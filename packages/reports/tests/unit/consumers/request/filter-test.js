@@ -28,7 +28,7 @@ module('Unit | Consumer | request filter', function(hooks) {
   test('TOGGLE_DIMENSION_FILTER', function(assert) {
     assert.expect(4);
 
-    const filter = { type: 'dimension', columnMeta: 'age' };
+    const filter = { type: 'dimension', columnMetadata: 'age' };
     const currentModel = {
       request: {
         filters: [filter]

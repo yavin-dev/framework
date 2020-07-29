@@ -111,24 +111,24 @@ module('Unit | Serializer | Request V2', function(hooks) {
 
     assert.equal(columns.length, 6, 'request has correct number of columns');
 
-    assert.equal(columns.objectAt(0).columnMeta.id, 'dateTime', 'dateTime column is normalized correctly');
+    assert.equal(columns.objectAt(0).columnMetadata.id, 'dateTime', 'dateTime column is normalized correctly');
     assert.equal(columns.objectAt(0).type, 'time-dimension', 'dateTime column type is set correctly');
     assert.deepEqual(columns.objectAt(0).parameters, { grain: 'day' }, 'dateTime column has correct parameters');
 
-    assert.equal(columns.objectAt(1).columnMeta.id, 'age', 'dimension columns are normalized correctly');
+    assert.equal(columns.objectAt(1).columnMetadata.id, 'age', 'dimension columns are normalized correctly');
     assert.deepEqual(columns.objectAt(1).parameters, {}, 'dimension columns have no parameters');
 
-    assert.equal(columns.objectAt(3).columnMeta.id, 'revenue', 'metric columns are normalized correctly');
+    assert.equal(columns.objectAt(3).columnMetadata.id, 'revenue', 'metric columns are normalized correctly');
     assert.deepEqual(columns.objectAt(3).parameters, { currency: 'USD' }, 'metric columns have correct parameters');
 
     assert.equal(filters.length, 5, 'request has correct number of filter fragments');
 
-    assert.equal(filters.objectAt(0).columnMeta.id, 'dateTime', 'dateTime filter is normalized correctly');
+    assert.equal(filters.objectAt(0).columnMetadata.id, 'dateTime', 'dateTime filter is normalized correctly');
     assert.equal(filters.objectAt(0).type, 'time-dimension', 'dateTime filter type is set correctly');
     assert.equal(filters.objectAt(0).operator, 'bet', 'dateTime filter operator is set correctly');
     assert.deepEqual(filters.objectAt(0).values, ['P7D', 'current'], 'dateTime filter values are set correctly');
 
-    assert.equal(filters.objectAt(1).columnMeta.id, 'age', 'dimension filters are normalized correctly');
+    assert.equal(filters.objectAt(1).columnMetadata.id, 'age', 'dimension filters are normalized correctly');
     assert.deepEqual(
       filters.objectAt(1).parameters,
       { projection: 'id' },
@@ -143,17 +143,17 @@ module('Unit | Serializer | Request V2', function(hooks) {
       'dimension filter has correct `desc` projection param'
     );
 
-    assert.equal(filters.objectAt(3).columnMeta.id, 'revenue', 'metric filters are normalized correctly');
+    assert.equal(filters.objectAt(3).columnMetadata.id, 'revenue', 'metric filters are normalized correctly');
     assert.deepEqual(filters.objectAt(3).parameters, { currency: 'USD' }, 'metric filters have correct parameters');
     assert.equal(filters.objectAt(3).operator, 'lt', 'metric filter operator are normalized correctly');
     assert.deepEqual(filters.objectAt(3).values, [24], 'metric filter values are normalized correctly');
 
     assert.equal(sorts.length, 2, 'request has correct number of sort fragments');
 
-    assert.equal(sorts.objectAt(0).columnMeta.id, 'dateTime', 'dateTime sort is normalized correctly');
+    assert.equal(sorts.objectAt(0).columnMetadata.id, 'dateTime', 'dateTime sort is normalized correctly');
     assert.equal(sorts.objectAt(0).direction, 'desc', 'dateTime sort direction is normalized correctly');
 
-    assert.equal(sorts.objectAt(1).columnMeta.id, 'revenue', 'metric sorts are normalized correctly');
+    assert.equal(sorts.objectAt(1).columnMetadata.id, 'revenue', 'metric sorts are normalized correctly');
     assert.deepEqual(sorts.objectAt(1).parameters, { currency: 'CAD' }, 'metric sorts have correct parameters');
   });
 });
