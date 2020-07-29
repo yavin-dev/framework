@@ -9,13 +9,7 @@ export default class PieChartController extends Controller {
       request: {
         metrics: [
           {
-            metric: 'uniqueIdentifier'
-          },
-          {
             metric: 'totalPageViews'
-          },
-          {
-            metric: 'revenue'
           }
         ],
         logicalTable: {
@@ -30,6 +24,9 @@ export default class PieChartController extends Controller {
         dimensions: [
           {
             dimension: 'age'
+          },
+          {
+            dimension: 'browser'
           }
         ]
       },
@@ -39,41 +36,61 @@ export default class PieChartController extends Controller {
             dateTime: '2015-12-14 00:00:00.000',
             'age|id': '-3',
             'age|desc': 'All Other',
-            uniqueIdentifier: 1234,
-            totalPageViews: 4321,
-            revenue: 1234
+            'browser|id': 'firefox',
+            'browser|desc': 'Mozilla Firefox',
+            uniqueIdentifier: 72620639,
+            totalPageViews: 3072620639,
+            revenue: 23435193.77284
           },
           {
             dateTime: '2015-12-14 00:00:00.000',
             'age|id': '1',
             'age|desc': 'under 13',
-            uniqueIdentifier: 5432,
-            totalPageViews: 2345,
-            revenue: 54320
+            'browser|id': 'Chrome',
+            'browser|desc': 'Google Chrome',
+            uniqueIdentifier: 55191081,
+            totalPageViews: 155191081,
+            revenue: 12498623.29348
           },
           {
             dateTime: '2015-12-14 00:00:00.000',
             'age|id': '2',
             'age|desc': '13 - 25',
-            uniqueIdentifier: 3456,
-            totalPageViews: 6543,
-            revenue: 3456
+            'browser|id': 'IE',
+            'browser|desc': 'Microsoft Internet Explorer',
+            uniqueIdentifier: 55191081,
+            totalPageViews: 3072620639,
+            revenue: 77348273.24588
           },
           {
             dateTime: '2015-12-14 00:00:00.000',
             'age|id': '3',
             'age|desc': '25 - 35',
-            uniqueIdentifier: 7654,
-            totalPageViews: 4567,
-            revenue: 76540
+            'browser|id': 'firefox',
+            'browser|desc': 'Mozilla Firefox',
+            uniqueIdentifier: 72620639,
+            totalPageViews: 72620639,
+            revenue: 98350255.98241
           },
           {
             dateTime: '2015-12-14 00:00:00.000',
             'age|id': '4',
             'age|desc': '35 - 45',
-            uniqueIdentifier: 5678,
-            totalPageViews: 8765,
-            revenue: 5678
+            'browser|id': 'Chrome',
+            'browser|desc': 'Google Chrome',
+            uniqueIdentifier: 72620639,
+            totalPageViews: 72620639,
+            revenue: 63491243.7692
+          },
+          {
+            dateTime: '2015-12-14 00:00:00.000',
+            'age|id': '4',
+            'age|desc': '35 - 45',
+            'browser|id': 'firefox',
+            'browser|desc': 'Mozilla Firefox',
+            uniqueIdentifier: 72620639,
+            totalPageViews: 72620639,
+            revenue: 35353239.99923
           }
         ]
       }
@@ -82,32 +99,30 @@ export default class PieChartController extends Controller {
 
   apexOptions = {
     series: {
-      type: 'dimension',
       config: {
-        metric: {
-          metric: 'totalPageViews'
-        },
-        dimensionOrder: ['age'],
+        colors: [
+          '#87d812',
+          '#fed800',
+          '#19c6f4',
+          '#9a2ead',
+          '#ff3390',
+          '#0072df',
+          '#f17603',
+          '#6e2ebf',
+          '#20c05b',
+          '#e21717'
+        ],
+        metrics: [
+          {
+            metric: 'totalPageViews'
+          }
+        ],
         dimensions: [
           {
-            name: 'All Other',
-            values: { age: '-3' }
+            dimension: 'age'
           },
           {
-            name: 'under 13',
-            values: { age: '1' }
-          },
-          {
-            name: '13 - 25',
-            values: { age: '2' }
-          },
-          {
-            name: '25 - 35',
-            values: { age: '3' }
-          },
-          {
-            name: '35 - 45',
-            values: { age: '4' }
+            dimension: 'browser'
           }
         ]
       }
@@ -129,7 +144,7 @@ export default class PieChartController extends Controller {
     return {
       type: 'apex-pie',
       version: 1,
-      metadata: get(this, 'apexOptions')
+      metadata: this.get('apexOptions')
     };
   }
 

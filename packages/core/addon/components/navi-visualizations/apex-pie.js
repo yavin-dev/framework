@@ -12,17 +12,9 @@ import { shapeData } from '../../chart-builders/apex';
 
 export default class NaviVisualizationsApexPie extends Component {
   /**
-   * @property {string} - the metric being displayed
-   */
-  @computed('args.options')
-  get metric() {
-    return this.args.options.metadata.series.config.metric.metric;
-  }
-
-  /**
    * @property {object} - an ApexCharts-friendly object of the data and data labels
    */
-  @computed('args.model')
+  @computed('args.model.firstObject')
   get data() {
     return shapeData(this.args.model.firstObject.request, this.args.model.firstObject.response.rows);
   }
@@ -30,12 +22,20 @@ export default class NaviVisualizationsApexPie extends Component {
   /**
    * @property {object} - ApexCharts-compatible object of options
    */
-  @computed('data', 'metric')
+  @computed('data', 'args.options')
   get chartOptions() {
     return {
-      chart: { type: 'pie' },
-      series: this.data.series.find(dataSet => dataSet.name === this.metric).data,
-      labels: this.data.labels
+      chart: {
+        type: 'pie',
+        height: '100%'
+      },
+      colors: this.args.options?.series?.config?.colors,
+      labels: this.data.labels,
+      legend: {
+        position: 'bottom',
+        floating: false
+      },
+      series: this.data.series[0].data
     };
   }
 }

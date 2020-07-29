@@ -59,3 +59,37 @@ export function buildTestRequest(
     )
   };
 }
+
+export function buildApexTestRequest(
+  metrics = [],
+  dimensions = [],
+  intervals = [{ end: 'current', start: 'P7D' }],
+  timeGrain = 'day'
+) {
+  return {
+    metrics: {
+      content: metrics.map(item => {
+        return {
+          metric: {
+            id: item
+          }
+        };
+      })
+    },
+    dimensions: {
+      content: dimensions.map(item => {
+        return {
+          dimension: {
+            id: item
+          }
+        };
+      })
+    },
+    logicalTable: { timeGrain },
+    intervals: A(
+      intervals.map(interval => ({
+        interval: Interval.parseFromStrings(interval.start, interval.end)
+      }))
+    )
+  };
+}

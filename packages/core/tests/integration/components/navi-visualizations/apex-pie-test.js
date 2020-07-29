@@ -89,22 +89,34 @@ const Model = A([
 ]);
 
 const seriesInfo = {
-  type: 'dimension',
-  config: {
-    metric: {
-      metric: 'totalPageViews'
-    },
-    dimensionOrder: ['age'],
-    dimensions: [
-      {
-        name: 'All Other',
-        values: { age: '-3' }
-      },
-      {
-        name: 'Under 13',
-        values: { age: '1' }
-      }
-    ]
+  series: {
+    config: {
+      colors: [
+        '#87d812',
+        '#fed800',
+        '#19c6f4',
+        '#9a2ead',
+        '#ff3390',
+        '#0072df',
+        '#f17603',
+        '#6e2ebf',
+        '#20c05b',
+        '#e21717'
+      ],
+      metrics: [
+        {
+          metric: 'totalPageViews'
+        },
+        {
+          metric: 'uniqueIdentifier'
+        }
+      ],
+      dimensions: [
+        {
+          dimension: 'age'
+        }
+      ]
+    }
   }
 };
 
@@ -120,11 +132,7 @@ module('Integration | Components | Apex-Pie', function(hooks) {
 
   hooks.beforeEach(function() {
     this.set('model', Model);
-    this.set('options', {
-      type: 'pie-chart',
-      version: 1,
-      metadata: { series: seriesInfo }
-    });
+    this.set('options', seriesInfo);
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
   });

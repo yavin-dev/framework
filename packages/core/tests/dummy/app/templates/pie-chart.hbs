@@ -2,17 +2,15 @@
 
 <h3>Apex Pie Chart</h3>
 <div class="chart-container pie-chart-container">
-  {{!--
-  <NaviVisualizationConfig::ApexConfig
+  <NaviVisualizationConfig::Wrapper
     @request={{this.apexPieRequest}}
     @response={{this.apexPieResponse}}
     @visualization={{this.apexPieOptions}}
     @onUpdateConfig={{this.onUpdateConfigApexPie}}
   />
-  --}}
   <NaviVisualizations::ApexPie
     @model={{this.apexModel}}
-    @options={{this.apexPieOptions}}
+    @options={{this.apexOptions}}
   />
 </div>
 

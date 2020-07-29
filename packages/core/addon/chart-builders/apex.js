@@ -2,10 +2,10 @@
 GIVEN:
   Request:
   {
-    dimensions: [{ dimension: { id: string, name: string }}],
+    dimensions: [{ dimension: string }],
     intervals: [{ start: timeString, end: timeString }],
     logicalTable: { timeGrain: string },
-    metric: [ string ]
+    metrics: [{ metric: string }, { metric: string }]
   }
   Response Rows:
   [
@@ -19,16 +19,17 @@ GIVEN:
   ]
 RETURNS:
   {
-    labels: ['dimension or time labels']
-    series: [{ name: 'metric', data: [#] }]
+    labels: ['dimension or time labels', ...]
+    series: [{ name: 'metric', data: [#, ...] }]
   }
 */
 export function shapeData(request, rows) {
-  // if there is no dimension in the request, it must be metric versus time
-  let labelType = 'dateTime';
-  if (request.hasOwnProperty('dimensions')) {
-    // TODO: currently assumes one dimension, make multi-dimensional
-    labelType = request.dimensions[0].dimension + '|desc';
+  // determine the type of labels for the visualization
+  let labelTypes = ['dateTime'];
+  if (request.dimensions.length > 0) {
+    labelTypes = request.dimensions.map(item => {
+      return item.dimension + '|desc';
+    });
   }
   // scaffold each of the metrics
   const series = request.metrics.map(item => {
@@ -42,9 +43,10 @@ export function shapeData(request, rows) {
       if (num === undefined) {
         num = null;
       }
-      dataSet.data.push(num);
+      dataSet.data.push(Number(num));
     });
-    return row[labelType];
+    const label = labelTypes.map(labelType => row[labelType]).join(', ');
+    return label;
   });
   return { labels: labels, series: series };
 }
