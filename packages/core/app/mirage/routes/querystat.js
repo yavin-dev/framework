@@ -10,11 +10,11 @@ export default function() {
   // this.get('/admin/querystats', function({ querystats }) {
   //   return ['A', 'B', 'C'];
   // });
-  console.log('Reached here!!!!!!');
+  //console.log('Reached here!!!!!!');
   //this.namespace = 'admin'
   this.get('/querystats', function({ querystats }, request) {
     let idFilter = request.queryParams['filter[querystats.id]'];
-
+    console.log('GET Gets Called');
     // Allow filtering
     if (idFilter) {
       let ids = idFilter.split(',');
@@ -23,9 +23,13 @@ export default function() {
       querystats = querystats.all();
     }
 
+    console.log(querystats);
     return querystats;
   });
 
+  this.get('/querystats/:id');
+
+  //no need for post
   this.post('/querystats', function({ querystats, db }) {
     let attrs = this.normalizedRequestAttrs(),
       querystat = querystats.create(attrs);

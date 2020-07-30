@@ -79,33 +79,34 @@ export default class AdminQuerystatsController extends Controller {
   options = {
     columns: [
       {
+        attributes: { name: 'createdOn' },
+        type: 'dateTime'
+        //displayName: 'Created On'
+      },
+      {
         attributes: { name: 'requestID' },
-        type: 'metric',
-        displayName: 'Request ID'
+        type: 'dimension'
+        //displayName: 'Request ID'
       },
       {
         attributes: { name: 'nameModel' },
-        type: 'metric',
-        displayName: 'Model Name'
+        type: 'metric'
+        //displayName: 'Model Name'
       },
       {
         attributes: { name: 'user', parameters: {} },
-        type: 'metric',
-        displayName: 'User'
+        type: 'metric'
+        //displayName: 'User'
       },
       {
         attributes: { name: 'status', parameters: {} },
-        type: 'metric',
-        displayName: 'Query Status'
+        type: 'metric'
+        //displayName: 'Query Status'
       },
       {
-        attributes: {
-          name: 'duration',
-          parameters: {},
-          canAggregateSubtotal: false
-        },
-        type: 'metric',
-        displayName: 'Query Duration'
+        attributes: { name: 'duration', parameters: {} },
+        type: 'metric'
+        //displayName: 'Query Duration'
       }
     ],
     showTotals: {
@@ -157,4 +158,6 @@ export default class AdminQuerystatsController extends Controller {
   onUpdateConfig(configUpdate) {
     set(this, 'options', merge({}, get(this, 'options'), configUpdate));
   }
+
+  //console.log('Reached Admin Controller');
 }
