@@ -50,7 +50,7 @@ export default class BardMetadataService extends Service {
 
     //Instantiating the bard metadata adapter & serializer
     const owner = getOwner(this);
-    this._adapter = owner.lookup('adapter:bard-metadata');
+    this._adapter = owner.lookup('adapter:metadata/bard');
     this._serializer = owner.lookup('serializer:bard-metadata');
   }
 
@@ -65,7 +65,7 @@ export default class BardMetadataService extends Service {
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      const payload = await this._fetchMetadata(options);
+      const payload = await this._adapter.fetchEverything(options);
 
       //normalize payload
       payload.source = dataSource;
@@ -76,26 +76,6 @@ export default class BardMetadataService extends Service {
 
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
-  }
-
-  /**
-   * This method can be easily overridden to configure what metadata is loaded
-   * @private
-   * @method _fetchMetadata
-   * @param {Object} options
-   * @param {String} options.dataSourceName
-   * @returns {Promise<Object>} Payload for a given datasource or the default datasource
-   */
-  _fetchMetadata(options = {}) {
-    return this._adapter.fetchAll(
-      'table',
-      assign(
-        {
-          query: { format: 'fullview' }
-        },
-        options
-      )
-    );
   }
 
   /**
@@ -206,7 +186,7 @@ export default class BardMetadataService extends Service {
     assert('Type must be a valid navi-data model type', VALID_TYPES.includes(type));
     let dataSourceName = namespace || getDefaultDataSourceName();
 
-    return this._adapter.fetchMetadata(type, id, { dataSourceName }).then(meta => {
+    return this._adapter.fetchById(type, id, { dataSourceName }).then(meta => {
       //If there is a serializer defined for the type, normalize before loading into keg
       meta = getOwner(this)
         .lookup(`serializer:metadata/${type}`)

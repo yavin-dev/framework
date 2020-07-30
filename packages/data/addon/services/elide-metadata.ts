@@ -5,7 +5,7 @@
  * Ember service that helps retrieve metadata from Elide WS through GraphQL
  */
 import Service, { inject as service } from '@ember/service';
-import { MetadataRequestOptions, MetadataQueryType } from '../adapters/elide-metadata';
+import { MetadataQueryType } from '../adapters/metadata/elide';
 import { TableMetadataPayload, TableMetadata } from '../models/metadata/table';
 import { MetricMetadataPayload } from '../models/metadata/metric';
 import { DimensionMetadataPayload } from '../models/metadata/dimension';
@@ -17,9 +17,9 @@ import { assign } from '@ember/polyfills';
 import { assert } from '@ember/debug';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import Serializer, { NormalizedMetadata, TablePayload } from '../serializers/elide-metadata';
-import Adapter from '../adapters/elide-metadata';
 
 import { setOwner, getOwner } from '@ember/application';
+import NaviMetadataAdapter, { MetadataOptions } from 'navi-data/adapters/metadata/interface';
 
 const VALID_TYPES = <const>['table', 'metric', 'dimension', 'time-dimension'];
 
@@ -35,7 +35,7 @@ export default class ElideMetadata extends Service {
    * @private
    * @property {Object} adapter - the adapter object
    */
-  readonly _adapter!: Adapter;
+  readonly _adapter!: NaviMetadataAdapter;
 
   /**
    * @private
@@ -62,7 +62,7 @@ export default class ElideMetadata extends Service {
 
     //Instantiating the elide metadata adapter & serializer
     const owner = getOwner(this);
-    this._adapter = owner.lookup('adapter:elide-metadata');
+    this._adapter = owner.lookup('adapter:metadata/elide');
     this._serializer = owner.lookup('serializer:elide-metadata');
   }
 
@@ -73,28 +73,17 @@ export default class ElideMetadata extends Service {
    * @param options - options object used by the adapter
    * @returns {Promise} promise that loads metadata
    */
-  async loadMetadata(options: MetadataRequestOptions = {}) {
+  async loadMetadata(options: MetadataOptions = {}) {
     const dataSource = options.dataSourceName || getDefaultDataSourceName();
     //fetch metadata from WS if metadata not yet loaded
     if (!this.loadedDataSources.includes(dataSource)) {
-      const payload = await this._fetchMetadata(options);
+      const payload = await this._adapter.fetchEverything(options);
 
       //normalize payload
       payload.source = dataSource;
       const metadata = this._serializer.normalize(payload);
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
-  }
-
-  /**
-   * This method can be easily overridden to configure what metadata is loaded
-   * @private
-   * @method _fetchMetadata
-   * @param options - optionally contains data source name
-   * @returns {Promise} Payload for a given datasource or the default datasource
-   */
-  _fetchMetadata(options: MetadataRequestOptions = {}) {
-    return this._adapter.fetchAll('table', options);
   }
 
   /**
