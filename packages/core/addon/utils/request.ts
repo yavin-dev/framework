@@ -192,7 +192,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   requestV2.columns.push({
     field: 'dateTime',
     parameters: { grain },
-    type: 'time-dimension'
+    type: 'timeDimension'
   });
 
   //normalize dimensions
@@ -216,7 +216,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   //normalize intervals
   normalized.intervals.forEach(({ start, end }) =>
     requestV2.filters.push({
-      type: 'time-dimension',
+      type: 'timeDimension',
       field: 'dateTime',
       operator: 'bet',
       values: [start, end],
@@ -252,7 +252,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   normalized.sort.forEach(({ metric: { metric, parameters = {} }, direction }) => {
     const isDateTime = metric === 'dateTime' || metric.endsWith('.dateTime');
     requestV2.sorts.push({
-      type: isDateTime ? 'time-dimension' : 'metric',
+      type: isDateTime ? 'timeDimension' : 'metric',
       field: isDateTime ? 'dateTime' : removeNamespace(metric, namespace),
       parameters: isDateTime ? { grain } : parameters,
       direction

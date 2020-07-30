@@ -10,7 +10,7 @@ import FilterFragment from '../models/bard-request-v2/fragments/filter';
 import SortFragment from '../models/bard-request-v2/fragments/sort';
 import { dasherize } from '@ember/string';
 
-type FieldType = 'metric' | 'dimension' | 'time-dimension';
+type FieldType = 'metric' | 'dimension' | 'timeDimension';
 
 export default class FragmentFactory extends Service {
   @service store!: Store;
@@ -29,7 +29,7 @@ export default class FragmentFactory extends Service {
 
   /**
    * Builds a request v2 column fragment and applies the appropriate meta data
-   * @param type - metric, dimension or time-dimension
+   * @param type - metric, dimension or timeDimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
@@ -71,7 +71,7 @@ export default class FragmentFactory extends Service {
 
   /**
    * Builds a request v2 filter fragment and applies the appropriate meta data
-   * @param type - metric, dimension or time-dimension
+   * @param type - metric, dimension or timeDimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
@@ -114,7 +114,7 @@ export default class FragmentFactory extends Service {
 
   /**
    * Builds a request v2 sort fragment and applies the appropriate meta data
-   * @param type - metric, dimension or time-dimension
+   * @param type - metric, dimension or timeDimension
    * @param dataSource - datasource or namespace for metadata lookups
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`

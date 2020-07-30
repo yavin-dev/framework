@@ -44,7 +44,7 @@ export default Component.extend({
   orderedFilters: computed('request.filters.[]', function() {
     const { filters } = this.request;
     const dateFilters = filters
-      .filter(f => f.type === 'time-dimension' && f.field === 'dateTime')
+      .filter(f => f.type === 'timeDimension' && f.field === 'dateTime')
       .map(filter => ({
         type: 'date-time', // Dasherized to match filter-builder component name
         requestFragment: filter,
@@ -52,7 +52,7 @@ export default Component.extend({
       }));
 
     let dimFilters = filters
-      .filter(f => f.type === 'dimension' || (f.type === 'time-dimension' && f.field !== 'dateTime'))
+      .filter(f => f.type === 'dimension' || (f.type === 'timeDimension' && f.field !== 'dateTime'))
       .map(filter => {
         let dimensionDataType = filter.columnMetadata?.valueType?.toLowerCase?.(),
           type = this._dimensionFilterBuilder(dimensionDataType);

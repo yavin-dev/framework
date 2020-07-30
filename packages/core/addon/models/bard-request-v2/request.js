@@ -135,11 +135,11 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * @property {ColumnFragment[]} dimensionColumns - The dimension and time-dimension columns
+   * @property {ColumnFragment[]} dimensionColumns - The dimension and timeDimension columns
    */
   @computed('columns.[]')
   get dimensionColumns() {
-    return this.columns.filter(column => column.type === 'time-dimension' || column.type === 'dimension');
+    return this.columns.filter(column => column.type === 'timeDimension' || column.type === 'dimension');
   }
 
   /**
@@ -151,23 +151,23 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * @property {ColumnFragment[]} dimensionFilters - The dimension and time-dimension filters
+   * @property {ColumnFragment[]} dimensionFilters - The dimension and timeDimension filters
    */
   @computed('filters.[]')
   get dimensionFilters() {
-    return this.filters.filter(filter => filter.type === 'time-dimension' || filter.type === 'dimension');
+    return this.filters.filter(filter => filter.type === 'timeDimension' || filter.type === 'dimension');
   }
 
   /**
-   * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime time-dimension
+   * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime timeDimension
    */
   @computed('columns.[]')
   get timeGrainColumn() {
-    return this.columns.find(column => column.type === 'time-dimension' && column.field === 'dateTime');
+    return this.columns.find(column => column.type === 'timeDimension' && column.field === 'dateTime');
   }
 
   /**
-   * @property {string} timeGrain - The grain parameter of the column containing the dateTime time-dimension
+   * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
   @computed('timeGrainColumn')
   get timeGrain() {
@@ -179,7 +179,7 @@ export default class Request extends Fragment.extend(Validations) {
    */
   @computed('filters.[]')
   get dateTimeFilter() {
-    return this.filters.find(filter => filter.type === 'time-dimension' && filter.field === 'dateTime');
+    return this.filters.find(filter => filter.type === 'timeDimension' && filter.field === 'dateTime');
   }
 
   /**
@@ -262,7 +262,7 @@ export default class Request extends Fragment.extend(Validations) {
   }
 
   /**
-   * Makes the request have a dateTime time-dimension column with the given grain
+   * Makes the request have a dateTime timeDimension column with the given grain
    * @param {string} newTimeGrain - the new timegrain to use for the request
    */
   updateTimeGrain(newTimeGrain) {
@@ -270,7 +270,7 @@ export default class Request extends Fragment.extend(Validations) {
 
     if (!timeGrainColumn) {
       this.addColumn({
-        type: 'time-dimension',
+        type: 'timeDimension',
         dataSource: this.dataSource,
         field: 'dateTime',
         parameters: { grain: newTimeGrain }
@@ -331,7 +331,7 @@ export default class Request extends Fragment.extend(Validations) {
    */
   addDateTimeSort(direction) {
     this.sorts.unshiftObject(
-      this.fragmentFactory.createSort('time-dimension', this.dataSource, 'dateTime', {}, direction)
+      this.fragmentFactory.createSort('timeDimension', this.dataSource, 'dateTime', {}, direction)
     );
   }
 

@@ -598,7 +598,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     return store.createFragment('bard-request-v2/request', {
       columns: [
         store.createFragment('bard-request-v2/fragments/column', {
-          type: 'time-dimension',
+          type: 'timeDimension',
           field: 'dateTime',
           parameters: {
             grain: timeGrain
