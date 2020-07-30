@@ -9,7 +9,7 @@ const TestRequest = {
   table: 'table1',
   requestVersion: '2.0',
   columns: [
-    { type: 'time-dimension', field: 'dateTime', parameters: { grain: 'grain1' } },
+    { type: 'timeDimension', field: 'dateTime', parameters: { grain: 'grain1' } },
     { type: 'metric', field: 'm1', parameters: {} },
     { type: 'metric', field: 'm2', parameters: {} },
     { type: 'dimension', field: 'd1', parameters: {} },
@@ -17,7 +17,7 @@ const TestRequest = {
   ],
   filters: [
     {
-      type: 'time-dimension',
+      type: 'timeDimension',
       field: 'dateTime',
       parameters: {
         grain: 'grain1'

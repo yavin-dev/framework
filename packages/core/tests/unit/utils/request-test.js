@@ -404,7 +404,7 @@ module('Unit | Utils | Request', function(hooks) {
           parameters: {
             grain: 'day'
           },
-          type: 'time-dimension'
+          type: 'timeDimension'
         },
         {
           field: 'age',
@@ -445,7 +445,7 @@ module('Unit | Utils | Request', function(hooks) {
         {
           field: 'dateTime',
           operator: 'bet',
-          type: 'time-dimension',
+          type: 'timeDimension',
           values: ['P7D', 'current'],
           parameters: {}
         },
@@ -502,7 +502,7 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           field: 'dateTime',
-          type: 'time-dimension',
+          type: 'timeDimension',
           parameters: {}
         },
         {
@@ -537,7 +537,7 @@ module('Unit | Utils | Request', function(hooks) {
           parameters: {
             grain: 'day'
           },
-          type: 'time-dimension'
+          type: 'timeDimension'
         },
         {
           field: 'age',
@@ -578,7 +578,7 @@ module('Unit | Utils | Request', function(hooks) {
         {
           field: 'dateTime',
           operator: 'bet',
-          type: 'time-dimension',
+          type: 'timeDimension',
           values: ['P7D', 'current'],
           parameters: {}
         },
@@ -635,7 +635,7 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           field: 'dateTime',
-          type: 'time-dimension',
+          type: 'timeDimension',
           parameters: {}
         },
         {
