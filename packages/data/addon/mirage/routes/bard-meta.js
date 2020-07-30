@@ -75,6 +75,7 @@ export default function() {
         .concat(metricModels.dayAvgMetrics)
         .find(metricModel => metricModel.name === metricName);
 
+    faker.seed(metricName.length);
     metric.description = faker.lorem.sentence();
     return metric;
   });
