@@ -24,7 +24,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
                   {
                     field: 'dateTime',
                     operator: 'bet',
-                    type: 'time-dimension',
+                    type: 'timeDimension',
                     values: ['P1D', 'current']
                   },
                   {
@@ -38,7 +38,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
                   {
                     field: 'dateTime',
                     parameters: { grain: 'day' },
-                    type: 'time-dimension',
+                    type: 'timeDimension',
                     alias: 'time'
                   },
                   {
@@ -59,7 +59,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
                 sorts: [
                   {
                     field: 'dateTime',
-                    type: 'time-dimension',
+                    type: 'timeDimension',
                     direction: 'asc'
                   },
                   {
@@ -263,7 +263,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       {
         field: 'dateTime',
         operator: 'bet',
-        type: 'time-dimension',
+        type: 'timeDimension',
         values: ['P1D', 'current']
       },
       {
@@ -290,7 +290,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
       {
         field: 'dateTime',
         parameters: { grain: 'day' },
-        type: 'time-dimension',
+        type: 'timeDimension',
         alias: 'time'
       },
       {
@@ -313,7 +313,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
     request.set('sorts', [
       {
         field: 'dateTime',
-        type: 'time-dimension',
+        type: 'timeDimension',
         direction: 'asc'
       },
       {
@@ -338,7 +338,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         filters: [
           {
             field: 'dateTime',
-            type: 'time-dimension',
+            type: 'timeDimension',
             operator: 'bet',
             values: ['P1D', 'current']
           },
@@ -353,7 +353,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
           {
             field: 'dateTime',
             parameters: { grain: 'day' },
-            type: 'time-dimension',
+            type: 'timeDimension',
             alias: 'time'
           },
           {
@@ -375,7 +375,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
         sorts: [
           {
             field: 'dateTime',
-            type: 'time-dimension',
+            type: 'timeDimension',
             direction: 'asc'
           },
           {

@@ -126,7 +126,7 @@ function hasAllColumns(request, columns) {
     .rejectBy('type', 'dateTime')
     .map(column => {
       const { attributes, type } = column;
-      if (type === 'dimension' || type === 'time-dimension') {
+      if (type === 'dimension' || type === 'timeDimension') {
         const attrs = Object.assign({}, attributes, { id: attributes.name });
         delete attrs.name;
         return canonicalizeDimension(attrs);

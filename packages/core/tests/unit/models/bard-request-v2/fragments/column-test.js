@@ -17,7 +17,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
           {
             field: 'dateTime',
             parameters: { grain: 'day' },
-            type: 'time-dimension',
+            type: 'timeDimension',
             alias: 'time',
             source: 'dummy'
           }
@@ -37,7 +37,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
 
     assert.deepEqual(column.parameters, { grain: 'day' }, 'the `parameters` property has the correct object');
 
-    assert.equal(column.type, 'time-dimension', 'the `type` property has the correct value');
+    assert.equal(column.type, 'timeDimension', 'the `type` property has the correct value');
 
     assert.equal(column.alias, 'time', 'the `alias` property has the correct value');
 
@@ -73,7 +73,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
     assert.notOk(column.validations.isValid, 'a column with an invalid `type` is invalid');
     assert.deepEqual(
       column.validations.messages,
-      ['The `type` field of `dateTime` column must equal to `dimension`, `metric`, or `time-dimension`'],
+      ['The `type` field of `dateTime` column must equal to `dimension`, `metric`, or `timeDimension`'],
       'error messages collection is correct for a column with an invalid `type`'
     );
 
@@ -99,7 +99,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
           parameters: {
             grain: 'day'
           },
-          type: 'time-dimension'
+          type: 'timeDimension'
         }
       ],
       'The columns model attribute was serialized correctly'
@@ -113,7 +113,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
         {
           alias: 'time',
           field: 'dateTime',
-          type: 'time-dimension'
+          type: 'timeDimension'
         }
       ],
       'The columns model attribute was serialized correctly when parameters is an empty object'
@@ -127,7 +127,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
         {
           alias: 'time',
           field: 'dateTime',
-          type: 'time-dimension'
+          type: 'timeDimension'
         }
       ],
       'The columns model attribute was serialized correctly when parameters is null'
