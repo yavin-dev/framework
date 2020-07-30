@@ -17,11 +17,11 @@ const Validations = buildValidations({
     message: 'The `field` field cannot be empty'
   }),
   type: validator('inclusion', {
-    in: ['dimension', 'metric', 'time-dimension'],
+    in: ['dimension', 'metric', 'timeDimension'],
     allowBlank: true,
     message() {
       const { field } = this.model;
-      return 'The `type` field of `' + field + '` column must equal to `dimension`, `metric`, or `time-dimension`';
+      return 'The `type` field of `' + field + '` column must equal to `dimension`, `metric`, or `timeDimension`';
     }
   })
 });

@@ -112,7 +112,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.equal(columns.length, 6, 'request has correct number of columns');
 
     assert.equal(columns.objectAt(0).columnMetadata.id, 'dateTime', 'dateTime column is normalized correctly');
-    assert.equal(columns.objectAt(0).type, 'time-dimension', 'dateTime column type is set correctly');
+    assert.equal(columns.objectAt(0).type, 'timeDimension', 'dateTime column type is set correctly');
     assert.deepEqual(columns.objectAt(0).parameters, { grain: 'day' }, 'dateTime column has correct parameters');
 
     assert.equal(columns.objectAt(1).columnMetadata.id, 'age', 'dimension columns are normalized correctly');
@@ -124,7 +124,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.equal(filters.length, 5, 'request has correct number of filter fragments');
 
     assert.equal(filters.objectAt(0).columnMetadata.id, 'dateTime', 'dateTime filter is normalized correctly');
-    assert.equal(filters.objectAt(0).type, 'time-dimension', 'dateTime filter type is set correctly');
+    assert.equal(filters.objectAt(0).type, 'timeDimension', 'dateTime filter type is set correctly');
     assert.equal(filters.objectAt(0).operator, 'bet', 'dateTime filter operator is set correctly');
     assert.deepEqual(filters.objectAt(0).values, ['P7D', 'current'], 'dateTime filter values are set correctly');
 

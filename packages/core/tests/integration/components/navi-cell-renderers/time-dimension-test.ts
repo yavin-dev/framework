@@ -38,7 +38,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     this.set(
       'request',
       store.createFragment('bard-request-v2/request', {
-        columns: [factory.createColumn('time-dimension', 'dummy', 'dateTime', { grain: 'day' })],
+        columns: [factory.createColumn('timeDimension', 'dummy', 'dateTime', { grain: 'day' })],
         filters: [],
         sorts: [],
         requestVersion: '2.0',
@@ -48,7 +48,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     );
 
     this.set('column', {
-      type: 'time-dimension',
+      type: 'time-dimension', // TODO: what type here
       displayName: 'Date',
       attributes: {
         name: 'dateTime',

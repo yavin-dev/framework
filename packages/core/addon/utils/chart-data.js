@@ -102,7 +102,7 @@ export function getRequestMetrics(request) {
  */
 export function getRequestDimensions(request) {
   return request.columns
-    .filter(c => c.type === 'dimension' || (c.type === 'time-dimension' && c.field !== 'dateTime'))
+    .filter(c => c.type === 'dimension' || (c.type === 'timeDimension' && c.field !== 'dateTime'))
     .map(c => c.field);
 }
 
