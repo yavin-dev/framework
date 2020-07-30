@@ -20,7 +20,7 @@
     "lint:js": "eslint . && tsc --allowJs false --noEmit",
     "lint": "npm run lint:hbs && npm run lint:js",
     "start": "ember serve",
-    "test": "ember test",
+    "test": "ember test 2>&1 > /dev/null",
     "test:all": "ember try:each",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
