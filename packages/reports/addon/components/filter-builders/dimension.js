@@ -92,7 +92,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
       operator,
       values: dimensionFragment.values,
       validations: dimensionFragment.validations,
-      field: dimensionFragment.parameters.projection
+      field: dimensionFragment.parameters.field
     };
   }
 
@@ -116,13 +116,11 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    */
   @action
   setField(field) {
-    const changeSet = {
-      paramaters: {
-        ...this.requestFragment.paramaters,
-        projection: field
-      }
+    const parameters = {
+      ...this.requestFragment.parameters,
+      field
     };
-    this.onUpdateFilter(changeSet);
+    this.onUpdateFilter({ parameters });
   }
 }
 

@@ -12,8 +12,8 @@ const TestRequest = {
     { type: 'timeDimension', field: 'dateTime', parameters: { grain: 'grain1' } },
     { type: 'metric', field: 'm1', parameters: {} },
     { type: 'metric', field: 'm2', parameters: {} },
-    { type: 'dimension', field: 'd1', parameters: {} },
-    { type: 'dimension', field: 'd2', parameters: {} }
+    { type: 'dimension', field: 'd1', parameters: { field: 'id' } },
+    { type: 'dimension', field: 'd2', parameters: { field: 'id' } }
   ],
   filters: [
     {
@@ -28,14 +28,14 @@ const TestRequest = {
     {
       type: 'dimension',
       field: 'd3',
-      parameters: {},
+      parameters: { field: 'id' },
       operator: 'in',
       values: ['v1', 'v2']
     },
     {
       type: 'dimension',
       field: 'd4',
-      parameters: {},
+      parameters: { field: 'id' },
       operator: 'in',
       values: ['v3', 'v4']
     },
