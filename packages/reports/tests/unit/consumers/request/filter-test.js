@@ -78,7 +78,7 @@ module('Unit | Consumer | request filter', function(hooks) {
               dataSource: 'dummy',
               field: 'age',
               parameters: {
-                projection: 'id'
+                field: 'id'
               },
               operator: 'in',
               values: []

@@ -5,7 +5,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
+module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -94,7 +94,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
   });
 
   test('Serialization', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     assert.deepEqual(
       mockModel.serialize().data.attributes.filters,
@@ -119,27 +119,13 @@ module('Unit | Model | Fragment | BardRequest V2 - Filter', function(hooks) {
       [
         {
           field: 'revenue',
+          parameters: {},
           operator: 'gt',
           type: 'metric',
           values: [3]
         }
       ],
       'The filters model attribute was serialized correctly when parameters is an empty object'
-    );
-
-    mockModel.filters.objectAt(0).set('parameters', null);
-
-    assert.deepEqual(
-      mockModel.serialize().data.attributes.filters,
-      [
-        {
-          field: 'revenue',
-          operator: 'gt',
-          type: 'metric',
-          values: [3]
-        }
-      ],
-      'The filters model attribute was serialized correctly when parameters is null'
     );
   });
 });

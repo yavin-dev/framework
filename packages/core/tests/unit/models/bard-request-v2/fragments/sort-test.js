@@ -5,7 +5,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
+module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -13,7 +13,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
     await this.owner.lookup('service:bard-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
-        sort: [
+        sorts: [
           {
             field: 'revenue',
             type: 'metric',
@@ -30,7 +30,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
-    const sort = mockModel.sort.objectAt(0);
+    const sort = mockModel.sorts.objectAt(0);
 
     assert.equal(sort.field, 'revenue', 'the `field` property has the correct value');
 
@@ -53,7 +53,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
   test('Validation', async function(assert) {
     assert.expect(8);
 
-    const sort = mockModel.sort.objectAt(0);
+    const sort = mockModel.sorts.objectAt(0);
 
     assert.ok(sort.validations.isValid, 'sort is valid');
     assert.equal(sort.validations.messages.length, 0, 'there are no validation errors for a valid sort');
@@ -85,10 +85,10 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
   });
 
   test('Serialization', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     assert.deepEqual(
-      mockModel.serialize().data.attributes.sort,
+      mockModel.serialize().data.attributes.sorts,
       [
         {
           field: 'revenue',
@@ -102,32 +102,19 @@ module('Unit | Model | Fragment | BardRequest V2 - Sort', function(hooks) {
       'The sort model attribute was serialized correctly'
     );
 
-    mockModel.sort.objectAt(0).set('parameters', {});
+    mockModel.sorts.objectAt(0).set('parameters', {});
 
     assert.deepEqual(
-      mockModel.serialize().data.attributes.sort,
+      mockModel.serialize().data.attributes.sorts,
       [
         {
           field: 'revenue',
           type: 'metric',
+          parameters: {},
           direction: 'desc'
         }
       ],
       'The sort model attribute was serialized correctly when parameters is an empty object'
-    );
-
-    mockModel.sort.objectAt(0).set('parameters', null);
-
-    assert.deepEqual(
-      mockModel.serialize().data.attributes.sort,
-      [
-        {
-          field: 'revenue',
-          type: 'metric',
-          direction: 'desc'
-        }
-      ],
-      'The sort model attribute was serialized correctly when parameters is null'
     );
   });
 });

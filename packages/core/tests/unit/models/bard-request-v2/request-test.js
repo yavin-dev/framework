@@ -5,7 +5,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
+module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -43,7 +43,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
                   },
                   {
                     field: 'property',
-                    parameters: { projection: 'id' },
+                    parameters: { field: 'id' },
                     type: 'dimension'
                   },
                   {
@@ -339,12 +339,14 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
           {
             field: 'dateTime',
             type: 'timeDimension',
+            parameters: {},
             operator: 'bet',
             values: ['P1D', 'current']
           },
           {
             field: 'uniqueIdentifier',
             type: 'metric',
+            parameters: {},
             operator: 'gt',
             values: [3]
           }
@@ -358,29 +360,34 @@ module('Unit | Model | Fragment | BardRequest V2 - Request', function(hooks) {
           },
           {
             field: 'property',
-            parameters: { projection: 'id' },
-            type: 'dimension'
+            parameters: { field: 'id' },
+            type: 'dimension',
+            alias: null
           },
           {
             field: 'revenue',
             parameters: { currency: 'USD' },
-            type: 'metric'
+            type: 'metric',
+            alias: null
           },
           {
             field: 'navClicks',
             parameters: {},
-            type: 'metric'
+            type: 'metric',
+            alias: null
           }
         ],
         sorts: [
           {
             field: 'dateTime',
             type: 'timeDimension',
+            parameters: {},
             direction: 'asc'
           },
           {
             field: 'navClicks',
             type: 'metric',
+            parameters: {},
             direction: 'desc'
           }
         ],

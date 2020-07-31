@@ -200,7 +200,9 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
     requestV2.columns.push({
       type: 'dimension',
       field: removeNamespace(dimension, namespace),
-      parameters: {}
+      parameters: {
+        field: 'id'
+      }
     })
   );
 
@@ -231,7 +233,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
     requestV2.filters.push({
       type: 'dimension',
       field: removeNamespace(dimension, namespace),
-      parameters: { projection: field },
+      parameters: { field },
       operator,
       values
     })
