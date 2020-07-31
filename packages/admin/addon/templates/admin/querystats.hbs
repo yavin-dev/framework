@@ -1,4 +1,11 @@
-{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-querystats-dashboard">
+  <h2 class="navi-querystats-dashboard__heading">PreCanned UI Dashboard</h2>
+</div>
+<div class="navi-querystats-dashboard__table">
+  <QueryStatsTable @model={{@model}} @modalClass={{@modalClass}} class="navi-querystats-dashboard__table-style"/>
+</div>
+
 {{!-- <div class="navi-querystats-dashboard">
   <h2 class="navi-querystats-dashboard__heading">PreCanned UI Dashboard</h2>
   <div class="navi-querystats-dashboard__table">
@@ -6,7 +13,7 @@
   </div>
 </div> --}}
 
-{{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
+{{!-- {{! Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. }}
 <div class="table-config__totals-toggle-section">
   {{!-- <span class="table-config__totals-toggle-label">Edit Header</span> --}}
   {{!-- <XToggle
@@ -15,20 +22,20 @@
     @size="small"
     @onToggle={{toggle-action "isEditing" this}}
   /> --}}
-</div>
+{{!-- </div> --}}
 
-<div class="navi-querystats-dashboard">
+{{!-- <div class="navi-querystats-dashboard">
   <h2 class="navi-querystats-dashboard__heading">PreCanned UI Dashboard</h2>
 </div>
 <div class="table-example">
   <NaviVisualizations::Table
     @model={{this.model}}
-    @options={{this.options}}
+    {{!-- @options={{this.options}} --}}
     {{!-- @isEditing={{true}}
     @isEditing={{this.isEditing}}
     @options={{this.options}}
     @onUpdateReport={{this.onUpdateReport}} --}}
-  />
+  {{!-- /> --}}
   {{!-- <h2>Blah</h2> --}}
   {{!-- <NaviVisualizationConfig::Wrapper
     @request={{this.request}}
@@ -36,4 +43,4 @@
     @visualization={{this.visualization}}
     @onUpdateConfig={{this.onUpdateConfig}}
   /> --}}
-</div>
+{{!-- </div> --}}

@@ -13,9 +13,11 @@ export default function() {
   //console.log('Reached here!!!!!!');
   //this.namespace = 'admin'
   this.get('/querystats', function({ querystats }, request) {
-    let idFilter = request.queryParams['filter[querystats.id]'];
+    let idFilter = request.queryParams['filter[querystats.createdOn]'];
     console.log('GET Gets Called');
     // Allow filtering
+    //filer based on current date
+    //can get it out from DateTime or request_Queryparams
     if (idFilter) {
       let ids = idFilter.split(',');
       querystats = querystats.find(ids);

@@ -71,6 +71,8 @@ export default class AdminQuerystatsRoute extends Route {
     //const querystatsObjects = promiseArray.then(result => result.data)
     //console.log(typeof(querystatsObjects));
     //console.log(promiseArray)
+    return { promiseArray };
+    //return { promiseArray } => got to await on the promise result returned from this
     //return { querystats };
     let querystatsRows = A();
     //let size = querystatsObjects.keys

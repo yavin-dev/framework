@@ -61,13 +61,19 @@ import { A as arr } from '@ember/array';
 import { setProperties, set, get, computed, action } from '@ember/object';
 import { isEqual, merge, omit } from 'lodash-es';
 
+//do data manipulation here
 export default class AdminQuerystatsController extends Controller {
+  //console.log(this.model);
+
   request = {
     dimensions: [{ dimension: { id: 'requestID', name: 'Query Request ID' } }]
   };
 
+  //one for each chart, table
+  // 1 computed function for each table, pass im=n directly here
   @computed('options')
   get visualization() {
+    // create a copy here => copy = cloneDeep(this.model)
     return {
       type: 'table',
       version: 1,
