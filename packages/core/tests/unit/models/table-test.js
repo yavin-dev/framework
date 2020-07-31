@@ -618,7 +618,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
               type: 'dimension',
               field: dimension,
               parameters: {
-                projection: field
+                field
               }
             });
           });

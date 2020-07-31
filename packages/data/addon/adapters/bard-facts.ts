@@ -5,7 +5,7 @@
  * Description: The adapter for the bard-facts request v2 model.
  */
 
-import { assert } from '@ember/debug';
+import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
@@ -20,6 +20,7 @@ import NaviFactAdapter, {
   SORT_DIRECTIONS,
   AsyncQueryResponse
 } from './fact-interface';
+import { omit } from 'lodash-es';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export type AliasFn = (column: string) => string;
@@ -32,13 +33,17 @@ export type AliasFn = (column: string) => string;
  * @returns formatted dimension name
  */
 function formatDimensionFieldName(field: string, parameters: Parameters, includeFieldProj = true): string {
-  const [fieldName, displayField = 'id'] = field.split('.'); // default dimension field projection to "id"
-  let parameterString = serializeParameters(parameters);
+  assert(`the dimension ${field} specifies a field parameter`, parameters.field);
+  if (field.includes('.')) {
+    warn(`field '${field}' includes '.', which is likely an error, use the parameters instead`);
+  }
+  const restParams = omit(parameters, 'field');
+  let parameterString = serializeParameters(restParams);
 
   if (parameterString.length > 0) {
     parameterString = `(${parameterString})`;
   }
-  return `${fieldName}${parameterString}${includeFieldProj ? '|' + displayField : ''}`;
+  return `${field}${parameterString}${includeFieldProj ? `|${parameters.field}` : ''}`;
 }
 
 /**

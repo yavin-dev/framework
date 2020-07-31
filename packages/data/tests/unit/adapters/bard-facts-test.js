@@ -21,21 +21,21 @@ const TestRequest = {
       },
       {
         field: 'd3',
-        parameters: {},
+        parameters: { field: 'id' },
         type: 'dimension',
         operator: 'in',
         values: ['v1', 'v2']
       },
       {
         field: 'd4',
-        parameters: {},
+        parameters: { field: 'id' },
         type: 'dimension',
         operator: 'in',
         values: ['v3', 'v4']
       },
       {
         field: 'd5',
-        parameters: {},
+        parameters: { field: 'id' },
         type: 'dimension',
         operator: 'notnull',
         values: ['']
@@ -73,12 +73,12 @@ const TestRequest = {
       },
       {
         field: 'd1',
-        parameters: {},
+        parameters: { field: 'id' },
         type: 'dimension'
       },
       {
         field: 'd2',
-        parameters: {},
+        parameters: { field: 'desc' },
         type: 'dimension'
       }
     ],
@@ -101,7 +101,7 @@ let Adapter,
   Server,
   aliasFunction = alias => (alias === 'a' ? 'r(p=123)' : alias);
 
-module('Unit | Bard Facts V2 Adapter', function(hooks) {
+module('Unit | Bard Facts Adapter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
@@ -133,7 +133,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     assert.expect(4);
 
     let singleDim = {
-      columns: [{ field: 'd1', type: 'dimension', parameters: {} }]
+      columns: [{ field: 'd1', type: 'dimension', parameters: { field: 'id' } }]
     };
     assert.equal(
       Adapter._buildDimensionsPath(singleDim),
@@ -143,8 +143,8 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let manyDims = {
       columns: [
-        { field: 'd1', type: 'dimension', parameters: {} },
-        { field: 'd2', type: 'dimension', parameters: {} }
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd2', type: 'dimension', parameters: { field: 'id' } }
       ]
     };
     assert.equal(
@@ -155,9 +155,9 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let duplicateDims = {
       columns: [
-        { field: 'd1', type: 'dimension', parameters: {} },
-        { field: 'd2', type: 'dimension', parameters: {} },
-        { field: 'd1', type: 'dimension', parameters: {} }
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } }
       ]
     };
     assert.equal(
@@ -303,7 +303,7 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     assert.expect(7);
 
     let singleFilter = {
-      filters: [{ field: 'd1.desc', parameters: {}, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }]
+      filters: [{ field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }]
     };
     assert.equal(
       Adapter._buildFiltersParam(singleFilter),
@@ -313,8 +313,8 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let manyFilters = {
       filters: [
-        { field: 'd1.desc', parameters: {}, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
-        { field: 'd2.id', parameters: {}, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] }
+        { field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
+        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] }
       ]
     };
     assert.equal(
@@ -339,7 +339,13 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let commaFilters = {
       filters: [
-        { field: 'd3.id', parameters: {}, type: 'dimension', operator: 'in', values: ['with, comma', 'no comma'] }
+        {
+          field: 'd3',
+          parameters: { field: 'id' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['with, comma', 'no comma']
+        }
       ]
     };
     assert.equal(
@@ -349,7 +355,15 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
     );
 
     let noIdFilters = {
-      filters: [{ field: 'd3', parameters: {}, type: 'dimension', operator: 'in', values: ['with, comma', 'no comma'] }]
+      filters: [
+        {
+          field: 'd3',
+          parameters: { field: 'id' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['with, comma', 'no comma']
+        }
+      ]
     };
     assert.equal(
       Adapter._buildFiltersParam(noIdFilters),
@@ -359,7 +373,13 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
 
     let quoteFilters = {
       filters: [
-        { field: 'd3.id', parameters: {}, type: 'dimension', operator: 'in', values: ['with "quote"', 'but why'] }
+        {
+          field: 'd3',
+          parameters: { field: 'id' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['with "quote"', 'but why']
+        }
       ]
     };
     assert.equal(
@@ -522,7 +542,9 @@ module('Unit | Bard Facts V2 Adapter', function(hooks) {
       '_buildHavingParam returns undefined with empty having'
     );
 
-    let onlyDimFilters = { filters: [{ field: 'foo', type: 'dimension', operator: 'gt', values: [0] }] };
+    let onlyDimFilters = {
+      filters: [{ field: 'foo', type: 'dimension', parameters: { field: 'id' }, operator: 'gt', values: [0] }]
+    };
     assert.equal(
       Adapter._buildHavingParam(onlyDimFilters),
       undefined,

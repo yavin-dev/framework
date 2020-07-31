@@ -4,7 +4,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
 
-module('Unit | Serializer | Request V2', function(hooks) {
+module('Unit | Serializer | Request', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -116,7 +116,7 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.deepEqual(columns.objectAt(0).parameters, { grain: 'day' }, 'dateTime column has correct parameters');
 
     assert.equal(columns.objectAt(1).columnMetadata.id, 'age', 'dimension columns are normalized correctly');
-    assert.deepEqual(columns.objectAt(1).parameters, {}, 'dimension columns have no parameters');
+    assert.deepEqual(columns.objectAt(1).parameters, { field: 'id' }, 'dimension columns have a field parameter');
 
     assert.equal(columns.objectAt(3).columnMetadata.id, 'revenue', 'metric columns are normalized correctly');
     assert.deepEqual(columns.objectAt(3).parameters, { currency: 'USD' }, 'metric columns have correct parameters');
@@ -129,18 +129,14 @@ module('Unit | Serializer | Request V2', function(hooks) {
     assert.deepEqual(filters.objectAt(0).values, ['P7D', 'current'], 'dateTime filter values are set correctly');
 
     assert.equal(filters.objectAt(1).columnMetadata.id, 'age', 'dimension filters are normalized correctly');
-    assert.deepEqual(
-      filters.objectAt(1).parameters,
-      { projection: 'id' },
-      'dimension filter has correct `id` projection param'
-    );
+    assert.deepEqual(filters.objectAt(1).parameters, { field: 'id' }, 'dimension filter has correct `id` field param');
     assert.equal(filters.objectAt(1).operator, 'in', 'dimension filter operator are normalized correctly');
     assert.deepEqual(filters.objectAt(1).values, ['2'], 'dimension filter values are normalized correctly');
 
     assert.deepEqual(
       filters.objectAt(2).parameters,
-      { projection: 'desc' },
-      'dimension filter has correct `desc` projection param'
+      { field: 'desc' },
+      'dimension filter has correct `desc` field param'
     );
 
     assert.equal(filters.objectAt(3).columnMetadata.id, 'revenue', 'metric filters are normalized correctly');

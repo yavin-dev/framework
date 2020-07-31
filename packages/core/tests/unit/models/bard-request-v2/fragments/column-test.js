@@ -5,7 +5,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
+module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -88,7 +88,7 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
   });
 
   test('Serialization', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     assert.deepEqual(
       mockModel.serialize().data.attributes.columns,
@@ -113,24 +113,11 @@ module('Unit | Model | Fragment | BardRequest V2 - Column', function(hooks) {
         {
           alias: 'time',
           field: 'dateTime',
+          parameters: {},
           type: 'timeDimension'
         }
       ],
       'The columns model attribute was serialized correctly when parameters is an empty object'
-    );
-
-    mockModel.columns.objectAt(0).set('parameters', null);
-
-    assert.deepEqual(
-      mockModel.serialize().data.attributes.columns,
-      [
-        {
-          alias: 'time',
-          field: 'dateTime',
-          type: 'timeDimension'
-        }
-      ],
-      'The columns model attribute was serialized correctly when parameters is null'
     );
   });
 });
