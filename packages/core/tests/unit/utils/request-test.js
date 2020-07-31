@@ -409,12 +409,16 @@ module('Unit | Utils | Request', function(hooks) {
         {
           field: 'age',
           type: 'dimension',
-          parameters: {}
+          parameters: {
+            field: 'id'
+          }
         },
         {
           field: 'platform',
           type: 'dimension',
-          parameters: {}
+          parameters: {
+            field: 'id'
+          }
         },
         {
           field: 'revenue',
@@ -447,13 +451,15 @@ module('Unit | Utils | Request', function(hooks) {
           operator: 'bet',
           type: 'timeDimension',
           values: ['P7D', 'current'],
-          parameters: {}
+          parameters: {
+            grain: 'day'
+          }
         },
         {
           field: 'age',
           operator: 'in',
           parameters: {
-            projection: 'id'
+            field: 'id'
           },
           type: 'dimension',
           values: ['2']
@@ -462,7 +468,7 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'platform',
           operator: 'contains',
           parameters: {
-            projection: 'desc'
+            field: 'desc'
           },
           type: 'dimension',
           values: ['win']
@@ -503,7 +509,9 @@ module('Unit | Utils | Request', function(hooks) {
           direction: 'desc',
           field: 'dateTime',
           type: 'timeDimension',
-          parameters: {}
+          parameters: {
+            grain: 'day'
+          }
         },
         {
           direction: 'asc',
@@ -542,12 +550,12 @@ module('Unit | Utils | Request', function(hooks) {
         {
           field: 'age',
           type: 'dimension',
-          parameters: {}
+          parameters: { field: 'id' }
         },
         {
           field: 'platform',
           type: 'dimension',
-          parameters: {}
+          parameters: { field: 'id' }
         },
         {
           field: 'revenue',
@@ -580,13 +588,15 @@ module('Unit | Utils | Request', function(hooks) {
           operator: 'bet',
           type: 'timeDimension',
           values: ['P7D', 'current'],
-          parameters: {}
+          parameters: {
+            grain: 'day'
+          }
         },
         {
           field: 'age',
           operator: 'in',
           parameters: {
-            projection: 'id'
+            field: 'id'
           },
           type: 'dimension',
           values: ['2']
@@ -595,7 +605,7 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'platform',
           operator: 'contains',
           parameters: {
-            projection: 'desc'
+            field: 'desc'
           },
           type: 'dimension',
           values: ['win']
@@ -636,7 +646,9 @@ module('Unit | Utils | Request', function(hooks) {
           direction: 'desc',
           field: 'dateTime',
           type: 'timeDimension',
-          parameters: {}
+          parameters: {
+            grain: 'day'
+          }
         },
         {
           direction: 'asc',

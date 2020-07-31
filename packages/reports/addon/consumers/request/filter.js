@@ -94,7 +94,7 @@ export default ActionConsumer.extend({
         type: 'dimension',
         dataSource: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
-        parameters: { projection: dimensionMetadataModel.primaryKeyFieldName },
+        parameters: { field: dimensionMetadataModel.primaryKeyFieldName },
         operator: defaultOperator,
         values: []
       });
