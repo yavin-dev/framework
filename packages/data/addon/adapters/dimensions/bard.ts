@@ -10,8 +10,8 @@ import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
 import { configHost, getDefaultDataSourceName } from '../../utils/adapter';
-import { serializeFilters } from '../bard-facts';
-import { Filter } from '../fact-interface';
+import { serializeFilters } from '../facts/bard';
+import { Filter } from '../facts/interface';
 import { DimensionMetadata } from 'navi-data/models/metadata/dimension';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];

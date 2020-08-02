@@ -101,11 +101,11 @@ let Adapter,
   Server,
   aliasFunction = alias => (alias === 'a' ? 'r(p=123)' : alias);
 
-module('Unit | Bard Facts Adapter', function(hooks) {
+module('Unit | Adapter | facts/bard', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Adapter = this.owner.lookup('adapter:bard-facts');
+    Adapter = this.owner.lookup('adapter:facts/bard');
 
     //setup Pretender
     Server = new Pretender(function() {

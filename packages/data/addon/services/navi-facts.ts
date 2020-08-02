@@ -11,8 +11,8 @@ import NaviFactsModel from 'navi-data/models/navi-facts';
 //@ts-ignore
 import RequestBuilder from 'navi-data/builder/request';
 import config from 'ember-get-config';
-import NaviFactAdapter, { RequestOptions, RequestV2 } from 'navi-data/adapters/fact-interface';
-import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/fact-interface';
+import NaviFactAdapter, { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
 export default class NaviFactsService extends Service {
@@ -22,8 +22,8 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Adapter} adapter instance for type
    */
-  _adapterFor(type = 'bard-facts'): NaviFactAdapter {
-    return getOwner(this).lookup(`adapter:${type}`);
+  _adapterFor(type = 'bard'): NaviFactAdapter {
+    return getOwner(this).lookup(`adapter:facts/${type}`);
   }
 
   /**
@@ -32,8 +32,8 @@ export default class NaviFactsService extends Service {
    * @param {String} type
    * @returns {Serializer} serializer instance for type
    */
-  _serializerFor(type = 'bard-facts'): NaviFactSerializer {
-    return getOwner(this).lookup(`serializer:${type}`);
+  _serializerFor(type = 'bard'): NaviFactSerializer {
+    return getOwner(this).lookup(`serializer:facts/${type}`);
   }
 
   /**
