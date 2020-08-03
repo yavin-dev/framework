@@ -60,7 +60,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
               field: 'id',
               operator: 'in',
               values: ['MacOS', 'Windows'],
-              dataSource: 'dummy'
+              dataSource: 'bardOne'
             }
           ]
         },
@@ -150,7 +150,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
 
   test('Add filter from other datasource', async function(assert) {
     assert.expect(2);
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     let author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',
@@ -179,7 +179,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
               operator: 'in',
               values: [],
               field: 'id',
-              dataSource: 'blockhead'
+              dataSource: 'bardTwo'
             }
           ]
         },
@@ -187,14 +187,14 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
       );
     };
 
-    await controller.send('addFilter', dashboard, { dimension: 'container', dataSource: 'blockhead' });
+    await controller.send('addFilter', dashboard, { dimension: 'container', dataSource: 'bardTwo' });
   });
 
   test('Updating multidatasource filter', async function(assert) {
     assert.expect(2);
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     const containerFilter = Store.createFragment('bard-request/fragments/filter', {
-      dimension: MetadataService.getById('dimension', 'container', 'blockhead'),
+      dimension: MetadataService.getById('dimension', 'container', 'bardTwo'),
       operator: 'in',
       fiel: 'id',
       values: []
@@ -229,7 +229,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
               operator: 'in',
               values: ['1'],
               field: 'id',
-              dataSource: 'blockhead'
+              dataSource: 'bardTwo'
             }
           ]
         },

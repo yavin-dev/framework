@@ -11,7 +11,7 @@ const NEW_MODEL = {
   requests: [
     {
       bardVersion: 'v1',
-      dataSource: 'dummy',
+      dataSource: 'bardOne',
       dimensions: [],
       filters: [],
       intervals: [

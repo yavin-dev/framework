@@ -49,9 +49,9 @@ module('Integration | Component | goal gauge ', function(hooks) {
     assert.expect(1);
     const metaData = this.owner.lookup('service:bard-metadata');
     metaData._keg.reset();
-    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+    await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
-    _setModel(this, 'available', 3030000000, 'blockhead');
+    _setModel(this, 'available', 3030000000, 'bardTwo');
     set(this, 'metric', { metric: 'available', parameters: {} });
     await render(hbs`
     <NaviVisualizations::GoalGauge
@@ -326,7 +326,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
    * @param {Number} value - value of metric
    * @return {Void}
    */
-  function _setModel(context, metric, value, dataSource = 'dummy') {
+  function _setModel(context, metric, value, dataSource = 'bardOne') {
     context.set(
       'model',
       arr([

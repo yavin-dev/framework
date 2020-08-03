@@ -105,7 +105,7 @@ module('Unit | Utils | Request', function(hooks) {
         adClicks: request.metrics[2],
         dateTime: { metric: 'dateTime' }
       },
-      'dummy'
+      'bardOne'
     );
 
     assert.deepEqual(
@@ -113,7 +113,7 @@ module('Unit | Utils | Request', function(hooks) {
       [
         {
           metric: {
-            metric: 'dummy.revenue',
+            metric: 'bardOne.revenue',
             parameters: {
               as: 'm1',
               currency: 'USD'
@@ -124,7 +124,7 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           metric: {
-            metric: 'dummy.revenue',
+            metric: 'bardOne.revenue',
             parameters: {
               as: 'm2',
               currency: 'CAD'
@@ -135,7 +135,7 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           metric: {
-            metric: 'dummy.adClicks'
+            metric: 'bardOne.adClicks'
           },
           operator: 'gt',
           values: ['11']
@@ -148,29 +148,29 @@ module('Unit | Utils | Request', function(hooks) {
   test('normalizeV1', function(assert) {
     assert.expect(7);
 
-    const normalized = normalizeV1(request, 'dummy');
+    const normalized = normalizeV1(request, 'bardOne');
 
-    assert.equal(normalized.dataSource, 'dummy', 'dataSource is set correctly');
+    assert.equal(normalized.dataSource, 'bardOne', 'dataSource is set correctly');
 
-    assert.equal(normalized.logicalTable.table, 'dummy.network', 'table is normalized correctly');
+    assert.equal(normalized.logicalTable.table, 'bardOne.network', 'table is normalized correctly');
 
     assert.deepEqual(
       normalized.metrics,
       [
         {
-          metric: 'dummy.revenue',
+          metric: 'bardOne.revenue',
           parameters: {
             currency: 'USD'
           }
         },
         {
-          metric: 'dummy.revenue',
+          metric: 'bardOne.revenue',
           parameters: {
             currency: 'CAD'
           }
         },
         {
-          metric: 'dummy.adClicks'
+          metric: 'bardOne.adClicks'
         }
       ],
       'metrics are normalized correctly'
@@ -181,7 +181,7 @@ module('Unit | Utils | Request', function(hooks) {
       [
         {
           metric: {
-            metric: 'dummy.revenue',
+            metric: 'bardOne.revenue',
             parameters: {
               currency: 'USD'
             }
@@ -191,7 +191,7 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           metric: {
-            metric: 'dummy.revenue',
+            metric: 'bardOne.revenue',
             parameters: {
               currency: 'CAD'
             }
@@ -201,7 +201,7 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           metric: {
-            metric: 'dummy.adClicks'
+            metric: 'bardOne.adClicks'
           },
           operator: 'gt',
           values: ['11']
@@ -216,13 +216,13 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           metric: {
-            metric: 'dummy.dateTime'
+            metric: 'bardOne.dateTime'
           }
         },
         {
           direction: 'asc',
           metric: {
-            metric: 'dummy.revenue',
+            metric: 'bardOne.revenue',
             parameters: {
               currency: 'CAD'
             }
@@ -236,10 +236,10 @@ module('Unit | Utils | Request', function(hooks) {
       normalized.dimensions,
       [
         {
-          dimension: 'dummy.age'
+          dimension: 'bardOne.age'
         },
         {
-          dimension: 'dummy.platform'
+          dimension: 'bardOne.platform'
         }
       ],
       'dimensions are normalized correctly'
@@ -249,13 +249,13 @@ module('Unit | Utils | Request', function(hooks) {
       normalized.filters,
       [
         {
-          dimension: 'dummy.age',
+          dimension: 'bardOne.age',
           field: 'id',
           operator: 'in',
           values: ['2']
         },
         {
-          dimension: 'dummy.platform',
+          dimension: 'bardOne.platform',
           field: 'desc',
           operator: 'contains',
           values: ['win']
@@ -388,11 +388,11 @@ module('Unit | Utils | Request', function(hooks) {
   test('normalize v1 to v2', function(assert) {
     assert.expect(6);
 
-    const normalized = normalizeV1toV2(request, 'dummy');
+    const normalized = normalizeV1toV2(request, 'bardOne');
 
     assert.equal(normalized.requestVersion, '2.0', 'requestVersion is set correctly');
 
-    assert.equal(normalized.dataSource, 'dummy', 'dataSource is set correctly');
+    assert.equal(normalized.dataSource, 'bardOne', 'dataSource is set correctly');
 
     assert.equal(normalized.table, 'network', 'table is normalized correctly');
 

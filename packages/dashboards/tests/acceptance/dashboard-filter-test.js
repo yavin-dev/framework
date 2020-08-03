@@ -101,7 +101,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.deepEqual(
       dashboardBody.data.attributes.filters,
-      [{ dimension: 'dummy.platform', field: 'desc', operator: 'contains', values: ['win'] }],
+      [{ dimension: 'bardOne.platform', field: 'desc', operator: 'contains', values: ['win'] }],
       'Correct filters are saved with the dashboard'
     );
   });
@@ -318,7 +318,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             field: 'id',
             operator: 'in',
             values: [],
-            dataSource: 'dummy'
+            dataSource: 'bardOne'
           }
         ]
       },
@@ -354,7 +354,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             field: 'id',
             operator: 'in',
             values: ['1'],
-            dataSource: 'dummy'
+            dataSource: 'bardOne'
           }
         ]
       },
@@ -403,7 +403,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             field: 'id',
             operator: 'in',
             values: [],
-            dataSource: 'dummy'
+            dataSource: 'bardOne'
           }
         ]
       },

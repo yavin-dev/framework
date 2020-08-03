@@ -7,5 +7,5 @@ export default class FragmentsV2MockModel extends Model {
   @fragmentArray('bard-request-v2/fragments/column') columns;
   @fragmentArray('bard-request-v2/fragments/sort') sorts;
   @fragment('bard-request-v2/request') request;
-  @attr('string', { defaultValue: 'dummy' }) dataSource;
+  @attr('string', { defaultValue: 'bardOne' }) dataSource;
 }

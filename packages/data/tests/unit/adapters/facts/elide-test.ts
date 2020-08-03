@@ -43,7 +43,7 @@ const TestRequestV2: RequestV2 = {
   sorts: [{ field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }],
   limit: '10000',
   requestVersion: '2.0',
-  dataSource: 'dummy-graphql'
+  dataSource: 'elideOne'
 };
 
 // Double the escaped characters as well as escape the double quote character
@@ -116,7 +116,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         sorts: [],
         filters: [],
         requestVersion: '2.0',
-        dataSource: 'dummy-graphql'
+        dataSource: 'elideOne'
       }),
       `{"query":"{ myTable { edges { node { m1(p: q) d1 } } } }"}`,
       'Arguments are properly excluded if they are not in the request'
@@ -135,7 +135,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         ],
         filters: [],
         requestVersion: '2.0',
-        dataSource: 'dummy-graphql'
+        dataSource: 'elideOne'
       }),
       escapeQuotes(`{"query":"{ myTable(sort: \\"-m1(p: q),d1\\") { edges { node { m1(p: q) d1 } } } }"}`),
       'Request with sorts and parameters is queried correctly'
@@ -155,7 +155,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           { field: 'd2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
         ],
         requestVersion: '2.0',
-        dataSource: 'dummy-graphql'
+        dataSource: 'elideOne'
       }),
       escapeQuotes(
         `{"query":"{ myTable(filter: \\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\") { edges { node { m1(p: q) d1 } } } }"}`
@@ -174,7 +174,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         filters: [],
         limit: '5',
         requestVersion: '2.0',
-        dataSource: 'dummy-graphql'
+        dataSource: 'elideOne'
       }),
       escapeQuotes(`{"query":"{ myTable(first: \\"5\\") { edges { node { m1(p: q) d1 } } } }"}`),
       'Request with limit is queried correctly'

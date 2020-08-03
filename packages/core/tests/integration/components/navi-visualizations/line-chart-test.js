@@ -634,7 +634,7 @@ module('Integration | Component | line chart', function(hooks) {
 
   test('multi-datasource labels', async function(assert) {
     MetadataService._keg.reset();
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
 
     assert.expect(1);
 
@@ -681,7 +681,7 @@ module('Integration | Component | line chart', function(hooks) {
             logicalTable: {
               timeGrain: 'day'
             },
-            dataSource: 'blockhead'
+            dataSource: 'bardTwo'
           },
           response: {
             rows: [

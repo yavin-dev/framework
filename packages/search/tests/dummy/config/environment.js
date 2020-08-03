@@ -24,8 +24,8 @@ module.exports = function(environment) {
 
     navi: {
       dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard' }
+        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
+        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
       ],
       appPersistence: {
         type: 'webservice',

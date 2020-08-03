@@ -16,7 +16,7 @@ const MockFilter = {
     name: 'Age',
     storageStrategy: 'loaded',
     primaryKeyFieldName: 'id',
-    source: 'dummy'
+    source: 'bardOne'
   },
   values: ['1', '2', '3'],
   validations: {}
@@ -75,14 +75,14 @@ module('Integration | Component | filter values/dimension select', function(hook
 
   test('it works for dimensions from other datasources', async function(assert) {
     assert.expect(3);
-    await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+    await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
 
     const datasourceFilter = {
       subject: {
         id: 'container',
         storageStrategy: 'loaded',
         primaryKeyFieldName: 'id',
-        source: 'blockhead'
+        source: 'bardTwo'
       },
       values: ['1', '2', '3'],
       validations: {}

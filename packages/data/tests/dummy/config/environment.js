@@ -26,12 +26,12 @@ module.exports = function(environment) {
 
     navi: {
       dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.com', type: 'bard' },
-        { name: 'dummy-gql', uri: 'https://data.naviapp.io', type: 'elide' },
-        { name: 'blockhead-gql', uri: 'https://data2.naviapp.com', type: 'elide' }
+        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
+        { name: 'bardTwo', uri: 'https://data2.naviapp.com', type: 'bard' },
+        { name: 'elideOne', uri: 'https://data.naviapp.io', type: 'elide' },
+        { name: 'elideTwo', uri: 'https://data2.naviapp.com', type: 'elide' }
       ],
-      defaultDataSource: 'dummy',
+      defaultDataSource: 'bardOne',
       searchThresholds: {
         contains: 600,
         in: 50000

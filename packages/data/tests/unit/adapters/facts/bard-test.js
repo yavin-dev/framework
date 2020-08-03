@@ -601,7 +601,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     assert.equal(
-      Adapter._buildURLPath(TestRequest, { dataSourceName: 'blockhead' }),
+      Adapter._buildURLPath(TestRequest, { dataSourceName: 'bardTwo' }),
       `${HOST2}/v1/data/table1/grain1/d1/d2/`,
       '_buildURLPath correctly built the URL path for the provided request when a host is configured'
     );
@@ -863,7 +863,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     assert.equal(
-      decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'blockhead' })),
+      decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'bardTwo' })),
       HOST2 +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
@@ -970,6 +970,6 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       return MockBardResponse;
     });
 
-    return Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'blockhead' });
+    return Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'bardTwo' });
   });
 });

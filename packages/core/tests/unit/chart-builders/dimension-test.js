@@ -214,7 +214,7 @@ const DATA2 = [
         end: '2016-06-02 00:00:00.000'
       }
     ],
-    dataSource: 'dummy'
+    dataSource: 'bardOne'
   },
   REQUEST2 = {
     logicalTable: {
@@ -226,7 +226,7 @@ const DATA2 = [
         end: '2016-01-03 00:00:00.000'
       }
     ],
-    dataSource: 'dummy'
+    dataSource: 'bardOne'
   },
   REQUEST3 = {
     logicalTable: {
@@ -238,7 +238,7 @@ const DATA2 = [
         end: '2016-01-03 00:00:00.000'
       }
     ],
-    dataSource: 'blockhead'
+    dataSource: 'bardTwo'
   };
 
 module('Unit | Chart Builders | Dimension', function() {
