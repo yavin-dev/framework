@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { constructFunctionArguments } from 'navi-data/serializers/metadata/metric-function';
+import { constructFunctionArguments, normalizeMetricFunctions } from 'navi-data/serializers/metadata/metric-function';
 import { MetricFunctionMoneyMetric } from '../../../helpers/metadata-routes';
 
 const FunctionArguments = [
@@ -11,7 +11,8 @@ const FunctionArguments = [
     description: undefined,
     type: 'ref',
     expression: 'dimension:displayCurrency',
-    _localValues: null,
+    source: 'dataSourceOne',
+    _localValues: undefined,
     defaultValue: 'USD'
   },
   {
@@ -21,6 +22,7 @@ const FunctionArguments = [
     valueType: 'TEXT',
     type: 'ref',
     expression: 'self',
+    source: 'dataSourceOne',
     _localValues: [
       {
         id: 'l',
@@ -39,14 +41,8 @@ const FunctionArguments = [
   }
 ];
 
-let Serializer;
-
 module('Unit | Metric Function Serializer', function(hooks) {
   setupTest(hooks);
-
-  hooks.beforeEach(function() {
-    Serializer = this.owner.lookup('serializer:metadata/metric-function');
-  });
 
   test('_normalizeMetricFunctions', function(assert) {
     const expected = [
@@ -62,6 +58,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
             valueType: 'TEXT',
             type: 'ref',
             expression: 'self',
+            source: 'dummy',
             _localValues: [
               {
                 description: 'US Dollars',
@@ -79,10 +76,10 @@ module('Unit | Metric Function Serializer', function(hooks) {
       }
     ];
 
-    const result = Serializer._normalizeMetricFunctions([MetricFunctionMoneyMetric], 'dummy');
+    const result = normalizeMetricFunctions([MetricFunctionMoneyMetric], 'dummy');
     assert.deepEqual(result, expected, 'Metric functions are normalized properly');
 
-    assert.deepEqual(Serializer._normalizeMetricFunctions([], 'dummy'), [], 'Empty array payload returns empty array');
+    assert.deepEqual(normalizeMetricFunctions([], 'dummy'), [], 'Empty array payload returns empty array');
   });
 
   test('constructFunctionArguments', function(assert) {
@@ -113,7 +110,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
     };
 
     assert.deepEqual(
-      constructFunctionArguments(parameters),
+      constructFunctionArguments(parameters, 'dataSourceOne'),
       FunctionArguments,
       'The parameter objects are successfully turned into metric function arguments'
     );

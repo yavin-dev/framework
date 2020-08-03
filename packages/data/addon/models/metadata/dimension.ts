@@ -25,6 +25,7 @@ export interface DimensionMetadata extends ColumnMetadata {
 export interface DimensionMetadataPayload extends ColumnMetadataPayload {
   fields?: Field[];
   cardinality?: Cardinality;
+  storageStrategy?: 'loaded' | 'none';
 }
 
 export default class DimensionMetadataModel extends ColumnMetadataModel
@@ -139,6 +140,8 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
     const field = this.getFieldsForTag(tag)?.[0];
     return field?.name || this.primaryKeyFieldName;
   }
+
+  storageStrategy?: 'loaded' | 'none';
 
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load

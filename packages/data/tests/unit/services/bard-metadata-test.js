@@ -79,38 +79,14 @@ module('Unit - Service - Bard Metadata', function(hooks) {
   });
 
   test('loadMetadata with metric function ids provided', async function(assert) {
-    assert.expect(3);
-
     const dataSource = 'dummy';
     const keg = Service._keg;
-    const originalSerializer = this.owner.factoryFor('serializer:metadata/metric-function');
-    const testSerializer = originalSerializer.class.extend({
-      normalize(payload, source) {
-        assert.equal(source, dataSource, 'The datasource is passed in correctly to the metric function serializer');
-        assert.deepEqual(
-          payload,
-          {
-            'metric-functions': { rows: [MetricFunctionMoneyMetric, MetricFunctionAggTrend] }
-          },
-          'The correct payload is passed to the metric-function serializer'
-        );
-        return this._super(...arguments);
-      }
-    });
-
-    this.owner.unregister('serializer:metadata/metric-function');
-    this.owner.register('serializer:metadata/metric-function', testSerializer);
-
     await Service.loadMetadata();
-
     assert.deepEqual(
       keg.all('metadata/metric-function', dataSource).mapBy('id'),
       [MetricFunctionMoneyMetric.id, MetricFunctionAggTrend.id],
       'When at least one metric has a metricFunctionId provided, all metric functions from the metric function endpoint are loaded into the keg'
     );
-
-    this.owner.unregister('serializer:metadata/metric-function');
-    this.owner.register('serializer:metadata/metric-function', originalSerializer);
   });
 
   test('loadMetadata from multiple sources', async function(assert) {

@@ -11,11 +11,12 @@ import { inject as service } from '@ember/service';
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 type FunctionArgumentType = 'ref' | 'primitive';
+export type MetricFunctionArgumentsValues = TODO[]; //TODO need to normalize
 
 type LocalFunctionArgument = FunctionArgumentMetadataModel & {
   type: 'ref';
   expression: 'self';
-  _localValues: string[];
+  _localValues: MetricFunctionArgumentsValues;
 };
 
 /**
@@ -28,7 +29,19 @@ function isLocalFunction(functionArgument: FunctionArgumentMetadataModel): funct
   return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
 }
 
-export default class FunctionArgumentMetadataModel extends EmberObject {
+export interface FunctionArgumentMetadataPayload {
+  id: string;
+  name: string;
+  description?: string;
+  source: string;
+  valueType: TODO;
+  type: FunctionArgumentType;
+  expression?: string;
+  defaultValue?: string;
+  _localValues?: MetricFunctionArgumentsValues;
+}
+
+export default class FunctionArgumentMetadataModel extends EmberObject implements FunctionArgumentMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
@@ -83,12 +96,12 @@ export default class FunctionArgumentMetadataModel extends EmberObject {
    * if metric function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
-  protected _localValues?: string[];
+  _localValues?: string[];
 
   /**
    * @property {Promise} values - array of values used for function arguments with an enum type
    */
-  get values(): Promise<string[]> | undefined {
+  get values(): Promise<MetricFunctionArgumentsValues> | undefined {
     if (isLocalFunction(this)) {
       return Promise.resolve(this._localValues);
     }
@@ -103,5 +116,5 @@ export default class FunctionArgumentMetadataModel extends EmberObject {
   /**
    * @property {string} defaultValue
    */
-  defaultValue!: string;
+  defaultValue?: string;
 }

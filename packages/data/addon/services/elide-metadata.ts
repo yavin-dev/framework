@@ -16,10 +16,11 @@ import { singularize } from 'ember-inflector';
 import { assign } from '@ember/polyfills';
 import { assert } from '@ember/debug';
 import GQLQueries from 'navi-data/gql/metadata-queries';
-import Serializer, { NormalizedMetadata, TablePayload } from '../serializers/elide-metadata';
+import Serializer, { TablePayload } from '../serializers/metadata/elide';
 
 import { setOwner, getOwner } from '@ember/application';
 import NaviMetadataAdapter, { MetadataOptions } from 'navi-data/adapters/metadata/interface';
+import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/interface';
 
 const VALID_TYPES = <const>['table', 'metric', 'dimension', 'time-dimension'];
 
@@ -63,7 +64,7 @@ export default class ElideMetadata extends Service {
     //Instantiating the elide metadata adapter & serializer
     const owner = getOwner(this);
     this._adapter = owner.lookup('adapter:metadata/elide');
-    this._serializer = owner.lookup('serializer:elide-metadata');
+    this._serializer = owner.lookup('serializer:metadata/elide');
   }
 
   /**
@@ -81,7 +82,7 @@ export default class ElideMetadata extends Service {
 
       //normalize payload
       payload.source = dataSource;
-      const metadata = this._serializer.normalize(payload);
+      const metadata = this._serializer.normalize('everything', payload);
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
   }
@@ -114,7 +115,7 @@ export default class ElideMetadata extends Service {
    * @param dataSource
    * @returns void
    */
-  _loadMetadataIntoKeg(metadata: NormalizedMetadata | TablePayload | undefined, dataSource: string): void {
+  _loadMetadataIntoKeg(metadata: EverythingMetadataPayload | TablePayload | undefined, dataSource: string): void {
     if (!(this.isDestroyed || this.isDestroying) && this.isMetadataNormalized(metadata)) {
       //create metadata model objects and load into keg
       this._loadMetadataForType('table', metadata.tables, dataSource);
@@ -230,7 +231,7 @@ export default class ElideMetadata extends Service {
    * @param metadata - Payload
    * @returns true if metadata is of type NormalizedMetadata
    */
-  isMetadataNormalized(metadata: object | undefined): metadata is NormalizedMetadata {
+  isMetadataNormalized(metadata: object | undefined): metadata is EverythingMetadataPayload {
     return Object.keys(metadata || {}).every(type => this.isValidType(singularize(dasherize(type))));
   }
 
