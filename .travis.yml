@@ -25,7 +25,6 @@ env:
     - PACKAGE=navi-admin
     - PACKAGE=navi-app
     - PACKAGE=navi-core
-    - PACKAGE=navi-dashboards
     - PACKAGE=navi-data
     - PACKAGE=navi-directory
     - PACKAGE=navi-notifications
