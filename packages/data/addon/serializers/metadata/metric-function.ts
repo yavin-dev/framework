@@ -14,7 +14,7 @@ import {
 } from 'navi-data/models/metadata/function-argument';
 
 type RawMetricFunctionEnvelope = {
-  ['metric-functions']: {
+  'metric-functions': {
     rows: RawMetricFunction[];
   };
 };
