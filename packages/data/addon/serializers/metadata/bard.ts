@@ -124,15 +124,12 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
             const convertedToMetricFunction = this._getMetricFunctionFromParameters(metric, source);
             if (convertedToMetricFunction) {
               metric.metricFunctionId = convertedToMetricFunction.id;
+              convertedToMetricFunctions[convertedToMetricFunction.id] = convertedToMetricFunction;
             }
 
             const newMetric = this._constructMetric(metric, source);
             currentMetrics[newMetric.id] = newMetric; // Add metric to all metrics list
             tableMetricIds.add(newMetric.id); // Add metric id to table's metricIds list
-
-            if (convertedToMetricFunction) {
-              convertedToMetricFunctions[convertedToMetricFunction.id] = convertedToMetricFunction;
-            }
           });
 
           return acc;

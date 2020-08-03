@@ -6,14 +6,14 @@
  */
 
 import EmberObject from '@ember/object';
-import { RawMetricFunctionArguments, RawMetricFunctionArgument, RawMetricFunction } from './bard';
+import { RawMetricFunctionArguments, RawMetricFunction } from './bard';
 import { MetricFunctionMetadataPayload } from 'navi-data/models/metadata/metric-function';
 import {
   FunctionArgumentMetadataPayload,
   INTRINSIC_VALUE_EXPRESSION
 } from 'navi-data/models/metadata/function-argument';
 
-type RawMetricFunctionEnvelope = {
+type RawMetricFunctionPayload = {
   'metric-functions': {
     rows: RawMetricFunction[];
   };
@@ -28,8 +28,7 @@ export function constructFunctionArguments(
   source: string
 ): FunctionArgumentMetadataPayload[] {
   return Object.keys(parameters).map(param => {
-    const paramObj: RawMetricFunctionArgument = parameters[param];
-    const { type, defaultValue, values, dimensionName, description } = paramObj;
+    const { type, defaultValue, values, dimensionName, description } = parameters[param];
 
     const normalized: FunctionArgumentMetadataPayload = {
       id: param,
@@ -74,7 +73,7 @@ export default class MetricFunctionSerializer extends EmberObject {
    * @param payload - raw metric function with envelope
    * @param source - data source name
    */
-  normalize(payload: RawMetricFunctionEnvelope, source: string): MetricFunctionMetadataPayload[] | undefined {
+  normalize(payload: RawMetricFunctionPayload, source: string): MetricFunctionMetadataPayload[] | undefined {
     if (payload?.['metric-functions']?.rows) {
       return normalizeMetricFunctions(payload['metric-functions'].rows, source);
     } else {
