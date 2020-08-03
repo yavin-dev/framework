@@ -32,11 +32,20 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
     return `${host}/${namespace}/${camelize(pluralize(type))}/${id}`;
   }
 
-  fetchEverything(options?: MetadataOptions): Promise<TODO> {
-    return this.fetchAll('table', {
+  async fetchEverything(options?: MetadataOptions): Promise<TODO> {
+    const fullViewReq = this.fetchAll('table', {
       query: { format: 'fullview' },
       ...options
     });
+    const metricFunctionsReq = this.fetchAll('metricFunctions').catch(e => {
+      // not all fili instances have metricFunction support
+      if (e.status !== 404) {
+        throw e;
+      }
+      return {};
+    });
+    const [{ tables }, { rows: metricFunctions }] = await Promise.all([fullViewReq, metricFunctionsReq]);
+    return { tables, metricFunctions };
   }
 
   fetchAll(type: string, options?: MetadataOptions): Promise<TODO> {

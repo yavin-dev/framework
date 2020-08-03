@@ -17,6 +17,13 @@ import metricModels from '../fixtures/bard-meta-metrics';
  */
 export default function() {
   /**
+   * unsupported metricFunctions endpoint
+   */
+  this.get('metricFunctions', function() {
+    return [404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'];
+  });
+
+  /**
    * /tables endpoint
    */
   this.get('/tables', function(db, req) {

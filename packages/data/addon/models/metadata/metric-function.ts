@@ -4,23 +4,23 @@
  *
  * A collection of function arguments that has a one to many relationship to metrics
  */
-import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
-import FunctionArgument from './function-argument';
-import KegService from '../../services/keg';
+import FunctionArgument, { FunctionArgumentMetadataPayload } from './function-argument';
 
-export default class MetricFunctionMetadataModel extends EmberObject {
+export interface MetricFunctionMetadataPayload {
+  id: string;
+  name: string;
+  description?: string;
+  source: string;
+  arguments?: FunctionArgumentMetadataPayload[];
+}
+
+export default class MetricFunctionMetadataModel extends EmberObject implements MetricFunctionMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
    */
   static identifierField = 'id';
-
-  /**
-   * @property {Ember.Service} keg
-   */
-  @service('keg')
-  keg!: KegService;
 
   /**
    * @property {string} id
