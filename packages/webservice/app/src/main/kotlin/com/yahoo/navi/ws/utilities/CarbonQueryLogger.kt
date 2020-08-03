@@ -119,7 +119,7 @@ open class CarbonQueryLogger constructor(
     }
 
     private fun constructAPIQuery(queryParams: Optional<MultivaluedMap<String, String>>?, path: String?): String? {
-        var apiQuery: String? = null
+        var apiQuery: String?
         if (queryParams == null) {
             return null
         } else if (!queryParams.isPresent) {
@@ -140,14 +140,14 @@ open class CarbonQueryLogger constructor(
 
     private fun getTotalRowsReturned(response: QueryResponse): Int {
         if (response.data == null) { return 0 }
-        val data: Iterable<Object> = response.data as Iterable<Object>
+        val data: Iterable<Any> = response.data as Iterable<Any>
         return Iterables.size(data)
     }
 
     private fun getTotalBytesReturned(response: QueryResponse): Int {
         if (response.data == null) { return 0 }
         var totalBytes: Int = 0
-        val data: Iterable<Object> = response.data as Iterable<Object>
+        val data: Iterable<Any> = response.data as Iterable<Any>
         for (d in data) {
             totalBytes += d.toString().length
         }
