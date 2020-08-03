@@ -8,7 +8,7 @@ import MetricFunction from './metric-function';
 
 // Shape of public properties on model
 export interface MetricMetadata extends ColumnMetadata {
-  defaultFormat: string;
+  defaultFormat?: string;
   metricFunction: MetricFunction | undefined;
   hasParameters: boolean;
   arguments: TODO[];
@@ -18,7 +18,7 @@ export interface MetricMetadata extends ColumnMetadata {
 }
 // Shape passed to model constructor
 export interface MetricMetadataPayload extends ColumnMetadataPayload {
-  defaultFormat: string;
+  defaultFormat?: string;
   metricFunctionId?: string;
 }
 
@@ -39,7 +39,7 @@ export default class MetricMetadataModel extends ColumnMetadataModel implements 
   /**
    * @property {string} defaultFormat - e.g. decimal for numbers
    */
-  defaultFormat!: string;
+  defaultFormat?: string;
 
   /**
    * @property {string} metricFunctionId

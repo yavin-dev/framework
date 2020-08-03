@@ -3,18 +3,20 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
-import { ColumnType } from '../models/metadata/column';
-import { TableMetadataPayload } from '../models/metadata/table';
-import { MetricMetadataPayload } from '../models/metadata/metric';
-import { DimensionMetadataPayload } from '../models/metadata/dimension';
-import { TimeDimensionMetadataPayload } from '../models/metadata/time-dimension';
+import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import { ColumnType } from '../../models/metadata/column';
+import { TableMetadataPayload } from '../../models/metadata/table';
+import { MetricMetadataPayload } from '../../models/metadata/metric';
+import { DimensionMetadataPayload } from '../../models/metadata/dimension';
+import { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
+import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
+import { assert } from '@ember/debug';
 
 type Edge<T> = {
   node: T;
   cursor: string;
 };
-type Connection<T> = {
+export type Connection<T> = {
   edges: Edge<T>[];
   pageInfo: TODO;
 };
@@ -28,9 +30,9 @@ type ColumnNode = {
   columnType: ColumnType;
   expression: string;
 };
-type MetricNode = ColumnNode & { defaultFormat: string };
-type DimensionNode = ColumnNode;
-type TimeDimensionNode = DimensionNode & {
+export type MetricNode = ColumnNode & { defaultFormat: string };
+export type DimensionNode = ColumnNode;
+export type TimeDimensionNode = DimensionNode & {
   supportedGrains: Connection<TimeDimensionGrainNode>;
   timeZone: string;
 };
@@ -55,14 +57,7 @@ export interface TablePayload {
   source: string;
 }
 
-export interface NormalizedMetadata {
-  tables: TableMetadataPayload[];
-  metrics: MetricMetadataPayload[];
-  dimensions: DimensionMetadataPayload[];
-  timeDimensions: TimeDimensionMetadataPayload[];
-}
-
-export default class ElideMetadataSerializer extends EmberObject {
+export default class ElideMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
   /**
    * Transform the elide metadata into a shape that our internal data models can use
    * @private
@@ -71,7 +66,7 @@ export default class ElideMetadataSerializer extends EmberObject {
    * @param {string} source - datasource of the payload
    * @returns {Object} - normalized tables and their associated columns
    */
-  _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string): NormalizedMetadata {
+  _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string): EverythingMetadataPayload {
     const edges = tableConnection.edges || [];
     let metrics: MetricMetadataPayload[] = [];
     let dimensions: DimensionMetadataPayload[] = [];
@@ -204,25 +199,13 @@ export default class ElideMetadataSerializer extends EmberObject {
     });
   }
 
-  /**
-   * @method normalize - normalizes the JSON response
-   * @param response {Object} - JSON response object
-   * @returns {Object} - normalized JSON object
-   */
-  normalize(payload: TablePayload) {
-    if (this.isTablePayload(payload)) {
-      return this._normalizeTableConnection(payload.table, payload.source);
-    }
-    return payload;
-  }
+  normalize<K extends keyof MetadataPayloadMap>(type: K, rawPayload: TablePayload): MetadataPayloadMap[K] {
+    assert('ElideMetadataSerializer only supports normalizing type `everything`', type === 'everything');
 
-  /**
-   * Runtime typecheck that typescript can understand
-   * @param payload
-   * @return true if payload is an instance of TablePayload
-   * */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  isTablePayload(payload: any): payload is TablePayload {
-    return !!payload.table;
+    const normalized: MetadataPayloadMap['everything'] = this._normalizeTableConnection(
+      rawPayload.table,
+      rawPayload.source
+    );
+    return normalized as MetadataPayloadMap[K];
   }
 }
