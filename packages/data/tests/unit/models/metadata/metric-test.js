@@ -65,7 +65,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     const metricFunction = metricOne.metricFunction;
     const expectedMetricFunc = this.owner
       .lookup('service:keg')
-      .getById('metadata/metric-function', 'moneyMetric', 'dummy');
+      .getById('metadata/metric-function', 'moneyMetric', 'bardOne');
     assert.equal(metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 

@@ -20,7 +20,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
             type: 'metric',
             operator: 'gt',
             values: [3],
-            source: 'dummy'
+            source: 'bardOne'
           }
         ]
       })

@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
-import scenario from 'dummy/mirage/scenarios/graphql';
+import scenario from 'dummy/mirage/scenarios/elide-one';
 import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
 
@@ -12,7 +12,7 @@ import { TestContext } from 'ember-test-helpers';
 const removeTypeNameField = (query: string) => query.replace(/\n\s*__typename/g, '').trim();
 
 interface MirageTestContext extends TestContext {
-  server: TODO
+  server: TODO;
 }
 
 module('Unit | Adapter | metadata/elide', function(hooks) {

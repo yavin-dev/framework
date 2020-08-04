@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NaviFactSerializer from 'navi-data/serializers/fact-interface';
-import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV1 } from 'navi-data/adapters/fact-interface';
+import NaviFactSerializer from 'navi-data/serializers/facts/interface';
+import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV1 } from 'navi-data/adapters/facts/interface';
 
 const Payload: AsyncQueryResponse = {
   asyncQuery: {
@@ -31,11 +31,11 @@ const Request: RequestV1 = {
 
 let Serializer: NaviFactSerializer;
 
-module('Unit | Serializer | elide facts', function(hooks) {
+module('Unit | Serializer | facts/elide', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function(this: TODO) {
-    Serializer = this.owner.lookup('serializer:elide-facts');
+    Serializer = this.owner.lookup('serializer:facts/elide');
   });
 
   test('it normalizes an elide fact response', function(assert) {

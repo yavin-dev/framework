@@ -19,12 +19,12 @@ module('Unit | Metadata | Metric Serializer', function(hooks) {
       description: 'desc',
       category: 'category',
       valueType: 'number',
-      source: 'dummy',
+      source: 'bardOne',
       metricFunctionId: 'foo'
     };
 
     assert.deepEqual(
-      Serializer._normalizeMetrics([testPayload], 'dummy'),
+      Serializer._normalizeMetrics([testPayload], 'bardOne'),
       [normalizedMetric],
       '_normalizeMetrics can normalize a single metric to the right shape'
     );
@@ -44,12 +44,12 @@ module('Unit | Metadata | Metric Serializer', function(hooks) {
         description: 'desc2',
         category: 'currencyMetrics',
         valueType: 'number',
-        source: 'dummy'
+        source: 'bardOne'
       }
     ];
 
     assert.deepEqual(
-      Serializer._normalizeMetrics(testPayload, 'dummy'),
+      Serializer._normalizeMetrics(testPayload, 'bardOne'),
       expectedMetrics,
       'Multiple metrics are normalized correctly'
     );
@@ -57,13 +57,13 @@ module('Unit | Metadata | Metric Serializer', function(hooks) {
 
   test('normalize', function(assert) {
     assert.strictEqual(
-      Serializer.normalize({}, 'dummy'),
+      Serializer.normalize({}, 'bardOne'),
       undefined,
       'Serializer returns undefined for a payload with no metrics key'
     );
     assert.strictEqual(Serializer.normalize(), undefined, 'Serializer returns undefined for a falsey payload');
 
-    const source = 'dummy';
+    const source = 'bardOne';
     let payload = {
         metrics: [
           Object.assign({}, MetricSix, {

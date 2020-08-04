@@ -54,7 +54,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
     this.set('changeme', function(selection) {
       assert.deepEqual(
         selection,
-        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'dummy' },
+        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'bardOne' },
         'Selection sends correct dimension object'
       );
     });
@@ -85,7 +85,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
         {
           requests: arr([
             {
-              dataSource: 'dummy',
+              dataSource: 'bardOne',
               logicalTable: {
                 table: {
                   id: 'a',
@@ -103,7 +103,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
         {
           requests: arr([
             {
-              dataSource: 'blockhead',
+              dataSource: 'bardTwo',
               logicalTable: {
                 table: {
                   id: 'b',
@@ -135,7 +135,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     assert.deepEqual(
       structure(dropdown),
-      { 'cat1 (blockhead)': ['dim4'], 'cat1 (dummy)': ['dim1'], cat2: ['dim2'], cat3: ['dim3'], cat4: ['dim2'] },
+      { 'cat1 (bardTwo)': ['dim4'], 'cat1 (bardOne)': ['dim1'], cat2: ['dim2'], cat3: ['dim3'], cat4: ['dim2'] },
       'Correct select structure is shown'
     );
   });

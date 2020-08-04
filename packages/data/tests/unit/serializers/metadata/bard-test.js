@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 const Payload = {
-  source: 'dummy',
+  source: 'bardOne',
   tables: [
     {
       name: 'tableName',
@@ -266,7 +266,7 @@ const Tables = [
     id: 'tableName',
     metricIds: ['metricOne', 'metricFour', 'metricTwo'],
     name: 'tableLongName',
-    source: 'dummy',
+    source: 'bardOne',
     timeDimensionIds: ['dimensionThree'],
     timeGrainIds: ['day', 'month']
   },
@@ -278,7 +278,7 @@ const Tables = [
     id: 'secondTable',
     metricIds: ['metricFive', 'metricTwo', 'metricOne', 'metricThree'],
     name: 'Second Table',
-    source: 'dummy',
+    source: 'bardOne',
     timeDimensionIds: ['dimensionThree'],
     timeGrainIds: ['day', 'week']
   }
@@ -290,7 +290,7 @@ const Dimensions = [
     category: 'categoryOne',
     id: 'dimensionOne',
     name: 'Dimension One',
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'text',
     fields: undefined,
@@ -302,7 +302,7 @@ const Dimensions = [
     category: 'categoryTwo',
     id: 'dimensionTwo',
     name: 'Dimension Two',
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'text',
     fields: [
@@ -322,7 +322,7 @@ const TimeDimensions = [
     category: 'dateCategory',
     id: 'dimensionThree',
     name: 'Dimension Three',
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     fields: undefined,
     valueType: 'date',
@@ -338,7 +338,7 @@ const Metrics = [
     metricFunctionId: undefined,
     name: 'Metric One',
     partialData: true,
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'number'
   },
@@ -348,7 +348,7 @@ const Metrics = [
     metricFunctionId: 'currency|format',
     name: 'Metric Four',
     partialData: true,
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'money'
   },
@@ -358,7 +358,7 @@ const Metrics = [
     metricFunctionId: 'currency',
     name: 'Metric Two',
     partialData: true,
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'money'
   },
@@ -368,7 +368,7 @@ const Metrics = [
     metricFunctionId: 'metricFunctionId take precedence over parameters',
     name: 'Metric Five',
     partialData: true,
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'number'
   },
@@ -378,7 +378,7 @@ const Metrics = [
     metricFunctionId: undefined,
     name: 'Metric Three',
     partialData: true,
-    source: 'dummy',
+    source: 'bardOne',
     type: 'field',
     valueType: 'number'
   }
@@ -389,7 +389,7 @@ const ParameterConvertToMetricFunction = [
     arguments: [
       {
         _localValues: undefined,
-        source: 'dummy',
+        source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
         expression: 'dimension:displayCurrency',
@@ -400,7 +400,7 @@ const ParameterConvertToMetricFunction = [
       },
       {
         _localValues: undefined,
-        source: 'dummy',
+        source: 'bardOne',
         defaultValue: 'none',
         description: undefined,
         expression: 'dimension:displayFormat',
@@ -413,13 +413,13 @@ const ParameterConvertToMetricFunction = [
     description: '',
     id: 'currency|format',
     name: '',
-    source: 'dummy'
+    source: 'bardOne'
   },
   {
     arguments: [
       {
         _localValues: undefined,
-        source: 'dummy',
+        source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
         expression: 'dimension:displayCurrency',
@@ -432,7 +432,7 @@ const ParameterConvertToMetricFunction = [
     description: '',
     id: 'currency',
     name: '',
-    source: 'dummy'
+    source: 'bardOne'
   }
 ];
 
@@ -461,7 +461,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
 
   test('normalize `everything` with metric functions', function(assert) {
     const MetricFunctionIdsPayload = {
-      source: 'dummy',
+      source: 'bardOne',
       metricFunctions: [
         {
           id: 'moneyMetric',
@@ -523,7 +523,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           id: 'metricOne',
           name: 'Metric One',
           valueType: 'number',
-          source: 'dummy',
+          source: 'bardOne',
           metricFunctionId: undefined,
           type: 'field',
           partialData: true
@@ -533,7 +533,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           id: 'metricTwo',
           name: 'Metric Two',
           valueType: 'money',
-          source: 'dummy',
+          source: 'bardOne',
           metricFunctionId: 'moneyMetric',
           type: 'field',
           partialData: true
@@ -556,13 +556,13 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
               name: 'currency',
               type: 'ref',
               valueType: 'TEXT',
-              source: 'dummy'
+              source: 'bardOne'
             }
           ],
           description: 'Mo Problems',
           id: 'moneyMetric',
           name: 'Mo Money',
-          source: 'dummy'
+          source: 'bardOne'
         }
       ],
       'Raw metric functions are normalized correctly'
@@ -588,7 +588,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ],
       datatype: 'text'
     };
-    const source = 'dummy';
+    const source = 'bardOne';
 
     assert.deepEqual(
       Serializer._constructDimension(rawDimension, source),
@@ -609,7 +609,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
   });
 
   test('_constructMetric', function(assert) {
-    const source = 'dummy';
+    const source = 'bardOne';
 
     const rawMetric = {
       category: 'categoryOne',

@@ -89,7 +89,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     assert.deepEqual(
       widgetsWithFilterWarning(),
       ['Report 12'],
-      'Widget with dummy datasource has a warning that filter does not apply'
+      'Widget with bardOne datasource has a warning that filter does not apply'
     );
 
     //add another filter for other datasource

@@ -84,7 +84,7 @@ module('Unit | Component | table', function(hooks) {
   const MODEL = A([
     {
       request: {
-        dataSource: 'dummy',
+        dataSource: 'bardOne',
         metrics: [
           {
             metric: 'uniqueIdentifier',
@@ -295,7 +295,7 @@ module('Unit | Component | table', function(hooks) {
     let options = merge({}, OPTIONS, { showTotals: { subtotal: 'dimension' } }),
       component = this.owner.factoryFor('component:navi-visualizations/table').create({
         options,
-        model: A([{ response: { rows: ROWS }, request: { dataSource: 'dummy' } }])
+        model: A([{ response: { rows: ROWS }, request: { dataSource: 'bardOne' } }])
       });
 
     assert.deepEqual(
@@ -358,7 +358,7 @@ module('Unit | Component | table', function(hooks) {
     let options = merge({}, OPTIONS, { showTotals: { subtotal: 'dimension' } }),
       component = this.owner.factoryFor('component:navi-visualizations/table').create({
         options,
-        model: A([{ response: { rows: ROWS }, request: { dataSource: 'dummy' } }]),
+        model: A([{ response: { rows: ROWS }, request: { dataSource: 'bardOne' } }]),
         computeColumnTotal
       });
 

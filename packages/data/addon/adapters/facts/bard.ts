@@ -10,8 +10,8 @@ import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
-import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../utils/metric';
-import { configHost } from '../utils/adapter';
+import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../../utils/metric';
+import { configHost } from '../../utils/adapter';
 import NaviFactAdapter, {
   Filter,
   Parameters,
@@ -19,7 +19,7 @@ import NaviFactAdapter, {
   RequestV2,
   SORT_DIRECTIONS,
   AsyncQueryResponse
-} from './fact-interface';
+} from './interface';
 import { omit } from 'lodash-es';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;

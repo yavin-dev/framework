@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { RequestV1, RequestV2 } from 'navi-data/adapters/fact-interface';
+import { RequestV1, RequestV2 } from 'navi-data/adapters/facts/interface';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponsePayload = any;

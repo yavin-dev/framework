@@ -193,7 +193,7 @@ module('Integration | Component | table', function(hooks) {
     assert.expect(2);
     const bardMeta = this.owner.lookup('service:bard-metadata');
     bardMeta._keg.reset();
-    await bardMeta.loadMetadata({ dataSourceName: 'blockhead' });
+    await bardMeta.loadMetadata({ dataSourceName: 'bardTwo' });
     const model = arr([
       {
         request: {
@@ -213,7 +213,7 @@ module('Integration | Component | table', function(hooks) {
               name: 'day'
             }
           },
-          dataSource: 'blockhead'
+          dataSource: 'bardTwo'
         },
         response: {
           rows: [

@@ -18,7 +18,7 @@ export default Route.extend({
     await this.user.findOrRegister();
     await Promise.all([
       this.bardMetadata.loadMetadata(),
-      this.bardMetadata.loadMetadata({ dataSourceName: 'blockhead' })
+      this.bardMetadata.loadMetadata({ dataSourceName: 'bardTwo' })
     ]);
   }
 });

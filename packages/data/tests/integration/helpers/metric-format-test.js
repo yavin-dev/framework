@@ -48,14 +48,14 @@ module('Integration | Helper | metric-format', function(hooks) {
     assert.expect(3);
     const metaData = this.owner.lookup('service:bard-metadata');
     metaData._keg.reset();
-    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+    await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
     this.set('metric', {
       metric: 'usedAmount',
       parameters: {}
     });
 
-    this.set('namespace', 'blockhead');
+    this.set('namespace', 'bardTwo');
     await render(hbs`{{metric-format this.metric this.namespace}}`);
     assert.dom().hasText('Used Amount', 'metric is looked up and rendered');
 

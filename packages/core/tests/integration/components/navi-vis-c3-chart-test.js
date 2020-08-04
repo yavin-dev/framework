@@ -22,7 +22,7 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
 
     this.owner.register('component:test-container', testContainer);
 
-    // Dummy data so chart won't complain
+    // mock data so chart won't complain
     this.set('data', {
       columns: [['data1', 30, 200, 100, 400, 150, 250]]
     });

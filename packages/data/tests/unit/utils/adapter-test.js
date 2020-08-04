@@ -10,13 +10,13 @@ module('Unit - Utils - Adapter Utils', function() {
     } = config;
 
     assert.deepEqual(
-      getDataSource('dummy'),
-      dataSources.find(s => s.name === 'dummy'),
+      getDataSource('bardOne'),
+      dataSources.find(s => s.name === 'bardOne'),
       'datasource is fetched from config'
     );
     assert.deepEqual(
-      getDataSource('blockhead'),
-      dataSources.find(s => s.name === 'blockhead'),
+      getDataSource('bardTwo'),
+      dataSources.find(s => s.name === 'bardTwo'),
       'Other datasource is fetched from config'
     );
 
@@ -59,25 +59,25 @@ module('Unit - Utils - Adapter Utils', function() {
   });
 
   test('getDefaultDataSourceName gets correct source object name depending on configuration', function(assert) {
-    assert.equal(getDefaultDataSourceName(), 'dummy', 'Gets the default datasource that is configured');
+    assert.equal(getDefaultDataSourceName(), 'bardOne', 'Gets the default datasource that is configured');
 
     const oldDefault = config.navi.defaultDataSource;
     set(config, 'navi.defaultDataSource', undefined);
 
-    assert.equal(getDefaultDataSourceName(), 'dummy', 'uses first configured datasource as default datasourcename');
+    assert.equal(getDefaultDataSourceName(), 'bardOne', 'uses first configured datasource as default datasourcename');
     set(config, 'navi.defaultDataSource', oldDefault);
   });
 
   test('configHost gets correct source object depending on configuration', function(assert) {
     assert.equal(
-      configHost({ dataSourceName: 'dummy' }),
+      configHost({ dataSourceName: 'bardOne' }),
       'https://data.naviapp.io',
-      'dummy host is correctly configured'
+      'bardOne host is correctly configured'
     );
     assert.equal(
-      configHost({ dataSourceName: 'blockhead' }),
+      configHost({ dataSourceName: 'bardTwo' }),
       'https://data2.naviapp.com',
-      'blockhead is correctly configured'
+      'bardTwo is correctly configured'
     );
     assert.equal(
       configHost({}),

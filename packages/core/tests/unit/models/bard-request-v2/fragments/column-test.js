@@ -19,7 +19,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             alias: 'time',
-            source: 'dummy'
+            source: 'bardOne'
           }
         ]
       })

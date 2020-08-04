@@ -47,18 +47,18 @@ module('Unit | Service | metric long name', function(hooks) {
     assert.expect(2);
     const metaData = this.owner.lookup('service:bard-metadata');
     metaData._keg.reset();
-    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
+    await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
     let service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getDisplayName({ metric: 'usedAmount', parameters: {} }, 'blockhead'),
+      service.getDisplayName({ metric: 'usedAmount', parameters: {} }, 'bardTwo'),
       'Used Amount',
       'Service returns the long name for a non parameterized metric'
     );
 
     assert.equal(
-      service.getName('available', 'blockhead'),
+      service.getName('available', 'bardTwo'),
       'How many are available',
       'Service can succesfully retrieve the long name for a valid metric'
     );

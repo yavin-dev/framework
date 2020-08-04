@@ -276,7 +276,7 @@ module('Unit | Service | dashboard data', function(hooks) {
       },
       data,
       filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })],
-      dataSource: 'dummy'
+      dataSource: 'bardOne'
     });
 
     const widgets = [
