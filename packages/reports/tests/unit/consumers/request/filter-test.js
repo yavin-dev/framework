@@ -65,7 +65,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     const dimensionMetadataModel = {
       id: 'age',
       primaryKeyFieldName: 'id',
-      source: 'dummy'
+      source: 'bardOne'
     };
 
     const currentModel = {
@@ -75,7 +75,7 @@ module('Unit | Consumer | request filter', function(hooks) {
             filterOptions,
             {
               type: 'dimension',
-              dataSource: 'dummy',
+              dataSource: 'bardOne',
               field: 'age',
               parameters: {
                 field: 'id'

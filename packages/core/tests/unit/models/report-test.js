@@ -30,7 +30,7 @@ const ExpectedRequest = {
     sorts: [{ type: 'metric', field: 'navClicks', parameters: {}, direction: 'asc' }],
     requestVersion: '2.0',
     limit: null,
-    dataSource: 'dummy'
+    dataSource: 'bardOne'
   },
   ExpectedReport = {
     data: {

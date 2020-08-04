@@ -12,13 +12,13 @@ module('Unit | Metadata Model | Metric Function', function(hooks) {
       id: 'moneyMetric',
       name: 'Money Metric',
       description: 'Currency parameter',
-      source: 'dummy',
+      source: 'bardOne',
       arguments: [
         {
           id: 'currency',
           name: 'Currency',
           description: 'moneyz',
-          source: 'dummy',
+          source: 'bardOne',
           valueType: 'text',
           type: 'ref',
           expression: 'dimension:displayCurrency',

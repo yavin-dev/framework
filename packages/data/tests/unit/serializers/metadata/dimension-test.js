@@ -24,13 +24,13 @@ module('Unit | Metadata | Dimension Serializer', function(hooks) {
       description: 'desc',
       category: 'categoryOne',
       valueType: 'text',
-      source: 'dummy',
+      source: 'bardOne',
       storageStrategy: 'loaded',
       fields: []
     };
 
     assert.deepEqual(
-      Serializer._normalizeDimensions([testPayload], 'dummy'),
+      Serializer._normalizeDimensions([testPayload], 'bardOne'),
       [normalizedDimension],
       '_normalizeDimensions can normalize a single dimension to the right shape'
     );
@@ -53,12 +53,12 @@ module('Unit | Metadata | Dimension Serializer', function(hooks) {
         valueType: 'date',
         storageStrategy: 'none',
         fields: DimensionTwo.fields,
-        source: 'dummy'
+        source: 'bardOne'
       }
     ];
 
     assert.deepEqual(
-      Serializer._normalizeDimensions(testPayload, 'dummy'),
+      Serializer._normalizeDimensions(testPayload, 'bardOne'),
       expectedDimensions,
       'Multiple dimensions are normalized correctly'
     );
@@ -66,13 +66,13 @@ module('Unit | Metadata | Dimension Serializer', function(hooks) {
 
   test('normalize', function(assert) {
     assert.strictEqual(
-      Serializer.normalize({}, 'dummy'),
+      Serializer.normalize({}, 'bardOne'),
       undefined,
       'Serializer returns undefined for a payload with no dimensions key'
     );
     assert.strictEqual(Serializer.normalize(), undefined, 'Serializer returns undefined for a falsey payload');
 
-    const source = 'dummy';
+    const source = 'bardOne';
     let payload = {
         dimensions: [
           Object.assign({}, DimensionFive, {

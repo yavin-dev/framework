@@ -3,11 +3,11 @@ import { setupTest } from 'ember-qunit';
 
 let Serializer;
 
-module('Unit | Bard Facts Serializer', function(hooks) {
+module('Unit | Serializer | facts/bard', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    Serializer = this.owner.lookup('serializer:bard-facts');
+    Serializer = this.owner.lookup('serializer:facts/bard');
   });
 
   test('normalize', function(assert) {

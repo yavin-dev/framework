@@ -78,7 +78,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await click('.get-api button');
     assert
       .dom('.get-api-modal-container input')
-      .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from blockhead datasource');
+      .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from bardTwo datasource');
 
     //check CSV export url
     await clickTrigger('.multiple-format-export');
@@ -132,7 +132,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await click('.get-api button');
     assert
       .dom('.get-api-modal-container input')
-      .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from blockhead datasource');
+      .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from bardTwo datasource');
 
     //check CSV export url
     await clickTrigger('.multiple-format-export');

@@ -6,8 +6,8 @@
  */
 
 import EmberObject from '@ember/object';
-import NaviFactSerializer, { ResponseV1 } from './fact-interface';
-import { RequestV1, RequestV2 } from 'navi-data/adapters/fact-interface';
+import NaviFactSerializer, { ResponseV1 } from './interface';
+import { RequestV1, RequestV2 } from 'navi-data/adapters/facts/interface';
 
 export default class BardFactsSerializer extends EmberObject implements NaviFactSerializer {
   normalize(payload: ResponseV1, _request: RequestV1 | RequestV2): ResponseV1 | undefined {

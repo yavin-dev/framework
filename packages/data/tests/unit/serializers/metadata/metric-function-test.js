@@ -50,7 +50,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
         id: 'moneyMetric',
         name: 'Money Metric',
         description: 'Money metric function',
-        source: 'dummy',
+        source: 'bardOne',
         arguments: [
           {
             id: 'currency',
@@ -58,7 +58,7 @@ module('Unit | Metric Function Serializer', function(hooks) {
             valueType: 'TEXT',
             type: 'ref',
             expression: 'self',
-            source: 'dummy',
+            source: 'bardOne',
             _localValues: [
               {
                 description: 'US Dollars',
@@ -76,10 +76,10 @@ module('Unit | Metric Function Serializer', function(hooks) {
       }
     ];
 
-    const result = normalizeMetricFunctions([MetricFunctionMoneyMetric], 'dummy');
+    const result = normalizeMetricFunctions([MetricFunctionMoneyMetric], 'bardOne');
     assert.deepEqual(result, expected, 'Metric functions are normalized properly');
 
-    assert.deepEqual(normalizeMetricFunctions([], 'dummy'), [], 'Empty array payload returns empty array');
+    assert.deepEqual(normalizeMetricFunctions([], 'bardOne'), [], 'Empty array payload returns empty array');
   });
 
   test('constructFunctionArguments', function(assert) {

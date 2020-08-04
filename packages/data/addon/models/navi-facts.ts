@@ -6,8 +6,8 @@
  */
 
 import EmberObject from '@ember/object';
-import { ResponseV1 } from 'navi-data/serializers/fact-interface';
-import { RequestV2 } from 'navi-data/adapters/fact-interface';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 export default class NaviFacts extends EmberObject {
   /**

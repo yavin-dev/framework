@@ -113,20 +113,20 @@ module('Unit | Serializer | dashboard', function(hooks) {
   });
 
   test('serialize', async function(assert) {
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     const dashboard = await this.owner.lookup('service:store').findRecord('dashboard', 6);
     const serialized = dashboard.serialize();
 
     assert.equal(serialized.data.attributes.title, 'Multi Source Dashboard', 'Title got serialized correctly');
     assert.deepEqual(
       serialized.data.attributes.filters[0],
-      { dimension: 'dummy.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      'Dummy filter serializes correctly with datasource'
+      { dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
+      'bardOne filter serializes correctly with datasource'
     );
     assert.deepEqual(
       serialized.data.attributes.filters[1],
-      { dimension: 'blockhead.container', operator: 'notin', field: 'id', values: [1] },
-      'Blockhead filter serializes correctly with datasource'
+      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
+      'bardTwo filter serializes correctly with datasource'
     );
   });
 });

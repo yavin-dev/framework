@@ -43,7 +43,7 @@ module('Unit | Serializer | Report', function(hooks) {
             ],
             bardVersion: 'v1',
             requestVersion: 'v1',
-            dataSource: 'dummy'
+            dataSource: 'bardOne'
           },
           visualization: {
             type: 'line-chart',
@@ -135,7 +135,7 @@ module('Unit | Serializer | Report', function(hooks) {
             ],
             bardVersion: 'v1',
             requestVersion: 'v1',
-            dataSource: 'dummy'
+            dataSource: 'bardOne'
           },
           visualization: {
             type: 'table',

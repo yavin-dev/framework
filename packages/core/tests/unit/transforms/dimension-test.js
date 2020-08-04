@@ -27,7 +27,7 @@ module('Unit | Transform | Dimension', function(hooks) {
 
     assert.equal(transform.deserialize('os'), dim, 'Dimension is deserialized to the right object');
 
-    assert.equal(transform.deserialize('dummy.os'), dim, 'Dimension with namespace is deserialized to right object');
+    assert.equal(transform.deserialize('bardOne.os'), dim, 'Dimension with namespace is deserialized to right object');
   });
 
   test('deserialize with "." in id', function(assert) {
@@ -59,7 +59,7 @@ module('Unit | Transform | Dimension', function(hooks) {
     config.navi.dataSources = dataSources;
 
     assert.deepEqual(
-      transform.deserialize('dummy.foo.bar'),
+      transform.deserialize('bardOne.foo.bar'),
       { type: 'dimension', id: 'foo.bar' },
       'Dimension with "." in id splits on the first "." when datasources are configured'
     );

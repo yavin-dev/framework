@@ -6,7 +6,7 @@ import { set } from '@ember/object';
 import Service from '@ember/service';
 
 class MetadataServiceStub extends Service {
-  loadedDataSources = ['dummy', 'blockhead'];
+  loadedDataSources = ['bardOne', 'bardTwo'];
 }
 
 module('Integration | Component | definition', function(hooks) {
@@ -88,13 +88,13 @@ module('Integration | Component | definition', function(hooks) {
         id: 'pageViews',
         name: 'Page Views',
         description: 'The number of views of a page.',
-        source: 'dummy'
+        source: 'bardOne'
       },
       {
         id: 'impressions',
         name: 'Impressions',
         description: 'Number of times a user saw the ad.',
-        source: 'blockhead'
+        source: 'bardTwo'
       }
     ];
     set(this, 'data', data);
@@ -115,7 +115,7 @@ module('Integration | Component | definition', function(hooks) {
     );
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-source').map(el => el.textContent.trim()),
-      ['Source: dummy', 'Source: blockhead'],
+      ['Source: bardOne', 'Source: bardTwo'],
       'definitions sources are shown correctly'
     );
   });

@@ -376,10 +376,10 @@ module('Integration | Component | pie chart', function(hooks) {
   test('renders correctly with multi datasource', async function(assert) {
     assert.expect(1);
     MetadataService._keg.reset();
-    await MetadataService.loadMetadata({ dataSourceName: 'blockhead' });
-    const blockheadModel = cloneDeep(Model[0]);
-    blockheadModel.request.dataSource = 'blockhead';
-    this.set('model', A([blockheadModel]));
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
+    const bardTwoModel = cloneDeep(Model[0]);
+    bardTwoModel.request.dataSource = 'bardTwo';
+    this.set('model', A([bardTwoModel]));
 
     this.set('options', {
       series: {
