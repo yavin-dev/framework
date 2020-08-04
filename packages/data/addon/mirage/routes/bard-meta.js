@@ -7,7 +7,7 @@ import faker from 'faker';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';
-import blockheadTableModels from '../fixtures/bard-meta-blockhead-tables';
+import bardTwoTableModels from '../fixtures/bard-meta-bard-two-tables';
 import timeGrainModels from '../fixtures/bard-meta-time-grains';
 import dimModels from '../fixtures/bard-meta-dimensions';
 import metricModels from '../fixtures/bard-meta-metrics';
@@ -27,14 +27,14 @@ export default function() {
    * /tables endpoint
    */
   this.get('/tables', function(db, req) {
-    let isBlockhead = req.url.startsWith('https://data2');
-    let tables = isBlockhead ? blockheadTableModels : tableModels;
+    let isBardTwo = req.url.startsWith('https://data2');
+    let tables = isBardTwo ? bardTwoTableModels : tableModels;
 
     if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
-          let tableDimModels = isBlockhead ? dimModels.blockheadDims : dimModels.defaultDims;
-          let defaultMetricModels = isBlockhead ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
+          let tableDimModels = isBardTwo ? dimModels.blockheadDims : dimModels.defaultDims;
+          let defaultMetricModels = isBardTwo ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
 
           if (table.name === 'tableC') {
             defaultMetricModels = defaultMetricModels.slice(0, 10);
@@ -47,7 +47,7 @@ export default function() {
           if (timeGrain.name === 'day') {
             return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
-            if (!isBlockhead) {
+            if (!isBardTwo) {
               defaultMetricModels = defaultMetricModels.concat(metricModels.dayAvgMetrics);
             }
 

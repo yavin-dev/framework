@@ -190,7 +190,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         ],
         pageInfo: {}
       },
-      source: 'dummy'
+      source: 'bardOne'
     };
 
     assert.deepEqual(
@@ -206,7 +206,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             metricIds: ['tableA.m1'],
             dimensionIds: ['tableA.d1', 'tableA.d2'],
             timeDimensionIds: ['tableA.td1'],
-            source: 'dummy'
+            source: 'bardOne'
           },
           {
             id: 'tableB',
@@ -217,7 +217,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             metricIds: ['tableB.m2', 'tableB.m3'],
             dimensionIds: ['tableB.d1', 'tableB.d2'],
             timeDimensionIds: [],
-            source: 'dummy'
+            source: 'bardOne'
           }
         ],
         metrics: [
@@ -231,7 +231,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             defaultFormat: 'NONE',
             type: 'field',
             expression: '',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableA'
           },
           {
@@ -245,7 +245,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             type: 'field',
             expression: '',
             tableId: 'tableB',
-            source: 'dummy'
+            source: 'bardOne'
           },
           {
             id: 'tableB.m3',
@@ -258,7 +258,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             type: 'field',
             expression: '',
             tableId: 'tableB',
-            source: 'dummy'
+            source: 'bardOne'
           }
         ],
         dimensions: [
@@ -271,7 +271,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['IMPORTANT'],
             type: 'field',
             expression: '',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableA'
           },
           {
@@ -283,7 +283,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['IMPORTANT'],
             type: 'field',
             expression: '',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableA'
           },
           {
@@ -295,7 +295,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['IMPORTANT'],
             type: 'field',
             expression: '',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableB'
           },
           {
@@ -307,7 +307,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['IMPORTANT'],
             type: 'field',
             expression: '',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableB'
           }
         ],
@@ -326,7 +326,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
               { id: 'week', grain: 'WEEK', expression: '' }
             ],
             timeZone: 'UTC',
-            source: 'dummy',
+            source: 'bardOne',
             tableId: 'tableA'
           }
         ]

@@ -11,7 +11,7 @@ import NaviFactAdapter, {
   QueryStatus,
   RequestV2,
   Parameters
-} from './fact-interface';
+} from './interface';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
@@ -31,7 +31,7 @@ const OPERATOR_MAP: Dict<string> = {
   notin: 'out'
 };
 
-export default class ElideFacts extends EmberObject implements NaviFactAdapter {
+export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
    * @property {Object} apollo - apollo client query manager using the overridden elide service
    */
@@ -158,7 +158,7 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
    * @param request
    * @param options
    */
-  @task(function*(this: ElideFacts, request: RequestV1, options: RequestOptions) {
+  @task(function*(this: ElideFactsAdapter, request: RequestV1, options: RequestOptions) {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
     const { id } = asyncQuery;
@@ -178,7 +178,11 @@ export default class ElideFacts extends EmberObject implements NaviFactAdapter {
    * @param request
    * @param options
    */
-  fetchDataForRequest(this: ElideFacts, request: RequestV1, options: RequestOptions): Promise<AsyncQueryResponse> {
+  fetchDataForRequest(
+    this: ElideFactsAdapter,
+    request: RequestV1,
+    options: RequestOptions
+  ): Promise<AsyncQueryResponse> {
     return this.fetchDataForRequestTask.perform(request, options);
   }
 }

@@ -27,7 +27,7 @@ module('Unit | Transform | Metric', function(hooks) {
 
     assert.equal(transform.deserialize('pageViews'), metric, 'Metric is deserialized to the right object');
     assert.equal(
-      transform.deserialize('dummy.pageViews'),
+      transform.deserialize('bardOne.pageViews'),
       metric,
       'namespaced metric is deserialized to the right object'
     );
@@ -62,7 +62,7 @@ module('Unit | Transform | Metric', function(hooks) {
     config.navi.dataSources = dataSources;
 
     assert.deepEqual(
-      transform.deserialize('dummy.foo.bar'),
+      transform.deserialize('bardOne.foo.bar'),
       { type: 'metric', id: 'foo.bar' },
       'Dimension with "." in id splits on the first "." when datasources are configured'
     );

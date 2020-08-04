@@ -72,7 +72,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     metadataRoutes.bind(Server)(1);
     return Promise.all([
       this.owner.lookup('service:bard-metadata').loadMetadata(),
-      this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' })
+      this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' })
     ]);
   });
 
@@ -157,9 +157,9 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      Adapter._buildFilterQuery('dimensionFour', { values: 'v4' }, { dataSourceName: 'blockhead' }),
+      Adapter._buildFilterQuery('dimensionFour', { values: 'v4' }, { dataSourceName: 'bardTwo' }),
       { filters: 'dimensionFour|id-in["v4"]' },
-      'correctly built filters for dimension in blockhead datasource'
+      'correctly built filters for dimension in bardTwo datasource'
     );
   });
 

@@ -69,7 +69,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
                   }
                 ],
                 table: 'network',
-                dataSource: 'dummy',
+                dataSource: 'bardOne',
                 limit: 2
               }
             }
@@ -94,7 +94,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.equal(request.requestVersion, '2.0', 'the `requestVersion` property has the correct default value');
 
-    assert.equal(request.dataSource, 'dummy', 'the `dataSource` property has the correct value');
+    assert.equal(request.dataSource, 'bardOne', 'the `dataSource` property has the correct value');
 
     assert.equal(
       request.columns.objectAt(1).columnMetadata.category,
@@ -130,7 +130,11 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
       'the `requestVersion` property of the cloned request has the correct value'
     );
 
-    assert.equal(request.dataSource, 'dummy', 'the `dataSource` property of the cloned request has the correct value');
+    assert.equal(
+      request.dataSource,
+      'bardOne',
+      'the `dataSource` property of the cloned request has the correct value'
+    );
 
     // filters
 
@@ -392,7 +396,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
           }
         ],
         table: 'network',
-        dataSource: 'dummy',
+        dataSource: 'bardOne',
         limit: 2,
         requestVersion: '2.0'
       },

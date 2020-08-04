@@ -686,16 +686,16 @@ module('Integration | Component | navi-column-config', function(hooks) {
   test('multidatasource support', async function(assert) {
     assert.expect(1);
 
-    await Metadata.loadMetadata({ dataSourceName: 'blockhead' });
+    await Metadata.loadMetadata({ dataSourceName: 'bardTwo' });
     this.set(
       'report',
       Store.createRecord('report', {
         request: Store.createFragment('bard-request/request', {
           logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-            table: Metadata.getById('table', 'inventory', 'blockhead'),
+            table: Metadata.getById('table', 'inventory', 'bardTwo'),
             timeGrain: 'day'
           }),
-          dataSource: 'blockhead',
+          dataSource: 'bardTwo',
           metrics: A([]),
           dimensions: A([]),
           filters: A([]),
@@ -726,8 +726,8 @@ module('Integration | Component | navi-column-config', function(hooks) {
       @isOpen={{true}}
     />`);
 
-    addItem('dimension', 'container', 'blockhead');
-    addItem('metric', 'ownedQuantity', 'blockhead');
+    addItem('dimension', 'container', 'bardTwo');
+    addItem('metric', 'ownedQuantity', 'bardTwo');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),

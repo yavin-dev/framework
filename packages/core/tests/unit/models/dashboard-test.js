@@ -133,15 +133,15 @@ module('Unit | Model | dashboard', function(hooks) {
 
       assert.deepEqual(clonedModel, expectedModel, 'The cloned dashboard model has the same attrs as original model');
 
-      await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+      await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
 
       const filterModel = await Store.findRecord('dashboard', 6);
       const clonedFilterModel = filterModel.clone().toJSON();
       assert.deepEqual(
         clonedFilterModel.filters,
         [
-          { dimension: 'dummy.age', field: 'id', operator: 'in', values: [1, 2, 3] },
-          { dimension: 'blockhead.container', field: 'id', operator: 'notin', values: [1] }
+          { dimension: 'bardOne.age', field: 'id', operator: 'in', values: [1, 2, 3] },
+          { dimension: 'bardTwo.container', field: 'id', operator: 'notin', values: [1] }
         ],
         'multi datasource filters has the datasource specified'
       );

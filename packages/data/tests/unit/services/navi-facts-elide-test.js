@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import GraphQLScenario from 'dummy/mirage/scenarios/graphql';
+import GraphQLScenario from 'dummy/mirage/scenarios/elide-one';
 
 const TestRequest = {
   logicalTable: {
@@ -45,7 +45,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   test('fetch', async function(assert) {
     assert.expect(1);
 
-    const response = await this.service.fetch(TestRequest, { dataSourceName: 'dummy-gql' });
+    const response = await this.service.fetch(TestRequest, { dataSourceName: 'elideOne' });
     assert.deepEqual(
       response.response,
       {

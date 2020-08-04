@@ -18,7 +18,7 @@ module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
             field: 'revenue',
             type: 'metric',
             parameters: { currency: 'USD' },
-            source: 'dummy'
+            source: 'bardOne'
           }
         ]
       })

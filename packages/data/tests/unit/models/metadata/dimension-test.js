@@ -201,7 +201,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     });
 
     const result = await dimensionOne.extended;
-    const expected = await this.owner.lookup('service:bard-metadata').findById('dimension', dimensionOne.id, 'dummy');
+    const expected = await this.owner.lookup('service:bard-metadata').findById('dimension', dimensionOne.id, 'bardOne');
     assert.equal(result, expected, 'dimension model can fetch extended attributes');
     server.shutdown();
   });

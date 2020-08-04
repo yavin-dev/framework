@@ -311,7 +311,7 @@ module('Integration | Component | metric selector', function(hooks) {
 
     await render(TEMPLATE);
 
-    const tableMetrics = MetadataService.getById('table', 'tableA', 'dummy').metrics;
+    const tableMetrics = MetadataService.getById('table', 'tableA', 'bardOne').metrics;
 
     // Sort by category then by name
     const groupedSortedMetrics = A(tableMetrics.filter(m => m.name.includes('Page')))
