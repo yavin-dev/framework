@@ -1009,9 +1009,9 @@ class UserTest : IntegrationTest() {
             .body("data.relationships.roles.data", empty<Any>())
 
         // register admin role
-        registerRole(adminRole, naviUser1)
+        registerRole(adminRole)
         // register user role
-        registerRole(userRole, naviUser1)
+        registerRole(userRole)
 
         // Add roles to user, user can have multiple roles
         given()

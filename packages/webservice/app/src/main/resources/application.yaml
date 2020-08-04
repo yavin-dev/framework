@@ -8,6 +8,13 @@ elide:
   swagger:
     path: /doc
     enabled: true
+  async:
+    enabled: true
+    threadPoolSize: 7
+    maxRunTime: 65
+    cleanupEnabled: true
+    queryCleanupDays: 7
+    defaultAsyncQueryDAO: true
 
 spring:
   application:

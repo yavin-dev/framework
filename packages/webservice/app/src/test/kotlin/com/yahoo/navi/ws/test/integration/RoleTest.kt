@@ -35,7 +35,7 @@ class RoleTest : IntegrationTest() {
         /*
          * New role can be added
          */
-        registerRole(adminRole, naviUser1)
+        registerRole(adminRole)
 
         /*
          * Created role is visible in roles endpoint
@@ -54,7 +54,7 @@ class RoleTest : IntegrationTest() {
         /*
          * Add test role
          */
-        registerRole(userRole, naviUser1)
+        registerRole(userRole)
 
         /*
          * Check for created date
