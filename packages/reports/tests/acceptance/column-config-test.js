@@ -1,29 +1,16 @@
 import { module, test, skip } from 'qunit';
 import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
-
-//let OriginalEnableRequestPreview;
 
 module('Acceptance | Navi Report | Column Config', function(hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
   setupMirage(hooks);
 
-  /*
- * hooks.beforeEach(function() {
- *   OriginalEnableRequestPreview = config.navi.FEATURES.enableRequestPreview;
- *   config.navi.FEATURES.enableRequestPreview = true;
- * });
-
- * hooks.afterEach(function() {
- *   config.navi.FEATURES.enableRequestPreview = OriginalEnableRequestPreview;
- * });
-*/
   test('Existing report loads correct columns', async function(assert) {
     assert.expect(2);
     await visit('reports/1/view');

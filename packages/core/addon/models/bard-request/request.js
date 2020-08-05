@@ -8,13 +8,11 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import Interval from 'navi-core/utils/classes/interval';
 import { A as arr, makeArray } from '@ember/array';
 import { assert } from '@ember/debug';
-import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import { copy } from 'ember-copy';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const Validations = buildValidations({

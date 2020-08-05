@@ -7,15 +7,8 @@ import { set } from '@ember/object';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import RSVP, { reject } from 'rsvp';
 import { A as arr } from '@ember/array';
-import {
-  clickItem,
-  clickItemFilter,
-  getItem,
-  getAll,
-  clickShowSelected
-} from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter, getItem, getAll } from 'navi-reports/test-support/report-builder';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-argument';
-import config from 'ember-get-config';
 
 let MockRequest, MockMetric, MetadataService;
 
