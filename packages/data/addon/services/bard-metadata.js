@@ -16,7 +16,7 @@ import { setOwner, getOwner } from '@ember/application';
 import { getWithDefault } from '@ember/object';
 import { getDefaultDataSourceName } from '../utils/adapter';
 
-const VALID_TYPES = ['table', 'dimension', 'time-dimension', 'metric', 'metric-function', 'function-argument'];
+const VALID_TYPES = ['table', 'dimension', 'time-dimension', 'metric', 'column-function', 'function-argument'];
 
 export default class BardMetadataService extends Service {
   /**
@@ -106,7 +106,7 @@ export default class BardMetadataService extends Service {
       this._loadMetadataForType('table', metadata.tables, dataSource);
       this._loadMetadataForType('dimension', metadata.dimensions, dataSource);
       this._loadMetadataForType('time-dimension', metadata.timeDimensions, dataSource);
-      this._loadMetadataForType('metric-function', metadata.metricFunctions, dataSource);
+      this._loadMetadataForType('column-function', metadata.columnFunctions, dataSource);
       this._loadMetadataForType('metric', metadata.metrics, dataSource);
 
       this.loadedDataSources.push(dataSource);

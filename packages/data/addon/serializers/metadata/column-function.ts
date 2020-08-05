@@ -6,8 +6,8 @@
  */
 
 import EmberObject from '@ember/object';
-import { RawMetricFunctionArguments, RawMetricFunction } from './bard';
-import { MetricFunctionMetadataPayload } from 'navi-data/models/metadata/metric-function';
+import { RawColumnFunctionArguments, RawColumnFunction } from './bard';
+import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import {
   FunctionArgumentMetadataPayload,
   INTRINSIC_VALUE_EXPRESSION
@@ -15,16 +15,16 @@ import {
 
 type RawMetricFunctionPayload = {
   'metric-functions': {
-    rows: RawMetricFunction[];
+    rows: RawColumnFunction[];
   };
 };
 
 /**
- * @param parameters - raw metric function parameters
+ * @param parameters - raw column function parameters
  * @param source - data source name
  */
 export function constructFunctionArguments(
-  parameters: RawMetricFunctionArguments,
+  parameters: RawColumnFunctionArguments,
   source: string
 ): FunctionArgumentMetadataPayload[] {
   return Object.keys(parameters).map(param => {
@@ -46,16 +46,16 @@ export function constructFunctionArguments(
 }
 
 /**
- * @param metricFunctions - raw metric functions
+ * @param columnFunctions - raw column functions
  * @param source - data source name
  */
-export function normalizeMetricFunctions(
-  metricFunctions: RawMetricFunction[],
+export function normalizeColumnFunctions(
+  columnFunctions: RawColumnFunction[],
   source: string
-): MetricFunctionMetadataPayload[] {
-  return metricFunctions.map(func => {
+): ColumnFunctionMetadataPayload[] {
+  return columnFunctions.map(func => {
     const { id, name, description, arguments: args } = func;
-    const normalizedFunc: MetricFunctionMetadataPayload = {
+    const normalizedFunc: ColumnFunctionMetadataPayload = {
       id,
       name,
       description,
@@ -73,9 +73,9 @@ export default class MetricFunctionSerializer extends EmberObject {
    * @param payload - raw metric function with envelope
    * @param source - data source name
    */
-  normalize(payload: RawMetricFunctionPayload, source: string): MetricFunctionMetadataPayload[] | undefined {
+  normalize(payload: RawMetricFunctionPayload, source: string): ColumnFunctionMetadataPayload[] | undefined {
     if (payload?.['metric-functions']?.rows) {
-      return normalizeMetricFunctions(payload['metric-functions'].rows, source);
+      return normalizeColumnFunctions(payload['metric-functions'].rows, source);
     } else {
       return undefined;
     }

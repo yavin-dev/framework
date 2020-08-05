@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Metric function arguments are named and have rules for what values are valid
+ * Column function arguments are named and have rules for what values are valid
  * The values control configuration for an argument on a base metric
  */
 import EmberObject from '@ember/object';
@@ -11,12 +11,12 @@ import { inject as service } from '@ember/service';
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 type FunctionArgumentType = 'ref' | 'primitive';
-export type MetricFunctionArgumentsValues = TODO[]; //TODO need to normalize
+export type ColumnFunctionArgumentsValues = TODO[]; //TODO need to normalize
 
 type LocalFunctionArgument = FunctionArgumentMetadataModel & {
   type: 'ref';
   expression: 'self';
-  _localValues: MetricFunctionArgumentsValues;
+  _localValues: ColumnFunctionArgumentsValues;
 };
 
 /**
@@ -38,7 +38,7 @@ export interface FunctionArgumentMetadataPayload {
   type: FunctionArgumentType;
   expression?: string;
   defaultValue?: string;
-  _localValues?: MetricFunctionArgumentsValues;
+  _localValues?: ColumnFunctionArgumentsValues;
 }
 
 export default class FunctionArgumentMetadataModel extends EmberObject implements FunctionArgumentMetadataPayload {
@@ -93,7 +93,7 @@ export default class FunctionArgumentMetadataModel extends EmberObject implement
   /**
    * @private
    * @property {string[]|undefined} _localValues
-   * if metric function ids are not supplied by the metadata endpoint,
+   * if column function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
   _localValues?: string[];
@@ -101,7 +101,7 @@ export default class FunctionArgumentMetadataModel extends EmberObject implement
   /**
    * @property {Promise} values - array of values used for function arguments with an enum type
    */
-  get values(): Promise<MetricFunctionArgumentsValues> | undefined {
+  get values(): Promise<ColumnFunctionArgumentsValues> | undefined {
     if (isLocalFunction(this)) {
       return Promise.resolve(this._localValues);
     }

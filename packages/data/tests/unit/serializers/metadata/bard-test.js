@@ -335,7 +335,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricOne',
-    metricFunctionId: undefined,
+    columnFunctionId: undefined,
     name: 'Metric One',
     partialData: true,
     source: 'bardOne',
@@ -345,7 +345,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricFour',
-    metricFunctionId: 'currency|format',
+    columnFunctionId: 'currency|format',
     name: 'Metric Four',
     partialData: true,
     source: 'bardOne',
@@ -355,7 +355,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricTwo',
-    metricFunctionId: 'currency',
+    columnFunctionId: 'currency',
     name: 'Metric Two',
     partialData: true,
     source: 'bardOne',
@@ -365,7 +365,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricFive',
-    metricFunctionId: 'metricFunctionId take precedence over parameters',
+    columnFunctionId: 'metricFunctionId take precedence over parameters',
     name: 'Metric Five',
     partialData: true,
     source: 'bardOne',
@@ -375,7 +375,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricThree',
-    metricFunctionId: undefined,
+    columnFunctionId: undefined,
     name: 'Metric Three',
     partialData: true,
     source: 'bardOne',
@@ -453,13 +453,13 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         dimensions: Dimensions,
         timeDimensions: TimeDimensions,
         tables: Tables,
-        metricFunctions: ParameterConvertToMetricFunction
+        columnFunctions: ParameterConvertToMetricFunction
       },
-      'One metric function is created for all metrics with only the currency parameter'
+      'One column function is created for all metrics with only the currency parameter'
     );
   });
 
-  test('normalize `everything` with metric functions', function(assert) {
+  test('normalize `everything` with column functions', function(assert) {
     const MetricFunctionIdsPayload = {
       source: 'bardOne',
       metricFunctions: [
@@ -513,7 +513,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ]
     };
 
-    const { metrics, metricFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload);
+    const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload);
 
     assert.deepEqual(
       metrics,
@@ -524,7 +524,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           name: 'Metric One',
           valueType: 'number',
           source: 'bardOne',
-          metricFunctionId: undefined,
+          columnFunctionId: undefined,
           type: 'field',
           partialData: true
         },
@@ -534,16 +534,16 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           name: 'Metric Two',
           valueType: 'money',
           source: 'bardOne',
-          metricFunctionId: 'moneyMetric',
+          columnFunctionId: 'moneyMetric',
           type: 'field',
           partialData: true
         }
       ],
-      'The metric with parameters has a metricFunctionId provided by the raw data'
+      'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
     assert.deepEqual(
-      metricFunctions,
+      columnFunctions,
       [
         {
           arguments: [
@@ -565,7 +565,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           source: 'bardOne'
         }
       ],
-      'Raw metric functions are normalized correctly'
+      'Raw column functions are normalized correctly'
     );
   });
 
@@ -617,7 +617,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       longName: 'Metric One',
       uri: 'https://metric-one-url',
       type: 'number',
-      metricFunctionId: 'money'
+      columnFunctionId: 'money'
     };
 
     assert.deepEqual(
@@ -628,11 +628,11 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         category: rawMetric.category,
         valueType: rawMetric.type,
         source,
-        metricFunctionId: rawMetric.metricFunctionId,
+        columnFunctionId: rawMetric.metricFunctionId,
         type: 'field',
         partialData: true
       },
-      'Metric is constructed correctly with no new metric function id or parameter'
+      'Metric is constructed correctly with no new column function id or parameter'
     );
   });
 });

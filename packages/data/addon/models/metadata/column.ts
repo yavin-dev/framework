@@ -5,9 +5,10 @@
 
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import KegService from '../../services/keg';
 import { isNone } from '@ember/utils';
+import KegService from '../../services/keg';
 import Table from './table';
+import ColumnFunction from './column-function';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
@@ -22,6 +23,7 @@ export interface ColumnMetadataPayload {
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
+  columnFunctionId?: string;
   tags?: string[];
   partialData?: boolean; //TODO refactor me
 }
@@ -37,6 +39,11 @@ export interface ColumnMetadata {
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
+  columnFunction: ColumnFunction | undefined;
+  hasParameters: boolean;
+  arguments: TODO[];
+  getParameter(id: string): TODO | undefined;
+  getDefaultParameters(): Dict<string> | undefined;
 }
 
 export type BaseExtendedAttributes = {
@@ -110,4 +117,64 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   tags?: string[];
 
   partialData?: boolean;
+
+  /**
+   * @property {string} columnFunctionId
+   */
+  columnFunctionId!: string;
+
+  /**
+   * Many to One relationship
+   * @property {ColumnFunction} columnFunction
+   */
+  get columnFunction(): ColumnFunction | undefined {
+    const { columnFunctionId, source, keg } = this;
+
+    if (columnFunctionId) {
+      return keg.getById('metadata/column-function', columnFunctionId, source);
+    }
+    return undefined;
+  }
+
+  /**
+   * @property {boolean} hasParameters
+   */
+  get hasParameters(): boolean {
+    return !!this.arguments?.length;
+  }
+
+  /**
+   * @property {object[]} arguments - arguments for the metric
+   */
+  get arguments(): TODO[] {
+    return this.columnFunction?.arguments || [];
+  }
+
+  /**
+   * @method getParameter - retrieves the queried parameter object from metadata
+   * @param {string} id
+   * @returns {object|undefined}
+   */
+  getParameter(id: string): TODO | undefined {
+    if (!this.hasParameters) {
+      return;
+    }
+
+    return this.arguments.find(arg => arg.id === id);
+  }
+
+  /**
+   * @method getDefaultParameters - retrieves all the default values for all the parameters
+   * @returns {Dict<string>|undefined}
+   */
+  getDefaultParameters(): Dict<string> | undefined {
+    if (!this.hasParameters) {
+      return;
+    }
+
+    return this.arguments.reduce((acc: Dict<string>, curr) => {
+      acc[curr.id] = curr.defaultValue;
+      return acc;
+    }, {});
+  }
 }

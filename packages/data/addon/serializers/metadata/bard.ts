@@ -4,22 +4,22 @@
  */
 import EmberObject from '@ember/object';
 import config from 'ember-get-config';
-import { constructFunctionArguments, normalizeMetricFunctions } from 'navi-data/serializers/metadata/metric-function';
-import { MetricFunctionMetadataPayload } from '../../models/metadata/metric-function';
+import { constructFunctionArguments, normalizeColumnFunctions } from 'navi-data/serializers/metadata/column-function';
+import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
 import { assert } from '@ember/debug';
-import { MetricFunctionArgumentsValues } from 'navi-data/models/metadata/function-argument';
+import { ColumnFunctionArgumentsValues } from 'navi-data/models/metadata/function-argument';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
 
 type RawEverythingPayload = {
   tables: RawTablePayload[];
-  metricFunctions?: RawMetricFunction[];
+  metricFunctions?: RawColumnFunction[];
   source: string;
 };
 
@@ -40,24 +40,24 @@ type RawMetricPayload = {
   name: string;
   category: string;
   metricFunctionId: string;
-  parameters: RawMetricFunctionArguments;
+  parameters: RawColumnFunctionArguments;
 };
 
-export type RawMetricFunction = {
+export type RawColumnFunction = {
   id: string;
   name: string;
   description: string;
-  arguments: RawMetricFunctionArguments;
+  arguments: RawColumnFunctionArguments;
 };
 
-export type RawMetricFunctionArguments = {
-  [k: string]: RawMetricFunctionArgument;
+export type RawColumnFunctionArguments = {
+  [k: string]: RawColumnFunctionArgument;
 };
 
-export type RawMetricFunctionArgument = {
+export type RawColumnFunctionArgument = {
   type: 'enum' | 'dimension';
   defaultValue?: string;
-  values?: MetricFunctionArgumentsValues;
+  values?: ColumnFunctionArgumentsValues;
   dimensionName?: string;
   description?: string;
 };
@@ -84,13 +84,13 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @returns normalized table object
    */
   _normalizeEverything(rawPayload: RawEverythingPayload): EverythingMetadataPayload {
-    const { tables: rawTables, source, metricFunctions: rawMetricFunctions } = rawPayload;
+    const { tables: rawTables, source, metricFunctions: rawColumnFunctions } = rawPayload;
 
     // build dimension and metric arrays
     const metrics: { [k: string]: MetricMetadataPayload } = {};
     const dimensions: { [k: string]: DimensionMetadataPayload } = {};
     const timeDimensions: { [k: string]: TimeDimensionMetadataModel } = {};
-    const convertedToMetricFunctions: { [k: string]: MetricFunctionMetadataPayload } = {};
+    const convertedToColumnFunctions: { [k: string]: ColumnFunctionMetadataPayload } = {};
     const tables = rawTables.map((table: RawTablePayload) => {
       // Reduce all columns regardless of timegrain into one object
       const allTableColumns = table.timeGrains.reduce(
@@ -121,10 +121,10 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
           // Construct each metric and metric function + function arguments if necessary
           timegrain.metrics.forEach((metric: RawMetricPayload) => {
-            const convertedToMetricFunction = this._getMetricFunctionFromParameters(metric, source);
-            if (convertedToMetricFunction) {
-              metric.metricFunctionId = convertedToMetricFunction.id;
-              convertedToMetricFunctions[convertedToMetricFunction.id] = convertedToMetricFunction;
+            const convertedToColumnFunction = this._getColumnFunctionFromMetricParameters(metric, source);
+            if (convertedToColumnFunction) {
+              metric.metricFunctionId = convertedToColumnFunction.id;
+              convertedToColumnFunctions[convertedToColumnFunction.id] = convertedToColumnFunction;
             }
 
             const newMetric = this._constructMetric(metric, source);
@@ -159,23 +159,26 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       };
     });
 
-    const metricFunctions = rawMetricFunctions ? normalizeMetricFunctions(rawMetricFunctions, source) : [];
+    const columnFunctions = rawColumnFunctions ? normalizeColumnFunctions(rawColumnFunctions, source) : [];
 
     return {
       tables,
       dimensions: Object.values(dimensions),
       metrics: Object.values(metrics),
       timeDimensions: Object.values(timeDimensions),
-      metricFunctions: [...metricFunctions, ...Object.values(convertedToMetricFunctions)]
+      columnFunctions: [...columnFunctions, ...Object.values(convertedToColumnFunctions)]
     };
   }
 
-  _getMetricFunctionFromParameters(metric: RawMetricPayload, source: string): MetricFunctionMetadataPayload | null {
+  _getColumnFunctionFromMetricParameters(
+    metric: RawMetricPayload,
+    source: string
+  ): ColumnFunctionMetadataPayload | null {
     const { parameters, metricFunctionId } = metric;
 
     //only if just `parameters` exists, since metricId take precedence
     if (parameters && !metricFunctionId) {
-      const newMetricFunction: MetricFunctionMetadataPayload = {
+      const newColumnFunction: ColumnFunctionMetadataPayload = {
         id: Object.keys(metric.parameters)
           .sort()
           .join('|'),
@@ -184,7 +187,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         arguments: constructFunctionArguments(parameters, source),
         source
       };
-      return newMetricFunction;
+      return newColumnFunction;
     }
     return null;
   }
@@ -222,7 +225,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       source,
       category,
       partialData: true,
-      metricFunctionId
+      columnFunctionId: metricFunctionId
     };
   }
 

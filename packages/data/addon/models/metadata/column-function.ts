@@ -2,12 +2,12 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * A collection of function arguments that has a one to many relationship to metrics
+ * A collection of function arguments that has a one to many relationship to columns
  */
 import EmberObject from '@ember/object';
 import FunctionArgument, { FunctionArgumentMetadataPayload } from './function-argument';
 
-export interface MetricFunctionMetadataPayload {
+export interface ColumnFunctionMetadataPayload {
   id: string;
   name: string;
   description?: string;
@@ -15,7 +15,7 @@ export interface MetricFunctionMetadataPayload {
   arguments?: FunctionArgumentMetadataPayload[];
 }
 
-export default class MetricFunctionMetadataModel extends EmberObject implements MetricFunctionMetadataPayload {
+export default class ColumnFunctionMetadataModel extends EmberObject implements ColumnFunctionMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
@@ -43,7 +43,7 @@ export default class MetricFunctionMetadataModel extends EmberObject implements 
   source!: string;
 
   /**
-   * @property {FunctionArgument[]} - Function argument instances related to this metric function
+   * @property {FunctionArgument[]} - Function argument instances related to this column function
    */
   arguments!: FunctionArgument[];
 }

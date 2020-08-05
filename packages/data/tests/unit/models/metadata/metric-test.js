@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
-
 import metadataRoutes from '../../../helpers/metadata-routes';
+import MetricMetadataModel from 'navi-data/models/metadata/metric';
 
 let Payload, Metric, MoneyMetric, ClicksMetric, server;
 
@@ -18,17 +17,20 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       id: 'dayAvgPageViews',
       name: 'Page Views (Daily Avg)',
       category: 'Page Views',
-      valueType: 'number'
+      valueType: 'number',
+      source: 'bardOne'
     };
 
     Metric = MetricMetadataModel.create(this.owner.ownerInjection(), Payload);
     MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'metricOne',
-      metricFunctionId: 'moneyMetric'
+      columnFunctionId: 'moneyMetric',
+      source: 'bardOne'
     });
     ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'metricTwo',
-      metricFunctionId: 'aggregationTrend'
+      columnFunctionId: 'aggregationTrend',
+      source: 'bardOne'
     });
   });
 
@@ -54,48 +56,50 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.equal(Metric.valueType, Payload.valueType, 'valueType property was properly hydrated');
   });
 
-  test('Metric with Metric Function', async function(assert) {
+  test('Metric with Column Function', async function(assert) {
     assert.expect(4);
 
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'metricOne',
-      metricFunctionId: 'moneyMetric'
+      columnFunctionId: 'moneyMetric',
+      source: 'bardOne'
     });
 
-    const metricFunction = metricOne.metricFunction;
-    const expectedMetricFunc = this.owner
+    const columnFunction = metricOne.columnFunction;
+    const expectedColumnFunc = this.owner
       .lookup('service:keg')
-      .getById('metadata/metric-function', 'moneyMetric', 'bardOne');
-    assert.equal(metricFunction, expectedMetricFunc, 'Metric function is returned correctly');
+      .getById('metadata/column-function', 'moneyMetric', 'bardOne');
+    assert.equal(columnFunction, expectedColumnFunc, 'Column function is returned correctly');
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
       metricOne.arguments.map(arg => arg.id),
       ['currency'],
-      'Arguments of the associated metric function are shown through arguments'
+      'Arguments of the associated column function are shown through arguments'
     );
 
     assert.deepEqual(
       metricOne.getParameter('currency'),
-      expectedMetricFunc.arguments.find(arg => arg.id === 'currency'),
-      'the queried metric function argument object is retrieved from parameters'
+      expectedColumnFunc.arguments.find(arg => arg.id === 'currency'),
+      'the queried column function argument object is retrieved from parameters'
     );
   });
 
-  test('Metric without Metric Function', async function(assert) {
+  test('Metric without Column Function', async function(assert) {
     assert.expect(3);
 
     let payload = {
         id: 'dayAvgPageViews',
         name: 'Page Views (Daily Avg)',
         category: 'Page Views',
-        valueType: 'number'
+        valueType: 'number',
+        source: 'bardOne'
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no metric function');
+    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no column function');
 
-    assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no metric function');
+    assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no column function');
 
     assert.strictEqual(
       metric.getParameter('someParam'),
@@ -117,7 +121,8 @@ module('Unit | Metadata Model | Metric', function(hooks) {
         name: 'dayAvgPageViews',
         longName: 'Page Views (Daily Avg)',
         category: 'Page Views',
-        valueType: 'number'
+        valueType: 'number',
+        source: 'bardOne'
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
@@ -136,7 +141,8 @@ module('Unit | Metadata Model | Metric', function(hooks) {
 
   test('extended property', async function(assert) {
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'metricOne'
+      id: 'metricOne',
+      source: 'bardOne'
     });
 
     const expected = {
