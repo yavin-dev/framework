@@ -6,7 +6,6 @@ import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
-import { animationsSettled } from 'ember-animated/test-support';
 
 module('Acceptance | date filter', function(hooks) {
   setupApplicationTest(hooks);

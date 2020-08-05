@@ -1,4 +1,4 @@
-import { click, findAll, visit } from '@ember/test-helpers';
+import { click, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';

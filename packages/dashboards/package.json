@@ -53,9 +53,9 @@
     "ember-truth-helpers": "^2.1.0",
     "ember-uuid": "^2.1.0",
     "lodash-es": "^4.17.11",
-    "navi-core": "canary",
-    "navi-data": "canary",
-    "navi-reports": "canary"
+    "navi-core": "0.2.0",
+    "navi-data": "0.2.0",
+    "navi-reports": "0.2.0"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
@@ -109,7 +109,7 @@
     "eslint-plugin-qunit": "^4.0.0",
     "faker": "^4.1.0",
     "loader.js": "^4.7.0",
-    "navi-notifications": "canary",
+    "navi-notifications": "0.2.0",
     "qunit-dom": "^1.0.0",
     "typescript": "3.7.5"
   },

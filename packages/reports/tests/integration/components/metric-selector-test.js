@@ -10,7 +10,7 @@ import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent }
 import config from 'ember-get-config';
 import { clickItem, clickItemFilter, getAll, getItem, renderAll } from 'navi-reports/test-support/report-builder';
 
-let Store, MetadataService, AdClicks, PageViews;
+let Store, MetadataService, AdClicks;
 
 const TEMPLATE = hbs`<MetricSelector
   @request={{this.request}}
@@ -46,7 +46,6 @@ module('Integration | Component | metric selector', function(hooks) {
 
     return MetadataService.loadMetadata().then(async () => {
       AdClicks = MetadataService.getById('metric', 'adClicks');
-      PageViews = MetadataService.getById('metric', 'pageViews');
       //set report object
       this.set(
         'request',

@@ -5,7 +5,6 @@
 import Controller from '@ember/controller';
 import { action, set, computed } from '@ember/object';
 import { assert } from '@ember/debug';
-import config from 'ember-get-config';
 import fade from 'ember-animated/transitions/fade';
 
 const REPORT_STATE = {
