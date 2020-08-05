@@ -20,7 +20,6 @@ import { get, computed, action } from '@ember/object';
 import { uniqBy } from 'lodash-es';
 import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { THROTTLE_TIME, BlurOnAnimationEnd } from './dimension-selector';
 
@@ -106,16 +105,10 @@ class MetricSelectorComponent extends Component {
    */
   doMetricClicked(metric, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
-    const enableRequestPreview = featureFlag('enableRequestPreview'),
-      actionName = !enableRequestPreview && get(this, 'metricsChecked')[get(metric, 'id')] ? 'Remove' : 'Add',
+    const actionName = 'Add',
       handler = this[`on${actionName}Metric`];
 
     if (handler) handler(metric);
-
-    //On add, trigger metric-config mousedown event when metric has parameters
-    if (actionName === 'Add' && get(metric, 'hasParameters') && !enableRequestPreview) {
-      this._openConfig(metric);
-    }
   }
 
   /**
@@ -125,13 +118,9 @@ class MetricSelectorComponent extends Component {
    */
   @action
   metricClicked(metric, { target }) {
-    if (featureFlag('enableRequestPreview')) {
-      const button = target.closest('button.grouped-list__item-label');
-      throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
-      BlurOnAnimationEnd(target, button);
-    } else {
-      this.doMetricClicked(metric, null);
-    }
+    const button = target.closest('button.grouped-list__item-label');
+    throttle(this, 'doMetricClicked', metric, button, THROTTLE_TIME);
+    BlurOnAnimationEnd(target, button);
   }
 }
 

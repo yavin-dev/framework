@@ -27,7 +27,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map(el => el.textContent.trim()),
-      ['Time Grain (6)', 'Personal (4)', 'World (2)', 'Asset (2)', 'World (3)', 'Personal (3)'],
+      ['Date (1)', 'Personal (4)', 'World (2)', 'Asset (2)', 'World (3)', 'Personal (3)'],
       'Metric and dimension categories switched to metrics/dimensions of new datasource'
     );
 
@@ -156,7 +156,11 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
       .dom('.report-builder__container--filters--collapsed')
       .doesNotIncludeText('Used Amount', 'Havings do not include metric havings from external table');
 
-    assert.deepEqual(await getAllSelected('dimension'), ['Day'], 'Only timegrain is selected once table is changed');
+    assert.deepEqual(
+      await getAllSelected('dimension'),
+      ['Date Time'],
+      'Only timegrain is selected once table is changed'
+    );
     assert.deepEqual(await getAllSelected('metric'), [], 'No metrics are selected once table is changed');
   });
 });

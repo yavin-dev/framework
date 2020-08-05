@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { visit, findAll, currentURL, click } from '@ember/test-helpers';
-import config from 'ember-get-config';
 import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | Navi Report | Invalid Route', function(hooks) {
@@ -11,8 +10,6 @@ module('Acceptance | Navi Report | Invalid Route', function(hooks) {
 
   test('Error data request', async function(assert) {
     assert.expect(2);
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/5/view');
 
@@ -26,7 +23,5 @@ module('Acceptance | Navi Report | Invalid Route', function(hooks) {
       ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
       'The column config is displayed in the error route'
     );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 });

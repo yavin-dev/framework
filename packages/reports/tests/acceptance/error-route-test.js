@@ -10,9 +10,6 @@ module('Acceptance | Navi Report | Error Route', function(hooks) {
   setupMirage(hooks);
 
   test('Error data request', async function(assert) {
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    config.navi.FEATURES.enableRequestPreview = true;
-
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
       '/data/*path',
@@ -33,7 +30,5 @@ module('Acceptance | Navi Report | Error Route', function(hooks) {
       ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
       'The column config is displayed in the error route'
     );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 });

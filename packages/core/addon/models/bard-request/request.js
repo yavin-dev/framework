@@ -104,26 +104,7 @@ export default Fragment.extend(Validations, {
   addMetric(requestMetric) {
     const metrics = this.metrics;
 
-    if (featureFlag('enableRequestPreview')) {
-      return metrics.createFragment(requestMetric);
-    }
-
-    let metricMetadata = requestMetric.metric,
-      metricDoesntExist = isEmpty(metrics.findBy('metric', metricMetadata));
-
-    //check if metric with parameter exists when metric hasParameters
-    if (metricMetadata && metricMetadata.hasParameters) {
-      let parameters = requestMetric.parameters,
-        //filter all metrics of type `metricMetadata`
-        existingMetrics = metrics.filterBy('metric', metricMetadata);
-
-      //check if parameters in requestMetric in in the filtered metrics
-      metricDoesntExist = isEmpty(existingMetrics.filter(metric => isEqual(metric.parameters, parameters)));
-    }
-
-    if (metricDoesntExist) {
-      metrics.createFragment(requestMetric);
-    }
+    return metrics.createFragment(requestMetric);
   },
 
   /**
@@ -253,16 +234,7 @@ export default Fragment.extend(Validations, {
   addDimension(dimensionObj) {
     const dimensions = this.dimensions;
 
-    if (featureFlag('enableRequestPreview')) {
-      return dimensions.createFragment(dimensionObj);
-    }
-
-    const newDimension = dimensionObj.dimension,
-      existingDimension = dimensions.findBy('dimension', newDimension);
-
-    if (!existingDimension) {
-      dimensions.createFragment(dimensionObj);
-    }
+    return dimensions.createFragment(dimensionObj);
   },
 
   /**

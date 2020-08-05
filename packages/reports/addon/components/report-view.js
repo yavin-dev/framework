@@ -42,9 +42,9 @@ class ReportView extends Component {
 
   get classNames() {
     const classNames = ['report-view'];
-    if (featureFlag('enableRequestPreview')) {
-      classNames.push('report-view--request-preview');
-    }
+
+    classNames.push('report-view--request-preview');
+
     return classNames;
   }
 

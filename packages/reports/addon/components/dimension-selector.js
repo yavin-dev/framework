@@ -20,7 +20,6 @@ import Component from '@ember/component';
 import { get, computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 
 export const THROTTLE_TIME = 750; // milliseconds
@@ -110,18 +109,14 @@ export default class DimensionSelector extends Component {
   get listItems() {
     let timeGrains;
 
-    if (featureFlag('enableRequestPreview')) {
-      // only option is to add the default time grain (if none is selected)
-      timeGrains = [
-        {
-          name: 'Date Time',
-          category: 'Date',
-          dateTimeDimension: true
-        }
-      ];
-    } else {
-      timeGrains = this.allTimeGrains;
-    }
+    // only option is to add the default time grain (if none is selected)
+    timeGrains = [
+      {
+        name: 'Date Time',
+        category: 'Date',
+        dateTimeDimension: true
+      }
+    ];
 
     return [...timeGrains, ...this.allDimensions];
   }
@@ -208,18 +203,13 @@ export default class DimensionSelector extends Component {
   doItemClicked(item, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
-    const enableRequestPreview = featureFlag('enableRequestPreview');
 
     let actionHandler;
 
-    if (enableRequestPreview) {
-      if (type === 'TimeGrain') {
-        return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
-      } else if (type === 'Dimension') {
-        actionHandler = 'Add';
-      }
-    } else {
-      actionHandler = this.itemsChecked[item.id] ? 'Remove' : 'Add';
+    if (type === 'TimeGrain') {
+      return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
+    } else if (type === 'Dimension') {
+      actionHandler = 'Add';
     }
 
     if (actionHandler) {
@@ -234,12 +224,8 @@ export default class DimensionSelector extends Component {
    */
   @action
   itemClicked(item, { target }) {
-    if (featureFlag('enableRequestPreview')) {
-      const button = target.closest('button.grouped-list__item-label');
-      throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
-      BlurOnAnimationEnd(target, button);
-    } else {
-      this.doItemClicked(item, null);
-    }
+    const button = target.closest('button.grouped-list__item-label');
+    throttle(this, 'doItemClicked', item, button, THROTTLE_TIME);
+    BlurOnAnimationEnd(target, button);
   }
 }

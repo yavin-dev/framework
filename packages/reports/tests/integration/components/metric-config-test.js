@@ -141,53 +141,10 @@ module('Integration | Component | metric config', function(hooks) {
     assert.deepEqual(embargoList, ['Embargo enforced (Y)', 'No Embargo (N)'], 'Enum elements are correctly displayed');
   });
 
-  test('show selected', async function(assert) {
+  test('add/remove param', async function(assert) {
     assert.expect(4);
 
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
     await render(TEMPLATE);
-
-    await clickTrigger('.metric-config__dropdown-trigger');
-
-    assert.ok(
-      (await getAll('metricConfig')).length > this.get('request.metrics.length'),
-      'Initially all the parameters are shown in the metric-config'
-    );
-
-    await clickShowSelected('metricConfig');
-
-    assert.deepEqual(
-      await getAll('metricConfig'),
-      ['Dollars (USD)'],
-      'When show selected is clicked only the selected parameter is shown'
-    );
-
-    assert.notOk(findAll('.grouped-list__add-icon--deselected').length, 'No unselected parameters are shown');
-
-    // close metric config
-    await clickTrigger('.metric-config__dropdown-trigger');
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await render(TEMPLATE);
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('add/remove param', async function(assert) {
-    assert.expect(8);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    //enableRequestPreview feature flag off
-    config.navi.FEATURES.enableRequestPreview = false;
 
     set(this, 'addParameterizedMetric', (metric, param) => {
       assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action');
@@ -195,40 +152,7 @@ module('Integration | Component | metric config', function(hooks) {
       assert.deepEqual(param, { currency: 'AMD' }, 'The selected param is also passed to the action');
     });
 
-    set(this, 'removeParameterizedMetric', (metric, param) => {
-      assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action');
-
-      assert.deepEqual(param, { currency: 'USD' }, 'The selected param is also passed to the action');
-    });
-
-    await clickTrigger('.metric-config__dropdown-trigger');
-    //add Param `Drams`
-    await clickItem('metricConfig', 'Drams');
-
-    //remove Param `Dollars(USD)`
-    await clickItem('metricConfig', 'Dollars', 'USD');
-
-    // close metric config
-    await clickTrigger('.metric-config__dropdown-trigger');
-
-    //enableRequestPreview feature flag on
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await render(TEMPLATE);
-
-    set(this, 'addParameterizedMetric', (metric, param) => {
-      assert.deepEqual(metric, MockMetric, 'The mock metric is passed to the action when enableRequestPreview is on');
-
-      assert.deepEqual(
-        param,
-        { currency: 'AMD' },
-        'The selected param is also passed to the action when enableRequestPreview is on'
-      );
-    });
-
-    set(this, 'removeParameterizedMetric', () =>
-      assert.notOk(true, 'removeParameterizedMetric is not called when enableRequestPreview is on')
-    );
+    set(this, 'removeParameterizedMetric', () => assert.notOk(true, 'removeParameterizedMetric is not called'));
 
     await clickTrigger('.metric-config__dropdown-trigger');
 
@@ -236,8 +160,6 @@ module('Integration | Component | metric config', function(hooks) {
 
     //clicking again adds when feature flag is on
     await clickItem('metricConfig', 'Drams');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {
