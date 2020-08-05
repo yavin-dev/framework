@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import { settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { set } from '@ember/object';
@@ -403,7 +402,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   /* == Metric == */
 
   test('addMetric', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -431,19 +430,10 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     /* == Test adding existing metric == */
     request.addMetric(newMetric);
     assert.deepEqual(
-      request.metrics.map(m => m.metric.id),
-      ['uniqueIdentifier', 'pageViews'],
-      'Adding a metric already present in the request does not result in duplicate metrics'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = true;
-    request.addMetric(newMetric);
-    assert.deepEqual(
       request.metrics.map(m => m.metric?.id),
       ['uniqueIdentifier', 'pageViews', 'pageViews'],
-      'Adding a metric already present in the request results in duplicate metrics when enableRequestPreview feature flag is on'
+      'Adding a metric already present in the request results in duplicate metrics'
     );
-    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('addRequestMetricByModel', async function(assert) {
@@ -550,7 +540,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestMetricWithParam(newMetric, { currency: 'USD' });
 
-    assert.equal(request.metrics.length, 3, 'The final metric is not added since it already exists in the request');
+    assert.equal(request.metrics.length, 4, 'The final metric is added because of requests preview');
   });
 
   test('removeRequestMetric', async function(assert) {
@@ -692,7 +682,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
   /* == Dimension == */
 
   test('addDimension', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     await settled();
     let mockModel = Store.peekRecord('fragments-mock', 1),
@@ -718,18 +708,9 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addDimension(newDimension);
     assert.deepEqual(
       request.dimensions.map(m => m.dimension?.id),
-      ['age'],
-      'Adding a dimension already present in the request does not result in duplicate dimensions'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = true;
-    request.addDimension(newDimension);
-    assert.deepEqual(
-      request.dimensions.map(m => m.dimension?.id),
       ['age', 'age'],
-      'Adding a dimension already present in the request results in duplicate dimensions when enableRequestPreview feature flag is on'
+      'Adding a dimension already present in the request results in duplicate dimensions'
     );
-    config.navi.FEATURES.enableRequestPreview = false;
   });
 
   test('addRequestDimensionByModel', async function(assert) {

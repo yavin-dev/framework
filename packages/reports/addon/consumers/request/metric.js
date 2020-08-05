@@ -93,8 +93,8 @@ export default ActionConsumer.extend({
     [RequestActions.ADD_METRIC_FILTER](route, metric, parameters) {
       // Metric filter can't exist without the metric present in the request
 
-      if (featureFlag('enableRequestPreview') && route.currentModel.request.metrics.mapBy('metric').includes(metric)) {
-        // When adding a metric filter with the requestPreview, users can add multiple of the same metric
+      if (route.currentModel.request.metrics.mapBy('metric').includes(metric)) {
+        // When adding a metric filter, users can add multiple of the same metric
         // So if the metric already exists we assume they don't want to add it again
         return;
       }

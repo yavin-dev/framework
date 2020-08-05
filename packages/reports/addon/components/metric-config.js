@@ -153,7 +153,7 @@ export default class MetricConfig extends Component {
   }
 
   /**
-   * @action paramToggled - throttle the adding of metrics when requestPreview is enabled
+   * @action paramToggled - throttle the adding of metrics
    * @param {Object} metric
    * @param {Object} param
    */

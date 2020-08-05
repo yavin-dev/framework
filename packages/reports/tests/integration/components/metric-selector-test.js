@@ -1,23 +1,14 @@
-import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, triggerEvent } from '@ember/test-helpers';
+import { render, triggerEvent } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
-import {
-  clickItem,
-  clickItemFilter,
-  clickShowSelected,
-  hasMetricConfig,
-  getAll,
-  getItem,
-  renderAll
-} from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter, getAll, getItem, renderAll } from 'navi-reports/test-support/report-builder';
 
 let Store, MetadataService, AdClicks, PageViews;
 
@@ -100,132 +91,23 @@ module('Integration | Component | metric selector', function(hooks) {
   });
 
   test('show selected', async function(assert) {
-    assert.expect(9);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    await renderAll('metric');
-
-    assert.ok(
-      findAll('.grouped-list__item').length > this.get('request.metrics.length'),
-      'Initially all the metrics are shown in the metric selector'
-    );
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
-
-    let resetShowSelected = await clickShowSelected('metric');
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks'],
-      'When show selected is clicked the selected adClicks base metric is still shown'
-    );
-
-    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
-
-    let metrics = get(this, 'request.metrics');
-    metrics.removeFragment(metrics.toArray()[0]);
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks'],
-      "Removing one metric while another metric with the same base is still selected does not change 'Show Selected'"
-    );
-
-    await resetShowSelected();
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText(
-        'Show Selected (1)',
-        'The Show Selected link still has the correct number of selected base metrics shown'
-      );
-
-    run(() => {
-      metrics.createFragment({
-        metric: PageViews,
-        parameters: 'Param1'
-      });
-    });
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText(
-        'Show Selected (2)',
-        'The Show Selected link increases the count when a metric with a different base is added'
-      );
-
-    resetShowSelected = await clickShowSelected('metric');
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks', 'Page Views'],
-      'Adding a new metric will show its base metric as selected'
-    );
-
-    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('show selected with enableRequestPreview', async function(assert) {
     assert.expect(1);
 
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
     await render(TEMPLATE);
 
-    assert
-      .dom('.navi-list-selector__show-link')
-      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
+    assert.dom('.navi-list-selector__show-link').doesNotExist('Show Selected toggle is hidden');
   });
 
   test('add and remove metric actions', async function(assert) {
-    assert.expect(4);
+    assert.expect(2);
 
     await render(TEMPLATE);
 
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    //enableRequestPreview feature flag off
-    config.navi.FEATURES.enableRequestPreview = false;
-
     this.set('addMetric', metric => {
-      assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
+      assert.equal(metric.get('name'), 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
 
-    this.set('removeMetric', metric => {
-      assert.equal(metric.name, 'Ad Clicks', 'the clicked metric is passed as a param to the action');
-    });
-
-    //add total clicks
-    await clickItem('metric', 'Total Clicks');
-
-    //remove ad clicks
-    await clickItem('metric', 'Ad Clicks');
-
-    //enableRequestPreview feature flag on
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    this.set('addMetric', metric => {
-      assert.equal(
-        metric.get('name'),
-        'Total Clicks',
-        'the clicked metric is passed as a param to the action when enableRequestPreview is on'
-      );
-    });
-
-    this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called when enableRequestPreview is on'));
+    this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called'));
 
     await render(TEMPLATE);
 
@@ -234,8 +116,6 @@ module('Integration | Component | metric selector', function(hooks) {
 
     //clicking again adds when feature flag is on
     await clickItem('metric', 'Total Clicks');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {
@@ -288,22 +168,6 @@ module('Integration | Component | metric selector', function(hooks) {
     assertTooltipContent(assert, {
       contentString: 'foo'
     });
-  });
-
-  test('metric config for metric with parameters', async function(assert) {
-    assert.expect(2);
-
-    await render(TEMPLATE);
-
-    assert.notOk(
-      await hasMetricConfig('Ad Clicks'),
-      'The metric config trigger icon is not present for a metric without parameters'
-    );
-
-    assert.ok(
-      await hasMetricConfig('Revenue'),
-      'The metric config trigger icon is present for a metric with parameters'
-    );
   });
 
   test('ranked search', async function(assert) {
