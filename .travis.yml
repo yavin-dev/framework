@@ -25,7 +25,7 @@ env:
     - PACKAGE=navi-admin
     - PACKAGE=navi-app
     - PACKAGE=navi-core
-    #- PACKAGE=navi-dashboards
+    - PACKAGE=navi-dashboards
     - PACKAGE=navi-data
     - PACKAGE=navi-directory
     - PACKAGE=navi-notifications
@@ -65,7 +65,7 @@ jobs:
   allow_failures:
     - env: PACKAGE=navi-app
     - env: PACKAGE=navi-core
-    #- env: PACKAGE=navi-dashboards
+    - env: PACKAGE=navi-dashboards
     - env: PACKAGE=navi-directory
     - env: PACKAGE=navi-reports
     - env: PACKAGE=navi-search
