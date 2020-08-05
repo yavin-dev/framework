@@ -6,6 +6,6 @@ package com.yahoo.navi.ws.config
 
 class AppSettings {
     var factApiHost = ""
-    var persistenceApiHost = "/json"
+    var persistenceApiHost = ""
     var user = ""
 }
