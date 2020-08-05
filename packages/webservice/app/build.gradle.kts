@@ -1,3 +1,4 @@
+import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "app"
@@ -5,6 +6,7 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("com.moowork.node") version "1.3.1"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
 }
@@ -28,11 +30,36 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 tasks.withType<KotlinCompile> {
+    dependsOn("copyNaviApp")
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
+}
+
+tasks.register<NpmTask>("installUIDependencies") {
+    setArgs(listOf("install"))
+    setExecOverrides(closureOf<ExecSpec> {
+        setWorkingDir("../../../")
+    })
+}
+
+tasks.register<Exec>("buildUI") {
+    dependsOn("installUIDependencies")
+
+    workingDir("../../..")
+
+    commandLine = listOf("npx", "lerna", "run", "prodbuild", "--scope", "navi-app", "--stream")
+}
+
+tasks.register<Copy>("copyNaviApp") {
+    dependsOn("buildUI")
+    from("../../app/dist")
+    into("$buildDir/resources/main/META-INF/resources")
 }
