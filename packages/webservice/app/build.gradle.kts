@@ -35,8 +35,11 @@ tasks.withType<Test> {
     }
 }
 
-tasks.withType<KotlinCompile> {
+tasks.withType<ProcessResources> {
     dependsOn("copyNaviApp")
+}
+
+tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
