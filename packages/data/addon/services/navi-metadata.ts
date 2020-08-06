@@ -88,6 +88,11 @@ export default class NaviMetadataService extends Service {
     //TODO store promises, so two requests for the same metadata use the same promise
   }
 
+  /**
+   * Provides an array of all loaded models for a given type
+   * @param type - model type
+   * @param dataSourceName - optional name of data source
+   */
   all<K extends keyof MetadataModelRegistry>(type: K, dataSourceName?: string): EmberArray<MetadataModelRegistry[K]> {
     assert(
       `Metadata must have the requested data source loaded: ${dataSourceName}`,
@@ -96,19 +101,33 @@ export default class NaviMetadataService extends Service {
     return this.keg.all(`metadata/${type}`, dataSourceName) as EmberArray<MetadataModelRegistry[K]>;
   }
 
+  /**
+   * Provides a single loaded model instance given an identifier
+   * @param type - model type
+   * @param id - identifier value of model
+   * @param dataSourceName - name of data source
+   */
   getById<K extends keyof MetadataModelRegistry>(
     type: K,
     id: string,
     dataSourceName: string
   ): MetadataModelRegistry[K] | undefined {
+    assert('`dataSourceName` argument required', dataSourceName);
     return this.keg.getById(`metadata/${type}`, id, dataSourceName) as MetadataModelRegistry[K];
   }
 
+  /**
+   * Fetches from data source a single model instance given an identifier
+   * @param type - model type
+   * @param id - identifier value of model
+   * @param dataSourceName - name of data source
+   */
   async fetchById<K extends keyof MetadataModelRegistry>(
     type: K,
     id: string,
     dataSourceName: string
   ): Promise<MetadataModelRegistry[K] | undefined> {
+    assert('`dataSourceName` argument required', dataSourceName);
     const { type: dataSourceType } = this.dataSourceFor(dataSourceName);
     const rawPayload = await this.adapterFor(dataSourceType).fetchById(type, id, { dataSourceName });
     const normalized = rawPayload
@@ -122,11 +141,18 @@ export default class NaviMetadataService extends Service {
     return undefined;
   }
 
+  /**
+   * Provides a single loaded model instance or fetches one, given an identifier
+   * @param type - model type
+   * @param id - identifier value of model
+   * @param dataSourceName - name of data source
+   */
   findById<K extends keyof MetadataModelRegistry>(
     type: K,
     id: string,
     dataSourceName: string
   ): Promise<MetadataModelRegistry[K] | undefined> {
+    assert('`dataSourceName` argument required', dataSourceName);
     const kegRecord = this.keg.getById(`metadata/${type}`, id, dataSourceName);
     if (kegRecord && !kegRecord.partialData) {
       return Promise.resolve(this.getById(type, id, dataSourceName)) as Promise<MetadataModelRegistry[K]>;
