@@ -8,11 +8,7 @@ import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher
 import org.apache.http.HttpStatus
-import org.hamcrest.Matchers.empty
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItems
-import org.hamcrest.Matchers.not
-import org.hamcrest.Matchers.nullValue
+import org.hamcrest.Matchers.contains
 import org.junit.jupiter.api.Test
 
 class UserTest : IntegrationTest() {
@@ -77,7 +73,8 @@ class UserTest : IntegrationTest() {
             .post("/users")
             .then()
             .assertThat()
-            .statusCode(HttpStatus.SC_FORBIDDEN)
+            .body("errors.detail", contains("Forbidden User Identity"))
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
 
         /*
          * Registering User1
