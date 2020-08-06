@@ -5,7 +5,7 @@ import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from '../../../helpers/metadata-routes';
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import ColumnFunctionMetadataModel from 'dummy/models/metadata/column-function';
+import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
 
 let Payload: MetricMetadataPayload,
   Metric: MetricMetadataModel,
