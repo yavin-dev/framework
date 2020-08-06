@@ -64,7 +64,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
 
   test('fetchById', async function(assert) {
     const payload = await Adapter.fetchById('metric', 'pageViews');
-    const metric = payload ? payload[0] : payload;
+    const metric = payload?.[0];
     assert.deepEqual(
       metric,
       {

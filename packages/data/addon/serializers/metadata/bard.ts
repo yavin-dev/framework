@@ -177,11 +177,11 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
   /**
    * @param metric - raw metrics
-   * @param source - data source name
+   * @param dataSourceName - data source name
    */
   private getColumnFunctionFromParameters(
     metric: RawMetricPayload,
-    source: string
+    dataSourceName: string
   ): ColumnFunctionMetadataPayload | null {
     const { parameters, metricFunctionId } = metric;
 
@@ -193,8 +193,8 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
           .join('|'),
         name: '',
         description: '',
-        _parametersPayload: this.constructFunctionParameters(parameters, source),
-        source
+        _parametersPayload: this.constructFunctionParameters(parameters, dataSourceName),
+        source: dataSourceName
       };
       return newColumnFunction;
     }
@@ -203,11 +203,11 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
   /**
    * @param parameters - raw function parameters
-   * @param source - data source name
+   * @param dataSourceName - data source name
    */
   private constructFunctionParameters(
     parameters: RawColumnFunctionArguments,
-    source: string
+    dataSourceName: string
   ): FunctionParameterMetadataPayload[] {
     return Object.keys(parameters).map(param => {
       const { type, defaultValue, values, dimensionName, description } = parameters[param];
@@ -220,7 +220,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
         expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
         _localValues: values,
-        source,
+        source: dataSourceName,
         defaultValue
       };
       return normalized;
@@ -229,9 +229,9 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
   /**
    * @param dimensions - raw dimensions
-   * @param source - data source name
+   * @param dataSourceName - data source name
    */
-  private normalizeDimensions(dimensions: RawDimensionPayload[], source: string): DimensionMetadataPayload[] {
+  private normalizeDimensions(dimensions: RawDimensionPayload[], dataSourceName: string): DimensionMetadataPayload[] {
     return dimensions.map(dimension => {
       const {
         name,
@@ -260,7 +260,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         fields,
         cardinality: dimCardinality,
         storageStrategy: storageStrategy || null,
-        source,
+        source: dataSourceName,
         partialData: isNone(description)
       };
     });
@@ -268,9 +268,9 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
   /**
    * @param metrics - raw metrics
-   * @param source - data source name
+   * @param dataSourceName - data source name
    */
-  private normalizeMetrics(metrics: RawMetricPayload[], source: string): MetricMetadataPayload[] {
+  private normalizeMetrics(metrics: RawMetricPayload[], dataSourceName: string): MetricMetadataPayload[] {
     return metrics.map(metric => {
       const { type: valueType, longName, name, description, category, metricFunctionId } = metric;
       return {
@@ -279,7 +279,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         description,
         type: 'field',
         valueType,
-        source,
+        source: dataSourceName,
         category,
         partialData: isNone(description),
         columnFunctionId: metricFunctionId
@@ -289,11 +289,11 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
   /**
    * @param metricFunctions - raw metric functions
-   * @param source - data source name
+   * @param dataSourceName - data source name
    */
   private normalizeColumnFunctions(
     columnFunctions: RawColumnFunction[],
-    source: string
+    dataSourceName: string
   ): ColumnFunctionMetadataPayload[] {
     return columnFunctions.map(func => {
       const { id, name, description, arguments: args } = func;
@@ -301,10 +301,10 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         id,
         name,
         description,
-        source
+        source: dataSourceName
       };
       if (args) {
-        normalizedFunc._parametersPayload = this.constructFunctionParameters(args, source);
+        normalizedFunc._parametersPayload = this.constructFunctionParameters(args, dataSourceName);
       }
       return normalizedFunc;
     });

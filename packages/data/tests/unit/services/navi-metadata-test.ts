@@ -152,6 +152,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     this.server.get('/tables', function() {
       assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
     });
+    await this.service.loadMetadata();
   });
 
   test('all', async function(this: Context, assert) {
@@ -210,7 +211,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
   test('fetchById - elide', async function(this: Context, assert) {
     assert.rejects(
       this.service.fetchById('metric', 'metric1', 'elideOne'),
-      /Type requested in navi-data\/elide-metadata adapter must be defined as a query in the gql\/metadata-queries.js file/,
+      /Type requested in ElideMetadataAdapter must be defined as a query in the gql\/metadata-queries.js file/,
       '`fetchById` elide throws an error if attempting to get a model by id'
     );
   });
