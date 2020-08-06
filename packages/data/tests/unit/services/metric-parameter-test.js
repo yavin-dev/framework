@@ -158,7 +158,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'arg0',
             type: 'ref',
@@ -201,7 +201,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'one',
             type: 'ref',
@@ -239,7 +239,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     let service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'one',
             type: 'ref',
