@@ -9,6 +9,7 @@ import { isNone } from '@ember/utils';
 import KegService from '../../services/keg';
 import Table from './table';
 import ColumnFunction from './column-function';
+import FunctionParameter from './function-parameter';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
@@ -41,8 +42,8 @@ export interface ColumnMetadata {
   expression?: string;
   columnFunction: ColumnFunction | undefined;
   hasParameters: boolean;
-  arguments: TODO[];
-  getParameter(id: string): TODO | undefined;
+  parameters: FunctionParameter[];
+  getParameter(id: string): FunctionParameter | undefined;
   getDefaultParameters(): Dict<string> | undefined;
 }
 
@@ -141,14 +142,14 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @property {boolean} hasParameters
    */
   get hasParameters(): boolean {
-    return !!this.arguments?.length;
+    return !!this.parameters?.length;
   }
 
   /**
-   * @property {object[]} arguments - arguments for the metric
+   * @property {object[]} parameters - parameters for the metric
    */
-  get arguments(): TODO[] {
-    return this.columnFunction?.arguments || [];
+  get parameters(): FunctionParameter[] {
+    return this.columnFunction?.parameters || [];
   }
 
   /**
@@ -156,12 +157,8 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @param {string} id
    * @returns {object|undefined}
    */
-  getParameter(id: string): TODO | undefined {
-    if (!this.hasParameters) {
-      return;
-    }
-
-    return this.arguments.find(arg => arg.id === id);
+  getParameter(id: string): FunctionParameter | undefined {
+    return this.parameters.find(param => param.id === id);
   }
 
   /**
@@ -170,11 +167,13 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    */
   getDefaultParameters(): Dict<string> | undefined {
     if (!this.hasParameters) {
-      return;
+      return undefined;
     }
 
-    return this.arguments.reduce((acc: Dict<string>, curr) => {
-      acc[curr.id] = curr.defaultValue;
+    return this.parameters.reduce((acc: Dict<string>, param) => {
+      if (param.defaultValue) {
+        acc[param.id] = param.defaultValue;
+      }
       return acc;
     }, {});
   }

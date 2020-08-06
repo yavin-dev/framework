@@ -9,9 +9,9 @@ import EmberObject from '@ember/object';
 import { RawColumnFunctionArguments, RawColumnFunction } from './bard';
 import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import {
-  FunctionArgumentMetadataPayload,
+  FunctionParameterMetadataPayload,
   INTRINSIC_VALUE_EXPRESSION
-} from 'navi-data/models/metadata/function-argument';
+} from 'navi-data/models/metadata/function-parameter';
 
 type RawMetricFunctionPayload = {
   'metric-functions': {
@@ -23,14 +23,14 @@ type RawMetricFunctionPayload = {
  * @param parameters - raw column function parameters
  * @param source - data source name
  */
-export function constructFunctionArguments(
+export function constructFunctionParameters(
   parameters: RawColumnFunctionArguments,
   source: string
-): FunctionArgumentMetadataPayload[] {
+): FunctionParameterMetadataPayload[] {
   return Object.keys(parameters).map(param => {
     const { type, defaultValue, values, dimensionName, description } = parameters[param];
 
-    const normalized: FunctionArgumentMetadataPayload = {
+    const normalized: FunctionParameterMetadataPayload = {
       id: param,
       name: param,
       description,
@@ -62,7 +62,7 @@ export function normalizeColumnFunctions(
       source
     };
     if (args) {
-      normalizedFunc.arguments = constructFunctionArguments(args, source);
+      normalizedFunc._parametersPayload = constructFunctionParameters(args, source);
     }
     return normalizedFunc;
   });

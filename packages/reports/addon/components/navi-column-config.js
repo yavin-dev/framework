@@ -159,7 +159,7 @@ class NaviColumnConfig extends Component {
    * @param {Object} metricColumn - a metric column
    */
   _cloneMetricParams(metricColumn) {
-    return metricColumn.metric.arguments.reduce((params, arg) => {
+    return metricColumn.metric.parameters.reduce((params, arg) => {
       params[arg.id] = metricColumn.parameters[arg.id];
       return params;
     }, {});

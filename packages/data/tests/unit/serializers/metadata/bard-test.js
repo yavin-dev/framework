@@ -386,7 +386,7 @@ const Metrics = [
 
 const ParameterConvertToMetricFunction = [
   {
-    arguments: [
+    _parametersPayload: [
       {
         _localValues: undefined,
         source: 'bardOne',
@@ -416,7 +416,7 @@ const ParameterConvertToMetricFunction = [
     source: 'bardOne'
   },
   {
-    arguments: [
+    _parametersPayload: [
       {
         _localValues: undefined,
         source: 'bardOne',
@@ -546,7 +546,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       columnFunctions,
       [
         {
-          arguments: [
+          _parametersPayload: [
             {
               _localValues: ['USD', 'CAN'],
               defaultValue: null,

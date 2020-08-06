@@ -4,7 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import config from 'ember-get-config';
-import { constructFunctionArguments, normalizeColumnFunctions } from 'navi-data/serializers/metadata/column-function';
+import { constructFunctionParameters, normalizeColumnFunctions } from 'navi-data/serializers/metadata/column-function';
 import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
@@ -12,7 +12,7 @@ import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
 import { assert } from '@ember/debug';
-import { ColumnFunctionArgumentsValues } from 'navi-data/models/metadata/function-argument';
+import { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
@@ -57,7 +57,7 @@ export type RawColumnFunctionArguments = {
 export type RawColumnFunctionArgument = {
   type: 'enum' | 'dimension';
   defaultValue?: string;
-  values?: ColumnFunctionArgumentsValues;
+  values?: ColumnFunctionParametersValues;
   dimensionName?: string;
   description?: string;
 };
@@ -119,7 +119,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
             accTableDimensionList.add(newDim.id); // Add dim id to table's dimensionIds/timeDimensionIds list
           });
 
-          // Construct each metric and metric function + function arguments if necessary
+          // Construct each metric and metric function + function parameters if necessary
           timegrain.metrics.forEach((metric: RawMetricPayload) => {
             const convertedToColumnFunction = this._getColumnFunctionFromMetricParameters(metric, source);
             if (convertedToColumnFunction) {
@@ -184,7 +184,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
           .join('|'),
         name: '',
         description: '',
-        arguments: constructFunctionArguments(parameters, source),
+        _parametersPayload: constructFunctionParameters(parameters, source),
         source
       };
       return newColumnFunction;

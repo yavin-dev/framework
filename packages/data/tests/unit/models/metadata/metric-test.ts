@@ -1,19 +1,27 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Pretender from 'pretender';
+import Pretender, { Server } from 'pretender';
+import { TestContext } from 'ember-test-helpers';
+//@ts-ignore
 import metadataRoutes from '../../../helpers/metadata-routes';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
+import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import ColumnFunctionMetadataModel from 'dummy/models/metadata/column-function';
 
-let Payload, Metric, MoneyMetric, ClicksMetric, server;
+let Payload: MetricMetadataPayload,
+  Metric: MetricMetadataModel,
+  MoneyMetric: MetricMetadataModel,
+  ClicksMetric: MetricMetadataModel,
+  server: Server;
 
 module('Unit | Metadata Model | Metric', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function(this: TestContext) {
     server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:bard-metadata').loadMetadata();
 
     Payload = {
+      type: 'field',
       id: 'dayAvgPageViews',
       name: 'Page Views (Daily Avg)',
       category: 'Page Views',
@@ -22,16 +30,24 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     };
 
     Metric = MetricMetadataModel.create(this.owner.ownerInjection(), Payload);
-    MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
+    const moneyMetricPayload: MetricMetadataPayload = {
       id: 'metricOne',
+      name: 'Metric One',
       columnFunctionId: 'moneyMetric',
-      source: 'bardOne'
-    });
-    ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), {
+      source: 'bardOne',
+      valueType: 'number',
+      type: 'field'
+    };
+    MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), moneyMetricPayload);
+    const clicksMetric: MetricMetadataPayload = {
       id: 'metricTwo',
+      name: 'Metric Two',
       columnFunctionId: 'aggregationTrend',
-      source: 'bardOne'
-    });
+      source: 'bardOne',
+      valueType: 'number',
+      type: 'field'
+    };
+    ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), clicksMetric);
   });
 
   hooks.afterEach(function() {
@@ -59,36 +75,41 @@ module('Unit | Metadata Model | Metric', function(hooks) {
   test('Metric with Column Function', async function(assert) {
     assert.expect(4);
 
-    const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
+    const payload: MetricMetadataPayload = {
       id: 'metricOne',
+      name: 'Metric One',
       columnFunctionId: 'moneyMetric',
-      source: 'bardOne'
-    });
+      source: 'bardOne',
+      valueType: 'number',
+      type: 'field'
+    };
+    const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
     const columnFunction = metricOne.columnFunction;
     const expectedColumnFunc = this.owner
       .lookup('service:keg')
-      .getById('metadata/column-function', 'moneyMetric', 'bardOne');
+      .getById('metadata/column-function', 'moneyMetric', 'bardOne') as ColumnFunctionMetadataModel;
     assert.equal(columnFunction, expectedColumnFunc, 'Column function is returned correctly');
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
-      metricOne.arguments.map(arg => arg.id),
+      metricOne.parameters.map(param => param.id),
       ['currency'],
-      'Arguments of the associated column function are shown through arguments'
+      'Arguments of the associated column function are shown through parameters'
     );
 
     assert.deepEqual(
       metricOne.getParameter('currency'),
-      expectedColumnFunc.arguments.find(arg => arg.id === 'currency'),
-      'the queried column function argument object is retrieved from parameters'
+      expectedColumnFunc.parameters.find(param => param.id === 'currency'),
+      'the queried column function parameter object is retrieved from parameters'
     );
   });
 
   test('Metric without Column Function', async function(assert) {
     assert.expect(3);
 
-    let payload = {
+    let payload: MetricMetadataPayload = {
+        type: 'field',
         id: 'dayAvgPageViews',
         name: 'Page Views (Daily Avg)',
         category: 'Page Views',
@@ -97,7 +118,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
-    assert.deepEqual(metric.arguments, [], 'arguments is an empty array when metric has no column function');
+    assert.deepEqual(metric.parameters, [], 'parameters is an empty array when metric has no column function');
 
     assert.notOk(metric.hasParameters, 'hasParameters property is false since the metric has no column function');
 
@@ -117,9 +138,10 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       'The default values of the metric parameters are returned as a key value pair'
     );
 
-    let payload = {
-        name: 'dayAvgPageViews',
-        longName: 'Page Views (Daily Avg)',
+    let payload: MetricMetadataPayload = {
+        id: 'dayAvgPageViews',
+        name: 'Page Views (Daily Avg)',
+        type: 'field',
         category: 'Page Views',
         valueType: 'number',
         source: 'bardOne'
@@ -140,21 +162,15 @@ module('Unit | Metadata Model | Metric', function(hooks) {
   });
 
   test('extended property', async function(assert) {
+    assert.expect(3);
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'metricOne',
       source: 'bardOne'
     });
 
-    const expected = {
-      category: 'category',
-      name: 'Metric One',
-      id: 'metricOne'
-    };
-
     const result = await metricOne.extended;
-    assert.ok(
-      Object.keys(expected).every(key => result[key] === expected[key]),
-      'metric model can fetch extended attributes'
-    );
+    assert.equal(result.id, 'metricOne', 'extended attributes model has same id');
+    assert.equal(result.category, 'category', 'extended attributes model has same id');
+    assert.equal(result.name, 'Metric One', 'extended attributes model has same id');
   });
 });

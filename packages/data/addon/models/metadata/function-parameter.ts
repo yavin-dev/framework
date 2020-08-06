@@ -2,21 +2,21 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Column function arguments are named and have rules for what values are valid
- * The values control configuration for an argument on a base metric
+ * Column function parameters are named and have rules for what values are valid
+ * The values control configuration for an parameters on a base metric
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
-type FunctionArgumentType = 'ref' | 'primitive';
-export type ColumnFunctionArgumentsValues = TODO[]; //TODO need to normalize
+type FunctionParameterType = 'ref' | 'primitive';
+export type ColumnFunctionParametersValues = TODO[]; //TODO need to normalize
 
-type LocalFunctionArgument = FunctionArgumentMetadataModel & {
+type LocalFunctionParameter = FunctionParameterMetadataModel & {
   type: 'ref';
   expression: 'self';
-  _localValues: ColumnFunctionArgumentsValues;
+  _localValues: ColumnFunctionParametersValues;
 };
 
 /**
@@ -25,23 +25,25 @@ type LocalFunctionArgument = FunctionArgumentMetadataModel & {
  * @function isLocalFunction
  * @returns {boolean} true if values are stored locally
  */
-function isLocalFunction(functionArgument: FunctionArgumentMetadataModel): functionArgument is LocalFunctionArgument {
-  return functionArgument.expression === INTRINSIC_VALUE_EXPRESSION;
+function isLocalFunction(
+  functionParameter: FunctionParameterMetadataModel
+): functionParameter is LocalFunctionParameter {
+  return functionParameter.expression === INTRINSIC_VALUE_EXPRESSION;
 }
 
-export interface FunctionArgumentMetadataPayload {
+export interface FunctionParameterMetadataPayload {
   id: string;
   name: string;
   description?: string;
   source: string;
   valueType: TODO;
-  type: FunctionArgumentType;
+  type: FunctionParameterType;
   expression?: string;
   defaultValue?: string;
-  _localValues?: ColumnFunctionArgumentsValues;
+  _localValues?: ColumnFunctionParametersValues;
 }
 
-export default class FunctionArgumentMetadataModel extends EmberObject implements FunctionArgumentMetadataPayload {
+export default class FunctionParameterMetadataModel extends EmberObject implements FunctionParameterMetadataPayload {
   /**
    * @static
    * @property {string} identifierField
@@ -70,7 +72,7 @@ export default class FunctionArgumentMetadataModel extends EmberObject implement
   description?: string;
 
   /**
-   * @property {string} source - name of the data source this argument is from.
+   * @property {string} source - name of the data source this parameter is from.
    */
   source!: string;
 
@@ -82,7 +84,7 @@ export default class FunctionArgumentMetadataModel extends EmberObject implement
   /**
    * @property {string} type - either "ref" or "primitive"
    */
-  type!: FunctionArgumentType;
+  type!: FunctionParameterType;
 
   /**
    * @property {string|undefined} expression - used if type is ref to get the valid values
@@ -99,16 +101,16 @@ export default class FunctionArgumentMetadataModel extends EmberObject implement
   _localValues?: string[];
 
   /**
-   * @property {Promise} values - array of values used for function arguments with an enum type
+   * @property {Promise} values - array of values used for function parameters with an enum type
    */
-  get values(): Promise<ColumnFunctionArgumentsValues> | undefined {
+  get values(): Promise<ColumnFunctionParametersValues> | undefined {
     if (isLocalFunction(this)) {
       return Promise.resolve(this._localValues);
     }
 
-    const [type, id] = this.expression?.split(':') || [];
-    if (this.type === 'ref' && type === 'dimension' && id) {
-      return this.dimensionService.all(id, this.source).then((results: TODO) => results.content?.toArray?.());
+    const [lookup, dimensionId] = this.expression?.split(':') || [];
+    if (this.type === 'ref' && lookup === 'dimension' && dimensionId) {
+      return this.dimensionService.all(dimensionId, this.source).then((results: TODO) => results.toArray?.());
     }
     return undefined;
   }

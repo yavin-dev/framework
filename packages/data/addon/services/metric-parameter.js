@@ -60,7 +60,7 @@ export default class MetricParameterService extends Service {
   fetchAllParams(metricMeta) {
     const promises = {};
     const supportedTypes = this.supportedTypes;
-    const parameters = (metricMeta.arguments || []).filter(
+    const parameters = (metricMeta.parameters || []).filter(
       param => param.type === 'ref' && supportedTypes.includes(param.expression.split(':')[0])
     );
 
