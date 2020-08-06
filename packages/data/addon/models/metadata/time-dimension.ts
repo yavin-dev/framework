@@ -32,3 +32,8 @@ export default class TimeDimensionMetadataModel extends DimensionMetadataModel
    */
   timeZone!: string;
 }
+declare module './registry' {
+  export default interface MetadataModelRegistry {
+    timeDimension: TimeDimensionMetadataModel;
+  }
+}

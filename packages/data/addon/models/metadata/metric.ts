@@ -42,3 +42,9 @@ export default class MetricMetadataModel extends ColumnMetadataModel implements 
     return metadataService.findById('metric', id, source);
   }
 }
+
+declare module './registry' {
+  export default interface MetadataModelRegistry {
+    metric: MetricMetadataModel;
+  }
+}
