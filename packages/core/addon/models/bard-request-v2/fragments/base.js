@@ -48,12 +48,14 @@ export default class Base extends Fragment.extend(Validations, {
   /**
    * @type {Meta}
    */
-  @computed('field', 'type', 'source')
+  @computed('field', 'type', 'source', 'parent.tableMetadata')
   get columnMetadata() {
     assert('Source must be set in order to access columnMetadata', isPresent(this.source));
     assert('column type must be set in order to access columnMetadata', isPresent(this.type));
+
     if (this.field === 'dateTime' && this.type === 'timeDimension') {
-      const { id: tableId, timeGrainIds } = this.parent.tableMetadata;
+      const { id: tableId, timeGrainIds = [] } = this.parent?.tableMetadata || {};
+      // TODO: come back and replace with just metadata call
       return TimeDimensionMetadataModel.create(getOwner(this).ownerInjection(), {
         id: 'dateTime',
         name: 'Date Time',

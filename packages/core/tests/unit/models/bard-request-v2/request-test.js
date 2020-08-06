@@ -118,17 +118,31 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('time-dimension matches table metadata', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const { request } = mockModel;
-    const timeDimension = request.columns.objectAt(0).columnMetadata;
+    let timeDimension = request.columns.objectAt(0).columnMetadata;
 
     assert.ok(
       timeDimension instanceof TimeDimensionMetadataModel,
       'dateTime time-dimension uses actual metadata model'
     );
 
-    assert.deepEqual(timeDimension.supportedGrains, [], 'meta data is populated on sub fragments');
+    assert.deepEqual(
+      timeDimension.supportedGrains.map(g => g.grain),
+      ['HOUR', 'DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      'meta data is populated on sub fragments'
+    );
+
+    request.table = 'tableB';
+    timeDimension = request.columns.objectAt(0).columnMetadata;
+
+    assert.deepEqual(
+      timeDimension.supportedGrains.map(g => g.grain),
+      ['DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      'meta data is populated on sub fragments'
+    );
+
     assert.deepEqual(timeDimension.timeZone, 'UTC', 'meta data is populated on sub fragments');
   });
 
