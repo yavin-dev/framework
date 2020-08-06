@@ -33,7 +33,7 @@ export default function() {
     if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
-          let tableDimModels = isBardTwo ? dimModels.blockheadDims : dimModels.defaultDims;
+          let tableDimModels = isBardTwo ? dimModels.bardTwoDims : dimModels.defaultDims;
           let defaultMetricModels = isBardTwo ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
 
           if (table.name === 'tableC') {
