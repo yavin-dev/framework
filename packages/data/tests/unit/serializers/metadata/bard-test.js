@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
 const Payload = {
-  source: 'bardOne',
   tables: [
     {
       name: 'tableName',
@@ -288,6 +287,7 @@ const Dimensions = [
   {
     cardinality: 'SMALL',
     category: 'categoryOne',
+    description: undefined,
     id: 'dimensionOne',
     name: 'Dimension One',
     source: 'bardOne',
@@ -300,6 +300,7 @@ const Dimensions = [
   {
     cardinality: 'SMALL',
     category: 'categoryTwo',
+    description: undefined,
     id: 'dimensionTwo',
     name: 'Dimension Two',
     source: 'bardOne',
@@ -320,6 +321,7 @@ const TimeDimensions = [
   {
     cardinality: 'MEDIUM',
     category: 'dateCategory',
+    description: undefined,
     id: 'dimensionThree',
     name: 'Dimension Three',
     source: 'bardOne',
@@ -336,6 +338,7 @@ const Metrics = [
     category: 'category',
     id: 'metricOne',
     columnFunctionId: undefined,
+    description: undefined,
     name: 'Metric One',
     partialData: true,
     source: 'bardOne',
@@ -346,6 +349,7 @@ const Metrics = [
     category: 'category',
     id: 'metricFour',
     columnFunctionId: 'currency|format',
+    description: undefined,
     name: 'Metric Four',
     partialData: true,
     source: 'bardOne',
@@ -356,6 +360,7 @@ const Metrics = [
     category: 'category',
     id: 'metricTwo',
     columnFunctionId: 'currency',
+    description: undefined,
     name: 'Metric Two',
     partialData: true,
     source: 'bardOne',
@@ -366,6 +371,7 @@ const Metrics = [
     category: 'category',
     id: 'metricFive',
     columnFunctionId: 'metricFunctionId take precedence over parameters',
+    description: undefined,
     name: 'Metric Five',
     partialData: true,
     source: 'bardOne',
@@ -376,6 +382,7 @@ const Metrics = [
     category: 'category',
     id: 'metricThree',
     columnFunctionId: undefined,
+    description: undefined,
     name: 'Metric Three',
     partialData: true,
     source: 'bardOne',
@@ -447,7 +454,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
 
   test('normalize `everything` with metric legacy `parameters`', function(assert) {
     assert.deepEqual(
-      Serializer.normalize('everything', Payload),
+      Serializer.normalize('everything', Payload, 'bardOne'),
       {
         metrics: Metrics,
         dimensions: Dimensions,
@@ -461,7 +468,6 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
 
   test('normalize `everything` with column functions', function(assert) {
     const MetricFunctionIdsPayload = {
-      source: 'bardOne',
       metricFunctions: [
         {
           id: 'moneyMetric',
@@ -513,7 +519,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ]
     };
 
-    const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload);
+    const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload, 'bardOne');
 
     assert.deepEqual(
       metrics,
@@ -522,6 +528,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           category: 'category',
           id: 'metricOne',
           name: 'Metric One',
+          description: undefined,
           valueType: 'number',
           source: 'bardOne',
           columnFunctionId: undefined,
@@ -532,6 +539,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           category: 'category',
           id: 'metricTwo',
           name: 'Metric Two',
+          description: undefined,
           valueType: 'money',
           source: 'bardOne',
           columnFunctionId: 'moneyMetric',
@@ -569,7 +577,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     );
   });
 
-  test('_constructDimension', function(assert) {
+  test('normalizeDimensions', function(assert) {
     const rawDimension = {
       category: 'categoryOne',
       name: 'dimensionOne',
@@ -591,24 +599,27 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     const source = 'bardOne';
 
     assert.deepEqual(
-      Serializer._constructDimension(rawDimension, source),
-      {
-        id: rawDimension.name,
-        name: rawDimension.longName,
-        category: rawDimension.category,
-        valueType: rawDimension.datatype,
-        cardinality: 'SMALL',
-        type: 'field',
-        storageStrategy: null,
-        fields: rawDimension.fields,
-        source,
-        partialData: true
-      },
+      Serializer.normalizeDimensions([rawDimension], source),
+      [
+        {
+          id: rawDimension.name,
+          name: rawDimension.longName,
+          description: undefined,
+          category: rawDimension.category,
+          valueType: rawDimension.datatype,
+          cardinality: 'SMALL',
+          type: 'field',
+          storageStrategy: null,
+          fields: rawDimension.fields,
+          source,
+          partialData: true
+        }
+      ],
       'New dimension is constructed correctly normalized'
     );
   });
 
-  test('_constructMetric', function(assert) {
+  test('normalizeMetrics', function(assert) {
     const source = 'bardOne';
 
     const rawMetric = {
@@ -621,17 +632,20 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     };
 
     assert.deepEqual(
-      Serializer._constructMetric(rawMetric, source),
-      {
-        id: rawMetric.name,
-        name: rawMetric.longName,
-        category: rawMetric.category,
-        valueType: rawMetric.type,
-        source,
-        columnFunctionId: rawMetric.metricFunctionId,
-        type: 'field',
-        partialData: true
-      },
+      Serializer.normalizeMetrics([rawMetric], source),
+      [
+        {
+          id: rawMetric.name,
+          name: rawMetric.longName,
+          description: undefined,
+          category: rawMetric.category,
+          valueType: rawMetric.type,
+          source,
+          columnFunctionId: rawMetric.metricFunctionId,
+          type: 'field',
+          partialData: true
+        }
+      ],
       'Metric is constructed correctly with no new column function id or parameter'
     );
   });

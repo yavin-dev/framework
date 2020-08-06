@@ -189,12 +189,11 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           }
         ],
         pageInfo: {}
-      },
-      source: 'bardOne'
+      }
     };
 
     assert.deepEqual(
-      Serializer.normalize('everything', tableConnectionPayload),
+      Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
       {
         tables: [
           {

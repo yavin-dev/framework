@@ -81,8 +81,7 @@ export default class ElideMetadata extends Service {
       const payload = await this._adapter.fetchEverything(options);
 
       //normalize payload
-      payload.source = dataSource;
-      const metadata = this._serializer.normalize('everything', payload);
+      const metadata = this._serializer.normalize('everything', payload, dataSource);
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
   }
