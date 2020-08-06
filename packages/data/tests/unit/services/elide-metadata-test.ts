@@ -56,7 +56,20 @@ module('Unit | Service | elide-metadata', function(hooks) {
 
     assert.deepEqual(
       keg.all('metadata/time-dimension').mapBy('id'),
-      ['timeDimension0'],
+      [
+        'eventTimeHour',
+        'orderTimeHour',
+        'eventTimeDay',
+        'orderTimeDay',
+        'eventTimeWeek',
+        'orderTimeWeek',
+        'eventTimeMonth',
+        'orderTimeMonth',
+        'eventTimeQuarter',
+        'orderTimeQuarter',
+        'eventTimeYear',
+        'orderTimeYear'
+      ],
       'All time-dimensions are loaded in the keg'
     );
 
@@ -123,9 +136,24 @@ module('Unit | Service | elide-metadata', function(hooks) {
     assert.deepEqual(
       keg.all('metadata/time-dimension').map((t: TimeDimensionMetadata) => ({ id: t.id, source: t.source })),
       [
-        { id: 'timeDimension0', source: 'dummy' },
-        { id: 'timeDimension1', source: 'blockhead' },
-        { id: 'timeDimension2', source: 'blockhead' }
+        { id: 'eventTimeHour', source: 'dummy' },
+        { id: 'orderTimeHour', source: 'dummy' },
+        { id: 'eventTimeDay', source: 'dummy' },
+        { id: 'orderTimeDay', source: 'dummy' },
+        { id: 'eventTimeWeek', source: 'dummy' },
+        { id: 'orderTimeWeek', source: 'dummy' },
+        { id: 'eventTimeMonth', source: 'dummy' },
+        { id: 'orderTimeMonth', source: 'dummy' },
+        { id: 'eventTimeQuarter', source: 'dummy' },
+        { id: 'orderTimeQuarter', source: 'dummy' },
+        { id: 'eventTimeYear', source: 'dummy' },
+        { id: 'orderTimeYear', source: 'dummy' },
+        { id: 'eventTimeHour', source: 'blockhead' },
+        { id: 'eventTimeDay', source: 'blockhead' },
+        { id: 'eventTimeWeek', source: 'blockhead' },
+        { id: 'eventTimeMonth', source: 'blockhead' },
+        { id: 'eventTimeQuarter', source: 'blockhead' },
+        { id: 'eventTimeYear', source: 'blockhead' }
       ],
       'All time-dimensions are loaded in the keg'
     );
@@ -230,7 +258,26 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
     assert.deepEqual(
       allTimeDimensions.mapBy('id'),
-      ['timeDimension0', 'timeDimension1', 'timeDimension2'],
+      [
+        'eventTimeHour',
+        'orderTimeHour',
+        'eventTimeDay',
+        'orderTimeDay',
+        'eventTimeWeek',
+        'orderTimeWeek',
+        'eventTimeMonth',
+        'orderTimeMonth',
+        'eventTimeQuarter',
+        'orderTimeQuarter',
+        'eventTimeYear',
+        'orderTimeYear',
+        'eventTimeHour',
+        'eventTimeDay',
+        'eventTimeWeek',
+        'eventTimeMonth',
+        'eventTimeQuarter',
+        'eventTimeYear'
+      ],
       'all method returns all loaded time-dimensions for every source'
     );
 
