@@ -6,14 +6,14 @@ import { TableMetadataPayload } from '../../models/metadata/table';
 import { MetricMetadataPayload } from '../../models/metadata/metric';
 import { DimensionMetadataPayload } from '../../models/metadata/dimension';
 import { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
-import { MetricFunctionMetadataPayload } from '../../models/metadata/metric-function';
+import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 
 export interface EverythingMetadataPayload {
   tables: TableMetadataPayload[];
   metrics: MetricMetadataPayload[];
   dimensions: DimensionMetadataPayload[];
   timeDimensions: TimeDimensionMetadataPayload[];
-  metricFunctions?: MetricFunctionMetadataPayload[];
+  columnFunctions?: ColumnFunctionMetadataPayload[];
 }
 
 export interface MetadataPayloadMap {
@@ -22,7 +22,7 @@ export interface MetadataPayloadMap {
   metric: MetricMetadataPayload[];
   dimension: DimensionMetadataPayload[];
   timeDimension: TimeDimensionMetadataPayload[];
-  metricFunctions: MetricMetadataPayload[];
+  columnFunctions: MetricMetadataPayload[];
 }
 
 export type RawMetadataPayload = unknown;

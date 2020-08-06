@@ -23,7 +23,7 @@ export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
 export default class TimeDimensionMetadataModel extends DimensionMetadataModel
   implements TimeDimensionMetadata, TimeDimensionMetadataPayload {
   /**
-   * @property {string[]} supportedGrains
+   * @property {TimeDimensionGrain[]} supportedGrains
    */
   supportedGrains!: TimeDimensionGrain[];
 

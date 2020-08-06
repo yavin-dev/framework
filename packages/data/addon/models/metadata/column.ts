@@ -5,9 +5,11 @@
 
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import KegService from '../../services/keg';
 import { isNone } from '@ember/utils';
+import KegService from '../../services/keg';
 import Table from './table';
+import ColumnFunction from './column-function';
+import FunctionParameter from './function-parameter';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
@@ -22,6 +24,7 @@ export interface ColumnMetadataPayload {
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
+  columnFunctionId?: string;
   tags?: string[];
   partialData?: boolean; //TODO refactor me
 }
@@ -37,6 +40,11 @@ export interface ColumnMetadata {
   valueType: TODO<string>;
   type: ColumnType;
   expression?: string;
+  columnFunction: ColumnFunction | undefined;
+  hasParameters: boolean;
+  parameters: FunctionParameter[];
+  getParameter(id: string): FunctionParameter | undefined;
+  getDefaultParameters(): Dict<string> | undefined;
 }
 
 export type BaseExtendedAttributes = {
@@ -110,4 +118,63 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   tags?: string[];
 
   partialData?: boolean;
+
+  /**
+   * @property {string} columnFunctionId
+   */
+  columnFunctionId!: string;
+
+  /**
+   * Many to One relationship
+   * @property {ColumnFunction} columnFunction
+   */
+  get columnFunction(): ColumnFunction | undefined {
+    const { columnFunctionId, source, keg } = this;
+
+    if (columnFunctionId) {
+      const columnFunction = keg.getById('metadata/column-function', columnFunctionId, source);
+      return (columnFunction as unknown) as ColumnFunction;
+    }
+    return undefined;
+  }
+
+  /**
+   * @property {boolean} hasParameters
+   */
+  get hasParameters(): boolean {
+    return !!this.parameters?.length;
+  }
+
+  /**
+   * @property {object[]} parameters - parameters for the column
+   */
+  get parameters(): FunctionParameter[] {
+    return this.columnFunction?.parameters || [];
+  }
+
+  /**
+   * @method getParameter - retrieves the queried parameter object from metadata
+   * @param {string} id
+   * @returns {object|undefined}
+   */
+  getParameter(id: string): FunctionParameter | undefined {
+    return this.parameters.find(param => param.id === id);
+  }
+
+  /**
+   * @method getDefaultParameters - retrieves all the default values for all the parameters
+   * @returns {Dict<string>|undefined}
+   */
+  getDefaultParameters(): Dict<string> | undefined {
+    if (!this.hasParameters) {
+      return undefined;
+    }
+
+    return this.parameters.reduce((acc: Dict<string>, param) => {
+      if (param.defaultValue) {
+        acc[param.id] = param.defaultValue;
+      }
+      return acc;
+    }, {});
+  }
 }

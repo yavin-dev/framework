@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
+import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 
 let mockModel;
 
@@ -25,6 +26,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
                     field: 'dateTime',
                     operator: 'bet',
                     type: 'timeDimension',
+                    parameters: { grain: 'day' },
                     values: ['P1D', 'current']
                   },
                   {
@@ -113,6 +115,35 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
     );
 
     assert.equal(request.sorts.objectAt(1).columnMetadata.category, 'Clicks', 'Sorts have meta data populated');
+  });
+
+  test('time-dimension matches table metadata', async function(assert) {
+    assert.expect(4);
+
+    const { request } = mockModel;
+    let timeDimension = request.columns.objectAt(0).columnMetadata;
+
+    assert.ok(
+      timeDimension instanceof TimeDimensionMetadataModel,
+      'dateTime time-dimension uses actual metadata model'
+    );
+
+    assert.deepEqual(
+      timeDimension.supportedGrains.map(g => g.grain),
+      ['HOUR', 'DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      'meta data is populated on sub fragments'
+    );
+
+    request.table = 'tableB';
+    timeDimension = request.columns.objectAt(0).columnMetadata;
+
+    assert.deepEqual(
+      timeDimension.supportedGrains.map(g => g.grain),
+      ['DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      'meta data is populated on sub fragments'
+    );
+
+    assert.deepEqual(timeDimension.timeZone, 'UTC', 'meta data is populated on sub fragments');
   });
 
   test('Clone Request', async function(assert) {
@@ -343,7 +374,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
           {
             field: 'dateTime',
             type: 'timeDimension',
-            parameters: {},
+            parameters: { grain: 'day' },
             operator: 'bet',
             values: ['P1D', 'current']
           },
@@ -363,22 +394,22 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
             alias: 'time'
           },
           {
+            alias: null,
             field: 'property',
             parameters: { field: 'id' },
-            type: 'dimension',
-            alias: null
+            type: 'dimension'
           },
           {
+            alias: null,
             field: 'revenue',
             parameters: { currency: 'USD' },
-            type: 'metric',
-            alias: null
+            type: 'metric'
           },
           {
+            alias: null,
             field: 'navClicks',
             parameters: {},
-            type: 'metric',
-            alias: null
+            type: 'metric'
           }
         ],
         sorts: [

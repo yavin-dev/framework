@@ -38,6 +38,7 @@ module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
 
     assert.equal(sort.direction, 'desc', 'the `direction` property defaults to `desc`');
 
+    sort.set('type', 'timeDimension');
     sort.set('field', 'dateTime');
     sort.set('parameters', { grain: 'day' });
     sort.set('direction', 'asc');
