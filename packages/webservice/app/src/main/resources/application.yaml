@@ -8,6 +8,8 @@ elide:
   swagger:
     path: /doc
     enabled: true
+  aggregation-store:
+    enabled: true
 
 spring:
   application:

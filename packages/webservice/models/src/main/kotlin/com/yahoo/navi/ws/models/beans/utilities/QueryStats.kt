@@ -37,34 +37,34 @@ class QueryStats(id: UUID) {
     var sessionId: String? = null
     var fromUI: Boolean? = null
 
-    @Column(columnDefinition = "user API version")
+    @Column
     var apiVersion: String? = null
 
-    @Column(columnDefinition = "API query query string")
+    @Column
     var apiQuery: String? = null
 
-    @Column(columnDefinition = "underlying SQL query")
+    @Column
     var storeQuery: String? = null
 
-    @Column(columnDefinition = "underlying base table name")
+    @Column
     var modelName: String? = null
 
-    @Column(columnDefinition = "user information")
+    @Column
     var user: String? = null
 
-    @Column(columnDefinition = "current query state")
+    @Column
     var status: QueryStatus? = null
 
-    @Column(columnDefinition = "query execution time")
+    @Column
     var durationInMillis: Long? = null
 
-    @Column(columnDefinition = "output rows returned")
+    @Column
     var rowsReturned: Int? = null
 
-    @Column(columnDefinition = "output bytes returned")
+    @Column
     var bytesReturned: Int? = null
 
-    @Column(columnDefinition = "query comes form cache or not")
+    @Column
     var isCached: Boolean = false
 
     @CreationTimestamp
@@ -72,7 +72,7 @@ class QueryStats(id: UUID) {
     @Temporal(TemporalType.TIMESTAMP)
     var createdOn: Date? = null
 
-    @Column(columnDefinition = "user system hostname")
+    @Column
     var hostName: String? = null
 
     @Transient
