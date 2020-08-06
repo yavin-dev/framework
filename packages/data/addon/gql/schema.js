@@ -194,6 +194,7 @@ const schema = gql`
   }
 
   enum TimeGrain {
+    HOUR
     DAY
     WEEK
     MONTH

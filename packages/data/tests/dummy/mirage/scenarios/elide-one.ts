@@ -1,7 +1,7 @@
 // TODO: Replace any with type supplied by new version of mirage
 import { capitalize } from '@ember/string';
 
-const grains = ['hour', 'day', 'week', 'month', 'quarter', 'year'];
+export const grains = ['hour', 'day', 'week', 'month', 'quarter', 'year'];
 const timeDimIds = ['eventTime', 'orderTime'];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function(server: any) {
