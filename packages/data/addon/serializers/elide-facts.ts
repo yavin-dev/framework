@@ -7,11 +7,11 @@
 
 import EmberObject from '@ember/object';
 import NaviFactSerializer, { ResponseV1 } from './fact-interface';
-import { AsyncQueryResponse, RequestV1 } from 'navi-data/adapters/fact-interface';
+import { AsyncQueryResponse, RequestV1, RequestV2 } from 'navi-data/adapters/fact-interface';
 
 export default class ElideFactsSerializer extends EmberObject implements NaviFactSerializer {
-  normalize(payload: AsyncQueryResponse, request: RequestV1): ResponseV1 | undefined {
-    const requestTable: string = request.logicalTable.table;
+  normalize(payload: AsyncQueryResponse, request: RequestV1 | RequestV2): ResponseV1 | undefined {
+    const requestTable: string = request.logicalTable?.table || request.table; // Get table depending on request version
     const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
     if (responseStr) {
       const response = JSON.parse(responseStr);
