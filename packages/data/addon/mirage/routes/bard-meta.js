@@ -4,6 +4,7 @@
  */
 
 import faker from 'faker';
+import { Response } from 'ember-cli-mirage';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';
@@ -19,9 +20,8 @@ export default function() {
   /**
    * unsupported metricFunctions endpoint
    */
-  this.get('metricFunctions', function() {
-    return [404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'];
-  });
+  this.get('metricFunctions', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
+  this.get('metricFunctions/:id', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
 
   /**
    * /tables endpoint
@@ -41,17 +41,21 @@ export default function() {
           }
 
           if (table.name !== 'network') {
-            tableDimModels = tableDimModels.concat(dimModels.highCardinalityDims);
+            tableDimModels = [...tableDimModels, ...dimModels.highCardinalityDims];
           }
 
           if (timeGrain.name === 'day') {
             return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
             if (!isBardTwo) {
-              defaultMetricModels = defaultMetricModels.concat(metricModels.dayAvgMetrics);
+              defaultMetricModels = [...defaultMetricModels, ...metricModels.dayAvgMetrics];
             }
 
-            return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
+            return {
+              ...timeGrain,
+              metrics: defaultMetricModels.map(m => ({ ...m, description: undefined })), //fullview does not have descriptions
+              dimensions: tableDimModels.map(d => ({ ...d, description: undefined })) //fullview does not have descriptions
+            };
           }
         });
 
@@ -62,8 +66,9 @@ export default function() {
 
         return Object.assign({}, table, { timeGrains });
       });
+      return { tables };
     }
-    return { tables };
+    return { rows: tables };
   });
 
   this.get('/dimensions/:dimension', function(db, request) {
