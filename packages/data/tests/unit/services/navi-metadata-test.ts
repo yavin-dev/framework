@@ -160,7 +160,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     await this.service.loadMetadata({ dataSourceName: 'elideOne' });
 
     const bardTwoTables = this.service.all('table', 'bardTwo');
-    assert.deepEqual(bardTwoTables.mapBy('id'), ['inventory'], '`all` returns all `elideOne` tables');
+    assert.deepEqual(bardTwoTables.mapBy('id'), ['inventory'], '`all` returns all `bardTwo` tables');
 
     const elideOneTables = this.service.all('table', 'elideOne');
     assert.deepEqual(elideOneTables.mapBy('id'), ['table0', 'table1'], '`all` return all `elideOne` tables');
@@ -169,7 +169,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     assert.deepEqual(
       allTables.mapBy('id'),
       ['inventory', 'table0', 'table1'],
-      '`all` return all loaded tables when data source is not specified'
+      '`all` returns all loaded tables when data source is not specified'
     );
     assert.ok(
       allTables.every(table => table instanceof TableMetadataModel),
