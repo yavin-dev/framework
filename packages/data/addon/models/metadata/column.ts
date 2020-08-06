@@ -131,7 +131,8 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
     const { columnFunctionId, source, keg } = this;
 
     if (columnFunctionId) {
-      return keg.getById('metadata/column-function', columnFunctionId, source);
+      const columnFunction = keg.getById('metadata/column-function', columnFunctionId, source);
+      return (columnFunction as unknown) as ColumnFunction;
     }
     return undefined;
   }
