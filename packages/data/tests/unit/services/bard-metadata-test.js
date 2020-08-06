@@ -15,8 +15,8 @@ import metadataRoutes, {
   MetricTwo,
   MetricFive,
   MetricSix,
-  MetricFunctionAggTrend,
-  MetricFunctionMoneyMetric,
+  ColumnFunctionAggTrend,
+  ColumnFunctionMoneyMetric,
   Host
 } from '../../helpers/metadata-routes';
 
@@ -83,8 +83,8 @@ module('Unit - Service - Bard Metadata', function(hooks) {
     const keg = Service._keg;
     await Service.loadMetadata();
     assert.deepEqual(
-      keg.all('metadata/metric-function', dataSource).mapBy('id'),
-      [MetricFunctionMoneyMetric.id, MetricFunctionAggTrend.id],
+      keg.all('metadata/column-function', dataSource).mapBy('id'),
+      [ColumnFunctionMoneyMetric.id, ColumnFunctionAggTrend.id],
       'When at least one metric has a metricFunctionId provided, all metric functions from the metric function endpoint are loaded into the keg'
     );
   });
@@ -370,11 +370,11 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       id: MetricSix.name,
       name: MetricSix.longName,
       category: MetricSix.category,
-      metricFunctionId: 'foonction',
+      columnFunctionId: 'foonction',
       partialData: true
     };
 
-    keg.push('metadata/metric-function', foonction, { namespace: 'bardOne' });
+    keg.push('metadata/column-function', foonction, { namespace: 'bardOne' });
     keg.push('metadata/metric', partiallyLoadedMetric, { namespace: 'bardOne' });
 
     const kegRecord = keg.getById('metadata/metric', 'metricSix', 'bardOne');
@@ -384,7 +384,7 @@ module('Unit - Service - Bard Metadata', function(hooks) {
       id: partiallyLoadedMetric.id,
       name: partiallyLoadedMetric.name,
       category: partiallyLoadedMetric.category,
-      metricFunctionId: partiallyLoadedMetric.metricFunctionId
+      columnFunctionId: partiallyLoadedMetric.columnFunctionId
     };
 
     const findOnPartiallyLoadedMetric = await Service.findById('metric', 'metricSix', 'bardOne');

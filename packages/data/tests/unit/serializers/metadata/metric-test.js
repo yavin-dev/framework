@@ -20,7 +20,7 @@ module('Unit | Metadata | Metric Serializer', function(hooks) {
       category: 'category',
       valueType: 'number',
       source: 'bardOne',
-      metricFunctionId: 'foo'
+      columnFunctionId: 'foo'
     };
 
     assert.deepEqual(
@@ -92,7 +92,7 @@ module('Unit | Metadata | Metric Serializer', function(hooks) {
           category: MetricTwo.category,
           description: 'description',
           valueType: 'number',
-          metricFunctionId: 'foonction',
+          columnFunctionId: 'foonction',
           source
         }
       ];

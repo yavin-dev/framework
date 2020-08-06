@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { constructFunctionArguments, normalizeMetricFunctions } from 'navi-data/serializers/metadata/metric-function';
-import { MetricFunctionMoneyMetric } from '../../../helpers/metadata-routes';
+import { constructFunctionParameters, normalizeColumnFunctions } from 'navi-data/serializers/metadata/column-function';
+import { ColumnFunctionMoneyMetric } from '../../../helpers/metadata-routes';
 
 const FunctionArguments = [
   {
@@ -41,17 +41,17 @@ const FunctionArguments = [
   }
 ];
 
-module('Unit | Metric Function Serializer', function(hooks) {
+module('Unit | Column Function Serializer', function(hooks) {
   setupTest(hooks);
 
-  test('_normalizeMetricFunctions', function(assert) {
+  test('_normalizeColumnFunctions', function(assert) {
     const expected = [
       {
         id: 'moneyMetric',
         name: 'Money Metric',
-        description: 'Money metric function',
+        description: 'Money column function',
         source: 'bardOne',
-        arguments: [
+        _parametersPayload: [
           {
             id: 'currency',
             name: 'currency',
@@ -76,10 +76,10 @@ module('Unit | Metric Function Serializer', function(hooks) {
       }
     ];
 
-    const result = normalizeMetricFunctions([MetricFunctionMoneyMetric], 'bardOne');
-    assert.deepEqual(result, expected, 'Metric functions are normalized properly');
+    const result = normalizeColumnFunctions([ColumnFunctionMoneyMetric], 'bardOne');
+    assert.deepEqual(result, expected, 'Column functions are normalized properly');
 
-    assert.deepEqual(normalizeMetricFunctions([], 'bardOne'), [], 'Empty array payload returns empty array');
+    assert.deepEqual(normalizeColumnFunctions([], 'bardOne'), [], 'Empty array payload returns empty array');
   });
 
   test('constructFunctionArguments', function(assert) {
@@ -110,9 +110,9 @@ module('Unit | Metric Function Serializer', function(hooks) {
     };
 
     assert.deepEqual(
-      constructFunctionArguments(parameters, 'dataSourceOne'),
+      constructFunctionParameters(parameters, 'dataSourceOne'),
       FunctionArguments,
-      'The parameter objects are successfully turned into metric function arguments'
+      'The parameter objects are successfully turned into column function arguments'
     );
   });
 });

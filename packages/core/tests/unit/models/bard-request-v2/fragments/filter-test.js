@@ -42,6 +42,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
 
     assert.deepEqual(filter.values, [3], 'the `values` property has the correct values');
 
+    filter.set('type', 'timeDimension');
     filter.set('field', 'dateTime');
     filter.set('parameters', {});
     filter.set('operator', 'bet');

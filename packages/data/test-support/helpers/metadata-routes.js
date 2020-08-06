@@ -298,10 +298,10 @@ export const Tables2 = [
   }
 ];
 
-export const MetricFunctionMoneyMetric = {
+export const ColumnFunctionMoneyMetric = {
   id: 'moneyMetric',
   name: 'Money Metric',
-  description: 'Money metric function',
+  description: 'Money column function',
   arguments: {
     currency: {
       defaultValue: 'USD',
@@ -320,10 +320,10 @@ export const MetricFunctionMoneyMetric = {
   }
 };
 
-export const MetricFunctionAggTrend = {
+export const ColumnFunctionAggTrend = {
   id: 'aggregationTrend',
   name: 'Aggregation Trend',
-  description: 'Aggregation and Trend metric function',
+  description: 'Aggregation and Trend column function',
   arguments: {
     aggregation: {
       defaultValue: '7DayAvg',
@@ -380,18 +380,18 @@ export default function(index = 0) {
   });
 
   this.get(`${host}/v1/metricFunctions/moneyMetric`, function() {
-    return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricFunctionMoneyMetric)];
+    return [200, { 'Content-Type': 'application/json' }, JSON.stringify(ColumnFunctionMoneyMetric)];
   });
 
   this.get(`${host}/v1/metricFunctions/aggregationTrend`, function() {
-    return [200, { 'Content-Type': 'application/json' }, JSON.stringify(MetricFunctionAggTrend)];
+    return [200, { 'Content-Type': 'application/json' }, JSON.stringify(ColumnFunctionAggTrend)];
   });
 
   this.get(`${host}/v1/metricFunctions/`, function() {
     return [
       200,
       { 'Content-Type': 'application/json' },
-      JSON.stringify({ rows: [MetricFunctionMoneyMetric, MetricFunctionAggTrend] })
+      JSON.stringify({ rows: [ColumnFunctionMoneyMetric, ColumnFunctionAggTrend] })
     ];
   });
 }
