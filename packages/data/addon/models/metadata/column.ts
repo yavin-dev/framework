@@ -146,7 +146,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   }
 
   /**
-   * @property {object[]} parameters - parameters for the metric
+   * @property {object[]} parameters - parameters for the column
    */
   get parameters(): FunctionParameter[] {
     return this.columnFunction?.parameters || [];
