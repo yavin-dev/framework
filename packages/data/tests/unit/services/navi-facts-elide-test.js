@@ -2,6 +2,7 @@ import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'dummy/mirage/scenarios/graphql';
+import moment from 'moment';
 
 const TestRequest = {
   logicalTable: {
@@ -359,13 +360,213 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
-      { dataSourceName: TestRequestV2.dataSource }
+      { dataSourceName: 'dummy-gql' }
     );
 
     assert.deepEqual(
       response.response,
       { rows: [{ metric1: '384.77', metric2: '897.01' }], meta: {} },
       'Request with only metrics is formatted correctly'
+    );
+  });
+
+  test('fetch RequestV2 - invalid date filter', async function(assert) {
+    assert.expect(2);
+
+    const filters = [
+      {
+        field: 'eventTimeDay',
+        operator: 'ge',
+        values: ['2015-01-29'],
+        parameters: {},
+        type: 'timeDimension'
+      },
+      {
+        field: 'eventTimeDay',
+        operator: 'lt',
+        values: ['2015-02-04'],
+        parameters: {},
+        type: 'timeDimension'
+      },
+      {
+        field: 'eventTimeDay',
+        operator: 'ge',
+        values: ['2015-02-05'],
+        parameters: {},
+        type: 'timeDimension'
+      },
+      {
+        field: 'eventTimeDay',
+        operator: 'lt',
+        values: ['2015-02-06'],
+        parameters: {},
+        type: 'timeDimension'
+      }
+    ];
+
+    const response = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeDay', parameters: {}, type: 'timeDimension' }
+        ],
+        filters,
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      response.response,
+      {
+        rows: [],
+        meta: {}
+      },
+      'An invalid filter on a requested field returns an empty response'
+    );
+
+    const noTimeDimResponse = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [{ field: 'metric1', parameters: {}, type: 'metric' }],
+        filters,
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+    assert.deepEqual(
+      noTimeDimResponse.response,
+      {
+        rows: [{ metric1: '97.53' }],
+        meta: {}
+      },
+      'An invalid filter on a non-requested field does not affect the response'
+    );
+  });
+
+  test('fetch RequestV2 - incomplete date filters', async function(assert) {
+    assert.expect(3);
+
+    const response = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeMonth', parameters: {}, type: 'timeDimension' }
+        ],
+        filters: [
+          {
+            field: 'eventTimeMonth',
+            operator: 'ge',
+            values: ['2015-01-01'],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      response.response,
+      {
+        rows: [
+          { eventTimeMonth: '2015 Jan', metric1: '38.56' },
+          { eventTimeMonth: '2015 Feb', metric1: '195.76' }
+        ],
+        meta: {}
+      },
+      'A date filter with no end date defaults to a one month date interval'
+    );
+
+    const noStartDateResponse = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeMonth', parameters: {}, type: 'timeDimension' }
+        ],
+        filters: [
+          {
+            field: 'eventTimeMonth',
+            operator: 'lt',
+            values: ['2015-01-01'],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+    assert.deepEqual(
+      noStartDateResponse.response,
+      {
+        rows: [
+          { eventTimeMonth: '2014 Nov', metric1: '38.56' },
+          { eventTimeMonth: '2014 Dec', metric1: '195.76' }
+        ],
+        meta: {}
+      },
+      'A date filter with no end date defaults to a one month date interval'
+    );
+
+    const DAY_FORMAT = 'YYYY-MM-DD';
+    const dateToCurrentResponse = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [{ field: 'eventTimeDay', parameters: {}, type: 'timeDimension' }],
+        filters: [
+          {
+            field: 'eventTimeDay',
+            operator: 'ge',
+            values: [
+              moment()
+                .subtract(2, 'days')
+                .format(DAY_FORMAT)
+            ],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      dateToCurrentResponse.response,
+      {
+        rows: [
+          {
+            eventTimeDay: moment()
+              .subtract(2, 'days')
+              .format(DAY_FORMAT)
+          },
+          {
+            eventTimeDay: moment()
+              .subtract(1, 'days')
+              .format(DAY_FORMAT)
+          },
+          {
+            eventTimeDay: moment().format(DAY_FORMAT)
+          }
+        ],
+        meta: {}
+      },
+      'A date filter with no end date ends at current if start is not more than a month before current'
     );
   });
 

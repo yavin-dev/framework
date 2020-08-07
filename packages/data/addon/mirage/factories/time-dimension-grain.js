@@ -8,7 +8,7 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    return `timeDimension${this.index}`;
+    return `timeDimensionGrain${this.index}`;
   },
 
   expression: null,

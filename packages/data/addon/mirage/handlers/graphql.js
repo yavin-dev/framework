@@ -32,7 +32,6 @@ const OPERATORS = {
   notIn: '=out=',
   isNull: '=isnull=true',
   notNull: '=isnull=false',
-  isEmpty: '=isempty=true',
   lt: '=lt=',
   gt: '=gt=',
   le: '=le=',
@@ -47,7 +46,6 @@ const FILTER_OPS = {
   [OPERATORS.notIn]: (filterVals, vals) => vals.filter(val => !filterVals.includes(val)),
   [OPERATORS.isNull]: (_, vals) => vals.filter(val => !val),
   [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),
-  [OPERATORS.isEmpty]: () => [],
   [OPERATORS.eq]: ([filterVal], vals) => vals.filter(val => val === filterVal),
   [OPERATORS.neq]: ([filterVal], vals) => vals.filter(val => val !== filterVal)
 };
@@ -67,6 +65,13 @@ const DATE_FILTER_OPS = {
   [OPERATORS.neq]: () => [null, null]
 };
 
+/**
+ *
+ * @param {String} table - table name
+ * @param {Object} args - args and their values
+ * @param {String[]} fields - requested fields
+ * @returns {Number} - number to use as faker seed
+ */
 function _getSeedForRequest(table, args, fields) {
   const tableLength = table.length;
   const argsLength = Object.keys(args).join(' ').length;
@@ -74,14 +79,30 @@ function _getSeedForRequest(table, args, fields) {
   return tableLength + argsLength + fieldsLength;
 }
 
+/**
+ *
+ * @param {Object[]} filters - time dimension filter objects with operator, values, and grain
+ * @returns {Array<Moment|null>} - lowerbound and upperbound of moments for interval
+ */
 function _createInterval(filters) {
   const intervals = filters.map(f => DATE_FILTER_OPS[f.operator](f.values, f.grain));
-  const lowerBound = moment.max(intervals.map(interval => interval[0]).filter(Boolean));
-  const upperBound = moment.min(intervals.map(interval => interval[1]).filter(Boolean));
+  const lowerLimits = intervals.map(interval => interval[0]).filter(Boolean);
+  const lowerBound = lowerLimits.length ? moment.max(lowerLimits) : null;
 
-  return [lowerBound, upperBound];
+  const upperLimits = intervals.map(interval => interval[1]).filter(Boolean);
+  const upperBound = upperLimits.length ? moment.min(upperLimits) : null;
+
+  if (!upperBound && !lowerBound) {
+    return [];
+  }
+
+  return !lowerBound || !upperBound || lowerBound.isSameOrBefore(upperBound) ? [lowerBound, upperBound] : [];
 }
 
+/**
+ * @param {Object[]} filters - time dimension filter objects with operator, values, and grain
+ * @returns {Object} - date intervals for each time dimension
+ */
 function _intervalsForFilters(filters) {
   // Group filters by their field without grain and assign grain and filterWithoutGrain properties
   const filtersWithGrain = filters.reduce((byField, filter) => {
@@ -101,10 +122,32 @@ function _intervalsForFilters(filters) {
   }, {});
 }
 
+/**
+ * @param {Array<Moment|null>} interval
+ * @param {String} grain
+ * @returns {Moment[]} - all the dates for the interval in the supplied time grain
+ */
 function _datesForInterval(interval, grain) {
+  if (!interval[0] && !interval[1]) {
+    return [];
+  }
+  let start;
+  let end;
   const dates = [];
-  const start = moment(interval[0]).startOf(grain);
-  const end = moment(interval[1]).startOf(grain);
+
+  // Default interval to at most 1 month long if start or end are null
+  if (!interval[0]) {
+    end = moment(interval[1]).startOf(grain);
+    start = moment(end).subtract(1, 'month'); //Default start to 1 month before end
+  } else if (!interval[1]) {
+    start = interval[0].startOf(grain);
+    let monthAhead = moment(start).add(1, 'month');
+    let current = moment();
+    end = monthAhead.isSameOrBefore(current) ? monthAhead.startOf(grain) : current.startOf(grain); //Default end to current or 1 month past start, whichever is closer to start
+  } else {
+    start = interval[0].startOf(grain);
+    end = interval[1].startOf(grain);
+  }
   for (let i = start; i.isSameOrBefore(end); i.add(1, grain)) {
     dates.push(moment(i));
   }
@@ -220,6 +263,10 @@ function _parseGQLQuery(queryStr) {
   };
 }
 
+/**
+ * @param {Object} args - query argument strings
+ * @returns {Object} objects for each argument type
+ */
 function _parseArgs(args) {
   const parsers = {
     filter: filter =>
@@ -261,6 +308,11 @@ function _parseArgs(args) {
   return parsed;
 }
 
+/**
+ * @param {MirageDatabase} db
+ * @param {MirageRecord} parent - async query mirage record
+ * @return {String} - response body object in string form
+ */
 function _getResponseBody(db, parent) {
   // Create mocked response for an async query
   const { createdOn, query } = parent;
