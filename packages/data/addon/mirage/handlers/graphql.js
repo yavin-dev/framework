@@ -224,7 +224,6 @@ function _getDates(filters, requestedColumns) {
 }
 
 /**
- * @param {String} name
  * @param {Object} filter
  * @returns n random dimension values
  */
