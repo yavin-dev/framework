@@ -343,7 +343,7 @@ export default {
     },
     {
       category: 'World',
-      name: 'globalySold',
+      name: 'globallySold',
       longName: 'How many have sold worldwide',
       type: 'number'
     },

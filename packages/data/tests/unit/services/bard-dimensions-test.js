@@ -353,7 +353,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     assert.deepEqual(model.id, 'v1', 'findByid returns the expected dimension value');
 
     const bardTwoModel = await Service.findById('dimensionFour', 'v4', { dataSourceName: 'bardTwo' });
-    assert.deepEqual(bardTwoModel.id, 'v4', 'findByid returns the expected dimension value in a differetn datasource');
+    assert.deepEqual(bardTwoModel.id, 'v4', 'findByid returns the expected dimension value in a different datasource');
   });
 
   test('getById', function(assert) {

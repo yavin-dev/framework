@@ -54,7 +54,6 @@ type TableNode = {
 
 export interface TablePayload {
   table: Connection<TableNode>;
-  source: string;
 }
 
 export default class ElideMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
@@ -199,12 +198,21 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
     });
   }
 
-  normalize<K extends keyof MetadataPayloadMap>(type: K, rawPayload: TablePayload): MetadataPayloadMap[K] {
-    assert('ElideMetadataSerializer only supports normalizing type `everything`', type === 'everything');
+  private supportedTypes = new Set<keyof MetadataPayloadMap>(['everything']);
+
+  normalize<K extends keyof MetadataPayloadMap>(
+    type: K,
+    rawPayload: TablePayload,
+    dataSourceName: string
+  ): MetadataPayloadMap[K] {
+    assert(
+      `ElideMetadataSerializer only supports normalizing type: ${[...this.supportedTypes]}`,
+      this.supportedTypes.has(type)
+    );
 
     const normalized: MetadataPayloadMap['everything'] = this._normalizeTableConnection(
       rawPayload.table,
-      rawPayload.source
+      dataSourceName
     );
     return normalized as MetadataPayloadMap[K];
   }
