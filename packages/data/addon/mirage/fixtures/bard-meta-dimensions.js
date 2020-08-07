@@ -258,7 +258,7 @@ export default {
     }
   ],
 
-  blockheadDims: [
+  bardTwoDims: [
     {
       name: 'item',
       longName: 'Item',

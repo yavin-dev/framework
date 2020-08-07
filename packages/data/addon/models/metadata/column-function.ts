@@ -71,3 +71,8 @@ export default class ColumnFunctionMetadataModel extends EmberObject
    */
   parameters!: FunctionParameter[];
 }
+declare module './registry' {
+  export default interface MetadataModelRegistry {
+    columnFunction: ColumnFunctionMetadataModel;
+  }
+}

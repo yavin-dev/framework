@@ -157,3 +157,9 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
     });
   }
 }
+
+declare module './registry' {
+  export default interface MetadataModelRegistry {
+    table: TableMetadataModel;
+  }
+}

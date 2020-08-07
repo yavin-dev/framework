@@ -54,7 +54,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
   });
 
   test('fetchAll', async function(assert) {
-    const { tables } = await Adapter.fetchAll('table');
+    const tables = await Adapter.fetchAll('table');
     assert.deepEqual(
       tables.map((t: { name: string }) => t.name),
       ['network', 'tableA', 'tableB', 'protected', 'tableC'],
@@ -63,7 +63,8 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
   });
 
   test('fetchById', async function(assert) {
-    const metric = await Adapter.fetchById('metric', 'pageViews');
+    const payload = await Adapter.fetchById('metric', 'pageViews');
+    const metric = payload?.[0];
     assert.deepEqual(
       metric,
       {

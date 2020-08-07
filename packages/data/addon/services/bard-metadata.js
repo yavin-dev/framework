@@ -67,8 +67,7 @@ export default class BardMetadataService extends Service {
     if (!this.loadedDataSources.includes(dataSource)) {
       const payload = await this._adapter.fetchEverything(options);
       //normalize payload
-      payload.source = dataSource;
-      const metadata = this._serializer.normalize('everything', payload);
+      const metadata = this._serializer.normalize('everything', payload, dataSource);
       this._loadMetadataIntoKeg(metadata, dataSource);
     }
   }
@@ -166,7 +165,7 @@ export default class BardMetadataService extends Service {
       //If there is a serializer defined for the type, normalize before loading into keg
       meta = getOwner(this)
         .lookup(`serializer:metadata/${type}`)
-        ?.normalize({ [pluralize(type)]: [meta] }, namespace) || [meta];
+        ?.normalize({ [pluralize(type)]: meta }, dataSourceName) || [meta];
 
       //load into keg if not already present
       return this._loadMetadataForType(type, meta, dataSourceName)?.[0];
