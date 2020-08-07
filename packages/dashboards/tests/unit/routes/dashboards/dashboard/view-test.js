@@ -12,7 +12,7 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
     Route = this.owner.lookup('route:dashboards/dashboard/view');
     this.owner.lookup('service:user').findUser();
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     compression = this.owner.lookup('service:compression');
 
     await MetadataService.loadMetadata();
@@ -23,13 +23,13 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
 
     let author = await Store.findRecord('user', 'navi_user'),
       genderFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'gender'),
+        dimension: MetadataService.getById('dimension', 'gender', 'bardOne'),
         operator: 'in',
         field: 'id',
         rawValues: ['Male']
       }),
       ageFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'age'),
+        dimension: MetadataService.getById('dimension', 'age', 'bardOne'),
         operator: 'notin',
         field: 'desc',
         rawValues: ['13-17', '18-20']

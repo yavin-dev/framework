@@ -18,7 +18,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
   /**
    * @property {Service} metadataService
    */
-  @service('bard-metadata') metadataService;
+  @service('navi-metadata') metadataService;
 
   /**
    * @property {Service} store
@@ -97,13 +97,13 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   async addFilter(dashboard, dimension) {
     const store = this.store;
-    const bardMetadata = this.metadataService;
+    const { metadataService } = this.metadataService;
     const filters = dashboard.filters.toArray().map(fil => {
       const newFil = fil.serialize();
       newFil.dataSource = fil.dimension.source;
       return newFil;
     }); //Native array of serialized filters
-    const dimensionMeta = bardMetadata.getById('dimension', dimension.dimension, dimension.dataSource);
+    const dimensionMeta = metadataService.getById('dimension', dimension.dimension, dimension.dataSource);
     const filter = store
       .createFragment('bard-request/fragments/filter', {
         dimension: dimensionMeta,
