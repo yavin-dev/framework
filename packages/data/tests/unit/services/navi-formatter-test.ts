@@ -15,7 +15,7 @@ module('Unit | Service | navi formatter', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function(this: TestContext) {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     Service = this.owner.lookup('service:navi-formatter');
   });
 

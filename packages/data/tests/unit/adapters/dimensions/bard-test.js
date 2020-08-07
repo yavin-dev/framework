@@ -71,8 +71,8 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     Server.map(metadataRoutes);
     metadataRoutes.bind(Server)(1);
     return Promise.all([
-      this.owner.lookup('service:bard-metadata').loadMetadata(),
-      this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' })
+      this.owner.lookup('service:navi-metadata').loadMetadata(),
+      this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' })
     ]);
   });
 

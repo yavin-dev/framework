@@ -2,14 +2,12 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-import ColumnMetadataModel, { BaseExtendedAttributes, ColumnMetadata, ColumnMetadataPayload } from './column';
+import ColumnMetadataModel, { ColumnMetadata, ColumnMetadataPayload } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
 type Field = TODO;
-type ExtendedAttributes = BaseExtendedAttributes;
 
 // Shape of public properties on model
 export interface DimensionMetadata extends ColumnMetadata {
@@ -19,7 +17,7 @@ export interface DimensionMetadata extends ColumnMetadata {
   primaryKeyFieldName: string;
   descriptionFieldName: string;
   idFieldName: string;
-  extended: Promise<DimensionMetadataModel & ExtendedAttributes>;
+  extended: Promise<DimensionMetadataModel | undefined>;
 }
 // Shape passed to model constructor
 export interface DimensionMetadataPayload extends ColumnMetadataPayload {
@@ -35,12 +33,6 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
    * @property {string} identifierField
    */
   static identifierField = 'id';
-
-  /**
-   * @property {Ember.Service} metadata
-   */
-  @service('bard-metadata')
-  metadata!: TODO;
 
   /**
    * @property {Object[]} fields - Array of field objects
@@ -146,9 +138,9 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  get extended(): Promise<DimensionMetadataModel & ExtendedAttributes> {
-    const { metadata, id, source } = this;
-    return metadata.findById('dimension', id, source);
+  get extended(): Promise<DimensionMetadataModel | undefined> {
+    const { naviMetadata, id, source } = this;
+    return naviMetadata.findById('dimension', id, source);
   }
 }
 

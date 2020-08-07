@@ -47,7 +47,7 @@ module('Unit | Service | Dimensions', function(hooks) {
 
   hooks.beforeEach(async function() {
     Service = this.owner.lookup('service:bard-dimensions');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     //setup Pretender
     Server = new Pretender(function() {

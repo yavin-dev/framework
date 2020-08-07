@@ -58,10 +58,7 @@ export default class BardDimensionService extends Service {
    */
   _dimensionKeyPrefix = 'dimension/';
 
-  /**
-   * @property metadataService
-   */
-  @service('bard-metadata') metadataService;
+  @service naviMetadata;
 
   /**
    * @method init
@@ -258,12 +255,12 @@ export default class BardDimensionService extends Service {
   searchValueField(dimension, field, query, options = {}) {
     assert('search query must be defined', query);
     assert('dimension must be defined', dimension);
-    const { metadataService, _bardAdapter: bardAdapter } = this;
+    const { naviMetadata, _bardAdapter: bardAdapter } = this;
 
     const source = options.dataSourceName || getDefaultDataSourceName();
     let operator = this._getSearchOperator(dimension);
 
-    if (metadataService.getById('dimension', dimension, source).cardinality === CARDINALITY_SIZES[2]) {
+    if (naviMetadata.getById('dimension', dimension, source)?.cardinality === CARDINALITY_SIZES[2]) {
       operator = 'in';
     }
 
@@ -313,10 +310,10 @@ export default class BardDimensionService extends Service {
       assert('for pagination both page and limit must be defined in search options', options.page && options.limit);
     }
 
-    const { metadataService } = this;
+    const { naviMetadata } = this;
     const source = options.dataSourceName || getDefaultDataSourceName();
     const query = options.term.trim();
-    const dimensionLookup = metadataService.getById('dimension', dimension, source);
+    const dimensionLookup = naviMetadata.getById('dimension', dimension, source);
     const cardinality = dimensionLookup?.cardinality;
 
     if (cardinality === CARDINALITY_SIZES[0]) {
@@ -370,9 +367,9 @@ export default class BardDimensionService extends Service {
    * @returns {Object} dimension model factory
    */
   _createDimensionModelFactory(dimensionName, namespace = getDefaultDataSourceName()) {
-    const metadata = this.metadataService.getById('dimension', dimensionName, namespace),
+    const metadata = this.naviMetadata.getById('dimension', dimensionName, namespace),
       dimensionModel = getOwner(this).factoryFor('model:bard-dimension').class,
-      identifierField = metadata.primaryKeyFieldName;
+      identifierField = metadata?.primaryKeyFieldName;
 
     return dimensionModel.extend().reopenClass({ identifierField, dimensionName, metadata });
   }
