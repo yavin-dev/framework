@@ -215,11 +215,15 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @param dataSourceName - data source name
    */
   private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataPayload {
-    const grains = table.timeGrains
-      .map(g => g.name)
-      .sort()
-      .join(',');
+    const grainIds = table.timeGrains.map(g => g.name);
+    const grains = grainIds.sort().join(',');
     const columnFunctionId = `${table.name}.grain(${grains})`;
+    let defaultValue;
+    if (grainIds.includes(config.navi.defaultTimeGrain)) {
+      defaultValue = config.navi.defaultTimeGrain;
+    } else {
+      defaultValue = grainIds[0];
+    }
     return {
       id: columnFunctionId,
       name: 'Time Grain',
@@ -233,7 +237,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
           source: dataSourceName,
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
-          defaultValue: 'day', // TODO: first check navi.defaultTimeGrain, else first (maybe lowest?)
+          defaultValue,
           _localValues: table.timeGrains.map(grain => ({
             id: grain.name,
             description: grain.description || '',

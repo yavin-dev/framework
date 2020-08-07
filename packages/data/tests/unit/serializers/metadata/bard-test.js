@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import config from 'ember-get-config';
 
 const Payload = {
   tables: [
@@ -766,5 +767,33 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ],
       'Metric is constructed correctly with no new column function id or parameter'
     );
+  });
+
+  test('configure defaultTimeGrain if it exists', async function(assert) {
+    const originalDefaultTimeGrain = config.navi.defaultTimeGrain;
+
+    const table = {
+      name: 'table',
+      timeGrains: [
+        { name: 'day', longName: 'Day' },
+        { name: 'hour', longName: 'Hour' },
+        { name: 'week', longName: 'Week' },
+        { name: 'month', longName: 'Month' }
+      ]
+    };
+
+    config.navi.defaultTimeGrain = 'week';
+    let columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'week', 'Picks default from config');
+
+    config.navi.defaultTimeGrain = 'year';
+    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'day', 'Falls back to first defined grain');
+
+    config.navi.defaultTimeGrain = 'hour';
+    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'hour', 'Picks default from config');
+
+    config.navi.defaultTimeGrain = originalDefaultTimeGrain;
   });
 });
