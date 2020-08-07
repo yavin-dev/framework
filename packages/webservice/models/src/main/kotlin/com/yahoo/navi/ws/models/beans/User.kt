@@ -4,7 +4,10 @@
  */
 package com.yahoo.navi.ws.models.beans
 
-import com.yahoo.elide.annotation.*
+import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.LifeCycleHookBinding
+import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.checks.DefaultDashboardAuthorCheck.Companion.IS_DASHBOARD_AUTHOR
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import com.yahoo.navi.ws.models.checks.DefaultSameUserCheck.Companion.IS_SAME_USER
@@ -29,9 +32,9 @@ import javax.validation.constraints.NotBlank
 @DeletePermission(expression = NOBODY)
 @UpdatePermission(expression = IS_SAME_USER)
 @LifeCycleHookBinding(
-        operation = LifeCycleHookBinding.Operation.CREATE,
-        phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
-        hook = UserValidationHook::class
+    operation = LifeCycleHookBinding.Operation.CREATE,
+    phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
+    hook = UserValidationHook::class
 )
 class User : HasRoles {
 

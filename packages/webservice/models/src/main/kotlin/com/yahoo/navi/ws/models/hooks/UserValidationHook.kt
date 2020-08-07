@@ -13,11 +13,18 @@ import com.yahoo.elide.security.RequestScope
 import com.yahoo.navi.ws.models.beans.User
 import java.util.Optional
 
+/**
+ * Validates a User model on creation.  Elide 5 does not support CreatePermission checks
+ * on ID fields - and so this logic is implemented as a hook.  Longer term, Navi should
+ * not overload the ID field - it should be a simple surrogate key.
+ */
 class UserValidationHook : LifeCycleHook<User> {
-    override fun execute(operation: LifeCycleHookBinding.Operation?,
-                         user: User?,
-                         requestScope: RequestScope?,
-                         changes: Optional<ChangeSpec>?) {
+    override fun execute(
+        operation: LifeCycleHookBinding.Operation?,
+        user: User?,
+        requestScope: RequestScope?,
+        changes: Optional<ChangeSpec>?
+    ) {
         val principalName = requestScope?.user?.name
         val userName = user?.id
 
