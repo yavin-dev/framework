@@ -7,6 +7,7 @@
 
 import NaviBaseSearchResultComponent from './base';
 import { inject as service } from '@ember/service';
+import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 
 /**
  * @constant NUM_TOP
@@ -14,10 +15,8 @@ import { inject as service } from '@ember/service';
 const NUM_TOP: number = 2;
 
 export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchResultComponent {
-  /**
-   * @property {Ember.Service} metadataService
-   */
-  @service('bard-metadata') metadataService!: TODO;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @override
@@ -29,6 +28,6 @@ export default class NaviDefinitionSearchResultComponent extends NaviBaseSearchR
    * @property {boolean} hasMultipleDataSources
    */
   get hasMultipleDataSources(): boolean {
-    return this.metadataService.loadedDataSources.length > 1;
+    return this.naviMetadata.loadedDataSources.size > 1;
   }
 }

@@ -6,14 +6,14 @@ import { set } from '@ember/object';
 import Service from '@ember/service';
 
 class MetadataServiceStub extends Service {
-  loadedDataSources = ['bardOne', 'bardTwo'];
+  loadedDataSources = new Set(['bardOne', 'bardTwo']);
 }
 
 module('Integration | Component | definition', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('service:bard-metadata', MetadataServiceStub);
+    this.owner.register('service:navi-metadata', MetadataServiceStub);
   });
 
   test('displays results', async function(assert) {

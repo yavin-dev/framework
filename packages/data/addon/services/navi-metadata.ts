@@ -16,6 +16,8 @@ type RequestOptions = {
   dataSourceName?: string;
 };
 
+export type MetadataModelTypes = keyof MetadataModelRegistry;
+
 export default class NaviMetadataService extends Service {
   @service
   private keg!: KegService;
