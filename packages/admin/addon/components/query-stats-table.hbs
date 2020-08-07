@@ -1,60 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-
-
-{{!-- <table class="navi-querystats-dashboard__table-table">
-  <caption class="navi-querystats-dashboard__table-caption">Query Stats</caption>
-  <thead>
-    <tr>
-      <th>Id</th>
-      <th>ModelName</th>
-      <th>ApiQuery</th>
-      <th>StoreQuery</th>
-      <th>Duration</th>
-      <th>Rows Returned</th> --}}
-      {{!-- {{#each columns as |column|}}
-        <th>
-          {{column.displayName}}
-        </th>
-      {{/each}}
-    </tr>
-  </thead>
-  <tbody>
-    {{#each sortedContent as |item|}}
-      <tr>
-        {{#each columns as |column|}}
-          <td>
-            {{get item column.key}}
-          </td>
-        {{/each}}
-        <td>1</td>
-        <td>Books</td>
-        <td>/book</td>
-        <td>SELECT * FROM Books</td>
-        <td>15</td>
-        <td>4</td>
-      </tr>
-    {{/each}}
-      <tr>
-        <td>2</td>
-        <td>Authors</td>
-        <td>/author</td>
-        <td>SELECT * FROM Authors</td>
-        <td>10</td>
-        <td>5</td>
-      </tr>
-  </tbody>
-</table> --}}
-{{!-- <h2>Blah</h2> --}}
-
 <div class="query-stats-table">
   {{#light-table table height="65vh" as |t|}}
-
-  {{!--
-    In order for `fa-sort-asc` and `fa-sort-desc` icons to work,
-    you need to have ember-font-awesome installed or manually include
-    the font-awesome assets, e.g. via a CDN.
-  --}}
-
     {{t.head
       onColumnClick=(action "onColumnClick")
       iconSortable="fa fa-sort"
@@ -63,7 +9,6 @@
       fixed=true
     }}
 
-    {{!-- canSelect = true => to have a dropdown for eahc row --}}
     {{#t.body
       canExpand=true
       multiRowExpansion=false

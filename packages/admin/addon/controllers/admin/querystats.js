@@ -1,61 +1,7 @@
-// import Ember from 'ember';
-
-// export default Ember.Controller.extend({
-//   userColumns: Ember.A([
-//     {
-//       'key': 'id',
-//       'displayName': 'ID'
-//     },
-//     {
-//       'key': 'apiVersion',
-//       'displayName': 'API Version'
-//     },
-//     {
-//       'key': 'apiQuery',
-//       'displayName': 'API Query'
-//     },
-//     {
-//       'key': 'storeQuery',
-//       'displayName': 'SQL Query'
-//     },
-//     {
-//       'key': 'modelName',
-//       'displayName' : 'Model Name'
-//     },
-//     {
-//       'key': 'user',
-//       'displayName' : 'User'
-//     },
-//     {
-//       'key': 'duration',
-//       'displayName': 'Execution Time'
-//     },
-//     {
-//       'key': 'rowsReturned',
-//       'displayName': 'Result Size'
-//     },
-//     {
-//       'key': 'bytesReturned',
-//       'displayName': 'Result Length'
-//     },
-//     {
-//       'key': 'creaedOn',
-//       'displayName': 'Created On'
-//     },
-//     {
-//       'key': 'fromUI',
-//       'displayName' : 'From UI'
-//     },
-//     {
-//       'key': 'status',
-//       'displayName' : 'Status'
-//     },
-//     {
-//       'key': 'hostName',
-//       'displayName': 'Host Name'
-//     }
-//   ])
-// });
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Controller from '@ember/controller';
 import { A as arr } from '@ember/array';
 import { setProperties, set, get, computed, action } from '@ember/object';
@@ -64,7 +10,6 @@ import { hash } from 'rsvp';
 import Ember from 'ember';
 import { tracked } from '@glimmer/tracking';
 
-//do data manipulation here
 function getAverageQueryCount(promiseArray) {
   let return_value_accepted = [0, 0, 0, 0, 0, 0, 0, 0];
   let return_value_failed = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -199,7 +144,6 @@ function getTotalQueries(promiseArray) {
 }
 
 function getAverageValueAndAxis(promiseArray) {
-  //console.log(promiseArray._objects);
   var hash_map = {};
   let return_value = {};
   let averageValue = [];
@@ -219,17 +163,15 @@ function getAverageValueAndAxis(promiseArray) {
     }
   }
   for (const key_ in hash_map) {
-    //console.log(key_);
     averageValue.push(hash_map[key_]['value'].toFixed(2));
     columnNames.push(key_);
   }
   return_value['values'] = averageValue;
   return_value['column_names'] = columnNames;
   return return_value;
-  //return [30,40,35,50,49,60,70,91,125];
 }
+
 export default class AdminQuerystatsController extends Controller {
-  //promiseArray = this.get('model');
   data_persistent = {};
   type = 'bar';
   width = '1000px';
@@ -268,7 +210,6 @@ export default class AdminQuerystatsController extends Controller {
 
   @action
   beforeMountHandler() {
-    //console.log('Before Mount handler triggered');
     Ember.run(() => {
       let data_ = getAverageValueAndAxis(this.model.promiseArray);
       this.data_persistent = data_;
@@ -368,12 +309,8 @@ export default class AdminQuerystatsController extends Controller {
 
   @action
   beforeMountHandlerTime() {
-    //console.log('Before Mount handler triggered');
     let data_ = getAverageQueryCount(this.model.promiseArray);
-    //this.data_persistent = data_;
-    //this.barOptions['xaxis']['categories'] = data_['column_names'];
     let i = 0;
-    let blah_ = this.chartOptions['series'];
     this.chartOptions['series'].forEach(item => {
       item['data'] = data_[i++];
     });

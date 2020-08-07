@@ -3,11 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import DS from 'ember-data';
+import BaseJsonSerializer from 'navi-core/serializers/base-json-serializer';
 
-export default DS.JSONSerializer.extend({
-  //console.log('Serializer Initialized');
-  extractArray(firstArg, secondArg, payload) {
-    return this._super(firstArg, secondArg, payload);
-  }
-});
+export default BaseJsonSerializer;

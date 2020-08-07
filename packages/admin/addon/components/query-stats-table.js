@@ -1,16 +1,7 @@
-// import Ember from 'ember';
-
-// export default Ember.Component.extend({
-//   sortProps: [],
-//   sortedContent: Ember.computed.sort('content', 'sortProps'),
-
-//   actions: {
-//     sort(direction, key) {
-//       this.set('sortProps', [key + ':' + direction]);
-//     }
-//   }
-// });
-
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Component from '@ember/component';
 import TableCommon from '../mixins/table-common';
 import { computed } from '@ember/object';
