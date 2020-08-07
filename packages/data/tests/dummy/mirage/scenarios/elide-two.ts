@@ -1,5 +1,5 @@
 // TODO: Replace any with type supplied by new version of mirage
-import { grains } from './graphql';
+import { grains } from './elide-one';
 import { capitalize } from '@ember/string';
 
 const timeDimIds = ['eventTime'];
