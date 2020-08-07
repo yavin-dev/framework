@@ -11,9 +11,10 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
+import { Server } from 'miragejs';
 
 interface Context extends TestContext {
-  server: TODO;
+  server: Server;
   service: NaviMetadataService;
 }
 
@@ -151,6 +152,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     this.server.get('/tables', function() {
       assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
+      return { tables: [] };
     });
     await this.service.loadMetadata();
   });
