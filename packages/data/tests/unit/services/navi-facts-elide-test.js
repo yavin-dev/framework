@@ -413,6 +413,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         ],
         filters,
         sorts: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
@@ -434,6 +435,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         columns: [{ field: 'metric1', parameters: {}, type: 'metric' }],
         filters,
         sorts: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
@@ -469,6 +471,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           }
         ],
         sorts: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
@@ -504,6 +507,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           }
         ],
         sorts: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
@@ -540,6 +544,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           }
         ],
         sorts: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'dummy-gql'
       },
@@ -567,6 +572,194 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         meta: {}
       },
       'A date filter with no end date ends at current if start is not more than a month before current'
+    );
+  });
+
+  test('fetch RequestV2 - sorts', async function(assert) {
+    assert.expect(2);
+
+    const response = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeDay', parameters: {}, type: 'timeDimension' }
+        ],
+        filters: [
+          {
+            field: 'eventTimeDay',
+            operator: 'ge',
+            values: ['2015-01-01'],
+            parameters: {},
+            type: 'timeDimension'
+          },
+          {
+            field: 'eventTimeDay',
+            operator: 'lt',
+            values: ['2015-01-04'],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [{ field: 'metric1', parameters: {}, type: 'metric', direction: 'asc' }],
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      response.response,
+      {
+        rows: [
+          { eventTimeDay: '2015-01-02', metric1: '139.22' },
+          { eventTimeDay: '2015-01-03', metric1: '464.10' },
+          { eventTimeDay: '2015-01-01', metric1: '944.50' }
+        ],
+        meta: {}
+      },
+      'Response is sorted as specified by the request'
+    );
+
+    const multiSortResponse = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'dimension1', parameters: {}, type: 'dimension' },
+          { field: 'dimension2', parameters: {}, type: 'dimension' },
+          { field: 'metric1', parameters: {}, type: 'metric' }
+        ],
+        filters: [],
+        sorts: [
+          { field: 'dimension1', parameters: {}, type: 'metric', direction: 'asc' },
+          { field: 'dimension2', parameters: {}, type: 'metric', direction: 'asc' }
+        ],
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      multiSortResponse.response,
+      {
+        rows: [
+          { dimension1: 'Licensed Cotton Computer', dimension2: 'Gorgeous Frozen Sausages', metric1: '990.67' },
+          { dimension1: 'Licensed Cotton Computer', dimension2: 'Licensed Granite Sausages', metric1: '825.82' },
+          { dimension1: 'Licensed Cotton Computer', dimension2: 'Sleek Metal Tuna', metric1: '414.83' },
+          { dimension1: 'Refined Rubber Soap', dimension2: 'Gorgeous Frozen Sausages', metric1: '946.26' },
+          { dimension1: 'Refined Rubber Soap', dimension2: 'Licensed Granite Sausages', metric1: '247.63' },
+          { dimension1: 'Refined Rubber Soap', dimension2: 'Sleek Metal Tuna', metric1: '335.55' },
+          { dimension1: 'Sleek Cotton Shoes', dimension2: 'Gorgeous Frozen Sausages', metric1: '344.62' },
+          { dimension1: 'Sleek Cotton Shoes', dimension2: 'Licensed Granite Sausages', metric1: '252.27' },
+          { dimension1: 'Sleek Cotton Shoes', dimension2: 'Sleek Metal Tuna', metric1: '628.05' },
+          { dimension1: 'Small Soft Bacon', dimension2: 'Gorgeous Frozen Sausages', metric1: '919.59' },
+          { dimension1: 'Small Soft Bacon', dimension2: 'Licensed Granite Sausages', metric1: '469.79' },
+          { dimension1: 'Small Soft Bacon', dimension2: 'Sleek Metal Tuna', metric1: '233.23' }
+        ],
+        meta: {}
+      },
+      'Multiple sorts are handled properly in order'
+    );
+  });
+
+  test('fetch RequestV2 - limit', async function(assert) {
+    assert.expect(2);
+
+    const response = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeDay', parameters: {}, type: 'timeDimension' }
+        ],
+        filters: [
+          {
+            field: 'eventTimeDay',
+            operator: 'ge',
+            values: ['2015-01-01'],
+            parameters: {},
+            type: 'timeDimension'
+          },
+          {
+            field: 'eventTimeDay',
+            operator: 'lt',
+            values: ['2015-01-10'],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [],
+        limit: 3,
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      response.response,
+      {
+        rows: [
+          { eventTimeDay: '2015-01-01', metric1: '384.77' },
+          { eventTimeDay: '2015-01-02', metric1: '897.01' },
+          { eventTimeDay: '2015-01-03', metric1: '859.71' }
+        ],
+        meta: {}
+      },
+      'Limit in the request determines the max number of rows returned'
+    );
+
+    const limitless = await this.service.fetch(
+      {
+        table: 'table1',
+        columns: [
+          { field: 'metric1', parameters: {}, type: 'metric' },
+          { field: 'eventTimeDay', parameters: {}, type: 'timeDimension' }
+        ],
+        filters: [
+          {
+            field: 'eventTimeDay',
+            operator: 'ge',
+            values: ['2015-01-01'],
+            parameters: {},
+            type: 'timeDimension'
+          },
+          {
+            field: 'eventTimeDay',
+            operator: 'lt',
+            values: ['2015-01-10'],
+            parameters: {},
+            type: 'timeDimension'
+          }
+        ],
+        sorts: [],
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'dummy-gql'
+      },
+      { dataSourceName: 'dummy-gql' }
+    );
+
+    assert.deepEqual(
+      limitless.response,
+      {
+        rows: [
+          { eventTimeDay: '2015-01-01', metric1: '858.89' },
+          { eventTimeDay: '2015-01-02', metric1: '59.65' },
+          { eventTimeDay: '2015-01-03', metric1: '372.71' },
+          { eventTimeDay: '2015-01-04', metric1: '421.04' },
+          { eventTimeDay: '2015-01-05', metric1: '555.13' },
+          { eventTimeDay: '2015-01-06', metric1: '330.39' },
+          { eventTimeDay: '2015-01-07', metric1: '955.66' },
+          { eventTimeDay: '2015-01-08', metric1: '754.00' },
+          { eventTimeDay: '2015-01-09', metric1: '736.67' }
+        ],
+        meta: {}
+      },
+      'A null limit in the request results in no row limit'
     );
   });
 

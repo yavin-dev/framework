@@ -10,11 +10,11 @@ import moment from 'moment';
 import { capitalize } from '@ember/string';
 import { orderBy } from 'lodash-es';
 
-const ASYNC_RESPONSE_DELAY = 5000; // ms before async api response result is populated
+const ASYNC_RESPONSE_DELAY = 2000; // ms before async api response result is populated
 const DATE_FORMATS = {
   hour: 'YYYY-MM-DD HH:MM:SS',
   day: 'YYYY-MM-DD',
-  week: 'YYYY-MM-DD',
+  isoweek: 'YYYY-MM-DD',
   month: 'YYYY MMM',
   quarter: 'YYYY [Q]Q',
   year: 'YYYY'
@@ -110,7 +110,7 @@ function _intervalsForFilters(filters) {
     const filterObject = {
       ...filter,
       fieldWithoutGrain,
-      grain
+      grain: grain === 'Week' ? 'Isoweek' : grain
     };
     byField[fieldWithoutGrain] = [...(byField[fieldWithoutGrain] || []), filterObject];
     return byField;
@@ -167,7 +167,7 @@ function _getDates(filters, requestedColumns) {
     const column = {
       ...col,
       fieldWithoutGrain,
-      grain
+      grain: grain === 'Week' ? 'Isoweek' : grain
     };
 
     // Insert column into field bucket in order
@@ -378,7 +378,7 @@ function _getResponseBody(db, parent) {
       );
 
       // handle limit in request
-      if (first < rows.length) {
+      if (first && first < rows.length) {
         rows = rows.slice(0, first);
       }
 
