@@ -12,7 +12,7 @@ module('Unit | Transform | Dimension', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
   });
 
@@ -21,7 +21,7 @@ module('Unit | Transform | Dimension', function(hooks) {
 
     await settled();
     const transform = this.owner.lookup('transform:dimension');
-    const dim = MetadataService.getById('dimension', 'os');
+    const dim = MetadataService.getById('dimension', 'os', 'bardOne');
 
     assert.equal(transform.serialize(dim), 'os', 'Dimension is serialized to the name');
 
@@ -35,9 +35,9 @@ module('Unit | Transform | Dimension', function(hooks) {
 
     const dataSources = config.navi.dataSources;
 
-    this.owner.unregister('service:bard-metadata');
+    this.owner.unregister('service:navi-metadata');
     this.owner.register(
-      'service:bard-metadata',
+      'service:navi-metadata',
       Service.extend({
         getById(type, id) {
           return { type, id };
@@ -64,8 +64,8 @@ module('Unit | Transform | Dimension', function(hooks) {
       'Dimension with "." in id splits on the first "." when datasources are configured'
     );
 
-    this.owner.unregister('service:bard-metadata');
-    this.owner.register('service:bard-metadata', MetadataService, { instantiate: false });
+    this.owner.unregister('service:navi-metadata');
+    this.owner.register('service:navi-metadata', MetadataService, { instantiate: false });
   });
 
   test('Do not cause crash when metadata is not available', function(assert) {

@@ -10,7 +10,7 @@ export default class RequestSerializer extends JSONSerializer {
   /**
    * @property {Service}
    */
-  @service bardMetadata;
+  @service naviMetadata;
 
   /**
    * Normalizes the JSON payload returned by the persistence layer
@@ -25,9 +25,9 @@ export default class RequestSerializer extends JSONSerializer {
     //normalize v1 into v2
     if (request.requestVersion === 'v1') {
       //if datasource is undefined, try to infer from metadata
-      const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table);
+      const dateSourceName = request.dataSource || this.naviMetadata.getTableNamespace(request.logicalTable.table); //COMEBACK
 
-      normalized = normalizeV1toV2(request, namespace);
+      normalized = normalizeV1toV2(request, dateSourceName);
     } else {
       normalized = Object.assign({}, request);
     }

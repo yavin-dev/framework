@@ -12,8 +12,8 @@ module('Unit | Component | line chart', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('dataConfig', function(assert) {

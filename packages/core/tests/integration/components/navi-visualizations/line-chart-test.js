@@ -72,7 +72,7 @@ module('Integration | Component | line chart', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     injectC3Enhancements();
     this.set('model', Model);
     this.set('options', {
@@ -96,12 +96,12 @@ module('Integration | Component | line chart', function(hooks) {
       }
     });
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {
-    MetadataService._keg.reset();
+    MetadataService.keg.reset();
   });
 
   test('it renders', async function(assert) {
@@ -633,7 +633,7 @@ module('Integration | Component | line chart', function(hooks) {
   });
 
   test('multi-datasource labels', async function(assert) {
-    MetadataService._keg.reset();
+    MetadataService.keg.reset();
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
 
     assert.expect(1);

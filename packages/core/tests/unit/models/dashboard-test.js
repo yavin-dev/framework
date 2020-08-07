@@ -11,7 +11,7 @@ module('Unit | Model | dashboard', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     await this.owner.lookup('service:user').findUser();
   });
 
@@ -133,7 +133,7 @@ module('Unit | Model | dashboard', function(hooks) {
 
       assert.deepEqual(clonedModel, expectedModel, 'The cloned dashboard model has the same attrs as original model');
 
-      await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
+      await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
 
       const filterModel = await Store.findRecord('dashboard', 6);
       const clonedFilterModel = filterModel.clone().toJSON();

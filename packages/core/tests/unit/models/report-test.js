@@ -8,7 +8,7 @@ import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 
-let Store, MetadataService;
+let Store;
 
 const ExpectedRequest = {
     table: 'network',
@@ -78,8 +78,7 @@ module('Unit | Model | report', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    await MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Retrieving records', async function(assert) {

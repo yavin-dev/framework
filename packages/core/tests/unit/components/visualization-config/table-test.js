@@ -8,7 +8,7 @@ module('Unit | Component | table config', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.lookup('service:bard-metadata').loadMetadata();
+    this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('dimensions', function(assert) {
