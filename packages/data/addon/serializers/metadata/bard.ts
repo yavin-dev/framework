@@ -8,7 +8,7 @@ import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-func
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
+import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
 import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
 import { assert } from '@ember/debug';
 import { isNone } from '@ember/utils';
@@ -69,6 +69,8 @@ export type RawColumnFunctionArgument = {
 
 type RawTimeGrainPayload = {
   name: string;
+  longName: string;
+  description?: string;
   dimensions: RawDimensionPayload[];
   metrics: RawMetricPayload[];
 };
@@ -94,7 +96,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     // build dimension and metric arrays
     const metrics: { [k: string]: MetricMetadataPayload } = {};
     const dimensions: { [k: string]: DimensionMetadataPayload } = {};
-    const timeDimensions: { [k: string]: TimeDimensionMetadataModel } = {};
+    const timeDimensions: { [k: string]: TimeDimensionMetadataPayload } = {};
     const convertedToColumnFunctions: { [k: string]: ColumnFunctionMetadataPayload } = {};
     const tables = rawTables.map((table: RawTablePayload) => {
       // Reduce all columns regardless of timegrain into one object
@@ -150,6 +152,13 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         }
       );
 
+      const columnFunction = this.createTimeGrainColumnFunction(table, dataSourceName);
+      const dateTime = this.createDateTime(table, dataSourceName);
+      dateTime.columnFunctionId = columnFunction.id;
+      convertedToColumnFunctions[columnFunction.id] = columnFunction;
+      allTableColumns.timeDimensions[dateTime.id] = dateTime;
+      allTableColumns.tableTimeDimensionIds.add(dateTime.id);
+
       return {
         id: table.name,
         name: table.longName,
@@ -172,6 +181,66 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       metrics: Object.values(metrics),
       timeDimensions: Object.values(timeDimensions),
       columnFunctions: [...columnFunctions, ...Object.values(convertedToColumnFunctions)]
+    };
+  }
+
+  /**
+   * Constructs a fili dateTime as a timeDimension column specific to the given table
+   * @param table - the table to create a dateTime for
+   * @param dataSourceName - data source name
+   */
+  private createDateTime(table: RawTablePayload, dataSourceName: string): TimeDimensionMetadataPayload {
+    const id = `${table.name}.dateTime`;
+    return {
+      category: 'Date',
+      description: undefined,
+      fields: undefined,
+      id,
+      name: 'Date Time',
+      source: dataSourceName,
+      type: 'field',
+      valueType: 'date',
+      supportedGrains: table.timeGrains.map(g => ({
+        id: `${id}.${g.name}`,
+        expression: '',
+        grain: g.name.toUpperCase()
+      })),
+      timeZone: 'UTC'
+    };
+  }
+
+  /**
+   * Constructs a fili dateTime as a timeDimension column specific to the given table
+   * @param table - the table to create a dateTime for
+   * @param dataSourceName - data source name
+   */
+  private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataPayload {
+    const grains = table.timeGrains
+      .map(g => g.name)
+      .sort()
+      .join(',');
+    const columnFunctionId = `${table.name}.grain(${grains})`;
+    return {
+      id: columnFunctionId,
+      name: 'Time Grain',
+      source: dataSourceName,
+      description: 'Time Grain',
+      _parametersPayload: [
+        {
+          id: 'grain',
+          name: 'Time Grain',
+          description: 'The Time Grain to group dates by',
+          source: dataSourceName,
+          type: 'ref',
+          expression: INTRINSIC_VALUE_EXPRESSION,
+          defaultValue: 'day', // TODO: first check navi.defaultTimeGrain, else first (maybe lowest?)
+          _localValues: table.timeGrains.map(grain => ({
+            id: grain.name,
+            description: grain.description || '',
+            name: grain.longName
+          }))
+        }
+      ]
     };
   }
 
@@ -216,7 +285,6 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         id: param,
         name: param,
         description,
-        valueType: 'TEXT',
         type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
         expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
         _localValues: values,

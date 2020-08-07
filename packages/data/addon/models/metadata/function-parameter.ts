@@ -12,7 +12,7 @@ import BardDimensionService from 'navi-data/services/bard-dimensions';
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 type FunctionParameterType = 'ref' | 'primitive';
-export type ColumnFunctionParametersValues = TODO[]; //TODO need to normalize
+export type ColumnFunctionParametersValues = { name: string; description?: string; id: string }[]; //TODO need to normalize
 
 type LocalFunctionParameter = FunctionParameterMetadataModel & {
   type: 'ref';
@@ -37,7 +37,6 @@ export interface FunctionParameterMetadataPayload {
   name: string;
   description?: string;
   source: string;
-  valueType: TODO;
   type: FunctionParameterType;
   expression?: string;
   defaultValue?: string;
@@ -78,11 +77,6 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
   source!: string;
 
   /**
-   * @property {ValueType} valueType
-   */
-  valueType!: TODO;
-
-  /**
    * @property {string} type - either "ref" or "primitive"
    */
   type!: FunctionParameterType;
@@ -95,11 +89,11 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
 
   /**
    * @private
-   * @property {string[]|undefined} _localValues
+   * @property {ColumnFunctionParametersValues[]|undefined} _localValues
    * if column function ids are not supplied by the metadata endpoint,
    * then enum values provided in the parameter will be placed here
    */
-  _localValues?: string[];
+  _localValues?: ColumnFunctionParametersValues;
 
   /**
    * @property {Promise} values - array of values used for function parameters with an enum type
@@ -111,7 +105,7 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
 
     const [lookup, dimensionId] = this.expression?.split(':') || [];
     if (this.type === 'ref' && lookup === 'dimension' && dimensionId) {
-      return this.dimensionService.all(dimensionId, this.source).then((results: TODO) => results.toArray?.());
+      return this.dimensionService.all(dimensionId, this.source).then((results: TODO) => results.toArray());
     }
     return undefined;
   }

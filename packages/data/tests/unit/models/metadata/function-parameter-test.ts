@@ -16,7 +16,7 @@ let Payload: FunctionParameterMetadataPayload;
 let server: Server;
 let FunctionParameter: FunctionParameterMetadataModel;
 
-module('Unit | Metadata Model | Function Argument', function(hooks) {
+module('Unit | Metadata Model | Function Parameter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(async function(this: TestContext) {
@@ -26,7 +26,6 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
     Payload = {
       id: 'currency',
       name: 'Currency',
-      valueType: 'TEXT',
       type: 'ref',
       source: 'bardOne',
       expression: 'dimension:dimensionOne',
@@ -48,13 +47,11 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
   });
 
   test('it properly hydrates properties', function(assert) {
-    assert.expect(7);
+    assert.expect(6);
 
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
 
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');
-
-    assert.equal(FunctionParameter.valueType, Payload.valueType, 'valueType property was properly hydrated');
 
     assert.equal(FunctionParameter.type, Payload.type, 'type property was properly hydrated');
 
@@ -95,17 +92,18 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
     const trendArgPayload: FunctionParameterMetadataPayload = {
       id: 'trend',
       name: 'Trend',
-      valueType: 'TEXT',
       source: 'bardOne',
       type: 'ref',
       expression: INTRINSIC_VALUE_EXPRESSION,
       _localValues: [
         {
           id: 'yoy',
+          name: 'YoY',
           description: 'Year Over Year'
         },
         {
           id: 'wow',
+          name: 'WoW',
           description: 'Week Over Week'
         }
       ],
@@ -124,7 +122,6 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
     const noValuesPayload: FunctionParameterMetadataPayload = {
       id: 'foo',
       name: 'Foo',
-      valueType: 'TEXT',
       type: 'primitive',
       source: 'bardOne',
       expression: undefined,

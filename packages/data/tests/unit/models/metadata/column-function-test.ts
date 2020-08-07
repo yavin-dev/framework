@@ -2,7 +2,9 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
+import FunctionParameterMetadataModel, {
+  FunctionParameterMetadataPayload
+} from 'navi-data/models/metadata/function-parameter';
 
 let Payload: ColumnFunctionMetadataPayload, ColumnFunction: ColumnFunctionMetadataModel;
 
@@ -15,7 +17,6 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
       name: 'Currency',
       description: 'moneyz',
       source: 'bardOne',
-      valueType: 'text',
       type: 'ref',
       expression: 'dimension:displayCurrency',
       defaultValue: 'USD'
@@ -38,8 +39,8 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
     assert.equal(ColumnFunctionMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
-  test('it properly hydrates properties', function(assert) {
-    assert.expect(9);
+  test('it properly hydrates properties', async function(assert) {
+    assert.expect(12);
 
     const { id, name, description, source, parameters } = ColumnFunction;
 
@@ -51,10 +52,21 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
     const param = parameters[0];
     const paramPayload = Payload._parametersPayload?.[0];
 
-    assert.deepEqual(param.valueType, paramPayload?.valueType, 'parameters property is hydrated properly');
-    assert.deepEqual(param.name, paramPayload?.name, 'parameters property is hydrated properly');
-    assert.deepEqual(param.id, paramPayload?.id, 'parameters property is hydrated properly');
-    assert.deepEqual(param.id, paramPayload?.id, 'parameters property is hydrated properly');
-    assert.deepEqual(param.id, paramPayload?.id, 'parameters property is hydrated properly');
+    assert.ok(param instanceof FunctionParameterMetadataModel, 'parameters are loaded into their metadata model');
+    assert.deepEqual(param.id, paramPayload?.id, 'parameters id property is hydrated properly');
+    assert.deepEqual(param.name, paramPayload?.name, 'parameters name property is hydrated properly');
+    assert.deepEqual(
+      param.description,
+      paramPayload?.description,
+      'parameters description property is hydrated properly'
+    );
+    assert.deepEqual(param.source, paramPayload?.source, 'parameters source property is hydrated properly');
+    assert.deepEqual(param.type, paramPayload?.type, 'parameters type property is hydrated properly');
+    assert.deepEqual(param.expression, paramPayload?.expression, 'parameters expression property is hydrated properly');
+    assert.deepEqual(
+      param.defaultValue,
+      paramPayload?.defaultValue,
+      'parameters defaultValue property is hydrated properly'
+    );
   });
 });
