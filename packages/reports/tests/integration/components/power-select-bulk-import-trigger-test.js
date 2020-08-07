@@ -4,16 +4,15 @@ import { render, fillIn, click, findAll, triggerEvent } from '@ember/test-helper
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-let BardMetadata, BardDimensions;
+let BardDimensions;
 module('Integration | Component | power select bulk import trigger', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    BardMetadata = this.owner.lookup('service:bard-metadata');
     BardDimensions = this.owner.lookup('service:bard-dimensions');
 
-    await BardMetadata.loadMetadata();
+    await this.owner.lookup('service:navi-metadata');
     const allProperties = await BardDimensions.all('property');
     this.setProperties({
       options: allProperties,

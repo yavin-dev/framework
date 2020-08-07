@@ -51,51 +51,50 @@ module('Integration | Component | print report view', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    let metadataService = this.owner.lookup('service:bard-metadata'),
-      store = this.owner.lookup('service:store');
+  hooks.beforeEach(async function() {
+    const metadataService = this.owner.lookup('service:data');
+    const store = this.owner.lookup('service:store');
 
-    metadataService.loadMetadata().then(() => {
-      this.set('response', RESPONSE);
+    await metadataService.loadMetadata();
+    this.set('response', RESPONSE);
 
-      //set report object
-      this.set(
-        'report',
-        store.createRecord('report', {
-          request: store.createFragment('bard-request/request', {
-            logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-              table: metadataService.getById('table', 'spaceId'),
-              timeGrain: 'day'
-            }),
-            responseFormat: 'csv',
-            intervals: A([{ interval: new Interval('current', 'next') }])
+    //set report object
+    this.set(
+      'report',
+      store.createRecord('report', {
+        request: store.createFragment('bard-request/request', {
+          logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
+            table: metadataService.getById('table', 'spaceId', 'bardOne'),
+            timeGrain: 'day'
           }),
-          visualization: {
-            type: 'line-chart',
-            version: 1,
-            metadata: {
-              axis: {
-                y: {
-                  series: {
-                    type: 'metric',
-                    config: {
-                      metrics: [
-                        {
-                          metric: 'adClicks',
-                          parameters: {},
-                          canonicalName: 'adClicks',
-                          longName: 'Ad Clicks'
-                        }
-                      ]
-                    }
+          responseFormat: 'csv',
+          intervals: A([{ interval: new Interval('current', 'next') }])
+        }),
+        visualization: {
+          type: 'line-chart',
+          version: 1,
+          metadata: {
+            axis: {
+              y: {
+                series: {
+                  type: 'metric',
+                  config: {
+                    metrics: [
+                      {
+                        metric: 'adClicks',
+                        parameters: {},
+                        canonicalName: 'adClicks',
+                        longName: 'Ad Clicks'
+                      }
+                    ]
                   }
                 }
               }
             }
           }
-        })
-      );
-    });
+        }
+      })
+    );
   });
 
   test('visualization is chosen based on report', async function(assert) {

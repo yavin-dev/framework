@@ -26,37 +26,28 @@ module('Integration | Component | report actions - export', function(hooks) {
     Store = this.owner.lookup('service:store');
   });
 
-  test('Component Renders', function(assert) {
+  test('Component Renders', async function(assert) {
     assert.expect(4);
 
-    let factService = this.owner.lookup('service:navi-facts'),
-      reportPromise = this.owner
-        .lookup('service:bard-metadata')
-        .loadMetadata()
-        .then(() => {
-          return Store.findRecord('report', 1);
-        });
+    const factService = this.owner.lookup('service:navi-facts');
+    this.owner.lookup('service:navi-metadata').loadMetadata();
+    const report = Store.findRecord('report', 1);
 
-    reportPromise.then(report => {
-      this.set('report', report);
+    this.set('report', report);
+    await render(TEMPLATE);
+
+    const component = $('a.report-control').get(0);
+
+    assert.equal(component.text.trim(), 'Export', 'Component yields content as expected');
+
+    assert.equal(component.getAttribute('target'), '_blank', 'Component has target attribute as _blank');
+
+    assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
+
+    const expectedHref = factService.getURL(report.get('request').serialize(), {
+      format: 'csv'
     });
-
-    return reportPromise.then(async report => {
-      await render(TEMPLATE);
-
-      let component = $('a.report-control').get(0);
-
-      assert.equal(component.text.trim(), 'Export', 'Component yields content as expected');
-
-      assert.equal(component.getAttribute('target'), '_blank', 'Component has target attribute as _blank');
-
-      assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
-
-      let expectedHref = factService.getURL(report.get('request').serialize(), {
-        format: 'csv'
-      });
-      assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
-    });
+    assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
   });
 
   test('Component is not disabled for unsaved reports', async function(assert) {

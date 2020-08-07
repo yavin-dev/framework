@@ -69,7 +69,7 @@ module('Integration | Component | report view', function(hooks) {
       { instantiate: false }
     );
 
-    const metadataService = this.owner.lookup('service:bard-metadata');
+    const metadataService = this.owner.lookup('service:navi-metadata');
     const store = this.owner.lookup('service:store');
 
     await metadataService.loadMetadata();
@@ -81,7 +81,7 @@ module('Integration | Component | report view', function(hooks) {
       store.createRecord('report', {
         request: store.createFragment('bard-request/request', {
           logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-            table: metadataService.getById('table', 'tableA'),
+            table: metadataService.getById('table', 'tableA', 'bardOne'),
             timeGrain: 'day'
           }),
           responseFormat: 'csv',

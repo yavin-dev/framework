@@ -28,9 +28,9 @@ module('Integration | Component | filter values/dimension select', function(hook
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.filter = MockFilter;
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders', async function(assert) {
@@ -75,7 +75,7 @@ module('Integration | Component | filter values/dimension select', function(hook
 
   test('it works for dimensions from other datasources', async function(assert) {
     assert.expect(3);
-    await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
+    await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
 
     const datasourceFilter = {
       subject: {

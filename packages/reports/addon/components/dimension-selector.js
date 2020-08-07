@@ -20,7 +20,6 @@ import { computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
-import { inject as service } from '@ember/service';
 
 export const THROTTLE_TIME = 750; // milliseconds
 
@@ -60,8 +59,6 @@ export default class DimensionSelector extends Component {
    * @property {Array} classNames
    */
   classNames = ['checkbox-selector', 'checkbox-selector--dimension'];
-
-  @service bardMetadata;
 
   /*
    * @property {Array} allDimensions
