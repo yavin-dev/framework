@@ -151,3 +151,9 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
     return metadata.findById('dimension', id, source);
   }
 }
+
+declare module './registry' {
+  export default interface MetadataModelRegistry {
+    dimension: DimensionMetadataModel;
+  }
+}

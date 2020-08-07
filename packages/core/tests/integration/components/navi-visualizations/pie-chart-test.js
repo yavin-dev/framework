@@ -386,9 +386,9 @@ module('Integration | Component | pie chart', function(hooks) {
         type: 'dimension',
         config: {
           metric: {
-            metric: 'globalySold',
+            metric: 'globallySold',
             parameters: {},
-            canonicalName: 'globalySold'
+            canonicalName: 'globallySold'
           },
           dimensionOrder: ['container'],
           dimensions: [

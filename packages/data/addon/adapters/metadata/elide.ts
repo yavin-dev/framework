@@ -31,7 +31,7 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
     const query: DocumentNode | undefined = GQLQueries[type]?.[id ? 'single' : 'all'];
 
     assert(
-      'Type requested in navi-data/elide-metadata adapter must be defined as a query in the gql/metadata-queries.js file',
+      'Type requested in ElideMetadataAdapter must be defined as a query in the gql/metadata-queries.js file',
       query
     );
 

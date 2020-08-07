@@ -22,11 +22,15 @@ export interface MetadataPayloadMap {
   metric: MetricMetadataPayload[];
   dimension: DimensionMetadataPayload[];
   timeDimension: TimeDimensionMetadataPayload[];
-  columnFunctions: MetricMetadataPayload[];
+  columnFunction: ColumnFunctionMetadataPayload[];
 }
 
 export type RawMetadataPayload = unknown;
 
 export default interface NaviMetadataSerializer {
-  normalize<K extends keyof MetadataPayloadMap>(type: K, rawPayload: RawMetadataPayload): MetadataPayloadMap[K];
+  normalize<K extends keyof MetadataPayloadMap>(
+    type: K,
+    rawPayload: RawMetadataPayload,
+    dataSourceName: string
+  ): MetadataPayloadMap[K] | undefined;
 }

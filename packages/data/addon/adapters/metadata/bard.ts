@@ -9,50 +9,53 @@ import { camelize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../../utils/adapter';
 import NaviMetadataAdapter, { MetadataOptions } from './interface';
+import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+
+type MetadataModelTypes = keyof MetadataModelRegistry;
 
 export default class BardMetadataAdapter extends EmberObject implements NaviMetadataAdapter {
   /**
    * @property namespace - url namespace
    */
-  namespace = 'v1';
+  private namespace = 'v1';
 
-  @service ajax!: TODO;
+  @service
+  private ajax!: TODO;
+
+  private typeTransform: Record<string, string> = {
+    columnFunction: 'metricFunction'
+  };
+
+  /**
+   * Returns bard type for metadata type
+   * @param type - model type
+   */
+  private getBardType(type: MetadataModelTypes): string {
+    return this.typeTransform[type] || type;
+  }
 
   /**
    * Builds a URL path for a metadata query
    *
-   * @param type
-   * @param id
+   * @param type - model type
+   * @param id - model id
    * @param options - optional host options.
    * @return URL Path
    */
-  private buildURLPath(type: string, id: string, options: MetadataOptions): string {
+  private buildURLPath(type: MetadataModelTypes, id: string, options: MetadataOptions): string {
     const host = configHost(options);
     const { namespace } = this;
-    return `${host}/${namespace}/${camelize(pluralize(type))}/${id}`;
+    const bardType = this.getBardType(type);
+    return `${host}/${namespace}/${camelize(pluralize(bardType))}/${id}`;
   }
 
-  async fetchEverything(options?: MetadataOptions): Promise<TODO> {
-    const fullViewReq = this.fetchAll('table', {
-      query: { format: 'fullview' },
-      ...options
-    });
-    const metricFunctionsReq = this.fetchAll('metricFunctions').catch(e => {
-      // not all fili instances have metricFunction support
-      if (e.status !== 404) {
-        throw e;
-      }
-      return {};
-    });
-    const [{ tables }, { rows: metricFunctions }] = await Promise.all([fullViewReq, metricFunctionsReq]);
-    return { tables, metricFunctions };
-  }
-
-  fetchAll(type: string, options?: MetadataOptions): Promise<TODO> {
-    return this.fetchById(type, '', options);
-  }
-
-  fetchById(type: string, id: string, options: MetadataOptions = {}) {
+  /**
+   * Performs xhr request
+   * @param type - model type
+   * @param id - model id
+   * @param options - request options
+   */
+  private async query(type: MetadataModelTypes, id: string, options: MetadataOptions = {}): Promise<TODO> {
     const url = this.buildURLPath(type, id, options);
     const { query = {}, clientId = 'UI', timeout = 300000 } = options;
 
@@ -63,5 +66,32 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
       data: query,
       timeout
     });
+  }
+
+  async fetchEverything(options?: MetadataOptions): Promise<TODO> {
+    const fullViewReq = this.query('table', '', { query: { format: 'fullview' }, ...options });
+    const metricFunctionsReq = this.fetchAll('columnFunction');
+    const [{ tables }, metricFunctions] = await Promise.all([fullViewReq, metricFunctionsReq]);
+    return { tables, metricFunctions };
+  }
+
+  async fetchAll(type: MetadataModelTypes, options?: MetadataOptions): Promise<TODO[]> {
+    const payload = await this.query(type, '', options).catch(e => {
+      if (e.status !== 404 && type === 'columnFunction') {
+        throw e;
+      }
+      return {};
+    });
+    return payload.rows;
+  }
+
+  async fetchById(type: MetadataModelTypes, id: string, options: MetadataOptions = {}): Promise<TODO[] | undefined> {
+    const payload = await this.query(type, id, options).catch(e => {
+      if (e.status !== 404) {
+        throw e;
+      }
+      return undefined;
+    });
+    return payload ? [payload] : undefined;
   }
 }

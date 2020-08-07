@@ -288,7 +288,7 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['personalSold', 'globalySold']
+                metrics: ['personalSold', 'globallySold']
               }
             }
           }
@@ -301,7 +301,7 @@ export default [
           table: 'inventory',
           timeGrain: 'day'
         },
-        metrics: [{ metric: 'personalSold' }, { metric: 'globalySold' }],
+        metrics: [{ metric: 'personalSold' }, { metric: 'globallySold' }],
         dimensions: [],
         filters: [],
         intervals: [
