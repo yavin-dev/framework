@@ -254,7 +254,6 @@ export default class AdminQuerystatsController extends Controller {
   @action
   beforeMountHandlerPie() {
     if (!this.has_been_rendered) {
-      console.log('Before Mount handler triggered');
       this.has_been_rendered = true;
       let data_ = getTotalQueries(this.model.promiseArray);
       this.series_2 = data_;

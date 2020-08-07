@@ -4,7 +4,6 @@
  */
 import DS from 'ember-data';
 
-console.log('Reached QueryStat Model')
 export default DS.Model.extend({
   requestID: DS.attr('string'),
   apiVersion: DS.attr('string'),
