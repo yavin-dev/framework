@@ -30,8 +30,10 @@ allOpen {
 
 dependencies {
     implementation("com.yahoo.elide", "elide-core", "5.0.0-pr15")
+    implementation("com.yahoo.elide", "elide-datastore-aggregation", "5.0.0-pr15")
     implementation("javax.persistence", "javax.persistence-api", "2.2")
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
+    implementation("org.projectlombok", "lombok", "1.18.12")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {

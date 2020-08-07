@@ -16,6 +16,7 @@ import java.util.Optional
 import java.util.Timer
 import java.util.TimerTask
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
@@ -33,7 +34,7 @@ open class CarbonQueryLogger constructor(
 ) : QueryLogger, TimerTask() {
 
     private var queriesToBeLogged: MutableList<QueryStats> = ArrayList()
-    private var queryWatcher: MutableMap<UUID, QueryStats> = HashMap()
+    private var queryWatcher: MutableMap<UUID, QueryStats> = ConcurrentHashMap()
 
     @PersistenceContext
     private lateinit var entityManager: EntityManager
@@ -65,22 +66,21 @@ open class CarbonQueryLogger constructor(
         user: User?,
         headers: MutableMap<String, String>?,
         apiVer: String?,
-        queryParams: Optional<MultivaluedMap<String, String>>?,
+        queryParams: Optional<MultivaluedMap<String, String>>,
         path: String?
     ) {
         var start: Long = System.currentTimeMillis()
         var apiQuery: String? = constructAPIQuery(queryParams, path)
         var userName: String? = user?.name
-        synchronized(queryWatcher) {
-            var qStat = QueryStats(queryId)
-            qStat.user = userName
-            qStat.apiVersion = apiVer
-            qStat.apiQuery = apiQuery
-            qStat.startTime = start
-            qStat.status = QueryStatus.ACCEPTED
-            qStat.hostName = getLocalHost().hostName
-            queryWatcher.put(queryId, qStat)
-        }
+
+        var qStat = QueryStats(queryId)
+        qStat.user = userName
+        qStat.apiVersion = apiVer
+        qStat.apiQuery = apiQuery
+        qStat.startTime = start
+        qStat.status = QueryStatus.ACCEPTED
+        qStat.hostName = getLocalHost().hostName
+        queryWatcher[queryId] = qStat
     }
 
     override fun completeQuery(queryId: UUID, response: QueryResponse) {
@@ -100,13 +100,12 @@ open class CarbonQueryLogger constructor(
 
     override fun processQuery(queryId: UUID, query: Query, apiQuery: String?, isCached: Boolean) {
         var qstat: QueryStats = queryWatcher[queryId]!!
-        synchronized(queryWatcher) {
-            qstat.modelName = query.table.name
-            qstat.storeQuery = apiQuery
-            qstat.status = QueryStatus.INPROGRESS
-            qstat.isCached = isCached
-            queryWatcher[queryId] = qstat
-        }
+
+        qstat.modelName = query.table.name
+        qstat.storeQuery = apiQuery
+        qstat.status = QueryStatus.INPROGRESS
+        qstat.isCached = isCached
+        queryWatcher[queryId] = qstat
     }
 
     override fun run() {
@@ -118,11 +117,9 @@ open class CarbonQueryLogger constructor(
         }
     }
 
-    private fun constructAPIQuery(queryParams: Optional<MultivaluedMap<String, String>>?, path: String?): String? {
+    private fun constructAPIQuery(queryParams: Optional<MultivaluedMap<String, String>>, path: String?): String? {
         var apiQuery: String?
-        if (queryParams == null) {
-            return null
-        } else if (!queryParams.isPresent) {
+        if (!queryParams.isPresent) {
             apiQuery = path
         } else {
             apiQuery = "$path?"

@@ -10,6 +10,9 @@ elide:
     enabled: true
   aggregation-store:
     enabled: true
+  dynamic-config:
+    path: src/main/resources/models
+    enabled: true
 
 spring:
   application:

@@ -1,0 +1,52 @@
+{
+    tables:
+    [
+        {
+            name: QueryStats
+            table: QueryStats
+            description:
+            '''
+            Carbon Query Stats Table
+            '''
+            cardinality: large
+            dimensions :
+            [
+                {
+                    name: requestId
+                    type: TEXT
+                    definition: requestId
+                }
+                {
+                    name : apiVersion
+                    type : TEXT
+                    definition : IF (apiVersion IS NULL, 'Unknown', apiVersion)
+                }
+                {
+                    name : apiQuery
+                    type : TEXT
+                    definition : IF (apiQuery IS NULL, 'Unknown', apiQuery)
+                }
+                {
+                    name : storeQuery
+                    type : TEXT
+                    definition : IF (storeQuery IS NULL, 'Unknown', storeQuery)
+                }
+                {
+                    name : isCached
+                    type : BOOLEAN
+                    definition : DEFAULT (false)
+                }
+                {
+                    name : hostName
+                    type : TEXT
+                    definition : IF (hostName IS NULL, 'Unknown', hostName)
+                }
+                {
+                    name: bytesReturned
+                    type: DECIMAL
+                    definition: IF (bytesReturned IS NULL, -1, bytesReturned)
+                }
+            ]
+        }
+    ]
+}
