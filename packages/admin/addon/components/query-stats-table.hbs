@@ -1,22 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<style>
-  th, td {
-    padding: 15px;
-    border: 1px solid #dddddd;
-    text-align: left;
-  }
-  tr:nth-child(even) {
-    background-color: #dddddd;
-  }
-  caption {
-    display: table-caption;
-    text-align: center;
-    font-size: large;
-    font-weight: bold;
-  }
-</style>
-{{!-- <NaviVisualizationConfig::Table
-  @model={{this.model}} --}}
+
 
 {{!-- <table class="navi-querystats-dashboard__table-table">
   <caption class="navi-querystats-dashboard__table-caption">Query Stats</caption>
@@ -61,8 +44,10 @@
       </tr>
   </tbody>
 </table> --}}
+{{!-- <h2>Blah</h2> --}}
 
-{{#light-table table height="65vh" as |t|}}
+<div class="query-stats-table">
+  {{#light-table table height="65vh" as |t|}}
 
   {{!--
     In order for `fa-sort-asc` and `fa-sort-desc` icons to work,
@@ -70,22 +55,46 @@
     the font-awesome assets, e.g. via a CDN.
   --}}
 
-  {{t.head
-    iconSortable="fa fa-sort"
-    iconAscending="fa fa-sort-asc"
-    iconDescending="fa fa-sort-desc"
-    fixed=true
-  }}
+    {{t.head
+      onColumnClick=(action "onColumnClick")
+      iconSortable="fa fa-sort"
+      iconAscending="fa fa-sort-asc"
+      iconDescending="fa fa-sort-desc"
+      fixed=true
+    }}
 
-  {{#t.body
-    canSelect=false
-    as |body|
-  }}
-    {{#if isLoading}}
-      {{#body.loader}}
-        {{table-loader}}
-      {{/body.loader}}
-    {{/if}}
-  {{/t.body}}
+    {{!-- canSelect = true => to have a dropdown for eahc row --}}
+    {{#t.body
+      canExpand=true
+      multiRowExpansion=false
+      canSelect=true
+      as |body|
+    }}
+      {{#if isLoading}}
+        {{#body.loader}}
+          {{table-loader}}
+        {{/body.loader}}
+      {{/if}}
+      {{#if table.isEmpty}}
+        {{#body.no-data}}
+          No users found.
+        {{/body.no-data}}
+      {{/if}}
 
-{{/light-table}}
+      {{#body.expanded-row as |row|}}
+        <div class = "query-stats-table__expanded-row">
+          <ul>
+            <li>Request Id: {{row.requestID}}</li>
+            <li>API Version: {{row.apiVersion}}</li>
+            <li>API Query: {{row.apiQuery}}</li>
+            <li>Store Query: {{row.storeQuery}}</li>
+            <li>Bytes Returned: {{row.bytesReturned}}</li>
+            <li>Host Name: {{row.hostName}}</li>
+          </ul>
+        </div>
+      {{/body.expanded-row}}
+    {{/t.body}}
+
+  {{/light-table}}
+</div>
+

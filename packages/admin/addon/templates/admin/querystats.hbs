@@ -1,9 +1,51 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-querystats-dashboard">
-  <h2 class="navi-querystats-dashboard__heading">PreCanned UI Dashboard</h2>
+{{!-- <div class="navi-querystats-dashboard">
+  <h2 class="navi-querystats-dashboard__heading">Query Stats Monitoring</h2>
+</div> --}}
+<div class="navi-querystats-dashboard__kpi">
+  <div class="navi-querystats-dashboard__kpi-bar">
+    {{!-- <BarGraphModel @model={{@model}} class="navi-querystats-dashboard__bar-style" /> --}}
+    <ApexChart
+    @type={{this.type}}
+    @width={{this.width}}
+    @height={{this.height}}
+    @series={{this.series}}
+    @chartOptions={{this.barOptions}}
+    {{!-- @onMounted={{this.mountedHandler}} --}}
+    @onBeforeMount={{this.beforeMountHandler}}
+    />
+  </div>
+
+  <div class="navi-querystats-dashboard__kpi-donut">
+    {{!-- <BarGraphModel @model={{@model}} class="navi-querystats-dashboard__bar-style" /> --}}
+    <ApexChart
+    @type={{this.type_2}}
+    @width={{this.width_2}}
+    @height={{this.height_2}}
+    @series={{this.series_2}}
+    @chartOptions={{this.donutOptions}}
+    {{!-- @onMounted={{this.mountedHandler}} --}}
+    @onBeforeMount={{this.beforeMountHandlerPie}}
+    />
+  </div>
 </div>
-<div class="navi-querystats-dashboard__table">
-  <QueryStatsTable @model={{@model}} @modalClass={{@modalClass}} class="navi-querystats-dashboard__table-style"/>
+
+<div class="navi-querystats-dashboard__timeseries">
+  {{!-- <BarGraphModel @model={{@model}} class="navi-querystats-dashboard__bar-style" /> --}}
+  <ApexChart
+  {{!-- @type={{this.type_2}}
+  @width={{this.width_2}}
+  @height={{this.height_2}} --}}
+  {{!-- @series={{this.series_3}} --}}
+  @chartOptions={{this.chartOptions}}
+  {{!-- @onMounted={{this.mountedHandler}} --}}
+  @onBeforeMount={{this.beforeMountHandlerTime}}
+  />
+</div>
+
+
+<div class="navi-querystats-dashboard__tablebalh">
+  <QueryStatsTable @model={{@model}} class="navi-querystats-dashboard__table-style"/>
 </div>
 
 {{!-- <div class="navi-querystats-dashboard">

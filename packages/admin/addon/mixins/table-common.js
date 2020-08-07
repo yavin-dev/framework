@@ -4,14 +4,16 @@ import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
 import Table from 'ember-light-table';
 import { task } from 'ember-concurrency';
+import { A } from '@ember/array';
+import { cloneDeep } from 'lodash-es';
 
 export default Mixin.create({
   store: service(),
 
   page: 0,
-  limit: 10,
+  limit: 5,
   dir: 'asc',
-  sort: 'firstName',
+  sort: 'createdOn',
 
   isLoading: computed.oneWay('fetchRecords.isRunning'),
   canLoadMore: true,
@@ -24,11 +26,20 @@ export default Mixin.create({
 
   init() {
     this._super(...arguments);
-    var columnsDebug = this.get('columns');
-    var modelsDebug = this.get('model');
-    console.log(typeof modelsDebug);
+    let columns = this.get('columns');
+    let modelsDebug = this.get('model');
+    console.log(modelsDebug.promiseArray);
+    const rows = modelsDebug.promiseArray;
     const data_ = modelsDebug.promiseArray.content;
-    let table = Table.create(columnsDebug, data_);
+    // const data_please = modelsDebug.promiseArray.then(function(response) {
+    //   console.log(response.data)
+    // })
+    // let rows_blah = A()
+    // for(let i =0 ; i < 100; i++) {
+    //   rows_blah.pushObjects(cloneDeep(MOCK_DATA))
+    // }
+
+    let table = Table.create({ columns, rows });
     let sortColumn = table.get('allColumns').findBy('valuePath', this.get('sort'));
 
     // Setup initial sort column
@@ -40,11 +51,24 @@ export default Mixin.create({
   },
 
   fetchRecords: task(function*() {
-    let records = yield this.get('store').query('user', this.getProperties(['page', 'limit', 'sort', 'dir']));
-    this.get('model').pushObjects(records.toArray());
-    this.set('meta', records.get('meta'));
-    this.set('canLoadMore', !isEmpty(records));
-  }).restartable(),
+    console.log('Gets Called');
+    let rows = yield this.get('store').query('querystat', this.getProperties(['page', 'limit', 'sort', 'dir']));
+    // this.get('model').promiseArray.pushObjects(records.toArray());
+    // this.set('meta', records.get('meta'));
+    // this.set('canLoadMore', !isEmpty(records));
+    this.model['promiseArray'] = rows;
+    let columns = this.get('columns');
+    let table = Table.create({ columns, rows });
+    let sortColumn = table.get('allColumns').findBy('valuePath', this.get('sort'));
+
+    // Setup initial sort column
+    if (sortColumn) {
+      sortColumn.set('sorted', true);
+    }
+
+    this.set('table', table);
+    //console.log(records);
+  }),
 
   actions: {
     onScrolledToBottom() {
@@ -62,7 +86,17 @@ export default Mixin.create({
           canLoadMore: true,
           page: 0
         });
-        this.get('model').clear();
+        //get(this, 'model').clear()
+
+        //TODO: need to sort the data over here based on the properties
+        //and rerender again
+        //this.transitiontoroute(..maybe)
+
+        console.log('Models Cleared');
+        //console.log(this.fetchRecords)
+        //console.log(this.get('fetchRecords'))//.next();
+        //this.get('model')
+        this.get('fetchRecords').perform();
       }
     }
   }

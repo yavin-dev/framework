@@ -1,0 +1,109 @@
+/**
+ * Copyright 2019, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+//  //reference
+//  <style>
+//   th, td {
+//     padding: 15px;
+//     border: 1px solid #dddddd;
+//     text-align: left;
+//   }
+//   tr:nth-child(even) {
+//     background-color: #dddddd;
+//   }
+//   caption {
+//     display: table-caption;
+//     text-align: center;
+//     font-size: large;
+//     font-weight: bold;
+//   }
+// </style>
+
+.query-stats-table {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 50px 20px 50px;
+  height: 80vh;
+  overflow-x: auto;
+
+  thead {
+    th {
+      border-bottom: 1px @navi-gray-500 solid;
+      color: @navi-gray-500;
+      font-family: @font-family-thin;
+      font-size: @font-size-mid-base;
+      font-weight: normal;
+      padding-bottom: 5px;
+    }
+
+    .lt-column {
+      color: #303030;
+      font-weight: normal;
+    }
+
+    .lt-sort-icon {
+      color: #303030;
+
+      &.fa-sort-desc,
+      &.fa-sort-asc {
+        color: @navi-gray;
+        margin-right: 5px;
+      }
+    }
+
+    .lt-column .lt-sort-icon {
+      float: left;
+    }
+  }
+
+  &__row {
+    border-bottom: 1px @navi-gray-300 solid;
+    font-size: @font-size-base;
+    margin: 5px 0;
+    padding-left: 5px;
+  }
+
+  &__row:hover {
+    .actions {
+      .action {
+        visibility: inherit;
+      }
+    }
+  }
+
+  &__cell {
+    cursor: default;
+    padding: 10px 0;
+
+    &--name {
+      padding-left: 10px;
+    }
+  }
+
+  &__header-cell {
+    &--name {
+      padding-left: 10px;
+    }
+  }
+
+  &__info-message {
+    &--text {
+      font-size: @font-size-form;
+    }
+
+    &--query {
+      color: @navi-blue-500;
+    }
+
+    &--subtext {
+      font-size: @font-size-base;
+    }
+  }
+
+  .navi-info-message {
+    height: 300px;
+    margin: 10px;
+  }
+}

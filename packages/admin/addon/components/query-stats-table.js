@@ -19,31 +19,39 @@ export default Component.extend(TableCommon, {
   columns: computed(function() {
     return [
       {
-        label: 'Request ID',
-        valuePath: 'requestID',
-        width: '150 px'
+        label: 'Created On',
+        valuePath: 'createdOn',
+        sortable: true
       },
       {
         label: 'Model Name',
         valuePath: 'nameModel',
-        width: '150px'
+        width: '150px',
+        sortable: true
       },
       {
         label: 'User',
         valuePath: 'user',
-        width: '150px'
+        width: '150px',
+        sortable: true
       },
       {
         label: 'Query Status',
-        valuePath: 'status'
+        valuePath: 'status',
+        width: '150px',
+        sortable: true
       },
       {
         label: 'Query Duration',
-        valuePath: 'duration'
+        valuePath: 'duration',
+        width: '150px',
+        sortable: true
       },
       {
-        label: 'Created On',
-        valuePath: 'createdOn'
+        label: 'Rows Returned',
+        valuePath: 'rowsReturned',
+        width: '150 px',
+        sortable: true
       }
     ];
   })
