@@ -7,7 +7,7 @@
 
 import NaviBaseSearchResultComponent from './base';
 import { inject as service } from '@ember/service';
-import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 /**
  * @constant NUM_TOP

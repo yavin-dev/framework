@@ -6,7 +6,7 @@ import Service, { inject as service } from '@ember/service';
 import EmberArray from '@ember/array';
 import { setOwner, getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
-import { getDataSource, getDefaultDataSource, DataSource } from 'navi-data/utils/adapter';
+import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviMetadataSerializer, { EverythingMetadataPayload } from 'navi-data/serializers/metadata/interface';
 import KegService, { KegRecord } from './keg';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
@@ -43,7 +43,7 @@ export default class NaviMetadataService extends Service {
     return getOwner(this).lookup(`serializer:metadata/${dataSourceType}`);
   }
 
-  private dataSourceFor(dataSourceName?: string): DataSource {
+  private dataSourceFor(dataSourceName?: string) {
     return dataSourceName ? getDataSource(dataSourceName) : getDefaultDataSource();
   }
 

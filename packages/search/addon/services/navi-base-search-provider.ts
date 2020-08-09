@@ -9,16 +9,9 @@ import Service from '@ember/service';
 import { assert } from '@ember/debug';
 
 export default class NaviBaseSearchProviderService extends Service {
-  /**
-   * @property {number} resultThreshold
-   */
-  resultThreshold = 10;
+  resultThreshold: number = 10;
 
-  /**
-   * @method search
-   * @returns {Array} array of search results
-   */
-  search() {
+  search(): TODO {
     assert('Search method must be called from a subclass');
   }
 }

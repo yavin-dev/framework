@@ -11,7 +11,7 @@ import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { task } from 'ember-concurrency';
 //@ts-ignore
 import { searchRecordsByFields } from 'navi-core/utils/search';
-import NaviMetadataService, { MetadataModelTypes } from 'navi-data/addon/services/navi-metadata';
+import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
   @service

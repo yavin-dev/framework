@@ -1,7 +1,11 @@
 import DS from 'ember-data';
+//@ts-ignore
 import RequestV2Fragment from 'navi-core/models/bard-request-v2/request';
+//@ts-ignore
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+//@ts-ignore
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+//@ts-ignore
 import SortFragment from 'navi-core/models/bard-request-v2/fragments/sort';
 
 interface FragmentRegistry {
