@@ -29,9 +29,9 @@ export default class MetricMetadataModel extends ColumnMetadataModel implements 
   /**
    * @property {Promise} extended - extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  get extended(): Promise<MetricMetadataModel | undefined> {
+  get extended(): Promise<MetricMetadataModel> {
     const { naviMetadata, id, source } = this;
-    return naviMetadata.findById('metric', id, source);
+    return naviMetadata.findById('metric', id, source).then(m => m || this);
   }
 }
 

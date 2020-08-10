@@ -138,9 +138,9 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
   /**
    * @property {Promise} extended - extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  get extended(): Promise<DimensionMetadataModel | undefined> {
+  get extended(): Promise<DimensionMetadataModel> {
     const { naviMetadata, id, source } = this;
-    return naviMetadata.findById('dimension', id, source);
+    return naviMetadata.findById('dimension', id, source).then(d => d || this);
   }
 }
 
