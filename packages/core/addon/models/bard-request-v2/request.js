@@ -72,7 +72,7 @@ export default class Request extends Fragment.extend(Validations) {
 
   @service fragmentFactory;
 
-  @service('bard-metadata') metadataService;
+  @service('navi-metadata') metadataService;
 
   /**
    * @method clone

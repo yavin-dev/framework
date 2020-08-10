@@ -30,9 +30,9 @@ module('Integration | Component | dimension selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     this.set('addTimeGrain', () => {});
     this.set('removeTimeGrain', () => {});
@@ -40,23 +40,22 @@ module('Integration | Component | dimension selector', function(hooks) {
     this.set('removeDimension', () => {});
     this.set('addDimFilter', () => {});
 
-    return MetadataService.loadMetadata().then(async () => {
-      Age = MetadataService.getById('dimension', 'age');
+    await MetadataService.loadMetadata();
+    Age = MetadataService.getById('dimension', 'age', 'bardOne');
 
-      //set report object
-      this.set(
-        'request',
-        Store.createFragment('bard-request/request', {
-          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-            table: MetadataService.getById('table', 'tableA'),
-            timeGrain: 'day'
-          }),
-          dimensions: [{ dimension: Age }],
-          filters: [{ dimension: Age }],
-          responseFormat: 'csv'
-        })
-      );
-    });
+    //set report object
+    this.set(
+      'request',
+      Store.createFragment('bard-request/request', {
+        logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
+          table: MetadataService.getById('table', 'tableA', 'bardOne'),
+          timeGrain: 'day'
+        }),
+        dimensions: [{ dimension: Age }],
+        filters: [{ dimension: Age }],
+        responseFormat: 'csv'
+      })
+    );
   });
 
   test('it renders', async function(assert) {

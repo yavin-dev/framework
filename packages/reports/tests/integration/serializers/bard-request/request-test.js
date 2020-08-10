@@ -4,16 +4,15 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-let store, metaService;
+let store;
 
 module('Integration | Serializer | Request Fragment', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     store = this.owner.lookup('service:store');
-    metaService = this.owner.lookup('service:bard-metadata');
-    return metaService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Adds aliases to reports when serialized', function(assert) {

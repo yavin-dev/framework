@@ -11,7 +11,7 @@ module('Unit | Component | Goal Gauge', function(hooks) {
 
   hooks.beforeEach(function() {
     this.owner.register(
-      'service:bard-metadata',
+      'service:navi-metadata',
       class extends Service {
         getById(type, id) {
           return { name: id };

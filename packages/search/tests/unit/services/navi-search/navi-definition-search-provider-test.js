@@ -11,7 +11,7 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     Server = new Pretender(metadataRoutes);
     Service = this.owner.lookup('service:navi-search/navi-definition-search-provider');
   });

@@ -10,7 +10,7 @@ module('Unit | Transform | Table', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
   });
 
@@ -19,7 +19,7 @@ module('Unit | Transform | Table', function(hooks) {
 
     await settled();
     let transform = this.owner.lookup('transform:table'),
-      table = MetadataService.getById('table', 'network');
+      table = MetadataService.getById('table', 'network', 'bardOne');
 
     assert.equal(transform.serialize(table), 'network', 'Table is serialized to the name');
 

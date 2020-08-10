@@ -24,7 +24,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
 
     this.metadata = { style: { aliases: arr([]) } };
@@ -48,7 +48,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     const metricFragment = getContext()
       .owner.lookup('service:store')
       .createFragment('bard-request/fragments/metric', {
-        metric: await MetadataService.findById('metric', metric),
+        metric: await MetadataService.findById('metric', metric, 'bardOne'),
         parameters
       });
 

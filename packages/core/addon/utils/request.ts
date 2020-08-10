@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
-import { Parameters, SortDirection, RequestV2 } from 'navi-data/adapters/fact-interface';
+import { Parameters, SortDirection, RequestV2 } from 'navi-data/adapters/facts/interface';
 
 type LogicalTable = {
   table: string;
@@ -19,7 +19,7 @@ type Dimension = {
   dimension: string;
 };
 
-type Metric = {
+export type Metric = {
   metric: string;
   parameters?: Parameters;
 };
@@ -79,9 +79,7 @@ export function toggleAlias(
   }
   return field.map(obj => {
     const metricName: string =
-      canonicalizeMetric(obj.metric) ||
-      (typeof obj.metric === 'string' && obj.metric) ||
-      (typeof obj.metric === 'object' && obj.metric.metric);
+      typeof obj.metric === 'object' ? canonicalizeMetric(obj.metric) || obj.metric.metric : obj.metric;
 
     obj.metric = aliasMap[metricName] || metricName;
     obj.metric = canonMap[obj.metric] || obj.metric;
@@ -169,18 +167,17 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
  * @param namespace - request datasource
  * @returns request normalized into v2
  */
-export function normalizeV1toV2(request: RequestV1<string>, namespace?: string): RequestV2 {
+export function normalizeV1toV2(request: RequestV1<string>, dataSource: string): RequestV2 {
   //normalize v1 request
-  const normalized = Object.assign({}, normalizeV1(request, namespace));
+  const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
   const {
-    logicalTable: { table, timeGrain: grain },
-    dataSource
+    logicalTable: { table, timeGrain: grain }
   } = normalized;
 
   const requestV2: RequestV2 = {
     requestVersion: '2.0',
-    table: removeNamespace(table, namespace),
+    table: removeNamespace(table, dataSource),
     dataSource,
     columns: [],
     filters: [],
@@ -199,7 +196,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   normalized.dimensions.forEach(({ dimension }) =>
     requestV2.columns.push({
       type: 'dimension',
-      field: removeNamespace(dimension, namespace),
+      field: removeNamespace(dimension, dataSource),
       parameters: {
         field: 'id'
       }
@@ -210,7 +207,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   normalized.metrics.forEach(({ metric, parameters = {} }) => {
     requestV2.columns.push({
       type: 'metric',
-      field: removeNamespace(metric, namespace),
+      field: removeNamespace(metric, dataSource),
       parameters
     });
   });
@@ -232,7 +229,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   normalized.filters.forEach(({ dimension, field, operator, values }) =>
     requestV2.filters.push({
       type: 'dimension',
-      field: removeNamespace(dimension, namespace),
+      field: removeNamespace(dimension, dataSource),
       parameters: { field },
       operator,
       values
@@ -243,7 +240,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
   normalized.having.forEach(({ metric: { metric, parameters = {} }, operator, values }) => {
     requestV2.filters.push({
       type: 'metric',
-      field: removeNamespace(metric, namespace),
+      field: removeNamespace(metric, dataSource),
       parameters,
       operator,
       values
@@ -255,7 +252,7 @@ export function normalizeV1toV2(request: RequestV1<string>, namespace?: string):
     const isDateTime = metric === 'dateTime' || metric.endsWith('.dateTime');
     requestV2.sorts.push({
       type: isDateTime ? 'timeDimension' : 'metric',
-      field: isDateTime ? 'dateTime' : removeNamespace(metric, namespace),
+      field: isDateTime ? 'dateTime' : removeNamespace(metric, dataSource),
       parameters: isDateTime ? { grain } : parameters,
       direction
     });

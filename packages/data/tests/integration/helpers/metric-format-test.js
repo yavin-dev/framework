@@ -9,7 +9,7 @@ module('Integration | Helper | metric-format', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders with serialized metric object', async function(assert) {
@@ -46,8 +46,8 @@ module('Integration | Helper | metric-format', function(hooks) {
 
   test('multi-datasource support', async function(assert) {
     assert.expect(3);
-    const metaData = this.owner.lookup('service:bard-metadata');
-    metaData._keg.reset();
+    const metaData = this.owner.lookup('service:navi-metadata');
+    metaData.keg.reset();
     await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
     this.set('metric', {
@@ -68,6 +68,6 @@ module('Integration | Helper | metric-format', function(hooks) {
     this.set('namespace', undefined);
     assert.dom().hasText('navClicks', 'default works if datasource is not loaded');
 
-    metaData._keg.reset();
+    metaData.keg.reset();
   });
 });

@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 
-let Store, MetadataService;
+let Store;
 
 module('Unit | Model | user', function(hooks) {
   setupTest(hooks);
@@ -12,8 +12,7 @@ module('Unit | Model | user', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    await MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Retrieving records', async function(assert) {

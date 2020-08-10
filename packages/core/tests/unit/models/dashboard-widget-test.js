@@ -16,8 +16,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
     Store.createRecord('user', { id: 'navi_user' });
 
     // Load metadata needed for request fragment
-    let metadataService = this.owner.lookup('service:bard-metadata');
-    await metadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('tempId', async function(assert) {

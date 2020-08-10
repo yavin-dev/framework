@@ -6,8 +6,6 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { get } from '@ember/object';
 
-let MetadataService;
-
 let Template = hbs`{{navi-visualization-config/series-chart
                     seriesConfig=seriesConfig
                     seriesType=seriesType
@@ -63,7 +61,7 @@ module('Integration | Component | visualization config/series chart', function(h
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.set('seriesType', 'dimension');
     this.set('seriesConfig', {
       dimensionOrder: ['foo'],
@@ -121,8 +119,7 @@ module('Integration | Component | visualization config/series chart', function(h
       onUpdateChartConfig: () => null
     });
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('metric selector', async function(assert) {

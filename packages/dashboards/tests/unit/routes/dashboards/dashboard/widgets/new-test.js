@@ -66,7 +66,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
 
     set(config, 'navi.defaultDataTable', 'tableA');
 
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   hooks.afterEach(function() {

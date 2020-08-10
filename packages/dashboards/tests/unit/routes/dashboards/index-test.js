@@ -9,7 +9,7 @@ module('Unit | Route | dashboards/index', function(hooks) {
 
   hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('model', async function(assert) {

@@ -30,9 +30,9 @@ export default Route.extend({
   compression: service(),
 
   /**
-   * @property {Service} metadataService - Bard Metadata Service
+   * @property {Service} metadataService - Navi Metadata Service
    */
-  metadataService: service('bard-metadata'),
+  metadataService: service('navi-metadata'),
 
   /**
    * @property {Service} user
@@ -128,17 +128,13 @@ export default Route.extend({
    * @returns {Object} table model
    */
   _getDefaultTable() {
-    let table = get(this, 'metadataService')
-      .all('table')
-      .findBy('id', get(config, 'navi.defaultDataTable'));
+    const { metadataService } = this;
+    let table = metadataService.all('table').findBy('id', config.navi.defaultDataTable);
 
     if (!table) {
-      let dataSourceTables = get(this, 'metadataService')
-        .all('table')
-        .sortBy('name');
-      table = dataSourceTables[0];
+      let tables = metadataService.all('table').sortBy('name');
+      table = tables[0];
     }
-
     return table;
   }
 });

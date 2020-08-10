@@ -6,10 +6,10 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
-import KegService from '../../services/keg';
 import Table from './table';
 import ColumnFunction from './column-function';
 import FunctionParameter from './function-parameter';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export type ColumnType = 'ref' | 'formula' | 'field';
 
@@ -35,7 +35,7 @@ export interface ColumnMetadata {
   name: string;
   category?: string;
   description?: string;
-  table: Table | null;
+  table: Table | undefined;
   source: string;
   valueType: TODO<string>;
   type: ColumnType;
@@ -47,15 +47,9 @@ export interface ColumnMetadata {
   getDefaultParameters(): Dict<string> | undefined;
 }
 
-export type BaseExtendedAttributes = {
-  description?: string;
-};
-
 export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata, ColumnMetadataPayload {
-  /**
-   * @property {KegService} keg
-   */
-  @service keg!: KegService;
+  @service
+  protected naviMetadata!: NaviMetadataService;
 
   /**
    * @property {string} id
@@ -80,11 +74,10 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   /**
    * @property {Table} table
    */
-  get table(): Table | null {
-    const { tableId, keg, source } = this;
-    if (isNone(tableId)) return null;
-    const table = keg.getById('metadata/table', tableId, source);
-    return (table as unknown) as Table;
+  get table(): Table | undefined {
+    const { tableId, naviMetadata, source } = this;
+    if (isNone(tableId)) return undefined;
+    return naviMetadata.getById('table', tableId, source);
   }
 
   /**
@@ -129,11 +122,10 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @property {ColumnFunction} columnFunction
    */
   get columnFunction(): ColumnFunction | undefined {
-    const { columnFunctionId, source, keg } = this;
+    const { columnFunctionId, source, naviMetadata } = this;
 
     if (columnFunctionId) {
-      const columnFunction = keg.getById('metadata/column-function', columnFunctionId, source);
-      return (columnFunction as unknown) as ColumnFunction;
+      return naviMetadata.getById('columnFunction', columnFunctionId, source);
     }
     return undefined;
   }

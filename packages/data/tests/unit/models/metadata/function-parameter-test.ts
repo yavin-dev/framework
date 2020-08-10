@@ -21,7 +21,7 @@ module('Unit | Metadata Model | Function Argument', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     server = new Pretender(metadataRoutes);
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     Payload = {
       id: 'currency',

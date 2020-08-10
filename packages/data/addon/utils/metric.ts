@@ -10,9 +10,10 @@ interface ColumnAttributes {
   name: string;
   parameters: Parameters;
 }
+
 interface MetricObject {
   metric: string;
-  parameters: Parameters;
+  parameters?: Parameters;
 }
 
 /**
@@ -84,9 +85,10 @@ export function canonicalizeColumnAttributes(attributes: ColumnAttributes): stri
  */
 export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
   return metrics.reduce((obj, metric) => {
-    if (hasParameters(metric) && 'as' in metric.parameters) {
+    const { parameters = {} } = metric;
+    if (hasParameters(metric) && 'as' in parameters) {
       return Object.assign({}, obj, {
-        [metric.parameters.as]: canonicalizeMetric(metric)
+        [parameters.as]: canonicalizeMetric(metric)
       });
     }
     return obj;

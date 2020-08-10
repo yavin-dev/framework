@@ -138,21 +138,21 @@ module('Integration | Component | table', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
 
     this.set('model', Model);
     this.set('options', Options);
     this.set('onUpdateReport', () => undefined);
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
-    return MetadataService.loadMetadata();
+    await MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
-    return MetadataService._keg.reset();
+    return MetadataService.keg.reset();
   });
 
   test('it renders', async function(assert) {
@@ -191,9 +191,7 @@ module('Integration | Component | table', function(hooks) {
 
   test('render alternative datasource', async function(assert) {
     assert.expect(2);
-    const bardMeta = this.owner.lookup('service:bard-metadata');
-    bardMeta._keg.reset();
-    await bardMeta.loadMetadata({ dataSourceName: 'bardTwo' });
+    await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
     const model = arr([
       {
         request: {

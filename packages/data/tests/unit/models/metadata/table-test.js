@@ -102,7 +102,6 @@ module('Unit | Metadata Model | Table', function(hooks) {
 
   test('Metric in Table', function(assert) {
     assert.expect(1);
-
     assert.equal(
       Model.metrics[0],
       Keg.getById('metadata/metric', 'pv', 'bardOne'),
@@ -125,7 +124,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
 
     assert.equal(
       Model.timeDimensions[0],
-      Keg.getById('metadata/time-dimension', 'orderDate', 'bardOne'),
+      Keg.getById('metadata/timeDimension', 'orderDate', 'bardOne'),
       'The Order date time-dimension is properly hydrated'
     );
   });

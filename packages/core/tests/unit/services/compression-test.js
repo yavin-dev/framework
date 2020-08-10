@@ -8,7 +8,7 @@ module('Unit | Service | compression', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('compress and decompress', function(assert) {

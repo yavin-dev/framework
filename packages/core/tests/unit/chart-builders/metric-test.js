@@ -51,9 +51,9 @@ module('Unit | Chart Builders | Metric', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     setOwner(MetricChartBuilder, this.owner);
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('buildData - no metrics', function(assert) {

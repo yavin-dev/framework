@@ -22,13 +22,10 @@ import layout from '../templates/components/metric-selector';
 import { run } from '@ember/runloop';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { THROTTLE_TIME, BlurOnAnimationEnd } from './dimension-selector';
-import { inject as service } from '@ember/service';
 
 @templateLayout(layout)
 @tagName('')
 class MetricSelectorComponent extends Component {
-  @service bardMetadata;
-
   /*
    * @property {Array} allMetrics
    */

@@ -12,7 +12,7 @@ export default DS.Transform.extend({
   /**
    * @property {Service} metadataService
    */
-  metadataService: service('bard-metadata'),
+  metadataService: service('navi-metadata'),
 
   /**
    * @property {String} type - type of transform

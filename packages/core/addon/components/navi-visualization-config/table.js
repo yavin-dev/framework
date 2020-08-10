@@ -25,7 +25,7 @@ class NaviVisualizationConfigTableComponent extends Component {
   /**
    * @property {Service} metadataService
    */
-  @service('bard-metadata') metadataService;
+  @service('navi-metadata') metadataService;
 
   /**
    * @property {Array} dimensions - dimension object metadata

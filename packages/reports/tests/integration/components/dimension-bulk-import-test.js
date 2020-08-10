@@ -44,7 +44,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.server.get(
       `${HOST}/v1/dimensions/property/values/`,
       (schema, request) => {
@@ -90,7 +90,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       queryIds: ['100001', '100002', '56565565', '78787', '114', '100003']
     });
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('bulk import Component renders', async function(assert) {

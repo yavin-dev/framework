@@ -7,20 +7,21 @@
 
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
+//@ts-ignore
 import { task } from 'ember-concurrency';
+//@ts-ignore
 import { searchRecordsByFields } from 'navi-core/utils/search';
+import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
-  /**
-   * @property {Ember.Service} metadataService
-   */
-  @service('bard-metadata') metadataService;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @property {String} _displayComponentName
    * @private
    */
-  _displayComponentName = 'navi-search-result/definition';
+  private displayComponentName = 'navi-search-result/definition';
 
   /**
    * @method search – Searches for definitions in the metadata
@@ -28,21 +29,21 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @returns {Object} Object containing, component, title and data
    */
   // eslint-disable-next-line require-yield
-  @(task(function*(query) {
-    const types = ['table', 'dimension', 'metric', 'time-dimension'];
-    const kegData = [];
+  @(task(function*(this: NaviDefinitionSearchProviderService, query: TODO) {
+    const types: MetadataModelTypes[] = ['table', 'dimension', 'metric', 'timeDimension'];
+    const kegData: TODO = [];
     let data = [];
 
     if (query?.length > 0) {
-      types.forEach(type => kegData.push(...this.metadataService.all(type)));
+      types.forEach(type => kegData.push(...this.naviMetadata.all(type).toArray()));
       data = searchRecordsByFields(kegData, query, ['id', 'name', 'description']);
     }
 
     return {
-      component: this._displayComponentName,
+      component: this.displayComponentName,
       title: 'Definition',
       data: data.slice(0, this.resultThreshold)
     };
   }).restartable())
-  search;
+  search: TODO;
 }

@@ -12,7 +12,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
   hooks.beforeEach(async function() {
     const Store = this.owner.lookup('service:store');
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     run(() => {
       Store.pushPayload({
         data: [

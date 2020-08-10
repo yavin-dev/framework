@@ -9,7 +9,6 @@ import Interval from 'navi-core/utils/classes/interval';
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import { getIsoDateTimePeriod } from 'navi-core/utils/date';
 import moment from 'moment';
-import { inject as service } from '@ember/service';
 
 const timeGrainSorting = {
   millisecond: 1,
@@ -39,8 +38,6 @@ export default class BaseIntervalComponent extends Component {
    * @property {String} dateTimePeriod - the current time grain
    */
   @readOnly('request.timeGrain') dateTimePeriod;
-
-  @service bardMetadata;
 
   /**
    * @property {String} lowestDateTimePeriod - the lowest supported time grain of the table

@@ -8,9 +8,9 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     controller = this.owner.lookup('controller:dashboards/dashboard/view');
     compression = this.owner.lookup('service:compression');
@@ -22,7 +22,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
     assert.expect(3);
 
     let osFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'os'),
+        dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
         operator: 'in',
         field: 'id',
         rawValues: ['MacOS']
@@ -74,7 +74,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   test('removeFilter', async function(assert) {
     assert.expect(3);
     let osFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'os'),
+        dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
         operator: 'in',
         field: 'id',
         rawValues: ['MacOS']

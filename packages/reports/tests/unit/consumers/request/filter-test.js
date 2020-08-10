@@ -1,8 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { A as arr } from '@ember/array';
-import config from 'ember-get-config';
 
 let consumer,
   dispatchedActions = [],
