@@ -5,36 +5,6 @@ import GraphQLScenario from 'dummy/mirage/scenarios/elide-one';
 import moment from 'moment';
 
 const TestRequest = {
-  logicalTable: {
-    table: 'table1',
-    timeGrain: 'grain1'
-  },
-  metrics: [{ metric: 'metric1' }, { metric: 'metric2' }],
-  dimensions: [{ dimension: 'dimension1' }, { dimension: 'dimension2' }],
-  filters: [
-    { dimension: 'dimension3', operator: 'in', values: ['v1', 'v2'] },
-    {
-      dimension: 'dimension4',
-      operator: 'in',
-      values: ['v3', 'v4']
-    }
-  ],
-  having: [
-    {
-      metric: 'metric1',
-      operator: 'gt',
-      values: [0]
-    }
-  ],
-  intervals: [
-    {
-      start: '2015-01-03',
-      end: '2015-01-04'
-    }
-  ]
-};
-
-const TestRequestV2 = {
   table: 'table1',
   columns: [
     { field: 'eventTimeDay', parameters: {}, type: 'timeDimension' },
@@ -107,97 +77,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   test('fetch', async function(assert) {
     assert.expect(1);
 
-    const response = await this.service.fetch(TestRequest, { dataSourceName: 'elideOne' });
-    assert.deepEqual(
-      response.response,
-      {
-        rows: [
-          {
-            dimension1: 'Sleek Rubber Computer',
-            dimension2: 'Ergonomic Metal Car',
-            metric1: '56.88',
-            metric2: '954.75'
-          },
-          {
-            dimension1: 'Sleek Rubber Computer',
-            dimension2: 'Awesome Rubber Chair',
-            metric1: '866.65',
-            metric2: '555.78'
-          },
-          {
-            dimension1: 'Sleek Rubber Computer',
-            dimension2: 'Generic Soft Ball',
-            metric1: '221.03',
-            metric2: '649.72'
-          },
-          {
-            dimension1: 'Sleek Rubber Computer',
-            dimension2: 'Fantastic Wooden Bacon',
-            metric1: '404.99',
-            metric2: '580.88'
-          },
-          {
-            dimension1: 'Sleek Rubber Computer',
-            dimension2: 'Small Concrete Shoes',
-            metric1: '316.09',
-            metric2: '168.88'
-          },
-          { dimension1: 'Rustic Wooden Bike', dimension2: 'Ergonomic Metal Car', metric1: '76.66', metric2: '415.87' },
-          {
-            dimension1: 'Rustic Wooden Bike',
-            dimension2: 'Awesome Rubber Chair',
-            metric1: '843.23',
-            metric2: '653.01'
-          },
-          { dimension1: 'Rustic Wooden Bike', dimension2: 'Generic Soft Ball', metric1: '848.94', metric2: '620.57' },
-          {
-            dimension1: 'Rustic Wooden Bike',
-            dimension2: 'Fantastic Wooden Bacon',
-            metric1: '971.47',
-            metric2: '403.77'
-          },
-          {
-            dimension1: 'Rustic Wooden Bike',
-            dimension2: 'Small Concrete Shoes',
-            metric1: '385.38',
-            metric2: '873.77'
-          },
-          {
-            dimension1: 'Rustic Plastic Bacon',
-            dimension2: 'Ergonomic Metal Car',
-            metric1: '954.49',
-            metric2: '555.07'
-          },
-          {
-            dimension1: 'Rustic Plastic Bacon',
-            dimension2: 'Awesome Rubber Chair',
-            metric1: '445.76',
-            metric2: '428.91'
-          },
-          { dimension1: 'Rustic Plastic Bacon', dimension2: 'Generic Soft Ball', metric1: '669.73', metric2: '139.69' },
-          {
-            dimension1: 'Rustic Plastic Bacon',
-            dimension2: 'Fantastic Wooden Bacon',
-            metric1: '82.50',
-            metric2: '230.24'
-          },
-          {
-            dimension1: 'Rustic Plastic Bacon',
-            dimension2: 'Small Concrete Shoes',
-            metric1: '897.10',
-            metric2: '197.14'
-          }
-        ],
-        meta: {}
-      },
-      'Response rows are correctly formatted for request'
-    );
-  });
-
-  test('fetch RequestV2', async function(assert) {
-    assert.expect(1);
-
-    const response = await this.service.fetch(TestRequestV2, { dataSourceName: TestRequestV2.dataSource });
+    const response = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
     assert.deepEqual(
       response.response,
       {
@@ -344,7 +224,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch RequestV2 - only metrics', async function(assert) {
+  test('fetch - only metrics', async function(assert) {
     assert.expect(1);
 
     const response = await this.service.fetch(
@@ -370,7 +250,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch RequestV2 - invalid date filter', async function(assert) {
+  test('fetch - invalid date filter', async function(assert) {
     assert.expect(2);
 
     const filters = [
@@ -451,7 +331,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch RequestV2 - incomplete date filters', async function(assert) {
+  test('fetch - incomplete date filters', async function(assert) {
     assert.expect(3);
 
     const response = await this.service.fetch(
@@ -575,7 +455,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch RequestV2 - sorts', async function(assert) {
+  test('fetch - sorts', async function(assert) {
     assert.expect(2);
 
     const response = await this.service.fetch(
@@ -665,7 +545,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch RequestV2 - limit', async function(assert) {
+  test('fetch - limit', async function(assert) {
     assert.expect(2);
 
     const response = await this.service.fetch(
