@@ -29,9 +29,9 @@ export default class MetricNameService extends Service {
    * @returns {String} formatted metric display name
    */
   //TODO use request v2 column obj
-  getDisplayName(metricObject: TODO): string {
+  getDisplayName(metricObject: TODO, dataSourceName: string): string {
     //TODO v2-ify
-    const metricMeta = this.naviMetadata.getById('metric', metricObject.metric, metricObject.source);
+    const metricMeta = this.naviMetadata.getById('metric', metricObject.metric, metricObject.source || dataSourceName);
     return this.naviFormatter.formatMetric(metricMeta, metricObject.parameters);
   }
 }

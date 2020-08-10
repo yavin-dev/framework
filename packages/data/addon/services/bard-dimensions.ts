@@ -17,6 +17,7 @@ import { intersection } from 'lodash-es';
 import { getDefaultDataSourceName } from '../utils/adapter';
 import CARDINALITY_SIZES from '../utils/enums/cardinality-sizes';
 import NaviMetadataService from './navi-metadata';
+import BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
 
 const SEARCH_OPERATOR_PRIORITY = ['contains', 'in'];
 
@@ -46,7 +47,7 @@ export default class BardDimensionService extends Service {
    * @private
    * @property {Object} _bardAdapter - the bard adapter object
    */
-  _bardAdapter!: TODO;
+  _bardAdapter!: BardDimensionAdapter;
 
   /**
    * @private

@@ -168,7 +168,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       );
 
       assert.deepEqual(
-        model._dimensionsService,
+        model.dimensionsService,
         Service,
         'find returns a bard dimension array model object with the service instance'
       );
@@ -221,7 +221,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     );
 
     assert.deepEqual(
-      model._dimensionsService,
+      model.dimensionsService,
       Service,
       'find returns a bard dimension array model object with the service instance'
     );
@@ -245,7 +245,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       );
 
       assert.deepEqual(
-        model._dimensionsService,
+        model.dimensionsService,
         Service,
         'find returns a bard dimension array model object with the service instance'
       );
