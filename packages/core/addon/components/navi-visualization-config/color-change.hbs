@@ -1,0 +1,29 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="color-change-config">
+  <div class="color-change__header">
+    Change Colors:
+  </div>
+  <label for='color-change__label-select' class='color-change__label-select__label'>
+    Label:
+  </label>
+  <PowerSelect
+    class='color-change__label-select'
+    @tagName='div'
+    @triggerId='color-change__label-select'
+    @options={{this.labelColors}}
+    @selected={{this.selectedLabelColor}}
+    @searchEnabled={{false}}
+    @onchange={{this.selectedNewLabel}}
+    @dropdownClass='color-change__label-select__dropdown'
+    as |labelColor|
+  >
+    {{labelColor.label}}
+  </PowerSelect>
+  <label for='color-change__color-select' class='color-change__color-select__label'>
+    Color:
+  </label>
+  <input type='color' id='color-change__color-select' name='selectedColor' value={{this.selectedLabelColor.color}}>
+  <button type='button' class='color-change__submit-button' {{action 'updateChartColor'}}>
+    Submit
+  </button>
+</div>

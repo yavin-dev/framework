@@ -6,9 +6,25 @@
  *   @options=tableOptions
  * />
  */
-import Component from '@ember/component';
-import layout from '../../templates/components/navi-visualization-config/apex-pie';
+import Component from '@glimmer/component';
+import { set, action } from '@ember/object';
+import { copy } from 'ember-copy';
+import { tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout
-});
+@tagName('')
+class NaviVisualizationConfigApexPieComponent extends Component {
+  /**
+   * Method to replace the seriesConfig in visualization config object.
+   *
+   * @method onUpdateConfig
+   * @param {Object} seriesConfig
+   */
+  @action
+  onUpdateSeriesConfig(seriesConfig) {
+    const newOptions = copy(this.args.options);
+    set(newOptions, 'series.config', seriesConfig);
+    this.args.onUpdateConfig(newOptions);
+  }
+}
+
+export default NaviVisualizationConfigApexPieComponent;
