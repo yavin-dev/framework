@@ -52,7 +52,7 @@ module('Integration | Component | print report view', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    const metadataService = this.owner.lookup('service:data');
+    const metadataService = this.owner.lookup('service:navi-metadata');
     const store = this.owner.lookup('service:store');
 
     await metadataService.loadMetadata();

@@ -12,7 +12,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
   hooks.beforeEach(async function() {
     BardDimensions = this.owner.lookup('service:bard-dimensions');
 
-    await this.owner.lookup('service:navi-metadata');
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     const allProperties = await BardDimensions.all('property');
     this.setProperties({
       options: allProperties,
