@@ -113,7 +113,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     );
     assert.deepEqual(
       timeDimensions.mapBy('id'),
-      ['timeDimension0', 'timeDimension1'],
+      ['eventTimeHour', 'eventTimeDay', 'eventTimeWeek', 'eventTimeMonth', 'eventTimeQuarter', 'eventTimeYear'],
       'All `elideOne` time dimensions are loaded'
     );
 
