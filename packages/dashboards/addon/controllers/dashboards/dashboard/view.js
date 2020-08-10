@@ -97,7 +97,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   async addFilter(dashboard, dimension) {
     const store = this.store;
-    const { metadataService } = this.metadataService;
+    const { metadataService } = this;
     const filters = dashboard.filters.toArray().map(fil => {
       const newFil = fil.serialize();
       newFil.dataSource = fil.dimension.source;

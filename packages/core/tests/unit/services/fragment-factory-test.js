@@ -16,7 +16,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
 
   test('Build Column Fragments From Meta', function(assert) {
     const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
-    const dimMeta = metadataService.getById('dimension', 'browseOne', 'bardOne');
+    const dimMeta = metadataService.getById('dimension', 'browser', 'bardOne');
 
     const metricMetaFragment = service.createColumnFromMeta(
       metricMeta,

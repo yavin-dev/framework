@@ -219,7 +219,7 @@ export default class BardDimensionService extends Service {
         dimension,
         content: A(serializedRecords),
         meta: rawPayload.meta,
-        _dimensionsService: this
+        dimensionsService: this
       });
     }
     return undefined;
@@ -233,7 +233,7 @@ export default class BardDimensionService extends Service {
    * @param {String} dimension - dimension model name
    * @returns {String} - search operator
    */
-  _getSearchOperator(dimension: unknown) {
+  _getSearchOperator(dimension: string) {
     assert('dimension must be defined', dimension);
 
     const searchOperator = intersection(SEARCH_OPERATOR_PRIORITY, this._bardAdapter.supportedFilterOperators)[0];
@@ -286,7 +286,7 @@ export default class BardDimensionService extends Service {
    * @param {Object} options - adapter options
    * @returns {Promise} - Array Promise containing the search result
    */
-  searchValue(dimension: any, query: string, options = {}) {
+  searchValue(dimension: string, query: string, options = {}) {
     const values = query.split(/,\s+|\s+/).map((v: string) => v.trim());
 
     return this._bardAdapter.search(dimension, { values }, options);
