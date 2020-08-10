@@ -29,8 +29,6 @@ export default Factory.extend({
 
   expression: null,
 
-  supportedGrains: () => [],
-
   timeZone() {
     return { short: 'UTC', long: 'Universal Time Coordinated' };
   }

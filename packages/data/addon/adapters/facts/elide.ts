@@ -28,7 +28,7 @@ interface RequestDimension {
 const OPERATOR_MAP: Dict<string> = {
   eq: '==',
   neq: '!=',
-  notin: 'out'
+  notin: '=out='
 };
 
 export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {

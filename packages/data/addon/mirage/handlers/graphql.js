@@ -7,10 +7,71 @@ import schema from 'navi-data/gql/schema';
 import gql from 'graphql-tag';
 import faker from 'faker';
 import moment from 'moment';
+import { capitalize } from '@ember/string';
+import { orderBy } from 'lodash-es';
 
-const API_DATE_FORMAT = 'YYYY-MM-DD';
-const ASYNC_RESPONSE_DELAY = 5000; // ms before async api response result is populated
+const ASYNC_RESPONSE_DELAY = 2000; // ms before async api response result is populated
+const DATE_FORMATS = {
+  hour: 'YYYY-MM-DD HH:MM:SS',
+  day: 'YYYY-MM-DD',
+  isoweek: 'YYYY-MM-DD',
+  month: 'YYYY MMM',
+  quarter: 'YYYY [Q]Q',
+  year: 'YYYY'
+};
+const GRAINS = Object.keys(DATE_FORMATS);
+const TIME_DIMENSION_REGEX = new RegExp(
+  `(.+)(${Object.keys(DATE_FORMATS)
+    .map(grain => capitalize(grain))
+    .join('|')})`
+);
+const OPERATORS = {
+  eq: '==',
+  neq: '!=',
+  isIn: '=in=',
+  notIn: '=out=',
+  isNull: '=isnull=true',
+  notNull: '=isnull=false',
+  lt: '=lt=',
+  gt: '=gt=',
+  le: '=le=',
+  ge: '=ge='
+};
+const FILTER_OPS = {
+  [OPERATORS.lt]: ([filterVal], vals) => vals.filter(val => val < filterVal),
+  [OPERATORS.gt]: ([filterVal], vals) => vals.filter(val => val > filterVal),
+  [OPERATORS.le]: ([filterVal], vals) => vals.filter(val => val <= filterVal),
+  [OPERATORS.ge]: ([filterVal], vals) => vals.filter(val => val >= filterVal),
+  [OPERATORS.isIn]: (filterVals, vals) => vals.filter(val => filterVals.includes(val)),
+  [OPERATORS.notIn]: (filterVals, vals) => vals.filter(val => !filterVals.includes(val)),
+  [OPERATORS.isNull]: (_, vals) => vals.filter(val => !val),
+  [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),
+  [OPERATORS.eq]: ([filterVal], vals) => vals.filter(val => val === filterVal),
+  [OPERATORS.neq]: ([filterVal], vals) => vals.filter(val => val !== filterVal)
+};
+const FILTER_REGEX = new RegExp(`(.*?)(?:\\((.+?)\\))?(${Object.values(OPERATORS).join('|')})\\((.+?)\\)`);
 
+//create an inclusive interval of dates based on filter values and operator
+const DATE_FILTER_OPS = {
+  [OPERATORS.lt]: ([val], grain) => [null, moment(val).subtract(1, grain)],
+  [OPERATORS.gt]: ([val], grain) => [moment(val).add(1, grain), null],
+  [OPERATORS.le]: ([val]) => [null, moment(val)],
+  [OPERATORS.ge]: ([val]) => [moment(val), null],
+  [OPERATORS.isIn]: () => [null, null], //TODO: Not sure if the following operators are really supported for dates
+  [OPERATORS.isNull]: () => [null, null],
+  [OPERATORS.notNull]: () => [null, null],
+  [OPERATORS.isEmpty]: () => [null, null],
+  [OPERATORS.eq]: () => [null, null],
+  [OPERATORS.neq]: () => [null, null]
+};
+
+/**
+ *
+ * @param {String} table - table name
+ * @param {Object} args - args and their values
+ * @param {String[]} fields - requested fields
+ * @returns {Number} - number to use as faker seed
+ */
 function _getSeedForRequest(table, args, fields) {
   const tableLength = table.length;
   const argsLength = Object.keys(args).join(' ').length;
@@ -19,32 +80,162 @@ function _getSeedForRequest(table, args, fields) {
 }
 
 /**
- * @param {string} filter
- * @returns 3 sequential days in format YYYY-MM-DD ending on today
+ *
+ * @param {Object[]} filters - time dimension filter objects with operator, values, and grain
+ * @returns {Array<Moment|null>} - lowerbound and upperbound of moments for interval
  */
-function _getDates(/* filter */) {
-  // TODO: Generate dates based on filters on time dimensions and the chosen grain
-  let day = moment();
-  let days = [];
-  for (let i = 0; i < 3; i++) {
-    days.push(moment(day).format(API_DATE_FORMAT));
-    day = moment(day).subtract(1, 'days');
+function _createInterval(filters) {
+  const intervals = filters.map(f => DATE_FILTER_OPS[f.operator](f.values, f.grain));
+  const lowerLimits = intervals.map(interval => interval[0]).filter(Boolean);
+  const lowerBound = lowerLimits.length ? moment.max(lowerLimits) : null;
+
+  const upperLimits = intervals.map(interval => interval[1]).filter(Boolean);
+  const upperBound = upperLimits.length ? moment.min(upperLimits) : null;
+
+  if (!upperBound && !lowerBound) {
+    return [];
   }
 
-  return days;
+  return !lowerBound || !upperBound || lowerBound.isSameOrBefore(upperBound) ? [lowerBound, upperBound] : [];
 }
 
 /**
- * @param {Number} n
+ * @param {Object[]} filters - time dimension filter objects with operator, values, and grain
+ * @returns {Object} - date intervals for each time dimension
+ */
+function _intervalsForFilters(filters) {
+  // Group filters by their field without grain and assign grain and filterWithoutGrain properties
+  const filtersWithGrain = filters.reduce((byField, filter) => {
+    const [, fieldWithoutGrain, grain] = TIME_DIMENSION_REGEX.exec(filter.field);
+    const filterObject = {
+      ...filter,
+      fieldWithoutGrain,
+      grain: grain === 'Week' ? 'Isoweek' : grain
+    };
+    byField[fieldWithoutGrain] = [...(byField[fieldWithoutGrain] || []), filterObject];
+    return byField;
+  }, {});
+
+  return Object.keys(filtersWithGrain).reduce((acc, curr) => {
+    acc[curr] = _createInterval(filtersWithGrain[curr]);
+    return acc;
+  }, {});
+}
+
+/**
+ * @param {Array<Moment|null>} interval
+ * @param {String} grain
+ * @returns {Moment[]} - all the dates for the interval in the supplied time grain
+ */
+function _datesForInterval(interval, grain) {
+  if (!interval[0] && !interval[1]) {
+    return [];
+  }
+  let start;
+  let end;
+  const dates = [];
+
+  // Default interval to at most 1 month long if start or end are null
+  if (!interval[0]) {
+    end = moment(interval[1]).startOf(grain);
+    start = moment(end).subtract(1, 'month'); //Default start to 1 month before end
+  } else if (!interval[1]) {
+    start = interval[0].startOf(grain);
+    let monthAhead = moment(start).add(1, 'month');
+    let current = moment();
+    end = monthAhead.isSameOrBefore(current) ? monthAhead.startOf(grain) : current.startOf(grain); //Default end to current or 1 month past start, whichever is closer to start
+  } else {
+    start = interval[0].startOf(grain);
+    end = interval[1].startOf(grain);
+  }
+  for (let i = start; i.isSameOrBefore(end); i.add(1, grain)) {
+    dates.push(moment(i));
+  }
+  return dates;
+}
+
+/**
+ * @param {Object[]} filters - filters from the request
+ * @param {Object[]} requestedColumns - time dimension columns from mirage db in the columns of the request
+ * @returns rows with values for each requested time dimension
+ */
+function _getDates(filters, requestedColumns) {
+  // Columns with buckets keyed by their field without grain where buckets are sorted by grain in ascending order
+  const columns = requestedColumns.reduce((acc, col) => {
+    const [, fieldWithoutGrain, grain] = TIME_DIMENSION_REGEX.exec(col.id);
+
+    const column = {
+      ...col,
+      fieldWithoutGrain,
+      grain: grain === 'Week' ? 'Isoweek' : grain
+    };
+
+    // Insert column into field bucket in order
+    if (!acc[fieldWithoutGrain]) {
+      acc[fieldWithoutGrain] = [column];
+    } else {
+      let index = acc[fieldWithoutGrain].length;
+      acc[fieldWithoutGrain].find((existing, i) => {
+        if (GRAINS.indexOf(existing.grain) > GRAINS.indexOf(column.grain)) {
+          index = i;
+          return true;
+        }
+        return false;
+      });
+      acc[fieldWithoutGrain].splice(index, 0, column);
+    }
+    return acc;
+  }, {});
+
+  // Time Dimensions will cover the same interval regardless of grain
+  // Calculate the interval for all grains of each time dimension
+  const intervals = _intervalsForFilters(filters);
+
+  let rows = [];
+  for (let field in columns) {
+    const columnsForField = columns[field];
+    // List of moment objects for an interval with the lowest requested grain passed in
+    const datesForField = _datesForInterval(intervals[field], columnsForField[0].grain);
+
+    // For each date for a field, add each date under the field's column names as keys with the date formatted depending on the grain
+    if (!rows.length) {
+      rows = datesForField.map(date =>
+        columnsForField.reduce((row, column) => {
+          row[column.id] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+          return row;
+        }, {})
+      );
+    } else {
+      rows = rows.reduce((newRows, currentRow) => {
+        return [
+          ...newRows,
+          ...datesForField.map(date => ({
+            ...currentRow,
+            ...columnsForField.reduce((row, column) => {
+              row[column.id] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+              return row;
+            }, {})
+          }))
+        ];
+      }, []);
+    }
+  }
+  return rows;
+}
+
+/**
+ * @param {Object} filter
  * @returns n random dimension values
  */
-function _dimensionValues(n) {
+function _dimensionValues(filter = {}) {
+  const { operator, values } = filter;
   const vals = [];
-  for (let i = 0; i < n; i++) {
+  const valCount = faker.random.number({ min: 3, max: 5 });
+  for (let i = 0; i < valCount; i++) {
     vals.push(faker.commerce.productName());
   }
 
-  return vals;
+  return operator && values ? FILTER_OPS[operator](values, vals) : vals;
 }
 
 /**
@@ -52,8 +243,9 @@ function _dimensionValues(n) {
  * @returns {Object}
  */
 function _parseGQLQuery(queryStr) {
+  const noEscapesQuery = queryStr.replace(/\\/g, '');
   const queryAST = gql`
-    ${queryStr}
+    ${noEscapesQuery}
   `;
 
   // Parse requested table, columns, and filters from graphql query
@@ -70,6 +262,56 @@ function _parseGQLQuery(queryStr) {
   };
 }
 
+/**
+ * @param {Object} args - query argument strings
+ * @returns {Object} objects for each argument type
+ */
+function _parseArgs(args) {
+  const parsers = {
+    filter: filter =>
+      filter
+        .split(';')
+        .filter(Boolean)
+        .map(f => {
+          const [, field, parameters, operator, values] = f.match(FILTER_REGEX);
+          return {
+            field,
+            parameters: parameters && Object.fromEntries(parameters.split(',').map(p => p.split(': '))),
+            operator,
+            values: values.split(','),
+            canonicalName: `${field}${parameters ? `(${parameters})` : ''}`
+          };
+        }),
+    sort: sort =>
+      sort
+        .split(',')
+        .filter(Boolean)
+        .map(s => {
+          let field = s;
+          let direction = 'asc';
+          if (s.startsWith('-')) {
+            direction = 'desc';
+            field = field.substring(1);
+          }
+          return { field, direction };
+        }),
+    first: limit => limit
+  };
+
+  const parsed = {};
+
+  for (let param in args) {
+    parsed[param] = parsers[param](args[param]);
+  }
+
+  return parsed;
+}
+
+/**
+ * @param {MirageDatabase} db
+ * @param {MirageRecord} parent - async query mirage record
+ * @return {String} - response body object in string form
+ */
 function _getResponseBody(db, parent) {
   // Create mocked response for an async query
   const { createdOn, query } = parent;
@@ -79,8 +321,8 @@ function _getResponseBody(db, parent) {
   if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
     parent.status = 'COMPLETE';
 
-    // TODO: get args from _parseGQLQuery result and handle filtering
     const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
+    const { filter = [], sort = [], first } = _parseArgs(args);
     const seed = _getSeedForRequest(table, args, fields);
     faker.seed(seed);
 
@@ -97,17 +339,22 @@ function _getResponseBody(db, parent) {
         { metrics: [], dimensions: [], timeDimensions: [] }
       );
 
-      const dates = columns.timeDimensions.length > 0 ? _getDates(args.filter) : [];
-
       // Convert each date into a row of data
       // If no time dimension is sent, just return a single row
-      let rows = dates.length ? dates.map(dateTime => ({ dateTime })) : [{}];
+      let rows =
+        columns.timeDimensions.length > 0
+          ? _getDates(
+              filter.filter(fil => columns.timeDimensions.includes(fil.field)),
+              db.timeDimensions.find(columns.timeDimensions)
+            )
+          : [{}];
 
       // Add each dimension
       columns.dimensions.forEach(dimension => {
-        rows = rows.reduce((newRows, currentRow) => {
-          const dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
+        const filterForDim = filter.find(f => f.field === dimension); // TODO: Handle parameterized dimensions
+        const dimensionValues = _dimensionValues(filterForDim);
 
+        rows = rows.reduce((newRows, currentRow) => {
           return [
             ...newRows,
             ...dimensionValues.map(value => ({
@@ -128,6 +375,20 @@ function _getResponseBody(db, parent) {
           currRow
         )
       );
+
+      // handle limit in request
+      if (first && first < rows.length) {
+        rows = rows.slice(0, first);
+      }
+
+      // sort rows
+      if (sort.length) {
+        rows = orderBy(
+          rows,
+          sort.map(r => r.field),
+          sort.map(r => r.direction)
+        );
+      }
 
       return JSON.stringify({
         data: {
@@ -169,7 +430,7 @@ const OPTIONS = {
         return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
       },
       op(records) {
-        return records;
+        return records; // op is not intended to be an actual filter in elide, but ember-cli-mirage-graphql treats it like one
       }
     }
   },
