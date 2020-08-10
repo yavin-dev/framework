@@ -322,31 +322,35 @@ module('Unit | Service | elide-metadata', function(hooks) {
     await Service.loadMetadata({ dataSourceName: 'elideOne' });
 
     assert.equal(
-      Service.getById('table', 'table1'),
+      Service.getById('table', 'table1', 'elideOne'),
       keg.getById('metadata/table', 'table1', 'elideOne'),
       'Table1 is fetched from the keg using getById'
     );
 
     assert.equal(
-      Service.getById('dimension', 'dimension1'),
+      Service.getById('dimension', 'dimension1', 'elideOne'),
       keg.getById('metadata/dimension', 'dimension1', 'elideOne'),
       'Dimension1 is fetched from the keg using getById'
     );
 
     assert.equal(
-      Service.getById('metric', 'metric0'),
+      Service.getById('metric', 'metric0', 'elideOne'),
       keg.getById('metadata/metric', 'metric0', 'elideOne'),
       'Metric0 is fetched from the keg using getById'
     );
 
     assert.equal(
-      Service.getById('time-dimension', 'timeDimension0'),
+      Service.getById('time-dimension', 'timeDimension0', 'elideOne'),
       keg.getById('metadata/time-dimension', 'timeDimension0', 'elideOne'),
       'Time Dimension 0 is fetched from the keg using getById'
     );
 
-    //@ts-ignore
-    assert.equal(Service.getById('metric'), undefined, 'getById returns undefined when no id is passed');
+    assert.equal(
+      //@ts-ignore
+      Service.getById('metric', undefined, 'elideOne'),
+      undefined,
+      'getById returns undefined when no id is passed'
+    );
 
     assert.throws(
       () => {
@@ -377,7 +381,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     await Service.loadMetadata({ dataSourceName: 'elideOne' });
 
     assert.equal(
-      await Service.findById('table', 'table1'),
+      await Service.findById('table', 'table1', 'elideOne'),
       keg.getById('metadata/table', 'table1', 'elideOne'),
       'Table1 is fetched from the keg using getById'
     );
@@ -395,7 +399,11 @@ module('Unit | Service | elide-metadata', function(hooks) {
     ElideTwoScenario(Server);
     await Service.loadMetadata({ dataSourceName: 'elideTwo' });
 
-    assert.equal(Service.getMetaField('metric', 'metric1', 'name'), 'Metric 1', 'gets field from requested metadata');
+    assert.equal(
+      Service.getMetaField('metric', 'metric1', 'name', undefined, 'elideOne'),
+      'Metric 1',
+      'gets field from requested metadata'
+    );
 
     assert.equal(
       Service.getMetaField('metric', 'metric5', 'name', undefined, 'elideTwo'),
@@ -410,13 +418,13 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'metric1', 'shortName', 'someDefault'),
+      Service.getMetaField('metric', 'metric1', 'shortName', 'someDefault', 'elideOne'),
       'someDefault',
-      'returns default when field is not found'
+      'returns default when field is not found on valid metric'
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'InvalidMetric', 'shortName', 'someDefault'),
+      Service.getMetaField('metric', 'InvalidMetric', 'shortName', 'someDefault', 'elideOne'),
       'someDefault',
       'returns default when metric is not found'
     );
@@ -453,6 +461,6 @@ module('Unit | Service | elide-metadata', function(hooks) {
       'Correct table namespace is returned for non-default source'
     );
 
-    assert.equal(Service.getTableNamespace('foo'), 'elideOne', 'Default namespace returned when table not found');
+    assert.equal(Service.getTableNamespace('foo'), 'bardOne', 'Default namespace returned when table not found');
   });
 });
