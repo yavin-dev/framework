@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV1 } from 'navi-data/adapters/facts/interface';
+import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV2 } from 'navi-data/adapters/facts/interface';
 
 const Payload: AsyncQueryResponse = {
   asyncQuery: {
@@ -24,9 +24,14 @@ const Payload: AsyncQueryResponse = {
   }
 };
 
-const Request: RequestV1 = {
-  metrics: [{ metric: 'user_count', parameters: {} }],
-  logicalTable: { table: 'tableA', timeGrain: 'month' }
+const Request: RequestV2 = {
+  columns: [{ field: 'user_count', parameters: {}, type: 'metric' }],
+  table: 'tableA',
+  filters: [],
+  sorts: [],
+  dataSource: 'elideOne',
+  requestVersion: '2.0',
+  limit: null
 };
 
 let Serializer: NaviFactSerializer;
