@@ -12,7 +12,7 @@ import EmberObject from '@ember/object';
 import { configHost, getDefaultDataSourceName } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
 import { Filter } from '../facts/interface';
-import { DimensionMetadata } from 'navi-data/models/metadata/dimension';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -47,33 +47,16 @@ export default class BardDimensionAdapter extends EmberObject {
    */
   namespace = 'v1';
 
-  /**
-   * @property {Service} ajax
-   */
-  @service ajax: TODO;
+  @service
+  private ajax: TODO;
 
-  /**
-   * @property {Service} bard metadata
-   */
-  @service bardMetadata: TODO;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @property {Array} supportedFilterOperators - List of supported filter operations
    */
   supportedFilterOperators = SUPPORTED_FILTER_OPERATORS;
-
-  /**
-   * Returns metadata for dimensionName
-   *
-   * @method _getDimensionMetadata
-   * @private
-   * @param {String} dimensionName - name of dimension
-   * @param {String} namespace - namespace of keg.
-   * @returns {Object} metadata object
-   */
-  _getDimensionMetadata(dimensionName: string, namespace = getDefaultDataSourceName()): DimensionMetadata {
-    return this.bardMetadata.getById('dimension', dimensionName, namespace);
-  }
 
   /**
    * Builds the URL for dimension search
@@ -133,10 +116,13 @@ export default class BardDimensionAdapter extends EmberObject {
       andQueries.every(q => Array.isArray(q.values))
     );
 
-    const defaultDimensionField = this._getDimensionMetadata(
+    const model = this.naviMetadata.getById(
+      'dimension',
       dimension,
       options.dataSourceName || getDefaultDataSourceName()
-    ).primaryKeyFieldName;
+    );
+
+    const defaultDimensionField = model?.primaryKeyFieldName || 'id';
 
     const requestV2Filters: Filter[] = andQueries.map(query => {
       const field = query.field || defaultDimensionField;
@@ -299,7 +285,7 @@ export default class BardDimensionAdapter extends EmberObject {
    *      }
    * @returns {Promise} - Promise with the response
    */
-  search(dimension: string, query: DimensionFilter, options: AdapterOptions) {
+  search(dimension: string, query: { values: Array<string | number> | string }, options: AdapterOptions) {
     let url = this._buildUrl(dimension, 'search', options),
       data = {};
 

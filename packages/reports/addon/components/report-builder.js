@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
@@ -17,7 +16,7 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {Service} metadataService
    */
-  @service('bard-metadata') metadataService;
+  @service('navi-metadata') metadataService;
 
   /**
    * @property {Object} request

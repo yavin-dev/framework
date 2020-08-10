@@ -6,8 +6,6 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-let MetadataService;
-
 const TEMPLATE = hbs`
   {{navi-visualizations/bar-chart
     model=model
@@ -381,7 +379,7 @@ module('Integration | Component | bar chart', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     injectC3Enhancements();
 
     this.set('model', Model);
@@ -406,8 +404,7 @@ module('Integration | Component | bar chart', function(hooks) {
       }
     });
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders', async function(assert) {

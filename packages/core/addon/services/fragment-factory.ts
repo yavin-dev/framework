@@ -5,8 +5,11 @@
 import Service, { inject as service } from '@ember/service';
 import Store from 'ember-data/store';
 import { ColumnMetadata } from 'navi-data/models/metadata/column';
+//@ts-ignore
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
+//@ts-ignore
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
+//@ts-ignore
 import SortFragment from '../models/bard-request-v2/fragments/sort';
 import { dasherize } from '@ember/string';
 

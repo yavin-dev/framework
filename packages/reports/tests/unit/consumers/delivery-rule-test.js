@@ -12,9 +12,9 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('delete delivery-rule - success', function(assert) {

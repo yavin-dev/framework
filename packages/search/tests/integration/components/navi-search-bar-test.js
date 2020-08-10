@@ -11,7 +11,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     const store = this.owner.lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(

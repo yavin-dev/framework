@@ -18,7 +18,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     server = new Pretender(metadataRoutes);
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     Payload = {
       type: 'field',
@@ -88,7 +88,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     const columnFunction = metricOne.columnFunction;
     const expectedColumnFunc = this.owner
       .lookup('service:keg')
-      .getById('metadata/column-function', 'moneyMetric', 'bardOne') as ColumnFunctionMetadataModel;
+      .getById('metadata/columnFunction', 'moneyMetric', 'bardOne') as ColumnFunctionMetadataModel;
     assert.equal(columnFunction, expectedColumnFunc, 'Column function is returned correctly');
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
@@ -169,8 +169,8 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     });
 
     const result = await metricOne.extended;
-    assert.equal(result.id, 'metricOne', 'extended attributes model has same id');
-    assert.equal(result.category, 'category', 'extended attributes model has same id');
-    assert.equal(result.name, 'Metric One', 'extended attributes model has same id');
+    assert.equal(result?.id, 'metricOne', 'extended attributes model has same id');
+    assert.equal(result?.category, 'category', 'extended attributes model has same id');
+    assert.equal(result?.name, 'Metric One', 'extended attributes model has same id');
   });
 });

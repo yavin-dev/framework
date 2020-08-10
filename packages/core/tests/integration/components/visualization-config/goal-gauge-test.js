@@ -10,7 +10,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   let Template = hbs`

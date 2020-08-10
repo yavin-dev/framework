@@ -5,11 +5,11 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { upperFirst } from 'lodash-es';
-import Metric from './metric';
-import KegService from '../../services/keg';
-import Dimension from './dimension';
-import TimeDimension from './time-dimension';
+import MetricMetadataModel from './metric';
+import DimensionMetadataModel from './dimension';
+import TimeDimensionMetadataModel from './time-dimension';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export type TimeGrain = {
   id: string;
@@ -37,12 +37,16 @@ export interface TableMetadata {
   category?: string;
   description?: string;
   cardinality: typeof CARDINALITY_SIZES[number];
-  metrics: Metric[];
-  dimensions: Dimension[];
-  timeDimensions: TimeDimension[];
+  metrics: MetricMetadataModel[];
+  dimensions: DimensionMetadataModel[];
+  timeDimensions: TimeDimensionMetadataModel[];
   source: string;
   timeGrains: TimeGrain[];
   tags: string[];
+}
+
+function isPresent<T>(t: T | undefined | null | void): t is T {
+  return t !== undefined && t !== null;
 }
 
 export default class TableMetadataModel extends EmberObject implements TableMetadata, TableMetadataPayload {
@@ -52,10 +56,8 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
    */
   static identifierField = 'id';
 
-  /**
-   * @property {KegService} keg
-   */
-  @service keg!: KegService;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @param {string} id
@@ -100,34 +102,24 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   /**
    * @param {Metric[]} metrics
    */
-  get metrics(): Metric[] {
-    return this.metricIds.map(metricId => {
-      const metric = this.keg.getById('metadata/metric', metricId, this.source);
-      // force cast to metric
-      return (metric as unknown) as Metric;
-    });
+  get metrics(): MetricMetadataModel[] {
+    return this.metricIds.map(id => this.naviMetadata.getById('metric', id, this.source)).filter(isPresent);
   }
 
   /**
    * @param {Dimension[]} dimensions
    */
-  get dimensions(): Dimension[] {
-    return this.dimensionIds.map(dimensionId => {
-      const dimension = this.keg.getById('metadata/dimension', dimensionId, this.source);
-      // force cast to dimension
-      return (dimension as unknown) as Dimension;
-    });
+  get dimensions(): DimensionMetadataModel[] {
+    return this.dimensionIds.map(id => this.naviMetadata.getById('dimension', id, this.source)).filter(isPresent);
   }
 
   /**
    * @param {TimeDimension[]} timeDimensions
    */
-  get timeDimensions(): TimeDimension[] {
-    return this.timeDimensionIds.map(dimensionId => {
-      const timeDimension = this.keg.getById('metadata/time-dimension', dimensionId, this.source);
-      // force cast to timeDimension
-      return (timeDimension as unknown) as TimeDimension;
-    });
+  get timeDimensions(): TimeDimensionMetadataModel[] {
+    return this.timeDimensionIds
+      .map(id => this.naviMetadata.getById('timeDimension', id, this.source))
+      .filter(isPresent);
   }
 
   /**

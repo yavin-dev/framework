@@ -195,13 +195,14 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
   test('extended property', async function(assert) {
     const server = new Pretender(metadataRoutes);
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
-      id: 'dimensionOne'
+      id: 'dimensionOne',
+      source: 'bardOne'
     });
 
     const result = await dimensionOne.extended;
-    const expected = await this.owner.lookup('service:bard-metadata').findById('dimension', dimensionOne.id, 'bardOne');
+    const expected = await this.owner.lookup('service:navi-metadata').findById('dimension', dimensionOne.id, 'bardOne');
     assert.equal(result, expected, 'dimension model can fetch extended attributes');
     server.shutdown();
   });

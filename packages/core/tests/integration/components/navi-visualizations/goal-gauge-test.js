@@ -11,9 +11,9 @@ module('Integration | Component | goal gauge ', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     injectC3Enhancements();
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('goal-gauge renders correctly', async function(assert) {
@@ -47,8 +47,8 @@ module('Integration | Component | goal gauge ', function(hooks) {
 
   test('goal-gauge renders correctly with multi datasource', async function(assert) {
     assert.expect(1);
-    const metaData = this.owner.lookup('service:bard-metadata');
-    metaData._keg.reset();
+    const metaData = this.owner.lookup('service:navi-metadata');
+    metaData.keg.reset();
     await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
     _setModel(this, 'available', 3030000000, 'bardTwo');
@@ -65,7 +65,7 @@ module('Integration | Component | goal gauge ', function(hooks) {
     `);
 
     assert.dom('.metric-title').hasText('How many are available', 'the default metric title is correctly displayed');
-    metaData._keg.reset();
+    metaData.keg.reset();
   });
 
   test('goal-gauge renders correctly with unit', async function(assert) {

@@ -87,9 +87,9 @@ class DimensionBulkImportComponent extends Component {
 
   /**
    * @private
-   * @property {Ember.Service} bardMetadata
+   * @property {Ember.Service} - navi metadata
    */
-  @service('bard-metadata') _bardMetadata;
+  @service('navi-metadata') naviMetadata;
 
   /**
    * @method didInsertElement
@@ -157,7 +157,7 @@ class DimensionBulkImportComponent extends Component {
    */
   @computed('dimension.{id,source}')
   get searchableIdField() {
-    const meta = this._bardMetadata.getById('dimension', this.dimension?.id, this.dimension?.source);
+    const meta = this.naviMetadata.getById('dimension', this.dimension?.id, this.dimension?.source);
     return get(meta, 'idFieldName');
   }
 

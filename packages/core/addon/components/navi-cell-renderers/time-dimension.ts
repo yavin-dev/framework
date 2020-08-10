@@ -11,6 +11,7 @@
  */
 
 import Component from '@glimmer/component';
+//@ts-ignore
 import Request from 'navi-core/models/bard-request-v2/request';
 
 type Args = {

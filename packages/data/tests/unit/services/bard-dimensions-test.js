@@ -47,7 +47,7 @@ module('Unit | Service | Dimensions', function(hooks) {
 
   hooks.beforeEach(async function() {
     Service = this.owner.lookup('service:bard-dimensions');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     //setup Pretender
     Server = new Pretender(function() {
@@ -168,7 +168,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       );
 
       assert.deepEqual(
-        model._dimensionsService,
+        model.dimensionsService,
         Service,
         'find returns a bard dimension array model object with the service instance'
       );
@@ -221,7 +221,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     );
 
     assert.deepEqual(
-      model._dimensionsService,
+      model.dimensionsService,
       Service,
       'find returns a bard dimension array model object with the service instance'
     );
@@ -245,7 +245,7 @@ module('Unit | Service | Dimensions', function(hooks) {
       );
 
       assert.deepEqual(
-        model._dimensionsService,
+        model.dimensionsService,
         Service,
         'find returns a bard dimension array model object with the service instance'
       );

@@ -15,7 +15,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it exists', function(assert) {

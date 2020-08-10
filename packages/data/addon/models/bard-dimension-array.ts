@@ -6,22 +6,23 @@
  */
 
 import ArrayProxy from '@ember/array/proxy';
+import BardDimensionService from 'navi-data/services/bard-dimensions';
 
-export default ArrayProxy.extend({
+export default class BardDimensionArray extends ArrayProxy<TODO> {
   /**
    * @property {Object} dimension - the dimension object
    */
-  dimension: undefined,
+  dimension!: TODO;
 
   /**
    * @property {Object} meta - meta response for dimension
    */
-  meta: undefined,
+  meta!: TODO;
 
   /**
    * @property {Service} _dimensionsService - instance of the bard-dimensions service passed in on create
    */
-  _dimensionsService: undefined,
+  dimensionsService!: BardDimensionService;
 
   /**
    * @method next - Returns the `next` url from the meta block of the response
@@ -43,7 +44,7 @@ export default ArrayProxy.extend({
       }
     }
     return null;
-  },
+  }
 
   /**
    * @method previous - Returns the `previous` url from the meta block of the response
@@ -62,4 +63,4 @@ export default ArrayProxy.extend({
     }
     return null;
   }
-});
+}

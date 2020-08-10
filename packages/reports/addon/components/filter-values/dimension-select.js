@@ -35,7 +35,7 @@ export default class DimensionSelectComponent extends Component {
    * @private
    * @property {Ember.Service} _metadataService
    */
-  @service('bard-metadata') _metadataService;
+  @service('navi-metadata') _metadataService;
 
   /**
    * @property {String} dimensionName - name of dimension to be filtered
@@ -50,7 +50,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
-  @computed('dimensionName', 'searchTerm', 'filter.subject.source')
+  @computed('dimensionName', 'filter.subject.columnMetadata.cardinality', 'searchTerm')
   get dimensionOptions() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results

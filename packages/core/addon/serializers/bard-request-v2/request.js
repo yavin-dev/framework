@@ -5,12 +5,23 @@
 import JSONSerializer from '@ember-data/serializer/json';
 import { inject as service } from '@ember/service';
 import { normalizeV1toV2 } from 'navi-core/utils/request';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 export default class RequestSerializer extends JSONSerializer {
   /**
    * @property {Service}
    */
-  @service bardMetadata;
+  @service naviMetadata;
+
+  /**
+   * Looks up data source name for a table name
+   * @param {String} tableId
+   * @returns {string} - data source name
+   */
+  getTableNamespace(tableId) {
+    const tableModel = this.naviMetadata.all('table').find(({ id }) => id === tableId);
+    return tableModel ? tableModel.source : getDefaultDataSourceName();
+  }
 
   /**
    * Normalizes the JSON payload returned by the persistence layer
@@ -25,11 +36,11 @@ export default class RequestSerializer extends JSONSerializer {
     //normalize v1 into v2
     if (request.requestVersion === 'v1') {
       //if datasource is undefined, try to infer from metadata
-      const namespace = request.dataSource || this.bardMetadata.getTableNamespace(request.logicalTable.table);
+      const dateSourceName = request.dataSource || this.getTableNamespace(request.logicalTable.table);
 
-      normalized = normalizeV1toV2(request, namespace);
+      normalized = normalizeV1toV2(request, dateSourceName);
     } else {
-      normalized = Object.assign({}, request);
+      normalized = { ...request };
     }
 
     //copy source property from request

@@ -109,15 +109,15 @@ module('Integration | Component | pie chart', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     injectC3Enhancements();
     this.set('model', Model);
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata();
   });
 
   hooks.afterEach(function() {
-    MetadataService._keg.reset();
+    MetadataService.keg.reset();
   });
 
   test('it renders for a dimension series', async function(assert) {
@@ -375,7 +375,7 @@ module('Integration | Component | pie chart', function(hooks) {
 
   test('renders correctly with multi datasource', async function(assert) {
     assert.expect(1);
-    MetadataService._keg.reset();
+    MetadataService.keg.reset();
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     const bardTwoModel = cloneDeep(Model[0]);
     bardTwoModel.request.dataSource = 'bardTwo';

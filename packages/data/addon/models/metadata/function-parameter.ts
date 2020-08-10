@@ -7,6 +7,7 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
+import BardDimensionService from 'navi-data/services/bard-dimensions';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
@@ -54,7 +55,7 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
    * @property {Service} dimensionService
    */
   @service('bard-dimensions')
-  dimensionService!: TODO;
+  dimensionService!: BardDimensionService;
 
   /**
    * @property {string} id

@@ -6,8 +6,6 @@ import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-let MetadataService;
-
 let Template = hbs`
   {{navi-visualization-config/wrapper
     response=response
@@ -20,7 +18,7 @@ module('Integration | Component | visualization config/warpper', function(hooks)
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     // mocking viz-config component
     this.owner.register(
       'component:navi-visualization-config/mock',
@@ -41,8 +39,7 @@ module('Integration | Component | visualization config/warpper', function(hooks)
 
     this.set('onUpdateChartConfig', () => null);
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('component renders', async function(assert) {

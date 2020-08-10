@@ -34,7 +34,7 @@ const DEFAULT_OPTIONS = {
 @templateLayout(layout)
 @tagName('')
 export default class NaviVisualizationsGoalGaugeComponent extends Component {
-  @service bardMetadata;
+  @service naviMetadata;
   @service naviFormatter;
 
   /**
@@ -71,20 +71,20 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   legend = { hide: true };
 
   /**
-   * @property {String} - which meta data namespace to use
+   * @property {String} - name of data source
    */
-  @alias('model.firstObject.request.dataSource') namespace;
+  @alias('model.firstObject.request.dataSource') dateSourceName;
 
   /**
    * @property {String} formatted default metric
    */
-  @computed('options.metric.{metric,parameters}', 'namespace')
+  @computed('options.metric.{metric,parameters}', 'dateSourceName')
   get defaultMetricTitle() {
     const {
       options: { metric },
-      namespace
+      dateSourceName
     } = this;
-    const metricMetadata = this.bardMetadata.getById('metric', metric.metric, namespace);
+    const metricMetadata = this.naviMetadata.getById('metric', metric.metric, dateSourceName);
     return this.naviFormatter.formatMetric(metricMetadata, metric.parameters);
   }
 

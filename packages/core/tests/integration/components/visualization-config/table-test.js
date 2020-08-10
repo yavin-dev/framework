@@ -10,8 +10,8 @@ module('Integration | Component | visualization config/table', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders', async function(assert) {

@@ -42,7 +42,7 @@ export default class Base extends Fragment.extend(Validations, {
   @attr('string') type;
   @attr('string') source;
 
-  @service('bard-metadata')
+  @service('navi-metadata')
   metadataService;
 
   /**
