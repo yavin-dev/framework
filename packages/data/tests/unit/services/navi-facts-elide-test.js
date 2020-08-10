@@ -92,7 +92,7 @@ const TestRequestV2 = {
   ],
   limit: 15,
   requestVersion: '2.0',
-  dataSource: 'dummy-gql'
+  dataSource: 'elideOne'
 };
 
 module('Unit | Service | Navi Facts - Elide', function(hooks) {
@@ -358,9 +358,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [{ field: 'metric2', parameters: {}, type: 'metric', direction: 'asc' }],
         limit: 15,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -415,9 +415,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -437,9 +437,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
     assert.deepEqual(
       noTimeDimResponse.response,
@@ -473,9 +473,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -509,9 +509,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
     assert.deepEqual(
       noStartDateResponse.response,
@@ -546,9 +546,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -604,9 +604,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [{ field: 'metric1', parameters: {}, type: 'metric', direction: 'asc' }],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -637,9 +637,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         ],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -694,9 +694,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: 3,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(
@@ -738,9 +738,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'dummy-gql'
+        dataSource: 'elideOne'
       },
-      { dataSourceName: 'dummy-gql' }
+      { dataSourceName: 'elideOne' }
     );
 
     assert.deepEqual(

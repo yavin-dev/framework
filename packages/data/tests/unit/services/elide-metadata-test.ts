@@ -30,7 +30,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
   test('loadMetadata', async function(assert) {
     // Seed our mirage database
     ElideOneScenario((this as MirageTestContext).server);
-    await Service.loadMetadata();
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
 
     const keg = Service._keg;
 
@@ -73,14 +73,14 @@ module('Unit | Service | elide-metadata', function(hooks) {
       'All time-dimensions are loaded in the keg'
     );
 
-    assert.deepEqual(Service.loadedDataSources, ['bardOne'], 'One datasource should be loaded');
+    assert.deepEqual(Service.loadedDataSources, ['elideOne'], 'One datasource should be loaded');
   });
 
   test('loadMetadata from multiple sources', async function(assert) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata({ dataSourceName: 'bardOne' });
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
     Server.db.emptyData();
     ElideTwoScenario(Server);
     await Service.loadMetadata({ dataSourceName: 'elideTwo' });
@@ -96,8 +96,8 @@ module('Unit | Service | elide-metadata', function(hooks) {
     assert.deepEqual(
       keg.all('metadata/table').map((table: TableMetadata) => ({ id: table.id, source: table.source })),
       [
-        { id: 'table0', source: 'bardOne' },
-        { id: 'table1', source: 'bardOne' },
+        { id: 'table0', source: 'elideOne' },
+        { id: 'table1', source: 'elideOne' },
         { id: 'table2', source: 'elideTwo' },
         { id: 'table3', source: 'elideTwo' }
       ],
@@ -107,9 +107,9 @@ module('Unit | Service | elide-metadata', function(hooks) {
     assert.deepEqual(
       keg.all('metadata/dimension').map((dim: DimensionMetadata) => ({ id: dim.id, source: dim.source })),
       [
-        { id: 'dimension0', source: 'bardOne' },
-        { id: 'dimension1', source: 'bardOne' },
-        { id: 'dimension2', source: 'bardOne' },
+        { id: 'dimension0', source: 'elideOne' },
+        { id: 'dimension1', source: 'elideOne' },
+        { id: 'dimension2', source: 'elideOne' },
         { id: 'dimension3', source: 'elideTwo' },
         { id: 'dimension4', source: 'elideTwo' },
         { id: 'dimension5', source: 'elideTwo' },
@@ -122,11 +122,11 @@ module('Unit | Service | elide-metadata', function(hooks) {
     assert.deepEqual(
       keg.all('metadata/metric').map((metric: MetricMetadata) => ({ id: metric.id, source: metric.source })),
       [
-        { id: 'metric0', source: 'bardOne' },
-        { id: 'metric1', source: 'bardOne' },
-        { id: 'metric2', source: 'bardOne' },
-        { id: 'metric3', source: 'bardOne' },
-        { id: 'metric4', source: 'bardOne' },
+        { id: 'metric0', source: 'elideOne' },
+        { id: 'metric1', source: 'elideOne' },
+        { id: 'metric2', source: 'elideOne' },
+        { id: 'metric3', source: 'elideOne' },
+        { id: 'metric4', source: 'elideOne' },
         { id: 'metric5', source: 'elideTwo' },
         { id: 'metric6', source: 'elideTwo' }
       ],
@@ -158,13 +158,13 @@ module('Unit | Service | elide-metadata', function(hooks) {
       'All time-dimensions are loaded in the keg'
     );
 
-    assert.deepEqual(Service.loadedDataSources, ['bardOne', 'elideTwo'], 'Two datasources should be loaded');
+    assert.deepEqual(Service.loadedDataSources, ['elideOne', 'elideTwo'], 'Two datasources should be loaded');
   });
 
   test('loadMetadata after data loaded', async function(assert) {
     assert.expect(1);
 
-    const result = await Service.loadMetadata();
+    const result = await Service.loadMetadata({ dataSourceName: 'elideOne' });
     assert.notOk(result, 'loadMetadata returns a promise that resolves to nothing when metadata is already loaded');
   });
 
@@ -179,15 +179,15 @@ module('Unit | Service | elide-metadata', function(hooks) {
         category: 'foo',
         defaultFormat: 'bar',
         tableId: 'baz',
-        source: 'bardOne',
+        source: 'elideOne',
         valueType: 'NUMBER',
         type: 'field',
         tags: []
       };
 
-    await Service._loadMetadataForType('metric', [testMetric], 'bardOne');
+    await Service._loadMetadataForType('metric', [testMetric], 'elideOne');
 
-    let record = keg.getById('metadata/metric', 'foo', 'bardOne');
+    let record = keg.getById('metadata/metric', 'foo', 'elideOne');
 
     assert.deepEqual(
       {
@@ -213,7 +213,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata({ dataSourceName: 'bardOne' });
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
     Server.db.emptyData();
     ElideTwoScenario(Server);
     await Service.loadMetadata({ dataSourceName: 'elideTwo' });
@@ -281,7 +281,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
       'all method returns all loaded time-dimensions for every source'
     );
 
-    const allBardOneMetrics = Service.all('metric', 'bardOne');
+    const allBardOneMetrics = Service.all('metric', 'elideOne');
     assert.ok(
       allBardOneMetrics.every((m: MetricMetadataModel) => m instanceof MetricMetadataModel),
       'all method returns metric metadata models'
@@ -319,29 +319,29 @@ module('Unit | Service | elide-metadata', function(hooks) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata();
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
 
     assert.equal(
       Service.getById('table', 'table1'),
-      keg.getById('metadata/table', 'table1', 'bardOne'),
+      keg.getById('metadata/table', 'table1', 'elideOne'),
       'Table1 is fetched from the keg using getById'
     );
 
     assert.equal(
       Service.getById('dimension', 'dimension1'),
-      keg.getById('metadata/dimension', 'dimension1', 'bardOne'),
+      keg.getById('metadata/dimension', 'dimension1', 'elideOne'),
       'Dimension1 is fetched from the keg using getById'
     );
 
     assert.equal(
       Service.getById('metric', 'metric0'),
-      keg.getById('metadata/metric', 'metric0', 'bardOne'),
+      keg.getById('metadata/metric', 'metric0', 'elideOne'),
       'Metric0 is fetched from the keg using getById'
     );
 
     assert.equal(
       Service.getById('time-dimension', 'timeDimension0'),
-      keg.getById('metadata/time-dimension', 'timeDimension0', 'bardOne'),
+      keg.getById('metadata/time-dimension', 'timeDimension0', 'elideOne'),
       'Time Dimension 0 is fetched from the keg using getById'
     );
 
@@ -374,11 +374,11 @@ module('Unit | Service | elide-metadata', function(hooks) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata();
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
 
     assert.equal(
       await Service.findById('table', 'table1'),
-      keg.getById('metadata/table', 'table1', 'bardOne'),
+      keg.getById('metadata/table', 'table1', 'elideOne'),
       'Table1 is fetched from the keg using getById'
     );
 
@@ -390,7 +390,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata({ dataSourceName: 'bardOne' });
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
     Server.db.emptyData();
     ElideTwoScenario(Server);
     await Service.loadMetadata({ dataSourceName: 'elideTwo' });
@@ -404,7 +404,7 @@ module('Unit | Service | elide-metadata', function(hooks) {
     );
 
     assert.equal(
-      Service.getMetaField('metric', 'metric5', 'name', 'foo', 'bardOne'),
+      Service.getMetaField('metric', 'metric5', 'name', 'foo', 'elideOne'),
       'foo',
       'returns default when metadata is not found in given datasource'
     );
@@ -441,18 +441,18 @@ module('Unit | Service | elide-metadata', function(hooks) {
     const Server = (this as MirageTestContext).server;
     // Seed our mirage database
     ElideOneScenario(Server);
-    await Service.loadMetadata({ dataSourceName: 'bardOne' });
+    await Service.loadMetadata({ dataSourceName: 'elideOne' });
     Server.db.emptyData();
     ElideTwoScenario(Server);
     await Service.loadMetadata({ dataSourceName: 'elideTwo' });
 
-    assert.equal(Service.getTableNamespace('table0'), 'bardOne', 'Correct table namespace is shown');
+    assert.equal(Service.getTableNamespace('table0'), 'elideOne', 'Correct table namespace is shown');
     assert.equal(
       Service.getTableNamespace('table2'),
       'elideTwo',
       'Correct table namespace is returned for non-default source'
     );
 
-    assert.equal(Service.getTableNamespace('foo'), 'bardOne', 'Default namespace returned when table not found');
+    assert.equal(Service.getTableNamespace('foo'), 'elideOne', 'Default namespace returned when table not found');
   });
 });
