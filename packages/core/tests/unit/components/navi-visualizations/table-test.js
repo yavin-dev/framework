@@ -11,7 +11,7 @@ module('Unit | Component | table', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.owner.register('component:navi-table-sort-icon', Component.extend(), {
       instantiate: false
     });
@@ -65,7 +65,7 @@ module('Unit | Component | table', function(hooks) {
       }
     );
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   const ROWS = [

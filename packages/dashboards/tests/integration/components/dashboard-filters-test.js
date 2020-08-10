@@ -40,7 +40,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
 
     this.set('dashboard', dashboard);
@@ -138,7 +138,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     this.set('onAddFilter', dimension => {
       const filter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', dimension.dimension),
+        dimension: MetadataService.getById('dimension', dimension.dimension, 'bardOne'),
         operator: 'in'
       });
 

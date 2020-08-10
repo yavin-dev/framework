@@ -11,7 +11,7 @@ module('Unit | Service | navi-asset-search-provider', function(hooks) {
 
   hooks.beforeEach(async function() {
     // Load metadata needed for request fragment
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     service = this.owner.lookup('service:navi-search/navi-asset-search-provider');
     const store = this.owner.lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'ciela' });

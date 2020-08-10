@@ -11,33 +11,32 @@ module('Integration | Component | report builder', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+  hooks.beforeEach(async function() {
+    MetadataService = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
 
     this.owner.__container__.registry.registrations['helper:update-report-action'] = helper(() => () => {});
 
-    return MetadataService.loadMetadata().then(() => {
-      this.set(
-        'report',
-        Store.createRecord('report', {
-          request: Store.createFragment('bard-request/request', {
-            logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-              table: MetadataService.getById('table', 'tableA'),
-              timeGrain: 'day'
-            })
-          }),
-          visualization: {}
-        })
-      );
-    });
+    await MetadataService.loadMetadata();
+    this.set(
+      'report',
+      Store.createRecord('report', {
+        request: Store.createFragment('bard-request/request', {
+          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
+            table: MetadataService.getById('table', 'tableA'),
+            timeGrain: 'day'
+          })
+        }),
+        visualization: {}
+      })
+    );
   });
 
   test("Single table in meta shouldn't show table selector", async function(assert) {
     assert.expect(2);
     //reset meta data and load only one table
-    MetadataService.get('_keg').resetByType('metadata/table');
-    MetadataService._loadMetadataForType('table', [
+    MetadataService.keg.resetByType('metadata/table');
+    MetadataService.loadMetadataForType('table', [
       {
         id: 'tableA',
         name: 'Table A',

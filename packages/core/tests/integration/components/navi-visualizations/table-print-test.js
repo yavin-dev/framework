@@ -82,14 +82,14 @@ module('Integration | Component | navi visualizations/table print', function(hoo
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
 
     this.set('model', Model);
     this.set('options', Options);
     this.set('onUpdateReport', () => undefined);
 
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   hooks.afterEach(function() {

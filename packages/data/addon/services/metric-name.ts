@@ -5,33 +5,33 @@
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
 import NaviFormatterService from './navi-formatter';
-import Metric from '../models/metadata/metric';
+import NaviMetadataService from './navi-metadata';
 
 export default class MetricNameService extends Service {
-  /**
-   * @property {Service} metricMeta
-   */
-  @service bardMetadata: TODO;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
-  @service naviFormatter!: NaviFormatterService;
+  @service
+  private naviFormatter!: NaviFormatterService;
 
   /**
-   * @method getName
-   * @param {String} metricId - base metric name for a metric
-   * @param {String} namespace - The namespace the metric lives in
-   * @returns {String} - long name for the metric from the metadata
+   * @param metricId - base metric name for a metric
+   * @param dataSourceName - name of data source
+   * @returns - long name for the metric from the metadata
    */
-  getName(metricId: string, namespace: string): string {
-    return this.bardMetadata.getMetaField('metric', metricId, 'name', metricId, namespace);
+  getName(metricId: string, dataSourceName: string): string | undefined {
+    return this.naviMetadata.getById('metric', metricId, dataSourceName)?.name || metricId;
   }
 
   /**
-   * @method getDisplayName
-   * @param {Object} metricObject - object with metric and parameter properties
+   * @param metricObject - object with metric and parameter properties
+   * @param dataSourceName - name of data source
    * @returns {String} formatted metric display name
    */
-  getDisplayName(metricObject: TODO, namespace: string): string {
-    const metricMeta: Metric = this.bardMetadata.getById('metric', metricObject.metric, namespace);
+  //TODO use request v2 column obj
+  getDisplayName(metricObject: TODO, dataSourceName: string): string {
+    //TODO v2-ify
+    const metricMeta = this.naviMetadata.getById('metric', metricObject.metric, metricObject.source || dataSourceName);
     return this.naviFormatter.formatMetric(metricMeta, metricObject.parameters);
   }
 }

@@ -47,9 +47,8 @@ module('Unit | Route | reports/new', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    let metadataService = this.owner.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     let mockAuthor = this.owner.lookup('service:store').createRecord('user', { id: 'navi_user' });
 

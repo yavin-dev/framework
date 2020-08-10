@@ -8,11 +8,11 @@ module('Unit | Serializer | dashboard', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Serializer = this.owner.lookup('serializer:dashboard');
     DashboardClass = this.owner.lookup('service:store').modelFor('dashboard');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata();
   });
 
   test('_addLinks', function(assert) {
@@ -89,7 +89,7 @@ module('Unit | Serializer | dashboard', function(hooks) {
           attributes: {
             filters: [
               {
-                dimension: MetadataService.getById('dimension', 'os'),
+                dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
                 operator: 'notin',
                 field: 'id',
                 rawValues: ['a', 'b']

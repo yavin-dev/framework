@@ -4,8 +4,6 @@ import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-let MetadataService;
-
 const TEMPLATE = hbs`
   {{chart-series-config
     seriesConfig=seriesConfig
@@ -52,15 +50,14 @@ module('Integration | Component | chart series config', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.setProperties({
       seriesType: 'dimension',
       seriesConfig: SERIES_CONFIG,
       onUpdateConfig: () => null
     });
 
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Component renders', async function(assert) {

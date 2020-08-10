@@ -1,11 +1,13 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
+import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 
-export default Route.extend({
+export default class ApplicationRoute extends Route {
   /**
    * @property {Ember.Service}
    */
-  bardMetadata: service(),
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @method model
@@ -13,6 +15,6 @@ export default Route.extend({
    * @returns {Ember.RSVP.Promise}
    */
   model() {
-    return this.get('bardMetadata').loadMetadata();
+    return this.naviMetadata.loadMetadata();
   }
-});
+}

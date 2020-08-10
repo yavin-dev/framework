@@ -8,8 +8,8 @@ module('helper:default-column-name', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('dateTime column', async function(assert) {

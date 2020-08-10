@@ -59,7 +59,7 @@ module('Unit | Service | metric parameter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     //setup Pretender
     Server = new Pretender(function() {

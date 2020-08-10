@@ -71,7 +71,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  @computed('requestFragment.columnMetadata')
+  @computed('requestFragment.columnMetadata.fields')
   get fields() {
     let fields = this.requestFragment.columnMetadata.fields;
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
@@ -81,7 +81,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{operator,dimension,values,validations,field}')
+  @computed('requestFragment.{dimension,field,operator,validations,values}', 'supportedOperators')
   get filter() {
     let dimensionFragment = this.requestFragment,
       operatorId = dimensionFragment.operator,

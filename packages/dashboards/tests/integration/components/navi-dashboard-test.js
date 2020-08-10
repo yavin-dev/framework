@@ -46,7 +46,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     this.set('onAddFilter', () => null);
 
     await owner.lookup('service:user').findUser();
-    await owner.lookup('service:bard-metadata').loadMetadata();
+    await owner.lookup('service:navi-metadata').loadMetadata();
 
     // Add some dashboard models to the store
     const store = owner.lookup('service:store');

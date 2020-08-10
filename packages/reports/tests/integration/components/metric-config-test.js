@@ -17,7 +17,7 @@ import {
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-argument';
 import config from 'ember-get-config';
 
-let MockRequest, MockMetric, MetadataService;
+let MockRequest, MockMetric;
 
 const TEMPLATE = hbs`<MetricConfig
   @metric={{this.metric}}
@@ -33,8 +33,6 @@ module('Integration | Component | metric config', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
-
     MockMetric = {
       id: 'metric1',
       name: 'Metric 1',
@@ -93,7 +91,7 @@ module('Integration | Component | metric config', function(hooks) {
     set(this, 'removeParameterizedMetric', () => {});
     set(this, 'toggleParameterizedMetricFilter', () => {});
 
-    await MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     set(this, 'metric', MockMetric);
     set(this, 'request', MockRequest);
     await render(TEMPLATE);

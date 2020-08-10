@@ -32,9 +32,9 @@ module('Integration | Component | metric selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     this.owner.register(
       'helper:update-report-action',
@@ -53,36 +53,35 @@ module('Integration | Component | metric selector', function(hooks) {
     this.set('removeMetric', () => {});
     this.set('addMetricFilter', () => {});
 
-    return MetadataService.loadMetadata().then(async () => {
-      AdClicks = MetadataService.getById('metric', 'adClicks');
-      PageViews = MetadataService.getById('metric', 'pageViews');
-      //set report object
-      this.set(
-        'request',
-        Store.createFragment('bard-request/request', {
-          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-            table: MetadataService.getById('table', 'tableA'),
-            timeGrain: 'day'
-          }),
-          metrics: [
-            {
-              metric: AdClicks,
-              parameters: {
-                adType: 'BannerAds'
-              }
-            },
-            {
-              metric: AdClicks,
-              parameters: {
-                adType: 'VideoAds'
-              }
+    await MetadataService.loadMetadata();
+    AdClicks = MetadataService.getById('metric', 'adClicks', 'bardOne');
+    PageViews = MetadataService.getById('metric', 'pageViews', 'bardOne');
+    //set report object
+    this.set(
+      'request',
+      Store.createFragment('bard-request/request', {
+        logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
+          table: MetadataService.getById('table', 'tableA', 'bardOne'),
+          timeGrain: 'day'
+        }),
+        metrics: [
+          {
+            metric: AdClicks,
+            parameters: {
+              adType: 'BannerAds'
             }
-          ],
-          having: A([{ metric: { metric: AdClicks } }]),
-          responseFormat: 'csv'
-        })
-      );
-    });
+          },
+          {
+            metric: AdClicks,
+            parameters: {
+              adType: 'VideoAds'
+            }
+          }
+        ],
+        having: A([{ metric: { metric: AdClicks } }]),
+        responseFormat: 'csv'
+      })
+    );
   });
 
   test('it renders', async function(assert) {

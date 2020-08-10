@@ -22,7 +22,7 @@ export default Route.extend({
   /**
    * @property {Service} metadataService
    */
-  metadataService: service('bard-metadata'),
+  metadataService: service('navi-metadata'),
 
   /**
    * @property {Service} store

@@ -12,7 +12,7 @@ module('Unit | Transform | Metric', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
   });
 
@@ -21,7 +21,7 @@ module('Unit | Transform | Metric', function(hooks) {
 
     await settled();
     let transform = this.owner.lookup('transform:metric'),
-      metric = MetadataService.getById('metric', 'pageViews');
+      metric = MetadataService.getById('metric', 'pageViews', 'bardOne');
 
     assert.equal(transform.serialize(metric), 'pageViews', 'Metric is serialized to the name');
 
@@ -38,9 +38,9 @@ module('Unit | Transform | Metric', function(hooks) {
 
     const dataSources = config.navi.dataSources;
 
-    this.owner.unregister('service:bard-metadata');
+    this.owner.unregister('service:navi-metadata');
     this.owner.register(
-      'service:bard-metadata',
+      'service:navi-metadata',
       Service.extend({
         getById(type, id) {
           return { type, id };
@@ -67,8 +67,8 @@ module('Unit | Transform | Metric', function(hooks) {
       'Dimension with "." in id splits on the first "." when datasources are configured'
     );
 
-    this.owner.unregister('service:bard-metadata');
-    this.owner.register('service:bard-metadata', MetadataService, { instantiate: false });
+    this.owner.unregister('service:navi-metadata');
+    this.owner.register('service:navi-metadata', MetadataService, { instantiate: false });
   });
 
   test('datetime test', async function(assert) {

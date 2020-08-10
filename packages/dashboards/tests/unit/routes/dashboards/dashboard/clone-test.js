@@ -48,7 +48,7 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     Route = this.owner.lookup('route:dashboards/dashboard/clone');
     this.owner.lookup('service:user').findUser();
 
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('_cloneDashboard - valid dashboard', async function(assert) {

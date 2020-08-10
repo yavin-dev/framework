@@ -39,9 +39,9 @@ const HEADER_TITLE = {
 @classNames('table-widget')
 class Table extends Component {
   /**
-   * @property {Service} bardMetadata
+   * @property {Service} naviMetadata
    */
-  @service bardMetadata;
+  @service naviMetadata;
 
   /**
    * @property {Service} naviFormatter
@@ -179,15 +179,15 @@ class Table extends Component {
    *
    * @private
    * @param {Object} column - column object
-   * @param {String} namespace - metadata namespace
+   * @param {String} dateSourceName - name of data source
    * @returns {Boolean}
    */
-  _hasCustomDisplayName(column, namespace) {
+  _hasCustomDisplayName(column, dateSourceName) {
     if (isBlank(column.displayName)) {
       return false;
     }
 
-    const defaultName = getColumnDefaultName(column, this.bardMetadata, this.naviFormatter, namespace);
+    const defaultName = getColumnDefaultName(column, this.naviMetadata, this.naviFormatter, dateSourceName);
     return column.displayName !== defaultName;
   }
 

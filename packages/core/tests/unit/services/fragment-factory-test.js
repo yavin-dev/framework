@@ -8,15 +8,15 @@ module('Unit | Service | fragmentFactory', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    metadataService = this.owner.lookup('service:bard-metadata');
+  hooks.beforeEach(async function() {
+    metadataService = this.owner.lookup('service:navi-metadata');
     service = this.owner.lookup('service:fragment-factory');
-    return metadataService.loadMetadata();
+    await metadataService.loadMetadata();
   });
 
   test('Build Column Fragments From Meta', function(assert) {
-    const metricMeta = metadataService.getById('metric', 'navClicks');
-    const dimMeta = metadataService.getById('dimension', 'browser');
+    const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
+    const dimMeta = metadataService.getById('dimension', 'browser', 'bardOne');
 
     const metricMetaFragment = service.createColumnFromMeta(
       metricMeta,
@@ -80,8 +80,8 @@ module('Unit | Service | fragmentFactory', function(hooks) {
   });
 
   test('Build Filter Fragments From Meta', function(assert) {
-    const metricMeta = metadataService.getById('metric', 'navClicks');
-    const dimMeta = metadataService.getById('dimension', 'browser');
+    const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
+    const dimMeta = metadataService.getById('dimension', 'browser', 'bardOne');
 
     const metricMetaFragment = service.createFilterFromMeta(metricMeta, { avg: 'trailing31day' }, 'in', [1, 2, 3]);
     assert.equal(metricMetaFragment.field, 'navClicks', 'Metric has right field');
@@ -142,7 +142,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
   });
 
   test('Build Sort Fragments From Meta', function(assert) {
-    const metricMeta = metadataService.getById('metric', 'navClicks');
+    const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
 
     const metricMetaFragment = service.createSortFromMeta(metricMeta, { avg: 'trailing31day' }, 'asc');
     assert.equal(metricMetaFragment.field, 'navClicks', 'Sort Fragment has right field');

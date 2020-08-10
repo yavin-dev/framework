@@ -22,7 +22,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
 
     // Mock notifications
@@ -30,15 +30,9 @@ module('Integration | Component | report actions - multiple-format-export', func
       add: () => null
     };
 
-    return this.owner
-      .lookup('service:bard-metadata')
-      .loadMetadata()
-      .then(() => {
-        return Store.findRecord('report', 1);
-      })
-      .then(report => {
-        this.set('report', report);
-      });
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    const report = await Store.findRecord('report', 1);
+    this.set('report', report);
   });
 
   test('export links', async function(assert) {

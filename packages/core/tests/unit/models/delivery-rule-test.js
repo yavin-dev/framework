@@ -28,7 +28,7 @@ module('Unit | Model | delivery rule', function(hooks) {
 
   hooks.beforeEach(function() {
     Store = this.owner.lookup('service:store');
-    return this.owner.lookup('service:bard-metadata').loadMetadata();
+    return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Retrieving records', async function(assert) {

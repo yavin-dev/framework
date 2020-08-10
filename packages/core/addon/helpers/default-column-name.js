@@ -13,27 +13,27 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
  *
  * @method chartToolTipFormat
  * @param {Object} column - table column object
- * @param {Object} bardMetadata - bard metadata service
- * @param {String} namespace - meta data namespace
+ * @param {Object} naviMetadata - metadata service
+ * @param {String} dateSourceName - name of data source
  * @return {String} - default display name
  */
 export function getColumnDefaultName(
   { type, attributes },
-  bardMetadata,
+  naviMetadata,
   naviFormatter,
-  namespace = getDefaultDataSourceName()
+  dateSourceName = getDefaultDataSourceName()
 ) {
   if (type === 'dateTime') {
     return 'Date';
   }
 
   let { name: id, field } = attributes,
-    model = bardMetadata.getById(type, id, namespace);
+    model = naviMetadata.getById(type, id, dateSourceName);
 
   //if metadata isn't found, check time-dimension bucket
   //TODO: replace when we have full vizualization support for time-dimensions
   if (model === undefined && type == 'dimension') {
-    model = bardMetadata.getById('time-dimension', id, namespace);
+    model = naviMetadata.getById('timeDimension', id, dateSourceName);
   }
 
   if (type === 'metric') {
@@ -51,10 +51,10 @@ export function getColumnDefaultName(
 }
 
 export default class DefaultColumnNameHelper extends Helper {
-  @service bardMetadata;
+  @service naviMetadata;
   @service naviFormatter;
 
-  compute([column, namespace]) {
-    return getColumnDefaultName(column, this.bardMetadata, this.naviFormatter, namespace);
+  compute([column, dateSourceName]) {
+    return getColumnDefaultName(column, this.naviMetadata, this.naviFormatter, dateSourceName);
   }
 }

@@ -21,7 +21,6 @@ import { observes } from '@ember-decorators/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
