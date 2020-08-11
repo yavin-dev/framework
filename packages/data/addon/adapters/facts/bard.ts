@@ -106,6 +106,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return dateTime param value
    */
   _buildDateTimeParam(request: RequestV2): string {
+    // TODO: Get lowest grain dateTime, handle corner cases
     const dateTimeFilters = request.filters.filter(
       fil => fil.type === 'timeDimension' && fil.field === `${request.table}.dateTime`
     );
@@ -216,6 +217,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const host = configHost(options);
     const { namespace } = this;
     const table = request.table;
+    // TODO: Get lowest grain dateTime
     const timeGrain =
       request.columns.find(col => col.type === 'timeDimension' && col.field === `${request.table}.dateTime`)?.parameters
         ?.grain || 'all';

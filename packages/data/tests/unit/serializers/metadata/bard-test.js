@@ -495,7 +495,7 @@ const ParameterConvertToMetricFunction = [
     _parametersPayload: [
       {
         defaultValue: 'day',
-        description: 'The Time Grain to group dates by',
+        description: 'The time grain to group dates by',
         expression: 'self',
         id: 'grain',
         name: 'Time Grain',
@@ -516,7 +516,7 @@ const ParameterConvertToMetricFunction = [
     _parametersPayload: [
       {
         defaultValue: 'day',
-        description: 'The Time Grain to group dates by',
+        description: 'The time grain to group dates by',
         expression: 'self',
         id: 'grain',
         name: 'Time Grain',
@@ -675,7 +675,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           _parametersPayload: [
             {
               defaultValue: 'day',
-              description: 'The Time Grain to group dates by',
+              description: 'The time grain to group dates by',
               expression: 'self',
               id: 'grain',
               name: 'Time Grain',

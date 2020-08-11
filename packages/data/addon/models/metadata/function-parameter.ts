@@ -12,7 +12,7 @@ import BardDimensionService from 'navi-data/services/bard-dimensions';
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
 type FunctionParameterType = 'ref' | 'primitive';
-export type ColumnFunctionParametersValues = { name: string; description?: string; id: string }[]; //TODO need to normalize
+export type ColumnFunctionParametersValues = { id: string; name?: string; description?: string }[]; //TODO need to normalize
 
 type LocalFunctionParameter = FunctionParameterMetadataModel & {
   type: 'ref';

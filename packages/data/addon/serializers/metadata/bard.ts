@@ -219,8 +219,9 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     const grains = grainIds.sort().join(',');
     const columnFunctionId = `${table.name}.grain(${grains})`;
     let defaultValue;
-    if (grainIds.includes(config.navi.defaultTimeGrain)) {
-      defaultValue = config.navi.defaultTimeGrain;
+    const { defaultTimeGrain } = config.navi;
+    if (defaultTimeGrain && grainIds.includes(defaultTimeGrain)) {
+      defaultValue = defaultTimeGrain;
     } else {
       defaultValue = grainIds[0];
     }
@@ -233,7 +234,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         {
           id: 'grain',
           name: 'Time Grain',
-          description: 'The Time Grain to group dates by',
+          description: 'The time grain to group dates by',
           source: dataSourceName,
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,

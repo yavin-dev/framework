@@ -47,8 +47,6 @@ module('Unit | Metadata Model | Function Parameter', function(hooks) {
   });
 
   test('it properly hydrates properties', function(assert) {
-    assert.expect(6);
-
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
 
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');

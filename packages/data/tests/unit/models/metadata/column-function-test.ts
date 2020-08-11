@@ -40,8 +40,6 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
   });
 
   test('it properly hydrates properties', async function(assert) {
-    assert.expect(12);
-
     const { id, name, description, source, parameters } = ColumnFunction;
 
     assert.equal(id, Payload.id, 'id property is hydrated properly');
