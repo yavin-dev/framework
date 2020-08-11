@@ -7,6 +7,7 @@ import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { selectChoose } from 'ember-power-select/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -124,7 +125,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
+
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
@@ -141,7 +144,12 @@ module('Acceptance | Exploring Widgets', function(hooks) {
   });
 
   test('Export action', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
+
+    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+
+    // Turn flag off
+    config.navi.FEATURES.enableMultipleExport = false;
 
     await visit('/dashboards/1/widgets/2/view');
 
@@ -167,6 +175,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
         '.navi-report-widget__action-link--is-disabled',
         'Export action is disabled when request is not valid'
       );
+
+    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
 
   test('Multi export action', async function(assert) {
