@@ -59,7 +59,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
       timeDimensions.every(dim => dim instanceof TimeDimensionMetadataModel),
       '`bardTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(timeDimensions.mapBy('id'), [], 'All `bardTwo` time dimensions are loaded');
+    assert.deepEqual(timeDimensions.mapBy('id'), ['inventory.dateTime'], 'All `bardTwo` time dimensions are loaded');
 
     const metrics = keg.all('metadata/metric', 'bardTwo');
     assert.ok(
