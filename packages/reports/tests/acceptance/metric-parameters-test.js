@@ -39,7 +39,6 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The parameterized metric is added as a filter');
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The parameterized metric is added as a filter');
-    await close();
   });
 
   test('metric filter', async function(assert) {
