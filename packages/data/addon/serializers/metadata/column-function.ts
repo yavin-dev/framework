@@ -27,16 +27,17 @@ export function constructFunctionParameters(
   parameters: RawColumnFunctionArguments,
   source: string
 ): FunctionParameterMetadataPayload[] {
-  return Object.keys(parameters).map(param => {
-    const { type, defaultValue, values, dimensionName, description } = parameters[param];
+  return Object.keys(parameters).map(paramName => {
+    const param = parameters[paramName];
+    const { defaultValue, description } = param;
 
     const normalized: FunctionParameterMetadataPayload = {
-      id: param,
-      name: param,
+      id: paramName,
+      name: paramName,
       description,
       type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
-      expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
-      _localValues: values,
+      expression: param.type === 'dimension' ? `dimension:${param.dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
+      _localValues: param.type === 'enum' ? param.values : undefined,
       source,
       defaultValue
     };

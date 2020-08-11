@@ -13,39 +13,45 @@ import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload }
 import { assert } from '@ember/debug';
 import { isNone } from '@ember/utils';
 import {
-  ColumnFunctionParametersValues,
   FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION
+  INTRINSIC_VALUE_EXPRESSION,
+  ColumnFunctionParametersValues
 } from 'navi-data/models/metadata/function-parameter';
+import { bind } from 'lodash-es';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
 
-type RawEverythingPayload = {
+export type RawEverythingPayload = {
   tables: RawTablePayload[];
   metricFunctions?: RawColumnFunction[];
 };
 
-type RawDimensionPayload = {
-  id: string;
-  datatype: 'date';
+type RawDimensionField = {
   name: string;
   description?: string;
-  longName: string;
-  category: string;
-  storageStrategy: TODO;
-  cardinality: number;
-  fields: TODO;
+  tags?: string[];
 };
 
-type RawMetricPayload = {
-  type: TODO;
-  longName: string;
-  description?: string;
+type RawColumnPayload = {
   name: string;
-  category: string;
-  metricFunctionId: string;
-  parameters: RawColumnFunctionArguments;
+  description?: string;
+  longName: string;
+  category?: string;
+  uri?: string;
+};
+
+export type RawDimensionPayload = RawColumnPayload & {
+  datatype: TODO<'text' | 'date'>;
+  storageStrategy?: TODO<'loaded' | 'none' | null>;
+  cardinality: number;
+  fields: RawDimensionField[];
+};
+
+export type RawMetricPayload = RawColumnPayload & {
+  type: TODO<string>;
+  metricFunctionId?: string;
+  parameters?: RawColumnFunctionArguments;
 };
 
 export type RawColumnFunction = {
@@ -59,31 +65,30 @@ export type RawColumnFunctionArguments = {
   [k: string]: RawColumnFunctionArgument;
 };
 
-export type RawColumnFunctionArgument = {
-  type: 'enum' | 'dimension';
-  defaultValue?: string;
-  values?: ColumnFunctionParametersValues;
-  dimensionName?: string;
-  description?: string;
-};
+export type RawColumnFunctionArgument =
+  | { type: 'enum'; defaultValue?: string | null; values: ColumnFunctionParametersValues; description?: string }
+  | { type: 'dimension'; defaultValue?: string | null; dimensionName: string; description?: string };
 
 type RawTimeGrainPayload = {
   name: string;
   longName: string;
   description?: string;
+  retention?: string;
   dimensions: RawDimensionPayload[];
   metrics: RawMetricPayload[];
 };
 
-type RawTablePayload = {
+export type RawTablePayload = {
   timeGrains: RawTimeGrainPayload[];
   name: string;
   longName: string;
-  description: string;
-  category: string;
+  description?: string;
+  category?: string;
 };
 
 export default class BardMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
+  private namespace = '_fili_generated_';
+
   /**
    * Transform the bard metadata into a shape that our internal data models can use
    * @param rawPayload - object containing all metadata for a datasource
@@ -113,15 +118,26 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
           // Construct each dimension / time-dimension
           timegrain.dimensions.forEach(dimension => {
-            const { datatype: valueType } = dimension;
-            const accDimensionList = valueType === 'date' ? currentTimeDimensions : currentDimensions;
-            const accTableDimensionList = valueType === 'date' ? tableTimeDimensionIds : tableDimensionIds;
+            const isTimeDimension = dimension.datatype === 'date';
 
-            const [newDim] = this.normalizeDimensions([dimension], dataSourceName);
+            const normalize = isTimeDimension
+              ? bind(this.normalizeTimeDimensions, this, table) // call function with table partially applied
+              : this.normalizeDimensions;
+            const accDimensionList = isTimeDimension ? currentTimeDimensions : currentDimensions;
+            const accTableDimensionList = isTimeDimension ? tableTimeDimensionIds : tableDimensionIds;
+
+            const [newDim] = normalize([dimension], dataSourceName);
+
+            // Create function for selecting dimension field
+            const columnFunction = this.createDimensionFieldColumnFunction(dimension, dataSourceName);
+            convertedToColumnFunctions[columnFunction.id] = columnFunction;
+            newDim.columnFunctionId = columnFunction.id; // attach function to dimension
+
             const newDimCardinality = newDim.cardinality || CARDINALITY_SIZES[2];
             if (CARDINALITY_SIZES.indexOf(newDimCardinality) > CARDINALITY_SIZES.indexOf(acc.tableCardinality)) {
               acc.tableCardinality = newDimCardinality;
             }
+
             accDimensionList[newDim.id] = newDim; // Add dim to all dimensions list
             accTableDimensionList.add(newDim.id); // Add dim id to table's dimensionIds/timeDimensionIds list
           });
@@ -152,6 +168,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         }
       );
 
+      // Create a dateTime timeDimension with columnFunctionId to select timeGrain
       const columnFunction = this.createTimeGrainColumnFunction(table, dataSourceName);
       const dateTime = this.createDateTime(table, dataSourceName);
       dateTime.columnFunctionId = columnFunction.id;
@@ -185,6 +202,42 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   }
 
   /**
+   * Creates a column function consisting of the dimension fields
+   * @param dimension - the dimension to extract fields from
+   * @param dataSourceName - data source name
+   */
+  createDimensionFieldColumnFunction(
+    dimension: RawDimensionPayload,
+    dataSourceName: string
+  ): ColumnFunctionMetadataPayload {
+    const { fields = [] } = dimension;
+    const sorted = fields.map(field => field.name).sort();
+    const columnFunctionId = `${this.namespace}:dimensionField(fields=${sorted.join(',')})`;
+    return {
+      id: columnFunctionId,
+      name: 'Dimension Field',
+      source: dataSourceName,
+      description: 'Dimension Field',
+      _parametersPayload: [
+        {
+          id: 'field',
+          name: 'Dimension Field',
+          description: 'The field to be projected for this dimension',
+          source: dataSourceName,
+          type: 'ref',
+          expression: INTRINSIC_VALUE_EXPRESSION,
+          defaultValue: fields[0]?.name,
+          _localValues: fields.map(field => ({
+            id: field.name,
+            description: undefined, // ignoring dimension field description for
+            name: field.name
+          }))
+        }
+      ]
+    };
+  }
+
+  /**
    * Constructs a fili dateTime as a timeDimension column specific to the given table
    * @param table - the table to create a dateTime for
    * @param dataSourceName - data source name
@@ -210,14 +263,14 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   }
 
   /**
-   * Constructs a fili dateTime as a timeDimension column specific to the given table
+   * Creates a column function to select the time grains from a given table
    * @param table - the table to create a dateTime for
    * @param dataSourceName - data source name
    */
   private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataPayload {
     const grainIds = table.timeGrains.map(g => g.name);
     const grains = grainIds.sort().join(',');
-    const columnFunctionId = `${table.name}.grain(${grains})`;
+    const columnFunctionId = `${this.namespace}:timeGrain(table=${table.name};grains=${grains})`;
     let defaultValue;
     const { defaultTimeGrain } = config.navi;
     if (defaultTimeGrain && grainIds.includes(defaultTimeGrain)) {
@@ -241,7 +294,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
           defaultValue,
           _localValues: table.timeGrains.map(grain => ({
             id: grain.name,
-            description: grain.description || '',
+            description: grain.description,
             name: grain.longName
           }))
         }
@@ -261,10 +314,9 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
     //only if just `parameters` exists, since metricId take precedence
     if (parameters && !metricFunctionId) {
+      const sorted = Object.keys(parameters).sort();
       const newColumnFunction: ColumnFunctionMetadataPayload = {
-        id: Object.keys(metric.parameters)
-          .sort()
-          .join('|'),
+        id: `${this.namespace}:columnFunction(parameters=${sorted.join(',')})`,
         name: '',
         description: '',
         _parametersPayload: this.constructFunctionParameters(parameters, dataSourceName),
@@ -283,21 +335,42 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     parameters: RawColumnFunctionArguments,
     dataSourceName: string
   ): FunctionParameterMetadataPayload[] {
-    return Object.keys(parameters).map(param => {
-      const { type, defaultValue, values, dimensionName, description } = parameters[param];
+    return Object.keys(parameters).map(paramName => {
+      const param = parameters[paramName];
+      const { defaultValue, description } = param;
 
       const normalized: FunctionParameterMetadataPayload = {
-        id: param,
-        name: param,
+        id: paramName,
+        name: paramName,
         description,
         type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
-        expression: type === 'dimension' ? `dimension:${dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
-        _localValues: values,
+        expression: param.type === 'dimension' ? `dimension:${param.dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
+        _localValues: param.type === 'enum' ? param.values : undefined,
         source: dataSourceName,
         defaultValue
       };
       return normalized;
     });
+  }
+
+  /**
+   * Defaults the supported grains to the day grain of the table in utc timezone
+   * @param table - raw table
+   * @param dimensions - raw dimensions
+   * @param dataSourceName - data source name
+   */
+  private normalizeTimeDimensions(
+    table: RawTablePayload,
+    dimensions: RawDimensionPayload[],
+    dataSourceName: string
+  ): TimeDimensionMetadataPayload[] {
+    return this.normalizeDimensions(dimensions, dataSourceName)
+      .filter(d => d.valueType === 'date')
+      .map(d => ({
+        supportedGrains: [{ id: `${table.name}.grain.day`, expression: '', grain: 'DAY' }],
+        timeZone: 'utc',
+        ...d
+      }));
   }
 
   /**
