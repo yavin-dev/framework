@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import config from 'ember-get-config';
 
 const Payload = {
   tables: [
@@ -266,7 +267,7 @@ const Tables = [
     metricIds: ['metricOne', 'metricFour', 'metricTwo'],
     name: 'tableLongName',
     source: 'bardOne',
-    timeDimensionIds: ['dimensionThree'],
+    timeDimensionIds: ['dimensionThree', 'tableName.dateTime'],
     timeGrainIds: ['day', 'month']
   },
   {
@@ -278,7 +279,7 @@ const Tables = [
     metricIds: ['metricFive', 'metricTwo', 'metricOne', 'metricThree'],
     name: 'Second Table',
     source: 'bardOne',
-    timeDimensionIds: ['dimensionThree'],
+    timeDimensionIds: ['dimensionThree', 'secondTable.dateTime'],
     timeGrainIds: ['day', 'week']
   }
 ];
@@ -330,6 +331,54 @@ const TimeDimensions = [
     valueType: 'date',
     storageStrategy: null,
     partialData: true
+  },
+  {
+    category: 'Date',
+    columnFunctionId: 'tableName.grain(day,month)',
+    description: undefined,
+    fields: undefined,
+    id: 'tableName.dateTime',
+    name: 'Date Time',
+    source: 'bardOne',
+    supportedGrains: [
+      {
+        expression: '',
+        grain: 'DAY',
+        id: 'tableName.dateTime.day'
+      },
+      {
+        expression: '',
+        grain: 'MONTH',
+        id: 'tableName.dateTime.month'
+      }
+    ],
+    timeZone: 'UTC',
+    type: 'field',
+    valueType: 'date'
+  },
+  {
+    category: 'Date',
+    columnFunctionId: 'secondTable.grain(day,week)',
+    description: undefined,
+    fields: undefined,
+    id: 'secondTable.dateTime',
+    name: 'Date Time',
+    source: 'bardOne',
+    supportedGrains: [
+      {
+        expression: '',
+        grain: 'DAY',
+        id: 'secondTable.dateTime.day'
+      },
+      {
+        expression: '',
+        grain: 'WEEK',
+        id: 'secondTable.dateTime.week'
+      }
+    ],
+    timeZone: 'UTC',
+    type: 'field',
+    valueType: 'date'
   }
 ];
 
@@ -402,8 +451,7 @@ const ParameterConvertToMetricFunction = [
         expression: 'dimension:displayCurrency',
         id: 'currency',
         name: 'currency',
-        type: 'ref',
-        valueType: 'TEXT'
+        type: 'ref'
       },
       {
         _localValues: undefined,
@@ -413,8 +461,7 @@ const ParameterConvertToMetricFunction = [
         expression: 'dimension:displayFormat',
         id: 'format',
         name: 'format',
-        type: 'ref',
-        valueType: 'TEXT'
+        type: 'ref'
       }
     ],
     description: '',
@@ -432,14 +479,63 @@ const ParameterConvertToMetricFunction = [
         expression: 'dimension:displayCurrency',
         id: 'currency',
         name: 'currency',
-        type: 'ref',
-        valueType: 'TEXT'
+        type: 'ref'
       }
     ],
     description: '',
     id: 'currency',
     name: '',
     source: 'bardOne'
+  },
+  {
+    id: 'tableName.grain(day,month)',
+    name: 'Time Grain',
+    description: 'Time Grain',
+    source: 'bardOne',
+    _parametersPayload: [
+      {
+        defaultValue: 'day',
+        description: 'The time grain to group dates by',
+        expression: 'self',
+        id: 'grain',
+        name: 'Time Grain',
+        source: 'bardOne',
+        type: 'ref',
+        _localValues: [
+          { id: 'day', description: 'The tableName day grain', name: 'Day' },
+          { id: 'month', description: 'The tableName month grain', name: 'MONTH' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'secondTable.grain(day,week)',
+    name: 'Time Grain',
+    description: 'Time Grain',
+    source: 'bardOne',
+    _parametersPayload: [
+      {
+        defaultValue: 'day',
+        description: 'The time grain to group dates by',
+        expression: 'self',
+        id: 'grain',
+        name: 'Time Grain',
+        source: 'bardOne',
+        type: 'ref',
+        _localValues: [
+          {
+            description: 'The secondTable day grain',
+            id: 'day',
+            name: 'Day'
+          },
+          {
+            description: 'The secondTable week grain',
+            id: 'week',
+            name: 'Week'
+          }
+        ]
+      }
+    ]
   }
 ];
 
@@ -563,7 +659,6 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
               id: 'currency',
               name: 'currency',
               type: 'ref',
-              valueType: 'TEXT',
               source: 'bardOne'
             }
           ],
@@ -571,6 +666,30 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           id: 'moneyMetric',
           name: 'Mo Money',
           source: 'bardOne'
+        },
+        {
+          description: 'Time Grain',
+          id: 'tableName.grain(day)',
+          name: 'Time Grain',
+          source: 'bardOne',
+          _parametersPayload: [
+            {
+              defaultValue: 'day',
+              description: 'The time grain to group dates by',
+              expression: 'self',
+              id: 'grain',
+              name: 'Time Grain',
+              source: 'bardOne',
+              type: 'ref',
+              _localValues: [
+                {
+                  description: 'The tableName day grain',
+                  id: 'day',
+                  name: 'Day'
+                }
+              ]
+            }
+          ]
         }
       ],
       'Raw column functions are normalized correctly'
@@ -648,5 +767,33 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ],
       'Metric is constructed correctly with no new column function id or parameter'
     );
+  });
+
+  test('configure defaultTimeGrain if it exists', async function(assert) {
+    const originalDefaultTimeGrain = config.navi.defaultTimeGrain;
+
+    const table = {
+      name: 'table',
+      timeGrains: [
+        { name: 'day', longName: 'Day' },
+        { name: 'hour', longName: 'Hour' },
+        { name: 'week', longName: 'Week' },
+        { name: 'month', longName: 'Month' }
+      ]
+    };
+
+    config.navi.defaultTimeGrain = 'week';
+    let columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'week', 'Picks default from config');
+
+    config.navi.defaultTimeGrain = 'year';
+    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'day', 'Falls back to first defined grain');
+
+    config.navi.defaultTimeGrain = 'hour';
+    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'hour', 'Picks default from config');
+
+    config.navi.defaultTimeGrain = originalDefaultTimeGrain;
   });
 });

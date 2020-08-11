@@ -9,5 +9,6 @@ declare module 'navi-config' {
     dataSources: NaviDataSource[];
     defaultDataSource?: string;
     searchThresholds: TODO;
+    defaultTimeGrain?: string;
   }
 }
