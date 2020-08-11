@@ -13,8 +13,8 @@ const TestRequest = {
     requestVersion: '2.0',
     filters: [
       {
-        field: 'dateTime',
-        parameters: {},
+        field: 'table1.dateTime',
+        parameters: { grain: 'grain1' },
         type: 'timeDimension',
         operator: 'bet',
         values: ['2015-01-03', '2015-01-04']
@@ -50,7 +50,7 @@ const TestRequest = {
     ],
     columns: [
       {
-        field: 'dateTime',
+        field: 'table1.dateTime',
         parameters: {
           grain: 'grain1'
         },
@@ -178,9 +178,11 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.expect(2);
 
     let singleInterval = {
+      table: 'tableName',
       filters: [
         {
-          field: 'dateTime',
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
           parameters: {},
           operator: 'bet',
           values: ['start', 'end']
@@ -194,15 +196,18 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     let manyIntervals = {
+      table: 'tableName',
       filters: [
         {
-          field: 'dateTime',
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
           parameters: {},
           operator: 'bet',
           values: ['start1', 'end1']
         },
         {
-          field: 'dateTime',
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
           parameters: {},
           operator: 'bet',
           values: ['start2', 'end2']
@@ -625,7 +630,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let noFiltersAndNoHavings = assign({}, TestRequest, {
       filters: [
         {
-          field: 'dateTime',
+          field: 'table1.dateTime',
           parameters: {},
           type: 'timeDimension',
           operator: 'bet',
@@ -833,7 +838,15 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     let onlyDateFilter = assign({}, TestRequest, {
-      filters: [{ field: 'dateTime', type: 'timeDimension', operator: 'bet', values: ['2015-01-03', '2015-01-04'] }]
+      filters: [
+        {
+          field: 'table1.dateTime',
+          parameters: { grain: 'grain1' },
+          type: 'timeDimension',
+          operator: 'bet',
+          values: ['2015-01-03', '2015-01-04']
+        }
+      ]
     });
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(onlyDateFilter)),
@@ -842,7 +855,15 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     let requestWithSort = assign({}, TestRequest, {
-      filters: [{ field: 'dateTime', type: 'timeDimension', operator: 'bet', values: ['2015-01-03', '2015-01-04'] }],
+      filters: [
+        {
+          field: 'table1.dateTime',
+          parameters: { grain: 'grain1' },
+          type: 'timeDimension',
+          operator: 'bet',
+          values: ['2015-01-03', '2015-01-04']
+        }
+      ],
       sorts: [{ field: 'm1' }, { field: 'm2' }]
     });
     assert.equal(
