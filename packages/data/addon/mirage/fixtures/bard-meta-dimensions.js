@@ -1,3 +1,8 @@
+const defaultFields = [
+  { name: 'id', description: 'Dimension ID' },
+  { name: 'desc', description: 'Dimension Description' }
+];
+
 export default {
   defaultDims: [
     {
@@ -6,7 +11,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'userDeviceType',
@@ -14,7 +20,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'age',
@@ -22,7 +29,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'currency',
@@ -30,7 +38,8 @@ export default {
       cardinality: 500,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'displayCurrency',
@@ -38,7 +47,8 @@ export default {
       cardinality: 54,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'gender',
@@ -46,7 +56,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'propertyCountry',
@@ -54,7 +65,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'loginState',
@@ -62,7 +74,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'platform',
@@ -70,7 +83,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'userDeviceTypeV3',
@@ -78,7 +92,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'productFamily',
@@ -86,7 +101,8 @@ export default {
       cardinality: 100,
       category: 'Asset',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'property',
@@ -94,7 +110,8 @@ export default {
       cardinality: 5000,
       category: 'Asset',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'browser',
@@ -102,7 +119,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'browserVersion',
@@ -110,7 +128,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'productRegion',
@@ -118,7 +137,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'platformVersion',
@@ -126,7 +146,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'screenType',
@@ -134,7 +155,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'lang',
@@ -142,7 +164,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'userCountry',
@@ -150,7 +173,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'userRegion',
@@ -158,7 +182,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'userSubRegion',
@@ -166,7 +191,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'productSubRegion',
@@ -174,7 +200,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'outflowChannel',
@@ -182,7 +209,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'outflowSite',
@@ -190,7 +218,8 @@ export default {
       cardinality: 100,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'contextId',
@@ -198,7 +227,8 @@ export default {
       cardinality: 0,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'none'
+      storageStrategy: 'none',
+      fields: defaultFields
     },
     {
       name: 'multiSystemId',
@@ -219,7 +249,8 @@ export default {
       cardinality: 39896,
       category: 'test',
       datatype: 'date',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'commaDim',
@@ -227,7 +258,8 @@ export default {
       cardinality: 2,
       category: 'test',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'Budget',
@@ -235,7 +267,8 @@ export default {
       cardinality: 462664,
       category: 'test',
       datatype: 'number',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     }
   ],
 
@@ -246,7 +279,8 @@ export default {
       cardinality: 9999999,
       category: 'Asset',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'parentEventId',
@@ -254,7 +288,8 @@ export default {
       cardinality: 9999999,
       category: 'Asset',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     }
   ],
 
@@ -265,7 +300,8 @@ export default {
       cardinality: 100,
       category: 'Personal',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'container',
@@ -273,7 +309,8 @@ export default {
       cardinality: 100,
       category: 'Personal',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'location',
@@ -281,7 +318,8 @@ export default {
       cardinality: 100,
       category: 'World',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'requirement',
@@ -289,7 +327,8 @@ export default {
       cardinality: 100,
       category: 'World',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'recipe',
@@ -297,7 +336,8 @@ export default {
       cardinality: 100,
       category: 'Personal',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     },
     {
       name: 'displayCurrency',
@@ -305,7 +345,8 @@ export default {
       cardinality: 34,
       category: 'Personal',
       datatype: 'text',
-      storageStrategy: 'loaded'
+      storageStrategy: 'loaded',
+      fields: defaultFields
     }
   ]
 };
