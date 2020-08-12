@@ -2,9 +2,9 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * colors follow pattern recommended at https://denali.design/principles/graphs
+ * graph colors follow pattern recommended at https://denali.design/principles/graphs
  * (lime, yellow, sky, violet, pink, blue, orange, purple, green, red)
- * color pallette recommended at https://denali.design/docs/2/aesthetics/colors
+ * color pallettes recommended at https://denali.design/docs/2/aesthetics/colors
  */
 const denaliGraphColors = [
   // 500-series colors
@@ -31,7 +31,12 @@ const denaliGraphColors = [
   '#be0c0c'
 ];
 
-export function fetchColor(index) {
+const denaliStatusColors = ['#ea0000', '#f4cb00', '#15c046'];
+
+export function fetchColor(index, type = 'graph') {
+  if (type === 'status') {
+    return denaliStatusColors[index];
+  }
   return denaliGraphColors[index % denaliGraphColors.length];
 }
 
