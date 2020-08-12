@@ -30,14 +30,12 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricFour',
               longName: 'Metric Four',
-              uri: 'https://metric-four-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -60,7 +58,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryOne',
               name: 'dimensionOne',
               longName: 'Dimension One',
-              uri: 'https://host:port/namespace/dimensions/dimensionOne',
               cardinality: 10,
               datatype: 'text',
               fields: [
@@ -78,7 +75,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
               cardinality: 5,
               datatype: 'text',
               fields: [
@@ -92,7 +88,6 @@ const Payload: RawEverythingPayload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
               cardinality: 50000,
               datatype: 'date',
               fields: [
@@ -112,14 +107,12 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricTwo',
               longName: 'Metric Two',
-              uri: 'https://metric-two-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -137,7 +130,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryOne',
               name: 'dimensionOne',
               longName: 'Dimension One',
-              uri: 'https://host:port/namespace/dimensions/dimensionOne',
               cardinality: 10,
               datatype: 'text',
               fields: [
@@ -155,7 +147,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
               cardinality: 5,
               datatype: 'text',
               fields: [
@@ -169,7 +160,6 @@ const Payload: RawEverythingPayload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
               cardinality: 50000,
               datatype: 'date',
               fields: [
@@ -199,7 +189,6 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricFive',
               longName: 'Metric Five',
-              uri: 'https://metric-five-url',
               type: 'number',
               metricFunctionId: 'metricFunctionId take precedence over parameters',
               parameters: {
@@ -214,7 +203,6 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricTwo',
               longName: 'Metric Two',
-              uri: 'https://metric-two-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -230,7 +218,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
               cardinality: 5,
               datatype: 'text',
               fields: [
@@ -244,7 +231,6 @@ const Payload: RawEverythingPayload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
               cardinality: 50000,
               datatype: 'date',
               fields: [
@@ -266,14 +252,12 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricThree',
               longName: 'Metric Three',
-              uri: 'https://metric-three-url',
               type: 'number'
             }
           ],
@@ -282,7 +266,6 @@ const Payload: RawEverythingPayload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
               cardinality: 5,
               datatype: 'text',
               fields: [
@@ -296,7 +279,6 @@ const Payload: RawEverythingPayload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
               cardinality: 50000,
               datatype: 'date',
               fields: [
@@ -344,7 +326,7 @@ const Dimensions: DimensionMetadataPayload[] = [
   {
     cardinality: 'SMALL',
     category: 'categoryOne',
-    columnFunctionId: '_fili_generated_:dimensionField(fields=desc,id)',
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=desc,id)',
     description: undefined,
     id: 'dimensionOne',
     name: 'Dimension One',
@@ -367,7 +349,7 @@ const Dimensions: DimensionMetadataPayload[] = [
   {
     cardinality: 'SMALL',
     category: 'categoryTwo',
-    columnFunctionId: '_fili_generated_:dimensionField(fields=foo)',
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=foo)',
     description: undefined,
     id: 'dimensionTwo',
     name: 'Dimension Two',
@@ -390,7 +372,7 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
     cardinality: 'MEDIUM',
     category: 'dateCategory',
     description: undefined,
-    columnFunctionId: '_fili_generated_:dimensionField(fields=id)',
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=id)',
     id: 'dimensionThree',
     name: 'Dimension Three',
     source: 'bardOne',
@@ -415,7 +397,7 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
   },
   {
     category: 'Date',
-    columnFunctionId: '_fili_generated_:timeGrain(table=tableName;grains=day,month)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     description: undefined,
     fields: undefined,
     id: 'tableName.dateTime',
@@ -439,7 +421,7 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
   },
   {
     category: 'Date',
-    columnFunctionId: '_fili_generated_:timeGrain(table=secondTable;grains=day,week)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
     description: undefined,
     fields: undefined,
     id: 'secondTable.dateTime',
@@ -478,7 +460,7 @@ const Metrics: MetricMetadataPayload[] = [
   {
     category: 'category',
     id: 'metricFour',
-    columnFunctionId: '_fili_generated_:columnFunction(parameters=currency,format)',
+    columnFunctionId: 'normalizer-generated:columnFunction(parameters=currency,format)',
     description: undefined,
     name: 'Metric Four',
     partialData: true,
@@ -489,7 +471,7 @@ const Metrics: MetricMetadataPayload[] = [
   {
     category: 'category',
     id: 'metricTwo',
-    columnFunctionId: '_fili_generated_:columnFunction(parameters=currency)',
+    columnFunctionId: 'normalizer-generated:columnFunction(parameters=currency)',
     description: undefined,
     name: 'Metric Two',
     partialData: true,
@@ -547,7 +529,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
       }
     ],
     description: 'Dimension Field',
-    id: '_fili_generated_:dimensionField(fields=desc,id)',
+    id: 'normalizer-generated:dimensionField(fields=desc,id)',
     name: 'Dimension Field',
     source: 'bardOne'
   },
@@ -571,7 +553,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
       }
     ],
     description: 'Dimension Field',
-    id: '_fili_generated_:dimensionField(fields=foo)',
+    id: 'normalizer-generated:dimensionField(fields=foo)',
     name: 'Dimension Field',
     source: 'bardOne'
   },
@@ -595,7 +577,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
       }
     ],
     description: 'Dimension Field',
-    id: '_fili_generated_:dimensionField(fields=id)',
+    id: 'normalizer-generated:dimensionField(fields=id)',
     name: 'Dimension Field',
     source: 'bardOne'
   },
@@ -623,7 +605,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
       }
     ],
     description: '',
-    id: '_fili_generated_:columnFunction(parameters=currency,format)',
+    id: 'normalizer-generated:columnFunction(parameters=currency,format)',
     name: '',
     source: 'bardOne'
   },
@@ -641,12 +623,12 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
       }
     ],
     description: '',
-    id: '_fili_generated_:columnFunction(parameters=currency)',
+    id: 'normalizer-generated:columnFunction(parameters=currency)',
     name: '',
     source: 'bardOne'
   },
   {
-    id: '_fili_generated_:timeGrain(table=tableName;grains=day,month)',
+    id: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -667,7 +649,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
     ]
   },
   {
-    id: '_fili_generated_:timeGrain(table=secondTable;grains=day,week)',
+    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -755,14 +737,12 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
                   category: 'category',
                   name: 'metricOne',
                   longName: 'Metric One',
-                  uri: 'https://metric-one-url',
                   type: 'number'
                 },
                 {
                   category: 'category',
                   name: 'metricTwo',
                   longName: 'Metric Two',
-                  uri: 'https://metric-two-url',
                   type: 'money',
                   metricFunctionId: 'moneyMetric'
                 }
@@ -833,7 +813,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         },
         {
           description: 'Time Grain',
-          id: '_fili_generated_:timeGrain(table=tableName;grains=day)',
+          id: 'normalizer-generated:timeGrain(table=tableName;grains=day)',
           name: 'Time Grain',
           source: 'bardOne',
           _parametersPayload: [
@@ -865,7 +845,6 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       category: 'categoryOne',
       name: 'dimensionOne',
       longName: 'Dimension One',
-      uri: 'https://host:port/namespace/dimensions/dimensionOne',
       cardinality: 10,
       fields: [
         {
@@ -909,7 +888,6 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       category: 'categoryOne',
       name: 'metricOne',
       longName: 'Metric One',
-      uri: 'https://metric-one-url',
       type: 'number',
       metricFunctionId: 'money'
     };

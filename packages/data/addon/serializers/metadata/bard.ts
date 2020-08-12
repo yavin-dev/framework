@@ -17,7 +17,6 @@ import {
   INTRINSIC_VALUE_EXPRESSION,
   ColumnFunctionParametersValues
 } from 'navi-data/models/metadata/function-parameter';
-import { bind } from 'lodash-es';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
@@ -38,12 +37,11 @@ type RawColumnPayload = {
   description?: string;
   longName: string;
   category?: string;
-  uri?: string;
 };
 
 export type RawDimensionPayload = RawColumnPayload & {
   datatype: TODO<'text' | 'date'>;
-  storageStrategy?: TODO<'loaded' | 'none' | null>;
+  storageStrategy?: TODO<'loaded' | 'none'>;
   cardinality: number;
   fields: RawDimensionField[];
 };
@@ -87,7 +85,7 @@ export type RawTablePayload = {
 };
 
 export default class BardMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
-  private namespace = '_fili_generated_';
+  private namespace = 'normalizer-generated';
 
   /**
    * Transform the bard metadata into a shape that our internal data models can use
@@ -121,7 +119,8 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
             const isTimeDimension = dimension.datatype === 'date';
 
             const normalize = isTimeDimension
-              ? bind(this.normalizeTimeDimensions, this, table) // call function with table partially applied
+              ? (dims: RawDimensionPayload[], dataSourceName: string) =>
+                  this.normalizeTimeDimensions(table, dims, dataSourceName) // call function with table partially applied
               : this.normalizeDimensions;
             const accDimensionList = isTimeDimension ? currentTimeDimensions : currentDimensions;
             const accTableDimensionList = isTimeDimension ? tableTimeDimensionIds : tableDimensionIds;
