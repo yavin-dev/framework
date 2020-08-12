@@ -1,19 +1,25 @@
 import { module, test } from 'qunit';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
+import { TestContext } from 'ember-test-helpers';
+//@ts-ignore
 import metadataRoutes from '../../../helpers/metadata-routes';
 
-let Payload, Dimension;
+let Payload: DimensionMetadataPayload, Dimension: DimensionMetadataModel;
 
 module('Unit | Metadata Model | Dimension', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
     Payload = {
       id: 'age',
       name: 'Age',
       category: 'Audience',
+      source: 'bardOne',
+      valueType: 'text',
+      type: 'field',
+      storageStrategy: null,
       fields: [
         {
           name: 'id',
@@ -56,7 +62,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
     assert.deepEqual(
       Dimension.getTagsForField('id'),
-      Payload.fields[0].tags,
+      Payload.fields?.[0].tags,
       'getTagsForField returns the correct tags for `id` field'
     );
 
@@ -78,6 +84,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       'getTagsForField returns an empty array when `fields` property is missing'
     );
 
+    //@ts-expect-error
     assert.deepEqual(Dimension.getTagsForField(), [], 'getTagsForField returns an empty array when field is undefined');
   });
 
@@ -86,19 +93,19 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
     assert.deepEqual(
       Dimension.getFieldsForTag('primaryKey'),
-      [Payload.fields[0]],
+      [Payload.fields?.[0]],
       'getFieldsForTag returns the correct field for tag `primaryKey`'
     );
 
     assert.deepEqual(
       Dimension.getFieldsForTag('description'),
-      [Payload.fields[1]],
+      [Payload.fields?.[1]],
       'getFieldsForTag returns the correct field for tag `description`'
     );
 
     assert.deepEqual(
       Dimension.getFieldsForTag('display'),
-      [Payload.fields[0], Payload.fields[1]],
+      [Payload.fields?.[0], Payload.fields?.[1]],
       'getFieldsForTag returns the correct fields for tag `display`'
     );
 
@@ -108,6 +115,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
       'getFieldsForTag returns an empty array when tag is missing'
     );
 
+    //@ts-expect-error
     assert.deepEqual(Dimension.getFieldsForTag(), [], 'getFieldsForTag returns an empty array when tag is undefined');
   });
 
@@ -221,13 +229,18 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
     const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       cardinality: 'MEDIUM',
-      type: 'somethingElse'
+      type: 'ref'
     });
 
-    assert.strictEqual(dimension2.cardinality, undefined, 'Dimension returns undefined for non-field type dimension');
+    assert.strictEqual(
+      dimension2.cardinality,
+      undefined,
+      'Dimension cardinality returns undefined for non-field type dimension'
+    );
 
     assert.throws(
       () => {
+        //@ts-expect-error
         dimension2.cardinality = 'chicago cubity';
       },
       /Dimension cardinality should be set to a value included in CARDINALITY_SIZES/,

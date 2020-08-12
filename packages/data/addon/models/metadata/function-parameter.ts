@@ -39,7 +39,7 @@ export interface FunctionParameterMetadataPayload {
   source: string;
   type: FunctionParameterType;
   expression?: string;
-  defaultValue?: string;
+  defaultValue?: string | null;
   _localValues?: ColumnFunctionParametersValues;
 }
 
@@ -113,5 +113,5 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
   /**
    * @property {string} defaultValue
    */
-  defaultValue?: string;
+  defaultValue?: string | null;
 }

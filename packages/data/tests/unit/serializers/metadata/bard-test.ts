@@ -1,8 +1,20 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
+import { TestContext } from 'ember-test-helpers';
+import BardMetadataSerializer, {
+  RawEverythingPayload,
+  RawDimensionPayload,
+  RawMetricPayload,
+  RawTablePayload
+} from 'navi-data/serializers/metadata/bard';
+import { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 
-const Payload = {
+const Payload: RawEverythingPayload = {
   tables: [
     {
       name: 'tableName',
@@ -18,14 +30,12 @@ const Payload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricFour',
               longName: 'Metric Four',
-              uri: 'https://metric-four-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -48,31 +58,44 @@ const Payload = {
               category: 'categoryOne',
               name: 'dimensionOne',
               longName: 'Dimension One',
-              uri: 'https://host:port/namespace/dimensions/dimensionOne',
-              cardinality: '10',
-              datatype: 'text'
+              cardinality: 10,
+              datatype: 'text',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                },
+                {
+                  name: 'desc',
+                  description: 'Dimension Description'
+                }
+              ]
             },
             {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-              cardinality: '5',
+              cardinality: 5,
+              datatype: 'text',
               fields: [
                 {
                   name: 'foo',
                   description: 'bar'
                 }
-              ],
-              datatype: 'text'
+              ]
             },
             {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
-              cardinality: '50000',
-              datatype: 'date'
+              cardinality: 50000,
+              datatype: 'date',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                }
+              ]
             }
           ]
         },
@@ -84,14 +107,12 @@ const Payload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricTwo',
               longName: 'Metric Two',
-              uri: 'https://metric-two-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -109,16 +130,24 @@ const Payload = {
               category: 'categoryOne',
               name: 'dimensionOne',
               longName: 'Dimension One',
-              uri: 'https://host:port/namespace/dimensions/dimensionOne',
-              cardinality: '10',
-              datatype: 'text'
+              cardinality: 10,
+              datatype: 'text',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                },
+                {
+                  name: 'desc',
+                  description: 'Dimension Description'
+                }
+              ]
             },
             {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-              cardinality: '5',
+              cardinality: 5,
               datatype: 'text',
               fields: [
                 {
@@ -131,9 +160,14 @@ const Payload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
-              cardinality: '50000',
-              datatype: 'date'
+              cardinality: 50000,
+              datatype: 'date',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                }
+              ]
             }
           ]
         }
@@ -155,7 +189,6 @@ const Payload = {
               category: 'category',
               name: 'metricFive',
               longName: 'Metric Five',
-              uri: 'https://metric-five-url',
               type: 'number',
               metricFunctionId: 'metricFunctionId take precedence over parameters',
               parameters: {
@@ -170,7 +203,6 @@ const Payload = {
               category: 'category',
               name: 'metricTwo',
               longName: 'Metric Two',
-              uri: 'https://metric-two-url',
               type: 'money',
               parameters: {
                 currency: {
@@ -186,8 +218,7 @@ const Payload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-              cardinality: '5',
+              cardinality: 5,
               datatype: 'text',
               fields: [
                 {
@@ -200,9 +231,14 @@ const Payload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
-              cardinality: '50000',
-              datatype: 'date'
+              cardinality: 50000,
+              datatype: 'date',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                }
+              ]
             }
           ]
         },
@@ -216,14 +252,12 @@ const Payload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              uri: 'https://metric-one-url',
               type: 'number'
             },
             {
               category: 'category',
               name: 'metricThree',
               longName: 'Metric Three',
-              uri: 'https://metric-three-url',
               type: 'number'
             }
           ],
@@ -232,8 +266,7 @@ const Payload = {
               category: 'categoryTwo',
               name: 'dimensionTwo',
               longName: 'Dimension Two',
-              uri: 'https://host:port/namespace/dimensions/dimensionTwo',
-              cardinality: '5',
+              cardinality: 5,
               datatype: 'text',
               fields: [
                 {
@@ -246,9 +279,14 @@ const Payload = {
               category: 'dateCategory',
               name: 'dimensionThree',
               longName: 'Dimension Three',
-              uri: 'https://host:port/namespace/dimensions/dimensionThree',
-              cardinality: '50000',
-              datatype: 'date'
+              cardinality: 50000,
+              datatype: 'date',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                }
+              ]
             }
           ]
         }
@@ -257,7 +295,7 @@ const Payload = {
   ]
 };
 // list of table objects, with table->timegrains->dimensions+metrics
-const Tables = [
+const Tables: TableMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
     category: 'General',
@@ -284,23 +322,34 @@ const Tables = [
   }
 ];
 
-const Dimensions = [
+const Dimensions: DimensionMetadataPayload[] = [
   {
     cardinality: 'SMALL',
     category: 'categoryOne',
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=desc,id)',
     description: undefined,
     id: 'dimensionOne',
     name: 'Dimension One',
     source: 'bardOne',
     type: 'field',
     valueType: 'text',
-    fields: undefined,
     storageStrategy: null,
-    partialData: true
+    partialData: true,
+    fields: [
+      {
+        name: 'id',
+        description: 'Dimension ID'
+      },
+      {
+        name: 'desc',
+        description: 'Dimension Description'
+      }
+    ]
   },
   {
     cardinality: 'SMALL',
     category: 'categoryTwo',
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=foo)',
     description: undefined,
     id: 'dimensionTwo',
     name: 'Dimension Two',
@@ -318,23 +367,37 @@ const Dimensions = [
   }
 ];
 
-const TimeDimensions = [
+const TimeDimensions: TimeDimensionMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
     category: 'dateCategory',
     description: undefined,
+    columnFunctionId: 'normalizer-generated:dimensionField(fields=id)',
     id: 'dimensionThree',
     name: 'Dimension Three',
     source: 'bardOne',
     type: 'field',
-    fields: undefined,
+    fields: [
+      {
+        name: 'id',
+        description: 'Dimension ID'
+      }
+    ],
     valueType: 'date',
     storageStrategy: null,
-    partialData: true
+    partialData: true,
+    supportedGrains: [
+      {
+        expression: '',
+        grain: 'DAY',
+        id: 'secondTable.grain.day'
+      }
+    ],
+    timeZone: 'utc'
   },
   {
     category: 'Date',
-    columnFunctionId: 'tableName.grain(day,month)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     description: undefined,
     fields: undefined,
     id: 'tableName.dateTime',
@@ -358,7 +421,7 @@ const TimeDimensions = [
   },
   {
     category: 'Date',
-    columnFunctionId: 'secondTable.grain(day,week)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
     description: undefined,
     fields: undefined,
     id: 'secondTable.dateTime',
@@ -382,7 +445,7 @@ const TimeDimensions = [
   }
 ];
 
-const Metrics = [
+const Metrics: MetricMetadataPayload[] = [
   {
     category: 'category',
     id: 'metricOne',
@@ -397,7 +460,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricFour',
-    columnFunctionId: 'currency|format',
+    columnFunctionId: 'normalizer-generated:columnFunction(parameters=currency,format)',
     description: undefined,
     name: 'Metric Four',
     partialData: true,
@@ -408,7 +471,7 @@ const Metrics = [
   {
     category: 'category',
     id: 'metricTwo',
-    columnFunctionId: 'currency',
+    columnFunctionId: 'normalizer-generated:columnFunction(parameters=currency)',
     description: undefined,
     name: 'Metric Two',
     partialData: true,
@@ -440,7 +503,84 @@ const Metrics = [
   }
 ];
 
-const ParameterConvertToMetricFunction = [
+const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
+  {
+    _parametersPayload: [
+      {
+        _localValues: [
+          {
+            description: undefined,
+            id: 'id',
+            name: 'id'
+          },
+          {
+            description: undefined,
+            id: 'desc',
+            name: 'desc'
+          }
+        ],
+        defaultValue: 'id',
+        description: 'The field to be projected for this dimension',
+        expression: 'self',
+        id: 'field',
+        name: 'Dimension Field',
+        source: 'bardOne',
+        type: 'ref'
+      }
+    ],
+    description: 'Dimension Field',
+    id: 'normalizer-generated:dimensionField(fields=desc,id)',
+    name: 'Dimension Field',
+    source: 'bardOne'
+  },
+  {
+    _parametersPayload: [
+      {
+        _localValues: [
+          {
+            description: undefined,
+            id: 'foo',
+            name: 'foo'
+          }
+        ],
+        defaultValue: 'foo',
+        description: 'The field to be projected for this dimension',
+        expression: 'self',
+        id: 'field',
+        name: 'Dimension Field',
+        source: 'bardOne',
+        type: 'ref'
+      }
+    ],
+    description: 'Dimension Field',
+    id: 'normalizer-generated:dimensionField(fields=foo)',
+    name: 'Dimension Field',
+    source: 'bardOne'
+  },
+  {
+    _parametersPayload: [
+      {
+        _localValues: [
+          {
+            description: undefined,
+            id: 'id',
+            name: 'id'
+          }
+        ],
+        defaultValue: 'id',
+        description: 'The field to be projected for this dimension',
+        expression: 'self',
+        id: 'field',
+        name: 'Dimension Field',
+        source: 'bardOne',
+        type: 'ref'
+      }
+    ],
+    description: 'Dimension Field',
+    id: 'normalizer-generated:dimensionField(fields=id)',
+    name: 'Dimension Field',
+    source: 'bardOne'
+  },
   {
     _parametersPayload: [
       {
@@ -465,7 +605,7 @@ const ParameterConvertToMetricFunction = [
       }
     ],
     description: '',
-    id: 'currency|format',
+    id: 'normalizer-generated:columnFunction(parameters=currency,format)',
     name: '',
     source: 'bardOne'
   },
@@ -483,12 +623,12 @@ const ParameterConvertToMetricFunction = [
       }
     ],
     description: '',
-    id: 'currency',
+    id: 'normalizer-generated:columnFunction(parameters=currency)',
     name: '',
     source: 'bardOne'
   },
   {
-    id: 'tableName.grain(day,month)',
+    id: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -509,7 +649,7 @@ const ParameterConvertToMetricFunction = [
     ]
   },
   {
-    id: 'secondTable.grain(day,week)',
+    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -539,12 +679,12 @@ const ParameterConvertToMetricFunction = [
   }
 ];
 
-let Serializer;
+let Serializer: BardMetadataSerializer;
 
 module('Unit | Serializer | metadata/bard', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
   });
 
@@ -556,14 +696,14 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         dimensions: Dimensions,
         timeDimensions: TimeDimensions,
         tables: Tables,
-        columnFunctions: ParameterConvertToMetricFunction
+        columnFunctions: ParameterConvertToColumnFunction
       },
       'One column function is created for all metrics with only the currency parameter'
     );
   });
 
   test('normalize `everything` with column functions', function(assert) {
-    const MetricFunctionIdsPayload = {
+    const MetricFunctionIdsPayload: RawEverythingPayload = {
       metricFunctions: [
         {
           id: 'moneyMetric',
@@ -573,7 +713,10 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
             currency: {
               type: 'enum',
               defaultValue: null,
-              values: ['USD', 'CAN'],
+              values: [
+                { id: 'USD', name: 'USD' },
+                { id: 'CAN', name: 'CAN' }
+              ],
               description: 'Currency Parameter'
             }
           }
@@ -594,14 +737,12 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
                   category: 'category',
                   name: 'metricOne',
                   longName: 'Metric One',
-                  uri: 'https://metric-one-url',
                   type: 'number'
                 },
                 {
                   category: 'category',
                   name: 'metricTwo',
                   longName: 'Metric Two',
-                  uri: 'https://metric-two-url',
                   type: 'money',
                   metricFunctionId: 'moneyMetric'
                 }
@@ -615,7 +756,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ]
     };
 
-    const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload, 'bardOne');
+    const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload, 'bardOne') || {};
 
     assert.deepEqual(
       metrics,
@@ -652,7 +793,10 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         {
           _parametersPayload: [
             {
-              _localValues: ['USD', 'CAN'],
+              _localValues: [
+                { id: 'USD', name: 'USD' },
+                { id: 'CAN', name: 'CAN' }
+              ],
               defaultValue: null,
               description: 'Currency Parameter',
               expression: 'self',
@@ -669,7 +813,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         },
         {
           description: 'Time Grain',
-          id: 'tableName.grain(day)',
+          id: 'normalizer-generated:timeGrain(table=tableName;grains=day)',
           name: 'Time Grain',
           source: 'bardOne',
           _parametersPayload: [
@@ -697,12 +841,11 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
   });
 
   test('normalizeDimensions', function(assert) {
-    const rawDimension = {
+    const rawDimension: RawDimensionPayload = {
       category: 'categoryOne',
       name: 'dimensionOne',
       longName: 'Dimension One',
-      uri: 'https://host:port/namespace/dimensions/dimensionOne',
-      cardinality: '10',
+      cardinality: 10,
       fields: [
         {
           name: 'foo',
@@ -718,7 +861,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     const source = 'bardOne';
 
     assert.deepEqual(
-      Serializer.normalizeDimensions([rawDimension], source),
+      Serializer['normalizeDimensions']([rawDimension], source),
       [
         {
           id: rawDimension.name,
@@ -741,17 +884,16 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
   test('normalizeMetrics', function(assert) {
     const source = 'bardOne';
 
-    const rawMetric = {
+    const rawMetric: RawMetricPayload = {
       category: 'categoryOne',
       name: 'metricOne',
       longName: 'Metric One',
-      uri: 'https://metric-one-url',
       type: 'number',
-      columnFunctionId: 'money'
+      metricFunctionId: 'money'
     };
 
     assert.deepEqual(
-      Serializer.normalizeMetrics([rawMetric], source),
+      Serializer['normalizeMetrics']([rawMetric], source),
       [
         {
           id: rawMetric.name,
@@ -772,27 +914,28 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
   test('configure defaultTimeGrain if it exists', async function(assert) {
     const originalDefaultTimeGrain = config.navi.defaultTimeGrain;
 
-    const table = {
+    const table: RawTablePayload = {
       name: 'table',
+      longName: 'Table',
       timeGrains: [
-        { name: 'day', longName: 'Day' },
-        { name: 'hour', longName: 'Hour' },
-        { name: 'week', longName: 'Week' },
-        { name: 'month', longName: 'Month' }
+        { name: 'day', longName: 'Day', metrics: [], dimensions: [] },
+        { name: 'hour', longName: 'Hour', metrics: [], dimensions: [] },
+        { name: 'week', longName: 'Week', metrics: [], dimensions: [] },
+        { name: 'month', longName: 'Month', metrics: [], dimensions: [] }
       ]
     };
 
     config.navi.defaultTimeGrain = 'week';
-    let columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
-    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'week', 'Picks default from config');
+    let columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'week', 'Picks default from config');
 
     config.navi.defaultTimeGrain = 'year';
-    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
-    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'day', 'Falls back to first defined grain');
+    columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'day', 'Falls back to first defined grain');
 
     config.navi.defaultTimeGrain = 'hour';
-    columnFunction = Serializer.createTimeGrainColumnFunction(table, 'bardOne');
-    assert.equal(columnFunction._parametersPayload[0].defaultValue, 'hour', 'Picks default from config');
+    columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
+    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'hour', 'Picks default from config');
 
     config.navi.defaultTimeGrain = originalDefaultTimeGrain;
   });
