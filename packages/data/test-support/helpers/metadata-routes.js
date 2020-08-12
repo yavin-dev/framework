@@ -78,8 +78,11 @@ export const DimensionOne = {
   name: 'dimensionOne',
   longName: 'Dimension One',
   description: 'This is Dimension One',
-  cardinality: 60
-  //No Fields
+  cardinality: 60,
+  fields: [
+    { name: 'id', description: 'Dimension ID' },
+    { name: 'desc', description: 'Dimension Description' }
+  ]
 };
 
 export const DimensionTwo = {
