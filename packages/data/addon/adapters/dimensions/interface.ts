@@ -41,7 +41,7 @@ export default interface NaviDimensionAdapter {
   /**
    * Get dimension values for a search string
    * @param dimension - requested dimension
-   * @param string - query string
+   * @param query - query string
    * @param options - adapter options
    */
   search(dimension: DimensionColumn, query: string, options?: AdapterOptions): Promise<unknown>;
