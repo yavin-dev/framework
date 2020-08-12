@@ -2,6 +2,7 @@ import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { set, get, computed, action } from '@ember/object';
 import { merge } from 'lodash-es';
+import { assignColors } from 'navi-core/utils/enums/denali-colors';
 
 export default class PieChartController extends Controller {
   apexModel = A([
@@ -100,18 +101,7 @@ export default class PieChartController extends Controller {
   apexOptions = {
     series: {
       config: {
-        colors: [
-          '#87d812',
-          '#fed800',
-          '#19c6f4',
-          '#9a2ead',
-          '#ff3390',
-          '#0072df',
-          '#f17603',
-          '#6e2ebf',
-          '#20c05b',
-          '#e21717'
-        ],
+        colors: assignColors(10),
         metrics: [
           {
             metric: 'totalPageViews'
@@ -131,12 +121,12 @@ export default class PieChartController extends Controller {
 
   @computed('apexModel')
   get apexPieRequest() {
-    return this.get('apexModel.0.request');
+    return this.apexModel.firstObject.request;
   }
 
   @computed('apexModel')
   get apexPieResponse() {
-    return this.get('apexModel.0.response.rows');
+    return this.apexModel.firstObject.response.rows;
   }
 
   @computed('apexOptions')
@@ -144,14 +134,14 @@ export default class PieChartController extends Controller {
     return {
       type: 'apex-pie',
       version: 1,
-      metadata: this.get('apexOptions')
+      metadata: this.apexOptions
     };
   }
 
   @action
   onUpdateConfigApexPie(configUpdates) {
-    let apexOptions = get(this, 'apexOptions');
-    set(this, 'apexOptions', merge({}, apexOptions, configUpdates));
+    const apexOptions = this.apexOptions;
+    this.apexOptions = merge({}, apexOptions, configUpdates);
   }
 
   request = {

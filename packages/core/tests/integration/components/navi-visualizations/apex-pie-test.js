@@ -3,6 +3,7 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { assignColors } from 'navi-core/utils/enums/denali-colors';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::ApexPie
@@ -91,18 +92,7 @@ const Model = A([
 const seriesInfo = {
   series: {
     config: {
-      colors: [
-        '#87d812',
-        '#fed800',
-        '#19c6f4',
-        '#9a2ead',
-        '#ff3390',
-        '#0072df',
-        '#f17603',
-        '#6e2ebf',
-        '#20c05b',
-        '#e21717'
-      ],
+      colors: assignColors(10),
       metrics: [
         {
           metric: 'totalPageViews'

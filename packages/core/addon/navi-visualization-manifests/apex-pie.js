@@ -1,3 +1,7 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import ManifestBase from 'navi-core/navi-visualization-manifests/base';
 
 export default class extends ManifestBase {

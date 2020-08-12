@@ -1,5 +1,4 @@
 import { set } from '@ember/object';
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { buildApexTestRequest } from '../../helpers/request';
@@ -32,69 +31,77 @@ module('Unit | Model | Apex Pie', function(hooks) {
         'd2|desc': 'Bar3'
       }
     ];
-    const chart = run(() =>
-      run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('apexPie')
-    );
-    // testing one metric with one dimension
+    const chart = this.owner
+      .lookup('service:store')
+      .createRecord('all-the-fragments')
+      .get('apexPie');
     let request = buildApexTestRequest(['m1'], ['d1']);
-    let config = run(() => chart.rebuildConfig(request, { rows }).toJSON());
-    assert.deepEqual(config, {
-      type: 'apex-pie',
-      version: 1,
-      metadata: {
-        series: {
-          config: {
-            colors: ['#87d812', '#fed800', '#19c6f4'],
-            metrics: [
-              {
-                metric: 'm1'
-              }
-            ],
-            dimensions: [
-              {
-                dimension: 'd1'
-              }
-            ]
+    let config = chart.rebuildConfig(request, { rows }).toJSON();
+    assert.deepEqual(
+      config,
+      {
+        type: 'apex-pie',
+        version: 1,
+        metadata: {
+          series: {
+            config: {
+              colors: ['#87d812', '#fed800', '#19c6f4'],
+              metrics: [
+                {
+                  metric: 'm1'
+                }
+              ],
+              dimensions: [
+                {
+                  dimension: 'd1'
+                }
+              ]
+            }
           }
         }
-      }
-    });
+      },
+      'testing one metric with one dimension'
+    );
     assert.ok(chart.isValidForRequest(request), 'apex-pie valid for single-metric single-dimension requests');
-    // testing one metric with many dimensions
     request = buildApexTestRequest(['m1'], ['d1', 'd2']);
-    config = run(() => chart.rebuildConfig(request, { rows }).toJSON());
-    assert.deepEqual(config, {
-      type: 'apex-pie',
-      version: 1,
-      metadata: {
-        series: {
-          config: {
-            colors: ['#87d812', '#fed800', '#19c6f4'],
-            metrics: [
-              {
-                metric: 'm1'
-              }
-            ],
-            dimensions: [
-              {
-                dimension: 'd1'
-              },
-              {
-                dimension: 'd2'
-              }
-            ]
+    config = chart.rebuildConfig(request, { rows }).toJSON();
+    assert.deepEqual(
+      config,
+      {
+        type: 'apex-pie',
+        version: 1,
+        metadata: {
+          series: {
+            config: {
+              colors: ['#87d812', '#fed800', '#19c6f4'],
+              metrics: [
+                {
+                  metric: 'm1'
+                }
+              ],
+              dimensions: [
+                {
+                  dimension: 'd1'
+                },
+                {
+                  dimension: 'd2'
+                }
+              ]
+            }
           }
         }
-      }
-    });
+      },
+      'testing one metric with many dimensions'
+    );
     assert.ok(chart.isValidForRequest(request), 'apex-pie valid for single-metric multiple-dimensions requests');
   });
 
   test('no-metric and dimensionless requests SHALL NOT PASS!!!', function(assert) {
     assert.expect(3);
-    const chart = run(() =>
-      run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('apexPie')
-    );
+    const chart = this.owner
+      .lookup('service:store')
+      .createRecord('all-the-fragments')
+      .get('apexPie');
     const rows = [
       {
         m1: 1,
@@ -123,22 +130,13 @@ module('Unit | Model | Apex Pie', function(hooks) {
     ];
     let request = buildApexTestRequest([], ['d1', 'd2']);
     chart.rebuildConfig(request, { rows });
-
     assert.notOk(chart.isValidForRequest(request), 'apex-pie invalid for no-metric requests');
     request = buildApexTestRequest(['m1'], []);
     chart.rebuildConfig(request, { rows });
-
-    assert.notOk(
-      chart.isValidForRequest(buildApexTestRequest(['m1'], [])),
-      'apex-pie invalid for dimensionless requests'
-    );
+    assert.notOk(chart.isValidForRequest(request), 'apex-pie invalid for dimensionless requests');
     request = buildApexTestRequest(['m1', 'm2'], ['d1']);
     chart.rebuildConfig(request, { rows });
-
-    assert.notOk(
-      chart.isValidForRequest(buildApexTestRequest(['m1', 'm2'], ['d1'])),
-      'apex-pie invalid for multiple-metric requests'
-    );
+    assert.notOk(chart.isValidForRequest(request), 'apex-pie invalid for multiple-metric requests');
   });
 
   test('config updates to match request changes', function(assert) {
@@ -151,9 +149,10 @@ module('Unit | Model | Apex Pie', function(hooks) {
         'd3|desc': 'Bar'
       }
     ];
-    let chart = run(() =>
-      run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('apexPie')
-    );
+    let chart = this.owner
+      .lookup('service:store')
+      .createRecord('all-the-fragments')
+      .get('apexPie');
     set(chart, 'metadata.series', {
       config: {
         colors: ['#87d812', '#fed800', '#19c6f4'],
@@ -173,30 +172,34 @@ module('Unit | Model | Apex Pie', function(hooks) {
       }
     });
     let request = buildApexTestRequest(['m1'], ['d1', 'd3']);
-    let config = run(() => chart.rebuildConfig(request, { rows }).toJSON());
-    assert.deepEqual(config, {
-      type: 'apex-pie',
-      version: 1,
-      metadata: {
-        series: {
-          config: {
-            colors: ['#87d812'],
-            metrics: [
-              {
-                metric: 'm1'
-              }
-            ],
-            dimensions: [
-              {
-                dimension: 'd1'
-              },
-              {
-                dimension: 'd3'
-              }
-            ]
+    let config = chart.rebuildConfig(request, { rows }).toJSON();
+    assert.deepEqual(
+      config,
+      {
+        type: 'apex-pie',
+        version: 1,
+        metadata: {
+          series: {
+            config: {
+              colors: ['#87d812'],
+              metrics: [
+                {
+                  metric: 'm1'
+                }
+              ],
+              dimensions: [
+                {
+                  dimension: 'd1'
+                },
+                {
+                  dimension: 'd3'
+                }
+              ]
+            }
           }
         }
-      }
-    });
+      },
+      'config updates to match request'
+    );
   });
 });

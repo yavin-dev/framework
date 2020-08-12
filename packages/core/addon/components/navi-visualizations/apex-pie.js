@@ -7,22 +7,23 @@
  * />
  */
 import Component from '@glimmer/component';
-import { computed } from '@ember/object';
 import { shapeData } from '../../chart-builders/apex';
 
 export default class NaviVisualizationsApexPie extends Component {
   /**
    * @property {object} - an ApexCharts-friendly object of the data and data labels
    */
-  @computed('args.model.firstObject')
   get data() {
-    return shapeData(this.args.model.firstObject.request, this.args.model.firstObject.response.rows);
+    const {
+      request,
+      response: { rows }
+    } = this.args.model.firstObject;
+    return shapeData(request, rows);
   }
 
   /**
    * @property {object} - ApexCharts-compatible object of options
    */
-  @computed('data', 'args.options')
   get chartOptions() {
     return {
       chart: {

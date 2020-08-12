@@ -1,23 +1,12 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import DS from 'ember-data';
 import { computed, set } from '@ember/object';
 import VisualizationBase from './visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
-
-// color pallete recommended from Denali Design principles
-// https://denali.design/principles/graphs
-// https://denali.design/docs/2/aesthetics/colors
-const denaliColors = [
-  '#87d812',
-  '#fed800',
-  '#19c6f4',
-  '#9a2ead',
-  '#ff3390',
-  '#0072df',
-  '#f17603',
-  '#6e2ebf',
-  '#20c05b',
-  '#e21717'
-];
+import { assignColors } from 'navi-core/utils/enums/denali-colors';
 
 /**
  * @constant {Object} Validations - Validation object
@@ -71,21 +60,15 @@ export default VisualizationBase.extend(Validations, {
       }
     }
     */
-    const metOrder = request.metrics.content.map(item => {
-      return item.metric.id;
-    });
-    const dimOrder = request.dimensions.content.map(item => {
-      return item.dimension.id;
-    });
     let meta = {
       series: {
         config: {
-          colors: response.rows.map((item, index) => denaliColors[index % denaliColors.length]),
-          metrics: metOrder.map(item => {
-            return { metric: item };
+          colors: assignColors(response.rows.length),
+          metrics: request.metrics.content.map(item => {
+            return { metric: item.metric.id };
           }),
-          dimensions: dimOrder.map(item => {
-            return { dimension: item };
+          dimensions: request.dimensions.content.map(item => {
+            return { dimension: item.dimension.id };
           })
         }
       }

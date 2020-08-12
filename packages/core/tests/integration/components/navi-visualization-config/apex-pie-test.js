@@ -7,12 +7,9 @@ module('Integration | Component | navi visualization config - apex-pie', functio
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-
-    // Handle any actions with this.set('myAction', function(val) { ... });
-
+    assert.expect(1);
     await render(hbs`<NaviVisualizationConfig::ApexPie />`);
 
-    assert.equal(this.element.textContent.trim(), 'No configuration options available.');
+    assert.dom().hasText('No configuration options available.');
   });
 });
