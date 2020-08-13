@@ -16,7 +16,7 @@ export type RequestOptions = {
   perPage?: number;
   format?: string;
   cache?: boolean;
-  queryParams?: Dict<string>;
+  queryParams?: Dict<string | number>;
   dataSourceName?: string;
 };
 
@@ -40,7 +40,7 @@ export type Filter = {
   parameters: Parameters;
   type: ColumnType;
   operator: string;
-  values: string[];
+  values: (string | number)[];
 };
 
 export type Sort = {
