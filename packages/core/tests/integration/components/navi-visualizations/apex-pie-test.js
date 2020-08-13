@@ -4,11 +4,15 @@ import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assignColors } from 'navi-core/utils/enums/denali-colors';
+import Component from '@ember/component';
+import { run } from '@ember/runloop';
+import { triggerEvent } from '@ember/test-helpers';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::ApexPie
   @model={{this.model}}
   @options={{this.options}}
+  @containerComponent={{this.containerComponent}}
 />`;
 
 const Model = A([
@@ -93,6 +97,8 @@ const seriesInfo = {
   series: {
     config: {
       colors: assignColors(10),
+      dataLabelsVisible: true,
+      legendVisible: true,
       metrics: [
         {
           metric: 'totalPageViews'
@@ -123,6 +129,7 @@ module('Integration | Components | Apex-Pie', function(hooks) {
   hooks.beforeEach(function() {
     this.set('model', Model);
     this.set('options', seriesInfo);
+    this.set('containerComponent', null);
     MetadataService = this.owner.lookup('service:bard-metadata');
     return MetadataService.loadMetadata();
   });
@@ -146,5 +153,44 @@ module('Integration | Components | Apex-Pie', function(hooks) {
     expectedInfo.totalPageViewData.forEach((item, index) => {
       assert.dom(`.apexcharts-pie-slice-${index}`).hasAttribute('data:value', item);
     });
+  });
+
+  test('size automatically calculates to match smaller of width/height', async function(assert) {
+    assert.expect(3);
+    let testContainer = Component.extend({
+      classNames: ['visualization-container'],
+      layout: hbs`{{yield this}}`
+    });
+    this.owner.register('component:test-container', testContainer);
+    await this.render(hbs`
+      {{#test-container as |test-container|}}
+      <div class='test-view'>
+        <div class='test-view__visualization-container' style={{'height:600px; width:900px;'}}>
+          <NaviVisualizations::ApexPie
+            @model={{this.model}}
+            @options={{this.options}}
+            @containerComponent={{test-container}}
+          />
+        </div>
+      </div>
+      {{/test-container}}`);
+    assert.dom('.apexcharts-canvas').exists();
+    assert
+      .dom('.apexcharts-canvas')
+      .hasStyle(
+        { height: '557.188px', width: '900px' },
+        'container in landscape orientation, chart auto-computes closest possible to 100% height'
+      );
+    this.$('.test-view__visualization-container')[0].style.height = '900px';
+    this.$('.test-view__visualization-container')[0].style.width = '600px';
+    await run(async () => {
+      await triggerEvent('.visualization-container', 'resizestop');
+    });
+    assert
+      .dom('.apexcharts-canvas')
+      .hasStyle(
+        { height: '457.188px', width: '600px' },
+        'container in portrait orientation, chart auto-computes closest posible to 100% width'
+      );
   });
 });

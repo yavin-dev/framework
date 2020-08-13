@@ -54,7 +54,8 @@ export default VisualizationBase.extend(Validations, {
     series: {
       type: string,
       config: {
-        colors: ['string',  ...]
+        colors: ['string',  ...],
+        legendVisible: boolean,
         metrics: [{ metric: string }, { metric: string }, ...],
         dimensions: [{ dimension: string }, { dimension: string }, ...]
       }
@@ -64,6 +65,8 @@ export default VisualizationBase.extend(Validations, {
       series: {
         config: {
           colors: assignColors(response.rows.length),
+          dataLabelsVisible: true,
+          legendVisible: true,
           metrics: request.metrics.content.map(item => {
             return { metric: item.metric.id };
           }),
