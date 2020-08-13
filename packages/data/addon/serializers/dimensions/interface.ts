@@ -4,7 +4,8 @@
  */
 import NaviDimensionModel from '../../models/navi-dimension';
 import { DimensionColumn } from '../../adapters/dimensions/interface';
+import EmberObject from '@ember/object';
 
-export default interface NaviDimensionSerializer {
+export default interface NaviDimensionSerializer extends EmberObject {
   normalize(dimension: DimensionColumn, rawPayload: unknown): NaviDimensionModel[];
 }
