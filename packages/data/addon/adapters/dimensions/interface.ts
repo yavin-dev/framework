@@ -4,17 +4,12 @@
  */
 import { Parameters } from '../facts/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-
-export type AdapterOptions = {
-  clientId?: string;
-  timeout?: number;
-  page?: number;
-  perPage?: number;
-};
+import EmberObject from '@ember/object';
+import { ServiceOptions } from 'navi-data/services/navi-dimension';
 
 export type DimensionFilter = {
-  operator: string;
-  values: string[];
+  operator: TODO<'in'>;
+  values: unknown[];
 };
 
 export interface DimensionColumn {
@@ -22,13 +17,13 @@ export interface DimensionColumn {
   parameters?: Parameters;
 }
 
-export default interface NaviDimensionAdapter {
+export default interface NaviDimensionAdapter extends EmberObject {
   /**
    * Get all values for a dimension column
    * @param dimension - requested dimension
    * @param options - adapter options
    */
-  all(dimension: DimensionColumn, options?: AdapterOptions): Promise<unknown>;
+  all(dimension: DimensionColumn, options?: ServiceOptions): Promise<unknown>;
 
   /**
    * Get dimension value for a filter predicate
@@ -36,7 +31,7 @@ export default interface NaviDimensionAdapter {
    * @param predicate - filter criteria
    * @param options - adapter options
    */
-  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: AdapterOptions): Promise<unknown>;
+  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: ServiceOptions): Promise<unknown>;
 
   /**
    * Get dimension values for a search string
@@ -44,5 +39,5 @@ export default interface NaviDimensionAdapter {
    * @param query - query string
    * @param options - adapter options
    */
-  search(dimension: DimensionColumn, query: string, options?: AdapterOptions): Promise<unknown>;
+  search(dimension: DimensionColumn, query: string, options?: ServiceOptions): Promise<unknown>;
 }
