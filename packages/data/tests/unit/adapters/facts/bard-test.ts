@@ -737,7 +737,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildURLPath(twoDateTime);
       },
-      /At most one '.dateTime' column is supported/,
+      /Requsting more than one '.dateTime' columns is not supported/,
       '_buildURLPath throws an error when more than one dateTime column is requested'
     );
 

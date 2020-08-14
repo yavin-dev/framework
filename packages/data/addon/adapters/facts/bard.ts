@@ -242,7 +242,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     const dateTimeColumns = request.columns.filter(isDateTime);
     if (dateTimeColumns.length > 1) {
-      throw new Error(`At most one '${request.table}.dateTime' column is supported`);
+      throw new Error(`Requsting more than one '${request.table}.dateTime' columns is not supported`);
     }
     const timeGrain = dateTimeColumns[0]?.parameters?.grain || 'all';
     const dimensions = this._buildDimensionsPath(request);
