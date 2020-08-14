@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { A as arr } from '@ember/array';
-import config from 'ember-get-config';
 
 let consumer,
   dispatchedActions = [],
@@ -157,11 +156,7 @@ module('Unit | Consumer | request column', function(hooks) {
       }
     };
 
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    //existing column should not be added when enableRequestPreview is on
+    //existing column should not be added
     consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'pageViews');
 
     consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'adClicks');
@@ -186,8 +181,6 @@ module('Unit | Consumer | request column', function(hooks) {
       ['revenue', { currency: 'USD' }],
       'ADD_COLUMN_WITH_PARAMS is called with the correct metadata model and parameters'
     );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('DID_UPDATE_TABLE', function(assert) {

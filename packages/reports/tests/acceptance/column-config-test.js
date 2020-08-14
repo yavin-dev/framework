@@ -1325,7 +1325,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
 
     await click(findAll('.grouped-list__group-header').filter(el => el.textContent.includes('Revenue'))[0]);
-    assert.dom('.metric-config').doesNotExist('Metric config is not visible when request preview is enabled');
+    assert.dom('.metric-config').doesNotExist('Metric config is not visible');
   });
 
   test('Sort gets removed when metric is removed', async function(assert) {
