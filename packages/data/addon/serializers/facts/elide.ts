@@ -20,6 +20,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
     const response = JSON.parse(payload);
 
     const { table } = request;
+    // TODO revisit when Elide adds parameter support
     const elideFields = request.columns.map(({ field, parameters }) => getElideField(field, parameters));
     const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
       // TODO rename with generic canonicalizeColumn
