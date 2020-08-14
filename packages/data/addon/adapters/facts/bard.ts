@@ -117,14 +117,19 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildDateTimeParam(request: RequestV2): string {
     const dateTimeFilters = request.filters.filter(isDateTime);
-    assert(`Only one '${request.table}.dateTime' filter is supported`, dateTimeFilters.length === 1);
+    if (dateTimeFilters.length !== 1) {
+      throw new Error(
+        `Exactly one '${request.table}.dateTime' filter is supported, you have ${dateTimeFilters.length}`
+      );
+    }
     const filter = dateTimeFilters[0];
     const dateTime = request.columns.filter(isDateTime)[0];
     const timeGrain = dateTime?.parameters?.grain || 'all';
-    assert(
-      `The requested filter timeGrain '${filter.parameters.grain}', must match the column timeGrain '${timeGrain}'`,
-      timeGrain === filter.parameters.grain
-    );
+    if (timeGrain !== filter.parameters.grain) {
+      throw new Error(
+        `The requested filter timeGrain '${filter.parameters.grain}', must match the column timeGrain '${timeGrain}'`
+      );
+    }
 
     const [start, end] = filter.values;
 
@@ -236,7 +241,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const table = request.table;
 
     const dateTimeColumns = request.columns.filter(isDateTime);
-    assert(`At most one '${request.table}.dateTime' column is supported`, dateTimeColumns.length <= 1);
+    if (dateTimeColumns.length > 1) {
+      throw new Error(`At most one '${request.table}.dateTime' column is supported`);
+    }
     const timeGrain = dateTimeColumns[0]?.parameters?.grain || 'all';
     const dimensions = this._buildDimensionsPath(request);
 

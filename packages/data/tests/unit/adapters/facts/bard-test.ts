@@ -197,7 +197,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('_buildDateTimeParam', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -216,6 +216,44 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildDateTimeParam(singleInterval),
       'start/end',
       '_buildDateTimeParam built the correct string for a single interval'
+    );
+
+    let differentColumnAndFilterGrain: RequestV2 = {
+      ...EmptyRequest,
+      columns: [
+        {
+          type: 'timeDimension',
+          field: '.dateTime',
+          parameters: {
+            grain: 'day'
+          }
+        }
+      ],
+      filters: [
+        {
+          type: 'timeDimension',
+          field: '.dateTime',
+          parameters: {
+            grain: 'week'
+          }
+        }
+      ]
+    };
+    assert.throws(
+      () => {
+        Adapter._buildDateTimeParam(differentColumnAndFilterGrain);
+      },
+      /The requested filter timeGrain 'week', must match the column timeGrain 'day'/,
+      '_buildDateTimeParam throws an error for different timeGrains requested'
+    );
+
+    let noIntervals: RequestV2 = { ...EmptyRequest };
+    assert.throws(
+      () => {
+        Adapter._buildDateTimeParam(noIntervals);
+      },
+      /Exactly one '.dateTime' filter is supported, you have 0/,
+      '_buildDateTimeParam throws an error for missing dateTime filter'
     );
 
     let manyIntervals: RequestV2 = {
@@ -242,7 +280,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildDateTimeParam(manyIntervals);
       },
-      /Only one 'tableName.dateTime' filter is supported/,
+      /Exactly one 'tableName.dateTime' filter is supported, you have 2/,
       '_buildDateTimeParam throws an error for multiple datetime filters'
     );
   });
@@ -669,7 +707,37 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('_buildURLPath', function(assert) {
-    assert.expect(2);
+    assert.expect(4);
+
+    assert.equal(
+      Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName' }),
+      'https://data.naviapp.io/v1/data/tableName/all/',
+      '_buildURLPath throws an error for missing dateTime column'
+    );
+
+    const twoDateTime: RequestV2 = {
+      ...EmptyRequest,
+      columns: [
+        {
+          field: '.dateTime',
+          type: 'timeDimension',
+          parameters: { grain: 'all' }
+        },
+        {
+          field: '.dateTime',
+          type: 'timeDimension',
+          parameters: { grain: 'week' }
+        }
+      ]
+    };
+
+    assert.throws(
+      () => {
+        Adapter._buildURLPath(twoDateTime);
+      },
+      /At most one '.dateTime' column is supported/,
+      '_buildURLPath throws an error when more than one dateTime column is requested'
+    );
 
     assert.equal(
       Adapter._buildURLPath(TestRequest),
