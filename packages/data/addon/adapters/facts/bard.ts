@@ -18,7 +18,9 @@ import NaviFactAdapter, {
   RequestOptions,
   RequestV2,
   SORT_DIRECTIONS,
-  AsyncQueryResponse
+  AsyncQueryResponse,
+  Column,
+  Sort
 } from './interface';
 import { omit } from 'lodash-es';
 
@@ -56,7 +58,7 @@ export function serializeFilters(filters: Filter[]): string {
     .map(filter => {
       const { field, operator, values, parameters } = filter;
       const serializedValues = values
-        .map(v => String(v).replace(/"/g, '""')) // csv serialize " -> ""
+        .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
         .map(v => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
       const formattedFieldName = formatDimensionFieldName(field, parameters, true);
@@ -64,6 +66,14 @@ export function serializeFilters(filters: Filter[]): string {
       return `${formattedFieldName}-${operator}[${serializedValues}]`;
     })
     .join(',');
+}
+
+/**
+ * Returns true if a column is a timeDimension and ends with `.dateTime`
+ * @param column the column to check if it is a dateTime
+ */
+function isDateTime(column: Column | Filter | Sort) {
+  return column.type === 'timeDimension' && column.field.endsWith('.dateTime');
 }
 
 export default class BardFactsAdapter extends EmberObject implements NaviFactAdapter {
@@ -106,12 +116,24 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return dateTime param value
    */
   _buildDateTimeParam(request: RequestV2): string {
-    // TODO: Get lowest grain dateTime, handle corner cases
-    const dateTimeFilters = request.filters.filter(
-      fil => fil.type === 'timeDimension' && fil.field === `${request.table}.dateTime`
-    );
+    const dateTimeFilters = request.filters.filter(isDateTime);
+    if (dateTimeFilters.length !== 1) {
+      throw new Error(
+        `Exactly one '${request.table}.dateTime' filter is supported, you have ${dateTimeFilters.length}`
+      );
+    }
+    const filter = dateTimeFilters[0];
+    const dateTime = request.columns.filter(isDateTime)[0];
+    const timeGrain = dateTime?.parameters?.grain || 'all';
+    if (timeGrain !== filter.parameters.grain) {
+      throw new Error(
+        `The requested filter timeGrain '${filter.parameters.grain}', must match the column timeGrain '${timeGrain}'`
+      );
+    }
 
-    return dateTimeFilters.map(filter => `${filter.values[0]}/${filter.values[1]}`).join(',');
+    const [start, end] = filter.values;
+
+    return `${start}/${end}`;
   }
 
   /**
@@ -217,10 +239,12 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const host = configHost(options);
     const { namespace } = this;
     const table = request.table;
-    // TODO: Get lowest grain dateTime
-    const timeGrain =
-      request.columns.find(col => col.type === 'timeDimension' && col.field === `${request.table}.dateTime`)?.parameters
-        ?.grain || 'all';
+
+    const dateTimeColumns = request.columns.filter(isDateTime);
+    if (dateTimeColumns.length > 1) {
+      throw new Error(`Requsting more than one '${request.table}.dateTime' columns is not supported`);
+    }
+    const timeGrain = dateTimeColumns[0]?.parameters?.grain || 'all';
     const dimensions = this._buildDimensionsPath(request);
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
@@ -235,7 +259,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @param options
    * @returns query object
    */
-  _buildQuery(request: RequestV2, options: RequestOptions): Query {
+  _buildQuery(request: RequestV2, options?: RequestOptions): Query {
     const { columns } = request;
     const metrics = columns
       .filter(col => col.type === 'metric')
@@ -296,7 +320,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @param options
    * @return url
    */
-  urlForFindQuery(request: RequestV2, options: RequestOptions): string {
+  urlForFindQuery(request: RequestV2, options?: RequestOptions): string {
     assert('Request for bard-facts adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
@@ -331,7 +355,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @param options - options object
    * @returns {Promise} - Promise with the response
    */
-  fetchDataForRequest(request: RequestV2, options: RequestOptions) {
+  fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
     assert('Request for bard-facts adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
