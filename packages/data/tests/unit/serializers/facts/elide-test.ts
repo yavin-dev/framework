@@ -25,7 +25,10 @@ const Payload: AsyncQueryResponse = {
 };
 
 const Request: RequestV2 = {
-  columns: [{ field: 'user_count', parameters: {}, type: 'metric' }],
+  columns: [
+    { field: 'datestamp', parameters: {}, type: 'timeDimension' },
+    { field: 'userCount', parameters: {}, type: 'metric' }
+  ],
   table: 'tableA',
   filters: [],
   sorts: [],
