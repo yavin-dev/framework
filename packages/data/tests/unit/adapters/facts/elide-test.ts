@@ -6,6 +6,7 @@ import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
+import { getElideField } from 'navi-data/adapters/facts/elide';
 
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -70,19 +71,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('queryStrForField', function(assert) {
-    const adapter = this.owner.lookup('adapter:facts/elide');
-
+    assert.equal(getElideField('foo', { bar: 'baz' }), 'foo(bar: baz)', 'Field with parameter is formatted correctly');
     assert.equal(
-      adapter.queryStrForField('foo', { bar: 'baz' }),
-      'foo(bar: baz)',
-      'Field with parameter is formatted correctly'
-    );
-    assert.equal(
-      adapter.queryStrForField('foo', { bar: 'baz', bang: 'boom' }),
+      getElideField('foo', { bar: 'baz', bang: 'boom' }),
       'foo(bar: baz,bang: boom)',
       'Field with multiple parameters is formatted correctly'
     );
-    assert.equal(adapter.queryStrForField('foo'), 'foo', 'Name is returned for field with no parameters');
+    assert.equal(getElideField('foo'), 'foo', 'Name is returned for field with no parameters');
   });
 
   test('dataQueryFromRequest', function(assert) {
@@ -258,7 +253,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
 
       const expectedTable = TestRequestV2.table;
-      const expectedColumns = TestRequestV2.columns.map(c => adapter.queryStrForField(c.field, c.parameters)).join(' ');
+      const expectedColumns = TestRequestV2.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
       const expectedArgs =
         '(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\")';
 

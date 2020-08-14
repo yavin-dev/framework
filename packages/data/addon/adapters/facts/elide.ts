@@ -31,6 +31,21 @@ const OPERATOR_MAP: Dict<string> = {
   notin: '=out='
 };
 
+/**
+ * ex: { field: 'table.foo', parameters: { bar: 'baz', bang: 'boom' } } -> 'foo(bar: baz,bang: boom)'
+ * @param fieldName
+ * @param parameters
+ */
+export function getElideField(fieldName: string, parameters: Parameters = {}) {
+  const parts = fieldName.split('.');
+  const requestField = parts[parts.length - 1];
+  const params = Object.keys(parameters)
+    .map(key => `${key}: ${parameters[key]}`)
+    .join(',');
+
+  return params.length ? `${requestField}(${params})` : requestField;
+}
+
 export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
    * @property {Object} apollo - apollo client query manager using the overridden elide service
@@ -42,19 +57,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @property {Number} _pollingInterval - number of ms between fetch requests during async request polling
    */
   _pollingInterval = 3000;
-
-  /**
-   * ex: { field: 'foo', parameters: { bar: 'baz', bang: 'boom' } } -> 'foo(bar: baz,bang: boom)'
-   * @param name
-   * @param parameters
-   */
-  private queryStrForField(name: string, parameters: Parameters = {}) {
-    const params = Object.keys(parameters)
-      .map(key => `${key}: ${parameters[key]}`)
-      .join(',');
-
-    return params.length ? `${name}(${params})` : name;
-  }
 
   /**
    * @param request
@@ -83,11 +85,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private dataQueryFromRequestV2(request: RequestV2): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
-    const columnsStr = columns.map(col => this.queryStrForField(col.field, col.parameters)).join(' ');
+    const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
 
     const filterStrings = filters.map(filter => {
       const { field, parameters, operator, values } = filter;
-      const fieldStr = this.queryStrForField(field, parameters);
+      const fieldStr = getElideField(field, parameters);
       const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
       const valuesStr = `(${values.join(',')})`;
       return `${fieldStr}${operatorStr}${valuesStr}`;
@@ -96,7 +98,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
     const sortStrings = sorts.map(sort => {
       const { field, parameters, direction } = sort;
-      const column = this.queryStrForField(field, parameters);
+      const column = getElideField(field, parameters);
       return `${direction === 'desc' ? '-' : ''}${column}`;
     });
     sortStrings.length && args.push(`sort: \\"${sortStrings.join(',')}\\"`);
