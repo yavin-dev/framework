@@ -235,7 +235,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           field: '.dateTime',
           parameters: {
             grain: 'week'
-          }
+          },
+          operator: 'bet',
+          values: []
         }
       ]
     };
