@@ -1,27 +1,15 @@
 import { module, test, skip } from 'qunit';
 import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 
-let OriginalEnableRequestPreview;
-
 module('Acceptance | Navi Report | Column Config', function(hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
   setupMirage(hooks);
-
-  hooks.beforeEach(function() {
-    OriginalEnableRequestPreview = config.navi.FEATURES.enableRequestPreview;
-    config.navi.FEATURES.enableRequestPreview = true;
-  });
-
-  hooks.afterEach(function() {
-    config.navi.FEATURES.enableRequestPreview = OriginalEnableRequestPreview;
-  });
 
   test('Existing report loads correct columns', async function(assert) {
     assert.expect(2);
@@ -37,7 +25,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.dom('.navi-column-config-item--open').doesNotExist('No columns are open when an existing report is loaded');
   });
 
-  test('Creating new report shows column config if enableRequestPreview is on', async function(assert) {
+  test('Creating new report shows column config', async function(assert) {
     assert.expect(5);
     await visit('/reports/new');
 
@@ -54,19 +42,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert
       .dom('.navi-column-config-item[data-name="dateTime"]')
       .hasClass('navi-column-config-item--open', 'The date time is open on a new report');
-  });
-
-  test('Creating new report does not show column config without enableRequestPreview', async function(assert) {
-    assert.expect(3);
-    config.navi.FEATURES.enableRequestPreview = false;
-    await visit('/reports/new');
-
-    assert.ok(currentURL().endsWith('/edit'), 'We are on the edit report route');
-
-    assert.dom('.navi-column-config').doesNotExist('The column config is not present with feature flag disabled');
-    await click('.navi-report__run-btn');
-
-    assert.dom('.navi-column-config').doesNotExist('The column config is not present after running the report either');
   });
 
   test('toggle columns drawer', async function(assert) {
