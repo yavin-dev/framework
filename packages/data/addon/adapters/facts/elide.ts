@@ -8,24 +8,16 @@ import NaviFactAdapter, {
   RequestV1,
   RequestOptions,
   AsyncQueryResponse,
+  Parameters,
   QueryStatus,
-  RequestV2,
-  Parameters
+  RequestV2
 } from './interface';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 
-interface RequestMetric {
-  metric: string;
-  parameters?: Dict<string>;
-}
-interface RequestDimension {
-  dimension: string;
-}
-
-const OPERATOR_MAP: Dict<string> = {
+export const OPERATOR_MAP: Dict<string> = {
   eq: '==',
   neq: '!=',
   notin: '=out='
@@ -60,29 +52,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
   /**
    * @param request
-   * @returns graphql query string for a request
-   */
-  private dataQueryFromRequest(request: RequestV1): string {
-    const {
-      logicalTable: { table },
-      metrics,
-      dimensions
-    } = request;
-    const metricIds = metrics.map((m: RequestMetric) => m.metric); //TODO: support parameterized metrics
-    const dimensionIds = dimensions.map((d: RequestDimension) => d.dimension);
-
-    // TODO: Create filter based on request intervals, filters, and havings
-
-    return JSON.stringify({
-      query: `{ ${table} { edges { node { ${metricIds.join(' ')} ${dimensionIds.join(' ')} } } } }`
-    });
-  }
-
-  /**
-   * @param request
    * @returns graphql query string for a v2 request
    */
-  private dataQueryFromRequestV2(request: RequestV2): string {
+  private dataQueryFromRequest(request: RequestV2): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
@@ -118,15 +90,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
-  createAsyncQuery(request: RequestV1 | RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
+  createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
-    const query = request.requestVersion?.startsWith('2.')
-      ? this.dataQueryFromRequestV2(request)
-      : this.dataQueryFromRequest(request);
+    const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
+    const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query } };
+    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
   }
 
@@ -134,18 +105,18 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise with the updated asyncQuery's id and status
    */
-  cancelAsyncQuery(id: string) {
+  cancelAsyncQuery(id: string, dataSourceName: string) {
     const mutation: DocumentNode = GQLQueries['asyncFactsCancel'];
-    return this.apollo.mutate({ mutation, variables: { id } });
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
   }
 
   /**
    * @param id
    * @returns Promise that resolves to the result of the AsyncQuery fetch query
    */
-  fetchAsyncQuery(id: string) {
+  fetchAsyncQuery(id: string, dataSourceName: string) {
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
-    return this.apollo.query({ query, variables: { ids: [id] } });
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
 
   /**
@@ -160,7 +131,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @param options
    */
-  @task(function*(this: ElideFactsAdapter, request: RequestV1, options: RequestOptions) {
+  @task(function*(this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
     const { id } = asyncQuery;
@@ -168,7 +139,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
     while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
       yield timeout(this._pollingInterval);
-      asyncQueryPayload = yield this.fetchAsyncQuery(id);
+      asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
       status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
     }
     return asyncQueryPayload;
@@ -182,7 +153,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   fetchDataForRequest(
     this: ElideFactsAdapter,
-    request: RequestV1,
+    request: RequestV2,
     options: RequestOptions
   ): Promise<AsyncQueryResponse> {
     return this.fetchDataForRequestTask.perform(request, options);

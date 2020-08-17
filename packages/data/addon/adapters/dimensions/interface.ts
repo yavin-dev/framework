@@ -8,7 +8,7 @@ import EmberObject from '@ember/object';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
 
 export type DimensionFilter = {
-  operator: TODO<'in'>;
+  operator: TODO;
   values: unknown[];
 };
 

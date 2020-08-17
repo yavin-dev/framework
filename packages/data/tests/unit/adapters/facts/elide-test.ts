@@ -11,20 +11,7 @@ import { getElideField } from 'navi-data/adapters/facts/elide';
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-const TestRequest = {
-  logicalTable: { table: 'table1', timeGrain: 'grain1' },
-  metrics: [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'r', parameters: { p: '123', as: 'a' } }],
-  dimensions: [{ dimension: 'd1' }, { dimension: 'd2' }],
-  filters: [
-    { dimension: 'd3', operator: 'in', values: ['v1', 'v2'] },
-    { dimension: 'd4', operator: 'in', values: ['v3', 'v4'] },
-    { dimension: 'd5', operator: 'isnull', values: ['false'] }
-  ],
-  intervals: [{ start: '2015-01-03', end: '2015-01-04' }],
-  having: [{ metric: 'm1', operator: 'gt', values: [0] }]
-};
-
-const TestRequestV2: RequestV2 = {
+const TestRequest: RequestV2 = {
   table: 'table1',
   columns: [
     { field: 'm1', type: 'metric', parameters: {} },
@@ -70,7 +57,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.ok(adapter, 'elide-fact adapter exists');
   });
 
-  test('queryStrForField', function(assert) {
+  test('getElideField', function(assert) {
     assert.equal(getElideField('foo', { bar: 'baz' }), 'foo(bar: baz)', 'Field with parameter is formatted correctly');
     assert.equal(
       getElideField('foo', { bar: 'baz', bang: 'boom' }),
@@ -85,16 +72,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const queryStr = adapter.dataQueryFromRequest(TestRequest);
     assert.equal(
       queryStr,
-      '{"query":"{ table1 { edges { node { m1 m2 r d1 d2 } } } }"}',
-      'dataQueryFromRequest returns the correct query string for the given request'
-    );
-  });
-
-  test('dataQueryFromRequestV2', function(assert) {
-    const adapter = this.owner.lookup('adapter:facts/elide');
-    const queryStr = adapter.dataQueryFromRequestV2(TestRequestV2);
-    assert.equal(
-      queryStr,
       escapeQuotes(
         '{"query":"{ table1(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}'
       ),
@@ -102,7 +79,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequestV2({
+      adapter.dataQueryFromRequest({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -118,7 +95,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequestV2({
+      adapter.dataQueryFromRequest({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -137,7 +114,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequestV2({
+      adapter.dataQueryFromRequest({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -159,7 +136,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequestV2({
+      adapter.dataQueryFromRequest({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -192,68 +169,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
 
-      const expectedTable = TestRequest.logicalTable.table;
-      const expectedColumns = [
-        ...TestRequest.metrics.map(m => m.metric),
-        ...TestRequest.dimensions.map(d => d.dimension)
-      ].join(' ');
-
-      assert.equal(
-        requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
-        JSON.stringify({
-          query: `{ ${expectedTable} { edges { node { ${expectedColumns} } } } }`
-        }).replace(/[ \t\r\n]+/g, ' '),
-        'createAsyncQuery send the correct query variable string'
-      );
-
-      assert.equal(
-        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
-        'createAsyncQuery sends the correct mutation to create a new asyncQuery'
-      );
-
-      response = {
-        asyncQuery: {
-          edges: [
-            {
-              node: {
-                id: requestObj.variables.id,
-                query: requestObj.variables.query,
-                queryType: 'GRAPHQL_V1_0',
-                status: 'QUEUED',
-                result: null
-              }
-            }
-          ]
-        }
-      };
-
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
-    });
-
-    const asyncQuery = await adapter.createAsyncQuery(TestRequest);
-
-    assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
-  });
-
-  test('createAsyncQuery (RequestV2) - success', async function(assert) {
-    assert.expect(5);
-    const adapter = this.owner.lookup('adapter:facts/elide');
-
-    let response;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
-      const requestObj = JSON.parse(requestBody);
-
-      assert.deepEqual(
-        Object.keys(requestObj.variables),
-        ['id', 'query'],
-        'createAsyncQuery sends id and query request variables'
-      );
-
-      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
-
-      const expectedTable = TestRequestV2.table;
-      const expectedColumns = TestRequestV2.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
+      const expectedTable = TestRequest.table;
+      const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
       const expectedArgs =
         '(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\")';
 
@@ -290,7 +207,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const asyncQuery = await adapter.createAsyncQuery(TestRequestV2);
+    const asyncQuery = await adapter.createAsyncQuery(TestRequest);
 
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
