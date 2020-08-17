@@ -15,7 +15,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
 
     await visit('/reports/1/view');
     //add revenue (metric with params)
-    await clickItem('metric', 'Platform Revenue'); // add but don't reset state
+    await clickItem('metric', 'Platform Revenue');
     assert.dom('.navi-column-config-base').isVisible('The metric is open in the column config');
 
     //close the config dropdown

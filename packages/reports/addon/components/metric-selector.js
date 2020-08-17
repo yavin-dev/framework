@@ -105,10 +105,7 @@ class MetricSelectorComponent extends Component {
    */
   doMetricClicked(metric, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
-    const actionName = 'Add',
-      handler = this[`on${actionName}Metric`];
-
-    if (handler) handler(metric);
+    this.onAddMetric(metric);
   }
 
   /**

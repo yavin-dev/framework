@@ -1,9 +1,8 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll } from '@ember/test-helpers';
+import { render, click, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { fillInSync } from '../../helpers/fill-in-sync';
 
 const TEMPLATE = hbs`
   <NaviListSelector
@@ -67,22 +66,12 @@ module('Integration | Component | navi list selector', function(hooks) {
     assert.dom('.navi-list-selector__search').isVisible('The navi-list-selector`s search bar is rendered');
   });
 
-  test('show all/show selected', async function(assert) {
-    assert.expect(1);
-
-    await render(TEMPLATE);
-
-    assert.dom('.navi-list-selector__show-link').doesNotExist('Show Selected toggle is hidden');
-  });
-
   test('search', async function(assert) {
     assert.expect(4);
 
     await render(TEMPLATE);
 
-    run(() => {
-      fillInSync('.navi-list-selector__search-input', 'ba');
-    });
+    await fillIn('.navi-list-selector__search-input', 'ba');
 
     assert.deepEqual(
       findAll('.test-item').map(el => el.textContent.trim()),
@@ -90,9 +79,7 @@ module('Integration | Component | navi list selector', function(hooks) {
       'the items that match the search query are rendered as `list-item`s'
     );
 
-    run(() => {
-      fillInSync('.navi-list-selector__search-input', 'not an item');
-    });
+    await fillIn('.navi-list-selector__search-input', 'not an item');
 
     assert
       .dom('.navi-list-selector__content--error')
@@ -106,9 +93,7 @@ module('Integration | Component | navi list selector', function(hooks) {
       'the search query is cleared and the selected items are rendered as `list-item`s'
     );
 
-    run(() => {
-      fillInSync('.navi-list-selector__search-input', 'foo');
-    });
+    await fillIn('.navi-list-selector__search-input', 'foo');
 
     assert.deepEqual(
       findAll('.test-item__filtered').map(el => el.textContent.trim()),

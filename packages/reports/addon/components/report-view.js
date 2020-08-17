@@ -42,8 +42,6 @@ class ReportView extends Component {
   get classNames() {
     const classNames = ['report-view'];
 
-    classNames.push('report-view--request-preview');
-
     return classNames;
   }
 

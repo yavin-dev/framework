@@ -107,18 +107,14 @@ export default class DimensionSelector extends Component {
    */
   @computed('allTimeGrains', 'allDimensions')
   get listItems() {
-    let timeGrains;
-
     // only option is to add the default time grain (if none is selected)
-    timeGrains = [
-      {
-        name: 'Date Time',
-        category: 'Date',
-        dateTimeDimension: true
-      }
-    ];
+    const timeGrain = {
+      name: 'Date Time',
+      category: 'Date',
+      dateTimeDimension: true
+    };
 
-    return [...timeGrains, ...this.allDimensions];
+    return [timeGrain, ...this.allDimensions];
   }
 
   /*
@@ -204,17 +200,11 @@ export default class DimensionSelector extends Component {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
 
-    let actionHandler;
-
     if (type === 'TimeGrain') {
       return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
-    } else if (type === 'Dimension') {
-      actionHandler = 'Add';
     }
 
-    if (actionHandler) {
-      this[`on${actionHandler}${type}`]?.(item);
-    }
+    this[`onAdd${type}`]?.(item);
   }
 
   /**

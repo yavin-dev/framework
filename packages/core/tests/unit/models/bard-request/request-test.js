@@ -540,7 +540,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
 
     request.addRequestMetricWithParam(newMetric, { currency: 'USD' });
 
-    assert.equal(request.metrics.length, 4, 'The final metric is added because of requests preview');
+    assert.equal(request.metrics.length, 4, 'Adding a metric already present results in duplicate metrics');
   });
 
   test('removeRequestMetric', async function(assert) {

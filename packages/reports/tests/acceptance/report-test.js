@@ -141,14 +141,12 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Revert changes when exiting report - existing report', async function(assert) {
-    assert.expect(4);
-
     // visit report 1
     await visit('/reports/1/view');
 
     assert.dom('.filter-builder__subject').hasText('Date Time (Day)');
 
-    // uncheck the day timegrain
+    // remove the dateTime column
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
@@ -163,6 +161,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.navi-report__revert-btn')
       .isNotVisible('After navigating away and back to the route, the Revert button disappears');
 
+    assert.dom('.navi-column-config-item[data-name="dateTime"]');
     assert.dom('.filter-builder__subject').hasText('Date Time (Day)');
   });
 

@@ -41,7 +41,6 @@ module('Integration | Component | metric selector', function(hooks) {
     );
 
     this.set('addMetric', () => {});
-    this.set('removeMetric', () => {});
     this.set('addMetricFilter', () => {});
 
     return MetadataService.loadMetadata().then(async () => {
@@ -89,21 +88,13 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the metric selector');
   });
 
-  test('show selected', async function(assert) {
-    assert.expect(1);
-
-    await render(TEMPLATE);
-
-    assert.dom('.navi-list-selector__show-link').doesNotExist('Show Selected toggle is hidden');
-  });
-
   test('add and remove metric actions', async function(assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
     this.set('addMetric', metric => {
-      assert.equal(metric.get('name'), 'Total Clicks', 'the clicked metric is passed as a param to the action');
+      assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
 
     this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called'));
