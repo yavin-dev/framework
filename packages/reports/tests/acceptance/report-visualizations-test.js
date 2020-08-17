@@ -265,7 +265,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
         'Metric with first parameter is sorted desc after sorting by both parameters'
       );
 
-    //remove both the ERU metric and the USD metric
+    //remove both the EUR metric and the USD metric
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Platform Revenue (EUR)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Platform Revenue (USD)"]');
 

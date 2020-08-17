@@ -176,8 +176,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Remove a metric
-    await click('.navi-column-config-item__trigger');
-    await selectChoose('.navi-column-config-item__parameter', 'Week');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
