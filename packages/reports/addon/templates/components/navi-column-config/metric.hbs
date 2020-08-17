@@ -22,11 +22,7 @@
         @onchange={{this.updateMetricParam}}
         as | arg |
       >
-        {{#if (should-show-id argument=arg params=allParams)}}
-          {{if arg.name arg.name arg.description}} ({{arg.id}})
-        {{else}}
-          {{if arg.name arg.name arg.description}}
-        {{/if}}
+        <ParameterListItem @argument={{arg}} @parameters={{allParams}} />
       </PowerSelect>
     {{/let}}
   </div>

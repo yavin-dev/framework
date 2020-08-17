@@ -7,8 +7,3 @@ declare module 'navi-reports/templates/*' {
 
 type Dict<T = string> = { [key: string]: T };
 type TODO<T = any> = T;
-
-interface Array<T> {
-  flat(): Array<T>;
-  flatMap(func: (x: T) => T): Array<T>;
-}
