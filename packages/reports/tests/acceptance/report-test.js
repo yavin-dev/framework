@@ -443,8 +443,6 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Export action - enabled/disabled', async function(assert) {
-    assert.expect(4);
-
     await visit('/reports/1/view');
 
     assert
