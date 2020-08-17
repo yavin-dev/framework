@@ -4,7 +4,7 @@ import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import $ from 'jquery';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { clickItemFilter, clickItem, clickMetricConfigTrigger } from 'navi-reports/test-support/report-builder';
+import { clickItemFilter, clickItem } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | navi-report - report visualizations', function(hooks) {
   setupApplicationTest(hooks);
@@ -97,9 +97,8 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //add a parameterized metric with a couple of parameters and run the report
     await clickItem('metric', 'Platform Revenue');
-    const closeConfig = await clickMetricConfigTrigger('Platform Revenue');
-    await clickItem('metricConfig', 'EUR');
-    await closeConfig();
+    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await clickItem('metric', 'Platform Revenue');
     await click('.navi-report__run-btn');
 
     //first parameter
@@ -266,8 +265,9 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
         'Metric with first parameter is sorted desc after sorting by both parameters'
       );
 
-    //remove the metric
-    await clickItem('metric', 'Platform Revenue');
+    //remove both the EUR metric and the USD metric
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Platform Revenue (EUR)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Platform Revenue (USD)"]');
 
     //test API query and close the modal
     await click('.navi-report__copy-api-btn .get-api__btn');

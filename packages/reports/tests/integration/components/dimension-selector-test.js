@@ -6,14 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
-import {
-  clickItem,
-  clickItemFilter,
-  clickShowSelected,
-  getItem,
-  getAll,
-  getAllSelected
-} from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter, getItem, getAll } from 'navi-reports/test-support/report-builder';
 
 let Store, MetadataService, Age;
 
@@ -37,7 +30,6 @@ module('Integration | Component | dimension selector', function(hooks) {
     this.set('addTimeGrain', () => {});
     this.set('removeTimeGrain', () => {});
     this.set('addDimension', () => {});
-    this.set('removeDimension', () => {});
     this.set('addDimFilter', () => {});
 
     await MetadataService.loadMetadata();
@@ -72,30 +64,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     assert.dom('.grouped-list').exists('a grouped-list component is rendered as part of the dimension selector');
   });
 
-  test('groups enableRequestPreview false', async function(assert) {
+  test('groups', async function(assert) {
     assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    assert.deepEqual(
-      findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
-      ['Time Grain (6)', 'test (27)', 'Asset (4)'],
-      'The groups rendered by the component include dimension groups and Time Grain'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('groups enableRequestPreview true', async function(assert) {
-    assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
 
@@ -104,105 +74,10 @@ module('Integration | Component | dimension selector', function(hooks) {
       ['Date (1)', 'test (27)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Date'
     );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('show selected enableRequestPreview false', async function(assert) {
-    assert.expect(3);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    const allDimensions = await getAll('dimension');
-    assert.ok(
-      allDimensions.length > this.get('request.dimensions.length') + 1 /*for timegrain*/,
-      'Initially all the dimensions are shown in the dimension-selector'
-    );
-
-    await clickShowSelected('dimension');
-
-    const selectedDimensions = await getAllSelected('dimension');
-    assert.deepEqual(
-      selectedDimensions,
-      ['Day', 'Age'],
-      'When show selected is clicked the selected age dimension and the selected timegrain are still shown'
-    );
-
-    assert.notOk(
-      findAll('.grouped-list__item-checkbox')
-        .filter(el => !el.checked)
-        .concat(findAll('.grouped-list__add-icon--deselected')).length,
-      'No unselected dimensions are shown'
-    );
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('show selected enableRequestPreview true', async function(assert) {
-    assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await render(TEMPLATE);
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('add/remove time grain enableRequestPreview false', async function(assert) {
-    assert.expect(3);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    //enableRequestPreview feature flag off
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    this.set('addTimeGrain', item => {
-      assert.equal(item.id, 'week', 'the week time grain item is passed as a param to the action');
-    });
-
-    this.set('removeTimeGrain', item => {
-      assert.equal(item.id, 'day', 'the day time grain item is passed as a param to the action');
-    });
-
-    //addTimeGrain when a different time grain is clicked
-    await clickItem('timeGrain', 'Week');
-
-    //removeTimeGrain when selected time grain is clicked
-    await clickItem('timeGrain', 'Day');
-
-    await clickShowSelected('dimension');
-
-    this.set('removeTimeGrain', item => {
-      assert.equal(
-        item.id,
-        'day',
-        'the day time grain item is passed as a param to the action when only selected are shown'
-      );
-    });
-
-    //removeTimeGrain when only selected are shown and selected time grain is clicked
-    await clickItem('timeGrain', 'Day');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('add/remove time grain enableRequestPreview true', async function(assert) {
+  test('add/remove time grain', async function(assert) {
     assert.expect(2);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    //enableRequestPreview feature flag on
-    config.navi.FEATURES.enableRequestPreview = true;
 
     await render(TEMPLATE);
 
@@ -233,79 +108,24 @@ module('Integration | Component | dimension selector', function(hooks) {
     });
 
     await clickItem('timeGrain', 'Date Time');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
-  test('add/remove dimension enableRequestPreview false', async function(assert) {
-    assert.expect(3);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    //enableRequestPreview feature flag off
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    this.set('addDimension', item => {
-      assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action for addition');
-    });
-
-    this.set('removeDimension', item => {
-      assert.equal(item.name, 'Age', 'the Age dimension item is passed as a param to the action for removal');
-    });
-
-    //select a random dimension
-
-    //addDimension when an unselected dimension is clicked
-    await clickItem('dimension', 'Gender');
-
-    //removeDimension when a selected dimension is clicked
-    await clickItem('dimension', 'Age');
-
-    await clickShowSelected('dimension');
-
-    this.set('removeDimension', item => {
-      assert.equal(
-        item.name,
-        'Age',
-        'the Age dimension item is passed as a param to the action for removal when only selected dimensions are shown'
-      );
-    });
-
-    //removeTimeGrain when only selected are shown and selected time grain is clicked
-    await clickItem('dimension', 'Age');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('add/remove dimension enableRequestPreview true', async function(assert) {
+  test('add/remove dimension', async function(assert) {
     assert.expect(2);
 
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-    //enableRequestPreview feature flag on
-    config.navi.FEATURES.enableRequestPreview = true;
-
     await render(TEMPLATE);
 
     this.set('addDimension', item => {
-      assert.equal(
-        item.name,
-        'Gender',
-        'the gender dimension item is passed as a param to the action when enableRequestPreview is on'
-      );
+      assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action');
     });
 
-    this.set('removeDimension', () =>
-      assert.ok(false, 'removeDimension is not called when enableRequestPreview is on')
-    );
+    this.set('removeDimension', () => assert.ok(false, 'removeDimension is not called'));
 
     //addDimension when an unselected dimension is clicked
     await clickItem('dimension', 'Gender');
 
     //clicking again adds when feature flag is on
     await clickItem('dimension', 'Gender');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {

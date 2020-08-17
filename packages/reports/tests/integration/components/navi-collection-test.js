@@ -84,8 +84,6 @@ module('Integration | Component | navi collection', function(hooks) {
   });
 
   test('Favorite icon', async function(assert) {
-    assert.expect(2);
-
     this.set('reports', REPORTS);
 
     await render(TEMPLATE);

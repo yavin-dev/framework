@@ -328,8 +328,6 @@ module('Integration | Component | pie chart', function(hooks) {
   });
 
   test('parameterized metric renders correctly for dimension series', async function(assert) {
-    assert.expect(5);
-
     this.set('options', {
       series: {
         type: 'dimension',

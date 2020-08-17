@@ -40,61 +40,64 @@ class NaviColumnConfig extends Component {
   )
   get columns() {
     const { request, visualization } = this.report;
-    const {
-      metrics,
-      dimensions,
-      filters,
-      having,
-      logicalTable: {
-        timeGrain,
-        table: { timeGrains }
-      }
-    } = request;
-    const timeGrainObject = timeGrains.find(grain => grain.id === timeGrain) || {};
+    if (request.logicalTable.table !== undefined) {
+      const {
+        metrics,
+        dimensions,
+        filters,
+        having,
+        logicalTable: {
+          timeGrain,
+          table: { timeGrains }
+        }
+      } = request;
+      const timeGrainObject = timeGrains.find(grain => grain.id === timeGrain) || {};
 
-    const filteredDimensions = filters.toArray().map(f => f.dimension.id);
-    const filteredMetrics = having.toArray().map(h => h.metric.canonicalName);
+      const filteredDimensions = filters.toArray().map(f => f.dimension.id);
+      const filteredMetrics = having.toArray().map(h => h.metric.canonicalName);
 
-    const dimensionColumns = dimensions.toArray().map(dimension => {
-      const { id: name } = dimension.dimension;
-      return {
-        type: 'dimension',
-        name,
-        displayName: this.getDisplayName(dimension, 'dimension', visualization),
-        isFiltered: filteredDimensions.includes(name),
-        isRemovable: true,
-        fragment: dimension
-      };
-    });
-
-    const metricColumns = metrics.toArray().map(metric => {
-      const name = metric.canonicalName;
-      return {
-        type: 'metric',
-        name,
-        displayName: this.getDisplayName(metric, 'metric', visualization),
-        isFiltered: filteredMetrics.includes(name),
-        isRemovable: true,
-        fragment: metric
-      };
-    });
-
-    const columns = [...dimensionColumns, ...metricColumns];
-
-    if (timeGrain !== 'all') {
-      columns.unshift({
-        type: 'timeDimension',
-        name: 'dateTime',
-        displayName: this.getDisplayName(timeGrainObject, 'timeDimension', visualization),
-        isFiltered: true,
-        isRemovable: timeGrains.find(grain => grain.id === 'all') ? true : false,
-        fragment: 'dateTime',
-        timeGrain,
-        timeGrains: timeGrains.filter(grain => grain.id !== 'all')
+      const dimensionColumns = dimensions.toArray().map(dimension => {
+        const { id: name } = dimension.dimension;
+        return {
+          type: 'dimension',
+          name,
+          displayName: this.getDisplayName(dimension, 'dimension', visualization),
+          isFiltered: filteredDimensions.includes(name),
+          isRemovable: true,
+          fragment: dimension
+        };
       });
-    }
 
-    return columns;
+      const metricColumns = metrics.toArray().map(metric => {
+        const name = metric.canonicalName;
+        return {
+          type: 'metric',
+          name,
+          displayName: this.getDisplayName(metric, 'metric', visualization),
+          isFiltered: filteredMetrics.includes(name),
+          isRemovable: true,
+          fragment: metric
+        };
+      });
+
+      const columns = [...dimensionColumns, ...metricColumns];
+
+      if (timeGrain !== 'all') {
+        columns.unshift({
+          type: 'timeDimension',
+          name: 'dateTime',
+          displayName: this.getDisplayName(timeGrainObject, 'timeDimension', visualization),
+          isFiltered: true,
+          isRemovable: timeGrains.find(grain => grain.id === 'all') ? true : false,
+          fragment: 'dateTime',
+          timeGrain,
+          timeGrains: timeGrains.filter(grain => grain.id !== 'all')
+        });
+      }
+
+      return columns;
+    }
+    return [];
   }
 
   /**

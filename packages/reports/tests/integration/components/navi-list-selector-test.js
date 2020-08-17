@@ -1,10 +1,7 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll } from '@ember/test-helpers';
+import { render, click, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { fillInSync } from '../../helpers/fill-in-sync';
-import config from 'ember-get-config';
 
 const TEMPLATE = hbs`
   <NaviListSelector
@@ -49,7 +46,7 @@ module('Integration | Component | navi list selector', function(hooks) {
   });
 
   test('it renders', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await render(TEMPLATE);
 
@@ -65,91 +62,15 @@ module('Integration | Component | navi list selector', function(hooks) {
         'The navi-list-selector search bar has the title in the placeholder'
       );
 
-    assert
-      .dom('.navi-list-selector__show-link')
-      .isVisible('The navi-list-selector`s show all/show selected link is rendered');
-
     assert.dom('.navi-list-selector__search').isVisible('The navi-list-selector`s search bar is rendered');
   });
 
-  test('show all/show selected', async function(assert) {
-    assert.expect(8);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await render(TEMPLATE);
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText('Show Selected (1)', 'the show link initially has the text `Show Selected`');
-
-    assert
-      .dom('.test-item__filtered')
-      .isNotVisible('the boolean `areItemsFiltered` is falsy when the item list is unfiltered');
-
-    assert.deepEqual(
-      findAll('.test-item').map(el => el.textContent.trim()),
-      ['foo', 'bar', 'baz'],
-      'All the items are rendered as list-item initially'
-    );
-
-    await click('.navi-list-selector__show-link');
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText('Show All', 'the show link text is toggled to `Show All` when clicked');
-
-    assert.deepEqual(
-      findAll('.test-item').map(el => el.textContent.trim()),
-      ['foo'],
-      'Only the selected items are rendered as `list-item`s'
-    );
-
-    assert.deepEqual(
-      findAll('.test-item__filtered').map(el => el.textContent.trim()),
-      ['foo'],
-      'the boolean `areItemsFiltered` is true when item list is filtered'
-    );
-
-    this.set('selected', []);
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText('Show Selected (0)', 'the show link will be change to "Show Selected"');
-
-    await click('.navi-list-selector__show-link');
-    assert
-      .dom('.navi-list-selector__content--error')
-      .hasText('No items selected', 'No items selected error message is displayed when no items are selected');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('show all/show selected with enableRequestPreview', async function(assert) {
-    assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await render(TEMPLATE);
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
   test('search', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     await render(TEMPLATE);
 
-    run(() => {
-      fillInSync('.navi-list-selector__search-input', 'ba');
-    });
+    await fillIn('.navi-list-selector__search-input', 'ba');
 
     assert.deepEqual(
       findAll('.test-item').map(el => el.textContent.trim()),
@@ -157,13 +78,7 @@ module('Integration | Component | navi list selector', function(hooks) {
       'the items that match the search query are rendered as `list-item`s'
     );
 
-    await click('.navi-list-selector__show-link');
-
-    assert.deepEqual(
-      findAll('.test-item').map(el => el.textContent.trim()),
-      [],
-      'no items match with the search query in the selected item list'
-    );
+    await fillIn('.navi-list-selector__search-input', 'not an item');
 
     assert
       .dom('.navi-list-selector__content--error')
@@ -173,9 +88,11 @@ module('Integration | Component | navi list selector', function(hooks) {
 
     assert.deepEqual(
       findAll('.test-item').map(el => el.textContent.trim()),
-      ['foo'],
+      ['foo', 'bar', 'baz'],
       'the search query is cleared and the selected items are rendered as `list-item`s'
     );
+
+    await fillIn('.navi-list-selector__search-input', 'foo');
 
     assert.deepEqual(
       findAll('.test-item__filtered').map(el => el.textContent.trim()),

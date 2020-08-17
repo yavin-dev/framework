@@ -39,8 +39,11 @@ class ReportView extends Component {
   @readOnly('report.request')
   request;
 
-  // todo remove feature flag className
-  classNames = ['report-view', 'report-view--request-preview'];
+  get classNames() {
+    const classNames = ['report-view'];
+
+    return classNames;
+  }
 
   /**
    * @property {Service} naviVisualizations - navi visualizations service

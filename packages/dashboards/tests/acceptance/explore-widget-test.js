@@ -7,6 +7,7 @@ import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { selectChoose } from 'ember-power-select/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -74,24 +75,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__body .report-builder').isVisible('Widget body has a builder on the view route');
 
     assert
-      .dom('.navi-report-widget__body .report-builder__container--result')
-      .isVisible('Widget body has a visualization on the view route');
-  });
-
-  test('Viewing a widget when enableRequestPreview is on', async function(assert) {
-    assert.expect(1);
-
-    let originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await visit('/dashboards/1/widgets/2/view');
-
-    assert
       .dom('.navi-report-widget__body .report-builder .navi-column-config')
       .exists('The column config exists on the view route');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Exploring a widget', async function(assert) {
@@ -140,7 +125,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
     // Remove a metric
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
+
     assert
       .dom('.navi-report-widget__revert-btn')
       .isVisible('Revert changes button is visible once a change has been made');
@@ -178,8 +165,11 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
     // Remove all metrics to create an invalid request
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
+    assert
+      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]')
+      .exists('The datesTime remove icon exists');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -187,6 +177,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
         '.navi-report-widget__action-link--is-disabled',
         'Export action is disabled when request is not valid'
       );
+
+    assert
+      .dom('.navi-report-widget__body .report-builder__container--result')
+      .isVisible('Widget body has a visualization on the view route');
 
     config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
