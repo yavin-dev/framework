@@ -47,7 +47,7 @@ export default class MetricFilterConfig extends Component {
 
   /**
    * @method calculatePosition
-   * @returns {Object} - positioning info used by metric-config
+   * @returns {Object}
    */
   calculatePosition(trigger) {
     let { top, left, width, height } = trigger.getBoundingClientRect(),

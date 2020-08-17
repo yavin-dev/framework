@@ -165,7 +165,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
     // Remove all metrics to create an invalid request
-    assert.dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]').exists();
+    assert
+      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]')
+      .exists('The datesTime remove icon exists');
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
 
@@ -175,6 +177,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
         '.navi-report-widget__action-link--is-disabled',
         'Export action is disabled when request is not valid'
       );
+
+    assert
+      .dom('.navi-report-widget__body .report-builder__container--result')
+      .isVisible('Widget body has a visualization on the view route');
 
     config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });

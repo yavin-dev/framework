@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
-  <div class="report-builder__side report-builder__side--request-preview">
+  <div class="report-builder__side report-builder__side">
     {{#if (or (gt this.allTables.length 1) (not this.hasValidLogicalTable))}}
       <NaviTableSelect
         class={{concat "report-builder__container report-builder__container--table" (if @disabled " report-builder__container--disabled" "")}}

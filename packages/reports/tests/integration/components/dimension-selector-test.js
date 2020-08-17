@@ -30,7 +30,6 @@ module('Integration | Component | dimension selector', function(hooks) {
     this.set('addTimeGrain', () => {});
     this.set('removeTimeGrain', () => {});
     this.set('addDimension', () => {});
-    this.set('removeDimension', () => {});
     this.set('addDimFilter', () => {});
 
     await MetadataService.loadMetadata();
@@ -75,14 +74,6 @@ module('Integration | Component | dimension selector', function(hooks) {
       ['Date (1)', 'test (27)', 'Asset (4)'],
       'The groups rendered by the component include dimension groups and Date'
     );
-  });
-
-  test('show selected', async function(assert) {
-    assert.expect(1);
-
-    await render(TEMPLATE);
-
-    assert.dom('.navi-list-selector__show-link').doesNotExist('Show Selected toggle is hidden');
   });
 
   test('add/remove time grain', async function(assert) {

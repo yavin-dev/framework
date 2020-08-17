@@ -1296,7 +1296,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('config - parameterized metric - search parameters', async function(assert) {
-    assert.expect(5);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1325,7 +1324,6 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     );
 
     await click(findAll('.grouped-list__group-header').filter(el => el.textContent.includes('Revenue'))[0]);
-    assert.dom('.metric-config').doesNotExist('Metric config is not visible');
   });
 
   test('Sort gets removed when metric is removed', async function(assert) {
