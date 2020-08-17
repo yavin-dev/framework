@@ -12,6 +12,7 @@ import NaviFactAdapter, {
   QueryStatus,
   RequestV2
 } from './interface';
+import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
@@ -105,8 +106,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise with the updated asyncQuery's id and status
    */
-  cancelAsyncQuery(id: string, dataSourceName: string) {
+  cancelAsyncQuery(id: string, dataSourceName?: string) {
     const mutation: DocumentNode = GQLQueries['asyncFactsCancel'];
+    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
   }
 
@@ -114,8 +116,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise that resolves to the result of the AsyncQuery fetch query
    */
-  fetchAsyncQuery(id: string, dataSourceName: string) {
+  fetchAsyncQuery(id: string, dataSourceName?: string) {
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
+    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
 
@@ -154,7 +157,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   fetchDataForRequest(
     this: ElideFactsAdapter,
     request: RequestV2,
-    options: RequestOptions
+    options: RequestOptions = {}
   ): Promise<AsyncQueryResponse> {
     return this.fetchDataForRequestTask.perform(request, options);
   }

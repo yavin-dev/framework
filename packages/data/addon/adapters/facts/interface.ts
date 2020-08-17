@@ -41,7 +41,7 @@ export type Filter = {
   field: string;
   parameters: Parameters;
   type: ColumnType;
-  operator: FilterOperator;
+  operator: string;
   values: (string | number)[];
 };
 
