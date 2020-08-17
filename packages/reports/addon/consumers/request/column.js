@@ -102,7 +102,6 @@ export default ActionConsumer.extend({
       // Metric filter can't exist without the metric present in the request
 
       if (
-        featureFlag('enableRequestPreview') &&
         route.currentModel.request.columns.find(
           column => column.type === 'metric' && column.columnMetadata === metricMetadataModel
         )

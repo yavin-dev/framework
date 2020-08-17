@@ -1,6 +1,4 @@
-import Mirage from 'ember-cli-mirage';
 import moment from 'moment';
-import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
