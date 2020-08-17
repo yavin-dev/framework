@@ -4,7 +4,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 
 module('Acceptance | date filter', function(hooks) {
@@ -74,8 +74,10 @@ module('Acceptance | date filter', function(hooks) {
 
     const timeGrains = ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'];
 
+    await click('.navi-column-config-item__trigger');
+
     for (const grain of timeGrains) {
-      await clickItem('timeGrain', grain);
+      await selectChoose('.navi-column-config-item__parameter', grain);
       assert.ok(!!$(`.filter-builder__subject:contains(${grain})`)[0], `${grain} is selected`);
       assert.ok(
         !!$('.filter-builder__operator:contains(Between)').length,
