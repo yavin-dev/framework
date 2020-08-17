@@ -153,7 +153,7 @@ export default class DimensionSelector extends Component {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
     const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
 
-    if (type === 'TimeGrain') {
+    if (item.dateTimeDimension) {
       return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
     }
 
