@@ -1,21 +1,28 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import { set, get } from '@ember/object';
-import DS from 'ember-data';
+import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
+import RequestFragment from './bard-request-v2/request';
 
-export default Fragment.extend({
-  type: DS.attr('string'),
-  version: DS.attr('number'),
-  metadata: DS.attr(),
+//TODO Try to make this an abstract class
+export default class VisualizationFragment extends Fragment {
+  @attr('string')
+  type!: string;
+
+  @attr('number')
+  version!: number;
+
+  @attr()
+  metadata: unknown;
 
   /**
    * @property {Object} - temporary request object used for validation
    */
-  _request: undefined,
+  _request!: RequestFragment;
 
   /**
    * Test if the config is valid for the given request
@@ -24,12 +31,14 @@ export default Fragment.extend({
    * @param {Object} request - request object
    * @return {Boolean} - is the config valid
    */
-  isValidForRequest(request) {
+  isValidForRequest(request: RequestFragment) {
     set(this, '_request', request);
+    //TODO Add validation mixin
+    //@ts-ignore
     this.validateSync();
-
+    //@ts-ignore
     return get(this, 'validations.isValid');
-  },
+  }
 
   /**
    * Rebuild config based on request and response
@@ -45,4 +54,4 @@ export default Fragment.extend({
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);
      */
   }
-});
+}

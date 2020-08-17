@@ -57,7 +57,7 @@ export type RequestV2 = {
   table: string;
   dataSource: string;
   sorts: Sort[];
-  limit: TODO<string> | null;
+  limit: number | null;
   requestVersion: '2.0';
 };
 
