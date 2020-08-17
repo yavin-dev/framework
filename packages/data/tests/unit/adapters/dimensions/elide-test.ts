@@ -3,26 +3,27 @@ import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import Pretender from 'pretender';
 import ElideDimensionAdapter from 'navi-data/adapters/dimensions/elide';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import { Response } from 'miragejs';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { TestContext } from 'ember-test-helpers';
 
-let Server: Pretender;
+interface MirageTestContext extends TestContext {
+  server: TODO;
+}
+
+type ServerRequest = {
+  requestBody: string;
+};
 
 module('Unit | Adapter | Dimensions | Elide', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    Server = new Pretender();
-  });
-
-  hooks.afterEach(function() {
-    //shutdown pretender
-    Server.shutdown();
-  });
-
-  test('find', async function(assert) {
+  test('find', async function(this: MirageTestContext, assert) {
     assert.expect(6);
     const {
       navi: { dataSources }
@@ -45,7 +46,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     let queryId: string;
 
     let response: TODO;
-    Server.post(`${HOST.uri}/graphql`, function({ requestBody }) {
+    this.server.post(`${HOST.uri}/graphql`, function(_: TODO, { requestBody }: ServerRequest) {
       callCount++;
       let result = null;
       let status = 'QUEUED';
@@ -123,20 +124,14 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         }
       };
 
-      return [
-        200,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify({
-          data: response
-        })
-      ];
+      return new Response(200, { 'Content-Type': 'application/json' }, { data: response });
     });
     const find = await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
 
     assert.deepEqual(find, response, 'find returns the correct response payload');
   });
 
-  test('all', async function(assert) {
+  test('all', async function(this: MirageTestContext, assert) {
     assert.expect(2);
     const {
       navi: { dataSources }
@@ -155,7 +150,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const myDataSource = dataSources.find(d => d.name === 'elideOne') || dataSources[0];
     let response;
 
-    Server.post(`${myDataSource.uri}/graphql`, function({ requestBody }) {
+    this.server.post(`${myDataSource.uri}/graphql`, function(_: TODO, { requestBody }: ServerRequest) {
       const requestObj = JSON.parse(requestBody);
       const expectedTable = TestDimensionColumn.columnMetadata.tableId;
       const expectedColumns = 'dimension1(foo: bar)';
@@ -195,7 +190,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
           ]
         }
       };
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+      return new Response(200, { 'Content-Type': 'application/json' }, { data: response });
     });
 
     const adapterResponse = await adapter.all(TestDimensionColumn);
@@ -203,7 +198,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     assert.deepEqual(adapterResponse, response, 'all returns the payload from graphql');
   });
 
-  test('search', async function(assert) {
+  test('search', async function(this: MirageTestContext, assert) {
     assert.expect(2);
     const {
       navi: { dataSources }
@@ -222,7 +217,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const myDataSource = dataSources.find(d => d.name === 'elideTwo') || dataSources[0];
     let response;
 
-    Server.post(`${myDataSource.uri}/graphql`, function({ requestBody }) {
+    this.server.post(`${myDataSource.uri}/graphql`, function(_: TODO, { requestBody }: ServerRequest) {
       const requestObj = JSON.parse(requestBody);
       const expectedTable = TestDimensionColumn.columnMetadata.tableId;
       const expectedColumns = 'dimension2(foo: baz)';
@@ -264,13 +259,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         }
       };
 
-      return [
-        200,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify({
-          data: response
-        })
-      ];
+      return new Response(200, { 'Content-Type': 'application/json' }, { data: response });
     });
 
     const adapterResponse = await adapter.search(TestDimensionColumn, 'something');

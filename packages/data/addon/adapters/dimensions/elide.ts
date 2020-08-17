@@ -24,9 +24,8 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   find(dimension: DimensionColumn, predicate: DimensionFilter[] = [], options: ServiceOptions = {}): Promise<unknown> {
     const {
       columnMetadata: { id, source, tableId },
-      parameters: params
+      parameters = {}
     } = dimension;
-    const parameters = params || {};
 
     // Create a request with only one dimension and its appropriate filters
     const request: RequestV2 = {
