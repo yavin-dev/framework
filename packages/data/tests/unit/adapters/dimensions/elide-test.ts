@@ -4,9 +4,9 @@ import config from 'ember-get-config';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import Pretender from 'pretender';
-import ElideDimensionAdapter from 'dummy/adapters/dimensions/elide';
+import ElideDimensionAdapter from 'navi-data/adapters/dimensions/elide';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
-import DimensionMetadataModel from 'dummy/models/metadata/dimension';
+import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 
 let Server: Pretender;
 

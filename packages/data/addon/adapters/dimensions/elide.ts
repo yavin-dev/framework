@@ -13,9 +13,9 @@ import ElideFactsAdapter from '../facts/elide';
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
-   * @property adapter - the elide fact adapter that will send asyncQuery requests for the dimension values
+   * The elide fact adapter that will send asyncQuery requests for the dimension values
    */
-  factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
+  private factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
   all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<unknown> {
     return this.find(dimension, [], options);

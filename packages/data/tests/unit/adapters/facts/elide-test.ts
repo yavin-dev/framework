@@ -6,7 +6,7 @@ import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
-import { getElideField } from 'navi-data/adapters/facts/elide';
+import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -68,8 +68,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('dataQueryFromRequest', function(assert) {
-    const adapter = this.owner.lookup('adapter:facts/elide');
-    const queryStr = adapter.dataQueryFromRequest(TestRequest);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
       escapeQuotes(
@@ -79,7 +79,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequest({
+      adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -87,6 +87,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         ],
         sorts: [],
         filters: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
@@ -95,7 +96,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequest({
+      adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -106,6 +107,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           { field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }
         ],
         filters: [],
+        limit: null,
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
@@ -114,7 +116,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequest({
+      adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -127,7 +129,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           { field: 'd2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
         ],
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideOne',
+        limit: null
       }),
       escapeQuotes(
         `{"query":"{ myTable(filter: \\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\") { edges { node { m1(p: q) d1 } } } }"}`
@@ -136,7 +139,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
 
     assert.equal(
-      adapter.dataQueryFromRequest({
+      adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
           { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
@@ -155,7 +158,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
   test('createAsyncQuery - success', async function(assert) {
     assert.expect(5);
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
@@ -215,7 +218,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('createAsyncQuery - error', async function(assert) {
     assert.expect(1);
 
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     const response = { errors: [{ message: 'Error in graphql query' }] };
     Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
@@ -230,7 +233,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('cancelAsyncQuery - success', async function(assert) {
     assert.expect(2);
 
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
@@ -265,7 +268,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('fetchAsyncQuery - success', async function(assert) {
     assert.expect(2);
 
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
@@ -318,7 +321,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('fetchDataForRequest - success', async function(assert) {
     assert.expect(10);
 
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     adapter._pollingInterval = 300;
 
     let callCount = 0;
@@ -401,7 +404,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
   test('fetchDataForRequest - error', async function(assert) {
     assert.expect(1);
-    const adapter = this.owner.lookup('adapter:facts/elide');
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let errors = [{ message: 'Bad request' }];
     Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
