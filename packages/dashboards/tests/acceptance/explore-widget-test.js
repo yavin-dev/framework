@@ -144,8 +144,6 @@ module('Acceptance | Exploring Widgets', function(hooks) {
   });
 
   test('Export action', async function(assert) {
-    assert.expect(4);
-
     let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
 
     // Turn flag off
