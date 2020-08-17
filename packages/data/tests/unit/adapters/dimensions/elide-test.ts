@@ -4,6 +4,9 @@ import config from 'ember-get-config';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import Pretender from 'pretender';
+import ElideDimensionAdapter from 'dummy/adapters/dimensions/elide';
+import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
+import DimensionMetadataModel from 'dummy/models/metadata/dimension';
 
 let Server: Pretender;
 
@@ -24,13 +27,13 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const {
       navi: { dataSources }
     } = config;
-    const adapter = this.owner.lookup('adapter:dimensions/elide');
-    const TestDimensionColumn = {
-      columnMetadata: {
+    const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
+    const TestDimensionColumn: DimensionColumn = {
+      columnMetadata: DimensionMetadataModel.create({
         id: 'dimension1',
         source: 'elideTwo',
         tableId: 'table1'
-      },
+      }),
       parameters: {
         foo: 'bar'
       }
@@ -138,13 +141,13 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const {
       navi: { dataSources }
     } = config;
-    const adapter = this.owner.lookup('adapter:dimensions/elide');
-    const TestDimensionColumn = {
-      columnMetadata: {
+    const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
+    const TestDimensionColumn: DimensionColumn = {
+      columnMetadata: DimensionMetadataModel.create({
         id: 'dimension1',
         source: 'elideOne',
         tableId: 'table1'
-      },
+      }),
       parameters: {
         foo: 'bar'
       }
@@ -205,13 +208,13 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const {
       navi: { dataSources }
     } = config;
-    const adapter = this.owner.lookup('adapter:dimensions/elide');
-    const TestDimensionColumn = {
-      columnMetadata: {
+    const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
+    const TestDimensionColumn: DimensionColumn = {
+      columnMetadata: DimensionMetadataModel.create({
         id: 'dimension2',
         source: 'elideTwo',
         tableId: 'table2'
-      },
+      }),
       parameters: {
         foo: 'baz'
       }

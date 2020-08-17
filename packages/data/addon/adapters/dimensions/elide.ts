@@ -9,12 +9,13 @@ import EmberObject from '@ember/object';
 import NaviDimensionAdapter, { DimensionColumn, DimensionFilter } from './interface';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
 import { RequestV2 } from '../facts/interface';
+import ElideFactsAdapter from '../facts/elide';
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
    * @property adapter - the elide fact adapter that will send asyncQuery requests for the dimension values
    */
-  factAdapter = getOwner(this).lookup('adapter:facts/elide');
+  factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
   all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<unknown> {
     return this.find(dimension, [], options);
@@ -30,7 +31,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     // Create a request with only one dimension and its appropriate filters
     const request: RequestV2 = {
       table: tableId || '',
-      columns: [{ field: id, parameters: parameters || {}, type: 'dimension' }],
+      columns: [{ field: id, parameters, type: 'dimension' }],
       filters: predicate.map(pred => ({
         field: id,
         parameters,
