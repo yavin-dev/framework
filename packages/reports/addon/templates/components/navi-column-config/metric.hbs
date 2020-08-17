@@ -22,11 +22,10 @@
         @onchange={{this.updateMetricParam}}
         as | arg |
       >
-        {{! TODO: Simplify this when we normalize function arguments }}
-        {{#if (eq (get (filter-by (if arg.name "name" "description") (if arg.name arg.name arg.description) allParams) "length") 1)}}
-          {{if arg.name arg.name arg.description}}
-        {{else}}
+        {{#if (should-show-id argument=arg params=allParams)}}
           {{if arg.name arg.name arg.description}} ({{arg.id}})
+        {{else}}
+          {{if arg.name arg.name arg.description}}
         {{/if}}
       </PowerSelect>
     {{/let}}
