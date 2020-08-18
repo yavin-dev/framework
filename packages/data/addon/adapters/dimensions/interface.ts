@@ -2,13 +2,13 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { Parameters } from '../facts/interface';
+import { Parameters, FilterOperator } from '../facts/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import EmberObject from '@ember/object';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
 
 export type DimensionFilter = {
-  operator: TODO<'in'>;
+  operator: FilterOperator;
   values: unknown[];
 };
 
