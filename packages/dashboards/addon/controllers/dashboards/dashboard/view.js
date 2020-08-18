@@ -105,11 +105,10 @@ export default class DashboardsDashboardViewController extends Controller.extend
       newFil.source = fil.source;
       return newFil;
     }); //Native array of serialized filters
-    const dimensionMeta = metadataService.getById('dimension', dimension.dimension, dimension.dataSource);
+    const dimensionMeta = metadataService.getById(dimension.type, dimension.dimension, dimension.dataSource);
     const filter = store
       .createFragment('bard-request-v2/fragments/filter', {
-        // TODO: could be timeDimension
-        type: 'dimension',
+        type: dimension.type,
         field: dimension.dimension,
         parameters: {
           field: dimensionMeta.primaryKeyFieldName

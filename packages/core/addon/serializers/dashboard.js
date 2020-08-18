@@ -11,7 +11,8 @@ function v1ToV2Filter(filter, metadataService) {
   let source = undefined;
   let dimension = undefined; // the filter.dimension can be stored as dataSource.dimension
   if (filter.dimension.includes('.')) {
-    [source, dimension] = filter.dimension.split('.');
+    [source, ...dimension] = filter.dimension.split('.');
+    dimension = dimension.join('.');
   } else {
     dimension = filter.dimension;
   }
