@@ -4,7 +4,44 @@
  */
 
 import AssetSerializer from 'navi-core/serializers/asset';
-import { get } from '@ember/object';
+import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
+import { getOwner } from '@ember/application';
+
+function v1ToV2Filter(filter, metadataService) {
+  let source = undefined;
+  let dimension = undefined; // the filter.dimension can be stored as dataSource.dimension
+  if (filter.dimension.includes('.')) {
+    [source, dimension] = filter.dimension.split('.');
+  } else {
+    dimension = filter.dimension;
+  }
+  const matchesField = d => d.id === dimension;
+  const matchingDimensions = metadataService.all('dimension', source).filter(matchesField);
+  const matchingTimeDimensions = metadataService.all('timeDimension', source).filter(matchesField);
+  let type;
+  if (matchingDimensions.length === 0 && matchingTimeDimensions.length === 1) {
+    type = 'timeDimension';
+    source = matchingTimeDimensions[0].source;
+  } else if (matchingDimensions.length === 1 && matchingTimeDimensions.length === 0) {
+    type = 'dimension';
+    source = matchingDimensions[0].source;
+  }
+
+  // TODO: no exact match, have better handling
+  type = type || 'dimension';
+  source = source || getDefaultDataSourceName();
+
+  return {
+    type,
+    field: filter.dimension,
+    parameters: {
+      field: filter.field
+    },
+    operator: filter.operator,
+    values: filter.values,
+    source
+  };
+}
 
 export default AssetSerializer.extend({
   /**
@@ -14,9 +51,34 @@ export default AssetSerializer.extend({
    * Replace null filters value with empty array
    */
   normalize(type, payload) {
-    if (get(type, 'modelName') === 'dashboard' && get(payload, 'attributes.filters') === null) {
+    if (type.modelName === 'dashboard') {
       const newPayload = Object.assign({}, payload);
-      newPayload.attributes.filters = [];
+      if (!Array.isArray(payload?.attributes?.filters)) {
+        newPayload.attributes.filters = [];
+      }
+
+      if (payload.attributes.filters.some(f => 'dimension' in f)) {
+        const metadataService = getOwner(this).lookup('service:navi-metadata');
+        newPayload.attributes.filters = newPayload.attributes.filters.map(filter =>
+          v1ToV2Filter(filter, metadataService)
+        );
+      } else {
+        newPayload.attributes.filters = newPayload.attributes.filters.map(filter => {
+          let dataSourceName, field;
+          if (filter.field.includes('.')) {
+            [dataSourceName, field] = filter.field.split('.');
+          } else {
+            dataSourceName = getDefaultDataSourceName();
+            field = filter.field;
+          }
+          return {
+            ...filter,
+            field,
+            source: dataSourceName
+          };
+        });
+      }
+
       return this._super(type, newPayload);
     }
     return this._super(...arguments);
@@ -31,15 +93,14 @@ export default AssetSerializer.extend({
   serialize(snapshot) {
     const buildKey = (dimension, values) => `${dimension}[${values.join(',')}]`;
     const filterSources = snapshot.attr('filters').reduce((dimensionSources, filter) => {
-      dimensionSources[buildKey(filter.attr('dimension').id, filter.attr('rawValues'))] = filter.attr(
-        'dimension'
-      ).source;
+      // TODO: Canonical column name
+      dimensionSources[buildKey(filter.attr('field'), filter.attr('values'))] = filter.attr('source');
       return dimensionSources;
     }, {});
     const dashboard = this._super(...arguments);
     dashboard.data.attributes.filters = dashboard.data.attributes.filters.map(filter => {
-      const key = buildKey(filter.dimension, filter.values);
-      filter.dimension = filterSources[key] ? `${filterSources[key]}.${filter.dimension}` : filter.dimension;
+      const key = buildKey(filter.field, filter.values);
+      filter.field = filterSources[key] ? `${filterSources[key]}.${filter.field}` : filter.field;
       return filter;
     });
     return dashboard;

@@ -120,7 +120,7 @@ export default [
     deliveryRuleIds: [],
     filters: [
       { dimension: 'dummy.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      { dimension: 'blockhead.container', operator: 'notin', field: 'id', values: [1] }
+      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] }
     ],
     presentation: {
       version: 1,

@@ -312,7 +312,7 @@ export default [
         ],
         bardVersion: 'v1',
         requestVersion: 'v1',
-        dataSource: 'blockhead'
+        dataSource: 'bardTwo'
       }
     ],
     createdOn: '2016-01-01 00:00:00',

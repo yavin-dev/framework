@@ -608,7 +608,7 @@ export default [
       ],
       bardVersion: 'v1',
       requestVersion: 'v1',
-      dataSource: 'blockhead'
+      dataSource: 'bardTwo'
     }
   }
 ];
