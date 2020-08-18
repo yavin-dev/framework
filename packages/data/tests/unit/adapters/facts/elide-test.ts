@@ -147,7 +147,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         ],
         sorts: [],
         filters: [],
-        limit: '5',
+        limit: 5,
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
