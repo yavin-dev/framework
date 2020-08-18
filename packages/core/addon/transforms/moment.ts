@@ -4,10 +4,11 @@
  */
 
 import DS from 'ember-data';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
+//@ts-ignore
 import DateUtils from 'navi-core/utils/date';
 
-export default DS.Transform.extend({
+export default class MomentTransform extends DS.Transform {
   /**
    * Deserializes date string into a moment object
    *
@@ -15,17 +16,14 @@ export default DS.Transform.extend({
    * @param {String} serialized - Date string to deserialize
    * @returns {Moment} - Moment object
    */
-  deserialize: function(serialized) {
+  deserialize(serialized: string): Moment | null {
     if (serialized) {
-      let result = moment.utc(serialized, DateUtils.API_DATE_FORMAT_STRING);
-      if (moment.isMoment(result) && result.isValid()) {
-        return result;
-      }
-      return null;
+      const result = moment.utc(serialized, DateUtils.API_DATE_FORMAT_STRING);
+      return moment.isMoment(result) && result.isValid() ? result : null;
     } else {
-      return serialized;
+      return null;
     }
-  },
+  }
 
   /**
    * Serializes moment object into a date string
@@ -34,11 +32,13 @@ export default DS.Transform.extend({
    * @param {Moment} deserialized - Moment object to serialize
    * @returns {String} - Date string
    */
-  serialize: function(deserialized) {
-    if (moment.isMoment(deserialized)) {
-      return deserialized.format(DateUtils.API_DATE_FORMAT_STRING);
-    } else {
-      return null;
-    }
+  serialize(deserialized: Moment) {
+    return moment.isMoment(deserialized) ? deserialized.format(DateUtils.API_DATE_FORMAT_STRING) : null;
   }
-});
+}
+
+declare module 'ember-data/types/registries/transform' {
+  export default interface TransformRegistry {
+    moment: MomentTransform;
+  }
+}

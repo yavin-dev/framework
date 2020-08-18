@@ -23,7 +23,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
               request: {
                 filters: [
                   {
-                    field: 'dateTime',
+                    field: 'network.dateTime',
                     operator: 'bet',
                     type: 'timeDimension',
                     parameters: { grain: 'day' },
@@ -38,7 +38,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
                 ],
                 columns: [
                   {
-                    field: 'dateTime',
+                    field: 'network.dateTime',
                     parameters: { grain: 'day' },
                     type: 'timeDimension',
                     alias: 'time'
@@ -122,7 +122,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     const { request } = mockModel;
     let timeDimension = request.columns.objectAt(0).columnMetadata;
-
     assert.ok(
       timeDimension instanceof TimeDimensionMetadataModel,
       'dateTime time-dimension uses actual metadata model'
@@ -134,7 +133,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
       'meta data is populated on sub fragments'
     );
 
-    request.table = 'tableB';
+    request.columns.objectAt(0).field = 'tableB.dateTime';
     timeDimension = request.columns.objectAt(0).columnMetadata;
 
     assert.deepEqual(
@@ -171,7 +170,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.equal(
       request.filters.objectAt(0).field,
-      'dateTime',
+      'network.dateTime',
       'the `field` property of the first filter has the correct value'
     );
 
@@ -197,7 +196,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.equal(
       request.columns.objectAt(0).field,
-      'dateTime',
+      'network.dateTime',
       'the `field` property of the first column has the correct value'
     );
 
@@ -372,7 +371,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
       {
         filters: [
           {
-            field: 'dateTime',
+            field: 'network.dateTime',
             type: 'timeDimension',
             parameters: { grain: 'day' },
             operator: 'bet',
@@ -388,7 +387,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
         ],
         columns: [
           {
-            field: 'dateTime',
+            field: 'network.dateTime',
             parameters: { grain: 'day' },
             type: 'timeDimension',
             alias: 'time'

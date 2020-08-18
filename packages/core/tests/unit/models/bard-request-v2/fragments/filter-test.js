@@ -43,12 +43,12 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
     assert.deepEqual(filter.values, [3], 'the `values` property has the correct values');
 
     filter.set('type', 'timeDimension');
-    filter.set('field', 'dateTime');
+    filter.set('field', 'tableA.dateTime');
     filter.set('parameters', {});
     filter.set('operator', 'bet');
     filter.set('values', ['P1D', 'current']);
 
-    assert.equal(filter.field, 'dateTime', 'the `field` property is set correctly');
+    assert.equal(filter.field, 'tableA.dateTime', 'the `field` property is set correctly');
 
     assert.deepEqual(filter.parameters, {}, 'the `parameters` property is set correctly');
 
@@ -56,7 +56,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
 
     assert.deepEqual(filter.values, ['P1D', 'current'], 'the `values` property is set correctly');
 
-    assert.equal(filter.columnMetadata.id, 'dateTime', 'metadata is loaded correctly');
+    assert.equal(filter.columnMetadata.id, 'tableA.dateTime', 'metadata is loaded correctly');
   });
 
   test('Validation', async function(assert) {

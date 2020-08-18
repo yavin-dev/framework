@@ -4,15 +4,36 @@
  */
 import { computed, set } from '@ember/object';
 import { inject as service } from '@ember/service';
-import attr from 'ember-data/attr';
+import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
+//@ts-ignore
 import { fragmentArray } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
+//@ts-ignore
 import { isEqual } from 'lodash-es';
+//@ts-ignore
 import Interval from 'navi-core/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { RequestV2, SortDirection, ColumnType } from 'navi-data/adapters/facts/interface';
+import FragmentFactory from 'navi-core/services/fragment-factory';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import Store from '@ember-data/store';
+import MetricMetadataModel from 'navi-data/models/metadata/metric';
+import ColumnFragment from './fragments/column';
+import FragmentArray from 'ember-data-model-fragments/FragmentArray';
+import { ColumnMetadataModels } from './fragments/base';
+import { Parameters } from 'navi-data/adapters/facts/interface';
+import FilterFragment from './fragments/filter';
+import SortFragment from './fragments/sort';
+
+type BaseLiteral = {
+  type: ColumnType;
+  source: string;
+  field: string;
+  parameters: Parameters;
+};
 
 const Validations = buildValidations({
   filters: [
@@ -46,41 +67,46 @@ const Validations = buildValidations({
   ]
 });
 
-export default class Request extends Fragment.extend(Validations) {
-  @fragmentArray('bard-request-v2/fragments/filter', {
-    defaultValue: []
-  })
-  filters;
-  @fragmentArray('bard-request-v2/fragments/column', {
-    defaultValue: []
-  })
-  columns;
-  @attr('string') table;
-  @fragmentArray('bard-request-v2/fragments/sort', {
-    defaultValue: []
-  })
-  sorts;
-  @attr('number') limit;
-  @attr('string', {
-    defaultValue: '2.0'
-  })
-  requestVersion;
-  @attr('string', {
-    defaultValue: getDefaultDataSourceName()
-  })
-  dataSource;
+export default class RequestFragment extends Fragment.extend(Validations) implements RequestV2 {
+  @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: () => [] })
+  filters!: FragmentArray<FilterFragment>;
 
-  @service fragmentFactory;
+  @fragmentArray('bard-request-v2/fragments/column', { defaultValue: () => [] })
+  columns!: FragmentArray<ColumnFragment>;
 
-  @service('navi-metadata') metadataService;
+  @attr('string')
+  table!: string;
+
+  @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
+  sorts!: FragmentArray<SortFragment>;
+
+  @attr('number')
+  limit!: number | null;
+
+  @attr('string', { defaultValue: '2.0' })
+  requestVersion!: '2.0';
+
+  @attr('string', { defaultValue: getDefaultDataSourceName() })
+  dataSource!: string;
+
+  @service
+  private fragmentFactory!: FragmentFactory;
+
+  @service('navi-metadata')
+  private metadataService!: NaviMetadataService;
+
+  /**
+   * @property store - Store service with fragments
+   */
+  store!: Store;
 
   /**
    * @method clone
    * @returns {Fragment} copy of this fragment
    */
-  clone() {
-    const { store } = this,
-      clonedRequest = this.toJSON();
+  clone(this: RequestFragment) {
+    const { store } = this;
+    const clonedRequest = this.toJSON() as RequestV2;
 
     return store.createFragment('bard-request-v2/request', {
       filters: clonedRequest.filters.map(filter => {
@@ -90,7 +116,7 @@ export default class Request extends Fragment.extend(Validations) {
           type: filter.type,
           operator: filter.operator,
           values: filter.values,
-          source: filter.source || clonedRequest.dataSource
+          source: clonedRequest.dataSource
         });
         return newFilter;
       }),
@@ -100,7 +126,7 @@ export default class Request extends Fragment.extend(Validations) {
           parameters: column.parameters,
           type: column.type,
           alias: column.alias,
-          source: column.source || clonedRequest.dataSource
+          source: clonedRequest.dataSource
         });
         return newColumn;
       }),
@@ -111,7 +137,7 @@ export default class Request extends Fragment.extend(Validations) {
           parameters: sort.parameters,
           type: sort.type,
           direction: sort.direction,
-          source: sort.source || clonedRequest.dataSource
+          source: clonedRequest.dataSource
         });
         return newSort;
       }),
@@ -188,15 +214,15 @@ export default class Request extends Fragment.extend(Validations) {
   @computed('dateTimeFilter.values')
   get interval() {
     const values = this.dateTimeFilter?.values;
-    return values?.length ? Interval.parseFromStrings(values[0], values[1]) : undefined;
+    return values?.length ? Interval.parseFromStrings(`${values[0]}`, `${values[1]}`) : undefined;
   }
 
   /**
    * Adds the column to the request
    * @param {object} column - the column to add to the request
    */
-  addColumn({ type, dataSource, field, parameters, alias }) {
-    this.columns.pushObject(this.fragmentFactory.createColumn(type, dataSource, field, parameters, alias));
+  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias: string }) {
+    this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
   }
 
   /**
@@ -204,7 +230,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
    * @param {object} parameters - the parameters to apply to the column
    */
-  addColumnFromMeta(columnMetadataModel, parameters) {
+  addColumnFromMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters) {
     this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
   }
 
@@ -213,7 +239,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
    * @param {object} parameters - the parameters to apply to the column
    */
-  addColumnFromMetaWithParams(columnMetadataModel, parameters = {}) {
+  addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}) {
     this.addColumnFromMeta(columnMetadataModel, {
       ...(columnMetadataModel.getDefaultParameters?.() || {}),
       ...parameters
@@ -224,7 +250,7 @@ export default class Request extends Fragment.extend(Validations) {
    * Removes an exact column from the request
    * @param {ColumnFragment} column - the fragment of the column to remove
    */
-  removeColumn(column) {
+  removeColumn(column: ColumnFragment) {
     this.columns.removeFragment(column);
   }
 
@@ -233,7 +259,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
    * @param {object} parameters - the parameters to search for to be removed
    */
-  removeColumnByMeta(columnMetadataModel, parameters) {
+  removeColumnByMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters) {
     let columnsToRemove = this.columns.filter(column => column.columnMetadata === columnMetadataModel);
 
     if (parameters) {
@@ -248,7 +274,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnFragment} column - the fragment of the column to remove
    * @param {string} alias - the new alias for the column
    */
-  renameColumn(column, alias) {
+  renameColumn(column: ColumnFragment, alias: string) {
     set(column, 'alias', alias);
   }
 
@@ -257,39 +283,20 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnFragment} column - the fragment of the column to update
    * @param {object} parameters - the parameters to be updated and their values
    */
-  updateColumnParameters(column, parameters) {
+  updateColumnParameters(column: ColumnFragment, parameters: Parameters) {
     column.updateParameters(parameters);
   }
 
-  /**
-   * Makes the request have a dateTime timeDimension column with the given grain
-   * @param {string} newTimeGrain - the new timegrain to use for the request
-   */
-  updateTimeGrain(newTimeGrain) {
-    const { timeGrainColumn } = this;
-
-    if (!timeGrainColumn) {
-      this.addColumn({
-        type: 'timeDimension',
-        dataSource: this.dataSource,
-        field: 'dateTime',
-        parameters: { grain: newTimeGrain }
-      });
-    }
-
-    if (this.timeGrain !== newTimeGrain) {
-      this.updateColumnParameters(this.timeGrainColumn, { grain: newTimeGrain });
-    }
+  updateTimeGrain() {
+    throw new Error('TimeGrain is no longer a top level property');
   }
 
-  /**
-   * Updates the values of the dateTime filter to the given interval
-   * @param {Interval} newInterval - the new interval to apply to the request
-   */
-  updateInterval(newInterval) {
-    const { dateTimeFilter } = this;
-    const { start, end } = newInterval.asStrings();
-    set(dateTimeFilter, 'values', [start, end]);
+  updateInterval() {
+    throw new Error('TimeGrain is no longer a top level property');
+  }
+
+  addDateTimeSort() {
+    throw new Error('DateTime is no longer a top level property');
   }
 
   //TODO: handle valueParam values vs rawValues
@@ -297,15 +304,22 @@ export default class Request extends Fragment.extend(Validations) {
    * Adds a filter to the request
    * @param {object} filter - the filter to add
    */
-  addFilter({ type, dataSource, field, parameters, operator, values }) {
-    this.filters.pushObject(this.fragmentFactory.createFilter(type, dataSource, field, parameters, operator, values));
+  addFilter({
+    type,
+    source,
+    field,
+    parameters,
+    operator,
+    values
+  }: BaseLiteral & { operator: string; values: (string | number)[] }) {
+    this.filters.pushObject(this.fragmentFactory.createFilter(type, source, field, parameters, operator, values));
   }
 
   /**
    * Removes a filter by it's fragment
    * @param {FilterFragment} filter - the filter to remove
    */
-  removeFilter(filter) {
+  removeFilter(filter: FilterFragment) {
     this.filters.removeFragment(filter);
   }
 
@@ -313,7 +327,7 @@ export default class Request extends Fragment.extend(Validations) {
    * Adds a sort to the request if it does not exist
    * @param {SortFragment} sort - the sort to add to the request
    */
-  addSort({ type, dataSource, field, parameters, direction }) {
+  addSort({ type, source, field, parameters, direction }: BaseLiteral & { direction: SortDirection }) {
     const canonicalName = canonicalizeMetric({
       metric: field,
       parameters
@@ -322,17 +336,7 @@ export default class Request extends Fragment.extend(Validations) {
 
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
 
-    this.sorts.pushObject(this.fragmentFactory.createSort(type, dataSource, field, parameters, direction));
-  }
-
-  /**
-   * Changes the direction for the dateTime column
-   * @param {string} direction - the direction for the dateTime
-   */
-  addDateTimeSort(direction) {
-    this.sorts.unshiftObject(
-      this.fragmentFactory.createSort('timeDimension', this.dataSource, 'dateTime', {}, direction)
-    );
+    this.sorts.pushObject(this.fragmentFactory.createSort(type, source, field, parameters, direction));
   }
 
   /**
@@ -340,14 +344,16 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {string} metricName - the canonical name of the metric
    * @param {string} direction - the direction of the sort
    */
-  addSortByMetricName(metricName, direction) {
-    const metricColumn = this.columns.find(column => column.type === 'metric' && column.canonicalName === metricName);
+  addSortByMetricName(metricName: string, direction: SortDirection) {
+    const metricColumn = this.columns.find(
+      column => column.type === 'metric' && column.canonicalName === metricName
+    ) as ColumnFragment;
 
     assert(`Metric with canonical name "${metricName}" was not found in the request`, metricColumn);
 
     this.addSort({
       type: 'metric',
-      dataSource: this.dataSource,
+      source: this.dataSource,
       field: metricColumn.field,
       parameters: metricColumn.parameters,
       direction
@@ -358,15 +364,16 @@ export default class Request extends Fragment.extend(Validations) {
    * Removes a sort from the request
    * @param {SortFragment} sort - the fragment of the sort to remove
    */
-  removeSort(sort) {
-    return this.sorts.removeFragment(sort);
+  removeSort(sort: SortFragment) {
+    this.sorts.removeFragment(sort);
   }
 
   /**
    * Removes all sorts on this metric
    * @param {ColumnMetadata} metricMetadataModel - the metadata of the metric to remove sorts for
    */
-  removeSortByMeta(metricMetadataModel) {
+  //TODO create metric type
+  removeSortByMeta(metricMetadataModel: ColumnMetadataModels) {
     const sortsToRemove = this.sorts.filter(sort => sort.columnMetadata === metricMetadataModel);
     sortsToRemove.forEach(sort => this.removeSort(sort));
   }
@@ -375,9 +382,11 @@ export default class Request extends Fragment.extend(Validations) {
    * Removes a sort if it exists by the given metric name
    * @param {string} metricName - the canonical name of the metric to remove sorts for
    */
-  removeSortByMetricName(metricName) {
+  removeSortByMetricName(metricName: string) {
     const sort = this.sorts.find(sort => sort.type === 'metric' && sort.canonicalName === metricName);
-    return this.removeSort(sort);
+    if (sort) {
+      this.removeSort(sort);
+    }
   }
 
   /**
@@ -385,8 +394,8 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnMetadata} metricMetadataModel - the   metadata of the metric to remove sorts
    * @param {object} parameters - the parameters applied to the metric
    */
-  removeSortWithParams(metricMetadataModel, parameters) {
-    return this.removeSortByMetricName(
+  removeSortWithParams(metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
+    this.removeSortByMetricName(
       canonicalizeMetric({
         metric: metricMetadataModel.id,
         parameters
@@ -399,7 +408,7 @@ export default class Request extends Fragment.extend(Validations) {
    * @param {ColumnFragment} column - the column fragment that is being moved
    * @param {number} index - the index to move the selected column
    */
-  reorderColumn(column, index) {
+  reorderColumn(column: ColumnFragment, index: number) {
     this.columns.removeFragment(column);
     this.columns.insertAt(index, column);
   }

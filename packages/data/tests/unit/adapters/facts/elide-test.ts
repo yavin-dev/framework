@@ -42,7 +42,7 @@ const TestRequestV2: RequestV2 = {
     { field: 'm1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
   ],
   sorts: [{ field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }],
-  limit: '10000',
+  limit: 10000,
   requestVersion: '2.0',
   dataSource: 'elideOne'
 };

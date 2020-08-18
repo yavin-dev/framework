@@ -39,16 +39,16 @@ module('Unit | Model | Fragment | BardRequest - Sort', function(hooks) {
     assert.equal(sort.direction, 'desc', 'the `direction` property defaults to `desc`');
 
     sort.set('type', 'timeDimension');
-    sort.set('field', 'dateTime');
+    sort.set('field', 'tableA.dateTime');
     sort.set('parameters', { grain: 'day' });
     sort.set('direction', 'asc');
 
-    assert.equal(sort.field, 'dateTime', 'the `field` property is set correctly');
+    assert.equal(sort.field, 'tableA.dateTime', 'the `field` property is set correctly');
 
     assert.deepEqual(sort.parameters, { grain: 'day' }, 'the `parameters` property is set correctly');
 
     assert.equal(sort.direction, 'asc', 'the `direction` property is set correctly');
-    assert.equal(sort.columnMetadata.id, 'dateTime', 'correct meta data is populated');
+    assert.equal(sort.columnMetadata.id, 'tableA.dateTime', 'correct meta data is populated');
   });
 
   test('Validation', async function(assert) {
