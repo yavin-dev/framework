@@ -14,6 +14,7 @@ import layout from '../templates/components/dashboard-dimension-selector';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { groupBy } from 'lodash-es';
+import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 
 @templateLayout(layout)
 @tagName('')
@@ -89,6 +90,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
 
         if (!results[dimension.category][`${dataSource}.${dimension.id}`]) {
           results[dimension.category][`${dataSource}.${dimension.id}`] = {
+            type: dimension instanceof TimeDimensionMetadataModel ? 'timeDimension' : 'dimension',
             dimension: dimension.id,
             name: dimension.name,
             tables: [table],
@@ -109,10 +111,11 @@ export default class DashboardDimensionSelectorComponent extends Component {
    */
   mergeWidgetDimensions(widgets) {
     return widgets.reduce((dimensionMap, widget) => {
-      const { id: tableKey, dimensions } = widget.requests?.firstObject?.logicalTable?.table;
-      const dataSource = widget?.requests?.firstObject?.dataSource || getDefaultDataSourceName();
+      // TODO: This includes 'dateTime' for fili, we may want to remove it
+      const { id: tableKey, dimensions, timeDimensions } = widget.requests?.firstObject?.tableMetadata;
+      const dataSource = widget?.requests?.firstObject?.dataSource;
       if (!dimensionMap[tableKey]) {
-        dimensionMap[`${dataSource}.${tableKey}`] = dimensions;
+        dimensionMap[`${dataSource}.${tableKey}`] = [...dimensions, ...timeDimensions];
       }
       return dimensionMap;
     }, {});

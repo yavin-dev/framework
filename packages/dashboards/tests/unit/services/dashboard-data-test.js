@@ -1,9 +1,9 @@
-import { cloneDeep, merge } from 'lodash-es';
-import { resolve } from 'rsvp';
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { get } from '@ember/object';
+import { cloneDeep, merge } from 'lodash-es';
+import { resolve } from 'rsvp';
 import config from 'ember-get-config';
 
 let MetadataService, Store;
@@ -81,12 +81,16 @@ module('Unit | Service | dashboard data', function(hooks) {
       addFilter(filter) {
         this.filters.push(filter);
       },
-      logicalTable: {
-        table: { id: 'table1' },
-        timeGrain: { dimensionIds: [] }
+      table: 'table1',
+      tableMetadata: {
+        dimensionIds: []
       },
       data,
-      filters
+      filters,
+      sorts: [],
+      columns: [],
+      dataSource: 'test',
+      requestVersion: '2.0'
     });
 
     const dashboard = {
@@ -166,21 +170,23 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     let service = this.owner.lookup('service:dashboard-data'),
       request = {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day'
-        },
-        metrics: [{ metric: 'adClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        table: 'network',
+        filters: [
           {
-            end: 'current',
-            start: 'P7D'
+            type: 'timeDimension',
+            field: 'network.dateTime',
+            parameters: { grain: 'day' },
+            operator: 'bet',
+            values: ['P7D', 'current']
           }
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1'
+        sorts: [],
+        columns: [
+          { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
+          { type: 'metric', field: 'adClicks', parameters: {} }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'bardOne'
       },
       response = {
         rows: [
@@ -245,18 +251,21 @@ module('Unit | Service | dashboard data', function(hooks) {
     });
 
     const makeFilter = ({ dimension }) => {
-      const rawValues = NO_VALUE_FILTERS.includes(dimension) ? [] : ['1'];
-      const dimensionFragment = MetadataService.getById('dimension', dimension, 'bardOne');
-
-      return Store.createFragment('bard-request/fragments/filter', {
-        dimension: dimensionFragment,
-        field: 'id',
+      const values = NO_VALUE_FILTERS.includes(dimension) ? [] : ['1'];
+      return Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: dimension,
+        parameter: {
+          field: 'id'
+        },
         operator: 'in',
-        rawValues
+        values,
+        source: 'bardOne'
       });
     };
 
     const dashboard = {
+      id: 10,
       filters: DASHBOARD_FILTERS.map(dimension => makeFilter({ dimension }))
     };
 
@@ -270,28 +279,34 @@ module('Unit | Service | dashboard data', function(hooks) {
       addRawFilter(filter) {
         this.filters.push(filter);
       },
-      logicalTable: {
-        table: { id: 'table1', dimensionIds: VALID_FILTERS },
-        timeGrain: { id: 'day', name: 'Day' }
-      },
-      data,
+      table: 'table1',
       filters: filters || [makeFilter({ dimension: `${DIMENSIONS[data + 4]}` })],
+      sorts: [],
+      columns: [
+        { type: 'timeDimension', field: 'table1.dateTime', parameters: { grain: 'day' } },
+        { type: 'metric', field: 'adClicks', parameters: {} }
+      ],
+      tableMetadata: {
+        dimensionIds: VALID_FILTERS
+      },
+      requestVersion: '2.0',
+      data,
       dataSource: 'bardOne'
     });
 
     const widgets = [
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard,
         id: 1,
         requests: [makeRequest(0), makeRequest(1, []), makeRequest(2)]
       },
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard,
         id: 2,
         requests: [makeRequest(3)]
       },
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard,
         id: 3,
         requests: []
       }
@@ -306,19 +321,19 @@ module('Unit | Service | dashboard data', function(hooks) {
     const widget3 = await get(data, '3');
 
     assert.deepEqual(
-      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
+      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
       [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
-      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
+      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
       [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
     assert.deepEqual(
-      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'dimension.id'))),
+      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
       [],
       'Applicable global filters are applied to widget 3 requests'
     );
@@ -361,26 +376,38 @@ module('Unit | Service | dashboard data', function(hooks) {
   test('multi-datasource validFilters', function(assert) {
     assert.expect(4);
     const request = {
-      logicalTable: {
-        table: { id: 'foo', dimensionIds: ['ham', 'spam'] },
-        timeGrain: 'day'
+      table: 'foo',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'foo.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['P7D', 'current']
+        }
+      ],
+      columns: [
+        { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
+        { type: 'metric', field: 'adClicks', parameters: {} }
+      ],
+      requestVersion: '2.0',
+      tableMetadata: {
+        dimensionIds: ['ham', 'spam']
       },
-      dimensions: [],
-      metrics: [],
       dataSource: 'one'
     };
 
     const service = this.owner.lookup('service:dashboard-data');
     assert.notOk(
-      service._isFilterValid(request, { dimension: { id: 'ham', source: 'two' } }),
+      service._isFilterValid(request, { columnMetadata: { id: 'ham' }, source: 'two' }),
       'even though dimension id is valid datasource does not match'
     );
     assert.ok(
-      service._isFilterValid(request, { dimension: { id: 'ham', source: 'one' } }),
+      service._isFilterValid(request, { columnMetadata: { id: 'ham' }, source: 'one' }),
       'dimension id is valid and datasource matches'
     );
     assert.notOk(
-      service._isFilterValid(request, { dimension: { id: 'scam', source: 'one' } }),
+      service._isFilterValid(request, { columnMetadata: { id: 'scam' }, source: 'one' }),
       'dimension id is invalid and datasource matches'
     );
     assert.notOk(
