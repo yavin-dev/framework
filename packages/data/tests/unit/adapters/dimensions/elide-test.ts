@@ -57,9 +57,6 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const adapter = this.owner.lookup('adapter:dimensions/elide');
 
     await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }], expectedOptions);
-
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', originalFactAdapter);
   });
 
   test('all', async function(assert) {
@@ -106,9 +103,6 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
     await adapter.all(TestDimensionColumn, expectedOptions);
-
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', originalFactAdapter);
   });
 
   test('search', async function(assert) {
@@ -167,8 +161,5 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
     await adapter.search(TestDimensionColumn, query, expectedOptions);
-
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', originalFactAdapter);
   });
 });
