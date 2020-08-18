@@ -176,13 +176,12 @@ export default class DashboardDataService extends Service {
    */
   _applyFilters(dashboard, request) {
     const requestClone = request.clone();
-
     this._getValidGlobalFilters(dashboard, request)
-      .filter(filter => filter.get('values').length > 0)
+      .filter(filter => get(filter, 'values').length > 0)
       .forEach(filter =>
         requestClone.addFilter({
           type: filter.type,
-          dataSource: filter.source,
+          source: filter.source,
           field: filter.field,
           parameters: filter.parameters,
           operator: filter.operator,
@@ -216,7 +215,7 @@ export default class DashboardDataService extends Service {
    * @returns {Array<Object>}
    */
   _getValidGlobalFilters(dashboard, request) {
-    const filters = dashboard.get('filters') || [];
+    const filters = get(dashboard, 'filters') || [];
 
     return filters.filter(filter => this._isFilterValid(request, filter));
   }
