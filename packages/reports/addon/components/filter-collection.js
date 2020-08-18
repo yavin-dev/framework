@@ -42,9 +42,10 @@ export default Component.extend({
    * @property {Array} orderedFilters - ordered collection of date, metric, and dimension filters from request
    */
   orderedFilters: computed('request.filters.[]', function() {
-    const { filters } = this.request;
+    const { filters, table } = this.request;
+    const dateTimeField = `${table}.dateTime`;
     const dateFilters = filters
-      .filter(f => f.type === 'timeDimension' && f.field === 'dateTime')
+      .filter(f => f.type === 'timeDimension' && f.field === dateTimeField)
       .map(filter => ({
         type: 'date-time', // Dasherized to match filter-builder component name
         requestFragment: filter,
@@ -52,7 +53,7 @@ export default Component.extend({
       }));
 
     let dimFilters = filters
-      .filter(f => f.type === 'dimension' || (f.type === 'timeDimension' && f.field !== 'dateTime'))
+      .filter(f => f.type === 'dimension' || (f.type === 'timeDimension' && f.field !== dateTimeField))
       .map(filter => {
         let dimensionDataType = filter.columnMetadata?.valueType?.toLowerCase?.(),
           type = this._dimensionFilterBuilder(dimensionDataType);
