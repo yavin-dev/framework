@@ -9,9 +9,7 @@ import { camelize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../../utils/adapter';
 import NaviMetadataAdapter, { MetadataOptions } from './interface';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
-
-type MetadataModelTypes = keyof MetadataModelRegistry;
+import { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
 export default class BardMetadataAdapter extends EmberObject implements NaviMetadataAdapter {
   /**
