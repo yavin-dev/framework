@@ -4,12 +4,12 @@
  */
 import attr from 'ember-data/attr';
 import BaseFragment from './base';
-import { Column } from 'navi-data/addon/adapters/facts/interface';
+import { Column } from 'navi-data/adapters/facts/interface';
 
 /**
  * @augments {BaseFragment}
  */
 export default class ColumnFragment extends BaseFragment implements Column {
   @attr('string')
-  alias?: string;
+  alias?: string | null;
 }

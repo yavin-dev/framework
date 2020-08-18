@@ -15,7 +15,7 @@ import DeliveryRuleModel from './delivery-rule';
 import Store from '@ember-data/store';
 
 export default class DeliverableItemModel extends Model {
-  @hasMany('deliveryRule', { async: true, inverse: 'deliveredItem' })
+  @hasMany('delivery-rule', { async: true, inverse: 'deliveredItem' })
   deliveryRules!: DS.PromiseManyArray<DeliveryRuleModel>;
 
   @service
@@ -57,6 +57,6 @@ export default class DeliverableItemModel extends Model {
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.
 declare module 'ember-data/types/registries/model' {
   export default interface ModelRegistry {
-    deliverableItem: DeliverableItemModel;
+    'deliverable-item': DeliverableItemModel;
   }
 }

@@ -5,7 +5,7 @@
 
 import DS from 'ember-data';
 import moment, { Moment } from 'moment';
-//@ts-ignores
+//@ts-ignore
 import DateUtils from 'navi-core/utils/date';
 
 export default class MomentTransform extends DS.Transform {

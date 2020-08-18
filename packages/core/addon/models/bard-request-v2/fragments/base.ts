@@ -4,8 +4,6 @@
  */
 import attr from 'ember-data/attr';
 import Fragment from 'ember-data-model-fragments/fragment';
-//@ts-ignore
-import { fragmentOwner } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { inject as service } from '@ember/service';
 import { set, computed } from '@ember/object';
@@ -33,9 +31,7 @@ const Validations = buildValidations({
 
 export type ColumnMetadataModels = MetadataModelRegistry[ColumnType];
 
-export default class Base extends Fragment.extend(Validations, {
-  parent: fragmentOwner()
-}) {
+export default class Base extends Fragment.extend(Validations) {
   @attr('string')
   field!: string;
 

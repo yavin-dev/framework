@@ -60,7 +60,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @attr('number', { defaultValue: 1 })
   version!: number;
 
-  @belongsTo('deliverableItem', { async: true, inverse: 'deliveryRules', polymorphic: true })
+  @belongsTo('deliverable-item', { async: true, inverse: 'deliveryRules', polymorphic: true })
   deliveredItem!: DS.PromiseObject<DeliverableItemModel>;
 
   @belongsTo('user', { async: true, inverse: 'deliveryRules' })
@@ -70,6 +70,6 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.
 declare module 'ember-data/types/registries/model' {
   export default interface ModelRegistry {
-    deliveryRule: DeliveryRuleModel;
+    'delivery-rule': DeliveryRuleModel;
   }
 }

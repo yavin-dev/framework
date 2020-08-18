@@ -32,7 +32,7 @@ export type Column = {
   field: string;
   parameters: Parameters;
   type: ColumnType;
-  alias?: string;
+  alias?: string | null;
 };
 
 export type Filter = {
@@ -57,7 +57,7 @@ export type RequestV2 = {
   table: string;
   dataSource: string;
   sorts: Sort[];
-  limit: number | null;
+  limit?: number | null;
   requestVersion: '2.0';
 };
 

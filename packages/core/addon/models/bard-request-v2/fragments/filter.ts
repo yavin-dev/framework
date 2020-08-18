@@ -5,7 +5,7 @@
 import attr from 'ember-data/attr';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from './base';
-import { Filter } from 'navi-data/addon/adapters/facts/interface';
+import { Filter } from 'navi-data/adapters/facts/interface';
 
 const Validations = buildValidations({
   operator: validator('presence', {

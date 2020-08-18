@@ -15,7 +15,7 @@ export default class UserModel extends Model {
   @hasMany('report', { async: true, inverse: null })
   favoriteReports!: DS.PromiseManyArray<ReportModel>;
 
-  @hasMany('deliveryRule', { async: true, inverse: 'owner' })
+  @hasMany('delivery-rule', { async: true, inverse: 'owner' })
   deliveryRules!: DS.PromiseManyArray<DeliveryRuleModel>;
 
   @hasMany('dashboard', { async: true, inverse: 'author' })

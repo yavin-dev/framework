@@ -12,7 +12,7 @@ import FilterFragment from '../models/bard-request-v2/fragments/filter';
 //@ts-ignore
 import SortFragment from '../models/bard-request-v2/fragments/sort';
 import { dasherize } from '@ember/string';
-import { SortDirection } from 'navi-data/addon/adapters/facts/interface';
+import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 type FieldType = 'metric' | 'dimension' | 'timeDimension';
 
