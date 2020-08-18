@@ -13,7 +13,8 @@
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test --stream",
-    "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes"
+    "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes",
+    "lerna-ci-publish-beta": "lerna publish --canary --preid beta --dist-tag beta --exact preminor --force-publish=* --yes"
   },
   "husky": {
     "hooks": {
@@ -22,7 +23,7 @@
     }
   },
   "devDependencies": {
-    "husky": "^3.0.1",
+    "husky": "^4.2.5",
     "lerna": "^3.22.1",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",

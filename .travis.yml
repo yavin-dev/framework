@@ -74,6 +74,11 @@ jobs:
       node_js: '8'
       name: 'NPM'
       script: bash ./scripts/npm-publish.sh
+    - stage: 'Publish'
+      if: branch = request-v2 AND repo = yahoo/navi AND type = push
+      node_js: '8'
+      name: 'NPM Beta'
+      script: bash ./scripts/npm-publish-beta.sh
     - before_script:
         - pyenv install 3.6.3
         - pyenv global 3.6.3
