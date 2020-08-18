@@ -11,25 +11,58 @@ import DeliverableItem from 'navi-core/models/deliverable-item';
 let Store;
 
 const ExpectedRequest = {
-    table: 'network',
-    columns: [
-      { type: 'timeDimension', field: 'dateTime', parameters: { grain: 'day' } },
-      { type: 'dimension', field: 'property', parameters: {} },
-      { type: 'metric', field: 'adClicks', parameters: {} },
-      { type: 'metric', field: 'navClicks', parameters: {} }
-    ],
     filters: [
       {
-        type: 'timeDimension',
-        field: 'dateTime',
-        parameters: { grain: 'day' },
         operator: 'bet',
-        values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000']
+        values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'],
+        field: 'dateTime',
+        parameters: {
+          grain: 'day'
+        },
+        type: 'timeDimension'
       }
     ],
-    sorts: [{ type: 'metric', field: 'navClicks', parameters: {}, direction: 'asc' }],
-    requestVersion: '2.0',
+    columns: [
+      {
+        alias: null,
+        field: 'dateTime',
+        parameters: {
+          grain: 'day'
+        },
+        type: 'timeDimension'
+      },
+      {
+        alias: null,
+        field: 'property',
+        parameters: {
+          field: 'id'
+        },
+        type: 'dimension'
+      },
+      {
+        alias: null,
+        field: 'adClicks',
+        parameters: {},
+        type: 'metric'
+      },
+      {
+        alias: null,
+        field: 'navClicks',
+        parameters: {},
+        type: 'metric'
+      }
+    ],
+    table: 'network',
+    sorts: [
+      {
+        direction: 'asc',
+        field: 'navClicks',
+        parameters: {},
+        type: 'metric'
+      }
+    ],
     limit: null,
+    requestVersion: '2.0',
     dataSource: 'bardOne'
   },
   ExpectedReport = {

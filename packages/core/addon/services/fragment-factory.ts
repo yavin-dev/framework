@@ -12,6 +12,7 @@ import FilterFragment from '../models/bard-request-v2/fragments/filter';
 //@ts-ignore
 import SortFragment from '../models/bard-request-v2/fragments/sort';
 import { dasherize } from '@ember/string';
+import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 type FieldType = 'metric' | 'dimension' | 'timeDimension';
 
@@ -128,7 +129,7 @@ export default class FragmentFactory extends Service {
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
-    direction: 'asc' | 'desc'
+    direction: SortDirection
   ): SortFragment {
     return this.store.createFragment('bard-request-v2/fragments/sort', {
       field,

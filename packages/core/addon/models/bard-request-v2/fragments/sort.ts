@@ -5,6 +5,7 @@
 import attr from 'ember-data/attr';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from './base';
+import { SortDirection, Sort } from 'navi-data/adapters/facts/interface';
 
 const Validations = buildValidations({
   direction: validator('inclusion', {
@@ -16,9 +17,7 @@ const Validations = buildValidations({
 /**
  * @augments {BaseFragment}
  */
-export default class Sort extends BaseFragment.extend(Validations) {
-  @attr('string', {
-    defaultValue: 'desc'
-  })
-  direction;
+export default class SortFragment extends BaseFragment.extend(Validations) implements Sort {
+  @attr('string', { defaultValue: 'desc' })
+  direction!: SortDirection;
 }
