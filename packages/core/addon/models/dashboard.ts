@@ -91,10 +91,14 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
       author: user,
       widgets: [],
       filters: this.filters.map(filter => {
-        const filterJson = filter.toJSON();
-        const namespace = filter.dimension.source;
-        filterJson.dimension = `${namespace}.${filterJson.dimension}`;
-        return this.store.createFragment('bard-request/fragments/filter', filterJson);
+        return this.store.createFragment('bard-request-v2/fragments/filter', {
+          field: filter.field,
+          parameters: filter.parameters,
+          type: filter.type,
+          operator: filter.operator,
+          values: filter.values,
+          source: filter.source
+        });
       }),
       presentation: copy(this.presentation),
       createdOn: null,

@@ -153,13 +153,15 @@ export default Route.extend({
 
       decompressedFilters.filters.map(fil => {
         const newFragmentFields = {
+          type: fil.type,
           field: fil.field,
+          parameters: fil.parameters,
           operator: fil.operator,
-          rawValues: fil.values,
-          dimension: this.metadataService.getById('dimension', fil.dimension, fil.dataSource)
+          values: fil.values,
+          source: fil.source
         };
 
-        const newFragment = this.store.createFragment('bard-request/fragments/filter', newFragmentFields);
+        const newFragment = this.store.createFragment('bard-request-v2/fragments/filter', newFragmentFields);
         modelFilters.pushObject(newFragment);
       });
     } catch (e) {

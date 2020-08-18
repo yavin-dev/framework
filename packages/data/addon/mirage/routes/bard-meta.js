@@ -34,7 +34,7 @@ export default function() {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
           let tableDimModels = isBardTwo ? dimModels.bardTwoDims : dimModels.defaultDims;
-          let defaultMetricModels = isBardTwo ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
+          let defaultMetricModels = isBardTwo ? metricModels.bardTwoMetrics : metricModels.defaultMetrics;
 
           if (table.name === 'tableC') {
             defaultMetricModels = defaultMetricModels.slice(0, 10);

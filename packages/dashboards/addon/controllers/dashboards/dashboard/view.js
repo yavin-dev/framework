@@ -44,12 +44,12 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   async updateFilter(dashboard, originalFilter, changeSet) {
     const origFilter = originalFilter.serialize();
-    origFilter.dataSource = originalFilter.dimension.source;
+    origFilter.source = originalFilter.source;
     const newFilters = get(dashboard, 'filters')
       .toArray()
       .map(fil => {
         const newFil = fil.serialize();
-        newFil.dataSource = fil.dimension.source;
+        newFil.source = fil.source;
         return newFil;
       }); //Native array of serialized filters
     const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
@@ -57,15 +57,17 @@ export default class DashboardsDashboardViewController extends Controller.extend
     setProperties(filterToUpdate, changeSet);
 
     const newFilter = this.store
-      .createFragment('bard-request/fragments/filter', {
-        dimension: this.metadataService.getById('dimension', filterToUpdate.dimension, originalFilter.dimension.source),
-        operator: filterToUpdate.operator,
+      .createFragment('bard-request-v2/fragments/filter', {
         field: filterToUpdate.field,
-        rawValues: filterToUpdate.rawValues || filterToUpdate.values
+        parameters: filterToUpdate.parameters,
+        type: filterToUpdate.type,
+        operator: filterToUpdate.operator,
+        values: filterToUpdate.values,
+        source: filterToUpdate.source
       })
       .serialize();
 
-    newFilter.dataSource = originalFilter.dimension.source;
+    newFilter.source = originalFilter.source;
     const index = newFilters.indexOf(filterToUpdate);
     newFilters[index] = newFilter;
 
@@ -100,19 +102,25 @@ export default class DashboardsDashboardViewController extends Controller.extend
     const { metadataService } = this;
     const filters = dashboard.filters.toArray().map(fil => {
       const newFil = fil.serialize();
-      newFil.dataSource = fil.dimension.source;
+      newFil.source = fil.source;
       return newFil;
     }); //Native array of serialized filters
     const dimensionMeta = metadataService.getById('dimension', dimension.dimension, dimension.dataSource);
     const filter = store
-      .createFragment('bard-request/fragments/filter', {
-        dimension: dimensionMeta,
+      .createFragment('bard-request-v2/fragments/filter', {
+        // TODO: could be timeDimension
+        type: 'dimension',
+        field: dimension.dimension,
+        parameters: {
+          field: dimensionMeta.primaryKeyFieldName
+        },
         operator: 'in',
-        field: dimensionMeta.primaryKeyFieldName
+        values: [],
+        source: dimension.dataSource
       })
       .serialize();
 
-    filter.dataSource = dimension.dataSource;
+    filter.source = dimension.dataSource;
 
     filters.push(filter);
 
