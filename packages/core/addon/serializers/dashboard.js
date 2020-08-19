@@ -34,7 +34,7 @@ function v1ToV2Filter(filter, metadataService) {
 
   return {
     type,
-    field: filter.dimension,
+    field: dimension,
     parameters: {
       field: filter.field
     },
@@ -92,17 +92,19 @@ export default AssetSerializer.extend({
    * @returns {Object} serialized dashboard
    */
   serialize(snapshot) {
-    const buildKey = (dimension, values) => `${dimension}[${values.join(',')}]`;
-    const filterSources = snapshot.attr('filters').reduce((dimensionSources, filter) => {
-      // TODO: Canonical column name
-      dimensionSources[buildKey(filter.attr('field'), filter.attr('values'))] = filter.attr('source');
-      return dimensionSources;
-    }, {});
+    const buildKey = filter => `${filter.field}(field=${filter.parameters.field})`;
+    const filterSources = Object.fromEntries(
+      snapshot.attr('filters').map(filter => [filter.record.canonicalName, filter.attr('source')])
+    );
     const dashboard = this._super(...arguments);
     dashboard.data.attributes.filters = dashboard.data.attributes.filters.map(filter => {
-      const key = buildKey(filter.field, filter.values);
-      filter.field = filterSources[key] ? `${filterSources[key]}.${filter.field}` : filter.field;
-      return filter;
+      const source = filterSources[buildKey(filter)];
+      return {
+        dimension: `${source}.${filter.field}`,
+        operator: filter.operator,
+        field: filter.parameters.field,
+        values: filter.values
+      };
     });
     return dashboard;
   },
