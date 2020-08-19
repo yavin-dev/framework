@@ -5,7 +5,6 @@
 import { inject as service } from '@ember/service';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default ActionConsumer.extend({
   /**

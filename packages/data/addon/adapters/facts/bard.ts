@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Description: The adapter for the bard-facts request v2 model.
+ * Description: The fact adapter for the bard request v2 model.
  */
 
 import { assert, warn } from '@ember/debug';
@@ -321,7 +321,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return url
    */
   urlForFindQuery(request: RequestV2, options?: RequestOptions): string {
-    assert('Request for bard-facts adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
+    assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
     let decoratedRequest = this._decorate(request),
@@ -356,7 +356,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @returns {Promise} - Promise with the response
    */
   fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
-    assert('Request for bard-facts adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
+    assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
     const decoratedRequest = this._decorate(request);
