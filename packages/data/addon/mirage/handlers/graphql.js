@@ -46,7 +46,12 @@ const FILTER_OPS = {
   [OPERATORS.notIn]: (filterVals, vals) => vals.filter(val => !filterVals.includes(val)),
   [OPERATORS.isNull]: (_, vals) => vals.filter(val => !val),
   [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),
-  [OPERATORS.eq]: ([filterVal], vals) => vals.filter(val => val === filterVal),
+  [OPERATORS.eq]: ([filterVal], vals) =>
+    vals.filter(val => {
+      //If filterVal is wrapped in wildcard operators, match all values that contain the filterVal
+      const match = /\*(.*)\*/.exec(filterVal);
+      return match ? val.includes(match[1]) : val === filterVal;
+    }),
   [OPERATORS.neq]: ([filterVal], vals) => vals.filter(val => val !== filterVal)
 };
 const FILTER_REGEX = new RegExp(`(.*?)(?:\\((.+?)\\))?(${Object.values(OPERATORS).join('|')})\\((.+?)\\)`);
