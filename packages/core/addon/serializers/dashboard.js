@@ -58,27 +58,11 @@ export default AssetSerializer.extend({
         newPayload.attributes.filters = [];
       }
 
-      if (payload.attributes.filters.some(f => 'dimension' in f)) {
-        const metadataService = getOwner(this).lookup('service:navi-metadata');
-        newPayload.attributes.filters = newPayload.attributes.filters.map(filter =>
-          v1ToV2Filter(filter, metadataService)
-        );
-      } else {
-        newPayload.attributes.filters = newPayload.attributes.filters.map(filter => {
-          let dataSourceName, field;
-          if (filter.field.includes('.')) {
-            [dataSourceName, field] = filter.field.split('.');
-          } else {
-            dataSourceName = getDefaultDataSourceName();
-            field = filter.field;
-          }
-          return {
-            ...filter,
-            field,
-            source: dataSourceName
-          };
-        });
-      }
+      const metadataService = getOwner(this).lookup('service:navi-metadata');
+      // TODO: We always convert since we only persist v1 filters
+      newPayload.attributes.filters = newPayload.attributes.filters.map(filter =>
+        v1ToV2Filter(filter, metadataService)
+      );
 
       return this._super(type, newPayload);
     }
@@ -87,6 +71,8 @@ export default AssetSerializer.extend({
 
   /**
    * Overrides default serialize method to add datasources to filter object
+   *
+   * TODO: This serializes to v1 format, we should support v2 filters for dashboards
    *
    * @param {Snapshot} snapshot
    * @returns {Object} serialized dashboard
