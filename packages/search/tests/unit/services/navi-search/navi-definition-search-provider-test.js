@@ -46,7 +46,9 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
     metadataRoutes.bind(Server);
     const results = await Service.search.perform('time');
 
+    const makeDateTime = table => ({ id: `${table}.dateTime`, name: 'Date Time' });
     const expectedResults = [
+      ...['network', 'tableA', 'tableB', 'protected', 'tableC'].map(table => makeDateTime(table)),
       {
         id: 'timeSpent',
         name: 'Time Spent'
@@ -75,6 +77,11 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
         id: 'tableA',
         name: 'Table A',
         description: 'Table A'
+      },
+      {
+        description: undefined,
+        id: 'tableA.dateTime',
+        name: 'Date Time'
       }
     ];
 
