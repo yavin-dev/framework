@@ -64,7 +64,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
     this.set('changeme', function(selection) {
       assert.deepEqual(
         selection,
-        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'bardOne', type: 'dimension' },
+        { type: 'dimension', field: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'bardOne' },
         'Selection sends correct dimension object'
       );
     });

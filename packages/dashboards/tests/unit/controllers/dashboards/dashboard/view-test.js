@@ -21,11 +21,15 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
   test('updateFilter', async function(assert) {
     assert.expect(3);
 
-    let osFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
+    let osFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: 'os',
+        parameters: {
+          field: 'id'
+        },
         operator: 'in',
-        field: 'id',
-        rawValues: ['MacOS']
+        values: ['MacOS'],
+        source: 'bardOne'
       }),
       author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
@@ -44,7 +48,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgvWABpaAHFAQ3guRuGmsYgA3NrACuietggBZNgGMA8gGUITYAHU-eCgHd6AXTUxEsPD2hmB-DmyUVRyOYh55RhQgE8IAX33fgQAAA'
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgFliBjAPIBlehADqNACZ4A7pwC6DKNESwplfJ2UFiyYgFtESNJlww1GrlSsBfZfACeRTVOhHqqaHlrBlqPFZkfkRNACM9KUFqUOBbBVtgIAAA'
           }
         },
         'Updating the filter sets the filters query param to the expected compressed string'
@@ -56,11 +60,14 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           filters: [
             {
-              dimension: 'os',
-              field: 'id',
+              type: 'dimension',
+              field: 'os',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: ['MacOS', 'Windows'],
-              dataSource: 'bardOne'
+              source: 'bardOne'
             }
           ]
         },
@@ -68,16 +75,20 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
       );
     };
 
-    await controller.send('updateFilter', dashboard, osFilter, { rawValues: ['MacOS', 'Windows'] });
+    await controller.send('updateFilter', dashboard, osFilter, { values: ['MacOS', 'Windows'] });
   });
 
   test('removeFilter', async function(assert) {
     assert.expect(3);
-    let osFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
+    let osFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: 'os',
+        parameters: {
+          field: 'id'
+        },
         operator: 'in',
-        field: 'id',
-        rawValues: ['MacOS']
+        values: ['MacOS'],
+        source: 'bardOne'
       }),
       author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
@@ -122,7 +133,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgEMBzRCAGggoAcVb4Lkbho1YK2AA3WrACuidMGwBdETESw8_aGuABfeVuBAAA'
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgxAOaJ6EAsWTEAtoiRpMuGIJFcqWgL594ATyKih0JdVTQ8tYH1R5WyAMZTtwAEZyhAeWpvdbl1gIA'
           }
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -134,10 +145,14 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           filters: [
             {
-              dimension: 'age',
+              type: 'dimension',
+              field: 'age',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: [],
-              field: 'id'
+              source: 'bardOne'
             }
           ]
         },
@@ -145,7 +160,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
       );
     };
 
-    await controller.send('addFilter', dashboard, { dimension: 'age' });
+    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'age', dataSource: 'bardOne' });
   });
 
   test('Add filter from other datasource', async function(assert) {
@@ -163,7 +178,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgGMr4BDaElCAGggoAcVH4KyGsBYcIAN0awAronTBsAXU5RoiWHmHRNwFXn6MAyhWnJaiYQCNYFWgGsAFokY6AvotfAgAA'
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgAYzzV4xGinoQCxZMQC2iJGky4YgkVyp6Avn3gBPIqKHQ11VNEnzgqPK2RjEogEZKhAFQDueBCG3IbAQAA'
           }
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -175,11 +190,14 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           filters: [
             {
-              dimension: 'container',
+              type: 'dimension',
+              field: 'container',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: [],
-              field: 'id',
-              dataSource: 'bardTwo'
+              source: 'bardTwo'
             }
           ]
         },
@@ -187,17 +205,21 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
       );
     };
 
-    await controller.send('addFilter', dashboard, { dimension: 'container', dataSource: 'bardTwo' });
+    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'container', dataSource: 'bardTwo' });
   });
 
   test('Updating multidatasource filter', async function(assert) {
     assert.expect(2);
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
-    const containerFilter = Store.createFragment('bard-request/fragments/filter', {
-      dimension: MetadataService.getById('dimension', 'container', 'bardTwo'),
+    const containerFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+      type: 'dimension',
+      field: 'container',
+      parameters: {
+        field: 'id'
+      },
       operator: 'in',
-      fiel: 'id',
-      values: []
+      values: [],
+      source: 'bardTwo'
     });
     let author = await Store.findRecord('user', 'navi_user'),
       dashboard = Store.createRecord('dashboard', {
@@ -213,7 +235,7 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgGMr4BDaElCAGggoAcVH4KyGsBYcIAN0awAronTBsEAIwQAupyjREsPMOi7gGvP0YBlCtOS1EwgEawKtANYALRIwMBfVZ-BAAAA'
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgEYIBdBlGiJYAE0rAAxnmrxiNFPQgFiyYgFtESNJlwxRErlSMBfIfACeRSWOhbqqaLOXBUeVsimJJAIzViACoA7ngQpvymwEAAA'
           }
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -225,11 +247,14 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
         {
           filters: [
             {
-              dimension: 'container',
+              type: 'dimension',
+              field: 'container',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: ['1'],
-              field: 'id',
-              dataSource: 'bardTwo'
+              source: 'bardTwo'
             }
           ]
         },
@@ -237,6 +262,6 @@ module('Unit | Controller | dashboards/dashboard/view', function(hooks) {
       );
     };
 
-    await controller.send('updateFilter', dashboard, containerFilter, { rawValues: ['1'] });
+    await controller.send('updateFilter', dashboard, containerFilter, { values: ['1'] });
   });
 });

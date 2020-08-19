@@ -10,24 +10,23 @@ const NEW_MODEL = {
   createdOn: null,
   requests: [
     {
-      bardVersion: 'v1',
-      dataSource: 'bardOne',
-      dimensions: [],
-      filters: [],
-      intervals: [
+      table: 'tableA',
+      filters: [
         {
-          end: 'current',
-          start: 'P1D'
+          type: 'timeDimension',
+          field: 'tableA.dateTime',
+          parameters: {
+            grain: 'hour'
+          },
+          operator: 'bet',
+          values: ['P1D', 'current']
         }
       ],
-      logicalTable: {
-        table: 'tableA',
-        timeGrain: 'hour'
-      },
-      metrics: [],
-      having: [],
-      sort: [],
-      requestVersion: 'v1'
+      columns: [],
+      sorts: [],
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne'
     }
   ],
   title: 'Untitled Widget',

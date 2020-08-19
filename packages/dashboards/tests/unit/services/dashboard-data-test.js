@@ -276,7 +276,7 @@ module('Unit | Service | dashboard data', function(hooks) {
       serialize() {
         return cloneDeep(this);
       },
-      addRawFilter(filter) {
+      addFilter(filter) {
         this.filters.push(filter);
       },
       table: 'table1',

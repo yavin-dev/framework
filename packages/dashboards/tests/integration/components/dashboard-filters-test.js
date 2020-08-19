@@ -11,24 +11,34 @@ import { A as arr } from '@ember/array';
 let Store, MetadataService;
 
 const filterFragment1 = {
-    dimension: {
-      id: 'age',
-      name: 'Age',
-      primaryKeyFieldName: 'id'
-    },
+    type: 'dimension',
+    field: 'age',
     operator: 'in',
-    field: 'id',
-    rawValues: ['1', '2']
+    parameters: {
+      field: 'id'
+    },
+    values: ['1', '2'],
+    source: 'bardOne',
+    columnMetadata: {
+      name: 'Age',
+      primaryKeyFieldName: 'id',
+      cardinality: 'SMALL'
+    }
   },
   filterFragment2 = {
-    dimension: {
-      id: 'currency',
-      name: 'Currency',
-      primaryKeyFieldName: 'id'
-    },
+    type: 'dimension',
+    field: 'currency',
     operator: 'contains',
-    field: 'desc',
-    rawValues: ['3', '4']
+    parameters: {
+      field: 'desc'
+    },
+    values: ['3', '4'],
+    source: 'bardOne',
+    columnMetadata: {
+      name: 'Currency',
+      primaryKeyFieldName: 'id',
+      cardinality: 'SMALL'
+    }
   },
   dashboard = {
     filters: [filterFragment1, filterFragment2]
@@ -53,16 +63,16 @@ module('Integration | Component | dashboard filters', function(hooks) {
     await render(hbs`
       <DashboardFilters
         @dashboard={{this.dashboard}}
-        @onUpdateFilter={{action this.onUpdateFilter}}
-        @onRemoveFilter={{action this.onRemoveFilter}}
-        @onAddFilter={{action this.onAddFilter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @onRemoveFilter={{this.onRemoveFilter}}
+        @onAddFilter={{this.onAddFilter}}
       />`);
   });
 
   test('it renders empty', async function(assert) {
     assert.expect(1);
 
-    this.set('dashboard', {});
+    this.set('dashboard', { filters: [] });
 
     assert.dom().hasText('Settings', 'When no filters are provided, only "Settings" is rendered');
   });
@@ -103,16 +113,16 @@ module('Integration | Component | dashboard filters', function(hooks) {
         {
           requests: arr([
             {
-              logicalTable: {
-                table: {
-                  id: 'a',
-                  dimensions: [
-                    { id: 'productFamily', name: 'Product Family', category: 'cat1', primaryKeyFieldName: 'id' },
-                    { id: 'dim2', name: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' }
-                  ]
-                },
-                timeGrain: 'day'
-              }
+              table: 'a',
+              tableMetadata: {
+                id: 'a',
+                dimensions: [
+                  { id: 'productFamily', name: 'Product Family', category: 'cat1', primaryKeyFieldName: 'id' },
+                  { id: 'dim2', name: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' }
+                ],
+                timeDimensions: []
+              },
+              dataSource: 'bardOne'
             }
           ])
         },
@@ -120,16 +130,16 @@ module('Integration | Component | dashboard filters', function(hooks) {
         {
           requests: arr([
             {
-              logicalTable: {
-                table: {
-                  id: 'b',
-                  dimensions: [
-                    { id: 'dim3', name: 'dim3', category: 'cat2', primaryKeyFieldName: 'id' },
-                    { id: 'dim1', name: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' }
-                  ]
-                },
-                timeGrain: 'day'
-              }
+              table: 'b',
+              tableMetadata: {
+                id: 'b',
+                dimensions: [
+                  { id: 'dim3', name: 'dim3', category: 'cat2', primaryKeyFieldName: 'id' },
+                  { id: 'dim1', name: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' }
+                ],
+                timeDimensions: []
+              },
+              dataSource: 'bardOne'
             }
           ])
         }
@@ -137,9 +147,15 @@ module('Integration | Component | dashboard filters', function(hooks) {
     });
 
     this.set('onAddFilter', dimension => {
-      const filter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', dimension.dimension, 'bardOne'),
-        operator: 'in'
+      const filter = Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: dimension.field,
+        parameters: {
+          field: 'id'
+        },
+        operator: 'in',
+        values: [],
+        source: 'bardOne'
       });
 
       this.get('dashboard.filters').pushObject(filter);
@@ -171,6 +187,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     assert.dom('.dashboard-filters--expanded-add-row').isVisible('add row appears again');
 
+    await this.pauseTest();
     await selectChoose('.dashboard-filters--expanded-add-row__dimension-selector', '.ember-power-select-option', 1);
 
     assert.dom('.dashboard-filters--expanded__add-filter-button').isVisible('add filter button appears again');
@@ -188,7 +205,9 @@ module('Integration | Component | dashboard filters', function(hooks) {
       assert.deepEqual(
         changeSet,
         {
-          field: 'id',
+          parameters: {
+            field: 'id'
+          },
           operator: 'null',
           values: []
         },
