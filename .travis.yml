@@ -65,9 +65,7 @@ jobs:
     - env: PACKAGE=navi-app
     - env: PACKAGE=navi-core
     - env: PACKAGE=navi-dashboards
-    - env: PACKAGE=navi-directory
     - env: PACKAGE=navi-reports
-    - env: PACKAGE=navi-search
   include:
     - stage: 'Publish'
       if: branch = master AND repo = yahoo/navi AND type = push

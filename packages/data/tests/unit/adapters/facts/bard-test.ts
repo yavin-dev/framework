@@ -982,7 +982,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         //@ts-expect-error
         Adapter.urlForFindQuery({ ...EmptyRequest, requestVersion: 'v1' });
       },
-      /Request for bard-facts adapter must be version 2/,
+      /Fact request for fili adapter must be version 2/,
       'urlForFindQuery fails assertion if v1 request is passed in'
     );
 
@@ -1085,7 +1085,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         //@ts-expect-error
         Adapter.fetchDataForRequest({ ...EmptyRequest, requestVersion: 'v1' });
       },
-      /Request for bard-facts adapter must be version 2/,
+      /Fact request for fili adapter must be version 2/,
       'fetchDataForRequest fails assertion if v1 request is passed in'
     );
 
