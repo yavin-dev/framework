@@ -91,7 +91,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
         if (!results[dimension.category][`${dataSource}.${dimension.id}`]) {
           results[dimension.category][`${dataSource}.${dimension.id}`] = {
             type: dimension instanceof TimeDimensionMetadataModel ? 'timeDimension' : 'dimension',
-            dimension: dimension.id,
+            field: dimension.id,
             name: dimension.name,
             tables: [table],
             dataSource

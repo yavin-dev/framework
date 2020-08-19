@@ -22,17 +22,25 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
     assert.expect(7);
 
     let author = await Store.findRecord('user', 'navi_user'),
-      genderFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'gender', 'bardOne'),
+      genderFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: 'gender',
+        parameters: {
+          field: 'id'
+        },
         operator: 'in',
-        field: 'id',
-        rawValues: ['Male']
+        values: ['Male'],
+        source: 'bardOne'
       }),
-      ageFilter = Store.createFragment('bard-request/fragments/filter', {
-        dimension: MetadataService.getById('dimension', 'age', 'bardOne'),
+      ageFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+        type: 'dimension',
+        field: 'age',
+        parameters: {
+          field: 'desc'
+        },
         operator: 'notin',
-        field: 'desc',
-        rawValues: ['13-17', '18-20']
+        values: ['13-17', '18-20'],
+        source: 'bardOne'
       }),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',

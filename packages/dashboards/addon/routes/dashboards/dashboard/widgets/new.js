@@ -5,8 +5,6 @@
 
 import { A } from '@ember/array';
 import { get } from '@ember/object';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
 
@@ -44,17 +42,23 @@ export default ReportsNewRoute.extend({
           dashboard,
           requests: A([
             {
-              logicalTable: {
-                table,
-                timeGrain
-              }
+              filters: A([
+                {
+                  type: 'timeDimension',
+                  field: `${table.id}.dateTime`,
+                  parameters: {
+                    grain: timeGrain
+                  },
+                  operator: 'bet',
+                  values: [DefaultIntervals[timeGrain], 'current']
+                }
+              ]),
+              table: table.id,
+              dataSource: table.source,
+              responseFormat: 'csv'
             }
           ]),
           visualization: { type: 'table' }
-        });
-
-        get(widget, 'request.intervals').createFragment({
-          interval: new Interval(new Duration(DefaultIntervals[timeGrain]), 'current')
         });
 
         return widget;
