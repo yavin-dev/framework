@@ -30,7 +30,7 @@ class BaseFilterBuilderComponent extends Component {
   /**
    * @property {String} displayName - display name for the filter
    */
-  @readOnly('filter.subject.columnMetadata.name') displayName;
+  @readOnly('requestFragment.columnMetadata.name') displayName;
 
   /**
    * @property {Array} supportedOperators - list of valid values for filter.operator
@@ -58,7 +58,7 @@ class BaseFilterBuilderComponent extends Component {
 
     //switch field to primary key if operator does not allow choosing fields
     if (primaryKeyField && !operatorObject.showFields) {
-      Object.assign(changeSet, { field: primaryKeyField });
+      Object.assign(changeSet, { parameters: { field: primaryKeyField } });
     }
 
     this.onUpdateFilter(changeSet);
