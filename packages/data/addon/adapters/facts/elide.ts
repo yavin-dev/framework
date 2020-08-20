@@ -18,8 +18,6 @@ import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 
-const REMOVE_TABLE_REGEX = /.+?\.(.+)/;
-
 export const OPERATOR_MAP: Dict<string> = {
   eq: '==',
   neq: '!=',
@@ -60,17 +58,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private dataQueryFromRequest(request: RequestV2): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
-    const columnsStr = columns
-      .map(col => {
-        const fieldWithoutTable = REMOVE_TABLE_REGEX.exec(col.field)?.[1] || col.field;
-        return getElideField(fieldWithoutTable, col.parameters);
-      })
-      .join(' ');
+    const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
 
     const filterStrings = filters.map(filter => {
       const { field, parameters, operator, values } = filter;
-      const fieldWithoutTable = REMOVE_TABLE_REGEX.exec(field)?.[1] || field;
-      const fieldStr = getElideField(fieldWithoutTable, parameters);
+      const fieldStr = getElideField(field, parameters);
       const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
       const valuesStr = `(${values.join(',')})`;
       return `${fieldStr}${operatorStr}${valuesStr}`;
@@ -79,8 +71,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
     const sortStrings = sorts.map(sort => {
       const { field, parameters, direction } = sort;
-      const fieldWithoutTable = REMOVE_TABLE_REGEX.exec(field)?.[1] || field;
-      const column = getElideField(fieldWithoutTable, parameters);
+      const column = getElideField(field, parameters);
       return `${direction === 'desc' ? '-' : ''}${column}`;
     });
     sortStrings.length && args.push(`sort: \\"${sortStrings.join(',')}\\"`);
