@@ -25,6 +25,7 @@ const TIME_DIMENSION_REGEX = new RegExp(
     .map(grain => capitalize(grain))
     .join('|')})`
 );
+const REMOVE_TABLE_REGEX = /.+?\.(.+)/;
 const OPERATORS = {
   eq: '==',
   neq: '!=',
@@ -206,7 +207,7 @@ function _getDates(filters, requestedColumns) {
     if (!rows.length) {
       rows = datesForField.map(date =>
         columnsForField.reduce((row, column) => {
-          row[column.id] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+          row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
           return row;
         }, {})
       );
@@ -217,7 +218,7 @@ function _getDates(filters, requestedColumns) {
           ...datesForField.map(date => ({
             ...currentRow,
             ...columnsForField.reduce((row, column) => {
-              row[column.id] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+              row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
               return row;
             }, {})
           }))
@@ -255,23 +256,25 @@ function _parseGQLQuery(queryStr) {
 
   // Parse requested table, columns, and filters from graphql query
   const selection = queryAST.definitions[0]?.selectionSet.selections[0];
+  const table = selection?.name.value;
   return {
-    table: selection?.name.value,
+    table,
     args: selection?.arguments.reduce((argsObj, arg) => {
       argsObj[arg.name.value] = arg.value.value;
       return argsObj;
     }, {}),
     fields: selection?.selectionSet.selections[0].selectionSet.selections[0].selectionSet.selections.map(
-      field => field.name.value
+      field => `${table}.${field.name.value}`
     )
   };
 }
 
 /**
  * @param {Object} args - query argument strings
+ * @param {String} table - table name
  * @returns {Object} objects for each argument type
  */
-function _parseArgs(args) {
+function _parseArgs(args, table) {
   const parsers = {
     filter: filter =>
       filter
@@ -280,11 +283,11 @@ function _parseArgs(args) {
         .map(f => {
           const [, field, parameters, operator, values] = f.match(FILTER_REGEX);
           return {
-            field,
+            field: `${table}.${field}`,
             parameters: parameters && Object.fromEntries(parameters.split(',').map(p => p.split(': '))),
             operator,
             values: values.split(','),
-            canonicalName: `${field}${parameters ? `(${parameters})` : ''}`
+            canonicalName: `${table}.${field}${parameters ? `(${parameters})` : ''}`
           };
         }),
     sort: sort =>
@@ -298,6 +301,7 @@ function _parseArgs(args) {
             direction = 'desc';
             field = field.substring(1);
           }
+          // We don't need to prefix the sort field with the table name because by the time sort is applied, the table names are removed
           return { field, direction };
         }),
     first: limit => limit
@@ -327,7 +331,7 @@ function _getResponseBody(db, parent) {
     parent.status = 'COMPLETE';
 
     const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
-    const { filter = [], sort = [], first } = _parseArgs(args);
+    const { filter = [], sort = [], first } = _parseArgs(args, table);
     const seed = _getSeedForRequest(table, args, fields);
     faker.seed(seed);
 
@@ -364,7 +368,7 @@ function _getResponseBody(db, parent) {
             ...newRows,
             ...dimensionValues.map(value => ({
               ...currentRow,
-              [dimension]: value
+              [REMOVE_TABLE_REGEX.exec(dimension)[1]]: value
             }))
           ];
         }, []);
@@ -375,7 +379,7 @@ function _getResponseBody(db, parent) {
         columns.metrics.reduce(
           (row, metric) => ({
             ...row,
-            [metric]: faker.finance.amount()
+            [REMOVE_TABLE_REGEX.exec(metric)[1]]: faker.finance.amount()
           }),
           currRow
         )
@@ -390,7 +394,7 @@ function _getResponseBody(db, parent) {
       if (sort.length) {
         rows = orderBy(
           rows,
-          sort.map(r => r.field),
+          sort.map(r => row => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
           sort.map(r => r.direction)
         );
       }

@@ -8,7 +8,8 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    return `dimension${this.index}`;
+    const id = this.table?.id;
+    return `${id ? id + '.' : ''}dimension${this.index}`;
   },
 
   name() {

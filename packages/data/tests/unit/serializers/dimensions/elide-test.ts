@@ -3,14 +3,31 @@ import { setupTest } from 'ember-qunit';
 import { QueryStatus, AsyncQueryResponse, QueryResultType } from 'navi-data/adapters/facts/interface';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import { TestContext } from 'ember-test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
+import GraphQLScenario from 'dummy/mirage/scenarios/elide-one';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { Server } from 'miragejs';
+
+interface TestContext extends Context {
+  metadataService: NaviMetadataService;
+  server: Server;
+}
 
 module('Unit | Serializer | Dimensions | Elide', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(async function(this: TestContext) {
+    this.metadataService = this.owner.lookup('service:navi-metadata');
+    GraphQLScenario(this.server);
+    await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
+  });
 
   test('normalize', function(this: TestContext, assert) {
-    assert.expect(3);
+    assert.expect(2);
     const serializer = this.owner.lookup('serializer:dimensions/elide');
 
     const payload: AsyncQueryResponse = {
@@ -26,7 +43,7 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 httpStatus: 200,
                 resultType: QueryResultType.EMBEDDED,
                 responseBody:
-                  '{"data":{"tableA":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
+                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
               }
             }
           }
@@ -34,28 +51,16 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
       }
     };
     const dimColumn: DimensionColumn = {
-      columnMetadata: DimensionMetadataModel.create(this.owner.ownerInjection(), {
-        id: 'dimension1',
-        source: 'elideTwo',
-        tableId: 'tableA'
-      }),
+      columnMetadata: this.metadataService.getById(
+        'dimension',
+        'table0.dimension1',
+        'elideOne'
+      ) as DimensionMetadataModel,
       parameters: {
         baddabing: 'baddaboom'
       }
     };
     assert.deepEqual(serializer.normalize(dimColumn), [], 'Empty array is returned for an undefined payload');
-
-    const noTableColumn = Object.assign({}, dimColumn, {
-      columnMetadata: DimensionMetadataModel.create(this.owner.ownerInjection(), {
-        id: 'dimension1',
-        source: 'elideTwo'
-      })
-    });
-    assert.deepEqual(
-      serializer.normalize(noTableColumn, payload),
-      [],
-      'Empty array is returned for column with no table id defined'
-    );
 
     const expectedModels = ['foo', 'bar', 'baz'].map(dimVal =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: dimColumn })

@@ -14,21 +14,21 @@ const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[
 const TestRequest: RequestV2 = {
   table: 'table1',
   columns: [
-    { field: 'm1', type: 'metric', parameters: {} },
-    { field: 'm2', type: 'metric', parameters: {} },
-    { field: 'r', type: 'metric', parameters: { p: '123', as: 'a' } },
-    { field: 'd1', type: 'dimension', parameters: {} },
-    { field: 'd2', type: 'dimension', parameters: {} }
+    { field: 'table1.m1', type: 'metric', parameters: {} },
+    { field: 'table1.m2', type: 'metric', parameters: {} },
+    { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
+    { field: 'table1.d1', type: 'dimension', parameters: {} },
+    { field: 'table1.d2', type: 'dimension', parameters: {} }
   ],
   filters: [
-    { field: 'd3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
-    { field: 'd4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'd5', operator: 'isnull', values: ['false'], type: 'dimension', parameters: {} },
-    { field: 'time', operator: 'ge', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
-    { field: 'time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
-    { field: 'm1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
+    { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
+    { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
+    { field: 'table1.d5', operator: 'isnull', values: ['false'], type: 'dimension', parameters: {} },
+    { field: 'table1.time', operator: 'ge', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
+    { field: 'table1.time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
+    { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
   ],
-  sorts: [{ field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }],
+  sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
   limit: 10000,
   requestVersion: '2.0',
   dataSource: 'elideOne'
@@ -82,8 +82,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'd1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [],
@@ -99,12 +99,12 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'd1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric', direction: 'desc' },
-          { field: 'd1', parameters: {}, type: 'dimension', direction: 'asc' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', direction: 'desc' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension', direction: 'asc' }
         ],
         filters: [],
         limit: null,
@@ -119,14 +119,14 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'd1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric', operator: 'in', values: ['v1', 'v2'] },
-          { field: 'd1', parameters: {}, type: 'dimension', operator: 'neq', values: ['a'] },
-          { field: 'd2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'in', values: ['v1', 'v2'] },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension', operator: 'neq', values: ['a'] },
+          { field: 'myTable.d2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
@@ -142,8 +142,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { field: 'm1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'd1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [],
