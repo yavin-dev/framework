@@ -31,11 +31,11 @@ const denaliGraphColors = [
   '#be0c0c'
 ];
 
-const denaliStatusColors = ['#ea0000', '#f4cb00', '#15c046'];
+const denaliStatusColors = ['#ea0000', '#f4cb00', '#15c046', '#0066df'];
 
 export function fetchColor(index, type = 'graph') {
   if (type === 'status') {
-    return denaliStatusColors[index];
+    return denaliStatusColors[index % denaliStatusColors.length];
   }
   return denaliGraphColors[index % denaliGraphColors.length];
 }

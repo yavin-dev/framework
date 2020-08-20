@@ -11,8 +11,4 @@
  */
 import Component from '@glimmer/component';
 
-class NaviVisualizationConfigApexPieComponent extends Component {
-  layout;
-}
-
-export default NaviVisualizationConfigApexPieComponent;
+export default class NaviVisualizationConfigApexPieComponent extends Component {}
