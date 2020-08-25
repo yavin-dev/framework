@@ -17,6 +17,7 @@ import {
   INTRINSIC_VALUE_EXPRESSION,
   ColumnFunctionParametersValues
 } from 'navi-data/models/metadata/function-parameter';
+import { capitalize } from '@ember/string';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
@@ -120,7 +121,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
 
             const normalize = isTimeDimension
               ? (dims: RawDimensionPayload[], dataSourceName: string) =>
-                  this.normalizeTimeDimensions(table, dims, dataSourceName) // call function with table partially applied
+                  this.normalizeTimeDimensions(dims, dataSourceName) // call function with table partially applied
               : this.normalizeDimensions;
             const accDimensionList = isTimeDimension ? currentTimeDimensions : currentDimensions;
             const accTableDimensionList = isTimeDimension ? tableTimeDimensionIds : tableDimensionIds;
@@ -252,10 +253,10 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       source: dataSourceName,
       type: 'field',
       valueType: 'date',
-      supportedGrains: table.timeGrains.map(g => ({
-        id: `${id}.${g.name}`,
+      supportedGrains: table.timeGrains.map(({ name }) => ({
+        id: name.toLowerCase(),
         expression: '',
-        grain: g.name.toUpperCase()
+        grain: capitalize(name)
       })),
       timeZone: 'UTC'
     };
@@ -359,14 +360,13 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @param dataSourceName - data source name
    */
   private normalizeTimeDimensions(
-    table: RawTablePayload,
     dimensions: RawDimensionPayload[],
     dataSourceName: string
   ): TimeDimensionMetadataPayload[] {
     return this.normalizeDimensions(dimensions, dataSourceName)
       .filter(d => d.valueType === 'date')
       .map(d => ({
-        supportedGrains: [{ id: `${table.name}.grain.day`, expression: '', grain: 'DAY' }],
+        supportedGrains: [{ id: 'day', expression: '', grain: 'Day' }],
         timeZone: 'utc',
         ...d
       }));
