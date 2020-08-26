@@ -15,9 +15,10 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 @tagName('')
 class BaseFilterBuilderComponent extends Component {
   /**
+   * @property {Object} requestFragment;
    * @property {Object} filter
    * @property {Object} filter.subject
-   * @property {String} filter.subject.name - display name for the filter subject
+   * @property {String} requestFragmentname - display name for the filter subject
    * @property {Object} filter.operator - object with the same shape as the objects in `supportedOperators` property
    * @property {String} filter.operator.name - display name for operator
    * @property {String} filter.operator.valuesComponent - name of component to use for selecting filter values
@@ -27,6 +28,9 @@ class BaseFilterBuilderComponent extends Component {
     return undefined;
   }
 
+  get requestFragment() {
+    return undefined;
+  }
   /**
    * @property {String} displayName - display name for the filter
    */
@@ -47,7 +51,6 @@ class BaseFilterBuilderComponent extends Component {
   setOperator(operatorObject) {
     const { filter, primaryKeyField } = this;
     let changeSet = { operator: operatorObject.id };
-
     /*
      * Clear values in case they are incompatible with new operator,
      * unless operators share valuesComponent

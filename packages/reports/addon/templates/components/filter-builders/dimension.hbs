@@ -26,22 +26,6 @@
     >
       {{operator.name}}
     </PowerSelect>
-    {{#if this.showFields}}
-      <PowerSelect
-        @searchEnabled={{false}}
-        @options={{this.fields}}
-        @selected={{this.filter.field}}
-        @tagName="span"
-        class="filter-builder-dimension__field"
-        @dropdownClass="filter-builder-dimension__field-dropdown"
-        @triggerClass="filter-builder-dimension__select-trigger"
-        @matchTriggerWidth={{false}}
-        @onchange={{this.setField}}
-        as | filterField |
-      >
-        {{filterField}}
-      </PowerSelect>
-    {{/if}}
     <span class="filter-builder-dimension__values {{if this.showFields "filter-builder-dimension__values--short"}}">
       {{component
         this.filter.operator.valuesComponent

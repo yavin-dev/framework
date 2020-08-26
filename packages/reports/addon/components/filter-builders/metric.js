@@ -72,7 +72,7 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {String} displayName - display name for the filter with metric and parameters
    */
-  @computed('requestFragment.{field,parameters}')
+  @computed('requestFragment.{field,parameters,columnMetadata}')
   get displayName() {
     const { columnMetadata, parameters } = this.requestFragment;
     return getOwner(this)
@@ -90,6 +90,7 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
     const { values, validations, operator: operatorId } = requestFragment;
     const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
+    console.log(operator);
     return {
       subject: requestFragment,
       operator,
