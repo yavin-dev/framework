@@ -3,23 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#dimension-selector
- *      request=request
- *      onAddDimension=(action 'addDimension')
- *      onRemoveDimension=(action 'removeDimension')
- *      onAddTimeGrain=(action 'addTimeGrain')
- *      onRemoveTimeGrain=(action 'removeTimeGrain')
- *   }}
- *      {{navi-list-selector}}
- *   {{/dimension-selector}}
+   <DimensionSelector
+     @request={{this.request}}
+     @onAddDimension={{this.onAddDimension}}
+     @onToggleDimFilter={{this.onToggleDimFilter}}
+   />
  */
 
 import { throttle } from '@ember/runloop';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
-import { A as arr } from '@ember/array';
 import layout from '../templates/components/dimension-selector';
-import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 
 export const THROTTLE_TIME = 750; // milliseconds
 
@@ -70,55 +64,11 @@ export default class DimensionSelector extends Component {
   }
 
   /*
-   * @property {Object} defaultTimeGrain - the default time grain for the logical table selected
-   */
-  @computed('request.tableMetadata.timeGrains')
-  get defaultTimeGrain() {
-    return getDefaultTimeGrain(this.request.tableMetadata.timeGrains);
-  }
-
-  /*
-   * @property {Array} listItems - all list items to populate the dimension selector,
-   *                               combination of timegrains and dimensions
-   */
-  @computed('allTimeGrains', 'allDimensions')
-  get listItems() {
-    // only option is to add the default time grain (if none is selected)
-    const timeGrain = {
-      name: 'Date Time',
-      category: 'Date',
-      dateTimeDimension: true
-    };
-
-    return [timeGrain, ...this.allDimensions];
-  }
-
-  /*
    * @property {Array} selectedDimensions - dimensions in the request
    */
   @computed('request.dimensionColumns.[]')
-  get selectedDimensions() {
-    return this.request.dimensionColumns;
-  }
-
-  /*
-   * @property {Object} selectedTimeGrain - timeGrain in the request
-   */
-  @computed('request.timeGrainColumn')
-  get selectedTimeGrain() {
-    return this.request.timeGrainColumn;
-  }
-
-  /*
-   * @property {Object} selectedColumns - unique selectedDimensions
-   */
-  @computed('selectedTimeGrain', 'selectedDimensions')
   get selectedColumns() {
-    if (!this.selectedTimeGrain) {
-      return this.selectedDimensions;
-    } else {
-      return arr([this.selectedTimeGrain, ...this.selectedDimensions]).uniq();
-    }
+    return this.request.dimensionColumns;
   }
 
   /*
@@ -151,13 +101,7 @@ export default class DimensionSelector extends Component {
    */
   doItemClicked(item, target) {
     target && target.focus(); // firefox does not focus a button on click in MacOS specifically
-    const type = item.dateTimeDimension ? 'TimeGrain' : 'Dimension';
-
-    if (item.dateTimeDimension) {
-      return this.onAddTimeGrain?.(this.selectedTimeGrain || this.defaultTimeGrain);
-    }
-
-    this[`onAdd${type}`]?.(item);
+    this.onAddDimension?.(item);
   }
 
   /**
