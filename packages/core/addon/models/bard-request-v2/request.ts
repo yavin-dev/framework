@@ -21,12 +21,13 @@ import FragmentFactory from 'navi-core/services/fragment-factory';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import Store from '@ember-data/store';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import ColumnFragment from './fragments/column';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { ColumnMetadataModels } from './fragments/base';
 import { Parameters } from 'navi-data/adapters/facts/interface';
-import FilterFragment from './fragments/filter';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
+import { TableMetadata } from 'navi-data/addon/models/metadata/table';
 
 type BaseLiteral = {
   type: ColumnType;
@@ -156,23 +157,17 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {ColumnFragment[]} metricColumns - The metric columns
    */
   @computed('columns.[]')
-  get metricColumns() {
+  get metricColumns(): ColumnFragment[] {
     return this.columns.filter(column => column.type === 'metric');
   }
 
-  /**
-   * @property {ColumnFragment[]} dimensionColumns - The dimension and timeDimension columns
-   */
   @computed('columns.[]')
-  get dimensionColumns() {
+  get dimensionColumns(): ColumnFragment[] {
     return this.columns.filter(column => column.type === 'timeDimension' || column.type === 'dimension');
   }
 
-  /**
-   * @property {ColumnFragment[]} metricFilters - The metric filters
-   */
   @computed('filters.[]')
-  get metricFilters() {
+  get metricFilters(): FilterFragment[] {
     return this.filters.filter(filter => filter.type === 'metric');
   }
 
@@ -180,7 +175,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {ColumnFragment[]} dimensionFilters - The dimension and timeDimension filters
    */
   @computed('filters.[]')
-  get dimensionFilters() {
+  get dimensionFilters(): FilterFragment[] {
     return this.filters.filter(filter => filter.type === 'timeDimension' || filter.type === 'dimension');
   }
 
@@ -218,29 +213,32 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * Adds the column to the request
-   * @param {object} column - the column to add to the request
+   * Sets the table of the request
    */
-  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias: string }) {
-    this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
+  setTableByMetadata(table: TableMetadata) {
+    this.set('table', table.id);
+    this.set('dataSource', table.source);
+  }
+
+  /**
+   * Adds the column to the request
+   */
+  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias: string }): ColumnFragment {
+    return this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
   }
 
   /**
    * Adds a new column with the parameters
-   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
-   * @param {object} parameters - the parameters to apply to the column
    */
-  addColumnFromMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters) {
-    this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
+  addColumnFromMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters): ColumnFragment {
+    return this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
   }
 
   /**
    * Adds a column with it's default parameters
-   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
-   * @param {object} parameters - the parameters to apply to the column
    */
-  addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}) {
-    this.addColumnFromMeta(columnMetadataModel, {
+  addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}): ColumnFragment {
+    return this.addColumnFromMeta(columnMetadataModel, {
       ...(columnMetadataModel.getDefaultParameters?.() || {}),
       ...parameters
     });

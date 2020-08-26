@@ -50,6 +50,45 @@ export default ActionConsumer.extend({
 
   actions: {
     /**
+     * @action TOGGLE_FILTER
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} column - column fragment
+     */
+    [RequestActions.TOGGLE_FILTER]: function(route, column) {
+      const { canonicalName, columnMetadata, type, parameters } = column;
+      const filter = route.currentModel.request.filters.find(filter => filter.canonicalName === canonicalName);
+
+      //do not add filter if it already exists
+      if (!filter) {
+        switch (type) {
+          case 'metric':
+            this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, columnMetadata, parameters);
+            break;
+          case 'dimension':
+            this.requestActionDispatcher.dispatch(RequestActions.ADD_DIMENSION_FILTER, route, columnMetadata);
+            break;
+          case 'timeDimension':
+            throw new Error('TODO');
+        }
+      } else {
+        switch (type) {
+          case 'metric':
+            this.requestActionDispatcher.dispatch(
+              RequestActions.REMOVE_METRIC_FILTER,
+              route,
+              columnMetadata,
+              parameters
+            );
+            break;
+          case 'dimension':
+            this.requestActionDispatcher.dispatch(RequestActions.REMOVE_DIMENSION_FILTER, route, columnMetadata);
+            break;
+          case 'timeDimension':
+            throw new Error('TODO');
+        }
+      }
+    },
+    /**
      * @action TOGGLE_DIMENSION_FILTER
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} dimension - dimension to filter

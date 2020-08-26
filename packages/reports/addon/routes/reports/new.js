@@ -96,27 +96,17 @@ export default Route.extend({
     let author = get(this, 'user').getUser();
 
     // Default to first data source + time grain
-    let defaultVisualization = get(this, 'naviVisualizations').defaultVisualization(),
-      table = this._getDefaultTable(),
-      timeGrain = getDefaultTimeGrain(table.timeGrains)?.id;
+    const defaultVisualization = get(this, 'naviVisualizations').defaultVisualization();
+    const table = this._getDefaultTable();
 
-    let report = this.store.createRecord('report', {
+    const report = this.store.createRecord('report', {
       author,
-      request: this.store.createFragment('bard-request/request', {
-        logicalTable: this.store.createFragment('bard-request/fragments/logicalTable', {
-          table,
-          timeGrain
-        }),
-        dataSource: table.source,
-        responseFormat: 'csv'
+      request: this.store.createFragment('bard-request-v2/request', {
+        table: table.id,
+        dataSource: table.source
       }),
       visualization: { type: defaultVisualization }
     });
-
-    get(report, 'request.intervals').createFragment({
-      interval: new Interval(new Duration(DefaultIntervals[timeGrain]), 'current')
-    });
-
     return report;
   },
 
@@ -130,7 +120,6 @@ export default Route.extend({
   _getDefaultTable() {
     const { metadataService } = this;
     let table = metadataService.all('table').findBy('id', config.navi.defaultDataTable);
-
     if (!table) {
       let tables = metadataService.all('table').sortBy('name');
       table = tables[0];

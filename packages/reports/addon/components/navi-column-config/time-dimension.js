@@ -25,8 +25,8 @@ class NaviColumnConfigTimeDimensionComponent extends Component {
    * @param {Object} timeGrain
    */
   @action
-  updateTimeGrain(timeGrain) {
-    this.onUpdateTimeGrain?.(timeGrain);
+  updateTimeGrain({ id }) {
+    this.onUpdateColumnParam(this.column.fragment, 'grain', id);
   }
 }
 

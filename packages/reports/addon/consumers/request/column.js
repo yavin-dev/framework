@@ -5,7 +5,6 @@
 import { inject as service } from '@ember/service';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default ActionConsumer.extend({
   /**
@@ -19,8 +18,12 @@ export default ActionConsumer.extend({
      * @param route - route that has a model that contains a request property
      * @param columnMetadataModel - metadata model to add
      */
-    [RequestActions.ADD_COLUMN]({ currentModel: { request } }, columnMetadataModel) {
-      request.addColumnFromMeta(columnMetadataModel);
+    [RequestActions.ADD_COLUMN](route, columnMetadataModel) {
+      const {
+        currentModel: { request }
+      } = route;
+      const column = request.addColumnFromMeta(columnMetadataModel);
+      this.requestActionDispatcher.dispatch(RequestActions.DID_ADD_COLUMN, route, column);
     },
 
     /**
@@ -29,8 +32,22 @@ export default ActionConsumer.extend({
      * @param columnMetadataModel - metadata model to add
      * @param parameters - parameters applied to the column
      */
-    [RequestActions.ADD_COLUMN_WITH_PARAMS]({ currentModel: { request } }, columnMetadataModel, parameters) {
-      request.addColumnFromMetaWithParams(columnMetadataModel, parameters);
+    [RequestActions.ADD_COLUMN_WITH_PARAMS](route, columnMetadataModel, parameters) {
+      const {
+        currentModel: { request }
+      } = route;
+      const column = request.addColumnFromMetaWithParams(columnMetadataModel, parameters);
+      this.requestActionDispatcher.dispatch(RequestActions.DID_ADD_COLUMN, route, column);
+    },
+
+    /**
+     * @action DID_ADD_COLUMN_
+     * @param route - route that has a model that contains a request property
+     * @param column - column fragment
+     */
+    [RequestActions.DID_ADD_COLUMN](route, column) {
+      const controller = route.controllerFor(route.routeName);
+      controller.setLastAddedColumn(column);
     },
 
     /**
