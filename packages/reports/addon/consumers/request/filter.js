@@ -192,7 +192,6 @@ export default ActionConsumer.extend({
      */
     [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
       let changeSetUpdates = {};
-
       //if an interval is set on a filter, normalize to a string array
       if (changeSet.interval) {
         const { start, end } = changeSet.interval.asStrings('YYYY-MM-DD');

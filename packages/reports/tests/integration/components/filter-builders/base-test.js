@@ -8,10 +8,15 @@ import Component from '@ember/component';
 import BaseFilterBuilderComponent from 'navi-reports/components/filter-builders/base';
 import $ from 'jquery';
 
-const filter = {
-  subject: {
+const requestFragment = {
+  type: 'dimension',
+  columnMetadata: {
     name: 'Device Type'
-  },
+  }
+};
+
+const filter = {
+  subject: requestFragment,
   operator: {
     id: 'in',
     name: 'Equals',
@@ -19,7 +24,6 @@ const filter = {
   },
   values: [1, 2, 3]
 };
-
 const supportedOperators = [
   { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
   {
@@ -49,7 +53,8 @@ module('Integration | Component | filter-builders/base', function(hooks) {
      */
     this.setProperties({
       filter,
-      supportedOperators
+      supportedOperators,
+      requestFragment
     });
     this.owner.register(
       'component:filter-builders/base',
@@ -59,6 +64,9 @@ module('Integration | Component | filter-builders/base', function(hooks) {
         }
         get supportedOperators() {
           return supportedOperators;
+        }
+        get requestFragment() {
+          return requestFragment;
         }
       }
     );
@@ -77,7 +85,9 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.filter-builder__subject').hasText(filter.subject.name, "Subject's name is display in filter builder");
+    assert
+      .dom('.filter-builder__subject')
+      .hasText(filter.subject.columnMetadata.name, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')
@@ -102,7 +112,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     assert
       .dom('.filter-builder')
       .hasText(
-        `${filter.subject.name} ${filter.operator.name.toLowerCase()} Test`,
+        `${filter.subject.columnMetadata.name} ${filter.operator.name.toLowerCase()} Test`,
         'Rendered correctly when collapsed'
       );
   });

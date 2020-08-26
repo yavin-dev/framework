@@ -4,11 +4,15 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
 import Helper from '@ember/component/helper';
-import { A as arr } from '@ember/array';
 
 let Request = {
-  metrics: arr([]),
-  having: arr([])
+  table: '',
+  dataSource: '',
+  requestVersion: '2.0',
+  limit: null,
+  columns: [],
+  filters: [],
+  sorts: []
 };
 
 module('Integration | Component | filter-builders/metric', function(hooks) {
@@ -33,15 +37,17 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     //check display name for metric with params
     const filter = {
-      subject: {
-        metric: { name: 'metric-with-params' },
-        parameters: {
-          foo: 'bar',
-          bar: 'baz'
-        }
+      field: 'metric-with-params',
+      type: 'metric',
+      parameters: {
+        foo: 'bar',
+        bar: 'baz'
+      },
+      columnMetadata: {
+        name: 'metric-with-params'
       },
       operator: {
-        id: 'in',
+        id: 'eq',
         name: 'Equals',
         valuesComponent: 'mock/values-component'
       },
@@ -51,7 +57,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     this.set('filter', filter);
     this.set('request', Request);
     await render(
-      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} />`
+      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} @requestFragment={{this.filter}} />`
     );
   });
 
@@ -67,12 +73,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     //check display name for metric without params
     const filter = {
-      subject: {
-        metric: { name: 'metric-without-params' },
-        parameters: {}
+      type: 'metric',
+      parameters: {},
+      columnMetadata: {
+        name: 'metric-without-params'
       },
       operator: {
-        id: 'in',
+        id: 'eq',
         name: 'Equals',
         valuesComponent: 'mock/values-component'
       },
@@ -90,7 +97,6 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     assert.expect(1);
 
     this.set('isCollapsed', true);
-
     assert
       .dom('.filter-builder')
       .hasText('metric-with-params (bar,baz) equals metric values', 'Rendered correctly when collapsed');
