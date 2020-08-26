@@ -90,7 +90,6 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
     const { values, validations, operator: operatorId } = requestFragment;
     const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
-    console.log(operator);
     return {
       subject: requestFragment,
       operator,
