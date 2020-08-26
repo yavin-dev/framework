@@ -21,7 +21,7 @@ export default class ActionDispatcher extends Service {
   _registeredConsumers: ActionConsumer[] = [];
 
   init() {
-    super.init(...arguments);
+    super.init();
     this.consumers.forEach(consumer => this.registerConsumer(consumer));
   }
 

@@ -48,8 +48,8 @@ export default class Base extends Fragment.extend(Validations) {
   @attr('string')
   source!: string; //TODO do we need this?
 
-  @service('navi-metadata')
-  metadataService!: NaviMetadataService;
+  @service
+  naviMetadata!: NaviMetadataService;
 
   /**
    * @type {Meta}
@@ -58,7 +58,7 @@ export default class Base extends Fragment.extend(Validations) {
   get columnMetadata() {
     assert('Source must be set in order to access columnMetadata', isPresent(this.source));
     assert('column type must be set in order to access columnMetadata', isPresent(this.type));
-    return this.metadataService.getById(this.type, this.field, this.source) as ColumnMetadataModels;
+    return this.naviMetadata.getById(this.type, this.field, this.source) as ColumnMetadataModels;
   }
 
   @computed('field', 'parameters.{}')

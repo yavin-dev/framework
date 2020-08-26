@@ -93,8 +93,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   @service
   private fragmentFactory!: FragmentFactory;
 
-  @service('navi-metadata')
-  private metadataService!: NaviMetadataService;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
   /**
    * @property store - Store service with fragments
@@ -150,7 +150,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   @computed('table', 'dataSource')
   get tableMetadata() {
-    return this.metadataService.getById('table', this.table, this.dataSource);
+    return this.naviMetadata.getById('table', this.table, this.dataSource);
   }
 
   /**
