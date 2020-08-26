@@ -27,8 +27,6 @@ module('Unit | Service | navi-dimension', function(hooks) {
   });
 
   test('all', async function(this: TestContext, assert) {
-    assert.expect(1);
-
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
@@ -47,8 +45,6 @@ module('Unit | Service | navi-dimension', function(hooks) {
   });
 
   test('find', async function(this: TestContext, assert) {
-    assert.expect(1);
-
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
