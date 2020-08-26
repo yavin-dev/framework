@@ -145,8 +145,8 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const TestDimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
-        'table1.dimension2',
-        'elideTwo'
+        'table0.dimension2',
+        'elideOne'
       ) as DimensionMetadataModel,
       parameters: {
         bang: 'boom'
@@ -155,10 +155,10 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const query = 'something';
 
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'table1.dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
+      columns: [{ field: 'table0.dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
       filters: [
         {
-          field: 'table1.dimension2',
+          field: 'table0.dimension2',
           parameters: { bang: 'boom' },
           type: 'dimension',
           operator: 'eq',
@@ -166,9 +166,9 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         }
       ],
       sorts: [],
-      table: 'table1',
+      table: 'table0',
       limit: null,
-      dataSource: 'elideTwo',
+      dataSource: 'elideOne',
       requestVersion: '2.0'
     };
     const expectedOptions = {
