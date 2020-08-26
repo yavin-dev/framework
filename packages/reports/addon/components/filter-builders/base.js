@@ -18,7 +18,6 @@ class BaseFilterBuilderComponent extends Component {
    * @property {Object} requestFragment;
    * @property {Object} filter
    * @property {Object} filter.subject
-   * @property {String} requestFragmentname - display name for the filter subject
    * @property {Object} filter.operator - object with the same shape as the objects in `supportedOperators` property
    * @property {String} filter.operator.name - display name for operator
    * @property {String} filter.operator.valuesComponent - name of component to use for selecting filter values
