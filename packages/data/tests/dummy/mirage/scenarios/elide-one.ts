@@ -9,15 +9,18 @@ export default function(server: any) {
   server.createList('metric', 3, { table: table0 });
   server.createList('metric', 2, { table: table1 });
   server.createList('dimension', 3, { table: table0 });
+  const timeDimTables = [table1];
   grains.forEach(grain => {
     timeDimIds.forEach(timeDimId => {
-      const idWithGrain = `${timeDimId}${capitalize(grain)}`;
-      let newGrain = server.create('time-dimension-grain', {
-        id: `${idWithGrain}.${grain}`,
-        expression: null,
-        grain: grain.toUpperCase()
+      timeDimTables.forEach(table => {
+        const idWithGrain = `${table.id}.${timeDimId}${capitalize(grain)}`;
+        let newGrain = server.create('time-dimension-grain', {
+          id: `${idWithGrain}.${grain}`,
+          expression: null,
+          grain: grain.toUpperCase()
+        });
+        server.create('time-dimension', { id: idWithGrain, table, supportedGrains: [newGrain] });
       });
-      server.create('time-dimension', { id: idWithGrain, table: table1, supportedGrains: [newGrain] });
     });
   });
 }

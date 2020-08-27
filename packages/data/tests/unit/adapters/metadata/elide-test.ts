@@ -110,7 +110,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
         edges: [
           {
             node: {
-              id: 'metric0',
+              id: 'table0.metric0',
               name: 'Metric 0',
               description: 'This is metric 0',
               category: 'categoryOne',
@@ -124,7 +124,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           },
           {
             node: {
-              id: 'metric1',
+              id: 'table0.metric1',
               name: 'Metric 1',
               description: 'This is metric 1',
               category: 'categoryOne',
@@ -138,7 +138,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           },
           {
             node: {
-              id: 'metric2',
+              id: 'table0.metric2',
               name: 'Metric 2',
               description: 'This is metric 2',
               category: 'categoryOne',
@@ -163,7 +163,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           {
             __typename: 'DimensionEdge',
             node: {
-              id: 'dimension0',
+              id: 'table0.dimension0',
               name: 'Dimension 0',
               description: 'This is dimension 0',
               category: 'categoryOne',
@@ -177,7 +177,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           {
             __typename: 'DimensionEdge',
             node: {
-              id: 'dimension1',
+              id: 'table0.dimension1',
               name: 'Dimension 1',
               description: 'This is dimension 1',
               category: 'categoryOne',
@@ -191,7 +191,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           {
             __typename: 'DimensionEdge',
             node: {
-              id: 'dimension2',
+              id: 'table0.dimension2',
               name: 'Dimension 2',
               description: 'This is dimension 2',
               category: 'categoryOne',
@@ -215,7 +215,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
         edges: [
           {
             node: {
-              id: 'metric3',
+              id: 'table1.metric3',
               name: 'Metric 3',
               description: 'This is metric 3',
               category: 'categoryOne',
@@ -229,7 +229,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           },
           {
             node: {
-              id: 'metric4',
+              id: 'table1.metric4',
               name: 'Metric 4',
               description: 'This is metric 4',
               category: 'categoryOne',
@@ -282,7 +282,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                   edges: [
                     {
                       node: {
-                        id: 'metric0',
+                        id: 'table0.metric0',
                         name: 'Metric 0',
                         description: 'This is metric 0',
                         category: 'categoryOne',
@@ -296,7 +296,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                     },
                     {
                       node: {
-                        id: 'metric1',
+                        id: 'table0.metric1',
                         name: 'Metric 1',
                         description: 'This is metric 1',
                         category: 'categoryOne',
@@ -310,7 +310,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                     },
                     {
                       node: {
-                        id: 'metric2',
+                        id: 'table0.metric2',
                         name: 'Metric 2',
                         description: 'This is metric 2',
                         category: 'categoryOne',
@@ -329,7 +329,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                   edges: [
                     {
                       node: {
-                        id: 'dimension0',
+                        id: 'table0.dimension0',
                         name: 'Dimension 0',
                         description: 'This is dimension 0',
                         category: 'categoryOne',
@@ -343,7 +343,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                     },
                     {
                       node: {
-                        id: 'dimension1',
+                        id: 'table0.dimension1',
                         name: 'Dimension 1',
                         description: 'This is dimension 1',
                         category: 'categoryOne',
@@ -357,7 +357,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                     },
                     {
                       node: {
-                        id: 'dimension2',
+                        id: 'table0.dimension2',
                         name: 'Dimension 2',
                         description: 'This is dimension 2',
                         category: 'categoryOne',

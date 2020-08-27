@@ -4,6 +4,18 @@ import ElideDimensionAdapter from 'navi-data/adapters/dimensions/elide';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 import { RequestV2, AsyncQueryResponse, QueryStatus, RequestOptions } from 'navi-data/adapters/facts/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { TestContext as Context } from 'ember-test-helpers';
+import ElideOneScenario from 'dummy/mirage/scenarios/elide-one';
+import ElideTwoScenario from 'dummy/mirage/scenarios/elide-two';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { Server } from 'miragejs';
+
+interface TestContext extends Context {
+  metadataService: NaviMetadataService;
+  server: Server;
+}
 
 const fakeResponse: AsyncQueryResponse = {
   asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] }
@@ -11,16 +23,31 @@ const fakeResponse: AsyncQueryResponse = {
 
 module('Unit | Adapter | Dimensions | Elide', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  test('find', async function(assert) {
+  hooks.beforeEach(async function(this: TestContext) {
+    this.metadataService = this.owner.lookup('service:navi-metadata');
+    ElideOneScenario(this.server);
+    await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
+
+    //reset the db so we can set the db up for the elideTwo scenario
+    this.server.db.emptyData();
+    //reset the indexes used by the mirage factories
+    //@ts-ignore
+    this.server.factorySequences = {};
+    ElideTwoScenario(this.server);
+    await this.metadataService.loadMetadata({ dataSourceName: 'elideTwo' });
+  });
+
+  test('find', async function(this: TestContext, assert) {
     assert.expect(2);
 
     const TestDimensionColumn: DimensionColumn = {
-      columnMetadata: DimensionMetadataModel.create({
-        id: 'dimension1',
-        source: 'elideTwo',
-        tableId: 'table1'
-      }),
+      columnMetadata: this.metadataService.getById(
+        'dimension',
+        'table0.dimension1',
+        'elideTwo'
+      ) as DimensionMetadataModel,
       parameters: {
         foo: 'bar'
       }
@@ -28,12 +55,18 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
 
     const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'dimension1', parameters: { foo: 'bar' }, type: 'dimension' }],
+      columns: [{ field: 'table0.dimension1', parameters: { foo: 'bar' }, type: 'dimension' }],
       filters: [
-        { field: 'dimension1', parameters: { foo: 'bar' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }
+        {
+          field: 'table0.dimension1',
+          parameters: { foo: 'bar' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['v1', 'v2']
+        }
       ],
       sorts: [],
-      table: 'table1',
+      table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
       requestVersion: '2.0'
@@ -59,27 +92,27 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }], expectedOptions);
   });
 
-  test('all', async function(assert) {
+  test('all', async function(this: TestContext, assert) {
     assert.expect(2);
 
     const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const TestDimensionColumn: DimensionColumn = {
-      columnMetadata: DimensionMetadataModel.create({
-        id: 'dimension1',
-        source: 'elideOne',
-        tableId: 'table1'
-      }),
+      columnMetadata: this.metadataService.getById(
+        'dimension',
+        'table0.dimension1',
+        'elideTwo'
+      ) as DimensionMetadataModel,
       parameters: {
         foo: 'baz'
       }
     };
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'dimension1', parameters: { foo: 'baz' }, type: 'dimension' }],
+      columns: [{ field: 'table0.dimension1', parameters: { foo: 'baz' }, type: 'dimension' }],
       filters: [],
       sorts: [],
-      table: 'table1',
+      table: 'table0',
       limit: null,
-      dataSource: 'elideOne',
+      dataSource: 'elideTwo',
       requestVersion: '2.0'
     };
     const expectedOptions = {
@@ -105,16 +138,16 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.all(TestDimensionColumn, expectedOptions);
   });
 
-  test('search', async function(assert) {
+  test('search', async function(this: TestContext, assert) {
     assert.expect(2);
 
     const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const TestDimensionColumn: DimensionColumn = {
-      columnMetadata: DimensionMetadataModel.create({
-        id: 'dimension2',
-        source: 'elideTwo',
-        tableId: 'table3'
-      }),
+      columnMetadata: this.metadataService.getById(
+        'dimension',
+        'table0.dimension2',
+        'elideOne'
+      ) as DimensionMetadataModel,
       parameters: {
         bang: 'boom'
       }
@@ -122,10 +155,10 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const query = 'something';
 
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
+      columns: [{ field: 'table0.dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
       filters: [
         {
-          field: 'dimension2',
+          field: 'table0.dimension2',
           parameters: { bang: 'boom' },
           type: 'dimension',
           operator: 'eq',
@@ -133,9 +166,9 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         }
       ],
       sorts: [],
-      table: 'table3',
+      table: 'table0',
       limit: null,
-      dataSource: 'elideTwo',
+      dataSource: 'elideOne',
       requestVersion: '2.0'
     };
     const expectedOptions = {
