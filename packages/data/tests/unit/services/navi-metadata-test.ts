@@ -102,7 +102,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
     );
     assert.deepEqual(
       dimensions.mapBy('id'),
-      ['dimension0', 'dimension1', 'dimension2', 'dimension3', 'dimension4'],
+      [
+        'table0.dimension0',
+        'table0.dimension1',
+        'table1.dimension2',
+        'table1.dimension3',
+        'table1.dimension4',
+        'table1.dimension5'
+      ],
       'All `elideOne` dimensions are loaded'
     );
 
@@ -113,7 +120,20 @@ module('Unit | Service | navi-metadata', function(hooks) {
     );
     assert.deepEqual(
       timeDimensions.mapBy('id'),
-      ['eventTimeHour', 'eventTimeDay', 'eventTimeWeek', 'eventTimeMonth', 'eventTimeQuarter', 'eventTimeYear'],
+      [
+        'table1.eventTimeHour',
+        'table1.orderTimeHour',
+        'table1.eventTimeDay',
+        'table1.orderTimeDay',
+        'table1.eventTimeWeek',
+        'table1.orderTimeWeek',
+        'table1.eventTimeMonth',
+        'table1.orderTimeMonth',
+        'table1.eventTimeQuarter',
+        'table1.orderTimeQuarter',
+        'table1.eventTimeYear',
+        'table1.orderTimeYear'
+      ],
       'All `elideOne` time dimensions are loaded'
     );
 
@@ -122,7 +142,11 @@ module('Unit | Service | navi-metadata', function(hooks) {
       metrics.every(metric => metric instanceof MetricMetadataModel),
       '`elideOne` `MetricMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(metrics.mapBy('id'), ['metric0', 'metric1'], 'All `elideOne` metrics are loaded');
+    assert.deepEqual(
+      metrics.mapBy('id'),
+      ['table0.metric0', 'table1.metric1', 'table1.metric2'],
+      'All `elideOne` metrics are loaded'
+    );
 
     const columnFunctions = keg.all('metadata/columnFunction', 'elideOne');
     assert.ok(
@@ -189,7 +213,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     await this.service.loadMetadata({ dataSourceName: 'elideOne' });
     await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
 
-    const metricOne = this.service.getById('metric', 'metric1', 'elideOne');
+    const metricOne = this.service.getById('metric', 'table1.metric1', 'elideOne');
     assert.ok(
       metricOne instanceof MetricMetadataModel,
       '`getById` returns a loaded instance of `MetricMetadataModel` when requesting `metric` type'
