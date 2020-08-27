@@ -7,6 +7,7 @@ import NaviDimensionSerializer from './interface';
 import NaviDimensionModel from '../../models/navi-dimension';
 import { DimensionColumn } from '../../adapters/dimensions/interface';
 import { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
+import { getElideField } from '../../adapters/facts/elide';
 import EmberObject from '@ember/object';
 
 type ResponseEdge = {
@@ -24,7 +25,7 @@ export default class ElideDimensionSerializer extends EmberObject implements Nav
       const response = JSON.parse(responseStr);
       return response.data[tableId as string].edges.map((edge: ResponseEdge) =>
         NaviDimensionModel.create({
-          value: edge.node[dimensionName], //TODO: Use canonicalized dimension name when Elide supports it
+          value: edge.node[getElideField(dimensionName, dimension.parameters)],
           dimensionColumn: dimension
         })
       );

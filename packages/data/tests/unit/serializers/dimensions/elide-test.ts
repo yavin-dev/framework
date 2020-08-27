@@ -43,7 +43,7 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 httpStatus: 200,
                 resultType: QueryResultType.EMBEDDED,
                 responseBody:
-                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
+                  '{"data":{"table0":{"edges":[{"node":{"dimension1(baddabing: baddaboom)":"foo"}},{"node":{"dimension1(baddabing: baddaboom)":"bar"}},{"node":{"dimension1(baddabing: baddaboom)":"baz"}}]}}}'
               }
             }
           }
