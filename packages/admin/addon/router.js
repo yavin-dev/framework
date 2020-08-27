@@ -6,7 +6,7 @@
 export function adminRoutes(router, nestedRoutes = () => null) {
   router.route('admin', function() {
     this.route('users');
-    this.route('querystats');
+    this.route('query-stats');
     nestedRoutes.apply(this);
   });
 }

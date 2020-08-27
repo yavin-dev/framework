@@ -16,7 +16,7 @@ const ADMIN_TAB_OPTIONS = [
   },
   {
     title: 'Query Stats',
-    route: 'admin.querystats'
+    route: 'admin.query-stats'
   }
 ];
 

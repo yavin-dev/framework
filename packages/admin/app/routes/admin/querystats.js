@@ -1,1 +1,1 @@
-export { default } from 'navi-admin/routes/admin/querystats';
+export { default } from 'navi-admin/routes/admin/query-stats';

@@ -20,6 +20,6 @@ module('Acceptance | Admin', function(hooks) {
     assert.equal(currentRouteName(), 'admin.users', 'loads users route');
 
     await click(linkContains('Query Stats'));
-    assert.equal(currentRouteName(), 'admin.querystats', 'loads querystats route');
+    assert.equal(currentRouteName(), 'admin.query-stats', 'loads query-stats route');
   });
 });

@@ -1,1 +1,1 @@
-export { default } from 'navi-admin/controllers/admin/querystats';
+export { default } from 'navi-admin/controllers/admin/query-stats';

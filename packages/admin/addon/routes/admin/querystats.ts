@@ -5,7 +5,7 @@
 
 import Route from '@ember/routing/route';
 
-export default class AdminQuerystats extends Route.extend({
+export default class AdminQueryStats extends Route.extend({
   // anything which *must* be merged to prototype here
 }) {
   // normal class body definition here
