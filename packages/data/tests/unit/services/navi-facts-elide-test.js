@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import GraphQLScenario from 'dummy/mirage/scenarios/elide-one';
+import GraphQLScenario from 'dummy/mirage/scenarios/elide-two';
 import moment from 'moment';
 
 const TestRequest = {
@@ -12,20 +12,26 @@ const TestRequest = {
     { field: 'table1.orderTimeDay', parameters: {}, type: 'timeDimension' },
     { field: 'table1.metric1', parameters: {}, type: 'metric' },
     { field: 'table1.metric2', parameters: {}, type: 'metric' },
-    { field: 'table1.dimension1', parameters: {}, type: 'dimension' },
-    { field: 'table1.dimension2', parameters: {}, type: 'dimension' }
+    { field: 'table1.dimension2', parameters: {}, type: 'dimension' },
+    { field: 'table1.dimension3', parameters: {}, type: 'dimension' }
   ],
   filters: [
-    { field: 'table1.dimension1', operator: 'eq', values: ['Small Metal Hat'], parameters: {}, type: 'dimension' },
     {
       field: 'table1.dimension2',
-      operator: 'notin',
-      values: ['Gorgeous Frozen Table', 'Refined Soft Sausages'],
+      operator: 'eq',
+      values: ['Incredible Metal Towels'],
       parameters: {},
       type: 'dimension'
     },
-    { field: 'table1.dimension3', operator: 'in', values: ['v1', 'v2'], parameters: {}, type: 'dimension' },
-    { field: 'table1.dimension4', operator: 'in', values: ['v3', 'v4'], parameters: {}, type: 'dimension' },
+    {
+      field: 'table1.dimension3',
+      operator: 'notin',
+      values: ['Unbranded Soft Sausage', 'Ergonomic Plastic Tuna'],
+      parameters: {},
+      type: 'dimension'
+    },
+    { field: 'table1.dimension4', operator: 'in', values: ['v1', 'v2'], parameters: {}, type: 'dimension' },
+    { field: 'table1.dimension5', operator: 'in', values: ['v3', 'v4'], parameters: {}, type: 'dimension' },
     { field: 'table1.metric1', operator: 'gt', values: ['0'], parameters: {}, type: 'metric' },
     {
       field: 'table1.eventTimeDay',
@@ -58,11 +64,11 @@ const TestRequest = {
   ],
   sorts: [
     { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension', direction: 'asc' },
-    { field: 'table1.dimension2', parameters: {}, type: 'dimension', direction: 'desc' }
+    { field: 'table1.dimension3', parameters: {}, type: 'dimension', direction: 'desc' }
   ],
   limit: 15,
   requestVersion: '2.0',
-  dataSource: 'elideOne'
+  dataSource: 'elideTwo'
 };
 
 module('Unit | Service | Navi Facts - Elide', function(hooks) {
@@ -81,144 +87,144 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     assert.deepEqual(
       response.response,
       {
+        meta: {},
         rows: [
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Unbranded Concrete Fish',
-            'table1.metric1': '785.60',
-            'table1.metric2': '590.23'
+            'table1.metric1': '231.96',
+            'table1.metric2': '969.93',
+            'table1.orderTimeDay': '2014-01-05'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Unbranded Concrete Fish',
-            'table1.metric1': '603.55',
-            'table1.metric2': '977.92'
+            'table1.metric1': '236.73',
+            'table1.metric2': '730.45',
+            'table1.orderTimeDay': '2014-01-06'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Refined Concrete Chair',
-            'table1.metric1': '83.56',
-            'table1.metric2': '774.72'
+            'table1.metric1': '385.95',
+            'table1.metric2': '463.94',
+            'table1.orderTimeDay': '2014-01-05'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Refined Concrete Chair',
-            'table1.metric1': '685.31',
-            'table1.metric2': '432.90'
+            'table1.metric1': '998.39',
+            'table1.metric2': '433.80',
+            'table1.orderTimeDay': '2014-01-06'
           },
           {
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Licensed Concrete Salad',
-            'table1.metric1': '965.49',
-            'table1.metric2': '534.25'
-          },
-          {
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Licensed Concrete Salad',
-            'table1.metric1': '729.00',
-            'table1.metric2': '611.60'
-          },
-          {
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Awesome Steel Pants',
-            'table1.metric1': '232.35',
-            'table1.metric2': '581.26'
-          },
-          {
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Awesome Steel Pants',
-            'table1.metric1': '276.24',
-            'table1.metric2': '946.29'
-          },
-          {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Unbranded Concrete Fish',
-            'table1.metric1': '517.87',
-            'table1.metric2': '791.83'
+            'table1.metric1': '389.34',
+            'table1.metric2': '661.33',
+            'table1.orderTimeDay': '2014-01-05'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Unbranded Concrete Fish',
-            'table1.metric1': '994.32',
-            'table1.metric2': '602.63'
+            'table1.metric1': '451.75',
+            'table1.metric2': '355.84',
+            'table1.orderTimeDay': '2014-01-06'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Refined Concrete Chair',
-            'table1.metric1': '186.96',
-            'table1.metric2': '146.24'
+            'table1.metric1': '723.84',
+            'table1.metric2': '196.83',
+            'table1.orderTimeDay': '2014-01-05'
           },
           {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Licensed Concrete Salad',
-            'table1.metric1': '48.48',
-            'table1.metric2': '456.50'
+            'table1.metric1': '476.87',
+            'table1.metric2': '676.99',
+            'table1.orderTimeDay': '2014-01-06'
           },
           {
-            'table1.eventTimeDay': '2015-01-30',
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.eventTimeDay': '2015-01-31',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Licensed Concrete Salad',
-            'table1.metric1': '520.67',
-            'table1.metric2': '591.28'
+            'table1.metric1': '545.26',
+            'table1.metric2': '114.62',
+            'table1.orderTimeDay': '2014-01-05'
           },
           {
-            'table1.eventTimeDay': '2015-01-30',
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.eventTimeDay': '2015-01-31',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-05',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Awesome Steel Pants',
-            'table1.metric1': '137.87',
-            'table1.metric2': '826.68'
+            'table1.metric1': '589.71',
+            'table1.metric2': '496.48',
+            'table1.orderTimeDay': '2014-01-06'
           },
           {
-            'table1.eventTimeDay': '2015-01-30',
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
+            'table1.eventTimeDay': '2015-01-31',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.orderTimeDay': '2014-01-06',
-            'table1.dimension1': 'Small Metal Hat',
-            'table1.dimension2': 'Awesome Steel Pants',
-            'table1.metric1': '578.79',
-            'table1.metric2': '441.69'
+            'table1.metric1': '432.79',
+            'table1.metric2': '246.23',
+            'table1.orderTimeDay': '2014-01-05'
+          },
+          {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
+            'table1.eventTimeDay': '2015-01-31',
+            'table1.eventTimeMonth': '2015 Jan',
+            'table1.metric1': '104.97',
+            'table1.metric2': '682.74',
+            'table1.orderTimeDay': '2014-01-06'
+          },
+          {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.eventTimeDay': '2015-02-01',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '861.11',
+            'table1.metric2': '824.58',
+            'table1.orderTimeDay': '2014-01-05'
+          },
+          {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.eventTimeDay': '2015-02-01',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '486.71',
+            'table1.metric2': '482.62',
+            'table1.orderTimeDay': '2014-01-06'
+          },
+          {
+            'table1.dimension2': 'Incredible Metal Towels',
+            'table1.dimension3': 'Ergonomic Steel Sausages',
+            'table1.eventTimeDay': '2015-02-01',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '308.03',
+            'table1.metric2': '227.94',
+            'table1.orderTimeDay': '2014-01-05'
           }
-        ],
-        meta: {}
+        ]
       },
       'Request V2 query is properly sent with all necessary arguments supplied'
     );
@@ -238,14 +244,14 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [{ field: 'table1.metric2', parameters: {}, type: 'metric', direction: 'asc' }],
         limit: 15,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       response.response,
-      { rows: [{ 'table1.metric1': '384.77', 'table1.metric2': '897.01' }], meta: {} },
+      { rows: [{ 'table1.metric1': '823.11', 'table1.metric2': '823.38' }], meta: {} },
       'Request with only metrics is formatted correctly'
     );
   });
@@ -295,9 +301,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
@@ -317,14 +323,14 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
     assert.deepEqual(
       noTimeDimResponse.response,
       {
-        rows: [{ 'table1.metric1': '97.53' }],
+        rows: [{ 'table1.metric1': '307.93' }],
         meta: {}
       },
       'An invalid filter on a non-requested field does not affect the response'
@@ -353,17 +359,17 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       response.response,
       {
         rows: [
-          { 'table1.eventTimeMonth': '2015 Jan', 'table1.metric1': '38.56' },
-          { 'table1.eventTimeMonth': '2015 Feb', 'table1.metric1': '195.76' }
+          { 'table1.eventTimeMonth': '2015 Jan', 'table1.metric1': '17.49' },
+          { 'table1.eventTimeMonth': '2015 Feb', 'table1.metric1': '426.48' }
         ],
         meta: {}
       },
@@ -389,16 +395,16 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
     assert.deepEqual(
       noStartDateResponse.response,
       {
         rows: [
-          { 'table1.eventTimeMonth': '2014 Nov', 'table1.metric1': '38.56' },
-          { 'table1.eventTimeMonth': '2014 Dec', 'table1.metric1': '195.76' }
+          { 'table1.eventTimeMonth': '2014 Nov', 'table1.metric1': '17.49' },
+          { 'table1.eventTimeMonth': '2014 Dec', 'table1.metric1': '426.48' }
         ],
         meta: {}
       },
@@ -426,9 +432,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
@@ -484,20 +490,29 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [{ field: 'table1.metric1', parameters: {}, type: 'metric', direction: 'asc' }],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       response.response,
       {
+        meta: {},
         rows: [
-          { 'table1.eventTimeDay': '2015-01-02', 'table1.metric1': '139.22' },
-          { 'table1.eventTimeDay': '2015-01-03', 'table1.metric1': '464.10' },
-          { 'table1.eventTimeDay': '2015-01-01', 'table1.metric1': '944.50' }
-        ],
-        meta: {}
+          {
+            'table1.eventTimeDay': '2015-01-03',
+            'table1.metric1': '44.71'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-02',
+            'table1.metric1': '327.11'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-01',
+            'table1.metric1': '675.73'
+          }
+        ]
       },
       'Response is sorted as specified by the request'
     );
@@ -506,88 +521,88 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       {
         table: 'table1',
         columns: [
-          { field: 'table1.dimension1', parameters: {}, type: 'dimension' },
           { field: 'table1.dimension2', parameters: {}, type: 'dimension' },
+          { field: 'table1.dimension3', parameters: {}, type: 'dimension' },
           { field: 'table1.metric1', parameters: {}, type: 'metric' }
         ],
         filters: [],
         sorts: [
-          { field: 'table1.dimension1', parameters: {}, type: 'metric', direction: 'asc' },
-          { field: 'table1.dimension2', parameters: {}, type: 'metric', direction: 'asc' }
+          { field: 'table1.dimension2', parameters: {}, type: 'metric', direction: 'asc' },
+          { field: 'table1.dimension3', parameters: {}, type: 'metric', direction: 'asc' }
         ],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       multiSortResponse.response,
       {
+        meta: {},
         rows: [
           {
-            'table1.dimension1': 'Licensed Cotton Computer',
-            'table1.dimension2': 'Gorgeous Frozen Sausages',
-            'table1.metric1': '990.67'
+            'table1.dimension2': 'Handmade Rubber Fish',
+            'table1.dimension3': 'Awesome Cotton Sausages',
+            'table1.metric1': '913.34'
           },
           {
-            'table1.dimension1': 'Licensed Cotton Computer',
-            'table1.dimension2': 'Licensed Granite Sausages',
-            'table1.metric1': '825.82'
+            'table1.dimension2': 'Handmade Rubber Fish',
+            'table1.dimension3': 'Handcrafted Concrete Pizza',
+            'table1.metric1': '220.58'
           },
           {
-            'table1.dimension1': 'Licensed Cotton Computer',
-            'table1.dimension2': 'Sleek Metal Tuna',
-            'table1.metric1': '414.83'
+            'table1.dimension2': 'Handmade Rubber Fish',
+            'table1.dimension3': 'Small Metal Mouse',
+            'table1.metric1': '286.62'
           },
           {
-            'table1.dimension1': 'Refined Rubber Soap',
-            'table1.dimension2': 'Gorgeous Frozen Sausages',
-            'table1.metric1': '946.26'
+            'table1.dimension2': 'Handmade Rubber Fish',
+            'table1.dimension3': 'Unbranded Wooden Pizza',
+            'table1.metric1': '188.92'
           },
           {
-            'table1.dimension1': 'Refined Rubber Soap',
-            'table1.dimension2': 'Licensed Granite Sausages',
-            'table1.metric1': '247.63'
+            'table1.dimension2': 'Incredible Rubber Tuna',
+            'table1.dimension3': 'Awesome Cotton Sausages',
+            'table1.metric1': '403.35'
           },
           {
-            'table1.dimension1': 'Refined Rubber Soap',
-            'table1.dimension2': 'Sleek Metal Tuna',
-            'table1.metric1': '335.55'
+            'table1.dimension2': 'Incredible Rubber Tuna',
+            'table1.dimension3': 'Handcrafted Concrete Pizza',
+            'table1.metric1': '500.33'
           },
           {
-            'table1.dimension1': 'Sleek Cotton Shoes',
-            'table1.dimension2': 'Gorgeous Frozen Sausages',
-            'table1.metric1': '344.62'
+            'table1.dimension2': 'Incredible Rubber Tuna',
+            'table1.dimension3': 'Small Metal Mouse',
+            'table1.metric1': '131.54'
           },
           {
-            'table1.dimension1': 'Sleek Cotton Shoes',
-            'table1.dimension2': 'Licensed Granite Sausages',
-            'table1.metric1': '252.27'
+            'table1.dimension2': 'Incredible Rubber Tuna',
+            'table1.dimension3': 'Unbranded Wooden Pizza',
+            'table1.metric1': '441.55'
           },
           {
-            'table1.dimension1': 'Sleek Cotton Shoes',
-            'table1.dimension2': 'Sleek Metal Tuna',
-            'table1.metric1': '628.05'
+            'table1.dimension2': 'Licensed Concrete Fish',
+            'table1.dimension3': 'Awesome Cotton Sausages',
+            'table1.metric1': '528.84'
           },
           {
-            'table1.dimension1': 'Small Soft Bacon',
-            'table1.dimension2': 'Gorgeous Frozen Sausages',
-            'table1.metric1': '919.59'
+            'table1.dimension2': 'Licensed Concrete Fish',
+            'table1.dimension3': 'Handcrafted Concrete Pizza',
+            'table1.metric1': '992.46'
           },
           {
-            'table1.dimension1': 'Small Soft Bacon',
-            'table1.dimension2': 'Licensed Granite Sausages',
-            'table1.metric1': '469.79'
+            'table1.dimension2': 'Licensed Concrete Fish',
+            'table1.dimension3': 'Small Metal Mouse',
+            'table1.metric1': '337.40'
           },
           {
-            'table1.dimension1': 'Small Soft Bacon',
-            'table1.dimension2': 'Sleek Metal Tuna',
-            'table1.metric1': '233.23'
+            'table1.dimension2': 'Licensed Concrete Fish',
+            'table1.dimension3': 'Unbranded Wooden Pizza',
+            'table1.metric1': '974.83'
           }
-        ],
-        meta: {}
+        ]
       },
       'Multiple sorts are handled properly in order'
     );
@@ -622,20 +637,29 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: 3,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       response.response,
       {
+        meta: {},
         rows: [
-          { 'table1.eventTimeDay': '2015-01-01', 'table1.metric1': '384.77' },
-          { 'table1.eventTimeDay': '2015-01-02', 'table1.metric1': '897.01' },
-          { 'table1.eventTimeDay': '2015-01-03', 'table1.metric1': '859.71' }
-        ],
-        meta: {}
+          {
+            'table1.eventTimeDay': '2015-01-01',
+            'table1.metric1': '823.11'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-02',
+            'table1.metric1': '823.38'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-03',
+            'table1.metric1': '26.11'
+          }
+        ]
       },
       'Limit in the request determines the max number of rows returned'
     );
@@ -666,26 +690,53 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         sorts: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideTwo'
       },
-      { dataSourceName: 'elideOne' }
+      { dataSourceName: 'elideTwo' }
     );
 
     assert.deepEqual(
       limitless.response,
       {
+        meta: {},
         rows: [
-          { 'table1.eventTimeDay': '2015-01-01', 'table1.metric1': '858.89' },
-          { 'table1.eventTimeDay': '2015-01-02', 'table1.metric1': '59.65' },
-          { 'table1.eventTimeDay': '2015-01-03', 'table1.metric1': '372.71' },
-          { 'table1.eventTimeDay': '2015-01-04', 'table1.metric1': '421.04' },
-          { 'table1.eventTimeDay': '2015-01-05', 'table1.metric1': '555.13' },
-          { 'table1.eventTimeDay': '2015-01-06', 'table1.metric1': '330.39' },
-          { 'table1.eventTimeDay': '2015-01-07', 'table1.metric1': '955.66' },
-          { 'table1.eventTimeDay': '2015-01-08', 'table1.metric1': '754.00' },
-          { 'table1.eventTimeDay': '2015-01-09', 'table1.metric1': '736.67' }
-        ],
-        meta: {}
+          {
+            'table1.eventTimeDay': '2015-01-01',
+            'table1.metric1': '783.84'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-02',
+            'table1.metric1': '258.04'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-03',
+            'table1.metric1': '634.84'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-04',
+            'table1.metric1': '684.22'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-05',
+            'table1.metric1': '249.04'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-06',
+            'table1.metric1': '917.34'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-07',
+            'table1.metric1': '758.08'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-08',
+            'table1.metric1': '204.93'
+          },
+          {
+            'table1.eventTimeDay': '2015-01-09',
+            'table1.metric1': '313.08'
+          }
+        ]
       },
       'A null limit in the request results in no row limit'
     );
