@@ -4,6 +4,7 @@ import { render } from '@ember/test-helpers';
 import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
   <NaviColumnConfig::Base
@@ -17,23 +18,27 @@ const TEMPLATE = hbs`
 
 module('Integration | Component | navi-column-config/time-dimension', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
     this.cloneColumn = () => undefined;
     this.toggleColumnFilter = () => undefined;
     this.onUpdateColumnName = () => undefined;
+    this.fragmentFactory = this.owner.lookup('service:fragment-factory');
+    await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('Configuring time grain', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     this.owner.register(
       'helper:update-report-action',
-      buildHelper(() => timeGrain => {
+      buildHelper(() => (fragment, key, value) => {
+        assert.equal(fragment.field, 'network.dateTime', 'The column fragment is pass correctly to the action handler');
         assert.deepEqual(
-          timeGrain,
-          { id: 'day', name: 'Day' },
-          'The Time Grain is passed correctly to the action handler'
+          { [key]: value },
+          { grain: 'day' },
+          'The grain parameter is passed correctly to the action handler'
         );
       }),
       { instantiate: false }
@@ -42,25 +47,9 @@ module('Integration | Component | navi-column-config/time-dimension', function(h
     this.column = {
       type: 'timeDimension',
       name: 'dateTime',
-      fragment: 'dateTime',
-      isFiltered: true,
-      timeGrain: 'week',
-      timeGrains: [
-        {
-          id: 'hour',
-          name: 'Hour'
-        },
-        {
-          id: 'day',
-          name: 'Day'
-        },
-        {
-          id: 'week',
-          name: 'Week'
-        }
-      ]
+      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime', { grain: 'week' }),
+      isFiltered: true
     };
-
     await render(TEMPLATE);
 
     assert

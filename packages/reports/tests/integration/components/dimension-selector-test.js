@@ -12,11 +12,8 @@ let Store, MetadataService, Age;
 
 const TEMPLATE = hbs`<DimensionSelector
   @request={{this.request}}
-  @onAddTimeGrain={{this.addTimeGrain}}
-  @onRemoveTimeGrain={{this.removeTimeGrain}}
-  @onAddDimension={{this.addDimension}}
-  @onRemoveDimension={{this.removeDimension}}
-  @onToggleDimFilter={{this.addDimFilter}}
+  @onAddDimension={{this.onAddDimension}}
+  @onToggleDimFilter={{this.onToggleDimFilter}}
 />`;
 
 module('Integration | Component | dimension selector', function(hooks) {
@@ -27,10 +24,8 @@ module('Integration | Component | dimension selector', function(hooks) {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:navi-metadata');
 
-    this.set('addTimeGrain', () => {});
-    this.set('removeTimeGrain', () => {});
-    this.set('addDimension', () => {});
-    this.set('addDimFilter', () => {});
+    this.set('onAddDimension', () => {});
+    this.set('onToggleDimFilter', () => {});
 
     await MetadataService.loadMetadata();
     Age = MetadataService.getById('dimension', 'age', 'bardOne');
@@ -38,14 +33,19 @@ module('Integration | Component | dimension selector', function(hooks) {
     //set report object
     this.set(
       'request',
-      Store.createFragment('bard-request/request', {
-        logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-          table: MetadataService.getById('table', 'tableA', 'bardOne'),
-          timeGrain: 'day'
-        }),
-        dimensions: [{ dimension: Age }],
-        filters: [{ dimension: Age }],
-        responseFormat: 'csv'
+      Store.createFragment('bard-request-v2/request', {
+        table: 'tableA',
+        dataSource: 'bardOne',
+        filters: [
+          {
+            field: 'age',
+            parameters: { field: 'id' },
+            type: 'dimension',
+            source: 'bardOne',
+            operator: 'in',
+            values: [1]
+          }
+        ]
       })
     );
   });
@@ -71,55 +71,19 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
-      ['Date (1)', 'test (27)', 'Asset (4)'],
+      ['test (27)', 'Asset (4)', 'Date (1)'],
       'The groups rendered by the component include dimension groups and Date'
     );
   });
 
-  test('add/remove time grain', async function(assert) {
+  test('add dimension', async function(assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
-    this.set('request.logicalTable.timeGrain', 'week');
-
-    //a time grain is selected
-    this.set('addTimeGrain', item => {
-      assert.equal(item.id, 'week', 'addTimeGrain is called with the already selected time grain');
-    });
-
-    this.set('removeTimeGrain', () => {
-      assert.ok(false, 'removeTimeGrain was called');
-    });
-
-    await render(TEMPLATE);
-
-    await clickItem('timeGrain', 'Date Time');
-
-    //a time grain is not selected
-    this.set('request.logicalTable.timeGrain', 'all');
-
-    this.set('addTimeGrain', item => {
-      assert.equal(
-        item.id,
-        config.navi.defaultTimeGrain,
-        'addTimeGrain is called with the default time grain when a time grain is not selected'
-      );
-    });
-
-    await clickItem('timeGrain', 'Date Time');
-  });
-
-  test('add/remove dimension', async function(assert) {
-    assert.expect(2);
-
-    await render(TEMPLATE);
-
-    this.set('addDimension', item => {
+    this.set('onAddDimension', item => {
       assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action');
     });
-
-    this.set('removeDimension', () => assert.ok(false, 'removeDimension is not called'));
 
     //addDimension when an unselected dimension is clicked
     await clickItem('dimension', 'Gender');
@@ -148,7 +112,7 @@ module('Integration | Component | dimension selector', function(hooks) {
       );
     await resetGender();
 
-    this.set('addDimFilter', dimension => {
+    this.set('onToggleDimFilter', dimension => {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 

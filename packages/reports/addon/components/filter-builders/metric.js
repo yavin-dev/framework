@@ -77,7 +77,7 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
     const { columnMetadata, parameters } = this.requestFragment;
     return getOwner(this)
       .lookup('service:navi-formatter')
-      .formatMetric(columnMetadata, parameters);
+      .formatColumnName(columnMetadata, parameters);
   }
 
   /**

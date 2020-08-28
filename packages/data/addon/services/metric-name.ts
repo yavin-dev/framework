@@ -32,7 +32,7 @@ export default class MetricNameService extends Service {
   getDisplayName(metricObject: TODO, dataSourceName: string): string {
     //TODO v2-ify
     const metricMeta = this.naviMetadata.getById('metric', metricObject.metric, metricObject.source || dataSourceName);
-    return this.naviFormatter.formatMetric(metricMeta, metricObject.parameters);
+    return this.naviFormatter.formatColumnName(metricMeta, metricObject.parameters);
   }
 }
 

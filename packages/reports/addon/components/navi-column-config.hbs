@@ -1,7 +1,7 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <AnimatedContainer class="navi-column-config" ...attributes
   {{did-insert this.setupElement}}
-  {{did-update this.openDefaultColumn this.columns}}>
+>
   {{#animated-if @isOpen use=this.drawerTransition duration=200}}
     <div class="navi-column-config__panel">
       <h3 class="navi-column-config__title">Columns</h3>
@@ -9,13 +9,13 @@
         {{#each this.columns key="fragment" as |column|}}
           <NaviColumnConfig::Item
             @column={{column}}
-            @isLastAdded={{eq column this.lastAddedItem}}
+            @isLastAdded={{eq column.fragment @lastAddedColumn}}
             @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
             @onOpenColumn={{this.openColumn}}
             @visualization={{@report.visualization}}
-            @onRemoveColumn={{fn this.removeColumn column}}
+            @onRemoveColumn={{fn @onRemoveColumn column.fragment}}
             @cloneColumn={{fn this.cloneColumn column}}
-            @toggleColumnFilter={{fn this.toggleColumnFilter column}}
+            @toggleColumnFilter={{fn @onToggleFilter column}}
             @onRenameColumn={{fn this.renameColumn column.fragment}}
           />
         {{/each}}
