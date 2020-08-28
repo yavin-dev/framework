@@ -9,7 +9,7 @@
  *    @column={{this.column}}
  *    @metadata={{this.visualization.metadata}}
  *    @onUpdateColumnName={{this.onUpdateColumnName}}
- *    @onUpdateMetricParam={{this.onUpdateMetricParam}}
+ *    @onUpdateColumnParam={{this.onUpdateColumnParam}}
  *  />
  */
 import Component from '@ember/component';
@@ -31,20 +31,15 @@ class NaviColumnConfigMetricComponent extends Component {
   /**
    * @property {String} classId - a unique id for this instance of the column config
    */
-  get classId() {
-    return guidFor(this);
-  }
+  classId = guidFor(this);
 
   /**
    * @property {Array} metricParameters - Returns a list of the metrics parameters or empty if there are none
    */
-  @computed('column.fragment.metric.parameters.{}')
+  @computed('column.fragment.parameters.{}')
   get metricParameters() {
-    const { metric } = this.column.fragment;
-    if (!metric.hasParameters) {
-      return [];
-    }
-    return metric.parameters;
+    const { columnMetadata } = this.column.fragment;
+    return columnMetadata.hasParameters ? columnMetadata.parameters : [];
   }
 
   /**
@@ -68,15 +63,15 @@ class NaviColumnConfigMetricComponent extends Component {
   /**
    * @property {Promise} - A promise to an object of parameter to its list of values for the given metric
    */
-  @computed('column.fragment.metric')
+  @computed('column.fragment')
   get allParameters() {
-    const { metric } = this.column.fragment;
-    if (!metric.hasParameters) {
+    const { columnMetadata } = this.column.fragment;
+    if (!columnMetadata.hasParameters) {
       return Promise.resolve({});
     }
 
     return this.parameterService
-      .fetchAllParams(metric)
+      .fetchAllParams(columnMetadata)
       .then(result => groupBy(Object.values(result), paramValue => paramValue.param));
   }
 
@@ -86,9 +81,7 @@ class NaviColumnConfigMetricComponent extends Component {
    */
   @action
   updateMetricParam(param) {
-    const { fragment: metricFragment } = this.column;
-
-    this.onUpdateMetricParam(metricFragment, param.id, param.param);
+    this.onUpdateColumnParam(this.column.fragment, param.param, param.id);
   }
 }
 

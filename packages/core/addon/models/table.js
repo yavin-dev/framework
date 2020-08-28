@@ -73,7 +73,7 @@ function buildMetricColumns(metrics, columnIndex, naviFormatter) {
     const column = columnIndex[metric.columnMetadata.id];
     const displayName = column
       ? column.displayName
-      : naviFormatter.formatMetric(metric.columnMetadata, metric.parameters, metric.alias);
+      : naviFormatter.formatColumnName(metric.columnMetadata, metric.parameters, metric.alias);
     const format = column ? get(column, 'attributes.format') : '';
 
     return {

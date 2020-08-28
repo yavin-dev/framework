@@ -3,14 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#metric-selector
- *      request=request
- *      onAddMetric=(action 'add')
- *      onRemoveMetric=(action 'remove')
- *      onToggleMetricFilter=(action 'addFilter')
- *   }}
- *      {{navi-list-selector}}
- *   {{/metric-selector}}
+ *   <MetricSelector
+ *     @request={{this.request}}
+ *     @onAddMetric={{this.onAddMetric}}
+ *     @onToggleMetricFilter={{this.onToggleMetricFilter}}
+ *   />
  */
 
 import { throttle } from '@ember/runloop';

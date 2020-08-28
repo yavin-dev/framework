@@ -21,18 +21,9 @@ interface NaviColumnConfigBaseArgs {
 }
 
 export default class NaviColumnConfigBase extends Component<NaviColumnConfigBaseArgs> {
-  /**
-   * A unique id for this instance of the column config
-   */
-  get classId(): string {
-    return guidFor(this);
-  }
+  classId = guidFor(this);
 
-  /**
-   * The api name for the column
-   */
   get apiColumnName(): string {
-    const { column } = this.args;
-    return column.name === 'dateTime' ? 'dateTime' : column.fragment[column.type].id;
+    return this.args.column.fragment.columnMetadata.id;
   }
 }

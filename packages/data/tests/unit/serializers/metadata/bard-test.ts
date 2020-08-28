@@ -124,7 +124,7 @@ const Payload: RawEverythingPayload = {
             }
           ],
           retention: 'P24M',
-          longName: 'MONTH',
+          longName: 'Month',
           dimensions: [
             {
               category: 'categoryOne',
@@ -389,8 +389,8 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
     supportedGrains: [
       {
         expression: '',
-        grain: 'DAY',
-        id: 'secondTable.grain.day'
+        grain: 'Day',
+        id: 'day'
       }
     ],
     timeZone: 'utc'
@@ -406,13 +406,13 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
     supportedGrains: [
       {
         expression: '',
-        grain: 'DAY',
-        id: 'tableName.dateTime.day'
+        grain: 'Day',
+        id: 'day'
       },
       {
         expression: '',
-        grain: 'MONTH',
-        id: 'tableName.dateTime.month'
+        grain: 'Month',
+        id: 'month'
       }
     ],
     timeZone: 'UTC',
@@ -430,13 +430,13 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
     supportedGrains: [
       {
         expression: '',
-        grain: 'DAY',
-        id: 'secondTable.dateTime.day'
+        grain: 'Day',
+        id: 'day'
       },
       {
         expression: '',
-        grain: 'WEEK',
-        id: 'secondTable.dateTime.week'
+        grain: 'Week',
+        id: 'week'
       }
     ],
     timeZone: 'UTC',
@@ -643,7 +643,7 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
         type: 'ref',
         _localValues: [
           { id: 'day', description: 'The tableName day grain', name: 'Day' },
-          { id: 'month', description: 'The tableName month grain', name: 'MONTH' }
+          { id: 'month', description: 'The tableName month grain', name: 'Month' }
         ]
       }
     ]

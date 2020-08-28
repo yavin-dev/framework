@@ -71,8 +71,7 @@ type RequestV1<T> = {
 export function toggleAlias(
   field: Array<{ metric: Metric | string }>,
   aliasMap: Dict<string> = {},
-  canonMap: Dict<Metric> = {},
-  namespace?: string
+  canonMap: Dict<Metric> = {}
 ): TODO[] {
   if (!field) {
     return [];
@@ -85,9 +84,6 @@ export function toggleAlias(
     obj.metric = canonMap[obj.metric] || obj.metric;
     obj.metric = typeof obj.metric === 'string' ? obj.metric : Object.assign({}, obj.metric);
 
-    if (namespace && obj.metric.metric) {
-      obj.metric.metric = `${namespace}.${obj.metric.metric}`;
-    }
     return obj;
   });
 }
@@ -125,8 +121,8 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   );
 
   const normalized = Object.assign({}, request, {
-    having: toggleAlias(request.having, aliasToCanon, canonToMetric, namespace),
-    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric, namespace)
+    having: toggleAlias(request.having, aliasToCanon, canonToMetric),
+    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric)
   });
 
   if (!normalized.dataSource && namespace) {
@@ -138,25 +134,8 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
     if (hasParameters(metric)) {
       delete metric.parameters?.as;
     }
-    if (namespace) {
-      metric.metric = `${namespace}.${metric.metric}`;
-    }
     return metric;
   });
-
-  if (namespace) {
-    normalized.logicalTable.table = `${namespace}.${normalized.logicalTable.table}`;
-
-    normalized.dimensions = normalized.dimensions.map(dimension => {
-      dimension.dimension = `${namespace}.${dimension.dimension}`;
-      return dimension;
-    });
-
-    normalized.filters = normalized.filters.map(filter => {
-      filter.dimension = `${namespace}.${filter.dimension}`;
-      return filter;
-    });
-  }
 
   return normalized;
 }
@@ -187,7 +166,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
 
   //normalize dateTime column
   requestV2.columns.push({
-    field: 'dateTime',
+    field: `${table}.dateTime`,
     parameters: { grain },
     type: 'timeDimension'
   });
@@ -216,7 +195,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   normalized.intervals.forEach(({ start, end }) =>
     requestV2.filters.push({
       type: 'timeDimension',
-      field: 'dateTime',
+      field: `${table}.dateTime`,
       operator: 'bet',
       values: [start, end],
       parameters: {
@@ -252,7 +231,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     const isDateTime = metric === 'dateTime' || metric.endsWith('.dateTime');
     requestV2.sorts.push({
       type: isDateTime ? 'timeDimension' : 'metric',
-      field: isDateTime ? 'dateTime' : removeNamespace(metric, dataSource),
+      field: isDateTime ? `${table}.dateTime` : removeNamespace(metric, dataSource),
       parameters: isDateTime ? { grain } : parameters,
       direction
     });

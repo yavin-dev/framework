@@ -1,4 +1,3 @@
-import DS from 'ember-data';
 import RequestV2Fragment from 'navi-core/models/bard-request-v2/request';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
@@ -12,8 +11,8 @@ interface FragmentRegistry {
   [key: string]: any;
 }
 
-declare class StoreWithFragment extends DS.Store {
-  createFragment<K extends keyof FragmentRegistry>(fragmentName: K, attributes: object): FragmentRegistry[K];
+declare module '@ember-data/store' {
+  export default interface Store {
+    createFragment<K extends keyof FragmentRegistry>(fragmentName: K, attributes: object): FragmentRegistry[K];
+  }
 }
-
-export default StoreWithFragment;

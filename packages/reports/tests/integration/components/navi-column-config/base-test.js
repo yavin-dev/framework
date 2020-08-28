@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { helper as buildHelper } from '@ember/component/helper';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
 <NaviColumnConfig::Base 
@@ -15,18 +16,21 @@ const TEMPLATE = hbs`
 
 module('Integration | Component | navi-column-config/base', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.owner.register(
       'helper:update-report-action',
       buildHelper(() => {}),
       { instantiate: false }
     );
+    this.fragmentFactory = this.owner.lookup('service:fragment-factory');
 
     this.metadata = {};
     this.cloneColumn = () => undefined;
     this.toggleColumnFilter = () => undefined;
     this.onUpdateColumnName = () => undefined;
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders ', async function(assert) {
@@ -34,44 +38,47 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       name: 'property',
       type: 'dimension',
       displayName: 'Property',
-      fragment: { dimension: { id: 'property', name: 'Property' } }
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     });
 
     await render(TEMPLATE);
 
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText(this.column.fragment.dimension.id, 'NaviColumnConfig::Base renders dimension API column name');
+      .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders dimension API column name');
 
     assert
       .dom('.navi-column-config-base__api-column-name')
       .hasAttribute(
         'title',
-        `API Column: ${this.column.fragment.dimension.id}`,
+        `API Column: ${this.column.fragment.columnMetadata.id}`,
         'NaviColumnConfig::Base renders a title attribute for the API Column name'
       );
 
     this.set('column', {
-      name: 'clicks',
+      name: 'adClicks',
       type: 'metric',
-      displayName: 'Clicks',
-      fragment: { metric: { id: 'clicks', name: 'Clicks' } }
+      displayName: 'Ad Clicks',
+      fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks')
     });
 
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText(this.column.fragment.metric.id, 'NaviColumnConfig::Base renders metric API column name');
+      .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders metric API column name');
 
     this.set('column', {
       name: 'dateTime',
       type: 'timeDimension',
       displayName: 'Date Time',
-      fragment: 'dateTime' //TODO make me real
+      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime')
     });
 
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText('dateTime', 'NaviColumnConfig::Base has a special case for rendering the dateTime API column name');
+      .hasText(
+        'network.dateTime',
+        'NaviColumnConfig::Base has a special case for rendering the dateTime API column name'
+      );
   });
 
   test('it supports action', async function(assert) {
@@ -80,7 +87,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       name: 'property',
       type: 'dimension',
       displayName: 'Property',
-      fragment: { dimension: { id: 'property', name: 'Property' } }
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     };
     this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
     this.toggleColumnFilter = () => assert.ok(true, 'toggleColumnFilter is called when filter is clicked');
@@ -110,7 +117,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       type: 'dimension',
       displayName: 'Property',
       isFiltered: false,
-      fragment: { dimension: { name: 'Property' } }
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     };
 
     await render(TEMPLATE);

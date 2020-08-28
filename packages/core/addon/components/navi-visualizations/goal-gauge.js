@@ -85,7 +85,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
       dateSourceName
     } = this;
     const metricMetadata = this.naviMetadata.getById('metric', metric.metric, dateSourceName);
-    return this.naviFormatter.formatMetric(metricMetadata, metric.parameters);
+    return this.naviFormatter.formatColumnName(metricMetadata, metric.parameters);
   }
 
   /**

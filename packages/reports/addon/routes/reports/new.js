@@ -7,10 +7,6 @@ import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { get } from '@ember/object';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
-import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
-import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 import config from 'ember-get-config';
 
 export default Route.extend({
@@ -93,30 +89,18 @@ export default Route.extend({
    * @returns {Promise} route model
    */
   _newModel() {
-    let author = get(this, 'user').getUser();
+    const author = this.user.getUser();
+    const defaultVisualization = this.naviVisualizations.defaultVisualization();
+    const table = this._getDefaultTable();
 
-    // Default to first data source + time grain
-    let defaultVisualization = get(this, 'naviVisualizations').defaultVisualization(),
-      table = this._getDefaultTable(),
-      timeGrain = getDefaultTimeGrain(table.timeGrains)?.id;
-
-    let report = this.store.createRecord('report', {
+    const report = this.store.createRecord('report', {
       author,
-      request: this.store.createFragment('bard-request/request', {
-        logicalTable: this.store.createFragment('bard-request/fragments/logicalTable', {
-          table,
-          timeGrain
-        }),
-        dataSource: table.source,
-        responseFormat: 'csv'
+      request: this.store.createFragment('bard-request-v2/request', {
+        table: table.id,
+        dataSource: table.source
       }),
       visualization: { type: defaultVisualization }
     });
-
-    get(report, 'request.intervals').createFragment({
-      interval: new Interval(new Duration(DefaultIntervals[timeGrain]), 'current')
-    });
-
     return report;
   },
 
@@ -130,7 +114,6 @@ export default Route.extend({
   _getDefaultTable() {
     const { metadataService } = this;
     let table = metadataService.all('table').findBy('id', config.navi.defaultDataTable);
-
     if (!table) {
       let tables = metadataService.all('table').sortBy('name');
       table = tables[0];
