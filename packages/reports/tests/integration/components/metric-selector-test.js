@@ -14,9 +14,8 @@ let Store, MetadataService, AdClicks;
 
 const TEMPLATE = hbs`<MetricSelector
   @request={{this.request}}
-  @onAddMetric={{this.addMetric}}
-  @onRemoveMetric={{this.removeMetric}}
-  @onToggleMetricFilter={{this.addMetricFilter}}
+  @onAddMetric={{this.onAddMetric}}
+  @onToggleMetricFilter={{this.onToggleMetricFilter}}
 />`;
 
 module('Integration | Component | metric selector', function(hooks) {
@@ -40,35 +39,18 @@ module('Integration | Component | metric selector', function(hooks) {
       { instantiate: false }
     );
 
-    this.set('addMetric', () => {});
-    this.set('addMetricFilter', () => {});
+    this.set('onAddMetric', () => {});
+    this.set('onToggleMetricFilter', () => {});
 
     await MetadataService.loadMetadata();
     AdClicks = MetadataService.getById('metric', 'adClicks', 'bardOne');
     //set report object
     this.set(
       'request',
-      Store.createFragment('bard-request/request', {
-        logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-          table: MetadataService.getById('table', 'tableA', 'bardOne'),
-          timeGrain: 'day'
-        }),
-        metrics: [
-          {
-            metric: AdClicks,
-            parameters: {
-              adType: 'BannerAds'
-            }
-          },
-          {
-            metric: AdClicks,
-            parameters: {
-              adType: 'VideoAds'
-            }
-          }
-        ],
-        having: A([{ metric: { metric: AdClicks } }]),
-        responseFormat: 'csv'
+      Store.createFragment('bard-request-v2/request', {
+        table: 'tableA',
+        dataSource: 'bardOne',
+        filters: [{ field: 'adClicks', type: 'metric', source: 'bardOne', operator: 'in', values: [1] }]
       })
     );
   });
@@ -87,23 +69,21 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the metric selector');
   });
 
-  test('add and remove metric actions', async function(assert) {
+  test('add metric actions', async function(assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
-    this.set('addMetric', metric => {
+    this.set('onAddMetric', metric => {
       assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
-
-    this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called'));
 
     await render(TEMPLATE);
 
     //add total clicks
     await clickItem('metric', 'Total Clicks');
 
-    //clicking again adds when feature flag is on
+    //clicking again adds column
     await clickItem('metric', 'Total Clicks');
   });
 
@@ -126,7 +106,7 @@ module('Integration | Component | metric selector', function(hooks) {
     );
     await totalClicksReset();
 
-    this.set('addMetricFilter', metric => {
+    this.set('onToggleMetricFilter', metric => {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 

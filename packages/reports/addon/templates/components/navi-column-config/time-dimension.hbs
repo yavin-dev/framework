@@ -8,11 +8,11 @@
     @triggerId="navi-column-config-item-datetime-timegrain"
     @dropdownClass="navi-column-config-item__parameter-dropdown"
     @searchEnabled={{false}}
-    @options={{@column.timeGrains}}
-    @selected={{find-by 'id' @column.timeGrain @column.timeGrains}}
+    @options={{@column.fragment.columnMetadata.supportedGrains}}
+    @selected={{find-by 'id' @column.fragment.parameters.grain @column.fragment.columnMetadata.supportedGrains}}
     @onchange={{this.updateTimeGrain}}
-    as | grain |
+    as | option |
   >
-    {{grain.name}}
+    {{option.grain}}
   </PowerSelect>
 </div>

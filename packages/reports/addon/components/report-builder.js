@@ -85,6 +85,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleParameterizedMetricFilter(metric, parameters) {
+    //TODO clean me up
     this._expandFilters(() =>
       this.request.metricFilters.find(
         filter => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })

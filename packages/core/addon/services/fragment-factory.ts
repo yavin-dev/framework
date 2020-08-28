@@ -11,7 +11,7 @@ import ColumnFragment from '../models/bard-request-v2/fragments/column';
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 //@ts-ignore
 import SortFragment from '../models/bard-request-v2/fragments/sort';
-import { dasherize } from '@ember/string';
+import { camelize } from '@ember/string';
 import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 type FieldType = 'metric' | 'dimension' | 'timeDimension';
@@ -145,7 +145,7 @@ export default class FragmentFactory extends Service {
    * @param columnMetadata - meta data to get type from
    */
   private _getMetaColumnType(columnMetadata: ColumnMetadata): FieldType {
-    return dasherize(columnMetadata.constructor.name).replace('-metadata-model', '') as FieldType;
+    return camelize(columnMetadata.constructor.name).replace('MetadataModel', '') as FieldType;
   }
 }
 

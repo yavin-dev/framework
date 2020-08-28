@@ -33,8 +33,8 @@ export default class MetricFormatHelper extends Helper {
   compute([metric, namespace = getDefaultDataSourceName(), alias /*...rest*/]: [TODO?, string?, string?]): string {
     const metricMeta = this.naviMetadata.getById('metric', metric?.metric, namespace) as Metric | undefined;
     if (metricMeta) {
-      return this.naviFormatter.formatMetric(metricMeta, metric?.parameters, alias);
+      return this.naviFormatter.formatColumnName(metricMeta, metric?.parameters, alias);
     }
-    return this.naviFormatter.formatMetric({ name: metric?.metric } as Metric, metric?.parameters, alias);
+    return this.naviFormatter.formatColumnName({ name: metric?.metric } as Metric, metric?.parameters, alias);
   }
 }

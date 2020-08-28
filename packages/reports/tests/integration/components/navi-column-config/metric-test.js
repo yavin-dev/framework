@@ -35,9 +35,9 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     this.owner.register(
       'helper:update-report-action',
       buildHelper(() => {
-        return (metricFragment, paramId, paramKey) => {
-          this.updateMetricParameters?.(metricFragment, paramId, paramKey);
-          metricFragment.updateParameter(paramId, paramKey);
+        return (columnFragment, paramKey, paramId) => {
+          this.updateColumnParameters?.(columnFragment, paramId, paramKey);
+          columnFragment.updateParameters({ [paramKey]: paramId });
         };
       }),
       { instantiate: false }
@@ -45,19 +45,16 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
   });
 
   async function getMetricColumn(metric, parameters) {
-    const metricFragment = getContext()
-      .owner.lookup('service:store')
-      .createFragment('bard-request/fragments/metric', {
-        metric: await MetadataService.findById('metric', metric, 'bardOne'),
-        parameters
-      });
+    const metadata = MetadataService.getById('metric', metric, 'bardOne');
+    const factory = getContext().owner.lookup('service:fragment-factory');
+    const fragment = factory.createColumnFromMeta(metadata, parameters);
 
     return {
       type: 'metric',
-      name: metricFragment.canonicalName,
+      name: fragment.columnMetadata.canonicalName,
       displayName: metric,
-      fragment: metricFragment,
-      isFiltered: false
+      isFiltered: false,
+      fragment
     };
   }
 
@@ -81,7 +78,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
       ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
-      'Mulitple parameters values are filled in with selected values'
+      'Multiple parameters values are filled in with selected values'
     );
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
@@ -155,13 +152,13 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       // assert.equal(newName, 'Money', 'New display name is passed to name update action');
       return undefined;
     };
-    this.updateMetricParameters = (metricFragment, paramId, paramKey) => {
+    this.updateColumnParameters = (metricFragment, paramId, paramKey) => {
       assert.equal(
         metricFragment.canonicalName,
         'revenue(currency=USD)',
         'Metric name is passed with the currently selected parameter'
       );
-      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateMetricParam method');
+      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateColumnParam method');
     };
     await render(TEMPLATE);
 

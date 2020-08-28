@@ -37,7 +37,7 @@ export function getColumnDefaultName(
   }
 
   if (type === 'metric') {
-    return naviFormatter.formatMetric(model, attributes.parameters);
+    return naviFormatter.formatColumnName(model, attributes.parameters);
   }
 
   if (type === 'dimension' && field) {

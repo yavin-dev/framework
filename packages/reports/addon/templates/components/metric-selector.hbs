@@ -40,7 +40,7 @@
             <NaviIcon
               @icon="filter"
               class={{concat (if (get-shallow this.metricsFiltered metric.id) "grouped-list__filter--active ") "grouped-list__filter"}}
-              {{on "click" (fn this.onToggleMetricFilter metric)}}
+              {{on "click" (fn @onToggleMetricFilter metric)}}
             >
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">
                 {{#if (has-parameters metric)}}
