@@ -139,7 +139,7 @@ export default class DimensionSelectComponent extends Component {
   @action
   setValues(values) {
     this.onUpdateFilter({
-      rawValues: A(values).mapBy(this.primaryKey)
+      values: A(values).mapBy(this.primaryKey)
     });
   }
 

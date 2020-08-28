@@ -73,7 +73,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.ok(
       dataRequests.every(
-        request => request.queryParams.filters == 'platform|desc-contains["win"],property|id-in["1","2"]'
+        request => request.queryParams.filters === 'platform|desc-contains["win"],property|id-in["1","2"]'
       ),
       'each widget request has both filters present after new one is added'
     );
