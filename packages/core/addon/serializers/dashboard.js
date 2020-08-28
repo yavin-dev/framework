@@ -8,29 +8,26 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { getOwner } from '@ember/application';
 
 function v1ToV2Filter(filter, metadataService) {
-  let source = undefined;
-  let dimension = undefined; // the filter.dimension can be stored as dataSource.dimension
+  let source;
+  let dimension; // the filter.dimension might be stored as dataSource.dimension
   if (filter.dimension.includes('.')) {
     [source, ...dimension] = filter.dimension.split('.');
     dimension = dimension.join('.');
   } else {
+    source = getDefaultDataSourceName();
     dimension = filter.dimension;
   }
-  const matchesField = d => d.id === dimension;
-  const matchingDimensions = metadataService.all('dimension', source).filter(matchesField);
-  const matchingTimeDimensions = metadataService.all('timeDimension', source).filter(matchesField);
-  let type;
-  if (matchingDimensions.length === 0 && matchingTimeDimensions.length === 1) {
-    type = 'timeDimension';
-    source = matchingTimeDimensions[0].source;
-  } else if (matchingDimensions.length === 1 && matchingTimeDimensions.length === 0) {
-    type = 'dimension';
-    source = matchingDimensions[0].source;
-  }
 
-  // TODO: no exact match, have better handling
-  type = type || 'dimension';
-  source = source || getDefaultDataSourceName();
+  const dimensionMetadata = metadataService.getById('dimension', dimension, source);
+  const timeDimensionMetadata = metadataService.getById('timeDimension', dimension, source);
+  let type;
+  if (!dimensionMetadata && timeDimensionMetadata) {
+    type = 'timeDimension';
+  } else if (dimensionMetadata && !timeDimensionMetadata) {
+    type = 'dimension';
+  } else {
+    type = 'dimension'; //fallback to just dimension
+  }
 
   return {
     type,
