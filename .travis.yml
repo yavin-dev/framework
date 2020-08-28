@@ -38,11 +38,10 @@ branches:
     - request-v2
     - apex-charts
 install:
+  - nvm install ${NODE_VERSION}; npm config set spin false;
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
     else
-    nvm install ${NODE_VERSION};
-    npm config set spin false;
     npm ci;
     fi
 script:
