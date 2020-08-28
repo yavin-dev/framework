@@ -5,7 +5,6 @@
 
 import { A } from '@ember/array';
 import { get } from '@ember/object';
-import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
 
 export default ReportsNewRoute.extend({
@@ -30,38 +29,23 @@ export default ReportsNewRoute.extend({
   _newModel() {
     let dashboard = this.modelFor('dashboards.dashboard');
 
-    return get(this, 'user')
-      .findOrRegister()
-      .then(author => {
-        // Default to first data source + time grain
-        let table = this._getDefaultTable(),
-          timeGrain = table.timeGrains?.[0]?.id;
+    return this.user.findOrRegister().then(author => {
+      const defaultVisualization = get(this, 'naviVisualizations').defaultVisualization();
+      const table = this._getDefaultTable();
 
-        let widget = this.store.createRecord('dashboard-widget', {
-          author,
-          dashboard,
-          requests: A([
-            {
-              filters: A([
-                {
-                  type: 'timeDimension',
-                  field: `${table.id}.dateTime`,
-                  parameters: {
-                    grain: timeGrain
-                  },
-                  operator: 'bet',
-                  values: [DefaultIntervals[timeGrain], 'current']
-                }
-              ]),
-              table: table.id,
-              dataSource: table.source,
-              responseFormat: 'csv'
-            }
-          ]),
-          visualization: { type: 'table' }
-        });
-
-        return widget;
+      const widget = this.store.createRecord('dashboard-widget', {
+        author,
+        dashboard,
+        requests: A([
+          this.store.createFragment('bard-request-v2/request', {
+            table: table.id,
+            dataSource: table.source
+          })
+        ]),
+        visualization: { type: defaultVisualization }
       });
+
+      return widget;
+    });
   }
 });

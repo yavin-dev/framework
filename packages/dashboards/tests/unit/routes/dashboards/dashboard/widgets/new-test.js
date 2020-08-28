@@ -11,17 +11,7 @@ const NEW_MODEL = {
   requests: [
     {
       table: 'tableA',
-      filters: [
-        {
-          type: 'timeDimension',
-          field: 'tableA.dateTime',
-          parameters: {
-            grain: 'hour'
-          },
-          operator: 'bet',
-          values: ['P1D', 'current']
-        }
-      ],
+      filters: [],
       columns: [],
       sorts: [],
       limit: null,

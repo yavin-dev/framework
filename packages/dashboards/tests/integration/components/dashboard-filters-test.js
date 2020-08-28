@@ -187,7 +187,6 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     assert.dom('.dashboard-filters--expanded-add-row').isVisible('add row appears again');
 
-    await this.pauseTest();
     await selectChoose('.dashboard-filters--expanded-add-row__dimension-selector', '.ember-power-select-option', 1);
 
     assert.dom('.dashboard-filters--expanded__add-filter-button').isVisible('add filter button appears again');
