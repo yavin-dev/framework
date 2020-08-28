@@ -178,16 +178,7 @@ export default class DashboardDataService extends Service {
     const requestClone = request.clone();
     this._getValidGlobalFilters(dashboard, request)
       .filter(filter => get(filter, 'values').length > 0)
-      .forEach(filter =>
-        requestClone.addFilter({
-          type: filter.type,
-          source: filter.source,
-          field: filter.field,
-          parameters: filter.parameters,
-          operator: filter.operator,
-          values: filter.values
-        })
-      );
+      .forEach(filter => requestClone.addFilter(filter));
 
     return requestClone;
   }
