@@ -66,8 +66,8 @@ export default class DashboardsDashboardViewController extends Controller.extend
         source: filterToUpdate.source
       })
       .serialize();
-
     newFilter.source = originalFilter.source;
+
     const index = newFilters.indexOf(filterToUpdate);
     newFilters[index] = newFilter;
 
@@ -83,9 +83,16 @@ export default class DashboardsDashboardViewController extends Controller.extend
    */
   @action
   async removeFilter(dashboard, filter) {
-    const filters = get(dashboard, 'filters').serialize();
     const removedFilter = filter.serialize();
-    const newFilters = filters.filter(fil => !isEqual(fil, removedFilter));
+    removedFilter.source = filter.source;
+    const newFilters = get(dashboard, 'filters')
+      .toArray()
+      .map(fil => {
+        const newFil = fil.serialize();
+        newFil.source = fil.source;
+        return newFil;
+      })
+      .filter(fil => !isEqual(fil, removedFilter));
     const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
@@ -94,10 +101,10 @@ export default class DashboardsDashboardViewController extends Controller.extend
   /**
    * @action addFilter
    * @param {Object} dashboard
-   * @param {Object} dimension
+   * @param {Object} filter
    */
   @action
-  async addFilter(dashboard, dimension) {
+  async addFilter(dashboard, filter) {
     const store = this.store;
     const { metadataService } = this;
     const filters = dashboard.filters.toArray().map(fil => {
@@ -105,23 +112,22 @@ export default class DashboardsDashboardViewController extends Controller.extend
       newFil.source = fil.source;
       return newFil;
     }); //Native array of serialized filters
-    const dimensionMeta = metadataService.getById(dimension.type, dimension.field, dimension.dataSource);
-    const filter = store
+    const dimensionMeta = metadataService.getById(filter.type, filter.field, filter.dataSource);
+    const newFilter = store
       .createFragment('bard-request-v2/fragments/filter', {
-        type: dimension.type,
-        field: dimension.field,
+        type: filter.type,
+        field: filter.field,
         parameters: {
           field: dimensionMeta.primaryKeyFieldName
         },
         operator: 'in',
         values: [],
-        source: dimension.dataSource
+        source: filter.dataSource
       })
       .serialize();
+    newFilter.source = filter.dataSource;
 
-    filter.source = dimension.dataSource;
-
-    filters.push(filter);
+    filters.push(newFilter);
 
     const filterQueryParams = await this.compression.compress({ filters });
 
