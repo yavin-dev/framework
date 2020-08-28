@@ -18,10 +18,10 @@
           @isDraggingDisabled={{@isDraggingDisabled}}
         >
           <span
-            class="table-header-cell__title {{if column.hasCustomDisplayName "table-header-cell__title--custom-name"}}"
+            class="table-header-cell__title {{if column.attributes.displayName "table-header-cell__title--custom-name"}}"
             title="Drag column header to reorder"
           >
-            {{or column.displayName (default-column-name column @request.dataSource)}}
+            {{or column.attributes.displayName (default-column-name column @request.dataSource)}}
           </span>
           {{#if column.sortDirection}}
             <NaviTableSortIcon
@@ -52,20 +52,20 @@
               {{#if @isEditingMode}}
                 <Input
                   class="table-header-cell__input"
-                  @value={{readonly column.displayName}}
+                  @value={{readonly column.attributes.displayName}}
                   @placeholder={{default-column-name column @request.dataSource}}
                   @focus-out={{fn @updateColumnDisplayName column}}
                 />
                 {{#if (eq column.type "metric")}}
-                  <NumberFormatDropdown 
-                    class="table-header-cell__number-format-dropdown" 
-                    @column={{column}} 
+                  <NumberFormatDropdown
+                    class="table-header-cell__number-format-dropdown"
+                    @column={{column}}
                     @onUpdateReport={{@onUpdateReport}}
                   />
                 {{/if}}
               {{else}}
                 <span class="table-header-cell__title">
-                  {{or column.displayName (default-column-name column @request.dataSource)}}
+                  {{or column.attributes.displayName (default-column-name column @request.dataSource)}}
                 </span>
                 {{#if column.sortDirection}}
                   <NaviTableSortIcon
@@ -92,12 +92,14 @@
         <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
           {{#each @columns as |column|}}
             <td class="table-cell">
-              {{#if (and (eq column.type "dateTime") row.__meta__.isTotalRow)}}
-                {{component
-                  (concat @cellRendererPrefix "total")
-                    data=row
-                    column=column
-                }}
+              {{#if (and (eq column.type "timeDimension") row.__meta__.isTotalRow)}}
+                {{#let (component (concat @cellRendererPrefix "total")) as |TotalRenderer|}}
+                  <TotalRenderer
+                    @data={{row}}
+                    @column={{column}}
+                    @request={{@request}}
+                  />
+                {{/let}}
               {{else}}
                 <NaviTableCellRenderer
                   @data={{row}}

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * <NaviCellRenderers::TimeDimension
+ * <NaviCellRenderers::Dimension
  *   @data={{this.row}}
  *   @column={{this.column}}
  *   @request={{this.request}}
@@ -11,27 +11,23 @@
  */
 
 import Component from '@glimmer/component';
+import { isEmpty } from '@ember/utils';
 import { CellRendererArgs } from '../navi-table-cell-renderer';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
-export default class TimeDimensionCellRenderer extends Component<CellRendererArgs> {
+export default class DimensionCellRenderer extends Component<CellRendererArgs> {
   /**
-   * Date start time from the response data or 'TOTAL'
+   * value that should be displayed in table cell
    */
   get value() {
-    const {
-      data,
-      column: { field, parameters }
-    } = this.args;
+    const { field, parameters } = this.args.column;
     const canonicalName = canonicalizeMetric({ metric: field, parameters });
-    return data[canonicalName];
-  }
+    const { data } = this.args;
 
-  /**
-   * Time Grain in request
-   */
-  get granularity() {
-    const { column } = this.args;
-    return column.parameters?.grain;
+    if (!isEmpty(data?.[canonicalName])) {
+      return data[canonicalName];
+    }
+
+    return '--';
   }
 }
