@@ -36,7 +36,16 @@ module('Integration | Component | dimension selector', function(hooks) {
       Store.createFragment('bard-request-v2/request', {
         table: 'tableA',
         dataSource: 'bardOne',
-        filters: [{ field: 'age', type: 'dimension', source: 'bardOne', operator: 'in', values: [1] }]
+        filters: [
+          {
+            field: 'age',
+            parameters: { field: 'id' },
+            type: 'dimension',
+            source: 'bardOne',
+            operator: 'in',
+            values: [1]
+          }
+        ]
       })
     );
   });

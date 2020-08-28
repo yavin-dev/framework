@@ -64,19 +64,11 @@ export default class DimensionSelector extends Component {
   }
 
   /*
-   * @property {Array} selectedDimensions - dimensions in the request
+   * @property {Object} selectedColumns - item -> boolean map to denote if item should be checked
    */
   @computed('request.dimensionColumns.[]')
   get selectedColumns() {
-    return this.request.dimensionColumns;
-  }
-
-  /*
-   * @property {Object} itemsChecked - item -> boolean map to denote if item should be checked
-   */
-  @computed('selectedColumns')
-  get itemsChecked() {
-    return this.selectedColumns.reduce((items, item) => {
+    return this.request.dimensionColumns.reduce((items, item) => {
       items[item.columnMetadata.id] = true;
       return items;
     }, {});

@@ -13,7 +13,7 @@
     @sortByField={{unless areItemsFiltered "name"}}
     as | item |
   >
-    <div class="grouped-list__item-container {{if (get-shallow this.itemsChecked item.id) "grouped-list__item-container--selected"}}">
+    <div class="grouped-list__item-container {{if (get-shallow this.selectedColumns item.id) "grouped-list__item-container--selected"}}">
       <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button" type="button">
         <NaviIcon
           @icon="plus-circle"

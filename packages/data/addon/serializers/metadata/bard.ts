@@ -119,14 +119,12 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
           timegrain.dimensions.forEach(dimension => {
             const isTimeDimension = dimension.datatype === 'date';
 
-            const normalize = isTimeDimension
-              ? (dims: RawDimensionPayload[], dataSourceName: string) =>
-                  this.normalizeTimeDimensions(dims, dataSourceName) // call function with table partially applied
-              : this.normalizeDimensions;
             const accDimensionList = isTimeDimension ? currentTimeDimensions : currentDimensions;
             const accTableDimensionList = isTimeDimension ? tableTimeDimensionIds : tableDimensionIds;
 
-            const [newDim] = normalize([dimension], dataSourceName);
+            const [newDim] = isTimeDimension
+              ? this.normalizeTimeDimensions([dimension], dataSourceName)
+              : this.normalizeDimensions([dimension], dataSourceName);
 
             // Create function for selecting dimension field
             const columnFunction = this.createDimensionFieldColumnFunction(dimension, dataSourceName);
