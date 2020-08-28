@@ -9,6 +9,7 @@ import config from 'ember-get-config';
  * @function featureFlag
  * @param {Array} single element with name of feature flag
  * @param {Boolean} value of feature flag
+ * @returns {boolean}
  */
 export function featureFlag(flag) {
   return config.navi.FEATURES[flag] || false;

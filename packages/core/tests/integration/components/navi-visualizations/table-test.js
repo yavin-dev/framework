@@ -11,68 +11,68 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
   <div style="width: 800px; height: 800px; display: flex;">
-    {{navi-visualizations/table
-      model=model
-      options=options
-      bufferSize=20
-      onUpdateReport=(action onUpdateReport)
-    }}
+    <NaviVisualizations::Table
+      @model={{this.model}}
+      @options={{this.options}}
+      @bufferSize={{20}}
+      @onUpdateReport={{this.onUpdateReport}}
+    />
   </div>`;
 
 const ROWS = [
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'All Other',
-    'os|desc': 'All Other',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'All Other',
+    'os(field=desc)': 'All Other',
     uniqueIdentifier: 172933788,
     totalPageViews: 3669828357
   },
   {
-    dateTime: '2016-06-10 00:00:00.000',
-    'os|id': 'All Other',
-    'os|desc': 'All Other',
+    'network.dateTime(grain=day)': '2016-06-10 00:00:00.000',
+    'os(field=id)': 'All Other',
+    'os(field=desc)': 'All Other',
     uniqueIdentifier: 172933788,
     totalPageViews: 3669828357
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'Android',
-    'os|desc': 'Android',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'Android',
+    'os(field=desc)': 'Android',
     uniqueIdentifier: 183206656,
     totalPageViews: 4088487125
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'BlackBerry',
-    'os|desc': 'BlackBerry OS',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'BlackBerry',
+    'os(field=desc)': 'BlackBerry OS',
     uniqueIdentifier: 183380921,
     totalPageViews: 4024700302
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'ChromeOS',
-    'os|desc': 'Chrome OS',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'ChromeOS',
+    'os(field=desc)': 'Chrome OS',
     uniqueIdentifier: 180559793,
     totalPageViews: 3950276031
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'Firefox',
-    'os|desc': 'Firefox OS',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'Firefox',
+    'os(field=desc)': 'Firefox OS',
     uniqueIdentifier: 172724594,
     totalPageViews: 3697156058
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'Mac',
-    'os|desc': 'Apple Mac OS X',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'Mac',
+    'os(field=desc)': 'Apple Mac OS X',
     uniqueIdentifier: 152298735,
     totalPageViews: 3008425744
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'Unknown',
-    'os|desc': 'Unknown',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'Unknown',
+    'os(field=desc)': 'Unknown',
     uniqueIdentifier: 155191081,
     totalPageViews: 3072620639
   }
@@ -81,20 +81,20 @@ const ROWS = [
 const Model = arr([
   {
     request: {
-      dimensions: [{ dimension: 'os' }],
-      metrics: [
-        { metric: 'uniqueIdentifier', parameters: {} },
-        { metric: 'totalPageViews', parameters: {} },
-        { metric: 'platformRevenue', parameters: { currency: 'USD', as: 'm1' } }
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      table: 'network',
+      columns: [
+        { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
+        { type: 'dimension', field: 'os', parameters: {} },
+        { type: 'metric', field: 'uniqueIdentifier', parameters: {} },
+        { type: 'metric', field: 'totalPageViews', parameters: {} },
+        { type: 'metric', field: 'platformRevenue', parameters: { currency: 'USD' } }
       ],
-      sort: [
-        { metric: 'm1', direction: 'desc' },
-        { metric: 'uniqueIdentifier', direction: 'asc' }
-      ],
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
-      }
+      sorts: [
+        { type: 'metric', field: 'platformRevenue', parameters: { currency: 'USD' }, direction: 'desc' },
+        { type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc' }
+      ]
     },
     response: {
       rows: ROWS
@@ -105,29 +105,52 @@ const Model = arr([
 const Options = {
   columns: [
     {
-      attributes: { name: 'dateTime' },
-      type: 'dateTime',
-      displayName: 'Date'
+      type: 'timeDimension',
+      field: 'network.dateTime',
+      parameters: { grain: 'day' },
+      attributes: {
+        displayName: 'Date'
+      }
     },
     {
-      attributes: { name: 'os' },
       type: 'dimension',
-      displayName: 'Operating System'
+      field: 'os',
+      parameters: { field: 'id' },
+      attributes: {
+        displayName: 'Operating System (id)'
+      }
     },
     {
-      attributes: { name: 'uniqueIdentifier', parameters: {} },
-      type: 'metric',
-      displayName: 'Unique Identifiers'
+      type: 'dimension',
+      field: 'os',
+      parameters: { field: 'desc' },
+      attributes: {
+        displayName: 'Operating System (desc)'
+      }
     },
     {
-      attributes: { name: 'totalPageViews', parameters: {} },
       type: 'metric',
-      displayName: 'Total Page Views'
+      field: 'uniqueIdentifier',
+      parameters: {},
+      attributes: {
+        displayName: 'Unique Identifiers'
+      }
     },
     {
-      attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
       type: 'metric',
-      displayName: 'Platform Revenue (USD)'
+      field: 'totalPageViews',
+      parameters: {},
+      attributes: {
+        displayName: 'Total Page Views'
+      }
+    },
+    {
+      type: 'metric',
+      field: 'platformRevenue',
+      parameters: { currency: 'USD' },
+      attributes: {
+        displayName: 'Platform Revenue (USD)'
+      }
     }
   ]
 };
@@ -166,7 +189,14 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       headers,
-      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Platform Revenue (USD)'],
+      [
+        'Date',
+        'Operating System (id)',
+        'Operating System (desc)',
+        'Unique Identifiers',
+        'Total Page Views',
+        'Platform Revenue (USD)'
+      ],
       'The table renders the headers correctly based on the request'
     );
     let body = findAll('tbody tr').map(row =>
@@ -176,14 +206,14 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       body,
       [
-        ['05/30/2016', 'All Other', '172,933,788', '3,669,828,357', '--'],
-        ['06/10/2016', 'All Other', '172,933,788', '3,669,828,357', '--'],
-        ['05/30/2016', 'Android', '183,206,656', '4,088,487,125', '--'],
-        ['05/30/2016', 'BlackBerry OS', '183,380,921', '4,024,700,302', '--'],
-        ['05/30/2016', 'Chrome OS', '180,559,793', '3,950,276,031', '--'],
-        ['05/30/2016', 'Firefox OS', '172,724,594', '3,697,156,058', '--'],
-        ['05/30/2016', 'Apple Mac OS X', '152,298,735', '3,008,425,744', '--'],
-        ['05/30/2016', 'Unknown', '155,191,081', '3,072,620,639', '--']
+        ['05/30/2016', 'All Other', 'All Other', '172,933,788', '3,669,828,357', '--'],
+        ['06/10/2016', 'All Other', 'All Other', '172,933,788', '3,669,828,357', '--'],
+        ['05/30/2016', 'Android', 'Android', '183,206,656', '4,088,487,125', '--'],
+        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183,380,921', '4,024,700,302', '--'],
+        ['05/30/2016', 'ChromeOS', 'Chrome OS', '180,559,793', '3,950,276,031', '--'],
+        ['05/30/2016', 'Firefox', 'Firefox OS', '172,724,594', '3,697,156,058', '--'],
+        ['05/30/2016', 'Mac', 'Apple Mac OS X', '152,298,735', '3,008,425,744', '--'],
+        ['05/30/2016', 'Unknown', 'Unknown', '155,191,081', '3,072,620,639', '--']
       ],
       'The table renders the response dataset correctly'
     );
@@ -195,44 +225,41 @@ module('Integration | Component | table', function(hooks) {
     const model = arr([
       {
         request: {
-          dimensions: [{ dimension: 'container' }],
-          metrics: [
-            { metric: 'ownedQuantity', parameters: {} },
-            { metric: 'usedAmount', parameters: {} },
-            { metric: 'personalSold', parameters: { as: 'm1' } }
+          dataSource: 'bardTwo',
+          requestVersion: '2.0',
+          table: 'inventory',
+          columns: [
+            { type: 'timeDimension', field: 'inventory.dateTime', parameters: { grain: 'day' } },
+            { type: 'dimension', field: 'container', parameters: {} },
+            { type: 'metric', field: 'ownedQuantity', parameters: {} },
+            { type: 'metric', field: 'usedAmount', parameters: {} },
+            { type: 'metric', field: 'personalSold', parameters: {} }
           ],
-          sort: [
-            { metric: 'm1', direction: 'desc' },
-            { metric: 'usedAmount', direction: 'asc' }
-          ],
-          logicalTable: {
-            table: 'inventory',
-            timeGrain: {
-              name: 'day'
-            }
-          },
-          dataSource: 'bardTwo'
+          sorts: [
+            { type: 'metric', field: 'personalSold', parameters: {}, direction: 'desc' },
+            { type: 'metric', field: 'usedAmount', parameters: {}, direction: 'asc' }
+          ]
         },
         response: {
           rows: [
             {
-              dateTime: '2016-05-30 00:00:00.000',
-              'container|id': '1',
-              'container|desc': 'Bag',
+              'inventory.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+              'container(field=id)': '1',
+              'container(field=desc)': 'Bag',
               ownedQuantity: 172933788,
               usedAmount: 3669828357
             },
             {
-              dateTime: '2016-06-10 00:00:00.000',
-              'container|id': '1',
-              'container|desc': 'Bag',
+              'inventory.dateTime(grain=day)': '2016-06-10 00:00:00.000',
+              'container(field=id)': '1',
+              'container(field=desc)': 'Bag',
               ownedQuantity: 172933788,
               usedAmount: 3669828357
             },
             {
-              dateTime: '2016-05-30 00:00:00.000',
-              'container|id': '2',
-              'os|desc': 'Bank',
+              'inventory.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+              'container(field=id)': '2',
+              'container(field=desc)': 'Bank',
               ownedQuantity: 183206656,
               usedAmount: 4088487125
             }
@@ -244,29 +271,44 @@ module('Integration | Component | table', function(hooks) {
     const options = {
       columns: [
         {
-          attributes: { name: 'dateTime' },
-          type: 'dateTime',
-          displayName: 'Date'
+          type: 'timeDimension',
+          field: 'inventory.dateTime',
+          parameters: { grain: 'day' },
+          attributes: {
+            displayName: 'Date'
+          }
         },
         {
-          attributes: { name: 'container' },
           type: 'dimension',
-          displayName: 'Container'
+          field: 'container',
+          parameters: {},
+          attributes: {
+            displayName: 'Container'
+          }
         },
         {
-          attributes: { name: 'ownedQuantity', parameters: {} },
           type: 'metric',
-          displayName: 'Quantity Owned'
+          field: 'ownedQuantity',
+          parameters: {},
+          attributes: {
+            displayName: 'Quantity Owned'
+          }
         },
         {
-          attributes: { name: 'usedAmount', parameters: {} },
           type: 'metric',
-          displayName: 'Amount Used'
+          field: 'usedAmount',
+          parameters: {},
+          attributes: {
+            displayName: 'Amount Used'
+          }
         },
         {
-          attributes: { name: 'personalSold', parameters: {} },
           type: 'metric',
-          displayName: 'Amount personally sold'
+          field: 'personalSold',
+          parameters: {},
+          attributes: {
+            displayName: 'Amount personally sold'
+          }
         }
       ]
     };
@@ -294,39 +336,15 @@ module('Integration | Component | table', function(hooks) {
       'options',
       merge({}, Options, {
         columns: [
+          ...Options.columns,
           {
-            attributes: { name: 'dateTime' },
-            type: 'dateTime',
-            displayName: 'Date'
-          },
-          {
-            attributes: { name: 'os' },
-            type: 'dimension',
-            displayName: 'Operating System'
-          },
-          {
-            attributes: { name: 'uniqueIdentifier', parameters: {} },
             type: 'metric',
-            displayName: 'Unique Identifiers'
-          },
-          {
-            attributes: { name: 'totalPageViews', parameters: {} },
-            type: 'metric',
-            displayName: 'Total Page Views'
-          },
-          {
-            attributes: { name: 'platformRevenue', parameters: { currency: 'USD' } },
-            type: 'metric',
-            displayName: 'Platform Revenue (USD)'
-          },
-          {
+            field: 'totalPageViewsWoW',
+            parameters: {},
             attributes: {
-              name: 'totalPageViewsWoW',
-              parameters: {},
+              displayName: 'Total Page Views WoW',
               canAggregateSubtotal: false
-            },
-            type: 'metric',
-            displayName: 'Total Page Views WoW'
+            }
           }
         ]
       })
@@ -342,12 +360,16 @@ module('Integration | Component | table', function(hooks) {
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
 
-      assert.equal(metricName, 'dateTime', 'The dateTime field is passed along when the dateTime header is clicked');
+      assert.equal(
+        metricName,
+        'network.dateTime(grain=day)',
+        'The dateTime field is passed along when the dateTime header is clicked'
+      );
 
       assert.equal(direction, 'asc', 'The asc direction is passed along when the dateTime header is clicked');
     });
 
-    await click('.table-header-row-vc--view .table-header-cell.dateTime');
+    await click('.table-header-row-vc--view .table-header-cell.timeDimension');
 
     this.set('onUpdateReport', (actionType, metricName, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');

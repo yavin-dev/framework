@@ -5,7 +5,7 @@
 import { isEmpty } from '@ember/utils';
 import { get } from '@ember/object';
 
-type Parameters = Dict<string>;
+type Parameters = Record<string, unknown>;
 interface ColumnAttributes {
   name: string;
   parameters: Parameters;
@@ -88,7 +88,7 @@ export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
     const { parameters = {} } = metric;
     if (hasParameters(metric) && 'as' in parameters) {
       return Object.assign({}, obj, {
-        [parameters.as]: canonicalizeMetric(metric)
+        [`${parameters.as}`]: canonicalizeMetric(metric)
       });
     }
     return obj;

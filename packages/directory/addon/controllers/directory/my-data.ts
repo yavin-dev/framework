@@ -7,7 +7,7 @@ import { action, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { tracked } from '@glimmer/tracking';
 import moment from 'moment';
-import { ModelFrom } from '../../utils/type-utils';
+import { ModelFrom } from 'navi-core/utils/type-utils';
 import DirectoryMyDataRoute from 'navi-directory/routes/directory/my-data';
 
 export default class DirectoryMyDataController extends SearchFilterController {
