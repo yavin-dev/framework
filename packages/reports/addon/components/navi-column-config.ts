@@ -13,6 +13,7 @@ import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { Parameters, ColumnType } from 'navi-data/adapters/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 interface NaviColumnConfigArgs {
   isOpen: boolean;
@@ -49,11 +50,11 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
       const filteredDimensions = dimensionFilters.map(({ canonicalName }) => canonicalName);
       const filteredMetrics = metricFilters.map(({ canonicalName }) => canonicalName);
       const dimensionColumns = dimensions.map(dimension => {
-        const { canonicalName: name, type } = dimension;
+        const { canonicalName: name, type, columnMetadata, parameters, alias } = dimension;
         return {
           type,
           name,
-          displayName: this.getDisplayName(dimension),
+          displayName: this.naviFormatter.formatColumnName(columnMetadata, parameters, alias),
           isFiltered: filteredDimensions.includes(name),
           isRemovable: true,
           fragment: dimension
@@ -61,11 +62,11 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
       });
 
       const metricColumns = metrics.map(metric => {
-        const { canonicalName: name, type } = metric;
+        const { canonicalName: name, type, columnMetadata, parameters, alias } = metric;
         return {
           type,
           name,
-          displayName: this.getDisplayName(metric),
+          displayName: this.naviFormatter.formatColumnName(columnMetadata, parameters, alias),
           isFiltered: filteredMetrics.includes(name),
           isRemovable: true,
           fragment: metric
@@ -77,27 +78,14 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
     return [];
   }
 
-  @service metricName: TODO;
+  @service
+  naviFormatter!: NaviFormatterService;
 
   @tracked
   currentlyOpenColumn?: ConfigColumn;
 
   @tracked
   componentElement!: Element;
-
-  getDisplayName(column: ColumnFragment) {
-    const {
-      alias,
-      columnMetadata: { name },
-      hasParametersSet,
-      parameters
-    } = column;
-
-    if (alias) {
-      return alias;
-    }
-    return hasParametersSet ? `${name} (${Object.values(parameters).join(' ')})` : name;
-  }
 
   /**
    * Adds a copy of the given column to the request including its parameters

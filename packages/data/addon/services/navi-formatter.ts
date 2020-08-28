@@ -8,7 +8,7 @@ import { ColumnMetadata } from 'navi-data/models/metadata/column';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 
 export default class NaviFormatterService extends Service {
-  formatColumnName(columnMetadata?: ColumnMetadata, parameters?: Parameters, alias?: string): string {
+  formatColumnName(columnMetadata?: ColumnMetadata, parameters?: Parameters, alias?: string | null): string {
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
 

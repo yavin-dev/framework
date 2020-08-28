@@ -72,10 +72,6 @@ export default class Base extends Fragment.extend(Validations) {
     });
   }
 
-  get hasParametersSet() {
-    return Object.keys(this.parameters).length > 0;
-  }
-
   updateParameters(parameters = {}) {
     set(this, 'parameters', { ...this.parameters, ...parameters });
   }
