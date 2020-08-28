@@ -47,7 +47,7 @@ export default VisualizationBase.extend(Validations, {
     const metric = metrics.firstObject.toJSON();
     const description = getOwner(this)
       .lookup('service:navi-formatter')
-      .formatMetric(metrics.firstObject.metric, metrics.firstObject.parameters);
+      .formatColumnName(metrics.firstObject.metric, metrics.firstObject.parameters);
     const allFormats = NumberFormats;
     const format = this.metadata.format || allFormats[0]?.format;
 
