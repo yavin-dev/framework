@@ -12,58 +12,20 @@ module('Unit | Component | table', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('component:navi-table-sort-icon', Component.extend(), {
-      instantiate: false
-    });
-    this.owner.register('component:sortable-group', Component.extend(), {
-      instantiate: false
-    });
-    this.owner.register('component:sortable-item', Component.extend(), {
-      instantiate: false
-    });
-    this.owner.register('component:navi-icon', Component.extend(), {
-      instantiate: false
-    });
-    this.owner.register('component:ember-tooltip', Component.extend(), {
-      instantiate: false
+    ['navi-table-sort-icon', 'sortable-group', 'sortable-item', 'navi-icon', 'ember-tooltip'].forEach(component => {
+      this.owner.register(`component:${component}`, Component.extend(), { instantiate: false });
     });
 
     //helpers
-    this.owner.register(
-      'helper:and',
-      buildHelper(() => undefined),
-      {
-        instantiate: false
-      }
-    );
-    this.owner.register(
-      'helper:sub',
-      buildHelper(() => undefined),
-      {
-        instantiate: false
-      }
-    );
-    this.owner.register(
-      'helper:not-eq',
-      buildHelper(() => undefined),
-      {
-        instantiate: false
-      }
-    );
-    this.owner.register(
-      'helper:is-valid-moment',
-      buildHelper(() => undefined),
-      {
-        instantiate: false
-      }
-    );
-    this.owner.register(
-      'helper:format-number',
-      buildHelper(() => undefined),
-      {
-        instantiate: false
-      }
-    );
+    ['and', 'sub', 'not-eq', 'is-valid-moment', 'format-number'].forEach(helper => {
+      this.owner.register(
+        `helper:${helper}`,
+        buildHelper(() => undefined),
+        {
+          instantiate: false
+        }
+      );
+    });
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
@@ -84,18 +46,27 @@ module('Unit | Component | table', function(hooks) {
   const MODEL = A([
     {
       request: {
-        dataSource: 'bardOne',
-        metrics: [
+        table: 'network',
+        columns: [
           {
-            metric: 'uniqueIdentifier',
-            parameters: {},
-            toJSON() {
-              return { metric: 'uniqueIdentifier', parameters: {} };
-            }
+            type: 'metric',
+            field: 'uniqueIdentifier',
+            parameters: {}
           }
         ],
-        logicalTable: { table: 'network', timeGrain: 'day' },
-        sort: [{ metric: 'dateTime', direction: 'desc' }]
+        sorts: [
+          {
+            type: 'metric',
+            field: 'uniqueIdentifier',
+            parameters: {},
+            direction: 'desc'
+          }
+        ],
+        filters: [],
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
+        timeGrain: 'day' // this is mocking a fragment 'timeGrain' property
       },
       response: {
         rows: ROWS
@@ -105,7 +76,7 @@ module('Unit | Component | table', function(hooks) {
 
   const OPTIONS = {
     columns: [
-      { attributes: { name: 'dateTime' }, type: 'dateTime', displayName: 'Date' },
+      { attributes: { name: 'dateTime' }, type: 'timeDimension', displayName: 'Date' },
       {
         attributes: { name: 'uniqueIdentifier', parameters: {} },
         type: 'metric',
@@ -127,7 +98,7 @@ module('Unit | Component | table', function(hooks) {
         model: MODEL,
         options: OPTIONS
       }),
-      dateTimeColumn = A(component.get('columns')).filterBy('type', 'dateTime')[0],
+      dateTimeColumn = A(component.get('columns')).filterBy('type', 'timeDimension')[0],
       metricColumn = A(component.get('columns')).filterBy('type', 'metric')[0];
 
     assert.equal(

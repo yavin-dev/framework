@@ -2,16 +2,19 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { TestContext } from 'ember-test-helpers';
+//@ts-ignore
 import { merge } from 'lodash-es';
+import { CellRendererArgs } from 'navi-core/components/navi-table-cell-renderer';
 
 const TEMPLATE = hbs`
-  {{navi-cell-renderers/metric
-    data=data
-    column=column
-    request=request
-  }}`;
+  <NaviCellRenderers::Metric
+    @data={{this.data}}
+    @column={{this.column}}
+    @request={{this.request}}
+  />`;
 
-let data = {
+const data: CellRendererArgs['data'] = {
   dateTime: '2016-05-30 00:00:00.000',
   'os|id': 'All Other',
   'os|desc': 'All Other',
@@ -19,10 +22,13 @@ let data = {
   totalPageViews: 3669828357
 };
 
-let column = {
-  attributes: { name: 'uniqueIdentifier', parameters: {} },
+const column: CellRendererArgs['column'] = {
   type: 'metric',
-  displayName: 'Unique Identifiers'
+  field: 'uniqueIdentifier',
+  parameters: {},
+  attributes: {
+    displayName: 'Unique Identifiers'
+  }
 };
 
 let request = {
@@ -37,7 +43,7 @@ let request = {
 module('Integration | Component | cell renderers/metric', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
     this.set('data', data);
     this.set('column', column);
     this.set('request', request);

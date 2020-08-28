@@ -17,33 +17,17 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
  * @param {String} dateSourceName - name of data source
  * @return {String} - default display name
  */
-export function getColumnDefaultName(
-  { type, attributes },
-  naviMetadata,
-  naviFormatter,
-  dateSourceName = getDefaultDataSourceName()
-) {
-  if (type === 'dateTime') {
-    return 'Date';
+export function getColumnDefaultName(column, naviMetadata, naviFormatter, dateSourceName = getDefaultDataSourceName()) {
+  let model = naviMetadata.getById(column.type, column.field, dateSourceName);
+
+  if (column.type === 'metric') {
+    return naviFormatter.formatColumnName(model, column.parameters);
   }
 
-  let { name: id, field } = attributes,
-    model = naviMetadata.getById(type, id, dateSourceName);
-
-  //if metadata isn't found, check time-dimension bucket
-  //TODO: replace when we have full vizualization support for time-dimensions
-  if (model === undefined && type == 'dimension') {
-    model = naviMetadata.getById('timeDimension', id, dateSourceName);
-  }
-
-  if (type === 'metric') {
-    return naviFormatter.formatColumnName(model, attributes.parameters);
-  }
-
-  if (type === 'dimension' && field) {
+  if (column.type === 'dimension' && column.field) {
     return formatDimensionName({
-      id: model.name,
-      field
+      name: model?.name,
+      field: column.parameters.field
     });
   }
 
