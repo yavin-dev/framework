@@ -38,22 +38,26 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
                 ],
                 columns: [
                   {
+                    cid: '1111111111',
                     field: 'network.dateTime',
                     parameters: { grain: 'day' },
                     type: 'timeDimension',
                     alias: 'time'
                   },
                   {
+                    cid: '2222222222',
                     field: 'property',
                     parameters: { field: 'id' },
                     type: 'dimension'
                   },
                   {
+                    cid: '3333333333',
                     field: 'revenue',
                     parameters: { currency: 'USD' },
                     type: 'metric'
                   },
                   {
+                    cid: '4444444444',
                     field: 'navClicks',
                     type: 'metric'
                   }
@@ -84,8 +88,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Model using the Request Fragment', async function(assert) {
-    assert.expect(9);
-
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const { request } = mockModel;
@@ -97,6 +99,8 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
     assert.equal(request.requestVersion, '2.0', 'the `requestVersion` property has the correct default value');
 
     assert.equal(request.dataSource, 'bardOne', 'the `dataSource` property has the correct value');
+
+    assert.equal(request.columns.objectAt(1).cid, '2222222222', '`cid` attribute is loaded into the column fragment');
 
     assert.equal(
       request.columns.objectAt(1).columnMetadata.category,
@@ -118,8 +122,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('time-dimension matches table metadata', async function(assert) {
-    assert.expect(4);
-
     const { request } = mockModel;
     let timeDimension = request.columns.objectAt(0).columnMetadata;
     assert.ok(
@@ -129,7 +131,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.deepEqual(
       timeDimension.supportedGrains.map(g => g.grain),
-      ['HOUR', 'DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year', 'All'],
       'meta data is populated on sub fragments'
     );
 
@@ -138,7 +140,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.deepEqual(
       timeDimension.supportedGrains.map(g => g.grain),
-      ['DAY', 'WEEK', 'MONTH', 'QUARTER', 'YEAR', 'ALL'],
+      ['Day', 'Week', 'Month', 'Quarter', 'Year', 'All'],
       'meta data is populated on sub fragments'
     );
 
@@ -146,8 +148,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Clone Request', async function(assert) {
-    assert.expect(16);
-
     const request = mockModel.request.clone();
 
     assert.equal(request.table, 'network', 'the `table` property of the cloned request has the correct value');
@@ -195,6 +195,12 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
     // columns
 
     assert.equal(
+      request.columns.objectAt(0).cid,
+      '1111111111',
+      'the `cid` property of the first column has the correct value'
+    );
+
+    assert.equal(
       request.columns.objectAt(0).field,
       'network.dateTime',
       'the `field` property of the first column has the correct value'
@@ -238,8 +244,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Validation', async function(assert) {
-    assert.expect(12);
-
     const { request } = mockModel;
 
     assert.ok(request.validations.isValid, 'request is valid');
@@ -289,8 +293,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Validation - filters has-many', async function(assert) {
-    assert.expect(3);
-
     const { request } = mockModel;
 
     request.set('filters', [
@@ -316,8 +318,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Validation - columns has-many', async function(assert) {
-    assert.expect(2);
-
     const { request } = mockModel;
 
     request.set('columns', [
@@ -340,8 +340,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Validation - sorts has-many', async function(assert) {
-    assert.expect(3);
-
     const { request } = mockModel;
 
     request.set('sorts', [
@@ -364,8 +362,6 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('Serialization', async function(assert) {
-    assert.expect(1);
-
     assert.deepEqual(
       mockModel.serialize().data.attributes.request,
       {
@@ -387,24 +383,28 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
         ],
         columns: [
           {
+            cid: '1111111111',
             field: 'network.dateTime',
             parameters: { grain: 'day' },
             type: 'timeDimension',
             alias: 'time'
           },
           {
+            cid: '2222222222',
             alias: null,
             field: 'property',
             parameters: { field: 'id' },
             type: 'dimension'
           },
           {
+            cid: '3333333333',
             alias: null,
             field: 'revenue',
             parameters: { currency: 'USD' },
             type: 'metric'
           },
           {
+            cid: '4444444444',
             alias: null,
             field: 'navClicks',
             parameters: {},
