@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
- com.yahoo.navi.ws.config.NaviConfig
+ com.yahoo.navi.ws.config.NaviConfig, \
+ com.yahoo.navi.ws.config.WebConfig
