@@ -104,6 +104,14 @@ export default class ReportsReportViewRoute extends Route {
     if (!visualizationModel.isValidForRequest(request)) {
       visualizationModel.rebuildConfig(request, response);
     }
+
+    // any apex-chart will need to have the config update when the request updates,
+    // but the ember-cp-validations library currently has integration bugs with ember
+    // data models, so this has to be done manually (for now)
+    // https://github.com/poteto/ember-changeset-validations/issues/110
+    else if (visualizationModel.type.startsWith('apex-')) {
+      visualizationModel.rebuildConfig(request, response);
+    }
   }
 
   /**

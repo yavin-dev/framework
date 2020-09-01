@@ -95,22 +95,24 @@ const seriesInfo = {
       colors: assignColors(10),
       metrics: [
         {
-          metric: 'totalPageViews'
+          id: 'totalPageViews',
+          name: 'TotalPageViews'
         },
         {
-          metric: 'uniqueIdentifier'
+          id: 'uniqueIdentifier',
+          name: 'UniqueIdentifier'
         }
       ],
       dimensions: [
         {
-          dimension: 'age'
+          id: 'age',
+          name: 'Age'
         }
       ]
     }
   }
 };
 
-let MetadataService;
 const expectedInfo = {
   labels: ['All Other', 'under 13', '13 - 25', '25 - 35', '35 - 45'],
   totalPageViewData: ['310382162', '2072620639', '2620639', '72620639', '72620639']
@@ -120,31 +122,34 @@ module('Integration | Components | Apex-Pie', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     this.set('model', Model);
     this.set('options', seriesInfo);
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:bard-metadata');
   });
 
   test('legend of apex-pie chart renders', async function(assert) {
     assert.expect(3);
     await this.render(TEMPLATE);
-    assert.dom('.apexcharts-legend-series').exists({ count: expectedInfo.labels.length });
+    assert
+      .dom('.apexcharts-legend-series')
+      .exists({ count: expectedInfo.labels.length }, 'all slice data renders in legend');
     assert.dom('.apexcharts-legend-text').hasAttribute('data:default-text');
     let legendText = [];
     this.element.querySelectorAll('.apexcharts-legend-text').forEach(item => {
       legendText.push(item.textContent);
     });
-    assert.deepEqual(legendText, expectedInfo.labels);
+    assert.deepEqual(legendText, expectedInfo.labels, 'legend renders with correct labels for all slices');
   });
 
   test('slices of apex-pie chart render with correct values', async function(assert) {
     assert.expect(expectedInfo.totalPageViewData.length + 1);
     await this.render(TEMPLATE);
-    assert.dom('.apexcharts-pie-series').exists({ count: 5 });
+    assert.dom('.apexcharts-pie-series').exists({ count: 5 }, 'all slices of pie chart render');
     expectedInfo.totalPageViewData.forEach((item, index) => {
-      assert.dom(`.apexcharts-pie-slice-${index}`).hasAttribute('data:value', item);
+      assert
+        .dom(`.apexcharts-pie-slice-${index}`)
+        .hasAttribute('data:value', item, 'pie chart slices have correct values');
     });
   });
 });

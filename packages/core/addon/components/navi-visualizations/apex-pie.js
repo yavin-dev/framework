@@ -7,36 +7,40 @@
  * />
  */
 import Component from '@glimmer/component';
-import { shapeData } from '../../chart-builders/apex';
+import { normalize } from '../../chart-builders/apex';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
 
 export default class NaviVisualizationsApexPie extends Component {
   /**
-   * @property {object} - an ApexCharts-friendly object of the data and data labels
+   * @property {object} - ApexCharts-compatible object of options
    */
-  get data() {
+  @tracked chartOptions;
+
+  @action
+  updateChartOptions() {
     const {
       request,
       response: { rows }
     } = this.args.model.firstObject;
-    return shapeData(request, rows);
-  }
-
-  /**
-   * @property {object} - ApexCharts-compatible object of options
-   */
-  get chartOptions() {
-    return {
+    const data = normalize(request, rows);
+    this.chartOptions = {
       chart: {
         type: 'pie',
         height: '100%'
       },
       colors: this.args.options?.series?.config?.colors,
-      labels: this.data.labels,
+      labels: data.labels,
       legend: {
         position: 'bottom',
         floating: false
       },
-      series: this.data.series[0].data
+      series: data.series[0].data
     };
+  }
+
+  constructor(owner, args) {
+    super(owner, args);
+    this.updateChartOptions();
   }
 }

@@ -8,16 +8,27 @@ import VisualizationBase from './visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { assignColors } from 'navi-core/utils/enums/denali-colors';
 
+const SERIES_PATH = 'metadata.series';
+const CONFIG_PATH = `${SERIES_PATH}.config`;
+
 /**
  * @constant {Object} Validations - Validation object
  */
 const Validations = buildValidations(
   {
-    // checks that there is exactly one metric
-    'metadata.series.config.metrics': [validator('presence', true), validator('length', { is: 1 })],
+    // checks that there is exactly one metric, and the request metric matches the config metric
+    [`${CONFIG_PATH}.metrics`]: [
+      validator('presence', true),
+      validator('length', { is: 1 }),
+      validator('metric-match')
+    ],
 
-    // checks that there is at least one dimension
-    'metadata.series.config.dimensions': [validator('presence', true), validator('length', { min: 1 })]
+    // checks that there is at least one dimension, and the request dimensions match the config dimensions
+    [`${CONFIG_PATH}.dimensions`]: [
+      validator('presence', true),
+      validator('length', { min: 1 }),
+      validator('dimension-match')
+    ]
   },
   {
     //Global Validation Options
@@ -48,31 +59,34 @@ export default VisualizationBase.extend(Validations, {
    * @return {Object} this object
    */
   rebuildConfig(request, response) {
-    this.isValidForRequest(request);
     /*
     RETURNS:
     series: {
       type: string,
       config: {
-        colors: ['string',  ...]
-        metrics: [{ metric: string }, { metric: string }, ...],
-        dimensions: [{ dimension: string }, { dimension: string }, ...]
+        colors: ['string',  ...],
+        dimensions: [{ id: string, name: string }, ...],
+        metrics: [{ id: string, name: string }, ...]
       }
     }
     */
     let meta = {
       series: {
         config: {
-          colors: assignColors(response.rows.length),
+          colors: [],
           metrics: request.metrics.content.map(item => {
-            return { metric: item.metric.id };
+            return { id: item.metric.id, name: item.metric.name };
           }),
           dimensions: request.dimensions.content.map(item => {
-            return { dimension: item.dimension.id };
+            return { id: item.dimension.id, name: item.dimension.name };
           })
         }
       }
     };
+    let oldColors = this.getWithDefault('metadata.series.config.colors', []);
+    let newColors = assignColors(response.rows.length);
+    Array.prototype.splice.apply(newColors, [0, oldColors.length].concat(oldColors));
+    set(meta, 'series.config.colors', newColors);
     set(this, 'metadata', meta);
     return this;
   }

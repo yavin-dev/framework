@@ -2,6 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /**
  * @typedef {object} requestType
@@ -23,8 +24,7 @@
  * @param {array} rows
  * @returns {returnType}
  */
-export function shapeData(request, rows) {
-  // determine the type of labels for the visualization
+export function normalize(request, rows) {
   let labelTypes = ['dateTime'];
   if (request.dimensions.length > 0) {
     labelTypes = request.dimensions.map(item => {
@@ -33,10 +33,11 @@ export function shapeData(request, rows) {
   }
   // scaffold each of the metrics
   const series = request.metrics.map(item => {
-    return { name: item.metric, data: [] };
+    return { name: canonicalizeMetric(item), data: [] };
   });
+  let labels = [];
   // generate labels and populate data for each metric
-  let labels = rows.map(row => {
+  rows.forEach(row => {
     series.forEach(dataSet => {
       let num = row[dataSet.name];
       // if row has no data for this metric, set to null
@@ -45,8 +46,7 @@ export function shapeData(request, rows) {
       }
       dataSet.data.push(Number(num));
     });
-    const label = labelTypes.map(labelType => row[labelType]).join(', ');
-    return label;
+    labels.push(labelTypes.map(labelType => row[labelType]).join(', '));
   });
   return { labels: labels, series: series };
 }

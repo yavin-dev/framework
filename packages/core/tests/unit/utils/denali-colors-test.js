@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { assignColors, fetchColor } from 'navi-core/utils/enums/denali-colors';
 
 module('Unit | Utils | Denali Colors', () => {
-  test('assignColors works as expected', assert => {
+  test('assignColors returns correct colors in correct order', assert => {
     assert.deepEqual(
       assignColors(10),
       ['#87d812', '#fed800', '#19c6f4', '#9a2ead', '#ff3390', '#0072df', '#f17603', '#6e2ebf', '#20c05b', '#e21717'],
@@ -41,7 +41,7 @@ module('Unit | Utils | Denali Colors', () => {
     );
   });
 
-  test('fetchColor works as expected', assert => {
+  test('fetchColor assigns correct colors in correct order', assert => {
     assert.deepEqual(fetchColor(5), '#0072df', 'defaults to graph colors');
     assert.deepEqual(fetchColor(2, 'status'), '#15c046', 'responds to status colors');
     assert.deepEqual(fetchColor(5, 'status'), '#f4cb00', 'wraps through status colors correctly');

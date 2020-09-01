@@ -119,17 +119,14 @@ export default class PieChartController extends Controller {
     }
   };
 
-  @computed('apexModel')
   get apexPieRequest() {
     return this.apexModel.firstObject.request;
   }
 
-  @computed('apexModel')
   get apexPieResponse() {
     return this.apexModel.firstObject.response.rows;
   }
 
-  @computed('apexOptions')
   get apexPieOptions() {
     return {
       type: 'apex-pie',
