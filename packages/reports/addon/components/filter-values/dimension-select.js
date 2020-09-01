@@ -60,7 +60,7 @@ export default class DimensionSelectComponent extends Component {
       dimensionService = get(this, '_dimensionService'),
       source = get(this, 'filter.subject.source');
 
-    if (dimensionName && this.filter.subject.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+    if (dimensionName && this.filter.subject.columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
@@ -139,7 +139,7 @@ export default class DimensionSelectComponent extends Component {
   @action
   setValues(values) {
     this.onUpdateFilter({
-      rawValues: A(values).mapBy(this.primaryKey)
+      values: A(values).mapBy(this.primaryKey)
     });
   }
 

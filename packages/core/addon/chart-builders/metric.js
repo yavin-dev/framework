@@ -52,8 +52,9 @@ export default EmberObject.extend({
     const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
 
     const metrics = config.metrics;
-    const grain = request.columns.find(f => f.type === 'timeDimension' && f.field === 'dateTime').parameters.grain;
-    const interval = request.filters.find(f => f.type === 'timeDimension' && f.field === 'dateTime');
+    const isDateTime = f => f.type === 'timeDimension' && f.field === `${request.table}.dateTime`;
+    const grain = request.columns.find(isDateTime).parameters.grain;
+    const interval = request.filters.find(isDateTime);
     const requestInterval = Interval.parseFromStrings(interval.values[0], interval.values[1]);
 
     /*

@@ -316,7 +316,7 @@ export default {
     }
   ],
 
-  blockheadMetrics: [
+  bardTwoMetrics: [
     {
       category: 'Personal',
       name: 'ownedQuantity',
