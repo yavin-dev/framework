@@ -101,7 +101,17 @@ export default class PieChartController extends Controller {
   apexOptions = {
     series: {
       config: {
-        colors: assignColors(10),
+        colors: assignColors(
+          [
+            'All Other, Mozilla Firefox',
+            'under 13, Google Chrome',
+            '13 - 25, Microsoft Internet Explorer',
+            '25 - 35, Mozilla Firefox',
+            '35 - 45, Google Chrome',
+            '35 - 45, Mozilla Firefox'
+          ],
+          []
+        ),
         metrics: [
           {
             metric: 'totalPageViews'
@@ -119,17 +129,14 @@ export default class PieChartController extends Controller {
     }
   };
 
-  @computed('apexModel')
   get apexPieRequest() {
     return this.apexModel.firstObject.request;
   }
 
-  @computed('apexModel')
   get apexPieResponse() {
     return this.apexModel.firstObject.response.rows;
   }
 
-  @computed('apexOptions')
   get apexPieOptions() {
     return {
       type: 'apex-pie',

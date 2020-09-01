@@ -7,7 +7,7 @@ import ManifestBase from 'navi-core/navi-visualization-manifests/base';
 export default class ApexPieVisualizationManifest extends ManifestBase {
   name = 'apex-pie';
 
-  niceName = 'apex-pie';
+  niceName = 'Pie Chart';
 
   icon = 'pie-chart';
 

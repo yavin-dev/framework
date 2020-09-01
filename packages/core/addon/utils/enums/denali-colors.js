@@ -40,8 +40,17 @@ export function fetchColor(index, type = 'graph') {
   return denaliGraphColors[index % denaliGraphColors.length];
 }
 
-export function assignColors(length) {
-  return new Array(length).fill().map((item, index) => {
+export function assignColors(labels, configColors) {
+  let colors = new Array(labels.length).fill().map((item, index) => {
     return fetchColor(index);
   });
+  labels.forEach((label, index) => {
+    const colorSetting = configColors?.find(color => {
+      return color.label === label;
+    });
+    if (colorSetting) {
+      colors[index] = colorSetting.color;
+    }
+  });
+  return colors;
 }
