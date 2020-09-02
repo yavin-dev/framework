@@ -1,0 +1,30 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='apex-gauge-config'>
+  <div class='apex-gauge-config__chart-options-section__header'>
+    Chart Options:
+  </div>
+  <div class='apex-gauge-config__chart-options-section'>
+    <div class='apex-gauge-config__chart-options-section__baselineValue-change'>
+      <span class='apex-gauge-config__chart-options-section__baselineValue-change__label'>
+        Baseline Value:
+      </span>
+      <Input
+        type='number'
+        class='apex-gauge-config__chart-options-section__baselineValue-change__input'
+        @value={{readonly @options.series.config.baselineValue}}
+        @focus-out={{fn this.updateChart 'baselineValue'}}
+      />
+    </div>
+    <div class='apex-gauge-config__chart-options-section__goalValue-change'>
+      <span class='apex-gauge-config__chart-options-section__goalValue-change__label'>
+        Goal Value:
+      </span>
+      <Input
+        type='number'
+        class='apex-gauge-config__chart-options-section__goalValue-change__input'
+        @value={{readonly @options.series.config.goalValue}}
+        @focus-out={{fn this.updateChart 'goalValue'}}
+      />
+    </div>
+  </div>
+</div>

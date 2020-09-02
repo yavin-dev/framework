@@ -8,5 +8,6 @@ export default DS.Model.extend({
   goalGauge: fragment('goalGauge', { defaultValue: {} }),
   metricLabel: fragment('metricLabel', { defaultValue: {} }),
   pieChart: fragment('pie-chart', { defaultValue: {} }),
-  apexPie: fragment('apex-pie', { defaultValue: {} })
+  apexPie: fragment('apex-pie', { defaultValue: {} }),
+  apexGauge: fragment('apex-gauge', { defaultValue: {} })
 });
