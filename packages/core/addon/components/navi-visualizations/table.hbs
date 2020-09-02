@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="table-widget" ...attributes {{did-insert this.setupElement}}>
+<div class="table-widget {{this.extraClassNames}}" ...attributes {{did-insert this.setupElement}}>
   <div class="table-widget__info-header">
     <div class="table-widget__row-info">
       <span class="table-widget__row-info-number">{{if this.rowsInResponse (format-number this.rowsInResponse) 0}}</span> out of
@@ -25,7 +25,7 @@
       @headerClicked={{this.headerClicked}}
       @updateColumnOrder={{this.updateColumnOrder}}
       @updateColumnDisplayName={{this.updateColumnDisplayName}}
-      @onUpdateReport={{optional this.onUpdateReport}}
+      @onUpdateReport={{@onUpdateReport}}
     />
   {{/let}}
 </div>

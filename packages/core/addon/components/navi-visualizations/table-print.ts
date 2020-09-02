@@ -3,11 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- * {{navi-visualizations/table-print
- *   model=model
- *   options=options
- *   onUpdateReport=(action 'onUpdateReport')
- * }}
+ * <NaviVisualizations::TablePrint
+ *   @model={{this.model}}
+ *   @options={{this.options}}
+ *   @onUpdateReport={{this.onUpdateReport}}
+ * />
  */
 import Table from './table';
 
@@ -15,7 +15,7 @@ export default class TablePrint extends Table {
   /**
    * @property {Array} classNames - list of component class names
    */
-  classNames = ['table-widget', 'table-widget--print'];
+  extraClassNames = 'table-widget--print';
 
   /*
    * @property {Boolean} occlusion - whether or not to incremental render

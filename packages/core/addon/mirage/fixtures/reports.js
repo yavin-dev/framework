@@ -144,6 +144,11 @@ export default [
             field: 'adClicks',
             type: 'metric',
             displayName: 'Ad Clicks'
+          },
+          {
+            field: 'navClicks',
+            type: 'metric',
+            displayName: 'Nav Clicks'
           }
         ]
       }

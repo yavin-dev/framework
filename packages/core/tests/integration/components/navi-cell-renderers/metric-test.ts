@@ -2,10 +2,14 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { TestContext } from 'ember-test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { merge } from 'lodash-es';
 import { CellRendererArgs } from 'navi-core/components/navi-table-cell-renderer';
+import StoreService from 'ember-data/store';
+import { TableColumn } from 'navi-core/components/navi-visualizations/table';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const TEMPLATE = hbs`
   <NaviCellRenderers::Metric
@@ -15,38 +19,41 @@ const TEMPLATE = hbs`
   />`;
 
 const data: CellRendererArgs['data'] = {
-  dateTime: '2016-05-30 00:00:00.000',
-  'os|id': 'All Other',
-  'os|desc': 'All Other',
-  uniqueIdentifier: 172933788,
-  totalPageViews: 3669828357
+  uniqueIdentifier: 172933788
 };
 
-const column: CellRendererArgs['column'] = {
-  type: 'metric',
-  field: 'uniqueIdentifier',
-  parameters: {},
-  attributes: {
-    displayName: 'Unique Identifiers'
-  }
-};
-
-let request = {
-  dimensions: [{ dimension: 'os' }],
-  metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-  logicalTable: {
-    table: 'network',
-    timeGrain: 'day'
-  }
-};
+interface TestContext extends Context {
+  column: TableColumn;
+  data: Record<string, string>;
+  request: RequestFragment;
+}
 
 module('Integration | Component | cell renderers/metric', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
+    const store = this.owner.lookup('service:store') as StoreService;
+
     this.set('data', data);
+    this.set(
+      'request',
+      store.createFragment('bard-request-v2/request', {
+        columns: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' }],
+        filters: [],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy',
+        table: 'network'
+      })
+    );
+
+    const fragment = this.request.columns.objectAt(0) as ColumnFragment;
+    const column: TableColumn = {
+      fragment,
+      attributes: {},
+      columnId: 0
+    };
     this.set('column', column);
-    this.set('request', request);
   });
 
   test('it renders', async function(assert) {
@@ -120,10 +127,10 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('--', 'The metric cell renders the null value with -- correctly');
   });
 
-  test('render value based on column format', async function(assert) {
+  test('render value based on column format', async function(this: TestContext, assert) {
     assert.expect(1);
 
-    this.set('column', merge({}, column, { attributes: { format: '$0,0[.]00' } }));
+    this.set('column', merge({}, this.column, { attributes: { format: '$0,0[.]00' } }));
     await render(TEMPLATE);
 
     assert

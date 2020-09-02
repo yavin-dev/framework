@@ -2,7 +2,6 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { A as arr } from '@ember/array';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { getDimensionGroupingField } from 'navi-core/utils/data';
 

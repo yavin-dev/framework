@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="table-cell-content table-cell--total" ...attributes>
-  {{get @data @column.type}}
+  {{get-shallow @data @column.fragment.canonicalName}}
   {{#if @data.__meta__.hasPartialData}}
     <div class="table-cell__info-message">
       <NaviIcon @icon="exclamation-triangle" class="table-cell__info-message--icon" />

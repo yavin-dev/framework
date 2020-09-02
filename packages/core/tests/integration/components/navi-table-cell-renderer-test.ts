@@ -8,9 +8,7 @@ module('Integration | Component | navi table cell renderer', function(hooks) {
 
   test('it renders the correct cell renderer', async function(assert) {
     this.set('column', {
-      type: 'metric',
-      field: 'foo',
-      parameters: {},
+      fragment: { type: 'metric', canonicalName: 'foo' },
       attributes: {}
     });
 
@@ -30,9 +28,7 @@ module('Integration | Component | navi table cell renderer', function(hooks) {
     assert.dom('.table-cell-content').hasClass('metric', 'renders metric cell-formatter');
 
     this.set('column', {
-      type: 'dimension',
-      field: 'foo',
-      parameters: { field: 'id' },
+      fragment: { type: 'dimension', canonicalName: 'foo(field=id)' },
       attributes: {}
     });
 
@@ -44,9 +40,7 @@ module('Integration | Component | navi table cell renderer', function(hooks) {
     assert.dom('.table-cell-content').hasClass('dimension', 'renders using dimension cell-formatter');
 
     this.set('column', {
-      type: 'timeDimension',
-      field: 'tableName.dateTime',
-      parameters: { grain: 'day' },
+      fragment: { type: 'timeDimension', parameters: { grain: 'day' }, canonicalName: 'tableName.dateTime(grain=day)' },
       attributes: {}
     });
 

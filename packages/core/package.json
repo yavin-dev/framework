@@ -101,7 +101,7 @@
     "eslint-plugin-qunit": "^4.0.0",
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.0.0",
-    "typescript": "3.7.5"
+    "typescript": "3.9.7"
   },
   "keywords": [
     "ember-addon"

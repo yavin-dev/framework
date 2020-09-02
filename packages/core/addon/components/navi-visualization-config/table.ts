@@ -34,7 +34,8 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
   @tracked _showSubtotalDropdown = false;
 
   get showSubtotalDropdown(): boolean {
-    return this._showSubtotalDropdown || !!this.args.options?.showTotals?.subtotal;
+    const hasSubtotal = this.args.options?.showTotals?.subtotal !== undefined;
+    return this._showSubtotalDropdown || hasSubtotal;
   }
 
   /**
@@ -42,8 +43,11 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   get selectedSubtotal(): ColumnFragment | undefined {
     const { options, request } = this.args;
-    const subtotalCanonicalName = options?.showTotals?.subtotal;
-    return request.dimensionColumns.find(c => c.canonicalName === subtotalCanonicalName);
+    const subtotalIndex = options?.showTotals?.subtotal;
+    if (subtotalIndex !== undefined) {
+      return request.columns.objectAt(subtotalIndex);
+    }
+    return undefined;
   }
 
   /**
@@ -65,9 +69,9 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
     this._showSubtotalDropdown = toggleSubtotal;
     if (toggleSubtotal) {
       const { request } = this.args;
-      const firstDim = request.dimensionColumns[0];
+      const firstDim = request.columns.indexOf(request.dimensionColumns[0]);
       this.args.onUpdateConfig({
-        showTotals: { subtotal: firstDim.canonicalName }
+        showTotals: { subtotal: firstDim }
       });
     } else if (this.args.options?.showTotals?.subtotal) {
       const newOptions = { ...this.args.options };
@@ -83,6 +87,7 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   @action
   updateSubtotal(dimension: ColumnFragment): void {
-    this.args.onUpdateConfig({ showTotals: { subtotal: dimension.canonicalName } });
+    const subtotal = this.args.request.columns.indexOf(dimension);
+    this.args.onUpdateConfig({ showTotals: { subtotal } });
   }
 }

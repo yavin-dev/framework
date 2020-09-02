@@ -82,7 +82,8 @@ export default class TableRoute extends Route {
               { type: 'dimension', field: 'os', parameters: { field: 'id' }, alias: null, source: 'bardOne' },
               { type: 'dimension', field: 'os', parameters: { field: 'desc' }, alias: null, source: 'bardOne' },
               { type: 'metric', field: 'uniqueIdentifier', parameters: {}, alias: null, source: 'bardOne' },
-              { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null, source: 'bardOne' }
+              { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null, source: 'bardOne' },
+              { type: 'metric', field: 'totalPageViewsWoW', parameters: {}, alias: null, source: 'bardOne' }
             ],
             filters: [],
             sorts: [],

@@ -13,7 +13,9 @@ export default class ActionDispatcher extends Service {
   /**
    * List of consumers to be registered on init
    */
-  consumers: string[] = [];
+  get consumers(): string[] {
+    return [];
+  }
 
   /**
    * List of registered consumers instances

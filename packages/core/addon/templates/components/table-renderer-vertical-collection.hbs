@@ -10,7 +10,7 @@
     >
       {{#each group.model as |column|}}
         <group.item
-          class="table-header-cell {{column.type}}"
+          class="table-header-cell {{column.fragment.type}}"
           @model={{readonly column}}
           @click={{fn @headerClicked column}}
           @onDragStart={{set this "isDragged" true}}
@@ -18,10 +18,10 @@
           @isDraggingDisabled={{@isDraggingDisabled}}
         >
           <span
-            class="table-header-cell__title {{if column.attributes.displayName "table-header-cell__title--custom-name"}}"
+            class="table-header-cell__title {{if column.fragment.alias "table-header-cell__title--custom-name"}}"
             title="Drag column header to reorder"
           >
-            {{or column.attributes.displayName (default-column-name column @request.dataSource)}}
+            {{column.fragment.displayName}}
           </span>
           {{#if column.sortDirection}}
             <NaviTableSortIcon
@@ -48,13 +48,13 @@
       <tr class="table-header-row-vc {{if @isEditingMode "table-header-row-vc--edit"}}">
         {{#each @columns as |column|}}
           <th>
-            <div class="table-header-cell {{column.type}}">
+            <div class="table-header-cell {{column.fragment.type}}">
               {{#if @isEditingMode}}
                 <Input
                   class="table-header-cell__input"
-                  @value={{readonly column.attributes.displayName}}
-                  @placeholder={{default-column-name column @request.dataSource}}
-                  @focus-out={{fn @updateColumnDisplayName column}}
+                  @value={{readonly column.fragment.alias}}
+                  @placeholder={{column.fragment.displayName}}
+                  @focus-out={{fn @updateColumnDisplayName column.fragment}}
                 />
                 {{#if (eq column.type "metric")}}
                   <NumberFormatDropdown
@@ -65,7 +65,7 @@
                 {{/if}}
               {{else}}
                 <span class="table-header-cell__title">
-                  {{or column.attributes.displayName (default-column-name column @request.dataSource)}}
+                  {{column.fragment.displayName}}
                 </span>
                 {{#if column.sortDirection}}
                   <NaviTableSortIcon
@@ -92,7 +92,7 @@
         <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
           {{#each @columns as |column|}}
             <td class="table-cell">
-              {{#if (and (eq column.type "timeDimension") row.__meta__.isTotalRow)}}
+              {{#if (and (eq column.fragment.type "timeDimension") row.__meta__.isTotalRow)}}
                 {{#let (component (concat @cellRendererPrefix "total")) as |TotalRenderer|}}
                   <TotalRenderer
                     @data={{row}}

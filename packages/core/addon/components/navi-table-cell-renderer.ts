@@ -14,15 +14,13 @@
 import Component from '@glimmer/component';
 import { dasherize } from '@ember/string';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { TableColumn } from 'navi-core/serializers/table';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import { TableColumn } from './navi-visualizations/table';
 
 // TODO: Better Column/data type
 export type CellRendererArgs = {
   data: Record<string, string | number | null>;
   column: TableColumn;
   request: RequestFragment;
-  requestColumn: ColumnFragment;
 };
 
 export default class NaviTableCellRenderer extends Component<CellRendererArgs> {
@@ -32,12 +30,8 @@ export default class NaviTableCellRenderer extends Component<CellRendererArgs> {
    * Chooses which cell renderer to use based on type of column
    */
   get cellRenderer() {
-    const {
-      prefix,
-      args: {
-        column: { type }
-      }
-    } = this;
+    const { prefix } = this;
+    const { type } = this.args.column.fragment;
     return `${prefix}${dasherize(type)}`;
   }
 }
