@@ -26,8 +26,9 @@ class StaticAssetServingTest : IntegrationTest() {
         given()
             .header("User", "testuser")
             .When()
-            .get("/index.html")
+            .get("/")
             .then()
+            .log().all()
             .body(equalTo(content))
             .statusCode(200)
     }

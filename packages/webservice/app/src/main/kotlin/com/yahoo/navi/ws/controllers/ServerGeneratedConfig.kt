@@ -26,7 +26,7 @@ class ServerGeneratedConfig @Autowired constructor(naviSettings: NaviConfig, eli
     @ResponseBody
     @Throws(JsonProcessingException::class)
     fun serverGeneratedConfig(user: Principal): String {
-        naviSettings.appSettings.user = user?.name ?: ""
+        naviSettings.appSettings.user = user.name ?: ""
 
         if (naviSettings.appSettings.persistenceApiHost == "") {
             naviSettings.appSettings.persistenceApiHost = elideSettings.jsonApi.path
