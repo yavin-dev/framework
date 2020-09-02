@@ -10,20 +10,24 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
 
+function hasAllColumns(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
+  const requestColumnIds = new Set(request.columns.map((_c, index) => index));
+
+  const eachAttributeValid = Object.keys(metadata.columnAttributes)
+    .map(Number)
+    .every(columnId => requestColumnIds.has(columnId));
+
+  const subtotalValid = metadata.showTotals?.subtotal ? requestColumnIds.has(metadata.showTotals.subtotal) : true;
+
+  return eachAttributeValid && subtotalValid;
+}
+
 const Validations = buildValidations(
   {
     metadata: validator('inline', {
       validate(metadata: TableVisualizationMetadata['metadata'], options: { request: RequestFragment }) {
         const { request } = options;
-        const requestColumnIds = new Set(request.columns.map((_c, index) => index));
-
-        const eachAttributeValid = Object.keys(metadata.columnAttributes)
-          .map(Number)
-          .every(columnId => requestColumnIds.has(columnId));
-
-        const subtotalValid = metadata.showTotals?.subtotal ? requestColumnIds.has(metadata.showTotals.subtotal) : true;
-
-        return !!request && eachAttributeValid && subtotalValid;
+        return request && hasAllColumns(request, metadata);
       },
       dependentKeys: ['model._request.columns.[]']
     })
