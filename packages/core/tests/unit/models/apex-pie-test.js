@@ -40,6 +40,8 @@ module('Unit | Model | Apex Pie', function(hooks) {
           series: {
             config: {
               colors: ['#87d812', '#fed800', '#19c6f4'],
+              dataLabelsVisible: true,
+              legendVisible: true,
               metrics: [
                 {
                   id: 'm1',
@@ -93,6 +95,8 @@ module('Unit | Model | Apex Pie', function(hooks) {
           series: {
             config: {
               colors: ['#87d812', '#fed800', '#19c6f4'],
+              dataLabelsVisible: true,
+              legendVisible: true,
               metrics: [
                 {
                   id: 'm1',
@@ -199,6 +203,8 @@ module('Unit | Model | Apex Pie', function(hooks) {
     set(chart, 'metadata.series', {
       config: {
         colors: ['#663399', '#000000', '#ffffff'],
+        dataLabelsVisible: true,
+        legendVisible: true,
         metrics: [
           {
             id: 'm1',
@@ -228,6 +234,8 @@ module('Unit | Model | Apex Pie', function(hooks) {
           series: {
             config: {
               colors: ['#663399', '#000000', '#ffffff', '#9a2ead'],
+              dataLabelsVisible: true,
+              legendVisible: true,
               metrics: [
                 {
                   id: 'm2',

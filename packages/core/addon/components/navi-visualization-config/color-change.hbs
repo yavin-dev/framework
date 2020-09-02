@@ -1,0 +1,41 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="color-change-config">
+  <div class='color-change-config__label-select'>
+    <span class='color-change-config__label-select__label'>
+      Label:
+    </span>
+    <PowerSelect
+      class='color-change-config__label-select__selector'
+      @tagName='div'
+      @triggerId='color-change-config__label-select__selector__trigger'
+      @options={{this.labelColors}}
+      @placeholder='select item to re-color'
+      @selected={{this.selectedLabelColor}}
+      @searchEnabled={{false}}
+      @onchange={{this.selectedNewLabel}}
+      @dropdownClass='color-change-config__label-select__selector__dropdown'
+      as |labelColor|
+    >
+      <div class='color-change-config__label-select__selector__list-item'>
+        <div class='color-change-config__label-select__selector__list-item__color'
+          style='width:10px; height:10px; background:{{labelColor.color}}'
+        />
+        <div class='color-change-config__label-select__selector__list-item__text'>
+          {{labelColor.label}}
+        </div>
+     </div>
+    </PowerSelect>
+  </div>
+  <div class='color-change-config__color-select'>
+    <span class='color-change-config__color-select__label'>
+      Color:
+    </span>
+    <input
+      onchange={{this.updateChartColor}}
+      class='color-change-config__color-select__input'
+      type='color'
+      name='selectedColor'
+      value={{this.selectedLabelColor.color}}>
+  </div>
+
+</div>
