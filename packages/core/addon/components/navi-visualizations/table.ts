@@ -11,19 +11,17 @@
  * />
  */
 import { readOnly, alias } from '@ember/object/computed';
-import { action } from '@ember/object';
-import { inject as service } from '@ember/service';
+import { action, computed } from '@ember/object';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { groupBy } from 'lodash-es';
 import EmberArray from '@ember/array';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+//@ts-ignore
 import { featureFlag } from 'navi-core/helpers/feature-flag';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import NaviFormatterService from 'navi-data/services/navi-formatter';
-import { TableColumn, TableColumnType } from 'navi-core/serializers/table';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -43,24 +41,22 @@ type ResponseRow = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TotalRow = any;
 
-type UpdateAction = 'upsertSort' | 'removeSort' | 'updateColumn' | 'updateColumnOrder';
+type UpdateAction = string;
 export type Args = {
   model: EmberArray<{ request: RequestFragment; response: ResponseRow[] }>;
-  options: {
-    columns: TableColumn[];
-    showTotals?: {
-      grandTotal?: boolean;
-      subtotal?: string;
-    };
-  };
+  options: TableVisualizationMetadata['metadata'];
   isEditing?: boolean;
   onUpdateReport: (action: UpdateAction, ...params: unknown[]) => void;
 };
 
-export default class Table extends Component<Args> {
-  @service naviMetadata!: NaviMetadataService;
+export type TableColumn = {
+  fragment: ColumnFragment;
+  attributes: TableColumnAttributes;
+  columnId: number;
+};
 
-  @service naviFormatter!: NaviFormatterService;
+export default class Table extends Component<Args> {
+  @tracked extraClassNames = '';
 
   /*
    * whether or not to incremental render
@@ -68,7 +64,7 @@ export default class Table extends Component<Args> {
   @tracked occlusion = true;
 
   @readOnly('args.options.showTotals.subtotal')
-  selectedSubtotal!: string;
+  selectedSubtotal!: number;
 
   /**
    * data from the WS
@@ -140,30 +136,31 @@ export default class Table extends Component<Args> {
    * @param {String} type - `grandTotal` || `subtotal`
    * @returns {Object} totalRow
    */
-  _computeTotal(data: ResponseRow[], type: TotalType) {
+  _computeTotal(data: ResponseRow[], totalType: TotalType) {
     const { columns, totalRows, rowsInResponse, selectedSubtotal } = this;
     const hasPartialData = totalRows > rowsInResponse;
 
     let hasTitle = false;
     let totalRow = columns.reduce((totRow: TotalRow, column) => {
-      const { field, parameters } = column;
-      const canonicalName = canonicalizeMetric({ metric: field, parameters: parameters });
+      const { canonicalName, type } = column.fragment;
+      let totalValue;
 
-      if (column.type === 'timeDimension' && !hasTitle) {
-        totRow[canonicalName] = HEADER_TITLE[type];
+      if (type === 'timeDimension' && !hasTitle) {
+        totalValue = HEADER_TITLE[totalType];
         hasTitle = true;
       }
 
       //set subtotal dimension if subtotal row
-      if (column.type === 'dimension' && canonicalName === selectedSubtotal && type === 'subtotal') {
-        totRow[canonicalName] = data[0][canonicalName];
+      if (type === 'dimension' && column.columnId === selectedSubtotal && totalType === 'subtotal') {
+        totalValue = data[0][canonicalName];
       }
 
       //if metric and not partial data compute totals
-      if (column.type === 'metric' && column.attributes.canAggregateSubtotal !== false && !hasPartialData) {
-        totRow[canonicalName] = this.computeColumnTotal(data, canonicalName, totRow, column, type);
+      if (type === 'metric' && column.attributes.canAggregateSubtotal !== false && !hasPartialData) {
+        totalValue = this.computeColumnTotal(data, canonicalName, totRow, column, totalType);
       }
 
+      totRow[canonicalName] = totalValue;
       return totRow;
     }, {});
 
@@ -185,7 +182,7 @@ export default class Table extends Component<Args> {
   _computeSubtotals() {
     const { selectedSubtotal: groupingColumn, rawData, groupedData } = this;
 
-    if (!groupingColumn) {
+    if (groupingColumn === undefined) {
       return rawData;
     }
 
@@ -199,14 +196,16 @@ export default class Table extends Component<Args> {
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
   get groupedData() {
-    let { selectedSubtotal: groupingColumn, rawData } = this;
+    let { selectedSubtotal, rawData, request } = this;
+    const canonicalName = request.columns.objectAt(selectedSubtotal)?.canonicalName as string;
 
-    return groupBy(rawData, (row: ResponseRow) => row[groupingColumn]);
+    return groupBy(rawData, (row: ResponseRow) => row[canonicalName]);
   }
 
   /**
    * @property {Object} tableData
    */
+  @computed('rawData', 'args.options.showTotals.grandTotal')
   get tableData() {
     const { rawData } = this;
     const tableData = this._computeSubtotals();
@@ -221,10 +220,18 @@ export default class Table extends Component<Args> {
   /**
    * @property {Object} columns
    */
-  get columns() {
-    const columns = [...(this.args.options?.columns || [])];
-
-    return columns;
+  @computed('args.options.columnAttributes', 'request.{columns.[],sorts.[]}')
+  get columns(): TableColumn[] {
+    const { columnAttributes } = this.args.options;
+    return this.request.columns.map((column, index) => {
+      const sort = this.request.sorts.find(sort => sort.canonicalName === column.canonicalName);
+      return {
+        fragment: column,
+        attributes: columnAttributes[index] || {},
+        sortDirection: sort?.direction || 'none',
+        columnId: index
+      };
+    });
   }
 
   /**
@@ -251,7 +258,7 @@ export default class Table extends Component<Args> {
   /**
    * @property {Object} request
    */
-  @alias('model.firstObject.request')
+  @alias('args.model.firstObject.request')
   request!: RequestFragment;
 
   /**
@@ -280,7 +287,7 @@ export default class Table extends Component<Args> {
    * @param {String} sortDirection - current sort direction
    * @returns {String} direction
    */
-  _getNextSortDirection(type: TableColumnType, sortDirection: SortDirection) {
+  _getNextSortDirection(type: ColumnFragment['type'], sortDirection: SortDirection) {
     let direction = NEXT_SORT_DIRECTION[sortDirection];
 
     // timeDimension will always be sorted
@@ -297,16 +304,16 @@ export default class Table extends Component<Args> {
    * @param {Object} column object
    */
   @action
-  headerClicked({ type, field, parameters }: TableColumn) {
+  headerClicked(column: TableColumn) {
+    const { type } = column.fragment;
     if (type === 'timeDimension' || type === 'metric') {
-      const canonicalName = canonicalizeMetric({ metric: field, parameters });
-      const sort = this.args.model.objectAt(0)?.request.sorts.find(sort => sort.canonicalName === canonicalName);
+      const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
       const sortDirection = (sort?.direction || 'none') as SortDirection;
       const direction = this._getNextSortDirection(type, sortDirection);
       //TODO Fetch from report action dispatcher service
       const actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
 
-      this.args.onUpdateReport(actionType, canonicalName, direction);
+      this.args.onUpdateReport(actionType, column.fragment, direction);
     }
   }
 
@@ -322,14 +329,7 @@ export default class Table extends Component<Args> {
    * @action updateColumnDisplayName
    */
   @action
-  updateColumnDisplayName(column: TableColumn, displayName: string | undefined) {
-    const newColumn: TableColumn = {
-      ...column,
-      attributes: {
-        ...column.attributes,
-        displayName
-      }
-    };
-    this.args.onUpdateReport('updateColumn', newColumn);
+  updateColumnDisplayName(column: TableColumn, alias: string | undefined) {
+    this.args.onUpdateReport('renameColumnFragment', column.fragment, alias);
   }
 }

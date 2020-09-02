@@ -7,76 +7,35 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
-  {{navi-visualizations/table-print
-    model=model
-    options=options
-    onUpdateReport=(action onUpdateReport)
-  }}`;
+  <NaviVisualizations::TablePrint
+    @model={{this.model}}
+    @options={{this.options}}
+    @onUpdateReport={{this.onUpdateReport}}
+  />`;
 
 const ROWS = [
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'All Other',
-    'os|desc': 'All Other',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'All Other',
+    'os(field=desc)': 'All Other',
     uniqueIdentifier: 172933788,
     totalPageViews: 3669828357
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'Android',
-    'os|desc': 'Android',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'Android',
+    'os(field=desc)': 'Android',
     uniqueIdentifier: 183206656,
     totalPageViews: 4088487125
   },
   {
-    dateTime: '2016-05-30 00:00:00.000',
-    'os|id': 'BlackBerry',
-    'os|desc': 'BlackBerry OS',
+    'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+    'os(field=id)': 'BlackBerry',
+    'os(field=desc)': 'BlackBerry OS',
     uniqueIdentifier: 183380921,
     totalPageViews: 4024700302
   }
 ];
-
-const Model = A([
-  {
-    request: {
-      dimensions: [{ dimension: 'os' }],
-      metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
-      }
-    },
-    response: {
-      rows: ROWS
-    }
-  }
-]);
-
-const Options = {
-  columns: [
-    {
-      attributes: { name: 'dateTime' },
-      type: 'dateTime',
-      displayName: 'Date'
-    },
-    {
-      attributes: { name: 'os' },
-      type: 'dimension',
-      displayName: 'Operating System'
-    },
-    {
-      attributes: { name: 'uniqueIdentifier', parameters: {} },
-      type: 'metric',
-      displayName: 'Unique Identifiers'
-    },
-    {
-      attributes: { name: 'totalPageViews', parameters: {} },
-      type: 'metric',
-      displayName: 'Total Page Views'
-    }
-  ]
-};
 
 module('Integration | Component | navi visualizations/table print', function(hooks) {
   setupRenderingTest(hooks);
@@ -85,6 +44,32 @@ module('Integration | Component | navi visualizations/table print', function(hoo
   hooks.beforeEach(async function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
 
+    const store = this.owner.lookup('service:store');
+
+    const Model = A([
+      {
+        request: store.createFragment('bard-request-v2/request', {
+          dataSource: 'bardOne',
+          requestVersion: '2.0',
+          table: 'network',
+          columns: [
+            { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
+            { type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
+            { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
+            { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
+            { type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' }
+          ],
+          sorts: []
+        }),
+        response: {
+          rows: ROWS
+        }
+      }
+    ]);
+
+    const Options = {
+      columnAttributes: {}
+    };
     this.set('model', Model);
     this.set('options', Options);
     this.set('onUpdateReport', () => undefined);
@@ -107,7 +92,7 @@ module('Integration | Component | navi visualizations/table print', function(hoo
 
     assert.deepEqual(
       headers,
-      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views'],
+      ['Date Time (day)', 'Operating System (id)', 'Operating System (desc)', 'Unique Identifiers', 'Total Page Views'],
       'The table renders the headers correctly based on the request'
     );
 
@@ -118,9 +103,9 @@ module('Integration | Component | navi visualizations/table print', function(hoo
     assert.deepEqual(
       body,
       [
-        ['05/30/2016', 'All Other', '172,933,788', '3,669,828,357'],
-        ['05/30/2016', 'Android', '183,206,656', '4,088,487,125'],
-        ['05/30/2016', 'BlackBerry OS', '183,380,921', '4,024,700,302']
+        ['05/30/2016', 'All Other', 'All Other', '172,933,788', '3,669,828,357'],
+        ['05/30/2016', 'Android', 'Android', '183,206,656', '4,088,487,125'],
+        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183,380,921', '4,024,700,302']
       ],
       'The table renders the response dataset correctly'
     );

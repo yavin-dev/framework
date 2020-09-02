@@ -5,6 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
+import { A as arr } from '@ember/array';
 
 module('Integration | Component | visualization config/table', function(hooks) {
   setupRenderingTest(hooks);
@@ -39,8 +40,10 @@ module('Integration | Component | visualization config/table', function(hooks) {
     config.navi.FEATURES.enableTotals = true;
 
     this.set('onUpdateConfig', () => undefined);
+    const columns = arr([{ field: 'os' }, { field: 'age' }]);
     this.set('request', {
-      dimensions: [{ dimension: 'os' }, { dimension: 'age' }]
+      columns,
+      dimensionColumns: columns
     });
     await render(hbs`{{navi-visualization-config/table
       request=request
@@ -112,15 +115,17 @@ module('Integration | Component | visualization config/table', function(hooks) {
       .dom('.table-config__total-toggle-button--subtotal')
       .isNotVisible('The subtotal toggle is not visible when there are no dimension groupbys');
 
+    const columns = arr([{ field: 'dateTime' }, { field: 'os' }, { field: 'age' }]);
     this.set('request', {
-      dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }, { dimension: { id: 'age', name: 'Age' } }]
+      columns: arr([{ type: 'metric' }, ...columns]),
+      dimensionColumns: columns
     });
 
     this.set('onUpdateConfig', result => {
       assert.equal(
         result.showTotals.subtotal,
-        'dateTime',
-        '`dateTime` is used to subtotal when toggled on and updated using `onUpdateConfig`'
+        1,
+        'The first dimension column is used when subtotal is toggled on and updated using `onUpdateConfig`'
       );
     });
 
@@ -133,7 +138,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
       this.set('onUpdateConfig', result => {
         assert.equal(
           result.showTotals.subtotal,
-          'age',
+          3,
           'Choosing another option in the dimension select updates the subtotal in the config'
         );
       });
@@ -157,18 +162,19 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
 
+    const columns = arr([{ field: 'os', columnMetadata: { name: 'Operating System' } }, { field: 'age' }]);
     let request = {
-      dimensions: [{ dimension: { id: 'os', name: 'Operating System' } }, { dimension: { id: 'age', name: 'Age' } }]
+      columns,
+      dimensionColumns: columns
     };
 
     this.set('request', request);
+    this.set('options', { showTotals: { subtotal: 0 } });
 
     await render(hbs`{{navi-visualization-config/table
       request=request
       options=options
     }}`);
-
-    this.set('options', { showTotals: { subtotal: 'os' } });
 
     assert
       .dom('.table-config__total-toggle-button--subtotal.x-toggle-component .x-toggle-container-checked')

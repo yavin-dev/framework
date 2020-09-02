@@ -20,17 +20,19 @@ export default ActionConsumer.extend({
      * @param {String} metricName - canonical name of the metric
      * @param {String} direction - the direction of the new sort
      */
-    [RequestActions.UPSERT_SORT]({ currentModel: { request } }, metricName, direction) {
-      const sort = request.sorts.find(sort => sort.canonicalName === metricName);
+    [RequestActions.UPSERT_SORT]({ currentModel: { request } }, columnFragment, direction) {
+      const sort = request.sorts.find(sort => sort.canonicalName === columnFragment.canonicalName);
 
       if (sort) {
         set(sort, 'direction', direction);
       } else {
-        if (metricName === 'dateTime') {
-          request.addDateTimeSort(direction);
-        } else {
-          request.addSortByMetricName(metricName, direction);
-        }
+        request.addSort({
+          type: columnFragment.type,
+          field: columnFragment.field,
+          parameters: columnFragment.parameters,
+          source: columnFragment.source,
+          direction
+        });
       }
     },
 

@@ -3,11 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import StoreService from 'ember-data/store';
-import { TableColumn } from 'navi-core/serializers/table';
 import { TestContext as Context } from 'ember-test-helpers';
-import RequestFragment from 'dummy/models/bard-request-v2/request';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
-import ColumnFragment from 'dummy/models/bard-request-v2/fragments/column';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import { TableColumn } from 'navi-core/components/navi-visualizations/table';
 
 interface TestContext extends Context {
   column: TableColumn;
@@ -25,34 +24,8 @@ interface TestContext extends Context {
 function _setRequestForTimeGrain(context: TestContext, timeGrain: string) {
   const column = context.request.columns.objectAt(0) as ColumnFragment;
   column.updateParameters({ grain: timeGrain });
-  context.set('column.parameters.grain', timeGrain);
   context.set('data', { [column.canonicalName]: '2016-06-03 11:12:13.000' });
 }
-
-const column: TableColumn = {
-  type: 'timeDimension',
-  field: 'network.dateTime',
-  parameters: { grain: 'day' },
-  attributes: {
-    displayName: 'Date'
-  }
-};
-
-const request: RequestV2 = {
-  columns: [
-    {
-      type: 'timeDimension',
-      field: 'network.dateTime',
-      parameters: { grain: 'day' },
-      alias: null
-    }
-  ],
-  filters: [],
-  sorts: [],
-  requestVersion: '2.0',
-  dataSource: 'dummy',
-  table: 'network'
-};
 
 const TEMPLATE = hbs`
   <NaviCellRenderers::TimeDimension
@@ -67,10 +40,33 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
   hooks.beforeEach(function(this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
 
+    this.set(
+      'request',
+      store.createFragment('bard-request-v2/request', {
+        columns: [
+          {
+            type: 'timeDimension',
+            field: 'network.dateTime',
+            parameters: { grain: 'day' },
+            alias: null,
+            source: 'bardOne'
+          }
+        ],
+        filters: [],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy',
+        table: 'network'
+      })
+    );
+
+    const fragment = this.request.columns.objectAt(0) as ColumnFragment;
+    const column: TableColumn = {
+      fragment,
+      attributes: {},
+      columnId: 0
+    };
     this.set('column', column);
-    this.set('request', store.createFragment('bard-request-v2/request', request));
-    const columnFragment = this.request.columns.objectAt(0) as ColumnFragment;
-    columnFragment.source = 'bardOne';
   });
 
   test('time-dimension renders second format correctly', async function(this: TestContext, assert) {
