@@ -4,19 +4,17 @@
  */
 import RequestActionDispatcher from './request-action-dispatcher';
 import { RequestActions } from './request-action-dispatcher';
-import { computed } from '@ember/object';
 
 export const UpdateReportActions = Object.assign({}, RequestActions, {
   UPDATE_TABLE_COLUMN_ORDER: 'updateColumnOrder',
   UPDATE_TABLE_COLUMN: 'updateColumn'
 });
 
-export default RequestActionDispatcher.extend({
+export default class UpdateReportActionDispatcher extends RequestActionDispatcher {
   /**
    * @property {Array} consumers - concatenate consumers in request
    */
-  consumers: computed(function() {
-    const parentConsumers = this._super(...arguments) || [];
-    return [...parentConsumers, 'report/table-visualization'];
-  })
-});
+  get consumers() {
+    return [...super.consumers, 'report/table-visualization'];
+  }
+}

@@ -12,7 +12,6 @@
 
 import Component from '@glimmer/component';
 import { CellRendererArgs } from '../navi-table-cell-renderer';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 export default class TimeDimensionCellRenderer extends Component<CellRendererArgs> {
   /**
@@ -21,9 +20,10 @@ export default class TimeDimensionCellRenderer extends Component<CellRendererArg
   get value() {
     const {
       data,
-      column: { field, parameters }
+      column: {
+        fragment: { canonicalName }
+      }
     } = this.args;
-    const canonicalName = canonicalizeMetric({ metric: field, parameters });
     return data[canonicalName];
   }
 
@@ -31,7 +31,7 @@ export default class TimeDimensionCellRenderer extends Component<CellRendererArg
    * Time Grain in request
    */
   get granularity() {
-    const { column } = this.args;
-    return column.parameters?.grain;
+    const { fragment } = this.args.column;
+    return fragment.parameters?.grain;
   }
 }

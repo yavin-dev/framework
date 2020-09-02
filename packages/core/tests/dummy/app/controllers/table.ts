@@ -1,12 +1,13 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { action, set } from '@ember/object';
 //@ts-ignore
-import { isEqual, merge, omit } from 'lodash-es';
-import { Args } from 'navi-core/components/navi-visualizations/table';
-import { TableColumn } from 'navi-core/serializers/table';
+import { merge } from 'lodash-es';
+import { Args, TableColumn } from 'navi-core/components/navi-visualizations/table';
 import { ModelFrom } from 'navi-core/utils/type-utils';
 import TableRoute from '../routes/table';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import { TableColumnAttributes } from 'navi-core/serializers/table';
 
 export default class TableController extends Controller {
   @tracked model!: ModelFrom<TableRoute>;
@@ -27,102 +28,65 @@ export default class TableController extends Controller {
 
   //options passed through to the table component
   @tracked options: Args['options'] = {
-    columns: [
-      {
-        type: 'timeDimension',
-        field: 'network.dateTime',
-        parameters: {
-          grain: 'week'
-        },
-        attributes: {
-          displayName: 'Date'
-        }
-      },
-      {
-        type: 'dimension',
-        field: 'os',
-        parameters: {
-          field: 'id'
-        },
-        attributes: {
-          displayName: 'Operating System'
-        }
-      },
-      {
-        type: 'dimension',
-        field: 'os',
-        parameters: {
-          field: 'desc'
-        },
-        attributes: {
-          displayName: 'Operating System'
-        }
-      },
-      {
-        type: 'metric',
-        field: 'uniqueIdentifier',
-        parameters: {},
-        attributes: {
-          displayName: 'Unique Identifiers'
-        }
-      },
-      {
-        type: 'metric',
-        field: 'totalPageViews',
-        parameters: {},
-        attributes: {
-          displayName: 'Total Page Views'
-        }
-      },
-      {
-        type: 'metric',
-        field: 'totalPageViewsWoW',
-        parameters: {},
-        attributes: {
-          canAggregateSubtotal: false,
-          displayName: 'Total Page Views WoW'
-        }
+    columnAttributes: {
+      5: {
+        canAggregateSubtotal: false
       }
-    ],
+    },
     showTotals: {
+      // subtotal: 0,
       grandTotal: true
-      // subtotal: 'network.dateTime(grain=week)'
     }
   };
 
-  upsertSort(options: any) {
-    this.model[0].request.set('sorts', [
+  @action
+  upsertSort(columnFragment: ColumnFragment, direction: string) {
+    this.request.set('sorts', [
       {
-        type: 'metric',
-        field: options.metric,
-        parameters: {},
-        direction: options.direction
+        type: columnFragment.type,
+        field: columnFragment.field,
+        parameters: columnFragment.parameters,
+        direction: direction
       }
     ]);
   }
 
+  @action
   removeSort() {
-    this.model[0].request.set('sorts', []);
-  }
-
-  updateColumn(updatedColumn: TableColumn) {
-    const columns = this.options.columns.map(col => {
-      const sameBase = isEqual(omit(updatedColumn, 'attributes'), omit(col, 'attributes'));
-      const propsToOmit = ['format', 'displayName'];
-      const sameAttrs = isEqual(omit(updatedColumn.attributes, propsToOmit), omit(col.attributes, propsToOmit));
-
-      return sameBase && sameAttrs ? updatedColumn : col;
-    });
-    this.options = { ...this.options, columns };
-  }
-
-  updateColumnOrder(columns: TableColumn[]) {
-    this.options = { ...this.options, columns };
+    this.request.set('sorts', []);
   }
 
   @action
-  onUpdateReport(actionType: Parameters<Args['onUpdateReport']>[0], options: Parameters<Args['onUpdateReport']>[1]) {
-    this[actionType](options);
+  updateColumn(updatedColumn: TableColumn) {
+    const columnAttributes = { ...this.options.columnAttributes };
+    columnAttributes[updatedColumn.columnId] = updatedColumn.attributes;
+
+    this.options = { columnAttributes };
+  }
+
+  @action
+  renameColumnFragment(column: ColumnFragment, name: string | undefined) {
+    set(column, 'alias', name);
+  }
+
+  @action
+  updateColumnOrder(newColumnOrder: TableColumn[]) {
+    const columnAttributes = newColumnOrder.reduce((columnAttributes, columnInfo, index) => {
+      columnAttributes[index] = columnInfo.attributes;
+      return columnAttributes;
+    }, {} as Record<number, TableColumnAttributes>);
+    const reorderedColumns = newColumnOrder.map(c => c.fragment);
+
+    this.options = { columnAttributes };
+    // TS doesn't like that we set this directly
+    //@ts-expect-error
+    set(this.request, 'columns', reorderedColumns);
+  }
+
+  @action
+  onUpdateReport(actionType: string, ...options: any[]) {
+    const updateAction = (this as any)[actionType] as Function;
+    updateAction(...options);
   }
 
   @action

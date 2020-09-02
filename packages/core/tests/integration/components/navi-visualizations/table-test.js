@@ -78,84 +78,11 @@ const ROWS = [
   }
 ];
 
-const Model = arr([
-  {
-    request: {
-      dataSource: 'bardOne',
-      requestVersion: '2.0',
-      table: 'network',
-      columns: [
-        { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
-        { type: 'dimension', field: 'os', parameters: {} },
-        { type: 'metric', field: 'uniqueIdentifier', parameters: {} },
-        { type: 'metric', field: 'totalPageViews', parameters: {} },
-        { type: 'metric', field: 'platformRevenue', parameters: { currency: 'USD' } }
-      ],
-      sorts: [
-        { type: 'metric', field: 'platformRevenue', parameters: { currency: 'USD' }, direction: 'desc' },
-        { type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc' }
-      ]
-    },
-    response: {
-      rows: ROWS
-    }
-  }
-]);
+let Model;
 
-const Options = {
-  columns: [
-    {
-      type: 'timeDimension',
-      field: 'network.dateTime',
-      parameters: { grain: 'day' },
-      attributes: {
-        displayName: 'Date'
-      }
-    },
-    {
-      type: 'dimension',
-      field: 'os',
-      parameters: { field: 'id' },
-      attributes: {
-        displayName: 'Operating System (id)'
-      }
-    },
-    {
-      type: 'dimension',
-      field: 'os',
-      parameters: { field: 'desc' },
-      attributes: {
-        displayName: 'Operating System (desc)'
-      }
-    },
-    {
-      type: 'metric',
-      field: 'uniqueIdentifier',
-      parameters: {},
-      attributes: {
-        displayName: 'Unique Identifiers'
-      }
-    },
-    {
-      type: 'metric',
-      field: 'totalPageViews',
-      parameters: {},
-      attributes: {
-        displayName: 'Total Page Views'
-      }
-    },
-    {
-      type: 'metric',
-      field: 'platformRevenue',
-      parameters: { currency: 'USD' },
-      attributes: {
-        displayName: 'Platform Revenue (USD)'
-      }
-    }
-  ]
-};
+let Options;
 
-let MetadataService;
+let MetadataService, Store;
 
 module('Integration | Component | table', function(hooks) {
   setupRenderingTest(hooks);
@@ -163,12 +90,52 @@ module('Integration | Component | table', function(hooks) {
 
   hooks.beforeEach(async function() {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
+    Store = this.owner.lookup('service:store');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
+    Model = arr([
+      {
+        request: Store.createFragment('bard-request-v2/request', {
+          dataSource: 'bardOne',
+          requestVersion: '2.0',
+          table: 'network',
+          columns: [
+            { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
+            { type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
+            { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
+            { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
+            { type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' },
+            { type: 'metric', field: 'platformRevenue', parameters: { currency: 'USD' }, source: 'bardOne' }
+          ],
+          sorts: [
+            {
+              type: 'timeDimension',
+              field: 'network.dateTime',
+              parameters: { grain: 'day' },
+              direction: 'desc',
+              source: 'bardTwo'
+            },
+            {
+              type: 'metric',
+              field: 'platformRevenue',
+              parameters: { currency: 'USD' },
+              direction: 'desc',
+              source: 'bardOne'
+            },
+            { type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc', source: 'bardOne' }
+          ]
+        }),
+        response: {
+          rows: ROWS
+        }
+      }
+    ]);
+    Options = {
+      columnAttributes: {}
+    };
     this.set('model', Model);
     this.set('options', Options);
     this.set('onUpdateReport', () => undefined);
-
-    MetadataService = this.owner.lookup('service:navi-metadata');
 
     await MetadataService.loadMetadata();
   });
@@ -190,7 +157,7 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       headers,
       [
-        'Date',
+        'Date Time (day)',
         'Operating System (id)',
         'Operating System (desc)',
         'Unique Identifiers',
@@ -224,22 +191,23 @@ module('Integration | Component | table', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
     const model = arr([
       {
-        request: {
+        request: Store.createFragment('bard-request-v2/request', {
           dataSource: 'bardTwo',
           requestVersion: '2.0',
           table: 'inventory',
           columns: [
-            { type: 'timeDimension', field: 'inventory.dateTime', parameters: { grain: 'day' } },
-            { type: 'dimension', field: 'container', parameters: {} },
-            { type: 'metric', field: 'ownedQuantity', parameters: {} },
-            { type: 'metric', field: 'usedAmount', parameters: {} },
-            { type: 'metric', field: 'personalSold', parameters: {} }
+            { type: 'timeDimension', field: 'inventory.dateTime', parameters: { grain: 'day' }, source: 'bardTwo' },
+            { type: 'dimension', field: 'container', parameters: { field: 'id' }, source: 'bardTwo' },
+            { type: 'dimension', field: 'container', parameters: { field: 'desc' }, source: 'bardTwo' },
+            { type: 'metric', field: 'ownedQuantity', parameters: {}, source: 'bardTwo' },
+            { type: 'metric', field: 'usedAmount', parameters: {}, source: 'bardTwo' },
+            { type: 'metric', field: 'personalSold', parameters: {}, source: 'bardTwo' }
           ],
           sorts: [
-            { type: 'metric', field: 'personalSold', parameters: {}, direction: 'desc' },
-            { type: 'metric', field: 'usedAmount', parameters: {}, direction: 'asc' }
+            { type: 'metric', field: 'personalSold', parameters: {}, direction: 'desc', source: 'bardTwo' },
+            { type: 'metric', field: 'usedAmount', parameters: {}, direction: 'asc', source: 'bardTwo' }
           ]
-        },
+        }),
         response: {
           rows: [
             {
@@ -269,48 +237,7 @@ module('Integration | Component | table', function(hooks) {
     ]);
 
     const options = {
-      columns: [
-        {
-          type: 'timeDimension',
-          field: 'inventory.dateTime',
-          parameters: { grain: 'day' },
-          attributes: {
-            displayName: 'Date'
-          }
-        },
-        {
-          type: 'dimension',
-          field: 'container',
-          parameters: {},
-          attributes: {
-            displayName: 'Container'
-          }
-        },
-        {
-          type: 'metric',
-          field: 'ownedQuantity',
-          parameters: {},
-          attributes: {
-            displayName: 'Quantity Owned'
-          }
-        },
-        {
-          type: 'metric',
-          field: 'usedAmount',
-          parameters: {},
-          attributes: {
-            displayName: 'Amount Used'
-          }
-        },
-        {
-          type: 'metric',
-          field: 'personalSold',
-          parameters: {},
-          attributes: {
-            displayName: 'Amount personally sold'
-          }
-        }
-      ]
+      columnAttributes: {}
     };
 
     this.set('model', model);
@@ -324,7 +251,14 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       headers,
-      ['Date', 'Container', 'Quantity Owned', 'Amount Used', 'Amount personally sold'],
+      [
+        'Date Time (day)',
+        'Container (id)',
+        'Container (desc)',
+        'Quantity of thing',
+        'Used Amount',
+        'Personally sold amount'
+      ],
       'The table renders the headers correctly based on the request'
     );
   });
@@ -332,27 +266,20 @@ module('Integration | Component | table', function(hooks) {
   test('onUpdateReport', async function(assert) {
     assert.expect(9);
 
-    this.set(
-      'options',
-      merge({}, Options, {
-        columns: [
-          ...Options.columns,
-          {
-            type: 'metric',
-            field: 'totalPageViewsWoW',
-            parameters: {},
-            attributes: {
-              displayName: 'Total Page Views WoW',
-              canAggregateSubtotal: false
-            }
-          }
-        ]
-      })
-    );
-
     this.set('onUpdateReport', () => {
       assert.notok(true, 'onUpdateReport should not be called when a dimension header is clicked');
     });
+
+    const totalPageViewWoW = this.model.firstObject.request.addColumn({
+      type: 'metric',
+      field: 'totalPageViewsWoW',
+      parameters: {},
+      source: 'bardOne'
+    });
+
+    this.options.columnAttributes[this.model.firstObject.request.columns.indexOf(totalPageViewWoW)] = {
+      canAggregateSubtotal: false
+    };
 
     await render(TEMPLATE);
     await click('.table-header-row-vc--view .table-header-cell.dimension');
@@ -414,7 +341,7 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       totalRow,
-      ['Grand Total', '--', '1,373,229,356', '29,181,322,613', '0'],
+      ['Grand Total', '--', '--', '1,373,229,356', '29,181,322,613', '0'],
       'The table renders the grand total row correctly'
     );
 
@@ -429,7 +356,7 @@ module('Integration | Component | table', function(hooks) {
   test('subtotals in table', async function(assert) {
     assert.expect(2);
 
-    let options = merge({}, Options, { showTotals: { subtotal: 'os' } });
+    let options = merge({}, Options, { showTotals: { subtotal: 1 } });
 
     set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
@@ -440,9 +367,9 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
-        'Subtotal All Other 345,867,576 7,339,656,714 0',
-        'Subtotal Android 183,206,656 4,088,487,125 0',
-        'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0'
+        'Subtotal All Other -- 345,867,576 7,339,656,714 0',
+        'Subtotal Android -- 183,206,656 4,088,487,125 0',
+        'Subtotal BlackBerry -- 183,380,921 4,024,700,302 0'
       ],
       'The subtotal rows are visible for each group of the specified subtotal in the options'
     );
@@ -454,10 +381,10 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
-        'Subtotal All Other 345,867,576 7,339,656,714 0',
-        'Subtotal Android 183,206,656 4,088,487,125 0',
-        'Subtotal BlackBerry OS 183,380,921 4,024,700,302 0',
-        'Grand Total -- 712,455,153 15,452,844,141 0'
+        'Subtotal All Other -- 345,867,576 7,339,656,714 0',
+        'Subtotal Android -- 183,206,656 4,088,487,125 0',
+        'Subtotal BlackBerry -- 183,380,921 4,024,700,302 0',
+        'Grand Total -- -- 712,455,153 15,452,844,141 0'
       ],
       'The total rows including grandTotal are visible along with the subtotals'
     );
@@ -466,7 +393,7 @@ module('Integration | Component | table', function(hooks) {
   test('subtotals by date in table', async function(assert) {
     assert.expect(1);
 
-    let options = merge({}, Options, { showTotals: { subtotal: 'dateTime' } });
+    let options = merge({}, Options, { showTotals: { subtotal: 0 } });
 
     set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
@@ -476,7 +403,7 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
-      ['Subtotal -- 539,521,365 11,783,015,784 0', 'Subtotal -- 172,933,788 3,669,828,357 0'],
+      ['Subtotal -- -- 539,521,365 11,783,015,784 0', 'Subtotal -- -- 172,933,788 3,669,828,357 0'],
       'The subtotal rows are visible for each group of the specified subtotal in the options'
     );
   });
@@ -513,7 +440,7 @@ module('Integration | Component | table', function(hooks) {
     });
 
     let options = merge({}, Options, {
-      showTotals: { grandTotal: true, subtotal: 'os' }
+      showTotals: { grandTotal: true, subtotal: 1 }
     });
 
     this.set('options', options);
@@ -522,10 +449,10 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
-        'Subtotal All Other -- -- --',
-        'Subtotal Android -- -- --',
-        'Subtotal BlackBerry OS -- -- --',
-        'Grand Total -- -- -- --'
+        'Subtotal All Other -- -- -- --',
+        'Subtotal Android -- -- -- --',
+        'Subtotal BlackBerry -- -- -- --',
+        'Grand Total -- -- -- -- --'
       ],
       'The metric totals are not calculated when only partial data is displayed in table'
     );
@@ -551,18 +478,7 @@ module('Integration | Component | table', function(hooks) {
   test('table header cell display name', async function(assert) {
     assert.expect(2);
 
-    this.set(
-      'options',
-      merge({}, Options, {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Customize Date'
-          }
-        ]
-      })
-    );
+    Model.firstObject.request.columns.objectAt(0).alias = 'Customize Date';
     await render(TEMPLATE);
 
     assert.ok(
@@ -570,18 +486,7 @@ module('Integration | Component | table', function(hooks) {
       'Customize Date should be shown as title in dateTime field'
     );
 
-    this.set(
-      'options',
-      merge({}, Options, {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: ''
-          }
-        ]
-      })
-    );
+    Model.firstObject.request.columns.objectAt(0).alias = null;
 
     await settled();
     assert.ok($('.table-header-cell:contains(Date)').is(':visible'), 'Date should be shown as title in dateTime field');

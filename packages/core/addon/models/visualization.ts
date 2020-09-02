@@ -48,7 +48,7 @@ export default class VisualizationFragment extends Fragment {
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(/*request, response*/) {
+  rebuildConfig(_request: RequestFragment, _response: TODO) {
     /*
      * TODO: Enable this after figuring out the reason for ember-cp-validations failing
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);

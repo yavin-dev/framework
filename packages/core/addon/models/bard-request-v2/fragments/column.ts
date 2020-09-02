@@ -5,6 +5,9 @@
 import attr from 'ember-data/attr';
 import BaseFragment from './base';
 import { Column } from 'navi-data/adapters/facts/interface';
+import { inject as service } from '@ember/service';
+import { computed } from '@ember/object';
+import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 /**
  * @augments {BaseFragment}
@@ -12,4 +15,12 @@ import { Column } from 'navi-data/adapters/facts/interface';
 export default class ColumnFragment extends BaseFragment implements Column {
   @attr('string')
   alias?: string | null;
+
+  @service naviFormatter!: NaviFormatterService;
+
+  @computed('columnMetadata', 'alias')
+  get displayName() {
+    const { alias, parameters, columnMetadata } = this;
+    return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
+  }
 }

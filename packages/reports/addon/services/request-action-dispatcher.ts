@@ -39,6 +39,7 @@ export const RequestActions = {
 };
 
 export default class RequestActionDispatcher extends ActionDispatcher {
-  concatenatedProperties = ['consumers'];
-  consumers = ['request/column', 'request/filter', 'request/table', 'request/sort'];
+  get consumers() {
+    return [...super.consumers, 'request/column', 'request/filter', 'request/table', 'request/sort'];
+  }
 }

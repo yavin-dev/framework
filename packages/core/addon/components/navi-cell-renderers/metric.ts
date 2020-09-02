@@ -12,10 +12,10 @@
  */
 import Component from '@glimmer/component';
 import { isEmpty } from '@ember/utils';
+//@ts-ignore
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { CellRendererArgs } from '../navi-table-cell-renderer';
 import numeral from 'numeral';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 export default class MetricCellRenderer extends Component<CellRendererArgs> {
   /**
@@ -23,15 +23,14 @@ export default class MetricCellRenderer extends Component<CellRendererArgs> {
    */
   get metricValue(): string {
     const { column, data } = this.args;
-    const { type, field, parameters } = column;
-    const format = column.attributes?.format;
-    const canonicalName = canonicalizeMetric({ metric: field, parameters });
+    const { canonicalName, type } = column.fragment;
     const metricValue = data?.[canonicalName];
 
     if (isEmpty(metricValue)) {
       return '--';
     }
 
+    const { format } = column.attributes;
     if (format) {
       return numeral(metricValue).format(format);
     }
