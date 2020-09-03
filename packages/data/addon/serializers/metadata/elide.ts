@@ -33,7 +33,7 @@ type ColumnNode = {
 export type MetricNode = ColumnNode & { defaultFormat: string };
 export type DimensionNode = ColumnNode;
 export type TimeDimensionNode = DimensionNode & {
-  supportedGrains: Connection<TimeDimensionGrainNode>;
+  supportedGrain: Connection<TimeDimensionGrainNode>;
   timeZone: string;
 };
 type TimeDimensionGrainNode = {
@@ -190,7 +190,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
         tableId,
         source,
         tags: node.columnTags,
-        supportedGrains: node.supportedGrains.edges.map(edge => edge.node),
+        supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
         timeZone: node.timeZone,
         type: node.columnType,
         expression: node.expression

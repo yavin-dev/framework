@@ -53,7 +53,7 @@ const query = gql`
                 columnTags
                 columnType
                 expression
-                supportedGrains {
+                supportedGrain {
                   edges {
                     node {
                       grain

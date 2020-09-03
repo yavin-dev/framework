@@ -116,7 +116,7 @@ const schema = gql`
     columnTags: [String!]
     columnType: ColumnType
     expression: String
-    supportedGrains: TimeDimensionGrainConnnection
+    supportedGrain: TimeDimensionGrainConnnection
     timeZone: TimeZone
   }
 
@@ -133,6 +133,7 @@ const schema = gql`
   type TimeDimensionGrain implements Node {
     id: DeferredID!
     expression: String
+    format: String
     grain: TimeGrain
   }
 

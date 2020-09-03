@@ -19,7 +19,7 @@ export default function(server: any) {
           expression: null,
           grain: grain.toUpperCase()
         });
-        server.create('time-dimension', { id: idWithGrain, table, supportedGrains: [newGrain] });
+        server.create('time-dimension', { id: idWithGrain, table, supportedGrain: [newGrain] });
       });
     });
   });
