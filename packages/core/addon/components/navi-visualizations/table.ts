@@ -10,10 +10,10 @@
  *   @onUpdateReport={{action 'onUpdateReport'}}
  * />
  */
-import { readOnly, alias } from '@ember/object/computed';
-import { action, computed } from '@ember/object';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { readOnly } from '@ember/object/computed';
+import { action, computed } from '@ember/object';
 //@ts-ignore
 import { groupBy } from 'lodash-es';
 import EmberArray from '@ember/array';
@@ -81,7 +81,7 @@ export default class Table extends Component<Args> {
   /**
    * rows in response from WS
    */
-  @alias('args.model.firstObject.response.rows.length')
+  @readOnly('args.model.firstObject.response.rows.length')
   rowsInResponse!: number;
 
   @tracked componentElement?: HTMLElement;
@@ -242,7 +242,7 @@ export default class Table extends Component<Args> {
   /**
    * @property {Object} request
    */
-  @alias('args.model.firstObject.request')
+  @readOnly('args.model.firstObject.request')
   request!: RequestFragment;
 
   /**
@@ -271,7 +271,7 @@ export default class Table extends Component<Args> {
    * @param {String} sortDirection - current sort direction
    * @returns {String} direction
    */
-  _getNextSortDirection(type: ColumnFragment['type'], sortDirection: SortDirection) {
+  _getNextSortDirection(_type: ColumnFragment['type'], sortDirection: SortDirection) {
     return NEXT_SORT_DIRECTION[sortDirection];
   }
 

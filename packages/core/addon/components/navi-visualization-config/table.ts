@@ -29,7 +29,7 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   @tracked _showSubtotalDropdown = false;
 
-  @computed('_showSubtotalDropdown', 'args.options.showTotals.subtotal')
+  @computed('args.options.showTotals.subtotal')
   get showSubtotalDropdown(): boolean {
     const hasSubtotal = this.args.options?.showTotals?.subtotal !== undefined;
     return this._showSubtotalDropdown || hasSubtotal;
@@ -70,7 +70,7 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
       this.args.onUpdateConfig({
         showTotals: { subtotal: firstDim }
       });
-    } else if (this.args.options?.showTotals?.subtotal) {
+    } else if (this.args.options?.showTotals?.subtotal !== undefined) {
       const newOptions = { ...this.args.options };
       delete newOptions?.showTotals?.subtotal;
       this.args.onUpdateConfig(newOptions);
