@@ -21,7 +21,7 @@ class ServerGeneratedConfigTest : IntegrationTest() {
 
     @Test
     fun server_generated_config() {
-        var expected: String? =
+        val expected: String? =
             """var NAVI_APP = {"appSettings":{"factApiHost":"","persistenceApiHost":"/api/v1","user":"testuser"},"features":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true}};"""
 
         val actual: String = given()
