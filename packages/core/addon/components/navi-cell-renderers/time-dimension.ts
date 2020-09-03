@@ -12,6 +12,7 @@
 
 import BaseCellRenderer from './base';
 import { computed } from '@ember/object';
+//@ts-ignore
 import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
 
 export default class TimeDimensionCellRenderer extends BaseCellRenderer {
