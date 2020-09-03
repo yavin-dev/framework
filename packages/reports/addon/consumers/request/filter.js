@@ -131,7 +131,7 @@ export default ActionConsumer.extend({
 
       request.addFilter({
         type: 'dimension',
-        dataSource: dimensionMetadataModel.source,
+        source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
         parameters: { field: dimensionMetadataModel.primaryKeyFieldName },
         operator: defaultOperator,
@@ -148,7 +148,7 @@ export default ActionConsumer.extend({
     [RequestActions.ADD_METRIC_FILTER]: ({ currentModel: { request } }, metricMetadataModel, parameters) => {
       request.addFilter({
         type: 'metric',
-        dataSource: request.dataSource,
+        source: request.dataSource,
         field: metricMetadataModel.id,
         parameters,
         ...DEFAULT_METRIC_FILTER

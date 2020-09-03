@@ -151,7 +151,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} displayName - display name for the filter
    */
-  @readOnly('filter.subject.name') displayName;
+  @readOnly('filter.columnMetadata.name') displayName;
 
   /**
    * @property {Object} filter
@@ -163,7 +163,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
 
     return {
       subject: { name: `Date Time (${this.dateTimePeriodName})` },
-      operator: this.operatorForInterval(interval),
+      operator: this.operatorForInterval(interval).id,
       values: arr([interval])
     };
   }
@@ -175,7 +175,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   @action
   setOperator(operatorObject) {
     const newOperator = operatorObject.id;
-    const oldOperator = this.filter.operator.id;
+    const oldOperator = this.filter.operator;
 
     if (oldOperator === newOperator) {
       return;
