@@ -134,14 +134,15 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     assert
       .dom('.table-config__subtotal-dimension-select')
-      .isVisible('The dimension dropdown is visible when subtotal is toggled on'),
-      this.set('onUpdateConfig', result => {
-        assert.equal(
-          result.showTotals.subtotal,
-          3,
-          'Choosing another option in the dimension select updates the subtotal in the config'
-        );
-      });
+      .isVisible('The dimension dropdown is visible when subtotal is toggled on');
+
+    this.set('onUpdateConfig', result => {
+      assert.equal(
+        result.showTotals.subtotal,
+        3,
+        'Choosing another option in the dimension select updates the subtotal in the config'
+      );
+    });
 
     await toggleSelector('.table-config__subtotal-dimension-select');
     await toggleOption(find('.subtotal-dimension-select__options .ember-power-select-option[data-option-index="2"]'));

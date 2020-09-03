@@ -61,7 +61,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     await render(TEMPLATE);
 
     assert.dom('.table-cell-content').isVisible('The metric cell renderer is visible');
-    assert.dom('.table-cell-content').hasText('172,933,788', 'The metric cell renders the value with commas correctly');
+    assert.dom('.table-cell-content').hasText('172933788', 'The metric cell renders the value with commas correctly');
   });
 
   test('metric renders zero value correctly', async function(assert) {
@@ -81,7 +81,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.table-cell-content').hasText('12,345,678', 'The metric cell renders the decimal value correctly');
+    assert.dom('.table-cell-content').hasText('12345678', 'The metric cell renders the decimal value correctly');
   });
 
   test('metric renders decimal value between 1 and 100 correctly', async function(assert) {
@@ -104,7 +104,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     assert
       .dom('.table-cell-content')
-      .hasText('0.0012', 'The metric cell renders the decimal value between 0.0001 and 1 correctly');
+      .hasText('0.001234', 'The metric cell renders the decimal value between 0.0001 and 1 correctly');
   });
 
   test('metric renders decimal value less than 0.0001 correctly', async function(assert) {
@@ -115,7 +115,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     assert
       .dom('.table-cell-content')
-      .hasText('1.2340e-5', 'The metric cell renders the decimal value less than 0.0001 correctly');
+      .hasText('0.00001234', 'The metric cell renders the decimal value less than 0.0001 correctly');
   });
 
   test('metric renders null value correctly', async function(assert) {

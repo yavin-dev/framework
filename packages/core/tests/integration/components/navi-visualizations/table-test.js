@@ -173,14 +173,14 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       body,
       [
-        ['05/30/2016', 'All Other', 'All Other', '172,933,788', '3,669,828,357', '--'],
-        ['06/10/2016', 'All Other', 'All Other', '172,933,788', '3,669,828,357', '--'],
-        ['05/30/2016', 'Android', 'Android', '183,206,656', '4,088,487,125', '--'],
-        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183,380,921', '4,024,700,302', '--'],
-        ['05/30/2016', 'ChromeOS', 'Chrome OS', '180,559,793', '3,950,276,031', '--'],
-        ['05/30/2016', 'Firefox', 'Firefox OS', '172,724,594', '3,697,156,058', '--'],
-        ['05/30/2016', 'Mac', 'Apple Mac OS X', '152,298,735', '3,008,425,744', '--'],
-        ['05/30/2016', 'Unknown', 'Unknown', '155,191,081', '3,072,620,639', '--']
+        ['05/30/2016', 'All Other', 'All Other', '172933788', '3669828357', '--'],
+        ['06/10/2016', 'All Other', 'All Other', '172933788', '3669828357', '--'],
+        ['05/30/2016', 'Android', 'Android', '183206656', '4088487125', '--'],
+        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183380921', '4024700302', '--'],
+        ['05/30/2016', 'ChromeOS', 'Chrome OS', '180559793', '3950276031', '--'],
+        ['05/30/2016', 'Firefox', 'Firefox OS', '172724594', '3697156058', '--'],
+        ['05/30/2016', 'Mac', 'Apple Mac OS X', '152298735', '3008425744', '--'],
+        ['05/30/2016', 'Unknown', 'Unknown', '155191081', '3072620639', '--']
       ],
       'The table renders the response dataset correctly'
     );
@@ -264,10 +264,18 @@ module('Integration | Component | table', function(hooks) {
   });
 
   test('onUpdateReport', async function(assert) {
-    assert.expect(9);
+    assert.expect(12);
 
-    this.set('onUpdateReport', () => {
-      assert.notok(true, 'onUpdateReport should not be called when a dimension header is clicked');
+    this.set('onUpdateReport', (actionType, columnFragment, direction) => {
+      assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
+
+      assert.deepEqual(
+        columnFragment.canonicalName,
+        'os(field=id)',
+        'The os fragment is passed along when the os header is clicked'
+      );
+
+      assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
     });
 
     const totalPageViewWoW = this.model.firstObject.request.addColumn({
@@ -284,13 +292,13 @@ module('Integration | Component | table', function(hooks) {
     await render(TEMPLATE);
     await click('.table-header-row-vc--view .table-header-cell.dimension');
 
-    this.set('onUpdateReport', (actionType, metricName, direction) => {
+    this.set('onUpdateReport', (actionType, columnFragment, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
 
       assert.equal(
-        metricName,
+        columnFragment.canonicalName,
         'network.dateTime(grain=day)',
-        'The dateTime field is passed along when the dateTime header is clicked'
+        'The dateTime fragment is passed along when the dateTime header is clicked'
       );
 
       assert.equal(direction, 'asc', 'The asc direction is passed along when the dateTime header is clicked');
@@ -298,13 +306,13 @@ module('Integration | Component | table', function(hooks) {
 
     await click('.table-header-row-vc--view .table-header-cell.timeDimension');
 
-    this.set('onUpdateReport', (actionType, metricName, direction) => {
+    this.set('onUpdateReport', (actionType, columnFragment, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
 
       assert.deepEqual(
-        metricName,
+        columnFragment.canonicalName,
         'totalPageViews',
-        'The totalPageViews metric is passed along when the dateTime header is clicked'
+        'The totalPageViews metric is passed along when the totalPageViews header is clicked'
       );
 
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
@@ -312,13 +320,13 @@ module('Integration | Component | table', function(hooks) {
 
     await click($('.table-header-row-vc--view .table-header-cell.metric:contains(Total Page Views)')[0]);
 
-    this.set('onUpdateReport', (actionType, metricName, direction) => {
+    this.set('onUpdateReport', (actionType, columnFragment, direction) => {
       assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
 
       assert.deepEqual(
-        metricName,
+        columnFragment.canonicalName,
         'totalPageViewsWoW',
-        'The totalPageViewsWoW metric is passed along when the dateTime header is clicked'
+        'The totalPageViewsWoW fragment is passed along when the totalPageViewsWoW header is clicked'
       );
 
       assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
@@ -341,7 +349,7 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       totalRow,
-      ['Grand Total', '--', '--', '1,373,229,356', '29,181,322,613', '0'],
+      ['Grand Total', '--', '--', '1373229356', '29181322613', '0'],
       'The table renders the grand total row correctly'
     );
 
@@ -367,9 +375,9 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
-        'Subtotal All Other -- 345,867,576 7,339,656,714 0',
-        'Subtotal Android -- 183,206,656 4,088,487,125 0',
-        'Subtotal BlackBerry -- 183,380,921 4,024,700,302 0'
+        'Subtotal All Other -- 345867576 7339656714 0',
+        'Subtotal Android -- 183206656 4088487125 0',
+        'Subtotal BlackBerry -- 183380921 4024700302 0'
       ],
       'The subtotal rows are visible for each group of the specified subtotal in the options'
     );
@@ -381,10 +389,10 @@ module('Integration | Component | table', function(hooks) {
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
       [
-        'Subtotal All Other -- 345,867,576 7,339,656,714 0',
-        'Subtotal Android -- 183,206,656 4,088,487,125 0',
-        'Subtotal BlackBerry -- 183,380,921 4,024,700,302 0',
-        'Grand Total -- -- 712,455,153 15,452,844,141 0'
+        'Subtotal All Other -- 345867576 7339656714 0',
+        'Subtotal Android -- 183206656 4088487125 0',
+        'Subtotal BlackBerry -- 183380921 4024700302 0',
+        'Grand Total -- -- 712455153 15452844141 0'
       ],
       'The total rows including grandTotal are visible along with the subtotals'
     );
@@ -403,7 +411,7 @@ module('Integration | Component | table', function(hooks) {
 
     assert.deepEqual(
       findAll('.table-row__total-row').map(el => el.textContent.replace(/\s+/g, ' ').trim()),
-      ['Subtotal -- -- 539,521,365 11,783,015,784 0', 'Subtotal -- -- 172,933,788 3,669,828,357 0'],
+      ['Subtotal -- -- 539521365 11783015784 0', 'Subtotal -- -- 172933788 3669828357 0'],
       'The subtotal rows are visible for each group of the specified subtotal in the options'
     );
   });
