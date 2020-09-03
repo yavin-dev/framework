@@ -5,11 +5,11 @@
 
 import Controller from '@ember/controller';
 
-export default class AdminQueryStats extends Controller {}
+export default class AdminQueryStatsController extends Controller {}
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
 declare module '@ember/controller' {
   interface Registry {
-    'admin/query-stats': AdminQueryStats;
+    'query-stats': AdminQueryStatsController;
   }
 }
