@@ -4,7 +4,7 @@
  *
  * Usage:
  *   <FilterBuilders::Dimension
- *       @requestFragment={{this.request.filters.firstObject}}
+ *       @filter={{this.request.filters.firstObject}}
  *   />
  */
 import { A as arr } from '@ember/array';
@@ -18,17 +18,17 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 @tagName('')
 class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
-   * @property {Object} requestFragment - filter fragment from request model
+   * @property {Object} filter - filter fragment from request model
    */
-  requestFragment = undefined;
+  filter = undefined;
 
   /**
    * @property {Array} supportedOperators
    * @override
    */
-  @computed('requestFragment.dimension')
+  @computed('filter.field')
   get supportedOperators() {
-    let storageStrategy = get(this, 'requestFragment.dimension.storageStrategy'),
+    let storageStrategy = get(this, 'filter.columnMetadata.storageStrategy'),
       inputComponent = 'filter-values/dimension-select';
 
     //Allow free form input of dimension values when dimension's storageStrategy is 'none'
@@ -71,9 +71,9 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  @computed('requestFragment.columnMetadata.fields')
+  @computed('filter.columnMetadata.fields')
   get fields() {
-    let fields = this.requestFragment.columnMetadata.fields;
+    let fields = this.filter.columnMetadata.fields;
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
   }
 
@@ -81,9 +81,9 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{dimension,field,operator,validations,values}', 'supportedOperators')
+  @computed('filter.{dimension,field,operator,validations,values}', 'supportedOperators')
   get filter() {
-    let dimensionFragment = this.requestFragment,
+    let dimensionFragment = this.filter,
       operatorId = dimensionFragment.operator,
       operator = arr(this.supportedOperators).findBy('id', operatorId);
 
@@ -117,10 +117,14 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   @action
   setField(field) {
     const parameters = {
-      ...this.requestFragment.parameters,
+      ...this.filter.parameters,
       field
     };
     this.onUpdateFilter({ parameters });
+  }
+
+  get selectedOperator() {
+    return arr(this.supportedOperators).findBy('id', this.filter.operator);
   }
 }
 

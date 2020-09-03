@@ -3,7 +3,11 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Component from '@ember/component';
+import { A as arr } from '@ember/array';
+import { TestContext } from 'ember-test-helpers';
 import Helper from '@ember/component/helper';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Request = {
   table: '',
@@ -15,10 +19,13 @@ let Request = {
   sorts: []
 };
 
+let metadataService: { loadMetadata: () => any };
+
 module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function(this: TestContext) {
     this.owner.register(
       'helper:update-report-action',
       Helper.helper(() => {}),
@@ -46,18 +53,14 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
       columnMetadata: {
         name: 'metric-with-params'
       },
-      operator: {
-        id: 'eq',
-        name: 'Equals',
-        valuesComponent: 'mock/values-component'
-      },
-      values: [1, 2, 3]
+      operator: 'eq',
+      values: arr(['metric values'])
     };
 
     this.set('filter', filter);
     this.set('request', Request);
     await render(
-      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} @requestFragment={{this.filter}} />`
+      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} />`
     );
   });
 
@@ -73,16 +76,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     //check display name for metric without params
     const filter = {
+      field: 'metric-without-params',
       type: 'metric',
       parameters: {},
       columnMetadata: {
         name: 'metric-without-params'
       },
-      operator: {
-        id: 'eq',
-        name: 'Equals',
-        valuesComponent: 'mock/values-component'
-      },
+      operator: 'eq',
       values: [1, 2, 3]
     };
 
@@ -99,6 +99,6 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
     this.set('isCollapsed', true);
     assert
       .dom('.filter-builder')
-      .hasText('metric-with-params (bar,baz) equals metric values', 'Rendered correctly when collapsed');
+      .hasText('metric-with-params (bar,baz) equals (=) metric values', 'Rendered correctly when collapsed');
   });
 });
