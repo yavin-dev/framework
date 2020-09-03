@@ -125,8 +125,8 @@ module('Unit | Component | table', function(hooks) {
 
     assert.equal(
       component._getNextSortDirection('timeDimension', 'asc'),
-      'desc',
-      'next sort direction for dateTime asc is desc'
+      'none',
+      'next sort direction for dateTime asc is none'
     );
 
     assert.equal(
@@ -187,7 +187,6 @@ module('Unit | Component | table', function(hooks) {
           hasPartialData: false,
           isTotalRow: true
         },
-        'age(field=id)': undefined,
         uniqueIdentifier: 356140444
       },
       'table data has the total row appended when the flag in the options is set'
@@ -268,7 +267,6 @@ module('Unit | Component | table', function(hooks) {
             hasPartialData: false,
             isTotalRow: true
           },
-          'age(field=id)': undefined,
           'network.dateTime(grain=day)': 'Grand Total',
           uniqueIdentifier: 356140444
         }
@@ -329,7 +327,6 @@ module('Unit | Component | table', function(hooks) {
           hasPartialData: false,
           isTotalRow: true
         },
-        'age(field=id)': undefined,
         uniqueIdentifier: 356140444
       },
       'compute total returns a total row object for the rows passed in'
@@ -401,7 +398,6 @@ module('Unit | Component | table', function(hooks) {
           hasPartialData: false,
           isTotalRow: true
         },
-        'age(field=id)': undefined,
         uniqueIdentifier: 356140444 - 2
       },
       'compute total returns a total row object for the rows passed in based on the overriding method'
