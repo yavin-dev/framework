@@ -8,6 +8,7 @@
  *     @filter={{filter}}
  *     @request={{request}}
  *     @field={{field}}
+ *     @selectedOperator{{selectedOperator}}
  *   />
  */
 import Component from '@ember/component';

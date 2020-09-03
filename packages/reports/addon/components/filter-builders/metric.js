@@ -4,7 +4,7 @@
  *
  * Usage:
  *   <FilterBuilders::Metric
- *       @requestFragment={{this.request.filters.firstObject}}
+ *       @filter={{this.filter}}
  *   />
  */
 
@@ -64,38 +64,44 @@ class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
     }
   ];
 
+  get supportedOperators() {
+    return this.supportedOperators;
+  }
   /**
-   * @property {Object} requestFragment - having fragment from request model
+   * @property {Object} filter - filter fragment from request model
    */
-  requestFragment = undefined;
+  filter = undefined;
 
   /**
    * @property {String} displayName - display name for the filter with metric and parameters
    */
-  @computed('requestFragment.{field,parameters,columnMetadata}')
+  @computed('filter.{field,parameters,columnMetadata}')
   get displayName() {
-    const { columnMetadata, parameters } = this.requestFragment;
+    const { columnMetadata, parameters } = this.filter;
     return getOwner(this)
       .lookup('service:navi-formatter')
       .formatMetric(columnMetadata, parameters);
   }
 
   /**
-   * @property {Object} filter
+   *
    * @override
    */
-  @computed('supportedOperators', 'requestFragment.{operator,metric,values.[]}')
+  @computed('supportedOperators', 'filter.{operator,metric,values.[]}')
   get filter() {
-    const { requestFragment } = this;
-    const { values, validations, operator: operatorId } = requestFragment;
+    const { values, validations, operator: operatorId } = this.filter;
     const operator = arr(this.supportedOperators).findBy('id', operatorId);
 
     return {
-      subject: requestFragment,
+      subject: this.filter,
       operator,
       values: arr(values),
       validations
     };
+  }
+
+  get selectedOperator() {
+    return arr(this.supportedOperators).findBy('id', this.filter.operator);
   }
 }
 

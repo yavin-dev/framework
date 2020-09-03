@@ -1,29 +1,17 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
+// @ts-ignore
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
+import { TestContext } from 'ember-test-helpers';
 import BaseFilterBuilderComponent from 'navi-reports/components/filter-builders/base';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 
-const requestFragment = {
-  type: 'dimension',
-  columnMetadata: {
-    name: 'Device Type'
-  }
-};
-
-const filter = {
-  subject: requestFragment,
-  operator: {
-    id: 'in',
-    name: 'Equals',
-    valuesComponent: 'mock/values-component'
-  },
-  values: [1, 2, 3]
-};
 const supportedOperators = [
   { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
   {
@@ -38,35 +26,35 @@ const supportedOperators = [
   }
 ];
 
-const TEMPLATE = hbs`
-<FilterBuilders::Base
-  @onUpdateFilter={{this.onUpdateFilter}}
-  @isCollapsed={{this.isCollapsed}} 
-/>`;
+let metadataService: { loadMetadata: () => any };
+
 module('Integration | Component | filter-builders/base', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function(this: TestContext) {
     /*
      * Normally supportedOperators will be provided by the child class,
      * but to simplify testing we pass it in
      */
-    this.setProperties({
-      filter,
-      supportedOperators,
-      requestFragment
-    });
+
+    const factory = this.owner.lookup('service:fragment-factory');
+
+    metadataService = this.owner.lookup('service:navi-metadata');
+    await metadataService.loadMetadata();
+    let filter = factory.createFilter('dimension', 'bardOne', 'userDeviceType', {}, 'in', [1, 2, 3]);
+
+    this.set('filter', filter);
+    this.set('supportedOperators', supportedOperators);
+
     this.owner.register(
       'component:filter-builders/base',
       class extends BaseFilterBuilderComponent {
-        get filter() {
-          return filter;
-        }
-        get supportedOperators() {
+        get supportedOperators(): Array<{}> {
           return supportedOperators;
         }
-        get requestFragment() {
-          return requestFragment;
+        get filter(): any {
+          return filter;
         }
       }
     );
@@ -83,15 +71,22 @@ module('Integration | Component | filter-builders/base', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(4);
 
-    await render(TEMPLATE);
+    await render(hbs`
+    <FilterBuilders::Base
+      @onUpdateFilter={{this.onUpdateFilter}}
+      @isCollapsed={{this.isCollapsed}}
+    />`);
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(filter.subject.columnMetadata.name, "Subject's name is display in filter builder");
+      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')
-      .hasText(filter.operator.name, 'The filter current operator is selected by default');
+      .hasText(
+        arr(supportedOperators).findBy('id', this.filter.operator).name,
+        'The filter current operator is selected by default'
+      );
 
     assert.dom('.mock-value-component').isVisible('The component specified by the filter operator is rendered');
 
@@ -107,14 +102,18 @@ module('Integration | Component | filter-builders/base', function(hooks) {
     assert.expect(1);
 
     this.set('isCollapsed', true);
-    await render(TEMPLATE);
+    await render(hbs`
+    <FilterBuilders::Base
+      @onUpdateFilter={{this.onUpdateFilter}}
+      @isCollapsed={{this.isCollapsed}}
+    />`);
 
-    assert
-      .dom('.filter-builder')
-      .hasText(
-        `${filter.subject.columnMetadata.name} ${filter.operator.name.toLowerCase()} Test`,
-        'Rendered correctly when collapsed'
-      );
+    assert.dom('.filter-builder').hasText(
+      `${this.filter.columnMetadata.name} ${arr(supportedOperators)
+        .findBy('id', this.filter.operator)
+        .name.toLowerCase()} Test`,
+      'Rendered correctly when collapsed'
+    );
   });
 
   test('changing operator', async function(assert) {
@@ -122,14 +121,17 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     this.set('onUpdateFilter', changeSet => {
       assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
-
       assert.notOk(
         'values' in changeSet,
         'Values is not reset when changing between operator with the same valuesComponent'
       );
     });
 
-    await render(TEMPLATE);
+    await render(hbs`
+    <FilterBuilders::Base
+      @onUpdateFilter={{this.onUpdateFilter}}
+      @isCollapsed={{this.isCollapsed}}
+    />`);
 
     /* == Operator with same valuesComponent == */
     await clickTrigger();

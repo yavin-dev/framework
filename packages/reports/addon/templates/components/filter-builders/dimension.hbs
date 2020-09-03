@@ -6,6 +6,7 @@
       @filter={{this.filter}}
       @request={{@request}}
       @field={{this.field}}
+      @selectedOperator={{this.selectedOperator}}
     />
   </span>
 {{else}}
@@ -17,7 +18,7 @@
       class="filter-builder-dimension__operator"
       @dropdownClass="filter-builder-dimension__operator-dropdown"
       @options={{this.supportedOperators}}
-      @selected={{this.filter.operator}}
+      @selected={{this.selectedOperator.operator}}
       @searchEnabled={{false}}
       @tagName="span"
       @triggerClass="filter-builder-dimension__select-trigger"
@@ -28,7 +29,7 @@
     </PowerSelect>
     <span class="filter-builder-dimension__values {{if this.showFields "filter-builder-dimension__values--short"}}">
       {{component
-        this.filter.operator.valuesComponent
+        this.selectedOperator.valuesComponent
         filter=this.filter
         request=@request
         onUpdateFilter=@onUpdateFilter

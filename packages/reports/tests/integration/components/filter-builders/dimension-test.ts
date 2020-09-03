@@ -3,34 +3,12 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import Component from '@ember/component';
+import { A as arr } from '@ember/array';
+import { TestContext } from 'ember-test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
-
-const requestFragment = {
-  type: 'dimension',
-  field: 'deviceType',
-  parameters: {
-    field: 'id'
-  },
-  operator: 'in',
-  values: [1, 2, 3],
-  columnMetadata: {
-    name: 'Device Type',
-    primaryKeyFieldName: 'id',
-    fields: [{ name: 'id' }, { name: 'desc' }, { name: 'foo' }]
-  }
-};
-const filter = {
-  subject: requestFragment,
-  operator: {
-    id: 'in',
-    name: 'Equals',
-    valuesComponent: 'mock/values-component'
-  },
-  values: [1, 2, 3],
-  validations: [],
-  field: 'id'
-};
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const supportedOperators = [
   { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
@@ -52,18 +30,25 @@ const supportedOperators = [
   }
 ];
 
+let metadataService: { loadMetadata: () => any };
+
 module('Integration | Component | filter-builders/dimension', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function(this: TestContext) {
     /*
      * Normally supportedOperators will be provided by the child class,
      * but to simplify testing we pass it in
      */
+    const factory = this.owner.lookup('service:fragment-factory');
+
+    metadataService = this.owner.lookup('service:navi-metadata');
+    await metadataService.loadMetadata();
+    let filter = factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: 'id' }, 'in', [1, 2, 3]);
     this.setProperties({
       filter,
-      supportedOperators,
-      requestFragment
+      supportedOperators
     });
     this.owner.register(
       'component:mock/values-component',
@@ -84,32 +69,28 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       @requestFragment={{this.requestFragment}}
       @isCollapsed={{true}} />`);
 
-    assert
-      .dom('.filter-builder')
-      .hasText(
-        `${filter.subject.columnMetadata.name} ${filter.operator.name.toLowerCase()} dimension values`,
-        'Rendered correctly when collapsed'
-      );
+    assert.dom('.filter-builder').hasText(
+      `${this.filter.columnMetadata.name} ${arr(supportedOperators)
+        .findBy('id', this.filter.operator)
+        .name.toLowerCase()} dimension values`,
+      'Rendered correctly when collapsed'
+    );
 
+    const factory = this.owner.lookup('service:fragment-factory');
     const field = 'desc',
-      filterWithDescField = {
-        subject: requestFragment,
-        operator: {
-          id: 'contains',
-          name: 'Contains',
-          valuesComponent: 'mock/values-component',
-          showFields: true
-        },
-        field,
-        values: [1, 2, 3]
-      };
+      filterWithDescField = factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: field }, 'in', [
+        1,
+        2,
+        3
+      ]);
 
     this.set('filter', filterWithDescField);
 
     assert.dom('.filter-builder').hasText(
-      `${filterWithDescField.subject.columnMetadata.name} 
-        (${filterWithDescField.field})
-         ${filterWithDescField.operator.name.toLowerCase()} dimension values`,
+      `${filterWithDescField.columnMetadata.name}
+         ${arr(supportedOperators)
+           .findBy('id', filterWithDescField.operator)
+           .name.toLowerCase()} dimension values`,
       'Rendered correctly with field when collapsed'
     );
   });
@@ -127,7 +108,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     });
 
     await render(
-      hbs`{{filter-builders/dimension filter=filter requestFragment=requestFragment supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
+      hbs`{{filter-builders/dimension filter=this.filter supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
     );
 
     await clickTrigger();
@@ -138,7 +119,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     this.set('onUpdateFilter', changeSet => {
       assert.equal(changeSet.field, 'desc', 'Selected field is given to action');
 
-      this.set('filter.field', changeSet.field);
+      this.set('this.filter.field', changeSet.field);
     });
 
     await clickTrigger('.filter-builder-dimension__field');
@@ -149,10 +130,10 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       assert.equal(changeSet.field, 'id', 'field is switched back to id');
 
       this.set(
-        'filter.operator',
+        'this.filter.operator',
         this.supportedOperators.find(oper => oper.id === changeSet.operator)
       );
-      this.set('filter.field', changeSet.field);
+      this.set('this.filter.field', changeSet.field);
     });
 
     await clickTrigger('.filter-builder-dimension__operator');
