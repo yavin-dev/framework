@@ -10,28 +10,22 @@
  * />
  */
 
-import Component from '@glimmer/component';
-import { CellRendererArgs } from '../navi-table-cell-renderer';
+import BaseCellRenderer from './base';
+import { computed } from '@ember/object';
+import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
 
-export default class TimeDimensionCellRenderer extends Component<CellRendererArgs> {
-  /**
-   * Date start time from the response data or 'TOTAL'
-   */
-  get value() {
-    const {
-      data,
-      column: {
-        fragment: { canonicalName }
-      }
-    } = this.args;
-    return data[canonicalName];
-  }
-
+export default class TimeDimensionCellRenderer extends BaseCellRenderer {
   /**
    * Time Grain in request
    */
-  get granularity() {
+  @computed('args.column.fragment.parameters.grain')
+  get timeGrain() {
     const { fragment } = this.args.column;
     return fragment.parameters?.grain;
+  }
+
+  get displayValue() {
+    const { columnValue, timeGrain } = this;
+    return formatDateForGranularity(`${columnValue}`, timeGrain);
   }
 }

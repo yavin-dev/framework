@@ -10,31 +10,26 @@
  *   @requestColumn={{request}}
  * />
  */
-import Component from '@glimmer/component';
+import BaseCellRenderer from './base';
 import { isEmpty } from '@ember/utils';
-//@ts-ignore
-import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
-import { CellRendererArgs } from '../navi-table-cell-renderer';
 import numeral from 'numeral';
 
-export default class MetricCellRenderer extends Component<CellRendererArgs> {
+export default class MetricCellRenderer extends BaseCellRenderer {
   /**
    * value to be rendered on the cell
    */
-  get metricValue(): string {
-    const { column, data } = this.args;
-    const { canonicalName, type } = column.fragment;
-    const metricValue = data?.[canonicalName];
+  get displayValue(): string {
+    const { columnValue } = this;
 
-    if (isEmpty(metricValue)) {
+    if (isEmpty(columnValue)) {
       return '--';
     }
 
-    const { format } = column.attributes;
+    const { format } = this.args.column.attributes;
     if (format) {
-      return numeral(metricValue).format(format);
+      return numeral(columnValue).format(format);
     }
 
-    return type === 'metric' ? smartFormatNumber([metricValue]) : `${metricValue}`;
+    return `${columnValue}`;
   }
 }

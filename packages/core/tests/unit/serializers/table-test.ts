@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { normalizeTableV2, TableVisMetadataPayload, TableVisualizationMetadata } from 'navi-core/serializers/table';
+import { normalizeTableV2, TableVisMetadataPayloadV1, TableVisualizationMetadata } from 'navi-core/serializers/table';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 const defaultAttributes = {
@@ -46,7 +46,7 @@ module('Unit | Serializer | table', function(hooks) {
   test('normalizeTableV2', function(assert) {
     assert.expect(4);
 
-    const initialMetadata: TableVisMetadataPayload = {
+    const initialMetadata: TableVisMetadataPayloadV1 = {
       type: 'table',
       version: 1,
       metadata: {

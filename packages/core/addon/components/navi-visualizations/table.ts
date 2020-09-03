@@ -103,16 +103,8 @@ export default class Table extends Component<Args> {
   }
 
   /**
-   * @method computeColumnTotal
    * Compute total for a metric column
    * Returns sum of values, may be overriden with your own logic
-   *
-   * @param {Array} data
-   * @param {String} metricName
-   * @param {Object} totalRow
-   * @param {Object} column
-   * @param {String} type - `grandTotal` || `subtotal`
-   * @returns {*} sum
    */
   computeColumnTotal(
     data: ResponseRow[],
@@ -128,13 +120,7 @@ export default class Table extends Component<Args> {
   }
 
   /**
-   * @method _computeTotal
    * Compute total for all metrics in the data
-   *
-   * @private
-   * @param {Array} data
-   * @param {String} type - `grandTotal` || `subtotal`
-   * @returns {Object} totalRow
    */
   _computeTotal(data: ResponseRow[], totalType: TotalType) {
     const { columns, totalRows, rowsInResponse, selectedSubtotal } = this;
@@ -143,24 +129,22 @@ export default class Table extends Component<Args> {
     let hasTitle = false;
     let totalRow = columns.reduce((totRow: TotalRow, column) => {
       const { canonicalName, type } = column.fragment;
-      let totalValue;
 
       if (type === 'timeDimension' && !hasTitle) {
-        totalValue = HEADER_TITLE[totalType];
+        totRow[canonicalName] = HEADER_TITLE[totalType];
         hasTitle = true;
       }
 
       //set subtotal dimension if subtotal row
       if (type === 'dimension' && column.columnId === selectedSubtotal && totalType === 'subtotal') {
-        totalValue = data[0][canonicalName];
+        totRow[canonicalName] = data[0][canonicalName];
       }
 
       //if metric and not partial data compute totals
       if (type === 'metric' && column.attributes.canAggregateSubtotal !== false && !hasPartialData) {
-        totalValue = this.computeColumnTotal(data, canonicalName, totRow, column, totalType);
+        totRow[canonicalName] = this.computeColumnTotal(data, canonicalName, totRow, column, totalType);
       }
 
-      totRow[canonicalName] = totalValue;
       return totRow;
     }, {});
 

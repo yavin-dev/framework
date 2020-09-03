@@ -33,10 +33,7 @@ export default class TableController extends Controller {
         canAggregateSubtotal: false
       }
     },
-    showTotals: {
-      // subtotal: 0,
-      grandTotal: true
-    }
+    showTotals: {}
   };
 
   @action

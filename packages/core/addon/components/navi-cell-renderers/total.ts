@@ -10,7 +10,6 @@
  * />
  */
 
-import Component from '@glimmer/component';
-import { CellRendererArgs } from '../navi-table-cell-renderer';
+import BaseCellRenderer from './base';
 
-export default class TotalCellRenderer extends Component<CellRendererArgs> {}
+export default class TotalCellRenderer extends BaseCellRenderer {}
