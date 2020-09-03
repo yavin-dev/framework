@@ -8,6 +8,7 @@ import com.jayway.restassured.RestAssured
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -23,12 +24,21 @@ class StaticAssetServingTest : IntegrationTest() {
     fun landing_page_test() {
         val content = this.javaClass::class.java.getResource("/META-INF/resources/index.html").readText()
 
+        val response = given()
+            .header("User", "testuser")
+            .redirects().follow(false)
+            .expect()
+            .statusCode(302)
+            .get("/")
+
+        val location = response.getHeader("Location")
+        Assertions.assertTrue(location.endsWith("/ui"))
+
         given()
             .header("User", "testuser")
             .When()
-            .get("/")
+            .get(location)
             .then()
-            .log().all()
             .body(equalTo(content))
             .statusCode(200)
     }
