@@ -28,7 +28,7 @@ class ServerGeneratedConfig @Autowired constructor(naviSettings: NaviConfig, eli
     fun serverGeneratedConfig(user: Principal): String {
         naviSettings.appSettings.user = user.name ?: ""
 
-        if (naviSettings.appSettings.persistenceApiHost == "") {
+        if (naviSettings.appSettings.persistenceApiHost.isBlank()) {
             naviSettings.appSettings.persistenceApiHost = elideSettings.jsonApi.path
         }
         return "var NAVI_APP = " + mapper.writeValueAsString(naviSettings) + ";"
