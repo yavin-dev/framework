@@ -272,14 +272,7 @@ export default class Table extends Component<Args> {
    * @returns {String} direction
    */
   _getNextSortDirection(type: ColumnFragment['type'], sortDirection: SortDirection) {
-    let direction = NEXT_SORT_DIRECTION[sortDirection];
-
-    // timeDimension will always be sorted
-    if (type === 'timeDimension' && direction === 'none') {
-      direction = 'desc';
-    }
-
-    return direction;
+    return NEXT_SORT_DIRECTION[sortDirection];
   }
 
   /**
@@ -289,16 +282,15 @@ export default class Table extends Component<Args> {
    */
   @action
   headerClicked(column: TableColumn) {
+    // TODO: Validate that the column clicked supports sorting
     const { type } = column.fragment;
-    if (type === 'timeDimension' || type === 'metric') {
-      const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
-      const sortDirection = (sort?.direction || 'none') as SortDirection;
-      const direction = this._getNextSortDirection(type, sortDirection);
-      //TODO Fetch from report action dispatcher service
-      const actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
+    const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
+    const sortDirection = (sort?.direction || 'none') as SortDirection;
+    const direction = this._getNextSortDirection(type, sortDirection);
+    //TODO Fetch from report action dispatcher service
+    const actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
 
-      this.args.onUpdateReport(actionType, column.fragment, direction);
-    }
+    this.args.onUpdateReport(actionType, column.fragment, direction);
   }
 
   /**

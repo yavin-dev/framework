@@ -12,9 +12,7 @@
 
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { inject as service } from '@ember/service';
 import { action, computed } from '@ember/object';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { Args as TableArgs } from 'navi-core/components/navi-visualizations/table';
@@ -26,14 +24,12 @@ export type Args = {
 };
 
 export default class NaviVisualizationConfigTableComponent extends Component<Args> {
-  @service('navi-metadata') metadataService!: NaviMetadataService;
-
   /**
    * initial value to show subtotal dropdown
    */
   @tracked _showSubtotalDropdown = false;
 
-  @computed('args.options.showTotals.subtotal')
+  @computed('_showSubtotalDropdown', 'args.options.showTotals.subtotal')
   get showSubtotalDropdown(): boolean {
     const hasSubtotal = this.args.options?.showTotals?.subtotal !== undefined;
     return this._showSubtotalDropdown || hasSubtotal;
