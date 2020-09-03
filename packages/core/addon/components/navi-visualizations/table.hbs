@@ -2,8 +2,11 @@
 <div class="table-widget {{this.extraClassNames}}" ...attributes {{did-insert this.setupElement}}>
   <div class="table-widget__info-header">
     <div class="table-widget__row-info">
-      <span class="table-widget__row-info-number">{{if this.rowsInResponse (format-number this.rowsInResponse) 0}}</span> out of
-      <span class="table-widget__row-info-number">{{if this.totalRows (format-number this.totalRows) 0}}</span> rows
+      <span class="table-widget__row-info-number">{{if this.rowsInResponse (format-number this.rowsInResponse) 0}}</span>
+      {{#if this.totalRows}}
+      out of <span class="table-widget__row-info-number">{{format-number this.totalRows}}</span>
+      {{/if}}
+      rows
     </div>
     {{#if this.isEditingMode}}
       <div class="table-widget__edit-col-msg">
