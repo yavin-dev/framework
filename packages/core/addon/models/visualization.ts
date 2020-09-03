@@ -7,6 +7,7 @@ import { set, get } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import RequestFragment from './bard-request-v2/request';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 //TODO Try to make this an abstract class
 export default class VisualizationFragment extends Fragment {
@@ -48,7 +49,7 @@ export default class VisualizationFragment extends Fragment {
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(_request: RequestFragment, _response: TODO) {
+  rebuildConfig(_request: RequestFragment, _response: ResponseV1) {
     /*
      * TODO: Enable this after figuring out the reason for ember-cp-validations failing
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);

@@ -10,20 +10,18 @@
  * />
  */
 
-import Component from '@glimmer/component';
+import BaseCellRenderer from './base';
 import { isEmpty } from '@ember/utils';
-import { CellRendererArgs } from '../navi-table-cell-renderer';
 
-export default class DimensionCellRenderer extends Component<CellRendererArgs> {
+export default class DimensionCellRenderer extends BaseCellRenderer {
   /**
    * value that should be displayed in table cell
    */
-  get value() {
-    const { canonicalName } = this.args.column.fragment;
-    const { data } = this.args;
+  get displayValue() {
+    const { columnValue } = this;
 
-    if (!isEmpty(data?.[canonicalName])) {
-      return data[canonicalName];
+    if (!isEmpty(columnValue)) {
+      return columnValue;
     }
 
     return '--';

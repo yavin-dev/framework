@@ -16,7 +16,7 @@ import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
  * @param naviFormatter - navi formatter service
  * @return default display name
  */
-export function getColumnDefaultName(column: ColumnFragment, naviFormatter: NaviFormatterService): string {
+function getColumnDefaultName(column: ColumnFragment, naviFormatter: NaviFormatterService): string {
   return naviFormatter.formatColumnName(column.columnMetadata, column.parameters, column.alias);
 }
 

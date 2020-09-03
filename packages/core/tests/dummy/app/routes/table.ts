@@ -56,7 +56,7 @@ export default class TableRoute extends Route {
     let rows = A();
 
     //20k rows
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 4000; i++) {
       rows.pushObjects(cloneDeep(MOCK_ROWS));
     }
 

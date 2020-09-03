@@ -9,8 +9,9 @@ import RequestFragment from './bard-request-v2/request';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
-function hasAllColumns(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
+function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
   const requestColumnIds = new Set(request.columns.map((_c, index) => index));
 
   const eachAttributeValid = Object.keys(metadata.columnAttributes)
@@ -27,7 +28,7 @@ const Validations = buildValidations(
     metadata: validator('inline', {
       validate(metadata: TableVisualizationMetadata['metadata'], options: { request: RequestFragment }) {
         const { request } = options;
-        return request && hasAllColumns(request, metadata);
+        return request && isConfigValid(request, metadata);
       },
       dependentKeys: ['model._request.columns.[]']
     })
@@ -38,18 +39,15 @@ const Validations = buildValidations(
   }
 );
 
-export default class TableVisualization extends VisualizationBase.extend(Validations) {
+export default class TableVisualization extends VisualizationBase.extend(Validations)
+  implements TableVisualizationMetadata {
   @attr('string', { defaultValue: 'table' })
-  type!: string;
+  type!: TableVisualizationMetadata['type'];
 
   @attr('number', { defaultValue: 2 })
-  version!: number;
+  version!: TableVisualizationMetadata['version'];
 
-  @attr({
-    defaultValue: () => {
-      return { columnAttributes: {} };
-    }
-  })
+  @attr({ defaultValue: () => ({ columnAttributes: {} }) })
   metadata!: TableVisualizationMetadata['metadata'];
 
   /**
@@ -60,7 +58,7 @@ export default class TableVisualization extends VisualizationBase.extend(Validat
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(request: RequestFragment, _response: TODO): TableVisualization {
+  rebuildConfig(request: RequestFragment, _response: ResponseV1): TableVisualization {
     const existingRequest = this._request || request;
 
     const { columnAttributes = {}, showTotals = {} } = this.metadata;

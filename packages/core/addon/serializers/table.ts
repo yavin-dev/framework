@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 //@ts-ignore
@@ -33,7 +33,7 @@ interface LegacyColumn<K extends LegacyType> {
 
 type LegacyMetadataColumn = LegacyColumn<'metric'> | LegacyColumn<'dateTime'> | LegacyColumn<'dimension'>;
 
-export type TableVisMetadataPayload = {
+export type TableVisMetadataPayloadV1 = {
   type: 'table';
   version: 1;
   metadata: {
@@ -100,7 +100,7 @@ type ColumnInfo = {
  * @param request the requested data for this table
  * @param visualization the existing visualization metadata
  */
-function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayload): Record<string, ColumnInfo> {
+function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayloadV1): Record<string, ColumnInfo> {
   const columnData: Record<string, ColumnInfo> = {};
   request.columns.forEach((column, index) => {
     const { field, parameters } = column;
@@ -141,7 +141,7 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
  */
 export function normalizeTableV2(
   request: RequestV2,
-  visualization: TableVisMetadataPayload | TableVisualizationMetadata
+  visualization: TableVisMetadataPayloadV1 | TableVisualizationMetadata
 ): TableVisualizationMetadata {
   if (visualization.version === 2) {
     return visualization;
