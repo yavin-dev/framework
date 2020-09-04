@@ -14,7 +14,7 @@ import numeral from 'numeral';
  * For NaN return empty string
  *
  * @method smartFormatNumber
- * @param {Number|String} value
+ * @param {[Number | String | unknown]} value
  * @return {String} Formatted string for the provided number
  */
 export function smartFormatNumber([value]) {

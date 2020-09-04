@@ -20,31 +20,31 @@
       </div>
 
       {{!-- Toggle for subtotal --}}
-      {{#if @request.dimensions.length}}
+      {{#if @request.dimensionColumns.length}}
         <div class="table-config__totals-toggle-section">
           <span class="table-config__totals-toggle-label">Subtotal</span>
           <XToggle
             class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
-            @value={{readonly this._showSubtotalDropdown}}
+            @value={{readonly this.showSubtotalDropdown}}
             @size="small"
-            @onToggle={{queue (toggle-action "_showSubtotalDropdown" this) this.onToggleSubtotal}}
+            @onToggle={{this.onToggleSubtotal}}
           />
         </div>
 
         {{!-- Dimension dropdown for subtotal --}}
-        {{#if this._showSubtotalDropdown}}
+        {{#if this.showSubtotalDropdown}}
           <PowerSelect
             class="table-config__subtotal-dimension-select"
             @tagName="div"
             @triggerComponent="subtotal-dimension-select-trigger"
             @dropdownClass="subtotal-dimension-select__options"
             @onchange={{this.updateSubtotal}}
-            @options={{this.subtotalDimensions}}
+            @options={{@request.dimensionColumns}}
             @searchEnabled={{false}}
             @selected={{this.selectedSubtotal}}
             as |dimension|
           >
-            {{dimension.name}}
+            {{dimension.columnMetadata.name}}
           </PowerSelect>
         {{/if}}
       {{/if}}

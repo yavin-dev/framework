@@ -1,1 +1,1 @@
-export { default, defaultColumnName } from 'navi-core/helpers/default-column-name';
+export { default } from 'navi-core/helpers/default-column-name';

@@ -2,45 +2,58 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { TestContext as Context } from 'ember-test-helpers';
+//@ts-ignore
 import { merge } from 'lodash-es';
+import { CellRendererArgs } from 'navi-core/components/navi-table-cell-renderer';
+import StoreService from 'ember-data/store';
+import { TableColumn } from 'navi-core/components/navi-visualizations/table';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const TEMPLATE = hbs`
-  {{navi-cell-renderers/metric
-    data=data
-    column=column
-    request=request
-  }}`;
+  <NaviCellRenderers::Metric
+    @data={{this.data}}
+    @column={{this.column}}
+    @request={{this.request}}
+  />`;
 
-let data = {
-  dateTime: '2016-05-30 00:00:00.000',
-  'os|id': 'All Other',
-  'os|desc': 'All Other',
-  uniqueIdentifier: 172933788,
-  totalPageViews: 3669828357
+const data: CellRendererArgs['data'] = {
+  uniqueIdentifier: 172933788
 };
 
-let column = {
-  attributes: { name: 'uniqueIdentifier', parameters: {} },
-  type: 'metric',
-  displayName: 'Unique Identifiers'
-};
-
-let request = {
-  dimensions: [{ dimension: 'os' }],
-  metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-  logicalTable: {
-    table: 'network',
-    timeGrain: 'day'
-  }
-};
+interface TestContext extends Context {
+  column: TableColumn;
+  data: Record<string, string>;
+  request: RequestFragment;
+}
 
 module('Integration | Component | cell renderers/metric', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
+    const store = this.owner.lookup('service:store') as StoreService;
+
     this.set('data', data);
+    this.set(
+      'request',
+      store.createFragment('bard-request-v2/request', {
+        columns: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' }],
+        filters: [],
+        sorts: [],
+        requestVersion: '2.0',
+        dataSource: 'dummy',
+        table: 'network'
+      })
+    );
+
+    const fragment = this.request.columns.objectAt(0) as ColumnFragment;
+    const column: TableColumn = {
+      fragment,
+      attributes: {},
+      columnId: 0
+    };
     this.set('column', column);
-    this.set('request', request);
   });
 
   test('it renders', async function(assert) {
@@ -48,7 +61,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     await render(TEMPLATE);
 
     assert.dom('.table-cell-content').isVisible('The metric cell renderer is visible');
-    assert.dom('.table-cell-content').hasText('172,933,788', 'The metric cell renders the value with commas correctly');
+    assert.dom('.table-cell-content').hasText('172933788', 'The metric cell renders the value with commas correctly');
   });
 
   test('metric renders zero value correctly', async function(assert) {
@@ -68,7 +81,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.table-cell-content').hasText('12,345,678', 'The metric cell renders the decimal value correctly');
+    assert.dom('.table-cell-content').hasText('12345678', 'The metric cell renders the decimal value correctly');
   });
 
   test('metric renders decimal value between 1 and 100 correctly', async function(assert) {
@@ -91,7 +104,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     assert
       .dom('.table-cell-content')
-      .hasText('0.0012', 'The metric cell renders the decimal value between 0.0001 and 1 correctly');
+      .hasText('0.001234', 'The metric cell renders the decimal value between 0.0001 and 1 correctly');
   });
 
   test('metric renders decimal value less than 0.0001 correctly', async function(assert) {
@@ -102,7 +115,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
 
     assert
       .dom('.table-cell-content')
-      .hasText('1.2340e-5', 'The metric cell renders the decimal value less than 0.0001 correctly');
+      .hasText('0.00001234', 'The metric cell renders the decimal value less than 0.0001 correctly');
   });
 
   test('metric renders null value correctly', async function(assert) {
@@ -114,10 +127,10 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('--', 'The metric cell renders the null value with -- correctly');
   });
 
-  test('render value based on column format', async function(assert) {
+  test('render value based on column format', async function(this: TestContext, assert) {
     assert.expect(1);
 
-    this.set('column', merge({}, column, { attributes: { format: '$0,0[.]00' } }));
+    this.set('column', merge({}, this.column, { attributes: { format: '$0,0[.]00' } }));
     await render(TEMPLATE);
 
     assert
