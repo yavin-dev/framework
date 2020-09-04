@@ -188,8 +188,8 @@ export default class Request extends EmberObject {
    * @param {String} source
    * @returns {Object} copy of request with property updated
    */
-  addFilter(operator, values, field, parameters, source) {
-    return this._immutablePush('filters', [{ field, parameters, operator, values, source }]);
+  addFilter(type, source, field, parameters, operator, values) {
+    return this._immutablePush('filters', [{ type, source, field, parameters, operator, values }]);
   }
 
   /**

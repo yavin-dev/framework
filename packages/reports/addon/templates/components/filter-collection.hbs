@@ -4,7 +4,7 @@
     {{#if @isCollapsed}}
       <FilterBuilder
         class="filter-collection--collapsed-item"
-        @requestFragment={{filter.requestFragment}}
+        @filter={{filter.requestFragment}}
         @request={{@request}}
         @isCollapsed={{true}}
       />
@@ -17,7 +17,7 @@
         />
         <FilterBuilder
           class="filter-collection__builder"
-          @requestFragment={{filter.requestFragment}}
+          @filter={{filter.requestFragment}}
           @request={{@request}}
           @onUpdateFilter={{fn @onUpdateFilter filter.requestFragment}}
         />
