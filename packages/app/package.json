@@ -14,6 +14,7 @@
   "main": "index.js",
   "scripts": {
     "build": "ember build",
+    "prodbuild": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "lint": "npm run lint:hbs && npm run lint:js",
