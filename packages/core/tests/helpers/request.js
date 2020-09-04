@@ -60,7 +60,7 @@ export function buildTestRequest(
   };
 }
 
-export function buildApexTestRequest(
+export function buildModelTestRequest(
   metrics = [],
   dimensions = [],
   intervals = [{ end: 'current', start: 'P7D' }],
@@ -71,7 +71,8 @@ export function buildApexTestRequest(
       content: metrics.map(item => {
         return {
           metric: {
-            id: item
+            id: item,
+            name: classify(item)
           }
         };
       })
@@ -80,7 +81,8 @@ export function buildApexTestRequest(
       content: dimensions.map(item => {
         return {
           dimension: {
-            id: item
+            id: item,
+            name: classify(item)
           }
         };
       })

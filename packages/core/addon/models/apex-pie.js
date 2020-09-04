@@ -5,20 +5,13 @@
 import DS from 'ember-data';
 import { computed, set } from '@ember/object';
 import VisualizationBase from './visualization';
-import { validator, buildValidations } from 'ember-cp-validations';
-import { assignColors } from 'navi-core/utils/enums/denali-colors';
+import { buildValidations } from 'ember-cp-validations';
 
 /**
  * @constant {Object} Validations - Validation object
  */
 const Validations = buildValidations(
-  {
-    // checks that there is exactly one metric
-    'metadata.series.config.metrics': [validator('presence', true), validator('length', { is: 1 })],
-
-    // checks that there is at least one dimension
-    'metadata.series.config.dimensions': [validator('presence', true), validator('length', { min: 1 })]
-  },
+  {},
   {
     //Global Validation Options
     request: computed.readOnly('model._request')
@@ -54,22 +47,14 @@ export default VisualizationBase.extend(Validations, {
     series: {
       type: string,
       config: {
-        colors: ['string',  ...]
-        metrics: [{ metric: string }, { metric: string }, ...],
-        dimensions: [{ dimension: string }, { dimension: string }, ...]
+        colors: [{ color: 'string', label: 'string' } ...]
       }
     }
     */
     let meta = {
       series: {
         config: {
-          colors: assignColors(response.rows.length),
-          metrics: request.metrics.content.map(item => {
-            return { metric: item.metric.id };
-          }),
-          dimensions: request.dimensions.content.map(item => {
-            return { dimension: item.dimension.id };
-          })
+          colors: this.getWithDefault('metadata.series.config.colors', [])
         }
       }
     };
