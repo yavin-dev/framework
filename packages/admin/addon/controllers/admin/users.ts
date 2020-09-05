@@ -6,6 +6,15 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import { camelize } from '@ember/string';
+import { A as arr } from '@ember/array';
+// @ts-ignore
+import Table from 'ember-light-table';
+
+/**
+ * @constant COLUMNS
+ */
+const COLUMNS = ['Id'];
 
 export default class AdminUsersController extends Controller {
   /**
@@ -18,6 +27,28 @@ export default class AdminUsersController extends Controller {
    */
   get userCount(): number {
     return this.model.users.length;
+  }
+
+  get table() {
+    return Table.create({
+      columns: this.columns,
+      rows: this.rows
+    });
+  }
+
+  /**
+   * @property {Array} columns
+   */
+  get columns(): Array<Object> {
+    return COLUMNS.map(column => {
+      return { name: column, valuePath: camelize(column) };
+    });
+  }
+
+  get rows(): TODO {
+    const rows = arr();
+    rows.pushObjects(this.model.users);
+    return rows;
   }
 
   /**

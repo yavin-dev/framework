@@ -11,4 +11,37 @@
     <DenaliChip @textColor="brand" class="navi-users-dashboard__tools-chip">{{this.userCount}}</DenaliChip>
     <h6 class="upper is-grey-600 navi-users-dashboard__tools-user-label">TOTAL USERS</h6>
   </div>
+  <EmberTable @class="table is-striped" as |t|>
+    <t.head @columns={{this.columns}} />
+
+    <t.body @rows={{this.rows}}
+    @staticHeight={{true}}
+      @estimateRowHeight={{41}} as |b|>
+      <b.row as |r|>
+        <r.cell as |value|>
+          {{value}}
+        </r.cell>
+      </b.row>
+    </t.body>
+  </EmberTable>
+  {{!-- <LightTable
+    class="table is-striped"
+    @table={{this.table}}
+    @responsive={{true}}
+    @occlusion={{true}}
+    ...attributes
+    as |t|
+  >
+  <t.head
+    @onColumnClick={{this.onColumnClick}}
+    @iconSortable="fa fa-sort"
+    @iconAscending="fa fa-sort-asc"
+    @iconDescending="fa fa-sort-desc"
+    @fixed={{true}}
+  />
+
+  <t.body @canSelect={{false}} as |body|>
+
+  </t.body>
+  </LightTable> --}}
 </div>

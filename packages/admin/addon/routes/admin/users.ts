@@ -7,6 +7,7 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 // @ts-ignore
 import StoreService from '@ember-data/store';
+import { hash } from 'rsvp';
 
 export default class AdminUsersRoute extends Route {
   /**
@@ -14,13 +15,15 @@ export default class AdminUsersRoute extends Route {
    */
   @service store!: StoreService;
 
+  @service user!: TODO;
+
   /**
    * @method model
    * @override
    */
   async model() {
-    const users = await this.store.findAll('user');
-
-    return { users };
+    const userIds = await this.store.findAll('user');
+    const userModels = await Promise.all(userIds.content.map((user: { id: string }) => this.user.findUser(user.id)));
+    return { users: userModels };
   }
 }

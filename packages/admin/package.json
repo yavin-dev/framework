@@ -31,6 +31,7 @@
     "ember-cli-htmlbars": "^4.3.1",
     "ember-cli-mirage": "~1.1.6",
     "ember-cli-typescript": "^3.1.4",
+    "ember-light-table": "^2.0.0-beta.5",
     "navi-core": "0.2.0"
   },
   "devDependencies": {
@@ -61,6 +62,7 @@
     "ember-resolver": "^8.0.0",
     "ember-source": "~3.18.0",
     "ember-source-channel-url": "^2.0.1",
+    "ember-table": "^2.2.3",
     "ember-template-lint": "^2.6.0",
     "ember-try": "^1.4.0",
     "ember-uuid": "^2.1.0",
