@@ -16,7 +16,7 @@ import { isEqual } from 'lodash-es';
 import Interval from 'navi-core/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { RequestV2, SortDirection, ColumnType } from 'navi-data/adapters/facts/interface';
+import { RequestV2, SortDirection } from 'navi-data/adapters/facts/interface';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import Store from '@ember-data/store';
@@ -27,13 +27,14 @@ import { ColumnMetadataModels } from './fragments/base';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
-import { TableMetadata } from 'navi-data/addon/models/metadata/table';
+import { TableMetadata } from 'navi-data/models/metadata/table';
+import { ColumnType } from 'navi-data/models/metadata/column';
 
 type BaseLiteral = {
   type: ColumnType;
   source: string;
   field: string;
-  parameters: Parameters;
+  parameters: Parameters | undefined;
 };
 
 const Validations = buildValidations({

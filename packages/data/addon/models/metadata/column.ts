@@ -9,9 +9,10 @@ import { isNone } from '@ember/utils';
 import Table from './table';
 import ColumnFunction from './column-function';
 import FunctionParameter from './function-parameter';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
+import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
-export type ColumnType = 'ref' | 'formula' | 'field';
+export type RawColumnType = 'ref' | 'formula' | 'field';
+export type ColumnType = Extract<MetadataModelTypes, 'metric' | 'dimension' | 'timeDimension'>;
 
 // Shape passed to model constructor
 export interface ColumnMetadataPayload {
@@ -22,7 +23,7 @@ export interface ColumnMetadataPayload {
   tableId?: string; // Some columns do not have unique IDs
   source: string;
   valueType: TODO<string>;
-  type: ColumnType;
+  type: RawColumnType;
   expression?: string;
   columnFunctionId?: string;
   tags?: string[];
@@ -33,12 +34,13 @@ export interface ColumnMetadataPayload {
 export interface ColumnMetadata {
   id: string;
   name: string;
+  metadataType: ColumnType;
   category?: string;
   description?: string;
   table: Table | undefined;
   source: string;
   valueType: TODO<string>;
-  type: ColumnType;
+  type: RawColumnType;
   expression?: string;
   columnFunction: ColumnFunction | undefined;
   hasParameters: boolean;
@@ -60,6 +62,11 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @property {string} name - Display name
    */
   name!: string;
+
+  /**
+   * @property {string} metadataType - metadata type
+   */
+  metadataType!: ColumnType;
 
   /**
    * @property {string|undefined} description - an extended attribute that can be fetched
@@ -88,7 +95,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   /**
    * @property {ColumnType} type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
-  type!: ColumnType;
+  type!: RawColumnType;
 
   /**
    * @property {string|undefined} expression - e.g. tableA.name if type is ref

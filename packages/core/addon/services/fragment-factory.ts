@@ -4,17 +4,14 @@
  */
 import Service, { inject as service } from '@ember/service';
 import Store from 'ember-data/store';
-import { ColumnMetadata } from 'navi-data/models/metadata/column';
+import { ColumnMetadata, ColumnType } from 'navi-data/models/metadata/column';
 //@ts-ignore
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 //@ts-ignore
 import FilterFragment from '../models/bard-request-v2/fragments/filter';
 //@ts-ignore
 import SortFragment from '../models/bard-request-v2/fragments/sort';
-import { camelize } from '@ember/string';
 import { SortDirection } from 'navi-data/adapters/facts/interface';
-
-type FieldType = 'metric' | 'dimension' | 'timeDimension';
 
 export default class FragmentFactory extends Service {
   @service store!: Store;
@@ -26,9 +23,8 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumnFromMeta(columnMetadata: ColumnMetadata, parameters: Dict<string> = {}, alias?: string): ColumnFragment {
-    const type = this._getMetaColumnType(columnMetadata);
-    const field = columnMetadata.id;
-    return this.createColumn(type, columnMetadata.source, field, parameters, alias);
+    const { id: field, metadataType: type, source } = columnMetadata;
+    return this.createColumn(type, source, field, parameters, alias);
   }
 
   /**
@@ -40,7 +36,7 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumn(
-    type: FieldType,
+    type: ColumnType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -68,9 +64,8 @@ export default class FragmentFactory extends Service {
     operator: string,
     values: Array<string | number>
   ): FilterFragment {
-    const type = this._getMetaColumnType(columnMetadata);
-    const field = columnMetadata.id;
-    return this.createFilter(type, columnMetadata.source, field, parameters, operator, values);
+    const { id: field, metadataType: type, source } = columnMetadata;
+    return this.createFilter(type, source, field, parameters, operator, values);
   }
 
   /**
@@ -83,7 +78,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilter(
-    type: FieldType,
+    type: ColumnType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -111,9 +106,8 @@ export default class FragmentFactory extends Service {
     parameters: Dict<string> = {},
     direction: 'asc' | 'desc'
   ): SortFragment {
-    const type = this._getMetaColumnType(columnMetadata);
-    const field = columnMetadata.id;
-    return this.createSort(type, columnMetadata.source, field, parameters, direction);
+    const { id: field, metadataType: type, source } = columnMetadata;
+    return this.createSort(type, source, field, parameters, direction);
   }
 
   /**
@@ -125,7 +119,7 @@ export default class FragmentFactory extends Service {
    * @param direction - `desc` or `asc`
    */
   createSort(
-    type: FieldType,
+    type: ColumnType,
     dataSource: string,
     field: string,
     parameters: Dict<string> = {},
@@ -138,14 +132,6 @@ export default class FragmentFactory extends Service {
       direction,
       source: dataSource
     });
-  }
-
-  /**
-   * Deducts meta column type from class type
-   * @param columnMetadata - meta data to get type from
-   */
-  private _getMetaColumnType(columnMetadata: ColumnMetadata): FieldType {
-    return camelize(columnMetadata.constructor.name).replace('MetadataModel', '') as FieldType;
   }
 }
 
