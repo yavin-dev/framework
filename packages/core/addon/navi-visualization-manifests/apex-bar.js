@@ -1,11 +1,11 @@
 import ManifestBase from 'navi-core/navi-visualization-manifests/base';
 
 export default class extends ManifestBase {
-  name = 'apex-line';
+  name = 'apex-bar';
 
-  niceName = 'apex-line';
+  niceName = 'apex-bar';
 
-  icon = 'line-chart';
+  icon = 'bar-chart';
 
   /**
    * Decides whether visualization type is valid given request

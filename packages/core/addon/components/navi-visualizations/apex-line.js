@@ -8,15 +8,16 @@
  */
 import numeral from 'numeral';
 import Component from '@glimmer/component';
-import { computed } from '@ember/object';
-import moment from 'moment';
 import { normalize } from '../../chart-builders/apex';
+import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
+import ResizeObserver from 'resize-observer-polyfill';
 
-export default class NaviVisualizationsApexPie extends Component {
+export default class NaviVisualizationsApexLine extends Component {
   /**
    * @property {object} - an ApexCharts-friendly object of the data and data labels
    */
-  @computed('model')
   get data() {
     return normalize(this.args.model.firstObject.request, this.args.model.firstObject.response.rows);
   }
@@ -24,31 +25,48 @@ export default class NaviVisualizationsApexPie extends Component {
   /**
    * @properties {array} - array of objects with ApexCharts-formatted data
    */
-  @computed('data')
   get series() {
-    return this.data.series;
+    return this.data.series.map(seri => {
+      return { type: 'line', name: seri.name, data: seri.data };
+    });
   }
 
   /**
    * @properties {array} - array of labels re-formatted to be human readable
    */
-  @computed('data')
   get labels() {
-    let labels = this.data.labels.map(item => {
-      return moment(item, 'YYY-MM-DD T').format('MMM D');
+    let labels = this.data.labels.map(label => {
+      return formatDateForGranularity(label, this.args.model.firstObject.request.logicalTable.timeGrain);
     });
     return labels;
   }
-
+  /*
+  get annotations() {
+    //currently only supports x-axis ruler annotations
+    let ann = {
+      xaxis: [
+        {
+          x: 'Feb 2019',
+          label: {
+            text: 'Annotation'
+          }
+        }
+      ]
+    };
+    return ann;
+  }
+*/
   /**
    * @property {object} - ApexCharts-compatible object of options
    */
-  @computed('series', 'labels')
   get chartOptions() {
     return {
+      //annotations: this.annotations,
       chart: {
-        type: 'line'
+        type: 'line',
+        [this.constrainBy]: '100%'
       },
+      colors: this.args.options?.series?.config?.colors,
       series: this.series,
       xaxis: {
         categories: this.labels
@@ -65,5 +83,50 @@ export default class NaviVisualizationsApexPie extends Component {
         curve: 'straight'
       }
     };
+  }
+
+  /**
+   * @property {string} constrainBy - the graph dimension to be pinned according to the orientation of the visualization container
+   */
+  @tracked constrainBy = 'width';
+
+  /**
+   * updates constrainBy when the visualization container's dimensions change, if necessary
+   * @method updateDimensions
+   */
+  @action
+  updateDimensions() {
+    const container = this.args.containerComponent?.$('* [class*=visualization-container]');
+    if (container === undefined) {
+      console.warn('Apex-Pie called without proper container component');
+      return;
+    }
+    const width = container.width();
+    const height = container.height();
+    // if oriented portrait-style, should constrain to width
+    if (height > width && !(this.constrainBy === 'width')) {
+      this.constrainBy = 'width';
+    }
+    // if oriented landscape-style, should constrain to height
+    else if (width > height && !(this.constrainBy === 'height')) {
+      this.constrainBy = 'height';
+    }
+  }
+
+  constructor(owner, args) {
+    super(owner, args);
+    this.updateDimensions();
+    const observer = new ResizeObserver(entries => {
+      this.updateDimensions();
+    });
+    const container = this.args.containerComponent?.element;
+    if (container !== undefined) {
+      observer.observe(container);
+      if ($(container).length) {
+        $(container).on('resizestop', () => {
+          this.updateDimensions();
+        });
+      }
+    }
   }
 }

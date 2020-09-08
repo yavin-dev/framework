@@ -18,7 +18,7 @@ const Validations = buildValidations(
 );
 
 export default VisualizationBase.extend(Validations, {
-  type: DS.attr('string', { defaultValue: 'apex-line' }),
+  type: DS.attr('string', { defaultValue: 'apex-bar' }),
   version: DS.attr('number', { defaultValue: 1 }),
   metadata: DS.attr({
     defaultValue: () => {

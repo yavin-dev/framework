@@ -6,9 +6,23 @@
  *   @options=tableOptions
  * />
  */
-import Component from '@ember/component';
-import layout from '../../templates/components/navi-visualization-config/apex-line';
+import Component from '@glimmer/component';
+import { set, action } from '@ember/object';
+import { copy } from 'ember-copy';
+import { tagName } from '@ember-decorators/component';
 
-export default Component.extend({
-  layout
-});
+@tagName('')
+export default class NaviVisualizationConfigApexPieComponent extends Component {
+  /**
+   * Method to update the config of the chart
+   * @method updateLegendVisible
+   * @param {string} type - the field of the config being updated
+   * @param {boolean} value - the new value of the field being updated
+   */
+  @action
+  updateChart(type, value) {
+    const newOptions = copy(this.args.options);
+    set(newOptions, 'series.config.' + type, value);
+    this.args.onUpdateConfig(newOptions);
+  }
+}

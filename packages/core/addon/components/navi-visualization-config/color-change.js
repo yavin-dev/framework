@@ -24,10 +24,15 @@ class NaviVisualizationConfigColorChangeComponent extends Component {
    * @property {Array} labels
    */
   get labelColors() {
-    const labelTypes = this.args.seriesConfig.dimensions.map(item => item.id + '|desc');
-    let labels = this.args.response.map(row => {
-      return labelTypes.map(labelType => row[labelType]).join(', ');
-    });
+    let labels;
+    if (this.args.type === 'apex-pie') {
+      const labelTypes = this.args.seriesConfig.dimensions.map(item => item.id + '|desc');
+      labels = this.args.response.map(row => {
+        return labelTypes.map(labelType => row[labelType]).join(', ');
+      });
+    } else if (this.args.type === 'apex-line') {
+      labels = this.args.seriesConfig.metrics.map(metric => metric.name);
+    }
     return labels.map((item, index) => {
       return {
         label: item,
