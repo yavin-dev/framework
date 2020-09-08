@@ -129,4 +129,17 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
       'The filters model attribute was serialized correctly when parameters is an empty object'
     );
   });
+
+  test('Display Name', async function(assert) {
+    const filter = mockModel.filters.objectAt(0);
+
+    filter.set('field', 'revenue');
+    filter.set('parameters', {});
+    filter.set('type', 'metric');
+
+    assert.equal(filter.displayName, 'Revenue');
+
+    filter.set('parameters', { currency: 'USD' });
+    assert.equal(filter.displayName, 'Revenue (USD)');
+  });
 });

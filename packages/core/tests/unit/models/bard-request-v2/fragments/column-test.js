@@ -120,4 +120,18 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
       'The columns model attribute was serialized correctly when parameters is an empty object'
     );
   });
+
+  test('Display Name', async function(assert) {
+    const column = mockModel.columns.objectAt(0);
+
+    column.set('field', 'revenue');
+    column.set('parameters', { currency: 'USD' });
+    column.set('type', 'metric');
+    column.set('alias', 'revenueUSD');
+
+    assert.equal(column.displayName, 'revenueUSD (USD)');
+
+    column.set('alias', undefined);
+    assert.equal(column.displayName, 'Revenue (USD)');
+  });
 });
