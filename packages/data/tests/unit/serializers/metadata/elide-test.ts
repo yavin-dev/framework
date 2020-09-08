@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import ElideMetadataSerializer from 'navi-data/serializers/metadata/elide';
+import ElideMetadataSerializer, { TimeDimensionGrainNode } from 'navi-data/serializers/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
+import config from 'ember-get-config';
 import {
   TablePayload,
   MetricNode,
@@ -9,6 +10,8 @@ import {
   DimensionNode,
   TimeDimensionNode
 } from 'navi-data/serializers/metadata/elide';
+import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
+import { capitalize } from 'lodash-es';
 
 let Serializer: ElideMetadataSerializer;
 
@@ -326,7 +329,39 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             ],
             timeZone: 'UTC',
             source: 'bardOne',
-            tableId: 'tableA'
+            tableId: 'tableA',
+            columnFunctionId: 'normalizer-generated:timeGrain(column=tableA.td1;grains=day,week)'
+          }
+        ],
+        columnFunctions: [
+          {
+            id: 'normalizer-generated:timeGrain(column=tableA.td1;grains=day,week)',
+            name: 'Time Grain',
+            description: 'Time Grain',
+            source: 'bardOne',
+            _parametersPayload: [
+              {
+                _localValues: [
+                  {
+                    id: 'day',
+                    description: 'Day',
+                    name: 'day'
+                  },
+                  {
+                    id: 'week',
+                    description: 'Week',
+                    name: 'week'
+                  }
+                ],
+                defaultValue: 'day',
+                description: 'The time grain to group dates by',
+                expression: INTRINSIC_VALUE_EXPRESSION,
+                id: 'grain',
+                name: 'Time Grain',
+                source: 'bardOne',
+                type: 'ref'
+              }
+            ]
           }
         ]
       },
@@ -533,49 +568,167 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       pageInfo: {}
     };
 
+    const oldDefaultGrain = config.navi.defaultTimeGrain;
+    config.navi.defaultTimeGrain = 'day';
+
     assert.deepEqual(
       Serializer._normalizeTableTimeDimensions(timeDimensionPayload, tableId, source),
       [
         {
-          id: 'userSignupDate',
-          name: 'User Signup Date',
-          description: 'Date that the user signed up',
-          category: 'userDimensions',
-          valueType: 'DATE',
-          tags: ['DISPLAY'],
-          supportedGrains: [
-            { id: 'day', grain: 'DAY', expression: '' },
-            { id: 'week', grain: 'WEEK', expression: '' },
-            { id: 'month', grain: 'MONTH', expression: '' }
-          ],
-          timeZone: 'PST',
-          source,
-          tableId,
-          type: 'field',
-          expression: ''
+          timeDimension: {
+            id: 'userSignupDate',
+            name: 'User Signup Date',
+            description: 'Date that the user signed up',
+            category: 'userDimensions',
+            valueType: 'DATE',
+            tags: ['DISPLAY'],
+            supportedGrains: [
+              { id: 'day', grain: 'DAY', expression: '' },
+              { id: 'week', grain: 'WEEK', expression: '' },
+              { id: 'month', grain: 'MONTH', expression: '' }
+            ],
+            timeZone: 'PST',
+            source,
+            tableId,
+            type: 'field',
+            expression: '',
+            columnFunctionId: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)'
+          },
+          columnFunction: {
+            id: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)',
+            name: 'Time Grain',
+            source,
+            description: 'Time Grain',
+            _parametersPayload: [
+              {
+                id: 'grain',
+                name: 'Time Grain',
+                description: 'The time grain to group dates by',
+                source,
+                type: 'ref',
+                expression: INTRINSIC_VALUE_EXPRESSION,
+                defaultValue: 'day',
+                _localValues: [
+                  {
+                    id: 'day',
+                    description: 'Day',
+                    name: 'day'
+                  },
+                  {
+                    id: 'week',
+                    description: 'Week',
+                    name: 'week'
+                  },
+                  {
+                    id: 'month',
+                    description: 'Month',
+                    name: 'month'
+                  }
+                ]
+              }
+            ]
+          }
         },
         {
-          id: 'orderMonth',
-          name: 'Order Month',
-          description: 'Month an order was placed',
-          category: 'userDimensions',
-          valueType: 'DATE',
-          tags: ['DISPLAY'],
-          supportedGrains: [{ id: 'month', grain: 'MONTH', expression: '' }],
-          timeZone: 'CST',
-          source,
-          tableId,
-          type: 'field',
-          expression: ''
+          timeDimension: {
+            id: 'orderMonth',
+            name: 'Order Month',
+            description: 'Month an order was placed',
+            category: 'userDimensions',
+            valueType: 'DATE',
+            tags: ['DISPLAY'],
+            supportedGrains: [{ id: 'month', grain: 'MONTH', expression: '' }],
+            timeZone: 'CST',
+            source,
+            tableId,
+            type: 'field',
+            expression: '',
+            columnFunctionId: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)'
+          },
+          columnFunction: {
+            id: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)',
+            name: 'Time Grain',
+            source,
+            description: 'Time Grain',
+            _parametersPayload: [
+              {
+                id: 'grain',
+                name: 'Time Grain',
+                description: 'The time grain to group dates by',
+                source,
+                type: 'ref',
+                expression: INTRINSIC_VALUE_EXPRESSION,
+                defaultValue: 'month',
+                _localValues: [
+                  {
+                    id: 'month',
+                    description: 'Month',
+                    name: 'month'
+                  }
+                ]
+              }
+            ]
+          }
         }
       ],
       'Time Dimension connection payload is normalized properly for a table'
     );
 
+    config.navi.defaultTimeGrain = oldDefaultGrain;
+
     assert.deepEqual(
       Serializer._normalizeTableTimeDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
+    );
+  });
+
+  test('createTimeGrainColumnFunction', function(assert) {
+    const timeDimensionId = 'wayTooPersonalTable.userBirthday';
+    const grainNodes: TimeDimensionGrainNode[] = [
+      {
+        id: `${timeDimensionId}.day`,
+        grain: 'DAY',
+        expression: 'foo'
+      },
+      {
+        id: `${timeDimensionId}.month`,
+        grain: 'MONTH',
+        expression: 'foo'
+      },
+      {
+        id: `${timeDimensionId}.year`,
+        grain: 'YEAR',
+        expression: 'foo'
+      }
+    ];
+    const dataSource = 'superInvasive';
+
+    assert.deepEqual(
+      Serializer['createTimeGrainColumnFunction'](timeDimensionId, grainNodes, dataSource),
+      {
+        id: `normalizer-generated:timeGrain(column=${timeDimensionId};grains=day,month,year)`,
+        name: 'Time Grain',
+        source: 'superInvasive',
+        description: 'Time Grain',
+        _parametersPayload: [
+          {
+            id: 'grain',
+            name: 'Time Grain',
+            description: 'The time grain to group dates by',
+            source: dataSource,
+            type: 'ref',
+            expression: INTRINSIC_VALUE_EXPRESSION,
+            defaultValue: 'day',
+            _localValues: grainNodes.map(grain => ({
+              id: grain.id,
+              description: capitalize(grain.grain.toLowerCase()),
+              name: grain.grain.toLowerCase()
+            }))
+          }
+        ]
+      },
+      'Column function is generated properly'
     );
   });
 });
