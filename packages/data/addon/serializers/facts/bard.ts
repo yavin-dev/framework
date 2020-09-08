@@ -51,7 +51,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       }
     }
 
-    return { rows, meta: payload.meta };
+    return { rows, meta: payload.meta || {} };
   }
 
   normalize(payload: ResponseV1, request: RequestV2): ResponseV1 | undefined {
@@ -60,7 +60,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
     } else if (payload) {
       return {
         rows: [],
-        meta: payload.meta
+        meta: payload.meta || {}
       };
     }
     return undefined;

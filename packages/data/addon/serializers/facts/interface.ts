@@ -10,8 +10,13 @@ type ResponsePayload = any;
 
 export interface ResponseV1 {
   rows: Array<Record<string, unknown>>;
-  meta?: {
-    pagination?: { currentPage: number; rowsPerPage: number; perPage: number; numberOfResults: number };
+  meta: {
+    pagination?: {
+      currentPage: number;
+      rowsPerPage: number;
+      perPage: number;
+      numberOfResults: number;
+    };
   };
 }
 

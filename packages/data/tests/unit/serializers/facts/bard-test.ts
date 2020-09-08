@@ -24,7 +24,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       Serializer.normalize({ foo: 'bar' }),
       {
         rows: [],
-        meta: undefined
+        meta: {}
       },
       'Returns `undefined` with invalid payload and undefined request'
     );
@@ -34,7 +34,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       Serializer.normalize({ rows: 'bar' }),
       {
         rows: [],
-        meta: undefined
+        meta: {}
       },
       'Returns `undefined` with payload and undefined request'
     );
@@ -78,7 +78,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     ];
 
     assert.deepEqual(
-      Serializer.normalize({ rows }, request),
+      Serializer.normalize({ rows, meta: {} }, request),
       {
         rows: [
           {
@@ -89,7 +89,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
             'metricName(param=value)': 'blah5'
           }
         ],
-        meta: undefined
+        meta: {}
       },
       'todo asdfasdfasdf'
     );
