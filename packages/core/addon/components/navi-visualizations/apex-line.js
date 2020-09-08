@@ -63,10 +63,13 @@ export default class NaviVisualizationsApexLine extends Component {
     return {
       //annotations: this.annotations,
       chart: {
-        type: 'line',
+        type: this.args.options?.series?.config?.area ? 'area' : 'line',
         [this.constrainBy]: '100%'
       },
       colors: this.args.options?.series?.config?.colors,
+      dataLabels: {
+        enabled: false
+      },
       series: this.series,
       xaxis: {
         categories: this.labels
@@ -80,7 +83,7 @@ export default class NaviVisualizationsApexLine extends Component {
         }
       },
       stroke: {
-        curve: 'straight'
+        curve: this.args.options?.series?.config?.stroke
       }
     };
   }

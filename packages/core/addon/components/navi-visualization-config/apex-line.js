@@ -9,10 +9,14 @@
 import Component from '@glimmer/component';
 import { set, action } from '@ember/object';
 import { copy } from 'ember-copy';
+import { tracked } from '@glimmer/tracking';
 import { tagName } from '@ember-decorators/component';
 
 @tagName('')
 export default class NaviVisualizationConfigApexLineComponent extends Component {
+  strokeOptions = ['straight', 'smooth', 'stepline'];
+  @tracked chosenStroke = this.args.options?.series?.config?.stroke;
+
   /**
    * Method to update the config of the chart
    * @method updateLegendVisible
@@ -21,6 +25,7 @@ export default class NaviVisualizationConfigApexLineComponent extends Component 
    */
   @action
   updateChart(type, value) {
+    console.log(type, value);
     const newOptions = copy(this.args.options);
     set(newOptions, 'series.config.' + type, value);
     this.args.onUpdateConfig(newOptions);
