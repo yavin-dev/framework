@@ -35,12 +35,13 @@
       {{operator.name}}
     </PowerSelect>
     <span class="filter-builder__values">
-      {{component
-        this.selectedOperator.valuesComponent
-        filter=this.filter
-        request=@request
-        onUpdateFilter=@onUpdateFilter
-      }}
+      {{#let this.selectedOperator.valuesComponent as |ValuesComponent|}}
+        <ValuesComponent
+          @filter={{this.filter}}
+          @request={{@request}}
+          @onUpdateFilter={{@onUpdateFilter}}
+        />
+      {{/let}}
     </span>
   </div>
 {{/if}}

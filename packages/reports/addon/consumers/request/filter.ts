@@ -3,28 +3,34 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
+import Route from '@ember/routing/route';
 import { setProperties, set } from '@ember/object';
 import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
+import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import {
   getSelectedMetricsOfBase,
   getFilteredMetricsOfBase,
   getUnfilteredMetricsOfBase
 } from 'navi-reports/utils/request-metric';
+import MetricMetadataModel from 'navi-data/models/metadata/metric';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ReportModel from 'navi-core/models/report';
+import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import { Parameters } from 'navi-data/adapters/facts/interface';
+import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import RequestFragment from 'navi-core/addon/models/bard-request-v2/request';
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
   values: [0]
 };
 
-export default ActionConsumer.extend({
-  /**
-   * @property {Ember.Service} requestActionDispatcher
-   */
-  requestActionDispatcher: service(),
+export default class FilterConsumer extends ActionConsumer {
+  @service
+  requestActionDispatcher!: RequestActionDispatcher;
 
   /**
    * @method _getNextParameterForMetric
@@ -35,7 +41,7 @@ export default ActionConsumer.extend({
    * @param request - request fragment
    * @returns {Object|undefined} next parameters object
    */
-  _getNextParameterForMetric(metricMetadataModel, request) {
+  _getNextParameterForMetric(metricMetadataModel: MetricMetadataModel, request: RequestFragment) {
     if (!metricMetadataModel.hasParameters) {
       return;
     }
@@ -46,17 +52,14 @@ export default ActionConsumer.extend({
 
     const nextUnfilteredMetric = getUnfilteredMetricsOfBase(metricMetadataModel, request)[0];
     return nextUnfilteredMetric?.parameters;
-  },
+  }
 
-  actions: {
-    /**
-     * @action TOGGLE_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} column - column fragment
-     */
-    [RequestActions.TOGGLE_FILTER]: function(route, column) {
+  actions = {
+    [RequestActions.TOGGLE_FILTER](this: FilterConsumer, route: Route, column: ColumnFragment) {
       const { canonicalName, columnMetadata, type, parameters } = column;
-      const filter = route.currentModel.request.filters.find(filter => filter.canonicalName === canonicalName);
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
+      const filter = request.filters.find(filter => filter.canonicalName === canonicalName);
 
       //do not add filter if it already exists
       if (!filter) {
@@ -71,31 +74,21 @@ export default ActionConsumer.extend({
             throw new Error('TODO');
         }
       } else {
-        switch (type) {
-          case 'metric':
-            this.requestActionDispatcher.dispatch(
-              RequestActions.REMOVE_METRIC_FILTER,
-              route,
-              columnMetadata,
-              parameters
-            );
-            break;
-          case 'dimension':
-            this.requestActionDispatcher.dispatch(RequestActions.REMOVE_DIMENSION_FILTER, route, columnMetadata);
-            break;
-          case 'timeDimension':
-            throw new Error('TODO');
-        }
+        //TODO fix me
+        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, column);
       }
     },
-    /**
-     * @action TOGGLE_DIMENSION_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} dimension - dimension to filter
-     */
-    [RequestActions.TOGGLE_DIMENSION_FILTER]: function(route, dimensionMetadataModel) {
-      const filter = route.currentModel.request.filters.find(
-        filter => filter.type === 'dimension' && filter.columnMetadata === dimensionMetadataModel
+
+    [RequestActions.TOGGLE_DIMENSION_FILTER](
+      this: FilterConsumer,
+      route: Route,
+      dimensionMetadataModel: DimensionMetadataModel
+    ) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
+      const filter = request.filters.find(
+        ({ type, columnMetadata }) =>
+          ['dimension', 'timeDimension'].includes(type) && columnMetadata === dimensionMetadataModel
       );
 
       //do not add filter if it already exists
@@ -111,14 +104,16 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} dimension - dimension to filter
      */
-    [RequestActions.ADD_DIMENSION_FILTER]: ({ currentModel: { request } }, dimensionMetadataModel) => {
+    [RequestActions.ADD_DIMENSION_FILTER](route: Route, dimensionMetadataModel: DimensionMetadataModel) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
       assert(
         'Dimension model has correct primaryKeyFieldName',
         typeof dimensionMetadataModel?.primaryKeyFieldName === 'string'
       );
 
-      const findDefaultOperator = type => {
-        const opDictionary = {
+      const findDefaultOperator = (type: string) => {
+        const opDictionary: Record<string, string> = {
           date: 'gte',
           number: 'eq',
           default: 'in'
@@ -130,10 +125,10 @@ export default ActionConsumer.extend({
       let defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
 
       request.addFilter({
-        type: 'dimension',
+        type: dimensionMetadataModel.metadataType,
         source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
-        parameters: { field: dimensionMetadataModel.primaryKeyFieldName },
+        parameters: dimensionMetadataModel.getDefaultParameters(),
         operator: defaultOperator,
         values: []
       });
@@ -145,7 +140,9 @@ export default ActionConsumer.extend({
      * @param {Object} metric - metric to filter
      * @param {Object} [parameters] - metric parameters to filter [optional]
      */
-    [RequestActions.ADD_METRIC_FILTER]: ({ currentModel: { request } }, metricMetadataModel, parameters) => {
+    [RequestActions.ADD_METRIC_FILTER](route: Route, metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
       request.addFilter({
         type: 'metric',
         source: request.dataSource,
@@ -160,10 +157,13 @@ export default ActionConsumer.extend({
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} metricMetadataModel - metric to filter
      */
-    [RequestActions.TOGGLE_METRIC_FILTER]: function(route, metricMetadataModel) {
-      const {
-        currentModel: { request }
-      } = route;
+    [RequestActions.TOGGLE_METRIC_FILTER](
+      this: FilterConsumer,
+      route: Route,
+      metricMetadataModel: MetricMetadataModel
+    ) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
 
       const metricFilters = getFilteredMetricsOfBase(metricMetadataModel, request);
 
@@ -184,16 +184,14 @@ export default ActionConsumer.extend({
       }
     },
 
-    /**
-     * @action TOGGLE_PARAMETERIZED_METRIC_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metricMetadataModel - metric to filter
-     * @param {Object} parameters - metric parameter to filter
-     */
-    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER]: function(route, metricMetadataModel, parameters) {
-      const {
-        currentModel: { request }
-      } = route;
+    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER](
+      this: FilterConsumer,
+      route: Route,
+      metricMetadataModel: MetricMetadataModel,
+      parameters: Parameters
+    ) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
 
       const filter = request.filters.find(
         filter =>
@@ -208,71 +206,34 @@ export default ActionConsumer.extend({
       }
     },
 
-    /**
-     * @action REMOVE_COLUMN
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} columnMetadataModel - metadata model of column to remove
-     */
-    [RequestActions.REMOVE_COLUMN](route, columnMetadataModel) {
+    [RequestActions.REMOVE_COLUMN](this: FilterConsumer, route: Route, columnMetadataModel: ColumnMetadataModel) {
       // Find and remove all filters attached to the column
-      const {
-        currentModel: { request }
-      } = route;
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
 
       const filters = request.filters.filter(filter => filter.columnMetadata === columnMetadataModel);
       filters.forEach(filter => this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter));
     },
 
-    /**
-     * @action UPDATE_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} originalFilter - object to update
-     * @param {Object} changeSet - object of properties and new values
-     */
-    [RequestActions.UPDATE_FILTER]: (route, originalFilter, changeSet) => {
-      let changeSetUpdates = {};
-      //if an interval is set on a filter, normalize to a string array
-      if (changeSet.interval) {
-        const { start, end } = changeSet.interval.asStrings('YYYY-MM-DD');
-        changeSetUpdates = { values: [start, end] };
-        delete changeSet.interval;
-      }
-
-      setProperties(originalFilter, Object.assign({}, changeSet, changeSetUpdates));
+    [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {
+      setProperties(originalFilter, changeSet);
     },
 
-    /**
-     * @action UPDATE_FILTER_PARAMS
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} originalFilter - object to update
-     */
-    [RequestActions.UPDATE_FILTER_PARAMS]: (route, originalFilter, key, value) => {
+    [RequestActions.UPDATE_FILTER_PARAMS]: (
+      _route: Route,
+      originalFilter: FilterFragment,
+      key: string,
+      value: string
+    ) => {
       set(originalFilter, 'parameters', {
         [key]: value
       });
     },
 
-    /**
-     * @action REMOVE_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} filter - object to remove from request
-     */
-    [RequestActions.REMOVE_FILTER]: ({ currentModel: { request } }, filter) => {
+    [RequestActions.REMOVE_FILTER](route: Route, filter: FilterFragment) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
       request.removeFilter(filter);
-    },
-
-    /**
-     * @action DID_UPDATE_TIME_GRAIN
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} timeGrain - newly updated time grain
-     */
-    [RequestActions.DID_UPDATE_TIME_GRAIN]({ currentModel: { request } }, timeGrain) {
-      // Set interval to default for time grain
-      const { interval } = request;
-      const timeGrainId = timeGrain.id;
-      const newInterval = interval?.asIntervalForTimePeriod(timeGrainId) || DefaultIntervals.getDefault(timeGrainId);
-
-      request.updateInterval(newInterval);
     }
-  }
-});
+  };
+}
