@@ -1,3 +1,23 @@
-<div class="visualization-config__warn-msg">
-  No configuration options available.
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class='apex-bar-config'>
+  <span class='apex-bar-config__annotations-section__header'>
+    Annotations:
+  </span>
+  <div class='apex-bar-config__annotations-section'>
+    <div class='apex-bar-config__annotations-section__x-ruler'>
+      Bar Chart
+    </div>
+  </div>
+  <span class='apex-bar-config__chart-colors-section__header'>
+    Chart Colors:
+  </span>
+  <div class='apex-bar-config__chart-colors-section'>
+    <NaviVisualizationConfig::ColorChange
+      @request={{@request}}
+      @response={{@response}}
+      @type='apex-line'
+      @seriesConfig={{readonly @options.series.config}}
+      @onUpdateConfig={{fn this.updateChart 'colors'}}
+    />
+  </div>
 </div>

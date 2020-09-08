@@ -12,7 +12,7 @@ import { copy } from 'ember-copy';
 import { tagName } from '@ember-decorators/component';
 
 @tagName('')
-export default class NaviVisualizationConfigApexPieComponent extends Component {
+export default class NaviVisualizationConfigApexLineComponent extends Component {
   /**
    * Method to update the config of the chart
    * @method updateLegendVisible
