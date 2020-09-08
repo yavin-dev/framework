@@ -91,7 +91,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
         ],
         meta: {}
       },
-      'todo asdfasdfasdf'
+      'The fili fields are mapped to the correct column canonical names'
     );
   });
 });
