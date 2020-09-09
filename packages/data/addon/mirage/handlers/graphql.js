@@ -418,6 +418,32 @@ function _getResponseBody(db, parent) {
 
 const OPTIONS = {
   fieldsMap: {
+    TimeDimension: {
+      supportedGrain(resolved, db, parent) {
+        // ember-cli-mirage-graphql fails to fetch the correct grain for some reason, so we do it manually here
+        const fields = Object.keys(resolved[0].edges[0].node);
+        const correctGrain = db.timeDimensionGrains.find(parent.supportedGrain[0].id);
+        const record = fields.reduce((obj, field) => {
+          obj[field] = correctGrain[field];
+          return obj;
+        }, {});
+
+        return [
+          {
+            __typename: 'TimeDimensionGrainConnection',
+            edges: [
+              {
+                __typename: 'TimeDimensionGrainEdge',
+                node: {
+                  ...record,
+                  __typename: 'TimeDimensionGrain'
+                }
+              }
+            ]
+          }
+        ];
+      }
+    },
     AsyncQuery: {
       result(_, db, parent) {
         return {
