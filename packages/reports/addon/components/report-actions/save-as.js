@@ -12,6 +12,7 @@ import Component from '@ember/component';
 import layout from '../../templates/components/report-actions/save-as';
 import { action, set } from '@ember/object';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { isBlank } from '@ember/utils';
 
 @templateLayout(layout)
 @tagName('')
@@ -22,10 +23,20 @@ export default class ReportActionSaveAs extends Component {
   showModal = false;
 
   /**
+   * @private
+   * @property {string} state holder for overriding default reportName
+   */
+  _reportTitle = '';
+
+  /**
    * @property {String} reportName - report name/title
    */
   get reportName() {
-    return `(New Copy) ${this.model.title}`.substring(0, 150);
+    return isBlank(this._reportTitle) ? `(New Copy) ${this.model.title}`.substring(0, 150) : this._reportTitle;
+  }
+
+  set reportName(value) {
+    this._reportTitle = value;
   }
 
   /**

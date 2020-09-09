@@ -369,6 +369,44 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
   });
 
+  test('Save As change title manually', async function(assert) {
+    assert.expect(6);
+    await visit('/reports/1');
+    // Change the Dim
+    await clickItem('timeGrain', 'Month');
+
+    // And click Save AS the report
+    await click('.navi-report__save-as-btn');
+
+    // The Modal with buttons is Visible
+    assert.dom('.save-as__save-as-modal-btn').isVisible('Save As Modal is visible with save as key');
+
+    //fill in new title
+    await fillIn('.navi-modal .text-input.dashboard-title', 'Title of Hyrule');
+
+    // Press the save as
+    await click('.save-as__save-as-modal-btn');
+
+    assert.ok(!!$('.filter-builder__subject:contains(Month)').length, 'The new Dim is shown in the new report.');
+
+    // New Report is run
+    let emberId = find('.report-view.ember-view').id,
+      component = this.owner.lookup('-view-registry:main')[emberId];
+    assert.equal(
+      component.get('report.visualization.type'),
+      'table',
+      'Report has a valid visualization type after running then reverting.'
+    );
+
+    assert.dom('.navi-report__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
+
+    await visit('/reports/1');
+
+    assert.ok(!!$('.filter-builder__subject:contains(Day)').length, 'Old unsaved report have the old DIM.');
+
+    assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
+  });
+
   test('Save As on failure', async function(assert) {
     assert.expect(3);
 
