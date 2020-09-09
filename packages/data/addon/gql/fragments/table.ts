@@ -20,7 +20,6 @@ const fragment = gql`
           category
           valueType
           columnTags
-          defaultFormat
           columnType
           expression
         }
@@ -58,7 +57,6 @@ const fragment = gql`
               }
             }
           }
-          timeZone
         }
       }
     }
