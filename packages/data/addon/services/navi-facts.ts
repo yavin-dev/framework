@@ -61,6 +61,18 @@ export default class NaviFactsService extends Service {
   }
 
   /**
+   * @method getURL - Uses the adapter to get the download query url for the request
+   * @param {Object} request - request object
+   * @param {Object} [options] - options object
+   * @returns {String} - url for the request
+   */
+  getDownloadURL(request: RequestV2, options: RequestOptions) {
+    const type = config.navi.dataSources[0].type;
+    const adapter = this._adapterFor(type);
+    return adapter.urlForDownloadQuery(request, options);
+  }
+
+  /**
    * @method fetch - Returns the bard response model for the request
    * @param {Object} request - request object
    * @param {Object} [options] - options object

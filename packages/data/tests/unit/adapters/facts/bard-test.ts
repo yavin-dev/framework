@@ -1077,6 +1077,109 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
+  test('urlForDownloadQuery', function(assert) {
+    assert.expect(7);
+
+    assert.throws(
+      () => {
+        //@ts-expect-error
+        Adapter.urlForDownloadQuery({ ...EmptyRequest, requestVersion: 'v1' });
+      },
+      /Fact request for fili adapter must be version 2/,
+      'urlForDownloadQuery fails assertion if v1 request is passed in'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest)),
+      HOST +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
+        'format=json',
+      'urlForDownloadQuery correctly built the URL for the provided request'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
+      HOST +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
+        'format=csv',
+      'urlForDownloadQuery correctly built the URL for the provided request with the format option'
+    );
+
+    let onlyDateFilter: RequestV2 = {
+      ...TestRequest,
+      filters: [
+        {
+          field: 'table1.dateTime',
+          parameters: { grain: 'grain1' },
+          type: 'timeDimension',
+          operator: 'bet',
+          values: ['2015-01-03', '2015-01-04']
+        }
+      ]
+    };
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(onlyDateFilter)),
+      HOST + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' + 'metrics=m1,m2,r(p=123)&format=json',
+      'urlForDownloadQuery correctly built the URL for a request with no filters'
+    );
+
+    let requestWithSort: RequestV2 = {
+      ...TestRequest,
+      filters: [
+        {
+          field: 'table1.dateTime',
+          parameters: { grain: 'grain1' },
+          type: 'timeDimension',
+          operator: 'bet',
+          values: ['2015-01-03', '2015-01-04']
+        }
+      ],
+      sorts: [
+        {
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          //@ts-expect-error
+          direction: undefined
+        },
+        {
+          type: 'metric',
+          field: 'm2',
+          parameters: {},
+          //@ts-expect-error
+          direction: undefined
+        }
+      ]
+    };
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(requestWithSort)),
+      HOST +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json',
+      'urlForDownloadQuery correctly built the URL for a request with sort'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
+      HOST +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
+        'format=json&_cache=false',
+      'urlForDownloadQuery correctly built the URL for the provided request with the cache option'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
+      HOST2 +
+        '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
+        'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
+        'format=json',
+      'urlForDownloadQuery renders alternative host name if option is given'
+    );
+  });
+
   test('fetchDataForRequest', function(assert) {
     assert.expect(2);
 

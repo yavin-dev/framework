@@ -335,6 +335,17 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   }
 
   /**
+   * Returns URL String for a request
+   *
+   * @method urlForDownloadQuery
+   * @param request
+   * @param options
+   * @return url
+   */
+  urlForDownloadQuery(request: RequestV2, options?: RequestOptions): string {
+    return this.urlForFindQuery(request, options);
+  }
+  /**
    * @property {Ember.Service} requestDecorator
    */
   @service requestDecorator: TODO;
