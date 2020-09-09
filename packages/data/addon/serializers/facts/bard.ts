@@ -11,6 +11,10 @@ import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 export default class BardFactsSerializer extends EmberObject implements NaviFactSerializer {
+  /**
+   * Converts a column to the expected webservice name (e.g. `dimensionName(field=desc)` -> `dimensionName|desc`)
+   * @param column - the requested column whose webservice name we need to find
+   */
   private getFiliField(column: Column): string {
     switch (column.type) {
       case 'metric':

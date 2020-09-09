@@ -217,36 +217,38 @@ module('Unit | Service | Navi Facts', function(hooks) {
     // TODO: Remove request builder?
     assert.expect(2);
 
-    // let requestBuilder = Service.request({
-    //   metrics: [
-    //     {
-    //       metric: 'pageViews',
-    //       parameters: {
-    //         type: 'dimension'
-    //       }
-    //     }
-    //   ]
-    // });
+    /*
+    let requestBuilder = Service.request({
+      metrics: [
+        {
+          metric: 'pageViews',
+          parameters: {
+            type: 'dimension'
+          }
+        }
+      ]
+    });
 
-    // let newRequest = requestBuilder.addMetrics({ metric: 'adClicks' });
+    let newRequest = requestBuilder.addMetrics({ metric: 'adClicks' });
 
-    // assert.deepEqual(
-    //   newRequest.metrics,
-    //   [
-    //     {
-    //       metric: 'pageViews',
-    //       parameters: {
-    //         type: 'dimension'
-    //       }
-    //     },
-    //     {
-    //       metric: 'adClicks'
-    //     }
-    //   ],
-    //   'Request returns a builder interface that allows extension'
-    // );
+    assert.deepEqual(
+      newRequest.metrics,
+      [
+        {
+          metric: 'pageViews',
+          parameters: {
+            type: 'dimension'
+          }
+        },
+        {
+          metric: 'adClicks'
+        }
+      ],
+      'Request returns a builder interface that allows extension'
+    );
 
-    // assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
+    assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
+    */
   });
 
   test('fetchNext', function(assert) {
