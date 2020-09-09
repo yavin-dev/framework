@@ -54,7 +54,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options] - options object
    * @returns {String} - url for the request
    */
-  getURL(request: RequestV2, options: RequestOptions) {
+  getURL(request: RequestV2, options: RequestOptions = {}) {
     const type = config.navi.dataSources[0].type;
     const adapter = this._adapterFor(type);
     return adapter.urlForFindQuery(request, options);
@@ -69,16 +69,15 @@ export default class NaviFactsService extends Service {
    * @param {Object} [options.customHeaders] - hash of header names and values
    * @returns {Promise} - Promise with the bard response model object
    */
-  fetch(this: NaviFactsService, request: RequestV2, options: RequestOptions): Promise<NaviFactsModel> {
+  async fetch(request: RequestV2, options: RequestOptions = {}): Promise<NaviFactsModel> {
     const dataSourceName = options?.dataSourceName;
     const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
     const adapter = this._adapterFor(type);
     const serializer = this._serializerFor(type);
 
-    return adapter.fetchDataForRequest(request, options).then(payload => {
-      const response = serializer.normalize(payload, request);
-      return NaviFactsModel.create({ request, response, _factsService: this });
-    });
+    const payload = await adapter.fetchDataForRequest(request, options);
+    const response = serializer.normalize(payload, request);
+    return NaviFactsModel.create({ request, response, _factService: this });
   }
 
   /**
@@ -87,7 +86,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the next set of results or null
    */
-  fetchNext(this: NaviFactsService, response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
+  fetchNext(response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { perPage, numberOfResults, currentPage } = response.meta.pagination;
       const totalPages = numberOfResults / perPage;
@@ -108,7 +107,7 @@ export default class NaviFactsService extends Service {
    * @param {Object} request
    * @return {Promise|null} returns the promise with the previous set of results or null
    */
-  fetchPrevious(this: NaviFactsService, response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
+  fetchPrevious(response: ResponseV1, request: RequestV2): Promise<NaviFactsModel> | null {
     if (response.meta.pagination) {
       const { rowsPerPage, currentPage } = response.meta.pagination;
       if (currentPage > 1) {

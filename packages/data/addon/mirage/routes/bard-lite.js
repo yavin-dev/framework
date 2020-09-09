@@ -152,7 +152,7 @@ function _loadPredefinedDimensions() {
 
 export default function(
   metricBuilder = () => {
-    return faker.finance.amount();
+    return Number(faker.finance.amount());
   }
 ) {
   _loadPredefinedDimensions();

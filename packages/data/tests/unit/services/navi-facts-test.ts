@@ -1,11 +1,15 @@
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Pretender from 'pretender';
+import Pretender, { Server as PretenderServer } from 'pretender';
 import config from 'ember-get-config';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactsService from 'navi-data/services/navi-facts';
+import { TestContext } from 'ember-test-helpers';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
-let Service, Server;
+let Service: NaviFactsService, Server: PretenderServer;
 
-const TestRequest = {
+const TestRequest: RequestV2 = {
   table: 'table1',
   requestVersion: '2.0',
   columns: [
@@ -47,17 +51,22 @@ const TestRequest = {
       values: [0]
     }
   ],
-  sorts: []
+  sorts: [],
+  dataSource: 'bardOne'
 };
 
-const Response = {
+const Response: ResponseV1 = {
   rows: [
     {
-      table: 'table1',
-      grain: 'grain1'
+      dateTime: undefined,
+      'd1|id': undefined,
+      'd2|id': undefined,
+      m1: undefined,
+      m2: undefined
     }
   ],
   meta: {
+    //@ts-expect-error
     test: true
   }
 };
@@ -67,7 +76,7 @@ const HOST = config.navi.dataSources[0].uri;
 module('Unit | Service | Navi Facts', function(hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
     Service = this.owner.lookup('service:navi-facts');
 
     //setup Pretender
@@ -78,7 +87,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
             200,
             { 'Content-Type': 'application/json' },
             JSON.stringify({
-              rows: {},
+              rows: [],
               meta: {
                 paginated: {
                   page: request.queryParams.page,
@@ -129,35 +138,53 @@ module('Unit | Service | Navi Facts', function(hooks) {
     assert.expect(3);
 
     return Service.fetch(TestRequest).then(function(model) {
-      assert.deepEqual(model.response, Response, 'Fetch returns a navi response model object for TestRequest');
+      assert.deepEqual(
+        model.response,
+        {
+          rows: [
+            {
+              'd1(field=id)': undefined,
+              'd2(field=id)': undefined,
+              m1: undefined,
+              m2: undefined,
+              'table1.dateTime(grain=grain1)': undefined
+            }
+          ],
+          meta: {
+            //@ts-expect-error
+            test: true
+          }
+        },
+        'Fetch returns a navi response model object for TestRequest'
+      );
 
       assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
 
       assert.deepEqual(
-        model._factsService,
+        model._factService,
         Service,
         'Fetch returns a navi response model object with the service instance'
       );
     });
   });
 
-  test('fetch with pagination', function(assert) {
+  test('fetch with pagination', async function(assert) {
     assert.expect(1);
-    return Service.fetch(TestRequest, { page: 2, perPage: 10 }).then(function(model) {
-      assert.deepEqual(
-        model.response,
-        {
-          rows: {},
-          meta: {
-            paginated: {
-              page: '2',
-              perPage: '10'
-            }
+    const model = await Service.fetch(TestRequest, { page: 2, perPage: 10 });
+    assert.deepEqual(
+      model.response,
+      {
+        rows: [],
+        meta: {
+          //@ts-expect-error
+          paginated: {
+            page: '2',
+            perPage: '10'
           }
-        },
-        'Fetch returns a navi response model object for the paginated request'
-      );
-    });
+        }
+      },
+      'Fetch returns a navi response model object for the paginated request'
+    );
   });
 
   test('fetch and catch error', function(assert) {
@@ -186,9 +213,11 @@ module('Unit | Service | Navi Facts', function(hooks) {
     });
   });
 
-  test('request builder', function(assert) {
+  skip('request builder', function(assert) {
+    // TODO: Remove request builder?
     assert.expect(2);
 
+    /*
     let requestBuilder = Service.request({
       metrics: [
         {
@@ -219,19 +248,22 @@ module('Unit | Service | Navi Facts', function(hooks) {
     );
 
     assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
+    */
   });
 
   test('fetchNext', function(assert) {
     assert.expect(2);
 
     const originalFetch = Service.fetch;
+    //@ts-expect-error
     Service.fetch = (request, options) => {
-      assert.equal(options.page, 3, 'FetchNext calls fetch with updated options');
+      assert.equal(options?.page, 3, 'FetchNext calls fetch with updated options');
     };
 
-    const response = {
-      rows: {},
+    const response: ResponseV1 = {
+      rows: [],
       meta: {
+        //@ts-expect-error
         pagination: {
           currentPage: 2,
           perPage: 10,
@@ -239,10 +271,11 @@ module('Unit | Service | Navi Facts', function(hooks) {
         }
       }
     };
-    const request = {};
+    const request = {} as RequestV2;
 
     Service.fetchNext(response, request);
 
+    //@ts-expect-error
     response.meta.pagination.currentPage = 3;
     assert.equal(Service.fetchNext(response, request), null, 'fetchNext returns null when the last page is reached');
 
@@ -253,13 +286,15 @@ module('Unit | Service | Navi Facts', function(hooks) {
     assert.expect(2);
 
     const originalFetch = Service.fetch;
-    Service.fetch = (request, options) => {
-      assert.equal(options.page, 1, 'FetchPrevious calls fetch with updated options');
+    //@ts-expect-error
+    Service.fetch = (_request, options) => {
+      assert.equal(options?.page, 1, 'FetchPrevious calls fetch with updated options');
     };
 
-    const response = {
-      rows: {},
+    const response: ResponseV1 = {
+      rows: [],
       meta: {
+        //@ts-expect-error
         pagination: {
           currentPage: 2,
           perPage: 10,
@@ -267,10 +302,11 @@ module('Unit | Service | Navi Facts', function(hooks) {
         }
       }
     };
-    const request = {};
+    const request = {} as RequestV2;
 
     Service.fetchPrevious(response, request);
 
+    //@ts-expect-error
     response.meta.pagination.currentPage = 1;
     assert.equal(
       Service.fetchPrevious(response, request),

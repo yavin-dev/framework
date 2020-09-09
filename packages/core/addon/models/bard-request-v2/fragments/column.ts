@@ -18,7 +18,7 @@ export default class ColumnFragment extends BaseFragment implements Column {
 
   @service naviFormatter!: NaviFormatterService;
 
-  @computed('columnMetadata', 'alias')
+  @computed('alias', 'parameters', 'columnMetadata')
   get displayName() {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
