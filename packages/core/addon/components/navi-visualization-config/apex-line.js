@@ -25,7 +25,9 @@ export default class NaviVisualizationConfigApexLineComponent extends Component 
    */
   @action
   updateChart(type, value) {
-    console.log(type, value);
+    if (type === 'stroke') {
+      this.chosenStroke = value;
+    }
     const newOptions = copy(this.args.options);
     set(newOptions, 'series.config.' + type, value);
     this.args.onUpdateConfig(newOptions);

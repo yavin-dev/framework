@@ -1,30 +1,25 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='apex-line-config'>
-  <span class='apex-line-config__line-options-section__header'>
-    Line Options:
+  <span class='apex-line-config__chart-options-section__header'>
+    Chart Options:
   </span>
-  <div class='apex-line-config__line-options-section'>
-    <div class='apex-line-config__line-options-section__stroke-change'>
-      <span class='apex-line-config__line-options-section__stroke-change__label'>
-        Stroke Style:
+  <div class='apex-line-config__chart-options-section'>
+    <div class='apex-line-config__chart-options-section__stroke-change'>
+      <span class='apex-line-config__chart-options-section__stroke-change__label'>
+        Line Style:
       </span>
       <PowerSelect
-        class='apex-line-config__line-options-section__stroke-change__selector'
+        class='apex-line-config__chart-options-section__stroke-change__selector'
         @options={{this.strokeOptions}}
         @selected={{this.chosenStroke}}
         @onchange={{fn this.updateChart 'stroke'}}
         as |stroke|
       >
-        <div class='apex-line-config__line-options-section__stroke-change__selector__list-item'>
+        <div class='apex-line-config__chart-options-section__stroke-change__selector__list-item'>
           {{stroke}}
         </div>
       </PowerSelect>
     </div>
-  </div>
-  <span class='apex-line-config__chart-options-section__header'>
-    Chart Options:
-  </span>
-  <div class='apex-line-config__chart-options-section'>
     <div class='apex-line-config__chart-options-section__area-toggle'>
       <span class='apex-line-config__chart-options-section__area-toggle__label'>
         Area:
@@ -33,6 +28,17 @@
         class='apex-line-config__chart-options-section__area-toggle__switch'
         @value={{readonly @options.series.config.area}}
         @onToggle={{fn this.updateChart 'area'}}
+        @size='small'
+      />
+    </div>
+    <div class='apex-line-config__chart-options-section__stacked-toggle'>
+      <span class='apex-line-config__chart-options-section__stacked-toggle__label'>
+        Stacked:
+      </span>
+      <XToggle
+        class='apex-line-config__chart-options-section__stacked-toggle__switch'
+        @value={{readonly @options.series.config.stacked}}
+        @onToggle={{fn this.updateChart 'stacked'}}
         @size='small'
       />
     </div>

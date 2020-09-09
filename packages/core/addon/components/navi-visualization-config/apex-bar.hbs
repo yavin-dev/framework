@@ -1,11 +1,19 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class='apex-bar-config'>
-  <span class='apex-bar-config__annotations-section__header'>
-    Annotations:
+  <span class='apex-bar-config__chart-options-section__header'>
+    Chart Options:
   </span>
-  <div class='apex-bar-config__annotations-section'>
-    <div class='apex-bar-config__annotations-section__x-ruler'>
-      Bar Chart
+  <div class='apex-bar-config__chart-options-section'>
+    <div class='apex-bar-config__chart-options-section__stacked-toggle'>
+      <span class='apex-bar-config__chart-options-section__stacked-toggle__label'>
+        Stacked:
+      </span>
+      <XToggle
+        class='apex-bar-config__chart-options-section__stacked-toggle__switch'
+        @value={{readonly @options.series.config.stacked}}
+        @onToggle={{fn this.updateChart 'stacked'}}
+        @size='small'
+      />
     </div>
   </div>
   <span class='apex-bar-config__chart-colors-section__header'>

@@ -42,6 +42,7 @@ export default VisualizationBase.extend(Validations, {
           area: this.getWithDefault('metadata.series.config.area', false),
           annotations: this.getWithDefault('metadata.series.config.annotations', []),
           colors: [],
+          stacked: this.getWithDefault('metadata.series.config.stacked', false),
           stroke: this.getWithDefault('metadata.series.config.stroke', 'straight'),
           metrics: request.metrics.content.map(item => {
             return { id: item.metric.id, name: item.metric.name };

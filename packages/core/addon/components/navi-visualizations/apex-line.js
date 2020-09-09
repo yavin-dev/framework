@@ -27,6 +27,9 @@ export default class NaviVisualizationsApexLine extends Component {
    */
   get series() {
     return this.data.series.map(seri => {
+      if (this.args.options?.series?.config?.area) {
+        return { type: 'area', name: seri.name, data: seri.data };
+      }
       return { type: 'line', name: seri.name, data: seri.data };
     });
   }
@@ -60,10 +63,11 @@ export default class NaviVisualizationsApexLine extends Component {
    * @property {object} - ApexCharts-compatible object of options
    */
   get chartOptions() {
-    return {
+    let options = {
       //annotations: this.annotations,
       chart: {
-        type: this.args.options?.series?.config?.area ? 'area' : 'line',
+        type: 'line',
+        stacked: this.args.options?.series?.config?.stacked,
         [this.constrainBy]: '100%'
       },
       colors: this.args.options?.series?.config?.colors,
@@ -75,7 +79,6 @@ export default class NaviVisualizationsApexLine extends Component {
         categories: this.labels
       },
       yaxis: {
-        type: 'datetime',
         labels: {
           formatter: function(value) {
             return numeral(value).format('0.00a');
@@ -86,6 +89,17 @@ export default class NaviVisualizationsApexLine extends Component {
         curve: this.args.options?.series?.config?.stroke
       }
     };
+    if (this.args.options?.series?.config?.area) {
+      return {
+        ...options,
+        ...{
+          fill: {
+            opacity: 0.5
+          }
+        }
+      };
+    }
+    return options;
   }
 
   /**

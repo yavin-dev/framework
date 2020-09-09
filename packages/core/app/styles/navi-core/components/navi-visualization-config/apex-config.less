@@ -93,8 +93,11 @@
 
 .apex-bar-config {
   padding: 10px;
-  &__annotations-section {
+  &__chart-options-section {
     .APEX_SECTIONS();
+    &__stacked-toggle {
+      .APEX_TOGGLE();
+    }
   }
   &__chart-colors-section {
     .APEX_SECTIONS();
@@ -103,16 +106,14 @@
 
 .apex-line-config {
   padding: 10px;
-  &__line-options-section {
-    .APEX_SECTIONS();
-    &__stroke-change {
-      .APEX_SELECTOR();
-    }
-  }
   &__chart-options-section {
     .APEX_SECTIONS();
-    &__area-toggle {
+    &__area-toggle,
+    &__stacked-toggle {
       .APEX_TOGGLE();
+    }
+    &__stroke-change {
+      .APEX_SELECTOR();
     }
   }
   &__chart-colors-section {
