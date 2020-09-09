@@ -133,13 +133,9 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
   test('Display Name', async function(assert) {
     const filter = mockModel.filters.objectAt(0);
 
-    filter.set('field', 'revenue');
+    assert.equal(filter.displayName, 'Revenue (USD)', 'Display name is as expected with params');
+
     filter.set('parameters', {});
-    filter.set('type', 'metric');
-
-    assert.equal(filter.displayName, 'Revenue');
-
-    filter.set('parameters', { currency: 'USD' });
-    assert.equal(filter.displayName, 'Revenue (USD)');
+    assert.equal(filter.displayName, 'Revenue', 'Display name is as expected with no params');
   });
 });

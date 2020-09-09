@@ -13,7 +13,7 @@ export default class NaviFormatterService extends Service {
     const paramValues = Object.values(allParams);
 
     const name = alias || columnMetadata?.name || '--';
-    if (paramValues.length) {
+    if (paramValues.length && alias === null) {
       return `${name} (${paramValues.join(',')})`;
     } else {
       return name;

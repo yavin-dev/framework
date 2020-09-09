@@ -82,6 +82,6 @@ export default class Base extends Fragment.extend(Validations) {
 
   get displayName() {
     const { parameters, columnMetadata } = this;
-    return this.naviFormatter.formatColumnName(columnMetadata, parameters, undefined);
+    return this.naviFormatter.formatColumnName(columnMetadata, parameters, null);
   }
 }

@@ -129,9 +129,12 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
     column.set('type', 'metric');
     column.set('alias', 'revenueUSD');
 
-    assert.equal(column.displayName, 'revenueUSD (USD)');
+    assert.equal(column.displayName, 'revenueUSD', 'Display name is as expected with an alias');
 
-    column.set('alias', undefined);
-    assert.equal(column.displayName, 'Revenue (USD)');
+    column.set('alias', null);
+    assert.equal(column.displayName, 'Revenue (USD)', 'Display name is as expected without an alias and with params');
+
+    column.set('parameters', {});
+    assert.equal(column.displayName, 'Revenue', 'Display name is as expected without params or an alias');
   });
 });
