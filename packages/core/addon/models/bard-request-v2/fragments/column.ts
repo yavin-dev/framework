@@ -6,7 +6,6 @@ import attr from 'ember-data/attr';
 import BaseFragment from './base';
 import { Column } from 'navi-data/adapters/facts/interface';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 /**

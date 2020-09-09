@@ -58,8 +58,6 @@ module('Unit | Service | navi formatter', function(hooks) {
   });
 
   test('parameters with alias', async function(assert) {
-    assert.expect(5);
-
     assert.equal(
       Service.formatColumnName(metric, {}, 'override'),
       'override',
@@ -70,20 +68,12 @@ module('Unit | Service | navi formatter', function(hooks) {
       'override',
       'Prints alias and hides the "as" parameter'
     );
-    assert.equal(
-      Service.formatColumnName(metric, { realParam: 'realValue' }, 'override'),
-      'override (realValue)',
-      'Prints alias with real parameter'
-    );
-    assert.equal(
-      Service.formatColumnName(metric, { as: 'lame', realParam: 'realValue' }, 'override'),
-      'override (realValue)',
-      'Prints alias with real parameter and hides "as"'
-    );
+    assert.equal(Service.formatColumnName(metric, { realParam: 'realValue' }, 'override'), 'override', 'Prints alias');
+
     assert.equal(
       Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }, 'override'),
-      'override (realValue1,realValue2)',
-      'Prints alias with multiple real parameters and hides "as"'
+      'override',
+      'Prints alias and hides real params and "as"'
     );
   });
 
