@@ -13,7 +13,6 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Parameters, ColumnType } from 'navi-data/adapters/facts/interface';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
-// @ts-ignore
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 const Validations = buildValidations({
