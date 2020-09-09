@@ -15,7 +15,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
         columns: [
           {
-            field: 'dateTime',
+            field: 'network.dateTime',
             parameters: { grain: 'day' },
             type: 'timeDimension',
             alias: 'time',
@@ -33,7 +33,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
 
     const column = mockModel.columns.objectAt(0);
 
-    assert.equal(column.field, 'dateTime', 'the `field` property has the correct value');
+    assert.equal(column.field, 'network.dateTime', 'the `field` property has the correct value');
 
     assert.deepEqual(column.parameters, { grain: 'day' }, 'the `parameters` property has the correct object');
 
@@ -73,7 +73,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
     assert.notOk(column.validations.isValid, 'a column with an invalid `type` is invalid');
     assert.deepEqual(
       column.validations.messages,
-      ['The `type` field of `dateTime` column must equal to `dimension`, `metric`, or `timeDimension`'],
+      ['The `type` field of `network.dateTime` column must equal to `dimension`, `metric`, or `timeDimension`'],
       'error messages collection is correct for a column with an invalid `type`'
     );
 
@@ -95,7 +95,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
       [
         {
           alias: 'time',
-          field: 'dateTime',
+          field: 'network.dateTime',
           parameters: {
             grain: 'day'
           },
@@ -112,7 +112,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
       [
         {
           alias: 'time',
-          field: 'dateTime',
+          field: 'network.dateTime',
           parameters: {},
           type: 'timeDimension'
         }
@@ -124,17 +124,12 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
   test('Display Name', async function(assert) {
     const column = mockModel.columns.objectAt(0);
 
-    column.set('field', 'revenue');
-    column.set('parameters', { currency: 'USD' });
-    column.set('type', 'metric');
-    column.set('alias', 'revenueUSD');
-
-    assert.equal(column.displayName, 'revenueUSD', 'Display name is as expected with an alias');
+    assert.equal(column.displayName, 'time', 'Display name is as expected with an alias');
 
     column.set('alias', null);
-    assert.equal(column.displayName, 'Revenue (USD)', 'Display name is as expected without an alias and with params');
+    assert.equal(column.displayName, 'Date Time (day)', 'Display name is as expected without an alias and with params');
 
     column.set('parameters', {});
-    assert.equal(column.displayName, 'Revenue', 'Display name is as expected without params or an alias');
+    assert.equal(column.displayName, 'Date Time', 'Display name is as expected without params or an alias');
   });
 });
