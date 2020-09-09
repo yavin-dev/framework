@@ -72,8 +72,7 @@ jobs:
       node_js: '8'
       name: 'NPM'
       script: bash ./scripts/npm-publish.sh
-    - stage: 'Publish'
-      if: branch = request-v2 AND repo = yahoo/navi AND type = push
+    - if: branch = request-v2 AND repo = yahoo/navi AND type = push
       node_js: '8'
       name: 'NPM Beta'
       script: bash ./scripts/npm-publish-beta.sh
@@ -89,3 +88,7 @@ jobs:
       name: 'Artifactory'
       node_js: '8'
       if: branch = master AND repo = yahoo/navi AND type = push
+    - if: branch = request-v2 AND repo = yahoo/navi AND type = push
+      node_js: '8'
+      name: 'Artifactory Beta'
+      script: bash ./scripts/artifactory-publish-beta.sh
