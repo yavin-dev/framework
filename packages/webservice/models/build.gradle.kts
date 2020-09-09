@@ -70,7 +70,11 @@ publishing {
 
 gradle.taskGraph.whenReady {
     if (hasTask(":models:artifactoryPublish")) {
-        version = "$version-SNAPSHOT"
+        var tag = ""
+        if(project.hasProperty("publishTag")) {
+            tag = "-${project.property("publishTag")}"
+        }
+        version = "${version}${tag}-SNAPSHOT"
         println("Overriding version as $version for artifactory")
     }
 }
