@@ -7,17 +7,23 @@
  * Usage:
  *  <NaviColumnConfig::Base
  *    @column={{this.column}}
- *    @metadata={{this.visualization.metadata}}
- *    @onUpdateColumnName={{this.onUpdateColumnName}}
+ *    @toggleColumnFilter={{this.toggleColumnFilter}}
+ *    @onRenameColumn={{this.onRenameColumn}}
+ *    @onUpdateColumnParam={{this.onUpdateColumnParam}}
  *  />
  */
 import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
+import FunctionParameterMetadataModel, {
+  ColumnFunctionParametersValues
+} from 'navi-data/models/metadata/function-parameter';
 
 interface NaviColumnConfigBaseArgs {
   column: TODO;
   metadata: TODO;
   onUpdateColumnName: (newColumnName: string) => void;
+  onUpdateColumnParam: (param: string, paramValue: string) => void;
 }
 
 export default class NaviColumnConfigBase extends Component<NaviColumnConfigBaseArgs> {
@@ -25,5 +31,10 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
 
   get apiColumnName(): string {
     return this.args.column.fragment.columnMetadata.id;
+  }
+
+  @action
+  setParameter(param: FunctionParameterMetadataModel, paramValue: ColumnFunctionParametersValues[number]) {
+    this.args.onUpdateColumnParam(param.id, paramValue.id);
   }
 }

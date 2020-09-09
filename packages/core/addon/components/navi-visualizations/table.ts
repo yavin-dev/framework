@@ -305,7 +305,7 @@ export default class Table extends Component<Args> {
    * @action updateColumnDisplayName
    */
   @action
-  updateColumnDisplayName(column: TableColumn, alias: string | undefined) {
-    this.args.onUpdateReport('renameColumnFragment', column.fragment, alias);
+  updateColumnDisplayName(column: ColumnFragment, alias: string | undefined) {
+    this.args.onUpdateReport('renameColumnFragment', column, alias);
   }
 }

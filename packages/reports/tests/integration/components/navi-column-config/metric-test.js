@@ -1,8 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll, getContext, triggerEvent } from '@ember/test-helpers';
-import { A as arr } from '@ember/array';
-import { helper as buildHelper } from '@ember/component/helper';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -13,10 +11,10 @@ let MetadataService;
 const TEMPLATE = hbs`
 <NaviColumnConfig::Base
   @column={{this.column}}
-  @metadata={{this.metadata}}
-  @cloneColumn={{this.cloneColumn}}
-  @toggleColumnFilter={{this.toggleColumnFilter}}
-  @onUpdateColumnName={{action this.onUpdateColumnName}}
+  @cloneColumn={{optional this.cloneColumn}}
+  @toggleColumnFilter={{optional this.toggleColumnFilter}}
+  @onRenameColumn={{optional this.onRenameColumn}}
+  @onUpdateColumnParam={{this.onUpdateColumnParam}}
 />
 `;
 module('Integration | Component | navi-column-config/metric', function(hooks) {
@@ -27,21 +25,12 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
 
-    this.metadata = { style: { aliases: arr([]) } };
-    this.cloneColumn = () => undefined;
-    this.toggleColumnFilter = () => undefined;
-    this.onUpdateColumnName = () => undefined;
-
-    this.owner.register(
-      'helper:update-report-action',
-      buildHelper(() => {
-        return (columnFragment, paramKey, paramId) => {
-          this.updateColumnParameters?.(columnFragment, paramId, paramKey);
-          columnFragment.updateParameters({ [paramKey]: paramId });
-        };
-      }),
-      { instantiate: false }
-    );
+    this.onUpdateColumnParam = (paramId, paramKey) => {
+      this.set('column.fragment.parameters', {
+        ...this.column.fragment.parameters,
+        [paramId]: paramKey
+      });
+    };
   });
 
   async function getMetricColumn(metric, parameters) {
@@ -50,9 +39,6 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     const fragment = factory.createColumnFromMeta(metadata, parameters);
 
     return {
-      type: 'metric',
-      name: fragment.columnMetadata.canonicalName,
-      displayName: metric,
       isFiltered: false,
       fragment
     };
@@ -141,10 +127,10 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
   });
 
   test('Configuring metric column', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     this.column = await getMetricColumn('revenue', { currency: 'USD' });
-    this.onUpdateColumnName = (/*newName*/) => {
+    this.onRenameColumn = (/*newName*/) => {
       // this must be called with action in the template
       /**
        * TODO: Reenable column relabeling, uncomment line below
@@ -152,13 +138,12 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       // assert.equal(newName, 'Money', 'New display name is passed to name update action');
       return undefined;
     };
-    this.updateColumnParameters = (metricFragment, paramId, paramKey) => {
-      assert.equal(
-        metricFragment.canonicalName,
-        'revenue(currency=USD)',
-        'Metric name is passed with the currently selected parameter'
-      );
-      assert.equal(`${paramKey}=${paramId}`, 'currency=CAD', 'Parameter is passed to onUpdateColumnParam method');
+    this.onUpdateColumnParam = (paramId, paramKey) => {
+      this.set('column.fragment.parameters', {
+        ...this.column.fragment.parameters,
+        [paramId]: paramKey
+      });
+      assert.equal(`${paramId}=${paramKey}`, 'currency=CAD', 'Parameter is passed to onUpdateColumnParam method');
     };
     await render(TEMPLATE);
 
