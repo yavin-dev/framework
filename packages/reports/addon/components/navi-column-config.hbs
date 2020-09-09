@@ -12,11 +12,11 @@
             @isLastAdded={{eq column.fragment @lastAddedColumn}}
             @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
             @onOpenColumn={{this.openColumn}}
-            @visualization={{@report.visualization}}
             @onRemoveColumn={{fn @onRemoveColumn column.fragment}}
             @cloneColumn={{fn this.cloneColumn column}}
             @toggleColumnFilter={{fn @onToggleFilter column}}
-            @onRenameColumn={{fn this.renameColumn column.fragment}}
+            @onRenameColumn={{fn @onRenameColumn column.fragment}}
+            @onUpdateColumnParam={{fn @onUpdateColumnParam column.fragment}}
           />
         {{/each}}
       </ul>

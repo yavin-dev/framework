@@ -6,7 +6,6 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { getContext } from '@ember/test-helpers';
-import { helper as buildHelper } from '@ember/component/helper';
 
 let Store, Metadata;
 
@@ -16,17 +15,26 @@ function addItem(type, item, dataSource, parameters = {}) {
   return self.report.request.addColumnFromMetaWithParams(metadata, parameters);
 }
 
+const TEMPLATE = hbs`
+<NaviColumnConfig
+  @isOpen={{true}}
+  @lastAddedColumn={{this.lastAddedColumn}}
+  @report={{this.report}}
+  @onAddColumn={{optional this.onAddColumn}}
+  @onRemoveColumn={{optional this.onRemoveColumn}}
+  @onToggleFilter={{optional this.onToggleFilter}}
+  @openFilters={{optional this.openFilters}}
+  @onRenameColumn={{optional this.onRenameColumn}}
+  @onReorderColumn={{optional this.onReorderColumn}}
+  @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
+/>`;
+
 module('Integration | Component | navi-column-config', function(hooks) {
   setupRenderingTest(hooks);
   setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register(
-      'helper:update-report-action',
-      buildHelper(() => {}),
-      { instantiate: false }
-    );
     Metadata = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
 
@@ -59,11 +67,6 @@ module('Integration | Component | navi-column-config', function(hooks) {
         }
       })
     );
-
-    // Create default noops
-    this.onAddColumn = () => null;
-    this.onRemoveColumn = () => null;
-    this.onToggleFilter = () => null;
   });
 
   test('it renders', async function(assert) {
@@ -111,15 +114,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
 
   test('time grain - switching and removing', async function(assert) {
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
-    await render(hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />
-    `);
+    await render(TEMPLATE);
     await animationsSettled();
 
     assert.deepEqual(
@@ -160,16 +155,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
   test('metrics - adding', async function(assert) {
     assert.expect(2);
 
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('metric', 'adClicks', 'bardOne');
@@ -198,16 +184,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     addItem('metric', 'adClicks', 'bardOne');
     addItem('metric', 'navClicks', 'bardOne');
     addItem('metric', 'adClicks', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -233,16 +210,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     addItem('metric', 'adClicks', 'bardOne');
     addItem('metric', 'navClicks', 'bardOne');
     addItem('metric', 'adClicks', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -267,16 +235,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('dimension', 'browser', 'bardOne');
     addItem('dimension', 'currency', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -301,16 +260,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     addItem('dimension', 'browser', 'bardOne');
     addItem('dimension', 'currency', 'bardOne');
     addItem('dimension', 'browser', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -335,16 +285,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     addItem('dimension', 'browser', 'bardOne');
     addItem('dimension', 'currency', 'bardOne');
     addItem('dimension', 'browser', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -366,16 +307,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     assert.expect(2);
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.deepEqual(
@@ -392,29 +324,20 @@ module('Integration | Component | navi-column-config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
-      ['Date Time (Day)', 'Browser (id)', 'Currency (id)', 'Product Family (id)', 'Nav Link Clicks', 'Ad Clicks'],
-      'date time, then dimensions, then metrics are displayed' // TODO: This will change
+      ['Date Time (Day)', 'Browser (id)', 'Nav Link Clicks', 'Currency (id)', 'Ad Clicks', 'Product Family (id)'],
+      'columns are displayed in the order they are added'
     );
   });
 
   test('Header config buttons - date dimension', async function(assert) {
-    assert.expect(10);
+    assert.expect(6);
 
     this.onAddColumn = () => assert.ok(true, 'onAddColumn was called for time dimension column');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called for time dimension column');
     this.onToggleFilter = () => assert.ok(true, 'onToggleFilter was called for time dimension column');
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
     await animationsSettled();
     await click('.navi-column-config-item__name[title="Date Time (day)"]');
     assert.deepEqual(
@@ -424,48 +347,21 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Time dimension config has clone icon');
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__clone-icon--disabled',
-        'Time dimension config clone icon does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .hasAttribute('aria-disabled', 'false', 'Time dimension config clone icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Time dimension config has filter icon');
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__filter-icon--disabled',
-        'Time dimension config filter does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .hasAttribute('aria-disabled', 'false', 'Time dimension config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
     await click('.navi-column-config-item__remove-icon');
     await animationsSettled();
   });
 
   test('Header config buttons - metric', async function(assert) {
-    assert.expect(12);
+    assert.expect(8);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
     this.onToggleFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('metric', 'navClicks', 'bardOne');
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await click('.navi-column-config-item__name[title="Nav Link Clicks"]');
     await animationsSettled();
@@ -476,27 +372,9 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__clone-icon--disabled',
-        'Metric config clone icon does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .hasAttribute('aria-disabled', 'false', 'Metric config clone icon has aria-disabled="false" attribute');
 
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Metric config has filter icon');
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__filter-icon--disabled',
-        'Metric config filter icon does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .hasAttribute('aria-disabled', 'false', 'Metric config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -515,23 +393,14 @@ module('Integration | Component | navi-column-config', function(hooks) {
   });
 
   test('Header config buttons - dimension', async function(assert) {
-    assert.expect(12);
+    assert.expect(8);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
     this.onToggleFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('dimension', 'browser', 'bardOne');
 
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     await click('.navi-column-config-item__name[title="Browser (id)"]');
@@ -542,26 +411,8 @@ module('Integration | Component | navi-column-config', function(hooks) {
     );
 
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Dimension config has clone icon');
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__clone-icon--disabled',
-        'Dimension config clone icon does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__clone-icon')
-      .hasAttribute('aria-disabled', 'false', 'Dimension config clone icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Dimension config has filter icon');
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .doesNotHaveClass(
-        'navi-column-config-base__filter-icon--disabled',
-        'Dimension config filter icon does not have a `disabled` class'
-      );
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .hasAttribute('aria-disabled', 'false', 'Dimension config filter icon has aria-disabled="false" attribute');
     await click('.navi-column-config-base__filter-icon');
 
     assert
@@ -590,17 +441,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
 
     this.set('lastAddedColumn', null);
 
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @lastAddedColumn={{this.lastAddedColumn}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert
@@ -611,8 +452,13 @@ module('Integration | Component | navi-column-config', function(hooks) {
     this.set('lastAddedColumn', dateTimeColumn);
     await animationsSettled();
     assert.deepEqual(
+      findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
+      ['Date Time (Day)', 'Browser (id)', 'Ad Clicks', 'Date Time (Day)'],
+      'Only the most recently added time dimension column is marked as last added'
+    );
+    assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, true, false],
+      [false, false, false, true],
       'Only the most recently added time dimension column is marked as last added'
     );
 
@@ -621,7 +467,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, false, true, false],
+      [false, false, false, false, true],
       'Only the most recently added dimension column is marked as last added'
     );
 
@@ -639,17 +485,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     const dateTimeColumn = addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     this.set('lastAddedColumn', dateTimeColumn);
 
-    await render(
-      hbs`
-      <NaviColumnConfig
-        @report={{this.report}}
-        @lastAddedColumn={{this.lastAddedColumn}}
-        @isOpen={{true}}
-        @onAddColumn={{this.onAddColumn}}
-        @onRemoveColumn={{this.onRemoveColumn}}
-        @onToggleFilter={{this.onToggleFilter}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     await animationsSettled();
     assert.dom('.navi-column-config-item--open').exists({ count: 1 }, 'Date time column is initially open');
@@ -668,7 +504,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true, false],
+      [false, false, true],
       'Last added column is open'
     );
 
@@ -676,7 +512,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, false, true],
+      [false, true, false],
       'Clicked metric column is open'
     );
 
@@ -684,8 +520,14 @@ module('Integration | Component | navi-column-config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map(el => el.classList.contains('navi-column-config-item--open')),
-      [false, true, false],
+      [false, false, true],
       'Clicked dimension column is open'
+    );
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map(el => el.textContent.trim()),
+      ['Date Time (Day)', 'Ad Clicks', 'Browser (id)'],
+      'The expected columns are in the column config'
     );
   });
 });
