@@ -31,7 +31,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has single metric
    */
   hasSingleMetric(request) {
-    return request.metrics?.length === 1;
+    return request.metricColumns.length === 1;
   },
 
   /**
@@ -40,7 +40,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has no metrics
    */
   hasNoMetric(request) {
-    return request.metrics?.length === 0;
+    return request.metricColumns.length === 0;
   },
 
   /**
@@ -57,11 +57,21 @@ export default EmberObject.extend({
    * @param {Object} request
    * @returns {Boolean} has single time bucket
    */
-  hasSingleTimeBucket(request) {
-    let timeGrain = request.logicalTable?.timeGrain,
-      numTimeBuckets = request.intervals?.firstObject?.interval?.diffForTimePeriod(timeGrain);
+  hasInterval(request) {
+    const { timeGrain, interval } = request;
 
-    return numTimeBuckets === 1;
+    return timeGrain && interval;
+  },
+
+  /**
+   * @method hasSingleTimeBucket
+   * @param {Object} request
+   * @returns {Boolean} has single time bucket
+   */
+  hasSingleTimeBucket(request) {
+    const { timeGrain, interval } = request;
+
+    return this.hasInterval(request) && interval.diffForTimePeriod(timeGrain) === 1;
   },
 
   /**
@@ -70,7 +80,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has no group by
    */
   hasNoGroupBy(request) {
-    return request.dimensions?.length === 0;
+    return request.columns.filter(({ type }) => type === 'dimension').length === 0;
   },
 
   /**
@@ -79,7 +89,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has multiple metrics
    */
   hasMultipleMetrics(request) {
-    return !(this.hasSingleMetric(request) || this.hasNoMetric(request));
+    return request.metricColumns.length > 1;
   },
 
   /**
@@ -88,7 +98,7 @@ export default EmberObject.extend({
    * @returns {Boolean} has multiple time buckets
    */
   hasMultipleTimeBuckets(request) {
-    return !this.hasSingleTimeBucket(request);
+    return this.hasInterval(request) && !this.hasSingleTimeBucket(request);
   },
 
   /**
