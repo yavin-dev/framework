@@ -1,1 +1,1 @@
-export { default } from 'navi-data/mirage/factories/metric';
+export { default } from 'navi-data/test-support/mirage/factories/metric';
