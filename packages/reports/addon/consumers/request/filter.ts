@@ -219,17 +219,6 @@ export default class FilterConsumer extends ActionConsumer {
       setProperties(originalFilter, changeSet);
     },
 
-    [RequestActions.UPDATE_FILTER_PARAMS]: (
-      _route: Route,
-      originalFilter: FilterFragment,
-      key: string,
-      value: string
-    ) => {
-      set(originalFilter, 'parameters', {
-        [key]: value
-      });
-    },
-
     [RequestActions.REMOVE_FILTER](route: Route, filter: FilterFragment) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;

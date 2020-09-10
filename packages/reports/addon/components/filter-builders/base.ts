@@ -49,10 +49,6 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
     };
   }
 
-  /**
-   * @action setOperator
-   * @param {Object} operatorObject - a value from supportedOperators that should become the filter's operator
-   */
   @action
   setOperator(operatorObject: FilterOperators) {
     const changeSet = { operator: operatorObject.id };
@@ -64,5 +60,12 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
       Object.assign(changeSet, { values: [] });
     }
     this.args.onUpdateFilter(changeSet);
+  }
+
+  @action
+  updateParameters(key: string, value: string) {
+    this.args.onUpdateFilter({
+      parameters: { ...this.args.filter.parameters, [key]: value }
+    });
   }
 }

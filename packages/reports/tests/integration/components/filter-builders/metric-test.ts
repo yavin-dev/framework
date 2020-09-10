@@ -1,104 +1,71 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
+// @ts-ignore
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
-import Component from '@ember/component';
-import { A as arr } from '@ember/array';
-import { TestContext } from 'ember-test-helpers';
-import Helper from '@ember/component/helper';
+import { TestContext as Context } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FragmentFactory from 'navi-core/services/fragment-factory';
 
-let Request = {
-  table: '',
-  dataSource: '',
-  requestVersion: '2.0',
-  limit: null,
-  columns: [],
-  filters: [],
-  sorts: []
-};
-
-let metadataService: { loadMetadata: () => any };
+interface TestContext extends Context {
+  filter: FilterFragment;
+}
 
 module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function(this: TestContext) {
-    this.owner.register(
-      'helper:update-report-action',
-      Helper.helper(() => {}),
-      {
-        instantiate: false
-      }
-    );
-
-    this.owner.register(
-      'component:mock/values-component',
-      Component.extend({
-        classNames: 'mock-value-component',
-        layout: hbs`<div>metric values</div>`
-      })
-    );
-
-    //check display name for metric with params
-    const filter = {
-      field: 'metric-with-params',
-      type: 'metric',
-      parameters: {
-        foo: 'bar',
-        bar: 'baz'
-      },
-      columnMetadata: {
-        name: 'metric-with-params'
-      },
-      operator: 'eq',
-      values: arr(['metric values'])
-    };
-
-    this.set('filter', filter);
-    this.set('request', Request);
-    await render(
-      hbs`<FilterBuilders::Metric @filter={{this.filter}} @request={{this.request}} @isCollapsed={{this.isCollapsed}} />`
-    );
+    const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
+    this.set('filter', factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', [30]));
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('displayName', async function(assert) {
-    assert.expect(2);
+  test('displayName', async function(this: TestContext, assert) {
+    await render(
+      hbs`<FilterBuilders::Metric 
+        @filter={{this.filter}} 
+        @isCollapsed={{false}} 
+      />`
+    );
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(
-        'metric-with-params (bar,baz)',
-        "Subject's long name displayed in filter builder includes the metric long name and the parameters"
-      );
-
-    //check display name for metric without params
-    const filter = {
-      field: 'metric-without-params',
-      type: 'metric',
-      parameters: {},
-      columnMetadata: {
-        name: 'metric-without-params'
-      },
-      operator: 'eq',
-      values: [1, 2, 3]
-    };
-
-    this.set('filter', filter);
+      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
 
     assert
-      .dom('.filter-builder__subject')
-      .hasText('metric-without-params', "Only the subject's long name is displayed when the metric has no parameters");
+      .dom('.filter-builder__operator .ember-power-select-selected-item')
+      .hasText('Greater than (>)', 'The filter current operator is selected by default');
+    assert.dom('.filter-values--value-input').hasValue('30', 'The filter values are rendered correctly');
+
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      [
+        'Greater than (>)',
+        'Greater than or equals (>=)',
+        'Less than (<)',
+        'Less than or equals (<=)',
+        'Equals (=)',
+        'Not equals (!=)',
+        'Between (<=>)',
+        'Not between (!<=>)'
+      ],
+      'All supported operators show up as options in the operator selector'
+    );
   });
 
   test('collapsed', async function(assert) {
-    assert.expect(1);
+    await render(
+      hbs`<FilterBuilders::Metric 
+        @filter={{this.filter}} 
+        @isCollapsed={{true}} 
+      />`
+    );
 
-    this.set('isCollapsed', true);
-    assert
-      .dom('.filter-builder')
-      .hasText('metric-with-params (bar,baz) equals (=) metric values', 'Rendered correctly when collapsed');
+    assert.dom('.filter-builder').hasText('Page Views greater than (>) 30', 'Rendered correctly when collapsed');
   });
 });
