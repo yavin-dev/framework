@@ -1,144 +1,76 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
-import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
-import Component from '@ember/component';
-import { A as arr } from '@ember/array';
-import { TestContext } from 'ember-test-helpers';
-import $ from 'jquery';
+import { findAll, render } from '@ember/test-helpers';
+// @ts-ignore
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 
-const supportedOperators = [
-  { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' },
-  {
-    id: 'notin',
-    name: 'Not Equals',
-    valuesComponent: 'mock/values-component'
-  },
-  {
-    id: 'null',
-    name: 'Is Empty',
-    valuesComponent: 'mock/another-values-component'
-  },
-  {
-    id: 'contains',
-    name: 'Contains',
-    valuesComponent: 'mock/values-component',
-    showFields: true
-  }
-];
-
-let metadataService: { loadMetadata: () => any };
+interface TestContext extends Context {
+  filter: FilterFragment;
+}
 
 module('Integration | Component | filter-builders/dimension', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function(this: TestContext) {
-    /*
-     * Normally supportedOperators will be provided by the child class,
-     * but to simplify testing we pass it in
-     */
     const factory = this.owner.lookup('service:fragment-factory');
-
-    metadataService = this.owner.lookup('service:navi-metadata');
-    await metadataService.loadMetadata();
-    let filter = factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: 'id' }, 'in', [1, 2, 3]);
-    this.setProperties({
-      filter,
-      supportedOperators
-    });
-    this.owner.register(
-      'component:mock/values-component',
-      Component.extend({
-        classNames: 'mock-value-component',
-        layout: hbs`<div>dimension values</div>`
-      })
+    this.set(
+      'filter',
+      factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: 'id' }, 'in', [1, 2, 3])
     );
-    this.owner.register('component:mock/another-values-component', Component.extend());
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('collapsed', async function(assert) {
-    assert.expect(2);
-
-    await render(hbs`<FilterBuilders::Dimension
+  test('it renders', async function(this: TestContext, assert) {
+    await render(hbs`
+    <FilterBuilders::Dimension
       @filter={{this.filter}}
-      @supportedOperators={{this.supportedOperators}}
-      @requestFragment={{this.requestFragment}}
-      @isCollapsed={{true}} />`);
+      @isCollapsed={{false}} />
+    />`);
 
-    assert.dom('.filter-builder').hasText(
-      `${this.filter.columnMetadata.name} ${arr(supportedOperators)
-        .findBy('id', this.filter.operator)
-        .name.toLowerCase()} dimension values`,
-      'Rendered correctly when collapsed'
-    );
+    assert
+      .dom('.filter-builder-dimension__subject')
+      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
 
-    const factory = this.owner.lookup('service:fragment-factory');
-    const field = 'desc',
-      filterWithDescField = factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: field }, 'in', [
-        1,
-        2,
-        3
-      ]);
+    assert
+      .dom('.filter-builder-dimension__operator .ember-power-select-selected-item')
+      .hasText('Equals', 'The filter current operator is selected by default');
 
-    this.set('filter', filterWithDescField);
-
-    assert.dom('.filter-builder').hasText(
-      `${filterWithDescField.columnMetadata.name}
-         ${arr(supportedOperators)
-           .findBy('id', filterWithDescField.operator)
-           .name.toLowerCase()} dimension values`,
-      'Rendered correctly with field when collapsed'
-    );
-  });
-
-  skip('changing operator with field', async function(assert) {
-    assert.expect(6);
-
-    this.set('onUpdateFilter', changeSet => {
-      assert.equal(changeSet.operator, 'contains', 'Selected operator is given to action');
-
-      this.set(
-        'filter.operator',
-        this.supportedOperators.find(oper => oper.id === changeSet.operator)
-      );
-    });
-
-    await render(
-      hbs`{{filter-builders/dimension filter=this.filter supportedOperators=supportedOperators onUpdateFilter=(action onUpdateFilter)}}`
+    assert.deepEqual(
+      findAll('.filter-builder-dimension__values .ember-power-select-multiple-option').map(el =>
+        el.textContent
+          ?.split('\n')
+          .map(l => l.trim())
+          .join('')
+      ),
+      ['×Licensed Concrete Fish (1)', '×Incredible Rubber Tuna (2)', '×Handmade Rubber Fish (3)'],
+      'The filter values are rendered correctly'
     );
 
     await clickTrigger();
-    await nativeMouseUp($('.ember-power-select-option:contains(Contains)')[0]);
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      ['Equals', 'Not Equals', 'Is Empty', 'Is Not Empty', 'Contains'],
+      'All supported operators show up as options in the operator selector'
+    );
+  });
 
-    assert.dom('.filter-builder-dimension__field').exists('Field dropdown is shown');
+  test('collapsed', async function(this: TestContext, assert) {
+    await render(hbs`<FilterBuilders::Dimension
+      @filter={{this.filter}}
+      @isCollapsed={{true}} />
+    `);
 
-    this.set('onUpdateFilter', changeSet => {
-      assert.equal(changeSet.field, 'desc', 'Selected field is given to action');
-
-      this.set('this.filter.field', changeSet.field);
-    });
-
-    await clickTrigger('.filter-builder-dimension__field');
-    await nativeMouseUp($('.ember-power-select-option:contains(desc)')[0]);
-
-    this.set('onUpdateFilter', changeSet => {
-      assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
-      assert.equal(changeSet.field, 'id', 'field is switched back to id');
-
-      this.set(
-        'this.filter.operator',
-        this.supportedOperators.find(oper => oper.id === changeSet.operator)
+    assert
+      .dom('.filter-builder')
+      .hasText(
+        `${this.filter.columnMetadata.name} equals Licensed Concrete Fish (1) Incredible Rubber Tuna (2) Handmade Rubber Fish (3)`,
+        'Rendered correctly when collapsed'
       );
-      this.set('this.filter.field', changeSet.field);
-    });
-
-    await clickTrigger('.filter-builder-dimension__operator');
-    await nativeMouseUp($('.ember-power-select-option:contains(Not Equals)')[0]);
-
-    assert.dom('.filter-builder__field').doesNotExist('Field dropdown is gone');
   });
 });

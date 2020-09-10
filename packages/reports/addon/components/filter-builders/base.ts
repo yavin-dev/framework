@@ -10,16 +10,24 @@ import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { computed } from '@ember/object';
 import { A as arr } from '@ember/array';
+import EmberArray from '@ember/array';
 
 interface BaseFilterBuilderArgs {
   filter: FilterFragment;
-  onUpdateFilter(changeSet: Record<string, unknown>): void;
+  onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-type FilterOperators = {
+export type FilterOperators = {
   id: string;
   name: string;
   valuesComponent: string;
+};
+
+export type FilterConfig = {
+  subject: FilterFragment;
+  operator: string;
+  values: EmberArray<string | number>;
+  validations?: TODO;
 };
 
 export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> {
