@@ -7,6 +7,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
+import { unset } from 'lodash-es';
 
 let Store;
 
@@ -15,7 +16,7 @@ const ExpectedRequest = {
       {
         operator: 'bet',
         values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'],
-        field: 'dateTime',
+        field: 'network.dateTime',
         parameters: {
           grain: 'day'
         },
@@ -25,7 +26,7 @@ const ExpectedRequest = {
     columns: [
       {
         alias: null,
-        field: 'dateTime',
+        field: 'network.dateTime',
         parameters: {
           grain: 'day'
         },
@@ -115,14 +116,22 @@ module('Unit | Model | report', function(hooks) {
   });
 
   test('Retrieving records', async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     await run(async () => {
       const report = await Store.findRecord('report', 1);
+      const cids = report.request.columns.mapBy('cid');
+      const serialized = report.serialize();
 
-      assert.ok(report, 'Found report with id 1');
+      cids.forEach((cid, idx) => {
+        assert.equal(cid.length, 10, 'column cid has proper value');
+        //TODO remove this once fixtures are converted request v2
+        //remove from validation since cid value is non deterministic
+        unset(serialized, `data.attributes.request.columns[${idx}].cid`);
+      });
+
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-      assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
+      assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
 
