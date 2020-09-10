@@ -59,3 +59,39 @@ export function buildTestRequest(
     )
   };
 }
+
+export function buildModelTestRequest(
+  metrics = [],
+  dimensions = [],
+  intervals = [{ end: 'current', start: 'P7D' }],
+  timeGrain = 'day'
+) {
+  return {
+    metrics: {
+      content: metrics.map(item => {
+        return {
+          metric: {
+            id: item,
+            name: classify(item)
+          }
+        };
+      })
+    },
+    dimensions: {
+      content: dimensions.map(item => {
+        return {
+          dimension: {
+            id: item,
+            name: classify(item)
+          }
+        };
+      })
+    },
+    logicalTable: { timeGrain },
+    intervals: A(
+      intervals.map(interval => ({
+        interval: Interval.parseFromStrings(interval.start, interval.end)
+      }))
+    )
+  };
+}
