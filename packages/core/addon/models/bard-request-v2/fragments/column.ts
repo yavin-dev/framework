@@ -10,7 +10,6 @@ import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
-
 /**
  * @augments {BaseFragment}
  */
