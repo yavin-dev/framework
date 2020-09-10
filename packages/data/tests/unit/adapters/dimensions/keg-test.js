@@ -2,7 +2,7 @@ import EmberObject from '@ember/object';
 import { assign } from '@ember/polyfills';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import metadataRoutes from '../../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import Pretender from 'pretender';
 
 const Response1 = {

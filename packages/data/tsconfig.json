@@ -37,7 +37,6 @@
     "addon/**/*",
     "tests/**/*",
     "types/**/*",
-    "test-support/**/*",
     "addon-test-support/**/*",
     "../*/config/*"
   ]

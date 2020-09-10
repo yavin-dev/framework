@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
-import metadataRoutes from '../../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import { assign } from '@ember/polyfills';
 
 const HOST = config.navi.dataSources[0].uri;
