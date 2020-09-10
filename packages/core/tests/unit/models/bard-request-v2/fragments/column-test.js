@@ -27,13 +27,12 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
   });
 
   test('Model using the Column Fragment', async function(assert) {
-    assert.expect(10);
-
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const column = mockModel.columns.objectAt(0);
 
     assert.equal(column.field, 'network.dateTime', 'the `field` property has the correct value');
+    assert.equal(column.cid.length, 10, 'the `cid` property has the correct value');
 
     assert.deepEqual(column.parameters, { grain: 'day' }, 'the `parameters` property has the correct object');
 
@@ -58,8 +57,6 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
   });
 
   test('Validation', async function(assert) {
-    assert.expect(8);
-
     const column = mockModel.columns.objectAt(0);
 
     assert.ok(column.validations.isValid, 'column is valid');
@@ -88,12 +85,12 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
   });
 
   test('Serialization', async function(assert) {
-    assert.expect(2);
-
+    const { cid } = mockModel.columns.firstObject;
     assert.deepEqual(
       mockModel.serialize().data.attributes.columns,
       [
         {
+          cid,
           alias: 'time',
           field: 'network.dateTime',
           parameters: {
@@ -111,6 +108,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
       mockModel.serialize().data.attributes.columns,
       [
         {
+          cid,
           alias: 'time',
           field: 'network.dateTime',
           parameters: {},

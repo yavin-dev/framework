@@ -19,5 +19,6 @@ data class Column(
         ]
     ) var parameters: Map<String, String> = emptyMap(),
     var type: ColumnType? = null,
-    var alias: String? = null
+    var alias: String? = null,
+    var cid: String? = null
 )

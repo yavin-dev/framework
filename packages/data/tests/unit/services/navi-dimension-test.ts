@@ -8,7 +8,7 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import GraphQLScenario from 'dummy/mirage/scenarios/elide-one';
+import GraphQLScenario from 'navi-data/test-support/mirage/scenarios/elide-one';
 import { Server } from 'miragejs';
 
 interface TestContext extends Context {
