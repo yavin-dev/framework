@@ -5,6 +5,7 @@
 import attr from 'ember-data/attr';
 import BaseFragment from './base';
 import { Column } from 'navi-data/adapters/facts/interface';
+import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
@@ -13,6 +14,9 @@ import NaviFormatterService from 'navi-data/services/navi-formatter';
  * @augments {BaseFragment}
  */
 export default class ColumnFragment extends BaseFragment implements Column {
+  @attr('string', { defaultValue: () => nanoid(10) })
+  cid!: string;
+
   @attr('string')
   alias?: string | null;
 

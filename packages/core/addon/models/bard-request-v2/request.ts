@@ -107,7 +107,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   clone(this: RequestFragment) {
     const { store } = this;
-    const clonedRequest = this.toJSON() as RequestV2;
+    const clonedRequest = this.toJSON() as RequestFragment; //POJO form of RequestFragment;
 
     return store.createFragment('bard-request-v2/request', {
       filters: clonedRequest.filters.map(filter => {
@@ -123,6 +123,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
       }),
       columns: clonedRequest.columns.map(column => {
         const newColumn = store.createFragment('bard-request-v2/fragments/column', {
+          cid: column.cid, // Needs to be the same for visualization column references
           field: column.field,
           parameters: column.parameters,
           type: column.type,

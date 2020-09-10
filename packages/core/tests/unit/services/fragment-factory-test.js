@@ -23,6 +23,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
       { avg: 'trailing31day' },
       'clicksTrailingMonthAvg'
     );
+    assert.equal(metricMetaFragment.cid.length, 10, 'Metric has a proper cid');
     assert.equal(metricMetaFragment.field, 'navClicks', 'Metric has right field');
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.alias, 'clicksTrailingMonthAvg', 'Metric Fragment has passed alias');
@@ -31,6 +32,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMetadata.source, 'bardOne', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createColumnFromMeta(dimMeta, {}, 'agent');
+    assert.equal(dimensionMetaFragment.cid.length, 10, 'Dimension has a proper cid');
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
@@ -55,6 +57,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
       { currency: 'USD' },
       'revenueTrailingMonthAvg'
     );
+    assert.equal(metricMetaFragment.cid.length, 10, 'Metric has a proper cid');
     assert.equal(metricMetaFragment.field, 'revenue', 'Metric has right field');
     assert.equal(metricMetaFragment.parameters.currency, 'USD', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.alias, 'revenueTrailingMonthAvg', 'Metric Fragment has passed alias');
@@ -63,6 +66,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMetadata.source, 'bardOne', 'Metric fragment meta data has right datasource');
 
     const dimensionMetaFragment = service.createColumn('dimension', 'bardOne', 'browser', {}, 'agent');
+    assert.equal(dimensionMetaFragment.cid.length, 10, 'Dimension has a proper cid');
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
     assert.equal(dimensionMetaFragment.alias, 'agent', 'Dimension Fragment has passed alias');
