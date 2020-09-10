@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
-import scenario from 'navi-data/mirage/scenarios/elide-one';
+import scenario from 'navi-data/test-support/mirage/scenarios/elide-one';
 import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
 

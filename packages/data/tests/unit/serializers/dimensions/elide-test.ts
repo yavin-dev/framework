@@ -6,7 +6,7 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import { TestContext as Context } from 'ember-test-helpers';
-import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
+import GraphQLScenario from 'navi-data/test-support/mirage/scenarios/elide-one';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';

@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
-import metadataRoutes from '../../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 
 let Payload: DimensionMetadataPayload, Dimension: DimensionMetadataModel;
 

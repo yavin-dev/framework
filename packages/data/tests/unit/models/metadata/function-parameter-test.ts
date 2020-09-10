@@ -8,7 +8,7 @@ import config from 'ember-get-config';
 import Pretender, { Server } from 'pretender';
 import { TestContext } from 'ember-test-helpers';
 // @ts-ignore
-import metadataRoutes from '../../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 
 const HOST = config.navi.dataSources[0].uri;
 

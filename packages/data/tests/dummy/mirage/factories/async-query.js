@@ -1,1 +1,1 @@
-export { default } from 'navi-data/mirage/factories/async-query';
+export { default } from 'navi-data/test-support/mirage/factories/async-query';

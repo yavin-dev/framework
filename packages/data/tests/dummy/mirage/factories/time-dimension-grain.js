@@ -1,1 +1,1 @@
-export { default } from 'navi-data/mirage/factories/time-dimension-grain';
+export { default } from 'navi-data/test-support/mirage/factories/time-dimension-grain';
