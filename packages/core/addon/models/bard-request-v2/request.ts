@@ -223,7 +223,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   /**
    * Adds the column to the request
    */
-  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias: string }): ColumnFragment {
+  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias?: string }): ColumnFragment {
     return this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
   }
 
