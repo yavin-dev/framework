@@ -6,7 +6,7 @@ import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
-import metadataRoutes from '../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import { parseFilters } from 'navi-data/mirage/routes/bard-lite-parsers';
 
 let Service, Server, MetadataService;
