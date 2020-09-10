@@ -10,7 +10,7 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { inject as service } from '@ember/service';
 import ReportModel from 'navi-core/models/report';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import { Parameters, ColumnType } from 'navi-data/adapters/facts/interface';
+import { Parameters } from 'navi-data/adapters/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
@@ -29,11 +29,7 @@ interface NaviColumnConfigArgs {
 }
 
 type ConfigColumn = {
-  type: ColumnType;
-  name: string;
-  displayName: string;
   isFiltered: boolean;
-  isRemovable: boolean;
   fragment: ColumnFragment;
 };
 
@@ -45,35 +41,16 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     if (request.table !== undefined) {
-      const { metricColumns: metrics, dimensionColumns: dimensions, dimensionFilters, metricFilters } = request;
+      const { columns, filters } = request;
 
-      const filteredDimensions = dimensionFilters.map(({ canonicalName }) => canonicalName);
-      const filteredMetrics = metricFilters.map(({ canonicalName }) => canonicalName);
-      const dimensionColumns = dimensions.map(dimension => {
-        const { canonicalName: name, type, columnMetadata, parameters, alias } = dimension;
+      const filteredColumns = filters.map(({ canonicalName }) => canonicalName);
+
+      return columns.map(column => {
         return {
-          type,
-          name,
-          displayName: this.naviFormatter.formatColumnName(columnMetadata, parameters, alias),
-          isFiltered: filteredDimensions.includes(name),
-          isRemovable: true,
-          fragment: dimension
+          isFiltered: filteredColumns.includes(column.canonicalName),
+          fragment: column
         };
       });
-
-      const metricColumns = metrics.map(metric => {
-        const { canonicalName: name, type, columnMetadata, parameters, alias } = metric;
-        return {
-          type,
-          name,
-          displayName: this.naviFormatter.formatColumnName(columnMetadata, parameters, alias),
-          isFiltered: filteredMetrics.includes(name),
-          isRemovable: true,
-          fragment: metric
-        };
-      });
-
-      return [...dimensionColumns, ...metricColumns];
     }
     return [];
   }
@@ -96,16 +73,6 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   cloneColumn(column: ConfigColumn) {
     const { columnMetadata, parameters } = column.fragment;
     this.args.onAddColumn(columnMetadata, { ...parameters });
-  }
-
-  /**
-   * @action
-   * @param column - the column fragment to be renamed
-   * @param alias - the new name for the column
-   */
-  @action
-  renameColumn(column: ColumnFragment, alias: string) {
-    this.args.onRenameColumn(column, alias);
   }
 
   /**

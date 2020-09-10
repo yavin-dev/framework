@@ -9,9 +9,14 @@ import { RequestV1, RequestV2 } from 'navi-data/adapters/facts/interface';
 type ResponsePayload = any;
 
 export interface ResponseV1 {
-  rows: Array<object>;
+  rows: Array<Record<string, unknown>>;
   meta: {
-    pagination?: { currentPage: number; rowsPerPage: number; perPage: number; numberOfResults: number };
+    pagination?: {
+      currentPage: number;
+      rowsPerPage: number;
+      perPage: number;
+      numberOfResults: number;
+    };
   };
 }
 

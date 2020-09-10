@@ -4,14 +4,4 @@
  */
 import { Factory } from 'ember-cli-mirage';
 
-export default Factory.extend({
-  index: i => i,
-
-  id() {
-    return `timeDimensionGrain${this.index}`;
-  },
-
-  expression: null,
-
-  grain: 'DAY'
-});
+export default Factory.extend({});

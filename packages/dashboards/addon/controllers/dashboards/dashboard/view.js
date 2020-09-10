@@ -44,12 +44,12 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   async updateFilter(dashboard, originalFilter, changeSet) {
     const origFilter = originalFilter.serialize();
-    origFilter.dataSource = originalFilter.dimension.source;
+    origFilter.source = originalFilter.source;
     const newFilters = get(dashboard, 'filters')
       .toArray()
       .map(fil => {
         const newFil = fil.serialize();
-        newFil.dataSource = fil.dimension.source;
+        newFil.source = fil.source;
         return newFil;
       }); //Native array of serialized filters
     const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
@@ -57,15 +57,17 @@ export default class DashboardsDashboardViewController extends Controller.extend
     setProperties(filterToUpdate, changeSet);
 
     const newFilter = this.store
-      .createFragment('bard-request/fragments/filter', {
-        dimension: this.metadataService.getById('dimension', filterToUpdate.dimension, originalFilter.dimension.source),
-        operator: filterToUpdate.operator,
+      .createFragment('bard-request-v2/fragments/filter', {
         field: filterToUpdate.field,
-        rawValues: filterToUpdate.rawValues || filterToUpdate.values
+        parameters: filterToUpdate.parameters,
+        type: filterToUpdate.type,
+        operator: filterToUpdate.operator,
+        values: filterToUpdate.values,
+        source: filterToUpdate.source
       })
       .serialize();
+    newFilter.source = originalFilter.source;
 
-    newFilter.dataSource = originalFilter.dimension.source;
     const index = newFilters.indexOf(filterToUpdate);
     newFilters[index] = newFilter;
 
@@ -81,9 +83,16 @@ export default class DashboardsDashboardViewController extends Controller.extend
    */
   @action
   async removeFilter(dashboard, filter) {
-    const filters = get(dashboard, 'filters').serialize();
     const removedFilter = filter.serialize();
-    const newFilters = filters.filter(fil => !isEqual(fil, removedFilter));
+    removedFilter.source = filter.source;
+    const newFilters = get(dashboard, 'filters')
+      .toArray()
+      .map(fil => {
+        const newFil = fil.serialize();
+        newFil.source = fil.source;
+        return newFil;
+      })
+      .filter(fil => !isEqual(fil, removedFilter));
     const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
@@ -92,29 +101,33 @@ export default class DashboardsDashboardViewController extends Controller.extend
   /**
    * @action addFilter
    * @param {Object} dashboard
-   * @param {Object} dimension
+   * @param {Object} filter
    */
   @action
-  async addFilter(dashboard, dimension) {
+  async addFilter(dashboard, filter) {
     const store = this.store;
     const { metadataService } = this;
     const filters = dashboard.filters.toArray().map(fil => {
       const newFil = fil.serialize();
-      newFil.dataSource = fil.dimension.source;
+      newFil.source = fil.source;
       return newFil;
     }); //Native array of serialized filters
-    const dimensionMeta = metadataService.getById('dimension', dimension.dimension, dimension.dataSource);
-    const filter = store
-      .createFragment('bard-request/fragments/filter', {
-        dimension: dimensionMeta,
+    const dimensionMeta = metadataService.getById(filter.type, filter.field, filter.dataSource);
+    const newFilter = store
+      .createFragment('bard-request-v2/fragments/filter', {
+        type: filter.type,
+        field: filter.field,
+        parameters: {
+          field: dimensionMeta.primaryKeyFieldName
+        },
         operator: 'in',
-        field: dimensionMeta.primaryKeyFieldName
+        values: [],
+        source: filter.dataSource
       })
       .serialize();
+    newFilter.source = filter.dataSource;
 
-    filter.dataSource = dimension.dataSource;
-
-    filters.push(filter);
+    filters.push(newFilter);
 
     const filterQueryParams = await this.compression.compress({ filters });
 

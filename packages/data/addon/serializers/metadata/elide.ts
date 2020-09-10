@@ -3,13 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
+import config from 'ember-get-config';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import { ColumnType } from '../../models/metadata/column';
 import { TableMetadataPayload } from '../../models/metadata/table';
 import { MetricMetadataPayload } from '../../models/metadata/metric';
 import { DimensionMetadataPayload } from '../../models/metadata/dimension';
 import { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
 import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
+import { upperFirst } from 'lodash-es';
+import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { assert } from '@ember/debug';
 
 type Edge<T> = {
@@ -33,10 +37,10 @@ type ColumnNode = {
 export type MetricNode = ColumnNode & { defaultFormat: string };
 export type DimensionNode = ColumnNode;
 export type TimeDimensionNode = DimensionNode & {
-  supportedGrains: Connection<TimeDimensionGrainNode>;
+  supportedGrain: Connection<TimeDimensionGrainNode>;
   timeZone: string;
 };
-type TimeDimensionGrainNode = {
+export type TimeDimensionGrainNode = {
   id: string;
   expression: string;
   grain: string;
@@ -57,6 +61,8 @@ export interface TablePayload {
 }
 
 export default class ElideMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
+  private namespace = 'normalizer-generated';
+
   /**
    * Transform the elide metadata into a shape that our internal data models can use
    * @private
@@ -70,6 +76,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
     let metrics: MetricMetadataPayload[] = [];
     let dimensions: DimensionMetadataPayload[] = [];
     let timeDimensions: TimeDimensionMetadataPayload[] = [];
+    let columnFunctions: ColumnFunctionMetadataPayload[] = [];
 
     const tables = edges.map(({ node: table }) => {
       const newTable: TableMetadataPayload = {
@@ -86,15 +93,22 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
 
       const newTableMetrics = this._normalizeTableMetrics(table.metrics, table.id, source);
       const newTableDimensions = this._normalizeTableDimensions(table.dimensions, table.id, source);
-      const newTableTimeDimensions = this._normalizeTableTimeDimensions(table.timeDimensions, table.id, source);
+      const newTableTimeDimensionsAndColFuncs = this._normalizeTableTimeDimensions(
+        table.timeDimensions,
+        table.id,
+        source
+      );
+      const newTableTimeDimensions = newTableTimeDimensionsAndColFuncs.map(obj => obj.timeDimension);
+      const newTableTimeDimensionColFuncs = newTableTimeDimensionsAndColFuncs.map(obj => obj.columnFunction);
 
       newTable.metricIds = newTableMetrics.map(m => m.id);
       newTable.dimensionIds = newTableDimensions.map(d => d.id);
       newTable.timeDimensionIds = newTableTimeDimensions.map(d => d.id);
 
-      metrics = metrics.concat(newTableMetrics);
-      dimensions = dimensions.concat(newTableDimensions);
-      timeDimensions = timeDimensions.concat(newTableTimeDimensions);
+      metrics = [...metrics, ...newTableMetrics];
+      dimensions = [...dimensions, ...newTableDimensions];
+      timeDimensions = [...timeDimensions, ...newTableTimeDimensions];
+      columnFunctions = [...columnFunctions, ...newTableTimeDimensionColFuncs];
 
       return newTable;
     });
@@ -103,8 +117,8 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
       tables,
       metrics,
       dimensions,
-      timeDimensions
-      // TODO: Support metric functions once it is supported by Elide
+      timeDimensions,
+      columnFunctions
     };
   }
 
@@ -178,24 +192,75 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
     timeDimensionConnection: Connection<TimeDimensionNode>,
     tableId: string,
     source: string
-  ): TimeDimensionMetadataPayload[] {
+  ): { timeDimension: TimeDimensionMetadataPayload; columnFunction: ColumnFunctionMetadataPayload }[] {
     return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
+      const supportedGrains = node.supportedGrain.edges.map(edge => edge.node);
+      const columnFunction = this.createTimeGrainColumnFunction(node.id, supportedGrains, source);
       return {
-        id: node.id,
-        name: node.name,
-        description: node.description,
-        category: node.category,
-        valueType: node.valueType,
-        tableId,
-        source,
-        tags: node.columnTags,
-        supportedGrains: node.supportedGrains.edges.map(edge => edge.node),
-        timeZone: node.timeZone,
-        type: node.columnType,
-        expression: node.expression
+        timeDimension: {
+          id: node.id,
+          name: node.name,
+          description: node.description,
+          category: node.category,
+          valueType: node.valueType,
+          tableId,
+          columnFunctionId: columnFunction.id,
+          source,
+          tags: node.columnTags,
+          supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
+          timeZone: node.timeZone,
+          type: node.columnType,
+          expression: node.expression
+        },
+        columnFunction
       };
     });
+  }
+
+  /**
+   * @param timeDimensionId
+   * @param grainNodes
+   * @param dataSourceName
+   * @returns new column function with the supported grains as parameters
+   */
+  private createTimeGrainColumnFunction(
+    timeDimensionId: string,
+    grainNodes: TimeDimensionGrainNode[],
+    dataSourceName: string
+  ): ColumnFunctionMetadataPayload {
+    const grainIds = grainNodes.map(g => g.grain.toLowerCase());
+    const grains = grainIds.sort().join(',');
+    const columnFunctionId = `${this.namespace}:timeGrain(column=${timeDimensionId};grains=${grains})`;
+    let defaultValue;
+    const { defaultTimeGrain } = config.navi;
+    if (defaultTimeGrain && grainIds.includes(defaultTimeGrain)) {
+      defaultValue = defaultTimeGrain;
+    } else {
+      defaultValue = grainIds[0];
+    }
+    return {
+      id: columnFunctionId,
+      name: 'Time Grain',
+      source: dataSourceName,
+      description: 'Time Grain',
+      _parametersPayload: [
+        {
+          id: 'grain',
+          name: 'Time Grain',
+          description: 'The time grain to group dates by',
+          source: dataSourceName,
+          type: 'ref',
+          expression: INTRINSIC_VALUE_EXPRESSION,
+          defaultValue,
+          _localValues: grainNodes.map(grain => ({
+            id: grain.id,
+            description: upperFirst(grain.grain.toLowerCase()),
+            name: grain.grain.toLowerCase()
+          }))
+        }
+      ]
+    };
   }
 
   private supportedTypes = new Set<keyof MetadataPayloadMap>(['everything']);

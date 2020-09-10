@@ -1,17 +1,16 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { helper as buildHelper } from '@ember/component/helper';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
-<NaviColumnConfig::Base 
+<NaviColumnConfig::Base
   @column={{this.column}} 
-  @metadata={{this.metadata}}
-  @cloneColumn={{this.cloneColumn}}
-  @toggleColumnFilter={{this.toggleColumnFilter}}
-  @onUpdateColumnName={{this.onUpdateColumnName}}
+  @cloneColumn={{optional this.cloneColumn}}
+  @toggleColumnFilter={{optional this.toggleColumnFilter}}
+  @onRenameColumn={{optional this.onRenameColumn}}
+  @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
 />`;
 
 module('Integration | Component | navi-column-config/base', function(hooks) {
@@ -19,25 +18,14 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register(
-      'helper:update-report-action',
-      buildHelper(() => {}),
-      { instantiate: false }
-    );
     this.fragmentFactory = this.owner.lookup('service:fragment-factory');
 
-    this.metadata = {};
-    this.cloneColumn = () => undefined;
-    this.toggleColumnFilter = () => undefined;
-    this.onUpdateColumnName = () => undefined;
-    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('it renders ', async function(assert) {
     this.set('column', {
-      name: 'property',
-      type: 'dimension',
-      displayName: 'Property',
+      isFiltered: false,
       fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     });
 
@@ -56,9 +44,6 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       );
 
     this.set('column', {
-      name: 'adClicks',
-      type: 'metric',
-      displayName: 'Ad Clicks',
       fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks')
     });
 
@@ -67,9 +52,6 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders metric API column name');
 
     this.set('column', {
-      name: 'dateTime',
-      type: 'timeDimension',
-      displayName: 'Date Time',
       fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime')
     });
 
@@ -84,9 +66,6 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
   test('it supports action', async function(assert) {
     assert.expect(2);
     this.column = {
-      name: 'property',
-      type: 'dimension',
-      displayName: 'Property',
       fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     };
     this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
@@ -113,9 +92,6 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
     assert.expect(2);
 
     this.column = {
-      name: 'property',
-      type: 'dimension',
-      displayName: 'Property',
       isFiltered: false,
       fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
     };

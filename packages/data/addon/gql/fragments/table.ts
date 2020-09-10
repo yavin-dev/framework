@@ -20,7 +20,6 @@ const fragment = gql`
           category
           valueType
           columnTags
-          defaultFormat
           columnType
           expression
         }
@@ -51,14 +50,13 @@ const fragment = gql`
           columnTags
           columnType
           expression
-          supportedGrains {
+          supportedGrain {
             edges {
               node {
                 grain
               }
             }
           }
-          timeZone
         }
       }
     }

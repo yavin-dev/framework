@@ -4,11 +4,9 @@
  */
 import { assert } from '@ember/debug';
 import { assign } from '@ember/polyfills';
-import { set, get } from '@ember/object';
-import { isEqual, keyBy, omit } from 'lodash-es';
+import { set } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
-import { canonicalizeColumnAttributes } from 'navi-data/utils/metric';
 
 export default ActionConsumer.extend({
   actions: {
@@ -18,17 +16,19 @@ export default ActionConsumer.extend({
      * @param {Object} newColumnOrder - new column order to replace old
      */
     [UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER]({ currentModel: report }, newColumnOrder) {
-      assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
-      let visualizationMetadata = get(report, 'visualization.metadata'),
-        metrics = get(report, 'request.metrics'),
-        metricIndex = keyBy(metrics.toArray(), metric => get(metric, 'canonicalName')),
-        reorderedMetrics = newColumnOrder
-          .filter(column => column.type === 'metric')
-          .map(column => metricIndex[canonicalizeColumnAttributes(column.attributes)]);
+      assert('Visualization must be a table', report.visualization.type === 'table');
+      const { metadata } = report.visualization;
 
-      set(report, 'visualization.metadata', assign({}, visualizationMetadata, { columns: newColumnOrder }));
+      const columnAttributes = newColumnOrder.reduce((columnAttributes, columnInfo, index) => {
+        if (columnInfo.attributes) {
+          columnAttributes[index] = columnInfo.attributes;
+        }
+        return columnAttributes;
+      }, {});
+      const reorderedColumns = newColumnOrder.map(c => c.fragment);
 
-      set(report, 'request.metrics', reorderedMetrics);
+      set(report, 'visualization.metadata', assign({}, metadata, { columnAttributes }));
+      set(report, 'request.columns', reorderedColumns);
     },
 
     /**
@@ -37,17 +37,12 @@ export default ActionConsumer.extend({
      * @param {Object} updatedColumn - updated column object
      */
     [UpdateReportActions.UPDATE_TABLE_COLUMN]({ currentModel: report }, updatedColumn) {
-      assert('Visualization must be a table', get(report, 'visualization.type') === 'table');
-      let visualizationMetadata = get(report, 'visualization.metadata'),
-        newColumns = get(visualizationMetadata, 'columns').map(col => {
-          let propsToOmit = ['format'];
+      assert('Visualization must be a table', report.visualization.type === 'table');
+      const { metadata } = report.visualization;
+      const columnAttributes = { ...metadata.columnAttributes };
+      columnAttributes[updatedColumn.columnId] = updatedColumn.attributes;
 
-          return isEqual(omit(updatedColumn.attributes, propsToOmit), omit(col.attributes, propsToOmit))
-            ? updatedColumn
-            : col;
-        });
-
-      set(report, 'visualization.metadata', assign({}, visualizationMetadata, { columns: newColumns }));
+      set(report, 'visualization.metadata', assign({}, metadata, { columnAttributes }));
     }
   }
 });

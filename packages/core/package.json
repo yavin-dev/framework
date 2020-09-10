@@ -15,9 +15,11 @@
   "dependencies": {
     "@ember-decorators/component": "^6.1.1",
     "@ember/jquery": "^0.6.1",
+    "@ember/render-modifiers": "^1.0.2",
     "@glimmer/component": "^1.0.0",
     "@glimmer/tracking": "^1.0.0",
     "@html-next/vertical-collection": "^1.0.0",
+    "@types/numeral": "0.0.28",
     "ember-auto-import": "^1.5.3",
     "ember-c3": "^2.0.0",
     "ember-cli-babel": "^7.17.2",
@@ -100,7 +102,7 @@
     "eslint-plugin-qunit": "^4.0.0",
     "loader.js": "^4.7.0",
     "qunit-dom": "^1.0.0",
-    "typescript": "3.7.5"
+    "typescript": "3.9.7"
   },
   "keywords": [
     "ember-addon"

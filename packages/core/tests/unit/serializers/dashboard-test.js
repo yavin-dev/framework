@@ -70,7 +70,7 @@ module('Unit | Serializer | dashboard', function(hooks) {
               dimension: 'os',
               operator: 'notin',
               field: 'id',
-              rawValues: ['a', 'b']
+              values: ['a', 'b']
             }
           ],
           presentation: {
@@ -89,10 +89,14 @@ module('Unit | Serializer | dashboard', function(hooks) {
           attributes: {
             filters: [
               {
-                dimension: MetadataService.getById('dimension', 'os', 'bardOne'),
+                type: 'dimension',
+                field: 'os',
+                parameters: {
+                  field: 'id'
+                },
                 operator: 'notin',
-                field: 'id',
-                rawValues: ['a', 'b']
+                values: ['a', 'b'],
+                source: 'bardOne'
               }
             ],
             presentation: {

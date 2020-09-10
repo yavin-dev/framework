@@ -1,15 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { getContext } from '@ember/test-helpers';
-import GlimmerComponentManager from 'dummy/component-managers/glimmer';
-
-// https://timgthomas.com/2019/11/unit-testing-glimmer-components/
-function createGlimmerComponent(lookupPath, named = {}) {
-  let { owner } = getContext();
-  let { class: componentClass } = owner.factoryFor(lookupPath);
-  let componentManager = new GlimmerComponentManager(owner);
-  return componentManager.createComponent(componentClass, { named });
-}
+import { createGlimmerComponent } from 'navi-core/test-support';
 
 module('Unit | Component | dir-item-name-cell', function(hooks) {
   setupTest(hooks);

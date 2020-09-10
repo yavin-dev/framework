@@ -10,33 +10,23 @@
  * />
  */
 
-import Component from '@glimmer/component';
+import BaseCellRenderer from './base';
+import { computed } from '@ember/object';
 //@ts-ignore
-import Request from 'navi-core/models/bard-request-v2/request';
+import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
 
-type Args = {
-  data: Dict;
-  column: TODO;
-  request: Request;
-};
-
-export default class DateTimeCellRenderer extends Component<Args> {
+export default class TimeDimensionCellRenderer extends BaseCellRenderer {
   /**
-   * @property {String} value
-   * Date start time from the response data or 'TOTAL'
+   * Time Grain in request
    */
-  get value() {
-    const { data, column } = this.args;
-    return data[column.attributes.name];
+  @computed('args.column.fragment.parameters.grain')
+  get timeGrain() {
+    const { fragment } = this.args.column;
+    return fragment.parameters?.grain;
   }
 
-  /**
-   * @property {String} granularity- Time Grain in request
-   * Request can be either a model or a serialized form of
-   * the model, timeGrain is an interval fragment in the model and a string in the serialized
-   * request model
-   */
-  get granularity() {
-    return this.args.request.timeGrain;
+  get displayValue() {
+    const { columnValue, timeGrain } = this;
+    return formatDateForGranularity(`${columnValue}`, timeGrain);
   }
 }

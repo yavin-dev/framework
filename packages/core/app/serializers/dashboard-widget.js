@@ -1,1 +1,1 @@
-export { default } from 'navi-core/serializers/asset';
+export { default } from 'navi-core/serializers/dashboard-widget';
