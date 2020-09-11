@@ -39,7 +39,9 @@ module('Unit | Model | Apex Pie', function(hooks) {
         metadata: {
           series: {
             config: {
-              colors: []
+              colors: [],
+              dataLabelsVisible: true,
+              legendVisible: true
             }
           }
         }
@@ -80,7 +82,9 @@ module('Unit | Model | Apex Pie', function(hooks) {
         metadata: {
           series: {
             config: {
-              colors: []
+              colors: [],
+              dataLabelsVisible: true,
+              legendVisible: true
             }
           }
         }
@@ -136,7 +140,9 @@ module('Unit | Model | Apex Pie', function(hooks) {
             color: '#00ff00',
             label: 'Lantern'
           }
-        ]
+        ],
+        dataLabelsVisible: true,
+        legendVisible: true
       }
     });
     let request = buildModelTestRequest(['m2'], ['d1', 'd2']);
@@ -158,7 +164,9 @@ module('Unit | Model | Apex Pie', function(hooks) {
                   color: '#00ff00',
                   label: 'Lantern'
                 }
-              ]
+              ],
+              dataLabelsVisible: true,
+              legendVisible: true
             }
           }
         }

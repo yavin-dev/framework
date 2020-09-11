@@ -1,0 +1,61 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.APEX_SECTIONS {
+  background-color: white;
+  border-bottom: 1px solid gray;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 8px;
+  resize: none;
+  width: 100%;
+  & > * {
+    padding: 5px;
+  }
+  &__header {
+    text-align: left;
+  }
+}
+
+.APEX_TOGGLE {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  &__label {
+    text-align: left;
+  }
+  &__switch {
+    padding-right: 8px;
+  }
+}
+
+.color-change-config {
+  & > * {
+    padding: 5px;
+  }
+  &__label-select__selector__list-item {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    & > * {
+      padding: 5px;
+    }
+  }
+}
+
+.apex-pie-config {
+  padding: 10px;
+  &__label-options-section {
+    .APEX_SECTIONS();
+    &__toggle-legend,
+    &__toggle-data-labels {
+      .APEX_TOGGLE();
+    }
+  }
+  &__chart-colors-section {
+    .APEX_SECTIONS();
+  }
+}

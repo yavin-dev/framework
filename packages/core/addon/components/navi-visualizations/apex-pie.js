@@ -11,28 +11,30 @@ import { normalize } from '../../chart-builders/apex';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assignColors } from 'navi-core/utils/enums/denali-colors';
+import ResizeObserver from 'resize-observer-polyfill';
 
 export default class NaviVisualizationsApexPie extends Component {
   /**
    * @property {object} - ApexCharts-compatible object of options
    */
-  @tracked chartOptions;
-
-  @action
-  updateChartOptions() {
+  get chartOptions() {
     const {
       request,
       response: { rows }
     } = this.args.model.firstObject;
     const data = normalize(request, rows);
-    this.chartOptions = {
+    return {
       chart: {
         type: 'pie',
-        height: '100%'
+        [this.constrainBy]: '100%'
       },
       colors: assignColors(data.labels, this.args.options?.series?.config?.colors),
+      dataLabels: {
+        enabled: this.args.options?.series?.config?.dataLabelsVisible
+      },
       labels: data.labels,
       legend: {
+        show: this.args.options?.series?.config?.legendVisible,
         position: 'bottom',
         floating: false
       },
@@ -40,8 +42,48 @@ export default class NaviVisualizationsApexPie extends Component {
     };
   }
 
+  /**
+   * @property {string} constrainBy - the graph dimension to be pinned according to the orientation of the visualization container
+   */
+  @tracked constrainBy = 'height';
+
+  /**
+   * updates constrainBy when the visualization container's dimensions change, if necessary
+   * @method updateDimensions
+   */
+  @action
+  updateDimensions() {
+    const container = this.args.containerComponent?.$('* [class*=visualization-container]');
+    if (container === undefined) {
+      console.warn('Apex-Pie called without proper container component');
+      return;
+    }
+    const width = container.width();
+    const height = container.height();
+    // if oriented portrait-style, should constrain to width
+    if (height > width && !(this.constrainBy === 'width')) {
+      this.constrainBy = 'width';
+    }
+    // if oriented landscape-style, should constrain to height
+    else if (width > height && !(this.constrainBy === 'height')) {
+      this.constrainBy = 'height';
+    }
+  }
+
   constructor(owner, args) {
     super(owner, args);
-    this.updateChartOptions();
+    this.updateDimensions();
+    const observer = new ResizeObserver(entries => {
+      this.updateDimensions();
+    });
+    const container = this.args.containerComponent?.element;
+    if (container !== undefined) {
+      observer.observe(container);
+      if ($(container).length) {
+        $(container).on('resizestop', () => {
+          this.updateDimensions();
+        });
+      }
+    }
   }
 }

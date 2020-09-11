@@ -41,16 +41,20 @@ export function fetchColor(index, type = 'graph') {
 }
 
 export function assignColors(labels, configColors) {
+  // console.log('labels:\n', labels);
+  // console.log('configColors:\n', configColors);
   let colors = new Array(labels.length).fill().map((item, index) => {
     return fetchColor(index);
   });
   labels.forEach((label, index) => {
-    const colorSetting = configColors?.find(color => {
-      return color.label === label;
+    const colorSetting = configColors?.find(setting => {
+      return setting.label === label;
     });
+    // console.log('colorSetting:\n', colorSetting);
     if (colorSetting) {
       colors[index] = colorSetting.color;
     }
   });
+  // console.log('colors:\n', colors);
   return colors;
 }
