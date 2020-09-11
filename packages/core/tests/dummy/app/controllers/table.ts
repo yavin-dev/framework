@@ -28,11 +28,7 @@ export default class TableController extends Controller {
 
   //options passed through to the table component
   @tracked options: Args['options'] = {
-    columnAttributes: {
-      5: {
-        canAggregateSubtotal: false
-      }
-    },
+    columnAttributes: {},
     showTotals: {}
   };
 

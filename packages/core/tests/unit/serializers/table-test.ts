@@ -12,27 +12,27 @@ const defaultAttributes = {
 const expected: TableVisualizationMetadata = {
   metadata: {
     columnAttributes: {
-      '0': defaultAttributes,
-      '1': {
-        canAggregateSubtotal: undefined,
-        format: '0.00'
-      },
-      '2': {
+      c0: defaultAttributes,
+      c1: defaultAttributes,
+      c2: {
         canAggregateSubtotal: false,
         format: undefined
       },
-      '3': {
+      c3: defaultAttributes,
+      c4: defaultAttributes,
+      c5: {
         canAggregateSubtotal: undefined,
         format: ''
       },
-      '4': defaultAttributes,
-      '5': defaultAttributes,
-      '6': defaultAttributes,
-      '7': defaultAttributes
+      c6: {
+        canAggregateSubtotal: undefined,
+        format: '0.00'
+      },
+      c7: defaultAttributes
     },
     showTotals: {
       grandTotal: true,
-      subtotal: 7
+      subtotal: 'c0'
     }
   },
   type: 'table',
@@ -92,6 +92,7 @@ module('Unit | Serializer | table', function(hooks) {
       filters: [],
       columns: [
         {
+          cid: 'c0',
           field: 'table1.dateTime',
           parameters: {
             grain: 'grain1'
@@ -99,6 +100,7 @@ module('Unit | Serializer | table', function(hooks) {
           type: 'timeDimension'
         },
         {
+          cid: 'c1',
           type: 'dimension',
           field: 'platform',
           parameters: {
@@ -106,11 +108,13 @@ module('Unit | Serializer | table', function(hooks) {
           }
         },
         {
+          cid: 'c2',
           type: 'metric',
           field: 'revenue',
           parameters: { currency: 'EUR' }
         },
         {
+          cid: 'c3',
           type: 'dimension',
           field: 'age',
           parameters: {
@@ -118,6 +122,7 @@ module('Unit | Serializer | table', function(hooks) {
           }
         },
         {
+          cid: 'c4',
           type: 'dimension',
           field: 'gender',
           parameters: {
@@ -125,16 +130,19 @@ module('Unit | Serializer | table', function(hooks) {
           }
         },
         {
+          cid: 'c5',
           type: 'metric',
           field: 'revenue',
           parameters: { currency: 'USD' }
         },
         {
+          cid: 'c6',
           type: 'metric',
           field: 'pageViews',
           parameters: {}
         },
         {
+          cid: 'c7',
           type: 'metric',
           field: 'clicks',
           parameters: {}

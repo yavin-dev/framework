@@ -3,6 +3,53 @@ import { setupTest } from 'ember-qunit';
 import { getContext } from '@ember/test-helpers';
 import { set } from '@ember/object';
 
+let COLUMN_ID_INDEX = 0;
+/**
+ * @function buildTestRequest
+ * @param {Array} dimensions - array of dimensions
+ * @param {Array} metrics - array of metrics
+ * @param {string} timeGrain - timegrain of the request
+ * @returns {Object} request object
+ */
+function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
+  const store = getContext().owner.lookup('service:store');
+
+  return store.createFragment('bard-request-v2/request', {
+    table: 'tableName',
+    requestVersion: '2.0',
+    dataSource: 'bardOne',
+    sorts: [],
+    filters: [],
+    columns: [
+      {
+        cid: `c${COLUMN_ID_INDEX++}`,
+        type: 'timeDimension',
+        field: 'tableName.dateTime',
+        parameters: { grain: timeGrain },
+        source: 'bardOne'
+      },
+      ...metrics.map(({ cid, metric, parameters = {} }) => {
+        return {
+          cid: cid || `c${COLUMN_ID_INDEX++}`,
+          type: 'metric',
+          field: metric,
+          parameters,
+          source: 'bardOne'
+        };
+      }),
+      ...dimensions.map(({ cid, dimension, field }) => {
+        return {
+          cid: cid || `c${COLUMN_ID_INDEX++}`,
+          type: 'dimension',
+          field: dimension,
+          parameters: { field },
+          source: 'bardOne'
+        };
+      })
+    ]
+  });
+}
+
 module('Unit | Model | Table Visualization Fragment', function(hooks) {
   setupTest(hooks);
 
@@ -29,8 +76,8 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     assert.expect(3);
 
     let metricsAndDims = [
-        [{ dimension: 'd1' }, { dimension: 'd2', fields: ['id', 'desc'] }],
-        [{ metric: 'm1' }, { metric: 'm2' }]
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+        [{ metric: 'm1' }, { cid: 'thisone', metric: 'm2' }]
       ],
       request = buildTestRequest(...metricsAndDims, 'day'),
       model = this.owner.lookup('service:store').createRecord('all-the-fragments');
@@ -44,7 +91,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     set(model, 'table', {
       metadata: {
         columnAttributes: {
-          2: {
+          thisone: {
             format: 'yes'
           }
         }
@@ -59,7 +106,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     set(model, 'table', {
       metadata: {
         columnAttributes: {
-          10: {
+          randomId: {
             format: 'no'
           }
         }
@@ -80,10 +127,14 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         .createRecord('all-the-fragments')
         .get('table'),
       request1 = buildTestRequest(
-        [{ dimension: 'd1' }, { dimension: 'd2', fields: ['id', 'desc'] }],
         [
-          { metric: 'm1', parameters: { gone: 'no' } },
-          { metric: 'm2', parameters: { gone: 'yes' } }
+          { dimension: 'd1' },
+          { cid: 'byedimension', dimension: 'd2', field: 'id' },
+          { dimension: 'd2', field: 'desc' }
+        ],
+        [
+          { cid: 'persistme', metric: 'm1', parameters: { gone: 'no' } },
+          { cid: 'byeparam', metric: 'm2', parameters: { gone: 'yes' } }
         ],
         'month'
       ),
@@ -103,18 +154,21 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
 
     set(table, 'metadata', {
       columnAttributes: {
-        1: {
+        persistme: {
           format: 'ok'
         },
-        2: {
+        byeparam: {
           format: 'bye param'
         },
-        4: {
+        byedimension: {
           format: 'bye dimension'
         }
       }
     });
-    const request2 = buildTestRequest([], [{ metric: 'm1', parameters: { gone: 'no' } }, { metric: 'm2' }]);
+    const request2 = buildTestRequest(
+      [],
+      [{ cid: 'persistme', metric: 'm1', parameters: { gone: 'no' } }, { metric: 'm2' }]
+    );
     const config2 = table.rebuildConfig(request2).toJSON();
 
     assert.deepEqual(
@@ -122,7 +176,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       {
         metadata: {
           columnAttributes: {
-            '1': {
+            persistme: {
               format: 'ok'
             }
           }
@@ -130,7 +184,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         type: 'table',
         version: 2
       },
-      'Only valid existing columns are moved over, dif'
+      'Only valid existing column attributes are moved over'
     );
 
     const config3 = table.rebuildConfig(request2).toJSON();
@@ -140,7 +194,7 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       {
         metadata: {
           columnAttributes: {
-            '1': {
+            persistme: {
               format: 'ok'
             }
           }
@@ -151,29 +205,4 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       'Columns config should be persistent'
     );
   });
-
-  /**
-   * @function buildTestRequest
-   * @param {Array} dimensions - array of dimensions
-   * @param {Array} metrics - array of metrics
-   * @param {Array} thresholds - array of thresholds
-   * @returns {Object} request object
-   */
-  function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
-    const store = getContext().owner.lookup('service:store');
-
-    return store.createFragment('bard-request-v2/request', {
-      columns: [
-        { type: 'timeDimension', field: 'dateTime', parameters: { grain: timeGrain }, source: 'bardOne' },
-        ...metrics.map(({ metric, parameters = {} }) => {
-          return { type: 'metric', field: metric, parameters, source: 'bardOne' };
-        }),
-        ...dimensions.flatMap(({ dimension, fields = ['id'] }) => {
-          return fields.map(field => {
-            return { type: 'dimension', field: dimension, parameters: { field }, source: 'bardOne' };
-          });
-        })
-      ]
-    });
-  }
 });

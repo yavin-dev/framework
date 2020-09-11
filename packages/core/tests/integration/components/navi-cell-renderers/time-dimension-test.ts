@@ -64,7 +64,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: 0
+      columnId: fragment.cid
     };
     this.set('column', column);
   });

@@ -43,9 +43,7 @@ module('Unit | Component | table', function(hooks) {
       this.owner.register(
         `helper:${helper}`,
         buildHelper(() => undefined),
-        {
-          instantiate: false
-        }
+        { instantiate: false }
       );
     });
 
@@ -63,6 +61,7 @@ module('Unit | Component | table', function(hooks) {
               source: 'bardOne'
             },
             {
+              cid: 'cid_age',
               type: 'dimension',
               field: 'age',
               parameters: { field: 'id' },
@@ -192,7 +191,7 @@ module('Unit | Component | table', function(hooks) {
       'table data has the total row appended when the flag in the options is set'
     );
 
-    set(OPTIONS, 'showTotals', { subtotal: 1 });
+    set(OPTIONS, 'showTotals', { subtotal: 'cid_age' });
 
     assert.deepEqual(
       component.tableData,
@@ -229,7 +228,7 @@ module('Unit | Component | table', function(hooks) {
       'table data has the subtotal row appended after every group of data'
     );
 
-    set(OPTIONS, 'showTotals', { subtotal: 1, grandTotal: true });
+    set(OPTIONS, 'showTotals', { subtotal: 'cid_age', grandTotal: true });
 
     assert.deepEqual(
       component.tableData,
@@ -278,7 +277,7 @@ module('Unit | Component | table', function(hooks) {
   test('computeTotal and computeSubtotals', function(assert) {
     assert.expect(2);
 
-    let options = merge({}, OPTIONS, { showTotals: { subtotal: 1 } }),
+    let options = merge({}, OPTIONS, { showTotals: { subtotal: 'cid_age' } }),
       component = createGlimmerComponent('component:navi-visualizations/table', {
         options,
         model: MODEL
@@ -336,7 +335,7 @@ module('Unit | Component | table', function(hooks) {
   test('computeTotal and computeSubtotals with an overriding computeColumnTotal method', function(assert) {
     assert.expect(2);
 
-    let options = merge({}, OPTIONS, { showTotals: { subtotal: 1 } }),
+    let options = merge({}, OPTIONS, { showTotals: { subtotal: 'cid_age' } }),
       component = createGlimmerClass(
         class extends NaviVisualizationsTable {
           computeColumnTotal(data, metricName, totalRow, column, type) {

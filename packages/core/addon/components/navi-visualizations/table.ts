@@ -52,7 +52,7 @@ export type Args = {
 export type TableColumn = {
   fragment: ColumnFragment;
   attributes: TableColumnAttributes;
-  columnId: number;
+  columnId: string;
 };
 
 export default class Table extends Component<Args> {
@@ -64,7 +64,7 @@ export default class Table extends Component<Args> {
   @tracked occlusion = true;
 
   @readOnly('args.options.showTotals.subtotal')
-  selectedSubtotal!: number;
+  selectedSubtotal!: string;
 
   /**
    * data from the WS
@@ -179,9 +179,10 @@ export default class Table extends Component<Args> {
   /**
    * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
    */
+  @computed('selectedSubtotal', 'rawData', 'request.{columns.[]}')
   get groupedData() {
     let { selectedSubtotal, rawData, request } = this;
-    const canonicalName = request.columns.objectAt(selectedSubtotal)?.canonicalName as string;
+    const canonicalName = request.columns.find(column => column.cid === selectedSubtotal)?.canonicalName as string;
 
     return groupBy(rawData, (row: ResponseRow) => row[canonicalName]);
   }
@@ -189,7 +190,7 @@ export default class Table extends Component<Args> {
   /**
    * @property {Object} tableData
    */
-  @computed('rawData', 'args.options.showTotals.grandTotal')
+  @computed('rawData', 'selectedSubtotal', 'args.options.showTotals.grandTotal', 'groupedData')
   get tableData() {
     const { rawData } = this;
     const tableData = this._computeSubtotals();
@@ -207,13 +208,13 @@ export default class Table extends Component<Args> {
   @computed('args.options.columnAttributes', 'request.{columns.[],sorts.[]}')
   get columns(): TableColumn[] {
     const { columnAttributes } = this.args.options;
-    return this.request.columns.map((column, index) => {
+    return this.request.columns.map(column => {
       const sort = this.request.sorts.find(sort => sort.canonicalName === column.canonicalName);
       return {
         fragment: column,
-        attributes: columnAttributes[index] || {},
+        attributes: columnAttributes[column.cid] || {},
         sortDirection: sort?.direction || 'none',
-        columnId: index
+        columnId: column.cid
       };
     });
   }
