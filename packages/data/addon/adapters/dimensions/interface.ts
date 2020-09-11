@@ -9,7 +9,7 @@ import { ServiceOptions } from 'navi-data/services/navi-dimension';
 
 export type DimensionFilter = {
   operator: FilterOperator;
-  values: unknown[];
+  values: (string | number)[];
 };
 
 export interface DimensionColumn {
