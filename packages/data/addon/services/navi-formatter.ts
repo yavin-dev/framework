@@ -9,10 +9,14 @@ import { Parameters } from 'navi-data/adapters/facts/interface';
 
 export default class NaviFormatterService extends Service {
   formatColumnName(columnMetadata?: ColumnMetadata, parameters?: Parameters, alias?: string | null): string {
+    if (alias) {
+      return alias;
+    }
+
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
 
-    const name = alias || columnMetadata?.name || '--';
+    const name = columnMetadata?.name || '--';
     if (paramValues.length) {
       return `${name} (${paramValues.join(',')})`;
     } else {

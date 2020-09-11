@@ -7,7 +7,6 @@ import BaseFragment from './base';
 import { Column } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
-import { computed } from '@ember/object';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 /**
@@ -22,7 +21,6 @@ export default class ColumnFragment extends BaseFragment implements Column {
 
   @service naviFormatter!: NaviFormatterService;
 
-  @computed('alias', 'parameters', 'columnMetadata')
   get displayName() {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
