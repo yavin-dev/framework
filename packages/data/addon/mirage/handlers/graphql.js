@@ -9,6 +9,14 @@ import faker from 'faker';
 import moment from 'moment';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD';
+const ASYNC_RESPONSE_DELAY = 5000; // ms before async api response result is populated
+
+function _getSeedForRequest(table, args, fields) {
+  const tableLength = table.length;
+  const argsLength = Object.keys(args).join(' ').length;
+  const fieldsLength = fields.join(' ').length;
+  return tableLength + argsLength + fieldsLength;
+}
 
 /**
  * @param {string} filter
@@ -62,81 +70,90 @@ function _parseGQLQuery(queryStr) {
   };
 }
 
+function _getResponseBody(db, parent) {
+  // Create mocked response for an async query
+  const { createdOn, query } = parent;
+  const responseTime = Date.now();
+
+  // Only respond if query was created over 5 seconds ago
+  if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
+    parent.status = 'COMPLETE';
+
+    // TODO: get args from _parseGQLQuery result and handle filtering
+    const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
+    const seed = _getSeedForRequest(table, args, fields);
+    faker.seed(seed);
+
+    if (db.tables.find(table) && fields.length) {
+      const columns = fields.reduce(
+        (groups, column) => {
+          const type = ['metrics', 'dimensions', 'timeDimensions'].find(t => db[t].find(column));
+
+          if (type) {
+            groups[type].push(column);
+          }
+          return groups;
+        },
+        { metrics: [], dimensions: [], timeDimensions: [] }
+      );
+
+      const dates = columns.timeDimensions.length > 0 ? _getDates(args.filter) : [];
+
+      // Convert each date into a row of data
+      // If no time dimension is sent, just return a single row
+      let rows = dates.length ? dates.map(dateTime => ({ dateTime })) : [{}];
+
+      // Add each dimension
+      columns.dimensions.forEach(dimension => {
+        rows = rows.reduce((newRows, currentRow) => {
+          const dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
+
+          return [
+            ...newRows,
+            ...dimensionValues.map(value => ({
+              ...currentRow,
+              [dimension]: value
+            }))
+          ];
+        }, []);
+      });
+
+      // Add each metric
+      rows = rows.map(currRow =>
+        columns.metrics.reduce(
+          (row, metric) => ({
+            ...row,
+            [metric]: faker.finance.amount()
+          }),
+          currRow
+        )
+      );
+
+      return JSON.stringify({
+        data: {
+          [table]: {
+            edges: rows.map(node => ({ node }))
+          }
+        }
+      });
+    }
+    return JSON.stringify({
+      errors: {
+        message: 'Invalid query sent with AsyncQuery'
+      }
+    });
+  }
+  return null;
+}
+
 const OPTIONS = {
   fieldsMap: {
-    AsyncQueryResult: {
-      responseBody(_, db, parent) {
-        // Create mocked response for an async query
-        const { createdOn, query } = parent;
-
-        // Only respond if query was created over 10 seconds ago
-        if (Date.now() - createdOn >= 10000) {
-          parent.status = 'COMPLETE';
-
-          // TODO: get args from _parseGQLQuery result and handle filtering
-          const { table, args, fields } = _parseGQLQuery(query);
-
-          if (table) {
-            const dbTable = db.tables.find(table);
-            const columns = fields.reduce(
-              (groups, column) => {
-                const type = ['metric', 'dimension', 'timeDimension'].find(t => dbTable[`${t}Ids`].includes(column));
-
-                if (type) {
-                  groups[type].push(column);
-                }
-                return groups;
-              },
-              { metric: [], dimension: [], timeDimension: [] }
-            );
-            let dates = [];
-
-            if (columns.timeDimension.length > 0) {
-              dates = _getDates(args.filter);
-            }
-
-            // Convert each date into a row of data
-            let rows = dates.map(dateTime => ({ dateTime }));
-
-            // Add each dimension
-            columns.dimension.forEach(dimension => {
-              rows = rows.reduce((newRows, currentRow) => {
-                let dimensionValues = _dimensionValues(faker.random.number({ min: 3, max: 5 }));
-
-                return newRows.concat(
-                  dimensionValues.map(value => {
-                    let newRow = Object.assign({}, currentRow);
-                    newRow[dimension] = value;
-                    return newRow;
-                  })
-                );
-              }, []);
-            });
-
-            // Add each metric
-            rows = rows.map(row => {
-              columns.metric.forEach(metric => {
-                row[metric] = faker.finance.amount();
-              });
-
-              return row;
-            });
-
-            return JSON.stringify({
-              data: {
-                [table]: {
-                  edges: rows.map(node => ({ node }))
-                }
-              }
-            });
-          }
-          return JSON.stringify({
-            errors: {
-              message: 'Invalid query sent with AsyncQuery'
-            }
-          });
-        }
-        return null;
+    AsyncQuery: {
+      result(_, db, parent) {
+        return {
+          httpStatus: 200,
+          responseBody: _getResponseBody(db, parent)
+        };
       }
     }
   },
@@ -146,26 +163,38 @@ const OPTIONS = {
       ids(records, _, ids) {
         return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
       }
+    },
+    AsyncQueryEdge: {
+      ids(records, _, ids) {
+        return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
+      },
+      op(records) {
+        return records;
+      }
     }
   },
   mutations: {
-    asyncQuery(asyncQueries, { op, data }) {
+    asyncQuery(connection, { op, data }, { asyncQueries }) {
+      data = data[0];
       const queryIds = data.id ? [data.id] : [];
       const existingQueries = asyncQueries.find(queryIds) || [];
       if (op === 'UPSERT' && existingQueries.length === 0) {
-        asyncQueries.add({
+        const node = asyncQueries.insert({
           id: data.id,
           asyncAfterSeconds: 10,
           requestId: data.id,
           query: data.query,
           queryType: data.queryType,
           status: data.status,
-          createdOn: Date.now()
+          createdOn: Date.now(),
+          result: null
         });
+        return { edges: [{ node }] };
       } else if (op === 'UPDATE' && existingQueries.length > 0) {
         existingQueries.forEach(query => {
           query.status = data.status;
         });
+        return { edges: existingQueries.map(node => ({ node })) };
       } else {
         throw new Error(`Unable to ${op} when ${existingQueries.length} queries exist with id `);
       }

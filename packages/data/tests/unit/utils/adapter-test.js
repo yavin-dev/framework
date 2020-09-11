@@ -1,16 +1,64 @@
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { set } from '@ember/object';
-import { getHost, getDefaultDataSourceName, configHost } from 'navi-data/utils/adapter';
+import { getDefaultDataSourceName, configHost, getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
 module('Unit - Utils - Adapter Utils', function() {
-  test('getHost gets correct host depending on configuration', function(assert) {
-    assert.equal(getHost('dummy'), 'https://data.naviapp.io', 'dummy host is fetched correctly');
-    assert.equal(getHost('blockhead'), 'https://data2.naviapp.com', 'blockhead host is fetched correctly');
-    assert.equal(getHost('foo'), 'https://data.naviapp.io', 'unknown host grabs first one');
+  test('getDataSource correctly returns datasource object', function(assert) {
+    const {
+      navi: { dataSources }
+    } = config;
+
+    assert.deepEqual(
+      getDataSource('dummy'),
+      dataSources.find(s => s.name === 'dummy'),
+      'datasource is fetched from config'
+    );
+    assert.deepEqual(
+      getDataSource('blockhead'),
+      dataSources.find(s => s.name === 'blockhead'),
+      'Other datasource is fetched from config'
+    );
+
+    assert.throws(
+      () => {
+        getDataSource();
+      },
+      /getDataSource should be given a data source name to lookup/,
+      'Data source name must be provided'
+    );
+    assert.throws(
+      () => {
+        getDataSource('wowie');
+      },
+      /Datasource wowie should be configured in the navi environment/,
+      'Assertion fails when nonexistent datasource is requested'
+    );
   });
 
-  test('getDefaultDatasource gets correct source object depending on configuration', function(assert) {
+  test('getDefaultDataSource returns correct source object depending on configuration', function(assert) {
+    const {
+      navi: { defaultDataSource, dataSources }
+    } = config;
+
+    assert.deepEqual(
+      getDefaultDataSource(),
+      dataSources.find(d => d.name === defaultDataSource),
+      'Gets the default datasource that is configured'
+    );
+
+    const oldDefault = defaultDataSource;
+    set(config, 'navi.defaultDataSource', undefined);
+
+    assert.equal(
+      getDefaultDataSource(),
+      dataSources[0],
+      'uses first configured datasource as default datasource with no default datasource configured'
+    );
+    set(config, 'navi.defaultDataSource', oldDefault);
+  });
+
+  test('getDefaultDataSourceName gets correct source object name depending on configuration', function(assert) {
     assert.equal(getDefaultDataSourceName(), 'dummy', 'Gets the default datasource that is configured');
 
     const oldDefault = config.navi.defaultDataSource;
@@ -32,19 +80,14 @@ module('Unit - Utils - Adapter Utils', function() {
       'blockhead is correctly configured'
     );
     assert.equal(
-      configHost({ dataSourceName: 'foobar' }),
-      'https://data.naviapp.io',
-      'unconfigured host returns default'
-    );
-    assert.equal(
       configHost({}),
       'https://data.naviapp.io',
-      'dummy host is correctly returned if datasource is not specified'
+      'default host is correctly returned if datasource is not specified'
     );
 
     const oldDefault = config.navi.defaultDataSource;
     set(config, 'navi.defaultDataSource', undefined);
-    assert.equal(configHost({}), 'https://data.naviapp.io', 'returns first host if default is unspcified');
+    assert.equal(configHost({}), 'https://data.naviapp.io', 'returns first host if default is unspecified');
 
     set(config, 'navi.defaultDataSource', oldDefault);
   });
