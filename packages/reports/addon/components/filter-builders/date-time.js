@@ -151,7 +151,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} displayName - display name for the filter
    */
-  @readOnly('filter.columnMetadata.name') displayName;
+  @readOnly('filter.displayName') displayName;
 
   /**
    * @property {Object} filter

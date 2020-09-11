@@ -35,7 +35,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
 
     assert
       .dom('.filter-builder-dimension__subject')
-      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
+      .hasText(this.filter.displayName, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder-dimension__operator .ember-power-select-selected-item')
@@ -69,7 +69,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     assert
       .dom('.filter-builder')
       .hasText(
-        `${this.filter.columnMetadata.name} equals Licensed Concrete Fish (1) Incredible Rubber Tuna (2) Handmade Rubber Fish (3)`,
+        `${this.filter.displayName} equals Licensed Concrete Fish (1) Incredible Rubber Tuna (2) Handmade Rubber Fish (3)`,
         'Rendered correctly when collapsed'
       );
   });

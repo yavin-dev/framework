@@ -34,7 +34,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
+      .hasText(this.filter.displayName, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')

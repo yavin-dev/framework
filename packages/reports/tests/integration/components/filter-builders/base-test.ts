@@ -33,7 +33,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
+      .hasText(this.filter.displayName, "Subject's name is display in filter builder");
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')
       .hasText('Equals', 'The filter current operator is selected by default');
@@ -58,7 +58,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     assert
       .dom('.filter-builder')
-      .hasText(`${this.filter.columnMetadata.name} equals Test Filter Value One`, 'Rendered correctly when collapsed');
+      .hasText(`${this.filter.displayName} equals Test Filter Value One`, 'Rendered correctly when collapsed');
   });
 
   test('changing operator', async function(assert) {

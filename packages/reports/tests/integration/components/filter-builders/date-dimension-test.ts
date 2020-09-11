@@ -36,7 +36,7 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(this.filter.columnMetadata.name, "Subject's name is display in filter builder");
+      .hasText(this.filter.displayName, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator .ember-power-select-selected-item')
@@ -58,6 +58,6 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
 
     assert
       .dom('.filter-builder')
-      .hasText(`${this.filter.columnMetadata.name} since (>=) Sep 08, 2020`, 'Rendered correctly when collapsed');
+      .hasText(`${this.filter.displayName} since (>=) Sep 08, 2020`, 'Rendered correctly when collapsed');
   });
 });

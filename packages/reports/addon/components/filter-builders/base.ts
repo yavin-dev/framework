@@ -33,7 +33,7 @@ export type FilterConfig = {
 export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> {
   get displayName() {
     //Rebase
-    return this.args.filter.columnMetadata.name;
+    return this.args.filter.displayName;
   }
 
   get supportedOperators(): Array<FilterOperators> {
