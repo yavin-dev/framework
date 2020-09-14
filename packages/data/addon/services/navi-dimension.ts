@@ -13,6 +13,7 @@ export type ServiceOptions = {
   timeout?: number;
   page?: number;
   perPage?: number;
+  clientId?: string;
 };
 
 export default class NaviDimensionService extends Service {
