@@ -1,7 +1,7 @@
 import { module, test, skip } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import GraphQLScenario from 'navi-data/test-support/mirage/scenarios/elide-two';
+import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 import moment from 'moment';
 
 const TestRequest = {
