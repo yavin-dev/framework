@@ -6,8 +6,8 @@ import { RequestV2, AsyncQueryResponse, QueryStatus, RequestOptions } from 'navi
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { TestContext as Context } from 'ember-test-helpers';
-import ElideOneScenario from 'navi-data/test-support/mirage/scenarios/elide-one';
-import ElideTwoScenario from 'navi-data/test-support/mirage/scenarios/elide-two';
+import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
+import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';

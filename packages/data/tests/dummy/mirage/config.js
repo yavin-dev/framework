@@ -1,7 +1,7 @@
 import config from 'dummy/config/environment';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
 import BardFacts from 'navi-data/mirage/routes/bard-lite';
-import GraphQL from 'navi-data/test-support/mirage/routes/graphql';
+import GraphQL from 'navi-data/mirage/routes/graphql';
 
 export default function() {
   this.passthrough('/write-coverage');

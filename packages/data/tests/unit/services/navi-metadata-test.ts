@@ -6,7 +6,7 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import TableMetadataModel from 'navi-data/models/metadata/table';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import ElideTwoScenario from 'navi-data/test-support/mirage/scenarios/elide-two';
+import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
