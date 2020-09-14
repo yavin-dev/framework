@@ -20,7 +20,19 @@ export type RequestOptions = {
   dataSourceName?: string;
 };
 
-export type FilterOperator = 'eq' | 'neq' | 'in' | 'notin' | 'lt' | 'le' | 'gt' | 'ge' | 'isnull' | 'notnull' | 'bet';
+export type FilterOperator =
+  | 'eq'
+  | 'neq'
+  | 'in'
+  | 'notin'
+  | 'lt'
+  | 'le'
+  | 'gt'
+  | 'ge'
+  | 'isnull'
+  | 'notnull'
+  | 'bet'
+  | 'contains';
 
 export const SORT_DIRECTIONS = ['desc', 'asc'];
 

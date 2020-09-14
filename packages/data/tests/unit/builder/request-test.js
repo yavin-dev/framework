@@ -1,5 +1,5 @@
 import RequestBuilder from 'navi-data/builder/request';
-import { module, test } from 'qunit';
+import { module, test, skip } from 'qunit';
 
 const Request = RequestBuilder.create();
 
@@ -174,7 +174,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('filters', function(assert) {
+  skip('filters', function(assert) {
     assert.expect(5);
 
     assert.deepEqual(Request.filters, [], 'filters is initially an empty array');
