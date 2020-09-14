@@ -1077,20 +1077,18 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('urlForDownloadQuery', function(assert) {
+  test('urlForDownloadQuery', async function(assert) {
     assert.expect(7);
 
-    assert.throws(
-      () => {
-        //@ts-expect-error
-        Adapter.urlForDownloadQuery({ ...EmptyRequest, requestVersion: 'v1' });
-      },
+    assert.rejects(
+      //@ts-expect-error
+      Adapter.urlForDownloadQuery({ ...EmptyRequest, requestVersion: 'v1' }),
       /Fact request for fili adapter must be version 2/,
       'urlForDownloadQuery fails assertion if v1 request is passed in'
     );
 
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest)),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
@@ -1099,7 +1097,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
@@ -1120,7 +1118,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ]
     };
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(onlyDateFilter)),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
       HOST + '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' + 'metrics=m1,m2,r(p=123)&format=json',
       'urlForDownloadQuery correctly built the URL for a request with no filters'
     );
@@ -1154,7 +1152,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ]
     };
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(requestWithSort)),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(requestWithSort)),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json',
@@ -1162,7 +1160,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
       HOST +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
@@ -1171,7 +1169,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
 
     assert.equal(
-      decodeURIComponent(Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
+      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
       HOST2 +
         '/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&' +
         'metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&' +
