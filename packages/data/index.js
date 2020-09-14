@@ -17,6 +17,14 @@ module.exports = {
     }
   },
 
+  treeForAddon(tree) {
+    if (!this._isMirageEnabled()) {
+      //Remove mirage files if not enabled
+      tree = new Funnel(tree, { exclude: ['mirage/**'] });
+    }
+    return this._super.treeForAddon.call(this, tree);
+  },
+
   treeForVendor(vendorTree) {
     const trees = [];
 
