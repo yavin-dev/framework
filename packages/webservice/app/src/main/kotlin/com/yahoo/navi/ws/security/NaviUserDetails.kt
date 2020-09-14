@@ -15,12 +15,7 @@ class NaviUserDetails(user: User) : UserDetails {
     private val user: User = user
 
     override fun getAuthorities(): Collection<GrantedAuthority> {
-        val authorities = ArrayList<GrantedAuthority>()
-        this.user.roles.forEach { role ->
-            val authority = SimpleGrantedAuthority(role.id!!.toLowerCase())
-            authorities.add(authority)
-        }
-        return authorities
+        return this.user.roles.map { role -> SimpleGrantedAuthority(role.id!!.toLowerCase()) }
     }
 
     override fun getPassword(): String {
