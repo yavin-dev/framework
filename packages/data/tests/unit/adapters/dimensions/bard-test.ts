@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-
 import { TestContext as Context } from 'ember-test-helpers';
 import BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
