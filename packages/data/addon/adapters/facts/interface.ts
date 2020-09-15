@@ -4,6 +4,7 @@
  */
 
 import NaviFactsModel from 'navi-data/models/navi-facts';
+import { ColumnType } from 'navi-data/models/metadata/column';
 
 export type RequestV1 = TODO;
 
@@ -39,8 +40,6 @@ export const SORT_DIRECTIONS = ['desc', 'asc'];
 export type Parameters = Dict<string>;
 
 export type SortDirection = typeof SORT_DIRECTIONS[number];
-
-export type ColumnType = 'metric' | 'dimension' | 'timeDimension';
 
 export type Column = {
   field: string;

@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DimensionMetadataModel, { DimensionMetadata, DimensionMetadataPayload } from './dimension';
+import { ColumnType } from './column';
 
 interface TimeDimensionGrain {
   id: string;
@@ -22,6 +23,7 @@ export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
 
 export default class TimeDimensionMetadataModel extends DimensionMetadataModel
   implements TimeDimensionMetadata, TimeDimensionMetadataPayload {
+  metadataType: ColumnType = 'timeDimension';
   /**
    * @property {TimeDimensionGrain[]} supportedGrains
    */

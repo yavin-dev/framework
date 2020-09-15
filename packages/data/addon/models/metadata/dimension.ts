@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { assert } from '@ember/debug';
-import ColumnMetadataModel, { ColumnMetadata, ColumnMetadataPayload } from './column';
+import ColumnMetadataModel, { ColumnMetadata, ColumnMetadataPayload, ColumnType } from './column';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 
 type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
@@ -33,6 +33,8 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
    * @property {string} identifierField
    */
   static identifierField = 'id';
+
+  metadataType: ColumnType = 'dimension';
 
   /**
    * @property {Object[]} fields - Array of field objects
