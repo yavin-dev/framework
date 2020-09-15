@@ -55,7 +55,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
 
     const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'table0.dimension1', parameters: { foo: 'bar' }, type: 'dimension' }],
+      columns: [{ cid: '', field: 'table0.dimension1', parameters: { foo: 'bar' }, type: 'dimension' }],
       filters: [
         {
           field: 'table0.dimension1',
@@ -107,7 +107,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
       }
     };
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'table0.dimension1', parameters: { foo: 'baz' }, type: 'dimension' }],
+      columns: [{ cid: '', field: 'table0.dimension1', parameters: { foo: 'baz' }, type: 'dimension' }],
       filters: [],
       sorts: [],
       table: 'table0',
@@ -155,7 +155,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const query = 'something';
 
     const expectedRequest: RequestV2 = {
-      columns: [{ field: 'table0.dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
+      columns: [{ cid: '', field: 'table0.dimension2', parameters: { bang: 'boom' }, type: 'dimension' }],
       filters: [
         {
           field: 'table0.dimension2',

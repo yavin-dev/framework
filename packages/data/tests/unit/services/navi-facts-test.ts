@@ -13,11 +13,11 @@ const TestRequest: RequestV2 = {
   table: 'table1',
   requestVersion: '2.0',
   columns: [
-    { type: 'timeDimension', field: 'table1.dateTime', parameters: { grain: 'grain1' } },
-    { type: 'metric', field: 'm1', parameters: {} },
-    { type: 'metric', field: 'm2', parameters: {} },
-    { type: 'dimension', field: 'd1', parameters: { field: 'id' } },
-    { type: 'dimension', field: 'd2', parameters: { field: 'id' } }
+    { cid: '', type: 'timeDimension', field: 'table1.dateTime', parameters: { grain: 'grain1' } },
+    { cid: '', type: 'metric', field: 'm1', parameters: {} },
+    { cid: '', type: 'metric', field: 'm2', parameters: {} },
+    { cid: '', type: 'dimension', field: 'd1', parameters: { field: 'id' } },
+    { cid: '', type: 'dimension', field: 'd2', parameters: { field: 'id' } }
   ],
   filters: [
     {

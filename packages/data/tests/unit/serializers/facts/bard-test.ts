@@ -55,11 +55,11 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [
-        { type: 'timeDimension', field: 'tableName.dateTime', parameters: { grain: 'day' } },
-        { type: 'dimension', field: 'age', parameters: { field: 'id' } },
-        { type: 'dimension', field: 'age', parameters: { field: 'key' } },
-        { type: 'metric', field: 'metricName', parameters: {} },
-        { type: 'metric', field: 'metricName', parameters: { param: 'value' } }
+        { cid: '', type: 'timeDimension', field: 'tableName.dateTime', parameters: { grain: 'day' } },
+        { cid: '', type: 'dimension', field: 'age', parameters: { field: 'id' } },
+        { cid: '', type: 'dimension', field: 'age', parameters: { field: 'key' } },
+        { cid: '', type: 'metric', field: 'metricName', parameters: {} },
+        { cid: '', type: 'metric', field: 'metricName', parameters: { param: 'value' } }
       ],
       filters: [],
       sorts: [],

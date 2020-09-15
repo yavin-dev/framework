@@ -30,7 +30,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     // Create a request with only one dimension and its appropriate filters
     const request: RequestV2 = {
       table: tableId || '',
-      columns: [{ field: id, parameters, type: 'dimension' }],
+      columns: [{ cid: '', field: id, parameters, type: 'dimension' }],
       filters: predicate.map(pred => ({
         field: id,
         parameters,
