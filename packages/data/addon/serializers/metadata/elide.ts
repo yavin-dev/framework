@@ -6,7 +6,7 @@ import EmberObject from '@ember/object';
 import config from 'ember-get-config';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
-import { ColumnType } from '../../models/metadata/column';
+import { RawColumnType } from '../../models/metadata/column';
 import { TableMetadataPayload } from '../../models/metadata/table';
 import { MetricMetadataPayload } from '../../models/metadata/metric';
 import { DimensionMetadataPayload } from '../../models/metadata/dimension';
@@ -31,7 +31,7 @@ type ColumnNode = {
   category: string;
   valueType: TODO<string>;
   columnTags: string[];
-  columnType: ColumnType;
+  columnType: RawColumnType;
   expression: string;
 };
 export type MetricNode = ColumnNode & { defaultFormat: string };

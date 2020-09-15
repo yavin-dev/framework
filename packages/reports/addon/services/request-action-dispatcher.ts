@@ -32,7 +32,6 @@ export const RequestActions = {
   TOGGLE_PARAMETERIZED_METRIC_FILTER: 'toggleParameterizedMetricFilter',
 
   UPDATE_FILTER: 'updateFilter',
-  UPDATE_FILTER_PARAMS: 'updateFilterParams',
   UPDATE_COLUMN_FRAGMENT_WITH_PARAMS: 'updateColumnFragmentWithParams',
   UPDATE_TABLE: 'updateTable',
   UPSERT_SORT: 'upsertSort'
