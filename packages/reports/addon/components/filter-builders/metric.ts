@@ -2,20 +2,12 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import BaseComponent from './base';
-import { computed } from '@ember/object';
-import { A as arr } from '@ember/array';
 
-export default class FilterBuildersNumberDimension extends BaseComponent {
-  /**
-   * @property {Object} requestFragment - filter fragment from request model
-   * @type Any
-   */
-  requestFragment = undefined;
+import BaseFilterBuilderComponent from './base';
 
+export default class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
-   * @property {Array} supportedOperators
-   * @override
+   * @property {Object[]} supportedOperators
    */
   get supportedOperators() {
     return [
@@ -60,23 +52,5 @@ export default class FilterBuildersNumberDimension extends BaseComponent {
         valuesComponent: 'filter-values/range-input'
       }
     ];
-  }
-
-  /**
-   * @property {Object} filter
-   * @override
-   */
-  @computed('supportedOperators', 'requestFragment.{operator,dimension,values.[]}')
-  get filter() {
-    const { requestFragment } = this;
-
-    const { dimension, operator: operatorId, rawValues: values } = requestFragment;
-    const operator = arr(this.supportedOperators).findBy('id', operatorId);
-
-    return {
-      subject: dimension,
-      operator,
-      values: arr(values)
-    };
   }
 }

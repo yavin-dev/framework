@@ -10,7 +10,6 @@
  */
 import { A as arr } from '@ember/array';
 import { computed, action } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
 import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
@@ -149,11 +148,6 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   }
 
   /**
-   * @property {String} displayName - display name for the filter
-   */
-  @readOnly('filter.subject.name') displayName;
-
-  /**
    * @property {Object} filter
    * @override
    */
@@ -163,7 +157,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
 
     return {
       subject: { name: `Date Time (${this.dateTimePeriodName})` },
-      operator: this.operatorForInterval(interval),
+      operator: this.operatorForInterval(interval).id,
       values: arr([interval])
     };
   }
@@ -175,7 +169,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   @action
   setOperator(operatorObject) {
     const newOperator = operatorObject.id;
-    const oldOperator = this.filter.operator.id;
+    const oldOperator = this.filter.operator;
 
     if (oldOperator === newOperator) {
       return;

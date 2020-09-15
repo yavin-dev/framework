@@ -4,27 +4,19 @@
     <FilterBuilders::Collapsed
       @displayName={{this.displayName}}
       @filter={{this.filter}}
-      @request={{@request}}
+      @selectedOperator={{this.selectedOperator}}
     />
   </span>
 {{else}}
   <div class="filter-builder" ...attributes>
     <span class="filter-builder__subject">
       {{this.displayName}}
-      {{#if (has-parameters this.filter.subject)}}
-        <MetricFilterConfig
-          class="filter-builder__metric-config"
-          @metric={{this.filter.subject}}
-          @request={{@request}}
-          @paramClicked={{update-report-action "UPDATE_FILTER_PARAMS" this.filter}}
-        />
-      {{/if}}
     </span>
     <PowerSelect
       class="filter-builder__operator"
       @dropdownClass="filter-builder__operator-dropdown"
       @options={{this.supportedOperators}}
-      @selected={{this.filter.operator}}
+      @selected={{this.selectedOperator}}
       @searchEnabled={{false}}
       @tagName="span"
       @triggerClass="filter-builder__select-trigger"
@@ -34,12 +26,13 @@
       {{operator.name}}
     </PowerSelect>
     <span class="filter-builder__values">
-      {{component
-        this.filter.operator.valuesComponent
-        filter=this.filter
-        request=@request
-        onUpdateFilter=@onUpdateFilter
-      }}
+      {{#let (component this.selectedOperator.valuesComponent) as |ValuesComponent|}}
+        <ValuesComponent
+          @filter={{this.filter}}
+          @request={{@request}}
+          @onUpdateFilter={{@onUpdateFilter}}
+        />
+      {{/let}}
     </span>
   </div>
 {{/if}}

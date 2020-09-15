@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let consumer,
   dispatchedActions = [],
@@ -15,25 +16,24 @@ const MockDispatcher = {
 
 module('Unit | Consumer | request filter', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
     consumer = this.owner.factoryFor('consumer:request/filter').create({ requestActionDispatcher: MockDispatcher });
+    this.metadataService = this.owner.lookup('service:navi-metadata');
+    await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('TOGGLE_DIMENSION_FILTER', function(assert) {
     assert.expect(4);
 
     const filter = { type: 'dimension', columnMetadata: 'age' };
-    const currentModel = {
-      request: {
-        filters: [filter]
-      }
-    };
+    const modelFor = () => ({ request: { filters: [filter] } });
 
-    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { currentModel }, 'age');
+    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { modelFor }, 'age');
     assert.deepEqual(
       dispatchedActions,
       [RequestActions.REMOVE_FILTER],
@@ -44,7 +44,7 @@ module('Unit | Consumer | request filter', function(hooks) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
-    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { currentModel }, 'browser');
+    consumer.send(RequestActions.TOGGLE_DIMENSION_FILTER, { modelFor }, 'browser');
     assert.deepEqual(
       dispatchedActions,
       [RequestActions.ADD_DIMENSION_FILTER],
@@ -60,20 +60,15 @@ module('Unit | Consumer | request filter', function(hooks) {
   test('ADD_DIMENSION_FILTER', function(assert) {
     assert.expect(1);
 
-    const dimensionMetadataModel = {
-      id: 'age',
-      primaryKeyFieldName: 'id',
-      source: 'bardOne'
-    };
-
-    const currentModel = {
+    const dimensionMetadataModel = this.metadataService.getById('dimension', 'age', 'bardOne');
+    const modelFor = () => ({
       request: {
         addFilter(filterOptions) {
           assert.deepEqual(
             filterOptions,
             {
               type: 'dimension',
-              dataSource: 'bardOne',
+              source: 'bardOne',
               field: 'age',
               parameters: {
                 field: 'id'
@@ -85,8 +80,8 @@ module('Unit | Consumer | request filter', function(hooks) {
           );
         }
       }
-    };
+    });
 
-    consumer.send(RequestActions.ADD_DIMENSION_FILTER, { currentModel }, dimensionMetadataModel);
+    consumer.send(RequestActions.ADD_DIMENSION_FILTER, { modelFor }, dimensionMetadataModel);
   });
 });
