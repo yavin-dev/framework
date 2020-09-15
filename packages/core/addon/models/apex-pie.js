@@ -47,14 +47,18 @@ export default VisualizationBase.extend(Validations, {
     series: {
       type: string,
       config: {
-        colors: [{ color: 'string', label: 'string' } ...]
+        colors: [{ color: 'string', label: 'string' } ...],
+        dataLabelsVisible: boolean,
+        legendVisible: boolean
       }
     }
     */
     let meta = {
       series: {
         config: {
-          colors: this.getWithDefault('metadata.series.config.colors', [])
+          colors: this.getWithDefault('metadata.series.config.colors', []),
+          dataLabelsVisible: this.getWithDefault('metadata.series.config.dataLabelsVisible', true),
+          legendVisible: this.getWithDefault('metadata.series.config.legendVisible', true)
         }
       }
     };

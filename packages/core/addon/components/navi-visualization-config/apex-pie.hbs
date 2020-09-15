@@ -1,6 +1,41 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class='apex-pie-config'>
-  <div class="visualization-config__warn-msg">
-    No configuration options available.
+<div class='apex-pie-config' ...attributes>
+  <span class='apex-pie-config__label-options-section__header'>
+    Label Options:
+  </span>
+  <div class='apex-pie-config__label-options-section'>
+    <div class='apex-pie-config__label-options-section__toggle-legend'>
+      <span class='apex-pie-config__label-options-section__toggle-legend__label'>
+        Legend Visibility:
+      </span>
+      <XToggle
+        class='apex-pie-config__label-options-section__toggle-legend__switch'
+        @value={{readonly @options.series.config.legendVisible}}
+        @onToggle={{fn this.updateChart 'legendVisible'}}
+        @size='small'
+      />
+    </div>
+    <div class='apex-pie-config__label-options-section__toggle-data-labels'>
+      <span class='apex-pie-config__label-options-section__toggle-data-labels__label'>
+        Show Percentages:
+      </span>
+      <XToggle
+        class='apex-pie-config__label-options-section__toggle-data-labels__switch'
+        @value={{readonly @options.series.config.dataLabelsVisible}}
+        @onToggle={{fn this.updateChart 'dataLabelsVisible'}}
+        @size='small'
+      />
+    </div>
+  </div>
+  <span class='apex-pie-config__chart-colors-section__header'>
+    Chart Colors:
+  </span>
+  <div class='apex-pie-config__chart-colors-section'>
+    <NaviVisualizationConfig::ColorChange
+      @request={{@request}}
+      @response={{@response}}
+      @seriesConfig={{readonly @options.series.config}}
+      @onUpdateConfig={{fn this.updateChart 'colors'}}
+    />
   </div>
 </div>
