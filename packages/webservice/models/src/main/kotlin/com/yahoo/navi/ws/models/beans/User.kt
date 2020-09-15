@@ -87,6 +87,6 @@ class User : HasRoles {
     )
     var favoriteDashboards: MutableSet<Dashboard> = mutableSetOf()
 
-    @OneToMany
+    @ManyToMany
     override var roles: MutableSet<Role> = mutableSetOf()
 }
