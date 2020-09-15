@@ -18,7 +18,6 @@ import { tagName } from '@ember-decorators/component';
 import { getRequestDimensions } from 'navi-core/utils/chart-data';
 import { assignColors } from 'navi-core/utils/enums/denali-colors';
 
-@tagName('')
 class NaviVisualizationConfigColorChangeComponent extends Component {
   @tracked selectedLabelColor = null;
 
