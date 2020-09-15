@@ -51,19 +51,21 @@ export default class MultipleFormatExport extends Component {
    */
   @computed('report.{request,visualization,validations.isTruelyValid}')
   get pdfHref() {
-    const { report, compression, store } = this;
-    let modelWithId = report;
+    const { report: model, compression, store } = this;
+    const clonedModel = model.toJSON();
 
-    /*
-     * Model compression requires an id, so if the report doesn't have one,
-     * create a copy using the tempId as the id
-     */
-    if (!report.id) {
-      modelWithId = store.createRecord('report', report.clone());
-      modelWithId.set('id', modelWithId.tempId);
-    }
+    //Create new report model in case dealing with a widget model
+    const newModel = store.createRecord('report', {
+      title: clonedModel.title,
+      request: model.get('request').clone(),
+      visualization: store.createFragment(clonedModel.visualization.type, clonedModel.visualization)
+    });
 
-    return compression.compressModel(modelWithId).then(serializedModel => `/export?reportModel=${serializedModel}`);
+    //Model compression requires an id
+    newModel.set('id', newModel.tempId);
+
+    compression.compressModel(newModel).then(serializedModel => console.log(serializedModel));
+    return compression.compressModel(newModel).then(serializedModel => `/export?reportModel=${serializedModel}`);
   }
 
   /**
