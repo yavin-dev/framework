@@ -64,7 +64,6 @@ export default class MultipleFormatExport extends Component {
     //Model compression requires an id
     newModel.set('id', newModel.tempId);
 
-    compression.compressModel(newModel).then(serializedModel => console.log(serializedModel));
     return compression.compressModel(newModel).then(serializedModel => `/export?reportModel=${serializedModel}`);
   }
 
