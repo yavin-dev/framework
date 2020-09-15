@@ -13,6 +13,10 @@ import FragmentFactory from 'navi-core/services/fragment-factory';
 interface TestContext extends Context {
   filter: FilterFragment;
 }
+const TEMPLATE = hbs`<FilterBuilders::Metric 
+  @filter={{this.filter}} 
+  @isCollapsed={{this.isCollapsed}} 
+/>`;
 
 module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);
@@ -21,16 +25,12 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
   hooks.beforeEach(async function(this: TestContext) {
     const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
     this.set('filter', factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', [30]));
+    this.set('isCollapsed', false);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('displayName', async function(this: TestContext, assert) {
-    await render(
-      hbs`<FilterBuilders::Metric 
-        @filter={{this.filter}} 
-        @isCollapsed={{false}} 
-      />`
-    );
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder__subject')
@@ -59,12 +59,8 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
   });
 
   test('collapsed', async function(assert) {
-    await render(
-      hbs`<FilterBuilders::Metric 
-        @filter={{this.filter}} 
-        @isCollapsed={{true}} 
-      />`
-    );
+    this.set('isCollapsed', true);
+    await render(TEMPLATE);
 
     assert.dom('.filter-builder').hasText('Page Views greater than (>) 30', 'Rendered correctly when collapsed');
   });

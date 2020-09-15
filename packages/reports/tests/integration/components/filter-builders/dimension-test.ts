@@ -12,6 +12,11 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 interface TestContext extends Context {
   filter: FilterFragment;
 }
+const TEMPLATE = hbs`
+<FilterBuilders::Dimension
+  @filter={{this.filter}}
+  @isCollapsed={{this.isCollapsed}} />
+/>`;
 
 module('Integration | Component | filter-builders/dimension', function(hooks) {
   setupRenderingTest(hooks);
@@ -23,15 +28,12 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       'filter',
       factory.createFilter('dimension', 'bardOne', 'userDeviceType', { field: 'id' }, 'in', [1, 2, 3])
     );
+    this.set('isCollapsed', false);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('it renders', async function(this: TestContext, assert) {
-    await render(hbs`
-    <FilterBuilders::Dimension
-      @filter={{this.filter}}
-      @isCollapsed={{false}} />
-    />`);
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder-dimension__subject')
@@ -61,10 +63,8 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
   });
 
   test('collapsed', async function(this: TestContext, assert) {
-    await render(hbs`<FilterBuilders::Dimension
-      @filter={{this.filter}}
-      @isCollapsed={{true}} />
-    `);
+    this.set('isCollapsed', true);
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder')

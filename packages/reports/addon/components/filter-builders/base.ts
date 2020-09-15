@@ -44,7 +44,7 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
     return this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
   }
 
-  @computed('supportedOperators', 'args.filter.{operator,metric,values.[]}')
+  @computed('supportedOperator', 'args.filter.{operator,validations,values.[]}')
   get filter() {
     const { values, validations } = this.args.filter;
     const { selectedOperator: operator } = this;

@@ -12,6 +12,10 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 interface TestContext extends Context {
   filter: FilterFragment;
 }
+const TEMPLATE = hbs`<FilterBuilders::DateDimension
+@filter={{this.filter}}
+@isCollapsed={{true}} />
+`;
 
 module('Integration | Component | filter-builders/date-dimension', function(hooks) {
   setupRenderingTest(hooks);
@@ -23,7 +27,7 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
       'filter',
       factory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'gte', ['2020-09-08'])
     );
-
+    this.set('isCollapsed', false);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
@@ -51,10 +55,8 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
   });
 
   test('collapsed', async function(this: TestContext, assert) {
-    await render(hbs`<FilterBuilders::DateDimension
-      @filter={{this.filter}}
-      @isCollapsed={{true}} />
-    `);
+    this.set('isCollapsed', true);
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder')

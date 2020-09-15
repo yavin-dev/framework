@@ -10,7 +10,6 @@
  */
 import { A as arr } from '@ember/array';
 import { computed, action } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
 import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-core/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
@@ -147,11 +146,6 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
       return new Interval(new Duration(`P${intervalValue}D`), end);
     }
   }
-
-  /**
-   * @property {String} displayName - display name for the filter
-   */
-  @readOnly('filter.displayName') displayName;
 
   /**
    * @property {Object} filter

@@ -21,6 +21,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
     this.set('displayName', 'Foo');
     this.set('filter', factory.createFilter('dimension', 'bardOne', 'Foo', {}, 'in', []));
     this.set('supportedOperators', [{ id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' }]);
+    this.set('selectedOperator', { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' });
     this.owner.register(
       'component:mock/values-component',
       Component.extend({
@@ -32,7 +33,6 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
 
   test('it renders', async function(assert) {
     assert.expect(2);
-    this.set('selectedOperator', arr(this.supportedOperators).findBy('id', this.filter.operator));
     await render(hbs`<FilterBuilders::Collapsed
       @displayName={{this.displayName}}
       @filter={{this.filter}}
