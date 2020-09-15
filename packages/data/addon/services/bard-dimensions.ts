@@ -54,12 +54,6 @@ export default class BardDimensionService extends Service {
 
   /**
    * @private
-   * @property {Object} _serializer - the serializer object
-   */
-  _serializer!: TODO;
-
-  /**
-   * @private
    * @property {String} _dimensionKeyPrefix - the prefix for dimension keys stored in Keg
    */
   _dimensionKeyPrefix = 'dimension/';
@@ -74,10 +68,8 @@ export default class BardDimensionService extends Service {
     super(...arguments);
     const owner = getOwner(this);
 
-    //Instantiating the dimension adapter & serializer
     this._bardAdapter = owner.lookup('adapter:dimensions/bard');
     this._kegAdapter = owner.lookup('adapter:dimensions/keg');
-    this._serializer = owner.lookup('serializer:dimensions/bard');
   }
 
   /**
@@ -104,7 +96,7 @@ export default class BardDimensionService extends Service {
    * @returns {Promise} - Promise with the bard dimension model object
    */
   all(dimension: string, options: TODO = {}) {
-    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter } = this;
 
     // fetch all from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
@@ -118,7 +110,7 @@ export default class BardDimensionService extends Service {
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
     return bardAdapter.all({ columnMetadata }, options).then((recordsFromBard: TODO) => {
-      const serialized = serializer.normalize(dimension, recordsFromBard);
+      const serialized = recordsFromBard?.rows;
       const dimensions = kegAdapter.pushMany(dimension, serialized, options);
 
       // Fili provides pagination metadata only when data is partially fetched
@@ -164,7 +156,7 @@ export default class BardDimensionService extends Service {
    * @returns {BardDimensionArray} - array of bard dimension model objects
    */
   find(dimension: string, andQueries: TODO, options: TODO = {}) {
-    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter } = this;
 
     // fetch from keg if all records are loaded in keg
     if (this.getLoadedStatus(dimension)) {
@@ -179,7 +171,7 @@ export default class BardDimensionService extends Service {
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
     return bardAdapter.find({ columnMetadata }, andQueries, options).then((recordsFromBard: TODO) => {
-      const serialized = serializer.normalize(dimension, recordsFromBard);
+      const serialized = recordsFromBard?.rows;
       const dimensions = kegAdapter.pushMany(dimension, serialized, options);
       return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
     });
@@ -204,15 +196,15 @@ export default class BardDimensionService extends Service {
    * @returns {Promise} - Promise with the bard dimension model object
    */
   findById(dimension: string, value: string, options: TODO = {}) {
-    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter, _serializer: serializer } = this;
+    const { _kegAdapter: kegAdapter, _bardAdapter: bardAdapter } = this;
     const namespace = options.dataSourceName || getDefaultDataSourceName();
 
     return kegAdapter.findById(dimension, value, namespace).then((recordFromKeg: TODO) => {
       if (!isEmpty(recordFromKeg)) {
         return recordFromKeg;
       } else {
-        return bardAdapter.findById(dimension, value, options).then((recordFromBard: TODO) => {
-          const serialized = serializer.normalize(dimension, recordFromBard);
+        return bardAdapter.findById(dimension, value, options).then((recordsFromBard: TODO) => {
+          const serialized = recordsFromBard?.rows;
           return kegAdapter.pushMany(dimension, serialized, options).firstObject;
         });
       }
