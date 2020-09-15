@@ -185,13 +185,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('columns.[]')
   get timeGrainColumn() {
-    return this.columns.find(column => column.type === 'timeDimension' && column.field === 'dateTime');
+    return this.columns.filter(column => column.type === 'timeDimension')[0];
   }
 
   /**
    * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
-  @computed('timeGrainColumn')
+  @computed('timeGrainColumn.parameters.grain')
   get timeGrain() {
     return this.timeGrainColumn?.parameters?.grain;
   }
@@ -201,7 +201,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('filters.[]')
   get dateTimeFilter() {
-    return this.filters.find(filter => filter.type === 'timeDimension' && filter.field === 'dateTime');
+    return this.filters.filter(filter => filter.type === 'timeDimension')[0];
   }
 
   /**
@@ -224,7 +224,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   /**
    * Adds the column to the request
    */
-  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias: string }): ColumnFragment {
+  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias?: string }): ColumnFragment {
     return this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
   }
 
