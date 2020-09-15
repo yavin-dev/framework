@@ -13,10 +13,10 @@ interface TestContext extends Context {
   filter: FilterFragment;
 }
 const TEMPLATE = hbs`
-<FilterBuilders::Dimension
-  @filter={{this.filter}}
-  @isCollapsed={{this.isCollapsed}} />
-/>`;
+  <FilterBuilders::Dimension
+    @filter={{this.filter}}
+    @isCollapsed={{this.isCollapsed}}
+  />`;
 
 module('Integration | Component | filter-builders/dimension', function(hooks) {
   setupRenderingTest(hooks);

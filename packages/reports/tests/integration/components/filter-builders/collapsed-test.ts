@@ -20,7 +20,6 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
     await metadataService.loadMetadata();
     this.set('displayName', 'Foo');
     this.set('filter', factory.createFilter('dimension', 'bardOne', 'Foo', {}, 'in', []));
-    this.set('supportedOperators', [{ id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' }]);
     this.set('selectedOperator', { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' });
     this.owner.register(
       'component:mock/values-component',
@@ -32,7 +31,6 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
   });
 
   test('it renders', async function(assert) {
-    assert.expect(2);
     await render(hbs`<FilterBuilders::Collapsed
       @displayName={{this.displayName}}
       @filter={{this.filter}}
@@ -40,9 +38,5 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
       @selectedOperator={{this.selectedOperator}} />`);
 
     assert.dom().hasText('Foo equals Test', 'Renders correctly without a field');
-
-    this.set('field', 'desc');
-
-    assert.dom().hasText('Foo (desc) equals Test', 'Renders correctly with a field');
   });
 });

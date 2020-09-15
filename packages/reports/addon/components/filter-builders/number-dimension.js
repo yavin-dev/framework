@@ -17,48 +17,50 @@ export default class FilterBuildersNumberDimension extends BaseComponent {
    * @property {Array} supportedOperators
    * @override
    */
-  supportedOperators = [
-    {
-      id: 'gt',
-      name: 'Greater than (>)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'gte',
-      name: 'Greater than or equals (>=)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'lt',
-      name: 'Less than (<)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'lte',
-      name: 'Less than or equals (<=)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'eq',
-      name: 'Equals (=)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'neq',
-      name: 'Not equals (!=)',
-      valuesComponent: 'filter-values/value-input'
-    },
-    {
-      id: 'bet',
-      name: 'Between (<=>)',
-      valuesComponent: 'filter-values/range-input'
-    },
-    {
-      id: 'nbet',
-      name: 'Not between (!<=>)',
-      valuesComponent: 'filter-values/range-input'
-    }
-  ];
+  get supportedOperators() {
+    return [
+      {
+        id: 'gt',
+        name: 'Greater than (>)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'gte',
+        name: 'Greater than or equals (>=)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'lt',
+        name: 'Less than (<)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'lte',
+        name: 'Less than or equals (<=)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'eq',
+        name: 'Equals (=)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'neq',
+        name: 'Not equals (!=)',
+        valuesComponent: 'filter-values/value-input'
+      },
+      {
+        id: 'bet',
+        name: 'Between (<=>)',
+        valuesComponent: 'filter-values/range-input'
+      },
+      {
+        id: 'nbet',
+        name: 'Not between (!<=>)',
+        valuesComponent: 'filter-values/range-input'
+      }
+    ];
+  }
 
   /**
    * @property {Object} filter

@@ -13,10 +13,11 @@ import FragmentFactory from 'navi-core/services/fragment-factory';
 interface TestContext extends Context {
   filter: FilterFragment;
 }
-const TEMPLATE = hbs`<FilterBuilders::Metric 
-  @filter={{this.filter}} 
-  @isCollapsed={{this.isCollapsed}} 
-/>`;
+const TEMPLATE = hbs`
+  <FilterBuilders::Metric 
+    @filter={{this.filter}} 
+    @isCollapsed={{this.isCollapsed}} 
+  />`;
 
 module('Integration | Component | filter-builders/metric', function(hooks) {
   setupRenderingTest(hooks);

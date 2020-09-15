@@ -12,10 +12,11 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 interface TestContext extends Context {
   filter: FilterFragment;
 }
-const TEMPLATE = hbs`<FilterBuilders::DateDimension
-@filter={{this.filter}}
-@isCollapsed={{true}} />
-`;
+const TEMPLATE = hbs`
+  <FilterBuilders::DateDimension
+    @filter={{this.filter}}
+    @isCollapsed={{this.isCollapsed}} 
+  />`;
 
 module('Integration | Component | filter-builders/date-dimension', function(hooks) {
   setupRenderingTest(hooks);
@@ -32,11 +33,7 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
   });
 
   test('it renders', async function(this: TestContext, assert) {
-    await render(hbs`
-        <FilterBuilders::DateDimension
-          @filter={{this.filter}}
-          @isCollapsed={{false}} />
-        />`);
+    await render(TEMPLATE);
 
     assert
       .dom('.filter-builder__subject')
