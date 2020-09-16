@@ -21,7 +21,7 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import RequestFragment from 'navi-core/addon/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 const DEFAULT_METRIC_FILTER = {
   operator: 'gt',
