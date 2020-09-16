@@ -321,8 +321,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return url
    */
   urlForFindQuery(request: RequestV2, options?: RequestOptions): string {
-    assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
-
     // Decorate and translate the request
     let decoratedRequest = this._decorate(request),
       path = this._buildURLPath(decoratedRequest, options),

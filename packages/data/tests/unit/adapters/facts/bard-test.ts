@@ -975,16 +975,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('urlForFindQuery', function(assert) {
-    assert.expect(7);
-
-    assert.throws(
-      () => {
-        //@ts-expect-error
-        Adapter.urlForFindQuery({ ...EmptyRequest, requestVersion: 'v1' });
-      },
-      /Fact request for fili adapter must be version 2/,
-      'urlForFindQuery fails assertion if v1 request is passed in'
-    );
+    assert.expect(6);
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
@@ -1078,15 +1069,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('urlForDownloadQuery', async function(assert) {
-    assert.expect(7);
-
-    assert.rejects(
-      //@ts-expect-error
-      Adapter.urlForDownloadQuery({ ...EmptyRequest, requestVersion: 'v1' }),
-      /Fact request for fili adapter must be version 2/,
-      'urlForDownloadQuery fails assertion if v1 request is passed in'
-    );
-
+    assert.expect(6);
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
       HOST +
@@ -1179,16 +1162,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('fetchDataForRequest', function(assert) {
-    assert.expect(2);
-
-    assert.throws(
-      () => {
-        //@ts-expect-error
-        Adapter.fetchDataForRequest({ ...EmptyRequest, requestVersion: 'v1' });
-      },
-      /Fact request for fili adapter must be version 2/,
-      'fetchDataForRequest fails assertion if v1 request is passed in'
-    );
+    assert.expect(1);
 
     return Adapter.fetchDataForRequest(TestRequest).then(function(result) {
       return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');
