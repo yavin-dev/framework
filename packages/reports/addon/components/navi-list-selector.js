@@ -35,7 +35,7 @@ export default Component.extend({
   /*
    * @property {String} errorMessage
    */
-  errorMessage: computed('query', 'showSelected', 'title', function() {
+  errorMessage: computed('query.length', 'showSelected', 'title', function() {
     if (get(this, 'query.length') > 0) {
       return `No ${get(this, 'title').toLowerCase()} found`;
     } else if (get(this, 'showSelected')) {

@@ -35,7 +35,7 @@ export default class MissingIntervalWarning extends Component {
   /**
    * @property {Array} missingIntervals - The formatted intervals displayed in the details section
    */
-  @computed('response')
+  @computed('response.meta.missingIntervals')
   get missingIntervals() {
     let rawIntervals = get(this, 'response.meta.missingIntervals') || [];
 

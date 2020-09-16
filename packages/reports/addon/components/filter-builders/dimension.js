@@ -26,7 +26,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Array} supportedOperators
    * @override
    */
-  @computed('requestFragment.dimension')
+  @computed('requestFragment.dimension.storageStrategy')
   get supportedOperators() {
     let storageStrategy = get(this, 'requestFragment.dimension.storageStrategy'),
       inputComponent = 'filter-values/dimension-select';
@@ -71,7 +71,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   /**
    * @property {Array} fields - List of fields that a user can choose from
    */
-  @computed('requestFragment.dimension')
+  @computed('requestFragment.dimension.fields')
   get fields() {
     let fields = get(this, 'requestFragment.dimension.fields');
     return fields ? fields.map(field => field.name) : ['id', 'desc'];
@@ -81,7 +81,7 @@ class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.{operator,dimension,rawValues.[],field}')
+  @computed('requestFragment.{operator,dimension,rawValues.[],field}', 'supportedOperators')
   get filter() {
     let dimensionFragment = get(this, 'requestFragment'),
       operatorId = get(dimensionFragment, 'operator'),
