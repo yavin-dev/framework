@@ -42,7 +42,7 @@ install:
   - if [[ "${PACKAGE}" == "navi-webservice" ]]; then
     pushd packages/webservice && ./gradlew assemble && popd;
     else
-    npm ci;
+    travis_wait npm ci;
     fi
 script:
   - if [[ "${PACKAGE}" != "navi-app" && "${PACKAGE}" != "navi-webservice" ]]; then
