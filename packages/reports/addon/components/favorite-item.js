@@ -26,7 +26,7 @@ export default Component.extend({
   /**
    * @property {String} itemType
    */
-  itemType: computed('item', function() {
+  itemType: computed('item.constructor.modelName', function() {
     return get(this, 'item.constructor.modelName');
   }),
 

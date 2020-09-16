@@ -124,7 +124,7 @@ export default Component.extend({
    * @private
    * @property {Number} _perPage - number of items loaded per page based on trim flag
    */
-  _perPage: computed('trim', 'perPage', function() {
+  _perPage: computed('trim', 'perPage', 'initialItemsToRender', function() {
     if (get(this, 'trim')) {
       return get(this, 'initialItemsToRender');
     }

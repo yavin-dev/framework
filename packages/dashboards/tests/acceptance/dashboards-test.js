@@ -94,7 +94,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/4');
 
     //trigger a change
-    const singlegrid = $('.grid-stack').data('gridstack');
+    const singlegrid = find('.grid-stack').gridstack;
     const item = findAll('.grid-stack-item')[0];
     run(() => {
       singlegrid.resize(item, 12, 4);
@@ -123,7 +123,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     //swap widget rows
-    const grid = $('.grid-stack').data('gridstack');
+    const grid = find('.grid-stack').gridstack;
     const items = findAll('.grid-stack-item');
 
     run(() => {

@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { parse } from 'papaparse';
+import { parse, ParseResult } from 'papaparse';
 
 const parseConfig = {
   delimiter: ','
@@ -16,7 +16,7 @@ const parseConfig = {
 export function parseSingleFilter(serializedFilter: string) {
   const [, dimension, field, operator, valuesString] = serializedFilter.match(/(.*)\|(.*)-(.*)\[(.*)\]/) || [];
 
-  const results = parse(valuesString, parseConfig);
+  const results: ParseResult<string[]> = parse(valuesString, parseConfig);
   if (results.errors.length) {
     throw new Error(`Failed in parseFilter(), ${JSON.stringify(results.errors)}`);
   } else if (results.data.length === 0 || results.data[0].length === 0) {
