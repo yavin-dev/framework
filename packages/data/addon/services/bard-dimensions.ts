@@ -389,7 +389,7 @@ export default class BardDimensionService extends Service {
    */
   _createDimensionModelFactory(dimensionName: string, namespace = getDefaultDataSourceName()) {
     const metadata = this.naviMetadata.getById('dimension', dimensionName, namespace),
-      dimensionModel = getOwner(this).factoryFor('model:bard-dimension').class,
+      dimensionModel = getOwner(this).factoryFor('model:legacy-bard-dimension').class,
       identifierField = metadata?.primaryKeyFieldName;
 
     return dimensionModel.extend().reopenClass({ identifierField, dimensionName, metadata });

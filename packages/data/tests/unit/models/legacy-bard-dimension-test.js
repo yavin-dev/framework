@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import { isEqual } from '@ember/utils';
-import BardDimension from 'navi-data/models/bard-dimension';
+import BardDimension from 'navi-data/models/legacy-bard-dimension';
 
-module('Unit | Model | Bard Dimension', function() {
+module('Unit | Model | Legacy Bard Dimension', function() {
   test('toString', function(assert) {
     assert.expect(1);
     let factory = BardDimension.extend().reopenClass({
