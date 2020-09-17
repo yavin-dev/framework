@@ -34,11 +34,6 @@ const TestRequest: RequestV2 = {
   dataSource: 'elideOne'
 };
 
-// Double the escaped characters as well as escape the double quote character
-function escapeQuotes(str: string) {
-  return str.replace(/\\"/g, '\\\\\\"');
-}
-
 let Server: Pretender;
 
 module('Unit | Adapter | facts/elide', function(hooks) {
@@ -72,9 +67,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
-      escapeQuotes(
-        '{"query":"{ table1(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}'
-      ),
+      '{"query":"{ table1(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}',
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
     );
 
@@ -111,7 +104,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
-      escapeQuotes(`{"query":"{ myTable(sort: \\"-m1(p: q),d1\\") { edges { node { m1(p: q) d1 } } } }"}`),
+      `{"query":"{ myTable(sort: \\"-m1(p: q),d1\\") { edges { node { m1(p: q) d1 } } } }"}`,
       'Request with sorts and parameters is queried correctly'
     );
 
@@ -132,9 +125,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      escapeQuotes(
-        `{"query":"{ myTable(filter: \\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\") { edges { node { m1(p: q) d1 } } } }"}`
-      ),
+      `{"query":"{ myTable(filter: \\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\") { edges { node { m1(p: q) d1 } } } }"}`,
       'Request with filters and parameters is queried correctly'
     );
 
@@ -151,7 +142,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
-      escapeQuotes(`{"query":"{ myTable(first: \\"5\\") { edges { node { m1(p: q) d1 } } } }"}`),
+      `{"query":"{ myTable(first: \\"5\\") { edges { node { m1(p: q) d1 } } } }"}`,
       'Request with limit is queried correctly'
     );
   });
@@ -175,7 +166,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       const expectedTable = TestRequest.table;
       const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
       const expectedArgs =
-        '(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\")';
+        '(filter: "d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)",sort: "d1",first: "10000")';
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
