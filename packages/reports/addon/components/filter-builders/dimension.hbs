@@ -1,9 +1,10 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
+  {{debugger}}
   <span class="filter-builder" ...attributes>
     <FilterBuilders::Collapsed
-      @displayName={{this.displayName}}
-      @filter={{this.filter}}
+      @displayName={{@filter.displayName}}
+      @filter={{@filter}}
       @request={{@request}}
       @field={{this.field}}
       @selectedOperator={{this.selectedOperator}}
@@ -12,7 +13,7 @@
 {{else}}
   <div class="filter-builder" ...attributes>
     <span class="filter-builder-dimension__subject">
-      {{this.displayName}}
+      {{@filter.displayName}}
     </span>
     <PowerSelect
       class="filter-builder-dimension__operator"
@@ -30,7 +31,7 @@
     <span class="filter-builder-dimension__values {{if this.showFields "filter-builder-dimension__values--short"}}">
       {{#let (component this.selectedOperator.valuesComponent) as |ValuesComponent|}}
         <ValuesComponent
-          @filter={{this.filter}}
+          @filter={{@filter}}
           @request={{@request}}
           @onUpdateFilter={{@onUpdateFilter}}
         />
