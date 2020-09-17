@@ -145,6 +145,27 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       `{"query":"{ myTable(first: \\"5\\") { edges { node { m1(p: q) d1 } } } }"}`,
       'Request with limit is queried correctly'
     );
+
+    assert.equal(
+      adapter['dataQueryFromRequest']({
+        table: 'myTable',
+        columns: [
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] },
+        ],
+        requestVersion: '2.0',
+        dataSource: 'elideOne',
+        limit: null
+      }),
+      escapeQuotes(
+        `{"query":"{ myTable(filter: \\"m1(p: q)=ge=(v1);m1(p: q)=lt=(v2)\\") { edges { node { m1(p: q) d1 } } } }"}`
+      ),
+      'Request with "between" filter operator splits the filter into two correctly'
+    );
   });
 
   test('createAsyncQuery - success', async function(assert) {
