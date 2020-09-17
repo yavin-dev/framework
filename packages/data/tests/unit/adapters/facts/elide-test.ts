@@ -161,9 +161,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      escapeQuotes(
-        `{"query":"{ myTable(filter: \\"m1(p: q)=ge=(v1);m1(p: q)=le=(v2)\\") { edges { node { m1(p: q) d1 } } } }"}`
-      ),
+      `{"query":"{ myTable(filter: \\"m1(p: q)=ge=(v1);m1(p: q)=le=(v2)\\") { edges { node { m1(p: q) d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
     );
   });
