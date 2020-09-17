@@ -67,16 +67,16 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       const valuesStr = `(${values.join(',')})`;
       return `${fieldStr}${operatorStr}${valuesStr}`;
     });
-    filterStrings.length && args.push(`filter: \\"${filterStrings.join(';')}\\"`);
+    filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);
 
     const sortStrings = sorts.map(sort => {
       const { field, parameters, direction } = sort;
       const column = getElideField(field, parameters);
       return `${direction === 'desc' ? '-' : ''}${column}`;
     });
-    sortStrings.length && args.push(`sort: \\"${sortStrings.join(',')}\\"`);
+    sortStrings.length && args.push(`sort: "${sortStrings.join(',')}"`);
 
-    const limitStr = limit ? `first: \\"${limit}\\"` : null;
+    const limitStr = limit ? `first: "${limit}"` : null;
     limitStr && args.push(limitStr);
 
     const argsString = args.length ? `(${args.join(',')})` : '';
