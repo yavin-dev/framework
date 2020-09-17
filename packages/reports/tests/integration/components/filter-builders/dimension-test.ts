@@ -14,7 +14,7 @@ interface TestContext extends Context {
 }
 const TEMPLATE = hbs`
   <FilterBuilders::Dimension
-    @filter={{this.filter}}
+    @filter={{@filter}}
     @isCollapsed={{this.isCollapsed}}
   />`;
 
