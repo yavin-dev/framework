@@ -66,7 +66,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
       // TODO: Remove this when Elide supports the "between" filter operator
       if (operator === 'bet') {
-        return `${fieldStr}=ge=(${values[0]});${fieldStr}=lt=(${values[1]})`;
+        return `${fieldStr}=ge=(${values[0]});${fieldStr}=le=(${values[1]})`;
       }
 
       const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
