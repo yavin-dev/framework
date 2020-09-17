@@ -155,7 +155,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         ],
         sorts: [],
         filters: [
-          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] },
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] }
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
