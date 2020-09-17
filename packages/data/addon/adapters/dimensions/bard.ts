@@ -41,6 +41,8 @@ export type FiliDimensionResponse = {
   rows: Record<string, string>[];
 };
 
+export const DefaultField = 'id';
+
 export default class BardDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
    * @property namespace
@@ -70,7 +72,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     andQueries: DimensionFilter[]
   ): Record<string, string | number | boolean> {
     const requestV2Filters: Filter[] = andQueries.map(query => {
-      const field = dimension.parameters?.field || 'id';
+      const field = dimension.parameters?.field || DefaultField;
       const fieldForUrl = URL_FIELD_NAMES[field] || field;
       return {
         type: 'dimension',
