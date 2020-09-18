@@ -18,13 +18,6 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
-/**
- * @enum {String} - mapping of dimension field names to URL dimension field names
- */
-const URL_FIELD_NAMES: Dict<string> = {
-  description: 'desc'
-};
-
 const SEARCH_TIMEOUT = 30000;
 
 const CLIENT_ID = 'UI';
@@ -73,11 +66,10 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
   ): Record<string, string | number | boolean> {
     const requestV2Filters: Filter[] = andQueries.map(query => {
       const field = dimension.parameters?.field || DefaultField;
-      const fieldForUrl = URL_FIELD_NAMES[field] || field;
       return {
         type: 'dimension',
         field: dimension.columnMetadata.id,
-        parameters: { field: fieldForUrl },
+        parameters: { field },
         operator: query.operator || 'in',
         values: query.values || []
       };

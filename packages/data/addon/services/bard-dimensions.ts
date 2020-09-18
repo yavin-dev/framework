@@ -356,7 +356,7 @@ export default class BardDimensionService extends Service {
         query,
         options
       ).catch(() => ({ rows: [] }));
-      const searchByDescription = await this.searchValueField(dimension, 'description', query, options).catch(() => ({
+      const searchByDescription = await this.searchValueField(dimension, 'desc', query, options).catch(() => ({
         rows: []
       }));
 

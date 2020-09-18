@@ -565,7 +565,7 @@ module('Unit | Service | Dimensions', function(hooks) {
     );
 
     /* == search for string in description == */
-    res = await Service.searchValueField('dimensionThree', 'description', 'value1');
+    res = await Service.searchValueField('dimensionThree', 'desc', 'value1');
 
     assert.deepEqual(
       A(res.rows).mapBy('desc'),
