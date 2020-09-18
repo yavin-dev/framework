@@ -64,7 +64,6 @@ const TestRequest: RequestV2 = {
     ],
     columns: [
       {
-        cid: '',
         field: 'table1.dateTime',
         parameters: {
           grain: 'grain1'
@@ -72,31 +71,26 @@ const TestRequest: RequestV2 = {
         type: 'timeDimension'
       },
       {
-        cid: '',
         field: 'm1',
         parameters: {},
         type: 'metric'
       },
       {
-        cid: '',
         field: 'm2',
         parameters: {},
         type: 'metric'
       },
       {
-        cid: '',
         field: 'r',
         parameters: { p: '123', as: 'a' },
         type: 'metric'
       },
       {
-        cid: '',
         field: 'd1',
         parameters: { field: 'id' },
         type: 'dimension'
       },
       {
-        cid: '',
         field: 'd2',
         parameters: { field: 'desc' },
         type: 'dimension'
@@ -159,7 +153,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
 
     let singleDim: RequestV2 = {
       ...EmptyRequest,
-      columns: [{ cid: '', field: 'd1', type: 'dimension', parameters: { field: 'id' } }]
+      columns: [{ field: 'd1', type: 'dimension', parameters: { field: 'id' } }]
     };
     assert.equal(
       Adapter._buildDimensionsPath(singleDim),
@@ -170,8 +164,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let manyDims: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { cid: '', field: 'd1', type: 'dimension', parameters: { field: 'id' } },
-        { cid: '', field: 'd2', type: 'dimension', parameters: { field: 'id' } }
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd2', type: 'dimension', parameters: { field: 'id' } }
       ]
     };
     assert.equal(
@@ -183,9 +177,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let duplicateDims: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { cid: '', field: 'd1', type: 'dimension', parameters: { field: 'id' } },
-        { cid: '', field: 'd2', type: 'dimension', parameters: { field: 'id' } },
-        { cid: '', field: 'd1', type: 'dimension', parameters: { field: 'id' } }
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } }
       ]
     };
     assert.equal(
@@ -228,7 +222,6 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         {
-          cid: '',
           type: 'timeDimension',
           field: '.dateTime',
           parameters: {
@@ -301,7 +294,6 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         {
-          cid: '',
           field: 'm1',
           parameters: {},
           type: 'metric'
@@ -318,13 +310,11 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         {
-          cid: '',
           field: 'm1',
           parameters: {},
           type: 'metric'
         },
         {
-          cid: '',
           field: 'm2',
           parameters: {},
           type: 'metric'
@@ -340,10 +330,10 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let differentParams: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { cid: '', field: 'm1', parameters: {}, type: 'metric' },
-        { cid: '', field: 'm2', parameters: {}, type: 'metric' },
-        { cid: '', field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { cid: '', field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' }
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
+        { field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -355,11 +345,11 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let duplicateMetrics: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { cid: '', field: 'm1', parameters: {}, type: 'metric' },
-        { cid: '', field: 'm2', parameters: {}, type: 'metric' },
-        { cid: '', field: 'm1', parameters: {}, type: 'metric' },
-        { cid: '', field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { cid: '', field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' }
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
+        { field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -371,13 +361,13 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     let nullParams: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { cid: '', field: 'm1', parameters: {}, type: 'metric' },
-        { cid: '', field: 'm2', parameters: {}, type: 'metric' },
-        { cid: '', field: 'r', parameters: { p: '123', q: 'bar' }, type: 'metric' },
+        { field: 'm1', parameters: {}, type: 'metric' },
+        { field: 'm2', parameters: {}, type: 'metric' },
+        { field: 'r', parameters: { p: '123', q: 'bar' }, type: 'metric' },
         //@ts-expect-error
-        { cid: '', field: 'r', parameters: { p: 'xyz', q: null }, type: 'metric' },
+        { field: 'r', parameters: { p: 'xyz', q: null }, type: 'metric' },
         //@ts-expect-error
-        { cid: '', field: 'r', parameters: { p: 'tuv', q: undefined }, type: 'metric' }
+        { field: 'r', parameters: { p: 'tuv', q: undefined }, type: 'metric' }
       ]
     };
     assert.equal(
@@ -731,13 +721,11 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         {
-          cid: '',
           field: '.dateTime',
           type: 'timeDimension',
           parameters: { grain: 'all' }
         },
         {
-          cid: '',
           field: '.dateTime',
           type: 'timeDimension',
           parameters: { grain: 'week' }

@@ -14,11 +14,11 @@ const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[
 const TestRequest: RequestV2 = {
   table: 'table1',
   columns: [
-    { cid: '', field: 'table1.m1', type: 'metric', parameters: {} },
-    { cid: '', field: 'table1.m2', type: 'metric', parameters: {} },
-    { cid: '', field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
-    { cid: '', field: 'table1.d1', type: 'dimension', parameters: {} },
-    { cid: '', field: 'table1.d2', type: 'dimension', parameters: {} }
+    { field: 'table1.m1', type: 'metric', parameters: {} },
+    { field: 'table1.m2', type: 'metric', parameters: {} },
+    { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
+    { field: 'table1.d1', type: 'dimension', parameters: {} },
+    { field: 'table1.d2', type: 'dimension', parameters: {} }
   ],
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
@@ -75,8 +75,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { cid: '', field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { cid: '', field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [],
@@ -92,8 +92,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { cid: '', field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { cid: '', field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', direction: 'desc' },
@@ -112,8 +112,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { cid: '', field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { cid: '', field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [
@@ -133,8 +133,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
-          { cid: '', field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { cid: '', field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
         sorts: [],
         filters: [],

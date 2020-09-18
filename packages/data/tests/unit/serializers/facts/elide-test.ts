@@ -26,8 +26,8 @@ const Payload: AsyncQueryResponse = {
 
 const Request: RequestV2 = {
   columns: [
-    { cid: '', field: 'datestamp', parameters: {}, type: 'timeDimension' },
-    { cid: '', field: 'userCount', parameters: {}, type: 'metric' }
+    { field: 'datestamp', parameters: {}, type: 'timeDimension' },
+    { field: 'userCount', parameters: {}, type: 'metric' }
   ],
   table: 'tableA',
   filters: [],
