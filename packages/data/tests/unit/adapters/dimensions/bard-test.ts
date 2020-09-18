@@ -77,7 +77,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
 
     assert.deepEqual(
-      this.adapter._buildFilterQuery({ ...ageColumn, parameters: { field: 'description' } }, [
+      this.adapter._buildFilterQuery({ ...ageColumn, parameters: { field: 'desc' } }, [
         {
           operator: 'in',
           values: ['value1,value2']
