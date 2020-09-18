@@ -53,7 +53,7 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: 0
+      columnId: fragment.cid
     };
     this.set('column', column);
   });
@@ -70,7 +70,7 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: 1
+      columnId: 'cid_osDesc'
     };
     this.set('column', column);
 

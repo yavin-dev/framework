@@ -39,7 +39,12 @@ module('Integration | Component | cell renderers/total', function(hooks) {
       'request',
       store.createFragment('bard-request-v2/request', {
         columns: [
-          { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' }
+          {
+            type: 'timeDimension',
+            field: 'network.dateTime',
+            parameters: { grain: 'day' },
+            source: 'bardOne'
+          }
         ],
         filters: [],
         sorts: [],
@@ -53,7 +58,7 @@ module('Integration | Component | cell renderers/total', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: 0
+      columnId: fragment.cid
     };
     this.set('column', column);
 

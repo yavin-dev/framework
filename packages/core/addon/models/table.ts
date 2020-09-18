@@ -12,13 +12,11 @@ import { set } from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
-  const requestColumnIds = new Set(request.columns.map((_c, index) => index));
+  const requestCids = new Set(request.columns.map(column => column.cid));
 
-  const eachAttributeValid = Object.keys(metadata.columnAttributes)
-    .map(Number)
-    .every(columnId => requestColumnIds.has(columnId));
+  const eachAttributeValid = Object.keys(metadata.columnAttributes).every(cid => requestCids.has(cid));
 
-  const subtotalValid = metadata.showTotals?.subtotal ? requestColumnIds.has(metadata.showTotals.subtotal) : true;
+  const subtotalValid = metadata.showTotals?.subtotal ? requestCids.has(metadata.showTotals.subtotal) : true;
 
   return eachAttributeValid && subtotalValid;
 }
@@ -59,32 +57,25 @@ export default class TableVisualization extends VisualizationBase.extend(Validat
    * @return {Object} this object
    */
   rebuildConfig(request: RequestFragment, _response: ResponseV1): TableVisualization {
-    const existingRequest = this._request || request;
-
     const { columnAttributes = {}, showTotals = {} } = this.metadata;
 
-    const newColumnAttributes: Record<number, TableColumnAttributes | undefined> = {};
-    Object.keys(columnAttributes).forEach(key => {
-      const columnId = Number(key);
-      const existingColumn = existingRequest.columns.objectAt(columnId);
-      const newColumnIndex = request.columns
-        .toArray()
-        .findIndex(c => c.canonicalName === existingColumn?.canonicalName);
-      if (newColumnIndex >= 0) {
-        // if existing column is found move attributes
-        newColumnAttributes[newColumnIndex] = columnAttributes[columnId];
+    const newColumnAttributes = Object.keys(columnAttributes).reduce((newColumnAttributes, cid) => {
+      const existingColumn = request.columns.find(column => column.cid === cid);
+      if (existingColumn) {
+        newColumnAttributes[cid] = columnAttributes[cid];
       }
-    });
+      return newColumnAttributes;
+    }, {} as Record<string, TableColumnAttributes | undefined>);
 
     set(this.metadata, 'columnAttributes', newColumnAttributes);
 
     if (showTotals.subtotal) {
-      const existingColumn = existingRequest.columns.objectAt(showTotals.subtotal);
-      const subtotal = request.columns.toArray().findIndex(c => c.canonicalName === existingColumn?.canonicalName);
-      set(this.metadata, 'showTotals', { subtotal, grandTotal: showTotals.grandTotal });
+      const existingColumn = request.columns.find(column => column.cid === showTotals.subtotal);
+      if (!existingColumn) {
+        delete this.metadata.showTotals?.subtotal;
+      }
     }
 
-    set(this, '_request', request);
     return this;
   }
 }

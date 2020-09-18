@@ -4,6 +4,7 @@
  */
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { Parameters, SortDirection, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { nanoid } from 'nanoid';
 
 type LogicalTable = {
   table: string;
@@ -166,14 +167,16 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
 
   //normalize dateTime column
   requestV2.columns.push({
+    cid: nanoid(10),
+    type: 'timeDimension',
     field: `${table}.dateTime`,
-    parameters: { grain },
-    type: 'timeDimension'
+    parameters: { grain }
   });
 
   //normalize dimensions
   normalized.dimensions.forEach(({ dimension }) =>
     requestV2.columns.push({
+      cid: nanoid(10),
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
       parameters: {
@@ -185,6 +188,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   //normalize metrics
   normalized.metrics.forEach(({ metric, parameters = {} }) => {
     requestV2.columns.push({
+      cid: nanoid(10),
       type: 'metric',
       field: removeNamespace(metric, dataSource),
       parameters

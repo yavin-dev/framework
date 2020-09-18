@@ -105,26 +105,30 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('options', { showTotals: { grandTotal: true } });
     this.set('onUpdateConfig', () => undefined);
 
-    await render(hbs`{{navi-visualization-config/table
-      request=request
-      options=options
-      onUpdateConfig=(action onUpdateConfig)
-    }}`);
+    await render(hbs`<NaviVisualizationConfig::Table
+      @request={{this.request}}
+      @options={{this.options}}
+      @onUpdateConfig={{this.onUpdateConfig}}
+    />`);
 
     assert
       .dom('.table-config__total-toggle-button--subtotal')
       .isNotVisible('The subtotal toggle is not visible when there are no dimension groupbys');
 
-    const columns = arr([{ field: 'dateTime' }, { field: 'os' }, { field: 'age' }]);
+    const columns = arr([
+      { cid: 'cid_dateTime', field: 'dateTime' },
+      { cid: 'cid_os', field: 'os' },
+      { cid: 'cid_age', field: 'age' }
+    ]);
     this.set('request', {
-      columns: arr([{ type: 'metric' }, ...columns]),
+      columns: arr([{ cid: 'cid_metric', type: 'metric' }, ...columns]),
       dimensionColumns: columns
     });
 
     this.set('onUpdateConfig', result => {
       assert.equal(
         result.showTotals.subtotal,
-        1,
+        'cid_dateTime',
         'The first dimension column is used when subtotal is toggled on and updated using `onUpdateConfig`'
       );
     });
@@ -139,7 +143,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     this.set('onUpdateConfig', result => {
       assert.equal(
         result.showTotals.subtotal,
-        3,
+        'cid_age',
         'Choosing another option in the dimension select updates the subtotal in the config'
       );
     });
@@ -163,14 +167,17 @@ module('Integration | Component | visualization config/table', function(hooks) {
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
 
-    const columns = arr([{ field: 'os', columnMetadata: { name: 'Operating System' } }, { field: 'age' }]);
+    const columns = arr([
+      { cid: 'cid_os', field: 'os', columnMetadata: { name: 'Operating System' } },
+      { cid: 'cid_age', field: 'age' }
+    ]);
     let request = {
       columns,
       dimensionColumns: columns
     };
 
     this.set('request', request);
-    this.set('options', { showTotals: { subtotal: 0 } });
+    this.set('options', { showTotals: { subtotal: 'cid_os' } });
 
     await render(hbs`{{navi-visualization-config/table
       request=request
