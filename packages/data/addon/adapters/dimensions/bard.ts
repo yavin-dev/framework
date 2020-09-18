@@ -18,13 +18,6 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
-/**
- * @enum {String} - mapping of dimension field names to URL dimension field names
- */
-const URL_FIELD_NAMES: Dict<string> = {
-  description: 'desc'
-};
-
 const SEARCH_TIMEOUT = 30000;
 
 const CLIENT_ID = 'UI';
@@ -40,6 +33,8 @@ type LegacyAdapterOptions = {
 export type FiliDimensionResponse = {
   rows: Record<string, string>[];
 };
+
+export const DefaultField = 'id';
 
 export default class BardDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
@@ -70,12 +65,11 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     andQueries: DimensionFilter[]
   ): Record<string, string | number | boolean> {
     const requestV2Filters: Filter[] = andQueries.map(query => {
-      const field = dimension.parameters?.field || 'id';
-      const fieldForUrl = URL_FIELD_NAMES[field] || field;
+      const field = dimension.parameters?.field || DefaultField;
       return {
         type: 'dimension',
         field: dimension.columnMetadata.id,
-        parameters: { field: fieldForUrl },
+        parameters: { field },
         operator: query.operator || 'in',
         values: query.values || []
       };
