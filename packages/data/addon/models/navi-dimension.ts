@@ -4,6 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
+import { isEqual } from 'lodash-es';
 
 export default class NaviDimensionModel extends EmberObject {
   /**
@@ -14,12 +15,23 @@ export default class NaviDimensionModel extends EmberObject {
   /**
    * Dimension value
    */
-  value!: unknown;
+  value!: Readonly<unknown>;
 
   /**
    * Dimension value for display purposes
    */
   get displayValue() {
     return `${this.value}`;
+  }
+
+  isEqual(other: NaviDimensionModel) {
+    if (this === other) {
+      return true;
+    }
+    return (
+      this.value === other.value &&
+      this.dimensionColumn.columnMetadata === other.dimensionColumn.columnMetadata &&
+      isEqual(this.dimensionColumn.parameters, other.dimensionColumn.parameters)
+    );
   }
 }
