@@ -18,7 +18,7 @@ export default class BaseCellRenderer extends Component<CellRendererArgs> {
   /**
    * value of the column
    */
-  @computed('args.column.fragment.canonicalName')
+  @computed('args.{data,column.fragment.canonicalName}')
   get columnValue() {
     const { column, data } = this.args;
     const { canonicalName } = column.fragment;
