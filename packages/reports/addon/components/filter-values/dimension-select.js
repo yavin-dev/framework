@@ -56,11 +56,17 @@ export default class DimensionSelectComponent extends Component {
       return undefined; // we are searching, so only show search results
     }
 
+<<<<<<< HEAD
     const {
       dimensionName,
       _dimensionService: dimensionService,
       filter: { source }
     } = this;
+=======
+    const dimensionName = get(this, 'dimensionName'),
+      dimensionService = get(this, '_dimensionService'),
+      source = get(this, 'filter.source');
+>>>>>>> 643788fe... Update: Dimension, Base, and Collapsed working
 
     if (dimensionName && this.filter.columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
@@ -101,7 +107,11 @@ export default class DimensionSelectComponent extends Component {
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
   // eslint-disable-next-line ember/use-brace-expansion
+<<<<<<< HEAD
   @computed('filter.{field,columnMetadata.idFieldName}')
+=======
+  @computed('filter.columnMetadata.idFieldName', 'filter.field', 'filter.columnMetadata.idFieldName')
+>>>>>>> 643788fe... Update: Dimension, Base, and Collapsed working
   get filterValueFieldId() {
     return this.filter.columnMetadata.idFieldName || this.filter.field;
   }
