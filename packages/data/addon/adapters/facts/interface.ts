@@ -42,6 +42,7 @@ export type Parameters = Dict<string>;
 export type SortDirection = typeof SORT_DIRECTIONS[number];
 
 export type Column = {
+  cid?: string;
   field: string;
   parameters: Parameters;
   type: ColumnType;

@@ -55,7 +55,7 @@ module('Acceptance | table', function(hooks) {
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert
-      .dom('.dateTime .number-format-dropdown__trigger')
+      .dom('.timeDimension .number-format-dropdown__trigger')
       .isNotVisible('Datetime field should not have format dropdown trigger');
 
     assert
@@ -76,16 +76,16 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.dateTime > .table-header-cell__input', 'test');
-    await blur('.dateTime > .table-header-cell__input');
+    await fillIn('.timeDimension > .table-header-cell__input', 'test');
+    await blur('.timeDimension > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
-      .dom('.table-header-row-vc--view .dateTime > .table-header-cell__title')
+      .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
       .hasText('test', 'DateTime field should have custom name "test"');
 
     assert
-      .dom('.table-header-row-vc--view .dateTime > .table-header-cell__title')
+      .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
       .hasClass('table-header-cell__title--custom-name', 'DateTime field should have custom name class after editing');
   });
 
@@ -95,16 +95,16 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.dateTime > .table-header-cell__input', '');
-    await blur('.dateTime > .table-header-cell__input');
+    await fillIn('.timeDimension > .table-header-cell__input', '');
+    await blur('.timeDimension > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
-      .dom('.table-header-row-vc--view .dateTime > .table-header-cell__title')
-      .hasText('Date', 'DateTime field should have the default name "Date"');
+      .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
+      .hasText('Date Time (week)', 'DateTime field should have the default name "Date"');
 
     assert
-      .dom('.table-header-row-vc--view .dateTime')
+      .dom('.table-header-row-vc--view .timeDimension')
       .hasNoClass('custom-name', 'DateTime field should not have custom name class after removing title');
   });
 });

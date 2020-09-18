@@ -12,7 +12,7 @@
 
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { Args as TableArgs } from 'navi-core/components/navi-visualizations/table';
@@ -29,10 +29,8 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   @tracked _showSubtotalDropdown = false;
 
-  @computed('args.options.showTotals.subtotal')
   get showSubtotalDropdown(): boolean {
-    const hasSubtotal = this.args.options?.showTotals?.subtotal !== undefined;
-    return this._showSubtotalDropdown || hasSubtotal;
+    return this._showSubtotalDropdown || !!this.args.options?.showTotals?.subtotal;
   }
 
   /**
@@ -40,11 +38,8 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   get selectedSubtotal(): ColumnFragment | undefined {
     const { options, request } = this.args;
-    const subtotalIndex = options?.showTotals?.subtotal;
-    if (subtotalIndex !== undefined) {
-      return request.columns.objectAt(subtotalIndex);
-    }
-    return undefined;
+    const subtotalCid = options?.showTotals?.subtotal;
+    return request.columns.find(column => column.cid === subtotalCid);
   }
 
   /**
@@ -66,9 +61,9 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
     this._showSubtotalDropdown = toggleSubtotal;
     if (toggleSubtotal) {
       const { request } = this.args;
-      const firstDim = request.columns.indexOf(request.dimensionColumns[0]);
+      const firstDim = request.dimensionColumns[0];
       this.args.onUpdateConfig({
-        showTotals: { subtotal: firstDim }
+        showTotals: { subtotal: firstDim?.cid }
       });
     } else if (this.args.options?.showTotals?.subtotal !== undefined) {
       const newOptions = { ...this.args.options };
@@ -84,7 +79,6 @@ export default class NaviVisualizationConfigTableComponent extends Component<Arg
    */
   @action
   updateSubtotal(dimension: ColumnFragment): void {
-    const subtotal = this.args.request.columns.indexOf(dimension);
-    this.args.onUpdateConfig({ showTotals: { subtotal } });
+    this.args.onUpdateConfig({ showTotals: { subtotal: dimension.cid } });
   }
 }

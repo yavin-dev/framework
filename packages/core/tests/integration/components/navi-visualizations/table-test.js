@@ -100,8 +100,14 @@ module('Integration | Component | table', function(hooks) {
           requestVersion: '2.0',
           table: 'network',
           columns: [
-            { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
-            { type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
+            {
+              cid: 'cid_dateTime',
+              type: 'timeDimension',
+              field: 'network.dateTime',
+              parameters: { grain: 'day' },
+              source: 'bardOne'
+            },
+            { cid: 'cid_osId', type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
             { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
             { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
             { type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' },
@@ -364,7 +370,7 @@ module('Integration | Component | table', function(hooks) {
   test('subtotals in table', async function(assert) {
     assert.expect(2);
 
-    let options = merge({}, Options, { showTotals: { subtotal: 1 } });
+    let options = merge({}, Options, { showTotals: { subtotal: 'cid_osId' } });
 
     set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
@@ -401,7 +407,7 @@ module('Integration | Component | table', function(hooks) {
   test('subtotals by date in table', async function(assert) {
     assert.expect(1);
 
-    let options = merge({}, Options, { showTotals: { subtotal: 0 } });
+    let options = merge({}, Options, { showTotals: { subtotal: 'cid_dateTime' } });
 
     set(Model, 'firstObject.response.rows', ROWS.slice(0, 4));
     this.set('model', Model);
@@ -448,7 +454,7 @@ module('Integration | Component | table', function(hooks) {
     });
 
     let options = merge({}, Options, {
-      showTotals: { grandTotal: true, subtotal: 1 }
+      showTotals: { grandTotal: true, subtotal: 'cid_osId' }
     });
 
     this.set('options', options);
