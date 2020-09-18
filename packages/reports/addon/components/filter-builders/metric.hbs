@@ -2,8 +2,8 @@
 {{#if @isCollapsed}}
   <span class="filter-builder" ...attributes>
     <FilterBuilders::Collapsed
-      @displayName={{this.displayName}}
-      @filter={{this.filter}}
+      @displayName={{@filter.displayName}}
+      @filter={{@filter}}
       @request={{@request}}
       @selectedOperator={{this.selectedOperator}}
     />
@@ -11,11 +11,11 @@
 {{else}}
   <div class="filter-builder" ...attributes>
     <span class="filter-builder__subject">
-      {{this.displayName}}
-      {{#if (has-parameters this.filter.subject)}}
+      {{@filter.displayName}}
+      {{#if (has-parameters @filter)}}
         <MetricFilterConfig
           class="filter-builder__metric-config"
-          @metric={{this.filter.subject}}
+          @metric={{@filter}}
           @request={{@request}}
           @paramClicked={{this.updateParameters}}
         />
@@ -37,7 +37,7 @@
     <span class="filter-builder__values">
       {{#let (component this.selectedOperator.valuesComponent) as |ValuesComponent|}}
         <ValuesComponent
-          @filter={{this.filter}}
+          @filter={{@filter}}
           @request={{@request}}
           @onUpdateFilter={{@onUpdateFilter}}
         />
