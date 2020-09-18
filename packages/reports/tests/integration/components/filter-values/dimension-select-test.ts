@@ -31,7 +31,7 @@ const HOST = config.navi.dataSources[0].uri;
 function createFilterConfig(filter: FilterFragment): FilterConfig {
   return {
     subject: filter,
-    operator: filter.operator,
+    operator: { id: filter.operator, name: 'Equals', valuesComponent: 'filter-values/dimension-select' },
     values: arr(filter.values)
   };
 }

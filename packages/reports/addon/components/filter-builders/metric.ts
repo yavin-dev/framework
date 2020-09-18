@@ -12,42 +12,42 @@ export default class MetricFilterBuilderComponent extends BaseFilterBuilderCompo
   get supportedOperators() {
     return [
       {
-        id: 'gt',
+        id: 'gt' as const,
         name: 'Greater than (>)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'gte',
+        id: 'gte' as const,
         name: 'Greater than or equals (>=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'lt',
+        id: 'lt' as const,
         name: 'Less than (<)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'lte',
+        id: 'lte' as const,
         name: 'Less than or equals (<=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'eq',
+        id: 'eq' as const,
         name: 'Equals (=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'neq',
+        id: 'neq' as const,
         name: 'Not equals (!=)',
         valuesComponent: 'filter-values/value-input'
       },
       {
-        id: 'bet',
+        id: 'bet' as const,
         name: 'Between (<=>)',
         valuesComponent: 'filter-values/range-input'
       },
       {
-        id: 'nbet',
+        id: 'nbet' as const,
         name: 'Not between (!<=>)',
         valuesComponent: 'filter-values/range-input'
       }

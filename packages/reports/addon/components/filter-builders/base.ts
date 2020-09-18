@@ -11,21 +11,22 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import EmberArray from '@ember/array';
+import { FilterOperator } from 'navi-data/addon/adapters/facts/interface';
 
 interface BaseFilterBuilderArgs {
   filter: FilterFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-export type FilterOperators = {
-  id: string;
+export type FilterBuilderOperators = {
+  id: FilterOperator;
   name: string;
   valuesComponent: string;
 };
 
 export type FilterConfig = {
   subject: FilterFragment;
-  operator: string;
+  operator: FilterBuilderOperators;
   values: EmberArray<string | number>;
   validations?: TODO;
 };
@@ -36,18 +37,18 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
     return this.args.filter.displayName;
   }
 
-  get supportedOperators(): Array<FilterOperators> {
+  get supportedOperators(): Array<FilterBuilderOperators> {
     return [];
   }
 
-  get selectedOperator(): FilterOperators | undefined {
+  get selectedOperator(): FilterBuilderOperators | undefined {
     return this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
   }
 
   @computed('selectedOperator', 'args.filter.{validations,values.[]}')
-  get filter() {
+  get filter(): FilterConfig {
     const { values, validations } = this.args.filter;
-    const { selectedOperator: operator } = this;
+    const operator = this.selectedOperator as FilterBuilderOperators;
 
     return {
       subject: this.args.filter,
@@ -58,7 +59,7 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
   }
 
   @action
-  setOperator(operatorObject: FilterOperators) {
+  setOperator(operatorObject: FilterBuilderOperators) {
     const changeSet = { operator: operatorObject.id };
     /*
      * Clear values in case they are incompatible with new operator,

@@ -23,8 +23,8 @@ const TestRequest: RequestV2 = {
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'table1.d5', operator: 'isnull', values: ['false'], type: 'dimension', parameters: {} },
-    { field: 'table1.time', operator: 'ge', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
+    { field: 'table1.d5', operator: 'null', values: ['false'], type: 'dimension', parameters: {} },
+    { field: 'table1.time', operator: 'gte', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
     { field: 'table1.time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
     { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
   ],
