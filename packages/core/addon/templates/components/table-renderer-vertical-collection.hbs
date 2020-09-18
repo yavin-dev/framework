@@ -56,7 +56,7 @@
                   @placeholder={{column.fragment.displayName}}
                   @focus-out={{fn @updateColumnDisplayName column.fragment}}
                 />
-                {{#if (eq column.type "metric")}}
+                {{#if (eq column.fragment.type "metric")}}
                   <NumberFormatDropdown
                     class="table-header-cell__number-format-dropdown"
                     @column={{column}}

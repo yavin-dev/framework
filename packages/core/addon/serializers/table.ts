@@ -54,10 +54,10 @@ export type TableVisualizationMetadata = {
   version: 2;
   metadata: {
     columnAttributes: {
-      [columnId: number]: TableColumnAttributes | undefined;
+      [cid: string]: TableColumnAttributes | undefined;
     };
     showTotals?: {
-      subtotal?: number;
+      subtotal?: string;
       grandTotal?: boolean;
     };
   };
@@ -162,14 +162,14 @@ export function normalizeTableV2(
 
   // extract column attributes
   const columnAttributes = Object.values(columnData).reduce((columns, columnInfo) => {
-    const { tableColumn, tableIndex } = columnInfo;
+    const { tableColumn, requestColumn } = columnInfo;
     const { attributes } = tableColumn;
-    columns[tableIndex] = {
+    columns[requestColumn.cid] = {
       canAggregateSubtotal: tableColumn.type === 'metric' ? attributes?.canAggregateSubtotal : undefined,
       format: tableColumn.format !== undefined ? tableColumn.format : attributes?.format
     };
     return columns;
-  }, {} as Record<number, TableColumnAttributes>);
+  }, {} as Record<string, TableColumnAttributes>);
 
   // update subtotal to use column index
   const { showTotals } = visualization?.metadata || {};
@@ -183,7 +183,7 @@ export function normalizeTableV2(
     } else {
       canonicalName = `${showTotals.subtotal}(field=id)`;
     }
-    subtotal = columnData[canonicalName].tableIndex;
+    subtotal = columnData[canonicalName].requestColumn.cid;
   }
 
   return {
