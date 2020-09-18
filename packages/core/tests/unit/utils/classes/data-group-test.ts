@@ -33,6 +33,7 @@ module('Unit | Utils | DataGroup Class', function() {
 
     assert.throws(
       function() {
+        //@ts-expect-error
         new DataGroup();
       },
       /Data rows must be defined/,
@@ -41,6 +42,7 @@ module('Unit | Utils | DataGroup Class', function() {
 
     assert.throws(
       function() {
+        //@ts-expect-error
         new DataGroup(DATA);
       },
       /Grouping function must be defined/,
@@ -49,7 +51,7 @@ module('Unit | Utils | DataGroup Class', function() {
 
     // Test for no error on valid construction
     new DataGroup(DATA, row => {
-      return row.dateTime;
+      return row.dateTime as string;
     });
   });
 
@@ -57,7 +59,7 @@ module('Unit | Utils | DataGroup Class', function() {
     assert.expect(1);
 
     let dataGroup = new DataGroup(DATA, row => {
-      return row.dateTime;
+      return row.dateTime as string;
     });
 
     assert.deepEqual(
@@ -71,7 +73,7 @@ module('Unit | Utils | DataGroup Class', function() {
     assert.expect(1);
 
     let dataGroup = new DataGroup(DATA, row => {
-      return row.dateTime;
+      return row.dateTime as string;
     });
 
     assert.deepEqual(

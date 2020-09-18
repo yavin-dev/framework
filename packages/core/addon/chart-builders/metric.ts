@@ -13,28 +13,31 @@
  *   }
  */
 import Mixin from '@ember/object/mixin';
-import moment from 'moment';
+import moment, { MomentInput } from 'moment';
+//@ts-ignore
 import tooltipLayout from '../templates/chart-tooltips/metric';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import Interval from 'navi-core/utils/classes/interval';
-import DateUtils from 'navi-core/utils/date';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { inject as service } from '@ember/service';
+import { API_DATE_FORMAT_STRING, getDatesForInterval, Grain } from 'navi-core/utils/date';
 import EmberObject, { set, computed } from '@ember/object';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import Interval from 'navi-core/utils/classes/interval';
 
-export default EmberObject.extend({
-  /**
-   * @property {Service} metricName
-   */
-  metricName: service(),
+type ResponseRow = ResponseV1['rows'][number];
+
+export default class MetricChartBuilder extends EmberObject {
+  byXSeries?: DataGroup<ResponseRow>;
 
   /**
-   * @method getXValue
-   * @param {Object} row - single row of fact data
-   * @returns {String} name of x value given row belongs to
+   * @param row - single row of fact data
+   * @returns name of x value given row belongs to
    */
-  getXValue: row => moment(row.dateTime).format(DateUtils.API_DATE_FORMAT_STRING),
+  getXValue(row: ResponseRow, timeGrainColumn: string): string {
+    // expects timeGrainColumn values to be a readable moment input
+    const date = row[timeGrainColumn] as MomentInput;
+    return moment(date).format(API_DATE_FORMAT_STRING);
+  }
 
   /**
    * @function buildData
@@ -44,57 +47,54 @@ export default EmberObject.extend({
    * @param {Object} request - request used to get data
    * @returns {Array} array of c3 data with x values
    */
-  buildData(data, config, request) {
+  buildData(data: ResponseV1['rows'], _config: unknown, request: RequestFragment) {
+    const timeGrainColumn = request.timeGrainColumn.canonicalName;
+    const interval = request.interval as Interval;
+    const timeGrain = request.timeGrain as Grain;
     // Group data by x axis value in order to lookup row data when building tooltip
-    set(this, 'byXSeries', new DataGroup(data, row => this.getXValue(row)));
+    set(this, 'byXSeries', new DataGroup(data, (row: ResponseRow) => this.getXValue(row, timeGrainColumn)));
 
     // Support different `dateTime` formats by mapping them to a standard
-    const buildDateKey = dateTime => moment(dateTime).format(DateUtils.API_DATE_FORMAT_STRING);
+    const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
 
-    const metrics = config.metrics;
-    const isDateTime = f => f.type === 'timeDimension' && f.field === `${request.table}.dateTime`;
-    const grain = request.columns.find(isDateTime).parameters.grain;
-    const interval = request.filters.find(isDateTime);
-    const requestInterval = Interval.parseFromStrings(interval.values[0], interval.values[1]);
+    // const metrics = config.metrics;
 
     /*
      * Get all date buckets spanned by the data,
      * and group data by date for easier lookup
      */
-    let dates = DateUtils.getDatesForInterval(requestInterval, grain),
-      byDate = new DataGroup(data, row => buildDateKey(row.dateTime));
+    const dates = getDatesForInterval(interval, timeGrain);
+    const byDate = new DataGroup(data, (row: ResponseRow) => buildDateKey(row[timeGrainColumn] as MomentInput));
 
     // Make a data point for each date in the request, so c3 can correctly show gaps in the chart
     return dates.map(date => {
-      let key = buildDateKey(date),
-        rowsForDate = byDate.getDataForKey(key) || [],
-        row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
+      const key = buildDateKey(date);
+      const rowsForDate = byDate.getDataForKey(key) || [];
+      const row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
 
-      let x = {
+      const x = {
         rawValue: key,
-        displayValue: date.format(ChartAxisDateTimeFormats[grain])
+        displayValue: date.format(ChartAxisDateTimeFormats[timeGrain])
       };
 
       // Build an object consisting of x value and requested metrics
       return Object.assign(
         { x },
-        ...metrics.map(metric => {
-          let metricDisplayName = this.metricName.getDisplayName(metric, request.dataSource),
-            canonicalName = canonicalizeMetric(metric);
-
+        ...request.metricColumns.map(metric => {
+          const metricValue = row[metric.canonicalName];
           return {
-            [metricDisplayName]: typeof row[canonicalName] === 'number' ? row[canonicalName] : null
+            [metric.displayName]: typeof metricValue === 'number' ? metricValue : null
           }; // c3 wants `null` for empty data points
         })
       );
     });
-  },
+  }
 
   /**
    * @function buildTooltip
    * @returns {Object} layout for tooltip
    */
-  buildTooltip() {
+  buildTooltip(_config: unknown, _request: RequestFragment) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
@@ -107,10 +107,10 @@ export default EmberObject.extend({
       rowData: computed('x', 'tooltipData', function() {
         return this.tooltipData.map(() => {
           // Get the full data for this combination of x + series
-          let dataForSeries = builder.byXSeries.getDataForKey(this.x) || [];
+          const dataForSeries = builder.byXSeries?.getDataForKey(this.x) || [];
           return dataForSeries[0];
         });
       })
     });
   }
-});
+}

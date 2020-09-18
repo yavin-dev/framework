@@ -1,15 +1,14 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 /**
  * given a transform, returns the translation that transform provides
- * @param {String} transform - transform to calculate
+ * @param transform - transform to calculate
  * @returns {Object} - Object with x and y properties
  */
-
-export function getTranslation(transform) {
+export function getTranslation(transform: string) {
   /*
    * Create a dummy g for calculation purposes only. This will never
    * be appended to the DOM and will be discarded once this function

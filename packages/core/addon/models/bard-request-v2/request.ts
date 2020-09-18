@@ -193,7 +193,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
   @computed('timeGrainColumn.parameters.grain')
-  get timeGrain() {
+  get timeGrain(): string | undefined {
     return this.timeGrainColumn?.parameters?.grain;
   }
 
