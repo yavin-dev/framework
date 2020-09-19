@@ -23,9 +23,10 @@ export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
   eq: '==',
   neq: '!=',
   notin: '=out=',
-  null: 'isnull',
-  gte: '>=',
-  lte: '<='
+  null: '=isnull=true',
+  notnull: '=isnull=false',
+  gte: '=ge=',
+  lte: '=le='
 };
 
 /**
@@ -68,7 +69,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
 
       const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
-      const valuesStr = `(${values.map(v => `'${v}'`).join(',')})`;
+      const valuesStr = values.length ? `(${values.map(v => `'${v}'`).join(',')})` : '';
       return `${fieldStr}${operatorStr}${valuesStr}`;
     });
     filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);

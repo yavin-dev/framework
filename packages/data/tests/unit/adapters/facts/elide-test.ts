@@ -23,7 +23,7 @@ const TestRequest: RequestV2 = {
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'table1.d5', operator: 'null', values: ['false'], type: 'dimension', parameters: {} },
+    { field: 'table1.d5', operator: 'null', values: [], type: 'dimension', parameters: {} },
     { field: 'table1.time', operator: 'gte', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
     { field: 'table1.time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
     { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
@@ -53,11 +53,11 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('getElideField', function(assert) {
-    assert.equal(getElideField('foo', { bar: 'baz' }), 'foo(bar: baz)', 'Field with parameter is formatted correctly');
+    assert.equal(getElideField('foo', { bar: 'baz' }), 'foo', 'Field with parameter is not supported');
     assert.equal(
       getElideField('foo', { bar: 'baz', bang: 'boom' }),
-      'foo(bar: baz,bang: boom)',
-      'Field with multiple parameters is formatted correctly'
+      'foo',
+      'Field with multiple parameters is not supported'
     );
     assert.equal(getElideField('foo'), 'foo', 'Name is returned for field with no parameters');
   });
@@ -67,7 +67,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
-      '{"query":"{ table1(filter: \\"d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r(p: 123,as: a) d1 d2 } } } }"}',
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
     );
 
@@ -84,7 +84,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
-      `{"query":"{ myTable { edges { node { m1(p: q) d1 } } } }"}`,
+      `{"query":"{ myTable { edges { node { m1 d1 } } } }"}`,
       'Arguments are properly excluded if they are not in the request'
     );
 
@@ -104,7 +104,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
-      `{"query":"{ myTable(sort: \\"-m1(p: q),d1\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      `{"query":"{ myTable(sort: \\"-m1,d1\\") { edges { node { m1 d1 } } } }"}`,
       'Request with sorts and parameters is queried correctly'
     );
 
@@ -125,7 +125,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"m1(p: q)=in=(v1,v2);d1!=(a);d2==(b)\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"m1=in=('v1','v2');d1!=('a');d2==('b')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with filters and parameters is queried correctly'
     );
 
@@ -142,7 +142,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne'
       }),
-      `{"query":"{ myTable(first: \\"5\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      `{"query":"{ myTable(first: \\"5\\") { edges { node { m1 d1 } } } }"}`,
       'Request with limit is queried correctly'
     );
 
@@ -161,7 +161,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"m1(p: q)=ge=(v1);m1(p: q)=le=(v2)\\") { edges { node { m1(p: q) d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"m1=ge=(v1);m1=le=(v2)\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
     );
   });
@@ -184,8 +184,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
       const expectedTable = TestRequest.table;
       const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
-      const expectedArgs =
-        '(filter: "d3=in=(v1,v2);d4=in=(v3,v4);d5=isnull=(false);time=ge=(2015-01-03);time=lt=(2015-01-04);m1=gt=(0)",sort: "d1",first: "10000")';
+      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),

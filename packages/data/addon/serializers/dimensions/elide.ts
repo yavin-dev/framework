@@ -15,7 +15,7 @@ type ResponseEdge = {
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  normalize(dimension: DimensionColumn, rawPayload: AsyncQueryResponse): NaviDimensionModel[] {
+  normalize(dimension: DimensionColumn, rawPayload?: AsyncQueryResponse): NaviDimensionModel[] {
     const responseStr = rawPayload?.asyncQuery.edges[0].node.result?.responseBody;
     const { id, tableId } = dimension.columnMetadata;
     const match = new RegExp(`${tableId}\\.(.*)`).exec(id); // Remove table id from start of dimension e.g. tableA.dim1 => dim1

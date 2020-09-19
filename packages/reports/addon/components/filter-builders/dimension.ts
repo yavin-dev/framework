@@ -4,7 +4,6 @@
  */
 import BaseFilterBuilderComponent from './base';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import { FilterOperator } from 'navi-data/addon/adapters/facts/interface';
 
 export default class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
   get supportedOperators() {
@@ -16,7 +15,7 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
 
     return [
       { id: 'in' as const, name: 'Equals', valuesComponent: inputComponent },
-      { id: 'notin' as FilterOperator, name: 'Not Equals', valuesComponent: inputComponent },
+      { id: 'notin' as const, name: 'Not Equals', valuesComponent: inputComponent },
       {
         id: 'null' as const,
         name: 'Is Empty',

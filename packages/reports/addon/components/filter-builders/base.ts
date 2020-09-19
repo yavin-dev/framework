@@ -11,6 +11,7 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import EmberArray from '@ember/array';
+import { assert } from '@ember/debug';
 import { FilterOperator } from 'navi-data/addon/adapters/facts/interface';
 
 interface BaseFilterBuilderArgs {
@@ -33,7 +34,6 @@ export type FilterConfig = {
 
 export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> {
   get displayName() {
-    //Rebase
     return this.args.filter.displayName;
   }
 
@@ -41,14 +41,16 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
     return [];
   }
 
-  get selectedOperator(): FilterBuilderOperators | undefined {
-    return this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
+  get selectedOperator(): FilterBuilderOperators {
+    const operator = this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
+    assert(`Filter operator: '${this.args.filter.operator}' is not supported in: ${this.constructor.name}`, operator);
+    return operator;
   }
 
   @computed('selectedOperator', 'args.filter.{validations,values.[]}')
   get filter(): FilterConfig {
     const { values, validations } = this.args.filter;
-    const operator = this.selectedOperator as FilterBuilderOperators;
+    const operator = this.selectedOperator;
 
     return {
       subject: this.args.filter,
