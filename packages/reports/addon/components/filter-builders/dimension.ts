@@ -14,23 +14,22 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
       storageStrategy === 'none' ? 'filter-values/multi-value-input' : 'filter-values/dimension-select';
 
     return [
-      { id: 'in', name: 'Equals', valuesComponent: inputComponent },
-      { id: 'notin', name: 'Not Equals', valuesComponent: inputComponent },
+      { id: 'in' as const, name: 'Equals', valuesComponent: inputComponent },
+      { id: 'notin' as const, name: 'Not Equals', valuesComponent: inputComponent },
       {
-        id: 'null',
+        id: 'null' as const,
         name: 'Is Empty',
         valuesComponent: 'filter-values/null-input'
       },
       {
-        id: 'notnull',
+        id: 'notnull' as const,
         name: 'Is Not Empty',
         valuesComponent: 'filter-values/null-input'
       },
       {
-        id: 'contains',
+        id: 'contains' as const,
         name: 'Contains',
-        valuesComponent: 'filter-values/multi-value-input',
-        showFields: true
+        valuesComponent: 'filter-values/multi-value-input'
       }
     ];
   }

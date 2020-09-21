@@ -10,6 +10,7 @@ import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';
+import ElideDimensionSerializer from 'navi-data/serializers/dimensions/elide';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -28,7 +29,7 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
 
   test('normalize', function(this: TestContext, assert) {
     assert.expect(2);
-    const serializer = this.owner.lookup('serializer:dimensions/elide');
+    const serializer: ElideDimensionSerializer = this.owner.lookup('serializer:dimensions/elide');
 
     const payload: AsyncQueryResponse = {
       asyncQuery: {
@@ -43,32 +44,25 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 httpStatus: 200,
                 resultType: QueryResultType.EMBEDDED,
                 responseBody:
-                  '{"data":{"table0":{"edges":[{"node":{"dimension1(baddabing: baddaboom)":"foo"}},{"node":{"dimension1(baddabing: baddaboom)":"bar"}},{"node":{"dimension1(baddabing: baddaboom)":"baz"}}]}}}'
+                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
               }
             }
           }
         ]
       }
     };
-    const dimColumn: DimensionColumn = {
+    const dimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
         'table0.dimension1',
         'elideOne'
       ) as DimensionMetadataModel,
-      parameters: {
-        baddabing: 'baddaboom'
-      }
+      parameters: {}
     };
-    assert.deepEqual(serializer.normalize(dimColumn), [], 'Empty array is returned for an undefined payload');
+    assert.deepEqual(serializer.normalize(dimensionColumn), [], 'Empty array is returned for an undefined payload');
 
-    const expectedModels = ['foo', 'bar', 'baz'].map(dimVal =>
-      NaviDimensionModel.create({ value: dimVal, dimensionColumn: dimColumn })
-    );
-    assert.deepEqual(
-      serializer.normalize(dimColumn, payload),
-      expectedModels,
-      'normalize returns the `rows` prop of the raw payload'
-    );
+    const expectedModels = ['foo', 'bar', 'baz'].map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    const actualModels = serializer.normalize(dimensionColumn, payload);
+    assert.deepEqual(actualModels, expectedModels, 'normalize returns the `rows` prop of the raw payload');
   });
 });
