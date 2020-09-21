@@ -10,7 +10,8 @@ import NaviFactAdapter, {
   AsyncQueryResponse,
   Parameters,
   QueryStatus,
-  RequestV2
+  RequestV2,
+  FilterOperator
 } from './interface';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -18,25 +19,23 @@ import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 
-export const OPERATOR_MAP: Dict<string> = {
+export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
   eq: '==',
   neq: '!=',
-  notin: '=out='
+  notin: '=out=',
+  null: '=isnull=true',
+  notnull: '=isnull=false',
+  gte: '=ge=',
+  lte: '=le='
 };
 
 /**
- * ex: { field: 'table.foo', parameters: { bar: 'baz', bang: 'boom' } } -> 'foo(bar: baz,bang: boom)'
- * @param fieldName
- * @param parameters
+ * Formats elide request field
  */
-export function getElideField(fieldName: string, parameters: Parameters = {}) {
+export function getElideField(fieldName: string, _parameters: Parameters = {}) {
+  //TODO add parameter support when added to Elide
   const parts = fieldName.split('.');
-  const requestField = parts[parts.length - 1];
-  const params = Object.keys(parameters)
-    .map(key => `${key}: ${parameters[key]}`)
-    .join(',');
-
-  return params.length ? `${requestField}(${params})` : requestField;
+  return parts[parts.length - 1];
 }
 
 export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {
@@ -70,7 +69,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
 
       const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
-      const valuesStr = `(${values.join(',')})`;
+      const valuesStr = values.length ? `(${values.map(v => `'${v}'`).join(',')})` : '';
       return `${fieldStr}${operatorStr}${valuesStr}`;
     });
     filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);

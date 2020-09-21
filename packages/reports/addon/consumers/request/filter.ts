@@ -4,7 +4,7 @@
  */
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { setProperties, set } from '@ember/object';
+import { setProperties } from '@ember/object';
 import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
