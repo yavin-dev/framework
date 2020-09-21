@@ -1079,7 +1079,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
-      'urlForDownloadQuery correctly built the URL for a request with no filters'
+      'urlForDownloadQuery correctly built the URL for a request with only date filter'
     );
 
     let requestWithSort: RequestV2 = {
