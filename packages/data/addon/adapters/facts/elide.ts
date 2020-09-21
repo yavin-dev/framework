@@ -136,6 +136,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   }
 
   /**
+   * @param _request
+   * @param _options
+   */
+  async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
+    return 'TODO';
+  }
+  /**
    * @param request
    * @param options
    */
