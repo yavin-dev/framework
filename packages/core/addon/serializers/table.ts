@@ -165,7 +165,10 @@ export function normalizeTableV2(
   const columnAttributes = Object.values(columnData).reduce((columns, columnInfo) => {
     const { tableColumn, requestColumn } = columnInfo;
     const { attributes } = tableColumn;
-    assert(`The request column ${requestColumn.field} has a cid`, requestColumn.cid);
+    assert(
+      `The request column ${requestColumn.field} should have a present 'cid' field`,
+      requestColumn.cid !== undefined
+    );
     columns[requestColumn.cid] = {
       canAggregateSubtotal: tableColumn.type === 'metric' ? attributes?.canAggregateSubtotal : undefined,
       format: tableColumn.format !== undefined ? tableColumn.format : attributes?.format
