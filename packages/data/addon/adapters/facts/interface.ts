@@ -125,4 +125,5 @@ export interface AsyncQueryResult {
 export default interface NaviFactAdapter {
   fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
   urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
+  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): Promise<string>;
 }
