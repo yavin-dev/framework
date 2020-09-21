@@ -6,6 +6,7 @@
 import VisualizationSerializer from './visualization';
 import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
 import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
+import { assert } from '@ember/debug';
 
 interface FieldTypes {
   metric: 'metric';
@@ -164,6 +165,10 @@ export function normalizeTableV2(
   const columnAttributes = Object.values(columnData).reduce((columns, columnInfo) => {
     const { tableColumn, requestColumn } = columnInfo;
     const { attributes } = tableColumn;
+    assert(
+      `The request column ${requestColumn.field} should have a present 'cid' field`,
+      requestColumn.cid !== undefined
+    );
     columns[requestColumn.cid] = {
       canAggregateSubtotal: tableColumn.type === 'metric' ? attributes?.canAggregateSubtotal : undefined,
       format: tableColumn.format !== undefined ? tableColumn.format : attributes?.format
