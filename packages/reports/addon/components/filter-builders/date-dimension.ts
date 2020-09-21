@@ -8,17 +8,17 @@ export default class DateDimensionFilterBuilderComponent extends BaseFilterBuild
   get supportedOperators() {
     return [
       {
-        id: 'gte',
+        id: 'gte' as const,
         name: 'Since (>=)',
         valuesComponent: 'filter-values/date'
       },
       {
-        id: 'lt',
+        id: 'lt' as const,
         name: 'Before (<)',
         valuesComponent: 'filter-values/date'
       },
       {
-        id: 'bet',
+        id: 'bet' as const,
         name: 'Between (<=>)',
         valuesComponent: 'filter-values/dimension-date-range'
       }

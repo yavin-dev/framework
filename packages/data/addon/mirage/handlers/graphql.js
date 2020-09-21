@@ -286,7 +286,7 @@ function _parseArgs(args, table) {
             field: `${table}.${field}`,
             parameters: parameters && Object.fromEntries(parameters.split(',').map(p => p.split(': '))),
             operator,
-            values: values.split(','),
+            values: values.split(',').map(v => v.match(/'(.*)'/)[1]),
             canonicalName: `${table}.${field}${parameters ? `(${parameters})` : ''}`
           };
         }),

@@ -3,7 +3,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { A as arr } from '@ember/array';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext } from 'ember-test-helpers';

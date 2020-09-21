@@ -412,7 +412,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
 
     let noDimensionFilters: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ type: 'metric', field: 'm1', parameters: {}, operator: '', values: [] }]
+      filters: [{ type: 'metric', field: 'm1', parameters: {}, operator: 'in', values: [] }]
     };
     assert.equal(
       Adapter._buildFiltersParam(noDimensionFilters),

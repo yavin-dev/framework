@@ -27,12 +27,13 @@ export type FilterOperator =
   | 'in'
   | 'notin'
   | 'lt'
-  | 'le'
+  | 'lte'
   | 'gt'
-  | 'ge'
-  | 'isnull'
+  | 'gte'
+  | 'null'
   | 'notnull'
   | 'bet'
+  | 'nbet'
   | 'contains';
 
 export const SORT_DIRECTIONS = ['desc', 'asc'];
@@ -53,7 +54,7 @@ export type Filter = {
   field: string;
   parameters: Parameters;
   type: ColumnType;
-  operator: string;
+  operator: FilterOperator;
   values: (string | number)[];
 };
 

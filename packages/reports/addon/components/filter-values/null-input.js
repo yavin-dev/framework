@@ -9,7 +9,6 @@
  *   }}
  */
 import Component from '@ember/component';
-import { get } from '@ember/object';
 import { isEqual } from 'lodash-es';
 
 export default Component.extend({
@@ -22,16 +21,17 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
 
-    const { isCollapsed, onUpdateFilter } = this;
+    const {
+      isCollapsed,
+      onUpdateFilter,
+      filter: { values }
+    } = this;
 
     /*
-     * Since this operator doesn't require values, pass empty string
-     * here empty string denoted as "" is the same as 'null' in druid
+     * Since this operator doesn't require values, set an empty array
      */
-    if (!isCollapsed && onUpdateFilter && !isEqual(get(this, 'filter.values'), ['""'])) {
-      onUpdateFilter({
-        values: ['""']
-      });
+    if (!isCollapsed && (isEqual(values, ['""']) || !!values.length)) {
+      onUpdateFilter({ values: [] });
     }
   }
 });
