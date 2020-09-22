@@ -19,11 +19,10 @@ import moment, { MomentInput } from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/metric';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { API_DATE_FORMAT_STRING, getDatesForInterval, Grain } from 'navi-core/utils/date';
+import { API_DATE_FORMAT_STRING, getDatesForInterval } from 'navi-core/utils/date';
 import EmberObject, { set, computed } from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import Interval from 'navi-core/utils/classes/interval';
 
 type ResponseRow = ResponseV1['rows'][number];
 

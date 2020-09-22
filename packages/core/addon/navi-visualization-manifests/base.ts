@@ -9,7 +9,6 @@
 import { assert } from '@ember/debug';
 import EmberObject from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { Grain } from 'navi-core/utils/date';
 
 export default class NaviVisualizationBaseManifest extends EmberObject {
   name!: string;
