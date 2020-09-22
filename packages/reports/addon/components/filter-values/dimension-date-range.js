@@ -22,12 +22,12 @@ export default class DimensionDateRange extends Component {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  @oneWay('filter.values.firstObject') startDate;
+  @oneWay('filter.values.[0]') startDate;
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  @oneWay('filter.values.lastObject') endDate;
+  @oneWay('filter.values.[1]') endDate;
 
   /**
    * @property {String} lowPlaceholder
@@ -46,7 +46,7 @@ export default class DimensionDateRange extends Component {
   @action
   setLowValue(value) {
     this.onUpdateFilter({
-      values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
+      values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.[1]')]
     });
   }
 
@@ -57,7 +57,7 @@ export default class DimensionDateRange extends Component {
   @action
   setHighValue(value) {
     this.onUpdateFilter({
-      values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
+      values: [get(this, 'filter.values.[0]'), Moment(value).format('YYYY-MM-DD')]
     });
   }
 }

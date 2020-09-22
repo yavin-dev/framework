@@ -22,7 +22,7 @@ export default class DateComponent extends Component {
   /**
    * @property {String} date - the date that's saved in the filter
    */
-  @oneWay('filter.values.firstObject')
+  @oneWay('filter.values.[0]')
   date;
 
   /**
