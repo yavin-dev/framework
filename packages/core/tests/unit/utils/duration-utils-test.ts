@@ -1,5 +1,5 @@
 import DurationUtils from 'navi-core/utils/duration-utils';
-import DateUtils from 'navi-core/utils/date';
+import { getFirstDayEpochIsoDateTimePeriod, PARAM_DATE_FORMAT_STRING } from 'navi-core/utils/date';
 import Duration from 'navi-core/utils/classes/duration';
 import { module, test } from 'qunit';
 import moment from 'moment';
@@ -22,11 +22,13 @@ module('Unit | Utils | DurationUtils', function() {
     assert.notEqual(date, result, 'subtractDurationFromDate does not mutate the date param object');
 
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.subtractDurationFromDate('2015-01-01', duration),
       'subtractDurationFromDate throws an error for an invalid date parameter'
     );
 
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.subtractDurationFromDate(date, '2 Days'),
       'subtractDurationFromDate throws an error for an invalid duration parameter'
     );
@@ -36,17 +38,20 @@ module('Unit | Utils | DurationUtils', function() {
     assert.expect(8);
 
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.isDurationOverAYear(),
       'isDurationOverAYear throws an error for an undefined duration parameter'
     );
 
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.isDurationOverAYear('2 Days'),
       'isDurationOverAYear throws an error for an invalid duration parameter'
     );
 
     let duration = new Duration('P2M');
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.isDurationOverAYear(duration),
       'isDurationOverAYear throws an error for undefined dateTimePeriod parameter'
     );
@@ -91,40 +96,42 @@ module('Unit | Utils | DurationUtils', function() {
     /* == valid cases == */
 
     /* == All Duration == */
-    let endDate = moment('2015-01-01', DateUtils.PARAM_DATE_FORMAT_STRING);
-    let expectedDate = DateUtils.getFirstDayEpochIsoDateTimePeriod('week');
+    let endDate = moment('2015-01-01', PARAM_DATE_FORMAT_STRING);
+    const expectedDate = getFirstDayEpochIsoDateTimePeriod('week');
     let startOfInterval = DurationUtils.computeStartOfInterval(endDate, Duration.all(), 'week');
     assert.ok(startOfInterval.isSame(expectedDate), 'computeStartOfInterval returns epoch week for all duration');
 
     /* == date range does not exceed epoch == */
-    endDate = moment('2013-05-01', DateUtils.PARAM_DATE_FORMAT_STRING);
-    expectedDate = moment(config.navi.dataEpoch, DateUtils.PARAM_DATE_FORMAT_STRING);
-    let duration = new Duration('P24M');
+    endDate = moment('2013-05-01', PARAM_DATE_FORMAT_STRING);
+    let expectedMoment = moment(config.navi.dataEpoch, PARAM_DATE_FORMAT_STRING);
+    const duration = new Duration('P24M');
     startOfInterval = DurationUtils.computeStartOfInterval(endDate, duration, 'month');
     assert.ok(
-      startOfInterval.isSame(expectedDate),
+      startOfInterval.isSame(expectedMoment),
       'computeStartOfInterval returns epoch if duration goes beyond epoch date'
     );
 
     /* == date range exceeds epoch == */
-    expectedDate = moment(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('month', DateUtils.PARAM_DATE_FORMAT_STRING),
-      DateUtils.PARAM_DATE_FORMAT_STRING
+    expectedMoment = moment(
+      getFirstDayEpochIsoDateTimePeriod('month', PARAM_DATE_FORMAT_STRING),
+      PARAM_DATE_FORMAT_STRING
     );
-    endDate = expectedDate.clone().add(1, 'month');
+    endDate = expectedMoment.clone().add(1, 'month');
     startOfInterval = DurationUtils.computeStartOfInterval(endDate, duration, 'month');
     assert.ok(
-      startOfInterval.isSame(expectedDate),
+      startOfInterval.isSame(expectedMoment),
       'computeStartOfInterval returns epoch month for date range that exceeds epoch'
     );
 
     /* == invalid cases == */
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.computeStartOfInterval(),
       'computeStartOfInterval throws an error for undefined params'
     );
 
     assert.throws(
+      //@ts-expect-error
       () => DurationUtils.computeStartOfInterval(endDate, 'P2D', 'month'),
       'computeStartOfInterval throws an error for invalid duration param'
     );

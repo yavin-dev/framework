@@ -4,11 +4,16 @@ import { module, test } from 'qunit';
 
 const ALL = Duration.ALL;
 
+function buildDuration(isoDuration: string) {
+  return new Duration(isoDuration);
+}
+
 module('Unit | Utils | Duration Class', function() {
   test('Construction of duration objects', function(assert) {
     assert.expect(14);
 
     assert.throws(function() {
+      //@ts-expect-error
       buildDuration();
     }, 'error is thrown while constructing a duration object with an undefined ISO duration');
 
@@ -88,7 +93,7 @@ module('Unit | Utils | Duration Class', function() {
     }, 'compare throws error while comparing durations having different units');
 
     assert.throws(function() {
-      duration.isEqual('invalid');
+      duration.compare('invalid');
     }, 'compare throws error while comparing P7D to an invalid duration');
 
     duration = buildDuration(ALL);
@@ -100,9 +105,7 @@ module('Unit | Utils | Duration Class', function() {
 
     let duration = buildDuration('P12W');
 
-    assert.throws(function() {
-      duration.isEqual('invalid');
-    }, 'isEqual throws an error for invalid ISO duration argument');
+    assert.strictEqual(duration.isEqual('invalid'), false, 'isEqual returns false for invalid ISO duration argument');
 
     assert.equal(duration.isEqual('P12W'), true, 'isEqual returns true when duration of 12 weeks is equal to P12W');
 
@@ -172,6 +175,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.expect(18);
 
     /* == Invalid Cases == */
+    //@ts-expect-error
     assert.equal(parseDuration(), null, 'parseDuration returns null while parsing an undefined ISO duration');
 
     assert.equal(parseDuration('invalid'), null, 'parseDuration returns null while parsing an invalid ISO duration');
@@ -185,31 +189,31 @@ module('Unit | Utils | Duration Class', function() {
     );
 
     /* == Valid Cases == */
-    let [value, unit] = parseDuration('PT1S');
+    let [value, unit] = parseDuration('PT1S') || [];
     assert.equal(value, 1, 'parseDuration parses PT1S and returns 1 as the value');
     assert.equal(unit, 'second', 'parseDuration parses PT1S and returns second as the unit');
 
-    [value, unit] = parseDuration('PT1M');
+    [value, unit] = parseDuration('PT1M') || [];
     assert.equal(value, 1, 'parseDuration parses PT1M and returns 1 as the value');
     assert.equal(unit, 'minute', 'parseDuration parses PT1M and returns minute as the unit');
 
-    [value, unit] = parseDuration('PT1H');
+    [value, unit] = parseDuration('PT1H') || [];
     assert.equal(value, 1, 'parseDuration parses PT1H and returns 1 as the value');
     assert.equal(unit, 'hour', 'parseDuration parses PT1H and returns hour as the unit');
 
-    [value, unit] = parseDuration('P7D');
+    [value, unit] = parseDuration('P7D') || [];
     assert.equal(value, 7, 'parseDuration parses P7D and returns 7 as the value');
     assert.equal(unit, 'day', 'parseDuration parses P7D and returns day as the unit');
 
-    [value, unit] = parseDuration('P12W');
+    [value, unit] = parseDuration('P12W') || [];
     assert.equal(value, 12, 'parseDuration parses P12W and returns 12 as the value');
     assert.equal(unit, 'week', 'parseDuration parses P12W and returns week as the unit');
 
-    [value, unit] = parseDuration('P10M');
+    [value, unit] = parseDuration('P10M') || [];
     assert.equal(value, 10, 'parseDuration parses P10M and returns 10 as the value');
     assert.equal(unit, 'month', 'parseDuration parses P10M and returns month as the unit');
 
-    [value, unit] = parseDuration(ALL);
+    [value, unit] = parseDuration(ALL) || [];
     assert.equal(value, ALL, 'parseDuration parses ' + ALL + ' and returns ' + ALL + ' as the value');
     assert.equal(unit, undefined, 'parseDuration parses ' + ALL + ' and returns undefined as the unit');
   });
@@ -217,14 +221,11 @@ module('Unit | Utils | Duration Class', function() {
   test('isIsoDurationString', function(assert) {
     assert.expect(5);
 
+    //@ts-expect-error
     assert.notOk(isIsoDurationString(), 'Undefined is not a valid ISO duration');
     assert.notOk(isIsoDurationString('P0W'), 'Zero value is not a valid ISO duration');
     assert.notOk(isIsoDurationString('P1J'), 'Unsupported time unit is not a valid ISO duration');
     assert.ok(isIsoDurationString('PT1H'), 'PT1H is a valid ISO duration');
     assert.ok(isIsoDurationString('P7D'), 'P7D is a valid ISO duration');
   });
-
-  function buildDuration(isoDuration) {
-    return new Duration(isoDuration);
-  }
 });

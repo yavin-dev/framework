@@ -19,7 +19,6 @@ import { readOnly } from '@ember/object/computed';
 import { isArray } from '@ember/array';
 import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
-import { getRequestMetrics } from 'navi-core/utils/chart-data';
 import layout from '../../templates/components/navi-visualization-config/series-chart';
 import { values, reject } from 'lodash-es';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
@@ -30,10 +29,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
   /**
    * @property {Array} metrics
    */
-  @computed('request')
-  get metrics() {
-    return getRequestMetrics(this.request);
-  }
+  @readOnly('request.metricColumns') metrics;
 
   /**
    * @property {Object} selectedMetric

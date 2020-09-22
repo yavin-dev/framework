@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
-import ApplicationInstance from '@ember/application/instance';
 import { getContext } from '@ember/test-helpers';
+import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import GlimmerComponentManager from 'dummy/component-managers/glimmer';
 
@@ -11,7 +11,7 @@ import GlimmerComponentManager from 'dummy/component-managers/glimmer';
  * @param named the named arguments to be supplied as `args` to the glimmer component
  */
 export function createGlimmerComponent(lookupPath: string, named: Record<string, unknown> = {}): Component {
-  const owner = (getContext() as any).owner as ApplicationInstance;
+  const owner = (getContext() as TestContext).owner;
   const { class: componentClass } = owner.factoryFor(lookupPath);
   return createGlimmerClass(componentClass, named);
 }
@@ -25,7 +25,7 @@ export function createGlimmerClass<T extends Component>(
   glimmerComponent: T,
   named: Record<string, unknown> = {}
 ): Component {
-  const owner = (getContext() as any).owner as ApplicationInstance;
+  const owner = (getContext() as TestContext).owner;
   const componentManager = new GlimmerComponentManager(owner);
   return componentManager.createComponent(glimmerComponent, { named });
 }

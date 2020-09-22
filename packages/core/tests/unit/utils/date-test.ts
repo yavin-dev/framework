@@ -32,7 +32,7 @@ module('Unit | Utils | DateUtils', function() {
 
     const expectedDate1 = moment()
       .subtract(1, 'week')
-      .startOf('isoweek')
+      .startOf('isoWeek')
       .format(dateFormat);
     assert.equal(
       DateUtils.getFirstDayOfPrevIsoDateTimePeriod('week', dateFormat),
@@ -77,7 +77,7 @@ module('Unit | Utils | DateUtils', function() {
     let dateFormat = 'YYYY-MM-DD';
 
     let expectedDate1 = moment()
-      .startOf('isoweek')
+      .startOf('isoWeek')
       .subtract(1, 'day')
       .format(dateFormat);
     assert.equal(
@@ -197,6 +197,7 @@ module('Unit | Utils | DateUtils', function() {
     let dateFormat = DateUtils.API_DATE_FORMAT_STRING;
 
     assert.throws(
+      //@ts-expect-error
       () => DateUtils.getFirstDayOfIsoDateTimePeriod(undefined, 'week', dateFormat),
       'Threw an error as expected'
     );
@@ -208,10 +209,11 @@ module('Unit | Utils | DateUtils', function() {
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate1 + ' as expected'
     );
 
+    //@ts-expect-error
     assert.throws(() => DateUtils.getFirstDayOfIsoDateTimePeriod(), 'Threw an error as expected');
 
     let expectedDate2 = moment()
-      .startOf('isoweek')
+      .startOf('isoWeek')
       .format(dateFormat);
     assert.equal(
       DateUtils.getFirstDayOfIsoDateTimePeriod(moment(), 'week'),
@@ -275,6 +277,7 @@ module('Unit | Utils | DateUtils', function() {
       dateFormat1 = DateUtils.PARAM_DATE_FORMAT_STRING;
 
     assert.throws(
+      //@ts-expect-error
       () => DateUtils.getLastDayOfIsoDateTimePeriod(undefined, 'week', dateFormat1),
       'Threw an error as expected'
     );
@@ -286,10 +289,11 @@ module('Unit | Utils | DateUtils', function() {
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate1 + ' as expected'
     );
 
+    //@ts-expect-error
     assert.throws(() => DateUtils.getLastDayOfIsoDateTimePeriod(), 'Threw an error as expected');
 
     let expectedDate2 = moment()
-      .endOf('isoweek')
+      .endOf('isoWeek')
       .format(dateFormat);
     assert.equal(
       DateUtils.getLastDayOfIsoDateTimePeriod(moment(), 'week'),
@@ -356,7 +360,7 @@ module('Unit | Utils | DateUtils', function() {
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod1 + ' as expected'
     );
 
-    let isoDateTimePeriod2 = 'isoweek';
+    let isoDateTimePeriod2 = 'isoWeek';
     assert.equal(
       DateUtils.getIsoDateTimePeriod('week'),
       isoDateTimePeriod2,
@@ -379,11 +383,13 @@ module('Unit | Utils | DateUtils', function() {
 
     let isoDateTimePeriod5 = 'invalid';
     assert.equal(
+      //@ts-expect-error
       DateUtils.getIsoDateTimePeriod('invalid'),
       isoDateTimePeriod5,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod5 + ' as expected'
     );
 
+    //@ts-expect-error
     assert.throws(() => DateUtils.getIsoDateTimePeriod(), 'Threw an error as expected');
   });
 });
