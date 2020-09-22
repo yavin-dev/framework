@@ -29,10 +29,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
   /**
    * @property {Array} metrics
    */
-  @computed('request')
-  get metrics() {
-    return this.request.metricColumns;
-  }
+  @readOnly('request.metricColumns') metrics;
 
   /**
    * @property {Object} selectedMetric

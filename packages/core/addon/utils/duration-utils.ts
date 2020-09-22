@@ -35,7 +35,7 @@ export default {
    * @param duration - duration to subtract from given date
    * @returns resultant date of the subtraction
    */
-  subtractDurationFromDate(date: Moment, duration: Duration) {
+  subtractDurationFromDate(date: Moment, duration: Duration): Moment {
     assert('Date should be a moment object', moment.isMoment(date));
     validateDurationArgument(duration);
     const value = duration.getValue();

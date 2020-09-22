@@ -57,8 +57,6 @@ export default class MetricChartBuilder extends EmberObject {
     // Support different `dateTime` formats by mapping them to a standard
     const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
 
-    // const metrics = config.metrics;
-
     /*
      * Get all date buckets spanned by the data,
      * and group data by date for easier lookup

@@ -29,6 +29,7 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
 import { TableMetadata } from 'navi-data/models/metadata/table';
 import { ColumnType } from 'navi-data/models/metadata/column';
+import { Grain } from 'navi-core/utils/date';
 
 type BaseLiteral = {
   type: ColumnType;
@@ -193,8 +194,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
   @computed('timeGrainColumn.parameters.grain')
-  get timeGrain(): string | undefined {
-    return this.timeGrainColumn?.parameters?.grain;
+  get timeGrain(): Grain | undefined {
+    return this.timeGrainColumn?.parameters?.grain as Grain;
   }
 
   /**
