@@ -11,14 +11,11 @@
  *   />
  */
 
-import Component from '@ember/component';
-import { action, get } from '@ember/object';
-import layout from '../../templates/components/filter-values/range-input';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import Args from './args-interface';
 
-@tagName('')
-@templateLayout(layout)
-export default class RangeInput extends Component {
+export default class RangeInput extends Component<Args> {
   /**
    * @property {String} lowPlaceholder
    */
@@ -35,8 +32,8 @@ export default class RangeInput extends Component {
    */
   @action
   setLowValue({ target: { value } }) {
-    this.onUpdateFilter({
-      values: [value, get(this, 'filter.values.1')]
+    this.args.onUpdateFilter({
+      values: [value, this.args.filter.values[0]]
     });
   }
 
@@ -46,8 +43,8 @@ export default class RangeInput extends Component {
    */
   @action
   setHighValue({ target: { value } }) {
-    this.onUpdateFilter({
-      values: [get(this, 'filter.values.0'), value]
+    this.args.onUpdateFilter({
+      values: [this.args.filter.values[0], value]
     });
   }
 }

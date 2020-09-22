@@ -1,28 +1,46 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click } from '@ember/test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import hbs from 'htmlbars-inline-precompile';
+import FragmentFactory from 'navi-core/addon/services/fragment-factory';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+
+interface TestContext extends Context {
+  filter: FilterFragment;
+  onUpdateFilter(changeSet: Partial<FilterFragment>): void;
+}
 
 module('Integration | Component | filter values/dimension date range', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(async function(this: TestContext) {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
+
+    const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
+    this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []);
+
+    await render(hbs`
+      <FilterValues::DimensionDateRange
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @isCollapsed={{this.isCollapsed}}
+      />`);
+  });
 
   test('displayed dates and update actions', async function(assert) {
     assert.expect(6);
 
-    this.set('filter', { values: arr([]) });
     this.set('onUpdateFilter', () => null);
-
-    await render(hbs`{{filter-values/dimension-date-range
-      filter=filter
-      onUpdateFilter=(action onUpdateFilter)
-      isCollapsed=isCollapsed
-    }}`);
 
     assert.equal(
       find('.filter-values--dimension-date-range-input')
-        .textContent.replace(/\s\s+/g, ' ')
+        ?.textContent?.replace(/\s\s+/g, ' ')
         .trim(),
       'Since and Before',
       'Appropriate placeholders are displayed when the filter has no dates'
@@ -31,7 +49,7 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('filter', { values: arr(['2019-01-05', null]) });
 
     //Check that setting low value sends the new date value to the action
-    this.set('onUpdateFilter', filter => {
+    this.set('onUpdateFilter', (filter: any) => {
       assert.deepEqual(get(filter, 'values'), ['2019-01-12', null], 'Selecting the low date updates the filter');
     });
     await click('.filter-values--dimension-date-range-input__low-value > .dropdown-date-picker__trigger');
@@ -41,7 +59,7 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('filter', { values: arr(['2019-01-05', '2019-01-12']) });
 
     //Check that setting high value sends the new date value to the action
-    this.set('onUpdateFilter', filter => {
+    this.set('onUpdateFilter', (filter: any) => {
       assert.deepEqual(
         get(filter, 'values'),
         ['2019-01-05', '2019-01-15'],
@@ -55,7 +73,7 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('filter', { values: arr(['2019-01-12', '2019-01-15']) });
     assert.equal(
       find('.filter-values--dimension-date-range-input')
-        .textContent.replace(/\s\s+/g, ' ')
+        ?.textContent?.replace(/\s\s+/g, ' ')
         .trim(),
       'Jan 12, 2019 and Jan 15, 2019',
       'Appropriate dates are displayed when the filter has dates'
