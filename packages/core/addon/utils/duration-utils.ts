@@ -31,7 +31,7 @@ export default {
   /**
    * Subtracts a given duration from a given date
    *
-   *  @param date - Moment object representing date
+   * @param date - Moment object representing date
    * @param duration - duration to subtract from given date
    * @returns resultant date of the subtraction
    */

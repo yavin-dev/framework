@@ -19,7 +19,7 @@ function isMacro(property: unknown): property is typeof MACROS[number] {
   return typeof property === 'string' && allMacros.includes(property);
 }
 
-type Serialized<T extends Moment | string> = { start: T; end: T | undefined };
+type SerializedMoment = { start: Moment; end: Moment | undefined };
 type SerializedWithEnd<T extends Moment | string> = { start: T; end: T };
 
 type IntervalStart = Duration | Moment | typeof CURRENT;
@@ -84,7 +84,7 @@ export default class Interval {
    * Converts interval into a POJO with moments
    * @returns object with start and end properties
    */
-  asMoments(): Serialized<Moment> {
+  asMoments(): SerializedMoment {
     let start = this._start;
     let end: IntervalEnd | undefined = this._end;
 
