@@ -1,17 +1,17 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import { assert } from '@ember/debug';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import Duration from './classes/duration';
-import DateUtils from './date';
+import { DateTimePeriod, getFirstDayEpochIsoDateTimePeriod } from './date';
 
 /**
  * Map of durations equivalent to a year for different time units
  */
-const YEAR_MAP = {
+const YEAR_MAP: Record<string, string | undefined> = {
   day: 'P365D',
   week: 'P52W',
   month: 'P12M',
@@ -21,9 +21,9 @@ const YEAR_MAP = {
 /**
  * Validates if argument is a Duration Object, if not throws an error
  *
- * @param {Duration} duration
+ * @param duration
  */
-function validateDurationArgument(duration) {
+function validateDurationArgument(duration: unknown) {
   assert('Duration should be a duration object', Duration.isDuration(duration));
 }
 
@@ -31,32 +31,34 @@ export default {
   /**
    * Subtracts a given duration from a given date
    *
-   * @method subtractDurationFromDate
-   * @param {Moment} date - Moment object representing date
-   * @param {Duration} duration - duration to subtract from given date
-   * @returns {Moment} - resultant date of the subtraction
+   * @param date - Moment object representing date
+   * @param duration - duration to subtract from given date
+   * @returns resultant date of the subtraction
    */
-  subtractDurationFromDate: function(date, duration) {
+  subtractDurationFromDate(date: Moment, duration: Duration): Moment {
     assert('Date should be a moment object', moment.isMoment(date));
     validateDurationArgument(duration);
+    const value = duration.getValue();
+    const unit = duration.getUnit();
+    assert('The duration unit must be defined', unit);
+    assert('The duration has a number value of units', typeof value === 'number');
     // Moment subtract mutates original date object hence the clone
-    return date.clone().subtract(duration.getValue(), duration.getUnit());
+    return date.clone().subtract(value, unit);
   },
 
   /**
    * Computes the start of interval given the end date and duration of the interval
    *
-   * @method computeStartOfInterval
-   * @param {Moment} endDate - end date of the interval
-   * @param {Duration} duration - duration object
-   * @param {String} dateTimePeriod - string representing dateTimePeriod
-   * @returns {Moment} - start date of interval
+   * @param endDate - end date of the interval
+   * @param duration - duration object
+   * @param dateTimePeriod - string representing dateTimePeriod
+   * @returns start date of interval
    */
-  computeStartOfInterval: function(endDate, duration, dateTimePeriod) {
+  computeStartOfInterval(endDate: Moment, duration: Duration, dateTimePeriod: DateTimePeriod): Moment {
     validateDurationArgument(duration);
     assert('Date should be a moment object', moment.isMoment(endDate));
 
-    let epochDate = moment(DateUtils.getFirstDayEpochIsoDateTimePeriod(dateTimePeriod));
+    let epochDate = moment(getFirstDayEpochIsoDateTimePeriod(dateTimePeriod));
     if (Duration.isAll(duration)) {
       return epochDate;
     }
@@ -70,11 +72,11 @@ export default {
   /**
    * Checks if given duration is over a year
    *
-   * @param {Duration} duration
-   * @param {String} dateTimePeriod
-   * @returns {boolean} - true if duration is over a year else false
+   * @param duration
+   * @param dateTimePeriod
+   * @returns true if duration is over a year else false
    */
-  isDurationOverAYear: function(duration, dateTimePeriod) {
+  isDurationOverAYear(duration: Duration, dateTimePeriod: string): boolean {
     validateDurationArgument(duration);
     assert('Date time period must be defined', dateTimePeriod);
 

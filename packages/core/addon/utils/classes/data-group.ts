@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { assert } from '@ember/debug';
@@ -7,27 +7,25 @@ import { assert } from '@ember/debug';
 /**
  * DataGroup
  * Groups large data sets for quick access
- *
- * @class
  */
-export default class DataGroup {
+export default class DataGroup<T> {
+  private _rowsByKey: Record<string, T[]>;
+
   /**
    * @param {Array} rows - data to group
    * @param {Function} groupingFn - function that takes a data row and returns the key to group it by
    */
-  constructor(rows, groupingFn) {
+  constructor(rows: T[], groupingFn: (row: T) => string) {
     assert('Data rows must be defined', rows);
     assert('Grouping function must be defined', typeof groupingFn === 'function');
 
-    let map = {},
-      i,
-      key,
-      row;
+    const map: Record<string, T[]> = {};
 
+    let i: number;
     // Build a map of keys to data rows
     for (i = 0; i < rows.length; i++) {
-      row = rows[i];
-      key = groupingFn(row);
+      const row = rows[i];
+      const key = groupingFn(row);
 
       if (map[key]) {
         map[key].push(row);
@@ -40,19 +38,17 @@ export default class DataGroup {
   }
 
   /**
-   * @method getDataForKey
-   * @param {String} key
-   * @returns {Array} data associated with given key
+   * @param key
+   * @returns data associated with given key
    */
-  getDataForKey(key) {
+  getDataForKey(key: string): T[] {
     return this._rowsByKey[key];
   }
 
   /**
-   * @method getKeys
-   * @returns {Array} set of all keys associated with given data
+   * @returns set of all keys associated with given data
    */
-  getKeys() {
+  getKeys(): string[] {
     return Object.keys(this._rowsByKey);
   }
 }
