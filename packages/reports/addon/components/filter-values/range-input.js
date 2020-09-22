@@ -36,7 +36,7 @@ export default class RangeInput extends Component {
   @action
   setLowValue({ target: { value } }) {
     this.onUpdateFilter({
-      values: [value, get(this, 'filter.values.[1]')]
+      values: [value, get(this, 'filter.values.1')]
     });
   }
 
@@ -47,7 +47,7 @@ export default class RangeInput extends Component {
   @action
   setHighValue({ target: { value } }) {
     this.onUpdateFilter({
-      values: [get(this, 'filter.values.[0]'), value]
+      values: [get(this, 'filter.values.0'), value]
     });
   }
 }
