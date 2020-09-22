@@ -5,12 +5,18 @@
 import { computed } from '@ember/object';
 import { isEqual, omit } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /**
- * @param {Object} request
- * @returns {Array} canonicalized metrics sorted alphabetically
+ * @param request
+ * @returns canonicalized metrics sorted alphabetically
  */
-const sortedColumns = request => [...new Set(request.columns.map(c => c.canonicalName))].sort();
+function sortedColumns(request) {
+  const canonicalNames = request.columns.map(({ field: metric, parameters }) =>
+    canonicalizeMetric({ metric, parameters })
+  );
+  return [...new Set(canonicalNames)].sort();
+}
 
 export default class ReportViewController extends Controller {
   /*
@@ -21,7 +27,10 @@ export default class ReportViewController extends Controller {
   /*
    * @property {Boolean} hasRequestRun
    */
-  @computed('reportController.modifiedRequest', 'model.request')
+  @computed(
+    'reportController.modifiedRequest.{columns.[],filters.[],sorts.[],table,dataSource}',
+    'model.request.{columns.[],filters.[],sorts.[],table,dataSource}'
+  )
   get hasRequestRun() {
     const { modifiedRequest } = this.reportController;
     const { request } = this.model;
