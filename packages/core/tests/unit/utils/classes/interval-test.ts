@@ -1,31 +1,34 @@
 import Interval from 'navi-core/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import { module, test } from 'qunit';
-import DateUtils from 'navi-core/utils/date';
-import moment from 'moment';
+import { getIsoDateTimePeriod } from 'navi-core/utils/date';
+import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';
 
 module('Unit | Utils | Interval Class', function() {
   test('Construction', function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
+    //@ts-expect-error
     assert.throws(() => new Interval(), 'error is thrown while constructing with an undefined start');
 
+    //@ts-expect-error
     assert.throws(() => new Interval('current'), 'error is thrown while constructing with an undefined end');
 
     assert.throws(
+      //@ts-expect-error
       () => new Interval('current', { a: 23 }),
       'error is thrown while constructing with an unaccepted object type'
     );
 
     assert.throws(
+      //@ts-expect-error
       () => new Interval(new Duration('P1W'), new Duration('P12W')),
       'error is thrown while constructing with an interval composed of two durations'
     );
 
-    // Test for no error on valid construction
-    new Interval(new Duration('P7D'), moment());
+    assert.ok(new Interval(new Duration('P7D'), moment()), 'proper interval can be built');
   });
 
   test('isEqual', function(assert) {
@@ -128,14 +131,14 @@ module('Unit | Utils | Interval Class', function() {
 
     assert.ok(moments.start.isSame(sevenDaysAgo, 'day'), 'Duration is correctly subtracted from end');
 
-    assert.ok(moments.end.isSame(current, 'day'), 'Macro is correctly substituted');
+    assert.ok(moments.end?.isSame(current, 'day'), 'Macro is correctly substituted');
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT);
 
     moments = new Interval(start, end).asMoments();
 
-    assert.ok(moments.start.isSame(start) && moments.end.isSame(end), 'Given moments are correctly returned');
+    assert.ok(moments.start.isSame(start) && moments.end?.isSame(end), 'Given moments are correctly returned');
   });
 
   test('asMomentsForTimePeriod', function(assert) {
@@ -145,9 +148,9 @@ module('Unit | Utils | Interval Class', function() {
       end = moment('2015-10-10', FORMAT),
       moments = new Interval(start, end).asMomentsForTimePeriod('week');
 
-    assert.ok(moments.start.isSame(start.startOf('isoweek')), 'Start moment is at start of isoweek');
+    assert.ok(moments.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
-    assert.ok(moments.end.isSame(end.startOf('isoweek')), 'End moment is at start of isoweek');
+    assert.ok(moments.end.isSame(end.startOf('isoWeek')), 'End moment is at start of isoWeek');
   });
 
   test('asMomentsForTimePeriod with current and next for time period', function(assert) {
@@ -155,7 +158,7 @@ module('Unit | Utils | Interval Class', function() {
 
     // end is next, which will be undefined as moment
     let moments = new Interval('current', 'next').asMomentsForTimePeriod('week');
-    let expected = moments.end.startOf(DateUtils.getIsoDateTimePeriod('week'));
+    let expected = moments.end.startOf(getIsoDateTimePeriod('week'));
 
     assert.ok(moments.end.isSame(expected), 'Setting end to next will be computed correctly');
   });
@@ -167,9 +170,9 @@ module('Unit | Utils | Interval Class', function() {
       end = moment('2017-10-10', FORMAT),
       moments = new Interval(start, end).asMomentsForTimePeriod('week');
 
-    assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoweek');
+    assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
-    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of next isoweek');
+    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of next isoWeek');
 
     moments = new Interval(start, end).asMomentsForTimePeriod('week', false);
 
@@ -183,9 +186,9 @@ module('Unit | Utils | Interval Class', function() {
       end = moment('2015-10-10', FORMAT),
       newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
 
-    assert.ok(newInterval.start.isSame(start.startOf('isoweek')), 'Start moment is at start of isoweek');
+    assert.ok(newInterval.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
-    assert.ok(newInterval.end.isSame(end.startOf('isoweek')), 'End moment is at start of isoweek');
+    assert.ok(newInterval.end?.isSame(end.startOf('isoWeek')), 'End moment is at start of isoWeek');
   });
 
   test('asIntervalForTimePeriod - same start and end date', function(assert) {
@@ -195,9 +198,9 @@ module('Unit | Utils | Interval Class', function() {
       end = moment('2017-10-10', FORMAT),
       newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
 
-    assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoweek');
+    assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
-    assert.equal(newInterval.end.format(FORMAT), '2017-10-16', 'End moment is at start of isoweek');
+    assert.equal(newInterval.end?.format(FORMAT), '2017-10-16', 'End moment is at start of isoWeek');
   });
 
   test('asStrings', function(assert) {
@@ -220,13 +223,13 @@ module('Unit | Utils | Interval Class', function() {
   test('_stringFromProperty', function(assert) {
     assert.expect(3);
 
-    assert.equal(Interval._stringFromProperty(new Duration('P7D')), 'P7D', 'Duration is converted to iso string');
+    assert.equal(Interval['_stringFromProperty'](new Duration('P7D')), 'P7D', 'Duration is converted to iso string');
 
-    assert.equal(Interval._stringFromProperty('current'), 'current', 'Macro keeps original value');
+    assert.equal(Interval['_stringFromProperty']('current'), 'current', 'Macro keeps original value');
 
     let start = moment('2014-10-10', FORMAT);
     assert.equal(
-      Interval._stringFromProperty(start),
+      Interval['_stringFromProperty'](start),
       start.format('YYYY-MM-DD HH:mm:ss.SSS'),
       'Moments are formatted for API'
     );
@@ -237,10 +240,13 @@ module('Unit | Utils | Interval Class', function() {
 
     assert.equal(Interval.fromString('current'), 'current', 'Macro can be parsed from string');
 
-    assert.ok(Interval.fromString('P7D').isEqual(new Duration('P7D')), 'Duration can be parsed from iso string');
+    assert.ok(
+      (Interval.fromString('P7D') as Duration).isEqual(new Duration('P7D')),
+      'Duration can be parsed from iso string'
+    );
 
     assert.ok(
-      Interval.fromString('2014-10-10 00:00:00.000').isSame(moment('2014-10-10', FORMAT)),
+      (Interval.fromString('2014-10-10 00:00:00.000') as Moment).isSame(moment('2014-10-10', FORMAT)),
       'Moments can be parsed from API date string'
     );
 
@@ -254,6 +260,7 @@ module('Unit | Utils | Interval Class', function() {
 
     assert.throws(
       () => {
+        //@ts-expect-error
         Interval.fromString(123);
       },
       /Argument must be a string/,
@@ -266,13 +273,13 @@ module('Unit | Utils | Interval Class', function() {
 
     let interval = new Interval('current', 'current');
 
-    assert.ok(interval._isAcceptedType(new Duration('P7D')), 'Duration are accepted');
+    assert.ok(interval['_isAcceptedType'](new Duration('P7D')), 'Duration are accepted');
 
-    assert.ok(interval._isAcceptedType('current'), 'String macros are accepted');
+    assert.ok(interval['_isAcceptedType']('current'), 'String macros are accepted');
 
-    assert.ok(interval._isAcceptedType(moment('2014-10-10', FORMAT)), 'Moments are accepted');
+    assert.ok(interval['_isAcceptedType'](moment('2014-10-10', FORMAT)), 'Moments are accepted');
 
-    assert.notOk(interval._isAcceptedType({ random: 'object' }), 'Generic objects are not accepted');
+    assert.notOk(interval['_isAcceptedType']({ random: 'object' }), 'Generic objects are not accepted');
   });
 
   test('isInterval', function(assert) {

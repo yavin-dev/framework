@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
-import { Parameters, SortDirection, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 
 type LogicalTable = {
@@ -214,7 +214,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
       parameters: { field },
-      operator,
+      operator: operator as FilterOperator,
       values
     })
   );
@@ -225,7 +225,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: 'metric',
       field: removeNamespace(metric, dataSource),
       parameters,
-      operator,
+      operator: operator as FilterOperator,
       values
     });
   });

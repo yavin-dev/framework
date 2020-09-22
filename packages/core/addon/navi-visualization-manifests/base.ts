@@ -50,6 +50,7 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
    */
   hasSingleTimeBucket(request: RequestFragment): boolean {
     const { timeGrain, interval } = request;
+    assert('request should have a timeGrain', timeGrain);
 
     return this.hasInterval(request) && interval?.diffForTimePeriod(timeGrain) === 1;
   }
