@@ -13,6 +13,7 @@
  *   }
  */
 import Mixin from '@ember/object/mixin';
+import { assert } from '@ember/debug';
 import moment, { MomentInput } from 'moment';
 //@ts-ignore
 import tooltipLayout from '../templates/chart-tooltips/metric';
@@ -49,8 +50,9 @@ export default class MetricChartBuilder extends EmberObject {
    */
   buildData(data: ResponseV1['rows'], _config: unknown, request: RequestFragment) {
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
-    const interval = request.interval as Interval;
-    const timeGrain = request.timeGrain as Grain;
+    const { timeGrain, interval } = request;
+    assert('request should have an interval', interval);
+    assert('request should have a timeGrain', timeGrain);
     // Group data by x axis value in order to lookup row data when building tooltip
     set(this, 'byXSeries', new DataGroup(data, (row: ResponseRow) => this.getXValue(row, timeGrainColumn)));
 
