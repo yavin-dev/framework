@@ -1,7 +1,7 @@
-import Interval from 'navi-core/utils/classes/interval';
-import Duration from 'navi-core/utils/classes/duration';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
-import { getIsoDateTimePeriod } from 'navi-core/utils/date';
+import { getIsoDateTimePeriod } from 'navi-data/utils/date';
 import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';
@@ -119,6 +119,26 @@ module('Unit | Utils | Interval Class', function() {
       new Interval(moment('2015-11-10 10:00:00.000'), moment('2015-11-13 11:00:00.000')).diffForTimePeriod('all'),
       1,
       "Interval has 'all' timeGrain and 1 time bucket for all timePeriod multiple time buckets"
+    );
+  });
+
+  test('getDatesForInterval', function(assert) {
+    assert.expect(2);
+
+    let testInterval = new Interval(moment('4-9-2017', 'D-M-Y'), moment('25-9-2017', 'D-M-Y')),
+      dates = testInterval.getDatesForInterval('week');
+
+    assert.deepEqual(
+      dates.map(date => date.format('D-M-Y')),
+      ['4-9-2017', '11-9-2017', '18-9-2017'],
+      'A moment for each week between Sep 4 and Sep 25 (exclusive) is returned'
+    );
+
+    dates = testInterval.getDatesForInterval('all');
+    assert.deepEqual(
+      dates.map(date => date.format('D-M-Y')),
+      ['4-9-2017'],
+      'A moment for all time is returned as the start date'
     );
   });
 

@@ -6,16 +6,16 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
-import DateUtils from 'navi-core/utils/date';
+import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let MetadataService;
 
 const TEMPLATE = hbs`
-  {{navi-visualizations/line-chart
-    model=model
-    options=options
-  }}`;
+  <NaviVisualizations::LineChart
+    @model={{this.model}}
+    @options={{this.options}}
+  />`;
 
 const Model = A([
   {
@@ -525,7 +525,7 @@ module('Integration | Component | line chart', function(hooks) {
 
     while (current.isBefore(end)) {
       rows.push({
-        dateTime: current.format(DateUtils.API_DATE_FORMAT_STRING),
+        dateTime: current.format(API_DATE_FORMAT_STRING),
         uniqueIdentifier: Math.random() * 1000
       });
 
@@ -540,8 +540,8 @@ module('Integration | Component | line chart', function(hooks) {
             metrics: ['uniqueIdentifier'],
             intervals: [
               {
-                start: start.format(DateUtils.API_DATE_FORMAT_STRING),
-                end: end.format(DateUtils.API_DATE_FORMAT_STRING)
+                start: start.format(API_DATE_FORMAT_STRING),
+                end: end.format(API_DATE_FORMAT_STRING)
               }
             ],
             logicalTable: {
@@ -728,11 +728,11 @@ module('Integration | Component | line chart', function(hooks) {
     assert.expect(2);
 
     const template = hbs`
-    {{#if shouldRender}}
-      {{navi-visualizations/line-chart
-        model=model
-        options=options
-      }}
+    {{#if this.shouldRender}}
+      <NaviVisualizations::LineChart
+        @model={{this.model}}
+        @options={{this.options}}
+      />
     {{/if}}`;
 
     this.set('options', {

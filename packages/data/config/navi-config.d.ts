@@ -6,6 +6,7 @@ declare module 'navi-config' {
   };
 
   export default interface NaviConfig {
+    dataEpoch: string;
     dataSources: NaviDataSource[];
     defaultDataSource?: string;
     searchThresholds: TODO;

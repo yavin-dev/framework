@@ -1,5 +1,4 @@
-import Duration from 'navi-core/utils/classes/duration';
-import { parseDuration, isIsoDurationString } from 'navi-core/utils/classes/duration';
+import Duration, { parseDuration, isIsoDurationString } from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
 
 const ALL = Duration.ALL;

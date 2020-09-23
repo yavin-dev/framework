@@ -29,7 +29,7 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
 import { TableMetadata } from 'navi-data/models/metadata/table';
 import { ColumnType } from 'navi-data/models/metadata/column';
-import { Grain } from 'navi-core/utils/date';
+import { Grain } from 'navi-data/utils/date';
 
 type BaseLiteral = {
   type: ColumnType;
