@@ -35,9 +35,7 @@ const NEXT_SORT_DIRECTION: Record<SortDirection, SortDirection> = {
   asc: 'none'
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponseRow = ResponseV1['rows'][number];
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TotalRow = ResponseRow;
 
 type UpdateAction = string;
