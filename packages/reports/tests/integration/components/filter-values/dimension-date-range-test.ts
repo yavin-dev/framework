@@ -49,7 +49,7 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('filter', { values: arr(['2019-01-05', null]) });
 
     //Check that setting low value sends the new date value to the action
-    this.set('onUpdateFilter', (filter: any) => {
+    this.set('onUpdateFilter', (filter: Partial<FilterFragment>) => {
       assert.deepEqual(get(filter, 'values'), ['2019-01-12', null], 'Selecting the low date updates the filter');
     });
     await click('.filter-values--dimension-date-range-input__low-value > .dropdown-date-picker__trigger');
@@ -59,7 +59,7 @@ module('Integration | Component | filter values/dimension date range', function(
     this.set('filter', { values: arr(['2019-01-05', '2019-01-12']) });
 
     //Check that setting high value sends the new date value to the action
-    this.set('onUpdateFilter', (filter: any) => {
+    this.set('onUpdateFilter', (filter: Partial<FilterFragment>) => {
       assert.deepEqual(
         get(filter, 'values'),
         ['2019-01-05', '2019-01-15'],

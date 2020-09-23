@@ -4,12 +4,11 @@
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import Args from './args-interface';
 
 export default class ValueInputComponent extends Component<Args> {
-  get value() {
-    return this.args.filter.values?.[0];
-  }
+  @readOnly('args.filter.values.0') value?: string;
 
   @action
   setValue({ target: { value } }: { target: HTMLInputElement }) {

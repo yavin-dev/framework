@@ -8,7 +8,7 @@
 {{else}}
   <div class="filter-values--range-input" ...attributes>
     <input
-      value={{@filter.values.[0]}}
+      value={{this.startDate}}
       placeholder="Low Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setLowValue}}>
@@ -16,7 +16,7 @@
     <span class="filter-values--range-input__separator">and</span>
 
     <input
-      value={{@filter.values.[1]}}
+      value={{this.endDate}}
       placeholder="High Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setHighValue}}>
