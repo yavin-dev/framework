@@ -19,6 +19,7 @@ export type RequestOptions = {
   cache?: boolean;
   queryParams?: Dict<string | number>;
   dataSourceName?: string;
+  resultType?: string;
 };
 
 export type FilterOperator =

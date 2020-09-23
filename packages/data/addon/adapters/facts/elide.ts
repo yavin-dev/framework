@@ -101,7 +101,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
-    const resultType: string = QueryResultType.DOWNLOAD;
+    const resultType: string = options.resultType || QueryResultType.EMBEDDED;
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
@@ -143,7 +143,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    return 'TODO';
+    let response = await this.fetchDataForRequest(_request, _options);
+    return Promise.resolve(response.asyncQuery.edges[0].node.result?.responseBody || '');
   }
   /**
    * @param request
