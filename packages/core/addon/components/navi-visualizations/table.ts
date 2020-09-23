@@ -14,14 +14,13 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { readOnly } from '@ember/object/computed';
 import { action, computed } from '@ember/object';
-//@ts-ignore
 import { groupBy } from 'lodash-es';
 import EmberArray from '@ember/array';
-//@ts-ignore
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -29,21 +28,20 @@ const HEADER_TITLE = {
 };
 type TotalType = keyof typeof HEADER_TITLE;
 
-const NEXT_SORT_DIRECTION = {
+type SortDirection = 'asc' | 'desc' | 'none';
+const NEXT_SORT_DIRECTION: Record<SortDirection, SortDirection> = {
   none: 'desc',
   desc: 'asc',
   asc: 'none'
 };
-type SortDirection = keyof typeof NEXT_SORT_DIRECTION;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ResponseRow = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type TotalRow = any;
+type ResponseRow = ResponseV1['rows'][number];
+type TotalRow = ResponseRow;
 
 type UpdateAction = string;
+export type VisualizationModel = EmberArray<{ request: RequestFragment; response: ResponseV1 }>;
 export type Args = {
-  model: EmberArray<{ request: RequestFragment; response: ResponseRow[] }>;
+  model: VisualizationModel;
   options: TableVisualizationMetadata['metadata'];
   isEditing?: boolean;
   onUpdateReport: (action: UpdateAction, ...params: unknown[]) => void;
@@ -91,15 +89,15 @@ export default class Table extends Component<Args> {
    * @param element - element inserted
    */
   @action
-  setupElement(element: HTMLElement) {
+  setupElement(element: HTMLElement): void {
     this.componentElement = element;
   }
 
   /**
    * Determines whether table columns can be reordered
    */
-  get isDraggingDisabled() {
-    return this.componentElement?.parentElement?.classList.contains('navi-widget__content');
+  get isDraggingDisabled(): boolean {
+    return !!this.componentElement?.parentElement?.classList.contains('navi-widget__content');
   }
 
   /**
@@ -112,7 +110,7 @@ export default class Table extends Component<Args> {
     _totalRow: TotalRow,
     _column: TableColumn,
     _type: TotalType
-  ) {
+  ): number {
     return data.reduce((sum: number, row: ResponseRow) => {
       let number = Number(row[metricName]);
       return Number.isNaN(number) ? sum : sum + number;
@@ -122,7 +120,7 @@ export default class Table extends Component<Args> {
   /**
    * Compute total for all metrics in the data
    */
-  _computeTotal(data: ResponseRow[], totalType: TotalType) {
+  _computeTotal(data: ResponseRow[], totalType: TotalType): TotalRow {
     const { columns, totalRows, rowsInResponse, selectedSubtotal } = this;
     const hasPartialData = totalRows > rowsInResponse;
 
@@ -157,13 +155,11 @@ export default class Table extends Component<Args> {
   }
 
   /**
-   * @method _computeSubtotals
    * Compute subtotal for selected dimension in the data
    *
-   * @private
-   * @returns {Array} data with subtotal rows
+   * @returns data with subtotal rows
    */
-  _computeSubtotals() {
+  private _computeSubtotals(): ResponseRow[] {
     const { selectedSubtotal: groupingColumn, rawData, groupedData } = this;
 
     if (groupingColumn === undefined) {
@@ -177,21 +173,18 @@ export default class Table extends Component<Args> {
   }
 
   /**
-   * @property {Object} groupedData - data grouped by grouping column specified in selectedSubtotal
+   * data grouped by grouping column specified in selectedSubtotal
    */
   @computed('selectedSubtotal', 'rawData', 'request.{columns.[]}')
-  get groupedData() {
+  get groupedData(): Record<string, ResponseRow[]> {
     let { selectedSubtotal, rawData, request } = this;
     const canonicalName = request.columns.find(column => column.cid === selectedSubtotal)?.canonicalName as string;
 
     return groupBy(rawData, (row: ResponseRow) => row[canonicalName]);
   }
 
-  /**
-   * @property {Object} tableData
-   */
   @computed('rawData', 'selectedSubtotal', 'args.options.showTotals.grandTotal', 'groupedData')
-  get tableData() {
+  get tableData(): ResponseRow[] {
     const { rawData } = this;
     const tableData = this._computeSubtotals();
 
@@ -202,9 +195,6 @@ export default class Table extends Component<Args> {
     return [...tableData, this._computeTotal(rawData, 'grandTotal')];
   }
 
-  /**
-   * @property {Object} columns
-   */
   @computed('args.options.columnAttributes', 'request.{columns.[],sorts.[]}')
   get columns(): TableColumn[] {
     const { columnAttributes } = this.args.options;
@@ -226,63 +216,51 @@ export default class Table extends Component<Args> {
     return featureFlag('enableTableEditing') && !!this.args.isEditing;
   }
 
-  /**
-   * @property {Boolean} isVerticalCollectionEnabled
-   */
   get isVerticalCollectionEnabled(): boolean {
     return featureFlag('enableVerticalCollectionTableIterator');
   }
 
-  /**
-   * @property {String} tableRenderer
-   */
   get tableRenderer(): string {
     return `table-renderer${this.isVerticalCollectionEnabled ? '-vertical-collection' : ''}`;
   }
 
-  /**
-   * @property {Object} request
-   */
   @readOnly('args.model.firstObject.request')
   request!: RequestFragment;
 
   /**
-   * @property {String} cellRendererPrefix - prefix for all cell renderer types
+   * prefix for all cell renderer types
    */
   cellRendererPrefix = 'navi-cell-renderers/';
 
   /**
-   * @property {Number} estimateHeight - estimated height in px of a single row
+   * estimated height in px of a single row
    */
   get estimateHeight(): number {
     return this.isVerticalCollectionEnabled ? 32 : 30;
   }
 
   /**
-   * @property {Number} bufferSize - size of the buffer before and after the collection
+   * size of the buffer before and after the collection
    */
   bufferSize = 10;
 
   /**
    * Get next direction based on column type and current direction
    *
-   * @method _getNextSortDirection
-   * @private
-   * @param {String} type - column type
-   * @param {String} sortDirection - current sort direction
-   * @returns {String} direction
+   * @param type - column type
+   * @param sortDirection - current sort direction
+   * @returns next direction
    */
-  _getNextSortDirection(_type: ColumnFragment['type'], sortDirection: SortDirection) {
+  _getNextSortDirection(_type: ColumnFragment['type'], sortDirection: SortDirection): SortDirection {
     return NEXT_SORT_DIRECTION[sortDirection];
   }
 
   /**
-   * @action headerClicked
    * sends sort action when timeDimension header is clicked
-   * @param {Object} column object
+   * @param column clicked table column
    */
   @action
-  headerClicked(column: TableColumn) {
+  headerClicked(column: TableColumn): void {
     // TODO: Validate that the column clicked supports sorting
     const { type } = column.fragment;
     const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
@@ -294,19 +272,13 @@ export default class Table extends Component<Args> {
     this.args.onUpdateReport(actionType, column.fragment, direction);
   }
 
-  /**
-   * @action updateColumnOrder
-   */
   @action
-  updateColumnOrder(newColumnOrder: TableColumn[]) {
+  updateColumnOrder(newColumnOrder: TableColumn[]): void {
     this.args.onUpdateReport('updateColumnOrder', newColumnOrder);
   }
 
-  /**
-   * @action updateColumnDisplayName
-   */
   @action
-  updateColumnDisplayName(column: ColumnFragment, alias: string | undefined) {
+  updateColumnDisplayName(column: ColumnFragment, alias: string | undefined): void {
     this.args.onUpdateReport('renameColumnFragment', column, alias);
   }
 }
