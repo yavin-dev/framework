@@ -13,11 +13,15 @@ import NaviFactAdapter, {
   RequestV2,
   FilterOperator
 } from './interface';
+import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
+import moment from 'moment';
+
+export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
 
 export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
   eq: '==',
@@ -28,7 +32,6 @@ export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
   gte: '=ge=',
   lte: '=le='
 };
-
 /**
  * Formats elide request field
  */
@@ -60,16 +63,24 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
 
     const filterStrings = filters.map(filter => {
-      const { field, parameters, operator, values } = filter;
+      const { field, parameters, operator, values, type } = filter;
       const fieldStr = getElideField(field, parameters);
+      const operatorStr = OPERATOR_MAP[operator as FilterOperator] || `=${operator}=`;
+      let filterVals = values;
+      if (type === 'timeDimension' && filterVals.length === 2) {
+        const { start, end } = Interval.parseFromStrings(String(filterVals[0]), String(filterVals[1])).asMoments();
+        filterVals = [
+          start.format(ELIDE_API_DATE_FORMAT),
+          end?.format(ELIDE_API_DATE_FORMAT) || moment().format(ELIDE_API_DATE_FORMAT)
+        ];
+      }
 
       // TODO: Remove this when Elide supports the "between" filter operator
       if (operator === 'bet') {
-        return `${fieldStr}=ge=(${values[0]});${fieldStr}=le=(${values[1]})`;
+        return `${fieldStr}=ge=(${filterVals[0]});${fieldStr}=le=(${filterVals[1]})`;
       }
 
-      const operatorStr = OPERATOR_MAP[operator] || `=${operator}=`;
-      const valuesStr = values.length ? `(${values.map(v => `'${v}'`).join(',')})` : '';
+      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${v}'`).join(',')})` : '';
       return `${fieldStr}${operatorStr}${valuesStr}`;
     });
     filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);
