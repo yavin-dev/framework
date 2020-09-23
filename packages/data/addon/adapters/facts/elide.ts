@@ -11,7 +11,8 @@ import NaviFactAdapter, {
   Parameters,
   QueryStatus,
   RequestV2,
-  FilterOperator
+  FilterOperator,
+  QueryResultType
 } from './interface';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -100,10 +101,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
+    const resultType: string = QueryResultType.DOWNLOAD;
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    const queryOptions = { mutation, variables: { id, query, resultType }, context: { dataSourceName } };
+    console.log(queryOptions);
     return this.apollo.mutate(queryOptions);
   }
 

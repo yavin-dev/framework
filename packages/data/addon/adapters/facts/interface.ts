@@ -86,13 +86,15 @@ export enum QueryStatus {
 }
 
 export enum QueryResultType {
-  EMBEDDED = 'EMBEDDED'
+  EMBEDDED = 'EMBEDDED',
+  DOWNLOAD = 'DOWNLOAD'
 }
 
 export interface AsyncQuery {
   requestId: string;
   request: RequestV1 | RequestV2;
   status: QueryStatus;
+  resultType: QueryResultType;
   result: AsyncQueryResult | null;
   createdOn: Date;
   updatedOn: Date;

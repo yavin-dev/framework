@@ -176,7 +176,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
       assert.deepEqual(
         Object.keys(requestObj.variables),
-        ['id', 'query'],
+        ['id', 'query', 'resultType'],
         'createAsyncQuery sends id and query request variables'
       );
 
