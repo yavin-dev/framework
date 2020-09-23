@@ -9,7 +9,7 @@
   <div class="filter-values--range-input" ...attributes>
     <input
       value={{@filter.values.[0]}}
-      placeholder={{this.lowPlaceholder}}
+      placeholder="Low Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setLowValue}}>
 
@@ -17,7 +17,7 @@
 
     <input
       value={{@filter.values.[1]}}
-      placeholder={{this.highPlaceholder}}
+      placeholder="High Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setHighValue}}>
   </div>

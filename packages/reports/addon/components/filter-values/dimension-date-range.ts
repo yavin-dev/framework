@@ -11,7 +11,7 @@
 
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { oneWay } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Moment from 'moment';
 import Args from './args-interface';
 
@@ -19,12 +19,12 @@ export default class DimensionDateRange extends Component<Args> {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  @oneWay('args.filter.values.0') startDate: string | undefined;
+  @readOnly('args.filter.values.0') startDate?: string;
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  @oneWay('args.filter.values.1') endDate: string | undefined;
+  @readOnly('args.filter.values.1') endDate?: string;
 
   /**
    * @property {String} lowPlaceholder
@@ -41,9 +41,9 @@ export default class DimensionDateRange extends Component<Args> {
    * @param {String} value - first value to be set in filter
    */
   @action
-  setLowValue(value: Moment.MomentInput) {
+  setLowValue(value: string) {
     this.args.onUpdateFilter({
-      values: [Moment(value).format('YYYY-MM-DD'), this.args.filter.values?.[1]]
+      values: [Moment(value).format('YYYY-MM-DD'), this.endDate]
     });
   }
 
@@ -52,9 +52,9 @@ export default class DimensionDateRange extends Component<Args> {
    * @param {String} value - last value to be set in filter
    */
   @action
-  setHighValue(value: Moment.MomentInput) {
+  setHighValue(value: string) {
     this.args.onUpdateFilter({
-      values: [this.args.filter.values?.[0], Moment(value).format('YYYY-MM-DD')]
+      values: [this.startDate, Moment(value).format('YYYY-MM-DD')]
     });
   }
 }

@@ -17,23 +17,13 @@ import Args from './args-interface';
 
 export default class RangeInput extends Component<Args> {
   /**
-   * @property {String} lowPlaceholder
-   */
-  lowPlaceholder = 'Low value';
-
-  /**
-   * @property {String} highPlaceholder
-   */
-  highPlaceholder = 'High value';
-
-  /**
    * @action setLowValue
    * @param {InputEvent} event
    */
   @action
   setLowValue({ target: { value } }) {
     this.args.onUpdateFilter({
-      values: [value, this.args.filter.values[0]]
+      values: [value, this.args.filter.values[1]]
     });
   }
 

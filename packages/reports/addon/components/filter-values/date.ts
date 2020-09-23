@@ -10,7 +10,7 @@ import Args from './args-interface';
 
 export default class DateComponent extends Component<Args> {
   @readOnly('args.filter.values.0')
-  date!: string;
+  date?: string;
 
   @action
   setDate(date: string) {
