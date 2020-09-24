@@ -100,15 +100,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-<<<<<<< HEAD
-  // eslint-disable-next-line ember/use-brace-expansion
-<<<<<<< HEAD
-=======
->>>>>>> aab68d1c... Update: Remove a few unwanted things, and resolve some ts errors
   @computed('filter.{field,columnMetadata.idFieldName}')
-=======
-  @computed('filter.columnMetadata.idFieldName', 'filter.field', 'filter.columnMetadata.idFieldName')
->>>>>>> 643788fe... Update: Dimension, Base, and Collapsed working
   get filterValueFieldId() {
     return this.filter.columnMetadata.idFieldName || this.filter.field;
   }
