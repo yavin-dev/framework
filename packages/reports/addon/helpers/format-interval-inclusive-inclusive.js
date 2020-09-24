@@ -5,7 +5,7 @@
 import { helper as buildHelper } from '@ember/component/helper';
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
-import Duration from 'navi-core/utils/classes/duration';
+import Duration from 'navi-data/utils/classes/duration';
 import DateUtils from 'navi-data/utils/date';
 
 /**

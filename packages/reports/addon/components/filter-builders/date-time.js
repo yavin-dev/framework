@@ -12,7 +12,7 @@ import { A as arr } from '@ember/array';
 import { computed, action } from '@ember/object';
 import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-data/utils/classes/interval';
-import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
+import Duration, { parseDuration } from 'navi-data/utils/classes/duration';
 import { getFirstDayOfIsoDateTimePeriod } from 'navi-data/utils/date';
 import moment from 'moment';
 

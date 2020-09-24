@@ -13,7 +13,7 @@ import BaseIntervalComponent from './base-interval-component';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../../templates/components/filter-values/lookback-input';
 import { computed, get, action } from '@ember/object';
-import Duration from 'navi-core/utils/classes/duration';
+import Duration from 'navi-data/utils/classes/duration';
 import Interval from 'navi-data/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
 import { MONTHS_IN_QUARTER } from '../filter-builders/date-time';
