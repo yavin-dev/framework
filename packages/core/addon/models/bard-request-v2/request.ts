@@ -13,7 +13,7 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 //@ts-ignore
 import { isEqual } from 'lodash-es';
 //@ts-ignore
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { RequestV2, SortDirection } from 'navi-data/adapters/facts/interface';

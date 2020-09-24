@@ -1,6 +1,6 @@
 import DefaultIntervals from 'navi-reports/utils/enums/default-intervals';
 import { module, test } from 'qunit';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import moment from 'moment';
 

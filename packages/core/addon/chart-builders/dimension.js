@@ -26,7 +26,7 @@ import Mixin from '@ember/object/mixin';
 import EmberObject, { set, computed } from '@ember/object';
 import moment from 'moment';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import DateUtils from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';

@@ -5,9 +5,9 @@
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
-import { getIsoDateTimePeriod } from 'navi-core/utils/date';
+import { getIsoDateTimePeriod } from 'navi-data/utils/date';
 import moment from 'moment';
 
 const timeGrainSorting = {

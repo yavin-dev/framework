@@ -5,7 +5,7 @@
  * Coerces the input into an interval
  */
 import { helper } from '@ember/component/helper';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 
 export function asInterval([interval]) {
   if (typeof interval === 'string' && interval.length > 0) {

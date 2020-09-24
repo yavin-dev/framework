@@ -3,7 +3,7 @@ import {
   formatDurationFromCurrent,
   formatDateRange
 } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-core/utils/classes/duration';
 import { module, test } from 'qunit';
 import moment from 'moment';
