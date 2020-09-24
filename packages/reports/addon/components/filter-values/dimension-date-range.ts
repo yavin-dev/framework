@@ -12,7 +12,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import Moment from 'moment';
+import moment from 'moment';
 import Args from './args-interface';
 
 export default class DimensionDateRange extends Component<Args> {
@@ -43,7 +43,7 @@ export default class DimensionDateRange extends Component<Args> {
   @action
   setLowValue(value: string) {
     this.args.onUpdateFilter({
-      values: [Moment(value).format('YYYY-MM-DD'), this.endDate]
+      values: [moment(value).format('YYYY-MM-DD'), this.endDate]
     });
   }
 
@@ -54,7 +54,7 @@ export default class DimensionDateRange extends Component<Args> {
   @action
   setHighValue(value: string) {
     this.args.onUpdateFilter({
-      values: [this.startDate, Moment(value).format('YYYY-MM-DD')]
+      values: [this.startDate, moment(value).format('YYYY-MM-DD')]
     });
   }
 }

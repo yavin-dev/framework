@@ -6,8 +6,6 @@
  *   <FilterValues::RangeInput
  *     @filter={{filter}}
  *     @onUpdateFilter={{action "update"}}
- *     @lowPlaceholder={{lowPlaceholder}}
- *     @highPlaceholder={{highPlaceholder}}
  *   />
  */
 

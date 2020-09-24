@@ -11,7 +11,7 @@
   <div class="filter-builder" ...attributes>
     <span class="filter-builder__subject">
       {{@filter.displayName}}
-      {{#if (has-parameters @filter)}}
+      {{#if @filter.columnMetadata.hasParameters}}
         <MetricFilterConfig
           class="filter-builder__metric-config"
           @metric={{@filter}}

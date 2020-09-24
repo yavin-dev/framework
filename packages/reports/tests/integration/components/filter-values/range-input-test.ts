@@ -22,7 +22,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
+    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
       1000,
       2000
     ]);
@@ -60,13 +60,13 @@ module('Integration | Component | filter values/range input', function(hooks) {
   test('changing values', async function(assert) {
     assert.expect(2);
 
-    this.set('onUpdateFilter', (changeSet: any) => {
+    this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(changeSet, { values: arr(['aaa', 2000]) }, 'User inputted number is given to update action');
     });
 
     await fillIn('.filter-values--range-input__input:first-child', 'aaa');
 
-    this.set('onUpdateFilter', (changeSet: any) => {
+    this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(changeSet, { values: [1000, 'bbb'] }, 'User inputted number is given to update action');
     });
 

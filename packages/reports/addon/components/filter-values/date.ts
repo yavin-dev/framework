@@ -5,7 +5,7 @@
 import { readOnly } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import Moment from 'moment';
+import moment from 'moment';
 import Args from './args-interface';
 
 export default class DateComponent extends Component<Args> {
@@ -15,7 +15,7 @@ export default class DateComponent extends Component<Args> {
   @action
   setDate(date: string) {
     this.args.onUpdateFilter({
-      values: [Moment(date).format('YYYY-MM-DD')]
+      values: [moment(date).format('YYYY-MM-DD')]
     });
   }
 }

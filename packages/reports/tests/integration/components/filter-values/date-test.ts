@@ -34,7 +34,7 @@ module('Integration | Component | filter values/date', function(hooks) {
       />`);
   });
 
-  test('Displayed text', async function(assert) {
+  test('Displayed text', async function(this: TestContext, assert) {
     assert.dom('.filter-values--date').hasText('Oct 31, 2018', 'The selected date is displayed');
 
     this.set('filter', { values: [''] });
