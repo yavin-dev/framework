@@ -46,11 +46,11 @@ module('Integration | Component | filter values/dimension date range', function(
       'Appropriate placeholders are displayed when the filter has no dates'
     );
 
-    this.set('filter', { values: arr(['2019-01-05', null]) });
+    this.set('filter', { values: arr(['2019-01-05', '']) });
 
     //Check that setting low value sends the new date value to the action
     this.set('onUpdateFilter', (filter: Partial<FilterFragment>) => {
-      assert.deepEqual(get(filter, 'values'), ['2019-01-12', null], 'Selecting the low date updates the filter');
+      assert.deepEqual(get(filter, 'values'), ['2019-01-12', ''], 'Selecting the low date updates the filter');
     });
     await click('.filter-values--dimension-date-range-input__low-value > .dropdown-date-picker__trigger');
     await click('.ember-power-calendar-day[data-date="2019-01-12"]');

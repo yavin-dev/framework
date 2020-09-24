@@ -23,7 +23,7 @@ export default class RangeInput extends Component<Args> {
    * @param {InputEvent} event
    */
   @action
-  setLowValue({ target: { value } }) {
+  setLowValue({ target: { value } }: { target: HTMLInputElement }) {
     this.args.onUpdateFilter({
       values: [value, this.endDate]
     });
@@ -34,7 +34,7 @@ export default class RangeInput extends Component<Args> {
    * @param {InputEvent} event
    */
   @action
-  setHighValue({ target: { value } }) {
+  setHighValue({ target: { value } }: { target: HTMLInputElement }) {
     this.args.onUpdateFilter({
       values: [this.startDate, value]
     });

@@ -61,7 +61,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     assert.expect(2);
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
-      assert.deepEqual(changeSet, { values: arr(['aaa', 2000]) }, 'User inputted number is given to update action');
+      assert.deepEqual(changeSet, { values: ['aaa', 2000] }, 'User inputted number is given to update action');
     });
 
     await fillIn('.filter-values--range-input__input:first-child', 'aaa');
