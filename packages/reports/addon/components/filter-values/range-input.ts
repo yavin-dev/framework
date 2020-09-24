@@ -17,7 +17,6 @@ import Args from './args-interface';
 import { readOnly } from '@ember/object/computed';
 
 export default class RangeInput extends Component<Args> {
-  // eslint-disable-next-line no-undef
   @readOnly('args.filter.values.0') startDate?: string;
 
   @readOnly('args.filter.values.1') endDate?: string;
@@ -28,7 +27,7 @@ export default class RangeInput extends Component<Args> {
   @action
   setLowValue({ target: { value } }) {
     this.args.onUpdateFilter({
-      values: [value, this.args.filter.values[1]]
+      values: [value, this.endDate]
     });
   }
 
@@ -39,7 +38,7 @@ export default class RangeInput extends Component<Args> {
   @action
   setHighValue({ target: { value } }) {
     this.args.onUpdateFilter({
-      values: [this.args.filter.values[0], value]
+      values: [this.startDate, value]
     });
   }
 }
