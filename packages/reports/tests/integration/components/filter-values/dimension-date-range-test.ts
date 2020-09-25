@@ -23,7 +23,7 @@ module('Integration | Component | filter values/dimension date range', function(
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []);
+    this.filter = fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []);
 
     await render(hbs`
       <FilterValues::DimensionDateRange

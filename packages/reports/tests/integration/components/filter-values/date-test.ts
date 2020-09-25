@@ -21,7 +21,7 @@ module('Integration | Component | filter values/date', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'gte', [
+    this.filter = fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'gte', [
       '2018-10-31'
     ]);
     this.onUpdateFilter = () => null;
