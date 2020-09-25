@@ -18,8 +18,8 @@ import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
+import { assert } from '@ember/debug';
 import { v1 } from 'ember-uuid';
-import moment from 'moment';
 
 export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
 
@@ -69,10 +69,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       let filterVals = values;
       if (type === 'timeDimension' && filterVals.length === 2) {
         const { start, end } = Interval.parseFromStrings(String(filterVals[0]), String(filterVals[1])).asMoments();
-        filterVals = [
-          start.format(ELIDE_API_DATE_FORMAT),
-          end?.format(ELIDE_API_DATE_FORMAT) || moment().format(ELIDE_API_DATE_FORMAT)
-        ];
+        assert('The end date of a time dimension filter should be defined', end);
+        filterVals = [start.format(ELIDE_API_DATE_FORMAT), end.format(ELIDE_API_DATE_FORMAT)];
       }
 
       // TODO: Remove this when Elide supports the "between" filter operator
