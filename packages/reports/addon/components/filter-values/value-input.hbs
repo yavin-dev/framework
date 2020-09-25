@@ -3,11 +3,11 @@
   {{#if @filter.validations.attrs.values.isInvalid}}
     <FilterValues::InvalidValue/>
   {{else}}
-    {{@filter.values.firstObject}}
+    {{this.value}}
   {{/if}}
 {{else}}
   <input
-    value={{@filter.values.firstObject}}
+    value={{this.value}}
     placeholder="Value"
     class="filter-values--value-input {{if @filter.validations.attrs.values.isInvalid "filter-values--value-input--error"}}"
     {{on "input" this.setValue}}>

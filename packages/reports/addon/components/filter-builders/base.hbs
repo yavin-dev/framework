@@ -2,15 +2,14 @@
 {{#if @isCollapsed}}
   <span class="filter-builder" ...attributes>
     <FilterBuilders::Collapsed
-      @displayName={{this.displayName}}
-      @filter={{this.filter}}
+      @filter={{@filter}}
       @selectedOperator={{this.selectedOperator}}
     />
   </span>
 {{else}}
   <div class="filter-builder" ...attributes>
     <span class="filter-builder__subject">
-      {{this.displayName}}
+      {{@filter.displayName}}
     </span>
     <PowerSelect
       class="filter-builder__operator"
@@ -28,7 +27,7 @@
     <span class="filter-builder__values">
       {{#let (component this.selectedOperator.valuesComponent) as |ValuesComponent|}}
         <ValuesComponent
-          @filter={{this.filter}}
+          @filter={{@filter}}
           @request={{@request}}
           @onUpdateFilter={{@onUpdateFilter}}
         />

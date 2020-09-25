@@ -174,7 +174,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(
         changeSet.values,
-        [...this.filter.subject.values, '5'],
+        [...this.filter.values, '5'],
         'The newly selected value is added to existing values and given to action'
       );
     };

@@ -3,21 +3,21 @@
   {{#if @filter.validations.attrs.values.isInvalid}}
     <FilterValues::InvalidValue/>
   {{else}}
-    {{concat @filter.values.firstObject " and " @filter.values.lastObject}}
+    {{concat @filter.values.[0] " and " @filter.values.[1]}}
   {{/if}}
 {{else}}
   <div class="filter-values--range-input" ...attributes>
     <input
-      value={{@filter.values.firstObject}}
-      placeholder={{this.lowPlaceholder}}
+      value={{this.startDate}}
+      placeholder="Low Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setLowValue}}>
 
     <span class="filter-values--range-input__separator">and</span>
 
     <input
-      value={{@filter.values.lastObject}}
-      placeholder={{this.highPlaceholder}}
+      value={{this.endDate}}
+      placeholder="High Value"
       class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
       {{on "input" this.setHighValue}}>
   </div>

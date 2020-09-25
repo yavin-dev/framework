@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<span class="filter-dimension--collapsed">{{@displayName}}</span>
+<span class="filter-dimension--collapsed">{{@filter.displayName}}</span>
 <span class="filter-operator--collapsed">{{lowercase @selectedOperator.name}}</span>
 <strong>
   {{#let (component @selectedOperator.valuesComponent) as |FilterValue|}}

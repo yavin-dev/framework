@@ -8,8 +8,6 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import { computed } from '@ember/object';
-import { A as arr } from '@ember/array';
 import EmberArray from '@ember/array';
 import { assert } from '@ember/debug';
 import { FilterOperator } from 'navi-data/addon/adapters/facts/interface';
@@ -33,10 +31,6 @@ export type FilterConfig = {
 };
 
 export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> {
-  get displayName() {
-    return this.args.filter.displayName;
-  }
-
   get supportedOperators(): Array<FilterBuilderOperators> {
     return [];
   }
@@ -45,19 +39,6 @@ export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> 
     const operator = this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
     assert(`Filter operator: '${this.args.filter.operator}' is not supported in: ${this.constructor.name}`, operator);
     return operator;
-  }
-
-  @computed('selectedOperator', 'args.filter.{validations,values.[]}')
-  get filter(): FilterConfig {
-    const { values, validations } = this.args.filter;
-    const operator = this.selectedOperator;
-
-    return {
-      subject: this.args.filter,
-      operator,
-      values: arr(values),
-      validations
-    };
   }
 
   @action
