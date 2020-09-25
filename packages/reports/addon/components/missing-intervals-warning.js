@@ -11,7 +11,7 @@
 import { notEmpty } from '@ember/object/computed';
 import Component from '@ember/component';
 import { computed, get } from '@ember/object';
-import Moment from 'moment';
+import moment from 'moment';
 import layout from '../templates/components/missing-intervals-warning';
 import fade from 'ember-animated/transitions/fade';
 import { Resize } from 'ember-animated/motions/resize';
@@ -42,8 +42,8 @@ export default class MissingIntervalWarning extends Component {
     return rawIntervals.map(interval => {
       //Make both dates in the interval inclusive
       let dates = interval.split('/'),
-        start = new Moment(dates[0]).format(DATE_FORMAT),
-        end = new Moment(dates[1]).subtract(1, 'second').format(DATE_FORMAT);
+        start = new moment(dates[0]).format(DATE_FORMAT),
+        end = new moment(dates[1]).subtract(1, 'second').format(DATE_FORMAT);
 
       //If the interval only covers one day, return just that date
       return start === end ? start : `${start} - ${end}`;

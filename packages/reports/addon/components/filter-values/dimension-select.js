@@ -40,27 +40,29 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} dimensionName - name of dimension to be filtered
    */
-  @readOnly('filter.subject.field') dimensionName;
+  @readOnly('filter.field') dimensionName;
 
   /**
    * @property {String} primaryKey - primary key for this dimension
    */
-  @readOnly('filter.subject.columnMetadata.primaryKeyFieldName') primaryKey;
+  @readOnly('filter.columnMetadata.primaryKeyFieldName') primaryKey;
 
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
-  @computed('dimensionName', 'filter.subject.columnMetadata.cardinality', 'searchTerm')
+  @computed('dimensionName', 'filter.columnMetadata.cardinality', 'searchTerm')
   get dimensionOptions() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
     }
 
-    const dimensionName = get(this, 'dimensionName'),
-      dimensionService = get(this, '_dimensionService'),
-      source = get(this, 'filter.subject.source');
+    const {
+      dimensionName,
+      _dimensionService: dimensionService,
+      filter: { source, columnMetadata }
+    } = this;
 
-    if (dimensionName && this.filter.subject.columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
+    if (dimensionName && columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
@@ -76,7 +78,7 @@ export default class DimensionSelectComponent extends Component {
       dimensionName = get(this, 'dimensionName'),
       primaryKey = get(this, 'primaryKey'),
       dimensionService = get(this, '_dimensionService'),
-      source = get(this, 'filter.subject.source');
+      source = get(this, 'filter.source');
 
     // Only fetch dimensions if filter has values
     if (get(dimensionIds, 'length')) {
@@ -98,9 +100,9 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-  @computed('filter.{subject.columnMetadata.idFieldName,field}')
+  @computed('filter.{field,columnMetadata.idFieldName}')
   get filterValueFieldId() {
-    return this.filter.subject.columnMetadata.idFieldName || this.filter.field;
+    return this.filter.columnMetadata.idFieldName || this.filter.field;
   }
 
   /**
@@ -125,7 +127,7 @@ export default class DimensionSelectComponent extends Component {
   _performSearch(term, resolve, reject) {
     let dimension = get(this, 'dimensionName'),
       useNewSearchAPI = get(this, 'useNewSearchAPI'),
-      dataSourceName = get(this, 'filter.subject.source');
+      dataSourceName = get(this, 'filter.source');
 
     get(this, '_dimensionService')
       .search(dimension, { term, useNewSearchAPI, dataSourceName })
