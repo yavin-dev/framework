@@ -17,8 +17,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
     const factory = this.owner.lookup('service:fragment-factory');
     metadataService = this.owner.lookup('service:navi-metadata');
     await metadataService.loadMetadata();
-    this.set('displayName', 'Foo');
-    this.set('filter', factory.createFilter('dimension', 'bardOne', 'Foo', {}, 'in', []));
+    this.set('filter', factory.createFilter('dimension', 'bardOne', 'userDeviceType', {}, 'in', []));
     this.set('selectedOperator', { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' });
     this.owner.register(
       'component:mock/values-component',
@@ -31,11 +30,10 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
 
   test('it renders', async function(assert) {
     await render(hbs`<FilterBuilders::Collapsed
-      @displayName={{this.displayName}}
       @filter={{this.filter}}
       @field={{this.field}}
       @selectedOperator={{this.selectedOperator}} />`);
 
-    assert.dom().hasText('Foo equals Test', 'Renders correctly without a field');
+    assert.dom().hasText('User Device Type equals Test', 'Renders correctly without a field');
   });
 });

@@ -7,7 +7,7 @@ import { getIsoDateTimePeriod } from 'navi-core/utils/date';
  */
 export function getDateRangeFormat(source) {
   const dateTimePeriod = source.request.logicalTable.timeGrain;
-  const { start, end } = source.filter.values.firstObject.asMomentsForTimePeriod(dateTimePeriod);
+  const { start, end } = source.filter.values[0].asMomentsForTimePeriod(dateTimePeriod);
   end.subtract(1, getIsoDateTimePeriod(dateTimePeriod));
   return formatDateRange(start, end, dateTimePeriod);
 }

@@ -9,25 +9,22 @@
  *   />
  */
 
-import Component from '@ember/component';
-import { get, action } from '@ember/object';
-import { oneWay } from '@ember/object/computed';
-import Moment from 'moment';
-import layout from '../../templates/components/filter-values/dimension-date-range';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
+import moment from 'moment';
+import Args from './args-interface';
 
-@templateLayout(layout)
-@tagName('')
-export default class DimensionDateRange extends Component {
+export default class DimensionDateRange extends Component<Args> {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  @oneWay('filter.values.firstObject') startDate;
+  @readOnly('args.filter.values.0') startDate!: string;
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  @oneWay('filter.values.lastObject') endDate;
+  @readOnly('args.filter.values.1') endDate!: string;
 
   /**
    * @property {String} lowPlaceholder
@@ -44,9 +41,9 @@ export default class DimensionDateRange extends Component {
    * @param {String} value - first value to be set in filter
    */
   @action
-  setLowValue(value) {
-    this.onUpdateFilter({
-      values: [Moment(value).format('YYYY-MM-DD'), get(this, 'filter.values.lastObject')]
+  setLowValue(value: string) {
+    this.args.onUpdateFilter({
+      values: [moment(value).format('YYYY-MM-DD'), this.endDate]
     });
   }
 
@@ -55,9 +52,9 @@ export default class DimensionDateRange extends Component {
    * @param {String} value - last value to be set in filter
    */
   @action
-  setHighValue(value) {
-    this.onUpdateFilter({
-      values: [get(this, 'filter.values.firstObject'), Moment(value).format('YYYY-MM-DD')]
+  setHighValue(value: string) {
+    this.args.onUpdateFilter({
+      values: [this.startDate, moment(value).format('YYYY-MM-DD')]
     });
   }
 }
