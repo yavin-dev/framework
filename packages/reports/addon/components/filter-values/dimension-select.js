@@ -59,10 +59,10 @@ export default class DimensionSelectComponent extends Component {
     const {
       dimensionName,
       _dimensionService: dimensionService,
-      filter: { source }
+      filter: { source, columnMetadata }
     } = this;
 
-    if (dimensionName && this.filter.columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
+    if (dimensionName && columnMetadata?.cardinality === CARDINALITY_SIZES[0]) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
