@@ -180,6 +180,7 @@ const schema = gql`
     createdOn: Date
     responseBody: String
     httpStatus: Int
+    resultType: QueryResultType
     updatedOn: Date
     query(op: RelationshipOp = FETCH, data: AsyncQueryInput): AsyncQuery
   }
@@ -276,6 +277,7 @@ const schema = gql`
     createdOn: Date
     responseBody: String
     httpStatus: Int
+    resultType: QueryResultType
     updatedOn: Date
     query: AsyncQueryInput
   }
