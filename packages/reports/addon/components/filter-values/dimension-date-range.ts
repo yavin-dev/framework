@@ -19,12 +19,12 @@ export default class DimensionDateRange extends Component<Args> {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */
-  @readOnly('args.filter.values.0') startDate?: string;
+  @readOnly('args.filter.values.0') startDate!: string;
 
   /**
    * @property {String} endDate - date (YYYY-MM-DD) of end of interval
    */
-  @readOnly('args.filter.values.1') endDate?: string;
+  @readOnly('args.filter.values.1') endDate!: string;
 
   /**
    * @property {String} lowPlaceholder
