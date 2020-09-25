@@ -18,7 +18,6 @@ export const asyncFactsMutationStr = `
             contentLength
             responseBody
             httpStatus
-            resultType
           }
         }
       }

@@ -157,6 +157,7 @@ const schema = gql`
     id: DeferredID
     createdOn: Date
     query: String
+    resultType: QueryResultType
     queryType: QueryType
     status: QueryStatus
     updatedOn: Date
@@ -244,6 +245,11 @@ const schema = gql`
     JSONAPI_V1_0
   }
 
+  enum QueryResultType {
+    EMBEDDED
+    DOWNLOAD
+  }
+
   enum QueryStatus {
     COMPLETE
     QUEUED
@@ -257,6 +263,7 @@ const schema = gql`
     id: ID
     createdOn: Date
     query: String
+    resultType: QueryResultType
     queryType: QueryType
     status: QueryStatus
     updatedOn: Date

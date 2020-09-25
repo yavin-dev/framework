@@ -106,7 +106,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query, resultType }, context: { dataSourceName } };
-    console.log(queryOptions);
     return this.apollo.mutate(queryOptions);
   }
 
@@ -143,8 +142,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    let response = await this.fetchDataForRequest(_request, _options);
-    return Promise.resolve(response.asyncQuery.edges[0].node.result?.responseBody || '');
+    //pass resulttype as DOWNLOAD in options to fetch data for request.
+    return 'TODO';
   }
   /**
    * @param request
