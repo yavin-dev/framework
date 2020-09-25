@@ -22,7 +22,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
+    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'bet', [
       1000,
       2000
     ]);
