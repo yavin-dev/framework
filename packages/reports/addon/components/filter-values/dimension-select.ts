@@ -15,6 +15,7 @@ import DimensionMetadataModel from 'navi-data/addon/models/metadata/dimension';
 //@ts-ignore
 import { task, timeout } from 'ember-concurrency';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 
 const SEARCH_DEBOUNCE_TIME = 200;
 
@@ -34,7 +35,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   @tracked
   searchTerm?: string;
 
-  get dimensionColumn() {
+  get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
     const columnMetadata = filter.columnMetadata as DimensionMetadataModel;
     const { parameters } = filter;
@@ -57,7 +58,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   get selectedDimensions() {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
-    return values?.map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    return values.map(value => NaviDimensionModel.create({ value, dimensionColumn }));
   }
 
   @action
