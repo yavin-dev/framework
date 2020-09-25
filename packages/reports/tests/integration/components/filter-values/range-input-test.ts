@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
-import { render, fillIn } from '@ember/test-helpers';
+import { render, fillIn, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
@@ -21,10 +21,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'bet', [
-      1000,
-      2000
-    ]);
+    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'bet', [1000, 2000]);
     this.onUpdateFilter = () => null;
 
     await render(hbs`
@@ -37,11 +34,11 @@ module('Integration | Component | filter values/range input', function(hooks) {
 
   test('it renders', function(assert) {
     assert.expect(1);
-
     assert.deepEqual(
-      $('.filter-values--range-input__input')
-        .map((index, el) => parseInt($(el).val(), 10))
-        .get(),
+      findAll('.filter-values--range-input__input')
+        .map((el: HTMLInputElement) => el.value?.trim())
+        .filter(val => !!val)
+        .map(val => parseInt(val, 10)),
       [1000, 2000],
       'The value selects contain inputs with the filter values as the text'
     );
