@@ -15,9 +15,9 @@ import Args from './args-interface';
 import { readOnly } from '@ember/object/computed';
 
 export default class RangeInput extends Component<Args> {
-  @readOnly('args.filter.values.0') startDate?: string;
+  @readOnly('args.filter.values.0') startDate!: string;
 
-  @readOnly('args.filter.values.1') endDate?: string;
+  @readOnly('args.filter.values.1') endDate!: string;
   /**
    * @action setLowValue
    * @param {InputEvent} event
