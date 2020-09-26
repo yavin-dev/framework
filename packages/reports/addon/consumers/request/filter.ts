@@ -5,7 +5,6 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
-import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -68,7 +67,12 @@ export default class FilterConsumer extends ActionConsumer {
             this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, columnMetadata, parameters);
             break;
           case 'dimension':
-            this.requestActionDispatcher.dispatch(RequestActions.ADD_DIMENSION_FILTER, route, columnMetadata);
+            this.requestActionDispatcher.dispatch(
+              RequestActions.ADD_DIMENSION_FILTER,
+              route,
+              columnMetadata,
+              parameters
+            );
             break;
           case 'timeDimension':
             throw new Error('TODO');
@@ -104,13 +108,13 @@ export default class FilterConsumer extends ActionConsumer {
      * @param {Object} route - route that has a model that contains a request property
      * @param {Object} dimension - dimension to filter
      */
-    [RequestActions.ADD_DIMENSION_FILTER](route: Route, dimensionMetadataModel: DimensionMetadataModel) {
+    [RequestActions.ADD_DIMENSION_FILTER](
+      route: Route,
+      dimensionMetadataModel: DimensionMetadataModel,
+      parameters: Parameters
+    ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      assert(
-        'Dimension model has correct primaryKeyFieldName',
-        typeof dimensionMetadataModel?.primaryKeyFieldName === 'string'
-      );
 
       const findDefaultOperator = (type: string) => {
         const opDictionary: Record<string, string> = {
@@ -128,7 +132,7 @@ export default class FilterConsumer extends ActionConsumer {
         type: dimensionMetadataModel.metadataType,
         source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
-        parameters: dimensionMetadataModel.getDefaultParameters(),
+        parameters: parameters || dimensionMetadataModel.getDefaultParameters(),
         operator: defaultOperator,
         values: []
       });
