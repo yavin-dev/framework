@@ -1,0 +1,28 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#if @filter.validations.attrs.values.isInvalid}}
+    <FilterValues::InvalidValue/>
+  {{else}}
+    {{#each (await this.selectedDimensions) as |dim|}}
+      <span class="filter-values--collapsed--value">{{dim.displayValue}}</span>
+    {{/each}}
+  {{/if}}
+{{else}}
+  <PowerSelectMultiple
+    @options={{this.dimensionOptions}}
+    @selected={{this.selectedDimensions}}
+    @extra={{hash filter=@filter}}
+    @triggerComponent="power-select-bulk-import-trigger"
+    @optionsComponent="power-select-collection-options"
+    @onchange={{this.setValues}}
+    @onclose={{set this.searchTerm undefined}}
+    @search={{perform this.searchDimensionValues}}
+    @closeOnSelect={{false}}
+    @placeholder="{{capitalize @filter.displayName}} Values"}}
+    @loadingMessage="Loading..."
+    @dropdownClass="filter-values--dimension-select__dropdown"
+    @triggerClass={{concat "filter-values--dimension-select__trigger" (if @filter.validations.attrs.values.isInvalid " filter-values--dimension-select--error")}}
+    as |dim|>
+      <span title={{dim.displayValue}}>{{dim.displayValue}}</span>
+  </PowerSelectMultiple>
+{{/if}}
