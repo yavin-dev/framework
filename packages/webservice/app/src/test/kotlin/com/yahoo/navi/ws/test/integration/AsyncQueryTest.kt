@@ -44,7 +44,9 @@ class AsyncQueryTest : IntegrationTest() {
                                 "asyncAfterSeconds": 0,
                                 "query": "/roles",
                                 "queryType": "JSONAPI_V1_0",
-                                "status": "QUEUED"
+                                "status": "QUEUED",
+                                "resultFormatType": "JSONAPI",
+                                "resultType": "EMBEDDED"
                             }
                         }
                     }
