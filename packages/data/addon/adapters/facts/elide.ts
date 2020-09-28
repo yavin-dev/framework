@@ -98,12 +98,15 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
+    console.log(request);
+    console.log(options);
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const resultType: string = options.resultType || QueryResultType.EMBEDDED;
     const dataSourceName = request.dataSource || options.dataSourceName;
 
+    console.log('in createasync function');
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query, resultType }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
@@ -142,8 +145,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    //pass resulttype as DOWNLOAD in options to fetch data for request.
-    return 'TODO';
+    _options.resultType = QueryResultType.DOWNLOAD;
+    let response = await this.fetchDataForRequest(_request, _options);
+    return Promise.resolve(response.asyncQuery.edges[0].node.result?.responseBody || '');
   }
   /**
    * @param request

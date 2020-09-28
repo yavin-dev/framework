@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { QueryResultType, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
@@ -32,6 +32,10 @@ const TestRequest: RequestV2 = {
   limit: 10000,
   requestVersion: '2.0',
   dataSource: 'elideOne'
+};
+
+const TestOption: RequestOptions = {
+  resultType: QueryResultType.DOWNLOAD
 };
 
 let Server: Pretender;
@@ -169,9 +173,12 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('createAsyncQuery - success', async function(assert) {
     assert.expect(6);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    console.log('posting test createAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      console.log(requestBody);
       const requestObj = JSON.parse(requestBody);
+      console.log(requestObj);
       assert.deepEqual(
         Object.keys(requestObj.variables),
         ['id', 'query', 'resultType'],
@@ -213,6 +220,9 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           ]
         }
       };
+      console.log('response');
+      console.log(response);
+      console.log(JSON.stringify({ data: response }));
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
@@ -227,6 +237,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     const response = { errors: [{ message: 'Error in graphql query' }] };
+    console.log('posting test createAsyncQuery error ');
     Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
 
     try {
@@ -240,6 +251,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    console.log('posting test cancelAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
@@ -274,6 +286,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    console.log('posting test fetchAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
@@ -331,6 +344,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let callCount = 0;
     let queryVariable: string;
     let queryId: string;
+    console.log('posting test fetchAsyncQuery success');
     let response: TODO;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       callCount++;
@@ -408,6 +422,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('fetchDataForRequest - error', async function(assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    console.log('posting test fetchAsyncQuery error ');
     let errors = [{ message: 'Bad request' }];
     Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
@@ -417,5 +432,15 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       const responseText = await errors[0].statusText;
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
     }
+  });
+
+  test('urlForDownloadQuery', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    assert.equal(
+      decodeURIComponent(await adapter.urlForDownloadQuery(TestRequest, TestOption)),
+      `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      'urlForDownloadQuery correctly built the URL for the provided request'
+    );
   });
 });
