@@ -20,7 +20,7 @@ import {
   getFirstDayOfIsoDateTimePeriod,
   getLastDayOfIsoDateTimePeriod,
   getIsoDateTimePeriod
-} from 'navi-core/utils/date';
+} from 'navi-data/utils/date';
 
 @templateLayout(layout)
 @tagName('')

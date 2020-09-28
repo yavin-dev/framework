@@ -5,8 +5,7 @@
 
 import DS from 'ember-data';
 import moment, { Moment } from 'moment';
-//@ts-ignore
-import DateUtils from 'navi-core/utils/date';
+import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 
 export default class MomentTransform extends DS.Transform {
   /**
@@ -18,7 +17,7 @@ export default class MomentTransform extends DS.Transform {
    */
   deserialize(serialized: string): Moment | null {
     if (serialized) {
-      const result = moment.utc(serialized, DateUtils.API_DATE_FORMAT_STRING);
+      const result = moment.utc(serialized, API_DATE_FORMAT_STRING);
       return moment.isMoment(result) && result.isValid() ? result : null;
     } else {
       return null;
@@ -33,7 +32,7 @@ export default class MomentTransform extends DS.Transform {
    * @returns {String} - Date string
    */
   serialize(deserialized: Moment) {
-    return moment.isMoment(deserialized) ? deserialized.format(DateUtils.API_DATE_FORMAT_STRING) : null;
+    return moment.isMoment(deserialized) ? deserialized.format(API_DATE_FORMAT_STRING) : null;
   }
 }
 
