@@ -4,7 +4,7 @@ import { A as arr } from '@ember/array';
 import { merge } from 'lodash-es';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, find, findAll } from '@ember/test-helpers';
+import { render, settled, click, find, findAll, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -401,7 +401,7 @@ module('Integration | Component | table', function(hooks) {
     //Turn off the flag
     set(this, 'options.showTotals.grandTotal', false);
 
-    await settled();
+    await waitUntil(() => find('.table-row__total-row') == null, { timeout: 1000 });
 
     assert.dom('.table-row__total-row').isNotVisible('The total row is not visible when show grand total is `false`');
   });

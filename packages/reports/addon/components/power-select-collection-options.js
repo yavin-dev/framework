@@ -63,7 +63,7 @@ export default Options.extend({
   /**
    * @property {Array} items - array of options to be used by hbs
    */
-  items: computed('options', 'groupKey', function() {
+  items: computed('options', 'groupKey', 'grouped', 'ungrouped', function() {
     let groupKey = get(this, 'groupKey');
 
     if (groupKey) {
@@ -96,7 +96,7 @@ export default Options.extend({
   /**
    * @property {Array} grouped - array of grouped options
    */
-  grouped: computed('indexedOptions', function() {
+  grouped: computed('indexedOptions', 'groupKey', function() {
     let options = get(this, 'indexedOptions'),
       groupKey = get(this, 'groupKey');
 

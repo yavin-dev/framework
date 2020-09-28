@@ -61,7 +61,7 @@ class ReportView extends Component {
    * @property {Array} visualizations - array of available visualizations
    * annotated with a field corresponding to whether the visualization type is valid based on the request
    */
-  @computed('response.rows')
+  @computed('response.rows', 'report.request')
   get validVisualizations() {
     return get(this, 'naviVisualizations').validVisualizations(get(this, 'report.request'));
   }

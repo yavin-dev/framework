@@ -56,7 +56,7 @@
         {{#let (component (concat "report-actions/" (if (feature-flag "enableMultipleExport") "multiple-format-export" "export"))) as |ExportAction|}}
           <ExportAction
             class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
-            @report={{reportify @model}}
+            @report={{@model}}
             @disabled={{not @model.validations.isTruelyValid}}
           >
             <NaviIcon @icon="download" class="navi-report-widget__icon" />

@@ -630,16 +630,22 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Multi export action - pdf href', async function(assert) {
     assert.expect(4);
 
-    const initialUrl =
-      '/export?reportModel=EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh46qnBoABlXjkIgKfHO8gmEy9YykVSQABqJT0UgYq3pTJZsEvOmvM1vZ01DLYPAENCUqDEGECEoJQpWsSwEHZYBPD3YByBcUM1jQUd02gJgAH14OaVFzmEcRYIZMQE1yCpgCAAA';
+    const store = this.owner.lookup('service:store');
+
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
 
-    assert.equal(
-      $('.multiple-format-export__dropdown a:contains(PDF)').attr('href'),
-      initialUrl,
-      'Export url contains serialized report'
-    );
+    const encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
+      .attr('href')
+      .split('/export?reportModel=')[1];
+
+    const actualModel = (await CompressionService.decompressModel(encodedModel)).serialize();
+    const expectedModel = (await store.findRecord('report', 1)).serialize();
+
+    //strip off owner
+    delete expectedModel.data.relationships;
+
+    assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
 
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');

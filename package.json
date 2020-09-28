@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "husky": "^3.0.1",
-    "lerna": "^3.18.3",
+    "lerna": "^3.22.1",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
     "validate-commit": "^3.4.0"

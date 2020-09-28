@@ -50,7 +50,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
-  @computed('dimensionName', 'searchTerm')
+  @computed('dimensionName', 'searchTerm', 'filter.subject.source')
   get dimensionOptions() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
@@ -72,7 +72,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {BardDimensionArray} selectedDimensions - list of currently selected dimension values
    */
-  @computed('filter.values')
+  @computed('filter.{values,subject.source}', 'primaryKey', 'dimensionName')
   get selectedDimensions() {
     let dimensionIds = get(this, 'filter.values'),
       dimensionName = get(this, 'dimensionName'),
@@ -100,7 +100,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {String} filterValueFieldId - which id field to use as ID display.
    */
-  @computed('dimensionName', 'filter.field')
+  @computed('dimensionName', 'filter.{field,subject.source}')
   get filterValueFieldId() {
     const { dimensionName } = this,
       metadataService = this._metadataService,

@@ -66,9 +66,8 @@ abstract class IntegrationTest : RestAssuredSupport {
     /**
      * Registers a test role
      */
-    fun registerRole(role: String, user: String) {
+    fun registerRole(role: String) {
         given()
-            .header("User", user)
             .contentType("application/vnd.api+json")
             .body(
                 """
@@ -85,6 +84,30 @@ abstract class IntegrationTest : RestAssuredSupport {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
+    }
+
+    /**
+     * Registers user-role relationship
+     */
+    fun registerUserRole(role: String, user: String) {
+        given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "roles",
+                        "id": "$role"
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/users/$user/relationships/roles")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
     }
 
     /**
