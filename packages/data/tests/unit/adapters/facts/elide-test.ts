@@ -225,8 +225,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       console.log(JSON.stringify({ data: response }));
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-
-    const asyncQuery = await adapter.createAsyncQuery(TestRequest);
+    //pass options here
+    const asyncQuery = await adapter.createAsyncQuery(TestRequest, {});
 
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
