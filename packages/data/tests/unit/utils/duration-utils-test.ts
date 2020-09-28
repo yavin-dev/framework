@@ -1,6 +1,6 @@
-import DurationUtils from 'navi-core/utils/duration-utils';
-import { getFirstDayEpochIsoDateTimePeriod, PARAM_DATE_FORMAT_STRING } from 'navi-core/utils/date';
-import Duration from 'navi-core/utils/classes/duration';
+import DurationUtils from 'navi-data/utils/duration-utils';
+import { getFirstDayEpochIsoDateTimePeriod, PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';

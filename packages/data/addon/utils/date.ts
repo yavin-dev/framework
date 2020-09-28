@@ -5,7 +5,6 @@
 
 import moment, { Moment } from 'moment';
 import config from 'ember-get-config';
-import Interval from './classes/interval';
 
 export const EPOCH_FORMAT_STRING = 'YYYY-MM-DD';
 export const MONTH_DATE_FORMAT_STRING = 'M/D';
@@ -18,34 +17,6 @@ type BaseDateTimePeriod = 'hour' | 'minute' | 'day' | 'month' | 'quarter' | 'yea
 export type DateTimePeriod = BaseDateTimePeriod | 'week';
 export type Grain = DateTimePeriod | 'all';
 type IsoDateTimePeriod = BaseDateTimePeriod | 'isoWeek';
-
-/**
- * Computes an array of each date, bucketed by time grain,
- * between a given interval's start and end (exclusive)
- *
- * Ex: Each week between Jan 1 and May 1
- *
- * @function getDatesForInterval
- * @param interval
- * @param grain - string representation of the length of time for each date bucket, ex: 'week'
- * @returns moment representation of each date between interval's start and end
- */
-export function getDatesForInterval(interval: Interval, grain: Grain): Moment[] {
-  const range = interval.asMomentsForTimePeriod(grain);
-  const currentDate = range.start;
-  const dates = [];
-
-  if (grain === 'all') {
-    return [currentDate.clone()];
-  }
-
-  while (currentDate.isBefore(range.end)) {
-    dates.push(currentDate.clone());
-    currentDate.add(1, grain);
-  }
-
-  return dates;
-}
 
 /**
  * Given a dateTimePeriod this functions returns its equivalent ISO dateTimePeriod

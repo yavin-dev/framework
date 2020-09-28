@@ -19,7 +19,7 @@ import moment, { MomentInput } from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/metric';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { API_DATE_FORMAT_STRING, getDatesForInterval } from 'navi-core/utils/date';
+import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import EmberObject, { set, computed } from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
@@ -62,7 +62,7 @@ export default class MetricChartBuilder extends EmberObject {
      * Get all date buckets spanned by the data,
      * and group data by date for easier lookup
      */
-    const dates = getDatesForInterval(interval, timeGrain);
+    const dates = interval.getDatesForInterval(timeGrain);
     const byDate = new DataGroup(data, (row: ResponseRow) => buildDateKey(row[timeGrainColumn] as MomentInput));
 
     // Make a data point for each date in the request, so c3 can correctly show gaps in the chart
