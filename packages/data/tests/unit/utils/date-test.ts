@@ -1,30 +1,18 @@
-import * as DateUtils from 'navi-core/utils/date';
+import {
+  getFirstDayOfPrevIsoDateTimePeriod,
+  getFirstDayEpochIsoDateTimePeriod,
+  getIsoDateTimePeriod,
+  getLastDayOfPrevIsoDateTimePeriod,
+  API_DATE_FORMAT_STRING,
+  getFirstDayOfIsoDateTimePeriod,
+  PARAM_DATE_FORMAT_STRING,
+  getLastDayOfIsoDateTimePeriod
+} from 'navi-data/utils/date';
 import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';
-import Interval from 'navi-core/utils/classes/interval';
 
 module('Unit | Utils | DateUtils', function() {
-  test('getDatesForInterval', function(assert) {
-    assert.expect(2);
-
-    let testInterval = new Interval(moment('4-9-2017', 'D-M-Y'), moment('25-9-2017', 'D-M-Y')),
-      dates = DateUtils.getDatesForInterval(testInterval, 'week');
-
-    assert.deepEqual(
-      dates.map(date => date.format('D-M-Y')),
-      ['4-9-2017', '11-9-2017', '18-9-2017'],
-      'A moment for each week between Sep 4 and Sep 25 (exclusive) is returned'
-    );
-
-    dates = DateUtils.getDatesForInterval(testInterval, 'all');
-    assert.deepEqual(
-      dates.map(date => date.format('D-M-Y')),
-      ['4-9-2017'],
-      'A moment for all time is returned as the start date'
-    );
-  });
-
   test('getFirstDayOfPrevIsoDateTimePeriod - date format provided', function(assert) {
     assert.expect(4);
 
@@ -35,7 +23,7 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('isoWeek')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfPrevIsoDateTimePeriod('week', dateFormat),
+      getFirstDayOfPrevIsoDateTimePeriod('week', dateFormat),
       expectedDate1,
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate1}`
     );
@@ -45,7 +33,7 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('month')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfPrevIsoDateTimePeriod('month', dateFormat),
+      getFirstDayOfPrevIsoDateTimePeriod('month', dateFormat),
       expectedDate2,
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate2}`
     );
@@ -55,7 +43,7 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('year')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfPrevIsoDateTimePeriod('year', dateFormat),
+      getFirstDayOfPrevIsoDateTimePeriod('year', dateFormat),
       expectedDate3,
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate3}`
     );
@@ -65,7 +53,7 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfPrevIsoDateTimePeriod('day', dateFormat),
+      getFirstDayOfPrevIsoDateTimePeriod('day', dateFormat),
       expectedDate4,
       `getFirstDayOfPrevIsoDateTimePeriod should return: ${expectedDate4}`
     );
@@ -81,7 +69,7 @@ module('Unit | Utils | DateUtils', function() {
       .subtract(1, 'day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfPrevIsoDateTimePeriod('week', dateFormat),
+      getLastDayOfPrevIsoDateTimePeriod('week', dateFormat),
       expectedDate1,
       'getLastDayOfPrevIsoDateTimePeriod should return: ' + expectedDate1
     );
@@ -91,7 +79,7 @@ module('Unit | Utils | DateUtils', function() {
       .subtract(1, 'day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfPrevIsoDateTimePeriod('month', dateFormat),
+      getLastDayOfPrevIsoDateTimePeriod('month', dateFormat),
       expectedDate2,
       'getLastDayOfPrevIsoDateTimePeriod should return: ' + expectedDate2
     );
@@ -101,7 +89,7 @@ module('Unit | Utils | DateUtils', function() {
       .subtract(1, 'day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfPrevIsoDateTimePeriod('year', dateFormat),
+      getLastDayOfPrevIsoDateTimePeriod('year', dateFormat),
       expectedDate3,
       'getFirstDayOfPrevIsoDateTimePeriod should return: ' + expectedDate3
     );
@@ -111,7 +99,7 @@ module('Unit | Utils | DateUtils', function() {
       .subtract(1, 'day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfPrevIsoDateTimePeriod('day', dateFormat),
+      getLastDayOfPrevIsoDateTimePeriod('day', dateFormat),
       expectedDate4,
       'getFirstDayOfPrevIsoDateTimePeriod should return: ' + expectedDate4
     );
@@ -126,21 +114,21 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = '2012-10-17';
     let expectedEpocDate1 = moment('2012-10-22').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('week', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('week', dateFormat),
       expectedEpocDate1,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate1
     );
 
     let expectedEpocDate2 = moment('2012-11-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('month', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('month', dateFormat),
       expectedEpocDate2,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate2
     );
 
     let expectedEpocDate3 = moment('2013-01-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('year', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('year', dateFormat),
       expectedEpocDate3,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate3
     );
@@ -158,7 +146,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = '2012-10-17';
     let expectedEpocDate1 = moment('2012-10-17').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('day', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('day', dateFormat),
       expectedEpocDate1,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate1
     );
@@ -166,7 +154,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = '2012-10-15';
     let expectedEpocDate2 = moment('2012-10-15').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('week', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('week', dateFormat),
       expectedEpocDate2,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate2
     );
@@ -174,7 +162,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = '2012-10-01';
     let expectedEpocDate3 = moment('2012-10-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('month', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('month', dateFormat),
       expectedEpocDate3,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate3
     );
@@ -182,7 +170,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = '2012-01-01';
     let expectedEpocDate4 = moment('2012-01-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayEpochIsoDateTimePeriod('year', dateFormat),
+      getFirstDayEpochIsoDateTimePeriod('year', dateFormat),
       expectedEpocDate4,
       'getFirstDayEpochIsoDateTimePeriod should return: ' + expectedEpocDate4
     );
@@ -194,29 +182,29 @@ module('Unit | Utils | DateUtils', function() {
   test('getFirstDayOfIsoDateTimePeriod - unit tests', function(assert) {
     assert.expect(10);
 
-    let dateFormat = DateUtils.API_DATE_FORMAT_STRING;
+    let dateFormat = API_DATE_FORMAT_STRING;
 
     assert.throws(
       //@ts-expect-error
-      () => DateUtils.getFirstDayOfIsoDateTimePeriod(undefined, 'week', dateFormat),
+      () => getFirstDayOfIsoDateTimePeriod(undefined, 'week', dateFormat),
       'Threw an error as expected'
     );
 
     let expectedDate1 = moment('2014-10-13').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment('2014-10-15'), 'week', dateFormat),
+      getFirstDayOfIsoDateTimePeriod(moment('2014-10-15'), 'week', dateFormat),
       expectedDate1,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate1 + ' as expected'
     );
 
     //@ts-expect-error
-    assert.throws(() => DateUtils.getFirstDayOfIsoDateTimePeriod(), 'Threw an error as expected');
+    assert.throws(() => getFirstDayOfIsoDateTimePeriod(), 'Threw an error as expected');
 
     let expectedDate2 = moment()
       .startOf('isoWeek')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment(), 'week'),
+      getFirstDayOfIsoDateTimePeriod(moment(), 'week'),
       expectedDate2,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate2 + ' as expected'
     );
@@ -225,14 +213,14 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('month')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment(), 'month'),
+      getFirstDayOfIsoDateTimePeriod(moment(), 'month'),
       expectedDate3,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate3 + ' as expected'
     );
 
     let expectedDate4 = moment('2014-10-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'month'),
+      getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'month'),
       expectedDate4,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate4 + ' as expected'
     );
@@ -241,14 +229,14 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('year')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment(), 'year'),
+      getFirstDayOfIsoDateTimePeriod(moment(), 'year'),
       expectedDate5,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate5 + ' as expected'
     );
 
     let expectedDate6 = moment('2014-01-01').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'year'),
+      getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'year'),
       expectedDate6,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate6 + ' as expected'
     );
@@ -257,14 +245,14 @@ module('Unit | Utils | DateUtils', function() {
       .startOf('day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment(), 'day'),
+      getFirstDayOfIsoDateTimePeriod(moment(), 'day'),
       expectedDate7,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate7 + ' as expected'
     );
 
     let expectedDate8 = moment('2014-10-03').format(dateFormat);
     assert.equal(
-      DateUtils.getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'day'),
+      getFirstDayOfIsoDateTimePeriod(moment('2014-10-03'), 'day'),
       expectedDate8,
       'getFirstDayOfIsoDateTimePeriod returned: ' + expectedDate8 + ' as expected'
     );
@@ -273,30 +261,30 @@ module('Unit | Utils | DateUtils', function() {
   test('getLastDayOfIsoDateTimePeriod - unit tests', function(assert) {
     assert.expect(10);
 
-    let dateFormat = DateUtils.API_DATE_FORMAT_STRING,
-      dateFormat1 = DateUtils.PARAM_DATE_FORMAT_STRING;
+    let dateFormat = API_DATE_FORMAT_STRING,
+      dateFormat1 = PARAM_DATE_FORMAT_STRING;
 
     assert.throws(
       //@ts-expect-error
-      () => DateUtils.getLastDayOfIsoDateTimePeriod(undefined, 'week', dateFormat1),
+      () => getLastDayOfIsoDateTimePeriod(undefined, 'week', dateFormat1),
       'Threw an error as expected'
     );
 
     let expectedDate1 = moment('2014-10-19').format(dateFormat1);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment('2014-10-15'), 'week', dateFormat1),
+      getLastDayOfIsoDateTimePeriod(moment('2014-10-15'), 'week', dateFormat1),
       expectedDate1,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate1 + ' as expected'
     );
 
     //@ts-expect-error
-    assert.throws(() => DateUtils.getLastDayOfIsoDateTimePeriod(), 'Threw an error as expected');
+    assert.throws(() => getLastDayOfIsoDateTimePeriod(), 'Threw an error as expected');
 
     let expectedDate2 = moment()
       .endOf('isoWeek')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment(), 'week'),
+      getLastDayOfIsoDateTimePeriod(moment(), 'week'),
       expectedDate2,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate2 + ' as expected'
     );
@@ -305,14 +293,14 @@ module('Unit | Utils | DateUtils', function() {
       .endOf('month')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment(), 'month'),
+      getLastDayOfIsoDateTimePeriod(moment(), 'month'),
       expectedDate3,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate3 + ' as expected'
     );
 
     let expectedDate4 = moment('2014-10-31').format(dateFormat1);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'month', dateFormat1),
+      getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'month', dateFormat1),
       expectedDate4,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate4 + ' as expected'
     );
@@ -321,14 +309,14 @@ module('Unit | Utils | DateUtils', function() {
       .endOf('year')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment(), 'year'),
+      getLastDayOfIsoDateTimePeriod(moment(), 'year'),
       expectedDate5,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate5 + ' as expected'
     );
 
     let expectedDate6 = moment('2014-12-31').format(dateFormat1);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'year', dateFormat1),
+      getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'year', dateFormat1),
       expectedDate6,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate6 + ' as expected'
     );
@@ -337,14 +325,14 @@ module('Unit | Utils | DateUtils', function() {
       .endOf('day')
       .format(dateFormat);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment(), 'day'),
+      getLastDayOfIsoDateTimePeriod(moment(), 'day'),
       expectedDate7,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate7 + ' as expected'
     );
 
     let expectedDate8 = moment('2014-10-23').format(dateFormat1);
     assert.equal(
-      DateUtils.getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'day', dateFormat1),
+      getLastDayOfIsoDateTimePeriod(moment('2014-10-23'), 'day', dateFormat1),
       expectedDate8,
       'getLastDayOfIsoDateTimePeriod returned: ' + expectedDate8 + ' as expected'
     );
@@ -355,28 +343,28 @@ module('Unit | Utils | DateUtils', function() {
 
     let isoDateTimePeriod1 = 'day';
     assert.equal(
-      DateUtils.getIsoDateTimePeriod('day'),
+      getIsoDateTimePeriod('day'),
       isoDateTimePeriod1,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod1 + ' as expected'
     );
 
     let isoDateTimePeriod2 = 'isoWeek';
     assert.equal(
-      DateUtils.getIsoDateTimePeriod('week'),
+      getIsoDateTimePeriod('week'),
       isoDateTimePeriod2,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod2 + ' as expected'
     );
 
     let isoDateTimePeriod3 = 'month';
     assert.equal(
-      DateUtils.getIsoDateTimePeriod('month'),
+      getIsoDateTimePeriod('month'),
       isoDateTimePeriod3,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod3 + ' as expected'
     );
 
     let isoDateTimePeriod4 = 'year';
     assert.equal(
-      DateUtils.getIsoDateTimePeriod('year'),
+      getIsoDateTimePeriod('year'),
       isoDateTimePeriod4,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod4 + ' as expected'
     );
@@ -384,12 +372,12 @@ module('Unit | Utils | DateUtils', function() {
     let isoDateTimePeriod5 = 'invalid';
     assert.equal(
       //@ts-expect-error
-      DateUtils.getIsoDateTimePeriod('invalid'),
+      getIsoDateTimePeriod('invalid'),
       isoDateTimePeriod5,
       'getIsoDateTimePeriod returned: ' + isoDateTimePeriod5 + ' as expected'
     );
 
     //@ts-expect-error
-    assert.throws(() => DateUtils.getIsoDateTimePeriod(), 'Threw an error as expected');
+    assert.throws(() => getIsoDateTimePeriod(), 'Threw an error as expected');
   });
 });

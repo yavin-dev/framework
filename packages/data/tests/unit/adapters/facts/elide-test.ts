@@ -6,7 +6,8 @@ import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
-import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
+import moment from 'moment';
+import ElideFactsAdapter, { getElideField, ELIDE_API_DATE_FORMAT } from 'navi-data/adapters/facts/elide';
 
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -163,6 +164,85 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       }),
       `{"query":"{ myTable(filter: \\"m1=ge=(v1);m1=le=(v2)\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
+    );
+
+    assert.equal(
+      adapter['dataQueryFromRequest']({
+        table: 'myTable',
+        columns: [
+          { field: 'myTable.time', parameters: { grain: 'month' }, type: 'timeDimension' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          {
+            field: 'myTable.time',
+            parameters: { grain: 'month' },
+            type: 'timeDimension',
+            operator: 'bet',
+            values: ['P1M', 'current']
+          }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'elideOne',
+        limit: null
+      }),
+      `{"query":"{ myTable(filter: \\"time=ge=(${moment()
+        .subtract(1, 'month')
+        .format(ELIDE_API_DATE_FORMAT)});time=le=(${moment().format(
+        ELIDE_API_DATE_FORMAT
+      )})\\") { edges { node { time d1 } } } }"}`,
+      'Macros and durations in time-dimension filters are converted to date strings properly'
+    );
+
+    assert.equal(
+      adapter['dataQueryFromRequest']({
+        table: 'myTable',
+        columns: [
+          { field: 'myTable.time', parameters: { grain: 'day' }, type: 'timeDimension' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          {
+            field: 'myTable.time',
+            parameters: { grain: 'day' },
+            type: 'timeDimension',
+            operator: 'null',
+            values: []
+          }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'elideOne',
+        limit: null
+      }),
+      `{"query":"{ myTable(filter: \\"time=isnull=true\\") { edges { node { time d1 } } } }"}`,
+      'Filter without 2 filter values is unaffected'
+    );
+
+    assert.equal(
+      adapter['dataQueryFromRequest']({
+        table: 'myTable',
+        columns: [
+          { field: 'myTable.time', parameters: { grain: 'day' }, type: 'timeDimension' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          {
+            field: 'myTable.time',
+            parameters: { grain: 'day' },
+            type: 'timeDimension',
+            operator: 'bet',
+            values: ['2020-05-05', '2020-05-09']
+          }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'elideOne',
+        limit: null
+      }),
+      `{"query":"{ myTable(filter: \\"time=ge=(2020-05-05);time=le=(2020-05-09)\\") { edges { node { time d1 } } } }"}`,
+      'Filter with 2 non-macro date values is unaffected'
     );
   });
 

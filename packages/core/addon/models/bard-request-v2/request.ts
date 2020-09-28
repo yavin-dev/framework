@@ -13,7 +13,7 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 //@ts-ignore
 import { isEqual } from 'lodash-es';
 //@ts-ignore
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { RequestV2, SortDirection } from 'navi-data/adapters/facts/interface';
@@ -29,7 +29,7 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
 import { TableMetadata } from 'navi-data/models/metadata/table';
 import { ColumnType } from 'navi-data/models/metadata/column';
-import { Grain } from 'navi-core/utils/date';
+import { Grain } from 'navi-data/utils/date';
 
 type BaseLiteral = {
   type: ColumnType;

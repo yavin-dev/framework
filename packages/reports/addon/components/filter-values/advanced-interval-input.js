@@ -13,8 +13,8 @@ import BaseIntervalComponent from './base-interval-component';
 import { computed, action } from '@ember/object';
 import layout from '../../templates/components/filter-values/advanced-interval-input';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import DateUtils from 'navi-core/utils/date';
-import Interval from 'navi-core/utils/classes/interval';
+import DateUtils from 'navi-data/utils/date';
+import Interval from 'navi-data/utils/classes/interval';
 
 @templateLayout(layout)
 @tagName('')

@@ -5,8 +5,7 @@
 
 import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
-import Duration from './duration';
-import { isIsoDurationString } from './duration';
+import Duration, { isIsoDurationString } from './duration';
 import DurationUtils from '../duration-utils';
 import { API_DATE_FORMAT_STRING, getIsoDateTimePeriod, Grain } from '../date';
 
@@ -188,6 +187,34 @@ export default class Interval {
   diffForTimePeriod(timePeriod: Grain): number {
     let moments = this.asMomentsForTimePeriod(timePeriod);
     return timePeriod === 'all' ? 1 : moments.end.diff(moments.start, timePeriod);
+  }
+
+  /**
+   * Computes an array of each date, bucketed by time grain,
+   * between a given interval's start and end (exclusive)
+   *
+   * Ex: Each week between Jan 1 and May 1
+   *
+   * @function getDatesForInterval
+   * @param interval
+   * @param grain - string representation of the length of time for each date bucket, ex: 'week'
+   * @returns moment representation of each date between interval's start and end
+   */
+  getDatesForInterval(grain: Grain): Moment[] {
+    const range = this.asMomentsForTimePeriod(grain);
+    const currentDate = range.start;
+    const dates = [];
+
+    if (grain === 'all') {
+      return [currentDate.clone()];
+    }
+
+    while (currentDate.isBefore(range.end)) {
+      dates.push(currentDate.clone());
+      currentDate.add(1, grain);
+    }
+
+    return dates;
   }
 
   /**
