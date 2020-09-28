@@ -21,7 +21,7 @@ import javax.persistence.TemporalType
 import javax.validation.constraints.NotBlank
 
 @Entity
-@Include(rootLevel = true, type = "roles")
+@Include(type = "roles")
 @DeletePermission(expression = EVERYBODY)
 @CreatePermission(expression = EVERYBODY)
 @UpdatePermission(expression = NOBODY)

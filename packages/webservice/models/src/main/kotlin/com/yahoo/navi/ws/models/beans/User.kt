@@ -28,7 +28,7 @@ import javax.persistence.TemporalType
 import javax.validation.constraints.NotBlank
 
 @Entity
-@Include(rootLevel = true, type = "users")
+@Include(type = "users")
 @DeletePermission(expression = NOBODY)
 @UpdatePermission(expression = IS_SAME_USER)
 @LifeCycleHookBinding(
