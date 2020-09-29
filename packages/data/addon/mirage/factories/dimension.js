@@ -24,7 +24,7 @@ export default Factory.extend({
 
   valueType: 'TEXT',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   columnType: 'field',
 
