@@ -24,7 +24,7 @@ export default Factory.extend({
 
   valueType: 'TIME',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   columnType: 'field',
 

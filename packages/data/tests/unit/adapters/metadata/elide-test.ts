@@ -115,7 +115,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is metric 0',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -129,7 +129,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is metric 1',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -143,7 +143,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is metric 2',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -168,7 +168,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is dimension 0',
               category: 'categoryOne',
               valueType: 'TEXT',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Dimension'
@@ -182,7 +182,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is dimension 1',
               category: 'categoryOne',
               valueType: 'TEXT',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Dimension'
@@ -196,7 +196,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is dimension 2',
               category: 'categoryOne',
               valueType: 'TEXT',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Dimension'
@@ -220,7 +220,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is metric 3',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -234,7 +234,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               description: 'This is metric 4',
               category: 'categoryOne',
               valueType: 'NUMBER',
-              columnTags: ['DISPLAY'],
+              tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
               __typename: 'Metric'
@@ -287,7 +287,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is metric 0',
                         category: 'categoryOne',
                         valueType: 'NUMBER',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Metric'
@@ -301,7 +301,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is metric 1',
                         category: 'categoryOne',
                         valueType: 'NUMBER',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Metric'
@@ -315,7 +315,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is metric 2',
                         category: 'categoryOne',
                         valueType: 'NUMBER',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Metric'
@@ -334,7 +334,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is dimension 0',
                         category: 'categoryOne',
                         valueType: 'TEXT',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Dimension'
@@ -348,7 +348,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is dimension 1',
                         category: 'categoryOne',
                         valueType: 'TEXT',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Dimension'
@@ -362,7 +362,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         description: 'This is dimension 2',
                         category: 'categoryOne',
                         valueType: 'TEXT',
-                        columnTags: ['DISPLAY'],
+                        tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
                         __typename: 'Dimension'

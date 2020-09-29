@@ -24,7 +24,7 @@ export default Factory.extend({
 
   valueType: 'NUMBER',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   defaultFormat: 'number',
 
