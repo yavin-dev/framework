@@ -5,10 +5,6 @@
  * Usage:
  *   <FilterValues::InvalidValue/>
  */
-import Component from '@ember/component';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../../templates/components/filter-values/invalid-value';
+import Component from '@glimmer/component';
 
-@tagName('')
-@templateLayout(layout)
 export default class InvalidValue extends Component {}

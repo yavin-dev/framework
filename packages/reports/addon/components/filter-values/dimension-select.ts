@@ -58,7 +58,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   get selectedDimensions() {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
-    return values.map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    if (values !== undefined) {
+      return values.map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    }
+    return [];
   }
 
   @action

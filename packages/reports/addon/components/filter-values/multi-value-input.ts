@@ -8,21 +8,27 @@
  *     @onUpdateFilter={{this.update}}
  *   />
  */
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { set, action } from '@ember/object';
-import layout from '../../templates/components/filter-values/multi-value-input';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 
-@templateLayout(layout)
-@tagName('')
-export default class MultiValueInput extends Component {
+interface MultiValueInputArgs {
+  filter: FilterFragment;
+  onUpdateFilter(changeSet: Partial<FilterFragment>): void;
+}
+
+export default class MultiValueInput extends Component<MultiValueInputArgs> {
+  /**
+   * @property {Array} tags
+   */
+  tags: (string | number)[] = [];
+
   /**
    * @method init
    * @override
    */
   init() {
-    super.init(...arguments);
-    const tags = this.filter.values || [];
+    const tags = this.args.filter.values || [];
     set(this, 'tags', tags);
   }
 
@@ -31,12 +37,12 @@ export default class MultiValueInput extends Component {
    * @param {String} tag - Add single value to the filter values list
    */
   @action
-  addValue(tag) {
+  addValue(tag: string | number) {
     const { tags } = this;
     tags.push(tag);
 
-    this.onUpdateFilter({
-      rawValues: tags.slice()
+    this.args.onUpdateFilter({
+      values: tags.slice()
     });
   }
 
@@ -45,12 +51,12 @@ export default class MultiValueInput extends Component {
    * @param {Number} index - index of value to remove
    */
   @action
-  removeValueAtIndex(index) {
+  removeValueAtIndex(index: number) {
     const { tags } = this;
     tags.splice(index, 1);
 
-    this.onUpdateFilter({
-      rawValues: tags.slice()
+    this.args.onUpdateFilter({
+      values: tags.slice()
     });
   }
 }
