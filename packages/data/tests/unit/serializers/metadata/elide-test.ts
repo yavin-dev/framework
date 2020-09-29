@@ -42,7 +42,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table A Metric 1',
                       category: 'cat1',
                       valueType: 'NUMBER',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: ''
@@ -61,7 +61,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table A Dimension 1',
                       category: 'cat1',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: ''
                     },
@@ -74,7 +74,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table A Dimension 2',
                       category: 'cat1',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: ''
                     },
@@ -92,7 +92,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table A Time Dimension 1',
                       category: 'cat1',
                       valueType: 'DATE',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       supportedGrain: {
                         edges: [
                           { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
@@ -128,7 +128,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table B Metric 2',
                       category: 'cat2',
                       valueType: 'NUMBER',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: ''
@@ -142,7 +142,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table B Metric 3',
                       category: 'cat2',
                       valueType: 'NUMBER',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: ''
@@ -161,7 +161,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table B Dimension 1',
                       category: 'cat2',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: ''
                     },
@@ -174,7 +174,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       description: 'Table B Dimension 2',
                       category: 'cat2',
                       valueType: 'TEXT',
-                      columnTags: ['IMPORTANT'],
+                      tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: ''
                     },
@@ -381,7 +381,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'Clicks',
             category: 'userMetrics',
             valueType: 'NUMBER',
-            columnTags: ['IMPORTANT'],
+            tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: ''
@@ -395,7 +395,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'Impressions',
             category: 'userMetrics',
             valueType: 'NUMBER',
-            columnTags: ['DISPLAY'],
+            tags: ['DISPLAY'],
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: ''
@@ -458,7 +458,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'User Age',
             category: 'userDimensions',
             valueType: 'TEXT',
-            columnTags: ['IMPORTANT'],
+            tags: ['IMPORTANT'],
             columnType: 'field',
             expression: ''
           },
@@ -471,7 +471,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'User Gender',
             category: 'userDimensions',
             valueType: 'TEXT',
-            columnTags: ['DISPLAY'],
+            tags: ['DISPLAY'],
             columnType: 'field',
             expression: ''
           },
@@ -531,7 +531,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'Date that the user signed up',
             category: 'userDimensions',
             valueType: 'DATE',
-            columnTags: ['DISPLAY'],
+            tags: ['DISPLAY'],
             supportedGrain: {
               edges: [
                 { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
@@ -553,7 +553,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             description: 'Month an order was placed',
             category: 'userDimensions',
             valueType: 'DATE',
-            columnTags: ['DISPLAY'],
+            tags: ['DISPLAY'],
             supportedGrain: {
               edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }],
               pageInfo: []

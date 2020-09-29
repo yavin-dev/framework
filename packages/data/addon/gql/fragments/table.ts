@@ -19,7 +19,7 @@ const fragment = gql`
           description
           category
           valueType
-          columnTags
+          tags
           columnType
           expression
         }
@@ -33,7 +33,7 @@ const fragment = gql`
           description
           category
           valueType
-          columnTags
+          tags
           columnType
           expression
         }
@@ -47,7 +47,7 @@ const fragment = gql`
           description
           category
           valueType
-          columnTags
+          tags
           columnType
           expression
           supportedGrain {

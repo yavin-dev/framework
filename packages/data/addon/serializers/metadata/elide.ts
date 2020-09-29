@@ -30,7 +30,7 @@ type ColumnNode = {
   description: string;
   category: string;
   valueType: TODO<string>;
-  columnTags: string[];
+  tags: string[];
   columnType: RawColumnType;
   expression: string;
 };
@@ -144,7 +144,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
         valueType: node.valueType,
         tableId,
         source,
-        tags: node.columnTags,
+        tags: node.tags,
         defaultFormat: node.defaultFormat,
         type: node.columnType,
         expression: node.expression
@@ -174,7 +174,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
         valueType: node.valueType,
         tableId,
         source,
-        tags: node.columnTags,
+        tags: node.tags,
         type: node.columnType,
         expression: node.expression
       };
@@ -207,7 +207,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
           tableId,
           columnFunctionId: columnFunction.id,
           source,
-          tags: node.columnTags,
+          tags: node.tags,
           supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
           timeZone: node.timeZone,
           type: node.columnType,
