@@ -11,11 +11,11 @@ module('Integration | Component | filter values/multi value input', function(hoo
     this.filter = { values: [1000] };
     this.onUpdateFilter = () => null;
 
-    await render(hbs`{{filter-values/multi-value-input
-            filter=filter
-            onUpdateFilter=(action onUpdateFilter)
-            isCollapsed=isCollapsed
-        }}`);
+    await render(hbs`<FilterValues::MultiValueInput
+            @filter={{this.filter}}
+            @onUpdateFilter={{this.onUpdateFilter}}
+            @isCollapsed={{this.isCollapsed}}
+        />`);
   });
 
   test('it renders', function(assert) {

@@ -3,29 +3,28 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{filter-values/null-input
- *       filter=filter
- *       onUpdateFilter=(action 'update')
- *   }}
+ *   <FilterValues::NullInput
+ *     @filter={{filter}}
+ *     @onUpdateFilter={{action "update"}}
+ *   />
  */
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { isEqual } from 'lodash-es';
+import Args from './args-interface';
 
-export default Component.extend({
-  tagName: '',
-
+export default class NullInput extends Component<Args> {
   /**
-   * @method didInsertElement
-   * @override
+   * @property {String} tagName
    */
-  didInsertElement() {
-    this._super(...arguments);
+  tagName = '';
 
+  init() {
+    debugger;
     const {
       isCollapsed,
       onUpdateFilter,
       filter: { values }
-    } = this;
+    } = this.args;
 
     /*
      * Since this operator doesn't require values, set an empty array
@@ -34,4 +33,4 @@ export default Component.extend({
       onUpdateFilter({ values: [] });
     }
   }
-});
+}
