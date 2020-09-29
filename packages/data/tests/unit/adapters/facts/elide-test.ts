@@ -167,19 +167,20 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('createAsyncQuery - success', async function(assert) {
-    assert.expect(6);
+    assert.expect(7);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
       assert.deepEqual(
         Object.keys(requestObj.variables),
-        ['id', 'query', 'resultType'],
-        'createAsyncQuery sends id, query and resultType request variables'
+        ['id', 'query', 'resultType', 'resultFormatType'],
+        'createAsyncQuery sends id, query, resultType and resultFormatType request variables'
       );
 
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
       assert.equal(requestObj.variables.resultType, 'EMBEDDED');
+      assert.equal(requestObj.variables.resultFormatType, 'JSONAPI');
       const expectedTable = TestRequest.table;
       const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
       const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;

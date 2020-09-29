@@ -12,7 +12,8 @@ import NaviFactAdapter, {
   QueryStatus,
   RequestV2,
   FilterOperator,
-  QueryResultType
+  QueryResultType,
+  QueryResultFormatType
 } from './interface';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -102,10 +103,16 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const resultType: string = options.resultType || QueryResultType.EMBEDDED;
+    const resultFormatType: string = options.resultFormatType || QueryResultFormatType.JSONAPI;
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query, resultType }, context: { dataSourceName } };
+    const queryOptions = {
+      mutation,
+      variables: { id, query, resultType, resultFormatType },
+      context: { dataSourceName }
+    };
+    // eslint-disable-next-line no-debugger
     return this.apollo.mutate(queryOptions);
   }
 
@@ -142,7 +149,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    //pass resulttype as DOWNLOAD in options to fetch data for request.
     return 'TODO';
   }
   /**
