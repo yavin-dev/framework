@@ -75,7 +75,7 @@ const schema = gql`
     table: Table
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
-    columnTags: [String!]
+    tags: [String!]
     columnType: ColumnType
     expression: String
   }
@@ -87,7 +87,7 @@ const schema = gql`
     table: Table
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
-    columnTags: [String!]
+    tags: [String!]
     defaultFormat: String
     metricFunction: metricFunction
     columnType: ColumnType
@@ -101,7 +101,7 @@ const schema = gql`
     table: Table
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
-    columnTags: [String!]
+    tags: [String!]
     columnType: ColumnType
     expression: String
   }
@@ -113,7 +113,7 @@ const schema = gql`
     table: Table
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
-    columnTags: [String!]
+    tags: [String!]
     columnType: ColumnType
     expression: String
     supportedGrain: TimeDimensionGrainConnnection
