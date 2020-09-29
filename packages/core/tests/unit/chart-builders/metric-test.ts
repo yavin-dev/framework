@@ -3,7 +3,9 @@ import { setOwner } from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import BuilderClass from 'navi-core/chart-builders/metric';
+//@ts-ignore
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const MetricChartBuilder = BuilderClass.create();

@@ -7,6 +7,8 @@ import Component from '@glimmer/component';
 import config from 'ember-get-config';
 import { getOwner } from '@ember/application';
 import { camelize } from '@ember/string';
+import { BaseChartBuilder } from 'navi-core/chart-builders/base';
+
 /* global requirejs */
 export default class ChartBuildersBase<Args> extends Component<Args> {
   /**
@@ -21,7 +23,7 @@ export default class ChartBuildersBase<Args> extends Component<Args> {
     const chartBuilderEntries = Object.keys(entries).filter(key => builderRegExp.test(key));
 
     const owner = getOwner(this);
-    const builderMap = chartBuilderEntries.reduce((map: Record<string, TODO | undefined>, builderName) => {
+    const builderMap = chartBuilderEntries.reduce((map: Record<string, BaseChartBuilder | undefined>, builderName) => {
       const [, chartBuilder] = builderRegExp.exec(builderName) || [];
       const builderKey = camelize(chartBuilder);
       map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);

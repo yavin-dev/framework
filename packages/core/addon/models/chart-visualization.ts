@@ -15,25 +15,6 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from './bard-request-v2/fragments/column';
 
-type DimensionSeriesConfigSerialized = {
-  metricCid: string; // cid of the selected metric column
-  dimensionOrder: string[]; //cids in the order that correspond to the values in each series
-  dimensions: SeriesValues[];
-};
-export type DimensionSeriesConfig = {
-  metricCid: string;
-  dimensionOrder: ColumnFragment[];
-  dimensions: SeriesValues[];
-};
-type DimensionSeries = {
-  type: typeof DIMENSION_SERIES;
-  config: DimensionSeriesConfig;
-};
-type MetricSeries = TODO;
-type DateTimeSeries = TODO;
-export type Series = DimensionSeries | MetricSeries | DateTimeSeries;
-export type SeriesValues = { name: string; values: Record<string, string | number | boolean> };
-
 export default class ChartVisualization extends Visualization {
   /**
    * Get a series builder based on type of chart
@@ -82,24 +63,18 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildDimensionSeries(
-    config: DimensionSeriesConfigSerialized,
-    validations: TODO,
-    request: RequestFragment,
-    response: ResponseV1
-  ): DimensionSeries {
+  buildDimensionSeries(config: string, validations: unknown, request: RequestFragment, _response: ResponseV1) {
     const validationAttrs = validations.attrs;
     const currentMetric = config.metricCid;
     const currentDimension = config.dimensions;
 
-    const isMetricValid = validationAttrs.config.metric.isValid;
+    const isMetricValid = validationAttrs.config.metricCid.isValid;
     const areDimensionsValid = validationAttrs.config.dimensions.isValid;
 
     const metric = isMetricValid
       ? (request.metricColumns.find(({ cid }) => cid === currentMetric) as ColumnFragment)
       : request.metricColumns[0];
 
-    const dimensionOrder = getRequestDimensions(request);
     const responseRows = topN(
       maxDataByDimensions(response.rows, dimensionOrder, metric.canonicalName),
       metric.canonicalName,
@@ -111,8 +86,7 @@ export default class ChartVisualization extends Visualization {
       type: DIMENSION_SERIES,
       config: {
         metricCid: metric.cid,
-        dimensionOrder,
-        dimensions
+        dimensions: undefined // TODO bring back
       }
     };
   }
@@ -126,12 +100,7 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildMetricSeries(
-    _config: unknown,
-    _validations: unknown,
-    _request: RequestFragment,
-    _response: ResponseV1
-  ): MetricSeries {
+  buildMetricSeries(_config: string, _validations: unknown, _request: RequestFragment, _response: ResponseV1) {
     return {
       type: METRIC_SERIES,
       config: {}
@@ -147,12 +116,7 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildDateTimeSeries(
-    _config: unknown,
-    _validations: unknown,
-    request: RequestFragment,
-    _response: ResponseV1
-  ): DateTimeSeries {
+  buildDateTimeSeries(_config: string, _validations: unknown, request: RequestFragment, _response: ResponseV1) {
     return {
       type: DATE_TIME_SERIES,
       config: {
