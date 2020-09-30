@@ -28,7 +28,7 @@ class UserValidationHook : LifeCycleHook<User> {
         val principalName = requestScope?.user?.name
         val userName = user?.id
 
-        if (userName != principalName) {
+        if (principalName.isNullOrEmpty() || userName != principalName) {
             throw BadRequestException("Forbidden User Identity")
         }
     }

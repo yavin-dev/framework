@@ -7,8 +7,8 @@ package com.yahoo.navi.ws.models.checks
 import com.yahoo.elide.core.Path
 import com.yahoo.elide.core.filter.FilterPredicate
 import com.yahoo.elide.core.filter.Operator
-import com.yahoo.elide.security.FilterExpressionCheck
 import com.yahoo.elide.security.RequestScope
+import com.yahoo.elide.security.checks.FilterExpressionCheck
 import com.yahoo.navi.ws.models.beans.User
 
 open class DefaultSameUserCheck : FilterExpressionCheck<User>() {
