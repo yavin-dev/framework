@@ -12,7 +12,8 @@ import NaviFactAdapter, {
   QueryStatus,
   RequestV2,
   FilterOperator,
-  QueryResultType
+  QueryResultType,
+  QueryResultFormatType
 } from './interface';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -104,11 +105,17 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const resultType: string = options.resultType || QueryResultType.EMBEDDED;
+    const resultFormatType: string = options.resultFormatType || QueryResultFormatType.JSONAPI;
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     console.log('in createasync function');
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query, resultType }, context: { dataSourceName } };
+    const queryOptions = {
+      mutation,
+      variables: { id, query, resultType, resultFormatType },
+      context: { dataSourceName }
+    };
+    // eslint-disable-next-line no-debugger
     return this.apollo.mutate(queryOptions);
   }
 
@@ -144,10 +151,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    _options.resultType = QueryResultType.DOWNLOAD;
-    let response = await this.fetchDataForRequest(_request, _options);
-    return Promise.resolve(response.asyncQuery.edges[0].node.result?.responseBody || '');
+  async urlForDownloadQuery(request: RequestV1, options: RequestOptions): Promise<string> {
+    //options.resultType = QueryResultType.DOWNLOAD;
+
+    let response = await this.fetchDataForRequest(request, {});
+    return response.asyncQuery.edges[0].node.result?.responseBody || '';
   }
   /**
    * @param request

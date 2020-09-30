@@ -1,6 +1,11 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { QueryStatus, AsyncQueryResponse, QueryResultType } from 'navi-data/adapters/facts/interface';
+import {
+  QueryStatus,
+  AsyncQueryResponse,
+  QueryResultType,
+  QueryResultFormatType
+} from 'navi-data/adapters/facts/interface';
 import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -43,6 +48,7 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 contentLength: 129,
                 httpStatus: 200,
                 resultType: QueryResultType.EMBEDDED,
+                resultFormatType: QueryResultFormatType.JSONAPI,
                 responseBody:
                   '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
               }

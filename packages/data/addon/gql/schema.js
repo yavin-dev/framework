@@ -158,6 +158,7 @@ const schema = gql`
     createdOn: Date
     query: String
     resultType: QueryResultType
+    resultFormatType: QueryResultFormatType
     queryType: QueryType
     status: QueryStatus
     updatedOn: Date
@@ -181,6 +182,7 @@ const schema = gql`
     responseBody: String
     httpStatus: Int
     resultType: QueryResultType
+    resultFormatType: QueryResultFormatType
     updatedOn: Date
     query(op: RelationshipOp = FETCH, data: AsyncQueryInput): AsyncQuery
   }
@@ -251,6 +253,13 @@ const schema = gql`
     DOWNLOAD
   }
 
+  enum QueryResultFormatType {
+    JSONAPI
+    GRAPHQLAPI
+    JSON
+    CSV
+  }
+
   enum QueryStatus {
     COMPLETE
     QUEUED
@@ -265,6 +274,7 @@ const schema = gql`
     createdOn: Date
     query: String
     resultType: QueryResultType
+    resultFormatType: QueryResultFormatType
     queryType: QueryType
     status: QueryStatus
     updatedOn: Date
@@ -278,6 +288,7 @@ const schema = gql`
     responseBody: String
     httpStatus: Int
     resultType: QueryResultType
+    resultFormatType: QueryResultFormatType
     updatedOn: Date
     query: AsyncQueryInput
   }

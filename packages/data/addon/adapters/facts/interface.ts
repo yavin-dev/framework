@@ -20,6 +20,7 @@ export type RequestOptions = {
   queryParams?: Dict<string | number>;
   dataSourceName?: string;
   resultType?: string;
+  resultFormatType?: string;
 };
 
 export type FilterOperator =
@@ -91,6 +92,13 @@ export enum QueryResultType {
   DOWNLOAD = 'DOWNLOAD'
 }
 
+export enum QueryResultFormatType {
+  JSONAPI = 'JSONAPI',
+  GRAPHQLAPI = 'GRAPHQLAPI',
+  JSON = 'JSON',
+  CSV = 'CSV'
+}
+
 export interface AsyncQuery {
   requestId: string;
   request: RequestV1 | RequestV2;
@@ -121,6 +129,7 @@ export interface AsyncQueryResult {
   httpStatus: number;
   contentLength: number;
   resultType: QueryResultType;
+  resultFormatType: QueryResultFormatType;
   responseBody: string;
 }
 
