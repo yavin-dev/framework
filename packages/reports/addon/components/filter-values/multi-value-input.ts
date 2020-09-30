@@ -27,7 +27,9 @@ export default class MultiValueInput extends Component<MultiValueInputArgs> {
    * @method init
    * @override
    */
-  init() {
+  constructor(owner: unknown, args: MultiValueInputArgs) {
+    super(owner, args);
+
     const tags = this.args.filter.values || [];
     set(this, 'tags', tags);
   }
