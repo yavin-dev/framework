@@ -12,6 +12,10 @@ const MESSAGE_OVERRIDES = {
   'The ajax operation timed out': 'Data Timeout'
 };
 
+const REGEX_OVERRIDES = {
+  '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.'
+};
+
 /**
  * Retrieves error message from error object
  * @function _getErrorText
@@ -41,6 +45,13 @@ export function _getErrorText(error = {}) {
  */
 export function getApiErrMsg(error) {
   let errorText = _getErrorText(error) || UNKNOWN_ERROR;
+
+  Object.keys(REGEX_OVERRIDES).forEach(reg => {
+    let regex = new RegExp(reg, 'gi');
+    if (regex.test(errorText)) {
+      errorText = REGEX_OVERRIDES[reg];
+    }
+  });
 
   if (MESSAGE_OVERRIDES[errorText]) {
     errorText = MESSAGE_OVERRIDES[errorText];

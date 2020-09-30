@@ -28,6 +28,15 @@ module('Unit | Utils | Error', function() {
     );
   });
 
+  test('regular expression matched error', function(assert) {
+    assert.expect(1);
+    assert.equal(
+      getApiErrMsg({ detail: 'Rate limit reached. reject https://foo.com/' }),
+      'Rate limit reached, please try again later.',
+      'The correct error is shown when regular expression overrides match'
+    );
+  });
+
   test('no message', function(assert) {
     assert.expect(3);
 
