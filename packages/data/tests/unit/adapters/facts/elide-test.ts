@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { QueryResultType, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { QueryResultFormatType, QueryResultType, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
@@ -35,7 +35,9 @@ const TestRequest: RequestV2 = {
 };
 
 const TestOption: RequestOptions = {
-  resultType: QueryResultType.DOWNLOAD
+  resultType: QueryResultType.DOWNLOAD,
+  resultFormatType: QueryResultFormatType.JSON,
+  page: 10
 };
 
 let Server: Pretender;
@@ -173,12 +175,9 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('createAsyncQuery - success', async function(assert) {
     assert.expect(7);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    console.log('posting test createAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
-      console.log(requestBody);
       const requestObj = JSON.parse(requestBody);
-      console.log(requestObj);
       assert.deepEqual(
         Object.keys(requestObj.variables),
         ['id', 'query', 'resultType', 'resultFormatType'],
@@ -221,13 +220,68 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           ]
         }
       };
-      console.log('response');
-      console.log(response);
-      console.log(JSON.stringify({ data: response }));
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-    //pass options here
-    const asyncQuery = await adapter.createAsyncQuery(TestRequest, { resultType: QueryResultType.DOWNLOAD });
+
+    const asyncQuery = await adapter.createAsyncQuery(TestRequest);
+    assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
+  });
+
+  test('createAsyncQuery with options - success', async function(assert) {
+    assert.expect(7);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+      assert.deepEqual(
+        Object.keys(requestObj.variables),
+        ['id', 'query', 'resultType', 'resultFormatType'],
+        'createAsyncQuery sends id, query, resultType and resultFormatType request variables'
+      );
+
+      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
+      assert.equal(requestObj.variables.resultType, 'DOWNLOAD');
+      assert.equal(requestObj.variables.resultFormatType, 'CSV');
+      const expectedTable = TestRequest.table;
+      const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
+      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
+
+      assert.equal(
+        requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
+        JSON.stringify({
+          query: `{ ${expectedTable}${expectedArgs} { edges { node { ${expectedColumns} } } } }`
+        }).replace(/[ \t\r\n]+/g, ' '),
+        'createAsyncQuery sends the correct query variable string'
+      );
+
+      assert.equal(
+        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+        asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+        'createAsyncQuery sends the correct mutation to create a new asyncQuery'
+      );
+
+      response = {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                queryType: 'GRAPHQL_V1_0',
+                resultType: 'DOWNLOAD',
+                status: 'QUEUED',
+                result: null
+              }
+            }
+          ]
+        }
+      };
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    const asyncQuery = await adapter.createAsyncQuery(TestRequest, {
+      resultType: QueryResultType.DOWNLOAD,
+      resultFormatType: QueryResultFormatType.CSV
+    });
 
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
@@ -238,7 +292,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     const response = { errors: [{ message: 'Error in graphql query' }] };
-    console.log('posting test createAsyncQuery error ');
     Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
 
     try {
@@ -252,7 +305,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    console.log('posting test cancelAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
@@ -287,7 +339,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    console.log('posting test fetchAsyncQuery');
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
@@ -345,7 +396,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let callCount = 0;
     let queryVariable: string;
     let queryId: string;
-    console.log('posting test fetchAsyncQuery success');
     let response: TODO;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       callCount++;
@@ -423,7 +473,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   test('fetchDataForRequest - error', async function(assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    console.log('posting test fetchAsyncQuery error ');
     let errors = [{ message: 'Bad request' }];
     Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 

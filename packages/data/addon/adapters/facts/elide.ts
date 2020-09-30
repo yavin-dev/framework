@@ -99,16 +99,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
-    console.log(request);
-    console.log(options);
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const resultType: string = options.resultType || QueryResultType.EMBEDDED;
     const resultFormatType: string = options.resultFormatType || QueryResultFormatType.JSONAPI;
     const dataSourceName = request.dataSource || options.dataSourceName;
-
-    console.log('in createasync function');
     // TODO: Add other options based on RequestOptions
     const queryOptions = {
       mutation,
@@ -152,9 +148,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(request: RequestV1, options: RequestOptions): Promise<string> {
-    //options.resultType = QueryResultType.DOWNLOAD;
-
-    let response = await this.fetchDataForRequest(request, {});
+    let optionCopy = { ...options };
+    optionCopy.resultType = QueryResultType.DOWNLOAD;
+    optionCopy.resultFormatType = optionCopy.resultFormatType || QueryResultFormatType.CSV;
+    //let response = await this.fetchDataForRequest(request, optionCopy).catch((e: TODO) => {
+    //  debugger;
+    //});
+    let response = await this.fetchDataForRequest(request, optionCopy);
     return response.asyncQuery.edges[0].node.result?.responseBody || '';
   }
   /**
