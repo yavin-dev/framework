@@ -4,13 +4,14 @@
  */
 package com.yahoo.navi.ws.models.beans
 
-import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.checks.DefaultDashboardAuthorCheck.Companion.IS_DASHBOARD_AUTHOR
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import com.yahoo.navi.ws.models.checks.DefaultSameUserCheck.Companion.IS_SAME_USER
+import com.yahoo.navi.ws.models.hooks.UserValidationHook
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import org.hibernate.annotations.Where
@@ -27,10 +28,14 @@ import javax.persistence.TemporalType
 import javax.validation.constraints.NotBlank
 
 @Entity
-@Include(rootLevel = true, type = "users")
+@Include(type = "users")
 @DeletePermission(expression = NOBODY)
-@CreatePermission(expression = IS_SAME_USER)
 @UpdatePermission(expression = IS_SAME_USER)
+@LifeCycleHookBinding(
+    operation = LifeCycleHookBinding.Operation.CREATE,
+    phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
+    hook = UserValidationHook::class
+)
 class User : HasRoles {
 
     @Id
