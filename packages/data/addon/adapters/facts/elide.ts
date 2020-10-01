@@ -151,10 +151,25 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     let optionCopy = { ...options };
     optionCopy.resultType = QueryResultType.DOWNLOAD;
     optionCopy.resultFormatType = optionCopy.resultFormatType || QueryResultFormatType.CSV;
-    //let response = await this.fetchDataForRequest(request, optionCopy).catch((e: TODO) => {
-    //  debugger;
+
+    if (optionCopy.resultFormatType === 'JSONAPI' || optionCopy.resultFormatType === 'GRAPHQLAPI') {
+      optionCopy.resultFormatType = QueryResultFormatType.CSV;
+    }
+    //Download can only be CSV or JSON. Will the ui enforce that?
+    console.log('inside urlForDownloadQuery');
+    console.log(options);
+    console.log(request);
+    //let response = await this.fetchDataForRequest(request, {
+    //  resultFormatType: QueryResultFormatType.CSV,
+    //  resultType: QueryResultType.DOWNLOAD,
+    //  ...options
     //});
+    //.catch((e: TODO) => {
+    //  debugger;
+   // });
+   // return '';
     let response = await this.fetchDataForRequest(request, optionCopy);
+    console.log(response);
     return response.asyncQuery.edges[0].node.result?.responseBody || '';
   }
   /**

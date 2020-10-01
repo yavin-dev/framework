@@ -36,8 +36,12 @@ const TestRequest: RequestV2 = {
 
 const TestOption: RequestOptions = {
   resultType: QueryResultType.DOWNLOAD,
-  resultFormatType: QueryResultFormatType.JSON,
-  page: 10
+  resultFormatType: QueryResultFormatType.JSON
+};
+
+const TestOptionDownload: RequestOptions = {
+  resultType: QueryResultType.EMBEDDED,
+  resultFormatType: QueryResultFormatType.JSON
 };
 
 let Server: Pretender;
@@ -222,7 +226,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       };
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-
     const asyncQuery = await adapter.createAsyncQuery(TestRequest);
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
@@ -485,12 +488,64 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('urlForDownloadQuery', async function(assert) {
-    assert.expect(1);
+    assert.expect(7);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    assert.equal(
-      decodeURIComponent(await adapter.urlForDownloadQuery(TestRequest, TestOption)),
-      `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
-      'urlForDownloadQuery correctly built the URL for the provided request'
-    );
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      console.log(requestBody);
+      const requestObj = JSON.parse(requestBody);
+      console.log('requestObj');
+      console.log(requestObj);
+      assert.deepEqual(
+        Object.keys(requestObj.variables),
+        ['id', 'query', 'resultType', 'resultFormatType'],
+        'urlForDownloadQuery sends id, query, resultType and resultFormatType request variables'
+      );
+      assert.equal(requestObj.variables.resultType, 'DOWNLOAD');
+      assert.equal(requestObj.variables.resultFormatType, 'JSON');
+      const expectedTable = TestRequest.table;
+      const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
+      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
+
+      assert.equal(
+        requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
+        JSON.stringify({
+          query: `{ ${expectedTable}${expectedArgs} { edges { node { ${expectedColumns} } } } }`
+        }).replace(/[ \t\r\n]+/g, ' '),
+        'urlForDownloadQuery sends the correct query variable string'
+      );
+
+      assert.equal(
+        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+        asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+        'urlForDownloadQuery sends the correct mutation to create a new asyncQuery'
+      );
+
+      response = {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                queryType: 'GRAPHQL_V1_0',
+                status: 'QUEUED',
+                resultType: 'DOWNLOAD',
+                resultFormatType: 'JSON',
+                result: { responseBody: 'responseURL' }
+              }
+            }
+          ]
+        }
+      };
+      console.log('response');
+      console.log(response);
+      console.log(JSON.stringify({ data: response }));
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    console.log('calling download');
+    const asyncQuery = await adapter.urlForDownloadQuery(TestRequest, TestOptionDownload);
+    console.log(asyncQuery);
+    assert.deepEqual(asyncQuery, response, 'urlForDownloadQuery returns the correct response payload');
   });
 });
