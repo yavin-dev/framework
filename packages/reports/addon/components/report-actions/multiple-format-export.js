@@ -11,6 +11,7 @@
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
@@ -36,6 +37,11 @@ export default class MultipleFormatExport extends Component {
    * @property {Service} naviNotifications
    */
   @service naviNotifications;
+
+  /**
+   * @property {String} filename - filename for the downloaded file
+   */
+  @readOnly('report.title') filename;
 
   /**
    * @property {String} csvHref - CSV download link for the report
@@ -82,6 +88,11 @@ export default class MultipleFormatExport extends Component {
         type: 'PDF',
         href: this.pdfHref,
         icon: 'file-pdf-o'
+      },
+      {
+        type: 'PNG',
+        href: this.pdfHref.then(href => `${href}&fileType=png`),
+        icon: 'file-image-o'
       }
     ];
   }

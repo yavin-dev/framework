@@ -73,7 +73,7 @@ export default class ScheduleActionComponent extends Component {
     if (!formats) {
       formats = defaultFormats.slice();
       if (get(config, 'navi.FEATURES.enableMultipleExport')) {
-        formats.push('pdf');
+        formats = [...formats, 'pdf', 'png'];
       }
     }
 

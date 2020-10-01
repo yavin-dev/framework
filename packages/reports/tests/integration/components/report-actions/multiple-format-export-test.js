@@ -7,13 +7,14 @@ import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
 const TEMPLATE = hbs`
-    {{#report-actions/multiple-format-export
-        report=report
-        disabled=disabled
-        naviNotifications=mockNotifications
-    }}
-        Export
-    {{/report-actions/multiple-format-export}}
+    <ReportActions::MultipleFormatExport
+      @report={{this.report}}
+      @title={{this.title}}
+      @disabled={{this.disabled}}
+      @naviNotifications={{this.mockNotifications}}
+    >
+      Export
+    </ReportActions::MultipleFormatExport>
     `;
 
 let Store;
@@ -42,7 +43,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   });
 
   test('export links', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const factService = this.owner.lookup('service:navi-facts');
     const compressionService = this.owner.lookup('service:compression');
@@ -60,9 +61,8 @@ module('Integration | Component | report actions - multiple-format-export', func
       'CSV link has appropriate link to API'
     );
 
-    const encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
-      .attr('href')
-      .split('/export?reportModel=')[1];
+    const pdfHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    const encodedModel = pdfHref.split('/export?reportModel=')[1];
 
     const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = this.report.serialize();
@@ -71,6 +71,9 @@ module('Integration | Component | report actions - multiple-format-export', func
     delete expectedModel.data.relationships;
 
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
+
+    const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
+    assert.equal(`${pdfHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
   });
 
   test('filename', async function(assert) {
@@ -157,14 +160,14 @@ module('Integration | Component | report actions - multiple-format-export', func
       }
     ]);
     await render(hbs`
-      {{#report-actions/multiple-format-export
-          report=report
-          disabled=disabled
-          naviNotifications=mockNotifications
-          exportFormats=exportFormats
-      }}
-          Export
-      {{/report-actions/multiple-format-export}}
+      <ReportActions::MultipleFormatExport
+        @report={{this.report}}
+        @disabled={{this.disabled}}
+        @naviNotifications={{this.mockNotifications}}
+        @exportFormats={{this.exportFormats}}
+      >
+        Export
+      </ReportActions::MultipleFormatExport>
     `);
 
     await clickTrigger();
