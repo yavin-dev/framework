@@ -6,9 +6,6 @@ import Component from '@glimmer/component';
 import Args from './args-interface';
 
 export default class NullInput extends Component<Args> {
-  /**
-   * @property {String} tagName
-   */
   constructor(owner: unknown, args: Args) {
     super(owner, args);
     const {

@@ -21,7 +21,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'bet', [1000]);
+    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'gt', [1000]);
     this.onUpdateFilter = () => null;
 
     await render(hbs`

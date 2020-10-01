@@ -18,15 +18,8 @@ interface MultiValueInputArgs {
 }
 
 export default class MultiValueInput extends Component<MultiValueInputArgs> {
-  /**
-   * @property {Array} tags
-   */
   tags: (string | number)[] = [];
 
-  /**
-   * @method init
-   * @override
-   */
   constructor(owner: unknown, args: MultiValueInputArgs) {
     super(owner, args);
 
@@ -36,7 +29,7 @@ export default class MultiValueInput extends Component<MultiValueInputArgs> {
 
   /**
    * @action addValue
-   * @param {String} tag - Add single value to the filter values list
+   * @param tag - Add single value to the filter values list
    */
   @action
   addValue(tag: string | number) {
