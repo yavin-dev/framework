@@ -181,7 +181,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"m1=lt=(v1);m1=gt=(v2)\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"m1=lt=(v1),m1=gt=(v2)\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
