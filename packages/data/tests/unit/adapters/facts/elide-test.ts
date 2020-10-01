@@ -170,6 +170,25 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+        ],
+        sorts: [],
+        filters: [
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'nbet', values: ['v1', 'v2'] }
+        ],
+        requestVersion: '2.0',
+        dataSource: 'elideOne',
+        limit: null
+      }),
+      `{"query":"{ myTable(filter: \\"m1=lt=(v1),m1=gt=(v2)\\") { edges { node { m1 d1 } } } }"}`,
+      'Request with "not between" filter operator splits the filter into two correctly'
+    );
+
+    assert.equal(
+      adapter['dataQueryFromRequest']({
+        table: 'myTable',
+        columns: [
           { field: 'myTable.time', parameters: { grain: 'month' }, type: 'timeDimension' },
           { field: 'myTable.d1', parameters: {}, type: 'dimension' }
         ],
