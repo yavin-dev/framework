@@ -112,7 +112,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       variables: { id, query, resultType, resultFormatType },
       context: { dataSourceName }
     };
-    // eslint-disable-next-line no-debugger
     return this.apollo.mutate(queryOptions);
   }
 
