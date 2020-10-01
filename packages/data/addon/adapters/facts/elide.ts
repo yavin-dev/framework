@@ -79,7 +79,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
 
       if (operator === 'nbet') {
-        return `${fieldStr}=le=(${filterVals[0]});${fieldStr}=ge=(${filterVals[1]})`;
+        return `${fieldStr}=lt=(${filterVals[0]});${fieldStr}=gt=(${filterVals[1]})`;
       }
 
       const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${v}'`).join(',')})` : '';
