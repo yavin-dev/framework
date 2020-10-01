@@ -5,7 +5,7 @@
   </span>
   <p>Oops! There was an error with your request.</p>
   <ul class="navi-info-message__error-list">
-    {{#let this.model.payload.description as | error | }}
+    {{#let (if this.model.payload.description this.model.payload.description this.model.payload) as | error | }}
       <li class="navi-info-message__error-list-item">
         <NaviIcon @icon="times" class="navi-info-message__error-list-icon" />
         {{error-message (hash detail=error)}}
