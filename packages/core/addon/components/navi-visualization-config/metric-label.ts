@@ -22,11 +22,11 @@ export default class NaviVisualizationConfigMetricLabelComponent extends NaviVis
   @readOnly('args.request.metricColumns.firstObject') metricColumn!: ColumnFragment;
 
   /**
-   * @param event - date string input event
+   * @param alias - date string input event
    */
   @action
   updateLabel(alias: string) {
-    // todo use report action
+    // TODO: use report action
     set(this.args.request.metricColumns[0], 'alias', alias);
   }
 
