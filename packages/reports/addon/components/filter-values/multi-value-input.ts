@@ -9,8 +9,9 @@
  *   />
  */
 import Component from '@glimmer/component';
-import { set, action } from '@ember/object';
+import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import { tracked } from '@glimmer/tracking';
 
 interface MultiValueInputArgs {
   filter: FilterFragment;
@@ -18,13 +19,12 @@ interface MultiValueInputArgs {
 }
 
 export default class MultiValueInput extends Component<MultiValueInputArgs> {
-  tags: (string | number)[] = [];
+  @tracked tags: (string | number)[] = [];
 
   constructor(owner: unknown, args: MultiValueInputArgs) {
     super(owner, args);
 
-    const tags = this.args.filter.values || [];
-    set(this, 'tags', tags);
+    this.tags = this.args.filter.values || [];
   }
 
   /**

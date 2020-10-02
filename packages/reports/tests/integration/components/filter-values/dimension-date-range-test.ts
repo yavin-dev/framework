@@ -9,11 +9,10 @@ import hbs from 'htmlbars-inline-precompile';
 import FragmentFactory from 'navi-core/addon/services/fragment-factory';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import DimensionDateRange from 'navi-reports/components/filter-values/dimension-date-range';
 
-interface TestContext extends Context {
-  filter: FilterFragment;
-  onUpdateFilter(changeSet: Partial<FilterFragment>): void;
-}
+type ComponentArgs = DimensionDateRange['args'];
+interface TestContext extends Context, ComponentArgs {}
 
 module('Integration | Component | filter values/dimension date range', function(hooks) {
   setupRenderingTest(hooks);
@@ -23,7 +22,14 @@ module('Integration | Component | filter values/dimension date range', function(
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []);
+    this.filter = fragmentFactory.createFilter(
+      'timeDimension',
+      'bardOne',
+      'network.dateTime',
+      { grain: 'day' },
+      'bet',
+      []
+    );
 
     await render(hbs`
       <FilterValues::DimensionDateRange
