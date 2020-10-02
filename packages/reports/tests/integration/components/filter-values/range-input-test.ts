@@ -7,7 +7,6 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import FragmentFactory from 'navi-core/addon/services/fragment-factory';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-
 import RangeInput from 'navi-reports/components/filter-values/range-input';
 
 type ComponentArgs = RangeInput['args'];
