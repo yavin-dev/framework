@@ -3,7 +3,14 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { QueryResultFormatType, QueryResultType, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import {
+  AsyncQueryResponse,
+  QueryResultFormatType,
+  QueryResultType,
+  QueryStatus,
+  RequestOptions,
+  RequestV2
+} from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
@@ -487,20 +494,22 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
-  test('urlForDownloadQuery', async function(assert) {
+  test('urlForDownloadQuery - success', async function(assert) {
     assert.expect(7);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const downloadURL = 'downloadURL';
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
-      console.log(requestBody);
       const requestObj = JSON.parse(requestBody);
-      console.log('requestObj');
+      console.log('requestObj 1');
       console.log(requestObj);
       assert.deepEqual(
         Object.keys(requestObj.variables),
         ['id', 'query', 'resultType', 'resultFormatType'],
         'urlForDownloadQuery sends id, query, resultType and resultFormatType request variables'
       );
+
+      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
       assert.equal(requestObj.variables.resultType, 'DOWNLOAD');
       assert.equal(requestObj.variables.resultFormatType, 'JSON');
       const expectedTable = TestRequest.table;
@@ -521,6 +530,9 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         'urlForDownloadQuery sends the correct mutation to create a new asyncQuery'
       );
 
+      console.log('requestObj 2');
+      console.log(requestObj);
+
       response = {
         asyncQuery: {
           edges: [
@@ -528,24 +540,25 @@ module('Unit | Adapter | facts/elide', function(hooks) {
               node: {
                 id: requestObj.variables.id,
                 query: requestObj.variables.query,
-                queryType: 'GRAPHQL_V1_0',
-                status: 'QUEUED',
-                resultType: 'DOWNLOAD',
-                resultFormatType: 'JSON',
-                result: { responseBody: 'responseURL' }
+                status: QueryStatus.COMPLETE,
+                result: {
+                  httpStatus: 200,
+                  contentLength: 2,
+                  resultType: QueryResultType.DOWNLOAD,
+                  resultFormatType: QueryResultFormatType.JSON,
+                  responseBody: downloadURL
+                }
               }
             }
           ]
         }
       };
-      console.log('response');
+      console.log('response in test');
       console.log(response);
-      console.log(JSON.stringify({ data: response }));
+      console.log(JSON.stringify({ data: response.asyncQuery.edges[0].node.result?.responseBody }));
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-    console.log('calling download');
-    const asyncQuery = await adapter.urlForDownloadQuery(TestRequest, TestOptionDownload);
-    console.log(asyncQuery);
-    assert.deepEqual(asyncQuery, response, 'urlForDownloadQuery returns the correct response payload');
+    const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, TestOptionDownload);
+    assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
 });
