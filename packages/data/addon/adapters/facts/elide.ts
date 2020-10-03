@@ -99,7 +99,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
-    console.log('inside createAsyncQuery');
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
@@ -130,11 +129,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the AsyncQuery fetch query
    */
   fetchAsyncQuery(id: string, dataSourceName?: string) {
-    console.log('inside fetchAsyncQuery');
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
     dataSourceName = dataSourceName || getDefaultDataSource().name;
-    console.log('apollo');
-    console.log(this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } }));
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
 
@@ -154,28 +150,10 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     let optionCopy = { ...options };
     optionCopy.resultType = QueryResultType.DOWNLOAD;
     optionCopy.resultFormatType = optionCopy.resultFormatType || QueryResultFormatType.CSV;
-
     if (optionCopy.resultFormatType === 'JSONAPI' || optionCopy.resultFormatType === 'GRAPHQLAPI') {
       optionCopy.resultFormatType = QueryResultFormatType.CSV;
     }
-    //Download can only be CSV or JSON. Will the ui enforce that?
-    console.log('inside urlForDownloadQuery');
-    console.log('options');
-    console.log(options);
-    console.log('request ');
-    console.log(request);
-    //let response = await this.fetchDataForRequest(request, {
-    //  resultFormatType: QueryResultFormatType.CSV,
-    //  resultType: QueryResultType.DOWNLOAD,
-    //  ...options
-    //});
-    //.catch((e: TODO) => {
-    //  debugger;
-    // });
-    // return '';
     let response = await this.fetchDataForRequest(request, optionCopy);
-    console.log('response');
-    console.log(response);
     return response.asyncQuery.edges[0].node.result?.responseBody || '';
   }
   /**
@@ -184,23 +162,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   @task(function*(this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
-    console.log('asyncQueryPayload');
-    console.log(asyncQueryPayload);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
     const { id } = asyncQuery;
     let status: QueryStatus = asyncQuery.status;
-    console.log('status');
-    console.log(status);
     while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-      console.log('in while');
       yield timeout(this._pollingInterval);
       asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
-      console.log('asyncQueryPayload 2');
-      console.log(asyncQueryPayload);
       status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
     }
-    console.log('asyncQueryPayload 2');
-    console.log(asyncQueryPayload);
     return asyncQueryPayload;
   })
   fetchDataForRequestTask!: TODO;
@@ -215,7 +184,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     request: RequestV2,
     options: RequestOptions = {}
   ): Promise<AsyncQueryResponse> {
-    console.log('inside fetchDataForRequest');
     return this.fetchDataForRequestTask.perform(request, options);
   }
 }

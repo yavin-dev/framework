@@ -41,11 +41,6 @@ const TestRequest: RequestV2 = {
   dataSource: 'elideOne'
 };
 
-const TestOption: RequestOptions = {
-  resultType: QueryResultType.DOWNLOAD,
-  resultFormatType: QueryResultFormatType.JSON
-};
-
 const TestOptionDownload: RequestOptions = {
   resultType: QueryResultType.EMBEDDED,
   resultFormatType: QueryResultFormatType.JSON
@@ -495,14 +490,12 @@ module('Unit | Adapter | facts/elide', function(hooks) {
   });
 
   test('urlForDownloadQuery - success', async function(assert) {
-    assert.expect(7);
+    assert.expect(5);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const downloadURL = 'downloadURL';
     let response;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
-      console.log('requestObj 1');
-      console.log(requestObj);
       assert.deepEqual(
         Object.keys(requestObj.variables),
         ['id', 'query', 'resultType', 'resultFormatType'],
@@ -512,26 +505,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
       assert.equal(requestObj.variables.resultType, 'DOWNLOAD');
       assert.equal(requestObj.variables.resultFormatType, 'JSON');
-      const expectedTable = TestRequest.table;
-      const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
-      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
-
-      assert.equal(
-        requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
-        JSON.stringify({
-          query: `{ ${expectedTable}${expectedArgs} { edges { node { ${expectedColumns} } } } }`
-        }).replace(/[ \t\r\n]+/g, ' '),
-        'urlForDownloadQuery sends the correct query variable string'
-      );
-
-      assert.equal(
-        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
-        'urlForDownloadQuery sends the correct mutation to create a new asyncQuery'
-      );
-
-      console.log('requestObj 2');
-      console.log(requestObj);
 
       response = {
         asyncQuery: {
@@ -553,9 +526,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           ]
         }
       };
-      console.log('response in test');
-      console.log(response);
-      console.log(JSON.stringify({ data: response.asyncQuery.edges[0].node.result?.responseBody }));
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
     const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, TestOptionDownload);
