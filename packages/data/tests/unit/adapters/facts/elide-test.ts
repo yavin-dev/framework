@@ -4,7 +4,6 @@ import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
 import {
-  AsyncQueryResponse,
   QueryResultFormatType,
   QueryResultType,
   QueryStatus,
