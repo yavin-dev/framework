@@ -524,4 +524,46 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
     }
   });
+
+  test('escaped filter values', async function(assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const EscapedTest: RequestV2 = {
+      table: 'table1',
+      columns: [
+        { field: 'table1.m1', type: 'metric', parameters: {} },
+        { field: 'table1.m2', type: 'metric', parameters: {} },
+        { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
+        { field: 'table1.d1', type: 'dimension', parameters: {} },
+        { field: 'table1.d2', type: 'dimension', parameters: {} }
+      ],
+      filters: [
+        {
+          field: 'table1.d6',
+          parameters: { field: 'id' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['with, comma', 'no comma']
+        },
+        {
+          field: 'table1.d7',
+          parameters: { field: 'id' },
+          type: 'dimension',
+          operator: 'in',
+          values: ['with "quote"', 'but why']
+        }
+      ],
+      sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
+      limit: 10000,
+      requestVersion: '2.0',
+      dataSource: 'elideOne'
+    };
+
+    const queryStr = adapter['dataQueryFromRequest'](EscapedTest);
+
+    assert.equal(
+      queryStr,
+      `{"query":"{ table1(filter: \\"d6=in=('with\\\\, comma','no comma');d7=in=('with \\\"quote\\\"','but why')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
+      'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
+    );
+  });
 });
