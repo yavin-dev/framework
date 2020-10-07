@@ -24,8 +24,7 @@ import { v1 } from 'ember-uuid';
 export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
 
 const escape = (value: string) => {
-  const fn = (v: string) => `${('' + v).replace(/'/g, "\\'").replace(/,/g, '\\,')}`;
-  return fn(value);
+  return `${('' + value).replace(/'/g, "\\'").replace(/,/g, '\\,')}`;
 };
 
 export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
