@@ -9,21 +9,15 @@
  *    @onUpdateConfig={{this.onUpdateConfig}}
  * />
  */
-
-import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { Args as TableArgs } from 'navi-core/components/navi-visualizations/table';
+import NaviVisualizationConfigBaseComponent from './base';
 
-export type Args = {
-  options: TableArgs['options'];
-  request: RequestFragment;
-  onUpdateConfig(options: Partial<Args['options']>): void;
-};
+type Options = TableArgs['options'];
 
-export default class NaviVisualizationConfigTableComponent extends Component<Args> {
+export default class NaviVisualizationConfigTableComponent extends NaviVisualizationConfigBaseComponent<Options> {
   /**
    * initial value to show subtotal dropdown
    */

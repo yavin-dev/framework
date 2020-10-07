@@ -13,11 +13,14 @@
 import Component from '@ember/component';
 import layout from '../templates/components/dashboard-filters';
 import { computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 
 export default Component.extend({
   layout,
   classNames: ['dashboard-filters'],
   classNameBindings: ['isCollapsed:dashboard-filters--collapsed:dashboard-filters--expanded'],
+
+  store: service(),
 
   /**
    * @property {Boolean} isCollapsed
@@ -32,7 +35,25 @@ export default Component.extend({
   /**
    * @property {Object} filters
    */
-  filters: computed('dashboard.filters', function() {
-    return { filters: this.dashboard.filters || [] };
+  request: computed('dashboard.filters', function() {
+    return this.store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [],
+      filters: this.dashboard.filters.map(filter => {
+        const newFilter = this.store.createFragment('bard-request-v2/fragments/filter', {
+          field: filter.field,
+          parameters: filter.parameters,
+          type: filter.type,
+          operator: filter.operator,
+          values: filter.values,
+          source: filter.source
+        });
+        return newFilter;
+      }),
+      sorts: [],
+      limit: null,
+      dataSource: null,
+      requestVersion: '2.0'
+    });
   })
 });

@@ -8,7 +8,7 @@
       class="metric-label-config__text-input metric-label-config__description-input"
       @name="metric-description-input"
       @type="text"
-      @value={{readonly @options.description}}
+      @value={{readonly this.metricColumn.displayName}}
       @enter={{fn this.updateLabel}}
       @focus-out={{fn this.updateLabel}}
       @placeholder="No Label"

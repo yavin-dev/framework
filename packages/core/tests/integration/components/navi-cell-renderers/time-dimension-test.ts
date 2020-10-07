@@ -55,7 +55,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
         filters: [],
         sorts: [],
         requestVersion: '2.0',
-        dataSource: 'dummy',
+        dataSource: 'bardOne',
         table: 'network'
       })
     );

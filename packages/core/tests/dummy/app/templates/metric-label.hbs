@@ -2,43 +2,29 @@
 
 <div class="metric-label__container">
   <NaviVisualizations::MetricLabel
-    @model={{this.model}}
-    @options={{hash
-      description="Hit Points (HP)"
-      metric=(hash metric="hp" parameters=(hash))
-    }}
+    @model={{@model.hp}}
+    @options={{hash format=undefined metricCid=@model.hp.firstObject.request.metricColumns.0.cid}}
   />
   <NaviVisualizations::MetricLabel
-    @model={{this.model}}
-    @options={{hash
-      description="Magic Points (MP)"
-      metric=(hash metric="magic" parameters=(hash))
-    }}
+    @model={{@model.magic}}
+    @options={{hash format=undefined metricCid=@model.magic.firstObject.request.metricColumns.0.cid}}
   />
   <NaviVisualizations::MetricLabel
-    @model={{this.model}}
-    @options={{hash
-      description="Rupees"
-      metric=(hash metric="rupees" parameters=(hash))
-      format="$0,0[.]00"
-    }}
+    @model={{@model.rupees}}
+    @options={{hash format="$0,0[.]00" metricCid=@model.rupees.firstObject.request.metricColumns.0.cid}}
   />
   <NaviVisualizations::MetricLabel
-    @model={{this.model}}
-    @options={{hash
-      description="Arrows"
-      metric=(hash metric="arrows" parameters=(hash))
-      format="$0,0[.]00"
-    }}
+    @model={{@model.arrows}}
+    @options={{hash format="$0,0[.]00" metricCid=@model.arrows.firstObject.request.metricColumns.0.cid}}
   />
   <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
-    @response={{this.response}}
+    @request={{@model.bottle.firstObject.request}}
+    @response={{@model.bottle.firstObject.response}}
     @visualization={{this.metricVisualization}}
     @onUpdateConfig={{this.onUpdateConfig}}
   />
   <NaviVisualizations::MetricLabel
-    @model={{this.model}}
+    @model={{@model.bottle}}
     @options={{this.metricLabelOptions}}
   />
 </div>

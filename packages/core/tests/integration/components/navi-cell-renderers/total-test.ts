@@ -49,7 +49,7 @@ module('Integration | Component | cell renderers/total', function(hooks) {
         filters: [],
         sorts: [],
         requestVersion: '2.0',
-        dataSource: 'dummy',
+        dataSource: 'bardOne',
         table: 'network'
       })
     );
