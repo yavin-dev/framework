@@ -18,8 +18,7 @@ export default class DashboardWidgetSerializer extends AssetSerializer {
     const normalized = super.normalize(type, dashboardWidget) as TODO;
 
     const { requests, visualization } = normalized.data?.attributes;
-    const viz = normalizeVisualization(requests[0], visualization);
-    Object.assign(normalized.data.attributes, { visualization: viz });
+    normalized.data.attributes.visualization = normalizeVisualization(requests[0], visualization);
 
     return normalized;
   }

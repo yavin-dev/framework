@@ -39,7 +39,7 @@ export default class MetricLabelModel extends VisualizationBase.extend(Validatio
   @attr('string', { defaultValue: 'metric-label' })
   type!: MetricLabelConfig['type'];
 
-  @attr('number', { defaultValue: 1 })
+  @attr('number', { defaultValue: 2 })
   version!: MetricLabelConfig['version'];
 
   @attr({ defaultValue: () => ({}) })

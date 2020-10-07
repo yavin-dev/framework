@@ -24,7 +24,8 @@ export function normalizeMetricLabelV2(
     return visualization;
   }
 
-  const metricColumn = request.columns.filter(c => c.type === 'metric')[0];
+  // Take the first metric column since there should be exactly one
+  const metricColumn = request.columns.find(c => c.type === 'metric');
   if (metricColumn === undefined) {
     throw new Error('There should be exactly one metric column in the request');
   }

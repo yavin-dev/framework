@@ -1,14 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- *  <NaviVisualizationConfig::MetricLabel
- *    @request={{this.request}}
- *    @response={{this.response}}
- *    @options={{this.options}}
- *    @onUpdateConfig={{this.onUpdateConfig}}
- *  />
  */
 import { action, set } from '@ember/object';
 import { readOnly } from '@ember/object/computed';

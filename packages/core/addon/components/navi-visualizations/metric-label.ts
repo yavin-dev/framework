@@ -43,9 +43,9 @@ export default class MetricLabelVisualization extends Component<Args> {
   get metric(): ColumnFragment {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
-    const firstMetric = request?.metricColumns.find(({ cid }) => cid === metricCid);
-    assert('A metric should exist', firstMetric);
-    return firstMetric;
+    const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
+    assert(`A metric column should exist with cid: ${metricCid}`, metricColumn);
+    return metricColumn;
   }
 
   /**

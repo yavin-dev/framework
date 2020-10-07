@@ -15,7 +15,7 @@ export default class MetricLabelController extends Controller {
   get metricVisualization() {
     return {
       type: 'metric-label',
-      version: 1,
+      version: 2,
       metadata: this.metricLabelOptions
     };
   }

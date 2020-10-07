@@ -30,8 +30,7 @@ export default class ReportSerializer extends AssetSerializer {
     const normalized = super.normalize(type, report) as TODO;
 
     const { request, visualization } = normalized.data?.attributes;
-    const viz = normalizeVisualization(request, visualization);
-    Object.assign(normalized.data.attributes, { visualization: viz });
+    normalized.data.attributes.visualization = normalizeVisualization(request, visualization);
 
     return normalized;
   }
