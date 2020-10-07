@@ -25,10 +25,10 @@ import javax.persistence.TemporalType
 @Include(rootLevel = true)
 @Entity
 @Cardinality(size = CardinalitySize.LARGE)
-@VersionQuery(sql = "SELECT COUNT(*) from queryStats")
+@VersionQuery(sql = "SELECT COUNT(*) from QueryStats")
 @EqualsAndHashCode
 @ToString
-@FromTable(name = "queryStats")
+@FromTable(name = "QueryStats")
 class QueryStats(id: UUID) {
 
     @Id
@@ -162,3 +162,26 @@ measures:
 }
 ]
 */
+
+/*
+{
+                    name: name
+                    type: TEXT
+                    definition: IF (name IS NULL, 'Unknown', name)
+                }
+                {
+                    name: label
+                    type: TEXT
+                    definition: IF (label IS NULL, 'Unknown', label)
+                }
+                {
+                    name: sessionId
+                    type: TEXT
+                    definition: IF (sessionId IS NULL, 'Unknown', sessionId)
+                }
+                {
+                    name: fromUI
+                    type: BOOLEAN
+                    definition: IF (fromUI IS NULL, false, fromUI)
+                }
+ */
