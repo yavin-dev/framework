@@ -25,9 +25,6 @@ export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include tim
 
 const escape = (value: string) => {
   const fn = (v: string) => `${('' + v).replace(/'/g, "\\'").replace(/,/g, '\\,')}`;
-  if (Array.isArray(value)) {
-    return value.map(fn);
-  }
   return fn(value);
 };
 

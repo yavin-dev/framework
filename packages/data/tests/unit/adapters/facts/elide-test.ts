@@ -529,13 +529,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const EscapedTest: RequestV2 = {
       table: 'table1',
-      columns: [
-        { field: 'table1.m1', type: 'metric', parameters: {} },
-        { field: 'table1.m2', type: 'metric', parameters: {} },
-        { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
-        { field: 'table1.d1', type: 'dimension', parameters: {} },
-        { field: 'table1.d2', type: 'dimension', parameters: {} }
-      ],
+      columns: [],
       filters: [
         {
           field: 'table1.d6',
@@ -556,7 +550,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ["with 'single quote'", 'okay']
+          values: ['okay', "with 'single quote'"]
         }
       ],
       sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
@@ -569,7 +563,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d6=in=('with\\\\, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('with \\\\'single quote\\\\'','okay')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
+      `{"query":"{ table1(filter: \\"d6=in=('with\\\\, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\'single quote\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
