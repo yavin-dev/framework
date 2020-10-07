@@ -16,11 +16,15 @@
 
 import { A as arr } from '@ember/array';
 import ScheduleActionComponent from 'navi-reports/components/common-actions/schedule';
+import { computed } from '@ember/object';
 
 export default class DashboardScheduleActionComponent extends ScheduleActionComponent {
   /**
    * @property {Array} formats
    * @override
    */
-  formats = arr(['pdf', 'png']);
+  @computed
+  get formats() {
+    return arr(super.formats.without('csv'));
+  }
 }

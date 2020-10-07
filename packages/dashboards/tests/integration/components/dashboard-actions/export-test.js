@@ -24,11 +24,16 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
   });
 
   test('export links', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     assert.dom('.ember-basic-dropdown-trigger').hasText('Export', 'Component yields content as expected');
 
     await clickTrigger();
+
+    assert.notOk(
+      !!$('.multiple-format-export__dropdown a:contains("CSV")').length,
+      'Export to CSV is not available for dashboards'
+    );
 
     assert.equal(
       $('.multiple-format-export__dropdown a:contains("PDF")').attr('href'),

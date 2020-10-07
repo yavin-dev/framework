@@ -21,6 +21,7 @@ import { get, set, computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
@@ -72,8 +73,11 @@ export default class ScheduleActionComponent extends Component {
 
     if (!formats) {
       formats = defaultFormats.slice();
-      if (get(config, 'navi.FEATURES.enableMultipleExport')) {
-        formats = [...formats, 'pdf', 'png'];
+      if (featureFlag('enableMultipleExport')) {
+        const supportedFormats = featureFlag('multiExportFileTypes');
+        if (Array.isArray(supportedFormats)) {
+          formats = [...formats, ...supportedFormats];
+        }
       }
     }
 

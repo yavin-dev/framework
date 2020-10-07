@@ -46,6 +46,7 @@ module.exports = function(environment) {
       FEATURES: {
         enableScheduleReports: true,
         enableMultipleExport: true,
+        multiExportFileTypes: ['pdf', 'png'],
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true

@@ -32,6 +32,7 @@ module.exports = function(/* environment, appConfig */) {
       },
       FEATURES: {
         enableMultipleExport: false,
+        multiExportFileTypes: ['pdf'],
         enabledNotifyIfData: false
       }
     }

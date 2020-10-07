@@ -332,11 +332,8 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - config enableMultipleExport true', async function(assert) {
+  test('format options - fallback to `multiExportFileTypes`', async function(assert) {
     assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
-    config.navi.FEATURES.enableMultipleExport = true;
 
     this.set('model', TestModel);
     await render(TEMPLATE);
@@ -349,8 +346,6 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       ['csv', 'pdf', 'png'],
       'Schedule format should have correct options'
     );
-
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
 
   test('format options - config enableMultipleExport false', async function(assert) {

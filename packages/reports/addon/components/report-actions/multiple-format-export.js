@@ -14,6 +14,7 @@ import { computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 @templateLayout(layout)
 @tagName('')
@@ -42,6 +43,11 @@ export default class MultipleFormatExport extends Component {
    * @property {String} filename - filename for the downloaded file
    */
   @readOnly('report.title') filename;
+
+  /**
+   * @property {Array} supportedFileTypes - supported file types for export
+   */
+  supportedFileTypes = featureFlag('multiExportFileTypes');
 
   /**
    * @property {String} csvHref - CSV download link for the report
@@ -76,25 +82,37 @@ export default class MultipleFormatExport extends Component {
   /**
    * @property {Array} exportFormats - A list of export formats
    */
-  @computed('csvHref', 'pdfHref')
+  @computed('csvHref', 'pdfHref', 'supportedFileTypes')
   get exportFormats() {
-    return [
+    const { supportedFileTypes } = this;
+
+    const exportFormats = [
       {
         type: 'CSV',
         href: this.csvHref,
         icon: 'file-text-o'
-      },
-      {
-        type: 'PDF',
-        href: this.pdfHref,
-        icon: 'file-pdf-o'
-      },
-      {
-        type: 'PNG',
-        href: this.pdfHref.then(href => `${href}&fileType=png`),
-        icon: 'file-image-o'
       }
     ];
+
+    if (Array.isArray(supportedFileTypes)) {
+      if (supportedFileTypes.includes('pdf') || supportedFileTypes.includes('PDF')) {
+        exportFormats.push({
+          type: 'PDF',
+          href: this.pdfHref,
+          icon: 'file-pdf-o'
+        });
+      }
+
+      if (supportedFileTypes.includes('png') || supportedFileTypes.includes('PNG')) {
+        exportFormats.push({
+          type: 'PNG',
+          href: this.pdfHref.then(href => `${href}&fileType=png`),
+          icon: 'file-image-o'
+        });
+      }
+    }
+
+    return exportFormats;
   }
 
   /**
