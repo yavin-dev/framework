@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { set, get } from '@ember/object';
+import { set } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import RequestFragment from './bard-request-v2/request';
@@ -36,9 +36,11 @@ export default class VisualizationFragment extends Fragment {
     set(this, '_request', request);
     //TODO Add validation mixin
     //@ts-ignore
-    this.validateSync();
-    //@ts-ignore
-    return get(this, 'validations.isValid');
+    const { validations } = this.validateSync?.() || {};
+    if (validations) {
+      return validations.isValid;
+    }
+    return true;
   }
 
   /**
