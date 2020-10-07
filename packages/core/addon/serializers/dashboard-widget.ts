@@ -5,7 +5,7 @@
 //@ts-ignore
 import AssetSerializer from './asset';
 import Model from '@ember-data/model';
-import { normalizeTableV2 } from './table';
+import { normalizeVisualization } from './report';
 
 export default class DashboardWidgetSerializer extends AssetSerializer {
   /**
@@ -14,13 +14,12 @@ export default class DashboardWidgetSerializer extends AssetSerializer {
    * @param visualization - json parsed object
    * @return {Object} normalized payload
    */
-  normalize(type: Model, dashboardWidget: TODO) {
+  normalize(type: Model, dashboardWidget: object) {
     const normalized = super.normalize(type, dashboardWidget) as TODO;
+
     const { requests, visualization } = normalized.data?.attributes;
-    if (visualization?.type === 'table') {
-      const viz = normalizeTableV2(requests[0], visualization);
-      Object.assign(normalized.data.attributes, { visualization: viz });
-    }
+    normalized.data.attributes.visualization = normalizeVisualization(requests[0], visualization);
+
     return normalized;
   }
 }

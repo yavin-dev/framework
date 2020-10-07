@@ -79,3 +79,10 @@ export default class TableVisualization extends VisualizationBase.extend(Validat
     return this;
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/model' {
+  export default interface ModelRegistry {
+    table: TableVisualization;
+  }
+}
