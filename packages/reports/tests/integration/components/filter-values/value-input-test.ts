@@ -4,12 +4,22 @@ import $ from 'jquery';
 import { render, fillIn } from '@ember/test-helpers';
 import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
+import { TestContext as Context } from 'ember-test-helpers';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FragmentFactory from 'navi-core/addon/services/fragment-factory';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import ValueInput from 'navi-reports/components/filter-values/value-input';
 
+type ComponentArgs = ValueInput['args'];
+interface TestContext extends Context, ComponentArgs {}
 module('Integration | Component | filter values/value input', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
-    this.filter = { values: arr([1000]) };
+  hooks.beforeEach(async function(this: TestContext) {
+    const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
+    this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'gt', [1000]);
     this.onUpdateFilter = () => null;
 
     await render(hbs`
@@ -20,7 +30,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
       />`);
   });
 
-  test('it renders', function(assert) {
+  test('it renders', function(this: TestContext, assert) {
     assert.expect(1);
 
     assert
@@ -31,7 +41,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
       );
   });
 
-  test('collapsed', function(assert) {
+  test('collapsed', function(this: TestContext, assert) {
     assert.expect(2);
 
     this.set('isCollapsed', true);
@@ -40,17 +50,17 @@ module('Integration | Component | filter values/value input', function(hooks) {
     assert.dom().hasText('1000', 'The value is rendered correctly when collapsed');
   });
 
-  test('changing values', async function(assert) {
+  test('changing values', async function(this: TestContext, assert) {
     assert.expect(1);
 
-    this.set('onUpdateFilter', changeSet => {
+    this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(changeSet, { values: ['aaa'] }, 'User inputted number is given to update action');
     });
 
     await fillIn('.filter-values--value-input', 'aaa');
   });
 
-  test('error state', function(assert) {
+  test('error state', function(this: TestContext, assert) {
     assert.expect(3);
 
     assert.notOk($('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');

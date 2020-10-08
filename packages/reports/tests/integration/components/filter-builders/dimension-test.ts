@@ -50,7 +50,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
           .map(l => l.trim())
           .join('')
       ),
-      ['×Licensed Concrete Fish (1)', '×Incredible Rubber Tuna (2)', '×Handmade Rubber Fish (3)'],
+      ['×1', '×2', '×3'],
       'The filter values are rendered correctly'
     );
 
@@ -68,9 +68,6 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
 
     assert
       .dom('.filter-builder')
-      .hasText(
-        `${this.filter.displayName} equals Licensed Concrete Fish (1) Incredible Rubber Tuna (2) Handmade Rubber Fish (3)`,
-        'Rendered correctly when collapsed'
-      );
+      .hasText(`${this.filter.displayName} equals 1 2 3`, 'Rendered correctly when collapsed');
   });
 });
