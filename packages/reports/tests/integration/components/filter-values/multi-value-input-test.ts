@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import $ from 'jquery';
 import { render, fillIn, triggerEvent, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
@@ -32,11 +31,12 @@ module('Integration | Component | filter values/multi value input', function(hoo
   test('it renders', function(this: TestContext, assert) {
     assert.expect(1);
 
-    assert.equal(
-      $('.emberTagInput-tag')[0].innerText.trim(),
-      this.filter.values[0],
-      'The value select contains an input with the first filter value as a tag'
-    );
+    assert
+      .dom('.emberTagInput-tag')
+      .hasText(
+        this.filter.values[0].toString(),
+        'The value select contains an input with the first filter value as a tag'
+      );
   });
 
   test('collapsed', function(this: TestContext, assert) {
@@ -68,16 +68,16 @@ module('Integration | Component | filter values/multi value input', function(hoo
       assert.deepEqual(changeSet, { values: ['11', '12'] }, 'Removing a tag updates the filter values');
     });
 
-    await click($('.emberTagInput-tag:contains(10)>.emberTagInput-remove')[0]);
+    await click('.emberTagInput-remove');
   });
 
   test('error state', function(this: TestContext, assert) {
     assert.expect(3);
 
-    assert.notOk($('.filter-values--multi-value-input--error').is(':visible'), 'The input should not have error state');
+    assert.dom('filter-values--multi-value-input--error').isNotVisible('The input should not have error state');
 
     this.set('filter', { validations: { isInvalid: true } });
-    assert.ok($('.filter-values--multi-value-input--error').is(':visible'), 'The input should have error state');
+    assert.dom('.filter-values--multi-value-input--error').isVisible('The input should have error state');
 
     this.set('isCollapsed', true);
     assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
