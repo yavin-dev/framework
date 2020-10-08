@@ -23,7 +23,7 @@ import { v1 } from 'ember-uuid';
 
 export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
 
-const escape = (value: string) => {
+const escape = (value: string | number) => {
   return `${('' + value).replace(/'/g, "\\'").replace(/,/g, '\\,')}`;
 };
 
