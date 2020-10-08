@@ -23,6 +23,10 @@ import { v1 } from 'ember-uuid';
 
 export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
 
+const escape = (value: string | number) => {
+  return `${('' + value).replace(/'/g, "\\'").replace(/,/g, '\\,')}`;
+};
+
 export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
   eq: '==',
   neq: '!=',
@@ -75,14 +79,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
       // TODO: Remove this when Elide supports the "between" filter operator
       if (operator === 'bet') {
-        return `${fieldStr}=ge=(${filterVals[0]});${fieldStr}=le=(${filterVals[1]})`;
+        return `${fieldStr}=ge=(${escape(filterVals[0])});${fieldStr}=le=(${escape(filterVals[1])})`;
       }
 
       if (operator === 'nbet') {
-        return `${fieldStr}=lt=(${filterVals[0]}),${fieldStr}=gt=(${filterVals[1]})`;
+        return `${fieldStr}=lt=(${escape(filterVals[0])}),${fieldStr}=gt=(${escape(filterVals[1])})`;
       }
 
-      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${v}'`).join(',')})` : '';
+      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${escape(v)}'`).join(',')})` : '';
       return `${fieldStr}${operatorStr}${valuesStr}`;
     });
     filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);
