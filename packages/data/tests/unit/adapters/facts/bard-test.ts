@@ -1053,13 +1053,13 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   test('urlForDownloadQuery', async function(assert) {
     assert.expect(6);
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
+      decodeURIComponent(await Adapter.urlForTableExport(TestRequest)),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
+      decodeURIComponent(await Adapter.urlForTableExport(TestRequest, { format: 'csv' })),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForDownloadQuery correctly built the URL for the provided request with the format option'
     );
@@ -1077,7 +1077,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ]
     };
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
+      decodeURIComponent(await Adapter.urlForTableExport(onlyDateFilter)),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with only date filter'
     );
@@ -1109,19 +1109,19 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ]
     };
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(requestWithSort)),
+      decodeURIComponent(await Adapter.urlForTableExport(requestWithSort)),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
+      decodeURIComponent(await Adapter.urlForTableExport(TestRequest, { cache: false })),
       `${HOST}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForDownloadQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
+      decodeURIComponent(await Adapter.urlForTableExport(TestRequest, { dataSourceName: 'bardTwo' })),
       `${HOST2}/v1/data/table1/grain1/d1/d2/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery renders alternative host name if option is given'
     );
