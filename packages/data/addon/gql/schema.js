@@ -155,6 +155,7 @@ const schema = gql`
 
   type AsyncQuery {
     id: DeferredID
+    asyncAfterSeconds: Int
     createdOn: Date
     query: String
     queryType: QueryType
@@ -256,6 +257,7 @@ const schema = gql`
 
   input AsyncQueryInput {
     id: ID
+    asyncAfterSeconds: Int
     createdOn: Date
     query: String
     queryType: QueryType

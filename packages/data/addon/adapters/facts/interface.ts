@@ -94,6 +94,7 @@ export interface AsyncQuery {
   requestId: string;
   request: RequestV1 | RequestV2;
   status: QueryStatus;
+  asyncAfterSeconds: number;
   result: AsyncQueryResult | null;
   createdOn: Date;
   updatedOn: Date;
