@@ -86,7 +86,8 @@ export enum QueryStatus {
 }
 
 export enum QueryResultType {
-  EMBEDDED = 'EMBEDDED'
+  CSV = 'CSV',
+  JSON = 'JSON'
 }
 
 export interface AsyncQuery {
@@ -118,8 +119,8 @@ export type AsyncQueryResponse = {
 export interface AsyncQueryResult {
   httpStatus: number;
   contentLength: number;
-  resultType: QueryResultType;
   responseBody: string;
+  recordCount: number;
 }
 
 export default interface NaviFactAdapter {
