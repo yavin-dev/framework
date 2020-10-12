@@ -6,10 +6,11 @@
  */
 import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
-import NaviDimensionAdapter, { DimensionColumn, DimensionFilter } from './interface';
+import NaviDimensionAdapter, { DimensionFilter } from './interface';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
 import { RequestV2 } from '../facts/interface';
 import ElideFactsAdapter from '../facts/elide';
+import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**

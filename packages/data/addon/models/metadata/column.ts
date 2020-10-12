@@ -30,6 +30,11 @@ export interface ColumnMetadataPayload {
   partialData?: boolean; //TODO refactor me
 }
 
+export interface ColumnInstance<T extends ColumnMetadataModel> {
+  columnMetadata: T;
+  parameters?: Parameters;
+}
+
 // Shape of public properties on model
 export interface ColumnMetadata {
   id: string;

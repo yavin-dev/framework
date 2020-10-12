@@ -5,10 +5,10 @@
 
 import NaviDimensionSerializer from './interface';
 import NaviDimensionModel from '../../models/navi-dimension';
-import { DimensionColumn } from '../../adapters/dimensions/interface';
 import { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import { getElideField } from '../../adapters/facts/elide';
 import EmberObject from '@ember/object';
+import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 type ResponseEdge = {
   node: Dict<string>;

@@ -11,11 +11,10 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { tracked } from '@glimmer/tracking';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import DimensionMetadataModel from 'navi-data/addon/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from 'navi-data/addon/models/metadata/dimension';
 //@ts-ignore
 import { task, timeout } from 'ember-concurrency';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 
 const SEARCH_DEBOUNCE_TIME = 200;
 
