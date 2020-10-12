@@ -10,6 +10,8 @@ import Table from './table';
 import ColumnFunction from './column-function';
 import FunctionParameter from './function-parameter';
 import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { Parameters } from 'navi-data/adapters/facts/interface';
 
 export type RawColumnType = 'ref' | 'formula' | 'field';
 export type ColumnType = Extract<MetadataModelTypes, 'metric' | 'dimension' | 'timeDimension'>;
@@ -180,5 +182,11 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
       }
       return acc;
     }, {});
+  }
+
+  getCanonicalName(parameters?: Parameters) {
+    const { id: metric } = this;
+    // TODO rename with generic canonicalizeColumn
+    return canonicalizeMetric({ metric, parameters });
   }
 }
