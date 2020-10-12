@@ -4,6 +4,7 @@
  */
 
 import { RequestV1, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponsePayload = any;
@@ -26,5 +27,5 @@ export default interface NaviFactSerializer {
    * @param payload - payload to normalize
    * @param request - request for response payload
    */
-  normalize(payload: ResponsePayload, request: RequestV1 | RequestV2): ResponseV1 | undefined;
+  normalize(payload: ResponsePayload, request: RequestV1 | RequestV2): NaviFactResponse | undefined;
 }

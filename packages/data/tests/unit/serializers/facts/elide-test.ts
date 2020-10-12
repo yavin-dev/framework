@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import NaviFactSerializer from 'navi-data/serializers/facts/interface';
 import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const Payload: AsyncQueryResponse = {
   asyncQuery: {
@@ -47,9 +48,9 @@ module('Unit | Serializer | facts/elide', function(hooks) {
   });
 
   test('it normalizes an elide fact response', function(assert) {
-    const normalized = Serializer.normalize(Payload, Request);
+    const { rows, meta } = Serializer.normalize(Payload, Request) as NaviFactResponse;
     assert.deepEqual(
-      normalized,
+      { rows, meta },
       {
         meta: {},
         rows: [
