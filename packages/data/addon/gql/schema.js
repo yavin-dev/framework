@@ -12,6 +12,8 @@ const schema = gql`
 
   scalar Date
 
+  scalar URL
+
   type TableConnection {
     pageInfo: PageInfo
     edges: [TableEdge!]!
@@ -185,6 +187,38 @@ const schema = gql`
     query(op: RelationshipOp = FETCH, data: AsyncQueryInput): AsyncQuery
   }
 
+  type TableExport {
+    id: DeferredID
+    asyncAfterSeconds: Int
+    createdOn: Date
+    query: String
+    queryType: QueryType
+    resultType: QueryResultType
+    status: QueryStatus
+    updatedOn: Date
+    result(op: RelationshipOp = FETCH, data: TableExportResultInput): TableExportResult
+  }
+
+  type TableExportEdge {
+    node: TableExport
+    cursor: String
+  }
+
+  type TableExportConnection {
+    edges: [TableExportEdge]
+    pageInfo: PageInfo
+  }
+
+  type TableExportResult {
+    id: DeferredID
+    createdOn: Date
+    recordCount: Int
+    httpStatus: Int
+    updatedOn: Date
+    url: URL
+    query(op: RelationshipOp = FETCH, data: TableExportInput): TableExport
+  }
+
   enum FunctionArgumentType {
     ref
     primitive
@@ -255,6 +289,11 @@ const schema = gql`
     FAILURE
   }
 
+  enum QueryResultType {
+    CSV
+    JSON
+  }
+
   input AsyncQueryInput {
     id: ID
     asyncAfterSeconds: Int
@@ -275,6 +314,28 @@ const schema = gql`
     recordCount: Int
     updatedOn: Date
     query: AsyncQueryInput
+  }
+
+  input TableExportInput {
+    id: ID
+    asyncAfterSeconds: Int
+    createdOn: Date
+    query: String
+    queryType: QueryType
+    resultType: QueryResultType
+    status: QueryStatus
+    updatedOn: Date
+    result: TableExportResultInput
+  }
+
+  input TableExportResultInput {
+    id: ID
+    createdOn: Date
+    httpStatus: Int
+    recordCount: Int
+    updatedOn: Date
+    url: URL
+    query: TableExportInput
   }
 
   type Query {
