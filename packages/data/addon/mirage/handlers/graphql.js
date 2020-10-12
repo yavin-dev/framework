@@ -452,15 +452,6 @@ const OPTIONS = {
           responseBody: _getResponseBody(db, parent)
         };
       }
-    },
-    TableExport: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      result(_, db, parent) {
-        return {
-          httpStatus: 200,
-          url: 'testURL'
-        };
-      }
     }
   },
   argsMap: {
@@ -471,14 +462,6 @@ const OPTIONS = {
       }
     },
     AsyncQueryEdge: {
-      ids(records, _, ids) {
-        return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
-      },
-      op(records) {
-        return records; // op is not intended to be an actual filter in elide, but ember-cli-mirage-graphql treats it like one
-      }
-    },
-    TableExportEdge: {
       ids(records, _, ids) {
         return Array.isArray(ids) ? records.filter(record => ids.includes(record.id)) : records;
       },
@@ -499,32 +482,6 @@ const OPTIONS = {
           requestId: data.id,
           query: data.query,
           queryType: data.queryType,
-          status: data.status,
-          createdOn: Date.now(),
-          result: null
-        });
-        return { edges: [{ node }] };
-      } else if (op === 'UPDATE' && existingQueries.length > 0) {
-        existingQueries.forEach(query => {
-          query.status = data.status;
-        });
-        return { edges: existingQueries.map(node => ({ node })) };
-      } else {
-        throw new Error(`Unable to ${op} when ${existingQueries.length} queries exist with id `);
-      }
-    },
-    tableExport(connection, { op, data }, { tableExports }) {
-      data = data[0];
-      const queryIds = data.id ? [data.id] : [];
-      const existingQueries = tableExports.find(queryIds) || [];
-      if (op === 'UPSERT' && existingQueries.length === 0) {
-        const node = tableExports.insert({
-          id: data.id,
-          asyncAfterSeconds: 10,
-          requestId: data.id,
-          query: data.query,
-          queryType: data.queryType,
-          resultType: data.queryResultType,
           status: data.status,
           createdOn: Date.now(),
           result: null

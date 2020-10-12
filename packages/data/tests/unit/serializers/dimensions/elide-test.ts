@@ -42,7 +42,7 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
               result: {
                 contentLength: 129,
                 httpStatus: 200,
-                recordCount: 20,
+                recordCount: 2,
                 responseBody:
                   '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
               }

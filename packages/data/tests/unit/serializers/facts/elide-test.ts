@@ -14,7 +14,7 @@ const Payload: AsyncQueryResponse = {
           result: {
             contentLength: 129,
             httpStatus: 200,
-            recordCount: 20,
+            recordCount: 2,
             responseBody:
               '{"data":{"tableA":{"edges":[{"node":{"datestamp":"202003", "userCount":10}},{"node":{"datestamp":"202004", "userCount":20}}]}}}'
           }

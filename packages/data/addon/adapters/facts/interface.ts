@@ -102,19 +102,6 @@ export interface AsyncQuery {
   cancel: () => void;
 }
 
-export interface TableExport {
-  requestId: string;
-  request: RequestV1 | RequestV2;
-  status: QueryStatus;
-  asyncAfterSeconds: number;
-  resultType: QueryResultType;
-  result: TableExportResult | null;
-  createdOn: Date;
-  updatedOn: Date;
-  then: () => NaviFactsModel;
-  cancel: () => void;
-}
-
 export type AsyncQueryResponse = {
   asyncQuery: {
     edges: [
@@ -130,21 +117,6 @@ export type AsyncQueryResponse = {
   };
 };
 
-export type TableExportResponse = {
-  asyncQuery: {
-    edges: [
-      {
-        node: {
-          id: string;
-          query: string;
-          status: QueryStatus;
-          result: TableExportResult | null;
-        };
-      }
-    ];
-  };
-};
-
 export interface AsyncQueryResult {
   httpStatus: number;
   contentLength: number;
@@ -152,13 +124,8 @@ export interface AsyncQueryResult {
   recordCount: number;
 }
 
-export interface TableExportResult {
-  httpStatus: number;
-  recordCount: number;
-  url: URL;
-}
 export default interface NaviFactAdapter {
   fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
   urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
-  urlForTableExport(request: RequestV1 | RequestV2, options: RequestOptions): Promise<string>;
+  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): Promise<string>;
 }

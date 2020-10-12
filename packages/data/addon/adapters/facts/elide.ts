@@ -156,7 +156,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  async urlForTableExport(_request: RequestV1, _options: RequestOptions): Promise<string> {
+  async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
     return 'TODO';
   }
   /**
@@ -184,6 +184,19 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    */
   fetchDataForRequest(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions = {}
+  ): Promise<AsyncQueryResponse> {
+    return this.fetchDataForRequestTask.perform(request, options);
+  }
+
+  /**
+   * @param this
+   * @param request
+   * @param options
+   */
+  fetchDataForExportRequest(
     this: ElideFactsAdapter,
     request: RequestV2,
     options: RequestOptions = {}
