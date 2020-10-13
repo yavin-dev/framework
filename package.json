@@ -10,6 +10,8 @@
     "url": "https://github.com/yahoo/navi"
   },
   "scripts": {
+    "demostart_": "lerna run prodbuild --scope navi-app --stream",
+    "demostart": "lerna exec --scope navi-app npm start",
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test --stream",
@@ -22,10 +24,17 @@
     }
   },
   "devDependencies": {
-    "husky": "^3.0.1",
+    "husky": "^3.1.0",
     "lerna": "^3.22.1",
     "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
+    "pretty-quick": "^2.0.2",
     "validate-commit": "^3.4.0"
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "browserslist": "^4.14.5",
+    "caniuse-lite": "^1.0.30001142",
+    "ember": "^1.0.3",
+    "ember-cli-babel": "^7.22.1"
   }
 }
