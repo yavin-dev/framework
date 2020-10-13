@@ -41,7 +41,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       canonicalizeMetric({ metric, parameters })
     );
 
-    const rawRows = payload.rows;
+    const { rows: rawRows, meta } = payload;
     const totalRows = rawRows.length;
     const totalFields = normalizedFields.length;
     const rows = new Array(totalRows);
@@ -56,21 +56,10 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       }
     }
 
-    return NaviFactResponse.create({
-      rows,
-      meta: payload.meta || {}
-    });
+    return NaviFactResponse.create({ rows, meta });
   }
 
   normalize(payload: ResponseV1, request: RequestV2): NaviFactResponse | undefined {
-    if (payload && request) {
-      return this.processResponse(payload, request);
-    } else if (payload) {
-      return NaviFactResponse.create({
-        rows: [],
-        meta: payload.meta || {}
-      });
-    }
-    return undefined;
+    return payload ? this.processResponse(payload, request) : undefined;
   }
 }

@@ -107,28 +107,35 @@ module('Unit | Model | navi fact response', function(hooks) {
   });
 
   test('getMaxTimeDimension/getMaxTimeDimension - value gaps', function(this: TestContext, assert) {
-    const rows = [
-      { 'table1.eventTimeDay': null },
-      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
-      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
-    ];
-    const response = NaviFactResponse.create({ rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeDay',
       'elideOne'
     ) as TimeDimensionMetadataModel;
 
-    const max = response.getMaxTimeDimension({ columnMetadata });
+    const maxRows = [
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': null },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
+    ];
+    const maxResponse = NaviFactResponse.create({ rows: maxRows });
+    const max = maxResponse.getMaxTimeDimension({ columnMetadata });
     assert.ok(
-      moment(rows[2]['table1.eventTimeDay']).isSame(max),
+      moment(maxRows[2]['table1.eventTimeDay']).isSame(max),
       '`getMaxTimeDimension` returns max dateTime when date values have gaps'
     );
 
-    const min = response.getMinTimeDimension({ columnMetadata });
+    const minRows = [
+      { 'table1.eventTimeDay': null },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' }
+    ];
+    const minResponse = NaviFactResponse.create({ rows: minRows });
+
+    const min = minResponse.getMinTimeDimension({ columnMetadata });
     assert.ok(
-      moment(rows[1]['table1.eventTimeDay']).isSame(min),
-      '`getMinTimeDimension` returns mix dateTime when date values have gaps'
+      moment(minRows[2]['table1.eventTimeDay']).isSame(min),
+      '`getMinTimeDimension` returns min dateTime when date values have gaps'
     );
   });
 });

@@ -4,6 +4,7 @@ import { TestContext } from 'ember-test-helpers';
 import BardFactSerializer from 'navi-data/serializers/facts/bard';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 let Serializer: BardFactSerializer;
 
@@ -14,32 +15,30 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     Serializer = this.owner.lookup('serializer:facts/bard');
   });
 
-  test('normalize - undefined', function(assert) {
-    //@ts-expect-error
-    assert.deepEqual(Serializer.normalize(), undefined, '`undefined` is returned for an undefined response');
-  });
-
-  test('normalize - invalid', function(assert) {
-    //@ts-expect-error
-    const { rows, meta } = Serializer.normalize({ foo: 'bar' });
-    assert.deepEqual(
-      { rows, meta },
-      { rows: [], meta: {} },
-      'Returns `undefined` with invalid payload and undefined request'
-    );
-  });
-
   test('normalize - empty rows', function(assert) {
-    //@ts-expect-error
-    const { rows, meta } = Serializer.normalize({ rows: [], meta: { next: 'nextLink' } });
-    assert.deepEqual(
-      { rows, meta },
-      {
-        rows: [],
-        meta: { next: 'nextLink' }
-      },
-      'Returns empty rows but preserves meta when there is no request'
-    );
+    const request: RequestV2 = {
+      table: 'tableName',
+      columns: [{ type: 'metric', field: 'metricName', parameters: { param: 'value' } }],
+      filters: [],
+      sorts: [],
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0'
+    };
+
+    const response: ResponseV1 = {
+      rows: [],
+      meta: {
+        pagination: {
+          currentPage: 1,
+          rowsPerPage: 0,
+          perPage: 10,
+          numberOfResults: 0
+        }
+      }
+    };
+    const { rows, meta } = Serializer.normalize(response, request) as NaviFactResponse;
+    assert.deepEqual({ rows, meta }, response, 'Returns empty rows but preserves meta when there is no request');
   });
 
   test('normalize by request', function(assert) {

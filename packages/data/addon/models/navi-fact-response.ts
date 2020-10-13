@@ -13,8 +13,8 @@ function notNull<T>(t: T | null): t is T {
 }
 
 export default class NaviFactResponse extends EmberObject implements ResponseV1 {
-  rows!: ResponseV1['rows'];
-  meta!: ResponseV1['meta'];
+  readonly rows: ResponseV1['rows'] = [];
+  readonly meta: ResponseV1['meta'] = {};
 
   private getTimeDimensionAsMoments(column: TimeDimensionColumn): Moment[] {
     const { columnMetadata, parameters } = column;
