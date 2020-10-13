@@ -322,7 +322,6 @@ function _parseArgs(args, table) {
  * @return {String} - response body object in string form
  */
 function _getResponseBody(db, parent) {
-  console.log('_getResponseBody');
   // Create mocked response for an async query
   const { createdOn, query } = parent;
   const responseTime = Date.now();
