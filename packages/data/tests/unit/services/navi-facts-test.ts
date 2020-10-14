@@ -6,6 +6,7 @@ import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactsService from 'navi-data/services/navi-facts';
 import { TestContext } from 'ember-test-helpers';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 let Service: NaviFactsService, Server: PretenderServer;
 
@@ -113,8 +114,6 @@ module('Unit | Service | Navi Facts', function(hooks) {
   });
 
   test('getURL', function(assert) {
-    assert.expect(2);
-
     assert.deepEqual(
       Service.getURL(TestRequest),
       `${HOST}/v1/data/table1/grain1/d1/d2/?` +
@@ -134,49 +133,45 @@ module('Unit | Service | Navi Facts', function(hooks) {
     );
   });
 
-  test('fetch', function(assert) {
-    assert.expect(3);
-
-    return Service.fetch(TestRequest).then(function(model) {
-      assert.deepEqual(
-        model.response,
-        {
-          rows: [
-            {
-              'd1(field=id)': undefined,
-              'd2(field=id)': undefined,
-              m1: undefined,
-              m2: undefined,
-              'table1.dateTime(grain=grain1)': undefined
-            }
-          ],
-          meta: {
-            //@ts-expect-error
-            test: true
+  test('fetch', async function(assert) {
+    const model = await Service.fetch(TestRequest);
+    const { rows, meta } = model.response as NaviFactResponse;
+    assert.deepEqual(
+      { rows, meta },
+      {
+        rows: [
+          {
+            'd1(field=id)': undefined,
+            'd2(field=id)': undefined,
+            m1: undefined,
+            m2: undefined,
+            'table1.dateTime(grain=grain1)': undefined
           }
-        },
-        'Fetch returns a navi response model object for TestRequest'
-      );
+        ],
+        meta: {
+          test: true
+        }
+      },
+      'Fetch returns a navi response model object for TestRequest'
+    );
 
-      assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
+    assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
 
-      assert.deepEqual(
-        model._factService,
-        Service,
-        'Fetch returns a navi response model object with the service instance'
-      );
-    });
+    assert.deepEqual(
+      model._factService,
+      Service,
+      'Fetch returns a navi response model object with the service instance'
+    );
   });
 
   test('fetch with pagination', async function(assert) {
-    assert.expect(1);
     const model = await Service.fetch(TestRequest, { page: 2, perPage: 10 });
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
-      model.response,
+      { rows, meta },
       {
         rows: [],
         meta: {
-          //@ts-expect-error
           paginated: {
             page: '2',
             perPage: '10'
@@ -213,10 +208,8 @@ module('Unit | Service | Navi Facts', function(hooks) {
     });
   });
 
-  skip('request builder', function(assert) {
+  skip('request builder', function(/*assert*/) {
     // TODO: Remove request builder?
-    assert.expect(2);
-
     /*
     let requestBuilder = Service.request({
       metrics: [

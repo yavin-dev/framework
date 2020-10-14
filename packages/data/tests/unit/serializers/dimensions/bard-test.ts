@@ -6,8 +6,7 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { FiliDimensionResponse } from 'navi-data/adapters/dimensions/bard';
-import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ContainerDimValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import { cloneDeep } from 'lodash-es';
 
