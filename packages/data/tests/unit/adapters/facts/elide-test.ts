@@ -3,11 +3,13 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { QueryResultType, QueryStatus, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField, ELIDE_API_DATE_FORMAT } from 'navi-data/adapters/facts/elide';
+import { exportFactsQueryStr } from 'navi-data/gql/queries/export-facts';
+import { exportFactsMutationStr } from 'navi-data/gql/mutations/export-facts';
 
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -34,6 +36,10 @@ const TestRequest: RequestV2 = {
   requestVersion: '2.0',
   dataSource: 'elideOne'
 };
+
+//const TestOptionDownload: RequestOptions = {
+//  resultType: QueryResultType.CSV
+//};
 
 let Server: Pretender;
 
@@ -426,6 +432,59 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
+  test('fetchTableExport - success', async function(assert) {
+    assert.expect(2);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(
+        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+        exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+        'fetchTableExport sent the correct query to fetch a tableExport'
+      );
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.ids[0],
+                query: 'foo',
+                queryType: 'GRAPHQL_V1_0',
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: '200',
+                  contentLength: 2,
+                  responseBody: JSON.stringify({
+                    table: {
+                      edges: [
+                        {
+                          node: {
+                            metric: 123,
+                            dimension: 'foo'
+                          }
+                        }
+                      ]
+                    }
+                  })
+                }
+              }
+            }
+          ]
+        }
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    const result = await adapter.fetchTableExport('request1');
+    assert.deepEqual(result, response, 'fetchTableExport returns the correct response payload');
+  });
+
   test('fetchDataForRequest - success', async function(assert) {
     assert.expect(10);
 
@@ -439,9 +498,11 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let response: TODO;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       callCount++;
+      console.log('query');
+
       let result = null;
       const { query, variables } = JSON.parse(requestBody);
-
+      console.log(query);
       if (callCount === 1) {
         queryVariable = variables.query;
         queryId = variables.id;
@@ -525,6 +586,111 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
+  test('fetchDataForExport - success', async function(assert) {
+    assert.expect(10);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    adapter._pollingInterval = 300;
+
+    let callCount = 0;
+    let queryVariable: string;
+    let queryId: string;
+
+    let response: TODO;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      callCount++;
+      console.log('requestBody');
+      console.log(requestBody);
+      console.log('query');
+
+      let result = null;
+      const { query, variables } = JSON.parse(requestBody);
+      console.log(query);
+      if (callCount === 1) {
+        console.log('if');
+        queryVariable = variables.query;
+        queryId = variables.id;
+
+        assert.equal(
+          query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+          exportFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+          'fetchDataForExport first creates a tableExport'
+        );
+      } else if (callCount < 6) {
+        console.log('else');
+        assert.equal(
+          query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+          exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+          'fetchDataForExport polls for the tableExport to complete'
+        );
+        assert.equal(
+          variables.ids[0],
+          queryId,
+          'fetchDataForExport requests the same asyncQuery id as the one it created'
+        );
+
+        if (callCount === 5) {
+          result = {
+            httpStatus: 200,
+            contentLength: 1,
+            responseBody: JSON.stringify({
+              data: {
+                tableName: {
+                  edges: [
+                    {
+                      node: {
+                        column1: '123',
+                        column2: '321'
+                      }
+                    }
+                  ]
+                }
+              }
+            })
+          };
+        }
+      } else {
+        assert.ok(false, 'Error: fetchDataForExport did not for the asyncQuery to complete');
+      }
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: queryId,
+                query: queryVariable,
+                queryType: 'GRAPHQL_V1_0',
+                status: callCount !== 5 ? 'QUEUED' : 'COMPLETE',
+                result
+              }
+            }
+          ]
+        }
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    const result = await adapter.fetchDataForExport(TestRequest); //.catch((e: TODO) => {debugger});
+    assert.deepEqual(result, response, 'fetchDataForExport returns the correct response payload');
+  });
+
+  test('fetchDataForExport - error', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let errors = [{ message: 'Bad request' }];
+    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
+
+    try {
+      await adapter.fetchDataForExport(TestRequest); //.catch((e: TODO) => {debugger});
+    } catch ({ errors }) {
+      const responseText = await errors[0].statusText;
+      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForExport an array of response objects on error');
+    }
+  });
+
   test('escaped filter values', async function(assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const EscapedTest: RequestV2 = {
@@ -567,5 +733,45 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       `{"query":"{ table1(filter: \\"d6=in=('with\\\\, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\'single quote\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
+  });
+  test('urlForDownloadQuery - success', async function(assert) {
+    assert.expect(5);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const downloadURL = 'downloadURL';
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+      console.log('requestBody');
+      console.log(requestBody);
+      assert.deepEqual(
+        Object.keys(requestObj.variables),
+        ['id', 'query'],
+        'urlForDownloadQuery sends id, query request variables'
+      );
+
+      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.COMPLETE,
+                result: {
+                  httpStatus: 200,
+                  url: downloadURL
+                }
+              }
+            }
+          ]
+        }
+      };
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    console.log('call urlfordownload');
+    const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, {});
+    assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
 });
