@@ -3,6 +3,8 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import BardFactSerializer from 'navi-data/serializers/facts/bard';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 let Serializer: BardFactSerializer;
 
@@ -13,42 +15,30 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     Serializer = this.owner.lookup('serializer:facts/bard');
   });
 
-  test('normalize', function(assert) {
-    assert.expect(4);
+  test('normalize - empty rows', function(assert) {
+    const request: RequestV2 = {
+      table: 'tableName',
+      columns: [{ type: 'metric', field: 'metricName', parameters: { param: 'value' } }],
+      filters: [],
+      sorts: [],
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0'
+    };
 
-    //@ts-expect-error
-    assert.deepEqual(Serializer.normalize(), undefined, '`undefined` is returned for an undefined response');
-
-    assert.deepEqual(
-      //@ts-expect-error
-      Serializer.normalize({ foo: 'bar' }),
-      {
-        rows: [],
-        meta: {}
-      },
-      'Returns `undefined` with invalid payload and undefined request'
-    );
-
-    assert.deepEqual(
-      //@ts-expect-error
-      Serializer.normalize({ rows: 'bar' }),
-      {
-        rows: [],
-        meta: {}
-      },
-      'Returns `undefined` with payload and undefined request'
-    );
-
-    assert.deepEqual(
-      //@ts-expect-error
-      Serializer.normalize({ rows: 'bar', meta: { next: 'nextLink' } }),
-      {
-        rows: [],
-        //@ts-expect-error
-        meta: { next: 'nextLink' }
-      },
-      'Returns empty rows but preserves meta when there is no request'
-    );
+    const response: ResponseV1 = {
+      rows: [],
+      meta: {
+        pagination: {
+          currentPage: 1,
+          rowsPerPage: 0,
+          perPage: 10,
+          numberOfResults: 0
+        }
+      }
+    };
+    const { rows, meta } = Serializer.normalize(response, request) as NaviFactResponse;
+    assert.deepEqual({ rows, meta }, response, 'Returns empty rows but preserves meta when there is no request');
   });
 
   test('normalize by request', function(assert) {
@@ -67,7 +57,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       limit: null,
       requestVersion: '2.0'
     };
-    const rows = [
+    const rawRows = [
       {
         dateTime: 'blah1',
         'age|id': 'blah2',
@@ -77,8 +67,10 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       }
     ];
 
+    const { rows, meta } = Serializer.normalize({ rows: rawRows, meta: {} }, request) as NaviFactResponse;
+
     assert.deepEqual(
-      Serializer.normalize({ rows, meta: {} }, request),
+      { rows, meta },
       {
         rows: [
           {

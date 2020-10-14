@@ -6,17 +6,18 @@
  */
 
 import EmberObject from '@ember/object';
-import NaviFactSerializer, { ResponseV1 } from './interface';
+import NaviFactSerializer from './interface';
 import { AsyncQueryResponse, RequestV2 } from 'navi-data/adapters/facts/interface';
 import { getElideField } from 'navi-data/adapters/facts/elide';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 export default class ElideFactsSerializer extends EmberObject implements NaviFactSerializer {
   /**
    * @param payload - raw payload string
    * @param request - request object
    */
-  private processResponse(payload: string, request: RequestV2): ResponseV1 {
+  private processResponse(payload: string, request: RequestV2): NaviFactResponse {
     const response = JSON.parse(payload);
 
     const { table } = request;
@@ -41,10 +42,11 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
         newRow[normalizedFields[f]] = rawRow[elideFields[f]];
       }
     }
-    return { rows, meta: {} };
+
+    return NaviFactResponse.create({ rows, meta: {} });
   }
 
-  normalize(payload: AsyncQueryResponse, request: RequestV2): ResponseV1 | undefined {
+  normalize(payload: AsyncQueryResponse, request: RequestV2): NaviFactResponse | undefined {
     const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
     return responseStr ? this.processResponse(responseStr, request) : undefined;
   }

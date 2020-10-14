@@ -81,11 +81,10 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch', async function(assert) {
-    assert.expect(1);
-
-    const response = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
+    const model = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
+    const { rows, meta } = model.response;
     assert.deepEqual(
-      response.response,
+      { rows, meta },
       {
         meta: {},
         rows: [
@@ -231,9 +230,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - only metrics', async function(assert) {
-    assert.expect(1);
-
-    const response = await this.service.fetch(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -249,16 +246,15 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
+    const { rows, meta } = model.response;
     assert.deepEqual(
-      response.response,
+      { rows, meta },
       { rows: [{ 'table1.metric1': '823.11', 'table1.metric2': '823.38' }], meta: {} },
       'Request with only metrics is formatted correctly'
     );
   });
 
   test('fetch - invalid date filter', async function(assert) {
-    assert.expect(2);
-
     const filters = [
       {
         field: 'table1.eventTimeDay',
@@ -290,7 +286,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       }
     ];
 
-    const response = await this.service.fetch(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -306,8 +302,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
+    const { rows, meta } = model.response;
     assert.deepEqual(
-      response.response,
+      { rows, meta },
       {
         rows: [],
         meta: {}
@@ -315,20 +312,26 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       'An invalid filter on a requested field returns an empty response'
     );
 
-    const noTimeDimResponse = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [{ field: 'table1.metric1', parameters: {}, type: 'metric' }],
-        filters,
-        sorts: [],
-        limit: null,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const noTimeDimResponse = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [{ field: 'table1.metric1', parameters: {}, type: 'metric' }],
+          filters,
+          sorts: [],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
+
     assert.deepEqual(
-      noTimeDimResponse.response,
+      {
+        rows: noTimeDimResponse.rows,
+        meta: noTimeDimResponse.meta
+      },
       {
         rows: [{ 'table1.metric1': '307.93' }],
         meta: {}
@@ -338,9 +341,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - incomplete date filters', async function(assert) {
-    assert.expect(3);
-
-    const response = await this.service.fetch(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -364,8 +365,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
+    const { rows, meta } = model.response;
     assert.deepEqual(
-      response.response,
+      { rows, meta },
       {
         rows: [
           { 'table1.eventTimeMonth': '2015 Jan', 'table1.metric1': '17.49' },
@@ -376,31 +378,36 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       'A date filter with no end date defaults to a one month date interval'
     );
 
-    const noStartDateResponse = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [
-          { field: 'table1.metric1', parameters: {}, type: 'metric' },
-          { field: 'table1.eventTimeMonth', parameters: {}, type: 'timeDimension' }
-        ],
-        filters: [
-          {
-            field: 'table1.eventTimeMonth',
-            operator: 'lt',
-            values: ['2015-01-01'],
-            parameters: {},
-            type: 'timeDimension'
-          }
-        ],
-        sorts: [],
-        limit: null,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const noStartDateResponse = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [
+            { field: 'table1.metric1', parameters: {}, type: 'metric' },
+            { field: 'table1.eventTimeMonth', parameters: {}, type: 'timeDimension' }
+          ],
+          filters: [
+            {
+              field: 'table1.eventTimeMonth',
+              operator: 'lt',
+              values: ['2015-01-01'],
+              parameters: {},
+              type: 'timeDimension'
+            }
+          ],
+          sorts: [],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
     assert.deepEqual(
-      noStartDateResponse.response,
+      {
+        rows: noStartDateResponse.rows,
+        meta: noStartDateResponse.meta
+      },
       {
         rows: [
           { 'table1.eventTimeMonth': '2014 Nov', 'table1.metric1': '17.49' },
@@ -412,33 +419,38 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
 
     const DAY_FORMAT = 'YYYY-MM-DD';
-    const dateToCurrentResponse = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [{ field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }],
-        filters: [
-          {
-            field: 'table1.eventTimeDay',
-            operator: 'ge',
-            values: [
-              moment()
-                .subtract(2, 'days')
-                .format(DAY_FORMAT)
-            ],
-            parameters: {},
-            type: 'timeDimension'
-          }
-        ],
-        sorts: [],
-        limit: null,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const dateToCurrentResponse = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [{ field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }],
+          filters: [
+            {
+              field: 'table1.eventTimeDay',
+              operator: 'ge',
+              values: [
+                moment()
+                  .subtract(2, 'days')
+                  .format(DAY_FORMAT)
+              ],
+              parameters: {},
+              type: 'timeDimension'
+            }
+          ],
+          sorts: [],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
 
     assert.deepEqual(
-      dateToCurrentResponse.response,
+      {
+        rows: dateToCurrentResponse.rows,
+        meta: dateToCurrentResponse.meta
+      },
       {
         rows: [
           {
@@ -462,9 +474,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - sorts', async function(assert) {
-    assert.expect(2);
-
-    const response = await this.service.fetch(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -495,8 +505,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
+    const { rows, meta } = model.response;
     assert.deepEqual(
-      response.response,
+      { rows, meta },
       {
         meta: {},
         rows: [
@@ -517,28 +528,33 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       'Response is sorted as specified by the request'
     );
 
-    const multiSortResponse = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [
-          { field: 'table1.dimension2', parameters: {}, type: 'dimension' },
-          { field: 'table1.dimension3', parameters: {}, type: 'dimension' },
-          { field: 'table1.metric1', parameters: {}, type: 'metric' }
-        ],
-        filters: [],
-        sorts: [
-          { field: 'table1.dimension2', parameters: {}, type: 'metric', direction: 'asc' },
-          { field: 'table1.dimension3', parameters: {}, type: 'metric', direction: 'asc' }
-        ],
-        limit: null,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const multiSortResponse = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [
+            { field: 'table1.dimension2', parameters: {}, type: 'dimension' },
+            { field: 'table1.dimension3', parameters: {}, type: 'dimension' },
+            { field: 'table1.metric1', parameters: {}, type: 'metric' }
+          ],
+          filters: [],
+          sorts: [
+            { field: 'table1.dimension2', parameters: {}, type: 'metric', direction: 'asc' },
+            { field: 'table1.dimension3', parameters: {}, type: 'metric', direction: 'asc' }
+          ],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
 
     assert.deepEqual(
-      multiSortResponse.response,
+      {
+        rows: multiSortResponse.rows,
+        meta: multiSortResponse.meta
+      },
       {
         meta: {},
         rows: [
@@ -609,41 +625,44 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - limit', async function(assert) {
-    assert.expect(2);
-
-    const response = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [
-          { field: 'table1.metric1', parameters: {}, type: 'metric' },
-          { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }
-        ],
-        filters: [
-          {
-            field: 'table1.eventTimeDay',
-            operator: 'ge',
-            values: ['2015-01-01'],
-            parameters: {},
-            type: 'timeDimension'
-          },
-          {
-            field: 'table1.eventTimeDay',
-            operator: 'lt',
-            values: ['2015-01-10'],
-            parameters: {},
-            type: 'timeDimension'
-          }
-        ],
-        sorts: [],
-        limit: 3,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const limit = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [
+            { field: 'table1.metric1', parameters: {}, type: 'metric' },
+            { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }
+          ],
+          filters: [
+            {
+              field: 'table1.eventTimeDay',
+              operator: 'ge',
+              values: ['2015-01-01'],
+              parameters: {},
+              type: 'timeDimension'
+            },
+            {
+              field: 'table1.eventTimeDay',
+              operator: 'lt',
+              values: ['2015-01-10'],
+              parameters: {},
+              type: 'timeDimension'
+            }
+          ],
+          sorts: [],
+          limit: 3,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
 
     assert.deepEqual(
-      response.response,
+      {
+        rows: limit.rows,
+        meta: limit.meta
+      },
       {
         meta: {},
         rows: [
@@ -664,39 +683,44 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       'Limit in the request determines the max number of rows returned'
     );
 
-    const limitless = await this.service.fetch(
-      {
-        table: 'table1',
-        columns: [
-          { field: 'table1.metric1', parameters: {}, type: 'metric' },
-          { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }
-        ],
-        filters: [
-          {
-            field: 'table1.eventTimeDay',
-            operator: 'ge',
-            values: ['2015-01-01'],
-            parameters: {},
-            type: 'timeDimension'
-          },
-          {
-            field: 'table1.eventTimeDay',
-            operator: 'lt',
-            values: ['2015-01-10'],
-            parameters: {},
-            type: 'timeDimension'
-          }
-        ],
-        sorts: [],
-        limit: null,
-        requestVersion: '2.0',
-        dataSource: 'elideTwo'
-      },
-      { dataSourceName: 'elideTwo' }
-    );
+    const limitless = (
+      await this.service.fetch(
+        {
+          table: 'table1',
+          columns: [
+            { field: 'table1.metric1', parameters: {}, type: 'metric' },
+            { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }
+          ],
+          filters: [
+            {
+              field: 'table1.eventTimeDay',
+              operator: 'ge',
+              values: ['2015-01-01'],
+              parameters: {},
+              type: 'timeDimension'
+            },
+            {
+              field: 'table1.eventTimeDay',
+              operator: 'lt',
+              values: ['2015-01-10'],
+              parameters: {},
+              type: 'timeDimension'
+            }
+          ],
+          sorts: [],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+    ).response;
 
     assert.deepEqual(
-      limitless.response,
+      {
+        rows: limitless.rows,
+        meta: limitless.meta
+      },
       {
         meta: {},
         rows: [
