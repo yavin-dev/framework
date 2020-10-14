@@ -72,7 +72,7 @@ module('Unit | Model | navi fact response', function(hooks) {
     );
   });
 
-  test('getMaxTimeDimension/getMinTimeDimension - empty column', function(this: TestContext, assert) {
+  test('getMaxTimeDimension/getMinTimeDimension - empty rows', function(this: TestContext, assert) {
     const rows: ResponseV1['rows'] = [];
     const response = NaviFactResponse.create({ rows });
     const columnMetadata = this.metadataService.getById(
@@ -157,5 +157,78 @@ module('Unit | Model | navi fact response', function(hooks) {
 
     const min = response.getMinTimeDimension({ columnMetadata });
     assert.strictEqual(null, min, '`getMinTimeDimension` returns null when encountering an invalid date');
+  });
+
+  test('getIntervalForTimeDimension', function(this: TestContext, assert) {
+    const columnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeDay',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const rows = [
+      { 'table1.eventTimeDay': '2014-04-02 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-02 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
+    ];
+    const response = NaviFactResponse.create({ rows });
+    const interval = response.getIntervalForTimeDimension({ columnMetadata });
+    assert.deepEqual(
+      interval?.asStrings(),
+      {
+        start: '2014-04-02 00:00:00.000',
+        end: '2014-04-04 00:00:00.000'
+      },
+      '`getIntervalForTimeDimension` returns an `Interval` object for a time dimension column'
+    );
+  });
+
+  test('getIntervalForTimeDimension - missing value', function(this: TestContext, assert) {
+    const rows = [
+      { 'table1.eventTimeDay': '2014-04-02 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
+    ];
+    const response = NaviFactResponse.create({ rows });
+    const columnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeMonth',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+    const interval = response.getIntervalForTimeDimension({ columnMetadata });
+    assert.strictEqual(interval, null, '`getIntervalForTimeDimension` returns null for missing values');
+  });
+
+  test('getIntervalForTimeDimension - empty rows ', function(this: TestContext, assert) {
+    const columnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeDay',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const rows: ResponseV1['rows'] = [];
+    const response = NaviFactResponse.create({ rows });
+    const interval = response.getIntervalForTimeDimension({ columnMetadata });
+    assert.strictEqual(interval, null, '`getIntervalForTimeDimension` returns null for an empty response');
+  });
+
+  test('getIntervalForTimeDimension - invalid values ', function(this: TestContext, assert) {
+    const columnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeDay',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const rows = [
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': 'not-a-date' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
+    ];
+    const response = NaviFactResponse.create({ rows });
+    const interval = response.getIntervalForTimeDimension({ columnMetadata });
+    assert.strictEqual(interval, null, '`getIntervalForTimeDimension` returns null when encountering an invalid date');
   });
 });
