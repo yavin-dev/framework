@@ -526,10 +526,10 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Export action - href', async function(assert) {
     assert.expect(4);
 
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.enableMultipleExport = false;
+    config.navi.FEATURES.multipleExportFileTypes = [];
 
     await visit('/reports/1/view');
 
@@ -573,7 +573,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'Filter updates are automatically included in export url'
     );
 
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action - csv href', async function(assert) {

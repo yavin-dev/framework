@@ -28,7 +28,7 @@ module.exports = function(environment) {
       defaultDataSource: 'default',
       FEATURES: {
         enableDashboardFilters: true,
-        enableMultipleExport: false,
+        multipleExportFileTypes: [],
         enableTableEditing: true
       }
     }

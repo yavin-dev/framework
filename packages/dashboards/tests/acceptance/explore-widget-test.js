@@ -159,10 +159,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
   test('Export action', async function(assert) {
     assert.expect(3);
 
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.enableMultipleExport = false;
+    config.navi.FEATURES.multipleExportFileTypes = [];
 
     await visit('/dashboards/1/widgets/2/view');
 
@@ -188,7 +188,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
         'Export action is disabled when request is not valid'
       );
 
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action', async function(assert) {

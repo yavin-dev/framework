@@ -53,7 +53,7 @@
 
       <li class="navi-report-widget__action">
         {{!-- Export action is only enabled when request is valid --}}
-        {{#let (component (concat "report-actions/" (if (and (feature-flag "enableMultipleExport") (not (is-empty (feature-flag "multiExportFileTypes")))) "multiple-format-export" "export"))) as |ExportAction|}}
+        {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "multipleExportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
           <ExportAction
             class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
             @report={{@model}}

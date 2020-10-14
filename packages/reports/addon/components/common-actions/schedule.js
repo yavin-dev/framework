@@ -73,11 +73,9 @@ export default class ScheduleActionComponent extends Component {
 
     if (!formats) {
       formats = defaultFormats.slice();
-      if (featureFlag('enableMultipleExport')) {
-        const supportedFormats = featureFlag('multiExportFileTypes');
-        if (Array.isArray(supportedFormats)) {
-          formats = [...formats, ...supportedFormats];
-        }
+      const supportedFormats = featureFlag('multipleExportFileTypes');
+      if (Array.isArray(supportedFormats)) {
+        formats = [...formats, ...supportedFormats];
       }
     }
 
