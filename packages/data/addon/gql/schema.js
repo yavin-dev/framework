@@ -216,6 +216,7 @@ const schema = gql`
     httpStatus: Int
     updatedOn: Date
     url: URL
+    message: String
     query(op: RelationshipOp = FETCH, data: TableExportInput): TableExport
   }
 
@@ -335,6 +336,7 @@ const schema = gql`
     recordCount: Int
     updatedOn: Date
     url: URL
+    message: String
     query: TableExportInput
   }
 
