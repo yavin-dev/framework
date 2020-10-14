@@ -9,7 +9,7 @@ import NaviFactResponse from 'navi-data/models/navi-fact-response';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ResponsePayload = any;
 
-export interface ResponseV1 {
+export interface ResponseV1 ReadOnly<{
   readonly rows: Array<Record<string, unknown>>;
   readonly meta: {
     pagination?: {
