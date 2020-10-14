@@ -9,6 +9,7 @@ import EmberObject from '@ember/object';
 import NaviFactSerializer, { ResponseV1 } from './interface';
 import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 export default class BardFactsSerializer extends EmberObject implements NaviFactSerializer {
   /**
@@ -33,14 +34,14 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
    * @param payload - raw payload string
    * @param request - request v2 object
    */
-  private processResponse(payload: ResponseV1, request: RequestV2): ResponseV1 {
+  private processResponse(payload: ResponseV1, request: RequestV2): NaviFactResponse {
     const filiFields = request.columns.map(column => this.getFiliField(column));
     const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
       // TODO rename with generic canonicalizeColumn
       canonicalizeMetric({ metric, parameters })
     );
 
-    const rawRows = payload.rows;
+    const { rows: rawRows, meta } = payload;
     const totalRows = rawRows.length;
     const totalFields = normalizedFields.length;
     const rows = new Array(totalRows);
@@ -55,18 +56,10 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       }
     }
 
-    return { rows, meta: payload.meta || {} };
+    return NaviFactResponse.create({ rows, meta });
   }
 
-  normalize(payload: ResponseV1, request: RequestV2): ResponseV1 | undefined {
-    if (payload && request) {
-      return this.processResponse(payload, request);
-    } else if (payload) {
-      return {
-        rows: [],
-        meta: payload.meta || {}
-      };
-    }
-    return undefined;
+  normalize(payload: ResponseV1, request: RequestV2): NaviFactResponse | undefined {
+    return payload ? this.processResponse(payload, request) : undefined;
   }
 }

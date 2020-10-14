@@ -4,10 +4,11 @@
  */
 import Service from '@ember/service';
 import NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
-import NaviDimensionAdapter, { DimensionColumn, DimensionFilter } from 'navi-data/adapters/dimensions/interface';
+import NaviDimensionAdapter, { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
 import { getOwner } from '@ember/application';
 import { getDataSource } from 'navi-data/utils/adapter';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export type ServiceOptions = {
   timeout?: number;
