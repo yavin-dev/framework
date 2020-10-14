@@ -81,10 +81,10 @@ module('Unit | Model | navi fact response', function(hooks) {
       'elideOne'
     ) as TimeDimensionMetadataModel;
     const max = response.getMaxTimeDimension({ columnMetadata });
-    assert.equal(null, max, '`getMaxTimeDimension` returns null for empty responses');
+    assert.strictEqual(null, max, '`getMaxTimeDimension` returns null for empty responses');
 
     const min = response.getMinTimeDimension({ columnMetadata });
-    assert.equal(null, min, '`getMinTimeDimension` returns null for empty responses');
+    assert.strictEqual(null, min, '`getMinTimeDimension` returns null for empty responses');
   });
 
   test('getMaxTimeDimension/getMinTimeDimension - missing value', function(this: TestContext, assert) {
@@ -100,10 +100,10 @@ module('Unit | Model | navi fact response', function(hooks) {
       'elideOne'
     ) as TimeDimensionMetadataModel;
     const max = response.getMaxTimeDimension({ columnMetadata });
-    assert.equal(null, max, '`getMaxTimeDimension` returns null for missing values');
+    assert.strictEqual(null, max, '`getMaxTimeDimension` returns null for missing values');
 
     const min = response.getMinTimeDimension({ columnMetadata });
-    assert.equal(null, min, '`getMinTimeDimension` returns null for missing values');
+    assert.strictEqual(null, min, '`getMinTimeDimension` returns null for missing values');
   });
 
   test('getMaxTimeDimension/getMinTimeDimension - value gaps', function(this: TestContext, assert) {
@@ -137,5 +137,25 @@ module('Unit | Model | navi fact response', function(hooks) {
       moment(minRows[2]['table1.eventTimeDay']).isSame(min),
       '`getMinTimeDimension` returns min dateTime when date values have gaps'
     );
+  });
+
+  test('getMaxTimeDimension/getMaxTimeDimension - invalid values', function(this: TestContext, assert) {
+    const columnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeDay',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const rows = [
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
+      { 'table1.eventTimeDay': 'not-a-date' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' }
+    ];
+    const response = NaviFactResponse.create({ rows });
+    const max = response.getMaxTimeDimension({ columnMetadata });
+    assert.strictEqual(null, max, '`getMaxTimeDimension` returns null when encountering an invalid date');
+
+    const min = response.getMinTimeDimension({ columnMetadata });
+    assert.strictEqual(null, min, '`getMinTimeDimension` returns null when encountering an invalid date');
   });
 });

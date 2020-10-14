@@ -33,7 +33,11 @@ export default class NaviFactResponse extends EmberObject implements ResponseV1 
    */
   getMaxTimeDimension(column: TimeDimensionColumn): Moment | null {
     const moments = this.getTimeDimensionAsMoments(column);
-    return moments.length ? moment.max(moments) : null;
+    if (moments.length) {
+      const max = moment.max(moments);
+      return max.isValid() ? max : null;
+    }
+    return null;
   }
 
   /**
@@ -41,6 +45,10 @@ export default class NaviFactResponse extends EmberObject implements ResponseV1 
    */
   getMinTimeDimension(column: TimeDimensionColumn): Moment | null {
     const moments = this.getTimeDimensionAsMoments(column);
-    return moments.length ? moment.min(moments) : null;
+    if (moments.length) {
+      const min = moment.min(moments);
+      return min.isValid() ? min : null;
+    }
+    return null;
   }
 }
