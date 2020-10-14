@@ -139,7 +139,7 @@ module('Unit | Model | navi fact response', function(hooks) {
     );
   });
 
-  test('getMaxTimeDimension/getMaxTimeDimension - invalid values', function(this: TestContext, assert) {
+  test('getMaxTimeDimension/getMinTimeDimension - invalid values', function(this: TestContext, assert) {
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeDay',
