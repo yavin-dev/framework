@@ -13,44 +13,64 @@
 
 import { assign } from '@ember/polyfills';
 import { A as arr } from '@ember/array';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { set, get, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { isArray } from '@ember/array';
+//@ts-ignore
 import { copy } from 'ember-copy';
 import { dataByDimensions } from 'navi-core/utils/data';
-import layout from '../../templates/components/navi-visualization-config/series-chart';
 import { values, reject } from 'lodash-es';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import RequestFragment from '../../models/bard-request-v2/request';
+import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import ColumnFragment from '../../models/bard-request-v2/fragments/column';
 
-@templateLayout(layout)
-@tagName('')
-class NaviVisualizationConfigSeriesChartComponent extends Component {
+type Args = {
+  request: RequestFragment;
+  response: ResponseV1;
+  seriesConfig: TODO;
+  seriesType: TODO;
+  onUpdateConfig: (config: object) => void;
+};
+
+export default class NaviVisualizationConfigSeriesChartComponent extends Component<Args> {
   /**
    * @property {Array} metrics
    */
-  @readOnly('request.metricColumns') metrics;
+  @readOnly('args.request.metricColumns') metrics!: ColumnFragment[];
 
   /**
    * @property {Object} selectedMetric
    */
-  @readOnly('seriesConfig.metric') selectedMetric;
+  @computed('args.seriesConfig.metric')
+  get selectedMetric() {
+    const {
+      args: {
+        seriesConfig: { metric }
+      },
+      metrics
+    } = this;
+    return metrics.find(col => metric.metric === col.cid);
+  }
 
   /**
    * @property {Boolean} showMetricSelect - whether to display the metric select
    */
-  @computed('metrics', 'seriesType')
+  @computed('metrics', 'args.seriesType')
   get showMetricSelect() {
-    const { metrics, seriesType } = this;
+    const {
+      metrics,
+      args: { seriesType }
+    } = this;
     return seriesType === 'dimension' && isArray(metrics) && metrics.length > 1;
   }
 
   /**
    * @property {Array} dimensions
    */
-  @computed('request')
+  @computed('args.request')
   get dimensions() {
-    return this.request.columns
+    return this.args.request.columns
       .filter(c => c.type === 'dimension' || (c.type === 'timeDimension' && c.field !== 'dateTime'))
       .map(c => c.columnMetadata);
   }
@@ -58,9 +78,9 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
   /**
    * @property {DataGroup} dataByDimensions - response data grouped by dimension composite keys
    */
-  @computed('seriesConfig', 'response')
+  @computed('args.{seriesConfig,response}')
   get dataByDimensions() {
-    return dataByDimensions(this.response, this.seriesConfig.dimensionOrder);
+    return dataByDimensions(this.args.response.rows, this.args.seriesConfig.dimensionOrder);
   }
 
   /**
@@ -70,12 +90,10 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
   get seriesByDimensions() {
     const { dimensions, dataByDimensions } = this;
     const keys = dataByDimensions.getKeys();
-    const series = {};
 
     // Build a series object for each series key
-    for (let i = 0; i < keys.length; i++) {
-      let key = keys[i],
-        data = dataByDimensions.getDataForKey(key);
+    return keys.reduce((series, key) => {
+      const data = dataByDimensions.getDataForKey(key);
 
       /*
        * Build a search key by adding all dimension ids + descriptions
@@ -88,9 +106,9 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
 
       for (let dimIndex = 0; dimIndex < dimensions.length; dimIndex++) {
         // Pull dimension id + description from response data
-        let dimension = dimensions[dimIndex],
-          id = get(data, `0.${dimension.name}|id`),
-          description = get(data, `0.${dimension.name}|desc`);
+        const dimension = dimensions[dimIndex];
+        const id = get(data, `0.${dimension.name}|id`);
+        const description = get(data, `0.${dimension.name}|desc`);
 
         searchKey += `${id} ${description} `;
 
@@ -114,9 +132,8 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
           values
         }
       };
-    }
-
-    return series;
+      return series;
+    }, {});
   }
 
   /**
@@ -132,7 +149,7 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    * @property {Array} selectedSeriesData - selected chart series data in the form:
    * [{searchKey: '...', dimensions: [{dimension: dimModel, value: {id: dimValueId, description: dimValDesc}}, ...]}, ...]
    */
-  @computed('seriesConfig')
+  @computed('args.seriesConfig')
   get selectedSeriesData() {
     let dimensionOrder = get(this, 'seriesConfig.dimensionOrder'),
       selectedDimensions = get(this, 'seriesConfig.dimensions');
@@ -177,10 +194,8 @@ class NaviVisualizationConfigSeriesChartComponent extends Component {
    */
   @action
   onUpdateChartMetric(metric) {
-    const newConfig = copy(this.seriesConfig);
-    set(newConfig, `metric`, metric);
-    this.onUpdateConfig(newConfig);
+    const newConfig = copy(this.args.seriesConfig);
+    newConfig.metric.metric = metric.cid;
+    this.args.onUpdateConfig(newConfig);
   }
 }
-
-export default NaviVisualizationConfigSeriesChartComponent;

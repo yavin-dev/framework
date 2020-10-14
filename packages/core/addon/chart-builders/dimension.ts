@@ -1,0 +1,166 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Logic for grouping chart data by many dimensions
+ *
+ * Usage:
+ * series: {
+ *    type: 'dimension',
+ *    config: {
+ *        dimensionOrder: [ dim1, dim2 ],
+ *        metric: metric,
+ *        dimensions: [
+ *              {
+ *                  name: 'All Other',
+ *                  values: {dim1: x, dim2: y}
+ *              },{
+ *                  name: 'Under 13',
+ *                  values: {dim1: a, dim2: b}
+ *             }
+ *          ]
+ *    }
+ *}
+ */
+import Mixin from '@ember/object/mixin';
+import { computed } from '@ember/object';
+import { assert } from '@ember/debug';
+import moment, { MomentInput } from 'moment';
+import DataGroup from 'navi-core/utils/classes/data-group';
+import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+//@ts-ignore
+import tooltipLayout from '../templates/chart-tooltips/dimension';
+import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
+import { getRequestDimensions, groupDataByDimensions } from 'navi-core/utils/chart-data';
+import BaseChartBuilder from './base';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { tracked } from '@glimmer/tracking';
+import { DimensionSeriesConfig } from '../models/chart-visualization';
+import ColumnFragment from '../models/bard-request-v2/fragments/column';
+
+type ResponseRow = ResponseV1['rows'][number];
+
+export default class DimensionChartBuilder extends BaseChartBuilder {
+  @tracked byXSeries?: DataGroup<ResponseRow>;
+
+  /**
+   * @param row - single row of fact data
+   * @param config - series config
+   * @param request - request used to query fact data
+   * @returns name of series given row belongs to
+   */
+  getSeriesName(row: ResponseRow, _config: unknown, request: RequestFragment): string {
+    // let dimensionOrder = config.dimensionOrder;
+    return request.dimensionColumns.map(dim => row[dim.canonicalName]).join(',');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  getXValue(row: ResponseRow, _config: unknown, request: RequestFragment): string {
+    // expects timeGrainColumn values to be a readable moment input
+    const date = row[request.timeGrainColumn.canonicalName] as MomentInput;
+    return moment(date).format(API_DATE_FORMAT_STRING);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  buildData(response: ResponseV1, config: DimensionSeriesConfig, request: RequestFragment) {
+    const timeGrainColumn = request.timeGrainColumn.canonicalName;
+    const { timeGrain, interval } = request;
+    assert('request should have an interval', interval);
+    assert('request should have a timeGrain', timeGrain);
+    // Group data by x axis value + series name in order to lookup trends when building tooltip
+    this.byXSeries = new DataGroup(response.rows, row => {
+      return `${this.getXValue(row, config, request)} ${this.getSeriesName(row, config, request)}`;
+    });
+
+    // Support different `dateTime` formats by mapping them to a standard
+    const buildDateKey = (dateTime: MomentInput) =>
+      timeGrain !== undefined && timeGrain !== 'all'
+        ? moment(dateTime)
+            .startOf(timeGrain)
+            .format(API_DATE_FORMAT_STRING)
+        : moment(dateTime).format(API_DATE_FORMAT_STRING);
+
+    const { metric: metricCid } = config;
+    const metric = request.columns.find(c => c.cid === metricCid) as ColumnFragment;
+    const dimensions = getRequestDimensions(request);
+    const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
+    const seriesName = config.dimensions.map(s => s.name); // Get all the series names
+    const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
+
+    // debugger;
+
+    // For each unique date, build the series
+    return interval.getDatesForInterval(timeGrain).map(date => {
+      const key = buildDateKey(date);
+      const x = {
+        rawValue: key,
+        displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain])
+      };
+
+      // Pulling the specific data rows for the date
+      let dateRows = byDate.getDataForKey(key) || [];
+
+      // Group the dimension required
+      let byDim = groupDataByDimensions(dateRows, dimensions);
+
+      // the data for date used in the C3 chart
+      let dataForDate = { x };
+
+      // Adding the series to the keys
+      seriesKey.forEach((s, index) => {
+        //Handling the case when some of the data group does not exist
+        if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
+          // Extending the data for date with the grouped dimension and metric value
+          Object.assign(dataForDate, {
+            [seriesName[index]]: byDim.getDataForKey(s)[0][metric.canonicalName]
+          });
+        } else {
+          // Returning null for the chart to show missing data
+          Object.assign(dataForDate, { [seriesName[index]]: null });
+        }
+      });
+
+      /**
+       * sample of return:
+       * x: {
+       *    rawValue: '2016-05-30 00:00:00.000',
+       *    displayValue: 'May 30'
+       *  },
+       *  'All Other | M': 828357,
+       *  'Under 15 | F' : 26357
+       */
+
+      // Return the data for Date
+      return dataForDate;
+    });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  buildTooltip(_config: unknown, _request: RequestFragment) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let builder = this;
+
+    return Mixin.create({
+      layout: tooltipLayout,
+
+      /**
+       * @property {Object[]} rowData - maps a response row to each series in a tooltip
+       */
+      rowData: computed('x', 'tooltipData', function() {
+        return this.tooltipData.map(series => {
+          // Get the full data for this combination of x + series
+          let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.id) || [];
+
+          return dataForSeries[0];
+        });
+      })
+    });
+  }
+}
