@@ -61,8 +61,8 @@ export default class ChartVisualization extends Visualization {
       const dimensionLabels: Array<string | number | boolean> = [];
       dimensions.forEach(dimension => {
         const id = row[dimension.canonicalName];
-        values[dimension.cid] = id;
-        dimensionLabels.push(id);
+        values[dimension.cid] = id as string | number | boolean;
+        dimensionLabels.push(id as string);
       });
       //Use object key to dedup dimension value combinations
       series[Object.values(values).join('|')] = {

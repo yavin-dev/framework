@@ -76,7 +76,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
 
     const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
 
-    const { metric: metricCid } = config;
+    const { metricCid } = config;
     const metric = request.columns.find(c => c.cid === metricCid) as ColumnFragment;
     const dimensions = getRequestDimensions(request);
     const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
