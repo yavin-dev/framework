@@ -142,7 +142,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
     console.log('apollo mutate');
-    console.log(this.apollo.mutate(queryOptions));
     return this.apollo.mutate(queryOptions);
   }
 
@@ -186,6 +185,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   fetchTableExport(id: string, dataSourceName?: string) {
     console.log('in fetchTableExport');
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
+    debugger;
     dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
@@ -221,6 +221,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     let status: QueryStatus = tableExport.status;
 
     while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+      debugger;
       yield timeout(this._pollingInterval);
       tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
       status = tableExportPayload?.tableExport.edges[0]?.node.status;
@@ -259,7 +260,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     request: RequestV2,
     options: RequestOptions = {}
   ): Promise<TableExportResponse> {
-    console.log('fetchDataForExport');
+    console.log('in fetchDataForExport');
     return this.fetchDataForExportTask.perform(request, options);
   }
 

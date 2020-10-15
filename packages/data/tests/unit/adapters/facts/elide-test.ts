@@ -495,24 +495,35 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let queryVariable: string;
     let queryId: string;
 
+    console.log('fetchDataForRequest test');
     let response: TODO;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      console.log('callCount');
+      console.log(callCount);
       callCount++;
-      console.log('query');
+      console.log(callCount);
+      console.log('requestBody');
+      console.log(requestBody);
 
       let result = null;
       const { query, variables } = JSON.parse(requestBody);
+      console.log('query');
       console.log(query);
       if (callCount === 1) {
+        console.log('if');
         queryVariable = variables.query;
         queryId = variables.id;
-
+        console.log('asyncFactsMutationStr');
+        console.log(asyncFactsMutationStr);
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
           asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest first creates an asyncQuery'
         );
       } else if (callCount < 6) {
+        console.log('asyncFactsQueryStr');
+        console.log(asyncFactsQueryStr);
+        console.log('else');
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
           asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
@@ -569,6 +580,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
     const result = await adapter.fetchDataForRequest(TestRequest);
     assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
+    console.log('test done');
   });
 
   test('fetchDataForRequest - error', async function(assert) {
@@ -586,96 +598,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
-  test('fetchDataForExport - success', async function(assert) {
-    assert.expect(10);
-
-    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    adapter._pollingInterval = 300;
-
-    let callCount = 0;
-    let queryVariable: string;
-    let queryId: string;
-
-    let response: TODO;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
-      callCount++;
-      console.log('requestBody');
-      console.log(requestBody);
-      console.log('query');
-
-      let result = null;
-      const { query, variables } = JSON.parse(requestBody);
-      console.log(query);
-      if (callCount === 1) {
-        console.log('if');
-        queryVariable = variables.query;
-        queryId = variables.id;
-
-        assert.equal(
-          query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          exportFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
-          'fetchDataForExport first creates a tableExport'
-        );
-      } else if (callCount < 6) {
-        console.log('else');
-        assert.equal(
-          query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
-          'fetchDataForExport polls for the tableExport to complete'
-        );
-        assert.equal(
-          variables.ids[0],
-          queryId,
-          'fetchDataForExport requests the same asyncQuery id as the one it created'
-        );
-
-        if (callCount === 5) {
-          result = {
-            httpStatus: 200,
-            contentLength: 1,
-            responseBody: JSON.stringify({
-              data: {
-                tableName: {
-                  edges: [
-                    {
-                      node: {
-                        column1: '123',
-                        column2: '321'
-                      }
-                    }
-                  ]
-                }
-              }
-            })
-          };
-        }
-      } else {
-        assert.ok(false, 'Error: fetchDataForExport did not for the asyncQuery to complete');
-      }
-
-      response = {
-        tableExport: {
-          edges: [
-            {
-              node: {
-                id: queryId,
-                query: queryVariable,
-                queryType: 'GRAPHQL_V1_0',
-                status: callCount !== 5 ? 'QUEUED' : 'COMPLETE',
-                result
-              }
-            }
-          ]
-        }
-      };
-
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
-    });
-
-    const result = await adapter.fetchDataForExport(TestRequest); //.catch((e: TODO) => {debugger});
-    assert.deepEqual(result, response, 'fetchDataForExport returns the correct response payload');
-  });
-
   test('fetchDataForExport - error', async function(assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
@@ -684,7 +606,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
     try {
-      await adapter.fetchDataForExport(TestRequest); //.catch((e: TODO) => {debugger});
+      await adapter.fetchDataForExport(TestRequest);
     } catch ({ errors }) {
       const responseText = await errors[0].statusText;
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForExport an array of response objects on error');
@@ -739,6 +661,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const downloadURL = 'downloadURL';
     let response;
+    console.log('urlForDownloadQuery test');
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
       console.log('requestBody');
