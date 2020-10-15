@@ -10,7 +10,7 @@ import NaviFactResponse from 'navi-data/models/navi-fact-response';
 type ResponsePayload = any;
 
 export interface ResponseV1 {
-  readonly rows: Array<Record<string, unknown>>;
+  readonly rows: Array<Record<string, string | number | boolean>>;
   readonly meta: {
     pagination?: {
       currentPage: number;

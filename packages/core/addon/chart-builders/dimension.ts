@@ -23,7 +23,7 @@
  *}
  */
 import Mixin from '@ember/object/mixin';
-import { computed } from '@ember/object';
+import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import moment, { MomentInput } from 'moment';
 import DataGroup from 'navi-core/utils/classes/data-group';
@@ -32,16 +32,14 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { getRequestDimensions, groupDataByDimensions } from 'navi-core/utils/chart-data';
-import BaseChartBuilder from './base';
+import BaseChartBuilder, { C3Row, ResponseRow } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeriesConfig } from '../models/chart-visualization';
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
 
-type ResponseRow = ResponseV1['rows'][number];
-
-export default class DimensionChartBuilder extends BaseChartBuilder {
+export default class DimensionChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;
 
   /**
@@ -51,7 +49,6 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, _config: unknown, request: RequestFragment): string {
-    // let dimensionOrder = config.dimensionOrder;
     return request.dimensionColumns.map(dim => row[dim.canonicalName]).join(',');
   }
 
@@ -67,7 +64,7 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
   /**
    * @inheritdoc
    */
-  buildData(response: ResponseV1, config: DimensionSeriesConfig, request: RequestFragment) {
+  buildData(response: ResponseV1, config: DimensionSeriesConfig, request: RequestFragment): C3Row[] {
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const { timeGrain, interval } = request;
     assert('request should have an interval', interval);
@@ -77,13 +74,7 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
       return `${this.getXValue(row, config, request)} ${this.getSeriesName(row, config, request)}`;
     });
 
-    // Support different `dateTime` formats by mapping them to a standard
-    const buildDateKey = (dateTime: MomentInput) =>
-      timeGrain !== undefined && timeGrain !== 'all'
-        ? moment(dateTime)
-            .startOf(timeGrain)
-            .format(API_DATE_FORMAT_STRING)
-        : moment(dateTime).format(API_DATE_FORMAT_STRING);
+    const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
 
     const { metric: metricCid } = config;
     const metric = request.columns.find(c => c.cid === metricCid) as ColumnFragment;
@@ -92,15 +83,9 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
     const seriesName = config.dimensions.map(s => s.name); // Get all the series names
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
 
-    // debugger;
-
     // For each unique date, build the series
     return interval.getDatesForInterval(timeGrain).map(date => {
       const key = buildDateKey(date);
-      const x = {
-        rawValue: key,
-        displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain])
-      };
 
       // Pulling the specific data rows for the date
       let dateRows = byDate.getDataForKey(key) || [];
@@ -109,7 +94,9 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
       let byDim = groupDataByDimensions(dateRows, dimensions);
 
       // the data for date used in the C3 chart
-      let dataForDate = { x };
+      let dataForDate: C3Row = {
+        x: { rawValue: key, displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain]) }
+      };
 
       // Adding the series to the keys
       seriesKey.forEach((s, index) => {
@@ -154,7 +141,7 @@ export default class DimensionChartBuilder extends BaseChartBuilder {
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return this.tooltipData.map(series => {
+        return this.tooltipData.map((series: TODO) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.id) || [];
 

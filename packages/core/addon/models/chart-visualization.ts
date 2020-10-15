@@ -1,3 +1,7 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import { topN, maxDataByDimensions } from 'navi-core/utils/data';
 import {
   METRIC_SERIES,
@@ -25,7 +29,10 @@ type DimensionSeries = {
   type: typeof DIMENSION_SERIES;
   config: DimensionSeriesConfig;
 };
-export type SeriesValues = { name: string; values: Record<string, unknown> };
+type MetricSeries = TODO;
+type DateTimeSeries = TODO;
+export type Series = DimensionSeries | MetricSeries | DateTimeSeries;
+export type SeriesValues = { name: string; values: Record<string, string | number | boolean> };
 
 export default class ChartVisualization extends Visualization {
   /**
@@ -34,7 +41,9 @@ export default class ChartVisualization extends Visualization {
    * @param type - type of chart series
    * @returns a series builder function
    */
-  getSeriesBuilder(type: ChartType): Function {
+  getSeriesBuilder(
+    type: ChartType
+  ): (config: unknown, validations: TODO, request: RequestFragment, response: ResponseV1) => Series {
     let builders = {
       [METRIC_SERIES]: this.buildMetricSeries,
       [DIMENSION_SERIES]: this.buildDimensionSeries,
@@ -48,8 +57,8 @@ export default class ChartVisualization extends Visualization {
     const series: Record<string, SeriesValues> = {};
     const dimensions = getRequestDimensions(request);
     rows.forEach(row => {
-      const values: Record<string, unknown> = {};
-      const dimensionLabels: unknown[] = [];
+      const values: Record<string, string | number | boolean> = {};
+      const dimensionLabels: Array<string | number | boolean> = [];
       dimensions.forEach(dimension => {
         const id = row[dimension.canonicalName];
         values[dimension.cid] = id;
@@ -117,7 +126,12 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildMetricSeries(_config: unknown, _validations: unknown, _request: RequestFragment, _response: ResponseV1) {
+  buildMetricSeries(
+    _config: unknown,
+    _validations: unknown,
+    _request: RequestFragment,
+    _response: ResponseV1
+  ): MetricSeries {
     return {
       type: METRIC_SERIES,
       config: {}
@@ -133,7 +147,12 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildDateTimeSeries(_config: unknown, _validations: unknown, request: RequestFragment, _response: ResponseV1) {
+  buildDateTimeSeries(
+    _config: unknown,
+    _validations: unknown,
+    request: RequestFragment,
+    _response: ResponseV1
+  ): DateTimeSeries {
     return {
       type: DATE_TIME_SERIES,
       config: {
