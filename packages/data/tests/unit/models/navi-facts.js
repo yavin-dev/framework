@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import NaviFactsModel from 'navi-data/models/navi-facts';
 
-module('Unit | Navi Facts Model', function(hooks) {
+module('Unit | Model | navi facts', function(hooks) {
   let Response, Payload;
 
   hooks.beforeEach(function() {

@@ -5,8 +5,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import { Server } from 'miragejs';
 

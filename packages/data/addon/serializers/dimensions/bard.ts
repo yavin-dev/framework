@@ -5,9 +5,9 @@
 
 import EmberObject from '@ember/object';
 import NaviDimensionSerializer from './interface';
-import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
 import NaviDimensionModel from '../../models/navi-dimension';
 import { FiliDimensionResponse, DefaultField } from 'navi-data/adapters/dimensions/bard';
+import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export default class BardDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
   normalize(dimensionColumn: DimensionColumn, rawPayload: FiliDimensionResponse): NaviDimensionModel[] {
