@@ -16,12 +16,12 @@ import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from './bard-request-v2/fragments/column';
 
 type DimensionSeriesConfigSerialized = {
-  metric: string; // cid of the selected metric column
+  metricCid: string; // cid of the selected metric column
   dimensionOrder: string[]; //cids in the order that correspond to the values in each series
   dimensions: SeriesValues[];
 };
 export type DimensionSeriesConfig = {
-  metric: string;
+  metricCid: string;
   dimensionOrder: ColumnFragment[];
   dimensions: SeriesValues[];
 };
@@ -53,7 +53,7 @@ export default class ChartVisualization extends Visualization {
     return builders[type];
   }
 
-  private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']) {
+  private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): SeriesValues[] {
     const series: Record<string, SeriesValues> = {};
     const dimensions = getRequestDimensions(request);
     rows.forEach(row => {
@@ -89,7 +89,7 @@ export default class ChartVisualization extends Visualization {
     response: ResponseV1
   ): DimensionSeries {
     const validationAttrs = validations.attrs;
-    const currentMetric = config.metric;
+    const currentMetric = config.metricCid;
     const currentDimension = config.dimensions;
 
     const isMetricValid = validationAttrs.config.metric.isValid;
@@ -110,7 +110,7 @@ export default class ChartVisualization extends Visualization {
     return {
       type: DIMENSION_SERIES,
       config: {
-        metric: metric.cid,
+        metricCid: metric.cid,
         dimensionOrder,
         dimensions
       }
