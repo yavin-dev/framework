@@ -96,7 +96,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
       // the data for date used in the C3 chart
       let dataForDate: C3Row = {
         x: { rawValue: key, displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain]) }
-      };
+      } as C3Row;
 
       // Adding the series to the keys
       seriesKey.forEach((s, index) => {

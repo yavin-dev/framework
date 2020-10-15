@@ -104,7 +104,7 @@ export default class NaviVisualizationConfigSeriesChartComponent extends Compone
       for (let dimIndex = 0; dimIndex < dimensions.length; dimIndex++) {
         // Pull dimension id + description from response data
         const dimension = dimensions[dimIndex];
-        const value = data[0][dimension.canonicalName];
+        const value = data[0][dimension.canonicalName] as string | number | boolean;
         searchKey += `${value} `;
 
         seriesDims.push({
