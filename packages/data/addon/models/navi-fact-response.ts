@@ -7,6 +7,7 @@ import EmberObject from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import moment, { Moment, MomentInput } from 'moment';
 import { TimeDimensionColumn } from './metadata/time-dimension';
+import Interval from 'navi-data/utils/classes/interval';
 
 function notNull<T>(t: T | null): t is T {
   return t !== null;
@@ -50,5 +51,17 @@ export default class NaviFactResponse extends EmberObject implements ResponseV1 
       return min.isValid() ? min : null;
     }
     return null;
+  }
+
+  /**
+   * Get an Interval object for a time dimension
+   */
+  getIntervalForTimeDimension(column: TimeDimensionColumn): Interval | null {
+    const min = this.getMinTimeDimension(column);
+    const max = this.getMaxTimeDimension(column);
+    if (null === min || null === max) {
+      return null;
+    }
+    return new Interval(min, max);
   }
 }
