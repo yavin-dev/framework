@@ -11,7 +11,7 @@ export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';
 export const DATE_TIME_SERIES = 'dateTime';
 
-type ChartType = typeof METRIC_SERIES | typeof DATE_TIME_SERIES | typeof DIMENSION_SERIES;
+export type ChartType = typeof METRIC_SERIES | typeof DATE_TIME_SERIES | typeof DIMENSION_SERIES;
 
 /**
  * Group data by dimensions
