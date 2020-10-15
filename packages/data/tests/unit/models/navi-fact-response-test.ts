@@ -34,6 +34,43 @@ module('Unit | Model | navi fact response', function(hooks) {
     assert.equal(meta, response.meta, '`NaviFactResponse` can be hydrated with `meta`');
   });
 
+  test('getTimeDimensionAsMoments - cached', function(this: TestContext, assert) {
+    const rows = [
+      { 'table1.eventTimeDay': '2014-04-02 00:00:00.000', 'table1.eventTimeMonth': '2014-04-01 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-03 00:00:00.000', 'table1.eventTimeMonth': '2014-04-01 00:00:00.000' },
+      { 'table1.eventTimeDay': '2014-04-04 00:00:00.000', 'table1.eventTimeMonth': '2014-04-01 00:00:00.000' }
+    ];
+    const response = NaviFactResponse.create({ rows });
+
+    const dayColumnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeDay',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const monthColumnMetadata = this.metadataService.getById(
+      'timeDimension',
+      'table1.eventTimeMonth',
+      'elideOne'
+    ) as TimeDimensionMetadataModel;
+
+    const dayOne = response['getTimeDimensionAsMoments']({ columnMetadata: dayColumnMetadata });
+    const monthOne = response['getTimeDimensionAsMoments']({ columnMetadata: monthColumnMetadata });
+    const dayTwo = response['getTimeDimensionAsMoments']({ columnMetadata: dayColumnMetadata });
+
+    assert.notEqual(
+      dayOne,
+      monthOne,
+      '`getTimeDimensionAsMoments` returns different arrays for different time columns'
+    );
+
+    assert.strictEqual(
+      dayOne,
+      dayTwo,
+      '`getTimeDimensionAsMoments` returns the same (cached) array for the same time column'
+    );
+  });
+
   test('getMaxTimeDimension', function(this: TestContext, assert) {
     const rows = [
       { 'table1.eventTimeDay': '2014-04-02 00:00:00.000' },
