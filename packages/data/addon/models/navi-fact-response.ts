@@ -17,16 +17,26 @@ export default class NaviFactResponse extends EmberObject implements ResponseV1 
   readonly rows: ResponseV1['rows'] = [];
   readonly meta: ResponseV1['meta'] = {};
 
+  private momentsCache: Record<string, Moment[]> = {};
+
   private getTimeDimensionAsMoments(column: TimeDimensionColumn): Moment[] {
     const { columnMetadata, parameters } = column;
     const field = columnMetadata.getCanonicalName(parameters);
+
+    const cached = this.momentsCache[field];
+    if (cached) {
+      return cached;
+    }
+
     const { rows = [] } = this;
-    return rows
+    const moments = rows
       .map(row => {
         const value = row[field];
         return value ? moment(value as MomentInput) : null;
       })
       .filter(notNull);
+
+    return (this.momentsCache[field] = moments);
   }
 
   /**
