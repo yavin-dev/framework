@@ -1,12 +1,24 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-table-select-item {
+  align-items: center;
+  display: flex;
   flex: 1;
+  min-width: 0;
+
+  &__label {
+    align-items: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
   &__info-icon {
     color: @navi-gray-500;
     font-size: 12px;
+    margin-left: 4px;
     visibility: hidden;
   }
 
