@@ -477,7 +477,6 @@ const OPTIONS = {
       if (op === 'UPSERT' && existingQueries.length === 0) {
         const node = asyncQueries.insert({
           id: data.id,
-          asyncAfterSeconds: 10,
           requestId: data.id,
           query: data.query,
           queryType: data.queryType,

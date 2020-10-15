@@ -193,7 +193,7 @@ const schema = gql`
     createdOn: Date
     query: String
     queryType: QueryType
-    resultType: QueryResultType
+    resultType: TableExportResultType
     status: QueryStatus
     updatedOn: Date
     result(op: RelationshipOp = FETCH, data: TableExportResultInput): TableExportResult
@@ -290,7 +290,7 @@ const schema = gql`
     FAILURE
   }
 
-  enum QueryResultType {
+  enum TableExportResultType {
     CSV
     JSON
   }
@@ -323,7 +323,7 @@ const schema = gql`
     createdOn: Date
     query: String
     queryType: QueryType
-    resultType: QueryResultType
+    resultType: TableExportResultType
     status: QueryStatus
     updatedOn: Date
     result: TableExportResultInput
