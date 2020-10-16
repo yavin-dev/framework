@@ -490,35 +490,21 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let queryVariable: string;
     let queryId: string;
 
-    console.log('fetchDataForRequest test');
     let response: TODO;
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
-      console.log('callCount');
-      console.log(callCount);
       callCount++;
-      console.log(callCount);
-      console.log('requestBody');
-      console.log(requestBody);
-
       let result = null;
       const { query, variables } = JSON.parse(requestBody);
-      console.log('query');
-      console.log(query);
+
       if (callCount === 1) {
-        console.log('if');
         queryVariable = variables.query;
         queryId = variables.id;
-        console.log('asyncFactsMutationStr');
-        console.log(asyncFactsMutationStr);
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
           asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest first creates an asyncQuery'
         );
       } else if (callCount < 6) {
-        console.log('asyncFactsQueryStr');
-        console.log(asyncFactsQueryStr);
-        console.log('else');
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
           asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
@@ -575,7 +561,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
 
     const result = await adapter.fetchDataForRequest(TestRequest);
     assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
-    console.log('test done');
   });
 
   test('fetchDataForRequest - error', async function(assert) {
@@ -642,11 +627,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const downloadURL = 'downloadURL';
     let response;
-    console.log('urlForDownloadQuery test');
     Server.post(`${HOST}/graphql`, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
-      console.log('requestBody');
-      console.log(requestBody);
       assert.deepEqual(
         Object.keys(requestObj.variables),
         ['id', 'query'],
@@ -674,7 +656,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       };
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-    console.log('call urlfordownload');
     const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, {});
     assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
