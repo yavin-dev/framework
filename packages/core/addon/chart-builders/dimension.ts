@@ -31,7 +31,7 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 //@ts-ignore
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
-import { getRequestDimensions, groupDataByDimensions } from 'navi-core/utils/chart-data';
+import { groupDataByDimensions } from 'navi-core/utils/chart-data';
 import { BaseChartBuilder, C3Row, ResponseRow } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
@@ -78,7 +78,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     const { metricCid } = config;
     const metric = request.columns.find(({ cid }) => cid === metricCid);
     assert(`a metric with cid ${metricCid} should be found`, metric);
-    const dimensions = getRequestDimensions(request);
+    const dimensions = request.nonTimeGrainDimensions;
     const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
     const seriesName = config.dimensions.map(s => s.name); // Get all the series names
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup

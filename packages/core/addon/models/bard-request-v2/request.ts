@@ -190,6 +190,11 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     return this.columns.filter(column => column.type === 'timeDimension')[0];
   }
 
+  @computed('timeGrainColumn')
+  get nonTimeGrainDimensions(): ColumnFragment[] {
+    return this.dimensionColumns.filter(c => c !== this.timeGrainColumn);
+  }
+
   /**
    * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
