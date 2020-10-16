@@ -185,7 +185,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   fetchTableExport(id: string, dataSourceName?: string) {
     console.log('in fetchTableExport');
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
-    debugger;
     dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
@@ -204,7 +203,10 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   async urlForDownloadQuery(request: RequestV1, options: RequestOptions = {}): Promise<string> {
     console.log('in urlfordownload');
-    let response = await this.fetchDataForExport(request, options);
+    let response = await this.fetchDataForExportTask.perform(request, options);
+    console.log('response');
+    console.log(response);
+    //let response = await this.fetchDataForExport(request, options);
     let url = response.tableExport.edges[0].node.result?.url || '';
     return url.toString();
   }
@@ -221,7 +223,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     let status: QueryStatus = tableExport.status;
 
     while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-      debugger;
       yield timeout(this._pollingInterval);
       tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
       status = tableExportPayload?.tableExport.edges[0]?.node.status;
@@ -249,20 +250,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     return asyncQueryPayload;
   })
   fetchDataForRequestTask!: TODO;
-
-  /**
-   * @param this
-   * @param request
-   * @param options
-   */
-  fetchDataForExport(
-    this: ElideFactsAdapter,
-    request: RequestV2,
-    options: RequestOptions = {}
-  ): Promise<TableExportResponse> {
-    console.log('in fetchDataForExport');
-    return this.fetchDataForExportTask.perform(request, options);
-  }
 
   /**
    * @param this

@@ -3,13 +3,12 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { QueryResultType, QueryStatus, RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { QueryStatus, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField, ELIDE_API_DATE_FORMAT } from 'navi-data/adapters/facts/elide';
 import { exportFactsQueryStr } from 'navi-data/gql/queries/export-facts';
-import { exportFactsMutationStr } from 'navi-data/gql/mutations/export-facts';
 
 const HOST = config.navi.dataSources[0].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -598,21 +597,6 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
-  test('fetchDataForExport - error', async function(assert) {
-    assert.expect(1);
-    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-
-    let errors = [{ message: 'Bad request' }];
-    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
-
-    try {
-      await adapter.fetchDataForExport(TestRequest);
-    } catch ({ errors }) {
-      const responseText = await errors[0].statusText;
-      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForExport an array of response objects on error');
-    }
-  });
-
   test('escaped filter values', async function(assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const EscapedTest: RequestV2 = {
@@ -656,8 +640,9 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
+
   test('urlForDownloadQuery - success', async function(assert) {
-    assert.expect(5);
+    assert.expect(3);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const downloadURL = 'downloadURL';
     let response;
