@@ -59,10 +59,10 @@ export default class MultipleFormatExport extends Component {
   }
 
   /**
-   * @property {Promise} pdfHref - Promise resolving to pdf download link
+   * @property {Promise} exportHref - Promise resolving to export to file link
    */
   @computed('report.{request,visualization,validations.isTruelyValid}')
-  get pdfHref() {
+  get exportHref() {
     const { report: model, compression, store } = this;
     const clonedModel = model.toJSON();
 
@@ -82,7 +82,7 @@ export default class MultipleFormatExport extends Component {
   /**
    * @property {Array} exportFormats - A list of export formats
    */
-  @computed('csvHref', 'pdfHref', 'supportedFileTypes')
+  @computed('csvHref', 'exportHref', 'supportedFileTypes')
   get exportFormats() {
     const { supportedFileTypes } = this;
 
@@ -98,7 +98,7 @@ export default class MultipleFormatExport extends Component {
       if (supportedFileTypes.includes('pdf') || supportedFileTypes.includes('PDF')) {
         exportFormats.push({
           type: 'PDF',
-          href: this.pdfHref,
+          href: this.exportHref,
           icon: 'file-pdf-o'
         });
       }
@@ -106,7 +106,7 @@ export default class MultipleFormatExport extends Component {
       if (supportedFileTypes.includes('png') || supportedFileTypes.includes('PNG')) {
         exportFormats.push({
           type: 'PNG',
-          href: this.pdfHref.then(href => `${href}&fileType=png`),
+          href: this.exportHref.then(href => `${href}&fileType=png`),
           icon: 'file-image-o'
         });
       }

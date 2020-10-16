@@ -32,11 +32,11 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
   csvHref = undefined;
 
   /**
-   * @property {Promise} pdfHref - Promise resolving to pdf download link
+   * @property {Promise} exportHref - Promise resolving to export to file link
    * @override
    */
   @computed('dashboard.id')
-  get pdfHref() {
+  get exportHref() {
     return Promise.resolve(`/export?dashboard=${this.dashboard.id}`);
   }
 
@@ -44,7 +44,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    * @property {Array} exportFormats - A list of export formats
    * @override
    */
-  @computed('pdfHref')
+  @computed('exportHref')
   get exportFormats() {
     return super.exportFormats.filter(format => format.type !== 'CSV');
   }

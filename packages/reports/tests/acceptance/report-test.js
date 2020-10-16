@@ -635,8 +635,8 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
 
-    const pdfHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
-    let encodedModel = pdfHref.split('/export?reportModel=')[1];
+    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    let encodedModel = exportHref.split('/export?reportModel=')[1];
 
     const actualModel = (await CompressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = (await store.findRecord('report', 1)).serialize();
@@ -646,8 +646,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
 
-    const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
-    assert.equal(`${pdfHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
+    const exportToPngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
+    assert.equal(`${exportHref}&fileType=png`, exportToPngHref, 'PNG link has appropriate link to export service');
 
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');

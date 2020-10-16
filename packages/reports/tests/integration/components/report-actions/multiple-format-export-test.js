@@ -61,8 +61,8 @@ module('Integration | Component | report actions - multiple-format-export', func
       'CSV link has appropriate link to API'
     );
 
-    const pdfHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
-    const encodedModel = pdfHref.split('/export?reportModel=')[1];
+    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    const encodedModel = exportHref.split('/export?reportModel=')[1];
 
     const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = this.report.serialize();
@@ -73,7 +73,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
 
     const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
-    assert.equal(`${pdfHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
+    assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
   });
 
   test('filename', async function(assert) {
