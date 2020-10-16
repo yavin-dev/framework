@@ -1,24 +1,30 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
- *   {{#dashboard-actions/schedule
- *      model=dashboard
- *      onSave=(action 'onSave')
- *      onRevert=(action 'onRevert')
- *      onDelete=(action 'onDelete')
- *   }}
- *      Inner template
- *   {{/dashboard-actions/schedule}}
+ *   <DashboardActions::Schedule
+ *     @model={{@dashboard}}
+ *     @disabled={{not @dashboard.validations.isTruelyValid}}
+ *     @onSave={{this.onSave}}
+ *     @onRevert={{this.onRevert}}
+ *     @onDelete={{this.onDelete}}
+ *   >
+ *     Inner template
+ *   </DashboardActions::Schedule>
  */
 
 import { A as arr } from '@ember/array';
-import ScheduleAction from 'navi-reports/components/common-actions/schedule';
+import ScheduleActionComponent from 'navi-reports/components/common-actions/schedule';
+import { computed } from '@ember/object';
 
-export default ScheduleAction.extend({
+export default class DashboardScheduleActionComponent extends ScheduleActionComponent {
   /**
    * @property {Array} formats
+   * @override
    */
-  formats: arr(['pdf'])
-});
+  @computed
+  get formats() {
+    return arr(super.formats.without('csv'));
+  }
+}

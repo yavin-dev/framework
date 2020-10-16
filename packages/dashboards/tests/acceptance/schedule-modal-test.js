@@ -1,15 +1,16 @@
-import { blur, click, fillIn, triggerEvent, visit } from '@ember/test-helpers';
+import { blur, click, fillIn, findAll, triggerEvent, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
+import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function(assert) {
-    assert.expect(11);
+    assert.expect(12);
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
@@ -36,6 +37,13 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     assert
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .hasText('pdf', 'Format field is set to the default value when creating a new schedule');
+
+    await clickTrigger('.schedule-modal__dropdown--format');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      ['pdf', 'png'],
+      'Schedule format should have correct options'
+    );
 
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');

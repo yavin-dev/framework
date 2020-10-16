@@ -11,8 +11,10 @@
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
+import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 @templateLayout(layout)
 @tagName('')
@@ -38,6 +40,16 @@ export default class MultipleFormatExport extends Component {
   @service naviNotifications;
 
   /**
+   * @property {String} filename - filename for the downloaded file
+   */
+  @readOnly('report.title') filename;
+
+  /**
+   * @property {Array} supportedFileTypes - supported file types for export
+   */
+  supportedFileTypes = featureFlag('multipleExportFileTypes');
+
+  /**
    * @property {String} csvHref - CSV download link for the report
    */
   @computed('report.{request,validations.isTruelyValid}')
@@ -47,10 +59,10 @@ export default class MultipleFormatExport extends Component {
   }
 
   /**
-   * @property {Promise} pdfHref - Promise resolving to pdf download link
+   * @property {Promise} exportHref - Promise resolving to export to file link
    */
   @computed('report.{request,visualization,validations.isTruelyValid}')
-  get pdfHref() {
+  get exportHref() {
     const { report: model, compression, store } = this;
     const clonedModel = model.toJSON();
 
@@ -70,20 +82,37 @@ export default class MultipleFormatExport extends Component {
   /**
    * @property {Array} exportFormats - A list of export formats
    */
-  @computed('csvHref', 'pdfHref')
+  @computed('csvHref', 'exportHref', 'supportedFileTypes')
   get exportFormats() {
-    return [
+    const { supportedFileTypes } = this;
+
+    const exportFormats = [
       {
         type: 'CSV',
         href: this.csvHref,
         icon: 'file-text-o'
-      },
-      {
-        type: 'PDF',
-        href: this.pdfHref,
-        icon: 'file-pdf-o'
       }
     ];
+
+    if (Array.isArray(supportedFileTypes)) {
+      if (supportedFileTypes.includes('pdf') || supportedFileTypes.includes('PDF')) {
+        exportFormats.push({
+          type: 'PDF',
+          href: this.exportHref,
+          icon: 'file-pdf-o'
+        });
+      }
+
+      if (supportedFileTypes.includes('png') || supportedFileTypes.includes('PNG')) {
+        exportFormats.push({
+          type: 'PNG',
+          href: this.exportHref.then(href => `${href}&fileType=png`),
+          icon: 'file-image-o'
+        });
+      }
+    }
+
+    return exportFormats;
   }
 
   /**

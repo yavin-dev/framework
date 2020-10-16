@@ -526,10 +526,10 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Export action - href', async function(assert) {
     assert.expect(4);
 
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.enableMultipleExport = false;
+    config.navi.FEATURES.multipleExportFileTypes = [];
 
     await visit('/reports/1/view');
 
@@ -573,7 +573,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'Filter updates are automatically included in export url'
     );
 
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action - csv href', async function(assert) {
@@ -627,17 +627,16 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
   });
 
-  test('Multi export action - pdf href', async function(assert) {
-    assert.expect(4);
+  test('Multi export action - pdf and png href', async function(assert) {
+    assert.expect(5);
 
     const store = this.owner.lookup('service:store');
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
 
-    const encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
-      .attr('href')
-      .split('/export?reportModel=')[1];
+    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    let encodedModel = exportHref.split('/export?reportModel=')[1];
 
     const actualModel = (await CompressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = (await store.findRecord('report', 1)).serialize();
@@ -647,16 +646,18 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
 
+    const exportToPngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
+    assert.equal(`${exportHref}&fileType=png`, exportToPngHref, 'PNG link has appropriate link to export service');
+
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    let modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
       .attr('href')
-      .split('=')[1];
-
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'request.dimensions')
           .objectAt(1)
@@ -671,10 +672,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
       .attr('href')
-      .split('=')[1];
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'visualization.type'),
         'table',
@@ -688,10 +689,11 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PNG")')
       .attr('href')
-      .split('=')[1];
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .replace('&fileType=png', '')
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'visualization.metadata.showTotals.grandTotal'),
         true,

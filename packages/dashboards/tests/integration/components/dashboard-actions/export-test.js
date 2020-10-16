@@ -1,86 +1,71 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import $ from 'jquery';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+
+const TEMPLATE = hbs`
+  <DashboardActions::Export
+    @dashboard={{this.dashboard}}
+    @disabled={{this.disabled}}
+  >
+    Export
+  </DashboardActions::Export>
+`;
 
 module('Integration | Component | dashboard actions/export', function(hooks) {
   setupRenderingTest(hooks);
 
-  test('export href', async function(assert) {
-    assert.expect(1);
+  hooks.beforeEach(async function() {
+    this.set('dashboard', { id: 123, title: 'Akkala Tech Lab Weekly Reports' });
+    this.set('disabled', false);
+    await render(TEMPLATE);
+  });
 
-    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+  test('export links', async function(assert) {
+    assert.expect(4);
 
-    await render(hbs`
-      {{dashboard-actions/export
-        dashboard=dashboard
-      }}
-    `);
+    assert.dom('.ember-basic-dropdown-trigger').hasText('Export', 'Component yields content as expected');
 
-    assert
-      .dom('a')
-      .hasAttribute(
-        'href',
-        '/export?dashboard=123',
-        'Export actions links to export service and gives the dashboard id'
-      );
+    await clickTrigger();
+
+    assert.notOk(
+      !!$('.multiple-format-export__dropdown a:contains("CSV")').length,
+      'Export to CSV is not available for dashboards'
+    );
+
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("PDF")').attr('href'),
+      '/export?dashboard=123',
+      'Export to PDF action has a correct download link'
+    );
+
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("PNG")').attr('href'),
+      '/export?dashboard=123&fileType=png',
+      'Export to PNG action has a correct download link'
+    );
   });
 
   test('export filename', async function(assert) {
     assert.expect(1);
 
-    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
-
-    await render(hbs`
-      {{dashboard-actions/export
-        dashboard=dashboard
-      }}
-    `);
-
-    assert
-      .dom('a')
-      .hasAttribute(
-        'download',
-        'akkala-tech-lab-weekly-reports-dashboard',
-        'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
-      );
+    await clickTrigger();
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("PDF")').attr('download'),
+      'akkala-tech-lab-weekly-reports-dashboard',
+      'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
+    );
   });
 
   test('disabled', async function(assert) {
     assert.expect(1);
 
-    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
+    this.set('disabled', true);
+    await render(TEMPLATE);
+    await clickTrigger();
 
-    await render(hbs`
-      {{dashboard-actions/export
-        dashboard=dashboard
-        disabled=true
-      }}
-    `);
-
-    assert
-      .dom('a')
-      .hasAttribute('href', 'unsafe:javascript:void(0);', 'When disabled, the export action href has no effect');
-  });
-
-  test('notifications', async function(assert) {
-    assert.expect(1);
-
-    this.dashboard = { id: 123, title: 'Akkala Tech Lab Weekly Reports' };
-
-    this.mockNotifications = {
-      add({ message }) {
-        assert.equal(message, 'The download should begin soon.', 'A notification is added when export is clicked.');
-      }
-    };
-
-    await render(hbs`
-      {{dashboard-actions/export
-        dashboard=dashboard
-        naviNotifications=mockNotifications
-      }}
-    `);
-
-    await click('a');
+    assert.dom('.ember-basic-dropdown-content-placeholder').isNotVisible('Dropdown should not be visible');
   });
 });

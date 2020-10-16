@@ -23,7 +23,7 @@
 
   <li class="action">
   {{!-- Export only enabled on a validated report --}}
-    {{#let (component (concat "report-actions/" (if (feature-flag "enableMultipleExport") "multiple-format-export" "export"))) as |ExportAction|}}
+    {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "multipleExportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
       <ExportAction
         id={{concat "navi-report-action-export-" @index}}
         class="navi-reports-index__report-control export {{unless @item.request.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
