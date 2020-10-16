@@ -36,10 +36,6 @@ const TestRequest: RequestV2 = {
   dataSource: 'elideOne'
 };
 
-//const TestOptionDownload: RequestOptions = {
-//  resultType: QueryResultType.CSV
-//};
-
 let Server: Pretender;
 
 module('Unit | Adapter | facts/elide', function(hooks) {
