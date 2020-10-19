@@ -9,6 +9,7 @@ import MetricLabelSerializer, {
   normalizeMetricLabelV2
 } from 'navi-core/serializers/metric-label';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 module('Unit | Serializer | metric label', function(hooks) {
   setupTest(hooks);
@@ -22,20 +23,22 @@ module('Unit | Serializer | metric label', function(hooks) {
 
   test('normalizeMetricLabelV2', function(this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
-      table: 'tableName',
-      columns: [
-        {
-          type: 'metric',
-          cid: 'cid_rupees'
-        }
-      ],
-      filters: [],
-      sorts: [],
-      limit: null,
-      dataSource: 'bardOne',
-      requestVersion: '2.0'
-    });
+    const request = store
+      .createFragment('bard-request-v2/request', {
+        table: 'tableName',
+        columns: [
+          {
+            type: 'metric',
+            cid: 'cid_rupees'
+          }
+        ],
+        filters: [],
+        sorts: [],
+        limit: null,
+        dataSource: 'bardOne',
+        requestVersion: '2.0'
+      })
+      .toJSON() as RequestV2;
 
     const initialMetaData: LegacyMetricLabelConfig = {
       version: 1,

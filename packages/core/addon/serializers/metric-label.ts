@@ -5,6 +5,7 @@
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
 
 export type LegacyMetricLabelConfig = {
   type: 'metric-label';
@@ -17,7 +18,7 @@ export type LegacyMetricLabelConfig = {
 };
 
 export function normalizeMetricLabelV2(
-  request: RequestFragment,
+  request: RequestV2,
   visualization?: LegacyMetricLabelConfig | MetricLabelConfig
 ): MetricLabelConfig {
   if (visualization?.version === 2) {
@@ -26,8 +27,8 @@ export function normalizeMetricLabelV2(
 
   // Take the first metric column since there should be exactly one
   const metricColumn = request.columns.find(c => c.type === 'metric');
-  if (metricColumn === undefined) {
-    throw new Error('There should be exactly one metric column in the request');
+  if (metricColumn === undefined || metricColumn.cid === undefined) {
+    throw new Error('There should be exactly one metric column in the request with a cid');
   }
 
   return {

@@ -3,16 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-import { set, get, computed } from '@ember/object';
+import { set, computed } from '@ember/object';
 import { attr } from '@ember-data/model';
-import ChartVisualization from './chart-visualization';
+import ChartVisualization, { DimensionSeriesValues } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
-import {
-  DIMENSION_SERIES,
-  DATE_TIME_SERIES,
-  chartTypeForRequest,
-  DimensionSeriesValues
-} from 'navi-core/utils/chart-data';
+import { DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest, ChartType } from 'navi-core/utils/chart-data';
 import RequestFragment from './bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
@@ -25,7 +20,19 @@ const CONFIG_PATH = `${SERIES_PATH}.config`;
 const Validations = buildValidations(
   {
     //Global Validation
-    [`${SERIES_PATH}.type`]: validator('chart-type'),
+    [`${SERIES_PATH}.type`]: [
+      validator('chart-type'),
+      validator('inline', {
+        validate(type: ChartType, options: { request: RequestFragment }) {
+          if (type === 'dimension') {
+            const { request } = options;
+            return request.columns.filter(({ type }) => type === 'dimension').length > 0;
+          }
+          return true;
+        },
+        dependentKeys: ['model._request.columns.[]']
+      })
+    ],
 
     [`${CONFIG_PATH}.timeGrain`]: validator('request-time-grain', {
       disabled: computed('chartType', function() {
@@ -40,12 +47,31 @@ const Validations = buildValidations(
         return this.chartType !== DIMENSION_SERIES && this.chartType !== DATE_TIME_SERIES;
       }),
       dependentKeys: ['model._request.columns.[]']
-    })
+    }),
+
+    [`${CONFIG_PATH}.dimensions`]: [
+      validator(
+        'length',
+        { min: 1 },
+        {
+          disabled: computed('chartType', function() {
+            return this.chartType !== DIMENSION_SERIES;
+          }),
+          dependentKeys: ['model._request.columns.[]']
+        }
+      ),
+      validator('request-filters', {
+        disabled: computed('chartType', function() {
+          return this.chartType !== DIMENSION_SERIES;
+        }),
+        dependentKeys: ['model._request.filters.@each.values']
+      })
+    ]
   },
   {
     //Global Validation Options
-    chartType: computed('model._request.{dimensions.[],metrics.[],intervals.firstObject.interval}', function() {
-      let request = get(this, 'request');
+    chartType: computed('model._request.{columns.[],filters.[]}', function() {
+      const { request } = this;
       return request && chartTypeForRequest(request);
     }),
     request: readOnly('model._request')
@@ -76,7 +102,7 @@ export type DateTimeSeries = {
   };
 };
 
-type NullSeries = { type: null; config: {} };
+export type ChartSeries = MetricSeries | DimensionSeries | DateTimeSeries;
 
 export type LineChartConfig = {
   type: 'line-chart';
@@ -89,7 +115,7 @@ export type LineChartConfig = {
     };
     axis: {
       y: {
-        series: MetricSeries | DimensionSeries | DateTimeSeries | NullSeries;
+        series: ChartSeries;
       };
     };
   };
@@ -102,7 +128,7 @@ export default class LineChartVisualization extends ChartVisualization.extend(Va
   version!: LineChartConfig['version'];
   @attr({
     defaultValue(): LineChartConfig['metadata'] {
-      return { axis: { y: { series: { type: null, config: {} } } } };
+      return { axis: { y: { series: { type: 'metric', config: {} } } } };
     }
   })
   metadata!: LineChartConfig['metadata'];

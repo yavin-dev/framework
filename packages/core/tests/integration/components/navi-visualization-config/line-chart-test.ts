@@ -2,50 +2,54 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import EmberObject from '@ember/object';
+import { TestContext } from 'ember-test-helpers';
+import BaseVisualizationManifest from 'navi-core/navi-visualization-manifests/base';
 
-let Template = hbs`
-  {{navi-visualization-config/line-chart
-    response=response
-    request=request
-    options=options
-    type=type
-    onUpdateConfig=(action onUpdateConfig)
-  }}`,
-  request = {
-    hasGroupBy: true,
-    hasMultipleMetrics: true,
-    dimensions: [],
-    metrics: []
-  },
-  chartOptions = {
-    type: 'metric',
-    style: {},
-    axis: {
-      y: {
-        series: {
-          type: 'mock'
-        }
+const Template = hbs`
+  <NaviVisualizationConfig::LineChart
+    @response={{this.response}}
+    @request={{this.request}}
+    @options={{this.options}}
+    @type={{this.type}}
+    @onUpdateConfig={{this.onUpdateConfig}}
+  />`;
+let request = {
+  hasGroupBy: true,
+  hasMultipleMetrics: true,
+  columns: []
+};
+type MockRequest = typeof request;
+
+const chartOptions = {
+  style: {},
+  axis: {
+    y: {
+      series: {
+        type: 'mock',
+        config: {}
       }
     }
-  };
+  }
+};
 
 module('Integration | Component | visualization config/line chart', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function(this: TestContext) {
     //mocking visualization manifest
     this.owner.register(
       'navi-visualization-manifest:mock',
-      EmberObject.extend({
-        hasGroupBy(request) {
+      class extends BaseVisualizationManifest {
+        //@ts-expect-error
+        hasGroupBy(request: MockRequest) {
           return request.hasGroupBy;
-        },
+        }
 
-        hasMultipleMetrics(request) {
+        //@ts-expect-error
+        hasMultipleMetrics(request: MockRequest) {
           return request.hasMultipleMetrics;
         }
-      })
+      }
     );
 
     this.set('type', 'mock');
@@ -84,8 +88,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
     this.set('request', {
       hasGroupBy: false,
       hasMultipleMetrics: false,
-      dimensions: [],
-      metrics: []
+      columns: []
     });
 
     await render(Template);

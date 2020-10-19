@@ -10,10 +10,10 @@ import GlimmerComponentManager from 'dummy/component-managers/glimmer';
  * @param lookupPath - the `component:${componentName}` path to the component
  * @param named the named arguments to be supplied as `args` to the glimmer component
  */
-export function createGlimmerComponent(lookupPath: string, named: Record<string, unknown> = {}): Component {
+export function createGlimmerComponent(lookupPath: string, args: Record<string, unknown> = {}): Component {
   const owner = (getContext() as TestContext).owner;
   const { class: componentClass } = owner.factoryFor(lookupPath);
-  return createGlimmerClass(componentClass, named);
+  return createGlimmerClass(componentClass, args);
 }
 
 /**
@@ -21,11 +21,11 @@ export function createGlimmerComponent(lookupPath: string, named: Record<string,
  * @param glimmerComponent - the class of the glimmer component to create
  * @param named - the named arguments to be supplied as `args` to the glimmer component
  */
-export function createGlimmerClass<T extends Component>(
-  glimmerComponent: T,
-  named: Record<string, unknown> = {}
-): Component {
+export function createGlimmerClass<
+  T extends Component,
+  C extends { new (owner: TestContext['owner'], args: T['args']): T }
+>(glimmerComponent: C, args: T['args']): Component {
   const owner = (getContext() as TestContext).owner;
   const componentManager = new GlimmerComponentManager(owner);
-  return componentManager.createComponent(glimmerComponent, { named });
+  return componentManager.createComponent(glimmerComponent, { named: args });
 }

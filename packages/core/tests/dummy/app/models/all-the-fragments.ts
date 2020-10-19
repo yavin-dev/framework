@@ -3,10 +3,11 @@ import DS from 'ember-data';
 import { fragment } from 'ember-data-model-fragments/attributes';
 import TableFragment from 'navi-core/models/table';
 import MetricLabel from 'navi-core/models/metric-label';
+import LineChartVisualization from 'navi-core/models/line-chart';
 
 export default class AllTheFragments extends DS.Model {
   @fragment('line-chart', { defaultValue: {} })
-  lineChart!: DS.Model;
+  lineChart!: LineChartVisualization;
   @fragment('bar-chart', { defaultValue: {} })
   barChart!: DS.Model;
   @fragment('table', { defaultValue: {} })

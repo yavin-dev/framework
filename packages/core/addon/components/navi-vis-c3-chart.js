@@ -24,7 +24,6 @@ import { set, getProperties, get, computed } from '@ember/object';
 import C3Chart from 'ember-c3/components/c3-chart';
 import c3 from 'c3';
 import { A } from '@ember/array';
-import { inject as service } from '@ember/service';
 import $ from 'jquery';
 
 export default C3Chart.extend({

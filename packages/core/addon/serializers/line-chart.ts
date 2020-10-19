@@ -4,11 +4,12 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import Model from '@ember-data/model';
+import { assert } from '@ember/debug';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
 
-type LegacyLineChartConfig = {
+export type LegacyLineChartConfig = {
   type: 'line-chart';
   version: 1;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,7 +23,6 @@ export function normalizeLineChartV2(
   if (visualization.version === 2) {
     return visualization;
   }
-  debugger;
   const series = visualization.metadata?.axis?.y?.series;
 
   let metricCid;
@@ -38,6 +38,24 @@ export function normalizeLineChartV2(
     }
   }
 
+  let timeGrain = series?.config?.timeGrain;
+  let dimensions;
+  if (series?.config?.dimensions) {
+    dimensions = series?.config?.dimensions.map(series => {
+      return {
+        name: series.name,
+        values: Object.keys(series.values).reduce((newValues: Record<string, string>, key) => {
+          const dimensionColumn = request.columns.find(({ field, type }) => type === 'dimension' && field === key);
+          if (!dimensionColumn?.cid) {
+            throw new Error(`Could not find a matching column for dimension ${key}`);
+          }
+          newValues[dimensionColumn.cid] = series.values[key];
+          return newValues;
+        }, {})
+      };
+    });
+  }
+
   // TODO Keep existing config during normalization
   return {
     type: 'line-chart',
@@ -49,8 +67,8 @@ export function normalizeLineChartV2(
             type: series?.type,
             config: {
               // TODO: dimensions values need to be updated
-              ...(series?.config?.dimensions ? { dimension: [] } : {}),
-              ...(series?.config?.timeGrain ? { timeGrain: series?.config?.timeGrain } : {}),
+              ...(dimensions ? { dimensions } : {}),
+              ...(timeGrain ? { timeGrain } : {}),
               ...(metricCid ? { metricCid } : {})
             }
           }

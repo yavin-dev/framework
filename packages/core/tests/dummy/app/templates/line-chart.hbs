@@ -1,7 +1,7 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 <h3>By Metric</h3>
-<div class="chart-container">
+<div class="chart-container metric">
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.default.0.request}}
     @response={{this.model.default.0.response}}
@@ -39,7 +39,7 @@
 />
 
 <h3>By Dimension</h3>
-<div class="chart-container">
+<div class="chart-container dimension">
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.dimension.0.request}}
     @response={{this.model.dimension.0.response}}
@@ -60,7 +60,7 @@
 
 <h3>Custom Chart Builder</h3>
 <NaviVisualizations::LineChart
-  @classNames="custom-chart-builder"
+  class="custom-chart-builder"
   @model={{this.model.default}}
   @options={{this.customOptions}}
 />

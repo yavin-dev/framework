@@ -1,7 +1,7 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
-import { Grain } from 'navi-core/utils/date';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { Grain } from 'navi-data/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /*eslint max-len: ["error", { "code": 250 }]*/
@@ -238,18 +238,7 @@ export default class LineChartRoute extends Route {
     });
   }
 
-  get defaultRequest() {
-    return this.buildRequest(
-      [
-        { field: 'uniqueIdentifier' },
-        { field: 'totalPageViews' },
-        { field: 'revenue', parameters: { currency: 'USD' } }
-      ],
-      [],
-      'week',
-      { start: '2015-12-14 00:00:00.000', end: '2016-02-22 00:00:00.000' }
-    );
-  }
+  defaultRequest!: RequestFragment;
 
   get dimensionRequest() {
     return this.buildRequest(
@@ -280,6 +269,19 @@ export default class LineChartRoute extends Route {
       start: '2017-09-01 00:00:00.000',
       end: '2017-09-07 00:00:00.000'
     });
+  }
+
+  init() {
+    this.defaultRequest = this.buildRequest(
+      [
+        { field: 'uniqueIdentifier' },
+        { field: 'totalPageViews' },
+        { field: 'revenue', parameters: { currency: 'USD' } }
+      ],
+      [],
+      'week',
+      { start: '2015-12-14 00:00:00.000', end: '2016-02-22 00:00:00.000' }
+    );
   }
 
   model() {

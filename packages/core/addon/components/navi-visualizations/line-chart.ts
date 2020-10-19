@@ -23,10 +23,9 @@ import { VisualizationModel } from './table';
 import { BaseChartBuilder } from 'navi-core/chart-builders/base';
 import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { LineChartConfig } from 'navi-core/models/line-chart';
-import { buildDimensionSeriesValues } from 'navi-core/utils/chart-data';
+import { ChartSeries, LineChartConfig } from 'navi-core/models/line-chart';
 
-const DEFAULT_OPTIONS = {
+const DEFAULT_OPTIONS = <const>{
   style: {
     curve: 'line',
     area: false,
@@ -123,27 +122,32 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * y axis label config options for the chart
    */
+  @computed('seriesConfig.config.metricCid', 'request.columns.[]')
   get yAxisLabelConfig() {
-    let metricDisplayName = null;
-    // TODO get metric display name
-    return metricDisplayName
-      ? {
-          axis: {
-            y: {
-              label: {
-                text: metricDisplayName
-              }
+    const { seriesConfig } = this;
+    if ('metricCid' in seriesConfig.config) {
+      const { metricCid } = seriesConfig.config;
+      const metric = this.request.columns.find(({ cid }) => cid === metricCid);
+      assert(`a metric with cid ${seriesConfig.config.metricCid} should be found`, metric);
+      return {
+        axis: {
+          y: {
+            label: {
+              text: metric.displayName
             }
           }
         }
-      : {};
+      };
+    }
+
+    return {};
   }
 
   /**
    * options for determining chart series
    */
   @computed('args.options')
-  get seriesConfig() {
+  get seriesConfig(): ChartSeries {
     const optionsWithDefault = merge({}, DEFAULT_OPTIONS, this.args.options);
 
     return optionsWithDefault.axis.y.series;
@@ -168,15 +172,6 @@ export default class LineChart extends ChartBuildersBase<Args> {
   }
 
   /**
-   * dimension series with values
-   */
-  @computed('request', 'response')
-  get dimensionSeriesValues() {
-    const { request, response } = this;
-    return buildDimensionSeriesValues(request, response.rows);
-  }
-
-  /**
    * chart series data
    */
   @computed('request', 'response', 'builder', 'seriesConfig.config')
@@ -190,7 +185,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
    */
   @computed('args.options', 'request', 'dimensionSeriesValues', 'seriesConfig', 'namespace')
   get seriesDataGroups() {
-    const { request, dimensionSeriesValues, seriesConfig } = this;
+    const { request, seriesConfig } = this;
     const newOptions = merge({}, DEFAULT_OPTIONS, this.args.options);
     const { stacked } = newOptions.style;
 
@@ -200,7 +195,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
 
     // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
     if (seriesConfig.type === 'dimension') {
-      return [dimensionSeriesValues];
+      return [seriesConfig.config.dimensions.map(dimension => dimension.name)];
     } else if (seriesConfig.type === 'metric') {
       return [request.metricColumns.map(c => c.displayName)];
     }
@@ -325,7 +320,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * explicity specifies x axis tick positions for year chart grain
    */
-  @computed('args.model.firstObject', 'seriesConfig')
+  @computed('request.timeGrain', 'seriesConfig.config.timeGrain', 'xAxisTickValuesByGrain')
   get xAxisTickValues() {
     const chartGrain = this.seriesConfig.config.timeGrain;
     if (chartGrain !== 'year') {

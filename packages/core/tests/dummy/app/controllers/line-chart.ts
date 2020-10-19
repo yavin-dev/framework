@@ -28,7 +28,6 @@ export default class LineChartController extends Controller {
           type: 'dimension',
           config: {
             metricCid: 'cid_adClicks',
-            dimensionOrder: ['age'],
             dimensions: [
               {
                 name: '-3,All Other',

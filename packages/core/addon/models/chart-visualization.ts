@@ -14,6 +14,10 @@ import Visualization from './visualization';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from './bard-request-v2/fragments/column';
+import { get } from '@ember/object';
+import { ChartSeries, DateTimeSeries, DimensionSeries, MetricSeries } from './line-chart';
+
+export type DimensionSeriesValues = { name: string; values: Record<string, unknown> };
 
 export default class ChartVisualization extends Visualization {
   /**
@@ -24,7 +28,7 @@ export default class ChartVisualization extends Visualization {
    */
   getSeriesBuilder(
     type: ChartType
-  ): (config: unknown, validations: TODO, request: RequestFragment, response: ResponseV1) => Series {
+  ): (config: unknown, validations: TODO, request: RequestFragment, response: ResponseV1) => ChartSeries {
     let builders = {
       [METRIC_SERIES]: this.buildMetricSeries,
       [DIMENSION_SERIES]: this.buildDimensionSeries,
@@ -34,8 +38,8 @@ export default class ChartVisualization extends Visualization {
     return builders[type];
   }
 
-  private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): SeriesValues[] {
-    const series: Record<string, SeriesValues> = {};
+  private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): DimensionSeriesValues[] {
+    const series: Record<string, DimensionSeriesValues> = {};
     const dimensions = getRequestDimensions(request);
     rows.forEach(row => {
       const values: Record<string, string | number | boolean> = {};
@@ -63,20 +67,25 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildDimensionSeries(config: string, validations: unknown, request: RequestFragment, _response: ResponseV1) {
+  buildDimensionSeries(
+    config: string,
+    validations: unknown,
+    request: RequestFragment,
+    response: ResponseV1
+  ): DimensionSeries {
     const validationAttrs = validations.attrs;
-    const currentMetric = config.metricCid;
-    const currentDimension = config.dimensions;
+    const currentMetric = get(this, config).metricCid;
+    const currentDimension = get(this, config).dimensions;
 
-    const isMetricValid = validationAttrs.config.metricCid.isValid;
-    const areDimensionsValid = validationAttrs.config.dimensions.isValid;
+    const isMetricValid = get(validationAttrs, config).metricCid.isValid;
+    const areDimensionsValid = get(validationAttrs, config).dimensions.isValid;
 
     const metric = isMetricValid
       ? (request.metricColumns.find(({ cid }) => cid === currentMetric) as ColumnFragment)
       : request.metricColumns[0];
 
     const responseRows = topN(
-      maxDataByDimensions(response.rows, dimensionOrder, metric.canonicalName),
+      maxDataByDimensions(response.rows, getRequestDimensions(request), metric.canonicalName),
       metric.canonicalName,
       10
     );
@@ -86,7 +95,7 @@ export default class ChartVisualization extends Visualization {
       type: DIMENSION_SERIES,
       config: {
         metricCid: metric.cid,
-        dimensions: undefined // TODO bring back
+        dimensions // TODO bring back
       }
     };
   }
@@ -100,7 +109,12 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildMetricSeries(_config: string, _validations: unknown, _request: RequestFragment, _response: ResponseV1) {
+  buildMetricSeries(
+    _config: string,
+    _validations: unknown,
+    _request: RequestFragment,
+    _response: ResponseV1
+  ): MetricSeries {
     return {
       type: METRIC_SERIES,
       config: {}
@@ -116,11 +130,16 @@ export default class ChartVisualization extends Visualization {
    * @param response - response object
    * @returns series config object
    */
-  buildDateTimeSeries(_config: string, _validations: unknown, request: RequestFragment, _response: ResponseV1) {
+  buildDateTimeSeries(
+    _config: string,
+    _validations: unknown,
+    request: RequestFragment,
+    _response: ResponseV1
+  ): DateTimeSeries {
     return {
       type: DATE_TIME_SERIES,
       config: {
-        metric: request.metricColumns[0].cid,
+        metricCid: request.metricColumns[0].cid,
         timeGrain: 'year'
       }
     };

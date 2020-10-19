@@ -15,7 +15,7 @@
           as |item|
         >
           <div class="line-chart-config__series-config__item__content">
-            {{if (eq @seriesType "dimension") seriesDataItem.name (metric-format seriesDataItem @request.dataSource)}}
+            {{if (eq @seriesType "dimension") seriesDataItem.name seriesDataItem.displayName}}
           </div>
           <item.handle>
             <div class="line-chart-config__series-config__item__handler">
