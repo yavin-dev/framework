@@ -11,9 +11,9 @@ import { configHost } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
 import { Filter } from '../facts/interface';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import NaviDimensionAdapter, { DimensionColumn, DimensionFilter } from './interface';
+import NaviDimensionAdapter, { DimensionFilter } from './interface';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];

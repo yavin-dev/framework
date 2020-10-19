@@ -2,20 +2,15 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { Parameters, FilterOperator } from '../facts/interface';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import { FilterOperator } from '../facts/interface';
 import EmberObject from '@ember/object';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
+import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export type DimensionFilter = {
   operator: FilterOperator;
   values: (string | number)[];
 };
-
-export interface DimensionColumn {
-  columnMetadata: DimensionMetadataModel;
-  parameters?: Parameters;
-}
 
 export default interface NaviDimensionAdapter extends EmberObject {
   /**

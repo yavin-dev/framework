@@ -20,13 +20,14 @@ import tooltipLayout from '../templates/chart-tooltips/metric';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
-import EmberObject, { set, computed } from '@ember/object';
+import BaseChartBuilder from './base';
+import { set, computed } from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 type ResponseRow = ResponseV1['rows'][number];
 
-export default class MetricChartBuilder extends EmberObject {
+export default class MetricChartBuilder extends BaseChartBuilder {
   byXSeries?: DataGroup<ResponseRow>;
 
   /**
@@ -47,7 +48,7 @@ export default class MetricChartBuilder extends EmberObject {
    * @param {Object} request - request used to get data
    * @returns {Array} array of c3 data with x values
    */
-  buildData(data: ResponseV1['rows'], _config: unknown, request: RequestFragment) {
+  buildData(data: ResponseV1['rows'], _config: unknown, request: RequestFragment): unknown[] {
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const { timeGrain, interval } = request;
     assert('request should have an interval', interval);

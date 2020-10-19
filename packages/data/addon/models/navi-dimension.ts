@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import { DimensionColumn } from 'navi-data/adapters/dimensions/interface';
+import { DimensionColumn } from './metadata/dimension';
 import { isEqual } from 'lodash-es';
 
 export default class NaviDimensionModel extends EmberObject {

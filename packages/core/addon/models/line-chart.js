@@ -6,8 +6,7 @@
 import { readOnly } from '@ember/object/computed';
 import { set, get, computed } from '@ember/object';
 import DS from 'ember-data';
-import VisualizationBase from './visualization';
-import ChartVisualization from 'navi-core/mixins/models/chart-visualization';
+import ChartVisualization from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
 
@@ -81,7 +80,7 @@ const Validations = buildValidations(
   }
 );
 
-export default VisualizationBase.extend(Validations, ChartVisualization, {
+export default ChartVisualization.extend(Validations, {
   type: DS.attr('string', { defaultValue: 'line-chart' }),
   version: DS.attr('number', { defaultValue: 1 }),
   metadata: DS.attr({

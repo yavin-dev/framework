@@ -47,9 +47,9 @@ module('Unit | Serializer | facts/elide', function(hooks) {
   });
 
   test('it normalizes an elide fact response', function(assert) {
-    const normalized = Serializer.normalize(Payload, Request);
+    const { rows, meta } = Serializer.normalize(Payload, Request) as NaviFactResponse;
     assert.deepEqual(
-      normalized,
+      { rows, meta },
       {
         meta: {},
         rows: [
