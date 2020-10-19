@@ -10,60 +10,84 @@
  */
 
 import { alias } from '@ember/object/computed';
-import Component from '@ember/component';
-import { computed } from '@ember/object';
+import Component from '@glimmer/component';
+import { computed, action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
+import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import numeral from 'numeral';
+// @ts-ignore
 import d3 from 'd3';
-import layout from '../../templates/components/navi-visualizations/goal-gauge';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import FilterFragment from 'dummy/models/bard-request-v2/fragments/filter';
+import NaviFormatterService from 'navi-data/services/navi-formatter';
+import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import { VisualizationModel } from './table';
+import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
+import ColumnFragment from 'dummy/models/bard-request-v2/fragments/column';
 
 const DEFAULT_OPTIONS = {
   baselineValue: 0,
   goalValue: 0,
   metricTitle: '',
-  metric: { metric: '', parameters: {} },
+  metricCid: '',
   prefix: '',
   unit: '',
   thresholdColors: ['#f05050', '#ffc831', '#44b876'],
   thresholdPercentages: [75, 85, 100]
 };
+export type Args = {
+  model: VisualizationModel;
+  options: GoalGaugeConfig['metadata'];
+};
 
-@templateLayout(layout)
-@tagName('')
-export default class NaviVisualizationsGoalGaugeComponent extends Component {
-  @service naviMetadata;
-  @service naviFormatter;
+export default class GoalGaugeVisualization extends Component<Args> {
+  @service
+  naviMetadata!: NaviMetadataService;
+  @service
+  naviFormatter!: NaviFormatterService;
 
   /**
    * @property {Array} - List of class names added to the gauge component
    */
-  @computed
+  @computed()
   get widgetClassNames() {
     return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }
 
-  /**
-   * @property {Number} - value to be rendered on gauge
-   */
-  actualValue;
+  @computed('args.{model.[],options.metricCid}')
+  get metric(): ColumnFragment {
+    const { request } = this.args.model?.firstObject || {};
+    const { metricCid } = this.args.options;
+    const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
+    assert(`A metric column should exist with cid: ${metricCid}`, metricColumn);
+    return metricColumn;
+  }
 
+  get actualValue(): number {
+    const { model } = this.args;
+    if (model) {
+      const { response } = model?.firstObject || {};
+      const firstRow = response?.rows?.[0] || {};
+      const { canonicalName } = this.metric;
+      let actualValue: number = firstRow[canonicalName] as number;
+      return actualValue;
+    }
+    return 0;
+  }
   /**
    * @property {object} - target metric model pulled from serialized request
    */
-  @alias('model.firstObject.request.metrics.0') metricModel;
+  @alias('model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
 
   /**
    * @property {Number} - starting value to measure progress towards the gaol
    */
-  @alias('config.baselineValue') baselineValue;
+  @alias('config.baselineValue') baselineValue = 0;
 
   /**
    * @property {Number} - value which is desired to be achieved
    */
-  @alias('config.goalValue') goalValue;
+  @alias('config.goalValue') goalValue = 0;
 
   /**
    * @property {Object} - legend configuration
@@ -73,19 +97,14 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   /**
    * @property {String} - name of data source
    */
-  @alias('model.firstObject.request.dataSource') dateSourceName;
+  @alias('model.firstObject.request.dataSource') dataSourceName = '';
 
   /**
    * @property {String} formatted default metric
    */
-  @computed('options.metric.{metric,parameters}', 'dateSourceName')
+  @computed('options.metric.{metric,parameters}', 'dataSourceName')
   get defaultMetricTitle() {
-    const {
-      options: { metric },
-      dateSourceName
-    } = this;
-    const metricMetadata = this.naviMetadata.getById('metric', metric.metric, dateSourceName);
-    return this.naviFormatter.formatColumnName(metricMetadata, metric.parameters);
+    return this.naviFormatter.formatColumnName(this.metric.columnMetadata, this.metric.parameters);
   }
 
   /**
@@ -93,6 +112,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('config.{metricTitle,metric}')
   get metricTitle() {
+    debugger;
     return this.config?.metricTitle || this.defaultMetricTitle;
   }
 
@@ -105,19 +125,19 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   }
 
   /**
-   * @property {String} - name of goal metric
+   * @property {String} - name of goal metricCid
    */
-  @alias('config.metric') metric;
+  @alias('config.metricCid') metricCid = '';
 
   /**
    * @property {String} - metric prefix
    */
-  @alias('config.prefix') prefix;
+  @alias('config.prefix') prefix = '';
 
   /**
    * @property {String} - metric unit
    */
-  @alias('config.unit') unit;
+  @alias('config.unit') unit = '';
 
   /**
    * @property {Object} - gauge tooltip configuration
@@ -129,13 +149,13 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    */
   @computed('options')
   get config() {
-    return { ...DEFAULT_OPTIONS, ...this.options };
+    return { ...DEFAULT_OPTIONS, ...this.args.options };
   }
 
   /**
    * @property {Object} - gauge data to render
    */
-  @computed
+  @computed()
   get data() {
     return {
       columns: [['data', this.actualValue]],
@@ -153,7 +173,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
       max: this.goalValue,
       min: this.baselineValue,
       label: {
-        extents: value => {
+        extents: (value: number) => {
           let number = this._formatNumber(value),
             prefix = this.prefix,
             unit = this.unit;
@@ -166,12 +186,12 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
   /**
    * @property {Array} - colors to render corresponding to the thresholdValues
    */
-  @alias('config.thresholdColors') thresholdColors;
+  @alias('config.thresholdColors') thresholdColors: any;
 
   /**
    * @property {Array} - percentages to render corresponding to the colors
    */
-  @alias('config.thresholdPercentages') thresholdPercentages;
+  @alias('config.thresholdPercentages') thresholdPercentages: any;
 
   /**
    * @property {Array} - threshold values to indicate what color to render
@@ -182,7 +202,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
     const { thresholdPercentages: percentages, goalValue: goal, baselineValue: baseline } = this;
     const diff = goal - baseline;
 
-    return percentages.map(p => Number(baseline) + (diff * p) / 100);
+    return percentages.map((p: number) => Number(baseline) + (diff * p) / 100);
   }
 
   /**
@@ -200,39 +220,9 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
     };
   }
 
-  /**
-   * Fires after the element is rendered/rerendered
-   * @method didRender
-   * @override
-   */
-  didRender() {
-    super.didRender(...arguments);
-    this._drawTitle();
-  }
-
-  /**
-   * Reset actualValue back to its computed value while still allowing
-   * the property to be set by the component between renders
-   * @method didReceiveAttrs
-   * @override
-   */
-  didReceiveAttrs() {
-    super.didReceiveAttrs(...arguments);
-
-    const metric = canonicalizeMetric(this.config.metric);
-    this.actualValue = this.model?.firstObject?.response?.rows?.[0]?.[metric];
-  }
-
-  /**
-   * Fires before the element is rerendered
-   * @method willUpdate
-   * @override
-   */
-  willUpdate() {
-    super.willUpdate(...arguments);
+  willDestroy() {
     this._removeTitle();
   }
-
   /**
    * Removes custom gauge title
    * @method _removeTitle
@@ -248,7 +238,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    * @method _drawTitle
    * @private
    */
-  _drawTitle() {
+  @action _drawTitle() {
     const titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`);
     const { metricTitle, goalValue, actualValue, baselineValue: baseline } = this;
     const number = this._formatNumber(actualValue);
@@ -287,7 +277,7 @@ export default class NaviVisualizationsGoalGaugeComponent extends Component {
    * @param {Number} value - value to format
    * @returns {String} formatted number
    */
-  _formatNumber(value) {
+  _formatNumber(value: number) {
     let formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
     return numeral(value)
       .format(formatStr)

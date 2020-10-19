@@ -4,12 +4,11 @@
  */
 
 import { readOnly } from '@ember/object/computed';
-import { get, set } from '@ember/object';
-import { A as arr } from '@ember/array';
-import DS from 'ember-data';
 import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import RequestFragment from './bard-request-v2/request';
+import { attr } from '@ember-data/model';
+import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object
@@ -17,7 +16,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
-    'metadata.metric': validator('request-metric-exist'),
+    'metadata.metricCid': validator('request-metric-exist'),
     'metadata.baselineValue': validator('number', { allowString: true, allowNone: false }),
     'metadata.goalValue': validator('number', { allowString: true, allowNone: false })
   },
@@ -27,21 +26,25 @@ const Validations = buildValidations(
   }
 );
 
-export default VisualizationBase.extend(Validations, {
-  type: DS.attr('string', { defaultValue: 'goal-gauge' }),
-  version: DS.attr('number', { defaultValue: 1 }),
-  metadata: DS.attr({
-    defaultValue: () => {
-      return {
-        metric: null,
-        baselineValue: null,
-        goalValue: null,
-        metricTitle: null,
-        unit: null,
-        prefix: null
-      };
-    }
-  }),
+export type GoalGaugeConfig = {
+  type: 'goal-gauge';
+  version: 1;
+  metadata: {
+    metricCid: string;
+    baselineValue: number;
+    goalValue: number;
+  };
+};
+
+export default class GoalGaugeModel extends VisualizationBase.extend(Validations) implements GoalGaugeConfig {
+  @attr('string', { defaultValue: 'goal-gauge' })
+  type!: GoalGaugeConfig['type'];
+
+  @attr('number', { defaultValue: 1 })
+  version!: GoalGaugeConfig['version'];
+
+  @attr({ defaultValue: () => ({}) })
+  metadata!: GoalGaugeConfig['metadata'];
 
   /**
    * Rebuild config based on request and response
@@ -51,25 +54,29 @@ export default VisualizationBase.extend(Validations, {
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(request, response) {
+  rebuildConfig(request: RequestFragment, response: ResponseV1): object {
     if (request && response) {
-      let metrics = arr(get(request, 'metrics')),
-        metric = get(metrics, 'firstObject').toJSON(),
-        canonicalName = canonicalizeMetric(metric),
-        actualValue = get(arr(response.rows), `firstObject.${canonicalName}`),
+      let metricCid = request.metricColumns[0].cid,
+        canonicalName = request.metricColumns[0].canonicalName,
+        firstRow = response?.rows?.[0] || {},
+        actualValue: number = firstRow[canonicalName] as number,
         above = actualValue * 1.1,
         below = actualValue * 0.9,
         baselineValue = actualValue > 0 ? below : above,
         goalValue = actualValue > 0 ? above : below;
 
-      //handle the zero value case
+      //handle the zero value casex
       if (actualValue === 0) {
         baselineValue = 0;
         goalValue = 1;
       }
 
-      set(this, 'metadata', { baselineValue, goalValue, metric });
+      this.set('metadata', {
+        metricCid,
+        baselineValue,
+        goalValue
+      });
     }
     return this;
   }
-});
+}

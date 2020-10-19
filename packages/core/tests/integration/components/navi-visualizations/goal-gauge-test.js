@@ -20,16 +20,13 @@ module('Integration | Component | goal gauge ', function(hooks) {
     assert.expect(6);
 
     _setModel(this, 'pageViews', 3030000000);
-    set(this, 'metric', { metric: 'pageViews', paramters: {} });
+    this.set('metric', { metric: 'pageViews', paramters: {} });
+    this.set('options', { metric: this.metric, baselineValue: 290000000, goalValue: 310000000 });
     await render(hbs`
-    {{navi-visualizations/goal-gauge
-        model=model
-        options=(hash
-          baselineValue=290000000
-          goalValue=310000000
-          metric=metric
-        )
-      }}
+      <NaviVisualizations::GoalGauge
+        @model={{this.model}}
+        @options={{this.options}}
+    />
     `);
 
     assert.dom('.c3-chart-component svg').exists('gauge component renders');
