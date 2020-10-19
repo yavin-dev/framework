@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import NaviFactSerializer from 'navi-data/serializers/facts/interface';
 import { AsyncQueryResponse, QueryStatus, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const Payload: AsyncQueryResponse = {
   asyncQuery: {

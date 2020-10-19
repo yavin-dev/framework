@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { QueryStatus, AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import { TestContext as Context } from 'ember-test-helpers';
