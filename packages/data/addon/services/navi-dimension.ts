@@ -70,6 +70,7 @@ export default class NaviDimensionService extends Service {
   async search(dimension: DimensionColumn, query: string, options?: ServiceOptions): Promise<NaviDimensionModel[]> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const payload = await this.adapterFor(dataSourceType).search(dimension, query, options);
+    console.log('search');
     return this.serializerFor(dataSourceType).normalize(dimension, payload);
   }
 }

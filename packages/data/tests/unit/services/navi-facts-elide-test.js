@@ -72,6 +72,7 @@ const TestRequest = {
 };
 
 module('Unit | Service | Navi Facts - Elide', function(hooks) {
+  console.log('navi facts elide');
   setupTest(hooks);
   setupMirage(hooks);
 

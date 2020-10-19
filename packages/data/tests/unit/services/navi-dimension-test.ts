@@ -17,6 +17,7 @@ interface TestContext extends Context {
 }
 
 module('Unit | Service | navi-dimension', function(hooks) {
+  console.log('navi dimension');
   setupTest(hooks);
   setupMirage(hooks);
 
