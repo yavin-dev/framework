@@ -11,6 +11,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { assert } from '@ember/debug';
+import EmberArray from '@ember/array';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
@@ -21,9 +22,10 @@ import { run } from '@ember/runloop';
 import ChartBuildersBase from './chart-builders-base';
 import { VisualizationModel } from './table';
 import { BaseChartBuilder } from 'navi-core/chart-builders/base';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ChartSeries, LineChartConfig } from 'navi-core/models/line-chart';
+import { Grain } from 'navi-data/utils/date';
 
 const DEFAULT_OPTIONS = <const>{
   style: {
@@ -64,6 +66,8 @@ const DEFAULT_OPTIONS = <const>{
     }
   }
 };
+
+type InsightsData = { index: number; actual: number; predicted: number; standardDeviation: number };
 
 export type Args = {
   model: VisualizationModel;
@@ -122,7 +126,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * y axis label config options for the chart
    */
-  @computed('seriesConfig.config.metricCid', 'request.columns.[]')
+  @computed('seriesConfig.config.metricCid', 'request.columns.@each.displayName')
   get yAxisLabelConfig() {
     const { seriesConfig } = this;
     if ('metricCid' in seriesConfig.config) {
@@ -174,7 +178,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series data
    */
-  @computed('request', 'response', 'builder', 'seriesConfig.config')
+  @computed('request.columns.[]', 'response', 'builder', 'seriesConfig.config')
   get seriesData() {
     const { request, response, builder, seriesConfig } = this;
     return builder.buildData(response, seriesConfig.config, request);
@@ -183,7 +187,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series groups for stacking
    */
-  @computed('args.options', 'request', 'dimensionSeriesValues', 'seriesConfig', 'namespace')
+  @computed('args.options', 'seriesConfig.config.dimensions.@each.name', 'request.metricColumns.@each.displayName')
   get seriesDataGroups() {
     const { request, seriesConfig } = this;
     const newOptions = merge({}, DEFAULT_OPTIONS, this.args.options);
@@ -250,9 +254,9 @@ export default class LineChart extends ChartBuildersBase<Args> {
    * config for selecting data points on chart
    */
   @computed('args.model.[]')
-  get dataSelectionConfig() {
+  get dataSelectionConfig(): { dataSelection?: Promise<EmberArray<InsightsData>> } {
     // model is an array, and object at index 1 is insights data promise
-    const insights = this.args.model.objectAt(1);
+    const insights = (this.args.model.objectAt(1) as unknown) as Promise<EmberArray<InsightsData>>;
     return insights ? { dataSelection: insights } : {};
   }
 
@@ -298,7 +302,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * x axis tick positions for day/week/month grain on year chart grain
    */
-  get xAxisTickValuesByGrain() {
+  get xAxisTickValuesByGrain(): Partial<Record<Grain, number[] | undefined>> {
     const dayValues = [];
     for (let i = 0; i < 12; i++) {
       dayValues.push(
@@ -320,15 +324,15 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * explicity specifies x axis tick positions for year chart grain
    */
-  @computed('request.timeGrain', 'seriesConfig.config.timeGrain', 'xAxisTickValuesByGrain')
+  @computed('request.timeGrain', 'seriesConfig.{type,config.timeGrain}', 'xAxisTickValuesByGrain')
   get xAxisTickValues() {
-    const chartGrain = this.seriesConfig.config.timeGrain;
-    if (chartGrain !== 'year') {
+    const { seriesConfig } = this;
+    if (seriesConfig.type !== 'dateTime' || seriesConfig.config.timeGrain !== 'year') {
       return {};
     }
     const requestGrain = this.request?.timeGrain;
 
-    const values = this.xAxisTickValuesByGrain[requestGrain];
+    const values = requestGrain ? this.xAxisTickValuesByGrain[requestGrain] : undefined;
     return {
       axis: {
         x: {
@@ -353,7 +357,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
     const seriesConfig = this.seriesConfig.config;
 
     return {
-      contents(tooltipData: { x: unknown }[]) {
+      contents(tooltipData: { x: number }[]) {
         /*
          * Since tooltipData.x only contains the index value, map it
          * to the raw x value for better formatting

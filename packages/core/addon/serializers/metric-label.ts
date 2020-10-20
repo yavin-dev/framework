@@ -4,7 +4,6 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
 
 export type LegacyMetricLabelConfig = {

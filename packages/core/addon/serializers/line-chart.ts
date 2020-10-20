@@ -4,10 +4,10 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import Model from '@ember-data/model';
-import { assert } from '@ember/debug';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
+import { DimensionSeriesValues } from 'navi-core/models/chart-visualization';
 
 export type LegacyLineChartConfig = {
   type: 'line-chart';
@@ -41,10 +41,10 @@ export function normalizeLineChartV2(
   let timeGrain = series?.config?.timeGrain;
   let dimensions;
   if (series?.config?.dimensions) {
-    dimensions = series?.config?.dimensions.map(series => {
+    dimensions = series?.config?.dimensions.map((series: DimensionSeriesValues) => {
       return {
         name: series.name,
-        values: Object.keys(series.values).reduce((newValues: Record<string, string>, key) => {
+        values: Object.keys(series.values).reduce((newValues: Record<string, unknown>, key) => {
           const dimensionColumn = request.columns.find(({ field, type }) => type === 'dimension' && field === key);
           if (!dimensionColumn?.cid) {
             throw new Error(`Could not find a matching column for dimension ${key}`);

@@ -134,6 +134,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
+    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 
@@ -141,7 +142,8 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return this.tooltipData.map(series => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return this.tooltipData.map((series: any) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.id) || [];
 

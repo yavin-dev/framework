@@ -69,12 +69,15 @@ export default class ChartVisualization extends Visualization {
    */
   buildDimensionSeries(
     config: string,
-    validations: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    validations: { attrs: any },
     request: RequestFragment,
     response: ResponseV1
   ): DimensionSeries {
     const validationAttrs = validations.attrs;
+    //@ts-expect-error
     const currentMetric = get(this, config).metricCid;
+    //@ts-expect-error
     const currentDimension = get(this, config).dimensions;
 
     const isMetricValid = get(validationAttrs, config).metricCid.isValid;

@@ -23,9 +23,9 @@ const Validations = buildValidations(
     [`${SERIES_PATH}.type`]: [
       validator('chart-type'),
       validator('inline', {
-        validate(type: ChartType, options: { request: RequestFragment }) {
-          if (type === 'dimension') {
-            const { request } = options;
+        validate(type: ChartType, options: { request?: RequestFragment }) {
+          const { request } = options;
+          if (type === 'dimension' && request) {
             return request.columns.filter(({ type }) => type === 'dimension').length > 0;
           }
           return true;

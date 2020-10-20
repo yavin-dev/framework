@@ -1,6 +1,5 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { Grain } from 'navi-data/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
@@ -238,7 +237,18 @@ export default class LineChartRoute extends Route {
     });
   }
 
-  defaultRequest!: RequestFragment;
+  get defaultRequest() {
+    return this.buildRequest(
+      [
+        { field: 'uniqueIdentifier' },
+        { field: 'totalPageViews' },
+        { field: 'revenue', parameters: { currency: 'USD' } }
+      ],
+      [],
+      'week',
+      { start: '2015-12-14 00:00:00.000', end: '2016-02-22 00:00:00.000' }
+    );
+  }
 
   get dimensionRequest() {
     return this.buildRequest(
@@ -253,15 +263,24 @@ export default class LineChartRoute extends Route {
   }
 
   get hourGrainRequest() {
-    return this.buildRequest([{ field: 'adClicks' }], [], 'hour', {});
+    return this.buildRequest([{ field: 'adClicks' }], [], 'hour', {
+      start: '2017-02-09 00:00:00.000',
+      end: '2017-02-10 23:00:00.000'
+    });
   }
 
   get minuteGrainRequest() {
-    return this.buildRequest([{ field: 'adClicks' }], [], 'minute', {});
+    return this.buildRequest([{ field: 'adClicks' }], [], 'minute', {
+      start: '2017-02-09 00:00:00.000',
+      end: '2017-02-09 02:10:00.000'
+    });
   }
 
   get secondGrainRequest() {
-    return this.buildRequest([{ field: 'adClicks' }], [], 'second', {});
+    return this.buildRequest([{ field: 'adClicks' }], [], 'second', {
+      start: '2017-02-09 00:00:00.000',
+      end: '2017-02-09 00:02:10.000'
+    });
   }
 
   get anomalousRequest() {
@@ -269,19 +288,6 @@ export default class LineChartRoute extends Route {
       start: '2017-09-01 00:00:00.000',
       end: '2017-09-07 00:00:00.000'
     });
-  }
-
-  init() {
-    this.defaultRequest = this.buildRequest(
-      [
-        { field: 'uniqueIdentifier' },
-        { field: 'totalPageViews' },
-        { field: 'revenue', parameters: { currency: 'USD' } }
-      ],
-      [],
-      'week',
-      { start: '2015-12-14 00:00:00.000', end: '2016-02-22 00:00:00.000' }
-    );
   }
 
   model() {

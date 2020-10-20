@@ -7,9 +7,7 @@
  * Usage:
  *   series: {
  *     type: 'metric'
- *     config: {
- *       metrics: ['pageViews', 'adClicks']
- *     }
+ *     config: {}
  *   }
  */
 import Mixin from '@ember/object/mixin';
@@ -95,6 +93,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
+    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 

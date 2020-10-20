@@ -25,5 +25,5 @@ export interface BaseChartBuilder {
   buildTooltip(
     _config: SeriesConfig,
     _request: RequestFragment
-  ): Mixin<{ layout: unknown; rowData: unknown }, EmberObject>;
+  ): Mixin<{ layout: unknown; rowData: unknown; tooltipData: unknown[]; x: string | number }, EmberObject>;
 }

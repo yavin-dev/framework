@@ -132,6 +132,7 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
   }
 };
 
+type SeriesMap = Record<string, Record<string, number | undefined> | undefined>;
 /**
  * Group data by series, then x value, in order to easily build c3's json format
  *
@@ -141,30 +142,32 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
  * @param grouper - series grouping logic
  * @returns metric value grouped by series and x value
  */
-const _groupDataBySeries = (data: ResponseRow[], timeGrainColumn: string, metric: string, grouper: Grouper) => {
-  return data.reduce((map: Record<string, Record<string, number | undefined> | undefined>, row) => {
+function _groupDataBySeries(data: ResponseRow[], timeGrainColumn: string, metric: string, grouper: Grouper): SeriesMap {
+  return data.reduce((map: SeriesMap, row: ResponseRow) => {
     const date = moment(row[timeGrainColumn] as MomentInput, API_DATE_FORMAT);
     const series = grouper.getSeries(date);
     const x = grouper.getXValue(date);
 
-    if (!map[series]) {
-      map[series] = {};
+    let seriesValue = map[series];
+    if (seriesValue === undefined) {
+      seriesValue = {};
     }
+    seriesValue[`${x}`] = row[metric] as number;
 
-    map[series][`${x}`] = row[metric] as number;
+    map[series] = seriesValue;
 
     return map;
-  }, {});
-};
+  }, {}) as SeriesMap;
+}
 
 /**
  * Convert seriesMap to data rows
  *
  * @param seriesMap - data index by series and x value
  * @param grouper - series grouping logic
- * @returns {Array} array of c3 data with x values
+ * @returns array of c3 data with x values
  */
-function _buildDataRows(seriesMap, grouper: Grouper): C3Row[] {
+function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): C3Row[] {
   let _buildRow = (x: number) => {
     let row = ({
       x: {
@@ -175,7 +178,7 @@ function _buildDataRows(seriesMap, grouper: Grouper): C3Row[] {
 
     // Add each series to the row
     Object.keys(seriesMap).forEach(series => {
-      const val = seriesMap[series][`${x}`];
+      const val = seriesMap[series]?.[`${x}`];
       row[series] = typeof val === 'number' ? val : null; // c3 wants `null` for empty data points
     });
 
@@ -260,6 +263,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
+    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 
@@ -267,7 +271,8 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return this.tooltipData.map(series => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return this.tooltipData.map((series: any) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.name) || [];
 

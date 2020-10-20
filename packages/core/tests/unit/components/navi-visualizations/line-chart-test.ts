@@ -17,6 +17,7 @@ import { C3Row } from 'navi-core/chart-builders/base';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import StoreService from '@ember-data/store';
 import { buildTestRequest } from '../../../helpers/request';
+import { LineChartConfig } from 'navi-core/models/line-chart';
 
 let Store: StoreService;
 
@@ -184,13 +185,14 @@ module('Unit | Component | line chart', function(hooks) {
       );
     });
     const args: LineChart['args'] = {
+      //@ts-expect-error
       model: A([{}, insightsDataPromise])
     };
     const component = createGlimmerComponent('component:navi-visualizations/line-chart', args) as LineChart;
 
-    assert.ok(component.dataSelectionConfig.dataSelection.then, 'Data selection config returns a promise as expected');
+    assert.ok(component.dataSelectionConfig.dataSelection?.then, 'Data selection config returns a promise as expected');
 
-    component.dataSelectionConfig.dataSelection.then(insightsData => {
+    component.dataSelectionConfig.dataSelection?.then(insightsData => {
       assert.deepEqual(
         insightsData.mapBy('index'),
         [1],
@@ -213,7 +215,7 @@ module('Unit | Component | line chart', function(hooks) {
     const component = createGlimmerClass(TestLineChart, {
       model: A([
         {
-          request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews', source: 'bardOne' }]),
+          request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews' }]),
           response: { rows: [] }
         }
       ])
@@ -265,6 +267,7 @@ module('Unit | Component | line chart', function(hooks) {
       x: { show: false }
     };
 
+    //@ts-expect-error
     set(component.args, 'options', { grid: newGrid });
 
     assert.deepEqual(
@@ -277,7 +280,7 @@ module('Unit | Component | line chart', function(hooks) {
     );
 
     /* == Test Y Axis Label on Non-metric charts == */
-    let dimensionChartType = {
+    let dimensionChartType: LineChartConfig['metadata'] = {
       axis: {
         y: {
           series: {
@@ -666,7 +669,7 @@ module('Unit | Component | line chart', function(hooks) {
     set(component.args, 'model', A([getModelDataFor('2018-01-01T00:00:00.000Z', '2019-06-01T00:00:00.000Z', grain)]));
     let xAxisTickValues = component.xAxisTickValues;
     assert.deepEqual(
-      xAxisTickValues.axis?.x.tick.values.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
+      xAxisTickValues.axis?.x.tick.values?.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
       allMonths,
       `Create label for each month on ${grain} grain year chart`
     );
@@ -675,7 +678,7 @@ module('Unit | Component | line chart', function(hooks) {
     set(component.args, 'model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
     xAxisTickValues = component.xAxisTickValues;
     assert.deepEqual(
-      xAxisTickValues.axis?.x.tick.values.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
+      xAxisTickValues.axis?.x.tick.values?.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
       allMonths,
       `Create label for each month on ${grain} grain year chart`
     );
@@ -684,7 +687,7 @@ module('Unit | Component | line chart', function(hooks) {
     set(component.args, 'model', A([getModelDataFor('2018-01-01 00:00:00.000', '2019-06-01 00:00:00.000', grain)]));
     xAxisTickValues = component.xAxisTickValues;
     assert.deepEqual(
-      xAxisTickValues.axis?.x.tick.values.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
+      xAxisTickValues.axis?.x.tick.values?.map((x: number) => GROUP[grain]?.by.year?.getXDisplay(x + 1)),
       allMonths,
       `Create label for each month on ${grain} grain year chart`
     );
