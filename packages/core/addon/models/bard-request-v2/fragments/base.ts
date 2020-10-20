@@ -80,6 +80,7 @@ export default class Base extends Fragment.extend(Validations) {
     set(this, 'parameters', { ...this.parameters, ...parameters });
   }
 
+  @computed('parameters', 'columnMetadata')
   get displayName() {
     const { parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, null);

@@ -1,66 +1,66 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 <h3>By Metric</h3>
-<div class="chart-container">
+<div class="chart-container metric">
   <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
-    @response={{this.response}}
+    @request={{this.model.default.0.request}}
+    @response={{this.model.default.0.response}}
     @visualization={{this.metricVisualization}}
     @onUpdateConfig={{fn (mut this.metricOptions)}}
   />
   <NaviVisualizations::LineChart
-    @model={{this.model}}
+    @model={{this.model.default}}
     @options={{this.metricOptions}}
   />
 </div>
 
 <h3>By Year</h3>
 <NaviVisualizations::LineChart
-  @model={{this.model}}
+  @model={{this.model.default}}
   @options={{this.timeOptions}}
 />
 
 <h3>Hours by Day</h3>
 <NaviVisualizations::LineChart
-  @model={{this.hourGrainModel}}
+  @model={{this.model.hourGrain}}
   @options={{this.hourByDayTimeOptions}}
 />
 
 <h3>Minutes by Hour</h3>
 <NaviVisualizations::LineChart
-  @model={{this.minuteGrainModel}}
+  @model={{this.model.minuteGrain}}
   @options={{this.minuteByHourTimeOptions}}
 />
 
 <h3>Seconds by Minute</h3>
 <NaviVisualizations::LineChart
-  @model={{this.secondGrainModel}}
+  @model={{this.model.secondGrain}}
   @options={{this.secondByMinuteTimeOptions}}
 />
 
 <h3>By Dimension</h3>
-<div class="chart-container">
+<div class="chart-container dimension">
   <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
-    @response={{this.dimensionModel}}
+    @request={{this.model.dimension.0.request}}
+    @response={{this.model.dimension.0.response}}
     @visualization={{this.dimVisualization}}
     @onUpdateConfig={{this.onUpdateConfig}}
   />
   <NaviVisualizations::LineChart
-    @model={{this.dimensionModel}}
+    @model={{this.model.dimension}}
     @options={{this.dimensionOptions}}
   />
 </div>
 
 <h3>Highlight Anomalies</h3>
 <NaviVisualizations::LineChart
-  @model={{this.anomalousDataModel}}
+  @model={{this.model.anomalous}}
   @options={{this.amomalousOptions}}
 />
 
 <h3>Custom Chart Builder</h3>
 <NaviVisualizations::LineChart
-  @classNames="custom-chart-builder"
-  @model={{this.model}}
+  class="custom-chart-builder"
+  @model={{this.model.default}}
   @options={{this.customOptions}}
 />

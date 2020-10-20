@@ -2,59 +2,37 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { TestContext } from 'ember-test-helpers';
+import { buildTestRequest } from 'dummy/tests/helpers/request';
 
 const TEMPLATE = hbs`
-  {{chart-series-config
-    seriesConfig=seriesConfig
-    seriesType=seriesType
-    onUpdateConfig=(action onUpdateConfig)
-  }}
-`;
+<ChartSeriesConfig
+  @seriesConfig={{this.seriesConfig}}
+  @seriesType={{this.seriesType}}
+  @onUpdateConfig={{this.onUpdateConfig}}
+  @request={{this.request}}
+/>`;
 
 const SERIES_CONFIG = {
-  metrics: [
-    {
-      metric: 'adClicks',
-      parameters: {}
-    },
-    {
-      metric: 'revenue',
-      parameters: {
-        currency: 'CAD',
-        as: 'm1'
-      }
-    },
-    {
-      metric: 'revenue',
-      parameters: {
-        currency: 'EUR',
-        as: 'm2'
-      }
-    }
-  ],
-  dimensions: [
-    {
-      name: 'Property 1'
-    },
-    {
-      name: 'Property 2'
-    },
-    {
-      name: 'Property 3'
-    }
-  ]
+  dimensions: [{ name: 'Property 1' }, { name: 'Property 2' }, { name: 'Property 3' }]
 };
 
 module('Integration | Component | chart series config', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function(this: TestContext) {
     this.setProperties({
       seriesType: 'dimension',
       seriesConfig: SERIES_CONFIG,
-      onUpdateConfig: () => null
+      onUpdateConfig: () => null,
+      request: buildTestRequest([
+        { field: 'adClicks' },
+        { field: 'revenue', parameters: { currency: 'CAD' } },
+        { field: 'revenue', parameters: { currency: 'EUR' } }
+      ])
     });
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
@@ -74,7 +52,7 @@ module('Integration | Component | chart series config', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent.trim()),
+      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
       ['Property 1', 'Property 2', 'Property 3'],
       'Component renders dimension names correctly'
     );
@@ -91,7 +69,7 @@ module('Integration | Component | chart series config', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent.trim()),
+      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
       ['Ad Clicks', 'Revenue (CAD)', 'Revenue (EUR)'],
       'Component renders metric names correctly'
     );

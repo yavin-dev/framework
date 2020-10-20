@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Promise } from 'rsvp';
 import { A } from '@ember/array';
 import moment from 'moment';
@@ -5,11 +6,16 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-
-let MetadataService;
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { TestContext } from 'ember-test-helpers';
+import { buildTestRequest } from '../../../helpers/request';
+import LineChart from 'navi-core/components/navi-visualizations/line-chart';
+import StoreService from '@ember-data/store';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::LineChart
@@ -17,80 +23,73 @@ const TEMPLATE = hbs`
     @options={{this.options}}
   />`;
 
-const Model = A([
-  {
-    request: {
-      metrics: ['uniqueIdentifier', 'totalPageViews', 'revenue(currency=USD)'],
-      intervals: [
-        {
-          start: '2016-05-30 00:00:00.000',
-          end: '2016-06-04 00:00:00.000'
-        }
-      ],
-      logicalTable: {
-        timeGrain: 'day'
-      }
-    },
-    response: {
-      rows: [
-        {
-          dateTime: '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788,
-          totalPageViews: 3669828357,
-          'revenue(currency=USD)': 2000323439.23
-        },
-        {
-          dateTime: '2016-05-31 00:00:00.000',
-          uniqueIdentifier: 183206656,
-          totalPageViews: 4088487125,
-          'revenue(currency=USD)': 1999243823.74
-        },
-        {
-          dateTime: '2016-06-01 00:00:00.000',
-          uniqueIdentifier: 183380921,
-          totalPageViews: 4024700302,
-          'revenue(currency=USD)': 1400324934.92
-        },
-        {
-          dateTime: '2016-06-02 00:00:00.000',
-          uniqueIdentifier: 180559793,
-          totalPageViews: 3950276031,
-          'revenue(currency=USD)': 923843934.11
-        },
-        {
-          dateTime: '2016-06-03 00:00:00.000',
-          uniqueIdentifier: 172724594,
-          totalPageViews: 3697156058,
-          'revenue(currency=USD)': 1623430236.42
-        }
-      ]
-    }
-  }
-]);
+let Model: LineChart['args']['model'];
+let MetadataService: NaviMetadataService;
 
 module('Integration | Component | line chart', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function(this: TestContext) {
     injectC3Enhancements();
+
+    Model = A([
+      {
+        request: buildTestRequest(
+          [
+            { cid: 'cid_uniqueIdentifier', field: 'uniqueIdentifier' },
+            { cid: 'cid_totalPageViews', field: 'totalPageViews' },
+            { cid: 'cid_revenue(currency=USD)', field: 'revenue', parameters: { currency: 'USD' } }
+          ],
+          [{ cid: 'cid_age', field: 'age', parameters: { field: 'id' } }],
+          { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
+          'day'
+        ),
+        response: {
+          rows: [
+            {
+              'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+              uniqueIdentifier: 172933788,
+              totalPageViews: 3669828357,
+              'revenue(currency=USD)': 2000323439.23
+            },
+            {
+              'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
+              uniqueIdentifier: 183206656,
+              totalPageViews: 4088487125,
+              'revenue(currency=USD)': 1999243823.74
+            },
+            {
+              'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
+              uniqueIdentifier: 183380921,
+              totalPageViews: 4024700302,
+              'revenue(currency=USD)': 1400324934.92
+            },
+            {
+              'network.dateTime(grain=day)': '2016-06-02 00:00:00.000',
+              uniqueIdentifier: 180559793,
+              totalPageViews: 3950276031,
+              'revenue(currency=USD)': 923843934.11
+            },
+            {
+              'network.dateTime(grain=day)': '2016-06-03 00:00:00.000',
+              uniqueIdentifier: 172724594,
+              totalPageViews: 3697156058,
+              'revenue(currency=USD)': 1623430236.42
+            }
+          ],
+          meta: {}
+        }
+      }
+    ]);
+
     this.set('model', Model);
     this.set('options', {
       axis: {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
@@ -101,7 +100,7 @@ module('Integration | Component | line chart', function(hooks) {
   });
 
   hooks.afterEach(function() {
-    MetadataService.keg.reset();
+    MetadataService['keg'].reset();
   });
 
   test('it renders', async function(assert) {
@@ -111,7 +110,7 @@ module('Integration | Component | line chart', function(hooks) {
 
     assert.dom('.navi-vis-c3-chart').isVisible('The line chart widget component is visible');
 
-    assert.dom('.c3-chart-line').exists({ count: 1 }, 'One chart line is present on the chart');
+    assert.dom('.c3-chart-line').exists({ count: 3 }, 'All 3 metrics are shown on the chart');
   });
 
   test('missing data - metrics', async function(assert) {
@@ -121,26 +120,20 @@ module('Integration | Component | line chart', function(hooks) {
       'model',
       A([
         {
-          request: {
-            metrics: ['uniqueIdentifier'],
-            intervals: [
-              {
-                start: '2016-05-30 00:00:00.000',
-                end: '2016-06-02 00:00:00.000'
-              }
-            ],
-            logicalTable: {
-              timeGrain: 'day'
-            }
-          },
+          request: buildTestRequest(
+            [{ cid: 'cid_uniqueIdentifier', field: 'uniqueIdentifier' }],
+            [],
+            { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
+            'day'
+          ),
           response: {
             rows: [
               {
-                dateTime: '2016-05-30 00:00:00.000',
+                'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 uniqueIdentifier: 172933788
               },
               {
-                dateTime: '2016-06-01 00:00:00.000',
+                'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
                 uniqueIdentifier: 183380921
               }
             ]
@@ -152,7 +145,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.c3-circle').map(el => el.style.opacity),
+      findAll('.c3-circle').map((el: SVGElement) => el.style.opacity),
       ['1', '0', '1'],
       'Missing data points are hidden by the chart'
     );
@@ -167,18 +160,11 @@ module('Integration | Component | line chart', function(hooks) {
           series: {
             type: 'dimension',
             config: {
-              metric: {
-                metric: 'uniqueIdentifier',
-                canonicalName: 'uniqueIdentifier',
-                toJSON() {
-                  return this;
-                }
-              },
-              dimensionOrder: ['age'],
+              metricCid: 'cid_uniqueIdentifier',
               dimensions: [
                 {
                   name: 'All Other',
-                  values: { age: '-3' }
+                  values: { cid_age: '-3' }
                 }
               ]
             }
@@ -191,30 +177,22 @@ module('Integration | Component | line chart', function(hooks) {
       'model',
       A([
         {
-          request: {
-            metrics: ['uniqueIdentifier'],
-            intervals: [
-              {
-                start: '2016-05-30 00:00:00.000',
-                end: '2016-06-02 00:00:00.000'
-              }
-            ],
-            logicalTable: {
-              timeGrain: 'day'
-            }
-          },
+          request: buildTestRequest(
+            [{ cid: 'cid_uniqueIdentifier', field: 'uniqueIdentifier' }],
+            [{ cid: 'cid_age', field: 'age', parameters: { field: 'id' } }],
+            { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
+            'day'
+          ),
           response: {
             rows: [
               {
-                dateTime: '2016-05-30 00:00:00.000',
-                'age|id': '-3',
-                'age|desc': 'All Other',
+                'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+                'age(field=id)': '-3',
                 uniqueIdentifier: 172933788
               },
               {
-                dateTime: '2016-06-01 00:00:00.000',
-                'age|id': '-3',
-                'age|desc': 'All Other',
+                'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
+                'age(field=id)': '-3',
                 uniqueIdentifier: 183380921
               }
             ]
@@ -226,7 +204,7 @@ module('Integration | Component | line chart', function(hooks) {
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.c3-circle').map(el => el.style.opacity),
+      findAll('.c3-circle').map((el: SVGElement) => el.style.opacity),
       ['1', '0', '1'],
       'Missing data points are hidden by the chart'
     );
@@ -240,34 +218,7 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'totalPageViews',
-                  canonicalName: 'totalPageViews',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'revenue',
-                  parameters: {
-                    currency: 'USD'
-                  },
-                  canonicalName: 'revenue(currency=USD)',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
@@ -290,34 +241,27 @@ module('Integration | Component | line chart', function(hooks) {
           series: {
             type: 'dimension',
             config: {
-              metric: {
-                metric: 'totalPageViews',
-                canonicalName: 'totalPageViews',
-                toJSON() {
-                  return this;
-                }
-              },
-              dimensionOrder: ['age'],
+              metricCid: 'cid_totalPageViews',
               dimensions: [
                 {
                   name: 'All Other',
-                  values: { age: '-3' }
+                  values: { cid_age: '-3' }
                 },
                 {
                   name: 'under 13',
-                  values: { age: '1' }
+                  values: { cid_age: '1' }
                 },
                 {
                   name: '13 - 25',
-                  values: { age: '2' }
+                  values: { cid_age: '2' }
                 },
                 {
                   name: '25 - 35',
-                  values: { age: '3' }
+                  values: { cid_age: '3' }
                 },
                 {
                   name: '35 - 45',
-                  values: { age: '4' }
+                  values: { cid_age: '4' }
                 }
               ]
             }
@@ -339,37 +283,27 @@ module('Integration | Component | line chart', function(hooks) {
           series: {
             type: 'dimension',
             config: {
-              metric: {
-                metric: 'revenue',
-                parameters: {
-                  currency: 'USD'
-                },
-                canonicalName: 'revenue(currency=USD)',
-                toJSON() {
-                  return this;
-                }
-              },
-              dimensionOrder: ['age'],
+              metricCid: 'cid_revenue(currency=USD)',
               dimensions: [
                 {
                   name: 'All Other',
-                  values: { age: '-3' }
+                  values: { cid_age: '-3' }
                 },
                 {
                   name: 'under 13',
-                  values: { age: '1' }
+                  values: { cid_age: '1' }
                 },
                 {
                   name: '13 - 25',
-                  values: { age: '2' }
+                  values: { cid_age: '2' }
                 },
                 {
                   name: '25 - 35',
-                  values: { age: '3' }
+                  values: { cid_age: '3' }
                 },
                 {
                   name: '35 - 45',
-                  values: { age: '4' }
+                  values: { cid_age: '4' }
                 }
               ]
             }
@@ -388,24 +322,7 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'totalPageViews',
-                  canonicalName: 'totalPageViews',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
@@ -419,46 +336,40 @@ module('Integration | Component | line chart', function(hooks) {
 
     let anomalousDataModel = A([
       {
-        request: {
-          metrics: ['uniqueIdentifier'],
-          logicalTable: {
-            timeGrain: 'day'
-          },
-          intervals: [
-            {
-              start: '2017-09-01 00:00:00.000',
-              end: '2017-09-07 00:00:00.000'
-            }
-          ]
-        },
+        request: buildTestRequest(
+          [{ field: 'uniqueIdentifier' }],
+          [],
+          { start: '2017-09-01 00:00:00.000', end: '2017-09-07 00:00:00.000' },
+          'day'
+        ),
         response: {
           rows: [
             {
-              dateTime: '2017-09-01 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-01 00:00:00.000',
               uniqueIdentifier: 155191081
             },
             {
-              dateTime: '2017-09-02 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-02 00:00:00.000',
               uniqueIdentifier: 172724594
             },
             {
-              dateTime: '2017-09-03 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-03 00:00:00.000',
               uniqueIdentifier: 183380921
             },
             {
-              dateTime: '2017-09-04 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-04 00:00:00.000',
               uniqueIdentifier: 172933788
             },
             {
-              dateTime: '2017-09-05 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-05 00:00:00.000',
               uniqueIdentifier: 183206656
             },
             {
-              dateTime: '2017-09-06 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-06 00:00:00.000',
               uniqueIdentifier: 183380921
             },
             {
-              dateTime: '2017-09-07 00:00:00.000',
+              'network.dateTime(grain=day)': '2017-09-07 00:00:00.000',
               uniqueIdentifier: 180559793
             }
           ]
@@ -496,17 +407,7 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
@@ -525,7 +426,7 @@ module('Integration | Component | line chart', function(hooks) {
 
     while (current.isBefore(end)) {
       rows.push({
-        dateTime: current.format(API_DATE_FORMAT_STRING),
+        'network.dateTime(grain=month)': current.format(API_DATE_FORMAT_STRING),
         uniqueIdentifier: Math.random() * 1000
       });
 
@@ -536,19 +437,16 @@ module('Integration | Component | line chart', function(hooks) {
       'model',
       A([
         {
-          request: {
-            metrics: ['uniqueIdentifier'],
-            intervals: [
-              {
-                start: start.format(API_DATE_FORMAT_STRING),
-                end: end.format(API_DATE_FORMAT_STRING)
-              }
-            ],
-            logicalTable: {
-              timeGrain: 'month'
-            }
-          },
-          response: { rows }
+          request: buildTestRequest(
+            [{ cid: 'cid_uniqueIdentifier', field: 'uniqueIdentifier' }],
+            [],
+            { start: start.format(API_DATE_FORMAT_STRING), end: end.format(API_DATE_FORMAT_STRING) },
+            'month'
+          ),
+          response: {
+            rows,
+            meta: {}
+          }
         }
       ])
     );
@@ -558,13 +456,7 @@ module('Integration | Component | line chart', function(hooks) {
           series: {
             type: 'dateTime',
             config: {
-              metric: {
-                metric: 'uniqueIdentifier',
-                canonicalName: 'uniqueIdentifier',
-                toJSON() {
-                  return this;
-                }
-              },
+              metricCid: 'cid_uniqueIdentifier',
               timeGrain: 'year'
             }
           }
@@ -589,34 +481,7 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'totalPageViews',
-                  canonicalName: 'totalPageViews',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'revenue',
-                  parameters: {
-                    currency: 'USD'
-                  },
-                  canonicalName: 'revenue(currency=USD)',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
@@ -632,8 +497,8 @@ module('Integration | Component | line chart', function(hooks) {
     );
   });
 
-  test('multi-datasource labels', async function(assert) {
-    MetadataService.keg.reset();
+  test('multi-datasource labels', async function(this: TestContext, assert) {
+    MetadataService['keg'].reset();
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
 
     assert.expect(1);
@@ -643,74 +508,77 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'ownedQuantity',
-                  canonicalName: 'ownedQuantity',
-                  toJSON() {
-                    return this;
-                  }
-                },
-                {
-                  metric: 'usedAmount',
-                  canonicalName: 'usedAmount',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
     });
 
+    const store = this.owner.lookup('service:store') as StoreService;
     this.set(
       'model',
       A([
         {
-          request: {
-            metrics: ['ownedQuantity', 'usedAmount'],
-            intervals: [
+          request: store.createFragment('bard-request-v2/request', {
+            table: 'inventory',
+            columns: [
               {
-                start: '2016-05-30 00:00:00.000',
-                end: '2016-06-04 00:00:00.000'
+                type: 'timeDimension',
+                field: 'inventory.dateTime',
+                parameters: {
+                  grain: 'day'
+                },
+                source: 'bardTwo'
+              },
+              { type: 'metric', field: 'ownedQuantity', parameters: {}, source: 'bardTwo' },
+              { type: 'metric', field: 'usedAmount', parameters: {}, source: 'bardTwo' }
+            ],
+            filters: [
+              {
+                type: 'timeDimension',
+                field: 'inventory.dateTime',
+                parameters: {
+                  grain: 'day'
+                },
+                operator: 'bet',
+                values: ['2016-05-30 00:00:00.000', '2016-06-04 00:00:00.000'],
+                source: 'bardTwo'
               }
             ],
-            logicalTable: {
-              timeGrain: 'day'
-            },
-            dataSource: 'bardTwo'
-          },
+            sorts: [],
+            limit: null,
+            dataSource: 'bardTwo',
+            requestVersion: '2.0'
+          }),
           response: {
             rows: [
               {
-                dateTime: '2016-05-30 00:00:00.000',
+                'inventory.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 ownedQuantity: 172933788,
                 usedAmount: 3669828357
               },
               {
-                dateTime: '2016-05-31 00:00:00.000',
+                'inventory.dateTime(grain=day)': '2016-05-31 00:00:00.000',
                 ownedQuantity: 183206656,
                 usedAmount: 4088487125
               },
               {
-                dateTime: '2016-06-01 00:00:00.000',
+                'inventory.dateTime(grain=day)': '2016-06-01 00:00:00.000',
                 ownedQuantity: 183380921,
                 usedAmount: 4024700302
               },
               {
-                dateTime: '2016-06-02 00:00:00.000',
+                'inventory.dateTime(grain=day)': '2016-06-02 00:00:00.000',
                 ownedQuantity: 180559793,
                 usedAmount: 3950276031
               },
               {
-                dateTime: '2016-06-03 00:00:00.000',
+                'inventory.dateTime(grain=day)': '2016-06-03 00:00:00.000',
                 ownedQuantity: 172724594,
                 usedAmount: 3697156058
               }
-            ]
+            ],
+            meta: {}
           }
         }
       ])
@@ -740,23 +608,14 @@ module('Integration | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {
-              metrics: [
-                {
-                  metric: 'uniqueIdentifier',
-                  canonicalName: 'uniqueIdentifier',
-                  toJSON() {
-                    return this;
-                  }
-                }
-              ]
-            }
+            config: {}
           }
         }
       }
     });
 
     const findTooltipComponent = () =>
+      //@ts-expect-error
       Object.keys(this.owner.__registry__.registrations).find(r =>
         r.startsWith('component:line-chart-metric-tooltip-')
       );
