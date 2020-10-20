@@ -1,12 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- * <NaviVisualizations::LineChart
- *   @model={{this.model}}
- *   @options={{this.options}}
- * />
  */
 import Component from '@ember/component';
 import { computed } from '@ember/object';
@@ -24,8 +18,9 @@ import { VisualizationModel } from './table';
 import { BaseChartBuilder } from 'navi-core/chart-builders/base';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { ChartSeries, LineChartConfig } from 'navi-core/models/line-chart';
+import { LineChartConfig } from 'navi-core/models/line-chart';
 import { Grain } from 'navi-data/utils/date';
+import { ChartSeries } from 'navi-core/models/chart-visualization';
 
 const DEFAULT_OPTIONS = <const>{
   style: {

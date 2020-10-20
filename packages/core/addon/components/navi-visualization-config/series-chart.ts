@@ -7,7 +7,8 @@ import { Args as BaseArgs } from './base';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import { MetricSeries, DimensionSeries, DateTimeSeries, SeriesConfig } from 'navi-core/models/line-chart';
+import { DateTimeSeries, DimensionSeries, MetricSeries } from 'navi-core/models/chart-visualization';
+import { SeriesConfig } from 'navi-core/chart-builders/base';
 
 type MetricSeriesOptions = { seriesType: MetricSeries['type']; seriesConfig: MetricSeries['config'] };
 type DimensionSeriesOptions = { seriesType: DimensionSeries['type']; seriesConfig: DimensionSeries['config'] };

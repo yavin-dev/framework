@@ -15,7 +15,29 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from './bard-request-v2/fragments/column';
 import { get } from '@ember/object';
-import { ChartSeries, DateTimeSeries, DimensionSeries, MetricSeries } from './line-chart';
+
+export type MetricSeries = {
+  type: 'metric';
+  config: {};
+};
+
+export type DimensionSeries = {
+  type: 'dimension';
+  config: {
+    metricCid: string;
+    dimensions: DimensionSeriesValues[];
+  };
+};
+
+export type DateTimeSeries = {
+  type: 'dateTime';
+  config: {
+    timeGrain: string; // TODO more specific?
+    metricCid: string;
+  };
+};
+
+export type ChartSeries = MetricSeries | DimensionSeries | DateTimeSeries;
 
 export type DimensionSeriesValues = { name: string; values: Record<string, unknown> };
 

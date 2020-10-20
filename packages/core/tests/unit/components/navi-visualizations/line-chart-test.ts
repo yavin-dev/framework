@@ -384,18 +384,6 @@ module('Unit | Component | line chart', function(hooks) {
       'the point radius is 2 for a single data point'
     );
 
-    // {
-    //   metrics: ['uniqueIdentifier'],
-    //   intervals: [
-    //     {
-    //       start: 'P2D',
-    //       end: '2016-06-01 00:00:00.000'
-    //     }
-    //   ],
-    //   logicalTable: {
-    //     timeGrain: 'day'
-    //   }
-    // }
     set(
       component.args,
       'model',
@@ -487,7 +475,7 @@ module('Unit | Component | line chart', function(hooks) {
         }
       }
     };
-    let component = createGlimmerComponent('component:navi-visualizations/line-chart', {
+    const component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model: A([model]),
       options
     }) as LineChart;

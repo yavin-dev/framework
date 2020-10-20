@@ -24,7 +24,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { BaseChartBuilder, C3Row } from './base';
 import { tracked } from '@glimmer/tracking';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import { DateTimeSeries } from 'navi-core/models/line-chart';
+import { DateTimeSeries } from 'navi-core/models/chart-visualization';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 const YEAR_WITH_53_ISOWEEKS = '2015-01-01';
@@ -256,7 +256,8 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
   }
 
   /**
-   * @param config
+   * @param _config
+   * @param _request
    * @returns {Object} object with tooltip template and rendering context
    */
   buildTooltip(_config: DateTimeSeries['config'], _request: RequestFragment) {

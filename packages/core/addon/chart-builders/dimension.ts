@@ -36,7 +36,7 @@ import { BaseChartBuilder, C3Row, ResponseRow } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { tracked } from '@glimmer/tracking';
-import { DimensionSeries } from 'navi-core/models/line-chart';
+import { DimensionSeries } from 'navi-core/models/chart-visualization';
 
 export default class DimensionChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;

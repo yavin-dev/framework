@@ -5,14 +5,16 @@ import { setupTest } from 'ember-qunit';
 import { buildTestRequest } from '../../helpers/request';
 import { TestContext } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
+import LineChartVisualization from 'navi-core/models/line-chart';
 
-let Store: StoreService;
+let LineChart: LineChartVisualization;
 
 module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
-    Store = this.owner.lookup('service:store') as StoreService;
+    const store = this.owner.lookup('service:store') as StoreService;
+    LineChart = store.createRecord('all-the-fragments').lineChart;
   });
 
   test('default value', function(assert) {
@@ -22,10 +24,9 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       [{ field: 'm1' }, { field: 'm2' }],
       [{ field: 'd1' }, { field: 'd2' }]
     ];
-    const chart = Store.createRecord('all-the-fragments').lineChart;
 
-    assert.ok(
-      !chart.isValidForRequest(buildTestRequest(...metricsAndDims)),
+    assert.notOk(
+      LineChart.isValidForRequest(buildTestRequest(...metricsAndDims)),
       'the default chart fragment values are invalid'
     );
   });
@@ -33,24 +34,22 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   test('chart type', function(assert) {
     assert.expect(4);
 
-    let chart = Store.createRecord('all-the-fragments').lineChart;
-
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'metric',
       config: {}
     });
 
     assert.ok(
-      chart.isValidForRequest(buildTestRequest([{ field: 'm1' }], [])),
+      LineChart.isValidForRequest(buildTestRequest([{ field: 'm1' }], [])),
       'metric line-chart is valid when request has no dimensions'
     );
 
-    assert.ok(
-      !chart.isValidForRequest(buildTestRequest([{ field: 'm1' }], [{ field: 'd1' }])),
+    assert.notOk(
+      LineChart.isValidForRequest(buildTestRequest([{ field: 'm1' }], [{ field: 'd1' }])),
       'metric line-chart is invalid when request has dimensions'
     );
 
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
       config: {
         metricCid: 'cid_m1',
@@ -64,12 +63,12 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     });
 
     assert.ok(
-      chart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [{ cid: 'cid_d1', field: 'd1' }])),
+      LineChart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [{ cid: 'cid_d1', field: 'd1' }])),
       'dimension line-chart is valid when request has at least one dimension'
     );
 
-    assert.ok(
-      !chart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [])),
+    assert.notOk(
+      LineChart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [])),
       'dimension line-chart is invalid when request has no dimensions'
     );
   });
@@ -77,20 +76,18 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   test('metric series - metrics', function(assert) {
     assert.expect(2);
 
-    let chart = Store.createRecord('all-the-fragments').lineChart;
-
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'metric',
       config: {}
     });
 
     assert.ok(
-      chart.isValidForRequest(buildTestRequest([{ field: 'm1' }, { field: 'm2' }], [])),
+      LineChart.isValidForRequest(buildTestRequest([{ field: 'm1' }, { field: 'm2' }], [])),
       'metric line-chart is valid for metric series'
     );
 
     assert.ok(
-      chart.isValidForRequest(buildTestRequest([{ field: 'm1' }, { field: 'm2' }, { field: 'm3' }], [])),
+      LineChart.isValidForRequest(buildTestRequest([{ field: 'm1' }, { field: 'm2' }, { field: 'm3' }], [])),
       'metric line-chart is valid for metric series with more metrics'
     );
   });
@@ -98,9 +95,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   test('dimension series - metric', function(assert) {
     assert.expect(2);
 
-    let chart = Store.createRecord('all-the-fragments').lineChart;
-
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
       config: {
         metricCid: 'cid_m1',
@@ -114,22 +109,21 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     });
 
     assert.ok(
-      chart.isValidForRequest(
+      LineChart.isValidForRequest(
         buildTestRequest([{ cid: 'cid_m1', field: 'm1' }, { field: 'm2' }], [{ cid: 'cid_d1', field: 'd1' }])
       ),
       'dimension line-chart is valid when it has a metric in the request metrics'
     );
 
-    assert.ok(
-      !chart.isValidForRequest(buildTestRequest([{ field: 'm3' }], [{ cid: 'cid_d1', field: 'd1' }])),
+    assert.notOk(
+      LineChart.isValidForRequest(buildTestRequest([{ field: 'm3' }], [{ cid: 'cid_d1', field: 'd1' }])),
       'dimension line-chart is invalid when it does not have a metric in the request metrics'
     );
   });
 
   test('rebuildConfig - metric', function(assert) {
-    const chart = Store.createRecord('all-the-fragments').lineChart;
     const request = buildTestRequest([{ field: 'm1' }, { field: 'm2' }], []);
-    const config = chart.rebuildConfig(request, { rows: [], meta: {} }).toJSON();
+    const config = LineChart.rebuildConfig(request, { rows: [], meta: {} }).toJSON();
 
     assert.deepEqual(
       config,
@@ -159,7 +153,6 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       { m1: 3, 'd1(field=id)': 'foo2', 'd2(field=id)': 'bar2' }
     ];
 
-    const chart = Store.createRecord('all-the-fragments').lineChart;
     const request = buildTestRequest(
       [{ cid: 'cid_m1', field: 'm1' }],
       [
@@ -167,7 +160,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
       ]
     );
-    const config = chart.rebuildConfig(request, { rows, meta: {} }).toJSON();
+    const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
 
     assert.deepEqual(
       config,
@@ -211,7 +204,6 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       { m1: 11, 'd1(field=id)': 'foo9', 'd2(field=id)': 'bar9' }
     ];
 
-    const chart = Store.createRecord('all-the-fragments').lineChart;
     const request = buildTestRequest(
       [{ cid: 'cid_m1', field: 'm1' }],
       [
@@ -219,7 +211,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
       ]
     );
-    const config = chart.rebuildConfig(request, { rows, meta: {} }).toJSON();
+    const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
 
     assert.deepEqual(
       config,
@@ -259,8 +251,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   test('rebuildConfig - dimension series - only metric', function(assert) {
     let rows = [{ requestMetric: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' }];
 
-    let chart = Store.createRecord('all-the-fragments').lineChart;
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
       config: {
         metricCid: 'cid_configMetric',
@@ -280,7 +271,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         { cid: 'cid_d2', field: 'd2' }
       ]
     );
-    const config = chart.rebuildConfig(request, { rows, meta: {} }).toJSON();
+    const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
 
     assert.deepEqual(
       config,
@@ -320,8 +311,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       }
     ];
 
-    let chart = Store.createRecord('all-the-fragments').lineChart;
-    set(chart.metadata.axis.y, 'series', {
+    set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
       config: {
         metricCid: 'cid_m1',
@@ -336,7 +326,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
       ]
     );
-    const config = chart.rebuildConfig(request, { rows, meta: {} }).toJSON();
+    const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
 
     assert.deepEqual(
       config,

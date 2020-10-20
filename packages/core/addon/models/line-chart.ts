@@ -5,7 +5,7 @@
 import { readOnly } from '@ember/object/computed';
 import { set, computed } from '@ember/object';
 import { attr } from '@ember-data/model';
-import ChartVisualization, { DimensionSeriesValues } from './chart-visualization';
+import ChartVisualization, { ChartSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest, ChartType } from 'navi-core/utils/chart-data';
 import RequestFragment from './bard-request-v2/request';
@@ -77,32 +77,6 @@ const Validations = buildValidations(
     request: readOnly('model._request')
   }
 );
-
-export type SeriesType = MetricSeries['type'] | DimensionSeries['type'] | DateTimeSeries['type'];
-export type SeriesConfig = MetricSeries['config'] | DimensionSeries['config'] | DateTimeSeries['config'];
-
-export type MetricSeries = {
-  type: 'metric';
-  config: {};
-};
-
-export type DimensionSeries = {
-  type: 'dimension';
-  config: {
-    metricCid: string;
-    dimensions: DimensionSeriesValues[];
-  };
-};
-
-export type DateTimeSeries = {
-  type: 'dateTime';
-  config: {
-    timeGrain: string; // TODO more specific?
-    metricCid: string;
-  };
-};
-
-export type ChartSeries = MetricSeries | DimensionSeries | DateTimeSeries;
 
 export type LineChartConfig = {
   type: 'line-chart';

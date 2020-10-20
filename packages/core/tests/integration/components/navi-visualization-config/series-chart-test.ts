@@ -9,7 +9,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
 import { TestContext } from 'ember-test-helpers';
 import { buildTestRequest } from 'dummy/tests/helpers/request';
-import { DimensionSeries } from 'navi-core/models/line-chart';
+import { DimensionSeries } from 'navi-core/models/chart-visualization';
 
 let Template = hbs`
 <NaviVisualizationConfig::SeriesChart

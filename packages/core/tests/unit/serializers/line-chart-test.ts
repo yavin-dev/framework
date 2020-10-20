@@ -4,7 +4,8 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { LegacyLineChartConfig, normalizeLineChartV2 } from 'navi-core/serializers/line-chart';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import { LineChartConfig, SeriesType } from 'navi-core/models/line-chart';
+import { LineChartConfig } from 'navi-core/models/line-chart';
+import { SeriesType } from 'navi-core/chart-builders/base';
 
 const TestRequest: RequestV2 = {
   table: 'table1',

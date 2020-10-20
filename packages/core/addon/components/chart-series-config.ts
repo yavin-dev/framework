@@ -1,14 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- *   <ChartSeriesConfig
- *     @seriesType={{this.seriesType}}
- *     @seriesConfig={{this.seriesConfig}}
- *     @onUpdateConfig={{this.onUpdateConfig}}
- *     @request={{@request}}
- *   />
  */
 import Component from '@glimmer/component';
 import { set, computed, action } from '@ember/object';

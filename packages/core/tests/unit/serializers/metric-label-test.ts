@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import StoreService from '@ember-data/store';
 import MetricLabelSerializer, {
   LegacyMetricLabelConfig,
   normalizeMetricLabelV2
@@ -22,23 +21,15 @@ module('Unit | Serializer | metric label', function(hooks) {
   });
 
   test('normalizeMetricLabelV2', function(this: TestContext, assert) {
-    const store = this.owner.lookup('service:store') as StoreService;
-    const request = store
-      .createFragment('bard-request-v2/request', {
-        table: 'tableName',
-        columns: [
-          {
-            type: 'metric',
-            cid: 'cid_rupees'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-      .toJSON() as RequestV2;
+    const request: RequestV2 = {
+      table: 'tableName',
+      columns: [{ type: 'metric', cid: 'cid_rupees', field: 'rupees', parameters: {} }],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    };
 
     const initialMetaData: LegacyMetricLabelConfig = {
       version: 1,

@@ -1,24 +1,16 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * <NaviVisualizationConfig::LineChart
- *    @request={{this.request}}
- *    @response={{this.response}}
- *    @options={{this.chartOptions}}
- *    @type={{this.visualizationType}}
- *    @onUpdateConfig={{this.onUpdateChartConfig}}
- * />
  */
 
 import Component from '@glimmer/component';
 import { set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
-import { SeriesConfig, SeriesType } from 'navi-core/models/line-chart';
 import { Args as BaseArgs } from './base';
 import { Args as LineChartArgs } from '../navi-visualizations/line-chart';
 import { cloneDeep } from 'lodash-es';
+import { SeriesConfig, SeriesType } from 'navi-core/chart-builders/base';
 
 type Style = LineChartArgs['options']['style'];
 

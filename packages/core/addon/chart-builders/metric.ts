@@ -23,7 +23,7 @@ import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { BaseChartBuilder, C3Row } from './base';
 import { tracked } from '@glimmer/tracking';
-import { MetricSeries } from 'navi-core/models/line-chart';
+import { MetricSeries } from 'navi-core/models/chart-visualization';
 
 type ResponseRow = ResponseV1['rows'][number];
 
