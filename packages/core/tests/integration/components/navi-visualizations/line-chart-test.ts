@@ -6,6 +6,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 //@ts-ignore

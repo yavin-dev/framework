@@ -14,7 +14,7 @@ import Component from '@glimmer/component';
 import { Args as BaseArgs } from './base';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
-import ColumnFragment from 'dummy/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { MetricSeries, DimensionSeries, DateTimeSeries, SeriesConfig } from 'navi-core/models/line-chart';
 
 type MetricSeriesOptions = { seriesType: MetricSeries['type']; seriesConfig: MetricSeries['config'] };
