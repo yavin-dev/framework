@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import $ from 'jquery';
 import { render, fillIn } from '@ember/test-helpers';
-import { A as arr } from '@ember/array';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';

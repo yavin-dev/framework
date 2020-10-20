@@ -9,5 +9,7 @@
   @point={{this.config.point}}
   @tooltip={{this.config.tooltip}}
   @containerComponent={{@containerComponent}}
-  @metaNamespace={{@request.dataSource}}
+  @metaNamespace={{this.request.dataSource}}
+  @metrics={{map-by "displayName" this.request.metricColumns}}
+  ...attributes
 />

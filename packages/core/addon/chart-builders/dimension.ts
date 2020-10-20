@@ -32,12 +32,11 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { getRequestDimensions, groupDataByDimensions } from 'navi-core/utils/chart-data';
-import BaseChartBuilder, { C3Row, ResponseRow } from './base';
+import { BaseChartBuilder, C3Row, ResponseRow } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { tracked } from '@glimmer/tracking';
-import { DimensionSeriesConfig } from '../models/chart-visualization';
-import ColumnFragment from '../models/bard-request-v2/fragments/column';
+import { DimensionSeries } from 'navi-core/models/chart-visualization';
 
 export default class DimensionChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;
@@ -48,14 +47,14 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
    * @param request - request used to query fact data
    * @returns name of series given row belongs to
    */
-  getSeriesName(row: ResponseRow, _config: unknown, request: RequestFragment): string {
+  getSeriesName(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
     return request.dimensionColumns.map(dim => row[dim.canonicalName]).join(',');
   }
 
   /**
    * @inheritdoc
    */
-  getXValue(row: ResponseRow, _config: unknown, request: RequestFragment): string {
+  getXValue(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
     // expects timeGrainColumn values to be a readable moment input
     const date = row[request.timeGrainColumn.canonicalName] as MomentInput;
     return moment(date).format(API_DATE_FORMAT_STRING);
@@ -64,7 +63,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
   /**
    * @inheritdoc
    */
-  buildData(response: ResponseV1, config: DimensionSeriesConfig, request: RequestFragment): C3Row[] {
+  buildData(response: ResponseV1, config: DimensionSeries['config'], request: RequestFragment): C3Row[] {
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const { timeGrain, interval } = request;
     assert('request should have an interval', interval);
@@ -77,7 +76,8 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
 
     const { metricCid } = config;
-    const metric = request.columns.find(c => c.cid === metricCid) as ColumnFragment;
+    const metric = request.columns.find(({ cid }) => cid === metricCid);
+    assert(`a metric with cid ${metricCid} should be found`, metric);
     const dimensions = getRequestDimensions(request);
     const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
     const seriesName = config.dimensions.map(s => s.name); // Get all the series names
@@ -130,10 +130,11 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
   /**
    * @inheritdoc
    */
-  buildTooltip(_config: unknown, _request: RequestFragment) {
+  buildTooltip(_config: DimensionSeries['config'], _request: RequestFragment) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
+    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 
@@ -141,7 +142,8 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
       rowData: computed('x', 'tooltipData', function() {
-        return this.tooltipData.map((series: TODO) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return this.tooltipData.map((series: any) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.id) || [];
 

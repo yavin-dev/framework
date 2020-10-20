@@ -2,7 +2,9 @@ import { click, fillIn, findAll, blur, visit } from '@ember/test-helpers';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+//@ts-ignore
 import { reorder } from 'ember-sortable/test-support/helpers';
 
 module('Acceptance | table', function(hooks) {
@@ -23,7 +25,7 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     assert.deepEqual(
-      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent?.trim()),
       ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers for the table are as specified'
     );
@@ -39,7 +41,7 @@ module('Acceptance | table', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent?.trim()),
       ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers are reordered as specified by the reorder'
     );

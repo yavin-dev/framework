@@ -8,7 +8,9 @@ import FragmentFactory from 'navi-core/services/fragment-factory';
 import RangeInput from 'navi-reports/components/filter-values/range-input';
 
 type ComponentArgs = RangeInput['args'];
-interface TestContext extends Context, ComponentArgs {}
+interface TestContext extends Context, ComponentArgs {
+  fragmentFactory: FragmentFactory;
+}
 
 module('Integration | Component | filter values/null input', function(hooks) {
   setupRenderingTest(hooks);
