@@ -56,7 +56,6 @@ export function normalizeLineChartV2(
     });
   }
 
-  // TODO Keep existing config during normalization
   return {
     type: 'line-chart',
     version: 2,
@@ -66,7 +65,6 @@ export function normalizeLineChartV2(
           series: {
             type: series?.type,
             config: {
-              // TODO: dimensions values need to be updated
               ...(dimensions ? { dimensions } : {}),
               ...(timeGrain ? { timeGrain } : {}),
               ...(metricCid ? { metricCid } : {})

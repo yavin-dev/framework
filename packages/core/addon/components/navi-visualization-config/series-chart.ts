@@ -1,14 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * <NaviVisualizationConfig::SeriesChart
- *    @request={{this.request}}
- *    @response={{this.response}}
- *    @seriesConfig={{this.seriesConfig}}
- *    @seriesType={{this.seriesType}}
- *    @onUpdateConfig={{this.onUpdateConfig}}
- * />
  */
 import Component from '@glimmer/component';
 import { Args as BaseArgs } from './base';

@@ -14,7 +14,6 @@
  *   point=pointConfig
  *   tooltip=tooltipConfig
  *   containerComponent=container
- *   metaNamespace=namespace
  *   metrics=metrics
  *  }}
  */

@@ -18,6 +18,7 @@ import { getOwner } from '@ember/application';
 import { SeriesConfig, SeriesType } from 'navi-core/models/line-chart';
 import { Args as BaseArgs } from './base';
 import { Args as LineChartArgs } from '../navi-visualizations/line-chart';
+import { cloneDeep } from 'lodash-es';
 
 type Style = LineChartArgs['options']['style'];
 
@@ -55,7 +56,7 @@ export default class NaviVisualizationConfigLineChartComponent extends Component
    */
   @action
   onUpdateSeriesConfig(seriesConfig: SeriesConfig) {
-    const newOptions = { ...this.args.options };
+    const newOptions = cloneDeep(this.args.options);
     set(newOptions.axis.y.series, 'config', seriesConfig);
     this.args.onUpdateConfig(newOptions);
   }
@@ -68,7 +69,7 @@ export default class NaviVisualizationConfigLineChartComponent extends Component
    */
   @action
   onUpdateStyle<StyleOption extends keyof Style>(field: StyleOption, value: Style[StyleOption]) {
-    let newOptions = { style: {}, ...this.args.options };
+    let newOptions = cloneDeep({ style: {}, ...this.args.options });
     set(newOptions.style, field, value);
     this.args.onUpdateConfig(newOptions);
   }

@@ -13,7 +13,7 @@ const Template = hbs`
     @type={{this.type}}
     @onUpdateConfig={{this.onUpdateConfig}}
   />`;
-let request = {
+const request = {
   hasGroupBy: true,
   hasMultipleMetrics: true,
   columns: []

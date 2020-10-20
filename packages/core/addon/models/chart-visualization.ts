@@ -61,7 +61,7 @@ export default class ChartVisualization extends Visualization {
   /**
    * Rebuild dimension series attributes based on request and response
    *
-   * @param config - series config object
+   * @param config - series config path
    * @param validations - validations object
    * @param request - request object
    * @param response - response object
@@ -98,7 +98,7 @@ export default class ChartVisualization extends Visualization {
       type: DIMENSION_SERIES,
       config: {
         metricCid: metric.cid,
-        dimensions // TODO bring back
+        dimensions
       }
     };
   }
@@ -106,7 +106,7 @@ export default class ChartVisualization extends Visualization {
   /**
    * Rebuild metric series attributes based on request and response
    *
-   * @param config - series config object
+   * @param config - series config path
    * @param validations - validations object
    * @param request - request object
    * @param response - response object
@@ -127,7 +127,7 @@ export default class ChartVisualization extends Visualization {
   /**
    * Rebuild date time series attributes based on request
    *
-   * @param config - series config object
+   * @param config - series config path
    * @param validations - validations object
    * @param request - request object
    * @param response - response object
