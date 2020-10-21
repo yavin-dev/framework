@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { getContext } from '@ember/test-helpers';
 import { TestContext } from 'ember-test-helpers';
-import { assert } from '@ember/debug';
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 

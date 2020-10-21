@@ -104,7 +104,6 @@ const ExpectedRequest = {
       type: 'reports'
     }
   };
-QUnit.dump.maxDepth = 100;
 
 module('Unit | Model | report', function(hooks) {
   setupTest(hooks);
