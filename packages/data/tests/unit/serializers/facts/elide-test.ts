@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import { AsyncQueryResponse, QueryStatus, QueryResultType, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { AsyncQueryResponse, QueryStatus, RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const Payload: AsyncQueryResponse = {
@@ -15,7 +15,7 @@ const Payload: AsyncQueryResponse = {
           result: {
             contentLength: 129,
             httpStatus: 200,
-            resultType: QueryResultType.EMBEDDED,
+            recordCount: 2,
             responseBody:
               '{"data":{"tableA":{"edges":[{"node":{"datestamp":"202003", "userCount":10}},{"node":{"datestamp":"202004", "userCount":20}}]}}}'
           }
