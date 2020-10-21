@@ -173,7 +173,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series data
    */
-  @computed('request.columns.{[],@each.displayName}', 'response', 'builder', 'seriesConfig.config')
+  @computed('request.columns.@each.displayName', 'response', 'builder', 'seriesConfig.config')
   get seriesData() {
     const { request, response, builder, seriesConfig } = this;
     return builder.buildData(response, seriesConfig.config, request);
