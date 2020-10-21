@@ -117,7 +117,9 @@ export default class FilterConsumer extends ActionConsumer {
       const { request } = route.modelFor(routeName) as ReportModel;
 
       const findDefaultOperator = (type: string) => {
+        type = type.toLowerCase();
         const opDictionary: Record<string, string> = {
+          time: 'gte',
           date: 'gte',
           number: 'eq',
           default: 'in'
