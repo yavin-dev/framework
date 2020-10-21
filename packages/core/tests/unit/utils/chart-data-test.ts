@@ -3,7 +3,6 @@ import { groupDataByDimensions, chartTypeForRequest } from 'navi-core/utils/char
 import { buildTestRequest } from '../../helpers/request';
 import { setupTest } from 'ember-qunit';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 module('Unit | Utils | Chart Data', function(hooks) {
   setupTest(hooks);

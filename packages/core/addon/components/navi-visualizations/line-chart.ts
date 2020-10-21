@@ -16,11 +16,11 @@ import { run } from '@ember/runloop';
 import ChartBuildersBase from './chart-builders-base';
 import { VisualizationModel } from './table';
 import { BaseChartBuilder } from 'navi-core/chart-builders/base';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 import { Grain } from 'navi-data/utils/date';
 import { ChartSeries } from 'navi-core/models/chart-visualization';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const DEFAULT_OPTIONS = <const>{
   style: {
@@ -153,7 +153,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   }
 
   @readOnly('args.model.0.request') request!: RequestFragment;
-  @readOnly('args.model.0.response') response!: ResponseV1;
+  @readOnly('args.model.0.response') response!: NaviFactResponse;
 
   /**
    * point radius config options for chart
@@ -173,7 +173,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series data
    */
-  @computed('request.columns.[]', 'response', 'builder', 'seriesConfig.config')
+  @computed('request.columns.@each.displayName', 'response', 'builder', 'seriesConfig.config')
   get seriesData() {
     const { request, response, builder, seriesConfig } = this;
     return builder.buildData(response, seriesConfig.config, request);

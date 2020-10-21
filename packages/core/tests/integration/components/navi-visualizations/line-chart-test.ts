@@ -16,6 +16,7 @@ import { TestContext } from 'ember-test-helpers';
 import { buildTestRequest } from '../../../helpers/request';
 import LineChart from 'navi-core/components/navi-visualizations/line-chart';
 import StoreService from '@ember-data/store';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::LineChart
@@ -45,7 +46,7 @@ module('Integration | Component | line chart', function(hooks) {
           { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
           'day'
         ),
-        response: {
+        response: NaviFactResponse.create({
           rows: [
             {
               'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -77,9 +78,8 @@ module('Integration | Component | line chart', function(hooks) {
               totalPageViews: 3697156058,
               'revenue(currency=USD)': 1623430236.42
             }
-          ],
-          meta: {}
-        }
+          ]
+        })
       }
     ]);
 
@@ -126,7 +126,7 @@ module('Integration | Component | line chart', function(hooks) {
             { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
             'day'
           ),
-          response: {
+          response: NaviFactResponse.create({
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -137,7 +137,7 @@ module('Integration | Component | line chart', function(hooks) {
                 uniqueIdentifier: 183380921
               }
             ]
-          }
+          })
         }
       ])
     );
@@ -183,7 +183,7 @@ module('Integration | Component | line chart', function(hooks) {
             { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
             'day'
           ),
-          response: {
+          response: NaviFactResponse.create({
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -196,7 +196,7 @@ module('Integration | Component | line chart', function(hooks) {
                 uniqueIdentifier: 183380921
               }
             ]
-          }
+          })
         }
       ])
     );
@@ -342,7 +342,7 @@ module('Integration | Component | line chart', function(hooks) {
           { start: '2017-09-01 00:00:00.000', end: '2017-09-07 00:00:00.000' },
           'day'
         ),
-        response: {
+        response: NaviFactResponse.create({
           rows: [
             {
               'network.dateTime(grain=day)': '2017-09-01 00:00:00.000',
@@ -373,7 +373,7 @@ module('Integration | Component | line chart', function(hooks) {
               uniqueIdentifier: 180559793
             }
           ]
-        }
+        })
       },
       new Promise(resolve => {
         resolve(
@@ -443,10 +443,9 @@ module('Integration | Component | line chart', function(hooks) {
             { start: start.format(API_DATE_FORMAT_STRING), end: end.format(API_DATE_FORMAT_STRING) },
             'month'
           ),
-          response: {
-            rows,
-            meta: {}
-          }
+          response: NaviFactResponse.create({
+            rows
+          })
         }
       ])
     );
@@ -550,7 +549,7 @@ module('Integration | Component | line chart', function(hooks) {
             dataSource: 'bardTwo',
             requestVersion: '2.0'
           }),
-          response: {
+          response: NaviFactResponse.create({
             rows: [
               {
                 'inventory.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -577,9 +576,8 @@ module('Integration | Component | line chart', function(hooks) {
                 ownedQuantity: 172724594,
                 usedAmount: 3697156058
               }
-            ],
-            meta: {}
-          }
+            ]
+          })
         }
       ])
     );
