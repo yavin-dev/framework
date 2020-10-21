@@ -4,12 +4,23 @@ import Object from '@ember/object';
 import BuilderClass from 'navi-core/chart-builders/date-time';
 import TooltipTemplate from 'navi-core/templates/chart-tooltips/date';
 import { C3Row } from 'navi-core/chart-builders/base';
-import { buildTestRequest } from 'dummy/tests/helpers/request';
+import { buildTestRequest } from '../../helpers/request';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { TestContext } from 'ember-test-helpers';
 
 const DateChartBuilder = BuilderClass.create();
 
 module('Unit | Chart Builders | Date Time', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(async function(this: TestContext) {
+    const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
+    await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
+  });
 
   test('weeks by year uses isoWeekYear', function(assert) {
     assert.expect(2);
@@ -21,13 +32,12 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'week'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=week)': '2016-01-04 00:00:00.000', pageViews: 2 }, // Week 1, 2016
         { 'network.dateTime(grain=week)': '2016-01-01 00:00:00.000', pageViews: 1 } // Week 53, 2015
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 53, 'A data entry exists for each possible week in a year');
@@ -53,15 +63,14 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'day'
     );
     const config = { timeGrain: 'month', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=day)': '2015-01-01 00:00:00.000', pageViews: 3 },
         { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 31, 'A data entry exists for each possible day in a month');
@@ -89,15 +98,14 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'day'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=day)': '2015-01-01 00:00:00.000', pageViews: 3 },
         { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 366, 'A data entry exists for each possible day in a year');
@@ -123,15 +131,14 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'month'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=month)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=month)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=month)': '2015-01-01 00:00:00.000', pageViews: 3 },
         { 'network.dateTime(grain=month)': '2014-03-15 00:00:00.000', pageViews: 4 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 12, 'A data entry exists for each possible month in a year');
@@ -158,14 +165,13 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'hour'
     );
     const config = { timeGrain: 'day', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=hour)': '2016-01-01 01:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=hour)': '2016-01-02 01:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=hour)': '2016-01-03 01:00:00.000', pageViews: 3 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 24, 'A data entry exists for each hour in a day');
@@ -192,14 +198,13 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'minute'
     );
     const config = { timeGrain: 'hour', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=minute)': '2016-01-01 00:04:00.000', pageViews: 1 },
         { 'network.dateTime(grain=minute)': '2016-01-01 01:04:00.000', pageViews: 2 },
         { 'network.dateTime(grain=minute)': '2016-01-02 02:04:00.000', pageViews: 3 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 60, 'A data entry exists for each minute in a hour');
@@ -226,14 +231,13 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'second'
     );
     const config = { timeGrain: 'minute', metricCid: 'cid_pageViews' };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=second)': '2016-01-01 00:00:20.000', pageViews: 1 },
         { 'network.dateTime(grain=second)': '2016-01-01 00:01:20.000', pageViews: 2 },
         { 'network.dateTime(grain=second)': '2016-01-01 00:03:20.000', pageViews: 3 }
-      ],
-      meta: {}
-    };
+      ]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.equal(data.length, 61, 'A data entry exists for each second in a minute');
@@ -260,10 +264,9 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       'day'
     );
     const config = { timeGrain: 'month', metricCid: 'cid_pageViews' };
-    const response = {
-      rows: [{ 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 0 }],
-      meta: {}
-    };
+    const response = NaviFactResponse.create({
+      rows: [{ 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 0 }]
+    });
     const data = DateChartBuilder.buildData(response, config, request);
 
     assert.deepEqual(
@@ -289,16 +292,19 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       timeGrain: 'month',
       metricCid: 'cid_pageViews'
     };
-    const response = {
+    const response = NaviFactResponse.create({
       rows: [
-        { dateTime: '2016-01-01 00:00:20.000', pageViews: 1 },
-        { dateTime: '2016-01-02 00:01:20.000', pageViews: 2 },
-        { dateTime: '2016-01-03 00:03:20.000', pageViews: 3 }
-      ],
-      meta: {}
-    };
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:20.000', pageViews: 1 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:01:20.000', pageViews: 2 },
+        { 'network.dateTime(grain=day)': '2016-01-03 00:03:20.000', pageViews: 3 }
+      ]
+    });
     const x = 2;
     const tooltipData = [{ x, name: 'Jan 2016', value: 2 }];
+
+    //Populates the 'byXSeries' property in the builder that buildTooltip uses
+    DateChartBuilder.buildData(response, config, request);
+
     const mixin = DateChartBuilder.buildTooltip(config, request);
     const tooltipClass = Object.extend(mixin, {});
     const tooltip = tooltipClass.create({ config, request, tooltipData, x });
@@ -306,6 +312,6 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     assert.equal(tooltip.layout, TooltipTemplate, 'Tooltip uses date template');
 
     //@ts-expect-error
-    assert.deepEqual(tooltip.rowData, [response[1]], 'The correct response row is given to the tooltip');
+    assert.deepEqual(tooltip.rowData, [response.rows[1]], 'The correct response row is given to the tooltip');
   });
 });

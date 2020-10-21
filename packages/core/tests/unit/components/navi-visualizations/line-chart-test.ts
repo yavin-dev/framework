@@ -19,6 +19,8 @@ import StoreService from '@ember-data/store';
 import { buildTestRequest } from '../../../helpers/request';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 
+/*eslint max-len: ["error", { "code": 250 }]*/
+
 let Store: StoreService;
 
 module('Unit | Component | line chart', function(hooks) {
@@ -33,32 +35,13 @@ module('Unit | Component | line chart', function(hooks) {
 
   test('dataConfig', function(assert) {
     const response = NaviFactResponse.create({
+      //prettier-ignore
       rows: [
-        {
-          'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788,
-          totalPageViews: 3669828357
-        },
-        {
-          'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
-          uniqueIdentifier: 183206656,
-          totalPageViews: 4088487125
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
-          uniqueIdentifier: 183380921,
-          totalPageViews: 4024700302
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-02 00:00:00.000',
-          uniqueIdentifier: 180559793,
-          totalPageViews: 3950276031
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-03 00:00:00.000',
-          uniqueIdentifier: 172724594,
-          totalPageViews: 3697156058
-        }
+        { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', uniqueIdentifier: 172933788, totalPageViews: 3669828357 },
+        { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', uniqueIdentifier: 183206656, totalPageViews: 4088487125 },
+        { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', uniqueIdentifier: 183380921, totalPageViews: 4024700302 },
+        { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', uniqueIdentifier: 180559793, totalPageViews: 3950276031 },
+        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
       ]
     });
     const request = Store.createFragment('bard-request-v2/request', {
@@ -216,7 +199,7 @@ module('Unit | Component | line chart', function(hooks) {
       model: A([
         {
           request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews' }]),
-          response: { rows: [] }
+          response: NaviFactResponse.create()
         }
       ])
     }) as TestLineChart;
@@ -346,15 +329,15 @@ module('Unit | Component | line chart', function(hooks) {
           { start: 'P1D', end: '2016-05-31 00:00:00.000' },
           'day'
         ),
-        response: {
+        response: NaviFactResponse.create({
           rows: [
             {
-              dateTime: '2016-05-30 00:00:00.000',
+              'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
               uniqueIdentifier: 172933788,
               totalPageViews: 3669828357
             }
           ]
-        }
+        })
       }
     ]);
     const component = createGlimmerComponent('component:navi-visualizations/line-chart', {
@@ -364,9 +347,7 @@ module('Unit | Component | line chart', function(hooks) {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: [{ metric: 'foo', parameters: {}, canonicalName: 'foo' }]
-              }
+              config: {}
             }
           }
         }
@@ -395,21 +376,20 @@ module('Unit | Component | line chart', function(hooks) {
             { start: 'P2D', end: '2016-06-01 00:00:00.000' },
             'day'
           ),
-          response: {
+          response: NaviFactResponse.create({
             rows: [
               {
-                dateTime: '2016-05-30 00:00:00.000',
+                'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 uniqueIdentifier: 172933788,
                 totalPageViews: 3669828357
               },
               {
-                dateTime: '2016-05-31 00:00:00.000',
+                'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
                 uniqueIdentifier: 172933788,
                 totalPageViews: 3669828357
               }
-            ],
-            meta: {}
-          }
+            ]
+          })
         }
       ])
     );
@@ -427,36 +407,16 @@ module('Unit | Component | line chart', function(hooks) {
   });
 
   test('tooltips', function(assert) {
-    const response = {
+    const response = NaviFactResponse.create({
+      //prettier-ignore
       rows: [
-        {
-          'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788,
-          totalPageViews: 3669828357
-        },
-        {
-          'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
-          uniqueIdentifier: 183206656,
-          totalPageViews: 4088487125
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
-          uniqueIdentifier: 183380921,
-          totalPageViews: 4024700302
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-02 00:00:00.000',
-          uniqueIdentifier: 180559793,
-          totalPageViews: 3950276031
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-03 00:00:00.000',
-          uniqueIdentifier: 172724594,
-          totalPageViews: 3697156058
-        }
-      ],
-      meta: {}
-    };
+        { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', uniqueIdentifier: 172933788, totalPageViews: 3669828357 },
+        { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', uniqueIdentifier: 183206656, totalPageViews: 4088487125 },
+        { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', uniqueIdentifier: 183380921, totalPageViews: 4024700302 },
+        { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', uniqueIdentifier: 180559793, totalPageViews: 3950276031 },
+        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
+      ]
+    });
     const request = buildTestRequest(
       [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
       [],
@@ -509,31 +469,15 @@ module('Unit | Component | line chart', function(hooks) {
     );
 
     //new data
-    let response2 = {
+    let response2 = NaviFactResponse.create({
       rows: [
-        {
-          'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          navClicks: 172933788
-        },
-        {
-          'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
-          navClicks: 4088487125
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
-          navClicks: 183380921
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-02 00:00:00.000',
-          navClicks: 3950276031
-        },
-        {
-          'network.dateTime(grain=day)': '2016-06-03 00:00:00.000',
-          navClicks: 172724594
-        }
-      ],
-      meta: {}
-    };
+        { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', navClicks: 172933788 },
+        { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', navClicks: 4088487125 },
+        { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', navClicks: 183380921 },
+        { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', navClicks: 3950276031 },
+        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', navClicks: 172724594 }
+      ]
+    });
 
     set(component.args, 'model', A([{ request, response: response2 }]));
 
@@ -568,16 +512,15 @@ module('Unit | Component | line chart', function(hooks) {
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model: A([
         {
-          response: {
+          response: NaviFactResponse.create({
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 uniqueIdentifier: 172933788,
                 totalPageViews: 3669828357
               }
-            ],
-            meta: {}
-          },
+            ]
+          }),
           request: buildTestRequest(
             [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
             [],
@@ -620,19 +563,12 @@ module('Unit | Component | line chart', function(hooks) {
 
     const getModelDataFor = (start: string, end: string, timeGrain: string) => {
       return {
-        response: {
+        response: NaviFactResponse.create({
           rows: [
-            {
-              [`network.dateTime(grain=${timeGrain})`]: start,
-              uniqueIdentifier: 172933788
-            },
-            {
-              [`network.dateTime(grain=${timeGrain})`]: end,
-              uniqueIdentifier: 183206656
-            }
-          ],
-          meta: {}
-        },
+            { [`network.dateTime(grain=${timeGrain})`]: start, uniqueIdentifier: 172933788 },
+            { [`network.dateTime(grain=${timeGrain})`]: end, uniqueIdentifier: 183206656 }
+          ]
+        }),
         request: buildTestRequest([], [], { start, end }, timeGrain)
       };
     };

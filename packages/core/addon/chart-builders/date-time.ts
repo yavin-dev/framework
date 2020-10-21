@@ -25,6 +25,7 @@ import { BaseChartBuilder, C3Row } from './base';
 import { tracked } from '@glimmer/tracking';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 const YEAR_WITH_53_ISOWEEKS = '2015-01-01';
@@ -224,16 +225,20 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): string {
-    const date = row[request.timeGrainColumn.canonicalName] as MomentInput;
+    const name = request.timeGrainColumn.canonicalName;
+    const date = row[request.timeGrainColumn.canonicalName];
+    assert(`a date for ${name} should be found, but got ${date}`, typeof date === 'string');
     return _getGrouper(request, config).getSeries(moment(date));
   }
 
   getXValue(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): number {
-    const date = row[request.timeGrainColumn.canonicalName] as MomentInput;
+    const name = request.timeGrainColumn.canonicalName;
+    const date = row[name];
+    assert(`a date for ${name} should be found, but got ${date}`, typeof date === 'string');
     return _getGrouper(request, config).getXValue(moment(date));
   }
 
-  buildData(response: ResponseV1, config: DateTimeSeries['config'], request: RequestFragment): C3Row[] {
+  buildData(response: NaviFactResponse, config: DateTimeSeries['config'], request: RequestFragment): C3Row[] {
     // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
     this.byXSeries = new DataGroup(response.rows, row => {
       let seriesName = this.getSeriesName(row, config, request),

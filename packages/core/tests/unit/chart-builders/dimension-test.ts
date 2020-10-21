@@ -8,12 +8,17 @@ import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/dime
 import { buildTestRequest } from 'dummy/tests/helpers/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { TestContext } from 'ember-test-helpers';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 const DimensionChartBuilder = BuilderClass.create();
 
 /*eslint max-len: ["error", { "code": 200 }]*/
 // prettier-ignore
-const DATA = {
+const DATA = NaviFactResponse.create({
   rows: [
     { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
     { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
@@ -21,11 +26,10 @@ const DATA = {
     { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 2669828357 },
     { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3088487125 },
     { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3024700302 }
-  ],
-  meta: {}
-};
+  ]
+});
 // prettier-ignore
-const DATA2 = {
+const DATA2 = NaviFactResponse.create({
   rows: [
     { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 176267792438 },
     { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 76735188 },
@@ -39,9 +43,8 @@ const DATA2 = {
     { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': '-1', totalPageViews: 5630202 },
     { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'f', totalPageViews: 156664890 },
     { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'm', totalPageViews: 289431575 }
-  ],
-  meta: {}
-};
+  ]
+});
 
 const metrics = [{ cid: 'cid_totalPageViews', field: 'totalPageViews' }];
 const ageDim = { cid: 'cid_age', field: 'age', parameters: { field: 'id' } };
@@ -51,8 +54,9 @@ let REQUEST: RequestFragment, REQUEST2: RequestFragment;
 
 module('Unit | Chart Builders | Dimension', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function(this: TestContext) {
     REQUEST = buildTestRequest(
       metrics,
       [ageDim],
@@ -60,6 +64,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
       'day'
     );
     REQUEST2 = buildTestRequest(metrics, [ageDim, genderDim], { start: 'P2D', end: '2016-01-03 00:00:00.000' }, 'day');
+    const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
+    await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('buildData - no dimensions', function(assert) {
@@ -121,14 +127,13 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-05-30 00:00:00.000' },
       'all'
     );
-    const data = {
+    const data = NaviFactResponse.create({
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=all)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=all)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 }
-      ],
-      meta: {}
-    };
+      ]
+    });
 
     assert.deepEqual(
       DimensionChartBuilder.buildData(
@@ -162,16 +167,15 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-05-30 02:00:00.000' },
       'hour'
     );
-    const data = {
+    const data = NaviFactResponse.create({
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=hour)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=hour)': '2016-05-30 01:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
         { 'network.dateTime(grain=hour)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=hour)': '2016-05-30 01:00:00.000', 'age(field=id)': '1', totalPageViews: 4088487125 }
-      ],
-      meta: {}
-    };
+      ]
+    });
 
     assert.deepEqual(
       DimensionChartBuilder.buildData(
@@ -210,16 +214,15 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
       { start: '2016-12-01 00:00:00.000', end: '2017-02-01 00:00:00.000' },
       'month'
     );
-    const data = {
+    const data = NaviFactResponse.create({
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 4088487125 }
-      ],
-      meta: {}
-    };
+      ]
+    });
 
     assert.deepEqual(
       DimensionChartBuilder.buildData(
@@ -334,6 +337,6 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
     assert.equal(tooltip.layout, TooltipTemplate, 'Tooltip uses dimension tooltip template');
 
     //@ts-expect-error
-    assert.deepEqual(tooltip.rowData, [DATA[1]], 'The correct response row is given to the tooltip');
+    assert.deepEqual(tooltip.rowData, [DATA.rows[1]], 'The correct response row is given to the tooltip');
   });
 });
