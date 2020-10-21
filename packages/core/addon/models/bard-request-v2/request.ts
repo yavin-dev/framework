@@ -191,8 +191,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   @computed('timeGrainColumn')
-  get nonTimeGrainDimensions(): ColumnFragment[] {
-    return this.dimensionColumns.filter(c => c !== this.timeGrainColumn);
+  get nonTimeDimensions(): ColumnFragment[] {
+    return this.columns.filter(c => c.type === 'dimension');
   }
 
   /**

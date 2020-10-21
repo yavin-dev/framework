@@ -433,4 +433,12 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
       'The request model attribute was serialized correctly'
     );
   });
+
+  test('nonTimeDimensions', function(assert) {
+    assert.deepEqual(
+      mockModel.request.nonTimeDimensions,
+      mockModel.request.columns.filter(c => c.type === 'dimension'),
+      'nonTimeDimensions retuns expected dimension columns ignoring the timeDimension and metric columns'
+    );
+  });
 });
