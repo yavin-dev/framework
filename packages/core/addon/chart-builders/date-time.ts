@@ -222,16 +222,16 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): string {
-    const name = request.timeGrainColumn.canonicalName;
-    const date = row[request.timeGrainColumn.canonicalName];
-    assert(`a date for ${name} should be found, but got ${date}`, typeof date === 'string');
+    const colName = request.timeGrainColumn.canonicalName;
+    const date = row[colName];
+    assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
     return _getGrouper(request, config).getSeries(moment(date));
   }
 
   getXValue(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): number {
-    const name = request.timeGrainColumn.canonicalName;
-    const date = row[name];
-    assert(`a date for ${name} should be found, but got ${date}`, typeof date === 'string');
+    const colName = request.timeGrainColumn.canonicalName;
+    const date = row[colName];
+    assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
     return _getGrouper(request, config).getXValue(moment(date));
   }
 

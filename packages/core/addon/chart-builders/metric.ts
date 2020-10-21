@@ -32,9 +32,9 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
    * @inheritdoc
    */
   getXValue(row: ResponseRow, _config: MetricSeries['config'], request: RequestFragment): string {
-    const name = request.timeGrainColumn.canonicalName;
-    const date = row[name];
-    assert(`a date for ${name} should be found, but got ${date}`, typeof date === 'string');
+    const colName = request.timeGrainColumn.canonicalName;
+    const date = row[colName];
+    assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
     return moment(date).format(API_DATE_FORMAT_STRING);
   }
 
