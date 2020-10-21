@@ -27,7 +27,7 @@ import { ColumnMetadataModels } from './fragments/base';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
-import { TableMetadata } from 'navi-data/models/metadata/table';
+import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/table';
 import { ColumnType } from 'navi-data/models/metadata/column';
 import { Grain } from 'navi-data/utils/date';
 
@@ -107,7 +107,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @method clone
    * @returns {Fragment} copy of this fragment
    */
-  clone(this: RequestFragment) {
+  clone(this: RequestFragment): RequestFragment {
     const { store } = this;
     const clonedRequest = this.toJSON() as RequestFragment; //POJO form of RequestFragment;
 
@@ -152,7 +152,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   @computed('table', 'dataSource')
-  get tableMetadata() {
+  get tableMetadata(): TableMetadataModel | undefined {
     return this.naviMetadata.getById('table', this.table, this.dataSource);
   }
 
@@ -160,13 +160,15 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {ColumnFragment[]} metricColumns - The metric columns
    */
   @computed('columns.[]')
-  get metricColumns(): ColumnFragment[] {
-    return this.columns.filter(column => column.type === 'metric');
+  get metricColumns(): ColumnFragment<'metric'>[] {
+    return this.columns.filter(column => column.type === 'metric') as ColumnFragment<'metric'>[];
   }
 
   @computed('columns.[]')
-  get dimensionColumns(): ColumnFragment[] {
-    return this.columns.filter(column => column.type === 'timeDimension' || column.type === 'dimension');
+  get dimensionColumns(): ColumnFragment<'dimension' | 'timeDimension'>[] {
+    return this.columns.filter(
+      column => column.type === 'timeDimension' || column.type === 'dimension'
+    ) as ColumnFragment<'dimension' | 'timeDimension'>[];
   }
 
   @computed('filters.[]')
@@ -186,8 +188,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime timeDimension
    */
   @computed('columns.[]')
-  get timeGrainColumn() {
-    return this.columns.filter(column => column.type === 'timeDimension')[0];
+  get timeGrainColumn(): ColumnFragment<'timeDimension'> {
+    return this.columns.filter(column => column.type === 'timeDimension')[0] as ColumnFragment<'timeDimension'>;
   }
 
   @computed('columns.[]')
