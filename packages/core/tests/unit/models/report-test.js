@@ -73,19 +73,18 @@ const ExpectedRequest = {
         request: ExpectedRequest,
         visualization: {
           type: 'line-chart',
-          version: 1,
+          version: 2,
           metadata: {
             axis: {
               y: {
                 series: {
                   type: 'dimension',
                   config: {
-                    metric: { metric: 'adClicks', parameters: {} },
-                    dimensionOrder: ['property'],
+                    metricCid: 'cid_adClicks',
                     dimensions: [
-                      { name: 'Property 1', values: { property: '114' } },
-                      { name: 'Property 2', values: { property: '100001' } },
-                      { name: 'Property 3', values: { property: '100002' } }
+                      { name: 'Property 1', values: { 'cid_property(field=id)': '114' } },
+                      { name: 'Property 2', values: { 'cid_property(field=id)': '100001' } },
+                      { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } }
                     ]
                   }
                 }
@@ -105,6 +104,7 @@ const ExpectedRequest = {
       type: 'reports'
     }
   };
+QUnit.dump.maxDepth = 100;
 
 module('Unit | Model | report', function(hooks) {
   setupTest(hooks);
@@ -121,6 +121,18 @@ module('Unit | Model | report', function(hooks) {
     await run(async () => {
       const report = await Store.findRecord('report', 1);
       const cids = report.request.columns.mapBy('cid');
+      const cidToReadable = report.request.columns.reduce((map, col) => {
+        map[col.cid] = `cid_${col.canonicalName}`;
+        return map;
+      }, {});
+      const vizConfig = report.visualization.metadata.axis.y.series.config;
+      vizConfig.metricCid = cidToReadable[vizConfig.metricCid];
+      vizConfig.dimensions.forEach(series => {
+        Object.keys(series.values).forEach(key => {
+          series.values[cidToReadable[key]] = series.values[key];
+          delete series.values[key];
+        });
+      });
       const serialized = report.serialize();
 
       cids.forEach((cid, idx) => {

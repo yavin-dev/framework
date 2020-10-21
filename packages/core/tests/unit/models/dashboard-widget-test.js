@@ -3,6 +3,7 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { unset } from 'lodash-es';
 
 let Store;
 
@@ -39,15 +40,23 @@ module('Unit | Model | dashboard widget', function(hooks) {
   });
 
   test('Retrieving Records', async function(assert) {
-    assert.expect(1);
+    assert.expect(4);
 
     await run(async () => {
       const dashboard = await Store.findRecord('dashboard', 1);
       const widgets = await dashboard.get('widgets');
       const rec = widgets.objectAt(0);
 
+      const serializedWidget = rec.toJSON();
+      const cids = serializedWidget.requests[0].columns.map(c => c.cid);
+      cids.forEach((cid, idx) => {
+        assert.equal(cid?.length, 10, 'column cid has proper value');
+        //remove from validation since cid value is non deterministic
+        unset(serializedWidget.requests[0], `columns[${idx}].cid`);
+      });
+
       assert.deepEqual(
-        rec.toJSON(),
+        serializedWidget,
         {
           title: 'Mobile DAU Goal',
           dashboard: '1',
@@ -62,24 +71,44 @@ module('Unit | Model | dashboard widget', function(hooks) {
           },
           requests: [
             {
-              logicalTable: {
-                table: 'network',
-                timeGrain: 'day'
-              },
-              metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-              dimensions: [],
-              filters: [],
-              having: [],
-              intervals: [
+              columns: [
                 {
-                  end: 'current',
-                  start: 'P1D'
+                  alias: null,
+                  field: 'network.dateTime',
+                  parameters: {
+                    grain: 'day'
+                  },
+                  type: 'timeDimension'
+                },
+                {
+                  alias: null,
+                  field: 'adClicks',
+                  parameters: {},
+                  type: 'metric'
+                },
+                {
+                  alias: null,
+                  field: 'navClicks',
+                  parameters: {},
+                  type: 'metric'
                 }
               ],
-              bardVersion: 'v1',
-              requestVersion: 'v1',
               dataSource: 'bardOne',
-              sort: []
+              filters: [
+                {
+                  field: 'network.dateTime',
+                  operator: 'bet',
+                  parameters: {
+                    grain: 'day'
+                  },
+                  type: 'timeDimension',
+                  values: ['P1D', 'current']
+                }
+              ],
+              limit: null,
+              requestVersion: '2.0',
+              sorts: [],
+              table: 'network'
             }
           ],
           createdOn: '2016-01-01 00:00:00.000',

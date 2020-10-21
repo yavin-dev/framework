@@ -168,7 +168,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
     config.navi.FEATURES.enableTotals = true;
 
     const columns = arr([
-      { cid: 'cid_os', field: 'os', columnMetadata: { name: 'Operating System' } },
+      { cid: 'cid_os', field: 'os', displayName: 'Operating System' },
       { cid: 'cid_age', field: 'age' }
     ]);
     let request = {
