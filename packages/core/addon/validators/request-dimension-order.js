@@ -6,13 +6,12 @@
 import { get } from '@ember/object';
 import BaseValidator from 'ember-cp-validations/validators/base';
 import { isEqual } from 'lodash-es';
-import { getRequestDimensions } from 'navi-core/utils/chart-data';
 
 export default BaseValidator.extend({
   validate(value, options /*, model, attribute*/) {
     let request = get(options, 'request');
     if (request) {
-      let requestDimensions = getRequestDimensions(request);
+      let requestDimensions = request.nonTimeGrainDimensions;
       return isEqual(value, requestDimensions);
     }
   }
