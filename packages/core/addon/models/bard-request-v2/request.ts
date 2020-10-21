@@ -190,7 +190,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     return this.columns.filter(column => column.type === 'timeDimension')[0];
   }
 
-  @computed('timeGrainColumn')
+  @computed('columns.[]')
   get nonTimeDimensions(): ColumnFragment[] {
     return this.columns.filter(c => c.type === 'dimension');
   }

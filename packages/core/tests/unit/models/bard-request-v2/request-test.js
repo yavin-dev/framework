@@ -435,10 +435,24 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
   });
 
   test('nonTimeDimensions', function(assert) {
+    const { request } = mockModel;
     assert.deepEqual(
-      mockModel.request.nonTimeDimensions,
-      mockModel.request.columns.filter(c => c.type === 'dimension'),
-      'nonTimeDimensions retuns expected dimension columns ignoring the timeDimension and metric columns'
+      request.nonTimeDimensions,
+      request.columns.filter(c => c.type === 'dimension'),
+      'nonTimeDimensions returns expected dimension columns ignoring the timeDimension and metric columns'
+    );
+
+    request.addColumn({
+      type: 'dimension',
+      source: request.dataSource,
+      field: 'foo',
+      parameters: {}
+    });
+
+    assert.deepEqual(
+      request.nonTimeDimensions,
+      request.columns.filter(c => c.type === 'dimension'),
+      'nonTimeDimensions recomputes when the request columns change'
     );
   });
 });
