@@ -3,13 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { topN, maxDataByDimensions } from 'navi-core/utils/data';
-import {
-  METRIC_SERIES,
-  DIMENSION_SERIES,
-  DATE_TIME_SERIES,
-  getRequestDimensions,
-  ChartType
-} from 'navi-core/utils/chart-data';
+import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, ChartType } from 'navi-core/utils/chart-data';
 import Visualization from './visualization';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
@@ -62,7 +56,7 @@ export default class ChartVisualization extends Visualization {
 
   private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): DimensionSeriesValues[] {
     const series: Record<string, DimensionSeriesValues> = {};
-    const dimensions = getRequestDimensions(request);
+    const dimensions = request.nonTimeGrainDimensions;
     rows.forEach(row => {
       const values: Record<string, string | number | boolean> = {};
       const dimensionLabels: Array<string | number | boolean> = [];
@@ -110,7 +104,7 @@ export default class ChartVisualization extends Visualization {
       : request.metricColumns[0];
 
     const responseRows = topN(
-      maxDataByDimensions(response.rows, getRequestDimensions(request), metric.canonicalName),
+      maxDataByDimensions(response.rows, request.nonTimeGrainDimensions, metric.canonicalName),
       metric.canonicalName,
       10
     );
