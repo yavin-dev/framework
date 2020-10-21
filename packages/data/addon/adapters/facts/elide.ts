@@ -63,6 +63,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns graphql query string for a v2 request
    */
   private dataQueryFromRequest(request: RequestV2): string {
+    console.log('dataQueryFromRequest');
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
@@ -131,6 +132,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the TableExport creation mutation
    */
   createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+    console.log('createTableExport');
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
@@ -176,6 +178,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the TableExport fetch query
    */
   fetchTableExport(id: string, dataSourceName?: string) {
+    console.log('fetchTableExport');
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
     dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
@@ -194,8 +197,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(request: RequestV1, options: RequestOptions = {}): Promise<string> {
+    //debugger;
+    console.log('urlForDownloadQuery');
     let response = await this.fetchDataForExportTask.perform(request, options);
-    let url = response.tableExport.edges[0].node.result?.url || '';
+    let url = response.tableExport.edges[0]?.node.result?.url || '';
+    console.log(url.toString());
     return url.toString();
   }
 
@@ -204,6 +210,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    */
   @task(function*(this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
+    console.log('fetchdataforexporttask');
     let tableExportPayload = yield this.createTableExport(request, options);
     const tableExport = tableExportPayload?.tableExport.edges[0]?.node;
     const { id } = tableExport;

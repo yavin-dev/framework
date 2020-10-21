@@ -489,6 +489,7 @@ const OPTIONS = {
   },
   mutations: {
     asyncQuery(connection, { op, data }, { asyncQueries }) {
+      console.log('asyncQuery mutation');
       data = data[0];
       const queryIds = data.id ? [data.id] : [];
       const existingQueries = asyncQueries.find(queryIds) || [];
@@ -514,6 +515,7 @@ const OPTIONS = {
       }
     },
     tableExport(connection, { op, data }, { tableExports }) {
+      console.log('tableExport mutation');
       data = data[0];
       const queryIds = data.id ? [data.id] : [];
       const existingQueries = tableExports.find(queryIds) || [];
