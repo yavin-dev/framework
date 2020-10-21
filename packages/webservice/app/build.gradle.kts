@@ -58,7 +58,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.register<NpmTask>("installUIDependencies") {
-    setArgs(listOf("install"))
+    setArgs(listOf("ci"))
     setExecOverrides(closureOf<ExecSpec> {
         setWorkingDir("../../../")
     })
