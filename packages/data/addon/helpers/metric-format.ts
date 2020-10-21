@@ -31,10 +31,10 @@ export default class MetricFormatHelper extends Helper {
    * @returns {string} - formatted metric
    */
   compute([metric, namespace = getDefaultDataSourceName(), alias /*...rest*/]: [TODO?, string?, string?]): string {
-    const metricMeta = this.naviMetadata.getById('metric', metric?.metric, namespace) as Metric | undefined;
+    const metricMeta = this.naviMetadata.getById('metric', metric?.field, namespace) as Metric | undefined;
     if (metricMeta) {
       return this.naviFormatter.formatColumnName(metricMeta, metric?.parameters, alias);
     }
-    return this.naviFormatter.formatColumnName({ name: metric?.metric } as Metric, metric?.parameters, alias);
+    return this.naviFormatter.formatColumnName({ name: metric?.field } as Metric, metric?.parameters, alias);
   }
 }

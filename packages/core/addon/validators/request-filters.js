@@ -13,17 +13,17 @@ export default BaseValidator.extend({
    * @override
    * @returns {Boolean}
    */
-  validate(allSeries, options /*, model, attribute*/) {
+  validate(allSeries, { request: { filters } } /*, model, attribute*/) {
     let isValid = true;
 
     if (allSeries) {
-      let requestFilters = arr(get(options, 'request.filters'));
+      const requestFilters = arr(filters);
 
       //check if each series value belongs to a filter
       allSeries.forEach(series => {
         Object.entries(get(series, 'values')).forEach(([key, value]) => {
-          let filter = requestFilters.findBy('dimension.id', key);
-          if (filter && !get(filter, 'rawValues').includes(value)) {
+          const filter = requestFilters.findBy('dimension.id', key);
+          if (filter?.rawValues?.includes(value)) {
             isValid = false;
           }
         });

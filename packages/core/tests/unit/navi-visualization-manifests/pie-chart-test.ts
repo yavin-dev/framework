@@ -6,16 +6,17 @@ import PieChartManifest from 'navi-core/navi-visualization-manifests/pie-chart';
 
 let ValidRequest: RequestFragment;
 let Manifest: PieChartManifest;
+let Store: any;
 
 module('Unit | Manifests | pie chart', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
-    const store = this.owner.lookup('service:store');
+    Store = this.owner.lookup('service:store');
 
     Manifest = this.owner.lookup('navi-visualization-manifest:pie-chart');
 
-    ValidRequest = store.createFragment('bard-request-v2/request', {
+    ValidRequest = Store.createFragment('bard-request-v2/request', {
       dataSource: 'bardOne',
       requestVersion: '2.0',
       table: 'network',
@@ -85,11 +86,26 @@ module('Unit | Manifests | pie chart', function(hooks) {
   });
 
   test('invalid for single time bucket with no metrics', function(assert) {
-    const request = ValidRequest.clone();
-    request.columns = [
-      //@ts-ignore
-      { type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' }
-    ];
+    const request = Store.createFragment('bard-request-v2/request', {
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['current', 'next'],
+          source: 'bardOne'
+        }
+      ],
+      columns: [
+        { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
+        { type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' }
+      ],
+      sorts: []
+    });
     assert.notOk(Manifest.typeIsValid(request), 'pie chart type is invalid for single time bucket with no metrics');
   });
 });

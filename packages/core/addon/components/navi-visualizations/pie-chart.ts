@@ -9,34 +9,47 @@
  * }}
  */
 
+//@ts-ignore
 import d3 from 'd3';
-import { alias, readOnly } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
 import { computed, action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
-import layout from '../../templates/components/navi-visualizations/pie-chart';
+//@ts-ignore
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import { merge } from 'lodash-es';
+import { VisualizationModel } from './table';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
-import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 import { getTranslation } from '../../utils/chart';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import ChartBuildersBase from './chart-builders-base';
+import RequestV2 from '../../models/bard-request-v2/request';
 
-@templateLayout(layout)
-@tagName('')
-class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuilders) {
+export type Args = {
+  model: VisualizationModel;
+  options: TODO;
+};
+
+type TooltipData = {
+  id: string;
+  index: number;
+  name: string;
+  ratio: number;
+  seriesIndex: number;
+  value: number;
+};
+
+export default class NaviVisualizationsPieChartComponent extends ChartBuildersBase<Args> {
   /**
    * @property {Service} metricName
    */
-  @service metricName;
+  @service metricName: TODO;
 
   /**
    * @property {String} chartId - return pie-chart-widget with its ember id appended to it
    */
-  @computed
   get chartId() {
     return `pie-chart-widget-${guidFor(this)}`;
   }
@@ -45,7 +58,6 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    * @property {Array} widgetClassNames - since pie-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  @computed
   get widgetClassNames() {
     return ['pie-chart-widget', this.chartId];
   }
@@ -53,12 +65,12 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {Object} request
    */
-  @alias('model.firstObject.request') request;
+  @readOnly('args.model.firstObject.request') request!: RequestV2;
 
   /**
    * @property {String} namespace - meta data namespace to use
    */
-  @alias('request.dataSource') namespace;
+  @readOnly('request.dataSource') namespace!: string;
 
   /**
    * @property {Object} builder - builder based on series type
@@ -73,23 +85,22 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {Object} seriesConfig - config for chart series
    */
-  @readOnly('options.series.config') seriesConfig;
+  @readOnly('args.options.series.config') seriesConfig!: TODO;
 
   /**
    * @property {String} seriesType
    */
-  @readOnly('options.series.type') seriesType;
+  @readOnly('args.options.series.type') seriesType: TODO;
 
   /**
    * Formatter for label (percentage value) shown on pie slices
    * @property {Object} pieConfig - pie chart specific config
    */
-  @computed
   get pieConfig() {
     return {
       pie: {
         label: {
-          format: (value, ratio) => {
+          format: (_: unknown, ratio: number) => {
             return smartFormatNumber([ratio * 100]) + '%';
           }
         }
@@ -100,11 +111,16 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {String} metricDisplayName - display name for metric
    */
-  @computed('options', 'namespace')
+  @computed('args.options', 'namespace')
   get metricDisplayName() {
-    const metric = this.seriesConfig.metric;
+    const {
+      request,
+      seriesConfig: { metricCid }
+    } = this;
+    const metricColumn = request.columns.findBy('cid', metricCid);
+    const metric = { metric: metricColumn?.field, parameters: metricColumn?.parameters };
 
-    return metric && this.metricName.getDisplayName(metric, this.namespace);
+    return metricColumn && this.metricName.getDisplayName(metric, this.namespace);
   }
 
   /**
@@ -112,10 +128,10 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('model.firstObject', 'seriesConfig')
   get dataConfig() {
-    const response = this.model?.firstObject?.response,
-      request = this.request,
-      seriesConfig = this.seriesConfig,
-      seriesData = this.builder.buildData(response.rows, seriesConfig, request);
+    const response = this.args.model?.firstObject?.response;
+    const request = this.request;
+    const seriesConfig = this.seriesConfig;
+    const seriesData = this.builder.buildData(response, seriesConfig, request);
 
     return {
       data: {
@@ -130,7 +146,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    */
   @computed('options', 'dataConfig')
   get config() {
-    return merge({}, this.pieConfig, this.options, this.dataConfig, {
+    return merge({}, this.pieConfig, this.args.options, this.dataConfig, {
       tooltip: this.chartTooltip
     });
   }
@@ -138,7 +154,6 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {String} tooltipComponentName - name of the tooltip component
    */
-  @computed
   get tooltipComponentName() {
     return `pie-chart-tooltip-${guidFor(this)}`;
   }
@@ -146,7 +161,6 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   /**
    * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
    */
-  @computed
   get tooltipComponent() {
     let owner = getOwner(this),
       tooltipComponentName = this.tooltipComponentName,
@@ -154,7 +168,6 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
       byXSeries = this.builder.byXSeries,
       tooltipComponent = Component.extend(
         owner.ownerInjection(),
-
         {
           layout: tooltipLayout,
 
@@ -189,7 +202,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
     const metric = this.seriesConfig.metric;
 
     return {
-      contents(tooltipData) {
+      contents(tooltipData: TooltipData[]) {
         let x = rawData[0].x.rawValue,
           tooltip = tooltipComponent.create({
             x,
@@ -211,11 +224,11 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
 
   /**
    * Fires before the element is destroyed
-   * @method willDestroyElement
+   * @method willDestroy
    * @override
    */
-  willDestroyElement() {
-    super.willDestroyElement(...arguments);
+  willDestroy() {
+    super.willDestroy();
     this._removeMetricLabel();
     this._removeTooltipFromRegistry();
   }
@@ -236,7 +249,7 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    * @private
    */
   _removeMetricLabel() {
-    let tspans = d3.selectAll(`.${this.get('chartId')} text.c3-title > .pie-metric-label`);
+    let tspans = d3.selectAll(`.${this.chartId} text.c3-title > .pie-metric-label`);
     tspans.remove();
   }
 
@@ -246,9 +259,9 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    * @private
    */
   _drawMetricLabel() {
-    let titleElm = d3.select(`.${this.get('chartId')} text.c3-title`),
-      svgElm = d3.select(`.${this.get('chartId')} svg`),
-      chartElm = d3.select(`.${this.get('chartId')} .c3-chart-arcs`),
+    let titleElm = d3.select(`.${this.chartId} text.c3-title`),
+      svgElm = d3.select(`.${this.chartId} svg`),
+      chartElm = d3.select(`.${this.chartId} .c3-chart-arcs`),
       /*
        * We want the metric label to be just to the left of the pie chart
        * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
@@ -283,5 +296,3 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
     }
   }
 }
-
-export default NaviVisualizationsPieChartComponent;

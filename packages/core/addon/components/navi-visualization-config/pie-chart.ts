@@ -10,15 +10,21 @@
  * }}
  */
 
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { set, action } from '@ember/object';
+//@ts-ignore
 import { copy } from 'ember-copy';
-import layout from '../../templates/components/navi-visualization-config/pie-chart';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import RequestFragment from 'dummy/models/bard-request-v2/request';
+import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 
-@templateLayout(layout)
-@tagName('')
-class NaviVisualizationConfigPieChartComponent extends Component {
+type Args = {
+  request: RequestFragment;
+  response: ResponseV1;
+  options: TODO;
+  onUpdateConfig: (newOptions: TODO) => void;
+};
+
+export default class NaviVisualizationConfigPieChartComponent extends Component<Args> {
   /**
    * Method to replace the seriesConfig in visualization config object.
    *
@@ -26,11 +32,9 @@ class NaviVisualizationConfigPieChartComponent extends Component {
    * @param {Object} seriesConfig
    */
   @action
-  onUpdateSeriesConfig(seriesConfig) {
-    const newOptions = copy(this.options);
+  onUpdateSeriesConfig(seriesConfig: TODO) {
+    const newOptions = copy(this.args.options);
     set(newOptions, 'series.config', seriesConfig);
-    this.onUpdateConfig(newOptions);
+    this.args.onUpdateConfig(newOptions);
   }
 }
-
-export default NaviVisualizationConfigPieChartComponent;
