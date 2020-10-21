@@ -27,26 +27,38 @@ module('Unit | Model | dashboard', function(hooks) {
           createdOn: '2016-02-01 00:00:00.000',
           filters: [
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'contains',
               values: ['114', '100001']
             },
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'notin',
               values: ['1']
             },
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'notin',
               values: ['2', '3']
             },
             {
-              dimension: 'eventId',
-              field: 'id',
+              type: 'dimension',
+              field: 'eventId',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: ['1']
             }
@@ -140,8 +152,24 @@ module('Unit | Model | dashboard', function(hooks) {
       assert.deepEqual(
         clonedFilterModel.filters,
         [
-          { dimension: 'bardOne.age', field: 'id', operator: 'in', values: [1, 2, 3] },
-          { dimension: 'bardTwo.container', field: 'id', operator: 'notin', values: [1] }
+          {
+            type: 'dimension',
+            field: 'age',
+            parameters: {
+              field: 'id'
+            },
+            operator: 'in',
+            values: [1, 2, 3]
+          },
+          {
+            type: 'dimension',
+            field: 'container',
+            parameters: {
+              field: 'id'
+            },
+            operator: 'notin',
+            values: [1]
+          }
         ],
         'multi datasource filters has the datasource specified'
       );
