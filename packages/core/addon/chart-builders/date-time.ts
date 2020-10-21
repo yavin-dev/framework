@@ -23,9 +23,8 @@ import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { BaseChartBuilder, C3Row } from './base';
 import { tracked } from '@glimmer/tracking';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 const YEAR_WITH_53_ISOWEEKS = '2015-01-01';
@@ -212,8 +211,6 @@ function _getGrouper(request: RequestFragment, config: DateTimeSeries['config'])
   assert(`Grouper for ${timeGrain} by ${seriesTimeGrain} should exist`, grouper);
   return grouper;
 }
-
-type ResponseRow = ResponseV1['rows'][number];
 
 export default class TimeChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;

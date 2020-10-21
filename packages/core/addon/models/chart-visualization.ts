@@ -56,7 +56,7 @@ export default class ChartVisualization extends Visualization {
 
   private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): DimensionSeriesValues[] {
     const series: Record<string, DimensionSeriesValues> = {};
-    const dimensions = request.nonTimeGrainDimensions;
+    const dimensions = request.nonTimeDimensions;
     rows.forEach(row => {
       const values: Record<string, string | number | boolean> = {};
       const dimensionLabels: Array<string | number | boolean> = [];
@@ -104,7 +104,7 @@ export default class ChartVisualization extends Visualization {
       : request.metricColumns[0];
 
     const responseRows = topN(
-      maxDataByDimensions(response.rows, request.nonTimeGrainDimensions, metric.canonicalName),
+      maxDataByDimensions(response.rows, request.nonTimeDimensions, metric.canonicalName),
       metric.canonicalName,
       10
     );

@@ -20,10 +20,10 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import EmberObject, { computed } from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { BaseChartBuilder, C3Row, ResponseRow } from './base';
+import { BaseChartBuilder, C3Row } from './base';
 import { tracked } from '@glimmer/tracking';
 import { MetricSeries } from 'navi-core/models/chart-visualization';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export default class MetricChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;

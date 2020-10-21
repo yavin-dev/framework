@@ -32,11 +32,11 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions } from 'navi-core/utils/chart-data';
-import { BaseChartBuilder, C3Row, ResponseRow } from './base';
+import { BaseChartBuilder, C3Row } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export default class DimensionChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;
@@ -48,9 +48,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
-    return getRequestDimensions(request)
-      .map(dim => row[dim.canonicalName])
-      .join(',');
+    return request.nonTimeDimensions.map(dim => row[dim.canonicalName]).join(',');
   }
 
   /**
@@ -70,7 +68,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
-    const { timeGrain } = request;
+    const { timeGrain, nonTimeDimensions } = request;
     assert('request should have an interval', interval);
     assert('request should have a timeGrain', timeGrain);
     // Group data by x axis value + series name in order to lookup trends when building tooltip
@@ -83,8 +81,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     const { metricCid } = config;
     const metric = request.columns.find(({ cid }) => cid === metricCid);
     assert(`a metric with cid ${metricCid} should be found`, metric);
-    const dimensions = request.nonTimeGrainDimensions;
-    const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
+    const seriesKey = config.dimensions.map(s => nonTimeDimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
     const seriesName = config.dimensions.map(s => s.name); // Get all the series names
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
 
@@ -99,7 +96,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
         let dateRows = byDate.getDataForKey(key) || [];
 
         // Group the dimension required
-        let byDim = groupDataByDimensions(dateRows, dimensions);
+        let byDim = groupDataByDimensions(dateRows, nonTimeDimensions);
 
         // the data for date used in the C3 chart
         let dataForDate: C3Row = {

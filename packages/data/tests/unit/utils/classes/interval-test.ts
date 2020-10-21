@@ -199,6 +199,79 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
   });
 
+  test('makeEndExclusiveFor', function(assert) {
+    const start = moment('2017-10-10T00:00:00.000Z').utc();
+    const end = moment('2017-10-12T01:02:03.004Z').utc();
+    const interval = new Interval(start, end);
+
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('second')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-10-12T01:02:04.000Z',
+      'interval is inclusive of the second'
+    );
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('minute')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-10-12T01:03:00.000Z',
+      'interval is inclusive of the minute'
+    );
+
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('hour')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-10-12T02:00:00.000Z',
+      'interval is inclusive of the hour'
+    );
+
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('day')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-10-13T00:00:00.000Z',
+      'interval is inclusive of the day'
+    );
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('week')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-10-16T00:00:00.000Z',
+      'interval is inclusive of the week'
+    );
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('month')
+        .asMoments()
+        .end?.toISOString(),
+      '2017-11-01T00:00:00.000Z',
+      'interval is inclusive of the month'
+    );
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('quarter')
+        .asMoments()
+        .end?.toISOString(),
+      '2018-01-01T00:00:00.000Z',
+      'interval is inclusive of the quarter'
+    );
+    assert.equal(
+      interval
+        .makeEndExclusiveFor('year')
+        .asMoments()
+        .end?.toISOString(),
+      '2018-01-01T00:00:00.000Z',
+      'interval is inclusive of the year'
+    );
+  });
+
   test('asIntervalForTimePeriod', function(assert) {
     assert.expect(2);
 

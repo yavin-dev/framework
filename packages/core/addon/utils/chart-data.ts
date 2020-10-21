@@ -34,7 +34,7 @@ export function groupDataByDimensions(
  * @returns the chart type
  */
 export function chartTypeForRequest(request: RequestFragment): ChartType {
-  if (request.nonTimeGrainDimensions.length > 0) {
+  if (request.nonTimeDimensions.length > 0) {
     return DIMENSION_SERIES;
   }
 

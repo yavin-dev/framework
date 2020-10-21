@@ -4,15 +4,12 @@
  */
 import Mixin from '@ember/object/mixin';
 import EmberObject from '@ember/object';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { DateTimeSeries, DimensionSeries, MetricSeries } from 'navi-core/models/chart-visualization';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export type SeriesType = MetricSeries['type'] | DimensionSeries['type'] | DateTimeSeries['type'];
 export type SeriesConfig = MetricSeries['config'] | DimensionSeries['config'] | DateTimeSeries['config'];
-
-export type ResponseRow = ResponseV1['rows'][number];
 
 export type C3Row = {
   x: {
