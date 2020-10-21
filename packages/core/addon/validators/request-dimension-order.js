@@ -11,7 +11,7 @@ export default BaseValidator.extend({
   validate(value, options /*, model, attribute*/) {
     let request = get(options, 'request');
     if (request) {
-      let requestDimensions = request.nonTimeGrainDimensions;
+      let requestDimensions = request.nonTimeDimensions;
       return isEqual(value, requestDimensions);
     }
   }

@@ -9,11 +9,12 @@ import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
+import { ColumnType } from 'navi-data/models/metadata/column';
 
 /**
  * @augments {BaseFragment}
  */
-export default class ColumnFragment extends BaseFragment implements Column {
+export default class ColumnFragment<T extends ColumnType = ColumnType> extends BaseFragment<T> implements Column {
   @attr('string', { defaultValue: () => nanoid(10) })
   cid!: string;
 
@@ -23,7 +24,7 @@ export default class ColumnFragment extends BaseFragment implements Column {
   @service naviFormatter!: NaviFormatterService;
 
   @computed('alias', 'parameters', 'columnMetadata')
-  get displayName() {
+  get displayName(): string {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
   }

@@ -32,11 +32,11 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions } from 'navi-core/utils/chart-data';
-import { BaseChartBuilder, C3Row, ResponseRow } from './base';
+import { BaseChartBuilder, C3Row } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export default class DimensionChartBuilder extends EmberObject implements BaseChartBuilder {
   @tracked byXSeries?: DataGroup<ResponseRow>;
@@ -48,24 +48,27 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
-    return request.dimensionColumns.map(dim => row[dim.canonicalName]).join(',');
+    return request.nonTimeDimensions.map(dim => row[dim.canonicalName]).join(',');
   }
 
   /**
    * @inheritdoc
    */
   getXValue(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
-    // expects timeGrainColumn values to be a readable moment input
-    const date = row[request.timeGrainColumn.canonicalName] as MomentInput;
+    const colName = request.timeGrainColumn.canonicalName;
+    const date = row[colName];
+    assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
     return moment(date).format(API_DATE_FORMAT_STRING);
   }
 
   /**
    * @inheritdoc
    */
-  buildData(response: ResponseV1, config: DimensionSeries['config'], request: RequestFragment): C3Row[] {
+  buildData(response: NaviFactResponse, config: DimensionSeries['config'], request: RequestFragment): C3Row[] {
+    assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
-    const { timeGrain, interval } = request;
+    const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
+    const { timeGrain, nonTimeDimensions } = request;
     assert('request should have an interval', interval);
     assert('request should have a timeGrain', timeGrain);
     // Group data by x axis value + series name in order to lookup trends when building tooltip
@@ -78,53 +81,55 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     const { metricCid } = config;
     const metric = request.columns.find(({ cid }) => cid === metricCid);
     assert(`a metric with cid ${metricCid} should be found`, metric);
-    const dimensions = request.nonTimeGrainDimensions;
-    const seriesKey = config.dimensions.map(s => dimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
+    const seriesKey = config.dimensions.map(s => nonTimeDimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
     const seriesName = config.dimensions.map(s => s.name); // Get all the series names
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
 
     // For each unique date, build the series
-    return interval.getDatesForInterval(timeGrain).map(date => {
-      const key = buildDateKey(date);
+    return interval
+      .makeEndExclusiveFor(timeGrain)
+      .getDatesForInterval(timeGrain)
+      .map(date => {
+        const key = buildDateKey(date);
 
-      // Pulling the specific data rows for the date
-      let dateRows = byDate.getDataForKey(key) || [];
+        // Pulling the specific data rows for the date
+        let dateRows = byDate.getDataForKey(key) || [];
 
-      // Group the dimension required
-      let byDim = groupDataByDimensions(dateRows, dimensions);
+        // Group the dimension required
+        let byDim = groupDataByDimensions(dateRows, nonTimeDimensions);
 
-      // the data for date used in the C3 chart
-      let dataForDate: C3Row = {
-        x: { rawValue: key, displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain]) }
-      } as C3Row;
+        // the data for date used in the C3 chart
+        let dataForDate: C3Row = {
+          x: { rawValue: key, displayValue: moment(date).format(ChartAxisDateTimeFormats[timeGrain]) }
+        } as C3Row;
 
-      // Adding the series to the keys
-      seriesKey.forEach((s, index) => {
-        //Handling the case when some of the data group does not exist
-        if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
-          // Extending the data for date with the grouped dimension and metric value
-          Object.assign(dataForDate, {
-            [seriesName[index]]: byDim.getDataForKey(s)[0][metric.canonicalName]
-          });
-        } else {
-          // Returning null for the chart to show missing data
-          Object.assign(dataForDate, { [seriesName[index]]: null });
-        }
+        // Adding the series to the keys
+        seriesKey.forEach((s, index) => {
+          //Handling the case when some of the data group does not exist
+          if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
+            // Extending the data for date with the grouped dimension and metric value
+            Object.assign(dataForDate, {
+              [seriesName[index]]: byDim.getDataForKey(s)[0][metric.canonicalName]
+            });
+          } else {
+            // Returning null for the chart to show missing data
+            Object.assign(dataForDate, { [seriesName[index]]: null });
+          }
+        });
+
+        /**
+         * sample of return:
+         * x: {
+         *    rawValue: '2016-05-30 00:00:00.000',
+         *    displayValue: 'May 30'
+         *  },
+         *  'All Other | M': 828357,
+         *  'Under 15 | F' : 26357
+         */
+
+        // Return the data for Date
+        return dataForDate;
       });
-
-      /**
-       * sample of return:
-       * x: {
-       *    rawValue: '2016-05-30 00:00:00.000',
-       *    displayValue: 'May 30'
-       *  },
-       *  'All Other | M': 828357,
-       *  'Under 15 | F' : 26357
-       */
-
-      // Return the data for Date
-      return dataForDate;
-    });
   }
 
   /**
@@ -145,7 +150,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.tooltipData.map((series: any) => {
           // Get the full data for this combination of x + series
-          let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.id) || [];
+          let dataForSeries = builder.byXSeries?.getDataForKey(`${this.x} ${series.id}`) || [];
 
           return dataForSeries[0];
         });

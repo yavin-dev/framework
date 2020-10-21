@@ -12,8 +12,9 @@ import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import { setOwner } from '@ember/application';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
-const DATA = {
+const DATA = NaviFactResponse.create({
   rows: [
     {
       'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -40,9 +41,8 @@ const DATA = {
       uniqueIdentifier: 172724594,
       totalPageViews: 3697156058
     }
-  ],
-  meta: {}
-};
+  ]
+});
 let ChartBuilder = MetricChartBuilder.create();
 let Request: RequestFragment;
 
@@ -52,14 +52,14 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     setOwner(ChartBuilder, this.owner);
-    const metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     Request = buildTestRequest(
       [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
       [],
       { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
       'day'
     );
-    await metadataService.loadMetadata();
+    const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
+    await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('buildData - no metrics', function(assert) {
@@ -126,29 +126,36 @@ module('Unit | Chart Builders | Metric', function(hooks) {
     const request = buildTestRequest(
       [{ field: 'totalPageViews' }, { field: 'uniqueIdentifier' }],
       [],
-      { start: '2016-06-01 00:00:00.000', end: '2016-06-03 00:00:00.000' },
+      { start: '2016-06-01 00:00:00.000', end: '2016-06-10 00:00:00.000' },
       'day'
     );
-    const data = {
-      rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 3669828357 }],
-      meta: {}
-    };
+    const data = NaviFactResponse.create({
+      rows: [
+        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', totalPageViews: 3669828357 },
+        { 'network.dateTime(grain=day)': '2016-06-05 00:00:00.000', totalPageViews: 3669823211 }
+      ]
+    });
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
       ([
         {
-          x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
+          x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
+          'Total Page Views': 3669828357,
+          'Unique Identifiers': null
+        },
+        {
+          x: { rawValue: '2016-06-04 00:00:00.000', displayValue: 'Jun 4' },
           'Total Page Views': null,
           'Unique Identifiers': null
         },
         {
-          x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
-          'Total Page Views': 3669828357,
+          x: { rawValue: '2016-06-05 00:00:00.000', displayValue: 'Jun 5' },
+          'Total Page Views': 3669823211,
           'Unique Identifiers': null
         }
       ] as unknown) as C3Row[],
-      'Missing data points are filled with null values'
+      'Intervals are trimmed and missing data points are filled with null values'
     );
   });
 
@@ -161,13 +168,12 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       { start: '2016-05-31 00:00:00.000', end: '2016-05-31 02:00:00.000' },
       'hour'
     );
-    const data = {
+    const data = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=hour)': '2016-05-31 00:00:00.000', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=hour)': '2016-05-31 01:00:00.000', totalPageViews: 4088487125 }
-      ],
-      meta: {}
-    };
+      ]
+    });
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
@@ -194,13 +200,12 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       { start: '2016-12-01 00:00:00.000', end: '2017-02-01 01:00:00.000' },
       'month'
     );
-    const data = {
+    const data = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', totalPageViews: 4088487125 }
-      ],
-      meta: {}
-    };
+      ]
+    });
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
@@ -227,10 +232,9 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       { start: '2016-06-02 00:00:00.000', end: '2016-06-03 00:00:00.000' },
       'day'
     );
-    const data = {
-      rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 0 }],
-      meta: {}
-    };
+    const data = NaviFactResponse.create({
+      rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 0 }]
+    });
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),

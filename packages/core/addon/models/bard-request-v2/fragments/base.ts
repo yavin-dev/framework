@@ -33,7 +33,7 @@ const Validations = buildValidations({
 
 export type ColumnMetadataModels = MetadataModelRegistry[ColumnType];
 
-export default class Base extends Fragment.extend(Validations) {
+export default class Base<T extends ColumnType> extends Fragment.extend(Validations) {
   @service naviFormatter!: NaviFormatterService;
 
   @attr('string')
@@ -47,7 +47,7 @@ export default class Base extends Fragment.extend(Validations) {
   parameters!: Parameters;
 
   @attr('string')
-  type!: ColumnType;
+  type!: T;
 
   @attr('string')
   source!: string; //TODO do we need this?
@@ -59,10 +59,10 @@ export default class Base extends Fragment.extend(Validations) {
    * @type {Meta}
    */
   @computed('field', 'type', 'source')
-  get columnMetadata() {
+  get columnMetadata(): MetadataModelRegistry[T] {
     assert('Source must be set in order to access columnMetadata', isPresent(this.source));
     assert('column type must be set in order to access columnMetadata', isPresent(this.type));
-    return this.naviMetadata.getById(this.type, this.field, this.source) as ColumnMetadataModels;
+    return this.naviMetadata.getById(this.type, this.field, this.source) as MetadataModelRegistry[T];
   }
 
   @computed('field', 'parameters.{}')

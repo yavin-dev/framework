@@ -1,5 +1,6 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { Grain } from 'navi-data/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
@@ -300,13 +301,13 @@ export default class LineChartRoute extends Route {
       anomalousRequest
     } = this;
     return {
-      default: A([{ request: defaultRequest, response: { rows: defaultRows, meta: {} } }]),
-      dimension: A([{ request: dimensionRequest, response: { rows: dimensionRows, meta: {} } }]),
-      hourGrain: A([{ request: hourGrainRequest, response: { rows: hourRows, meta: {} } }]),
-      minuteGrain: A([{ request: minuteGrainRequest, response: { rows: minuteRows, meta: {} } }]),
-      secondGrain: A([{ request: secondGrainRequest, response: { rows: secondRows, meta: {} } }]),
+      default: A([{ request: defaultRequest, response: NaviFactResponse.create({ rows: defaultRows }) }]),
+      dimension: A([{ request: dimensionRequest, response: NaviFactResponse.create({ rows: dimensionRows }) }]),
+      hourGrain: A([{ request: hourGrainRequest, response: NaviFactResponse.create({ rows: hourRows }) }]),
+      minuteGrain: A([{ request: minuteGrainRequest, response: NaviFactResponse.create({ rows: minuteRows }) }]),
+      secondGrain: A([{ request: secondGrainRequest, response: NaviFactResponse.create({ rows: secondRows }) }]),
       anomalous: A([
-        { request: anomalousRequest, response: { rows: anomalousRows, meta: {} } },
+        { request: anomalousRequest, response: NaviFactResponse.create({ rows: anomalousRows }) },
         Promise.resolve(
           A([
             { index: 1, actual: 12, predicted: 172724594.12345, standardDeviation: 123.123456 },
