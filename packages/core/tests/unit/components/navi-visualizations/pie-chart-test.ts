@@ -5,10 +5,13 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import PieChart from 'navi-core/components/navi-visualizations/pie-chart';
+import { createGlimmerComponent } from 'navi-core/test-support';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-let ComponentManager: any, ComponentClass: any;
+import { C3Row } from 'navi-core/chart-builders/base';
+
+let Request: RequestFragment;
 
 module('Unit | Component | pie chart', function(hooks) {
   setupTest(hooks);
@@ -16,123 +19,123 @@ module('Unit | Component | pie chart', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
-    ComponentManager = this.owner.lookup('component-manager:glimmer');
-    ComponentClass = this.owner.factoryFor('component:navi-visualizations/pie-chart').class;
+    Request = this.owner.lookup('service:store').createFragment('bard-request-v2/request', {
+      columns: [
+        {
+          cid: 'cid_age(field=desc)',
+          field: 'age',
+          parameters: { field: 'desc' },
+          type: 'dimension',
+          source: 'bardOne'
+        },
+        {
+          cid: 'cid_totalPageViews',
+          field: 'totalPageViews',
+          parameters: {},
+          type: 'metric',
+          source: 'bardOne'
+        },
+        {
+          cid: 'cid_uniqueIdentifier',
+          field: 'uniqueIdentifier',
+          parameters: {},
+          type: 'metric',
+          source: 'bardOne'
+        },
+        {
+          cid: 'cid_network.dateTime',
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day'
+          },
+          type: 'timeDimension',
+          source: 'bardOne'
+        }
+      ],
+      filters: [
+        {
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day'
+          },
+          operator: 'bet',
+          values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
+          type: 'timeDimension',
+          source: 'bardOne'
+        }
+      ],
+      table: 'tableA',
+      dataSource: 'bardOne',
+      sorts: [],
+      requestVersion: '2.0'
+    });
   });
 
-  const REQUEST: RequestV2 = {
-    columns: [
-      {
-        cid: 'd1',
-        field: 'age',
-        parameters: { field: 'desc' },
-        type: 'dimension'
-      },
-      {
-        cid: 'm1',
-        field: 'totalPageViews',
-        parameters: {},
-        type: 'metric'
-      },
-      {
-        cid: 'm2',
-        field: 'uniqueIdentifier',
-        parameters: {},
-        type: 'metric'
-      },
-      {
-        cid: 'td1',
-        field: 'dateTime',
-        parameters: {
-          grain: 'day'
-        },
-        type: 'timeDimension'
-      }
-    ],
-    filters: [
-      {
-        field: 'dateTime',
-        parameters: {
-          grain: 'day'
-        },
-        operator: 'bet',
-        values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
-        type: 'timeDimension'
-      }
-    ],
-    table: 'tableA',
-    dataSource: 'bardOne',
-    sorts: [],
-    requestVersion: '2.0'
-  };
-
-  const RESPONSE: ResponseV1 = {
-    meta: {},
+  const RESPONSE = NaviFactResponse.create({
     rows: [
       {
-        'dateTime(grain=day)': '2015-12-14 00:00:00.000',
+        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '-3',
         'age(field=desc)': 'All Other',
         uniqueIdentifier: 155191081,
         totalPageViews: 3072620639
       },
       {
-        'dateTime(grain=day)': '2015-12-14 00:00:00.000',
+        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '1',
         'age(field=desc)': 'under 13',
         uniqueIdentifier: 55191081,
         totalPageViews: 2072620639
       },
       {
-        'dateTime(grain=day)': '2015-12-14 00:00:00.000',
+        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '2',
         'age(field=desc)': '13 - 25',
         uniqueIdentifier: 55191081,
         totalPageViews: 2620639
       },
       {
-        'dateTime(grain=day)': '2015-12-14 00:00:00.000',
+        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '3',
         'age(field=desc)': '25 - 35',
         uniqueIdentifier: 55191081,
         totalPageViews: 72620639
       },
       {
-        'dateTime(grain=day)': '2015-12-14 00:00:00.000',
+        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '4',
         'age(field=desc)': '35 - 45',
         uniqueIdentifier: 55191081,
         totalPageViews: 72620639
       }
     ]
-  };
+  });
 
   const DIMENSION_SERIES_OPTIONS = {
     series: {
       type: 'dimension',
       config: {
-        metricCid: 'm1',
-        dimensionOrder: ['d1'],
+        metricCid: 'cid_totalPageViews',
         dimensions: [
           {
             name: 'All Other',
-            values: { d1: 'All Other' }
+            values: { 'cid_age(field=desc)': 'All Other' }
           },
           {
             name: 'under 13',
-            values: { d1: 'under 13' }
+            values: { 'cid_age(field=desc)': 'under 13' }
           },
           {
             name: '13 - 25',
-            values: { d1: '13 - 25' }
+            values: { 'cid_age(field=desc)': '13 - 25' }
           },
           {
             name: '25 - 35',
-            values: { d1: '25 - 35' }
+            values: { 'cid_age(field=desc)': '25 - 35' }
           },
           {
             name: '35 - 45',
-            values: { d1: '35 - 45' }
+            values: { 'cid_age(field=desc)': '35 - 45' }
           }
         ]
       }
@@ -161,15 +164,10 @@ module('Unit | Component | pie chart', function(hooks) {
 
   test('pieConfig', function(assert) {
     assert.expect(1);
-    const request: RequestFragment = this.owner
-      .lookup('service:store')
-      .createFragment('bard-request-v2/request', REQUEST);
 
-    let component = ComponentManager.createComponent(ComponentClass, {
-      named: {
-        model: A([{ request, response: RESPONSE }])
-      }
-    });
+    let component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+      model: A([{ Request, response: RESPONSE }])
+    }) as PieChart;
 
     assert.notEqual(component.pieConfig.pie.label.format, undefined, 'Pie chart has label function defined');
   });
@@ -177,20 +175,17 @@ module('Unit | Component | pie chart', function(hooks) {
   test('dataConfig', function(assert) {
     assert.expect(4);
 
-    const request: RequestFragment = this.owner
-      .lookup('service:store')
-      .createFragment('bard-request-v2/request', REQUEST);
-    request.columns.forEach(c => (c.source = request.dataSource)); //Manually set the source on each column
-    const model = A([{ request, response: RESPONSE }]);
-    const component = ComponentManager.createComponent(ComponentClass, {
-      named: { model, options: DIMENSION_SERIES_OPTIONS }
-    });
+    const model = A([{ request: Request, response: RESPONSE }]);
+    const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+      model,
+      options: DIMENSION_SERIES_OPTIONS
+    }) as PieChart;
 
     assert.equal(component.dataConfig.data.type, 'pie', 'Data config contains the type property as `pie`');
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      [
+      ([
         {
           '13 - 25': 2620639,
           '25 - 35': 72620639,
@@ -202,7 +197,7 @@ module('Unit | Component | pie chart', function(hooks) {
             rawValue: '2015-12-14 00:00:00.000'
           }
         }
-      ],
+      ] as unknown) as C3Row[],
       'Data config contains json property with values for each slice of pie'
     );
 
@@ -210,39 +205,38 @@ module('Unit | Component | pie chart', function(hooks) {
       series: {
         type: 'dimension',
         config: {
-          metricCid: 'm2',
-          dimensionOrder: ['d1'],
+          metricCid: 'cid_uniqueIdentifier',
           dimensions: [
             {
               name: 'All Other',
-              values: { d1: 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' }
             },
             {
               name: 'under 13',
-              values: { d1: 'under 13' }
+              values: { 'cid_age(field=desc)': 'under 13' }
             },
             {
               name: '13 - 25',
-              values: { d1: '13 - 25' }
+              values: { 'cid_age(field=desc)': '13 - 25' }
             },
             {
               name: '25 - 35',
-              values: { d1: '25 - 35' }
+              values: { 'cid_age(field=desc)': '25 - 35' }
             },
             {
               name: '35 - 45',
-              values: { d1: '35 - 45' }
+              values: { 'cid_age(field=desc)': '35 - 45' }
             }
           ]
         }
       }
     };
 
-    set(component, 'args.options', updatedOptions);
+    set(component.args, 'options', updatedOptions);
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      [
+      ([
         {
           '13 - 25': 55191081,
           '25 - 35': 55191081,
@@ -254,15 +248,15 @@ module('Unit | Component | pie chart', function(hooks) {
             rawValue: '2015-12-14 00:00:00.000'
           }
         }
-      ],
+      ] as unknown) as C3Row[],
       'Data config updates when metric has been changed in series options'
     );
 
-    set(component, 'args.options', METRIC_SERIES_OPTIONS);
+    set(component.args, 'options', METRIC_SERIES_OPTIONS);
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      [
+      ([
         {
           'Total Page Views': 3072620639,
           'Unique Identifiers': 155191081,
@@ -271,7 +265,7 @@ module('Unit | Component | pie chart', function(hooks) {
             rawValue: '2015-12-14 00:00:00.000'
           }
         }
-      ],
+      ] as unknown) as C3Row[],
       'Data config updates correctly for a metrics series according to first row of response'
     );
   });
@@ -279,27 +273,22 @@ module('Unit | Component | pie chart', function(hooks) {
   test('tooltipComponent', function(assert) {
     assert.expect(1);
 
-    const request: RequestFragment = this.owner
-      .lookup('service:store')
-      .createFragment('bard-request-v2/request', REQUEST);
-    request.columns.forEach(c => (c.source = request.dataSource)); //Manually set the source on each column
-    const model = A([{ request, response: RESPONSE }]);
-    const component = ComponentManager.createComponent(ComponentClass, {
-      named: { model, options: DIMENSION_SERIES_OPTIONS }
-    });
+    const model = A([{ request: Request, response: RESPONSE }]);
+    const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+      model,
+      options: DIMENSION_SERIES_OPTIONS
+    }) as PieChart;
     component.dataConfig;
-    const x = '2015-12-14 00:00:00.000 ';
+    const x = '2015-12-14 00:00:00.000';
     const requiredToolTipData = {
       x,
-      id: '13 - 25,2015-12-14 00:00:00.000',
+      id: '13 - 25',
       name: '13 - 25'
     };
 
-    const metricName = component.seriesConfig.metric;
     const tooltipComponent = component.tooltipComponent;
     const tooltip = tooltipComponent.create({
       requiredToolTipData,
-      metricName,
       x
     });
 

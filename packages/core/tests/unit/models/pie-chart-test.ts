@@ -149,7 +149,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',
@@ -271,7 +271,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',
@@ -371,7 +371,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',
@@ -391,7 +391,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
     );
   });
 
-  test('rebuildConfig - dimension series - dimension order', function(assert) {
+  test('rebuildConfig - dimension series - dimensions', function(assert) {
     let rows = [
       {
         requestMetric: 1,
@@ -419,7 +419,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
 
     const request = buildTestRequest(
       [{ field: 'requestMetric', cid: '1' }],
-      [{ field: 'requestDim', parameters: { field: 'desc' }, cid: '2' }]
+      [{ field: 'requestDim', parameters: { field: 'desc' }, cid: '4' }]
     );
     const config = chart.rebuildConfig(request, { rows }).toJSON();
 
@@ -427,7 +427,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',
@@ -435,8 +435,8 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
               metricCid: '1',
               dimensions: [
                 {
-                  name: 'Config Value 1,Config Value 2',
-                  values: { '2': 'configValue1', '3': 'configValue2' }
+                  name: 'Request Dim',
+                  values: { '4': 'Request Dim' }
                 }
               ]
             }
@@ -489,7 +489,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',
@@ -540,7 +540,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       config,
       {
         type: 'pie-chart',
-        version: 1,
+        version: 2,
         metadata: {
           series: {
             type: 'dimension',

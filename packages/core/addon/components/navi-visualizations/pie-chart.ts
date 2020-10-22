@@ -13,6 +13,7 @@
 import d3 from 'd3';
 import { readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
+import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { computed, action } from '@ember/object';
 import { getOwner } from '@ember/application';
@@ -26,6 +27,9 @@ import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { getTranslation } from '../../utils/chart';
 import ChartBuildersBase from './chart-builders-base';
 import RequestV2 from '../../models/bard-request-v2/request';
+import NaviFactResponse from 'navi-data/addon/models/navi-fact-response';
+import { BaseChartBuilder, SeriesType } from 'navi-core/chart-builders/base';
+import { ChartSeries } from 'navi-core/models/chart-visualization';
 
 export type Args = {
   model: VisualizationModel;
@@ -48,53 +52,57 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
   @service metricName: TODO;
 
   /**
-   * @property {String} chartId - return pie-chart-widget with its ember id appended to it
+   * @property chartId - return pie-chart-widget with its ember id appended to it
    */
-  get chartId() {
+  get chartId(): string {
     return `pie-chart-widget-${guidFor(this)}`;
   }
 
   /**
-   * @property {Array} widgetClassNames - since pie-chart is a tagless wrapper component,
+   * @property widgetClassNames - since pie-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  get widgetClassNames() {
+  get widgetClassNames(): string[] {
     return ['pie-chart-widget', this.chartId];
   }
 
   /**
-   * @property {Object} request
+   * @property request
    */
   @readOnly('args.model.firstObject.request') request!: RequestV2;
 
+  @readOnly('args.model.firstObject.response') response!: NaviFactResponse;
+
   /**
-   * @property {String} namespace - meta data namespace to use
+   * @property namespace - meta data namespace to use
    */
   @readOnly('request.dataSource') namespace!: string;
 
   /**
-   * @property {Object} builder - builder based on series type
+   * @property builder - builder based on series type
    */
   @computed('seriesType')
-  get builder() {
+  get builder(): BaseChartBuilder {
     const { seriesType: type, chartBuilders: builders } = this;
+    const chartBuilder = builders[type];
 
-    return builders[type];
+    assert(`There should be a chart-builder for ${type}`, chartBuilder);
+    return chartBuilder;
   }
 
   /**
-   * @property {Object} seriesConfig - config for chart series
+   * @property seriesConfig - config for chart series
    */
-  @readOnly('args.options.series.config') seriesConfig!: TODO;
+  @readOnly('args.options.series.config') seriesConfig!: ChartSeries['config'];
 
   /**
-   * @property {String} seriesType
+   * @property seriesType
    */
-  @readOnly('args.options.series.type') seriesType: TODO;
+  @readOnly('args.options.series.type') seriesType!: SeriesType;
 
   /**
    * Formatter for label (percentage value) shown on pie slices
-   * @property {Object} pieConfig - pie chart specific config
+   * @property pieConfig - pie chart specific config
    */
   get pieConfig() {
     return {
@@ -113,14 +121,17 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
    */
   @computed('args.options', 'namespace')
   get metricDisplayName() {
-    const {
-      request,
-      seriesConfig: { metricCid }
-    } = this;
-    const metricColumn = request.columns.findBy('cid', metricCid);
-    const metric = { metric: metricColumn?.field, parameters: metricColumn?.parameters };
+    if ('metricCid' in this.seriesConfig) {
+      const {
+        request,
+        seriesConfig: { metricCid }
+      } = this;
+      const metricColumn = request.columns.findBy('cid', metricCid);
+      const metric = { metric: metricColumn?.field, parameters: metricColumn?.parameters };
 
-    return metricColumn && this.metricName.getDisplayName(metric, this.namespace);
+      return metricColumn && this.metricName.getDisplayName(metric, this.namespace);
+    }
+    return undefined;
   }
 
   /**
@@ -128,7 +139,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
    */
   @computed('model.firstObject', 'seriesConfig')
   get dataConfig() {
-    const response = this.args.model?.firstObject?.response;
+    const response = this.response;
     const request = this.request;
     const seriesConfig = this.seriesConfig;
     const seriesData = this.builder.buildData(response, seriesConfig, request);
@@ -172,9 +183,10 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
           layout: tooltipLayout,
 
           rowData: computed('x', 'requiredToolTipData', function() {
+            assert('buildData must be called in the chart-builder before the tooltip can be rendered', byXSeries);
             // Get the full data for this combination of x + series
             const series = this.requiredToolTipData,
-              dataForSeries = byXSeries.getDataForKey(this.x + series.id) || [];
+              dataForSeries = byXSeries.getDataForKey(`${this.x} ${series.id}`) || [];
 
             return dataForSeries[0];
           })
@@ -199,15 +211,13 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
   get chartTooltip() {
     const tooltipComponent = this.tooltipComponent;
     const rawData = this.dataConfig.data.json;
-    const metric = this.seriesConfig.metric;
 
     return {
       contents(tooltipData: TooltipData[]) {
         let x = rawData[0].x.rawValue,
           tooltip = tooltipComponent.create({
             x,
-            requiredToolTipData: tooltipData[0],
-            metric
+            requiredToolTipData: tooltipData[0]
           });
 
         run(() => {

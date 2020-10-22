@@ -20,8 +20,7 @@ import { featureFlag } from 'navi-core/helpers/feature-flag';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import { ResponseRow } from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -39,7 +38,8 @@ const NEXT_SORT_DIRECTION: Record<SortDirection, SortDirection> = {
 type TotalRow = ResponseRow;
 
 type UpdateAction = string;
-export type VisualizationModel = EmberArray<{ request: RequestFragment; response: ResponseV1 }>;
+export type VisualizationModelEntry = { request: RequestFragment; response: NaviFactResponse };
+export type VisualizationModel = EmberArray<VisualizationModelEntry>;
 export type Args = {
   model: VisualizationModel;
   options: TableVisualizationMetadata['metadata'];

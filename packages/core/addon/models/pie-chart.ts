@@ -9,8 +9,8 @@ import { attr } from '@ember-data/model';
 import ChartVisualization, { ChartSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 import RequestFragment from './bard-request-v2/request';
+import NaviFactResponse from 'navi-data/addon/models/navi-fact-response';
 
 const SERIES_PATH = 'metadata.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -26,18 +26,16 @@ const Validations = buildValidations(
     //Dimension Series Validations
     [`${CONFIG_PATH}.metricCid`]: validator('request-metric-exist', {
       disabled: computed('chartType', function() {
-        return get(this, 'chartType') !== DIMENSION_SERIES;
+        return this.chartType && this.chartType !== DIMENSION_SERIES;
       }),
       dependentKeys: ['model._request.metricColumns.@each.parameters.{}']
     }),
 
-    [`${CONFIG_PATH}.dimensions`]: validator('length', {
-      min: 1,
+    [`${CONFIG_PATH}.dimensions`]: validator('dimension-series', {
       disabled: computed('chartType', function() {
         return this.chartType && this.chartType !== DIMENSION_SERIES;
       }),
-      dependentKeys: ['model._request.dimensionColumns.[]'],
-      allowNone: false
+      dependentKeys: ['model._request.dimensionColumns.[]']
     })
   },
   {
@@ -53,16 +51,20 @@ const Validations = buildValidations(
   }
 );
 
-type PieChartMetadata = {
-  series: ChartSeries;
+export type PieChartConfig = {
+  type: 'pie-chart';
+  version: 2;
+  metadata: {
+    series: ChartSeries;
+  };
 };
 
 export default class PieChart extends ChartVisualization.extend(Validations) {
   @attr('string', { defaultValue: 'pie-chart' })
-  type!: string;
+  type!: PieChartConfig['type'];
 
-  @attr('number', { defaultValue: 1 })
-  version!: number;
+  @attr('number', { defaultValue: 2 })
+  version!: PieChartConfig['version'];
 
   @attr({
     defaultValue: () => {
@@ -74,7 +76,7 @@ export default class PieChart extends ChartVisualization.extend(Validations) {
       };
     }
   })
-  metadata!: PieChartMetadata;
+  metadata!: PieChartConfig['metadata'];
 
   /**
    * Rebuild config based on request and response
@@ -84,7 +86,7 @@ export default class PieChart extends ChartVisualization.extend(Validations) {
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(request: RequestFragment, response: ResponseV1) {
+  rebuildConfig(request: RequestFragment, response: NaviFactResponse) {
     this.isValidForRequest(request);
 
     const chartType = chartTypeForRequest(request);
