@@ -9,5 +9,5 @@
   @containerComponent={{@containerComponent}}
   @metaNamespace={{@request.source}}
   {{did-insert this._drawTitle @options}}
-  {{did-update this._drawTitle @options}}
+  {{did-update (queue this._removeTitle this._drawTitle) @options}}
 />

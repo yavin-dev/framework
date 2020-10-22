@@ -54,7 +54,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }
 
-  @computed('args.{model.[],options.metricCid}')
+  @computed('args.{model.firstObject.request.firstObject,options.metricCid}')
   get metric(): ColumnFragment {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
@@ -63,6 +63,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     return metricColumn;
   }
 
+  @computed('metric', 'args.model.firstObject.response')
   get actualValue(): number {
     const { model } = this.args;
     if (model) {
@@ -77,7 +78,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {object} - target metric model pulled from serialized request
    */
-  @alias('model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
+  @alias('args.model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
 
   /**
    * @property {Number} - starting value to measure progress towards the gaol
@@ -97,12 +98,12 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {String} - name of data source
    */
-  @alias('model.firstObject.request.dataSource') dataSourceName = '';
+  @alias('args.model.firstObject.request.dataSource') dataSourceName = '';
 
   /**
    * @property {String} formatted default metric
    */
-  @computed('options.metric.{metric,parameters}', 'dataSourceName')
+  @computed('metric.{metric,parameters}', 'dataSourceName')
   get defaultMetricTitle() {
     return this.naviFormatter.formatColumnName(this.metric.columnMetadata, this.metric.parameters);
   }
@@ -110,10 +111,10 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {String} - The title for the goal metric
    */
-  @computed('config.{metricTitle,metric}')
+  @computed('args.model.[]', 'metric')
   get metricTitle() {
     debugger;
-    return this.config?.metricTitle || this.defaultMetricTitle;
+    return this.metric.alias || this.defaultMetricTitle;
   }
 
   /**
@@ -147,7 +148,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Object} config - config options for the chart
    */
-  @computed('options')
+  @computed('args.options')
   get config() {
     return { ...DEFAULT_OPTIONS, ...this.args.options };
   }
@@ -166,12 +167,12 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Object} - general gauge configuration
    */
-  @computed('options.{baselineValue,goalValue}', 'prefix', 'unit')
+  @computed('args.options.{baselineValue,goalValue}')
   get gauge() {
     return {
       width: 20,
-      max: this.goalValue,
-      min: this.baselineValue,
+      max: this.args.options.goalValue as number,
+      min: this.args.options.baselineValue as number,
       label: {
         extents: (value: number) => {
           let number = this._formatNumber(value),
@@ -186,18 +187,18 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Array} - colors to render corresponding to the thresholdValues
    */
-  @alias('config.thresholdColors') thresholdColors: any;
+  @alias('config.thresholdColors') thresholdColors = ['#f05050', '#ffc831', '#44b876'];
 
   /**
    * @property {Array} - percentages to render corresponding to the colors
    */
-  @alias('config.thresholdPercentages') thresholdPercentages: any;
+  @alias('config.thresholdPercentages') thresholdPercentages = [75, 85, 100];
 
   /**
    * @property {Array} - threshold values to indicate what color to render
    * C3 Threshold Algorithm: if < threshold value indexN, use color indexN
    */
-  @computed('options.{baselineValue,goalValue}')
+  @computed('args.options.{baselineValue,goalValue}')
   get thresholdValues() {
     const { thresholdPercentages: percentages, goalValue: goal, baselineValue: baseline } = this;
     const diff = goal - baseline;
@@ -228,7 +229,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @method _removeTitle
    * @private
    */
-  _removeTitle() {
+  @action _removeTitle() {
     let tspans = d3.selectAll(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title > tspan`);
     tspans.remove();
   }
@@ -240,7 +241,8 @@ export default class GoalGaugeVisualization extends Component<Args> {
    */
   @action _drawTitle() {
     const titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`);
-    const { metricTitle, goalValue, actualValue, baselineValue: baseline } = this;
+    const { goalValue, baselineValue: baseline } = this.args.options;
+    const { metricTitle, actualValue } = this;
     const number = this._formatNumber(actualValue);
     const goal = this._formatNumber(goalValue);
     const prefix = this.prefix || '';

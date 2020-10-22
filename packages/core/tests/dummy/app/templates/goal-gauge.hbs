@@ -6,7 +6,7 @@
     @onUpdateConfig={{this.onUpdateConfig}}
 />
 <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
+    @request={{@model.firstObject.request}}
     @response={{this.response}}
     @visualization={{this.goalGaugeVisualization}}
     @onUpdateConfig={{this.onUpdateConfig}}
