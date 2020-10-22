@@ -659,4 +659,18 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, {});
     assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
+
+  test('urlForDownloadQuery - error', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    const response = { errors: [{ message: 'Bad Request' }] };
+    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
+
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch (error) {
+      assert.deepEqual(error, response, 'urlForDownloadQuery returns the error response payload');
+    }
+  });
 });
