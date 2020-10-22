@@ -9,10 +9,10 @@
       @autofocus={{false}}
       @name="metric-description-input"
       @type="text"
-      @value={{readonly @options.metricTitle}}
+      @value={{readonly this.metricColumn.displayName}}
       @focus-out={{fn this.updateLabel}}
       @key-up={{fn this.updateLabel}}
-      @placeholder={{metric-format (serialize @request.metricColumns.firstObject) @request.dataSource}}
+      @placeholder={{this.metricColumn.displayName}}
     />
   </div>
   <div class="goal-gauge-config__section-header">

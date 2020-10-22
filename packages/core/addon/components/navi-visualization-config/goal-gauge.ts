@@ -11,7 +11,6 @@
  */
 import { action, set } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import RequestFragment from 'dummy/models/bard-request-v2/request';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { Args as GoalGaugeArgs } from '../navi-visualizations/goal-gauge';
 import NaviVisualizationConfigBaseComponent from './base';
@@ -20,7 +19,6 @@ type Options = GoalGaugeArgs['options'];
 
 export default class NaviVisualizationConfigGoalGaugeComponent extends NaviVisualizationConfigBaseComponent<Options> {
   @readOnly('args.request.metricColumns.firstObject') metricColumn!: ColumnFragment;
-  @readOnly('args.request') request!: RequestFragment;
 
   /**
    * @param alias - date string input event
@@ -28,9 +26,7 @@ export default class NaviVisualizationConfigGoalGaugeComponent extends NaviVisua
   @action
   updateLabel(alias: string) {
     // TODO: use report action
-    debugger;
     set(this.args.request.metricColumns[0], 'alias', alias);
-    debugger;
   }
 
   @action

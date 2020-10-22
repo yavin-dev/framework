@@ -15,15 +15,15 @@ import { computed, action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
-import numeral from 'numeral';
 // @ts-ignore
 import d3 from 'd3';
-import FilterFragment from 'dummy/models/bard-request-v2/fragments/filter';
+import numeral from 'numeral';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 import { VisualizationModel } from './table';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
-import ColumnFragment from 'dummy/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const DEFAULT_OPTIONS = {
   baselineValue: 0,
@@ -54,7 +54,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }
 
-  @computed('args.{model.firstObject.request.firstObject,options.metricCid}')
+  @computed('args.{model.firstObject.request.metricColumns.[],options.metricCid}')
   get metric(): ColumnFragment {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
@@ -63,7 +63,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     return metricColumn;
   }
 
-  @computed('metric', 'args.model.firstObject.response')
+  @computed('metric', 'args.model.firstObject.response.rows.[]')
   get actualValue(): number {
     const { model } = this.args;
     if (model) {
@@ -99,23 +99,6 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @property {String} - name of data source
    */
   @alias('args.model.firstObject.request.dataSource') dataSourceName = '';
-
-  /**
-   * @property {String} formatted default metric
-   */
-  @computed('metric.{metric,parameters}', 'dataSourceName')
-  get defaultMetricTitle() {
-    return this.naviFormatter.formatColumnName(this.metric.columnMetadata, this.metric.parameters);
-  }
-
-  /**
-   * @property {String} - The title for the goal metric
-   */
-  @computed('args.model.[]', 'metric')
-  get metricTitle() {
-    debugger;
-    return this.metric.alias || this.defaultMetricTitle;
-  }
 
   /**
    * @property {String} - Display value of goal
@@ -242,7 +225,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   @action _drawTitle() {
     const titleElm = d3.select(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title`);
     const { goalValue, baselineValue: baseline } = this.args.options;
-    const { metricTitle, actualValue } = this;
+    const { metric, actualValue } = this;
     const number = this._formatNumber(actualValue);
     const goal = this._formatNumber(goalValue);
     const prefix = this.prefix || '';
@@ -260,7 +243,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     titleElm
       .insert('tspan')
       .attr('class', 'metric-title')
-      .text(metricTitle)
+      .text(metric.displayName)
       .attr('dy', 26)
       .attr('x', 0);
 
