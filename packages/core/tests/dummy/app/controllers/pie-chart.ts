@@ -5,7 +5,7 @@ import { set, get, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { merge } from 'lodash-es';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import RequestFragment from 'dummy/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 export default class PieChartController extends Controller {
   @service('store')

@@ -14,7 +14,7 @@ import Component from '@glimmer/component';
 import { set, action } from '@ember/object';
 //@ts-ignore
 import { copy } from 'ember-copy';
-import RequestFragment from 'dummy/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 
 type Args = {

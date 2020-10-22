@@ -4,6 +4,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
