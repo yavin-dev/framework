@@ -5,7 +5,7 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import PieChart from 'navi-core/components/navi-visualizations/pie-chart';
+import PieChart, { PieChartOptions } from 'navi-core/components/navi-visualizations/pie-chart';
 import { createGlimmerComponent } from 'navi-core/test-support';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
@@ -111,7 +111,7 @@ module('Unit | Component | pie chart', function(hooks) {
     ]
   });
 
-  const DIMENSION_SERIES_OPTIONS = {
+  const DIMENSION_SERIES_OPTIONS: PieChartOptions = {
     series: {
       type: 'dimension',
       config: {
@@ -142,7 +142,7 @@ module('Unit | Component | pie chart', function(hooks) {
     }
   };
 
-  const METRIC_SERIES_OPTIONS = {
+  const METRIC_SERIES_OPTIONS: PieChartOptions = {
     series: {
       type: 'metric',
       config: {
@@ -201,7 +201,7 @@ module('Unit | Component | pie chart', function(hooks) {
       'Data config contains json property with values for each slice of pie'
     );
 
-    let updatedOptions = {
+    let updatedOptions: PieChartOptions = {
       series: {
         type: 'dimension',
         config: {

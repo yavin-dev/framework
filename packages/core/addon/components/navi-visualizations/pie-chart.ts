@@ -1,12 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- * {{navi-visualizations/pie-chart
- *   model=model
- *   options=options
- * }}
  */
 
 //@ts-ignore
@@ -30,10 +24,13 @@ import RequestV2 from '../../models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/addon/models/navi-fact-response';
 import { BaseChartBuilder, SeriesType } from 'navi-core/chart-builders/base';
 import { ChartSeries } from 'navi-core/models/chart-visualization';
+import { PieChartConfig } from 'navi-core/models/pie-chart';
+
+export type PieChartOptions = PieChartConfig['metadata'];
 
 export type Args = {
   model: VisualizationModel;
-  options: TODO;
+  options: PieChartOptions;
 };
 
 type TooltipData = {
@@ -155,7 +152,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
   /**
    * @property {Object} config - config options for the chart
    */
-  @computed('options', 'dataConfig')
+  @computed('args.options', 'dataConfig')
   get config() {
     return merge({}, this.pieConfig, this.args.options, this.dataConfig, {
       tooltip: this.chartTooltip
