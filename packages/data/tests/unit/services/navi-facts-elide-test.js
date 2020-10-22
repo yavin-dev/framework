@@ -771,8 +771,9 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('getDownloadURL', function(assert) {
-    let url = this.service.getDownloadURL(TestRequest, { dataSourceName: TestRequest.dataSource });
+  test('getDownloadURL', async function(assert) {
+    let url = await this.service.getDownloadURL(TestRequest, { dataSourceName: TestRequest.dataSource });
+    console.log('test result url');
     console.log(url);
     //debugger;
     assert.deepEqual(url, 'downloadURL', 'Service returns the url when requested');

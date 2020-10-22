@@ -356,6 +356,15 @@ const schema = gql`
       after: String
       data: [AsyncQueryInput]
     ): AsyncQueryConnection
+    tableExport(
+      op: RelationshipOp = FETCH
+      ids: [String]
+      filter: String
+      sort: String
+      first: String
+      after: String
+      data: [TableExportInput]
+    ): TableExportConnection
   }
 
   type Mutation {
@@ -368,6 +377,15 @@ const schema = gql`
       after: String
       data: [AsyncQueryInput]
     ): AsyncQueryConnection
+    tableExport(
+      op: RelationshipOp = FETCH
+      ids: [String]
+      filter: String
+      sort: String
+      first: String
+      after: String
+      data: [TableExportInput]
+    ): TableExportConnection
   }
 `;
 
