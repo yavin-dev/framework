@@ -33,6 +33,6 @@ export default class AdminUsersController extends Controller {
 // DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
 declare module '@ember/controller' {
   interface Registry {
-    users: AdminUsersController;
+    'admin/users': AdminUsersController;
   }
 }
