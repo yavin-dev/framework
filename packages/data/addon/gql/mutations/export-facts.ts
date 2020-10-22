@@ -17,6 +17,7 @@ export const exportFactsMutationStr = `
           result {
             url
             httpStatus
+            message
           }
         }
       }

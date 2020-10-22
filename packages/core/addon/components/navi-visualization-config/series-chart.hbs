@@ -7,7 +7,7 @@
         <PowerSelect
           class="metric-select__select__selector"
           @tagName="div"
-          @options={{this.metrics}}
+          @options={{@request.metricColumns}}
           @selected={{this.selectedMetric}}
           @searchEnabled={{false}}
           @onchange={{this.onUpdateChartMetric}}
@@ -16,7 +16,7 @@
           @renderInPlace={{true}}
           as |metric|
         >
-          {{metric-format metric @request.dataSource}}
+          {{metric.displayName}}
         </PowerSelect>
       </div>
     </div>

@@ -37,7 +37,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   /**
    * Dimension and metric columns from the request
    */
-  @computed('args.report.request.{columns.@each.parameters,filters.[]}')
+  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[]}')
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     if (request.table !== undefined) {

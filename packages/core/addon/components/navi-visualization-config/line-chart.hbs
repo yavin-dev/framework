@@ -1,0 +1,63 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviVisualizationConfig::SeriesChart
+  class="line-chart-config"
+  @request={{@request}}
+  @response={{@response}}
+  @seriesConfig={{this.seriesConfig}}
+  @seriesType={{this.seriesType}}
+  @onUpdateConfig={{this.onUpdateSeriesConfig}}
+  ...attributes
+>
+  {{#if (or (eq @type "line-chart") this.showStackOption)}}
+    <div class="line-chart-config__header">Chart Style Options</div>
+    <div class="line-chart-config__style-options">
+      {{#if (eq @type "line-chart")}}
+        <div class="line-chart-config__curve-opt">
+          <span class="line-chart-config__curve-opt-title">Line Style</span>
+          <PowerSelect
+            @triggerClass="line-chart-config__curve-opt-select"
+            @options={{this.curveOptions}}
+            @selected={{or (readonly @options.style.curve) "line"}}
+            @onchange={{fn this.onUpdateStyle "curve"}}
+            @searchEnabled={{false}}
+            as |curve|
+          >
+            {{capitalize curve}}
+          </PowerSelect>
+        </div>
+        <div class="line-chart-config__area-opt">
+          <span class="line-chart-config__area-opt-title">Area</span>
+          <XToggle
+            class="line-chart-config__area-opt-select"
+            @value={{readonly @options.style.area}}
+            @size="small"
+            @onToggle={{fn this.onUpdateStyle "area"}}
+          />
+        </div>
+      {{/if}}
+      {{#if this.showStackOption}}
+        <div class="line-chart-config__stacked-opt">
+          <span class="line-chart-config__stacked-opt-title">Stacked</span>
+          <XToggle
+            class="line-chart-config__stacked-opt-select"
+            @value={{readonly @options.style.stacked}}
+            @size="small"
+            @onToggle={{fn this.onUpdateStyle "stacked"}}
+          />
+        </div>
+      {{/if}}
+    </div>
+    {{#if (and this.showStackOption @options.style.stacked)}}
+      <ChartSeriesConfig
+        class="line-chart-config__series-config"
+        @seriesConfig={{this.seriesConfig}}
+        @seriesType={{this.seriesType}}
+        @onUpdateConfig={{this.onUpdateSeriesConfig}}
+        @request={{@request}}
+        @response={{@response}}
+      />
+    {{/if}}
+  {{else if (not (eq this.seriesType "dimension"))}}
+    <div class="navi-visualization-config__warn-msg">No configuration options available.</div>
+  {{/if}}
+</NaviVisualizationConfig::SeriesChart>

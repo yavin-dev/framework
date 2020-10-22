@@ -17,6 +17,7 @@ export const exportFactsQueryStr = `
           result {
             httpStatus
             url
+            message
           }
         }
       }

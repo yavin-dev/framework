@@ -58,10 +58,10 @@ module('Unit | Consumer | request filter', function(hooks) {
   });
 
   test('ADD_DIMENSION_FILTER', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
 
     const dimensionMetadataModel = this.metadataService.getById('dimension', 'age', 'bardOne');
-    const modelFor = () => ({
+    let modelFor = () => ({
       request: {
         addFilter(filterOptions) {
           assert.deepEqual(
@@ -83,5 +83,28 @@ module('Unit | Consumer | request filter', function(hooks) {
     });
 
     consumer.send(RequestActions.ADD_DIMENSION_FILTER, { modelFor }, dimensionMetadataModel);
+
+    const timeDimensionMetadataModel = this.metadataService.getById('timeDimension', 'network.dateTime', 'bardOne');
+    modelFor = () => ({
+      request: {
+        addFilter(filterOptions) {
+          assert.deepEqual(
+            filterOptions,
+            {
+              type: 'timeDimension',
+              source: 'bardOne',
+              field: 'network.dateTime',
+              parameters: {
+                grain: 'day'
+              },
+              operator: 'gte',
+              values: []
+            },
+            'Correct default operator is added for the metadata type'
+          );
+        }
+      }
+    });
+    consumer.send(RequestActions.ADD_DIMENSION_FILTER, { modelFor }, timeDimensionMetadataModel);
   });
 });

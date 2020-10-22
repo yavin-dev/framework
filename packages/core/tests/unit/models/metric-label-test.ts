@@ -24,7 +24,7 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
     );
 
     request = buildTestRequest([{ field: 'swords' }, { field: 'hp' }]);
-    assert.ok(metricLabel.isValidForRequest(request), 'config for metric label is invalid when metrics are changed');
+    assert.notOk(metricLabel.isValidForRequest(request), 'config for metric label is invalid when metrics are changed');
   });
 
   test('rebuildConfig', function(assert) {
@@ -44,7 +44,7 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
           metricCid: 'cid_rupees'
         },
         type: 'metric-label',
-        version: 1
+        version: 2
       },
       'config regenerated with metric updated'
     );
