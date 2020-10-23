@@ -453,19 +453,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 status: 'COMPLETE',
                 result: {
                   httpStatus: '200',
-                  contentLength: 2,
-                  responseBody: JSON.stringify({
-                    table: {
-                      edges: [
-                        {
-                          node: {
-                            metric: 123,
-                            dimension: 'foo'
-                          }
-                        }
-                      ]
-                    }
-                  })
+                  url: 'downloadURL',
+                  message: ''
                 }
               }
             }
@@ -647,7 +636,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 status: QueryStatus.COMPLETE,
                 result: {
                   httpStatus: 200,
-                  url: downloadURL
+                  url: downloadURL,
+                  message: ''
                 }
               }
             }
