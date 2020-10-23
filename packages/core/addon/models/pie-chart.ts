@@ -28,7 +28,7 @@ const Validations = buildValidations(
       disabled: computed('chartType', function() {
         return this.chartType && this.chartType !== DIMENSION_SERIES;
       }),
-      dependentKeys: ['model._request.metricColumns.@each.parameters.{}']
+      dependentKeys: ['model._request.metricColumns.[]']
     }),
 
     [`${CONFIG_PATH}.dimensions`]: validator('dimension-series', {
@@ -40,13 +40,10 @@ const Validations = buildValidations(
   },
   {
     //Global Validation Options
-    chartType: computed(
-      'model._request.{dimensionColumns.[],metricColumns.[],intervals.firstObject.interval}',
-      function() {
-        const request = get(this, 'request');
-        return request && chartTypeForRequest(request);
-      }
-    ),
+    chartType: computed('model._request.{dimensionColumns.[],metricColumns.[],interval}', function() {
+      const request = get(this, 'request');
+      return request && chartTypeForRequest(request);
+    }),
     request: readOnly('model._request')
   }
 );

@@ -185,9 +185,7 @@ module('Integration | Component | pie chart', function(hooks) {
     this.set('options', {
       series: {
         type: 'metric',
-        config: {
-          metrics: ['cid_totalPageViews', 'cid_uniqueIdentifier']
-        }
+        config: {}
       }
     });
     await render(TEMPLATE);
@@ -211,9 +209,7 @@ module('Integration | Component | pie chart', function(hooks) {
     this.set('options', {
       series: {
         type: 'metric',
-        config: {
-          metrics: ['cid_totalPageViews', 'cid_uniqueIdentifier']
-        }
+        config: {}
       }
     });
 
@@ -270,7 +266,7 @@ module('Integration | Component | pie chart', function(hooks) {
      * Resize the parent element of the SVG that the pie chart is drawn in
      * This effectively moves the pie chart to the left
      */
-    (find('.pie-chart-widget') as Element & { style: { maxWidth: string } }).style.maxWidth = '1000px';
+    (find('.pie-chart-widget') as HTMLElement).style.maxWidth = '1000px';
 
     //Rerender with a new metric and new chart position
     this.set('options', {
@@ -389,13 +385,15 @@ module('Integration | Component | pie chart', function(hooks) {
         field: 'globallySold',
         parameters: {},
         type: 'metric',
-        cid: 'cid_globallySold'
+        cid: 'cid_globallySold',
+        source: 'bardTwo'
       },
       {
         field: 'container',
         parameters: { field: 'desc' },
         type: 'dimension',
-        cid: 'cid_container(field=desc)'
+        cid: 'cid_container(field=desc)',
+        source: 'bardTwo'
       }
     ];
     const newFilters = [
@@ -490,9 +488,7 @@ module('Integration | Component | pie chart', function(hooks) {
     this.set('options', {
       series: {
         type: 'metric',
-        config: {
-          metrics: ['cid_revenue(currency=USD)', 'cid_revenue(currency=CAD)']
-        }
+        config: {}
       }
     });
 

@@ -4,6 +4,7 @@ import { fragment } from 'ember-data-model-fragments/attributes';
 import TableFragment from 'navi-core/models/table';
 import MetricLabel from 'navi-core/models/metric-label';
 import LineChartVisualization from 'navi-core/models/line-chart';
+import PieChart from 'navi-core/models/pie-chart';
 
 export default class AllTheFragments extends DS.Model {
   @fragment('line-chart', { defaultValue: {} })
@@ -17,7 +18,7 @@ export default class AllTheFragments extends DS.Model {
   @fragment('metricLabel', { defaultValue: {} })
   metricLabel!: MetricLabel;
   @fragment('pie-chart', { defaultValue: {} })
-  pieChart!: DS.Model;
+  pieChart!: PieChart;
 }
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.
 declare module 'ember-data/types/registries/model' {

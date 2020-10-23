@@ -19,6 +19,14 @@ export type C3Row = {
   };
 } & Record<string, number | null | undefined>;
 
+export type TooltipData = {
+  id: string;
+  index: number;
+  name: string;
+  ratio: number;
+  seriesIndex: number;
+  value: number;
+};
 export interface BaseChartBuilder {
   byXSeries?: DataGroup<ResponseRow>;
 
@@ -29,5 +37,5 @@ export interface BaseChartBuilder {
   buildTooltip(
     _config: SeriesConfig,
     _request: RequestFragment
-  ): Mixin<{ layout: unknown; rowData: unknown; tooltipData: unknown[]; x: string | number }, EmberObject>;
+  ): Mixin<{ layout: unknown; rowData: unknown; tooltipData: TooltipData[]; x: string | number }, EmberObject>;
 }

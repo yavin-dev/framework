@@ -64,7 +64,7 @@ module('Unit | Component | pie chart', function(hooks) {
           source: 'bardOne'
         }
       ],
-      table: 'tableA',
+      table: 'network',
       dataSource: 'bardOne',
       sorts: [],
       requestVersion: '2.0'

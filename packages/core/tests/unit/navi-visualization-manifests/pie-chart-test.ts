@@ -3,10 +3,11 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import PieChartManifest from 'navi-core/navi-visualization-manifests/pie-chart';
+import StoreService from '@ember-data/store';
 
 let ValidRequest: RequestFragment;
 let Manifest: PieChartManifest;
-let Store: any;
+let Store: StoreService;
 
 module('Unit | Manifests | pie chart', function(hooks) {
   setupTest(hooks);

@@ -1,20 +1,22 @@
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import { set, get, computed, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { merge } from 'lodash-es';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import StoreService from '@ember-data/store';
+import { PieChartConfig } from 'navi-core/models/pie-chart';
 
 export default class PieChartController extends Controller {
   @service('store')
-  store: TODO;
+  store!: StoreService;
 
   @readOnly('model.firstObject.request')
   request!: RequestFragment;
 
-  @readOnly('model.firstObject.response.rows')
+  @readOnly('model.firstObject.response')
   response!: NaviFactResponse;
 
   //options passed through to the pie-chart component
@@ -114,7 +116,7 @@ export default class PieChartController extends Controller {
     ],
     filters: [
       {
-        field: 'time',
+        field: 'network.dateTime',
         parameters: { grain: 'day' },
         operator: 'bet',
         type: 'timeDimension',
@@ -226,14 +228,14 @@ export default class PieChartController extends Controller {
   }
 
   @action
-  onUpdateConfigOneDimension(configUpdates: object) {
+  onUpdateConfigOneDimension(configUpdates: Partial<PieChartConfig['metadata']>) {
     const { options } = this;
     set(this, 'options', merge({}, options, configUpdates));
   }
 
   @action
-  onUpdateConfigMultipleDimension(configUpdates: object) {
-    let multiDimensionOptions = get(this, 'multiDimensionOptions');
+  onUpdateConfigMultipleDimension(configUpdates: Partial<PieChartConfig['metadata']>) {
+    const { multiDimensionOptions } = this;
     set(this, 'multiDimensionOptions', merge({}, multiDimensionOptions, configUpdates));
   }
 }
