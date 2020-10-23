@@ -654,13 +654,33 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
-    const response = { errors: [{ message: 'Bad Request' }] };
-    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
+    const response = { errors: [{ message: 'Server Error' }] };
+    Server.post(`${HOST}/graphql`, () => [500, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
 
     try {
       await adapter.urlForDownloadQuery(TestRequest, {});
-    } catch (error) {
-      assert.deepEqual(error, response, 'urlForDownloadQuery returns the error response payload');
+    } catch ({ errors }) {
+      const responseText = await errors[0].statusText;
+      assert.deepEqual(
+        responseText,
+        errors[0].messages,
+        'urlForDownloadQuery an array of response objects on server error'
+      );
+    }
+  });
+
+  test('urlForDownloadQuery bad request - error', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let errors = [{ message: 'Bad request' }];
+    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
+
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch ({ errors }) {
+      const responseText = await errors[0].statusText;
+      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
     }
   });
 });

@@ -216,7 +216,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     }
     return tableExportPayload;
   })
-  fetchDataForExportTask!: TODO;
+  private fetchDataForExportTask!: TODO;
 
   /**
    * @param request
