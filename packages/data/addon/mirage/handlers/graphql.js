@@ -419,7 +419,7 @@ function _getResponseBody(db, parent) {
 
 /**
  * @param {MirageDatabase} db
- * @param {MirageRecord} parent - async query mirage record
+ * @param {MirageRecord} parent - table export mirage record
  * @return {String} - url in string form
  */
 function _getUrl(db, parent) {
@@ -427,97 +427,13 @@ function _getUrl(db, parent) {
   //debugger;
   // Create mocked response for a table export
   const { createdOn, query } = parent;
+  console.log(parent);
+  console.log(query);
   const responseTime = Date.now();
   // Only respond if query was created over 5 seconds ago
   if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
     parent.status = 'COMPLETE';
-
-    const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
-    const { filter = [], sort = [], first } = _parseArgs(args, table);
-    const seed = _getSeedForRequest(table, args, fields);
-    faker.seed(seed);
-
-    if (db.tables.find(table) && fields.length) {
-      const columns = fields.reduce(
-        (groups, column) => {
-          const type = ['metrics', 'dimensions', 'timeDimensions'].find(t => db[t].find(column));
-
-          if (type) {
-            groups[type].push(column);
-          }
-          console.log('groups');
-          console.log(groups);
-          return groups;
-        },
-        { metrics: [], dimensions: [], timeDimensions: [] }
-      );
-
-      // Convert each date into a row of data
-      // If no time dimension is sent, just return a single row
-      let rows =
-        columns.timeDimensions.length > 0
-          ? _getDates(
-              filter.filter(fil => columns.timeDimensions.includes(fil.field)),
-              db.timeDimensions.find(columns.timeDimensions)
-            )
-          : [{}];
-
-      // Add each dimension
-      columns.dimensions.forEach(dimension => {
-        const filterForDim = filter.find(f => f.field === dimension); // TODO: Handle parameterized dimensions
-        const dimensionValues = _dimensionValues(filterForDim);
-
-        rows = rows.reduce((newRows, currentRow) => {
-          return [
-            ...newRows,
-            ...dimensionValues.map(value => ({
-              ...currentRow,
-              [REMOVE_TABLE_REGEX.exec(dimension)[1]]: value
-            }))
-          ];
-        }, []);
-      });
-
-      // Add each metric
-      rows = rows.map(currRow =>
-        columns.metrics.reduce(
-          (row, metric) => ({
-            ...row,
-            [REMOVE_TABLE_REGEX.exec(metric)[1]]: faker.finance.amount()
-          }),
-          currRow
-        )
-      );
-
-      // handle limit in request
-      if (first && first < rows.length) {
-        rows = rows.slice(0, first);
-      }
-
-      // sort rows
-      if (sort.length) {
-        rows = orderBy(
-          rows,
-          sort.map(r => row => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
-          sort.map(r => r.direction)
-        );
-      }
-      let eg = JSON.stringify({
-        data: {
-          [table]: {
-            edges: rows.map(node => ({ node }))
-          }
-        }
-      });
-      console.log('eg');
-      console.log(eg);
-      return 'downloadURL';
-    }
-    return JSON.stringify({
-      errors: {
-        message: 'Invalid query sent with TableExport'
-      }
-    });
+    return 'downloadURL';
   }
   return null;
 }

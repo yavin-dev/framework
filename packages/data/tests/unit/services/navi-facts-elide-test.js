@@ -775,7 +775,6 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     let url = await this.service.getDownloadURL(TestRequest, { dataSourceName: TestRequest.dataSource });
     console.log('test result url');
     console.log(url);
-    //debugger;
     assert.deepEqual(url, 'downloadURL', 'Service returns the url when requested');
   });
   // TODO: Normalize error handling between elide and fili
