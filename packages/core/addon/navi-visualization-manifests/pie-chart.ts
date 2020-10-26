@@ -16,7 +16,7 @@ export default class PieChartManifest extends NaviVisualizationBaseManifest {
 
   typeIsValid(request: RequestFragment) {
     return (
-      this.hasSingleTimeBucket(request) &&
+      this.hasExplicitSingleTimeBucket(request) &&
       this.hasMetric(request) &&
       (this.hasGroupBy(request) || this.hasMultipleMetrics(request))
     );

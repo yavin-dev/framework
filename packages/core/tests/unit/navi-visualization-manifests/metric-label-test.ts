@@ -59,7 +59,7 @@ module('Unit | Manifests | metric label', function(hooks) {
 
   test('invalid due to multiple time buckets', function(assert) {
     const request = ValidRequest.clone();
-    request.dateTimeFilter.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
+    request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     assert.deepEqual(Manifest.typeIsValid(request), false, 'metric label is invalid due to multiple time buckets');
   });
 });
