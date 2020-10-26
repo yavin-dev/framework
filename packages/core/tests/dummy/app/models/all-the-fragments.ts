@@ -5,12 +5,13 @@ import TableFragment from 'navi-core/models/table';
 import MetricLabel from 'navi-core/models/metric-label';
 import LineChartVisualization from 'navi-core/models/line-chart';
 import PieChart from 'navi-core/models/pie-chart';
+import BarChart from 'navi-core/models/bar-chart';
 
 export default class AllTheFragments extends DS.Model {
   @fragment('line-chart', { defaultValue: {} })
   lineChart!: LineChartVisualization;
   @fragment('bar-chart', { defaultValue: {} })
-  barChart!: DS.Model;
+  barChart!: BarChart;
   @fragment('table', { defaultValue: {} })
   table!: TableFragment;
   @fragment('goalGauge', { defaultValue: {} })

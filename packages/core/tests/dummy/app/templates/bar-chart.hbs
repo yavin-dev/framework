@@ -4,33 +4,33 @@
 
 <div class="chart-container">
   <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
-    @response={{this.response}}
+    @request={{this.model.default.0.request}}
+    @response={{this.model.default.0.response}}
     @visualization={{this.metricVisualization}}
     @onUpdateConfig={{fn (mut this.metricOptions)}}
   />
   <NaviVisualizations::BarChart
-    @model={{this.model}}
+    @model={{this.model.default}}
     @options={{this.metricOptions}}
   />
 </div>
 
 <h3>Hours by Day</h3>
 <NaviVisualizations::BarChart
-  @model={{this.hourGrainModel}}
+  @model={{this.model.hourGrain}}
   @options={{this.hourByDayTimeOptions}}
 />
 
 <h3>By Dimension</h3>
 <div class="chart-container">
   <NaviVisualizationConfig::Wrapper
-    @request={{this.request}}
-    @response={{this.response}}
+    @request={{this.model.dimension.0.request}}
+    @response={{this.model.dimension.0.response}}
     @visualization={{this.dimVisualization}}
     @onUpdateConfig={{this.onUpdateConfig}}
   />
   <NaviVisualizations::BarChart
-    @model={{this.model}}
+    @model={{this.model.dimension}}
     @options={{this.dimensionOptions}}
   />
 </div>

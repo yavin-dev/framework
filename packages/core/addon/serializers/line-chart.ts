@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
-import Model from '@ember-data/model';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
@@ -24,6 +23,8 @@ export function normalizeLineChartV2(
     return visualization;
   }
   const series = visualization.metadata?.axis?.y?.series;
+
+  let style = visualization.metadata?.style;
 
   let metricCid;
   if (series?.config?.metric) {
@@ -60,6 +61,7 @@ export function normalizeLineChartV2(
     type: 'line-chart',
     version: 2,
     metadata: {
+      ...(style ? { style } : {}),
       axis: {
         y: {
           series: {
@@ -76,14 +78,4 @@ export function normalizeLineChartV2(
   };
 }
 
-export default class LineChartSerializer extends VisualizationSerializer {
-  /**
-   * Normalizes payload so that it can be applied to models correctly
-   * @param type - class type
-   * @param visualization - json parsed object
-   * @return normalized payload
-   */
-  normalize(type: Model, visualization: object) {
-    return super.normalize(type, visualization);
-  }
-}
+export default class LineChartSerializer extends VisualizationSerializer {}
