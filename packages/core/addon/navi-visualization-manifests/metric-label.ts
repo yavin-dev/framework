@@ -15,6 +15,6 @@ export default class MetricLabelManifest extends NaviVisualizationBaseManifest {
   icon = 'list-alt';
 
   typeIsValid(request: RequestFragment) {
-    return this.hasNoGroupBy(request) && this.hasSingleTimeBucket(request) && this.hasSingleMetric(request);
+    return this.hasNoGroupBy(request) && this.hasExplicitSingleTimeBucket(request) && this.hasSingleMetric(request);
   }
 }
