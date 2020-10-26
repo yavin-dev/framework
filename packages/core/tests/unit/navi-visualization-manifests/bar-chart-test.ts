@@ -78,7 +78,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
 
   test('valid for multiple time buckets with dimension and metric', function(assert) {
     const request = ValidRequest.clone();
-    request.dateTimeFilter.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
+    request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     request.addColumn({ type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' });
     assert.ok(
       Manifest.typeIsValid(request),
@@ -88,7 +88,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
 
   test('valid for multiple time bucket no dimension and metric', function(assert) {
     const request = ValidRequest.clone();
-    request.dateTimeFilter.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
+    request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     assert.ok(
       Manifest.typeIsValid(request),
       'bar chart type is invalid for multiple time bucket no dimension and metric'
