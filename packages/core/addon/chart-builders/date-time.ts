@@ -21,7 +21,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { BaseChartBuilder, C3Row } from './base';
+import { BaseChartBuilder, C3Row, TooltipData } from './base';
 import { tracked } from '@glimmer/tracking';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
@@ -275,7 +275,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
        */
       rowData: computed('x', 'tooltipData', function() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return this.tooltipData.map((series: any) => {
+        return this.tooltipData.map((series: TooltipData) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(this.x + series.name) || [];
 

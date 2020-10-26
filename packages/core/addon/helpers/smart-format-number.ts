@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -14,10 +14,10 @@ import numeral from 'numeral';
  * For NaN return empty string
  *
  * @method smartFormatNumber
- * @param {[Number | String | unknown]} value
- * @return {String} Formatted string for the provided number
+ * @param value
+ * @return Formatted string for the provided number
  */
-export function smartFormatNumber([value]) {
+export function smartFormatNumber([value]: Array<number | string>): string {
   // type safe check
   let hasPoint = value !== undefined && JSON.stringify(value).indexOf('.') !== -1;
   if (typeof value !== 'number') {
