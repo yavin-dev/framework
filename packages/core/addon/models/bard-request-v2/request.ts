@@ -209,7 +209,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {FilterFragment} dateTimeFilter - The filter on the dateTime dimension
    */
   @computed('filters.[]')
-  get dateTimeFilter() {
+  get dateTimeFilter(): FilterFragment | undefined {
     return this.filters.filter(filter => filter.type === 'timeDimension')[0];
   }
 
@@ -217,9 +217,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {Interval|undefined} interval - The interval to filter the dateTime for
    */
   @computed('dateTimeFilter.values')
-  get interval() {
-    const values = this.dateTimeFilter?.values;
-    return values?.length ? Interval.parseFromStrings(`${values[0]}`, `${values[1]}`) : undefined;
+  get interval(): Interval | undefined {
+    const { operator, values = [] } = this.dateTimeFilter || {};
+    const [start, end] = values;
+    if (operator === 'bet' && start && end) {
+      return Interval.parseFromStrings(`${start}`, `${end}`);
+    }
+    return undefined;
   }
 
   /**

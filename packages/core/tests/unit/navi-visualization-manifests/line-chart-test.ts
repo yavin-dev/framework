@@ -47,4 +47,12 @@ module('Unit | Manifests | line chart', function(hooks) {
 
     assert.ok(Manifest.typeIsValid(request), 'line chart type is valid for multiple time buckets');
   });
+
+  test('valid for potential multiple time buckets', function(assert) {
+    const request = ValidRequest.clone();
+    request.dateTimeFilter.operator = 'gte';
+    request.dateTimeFilter.values = ['2015-11-09 00:00:00.000'];
+
+    assert.ok(Manifest.typeIsValid(request), 'line chart type is valid for multiple time buckets');
+  });
 });

@@ -48,18 +48,21 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
   /**
    * checks if the request has single time bucket
    */
-  hasSingleTimeBucket(request: RequestFragment): boolean {
+  hasExplicitSingleTimeBucket(request: RequestFragment): boolean {
     const { timeGrain, interval } = request;
     assert('request should have a timeGrain', timeGrain);
+    if (this.hasInterval(request)) {
+      return interval?.diffForTimePeriod(timeGrain) === 1;
+    }
 
-    return this.hasInterval(request) && interval?.diffForTimePeriod(timeGrain) === 1;
+    return false;
   }
 
   /**
    * checks if the request has no group by
    */
   hasNoGroupBy(request: RequestFragment): boolean {
-    return request.columns.filter(({ type }) => type === 'dimension').length === 0;
+    return request.nonTimeDimensions.length === 0;
   }
 
   /**
@@ -72,8 +75,8 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
   /**
    * checks if the request has multiple time buckets
    */
-  hasMultipleTimeBuckets(request: RequestFragment): boolean {
-    return this.hasInterval(request) && !this.hasSingleTimeBucket(request);
+  hasPotentialMultipleTimeBuckets(request: RequestFragment): boolean {
+    return !this.hasExplicitSingleTimeBucket(request);
   }
 
   /**
