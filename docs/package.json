@@ -6,6 +6,6 @@
     "start": "bundle exec jekyll serve"
   },
   "dependencies": {
-    "bootstrap": "^4.3.0"
+    "bootstrap": "^4.5.3"
   }
 }
