@@ -322,8 +322,6 @@ function _parseArgs(args, table) {
  * @return {String} - response body object in string form
  */
 function _getResponseBody(db, parent) {
-  console.log('getResponseBody');
-  //debugger;
   // Create mocked response for an async query
   const { createdOn, query } = parent;
   const responseTime = Date.now();
@@ -423,17 +421,17 @@ function _getResponseBody(db, parent) {
  * @return {String} - url in string form
  */
 function _getUrl(db, parent) {
-  console.log('_getUrl');
   //debugger;
   // Create mocked response for a table export
   const { createdOn, query } = parent;
-  console.log(parent);
-  console.log(query);
   const responseTime = Date.now();
   // Only respond if query was created over 5 seconds ago
   if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
     parent.status = 'COMPLETE';
-    return 'downloadURL';
+    const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
+    const seed = _getSeedForRequest(table, args, fields);
+    faker.seed(seed);
+    return faker.internet.url();
   }
   return null;
 }
@@ -510,7 +508,6 @@ const OPTIONS = {
   },
   mutations: {
     asyncQuery(connection, { op, data }, { asyncQueries }) {
-      console.log('asyncQuery mutation');
       data = data[0];
       const queryIds = data.id ? [data.id] : [];
       const existingQueries = asyncQueries.find(queryIds) || [];
@@ -536,7 +533,6 @@ const OPTIONS = {
       }
     },
     tableExport(connection, { op, data }, { tableExports }) {
-      console.log('tableExport mutation');
       data = data[0];
       const queryIds = data.id ? [data.id] : [];
       const existingQueries = tableExports.find(queryIds) || [];

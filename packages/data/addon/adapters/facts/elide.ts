@@ -204,7 +204,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    */
   @task(function*(this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
-    console.log('fetchdataforexporttask');
     let tableExportPayload = yield this.createTableExport(request, options);
     const tableExport = tableExportPayload?.tableExport.edges[0]?.node;
     const { id } = tableExport;

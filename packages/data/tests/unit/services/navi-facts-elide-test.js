@@ -72,7 +72,6 @@ const TestRequest = {
 };
 
 module('Unit | Service | Navi Facts - Elide', function(hooks) {
-  console.log('module service navi facts elide');
   setupTest(hooks);
   setupMirage(hooks);
 
@@ -82,7 +81,6 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch', async function(assert) {
-    console.log('fetch');
     const model = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
     const { rows, meta } = model.response;
     assert.deepEqual(
@@ -232,7 +230,6 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - only metrics', async function(assert) {
-    console.log('fetch- only metrics');
     const model = await this.service.fetch(
       {
         table: 'table1',
@@ -477,7 +474,6 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - sorts', async function(assert) {
-    console.log('fetch- sorts');
     const model = await this.service.fetch(
       {
         table: 'table1',
@@ -629,7 +625,6 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   });
 
   test('fetch - limit', async function(assert) {
-    console.log('fetch- limit');
     const limit = (
       await this.service.fetch(
         {
@@ -773,15 +768,11 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
   test('getDownloadURL', async function(assert) {
     let url = await this.service.getDownloadURL(TestRequest, { dataSourceName: TestRequest.dataSource });
-    console.log('test result url');
-    console.log(url);
-    assert.deepEqual(url, 'downloadURL', 'Service returns the url when requested');
+    assert.deepEqual(url, 'https://seth.info', 'Service returns the url when requested');
   });
   // TODO: Normalize error handling between elide and fili
   skip('fetch and catch error', function(assert) {
-    console.log('fetch and catch error');
     assert.expect(2);
-
     // Return an error
     return this.service.fetch(Object.assign({}, TestRequest, { metrics: [], dimensions: [] })).catch(response => {
       assert.ok(true, 'A request error falls into the promise catch block');
