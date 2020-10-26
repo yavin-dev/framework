@@ -1,0 +1,149 @@
+---
+---
+
+$green: #65C09F;
+$red: #C82045;
+
+$primary: $green;
+$secondary: $red;
+$spacer: 3rem;
+
+$btn-border-radius: 2em;
+$font-family-base: Nunito, Inconsolata;
+$jumbotron-bg: transparent;
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "web-fonts";
+
+@import url(web-fonts-url("Nunito"));
+@import url(web-fonts-url("Inconsolata"));
+
+/**
+ * Overrides
+ */
+.jumbotron {
+  color: $white;
+}
+
+.btn {
+  padding-left: 2em;
+  padding-right: 2em;
+  text-transform: uppercase;
+}
+
+.navbar-toggler {
+  border-radius: 5px;
+}
+
+.display-4 {
+  font-family: Inconsolata;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+}
+
+/**
+ * Custom
+ */
+.background-dark {
+  background-color: #273545;
+}
+
+.feature {
+  @extend .text-center;
+  @extend .text-sm-left;
+}
+
+$elbow-border: $gray-600 2px dashed;
+.elbow {
+  margin: 1em 0;
+
+  div {
+    margin-left: 115px;
+    margin-right: 115px;
+    width: 100%;
+    @extend .d-none;
+    @extend .d-sm-block;
+  }
+
+  .elbow-left {
+    border-left: $elbow-border;
+    height: 5em;
+  }
+
+  .elbow-right {
+    border-right: $elbow-border;
+    height: 5em;
+  }
+
+  .elbow-center {
+    border-top: $elbow-border;
+  }
+}
+
+.github {
+  img {
+    height: 18px;
+    width: 18px;
+  }
+  span {
+    padding-top: 1px;
+    vertical-align: middle;
+  }
+}
+
+.docs {
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+  }
+
+  ol ol {
+    list-style: lower-latin;
+  }
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.footer .links a {
+  color: $white;
+  display: block;
+  margin-bottom: 1rem;
+  
+  &:hover {
+    color: $primary;
+    text-decoration: none;
+  }
+}
+
+.side-bar {
+  li {
+    line-height: 3em;
+  }
+}
+
+.license {
+  font-family: Inconsolata;
+  white-space: pre-wrap;
+}
+
+li.subtopic {
+  margin-left:25px;
+}
+
+.show-phone {
+  display: none;
+}
+
+@media only screen and (max-width: 760px) {
+  .hidden-phone {
+    display: none;
+  }
+
+  .show-phone {
+    display: block;
+  }
+}

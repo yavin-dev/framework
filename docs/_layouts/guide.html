@@ -1,0 +1,26 @@
+---
+layout: default
+---
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-sm side-bar hidden-phone">
+      <ul class="nav flex-column">
+        {% assign sorted_pages = site.pages | sort:"name" %} {% for pages in sorted_pages %} {% if pages.group ==
+        "guide" and page.version == pages.version %} {% if pages.subtopic == true %}
+        <li class="subtopic"><a href="{{ pages.url }}">{{ pages.title }}</a></li>
+        {% else %}
+        <li><a href="{{ pages.url }}">{{ pages.title }}</a></li>
+        {% endif %} {% endif %} {% endfor %}
+      </ul>
+    </div>
+    <div class="col-sm-9 docs">
+      {% if pages.title != blank %}
+      <h1>{{ page.title }} {% if page.tagline %} <small>{{ page.tagline }}</small>{% endif %}</h1>
+      {% endif %}
+      <div class="row-fluid">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+</div>

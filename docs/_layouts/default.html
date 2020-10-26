@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113508065-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-113508065-1');
+  </script>
+  -->
+    <meta name="twitter:card" content="summary" />
+    <meta property="og:url" content="{{ site.BASE_PATH }}" />
+    <meta property="og:title" content="Navi" />
+    <meta property="og:description" content="Navi is an indispensable guide to exploring your data." />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <base href="{{ site.BASE_PATH }}" />
+    <link rel="stylesheet" type="text/css" href="{{ site.ASSET_PATH }}/styles/main.css" />
+    <link rel="stylesheet" type="text/css" href="{{ site.ASSET_PATH }}/styles/syntax.css" />
+
+    <!-- Treant -->
+    <link rel="stylesheet" type="text/css" href="/{{ site.ASSET_PATH }}/styles/treant-js/Treant.css" />
+    <script src="{{ site.ASSET_PATH }}/js/raphael/raphael.min.js"></script>
+    <script src="{{ site.ASSET_PATH }}/js/treant-js/Treant.js"></script>
+  </head>
+
+  <body>
+    <div class="text-light background-dark">
+      <div class="container">
+        <nav class="navbar navbar-expand-md navbar-dark p-1">
+          <a class="navbar-brand mr-0" href="{{ site.BASE_PATH }}">
+            <img src="{{ site.ASSET_PATH }}/images/navi-logo.png" class="img-fluid text-light" alt="Navi Logo" />
+          </a>
+          {% if page.version != nil %}
+          <span class="navbar-text ml-2">
+            Version {{ page.version }}
+          </span>
+          {% endif %}
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navLinks"
+            aria-controls="navLinks"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navLinks">
+            <div class="navbar-nav mx-auto">
+              {% assign sorted_pages = site.pages | sort:"name" %} {% for pages in sorted_pages %} {% if pages.group ==
+              "guide" and page.version == pages.version %} {% if pages.subtopic == true %}
+              <a class="show-phone nav-item nav-link text-light ml-auto subtopic" href="{{ pages.url }}"
+                >{{ pages.title }}</a
+              >
+              {% else %}
+              <a class="show-phone nav-item nav-link text-light ml-auto" href="{{ pages.url }}">{{ pages.title }}</a>
+              {% endif %} {% endif %} {% endfor %}
+
+              <a class="nav-item nav-link text-light ml-auto" href="/pages/guide/01-start.html">Documentation</a>
+              <a class="nav-item nav-link text-light ml-auto" href="https://spectrum.chat/navi">Community</a>
+            </div>
+          </div>
+          <a class="navbar-brand mr-0 d-none d-md-block" href="https://github.com/yahoo/navi">
+            <button type="button" class="btn btn-secondary github">
+              <img src="{{ site.ASSET_PATH }}/images/GitHub-Mark-Light-32px.png" class="img-fluid" alt="Github Logo" />
+              <span>Github</span>
+            </button>
+          </a>
+        </nav>
+      </div>
+    </div>
+
+    {{content}}
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+      integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+      integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

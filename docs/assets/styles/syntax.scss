@@ -1,0 +1,26 @@
+---
+---
+
+// generate custom syntax theme @ http://jwarby.github.io/jekyll-pygments-themes/builder.html
+@import "jwarby-jekyll-pygments-themes/manni";
+
+.highlight,
+.highlight code {
+  white-space: pre;
+}
+
+code {
+  color: inherit;
+  background-color: #eee;
+}
+
+pre {
+  padding: 10px;
+  margin: 0 0 10px;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: #7b8a8b;
+  background-color: #ecf0f1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

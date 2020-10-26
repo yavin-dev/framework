@@ -36,3 +36,7 @@ exclude:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# site-specific configuration
+BASE_PATH: https://navi.io
+ASSET_PATH: assets
