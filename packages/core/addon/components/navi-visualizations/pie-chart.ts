@@ -1,95 +1,84 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- * {{navi-visualizations/pie-chart
- *   model=model
- *   options=options
- * }}
  */
-
+//@ts-ignore
 import d3 from 'd3';
-import { alias, readOnly } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@ember/component';
-import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
 import { computed, action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { guidFor } from '@ember/object/internals';
-import layout from '../../templates/components/navi-visualizations/pie-chart';
+//@ts-ignore
 import tooltipLayout from '../../templates/chart-tooltips/pie-chart';
 import { merge } from 'lodash-es';
+import { VisualizationModel } from './table';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
-import hasChartBuilders from 'navi-core/mixins/components/has-chart-builders';
 import { getTranslation } from '../../utils/chart';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import ChartBuildersBase from './chart-builders-base';
+import RequestV2 from '../../models/bard-request-v2/request';
+import NaviFactResponse from 'navi-data/addon/models/navi-fact-response';
+import { BaseChartBuilder, SeriesType, TooltipData } from 'navi-core/chart-builders/base';
+import { ChartSeries } from 'navi-core/models/chart-visualization';
+import { PieChartConfig } from 'navi-core/models/pie-chart';
 
-@templateLayout(layout)
-@tagName('')
-class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuilders) {
-  /**
-   * @property {Service} metricName
-   */
-  @service metricName;
+export type PieChartOptions = PieChartConfig['metadata'];
 
+export type Args = {
+  model: VisualizationModel;
+  options: PieChartOptions;
+};
+
+export default class NaviVisualizationsPieChartComponent extends ChartBuildersBase<Args> {
   /**
-   * @property {String} chartId - return pie-chart-widget with its ember id appended to it
+   * pie-chart-widget with its ember id appended to it
    */
-  @computed
-  get chartId() {
+  get chartId(): string {
     return `pie-chart-widget-${guidFor(this)}`;
   }
 
   /**
-   * @property {Array} widgetClassNames - since pie-chart is a tagless wrapper component,
+   * since pie-chart is a tagless wrapper component,
    * classes specified here are applied to the underlying c3-chart component
    */
-  @computed
-  get widgetClassNames() {
+  get widgetClassNames(): string[] {
     return ['pie-chart-widget', this.chartId];
   }
 
-  /**
-   * @property {Object} request
-   */
-  @alias('model.firstObject.request') request;
+  @readOnly('args.model.firstObject.request') request!: RequestV2;
+
+  @readOnly('args.model.firstObject.response') response!: NaviFactResponse;
 
   /**
-   * @property {String} namespace - meta data namespace to use
-   */
-  @alias('request.dataSource') namespace;
-
-  /**
-   * @property {Object} builder - builder based on series type
+   * @property builder - builder based on series type
    */
   @computed('seriesType')
-  get builder() {
+  get builder(): BaseChartBuilder {
     const { seriesType: type, chartBuilders: builders } = this;
+    const chartBuilder = builders[type];
 
-    return builders[type];
+    assert(`There should be a chart-builder for ${type}`, chartBuilder);
+    return chartBuilder;
   }
 
   /**
-   * @property {Object} seriesConfig - config for chart series
+   * config for chart series
    */
-  @readOnly('options.series.config') seriesConfig;
+  @readOnly('args.options.series.config') seriesConfig!: ChartSeries['config'];
 
-  /**
-   * @property {String} seriesType
-   */
-  @readOnly('options.series.type') seriesType;
+  @readOnly('args.options.series.type') seriesType!: SeriesType;
 
   /**
    * Formatter for label (percentage value) shown on pie slices
-   * @property {Object} pieConfig - pie chart specific config
+   * pie chart specific config
    */
-  @computed
   get pieConfig() {
     return {
       pie: {
         label: {
-          format: (value, ratio) => {
+          format: (_: unknown, ratio: number) => {
             return smartFormatNumber([ratio * 100]) + '%';
           }
         }
@@ -98,24 +87,27 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   }
 
   /**
-   * @property {String} metricDisplayName - display name for metric
+   * The metric based on the cid stored in the seriesConfig
    */
-  @computed('options', 'namespace')
-  get metricDisplayName() {
-    const metric = this.seriesConfig.metric;
-
-    return metric && this.metricName.getDisplayName(metric, this.namespace);
+  @computed('request.columns.[]', 'seriesConfig.metricCid')
+  get metric() {
+    if ('metricCid' in this.seriesConfig) {
+      const {
+        request,
+        seriesConfig: { metricCid }
+      } = this;
+      return request.columns.findBy('cid', metricCid);
+    }
+    return undefined;
   }
 
   /**
-   * @property {Object} chart data config
+   * data config
    */
   @computed('model.firstObject', 'seriesConfig')
   get dataConfig() {
-    const response = this.model?.firstObject?.response,
-      request = this.request,
-      seriesConfig = this.seriesConfig,
-      seriesData = this.builder.buildData(response.rows, seriesConfig, request);
+    const { builder, request, response, seriesConfig } = this;
+    const seriesData = builder.buildData(response, seriesConfig, request);
 
     return {
       data: {
@@ -126,27 +118,25 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   }
 
   /**
-   * @property {Object} config - config options for the chart
+   * config options for the chart
    */
-  @computed('options', 'dataConfig')
+  @computed('args.options', 'dataConfig')
   get config() {
-    return merge({}, this.pieConfig, this.options, this.dataConfig, {
+    return merge({}, this.pieConfig, this.args.options, this.dataConfig, {
       tooltip: this.chartTooltip
     });
   }
 
   /**
-   * @property {String} tooltipComponentName - name of the tooltip component
+   * name of the tooltip component
    */
-  @computed
   get tooltipComponentName() {
     return `pie-chart-tooltip-${guidFor(this)}`;
   }
 
   /**
-   * @property {Component} tooltipComponent - component used for rendering HTMLBars templates
+   * component used for rendering HTMLBars templates
    */
-  @computed
   get tooltipComponent() {
     let owner = getOwner(this),
       tooltipComponentName = this.tooltipComponentName,
@@ -154,14 +144,14 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
       byXSeries = this.builder.byXSeries,
       tooltipComponent = Component.extend(
         owner.ownerInjection(),
-
         {
           layout: tooltipLayout,
 
           rowData: computed('x', 'requiredToolTipData', function() {
+            assert('buildData must be called in the chart-builder before the tooltip can be rendered', byXSeries);
             // Get the full data for this combination of x + series
-            const series = this.requiredToolTipData,
-              dataForSeries = byXSeries.getDataForKey(this.x + series.id) || [];
+            const series = this.requiredToolTipData;
+            const dataForSeries = byXSeries.getDataForKey(`${this.x} ${series.id}`) || [];
 
             return dataForSeries[0];
           })
@@ -180,16 +170,15 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   }
 
   /**
-   * @property {Object} chartTooltip - configuration for tooltip
+   * configuration for tooltip
    */
-  @computed('seriesConfig.metric')
+  @computed('metric')
   get chartTooltip() {
-    const tooltipComponent = this.tooltipComponent;
+    const { tooltipComponent, metric } = this;
     const rawData = this.dataConfig.data.json;
-    const metric = this.seriesConfig.metric;
 
     return {
-      contents(tooltipData) {
+      contents(tooltipData: TooltipData[]) {
         let x = rawData[0].x.rawValue,
           tooltip = tooltipComponent.create({
             x,
@@ -210,12 +199,10 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
   }
 
   /**
-   * Fires before the element is destroyed
-   * @method willDestroyElement
-   * @override
+   * Removes manual metric label from html and tooltip from registry
    */
-  willDestroyElement() {
-    super.willDestroyElement(...arguments);
+  willDestroy() {
+    super.willDestroy();
     this._removeMetricLabel();
     this._removeTooltipFromRegistry();
   }
@@ -236,34 +223,32 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
    * @private
    */
   _removeMetricLabel() {
-    let tspans = d3.selectAll(`.${this.get('chartId')} text.c3-title > .pie-metric-label`);
+    let tspans = d3.selectAll(`.${this.chartId} text.c3-title > .pie-metric-label`);
     tspans.remove();
   }
 
   /**
    * Creates the pie chart's metric label
-   * @method _drawMetricLabel
-   * @private
    */
   _drawMetricLabel() {
-    let titleElm = d3.select(`.${this.get('chartId')} text.c3-title`),
-      svgElm = d3.select(`.${this.get('chartId')} svg`),
-      chartElm = d3.select(`.${this.get('chartId')} .c3-chart-arcs`),
-      /*
-       * We want the metric label to be just to the left of the pie chart
-       * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
-       */
-      xTranslate = getTranslation(chartElm.attr('transform')).x - chartElm.node().getBBox().width / 2 - 50,
-      yTranslate = svgElm.style('height').replace('px', '') / 2, //vertically center the label in the svg
-      metricTitle = this.metricDisplayName;
+    const { metric } = this;
+    const titleElm = d3.select(`.${this.chartId} text.c3-title`);
+    const svgElm = d3.select(`.${this.chartId} svg`);
+    const chartElm = d3.select(`.${this.chartId} .c3-chart-arcs`);
+    /*
+     * We want the metric label to be just to the left of the pie chart
+     * Find the x translation of the pie chart element and subtract half the chart's width and 50 more pixels
+     */
+    const xTranslate = getTranslation(chartElm.attr('transform')).x - chartElm.node().getBBox().width / 2 - 50;
+    const yTranslate = svgElm.style('height').replace('px', '') / 2; //vertically center the label in the svg
 
-    if (metricTitle) {
+    if (metric) {
       titleElm
         .insert('tspan')
         .attr('class', 'pie-metric-label')
         .attr('y', 0)
         .attr('x', 0)
-        .text(metricTitle);
+        .text(metric.displayName);
 
       //rotate the label to be vertical and place it just left of the pie chart
       titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);
@@ -283,5 +268,3 @@ class NaviVisualizationsPieChartComponent extends Component.extend(hasChartBuild
     }
   }
 }
-
-export default NaviVisualizationsPieChartComponent;
