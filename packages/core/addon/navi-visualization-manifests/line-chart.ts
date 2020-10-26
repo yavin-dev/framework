@@ -15,6 +15,6 @@ export default class LineChartManifest extends NaviVisualizationBaseManifest {
   icon = 'line-chart';
 
   typeIsValid(request: RequestFragment) {
-    return this.hasMetric(request) && !this.hasSingleTimeBucket(request);
+    return this.hasMetric(request) && this.hasPotentialMultipleTimeBuckets(request);
   }
 }

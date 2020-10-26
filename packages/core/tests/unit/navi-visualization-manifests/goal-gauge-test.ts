@@ -58,7 +58,7 @@ module('Unit | Manifests | goal gauge', function(hooks) {
 
   test('invalid due to multiple time buckets', function(assert) {
     const request = ValidRequest.clone();
-    request.dateTimeFilter.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
+    request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     assert.notOk(Manifest.typeIsValid(request), 'goal gauge is invalid due to multiple time buckets');
   });
 });

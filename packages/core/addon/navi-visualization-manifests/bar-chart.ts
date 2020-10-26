@@ -17,7 +17,7 @@ export default class BarChartManifest extends NaviVisualizationBaseManifest {
   typeIsValid(request: RequestFragment) {
     return (
       this.hasMultipleMetrics(request) ||
-      (this.hasMetric(request) && (this.hasGroupBy(request) || this.hasMultipleTimeBuckets(request)))
+      (this.hasMetric(request) && (this.hasGroupBy(request) || this.hasPotentialMultipleTimeBuckets(request)))
     );
   }
 }
