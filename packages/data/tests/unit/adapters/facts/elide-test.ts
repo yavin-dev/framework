@@ -565,7 +565,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.deepEqual(
         response,
         errors[0].result.response,
-        'fetchDataForRequest an array of response objects on error'
+        'fetchDataForRequest returns an array of response objects on error'
       );
     }
   });
@@ -666,7 +666,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.deepEqual(
         response,
         errors[0].result.response,
-        'urlForDownloadQuery an array of response objects on server error'
+        'urlForDownloadQuery returns an array of response objects on server error'
       );
     }
   });
@@ -683,7 +683,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.deepEqual(
         response,
         errors[0].result.response,
-        'fetchDataForRequest an array of response objects on error'
+        'urlForDownloadQuery returns an array of response objects on error'
       );
     }
   });
