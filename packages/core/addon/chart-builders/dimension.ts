@@ -32,7 +32,7 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions } from 'navi-core/utils/chart-data';
-import { BaseChartBuilder, C3Row } from './base';
+import { BaseChartBuilder, C3Row, TooltipData } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
@@ -148,7 +148,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
        */
       rowData: computed('x', 'tooltipData', function() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return this.tooltipData.map((series: any) => {
+        return this.tooltipData.map((series: TooltipData) => {
           // Get the full data for this combination of x + series
           let dataForSeries = builder.byXSeries?.getDataForKey(`${this.x} ${series.id}`) || [];
 

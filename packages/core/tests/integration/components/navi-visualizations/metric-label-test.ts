@@ -8,6 +8,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import MetricLabelVisualization from 'navi-core/components/navi-visualizations/metric-label';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::MetricLabel
@@ -56,7 +57,7 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
           dataSource: 'bardOne',
           table: 'network'
         }),
-        response: { rows: [], meta: {} }
+        response: NaviFactResponse.create({ rows: [] })
       }
     ]);
   });

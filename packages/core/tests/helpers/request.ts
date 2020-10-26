@@ -4,7 +4,7 @@ import { TestContext } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
-type Column = { cid?: string; field: string; parameters?: Record<string, string> };
+export type Column = { cid?: string; field: string; parameters?: Record<string, string> };
 
 /**
  * @function buildTestRequest

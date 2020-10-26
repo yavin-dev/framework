@@ -15,7 +15,7 @@ module('Integration | Helper | metric-format', function(hooks) {
   test('it renders with serialized metric object', async function(assert) {
     assert.expect(7);
     this.set('metric', {
-      metric: 'revenue',
+      field: 'revenue',
       parameters: { currency: 'USD', as: 'revenueUSD' }
     });
 
@@ -23,24 +23,24 @@ module('Integration | Helper | metric-format', function(hooks) {
     assert.dom().hasText('Revenue (USD)');
 
     this.set('metric', {
-      metric: 'revenue',
+      field: 'revenue',
       parameters: { currency: 'CAD', as: 'revenueUSD' }
     });
     assert.dom().hasText('Revenue (CAD)');
 
-    this.set('metric', { metric: 'revenue' });
+    this.set('metric', { field: 'revenue' });
     assert.dom().hasText('Revenue');
 
-    this.set('metric', { metric: null });
+    this.set('metric', { field: null });
     assert.dom().hasText('--');
 
     this.set('metric', null);
     assert.dom().hasText('--');
 
-    this.set('metric', { metric: '' });
+    this.set('metric', { field: '' });
     assert.dom().hasText('--');
 
-    this.set('metric', { metric: 'foo' });
+    this.set('metric', { field: 'foo' });
     assert.dom().hasText('foo');
   });
 
@@ -51,7 +51,7 @@ module('Integration | Helper | metric-format', function(hooks) {
     await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
 
     this.set('metric', {
-      metric: 'usedAmount',
+      field: 'usedAmount',
       parameters: {}
     });
 
@@ -60,7 +60,7 @@ module('Integration | Helper | metric-format', function(hooks) {
     assert.dom().hasText('Used Amount', 'metric is looked up and rendered');
 
     this.set('metric', {
-      metric: 'navClicks',
+      field: 'navClicks',
       parameters: {}
     });
     assert.dom().hasText('navClicks', 'Fall back works');
