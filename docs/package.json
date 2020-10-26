@@ -1,0 +1,11 @@
+{
+  "name": "navi-doc",
+  "description": "Doc site for the navi.io project",
+  "scripts": {
+    "setup": "gem install bundler; bundle install",
+    "start": "bundle exec jekyll serve"
+  },
+  "dependencies": {
+    "bootstrap": "^4.5.3"
+  }
+}
