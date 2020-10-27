@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { set, get, computed, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import { merge } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
@@ -9,19 +9,18 @@ import GoalGaugeRoute from '../routes/goal-gauge';
 export default class GoalGaugeController extends Controller {
   model!: ModelFrom<GoalGaugeRoute>;
 
-  request = {};
-  @tracked goalGaugeOptions = {
-    metricCid: this.model.firstObject?.request.metricColumns[0].cid,
-    baselineValue: '2900000000',
-    goalValue: '3100000000'
+  @tracked goalGaugeOptions: GoalGaugeConfig['metadata'] = {
+    metricCid: this.model.firstObject!.request.metricColumns[0].cid,
+    baselineValue: 2900000000,
+    goalValue: 3100000000
   };
 
   @computed('goalGaugeOptions')
-  get goalGaugeVisualization() {
+  get goalGaugeVisualization(): GoalGaugeConfig {
     return {
       type: 'goal-gauge',
       version: 1,
-      metadata: get(this, 'goalGaugeOptions')
+      metadata: this.goalGaugeOptions
     };
   }
 

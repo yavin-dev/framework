@@ -3,12 +3,11 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { set } from '@ember/object';
 import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import GoalGaugeVisualization from 'navi-core/components/navi-visualizations/goal-gauge';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import RequestFragment from 'dummy/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::GoalGauge
@@ -46,12 +45,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       dataSource: 'bardOne',
       requestVersion: '2.0'
     });
-    this.model = arr([
-      {
-        request: this.request,
-        response: { rows: [{ pageViews: 3030000000 }], meta: {} }
-      }
-    ]);
+    this.set(
+      'model',
+      arr([
+        { request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 3030000000 }], meta: {} }) }
+      ])
+    );
   });
 
   test('goal-gauge renders correctly', async function(this: TestContext, assert) {
@@ -112,7 +111,6 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       'model',
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
     );
-    //@ts-expect-error
     this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, unit: '%' });
     await render(TEMPLATE);
 
@@ -136,7 +134,6 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       'model',
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
     );
-    //@ts-expect-error
     this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, prefix: '$' });
     await render(TEMPLATE);
 
