@@ -10,40 +10,24 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
   test('isValidForRequest', function(assert) {
     assert.expect(6);
 
-    let request = buildTestRequest([{ metric: 'rupees', parameters: {} }], []),
+    let request = buildTestRequest([{ field: 'rupees', parameters: {}, cid: 'cid_rupees' }], []),
       goalGauge = run(() =>
         run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('goalGauge')
       );
 
     run(() =>
       set(goalGauge, 'metadata', {
-        metric: {
-          metric: {
-            category: 'category',
-            name: 'Rupees',
-            id: 'rupees'
-          },
-          parameters: {},
-          canonicalName: 'rupees'
-        }
+        metricCid: 'cid_rupees'
       })
     );
     assert.notOk(
       goalGauge.isValidForRequest(request),
-      'config for goal gauge is invalid when metric in config but baseline and goal do not exists config'
+      'config for goal gauge is invalid when metricCid in config but baseline and goal do not exists config'
     );
 
     run(() =>
       set(goalGauge, 'metadata', {
-        metric: {
-          metric: {
-            category: 'category',
-            name: 'Rupees',
-            id: 'rupees'
-          },
-          parameters: {},
-          canonicalName: 'rupees'
-        },
+        metricCid: 'cid_rupees',
         baselineValue: 34,
         goalValue: 50
       })
@@ -55,15 +39,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
 
     run(() =>
       set(goalGauge, 'metadata', {
-        metric: {
-          metric: {
-            category: 'category',
-            name: 'Rupees',
-            id: 'rupees'
-          },
-          parameters: {},
-          canonicalName: 'rupees'
-        },
+        metricCid: 'cid_rupees',
         baselineValue: '34',
         goalValue: '50'
       })
@@ -75,15 +51,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
 
     run(() =>
       set(goalGauge, 'metadata', {
-        metric: {
-          metric: {
-            category: 'category',
-            name: 'Rupees',
-            id: 'rupees'
-          },
-          parameters: {},
-          canonicalName: 'rupees'
-        },
+        metricCid: 'cid_rupees',
         baselineValue: 'e',
         goalValue: 50
       })
@@ -95,15 +63,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
 
     run(() =>
       set(goalGauge, 'metadata', {
-        metric: {
-          metric: {
-            category: 'category',
-            name: 'Rupees',
-            id: 'rupees'
-          },
-          parameters: {},
-          canonicalName: 'rupees'
-        },
+        metricCid: 'cid_rupees',
         baselineValue: 34,
         goalValue: 'abc'
       })
@@ -112,8 +72,8 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
 
     request = buildTestRequest(
       [
-        { metric: 'swords', parameters: {}, canonicalName: 'swords' },
-        { metric: 'hp', parameters: {}, canonicalName: 'hp' }
+        { field: 'swords', parameters: {}, cid: 'cid_swords' },
+        { field: 'hp', parameters: {}, cid: 'cid_hp' }
       ],
       []
     );
@@ -126,8 +86,11 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
   test('rebuildConfig', function(assert) {
     assert.expect(6);
 
-    let request = buildTestRequest([{ metric: 'rupees', parameters: {} }], []),
-      requestWithParams = buildTestRequest([{ metric: 'revenue', parameters: { currency: 'HYR' } }], []),
+    let request = buildTestRequest([{ field: 'rupees', cid: 'cid_rupees', parameters: {} }], []),
+      requestWithParams = buildTestRequest(
+        [{ field: 'revenue', cid: 'cid_revenue', parameters: { currency: 'HYR' } }],
+        []
+      ),
       response = { rows: [{ rupees: 10 }] },
       responseWithParams = { rows: [{ 'revenue(currency=HYR)': 10 }] },
       gauge = run(() =>
@@ -141,7 +104,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metric: { metric: 'rupees', parameters: {} }
+          metricCid: 'cid_rupees'
         },
         type: 'goal-gauge',
         version: 1
@@ -150,7 +113,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 0.9,
           goalValue: 1.1,
-          metric: { metric: 'rupees', parameters: {} }
+          metricCid: 'cid_rupees'
         },
         type: 'goal-gauge',
         version: 1
@@ -159,7 +122,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: -11,
           goalValue: -9,
-          metric: { metric: 'rupees', parameters: {} }
+          metricCid: 'cid_rupees'
         },
         type: 'goal-gauge',
         version: 1
@@ -168,7 +131,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 0,
           goalValue: 1,
-          metric: { metric: 'rupees', parameters: {} }
+          metricCid: 'cid_rupees'
         },
         type: 'goal-gauge',
         version: 1
@@ -177,7 +140,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metric: { metric: 'revenue', parameters: { currency: 'HYR' } }
+          metricCid: 'cid_revenue'
         },
         type: 'goal-gauge',
         version: 1

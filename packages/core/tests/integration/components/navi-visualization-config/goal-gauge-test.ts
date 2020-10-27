@@ -33,7 +33,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
     this.request = store.createFragment('bard-request-v2/request', {
       columns: [
         {
-          cid: 'cidBubbles',
+          cid: 'cid_bubbles',
           type: 'metric',
           field: 'bubbles',
           parameters: {},
@@ -47,7 +47,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
       dataSource: 'bardOne',
       table: 'network'
     });
-    this.response = { rows: [{ cidBubbles: 32 }], meta: {} };
+    this.response = { rows: [{ bubbles: 32 }], meta: {} };
   });
 
   test('it renders', async function(this: TestContext, assert) {

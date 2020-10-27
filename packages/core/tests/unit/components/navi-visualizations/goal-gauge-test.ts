@@ -1,37 +1,63 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Service from '@ember/service';
 import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
+import GoalGauge from 'navi-core/components/navi-visualizations/goal-gauge';
+import NaviMetadata from 'navi-data/services/navi-metadata';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import StoreService from '@ember-data/store';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import { TestContext } from 'ember-test-helpers';
+import { createGlimmerComponent } from 'navi-core/test-support';
 
-let Component;
+let Store: StoreService;
+let Component: GoalGauge;
 
 module('Unit | Component | Goal Gauge', function(hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    this.owner.register(
-      'service:navi-metadata',
-      class extends Service {
-        getById(type, id) {
-          return { name: id };
-        }
-      }
-    );
-    Component = this.owner.factoryFor('component:navi-visualizations/goal-gauge').create({
-      actualValue: 75,
-      model: arr([{ request: { metrics: [{ metric: 'm1' }] } }]),
-      options: {
-        goalValue: 100,
-        baselineValue: 50,
-        metric: {
-          metric: 'm1',
-          parameters: {}
-        },
-        metricTitle: 'Custom Metric Title',
-        unit: '%'
-      }
+  hooks.beforeEach(async function(this: TestContext) {
+    Store = this.owner.lookup('service:store') as StoreService;
+    const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadata;
+    await naviMetadata.loadMetadata();
+
+    const response = NaviFactResponse.create({
+      //prettier-ignore
+      rows: [{ m1: 75 }]
     });
+    const request = Store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      columns: [
+        {
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          alias: '',
+          source: 'bardOne',
+          cid: 'cid_m1'
+        }
+      ],
+      filters: [{}],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
+
+    let options = {
+      baselineValue: 50,
+      goalValue: 100,
+      metricCid: 'cid_m1',
+      metricTitle: 'Custom Metric Title'
+    } as GoalGauge['args']['options'];
+
+    const args: GoalGauge['args'] = {
+      model: arr([{ request, response }]),
+      options
+    };
+    Component = createGlimmerComponent('component:navi-visualizations/goal-gauge', args) as GoalGauge;
   });
 
   test('data', function(assert) {
@@ -51,13 +77,13 @@ module('Unit | Component | Goal Gauge', function(hooks) {
     assert.expect(2);
 
     assert.equal(
-      get(Component, 'gauge.min'),
+      get(Component, 'gauge').min,
       get(Component, 'baselineValue'),
       'gauge.min is correctly set based on baseline property'
     );
 
     assert.equal(
-      get(Component, 'gauge.max'),
+      get(Component, 'gauge').max,
       get(Component, 'goalValue'),
       'gauge.max is correctly set based on goal property'
     );
@@ -103,25 +129,6 @@ module('Unit | Component | Goal Gauge', function(hooks) {
       Component._formatNumber(9123456789),
       '9.123B',
       '_formatNumber uses a precision of 3 for numbers over 1B'
-    );
-  });
-
-  test('metricTitle', function(assert) {
-    assert.expect(2);
-
-    assert.equal(
-      get(Component, 'metricTitle'),
-      'Custom Metric Title',
-      'metricTitle is the value of options.metricTitle if provided'
-    );
-
-    //Set options without metricTitle
-    Component.set('options', { metric: { metric: 'm1', parameters: {} } });
-
-    assert.equal(
-      get(Component, 'metricTitle'),
-      'm1',
-      'metricTitle is the value of options.metric if if options.metricTitle is not provided'
     );
   });
 });
