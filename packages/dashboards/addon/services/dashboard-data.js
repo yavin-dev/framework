@@ -116,7 +116,11 @@ export default class DashboardDataService extends Service {
       const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
       const filterErrors = this._getFilterErrors(dashboard, request);
 
-      fetchTasks.push(this._fetchRequest.perform(requestDecorated, options, filterErrors));
+      // Replace serialized request with request fragment
+      let result = this._fetchRequest
+        .perform(requestDecorated, options, filterErrors)
+        .then(response => ({ ...response, request: requestWithFilters }));
+      fetchTasks.push(result);
     });
 
     return yield fetchTasks.length ? all(fetchTasks) : [];

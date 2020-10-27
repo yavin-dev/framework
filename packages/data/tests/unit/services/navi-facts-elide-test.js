@@ -768,7 +768,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
   test('getDownloadURL', async function(assert) {
     let url = await this.service.getDownloadURL(TestRequest, { dataSourceName: TestRequest.dataSource });
-    assert.deepEqual(url, 'https://seth.info', 'Service returns the url when requested');
+    assert.deepEqual(url, 'https://toney.biz', 'Service returns the url when requested');
   });
   // TODO: Normalize error handling between elide and fili
   skip('fetch and catch error', function(assert) {

@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
-import { groupDataByDimensions, chartTypeForRequest, getRequestDimensions } from 'navi-core/utils/chart-data';
+import { groupDataByDimensions, chartTypeForRequest } from 'navi-core/utils/chart-data';
 import { buildTestRequest } from '../../helpers/request';
 import { setupTest } from 'ember-qunit';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 module('Unit | Utils | Chart Data', function(hooks) {
   setupTest(hooks);
@@ -67,22 +66,6 @@ module('Unit | Utils | Chart Data', function(hooks) {
       chartTypeForRequest(request),
       'dateTime',
       'chartTypeForRequest returns dateTime series when request has single metric, no dimensions, and interval over a year'
-    );
-  });
-
-  test('getRequestDimensions', function(assert) {
-    assert.expect(1);
-
-    const timeGrainColumn = { field: 'time' };
-    let request = ({
-      timeGrainColumn,
-      dimensionColumns: [{ field: 'age' }, timeGrainColumn, { field: 'gender' }]
-    } as unknown) as RequestFragment;
-
-    assert.deepEqual(
-      getRequestDimensions(request),
-      [{ field: 'age' }, { field: 'gender' }] as ColumnFragment[],
-      'getRequestDimensions retuns expected dimension columns ignoring the selected timeGrainColumn'
     );
   });
 });

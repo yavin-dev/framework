@@ -21,6 +21,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -35,7 +36,6 @@ const NEXT_SORT_DIRECTION: Record<SortDirection, SortDirection> = {
   asc: 'none'
 };
 
-type ResponseRow = ResponseV1['rows'][number];
 type TotalRow = ResponseRow;
 
 type UpdateAction = string;

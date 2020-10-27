@@ -28,23 +28,13 @@ export function groupDataByDimensions(
 }
 
 /**
- * Returns a list of dimensions id from the request
- *
- * @param request - request object
- * @returns - list of dimension ids
- */
-export function getRequestDimensions(request: RequestFragment): ColumnFragment[] {
-  return request.dimensionColumns.filter(c => c !== request.timeGrainColumn);
-}
-
-/**
  * Determine chart type based on request
  *
  * @param request - request object
  * @returns the chart type
  */
 export function chartTypeForRequest(request: RequestFragment): ChartType {
-  if (getRequestDimensions(request).length > 0) {
+  if (request.nonTimeDimensions.length > 0) {
     return DIMENSION_SERIES;
   }
 

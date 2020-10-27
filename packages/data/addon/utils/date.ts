@@ -13,7 +13,7 @@ export const PARAM_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 export const CAL_DATE_FORMAT_STRING = 'MM-DD-YYYY';
 export const CAL_DISPLAY_DATE_FORMAT_STRING = 'M/D/YYYY';
 
-type BaseDateTimePeriod = 'hour' | 'minute' | 'day' | 'month' | 'quarter' | 'year';
+type BaseDateTimePeriod = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'quarter' | 'year';
 export type DateTimePeriod = BaseDateTimePeriod | 'week';
 export type Grain = DateTimePeriod | 'all';
 type IsoDateTimePeriod = BaseDateTimePeriod | 'isoWeek';

@@ -141,6 +141,7 @@ export interface AsyncQueryResult {
 export interface TableExportResult {
   httpStatus: number;
   url: URL;
+  message: string;
   recordCount: number;
 }
 export default interface NaviFactAdapter {

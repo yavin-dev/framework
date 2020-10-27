@@ -7,8 +7,7 @@ import { assert } from '@ember/debug';
 import { maxBy } from 'lodash-es';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-
-type ResponseRow = ResponseV1['rows'][number];
+import { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 /**
  * Trim rows to a max of n values, sorted by highest value for given metric.

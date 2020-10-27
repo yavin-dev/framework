@@ -453,19 +453,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 status: 'COMPLETE',
                 result: {
                   httpStatus: '200',
-                  contentLength: 2,
-                  responseBody: JSON.stringify({
-                    table: {
-                      edges: [
-                        {
-                          node: {
-                            metric: 123,
-                            dimension: 'foo'
-                          }
-                        }
-                      ]
-                    }
-                  })
+                  url: 'downloadURL',
+                  message: ''
                 }
               }
             }
@@ -567,14 +556,17 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
-    let errors = [{ message: 'Bad request' }];
-    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
+    let response = { message: 'Bad request' };
+    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
 
     try {
       await adapter.fetchDataForRequest(TestRequest);
     } catch ({ errors }) {
-      const responseText = await errors[0].statusText;
-      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
+      assert.deepEqual(
+        errors[0].result.response,
+        response,
+        'fetchDataForRequest returns an array of response objects on error'
+      );
     }
   });
 
@@ -647,7 +639,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 status: QueryStatus.COMPLETE,
                 result: {
                   httpStatus: 200,
-                  url: downloadURL
+                  url: downloadURL,
+                  message: ''
                 }
               }
             }
@@ -658,5 +651,40 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     });
     const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, {});
     assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
+  });
+
+  test('urlForDownloadQuery - error', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    const response = { message: 'Server Error' };
+    Server.post(`${HOST}/graphql`, () => [500, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
+
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch ({ errors }) {
+      assert.deepEqual(
+        errors[0].result.response,
+        response,
+        'urlForDownloadQuery returns an array of response objects on server error'
+      );
+    }
+  });
+
+  test('urlForDownloadQuery bad request - error', async function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const response = { message: 'Bad request' };
+    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
+
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch ({ errors }) {
+      assert.deepEqual(
+        errors[0].result.response,
+        response,
+        'urlForDownloadQuery returns an array of response objects on error'
+      );
+    }
   });
 });

@@ -421,7 +421,6 @@ function _getResponseBody(db, parent) {
  * @return {String} - url in string form
  */
 function _getUrl(db, parent) {
-  //debugger;
   // Create mocked response for a table export
   const { createdOn, query } = parent;
   const responseTime = Date.now();

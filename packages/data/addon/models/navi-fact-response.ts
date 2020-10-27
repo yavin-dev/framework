@@ -13,6 +13,7 @@ function notNull<T>(t: T | null): t is T {
   return t !== null;
 }
 
+export type ResponseRow = ResponseV1['rows'][number];
 export default class NaviFactResponse extends EmberObject implements ResponseV1 {
   readonly rows: ResponseV1['rows'] = [];
   readonly meta: ResponseV1['meta'] = {};

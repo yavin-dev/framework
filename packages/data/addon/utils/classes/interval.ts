@@ -158,6 +158,27 @@ export default class Interval {
   }
 
   /**
+   * Converts interval from [inclusive, inclusive] to [inclusive, exclusive] for the given grain
+   * @param timePeriod - period to align to
+   * @returns new interval with inclusive exclusive
+   */
+  makeEndExclusiveFor(timePeriod: Grain): Interval {
+    /*
+     * moment does not know how to deal with all,
+     * and we only concern day here, so use day as base unit
+     */
+    if (timePeriod === 'all') {
+      timePeriod = 'day';
+    }
+
+    let { start, end } = this.asMoments();
+    assert('when making the end of an interval exclusive, the end should exist', end);
+    end.startOf(getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
+
+    return new Interval(start, end);
+  }
+
+  /**
    * Converts interval into another interval with moments that are aligned to the given time period
    * @param timePeriod - period to align to
    * @returns object with start and end properties
