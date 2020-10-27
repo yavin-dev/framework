@@ -563,8 +563,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       await adapter.fetchDataForRequest(TestRequest);
     } catch ({ errors }) {
       assert.deepEqual(
-        response,
         errors[0].result.response,
+        response,
         'fetchDataForRequest returns an array of response objects on error'
       );
     }
@@ -664,8 +664,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       await adapter.urlForDownloadQuery(TestRequest, {});
     } catch ({ errors }) {
       assert.deepEqual(
-        response,
         errors[0].result.response,
+        response,
         'urlForDownloadQuery returns an array of response objects on server error'
       );
     }
@@ -681,8 +681,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       await adapter.urlForDownloadQuery(TestRequest, {});
     } catch ({ errors }) {
       assert.deepEqual(
-        response,
         errors[0].result.response,
+        response,
         'urlForDownloadQuery returns an array of response objects on error'
       );
     }
