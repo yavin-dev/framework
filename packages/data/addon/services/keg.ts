@@ -20,8 +20,14 @@ interface Factory {
   create(obj: object): KegRecord;
   identifierField: string;
 }
+
 type Options = {
   modelFactory: string; // name of explicit modelFactory to store
+  namespace: string; // namespace to store data under, defaults to 'navi'
+};
+
+type InsertOptions = {
+  identifierField: string; // id field for record, defaults to 'id'
   namespace: string; // namespace to store data under, defaults to 'navi'
 };
 
@@ -83,6 +89,51 @@ export default class KegService extends Service {
    */
   push(type: string, rawRecord: KegRecord, options: Partial<Options>) {
     return this.pushMany(type, [rawRecord], options).firstObject;
+  }
+
+  /**
+   * Inserts a single record into the store
+   *
+   * @param type - name of the model type
+   * @param record - record to be inserted into the keg
+   * @param options - config object
+   */
+  insert(type: string, record: KegRecord, options: Partial<InsertOptions> = {}): KegRecord {
+    return this.insertMany(type, [record], options).firstObject as KegRecord;
+  }
+
+  /**
+   * Inserts an array of records into the store
+   *
+   * @param type - type name of the model type
+   * @param record - record to be inserted into the keg
+   * @param options - config object
+   */
+  insertMany(type: string, records: Array<KegRecord>, options: Partial<InsertOptions> = {}): EmberArray<KegRecord> {
+    const recordKeg = this._getRecordKegForType(type);
+    const idIndex = this._getIdIndexForType(type);
+    const namespace = options.namespace || this.defaultNamespace;
+    const identifierField = options?.identifierField || KegService.identifierField;
+
+    const returnedRecords: MutableArray<KegRecord> = A();
+    for (let i = 0; i < records.length; i++) {
+      const id = records[i][identifierField] as Identifier;
+      const existingRecord = this.getById(type, id, namespace);
+
+      if (existingRecord) {
+        if (existingRecord.partialData && !records[i].partialData) {
+          delete existingRecord.partialData;
+        }
+        setProperties(existingRecord, records[i]);
+        returnedRecords.pushObject(existingRecord);
+      } else {
+        const record = records[i];
+        idIndex[`${namespace}.${id}`] = record;
+        recordKeg.pushObject(record);
+        returnedRecords.pushObject(record);
+      }
+    }
+    return returnedRecords;
   }
 
   /**
