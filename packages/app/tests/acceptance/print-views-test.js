@@ -15,7 +15,7 @@ module('Acceptance | print views', function(hooks) {
     assert.dom('.navi-report__title').hasText('Kart Wins By Character', 'The report title shows up');
     assert.deepEqual(
       findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent),
-      ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+      ['Dry Bowser', 'Daisy', 'Wario'],
       'The legend fills in with widget dimensions'
     );
   });
