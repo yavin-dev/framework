@@ -163,43 +163,58 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 0',
+              expression: null,
               id: 'table0.dimension0',
               name: 'Dimension 0',
-              description: 'This is dimension 0',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: null,
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'ENUM',
+              valueType: 'TEXT',
+              values: [
+                'Rustic Frozen Pizza',
+                'Practical Frozen Fish',
+                'Practical Concrete Chair',
+                'Awesome Steel Chicken',
+                'Tasty Fresh Towels'
+              ]
             }
           },
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 1',
+              expression: null,
               id: 'table0.dimension1',
               name: 'Dimension 1',
-              description: 'This is dimension 1',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: 'table0.dimension2',
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'TABLE',
+              valueType: 'TEXT',
+              values: []
             }
           },
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 2',
+              expression: null,
               id: 'table0.dimension2',
               name: 'Dimension 2',
-              description: 'This is dimension 2',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: null,
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'NONE',
+              valueType: 'TEXT',
+              values: []
             }
           }
         ]
@@ -337,7 +352,16 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Dimension'
+                        __typename: 'Dimension',
+                        tableSource: null,
+                        valueSourceType: 'ENUM',
+                        values: [
+                          'Rustic Frozen Pizza',
+                          'Practical Frozen Fish',
+                          'Practical Concrete Chair',
+                          'Awesome Steel Chicken',
+                          'Tasty Fresh Towels'
+                        ]
                       },
                       __typename: 'DimensionEdge'
                     },
@@ -351,7 +375,10 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Dimension'
+                        __typename: 'Dimension',
+                        tableSource: 'table0.dimension2',
+                        valueSourceType: 'TABLE',
+                        values: []
                       },
                       __typename: 'DimensionEdge'
                     },
@@ -365,7 +392,10 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Dimension'
+                        __typename: 'Dimension',
+                        tableSource: null,
+                        valueSourceType: 'NONE',
+                        values: []
                       },
                       __typename: 'DimensionEdge'
                     }

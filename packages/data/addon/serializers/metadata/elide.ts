@@ -15,6 +15,7 @@ import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload }
 import { upperFirst } from 'lodash-es';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { assert } from '@ember/debug';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 type Edge<T> = {
   node: T;
@@ -35,7 +36,13 @@ type ColumnNode = {
   expression: string;
 };
 export type MetricNode = ColumnNode & { defaultFormat: string };
-export type DimensionNode = ColumnNode;
+
+export type DimensionNode = ColumnNode & {
+  valueSourceType: ValueSourceType;
+  tableSource: string | null;
+  values: string[];
+};
+
 export type TimeDimensionNode = DimensionNode & {
   supportedGrain: Connection<TimeDimensionGrainNode>;
   timeZone: string;

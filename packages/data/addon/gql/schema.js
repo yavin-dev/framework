@@ -94,6 +94,12 @@ const schema = gql`
     expression: String
   }
 
+  enum ValueSourceType {
+    ENUM
+    TABLE
+    NONE
+  }
+
   type Dimension implements Node & ColumnInterface {
     id: DeferredID!
     name: String!
@@ -104,6 +110,9 @@ const schema = gql`
     tags: [String!]
     columnType: ColumnType
     expression: String
+    valueSourceType: ValueSourceType!
+    tableSource: String
+    values: [String]
   }
 
   type TimeDimension implements Node & ColumnInterface {
