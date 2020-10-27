@@ -7,6 +7,8 @@ import { set } from '@ember/object';
 import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import GoalGaugeVisualization from 'navi-core/components/navi-visualizations/goal-gauge';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import RequestFragment from 'dummy/models/bard-request-v2/request';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::GoalGauge
@@ -16,19 +18,21 @@ const TEMPLATE = hbs`
 
 type ComponentArgs = GoalGaugeVisualization['args'];
 
-interface TestContext extends Context, ComponentArgs {}
+interface TestContext extends Context, ComponentArgs {
+  request: RequestFragment;
+}
 
 module('Integration | Component | navi-visualization/goal gauge ', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
-    this.options = { metricCid: 'pageViews', baselineValue: 290000000, goalValue: 310000000 };
-    let request = store.createFragment('bard-request-v2/request', {
+    this.options = { metricCid: 'cid_pageViews', baselineValue: 290000000, goalValue: 310000000 };
+    this.request = store.createFragment('bard-request-v2/request', {
       table: null,
       columns: [
         {
-          cid: 'pageViews',
+          cid: 'cid_pageViews',
           type: 'metric',
           field: 'pageViews',
           parameters: {},
@@ -44,7 +48,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     });
     this.model = arr([
       {
-        request,
+        request: this.request,
         response: { rows: [{ pageViews: 3030000000 }], meta: {} }
       }
     ]);
@@ -71,30 +75,30 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
   test('goal-gauge renders correctly with multi datasource', async function(this: TestContext, assert) {
     assert.expect(1);
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model.firstObject.request',
-      store.createFragment('bard-request-v2/request', {
-        table: null,
-        columns: [
-          {
-            cid: 'available',
-            type: 'metric',
-            field: 'available',
-            parameters: {},
-            alias: 'How many are available',
-            source: 'bardTwo'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-    );
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_available',
+          type: 'metric',
+          field: 'available',
+          parameters: {},
+          alias: 'How many are available',
+          source: 'bardTwo'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
 
-    this.set('model.firstObject.response', { rows: [{ available: 3030000000 }], meta: {} });
-    this.set('options', { metricCid: 'available', baselineValue: 290000000, goalValue: 310000000 });
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
+    );
+    this.set('options', { metricCid: 'cid_available', baselineValue: 290000000, goalValue: 310000000 });
 
     await render(TEMPLATE);
 
@@ -104,9 +108,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
   test('goal-gauge renders correctly with unit', async function(this: TestContext, assert) {
     assert.expect(6);
 
-    this.set('model.firstObject.response', { rows: [{ pageViews: 75 }], meta: {} });
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
+    );
     //@ts-expect-error
-    this.set('options', { metricCid: 'pageViews', baselineValue: 50, goalValue: 100, unit: '%' });
+    this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, unit: '%' });
     await render(TEMPLATE);
 
     assert.dom('.c3-chart-component svg').exists('gauge component renders');
@@ -122,12 +129,15 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.goal-title').hasText('100% Goal', 'goal title is correctly displayed');
   });
 
-  test('goal-gauge renders correctly with prefix', async function(assert) {
+  test('goal-gauge renders correctly with prefix', async function(this: TestContext, assert) {
     assert.expect(6);
 
-    this.set('model.firstObject.response', { rows: [{ pageViews: 75 }], meta: {} });
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
+    );
     //@ts-expect-error
-    this.set('options', { metricCid: 'pageViews', baselineValue: 50, goalValue: 100, prefix: '$' });
+    this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, prefix: '$' });
     await render(TEMPLATE);
 
     assert.dom('.c3-chart-component svg').exists('gauge component renders');
@@ -147,83 +157,72 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.expect(3);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model.firstObject.request',
-      store.createFragment('bard-request-v2/request', {
-        table: null,
-        columns: [
-          {
-            cid: 'm1',
-            type: 'metric',
-            field: 'm1',
-            parameters: {},
-            alias: '',
-            source: 'bardOne'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-    );
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_m1',
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          alias: '',
+          source: 'bardOne'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
 
-    this.set('model.firstObject.response.rows', [{ m1: 150 }]);
-    this.options = { metricCid: 'm1', baselineValue: 100, goalValue: 200 };
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 150 }] }) }]));
+    this.options = { metricCid: 'cid_m1', baselineValue: 100, goalValue: 200 };
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.pos').length, 'pos class is added when actualValue is above baselineValue');
 
-    this.set('model.firstObject.response.rows', [{ m1: 50 }]);
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 50 }] }) }]));
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.neg').length, 'neg class is added when actualValue is below baselineValue');
 
-    this.set('model.firstObject.response.rows', [{ m1: 100 }]);
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 100 }] }) }]));
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.neg').length, 'neg class is added when actualValue equals baselineValue');
   });
 
-  test('goal-guage with parameterized metric', async function(assert) {
+  test('goal-guage with parameterized metric', async function(this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model',
-      arr([
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
         {
-          response: {
-            rows: [
-              {
-                'revenue(currency=USD)': '300'
-              }
-            ]
+          field: 'revenue',
+          parameters: {
+            currency: 'USD'
           },
-          request: store.createFragment('bard-request-v2/request', {
-            table: null,
-            columns: [
-              {
-                field: 'revenue',
-                parameters: {
-                  currency: 'USD'
-                },
-                cid: 'revenue',
-                type: 'metric',
-                alias: 'Revenue (USD)',
-                source: 'bardOne'
-              }
-            ],
-            filters: [],
-            sorts: [],
-            limit: null,
-            dataSource: 'bardOne',
-            requestVersion: '2.0'
-          })
+          cid: 'cid_revenue',
+          type: 'metric',
+          alias: 'Revenue (USD)',
+          source: 'bardOne'
         }
-      ])
-    );
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
     this.set('options', {
       baselineValue: 200,
       goalValue: 500,
-      metricCid: 'revenue'
+      metricCid: 'cid_revenue'
     });
+    this.set(
+      'model',
+      arr([
+        { request: this.request, response: NaviFactResponse.create({ rows: [{ 'revenue(currency=USD)': '300' }] }) }
+      ])
+    );
 
     await render(TEMPLATE);
 
@@ -238,37 +237,34 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.metric-title').hasText('Revenue (USD)', 'parameterized metric title is correctly displayed');
   });
 
-  test('goal-gauge value & min/max precision', async function(assert) {
+  test('goal-gauge value & min/max precision', async function(this: TestContext, assert) {
     assert.expect(6);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model.firstObject.request',
-      store.createFragment('bard-request-v2/request', {
-        table: null,
-        columns: [
-          {
-            cid: 'm1',
-            type: 'metric',
-            field: 'm1',
-            parameters: {},
-            alias: '',
-            source: 'bardOne'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-    );
-    this.set('model.firstObject.response.rows', [{ m1: 1234567 }]);
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_m1',
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          alias: '',
+          source: 'bardOne'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
     this.set('options', {
       baselineValue: 1234567,
       goalValue: 1234567,
-      metricCid: 'm1'
+      metricCid: 'cid_m1'
     });
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 1234567 }] }) }]));
 
     await render(TEMPLATE);
 
@@ -278,13 +274,15 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
 
     assert.dom('.c3-chart-arcs-gauge-max').hasText('1.23M', 'max gauge label has a precision of 2 when under 1B');
 
-    this.set('model.firstObject.response.rows', [{ m1: 9123456789 }]);
     this.set('options', {
       baselineValue: 9123456789,
       goalValue: 9123456789,
-      metricCid: 'm1'
+      metricCid: 'cid_m1'
     });
-
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 9123456789 }] }) }])
+    );
     await render(TEMPLATE);
 
     assert.dom('.value-title').hasText('9.123B', 'value title has a precision of 3 when over 1B');
@@ -294,72 +292,66 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.c3-chart-arcs-gauge-max').hasText('9.123B', 'max gauge label has a precision of 3 when over 1B');
   });
 
-  test('goal-gauge renders custom metric title', async function(assert) {
+  test('goal-gauge renders custom metric title', async function(this: TestContext, assert) {
     assert.expect(1);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model.firstObject.request',
-      store.createFragment('bard-request-v2/request', {
-        table: null,
-        columns: [
-          {
-            cid: 'm1',
-            type: 'metric',
-            field: 'm1',
-            parameters: {},
-            alias: 'A real good metric',
-            source: 'bardOne'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-    );
-    this.set('model.firstObject.response.rows', [{ m1: 75 }]);
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_m1',
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          alias: 'A real good metric',
+          source: 'bardOne'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'm1'
+      metricCid: 'cid_m1'
     });
     await render(TEMPLATE);
 
     assert.dom('.metric-title').hasText('A real good metric', 'custom metric title is correctly displayed');
   });
 
-  test('cleanup', async function(assert) {
+  test('cleanup', async function(this: TestContext, assert) {
     assert.expect(2);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.set(
-      'model.firstObject.request',
-      store.createFragment('bard-request-v2/request', {
-        table: null,
-        columns: [
-          {
-            cid: 'm1',
-            type: 'metric',
-            field: 'm1',
-            parameters: {},
-            alias: 'A real great metric',
-            source: 'bardOne'
-          }
-        ],
-        filters: [],
-        sorts: [],
-        limit: null,
-        dataSource: 'bardOne',
-        requestVersion: '2.0'
-      })
-    );
-    this.set('model.firstObject.response.rows', [{ m1: 75 }]);
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_m1',
+          type: 'metric',
+          field: 'm1',
+          parameters: {},
+          alias: 'A real great metric',
+          source: 'bardOne'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'm1'
+      metricCid: 'cid_m1'
     });
 
     await render(TEMPLATE);
