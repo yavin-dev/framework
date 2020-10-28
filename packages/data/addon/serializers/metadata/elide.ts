@@ -2,20 +2,20 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import EmberObject from '@ember/object';
 import config from 'ember-get-config';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
-import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
+import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import { RawColumnType } from '../../models/metadata/column';
 import { TableMetadataPayload } from '../../models/metadata/table';
-import { MetricMetadataPayload } from '../../models/metadata/metric';
-import { DimensionMetadataPayload } from '../../models/metadata/dimension';
-import { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
-import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
+import MetricMetadataModel, { MetricMetadataPayload } from '../../models/metadata/metric';
+import DimensionMetadataModel from '../../models/metadata/dimension';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
+import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
 import { upperFirst } from 'lodash-es';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { assert } from '@ember/debug';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { getOwner } from '@ember/application';
 
 type Edge<T> = {
   node: T;
@@ -67,8 +67,10 @@ export interface TablePayload {
   table: Connection<TableNode>;
 }
 
-export default class ElideMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
+export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
+
+  protected dimensionFactory = getOwner(this).factoryFor('model:metadata/elide/dimension');
 
   /**
    * Transform the elide metadata into a shape that our internal data models can use
@@ -76,16 +78,16 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
    * @method _normalizeTableConnection - normalizes the table connection object
    * @param {Object} tableConnection - table connection with array of edges to table nodes
    * @param {string} source - datasource of the payload
-   * @returns {Object} - normalized tables and their associated columns
+   * @returns {Object} - tables and their associated columns models
    */
   _normalizeTableConnection(tableConnection: Connection<TableNode>, source: string): EverythingMetadataPayload {
     const edges = tableConnection.edges || [];
-    let metrics: MetricMetadataPayload[] = [];
-    let dimensions: DimensionMetadataPayload[] = [];
-    let timeDimensions: TimeDimensionMetadataPayload[] = [];
-    let columnFunctions: ColumnFunctionMetadataPayload[] = [];
+    let metrics: MetricMetadataModel[] = [];
+    let dimensions: DimensionMetadataModel[] = [];
+    let timeDimensions: TimeDimensionMetadataModel[] = [];
+    let columnFunctions: ColumnFunctionMetadataModel[] = [];
 
-    const tables = edges.map(({ node: table }) => {
+    const tablePayloads = edges.map(({ node: table }) => {
       const newTable: TableMetadataPayload = {
         id: table.id,
         name: table.name,
@@ -121,7 +123,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
     });
 
     return {
-      tables,
+      tables: tablePayloads.map(p => this.tableFactory.create(p)),
       metrics,
       dimensions,
       timeDimensions,
@@ -134,16 +136,16 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
    * @method _normalizeTableMetrics - normalizes the MetricConnection JSON response
    * @param {Connection<MetricNode>} metricConnection - MetricConnection JSON
    * @param {string} source - datasource name
-   * @returns {Object[]} - normalized metric objects
+   * @returns {Object[]} - metric models
    */
   _normalizeTableMetrics(
     metricConnection: Connection<MetricNode>,
     tableId: string,
     source: string
-  ): MetricMetadataPayload[] {
+  ): MetricMetadataModel[] {
     return metricConnection.edges.map((edge: Edge<MetricNode>) => {
       const { node } = edge;
-      return {
+      const payload: MetricMetadataPayload = {
         id: node.id,
         name: node.name,
         description: node.description,
@@ -156,6 +158,7 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
         type: node.columnType,
         expression: node.expression
       };
+      return this.metricFactory.create(payload);
     });
   }
 
@@ -164,16 +167,16 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
    * @method _normalizeDimensions - normalizes the Connection<DimensionNode> JSON response
    * @param {Connection<DimensionNode>} dimensionConnection - Connection<DimensionNode> JSON
    * @param {string} source - datasource name
-   * @returns {Object[]} - normalized dimension objects
+   * @returns {Object[]} - dimension models
    */
   _normalizeTableDimensions(
     dimensionConnection: Connection<DimensionNode>,
     tableId: string,
     source: string
-  ): DimensionMetadataPayload[] {
+  ): DimensionMetadataModel[] {
     return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
-      return {
+      const payload: ElideDimensionMetadataPayload = {
         id: node.id,
         name: node.name,
         description: node.description,
@@ -183,8 +186,12 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
         source,
         tags: node.tags,
         type: node.columnType,
-        expression: node.expression
+        expression: node.expression,
+        valueSourceType: node.valueSourceType,
+        tableSource: node.tableSource,
+        values: node.values
       };
+      return this.dimensionFactory.create(payload);
     });
   }
 
@@ -193,34 +200,35 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
    * @method _normalizeTableTimeDimensions - normalizes the TimeConnection<DimensionNode> JSON response
    * @param {TimeConnection<DimensionNode>} timeConnection<DimensionNode> - TimeConnection<DimensionNode> JSON
    * @param {string} source - datasource name
-   * @returns {Object[]} - normalized timeDimension objects
+   * @returns {Object[]} - timeDimension models
    */
   _normalizeTableTimeDimensions(
     timeDimensionConnection: Connection<TimeDimensionNode>,
     tableId: string,
     source: string
-  ): { timeDimension: TimeDimensionMetadataPayload; columnFunction: ColumnFunctionMetadataPayload }[] {
+  ): { timeDimension: TimeDimensionMetadataModel; columnFunction: ColumnFunctionMetadataModel }[] {
     return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
       const supportedGrains = node.supportedGrain.edges.map(edge => edge.node);
-      const columnFunction = this.createTimeGrainColumnFunction(node.id, supportedGrains, source);
+      const columnFunctionPayload = this.createTimeGrainColumnFunction(node.id, supportedGrains, source);
+      const timeDimensionPayload: TimeDimensionMetadataPayload = {
+        id: node.id,
+        name: node.name,
+        description: node.description,
+        category: node.category,
+        valueType: node.valueType,
+        tableId,
+        columnFunctionId: columnFunctionPayload.id,
+        source,
+        tags: node.tags,
+        supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
+        timeZone: node.timeZone,
+        type: node.columnType,
+        expression: node.expression
+      };
       return {
-        timeDimension: {
-          id: node.id,
-          name: node.name,
-          description: node.description,
-          category: node.category,
-          valueType: node.valueType,
-          tableId,
-          columnFunctionId: columnFunction.id,
-          source,
-          tags: node.tags,
-          supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
-          timeZone: node.timeZone,
-          type: node.columnType,
-          expression: node.expression
-        },
-        columnFunction
+        timeDimension: this.timeDimensionFactory.create(timeDimensionPayload),
+        columnFunction: this.columnFunctionFactory.create(columnFunctionPayload)
       };
     });
   }
@@ -270,22 +278,19 @@ export default class ElideMetadataSerializer extends EmberObject implements Navi
     };
   }
 
-  private supportedTypes = new Set<keyof MetadataPayloadMap>(['everything']);
+  private supportedTypes = new Set<keyof MetadataModelMap>(['everything']);
 
-  normalize<K extends keyof MetadataPayloadMap>(
+  normalize<K extends keyof MetadataModelMap>(
     type: K,
     rawPayload: TablePayload,
     dataSourceName: string
-  ): MetadataPayloadMap[K] {
+  ): MetadataModelMap[K] {
     assert(
       `ElideMetadataSerializer only supports normalizing type: ${[...this.supportedTypes]}`,
       this.supportedTypes.has(type)
     );
 
-    const normalized: MetadataPayloadMap['everything'] = this._normalizeTableConnection(
-      rawPayload.table,
-      dataSourceName
-    );
-    return normalized as MetadataPayloadMap[K];
+    const normalized: MetadataModelMap['everything'] = this._normalizeTableConnection(rawPayload.table, dataSourceName);
+    return normalized as MetadataModelMap[K];
   }
 }
