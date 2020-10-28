@@ -1,13 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- *  {{navi-visualization-config/goal-gauge
- *    request=request
- *    response=response
- *    options=options
- *  }}
  */
 import { action, set } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
@@ -26,7 +19,7 @@ export default class NaviVisualizationConfigGoalGaugeComponent extends NaviVisua
   @action
   updateLabel(alias: string) {
     // TODO: use report action
-    set(this.args.request.metricColumns[0], 'alias', alias);
+    set(this.metricColumn, 'alias', alias);
   }
 
   @action

@@ -63,7 +63,6 @@ script:
 jobs:
   fast_finish: true
   allow_failures:
-    - env: PACKAGE=navi-core
     - env: PACKAGE=navi-dashboards
     - env: PACKAGE=navi-reports
   include:

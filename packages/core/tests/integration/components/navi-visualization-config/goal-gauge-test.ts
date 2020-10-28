@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, blur, findAll } from '@ember/test-helpers';
@@ -37,7 +36,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
           type: 'metric',
           field: 'bubbles',
           parameters: {},
-          alias: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
+          alias: 'Number of Bubbles',
           source: 'bardOne'
         }
       ],
@@ -78,10 +77,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    await run(async () => {
-      await fillIn('.goal-gauge-config__goal-input', '10');
-      await blur('.goal-gauge-config__goal-input');
-    });
+    await fillIn('.goal-gauge-config__goal-input', '10');
+    await blur('.goal-gauge-config__goal-input');
   });
 
   test('onUpdateConfig goal gauge label input', async function(this: TestContext, assert) {
@@ -89,10 +86,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    await run(async () => {
-      await fillIn('.goal-gauge-config__label-input', 'bottles');
-      await blur('.goal-gauge-config__label-input');
-    });
+    await fillIn('.goal-gauge-config__label-input', 'bottles');
+    await blur('.goal-gauge-config__label-input');
     assert.equal(this.request.metricColumns[0].alias, 'bottles', 'onUpdateConfig action is called by label input');
   });
 });

@@ -9,18 +9,15 @@
  *  }}
  */
 
-import { alias } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import { assert } from '@ember/debug';
-import { inject as service } from '@ember/service';
 // @ts-ignore
 import d3 from 'd3';
 import numeral from 'numeral';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import NaviFormatterService from 'navi-data/services/navi-formatter';
-import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 import { VisualizationModel } from './table';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
@@ -41,11 +38,6 @@ export type Args = {
 };
 
 export default class GoalGaugeVisualization extends Component<Args> {
-  @service
-  naviMetadata!: NaviMetadataService;
-  @service
-  naviFormatter!: NaviFormatterService;
-
   /**
    * @property {Array} - List of class names added to the gauge component
    */
@@ -70,25 +62,14 @@ export default class GoalGaugeVisualization extends Component<Args> {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
       const { canonicalName } = this.metric;
-      let actualValue: number = firstRow[canonicalName] as number;
-      return actualValue;
+      return Number(firstRow[canonicalName]);
     }
     return 0;
   }
   /**
    * @property {object} - target metric model pulled from serialized request
    */
-  @alias('args.model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
-
-  /**
-   * @property {Number} - starting value to measure progress towards the gaol
-   */
-  @alias('config.baselineValue') baselineValue = 0;
-
-  /**
-   * @property {Number} - value which is desired to be achieved
-   */
-  @alias('config.goalValue') goalValue = 0;
+  @readOnly('args.model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
 
   /**
    * @property {Object} - legend configuration
@@ -96,32 +77,12 @@ export default class GoalGaugeVisualization extends Component<Args> {
   legend = { hide: true };
 
   /**
-   * @property {String} - name of data source
-   */
-  @alias('args.model.firstObject.request.dataSource') dataSourceName = '';
-
-  /**
    * @property {String} - Display value of goal
    */
-  @computed('goalValue')
+  @computed('config.goalValue')
   get formattedGoalValue() {
-    return this._formatNumber(this.goalValue);
+    return this._formatNumber(this.config.goalValue);
   }
-
-  /**
-   * @property {String} - name of goal metricCid
-   */
-  @alias('config.metricCid') metricCid = '';
-
-  /**
-   * @property {String} - metric prefix
-   */
-  @alias('config.prefix') prefix = '';
-
-  /**
-   * @property {String} - metric unit
-   */
-  @alias('config.unit') unit = '';
 
   /**
    * @property {Object} - gauge tooltip configuration
@@ -154,13 +115,13 @@ export default class GoalGaugeVisualization extends Component<Args> {
   get gauge() {
     return {
       width: 20,
-      max: this.args.options.goalValue as number,
-      min: this.args.options.baselineValue as number,
+      max: this.args.options.goalValue,
+      min: this.args.options.baselineValue,
       label: {
         extents: (value: number) => {
           let number = this._formatNumber(value),
-            prefix = this.prefix,
-            unit = this.unit;
+            prefix = this.config.prefix,
+            unit = this.config.unit;
           return `${prefix}${number}${unit}`;
         }
       }
@@ -168,37 +129,26 @@ export default class GoalGaugeVisualization extends Component<Args> {
   }
 
   /**
-   * @property {Array} - colors to render corresponding to the thresholdValues
-   */
-  @alias('config.thresholdColors') thresholdColors = ['#f05050', '#ffc831', '#44b876'];
-
-  /**
-   * @property {Array} - percentages to render corresponding to the colors
-   */
-  @alias('config.thresholdPercentages') thresholdPercentages = [75, 85, 100];
-
-  /**
    * @property {Array} - threshold values to indicate what color to render
    * C3 Threshold Algorithm: if < threshold value indexN, use color indexN
    */
   @computed('args.options.{baselineValue,goalValue}')
   get thresholdValues() {
-    const { thresholdPercentages: percentages, goalValue: goal, baselineValue: baseline } = this;
-    const diff = goal - baseline;
+    const diff = this.config.goalValue - this.config.baselineValue;
 
-    return percentages.map((p: number) => Number(baseline) + (diff * p) / 100);
+    return this.config.thresholdPercentages.map((p: number) => Number(this.config.baselineValue) + (diff * p) / 100);
   }
 
   /**
    * @property {Object} - color gauge configuration
    */
-  @computed('thresholdValues', 'goalValue')
+  @computed('config.{goalValue,thresholdColors}')
   get color() {
     return {
-      pattern: this.thresholdColors,
+      pattern: this.config.thresholdColors,
       threshold: {
         unit: 'value',
-        max: this.goalValue,
+        max: this.config.goalValue,
         values: this.thresholdValues
       }
     };
@@ -228,8 +178,8 @@ export default class GoalGaugeVisualization extends Component<Args> {
     const { metric, actualValue } = this;
     const number = this._formatNumber(actualValue);
     const goal = this._formatNumber(goalValue);
-    const prefix = this.prefix || '';
-    const unit = this.unit || '';
+    const prefix = this.config.prefix || '';
+    const unit = this.config.unit || '';
     const valueClass = actualValue > baseline ? 'pos' : 'neg';
 
     //Add titles

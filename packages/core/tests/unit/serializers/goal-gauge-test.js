@@ -18,7 +18,7 @@ module('Unit | Serializer | goal gauge', function(hooks) {
     assert.expect(3);
 
     let initialMetaData = {
-        version: 1,
+        version: 2,
         type: 'goal-gauge',
         metadata: {
           metric: 'rupees',
@@ -30,7 +30,7 @@ module('Unit | Serializer | goal gauge', function(hooks) {
         }
       },
       metricObjectMetaData = {
-        version: 1,
+        version: 2,
         type: 'goal-gauge',
         metadata: {
           metric: { metric: 'rupees', parameters: {} },

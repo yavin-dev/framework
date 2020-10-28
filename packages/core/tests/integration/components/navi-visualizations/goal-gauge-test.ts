@@ -8,6 +8,8 @@ import StoreService from '@ember-data/store';
 import GoalGaugeVisualization from 'navi-core/components/navi-visualizations/goal-gauge';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::GoalGauge
@@ -23,12 +25,15 @@ interface TestContext extends Context, ComponentArgs {
 
 module('Integration | Component | navi-visualization/goal gauge ', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
+    const MetadataService = this.owner.lookup('service:navi-metadata');
+    MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
     this.options = { metricCid: 'cid_pageViews', baselineValue: 290000000, goalValue: 310000000 };
     this.request = store.createFragment('bard-request-v2/request', {
-      table: null,
+      table: 'inventory',
       columns: [
         {
           cid: 'cid_pageViews',
@@ -42,7 +47,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       filters: [],
       sorts: [],
       limit: null,
-      dataSource: 'bardOne',
+      dataSource: 'bardTwo',
       requestVersion: '2.0'
     });
     this.set(
@@ -72,8 +77,11 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
   });
 
   test('goal-gauge renders correctly with multi datasource', async function(this: TestContext, assert) {
-    assert.expect(1);
     const store = this.owner.lookup('service:store') as StoreService;
+    const MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
+    this.set('options', { metricCid: 'cid_available', baselineValue: 290000000, goalValue: 310000000 });
+
     this.request = store.createFragment('bard-request-v2/request', {
       table: null,
       columns: [
@@ -82,7 +90,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           type: 'metric',
           field: 'available',
           parameters: {},
-          alias: 'How many are available',
+          alias: '',
           source: 'bardTwo'
         }
       ],
@@ -97,11 +105,35 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       'model',
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
     );
-    this.set('options', { metricCid: 'cid_available', baselineValue: 290000000, goalValue: 310000000 });
+    await render(TEMPLATE);
+    assert.dom('.metric-title').hasText('How many are available', 'the aliased metric title is correctly displayed');
 
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [
+        {
+          cid: 'cid_available',
+          type: 'metric',
+          field: 'available',
+          parameters: {},
+          alias: 'Number Available',
+          source: 'bardTwo'
+        }
+      ],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
+
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
+    );
     await render(TEMPLATE);
 
-    assert.dom('.metric-title').hasText('How many are available', 'the default metric title is correctly displayed');
+    assert.dom('.metric-title').hasText('Number Available', 'the aliased metric title is correctly displayed');
   });
 
   test('goal-gauge renders correctly with unit', async function(this: TestContext, assert) {
@@ -128,8 +160,6 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
   });
 
   test('goal-gauge renders correctly with prefix', async function(this: TestContext, assert) {
-    assert.expect(6);
-
     this.set(
       'model',
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])

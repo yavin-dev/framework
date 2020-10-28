@@ -9,7 +9,7 @@
       @autofocus={{false}}
       @name="metric-description-input"
       @type="text"
-      @value={{readonly this.metricColumn.displayName}}
+      @value={{readonly this.metricColumn.alias}}
       @focus-out={{fn this.updateLabel}}
       @key-up={{fn this.updateLabel}}
       @placeholder={{this.metricColumn.displayName}}

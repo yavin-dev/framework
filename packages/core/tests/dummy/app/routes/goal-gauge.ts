@@ -8,16 +8,16 @@ export default class GoalGaugeRoute extends Route {
   fragmentFactory!: FragmentFactory;
 
   model() {
-    let column = this.fragmentFactory.createColumn('metric', 'bardOne', 'pageViews', {}, '');
-    const request = this.store.createFragment('bard-request-v2/request', {
-      table: null,
-      columns: [column],
-      filters: [],
-      sorts: [],
-      limit: null,
-      dataSource: 'bardOne',
-      requestVersion: '2.0'
-    });
+    const column = this.fragmentFactory.createColumn('metric', 'bardOne', 'pageViews', {}, ''),
+      request = this.store.createFragment('bard-request-v2/request', {
+        table: null,
+        columns: [column],
+        filters: [],
+        sorts: [],
+        limit: null,
+        dataSource: 'bardOne',
+        requestVersion: '2.0'
+      });
 
     return A([
       {
