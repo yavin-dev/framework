@@ -556,17 +556,14 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
-    let response = { message: 'Bad request' };
-    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
+    let errors = [{ message: 'Bad request' }];
+    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
     try {
       await adapter.fetchDataForRequest(TestRequest);
     } catch ({ errors }) {
-      assert.deepEqual(
-        errors[0].result.response,
-        response,
-        'fetchDataForRequest returns an array of response objects on error'
-      );
+      const responseText = await errors[0].statusText;
+      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
     }
   });
 
@@ -732,5 +729,4 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       );
     }
   });
-
 });
