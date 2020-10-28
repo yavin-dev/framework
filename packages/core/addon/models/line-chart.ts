@@ -5,7 +5,7 @@
 import { readOnly } from '@ember/object/computed';
 import { set, computed } from '@ember/object';
 import { attr } from '@ember-data/model';
-import ChartVisualization, { ChartSeries } from './chart-visualization';
+import ChartVisualization, { ChartConfig, ChartVisualizationType } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest, ChartType } from 'navi-core/utils/chart-data';
 import RequestFragment from './bard-request-v2/request';
@@ -57,9 +57,15 @@ const Validations = buildValidations(
           disabled: computed('chartType', function() {
             return this.chartType !== DIMENSION_SERIES;
           }),
-          dependentKeys: ['model._request.columns.[]']
+          dependentKeys: ['model._request.dimensionColumns.[]']
         }
       ),
+      validator('dimension-series', {
+        disabled: computed('chartType', function() {
+          return this.chartType !== DIMENSION_SERIES;
+        }),
+        dependentKeys: ['model._request.dimensionColumns.[]']
+      }),
       validator('request-filters', {
         disabled: computed('chartType', function() {
           return this.chartType !== DIMENSION_SERIES;
@@ -78,26 +84,13 @@ const Validations = buildValidations(
   }
 );
 
-export type LineChartConfig = {
-  type: 'line-chart';
-  version: 2;
-  metadata: {
-    style?: {
-      curve?: string;
-      area?: boolean;
-      stacked?: boolean;
-    };
-    axis: {
-      y: {
-        series: ChartSeries;
-      };
-    };
-  };
-};
+export type LineChartConfig = ChartConfig<'line-chart'>;
 
-export default class LineChartVisualization extends ChartVisualization.extend(Validations) implements LineChartConfig {
+export default class LineChartVisualization<T extends ChartVisualizationType = 'line-chart'>
+  extends ChartVisualization.extend(Validations)
+  implements ChartConfig<T> {
   @attr('string', { defaultValue: 'line-chart' })
-  type!: LineChartConfig['type'];
+  type!: T;
   @attr('number', { defaultValue: 2 })
   version!: LineChartConfig['version'];
   @attr({
