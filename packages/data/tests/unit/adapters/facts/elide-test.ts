@@ -653,38 +653,84 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
 
-  test('urlForDownloadQuery - error', async function(assert) {
+  test('urlForDownloadQuery - Internal server error', async function(assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
-    const response = { message: 'Server Error' };
-    Server.post(`${HOST}/graphql`, () => [500, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.FAILURE,
+                result: {
+                  httpStatus: 500,
+                  url: '',
+                  message: ''
+                }
+              }
+            }
+          ]
+        }
+      };
+
+      return [500, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
 
     try {
       await adapter.urlForDownloadQuery(TestRequest, {});
-    } catch ({ errors }) {
+    } catch (e) {
       assert.deepEqual(
-        errors[0].result.response,
-        response,
-        'urlForDownloadQuery returns an array of response objects on server error'
+        e.errors[0].response.statusText,
+        'Internal Server Error',
+        'urlForDownloadQuery returns appropriate error message on server error'
       );
     }
   });
 
-  test('urlForDownloadQuery bad request - error', async function(assert) {
+  test('urlForDownloadQuery - Bad request error', async function(assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    const response = { message: 'Bad request' };
-    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify({ response })]);
+    let response;
+    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
 
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.FAILURE,
+                result: {
+                  httpStatus: 200,
+                  url: '',
+                  message: ''
+                }
+              }
+            }
+          ]
+        }
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
     try {
       await adapter.urlForDownloadQuery(TestRequest, {});
-    } catch ({ errors }) {
+    } catch (e) {
       assert.deepEqual(
-        errors[0].result.response,
-        response,
-        'urlForDownloadQuery returns an array of response objects on error'
+        e.message,
+        'Table Export Query did not complete successfully',
+        'urlForDownloadQuery returns appropriate error message on bad request'
       );
     }
   });
+
 });

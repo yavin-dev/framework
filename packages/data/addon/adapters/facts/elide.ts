@@ -195,9 +195,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   async urlForDownloadQuery(request: RequestV1, options: RequestOptions = {}): Promise<string> {
     const response = await this.fetchDataForExportTask.perform(request, options);
+    const status: QueryStatus = response.tableExport.edges[0]?.node.status;
+    if (status !== QueryStatus.COMPLETE) {
+      throw new Error('Table Export Query did not complete successfully');
+    }
     const url = response.tableExport.edges[0]?.node.result?.url;
     if (!url) {
-      throw new Error("Unable to retrieve download URL");
+      throw new Error('Unable to retrieve download URL');
     }
     return url.toString();
   }
