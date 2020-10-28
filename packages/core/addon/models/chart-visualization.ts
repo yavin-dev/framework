@@ -33,6 +33,24 @@ export type DateTimeSeries = {
 
 export type ChartSeries = MetricSeries | DimensionSeries | DateTimeSeries;
 
+export type ChartVisualizationType = 'line-chart' | 'bar-chart';
+export type ChartConfig<T extends ChartVisualizationType> = {
+  type: T;
+  version: 2;
+  metadata: {
+    style?: {
+      curve?: string;
+      area?: boolean;
+      stacked?: boolean;
+    };
+    axis: {
+      y: {
+        series: ChartSeries;
+      };
+    };
+  };
+};
+
 export type DimensionSeriesValues = { name: string; values: Record<string, unknown> };
 
 export default class ChartVisualization extends Visualization {

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { buildTestRequest, Column } from '../../helpers/request';
+import { buildTestRequest } from '../../helpers/request';
 import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 import PieChartModel from 'navi-core/models/pie-chart';
@@ -19,19 +19,19 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
   test('default value', function(assert) {
     assert.expect(1);
 
-    const metricsAndDims: Column[][] = [
-      [
-        { field: 'm1', cid: '1' },
-        { field: 'm2', cid: '2' }
-      ],
-      [
-        { field: 'd1', cid: '3' },
-        { field: 'd2', cid: '4' }
-      ]
-    ];
-
     assert.notOk(
-      PieChart.isValidForRequest(buildTestRequest(...metricsAndDims)),
+      PieChart.isValidForRequest(
+        buildTestRequest(
+          [
+            { field: 'm1', cid: '1' },
+            { field: 'm2', cid: '2' }
+          ],
+          [
+            { field: 'd1', cid: '3' },
+            { field: 'd2', cid: '4' }
+          ]
+        )
+      ),
       'the default chart fragment values are invalid'
     );
   });
