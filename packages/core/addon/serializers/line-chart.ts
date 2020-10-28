@@ -24,7 +24,7 @@ export function normalizeLineChartV2(
   }
   const series = visualization.metadata?.axis?.y?.series;
 
-  let style = visualization.metadata?.style;
+  const style = visualization.metadata?.style;
 
   let metricCid;
   if (series?.config?.metric) {
