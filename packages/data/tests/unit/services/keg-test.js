@@ -114,10 +114,10 @@ module('Unit | Service | keg', function(hooks) {
   });
 
   test('pushing a record with an existing id update the record in the keg', function(assert) {
-    //Push initial record
+    //Insert initial record
     const pushedRecord = Keg.push('record', RawRecord1);
 
-    //Push new record with same id
+    //Insert new record with same id
     Keg.push('record', { id: 1, description: 'updated' });
 
     let fetchedRecord = Keg.getById('record', 1);
@@ -138,10 +138,10 @@ module('Unit | Service | keg', function(hooks) {
   });
 
   test('inserting a record with an existing id update the record in the keg', function(assert) {
-    //Push initial record
+    //Insert initial record
     const insertedRecord = Keg.insert('record', Record1);
 
-    //Push new record with same id
+    //Insert new record with same id
     const newRecord = RecordFactory.create({ ...RawRecord1, description: 'updated' });
     Keg.insert('record', newRecord);
 
