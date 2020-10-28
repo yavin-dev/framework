@@ -5,10 +5,11 @@
 //@ts-ignore
 import AssetSerializer from './asset';
 import Model from '@ember-data/model';
-import { normalizeTableV2 } from './table';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { normalizeTableV2 } from './table';
 import { normalizeMetricLabelV2 } from './metric-label';
 import { normalizeLineChartV2 } from './line-chart';
+import { normalizeBarChartV2 } from './bar-chart';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeVisualization(request: RequestFragment, visualization?: any) {
@@ -18,6 +19,8 @@ export function normalizeVisualization(request: RequestFragment, visualization?:
     return normalizeMetricLabelV2(request, visualization);
   } else if (visualization?.type === 'line-chart') {
     return normalizeLineChartV2(request, visualization);
+  } else if (visualization?.type === 'bar-chart') {
+    return normalizeBarChartV2(request, visualization);
   }
   return visualization;
 }

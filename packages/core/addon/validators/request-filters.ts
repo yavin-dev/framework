@@ -23,7 +23,7 @@ export default class RequestFitlerValidator extends BaseValidator {
           const filter = filters.find(
             ({ type, canonicalName }) => type === column?.type && canonicalName === column.canonicalName
           );
-          if (filter?.values?.includes(value as string | number) !== true) {
+          if (filter && !filter.values?.includes(value as string | number)) {
             isValid = false;
           }
         });
