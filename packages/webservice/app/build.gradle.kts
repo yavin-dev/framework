@@ -6,7 +6,6 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    //id("com.moowork.node") version "1.3.1"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
     id("com.github.node-gradle.node") version "2.2.4"
@@ -66,9 +65,8 @@ tasks.register<NpmTask>("installUIDependencies") {
 
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
-  setArgs(listOf("run-script","demostart"))
+  setArgs(listOf("run-script","build_prod"))
 }
-
 
 tasks.register<Copy>("copyNaviApp") {
     dependsOn("buildUI")
