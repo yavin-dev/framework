@@ -15,7 +15,6 @@ export default class GoalGaugeController extends Controller {
     goalValue: 3100000000
   };
 
-  @computed('goalGaugeOptions')
   get goalGaugeVisualization(): GoalGaugeConfig {
     return {
       type: 'goal-gauge',

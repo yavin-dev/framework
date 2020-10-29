@@ -9,7 +9,7 @@
  *  }}
  */
 
-import { alias, readOnly } from '@ember/object/computed';
+import { readOnly } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
@@ -62,7 +62,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
       const { canonicalName } = this.metric;
-      let actualValue: number = firstRow[canonicalName] as number;
+      let actualValue = Number(firstRow[canonicalName]);
       return actualValue;
     }
     return 0;
@@ -73,16 +73,6 @@ export default class GoalGaugeVisualization extends Component<Args> {
   @readOnly('args.model.firstObject.request.metricColumns.0') metricModel!: FilterFragment;
 
   /**
-   * @property {Number} - starting value to measure progress towards the gaol
-   */
-  @alias('config.baselineValue') baselineValue = 0;
-
-  /**
-   * @property {Number} - value which is desired to be achieved
-   */
-  @alias('config.goalValue') goalValue = 0;
-
-  /**
    * @property {Object} - legend configuration
    */
   legend = { hide: true };
@@ -90,9 +80,9 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {String} - Display value of goal
    */
-  @computed('goalValue')
+  @computed('config.goalValue')
   get formattedGoalValue() {
-    return this._formatNumber(this.goalValue);
+    return this._formatNumber(this.config.goalValue);
   }
 
   /**
@@ -140,37 +130,26 @@ export default class GoalGaugeVisualization extends Component<Args> {
   }
 
   /**
-   * @property {Array} - colors to render corresponding to the thresholdValues
-   */
-  @alias('config.thresholdColors') thresholdColors = ['#f05050', '#ffc831', '#44b876'];
-
-  /**
-   * @property {Array} - percentages to render corresponding to the colors
-   */
-  @alias('config.thresholdPercentages') thresholdPercentages = [75, 85, 100];
-
-  /**
    * @property {Array} - threshold values to indicate what color to render
    * C3 Threshold Algorithm: if < threshold value indexN, use color indexN
    */
   @computed('args.options.{baselineValue,goalValue}')
   get thresholdValues() {
-    const { thresholdPercentages: percentages, goalValue: goal, baselineValue: baseline } = this;
-    const diff = goal - baseline;
+    const diff = this.config.goalValue - this.config.baselineValue;
 
-    return percentages.map((p: number) => Number(baseline) + (diff * p) / 100);
+    return this.config.thresholdPercentages.map((p: number) => Number(this.config.baselineValue) + (diff * p) / 100);
   }
 
   /**
    * @property {Object} - color gauge configuration
    */
-  @computed('thresholdValues', 'goalValue')
+  @computed('config.{goalValue,thresholdColors}')
   get color() {
     return {
-      pattern: this.thresholdColors,
+      pattern: this.config.thresholdColors,
       threshold: {
         unit: 'value',
-        max: this.goalValue,
+        max: this.config.goalValue,
         values: this.thresholdValues
       }
     };

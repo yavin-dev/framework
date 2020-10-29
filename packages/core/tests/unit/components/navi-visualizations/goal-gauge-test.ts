@@ -9,6 +9,7 @@ import StoreService from '@ember-data/store';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { TestContext } from 'ember-test-helpers';
 import { createGlimmerComponent } from 'navi-core/test-support';
+import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 
 let Store: StoreService;
 let Component: GoalGauge;
@@ -48,9 +49,8 @@ module('Unit | Component | Goal Gauge', function(hooks) {
     let options = {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'cid_m1',
-      metricTitle: 'Custom Metric Title'
-    } as GoalGauge['args']['options'];
+      metricCid: 'cid_m1'
+    } as GoalGaugeConfig['metadata'];
 
     const args: GoalGauge['args'] = {
       model: arr([{ request, response }]),
@@ -75,9 +75,13 @@ module('Unit | Component | Goal Gauge', function(hooks) {
   test('gauge', function(assert) {
     assert.expect(2);
 
-    assert.equal(Component.gauge.min, Component.baselineValue, 'gauge.min is correctly set based on baseline property');
+    assert.equal(
+      Component.gauge.min,
+      Component.config.baselineValue,
+      'gauge.min is correctly set based on baseline property'
+    );
 
-    assert.equal(Component.gauge.max, Component.goalValue, 'gauge.max is correctly set based on goal property');
+    assert.equal(Component.gauge.max, Component.config.goalValue, 'gauge.max is correctly set based on goal property');
   });
 
   test('thresholdValues', function(assert) {
