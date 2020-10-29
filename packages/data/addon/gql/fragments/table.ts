@@ -36,6 +36,9 @@ const fragment = gql`
           tags
           columnType
           expression
+          valueSourceType
+          tableSource
+          values
         }
       }
     }

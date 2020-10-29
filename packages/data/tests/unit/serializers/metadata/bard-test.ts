@@ -8,11 +8,11 @@ import BardMetadataSerializer, {
   RawMetricPayload,
   RawTablePayload
 } from 'navi-data/serializers/metadata/bard';
-import { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -295,7 +295,7 @@ const Payload: RawEverythingPayload = {
   ]
 };
 // list of table objects, with table->timegrains->dimensions+metrics
-const Tables: TableMetadataPayload[] = [
+const TablePayloads: TableMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
     category: 'General',
@@ -322,7 +322,7 @@ const Tables: TableMetadataPayload[] = [
   }
 ];
 
-const Dimensions: DimensionMetadataPayload[] = [
+const DimensionsPayloads: DimensionMetadataPayload[] = [
   {
     cardinality: 'SMALL',
     category: 'categoryOne',
@@ -367,7 +367,7 @@ const Dimensions: DimensionMetadataPayload[] = [
   }
 ];
 
-const TimeDimensions: TimeDimensionMetadataPayload[] = [
+const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
     category: 'dateCategory',
@@ -445,7 +445,7 @@ const TimeDimensions: TimeDimensionMetadataPayload[] = [
   }
 ];
 
-const Metrics: MetricMetadataPayload[] = [
+const MetricPayloads: MetricMetadataPayload[] = [
   {
     category: 'category',
     id: 'metricOne',
@@ -503,7 +503,7 @@ const Metrics: MetricMetadataPayload[] = [
   }
 ];
 
-const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
+const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
   {
     _parametersPayload: [
       {
@@ -680,12 +680,24 @@ const ParameterConvertToColumnFunction: ColumnFunctionMetadataPayload[] = [
 ];
 
 let Serializer: BardMetadataSerializer;
+let ColumnFunctions: ColumnFunctionMetadataModel[];
+let Metrics: MetricMetadataModel[];
+let TimeDimensions: TimeDimensionMetadataModel[];
+let Dimensions: DimensionMetadataModel[];
+let Tables: TableMetadataModel[];
 
 module('Unit | Serializer | metadata/bard', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
+    Tables = TablePayloads.map(p => TableMetadataModel.create(this.owner.ownerInjection(), p));
+    Dimensions = DimensionsPayloads.map(p => DimensionMetadataModel.create(this.owner.ownerInjection(), p));
+    TimeDimensions = TimeDimensionPayloads.map(p => TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p));
+    Metrics = MetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p));
+    ColumnFunctions = ColumnFunctionPayloads.map(p =>
+      ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
+    );
   });
 
   test('normalize `everything` with metric legacy `parameters`', function(assert) {
@@ -696,7 +708,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         dimensions: Dimensions,
         timeDimensions: TimeDimensions,
         tables: Tables,
-        columnFunctions: ParameterConvertToColumnFunction
+        columnFunctions: ColumnFunctions
       },
       'One column function is created for all metrics with only the currency parameter'
     );
@@ -758,84 +770,87 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
 
     const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload, 'bardOne') || {};
 
+    const expectedMetricPayloads: MetricMetadataPayload[] = [
+      {
+        category: 'category',
+        id: 'metricOne',
+        name: 'Metric One',
+        description: undefined,
+        valueType: 'number',
+        source: 'bardOne',
+        columnFunctionId: undefined,
+        type: 'field',
+        partialData: true
+      },
+      {
+        category: 'category',
+        id: 'metricTwo',
+        name: 'Metric Two',
+        description: undefined,
+        valueType: 'money',
+        source: 'bardOne',
+        columnFunctionId: 'moneyMetric',
+        type: 'field',
+        partialData: true
+      }
+    ];
+
     assert.deepEqual(
       metrics,
-      [
-        {
-          category: 'category',
-          id: 'metricOne',
-          name: 'Metric One',
-          description: undefined,
-          valueType: 'number',
-          source: 'bardOne',
-          columnFunctionId: undefined,
-          type: 'field',
-          partialData: true
-        },
-        {
-          category: 'category',
-          id: 'metricTwo',
-          name: 'Metric Two',
-          description: undefined,
-          valueType: 'money',
-          source: 'bardOne',
-          columnFunctionId: 'moneyMetric',
-          type: 'field',
-          partialData: true
-        }
-      ],
+      expectedMetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
       'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
+    const expectedColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
+      {
+        _parametersPayload: [
+          {
+            _localValues: [
+              { id: 'USD', name: 'USD' },
+              { id: 'CAN', name: 'CAN' }
+            ],
+            defaultValue: null,
+            description: 'Currency Parameter',
+            expression: 'self',
+            id: 'currency',
+            name: 'currency',
+            type: 'ref',
+            source: 'bardOne'
+          }
+        ],
+        description: 'Mo Problems',
+        id: 'moneyMetric',
+        name: 'Mo Money',
+        source: 'bardOne'
+      },
+      {
+        description: 'Time Grain',
+        id: 'normalizer-generated:timeGrain(table=tableName;grains=day)',
+        name: 'Time Grain',
+        source: 'bardOne',
+        _parametersPayload: [
+          {
+            defaultValue: 'day',
+            description: 'The time grain to group dates by',
+            expression: 'self',
+            id: 'grain',
+            name: 'Time Grain',
+            source: 'bardOne',
+            type: 'ref',
+            _localValues: [
+              {
+                description: 'The tableName day grain',
+                id: 'day',
+                name: 'Day'
+              }
+            ]
+          }
+        ]
+      }
+    ];
     assert.deepEqual(
       columnFunctions,
-      [
-        {
-          _parametersPayload: [
-            {
-              _localValues: [
-                { id: 'USD', name: 'USD' },
-                { id: 'CAN', name: 'CAN' }
-              ],
-              defaultValue: null,
-              description: 'Currency Parameter',
-              expression: 'self',
-              id: 'currency',
-              name: 'currency',
-              type: 'ref',
-              source: 'bardOne'
-            }
-          ],
-          description: 'Mo Problems',
-          id: 'moneyMetric',
-          name: 'Mo Money',
-          source: 'bardOne'
-        },
-        {
-          description: 'Time Grain',
-          id: 'normalizer-generated:timeGrain(table=tableName;grains=day)',
-          name: 'Time Grain',
-          source: 'bardOne',
-          _parametersPayload: [
-            {
-              defaultValue: 'day',
-              description: 'The time grain to group dates by',
-              expression: 'self',
-              id: 'grain',
-              name: 'Time Grain',
-              source: 'bardOne',
-              type: 'ref',
-              _localValues: [
-                {
-                  description: 'The tableName day grain',
-                  id: 'day',
-                  name: 'Day'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      expectedColumnFunctionPayloads.map(p => ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)),
       'Raw column functions are normalized correctly'
     );
   });
@@ -860,23 +875,23 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     };
     const source = 'bardOne';
 
+    const expectedDimensionPayload: DimensionMetadataPayload = {
+      id: rawDimension.name,
+      name: rawDimension.longName,
+      description: undefined,
+      category: rawDimension.category,
+      valueType: rawDimension.datatype,
+      cardinality: 'SMALL',
+      type: 'field',
+      storageStrategy: null,
+      fields: rawDimension.fields,
+      source,
+      partialData: true
+    };
+
     assert.deepEqual(
       Serializer['normalizeDimensions']([rawDimension], source),
-      [
-        {
-          id: rawDimension.name,
-          name: rawDimension.longName,
-          description: undefined,
-          category: rawDimension.category,
-          valueType: rawDimension.datatype,
-          cardinality: 'SMALL',
-          type: 'field',
-          storageStrategy: null,
-          fields: rawDimension.fields,
-          source,
-          partialData: true
-        }
-      ],
+      [DimensionMetadataModel.create(this.owner.ownerInjection(), expectedDimensionPayload)],
       'New dimension is constructed correctly normalized'
     );
   });
@@ -892,21 +907,21 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       metricFunctionId: 'money'
     };
 
+    const expectedMetricPayload: MetricMetadataPayload = {
+      id: rawMetric.name,
+      name: rawMetric.longName,
+      description: undefined,
+      category: rawMetric.category,
+      valueType: rawMetric.type,
+      source,
+      columnFunctionId: rawMetric.metricFunctionId,
+      type: 'field',
+      partialData: true
+    };
+
     assert.deepEqual(
       Serializer['normalizeMetrics']([rawMetric], source),
-      [
-        {
-          id: rawMetric.name,
-          name: rawMetric.longName,
-          description: undefined,
-          category: rawMetric.category,
-          valueType: rawMetric.type,
-          source,
-          columnFunctionId: rawMetric.metricFunctionId,
-          type: 'field',
-          partialData: true
-        }
-      ],
+      [MetricMetadataModel.create(this.owner.ownerInjection(), expectedMetricPayload)],
       'Metric is constructed correctly with no new column function id or parameter'
     );
   });
