@@ -2,14 +2,13 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import EmberObject from '@ember/object';
 import config from 'ember-get-config';
-import { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
-import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import NaviMetadataSerializer, { MetadataPayloadMap, EverythingMetadataPayload } from './interface';
+import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
 import { assert } from '@ember/debug';
 import { isNone } from '@ember/utils';
 import {
@@ -18,6 +17,7 @@ import {
   ColumnFunctionParametersValues
 } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
+import { TableMetadataPayload } from 'navi-data/models/metadata/table';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
@@ -85,7 +85,7 @@ export type RawTablePayload = {
   category?: string;
 };
 
-export default class BardMetadataSerializer extends EmberObject implements NaviMetadataSerializer {
+export default class BardMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
   /**
@@ -98,11 +98,11 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     const { tables: rawTables, metricFunctions: rawColumnFunctions } = rawPayload;
 
     // build dimension and metric arrays
-    const metrics: { [k: string]: MetricMetadataPayload } = {};
-    const dimensions: { [k: string]: DimensionMetadataPayload } = {};
-    const timeDimensions: { [k: string]: TimeDimensionMetadataPayload } = {};
-    const convertedToColumnFunctions: { [k: string]: ColumnFunctionMetadataPayload } = {};
-    const tables = rawTables.map((table: RawTablePayload) => {
+    const metrics: { [k: string]: MetricMetadataModel } = {};
+    const dimensions: { [k: string]: DimensionMetadataModel } = {};
+    const timeDimensions: { [k: string]: TimeDimensionMetadataModel } = {};
+    const convertedToColumnFunctions: { [k: string]: ColumnFunctionMetadataModel } = {};
+    const tablePayloads: TableMetadataPayload[] = rawTables.map((table: RawTablePayload) => {
       // Reduce all columns regardless of timegrain into one object
       const allTableColumns = table.timeGrains.reduce(
         (acc, timegrain) => {
@@ -191,7 +191,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     const columnFunctions = rawColumnFunctions ? this.normalizeColumnFunctions(rawColumnFunctions, dataSourceName) : [];
 
     return {
-      tables,
+      tables: tablePayloads.map(payload => this.tableFactory.create(payload)),
       dimensions: Object.values(dimensions),
       metrics: Object.values(metrics),
       timeDimensions: Object.values(timeDimensions),
@@ -207,11 +207,11 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   createDimensionFieldColumnFunction(
     dimension: RawDimensionPayload,
     dataSourceName: string
-  ): ColumnFunctionMetadataPayload {
+  ): ColumnFunctionMetadataModel {
     const { fields = [] } = dimension;
     const sorted = fields.map(field => field.name).sort();
     const columnFunctionId = `${this.namespace}:dimensionField(fields=${sorted.join(',')})`;
-    return {
+    const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,
       name: 'Dimension Field',
       source: dataSourceName,
@@ -233,6 +233,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         }
       ]
     };
+    return this.columnFunctionFactory.create(payload);
   }
 
   /**
@@ -240,9 +241,9 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @param table - the table to create a dateTime for
    * @param dataSourceName - data source name
    */
-  private createDateTime(table: RawTablePayload, dataSourceName: string): TimeDimensionMetadataPayload {
+  private createDateTime(table: RawTablePayload, dataSourceName: string): TimeDimensionMetadataModel {
     const id = `${table.name}.dateTime`;
-    return {
+    const payload: TimeDimensionMetadataPayload = {
       category: 'Date',
       description: undefined,
       fields: undefined,
@@ -258,6 +259,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       })),
       timeZone: 'UTC'
     };
+    return this.timeDimensionFactory.create(payload);
   }
 
   /**
@@ -265,7 +267,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @param table - the table to create a dateTime for
    * @param dataSourceName - data source name
    */
-  private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataPayload {
+  private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataModel {
     const grainIds = table.timeGrains.map(g => g.name);
     const grains = grainIds.sort().join(',');
     const columnFunctionId = `${this.namespace}:timeGrain(table=${table.name};grains=${grains})`;
@@ -276,7 +278,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
     } else {
       defaultValue = grainIds[0];
     }
-    return {
+    const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,
       name: 'Time Grain',
       source: dataSourceName,
@@ -298,6 +300,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         }
       ]
     };
+    return this.columnFunctionFactory.create(payload);
   }
 
   /**
@@ -307,7 +310,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   private getColumnFunctionFromParameters(
     metric: RawMetricPayload,
     dataSourceName: string
-  ): ColumnFunctionMetadataPayload | null {
+  ): ColumnFunctionMetadataModel | null {
     const { parameters, metricFunctionId } = metric;
 
     //only if just `parameters` exists, since metricId take precedence
@@ -320,7 +323,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         _parametersPayload: this.constructFunctionParameters(parameters, dataSourceName),
         source: dataSourceName
       };
-      return newColumnFunction;
+      return this.columnFunctionFactory.create(newColumnFunction);
     }
     return null;
   }
@@ -360,21 +363,34 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   private normalizeTimeDimensions(
     dimensions: RawDimensionPayload[],
     dataSourceName: string
-  ): TimeDimensionMetadataPayload[] {
-    return this.normalizeDimensions(dimensions, dataSourceName)
+  ): TimeDimensionMetadataModel[] {
+    const payloads: TimeDimensionMetadataPayload[] = this.normalizeDimensionPayloads(dimensions, dataSourceName)
       .filter(d => d.valueType === 'date')
       .map(d => ({
         supportedGrains: [{ id: 'day', expression: '', grain: 'Day' }],
         timeZone: 'utc',
         ...d
       }));
+    return payloads.map(payload => this.timeDimensionFactory.create(payload));
   }
 
   /**
    * @param dimensions - raw dimensions
    * @param dataSourceName - data source name
    */
-  private normalizeDimensions(dimensions: RawDimensionPayload[], dataSourceName: string): DimensionMetadataPayload[] {
+  private normalizeDimensions(dimensions: RawDimensionPayload[], dataSourceName: string): DimensionMetadataModel[] {
+    const payloads = this.normalizeDimensionPayloads(dimensions, dataSourceName);
+    return payloads.map(payload => this.dimensionFactory.create(payload));
+  }
+
+  /**
+   * @param dimensions - raw dimensions
+   * @param dataSourceName - data source name
+   */
+  private normalizeDimensionPayloads(
+    dimensions: RawDimensionPayload[],
+    dataSourceName: string
+  ): DimensionMetadataPayload[] {
     return dimensions.map(dimension => {
       const {
         name,
@@ -413,10 +429,10 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
    * @param metrics - raw metrics
    * @param dataSourceName - data source name
    */
-  private normalizeMetrics(metrics: RawMetricPayload[], dataSourceName: string): MetricMetadataPayload[] {
+  private normalizeMetrics(metrics: RawMetricPayload[], dataSourceName: string): MetricMetadataModel[] {
     return metrics.map(metric => {
       const { type: valueType, longName, name, description, category, metricFunctionId } = metric;
-      return {
+      const payload: MetricMetadataPayload = {
         id: name,
         name: longName,
         description,
@@ -427,6 +443,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
         partialData: isNone(description),
         columnFunctionId: metricFunctionId
       };
+      return this.metricFactory.create(payload);
     });
   }
 
@@ -437,7 +454,7 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
   private normalizeColumnFunctions(
     columnFunctions: RawColumnFunction[],
     dataSourceName: string
-  ): ColumnFunctionMetadataPayload[] {
+  ): ColumnFunctionMetadataModel[] {
     return columnFunctions.map(func => {
       const { id, name, description, arguments: args } = func;
       const normalizedFunc: ColumnFunctionMetadataPayload = {
@@ -449,43 +466,40 @@ export default class BardMetadataSerializer extends EmberObject implements NaviM
       if (args) {
         normalizedFunc._parametersPayload = this.constructFunctionParameters(args, dataSourceName);
       }
-      return normalizedFunc;
+      return this.columnFunctionFactory.create(normalizedFunc);
     });
   }
 
-  private supportedTypes = new Set<keyof MetadataPayloadMap>(['everything', 'metric', 'dimension', 'columnFunction']);
+  private supportedTypes = new Set<keyof MetadataModelMap>(['everything', 'metric', 'dimension', 'columnFunction']);
 
-  normalize<K extends keyof MetadataPayloadMap>(
+  normalize<K extends keyof MetadataModelMap>(
     type: K,
     rawPayload: TODO,
     dataSourceName: string
-  ): MetadataPayloadMap[K] | undefined {
+  ): MetadataModelMap[K] | undefined {
     assert(
       `BardMetadataSerializer only supports normalizing types: ${[...this.supportedTypes]}`,
       this.supportedTypes.has(type)
     );
 
     if ('everything' === type) {
-      const normalized: MetadataPayloadMap['everything'] = this.normalizeEverything(rawPayload, dataSourceName);
-      return normalized as MetadataPayloadMap[K];
+      const normalized: MetadataModelMap['everything'] = this.normalizeEverything(rawPayload, dataSourceName);
+      return normalized as MetadataModelMap[K];
     }
 
     if ('metric' === type) {
-      const normalized: MetadataPayloadMap['metric'] = this.normalizeMetrics(rawPayload, dataSourceName);
-      return normalized as MetadataPayloadMap[K];
+      const normalized: MetadataModelMap['metric'] = this.normalizeMetrics(rawPayload, dataSourceName);
+      return normalized as MetadataModelMap[K];
     }
 
     if ('dimension' === type) {
-      const normalized: MetadataPayloadMap['dimension'] = this.normalizeDimensions(rawPayload, dataSourceName);
-      return normalized as MetadataPayloadMap[K];
+      const normalized: MetadataModelMap['dimension'] = this.normalizeDimensions(rawPayload, dataSourceName);
+      return normalized as MetadataModelMap[K];
     }
 
     if ('columnFunction' === type) {
-      const normalized: MetadataPayloadMap['columnFunction'] = this.normalizeColumnFunctions(
-        rawPayload,
-        dataSourceName
-      );
-      return normalized as MetadataPayloadMap[K];
+      const normalized: MetadataModelMap['columnFunction'] = this.normalizeColumnFunctions(rawPayload, dataSourceName);
+      return normalized as MetadataModelMap[K];
     }
     return undefined;
   }

@@ -163,43 +163,58 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 0',
+              expression: null,
               id: 'table0.dimension0',
               name: 'Dimension 0',
-              description: 'This is dimension 0',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: null,
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'NONE',
+              valueType: 'TEXT',
+              values: []
             }
           },
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 1',
+              expression: null,
               id: 'table0.dimension1',
               name: 'Dimension 1',
-              description: 'This is dimension 1',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: null,
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'ENUM',
+              valueType: 'TEXT',
+              values: [
+                'Practical Frozen Fish',
+                'Practical Concrete Chair',
+                'Awesome Steel Chicken',
+                'Tasty Fresh Towels',
+                'Intelligent Steel Pizza'
+              ]
             }
           },
           {
             __typename: 'DimensionEdge',
             node: {
+              __typename: 'Dimension',
+              category: 'categoryOne',
+              columnType: 'field',
+              description: 'This is dimension 2',
+              expression: null,
               id: 'table0.dimension2',
               name: 'Dimension 2',
-              description: 'This is dimension 2',
-              category: 'categoryOne',
-              valueType: 'TEXT',
+              tableSource: 'table3.dimension0',
               tags: ['DISPLAY'],
-              columnType: 'field',
-              expression: null,
-              __typename: 'Dimension'
+              valueSourceType: 'TABLE',
+              valueType: 'TEXT',
+              values: []
             }
           }
         ]
@@ -328,46 +343,61 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                 dimensions: {
                   edges: [
                     {
+                      __typename: 'DimensionEdge',
                       node: {
+                        __typename: 'Dimension',
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 0',
+                        expression: null,
                         id: 'table0.dimension0',
                         name: 'Dimension 0',
-                        description: 'This is dimension 0',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
+                        tableSource: null,
                         tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
-                        __typename: 'Dimension'
-                      },
-                      __typename: 'DimensionEdge'
+                        valueSourceType: 'NONE',
+                        valueType: 'TEXT',
+                        values: []
+                      }
                     },
                     {
+                      __typename: 'DimensionEdge',
                       node: {
+                        __typename: 'Dimension',
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 1',
+                        expression: null,
                         id: 'table0.dimension1',
                         name: 'Dimension 1',
-                        description: 'This is dimension 1',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
+                        tableSource: null,
                         tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
-                        __typename: 'Dimension'
-                      },
-                      __typename: 'DimensionEdge'
+                        valueSourceType: 'ENUM',
+                        valueType: 'TEXT',
+                        values: [
+                          'Practical Frozen Fish',
+                          'Practical Concrete Chair',
+                          'Awesome Steel Chicken',
+                          'Tasty Fresh Towels',
+                          'Intelligent Steel Pizza'
+                        ]
+                      }
                     },
                     {
+                      __typename: 'DimensionEdge',
                       node: {
+                        __typename: 'Dimension',
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 2',
+                        expression: null,
                         id: 'table0.dimension2',
                         name: 'Dimension 2',
-                        description: 'This is dimension 2',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
+                        tableSource: 'table3.dimension0',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
-                        __typename: 'Dimension'
-                      },
-                      __typename: 'DimensionEdge'
+                        valueSourceType: 'TABLE',
+                        valueType: 'TEXT',
+                        values: []
+                      }
                     }
                   ],
                   __typename: 'DimensionConnection'
