@@ -12,10 +12,7 @@ plugins {
 }
 
 node {
-    //if needed specify node version
-    //version = "8.9.4" 
-    //if needed specify npm version
-    //npmVersion = "6.13.4"
+    npmVersion = "12.16.0"
     distBaseUrl = "https://nodejs.org/dist"
     download = true
 }
