@@ -113,7 +113,7 @@ export default class KegService extends Service {
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
     const namespace = options.namespace || this.defaultNamespace;
-    const identifierField = options?.identifierField || KegService.identifierField;
+    const identifierField = options.identifierField || KegService.identifierField;
 
     const returnedRecords: MutableArray<KegRecord> = A();
     for (let i = 0; i < records.length; i++) {

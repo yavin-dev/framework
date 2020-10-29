@@ -117,7 +117,7 @@ module('Unit | Service | keg', function(hooks) {
     //Insert initial record
     const pushedRecord = Keg.push('record', RawRecord1);
 
-    //Insert new record with same id
+    //Push new record with same id
     Keg.push('record', { id: 1, description: 'updated' });
 
     let fetchedRecord = Keg.getById('record', 1);
@@ -150,7 +150,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(
       Keg.all('record'),
       [newRecord],
-      'Pushing a record into the keg with an existing id does not add a new record'
+      'Inserting a record into the keg with an existing id does not add a new record'
     );
 
     assert.equal(insertedRecord, fetchedRecord, 'After update fetched record still the same object');
