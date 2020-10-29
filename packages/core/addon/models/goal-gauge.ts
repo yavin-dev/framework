@@ -17,8 +17,8 @@ const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
     'metadata.metricCid': validator('request-metric-exist'),
-    'metadata.baselineValue': validator('number', { allowString: false, allowNone: false }),
-    'metadata.goalValue': validator('number', { allowString: false, allowNone: false })
+    'metadata.baselineValue': validator('number', { allowString: true, allowNone: false }),
+    'metadata.goalValue': validator('number', { allowString: true, allowNone: false })
   },
   {
     //Global Validation Options
@@ -54,12 +54,12 @@ export default class GoalGaugeModel extends VisualizationBase.extend(Validations
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(request: RequestFragment, response: ResponseV1): GoalGaugeModel {
+  rebuildConfig(request: RequestFragment, response: ResponseV1): object {
     if (request && response) {
       let metricCid = request.metricColumns[0].cid,
         canonicalName = request.metricColumns[0].canonicalName,
         firstRow = response?.rows?.[0] || {},
-        actualValue = Number(firstRow[canonicalName]),
+        actualValue: number = firstRow[canonicalName] as number,
         above = actualValue * 1.1,
         below = actualValue * 0.9,
         baselineValue = actualValue > 0 ? below : above,

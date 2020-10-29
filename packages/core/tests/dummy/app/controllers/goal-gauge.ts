@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { set, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import { merge } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
@@ -15,6 +15,7 @@ export default class GoalGaugeController extends Controller {
     goalValue: 3100000000
   };
 
+  @computed('goalGaugeOptions')
   get goalGaugeVisualization(): GoalGaugeConfig {
     return {
       type: 'goal-gauge',

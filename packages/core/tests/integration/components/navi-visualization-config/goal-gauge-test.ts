@@ -21,22 +21,23 @@ interface TestContext extends Context, ComponentArgs {}
 module('Integration | Component | visualization config/goal gauge', function(hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(async function(this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
+
     this.options = {
       baselineValue: 200,
       goalValue: 0,
-      metricCid: 'cid_bubbles'
+      metricCid: 'cid_pageViews'
     };
     this.onUpdateConfig = () => null;
     this.request = store.createFragment('bard-request-v2/request', {
       columns: [
         {
-          cid: 'cid_bubbles',
+          cid: 'cid_pageViews',
           type: 'metric',
-          field: 'bubbles',
+          field: 'pageViews',
           parameters: {},
-          alias: 'Number of Bubbles',
+          alias: 'Number of pageViews',
           source: 'bardOne'
         }
       ],
@@ -46,7 +47,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
       dataSource: 'bardOne',
       table: 'network'
     });
-    this.response = { rows: [{ bubbles: 32 }], meta: {} };
+    this.response = { rows: [{ pageViews: 32 }], meta: {} };
   });
 
   test('it renders', async function(this: TestContext, assert) {
