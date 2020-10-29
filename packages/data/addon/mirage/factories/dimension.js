@@ -35,8 +35,8 @@ export default Factory.extend({
     return { 1: 'ENUM', 2: 'TABLE' }[i] || 'NONE';
   },
 
-  tableSource(i) {
-    return this.valueSourceType === 'TABLE' ? `table${i + 1}.dimension0` : null;
+  tableSource() {
+    return this.valueSourceType === 'TABLE' ? `table0.dimension0` : null;
   },
 
   values() {
