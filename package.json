@@ -10,7 +10,7 @@
     "url": "https://github.com/yahoo/navi"
   },
   "scripts": {
-    "build_prod": "lerna run prodbuild --scope navi-app --stream",
+    "build-ui": "lerna run prodbuild --scope navi-app --stream",
     "start": "lerna exec --scope navi-app npm start",
     "postinstall": "lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test --stream",
