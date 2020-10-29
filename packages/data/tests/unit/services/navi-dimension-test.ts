@@ -70,7 +70,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
-      'table0.dimension2',
+      'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
     const search = await service.search({ columnMetadata }, 'Plastic');

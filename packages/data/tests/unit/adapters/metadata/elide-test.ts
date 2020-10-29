@@ -172,15 +172,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               name: 'Dimension 0',
               tableSource: null,
               tags: ['DISPLAY'],
-              valueSourceType: 'ENUM',
+              valueSourceType: 'NONE',
               valueType: 'TEXT',
-              values: [
-                'Rustic Frozen Pizza',
-                'Practical Frozen Fish',
-                'Practical Concrete Chair',
-                'Awesome Steel Chicken',
-                'Tasty Fresh Towels'
-              ]
+              values: []
             }
           },
           {
@@ -193,11 +187,17 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               expression: null,
               id: 'table0.dimension1',
               name: 'Dimension 1',
-              tableSource: 'table0.dimension2',
+              tableSource: null,
               tags: ['DISPLAY'],
-              valueSourceType: 'TABLE',
+              valueSourceType: 'ENUM',
               valueType: 'TEXT',
-              values: []
+              values: [
+                'Practical Frozen Fish',
+                'Practical Concrete Chair',
+                'Awesome Steel Chicken',
+                'Tasty Fresh Towels',
+                'Intelligent Steel Pizza'
+              ]
             }
           },
           {
@@ -210,9 +210,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               expression: null,
               id: 'table0.dimension2',
               name: 'Dimension 2',
-              tableSource: null,
+              tableSource: 'table3.dimension0',
               tags: ['DISPLAY'],
-              valueSourceType: 'NONE',
+              valueSourceType: 'TABLE',
               valueType: 'TEXT',
               values: []
             }
@@ -343,61 +343,61 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                 dimensions: {
                   edges: [
                     {
+                      __typename: 'DimensionEdge',
                       node: {
+                        __typename: 'Dimension',
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 0',
+                        expression: null,
                         id: 'table0.dimension0',
                         name: 'Dimension 0',
-                        description: 'This is dimension 0',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
-                        tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
-                        __typename: 'Dimension',
                         tableSource: null,
+                        tags: ['DISPLAY'],
+                        valueSourceType: 'NONE',
+                        valueType: 'TEXT',
+                        values: []
+                      }
+                    },
+                    {
+                      __typename: 'DimensionEdge',
+                      node: {
+                        __typename: 'Dimension',
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 1',
+                        expression: null,
+                        id: 'table0.dimension1',
+                        name: 'Dimension 1',
+                        tableSource: null,
+                        tags: ['DISPLAY'],
                         valueSourceType: 'ENUM',
+                        valueType: 'TEXT',
                         values: [
-                          'Rustic Frozen Pizza',
                           'Practical Frozen Fish',
                           'Practical Concrete Chair',
                           'Awesome Steel Chicken',
-                          'Tasty Fresh Towels'
+                          'Tasty Fresh Towels',
+                          'Intelligent Steel Pizza'
                         ]
-                      },
-                      __typename: 'DimensionEdge'
+                      }
                     },
                     {
+                      __typename: 'DimensionEdge',
                       node: {
-                        id: 'table0.dimension1',
-                        name: 'Dimension 1',
-                        description: 'This is dimension 1',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
-                        tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
                         __typename: 'Dimension',
-                        tableSource: 'table0.dimension2',
-                        valueSourceType: 'TABLE',
-                        values: []
-                      },
-                      __typename: 'DimensionEdge'
-                    },
-                    {
-                      node: {
+                        category: 'categoryOne',
+                        columnType: 'field',
+                        description: 'This is dimension 2',
+                        expression: null,
                         id: 'table0.dimension2',
                         name: 'Dimension 2',
-                        description: 'This is dimension 2',
-                        category: 'categoryOne',
-                        valueType: 'TEXT',
+                        tableSource: 'table3.dimension0',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
-                        expression: null,
-                        __typename: 'Dimension',
-                        tableSource: null,
-                        valueSourceType: 'NONE',
+                        valueSourceType: 'TABLE',
+                        valueType: 'TEXT',
                         values: []
-                      },
-                      __typename: 'DimensionEdge'
+                      }
                     }
                   ],
                   __typename: 'DimensionConnection'

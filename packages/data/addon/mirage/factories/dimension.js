@@ -32,11 +32,11 @@ export default Factory.extend({
   expression: null,
 
   valueSourceType(i) {
-    return { 0: 'ENUM', 1: 'TABLE' }[i] || 'NONE';
+    return { 1: 'ENUM', 2: 'TABLE' }[i] || 'NONE';
   },
 
-  tableSource() {
-    return this.valueSourceType === 'TABLE' ? 'table0.dimension2' : null;
+  tableSource(i) {
+    return this.valueSourceType === 'TABLE' ? `table${i + 1}.dimension0` : null;
   },
 
   values() {
