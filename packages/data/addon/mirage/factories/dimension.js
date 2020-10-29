@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { Factory } from 'ember-cli-mirage';
+import faker from 'faker';
 
 export default Factory.extend({
   index: i => i,
@@ -28,5 +29,22 @@ export default Factory.extend({
 
   columnType: 'field',
 
-  expression: null
+  expression: null,
+
+  valueSourceType(i) {
+    return { 1: 'ENUM', 2: 'TABLE' }[i] || 'NONE';
+  },
+
+  tableSource(i) {
+    return this.valueSourceType === 'TABLE' ? `table${i + 1}.dimension0` : null;
+  },
+
+  values() {
+    return this.valueSourceType === 'ENUM'
+      ? new Array(5).fill().map((_, idx) => {
+          faker.seed(this.index + idx);
+          return faker.commerce.productName();
+        })
+      : [];
+  }
 });

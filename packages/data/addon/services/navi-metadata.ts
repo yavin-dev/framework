@@ -4,11 +4,14 @@
  */
 import Service, { inject as service } from '@ember/service';
 import EmberArray from '@ember/array';
-import { setOwner, getOwner } from '@ember/application';
+import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
-import NaviMetadataSerializer, { EverythingMetadataPayload } from 'navi-data/serializers/metadata/interface';
-import KegService, { KegRecord } from './keg';
+import NaviMetadataSerializer, {
+  EverythingMetadataPayload,
+  MetadataModelMap
+} from 'navi-data/serializers/metadata/base';
+import KegService from './keg';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviMetadataAdapter from '../adapters/metadata/interface';
 
@@ -67,12 +70,10 @@ export default class NaviMetadataService extends Service {
    */
   private loadMetadataForType<K extends keyof MetadataModelRegistry>(
     type: K,
-    metadataObjects: Array<KegRecord>,
+    metadataObjects: MetadataModelMap[K],
     dataSourceName: string
   ): EmberArray<MetadataModelRegistry[K]> {
-    const owner = getOwner(this);
-    metadataObjects.forEach(obj => setOwner(obj, owner));
-    return this.keg.pushMany(`metadata/${type}`, metadataObjects, {
+    return this.keg.insertMany(`metadata/${type}`, metadataObjects, {
       namespace: dataSourceName
     }) as EmberArray<MetadataModelRegistry[K]>;
   }
