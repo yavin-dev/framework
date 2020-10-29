@@ -62,7 +62,7 @@ tasks.register<NpmTask>("installUIDependencies") {
 
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
-  setArgs(listOf("run-script","build_prod"))
+  setArgs(listOf("run-script", "build-ui"))
 }
 
 tasks.register<Copy>("copyNaviApp") {
