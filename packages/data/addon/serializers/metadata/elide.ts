@@ -167,7 +167,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
    * @method _normalizeDimensions - normalizes the Connection<DimensionNode> JSON response
    * @param {Connection<DimensionNode>} dimensionConnection - Connection<DimensionNode> JSON
    * @param {string} source - datasource name
-   * @returns {Object[]} - dimension models
+   * @returns dimension models
    */
   _normalizeTableDimensions(
     dimensionConnection: Connection<DimensionNode>,
@@ -200,7 +200,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
    * @method _normalizeTableTimeDimensions - normalizes the TimeConnection<DimensionNode> JSON response
    * @param {TimeConnection<DimensionNode>} timeConnection<DimensionNode> - TimeConnection<DimensionNode> JSON
    * @param {string} source - datasource name
-   * @returns {Object[]} - timeDimension models
+   * @returns timeDimension models
    */
   _normalizeTableTimeDimensions(
     timeDimensionConnection: Connection<TimeDimensionNode>,
