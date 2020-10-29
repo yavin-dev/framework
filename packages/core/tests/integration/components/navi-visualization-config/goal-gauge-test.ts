@@ -37,11 +37,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
           type: 'metric',
           field: 'pageViews',
           parameters: {},
-<<<<<<< HEAD
           alias: 'Number of pageViews',
-=======
-          alias: 'Number of Bubbles',
->>>>>>> ccb3cd03... Update: More revision updates from pull request
           source: 'bardOne'
         }
       ],
