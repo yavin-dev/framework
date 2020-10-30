@@ -11,7 +11,7 @@ import EmberObject from '@ember/object';
 import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 
-type ResponseEdge = {
+export type ResponseEdge = {
   node: Dict<string>;
 };
 
