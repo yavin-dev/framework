@@ -127,18 +127,18 @@ const schema = gql`
     tags: [String!]
     columnType: ColumnType
     expression: String
-    supportedGrain: TimeDimensionGrainConnnection
+    supportedGrain: TimeDimensionGrainConnection
     timeZone: TimeZone
   }
 
-  type TimeDimensionGrainConnnection {
+  type TimeDimensionGrainConnection {
     edges: [TimeDimensionGrainEdge!]!
     pageInfo: PageInfo
   }
 
   type TimeDimensionGrainEdge {
-    node: TimeDimensionGrain
-    cursor: String!
+    cursor: String
+    node: TimeDimensionGrain!
   }
 
   type TimeDimensionGrain implements Node {

@@ -30,7 +30,5 @@ export default Factory.extend({
 
   expression: null,
 
-  timeZone() {
-    return { short: 'UTC', long: 'Universal Time Coordinated' };
-  }
+  timeZoneId: 'UTC'
 });
