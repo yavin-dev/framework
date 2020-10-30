@@ -465,8 +465,7 @@ export default function() {
             if (result.responseBody !== null) {
               db.asyncQueries.update(asyncQueryRecord.id, { status: 'COMPLETE' });
             }
-            const foo = db.asyncQueries.update(asyncQueryRecord.id, { result });
-            records.edges[0].node = foo;
+            records.edges[0].node = db.asyncQueries.update(asyncQueryRecord.id, { result });
           }
           return records;
         }
