@@ -171,11 +171,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-All-Other text')
+      .dom('.chart-series-0 text')
       .hasText('13.02%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
-      .dom('.c3-target-Under-13 text')
+      .dom('.chart-series-1 text')
       .hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
@@ -195,11 +195,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-Total-Page-Views text')
+      .dom('.chart-series-0 text')
       .hasText('66.67%', 'Percentage label shown on slice is formatted properly for `Total Page Views`');
 
     assert
-      .dom('.c3-target-Unique-Identifiers text')
+      .dom('.chart-series-1 text')
       .hasText('33.33%', 'Percentage label shown on slice is formatted properly for `Unique Identifier`');
   });
 
@@ -361,11 +361,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-All-Other text')
+      .dom('.chart-series-0 text')
       .hasText('40%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
-      .dom('.c3-target-Under-13 text')
+      .dom('.chart-series-1 text')
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 

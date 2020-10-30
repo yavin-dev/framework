@@ -29,13 +29,6 @@ const Validations = buildValidations(
         return this.chartType && this.chartType !== DIMENSION_SERIES;
       }),
       dependentKeys: ['model._request.metricColumns.[]']
-    }),
-
-    [`${CONFIG_PATH}.dimensions`]: validator('dimension-series', {
-      disabled: computed('chartType', function() {
-        return this.chartType && this.chartType !== DIMENSION_SERIES;
-      }),
-      dependentKeys: ['model._request.dimensionColumns.[]']
     })
   },
   {
@@ -75,6 +68,10 @@ export default class PieChart extends ChartVisualization.extend(Validations) {
   })
   metadata!: PieChartConfig['metadata'];
 
+  get isDimensionSeries() {
+    return this.metadata.series.type === 'dimension';
+  }
+
   /**
    * Rebuild config based on request and response
    *
@@ -90,5 +87,12 @@ export default class PieChart extends ChartVisualization.extend(Validations) {
     const series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, this.validations, request, response);
     this.metadata = { series };
     return this;
+  }
+}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/model' {
+  export default interface ModelRegistry {
+    'pie-chart': PieChart;
   }
 }

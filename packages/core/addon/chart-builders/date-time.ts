@@ -167,7 +167,7 @@ function _groupDataBySeries(data: ResponseRow[], timeGrainColumn: string, metric
  * @param grouper - series grouping logic
  * @returns array of c3 data with x values
  */
-function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): C3Row[] {
+function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): { series: C3Row[]; names: Record<string, string> } {
   let _buildRow = (x: number) => {
     let row = ({
       x: {
@@ -177,20 +177,24 @@ function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): C3Row[] {
     } as unknown) as C3Row;
 
     // Add each series to the row
-    Object.keys(seriesMap).forEach(series => {
+    Object.keys(seriesMap).forEach((series, index) => {
       const val = seriesMap[series]?.[`${x}`];
-      row[series] = typeof val === 'number' ? val : null; // c3 wants `null` for empty data points
+      row[`series.${index}`] = typeof val === 'number' ? val : null; // c3 wants `null` for empty data points
     });
 
     return row;
   };
 
-  let rows = [];
+  const series = [];
   for (let x = 1; x <= grouper.xValueCount; x++) {
-    rows.push(_buildRow(x));
+    series.push(_buildRow(x));
   }
 
-  return rows;
+  const names = Object.keys(seriesMap).reduce((names: Record<string, string>, series, index) => {
+    names[`series.${index}`] = series;
+    return names;
+  }, {});
+  return { series, names };
 }
 
 /**
@@ -235,7 +239,11 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     return _getGrouper(request, config).getXValue(moment(date));
   }
 
-  buildData(response: NaviFactResponse, config: DateTimeSeries['config'], request: RequestFragment): C3Row[] {
+  buildData(
+    response: NaviFactResponse,
+    config: DateTimeSeries['config'],
+    request: RequestFragment
+  ): { series: C3Row[]; names: Record<string, string> } {
     // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
     this.byXSeries = new DataGroup(response.rows, row => {
       let seriesName = this.getSeriesName(row, config, request),

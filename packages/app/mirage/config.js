@@ -36,7 +36,7 @@ export default function() {
   this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
   const metricBuilder = (metric, row, dimensionKey) => {
     faker.seed(hashCode(`${row.dateTime}_${dimensionKey}_${metric}`));
-    return faker.finance.amount();
+    return Number(faker.finance.amount());
   };
   BardLite.call(this, metricBuilder);
   BardMeta.call(this);

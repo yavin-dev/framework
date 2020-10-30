@@ -62,14 +62,14 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       }
     });
 
-    assert.ok(
+    assert.notOk(
       LineChart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [{ cid: 'cid_d1', field: 'd1' }])),
-      'dimension line-chart is valid when request has at least one dimension'
+      'dimension line-chart is always invalid'
     );
 
     assert.notOk(
       LineChart.isValidForRequest(buildTestRequest([{ cid: 'cid_m1', field: 'm1' }], [])),
-      'dimension line-chart is invalid when request has no dimensions'
+      'dimension line-chart is always invalid'
     );
   });
 
@@ -108,16 +108,16 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       }
     });
 
-    assert.ok(
+    assert.notOk(
       LineChart.isValidForRequest(
         buildTestRequest([{ cid: 'cid_m1', field: 'm1' }, { field: 'm2' }], [{ cid: 'cid_d1', field: 'd1' }])
       ),
-      'dimension line-chart is valid when it has a metric in the request metrics'
+      'dimension line-chart is always invalid'
     );
 
     assert.notOk(
       LineChart.isValidForRequest(buildTestRequest([{ field: 'm3' }], [{ cid: 'cid_d1', field: 'd1' }])),
-      'dimension line-chart is invalid when it does not have a metric in the request metrics'
+      'dimension line-chart is always invalid'
     );
   });
 
@@ -249,7 +249,10 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
   });
 
   test('rebuildConfig - dimension series - only metric', function(assert) {
-    let rows = [{ requestMetric: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' }];
+    let rows = [
+      { requestMetric: 1, 'd1(field=id)': 'configValue1', 'd2(field=id)': 'configValue2' },
+      { requestMetric: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' }
+    ];
 
     set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
@@ -267,8 +270,8 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     const request = buildTestRequest(
       [{ cid: 'cid_requestMetric', field: 'requestMetric' }],
       [
-        { cid: 'cid_d1', field: 'd1' },
-        { cid: 'cid_d2', field: 'd2' }
+        { cid: 'cid_d1', field: 'd1', parameters: { field: 'id' } },
+        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
       ]
     );
     const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
@@ -290,6 +293,13 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
                     {
                       name: 'Foo1,Bar1',
                       values: { cid_d1: 'configValue1', cid_d2: 'configValue2' }
+                    },
+                    {
+                      name: 'foo1,bar1',
+                      values: {
+                        cid_d1: 'foo1',
+                        cid_d2: 'bar1'
+                      }
                     }
                   ]
                 }
@@ -298,7 +308,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
           }
         }
       },
-      'dimension series config regenerated with only metric updated'
+      'dimension series config regenerated with metric updated, old valid series kept, new series added to config'
     );
   });
 

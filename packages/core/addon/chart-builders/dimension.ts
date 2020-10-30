@@ -64,7 +64,11 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
   /**
    * @inheritdoc
    */
-  buildData(response: NaviFactResponse, config: DimensionSeries['config'], request: RequestFragment): C3Row[] {
+  buildData(
+    response: NaviFactResponse,
+    config: DimensionSeries['config'],
+    request: RequestFragment
+  ): { series: C3Row[]; names: Record<string, string> } {
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
@@ -82,11 +86,14 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     const metric = request.columns.find(({ cid }) => cid === metricCid);
     assert(`a metric with cid ${metricCid} should be found`, metric);
     const seriesKey = config.dimensions.map(s => nonTimeDimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
-    const seriesName = config.dimensions.map(s => s.name); // Get all the series names
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
 
+    const names = config.dimensions.reduce((names: Record<string, string>, series, index) => {
+      names[`series.${index}`] = series.name;
+      return names;
+    }, {});
     // For each unique date, build the series
-    return interval
+    const series = interval
       .makeEndExclusiveFor(timeGrain)
       .getDatesForInterval(timeGrain)
       .map(date => {
@@ -109,11 +116,11 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
           if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
             // Extending the data for date with the grouped dimension and metric value
             Object.assign(dataForDate, {
-              [seriesName[index]]: byDim.getDataForKey(s)[0][metric.canonicalName]
+              [`series.${index}`]: byDim.getDataForKey(s)[0][metric.canonicalName]
             });
           } else {
             // Returning null for the chart to show missing data
-            Object.assign(dataForDate, { [seriesName[index]]: null });
+            Object.assign(dataForDate, { [`series.${index}`]: null });
           }
         });
 
@@ -130,6 +137,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
         // Return the data for Date
         return dataForDate;
       });
+    return { series, names };
   }
 
   /**

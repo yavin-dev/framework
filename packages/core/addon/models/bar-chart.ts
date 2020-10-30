@@ -12,3 +12,10 @@ export default class BarChart extends LineChart<'bar-chart'> implements BarChart
   @attr('string', { defaultValue: 'bar-chart' })
   type!: 'bar-chart';
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/model' {
+  export default interface ModelRegistry {
+    'bar-chart': BarChart;
+  }
+}

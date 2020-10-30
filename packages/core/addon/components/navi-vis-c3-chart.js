@@ -115,9 +115,9 @@ export default C3Chart.extend({
     let dataSelection = get(this, 'dataSelection');
     if (dataSelection) {
       dataSelection.then(insightsData => {
-        const metrics = this.metrics,
-          dataSelectionIndices = insightsData.mapBy('index');
-        get(this, 'chart').select(metrics, dataSelectionIndices);
+        const series = Object.keys(this.data.json[0]).filter(series => series !== 'x');
+        const dataSelectionIndices = insightsData.mapBy('index');
+        get(this, 'chart').select(series, dataSelectionIndices);
       });
     } else {
       /*

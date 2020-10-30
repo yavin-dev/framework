@@ -53,7 +53,28 @@ export type ChartConfig<T extends ChartVisualizationType> = {
 
 export type DimensionSeriesValues = { name: string; values: Record<string, unknown> };
 
+function makeSeriesKey(d: DimensionSeriesValues) {
+  return Object.keys(d.values)
+    .sort()
+    .map(k => `${k}=${d.values[k]}`)
+    .join(',');
+}
+
 export default class ChartVisualization extends Visualization {
+  /**
+   * Determines whether or not the chart is showing a dimension series
+   */
+  get isDimensionSeries(): boolean {
+    return false;
+  }
+
+  /**
+   * Invalidates the visualization every time if it is a dimension series
+   */
+  isValidForRequest(request: RequestFragment) {
+    return super.isValidForRequest(request) && !this.isDimensionSeries;
+  }
+
   /**
    * Get a series builder based on type of chart
    *
@@ -111,11 +132,8 @@ export default class ChartVisualization extends Visualization {
     const validationAttrs = validations.attrs;
     //@ts-expect-error
     const currentMetric = get(this, config).metricCid;
-    //@ts-expect-error
-    const currentDimension = get(this, config).dimensions;
 
     const isMetricValid = get(validationAttrs, config).metricCid.isValid;
-    const areDimensionsValid = get(validationAttrs, config).dimensions.isValid;
 
     const metric = isMetricValid
       ? (request.metricColumns.find(({ cid }) => cid === currentMetric) as ColumnFragment)
@@ -126,7 +144,10 @@ export default class ChartVisualization extends Visualization {
       metric.canonicalName,
       10
     );
-    const dimensions = areDimensionsValid ? currentDimension : this.buildDimensionSeriesValues(request, responseRows);
+
+    //@ts-expect-error
+    const currentDimensionSeries = (get(this, config).dimensions || []) as DimensionSeriesValues[];
+    const dimensions = this.updateDimensionSeries(request, currentDimensionSeries, responseRows);
 
     return {
       type: DIMENSION_SERIES,
@@ -135,6 +156,22 @@ export default class ChartVisualization extends Visualization {
         dimensions
       }
     };
+  }
+
+  private updateDimensionSeries(
+    request: RequestFragment,
+    currentDimensionSeries: DimensionSeriesValues[],
+    responseRows: Record<string, unknown>[]
+  ) {
+    const builtDimensionSeries = this.buildDimensionSeriesValues(request, responseRows);
+
+    const existingSeries = new Set(currentDimensionSeries.map(d => makeSeriesKey(d)));
+    const validSeries = new Set(builtDimensionSeries.map(d => makeSeriesKey(d)));
+
+    const oldDimensionSeries = currentDimensionSeries.filter(d => validSeries.has(makeSeriesKey(d)));
+    const newDimensionSeries = builtDimensionSeries.filter(d => !existingSeries.has(makeSeriesKey(d)));
+    const dimensions = [...oldDimensionSeries, ...newDimensionSeries];
+    return dimensions;
   }
 
   /**

@@ -173,7 +173,12 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series data
    */
-  @computed('request.columns.@each.displayName', 'response', 'builder', 'seriesConfig.config')
+  @computed(
+    'request.columns.@each.displayName',
+    'response',
+    'builder',
+    'seriesConfig.config.{dimensions.[],metricCid.timeGrain}'
+  )
   get seriesData() {
     const { request, response, builder, seriesConfig } = this;
     return builder.buildData(response, seriesConfig.config, request);
@@ -182,7 +187,11 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * chart series groups for stacking
    */
-  @computed('args.options', 'seriesConfig.config.dimensions.@each.name', 'request.metricColumns.@each.displayName')
+  @computed(
+    'args.options',
+    'seriesConfig.config.{type,dimensions.@each.name}',
+    'request.metricColumns.@each.displayName'
+  )
   get seriesDataGroups() {
     const { request, seriesConfig } = this;
     const newOptions = merge({}, DEFAULT_OPTIONS, this.args.options);
@@ -194,9 +203,9 @@ export default class LineChart extends ChartBuildersBase<Args> {
 
     // if stacked, return [[ "Dimension 1", "Dimension 2", ... ]] or [[ "Metric 1", "Metric 2", ... ]]
     if (seriesConfig.type === 'dimension') {
-      return [seriesConfig.config.dimensions.map(dimension => dimension.name)];
+      return [seriesConfig.config.dimensions.map((_, i) => `series.${i}`)];
     } else if (seriesConfig.type === 'metric') {
-      return [request.metricColumns.map(c => c.displayName)];
+      return [request.metricColumns.map((_, i) => `series.${i}`)];
     }
 
     return [];
@@ -218,8 +227,9 @@ export default class LineChart extends ChartBuildersBase<Args> {
     return {
       data: {
         type: c3ChartType,
-        json: seriesData,
+        json: seriesData.series,
         groups: seriesDataGroups,
+        names: seriesData.names,
         order,
         selection: {
           enabled: true

@@ -41,7 +41,11 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
   /**
    * @inheritdoc
    */
-  buildData(response: NaviFactResponse, config: MetricSeries['config'], request: RequestFragment): C3Row[] {
+  buildData(
+    response: NaviFactResponse,
+    config: MetricSeries['config'],
+    request: RequestFragment
+  ): { series: C3Row[]; names: Record<string, string> } {
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
@@ -63,8 +67,12 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
       buildDateKey(row[timeGrainColumn] as MomentInput)
     );
 
+    const names = request.metricColumns.reduce((names: Record<string, string>, metric, index) => {
+      names[`series.${index}`] = metric.displayName;
+      return names;
+    }, {});
     // Make a data point for each date in the request, so c3 can correctly show gaps in the chart
-    return dates.map(date => {
+    const series = dates.map(date => {
       const key = buildDateKey(date);
       const rowsForDate = byDate.getDataForKey(key) || [];
       const row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
@@ -77,14 +85,15 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
       // Build an object consisting of x value and requested metrics
       return Object.assign(
         { x },
-        ...request.metricColumns.map(metric => {
+        ...request.metricColumns.map((metric, index) => {
           const metricValue = row[metric.canonicalName];
           return {
-            [metric.displayName]: typeof metricValue === 'number' ? metricValue : null
+            [`series.${index}`]: typeof metricValue === 'number' ? metricValue : null
           }; // c3 wants `null` for empty data points
         })
       );
     });
+    return { series, names };
   }
 
   /**

@@ -173,8 +173,6 @@ module('Unit | Component | pie chart', function(hooks) {
   });
 
   test('dataConfig', function(assert) {
-    assert.expect(4);
-
     const model = A([{ request: Request, response: RESPONSE }]);
     const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
       model,
@@ -187,11 +185,11 @@ module('Unit | Component | pie chart', function(hooks) {
       component.dataConfig.data.json,
       ([
         {
-          '13 - 25': 2620639,
-          '25 - 35': 72620639,
-          '35 - 45': 72620639,
-          'All Other': 3072620639,
-          'under 13': 2072620639,
+          'series.0': 3072620639,
+          'series.1': 2072620639,
+          'series.2': 2620639,
+          'series.3': 72620639,
+          'series.4': 72620639,
           x: {
             displayValue: 'Dec 14',
             rawValue: '2015-12-14 00:00:00.000'
@@ -199,6 +197,18 @@ module('Unit | Component | pie chart', function(hooks) {
         }
       ] as unknown) as C3Row[],
       'Data config contains json property with values for each slice of pie'
+    );
+
+    assert.deepEqual(
+      component.dataConfig.data.names,
+      {
+        'series.0': 'All Other',
+        'series.1': 'under 13',
+        'series.2': '13 - 25',
+        'series.3': '25 - 35',
+        'series.4': '35 - 45'
+      },
+      'Data config contains names property mapping series to display name'
     );
 
     let updatedOptions: PieChartOptions = {
@@ -238,11 +248,11 @@ module('Unit | Component | pie chart', function(hooks) {
       component.dataConfig.data.json,
       ([
         {
-          '13 - 25': 55191081,
-          '25 - 35': 55191081,
-          '35 - 45': 55191081,
-          'All Other': 155191081,
-          'under 13': 55191081,
+          'series.0': 155191081,
+          'series.1': 55191081,
+          'series.2': 55191081,
+          'series.3': 55191081,
+          'series.4': 55191081,
           x: {
             displayValue: 'Dec 14',
             rawValue: '2015-12-14 00:00:00.000'
@@ -252,14 +262,26 @@ module('Unit | Component | pie chart', function(hooks) {
       'Data config updates when metric has been changed in series options'
     );
 
+    assert.deepEqual(
+      component.dataConfig.data.names,
+      {
+        'series.0': 'All Other',
+        'series.1': 'under 13',
+        'series.2': '13 - 25',
+        'series.3': '25 - 35',
+        'series.4': '35 - 45'
+      },
+      'Data config contains names property mapping series to display name'
+    );
+
     set(component.args, 'options', METRIC_SERIES_OPTIONS);
 
     assert.deepEqual(
       component.dataConfig.data.json,
       ([
         {
-          'Total Page Views': 3072620639,
-          'Unique Identifiers': 155191081,
+          'series.0': 3072620639,
+          'series.1': 155191081,
           x: {
             displayValue: 'Dec 14',
             rawValue: '2015-12-14 00:00:00.000'
@@ -267,6 +289,15 @@ module('Unit | Component | pie chart', function(hooks) {
         }
       ] as unknown) as C3Row[],
       'Data config updates correctly for a metrics series according to first row of response'
+    );
+
+    assert.deepEqual(
+      component.dataConfig.data.names,
+      {
+        'series.0': 'Total Page Views',
+        'series.1': 'Unique Identifiers'
+      },
+      'Data config contains names property mapping series to display name'
     );
   });
 

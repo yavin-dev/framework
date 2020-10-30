@@ -32,7 +32,11 @@ export interface BaseChartBuilder {
 
   getXValue(row: ResponseRow, config: SeriesConfig, request: RequestFragment): string | number;
 
-  buildData(response: NaviFactResponse, _config: SeriesConfig, request: RequestFragment): C3Row[];
+  buildData(
+    response: NaviFactResponse,
+    _config: SeriesConfig,
+    request: RequestFragment
+  ): { series: C3Row[]; names: Record<string, string> };
 
   buildTooltip(
     _config: SeriesConfig,

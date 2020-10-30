@@ -72,7 +72,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       'day'
     );
     assert.deepEqual(
-      ChartBuilder.buildData(DATA, {}, request),
+      ChartBuilder.buildData(DATA, {}, request).series,
       [
         { x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' } },
         { x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' } },
@@ -89,33 +89,39 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
     assert.deepEqual(
       ChartBuilder.buildData(DATA, {}, Request),
-      ([
-        {
-          x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
-          'Total Page Views': 3669828357,
-          'Unique Identifiers': 172933788
-        },
-        {
-          x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
-          'Total Page Views': 4088487125,
-          'Unique Identifiers': 183206656
-        },
-        {
-          x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
-          'Total Page Views': 4024700302,
-          'Unique Identifiers': 183380921
-        },
-        {
-          x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
-          'Total Page Views': 3950276031,
-          'Unique Identifiers': 180559793
-        },
-        {
-          x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
-          'Total Page Views': 3697156058,
-          'Unique Identifiers': 172724594
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
+            'series.0': 172933788,
+            'series.1': 3669828357
+          },
+          {
+            x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
+            'series.0': 183206656,
+            'series.1': 4088487125
+          },
+          {
+            x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
+            'series.0': 183380921,
+            'series.1': 4024700302
+          },
+          {
+            x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
+            'series.0': 180559793,
+            'series.1': 3950276031
+          },
+          {
+            x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
+            'series.0': 172724594,
+            'series.1': 3697156058
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Unique Identifiers',
+          'series.1': 'Total Page Views'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series is made for each requested metric'
     );
   });
@@ -138,23 +144,29 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
-      ([
-        {
-          x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
-          'Total Page Views': 3669828357,
-          'Unique Identifiers': null
-        },
-        {
-          x: { rawValue: '2016-06-04 00:00:00.000', displayValue: 'Jun 4' },
-          'Total Page Views': null,
-          'Unique Identifiers': null
-        },
-        {
-          x: { rawValue: '2016-06-05 00:00:00.000', displayValue: 'Jun 5' },
-          'Total Page Views': 3669823211,
-          'Unique Identifiers': null
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
+            'series.0': 3669828357,
+            'series.1': null
+          },
+          {
+            x: { rawValue: '2016-06-04 00:00:00.000', displayValue: 'Jun 4' },
+            'series.0': null,
+            'series.1': null
+          },
+          {
+            x: { rawValue: '2016-06-05 00:00:00.000', displayValue: 'Jun 5' },
+            'series.0': 3669823211,
+            'series.1': null
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Total Page Views',
+          'series.1': 'Unique Identifiers'
         }
-      ] as unknown) as C3Row[],
+      },
       'Intervals are trimmed and missing data points are filled with null values'
     );
   });
@@ -177,16 +189,21 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
-      ([
-        {
-          x: { rawValue: '2016-05-31 00:00:00.000', displayValue: '00:00' },
-          'Total Page Views': 3669828357
-        },
-        {
-          x: { rawValue: '2016-05-31 01:00:00.000', displayValue: '01:00' },
-          'Total Page Views': 4088487125
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-05-31 00:00:00.000', displayValue: '00:00' },
+            'series.0': 3669828357
+          },
+          {
+            x: { rawValue: '2016-05-31 01:00:00.000', displayValue: '01:00' },
+            'series.0': 4088487125
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Total Page Views'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series has the properly formmatted displayValue'
     );
   });
@@ -209,16 +226,21 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
-      ([
-        {
-          x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
-          'Total Page Views': 3669828357
-        },
-        {
-          x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
-          'Total Page Views': 4088487125
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
+            'series.0': 3669828357
+          },
+          {
+            x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
+            'series.0': 4088487125
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Total Page Views'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series has the properly formmatted displayValue'
     );
   });
@@ -238,13 +260,19 @@ module('Unit | Chart Builders | Metric', function(hooks) {
 
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
-      ([
-        {
-          x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
-          'Total Page Views': 0,
-          'Unique Identifiers': null
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
+            'series.0': 0,
+            'series.1': null
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Total Page Views',
+          'series.1': 'Unique Identifiers'
         }
-      ] as unknown) as C3Row[],
+      },
       'Zero values are not considered gaps in data'
     );
   });

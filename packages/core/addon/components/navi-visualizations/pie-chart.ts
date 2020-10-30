@@ -112,7 +112,8 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
     return {
       data: {
         type: 'pie',
-        json: seriesData
+        json: seriesData.series,
+        names: seriesData.names
       }
     };
   }

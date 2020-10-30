@@ -98,7 +98,7 @@ module('Unit | Component | line chart', function(hooks) {
           rawValue: date,
           displayValue: moment(date).format('MMM D')
         },
-        'Total Page Views': row.totalPageViews
+        'series.0': row.totalPageViews
       };
     }) as unknown) as C3Row[];
 
@@ -106,6 +106,12 @@ module('Unit | Component | line chart', function(hooks) {
       component.dataConfig.data.json,
       expectedData,
       'Data config contains json property with values for each x value and each series'
+    );
+
+    assert.deepEqual(
+      component.dataConfig.data.names,
+      { 'series.0': 'Total Page Views' },
+      'Data config contains names property mapping series to display name'
     );
 
     assert.deepEqual(component.dataConfig.data.groups, [], 'Data config groups is empty when chart is not stacked');
@@ -136,18 +142,24 @@ module('Unit | Component | line chart', function(hooks) {
           rawValue: date,
           displayValue: moment(date).format('MMM D')
         },
-        'Unique Identifiers': row.uniqueIdentifier,
-        'Total Page Views': row.totalPageViews
+        'series.0': row.totalPageViews,
+        'series.1': row.uniqueIdentifier
       };
     }) as unknown) as C3Row[];
 
     assert.deepEqual(component.dataConfig.data.json, expectedData, 'Data config updates with series options');
 
+    assert.deepEqual(
+      component.dataConfig.data.names,
+      { 'series.0': 'Total Page Views', 'series.1': 'Unique Identifiers' },
+      'Data config contains names property mapping series to display name'
+    );
+
     set(component.args, 'options', Object.assign({}, options, { style: { stacked: true } }));
 
     assert.deepEqual(
       component.dataConfig.data.groups,
-      [['Total Page Views', 'Unique Identifiers']],
+      [['series.0', 'series.1']],
       'Data config groups is array of series keys when chart is stacked'
     );
   });

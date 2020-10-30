@@ -25,10 +25,11 @@ const Validations = buildValidations(
       validator('inline', {
         validate(type: ChartType, options: { request?: RequestFragment }) {
           const { request } = options;
+          const numDimensions = request?.columns.filter(({ type }) => type === 'dimension').length || 0;
           if (type === 'dimension' && request) {
-            return request.columns.filter(({ type }) => type === 'dimension').length > 0;
+            return numDimensions > 0;
           }
-          return true;
+          return numDimensions === 0;
         },
         dependentKeys: ['model._request.columns.[]']
       })
@@ -47,32 +48,7 @@ const Validations = buildValidations(
         return this.chartType !== DIMENSION_SERIES && this.chartType !== DATE_TIME_SERIES;
       }),
       dependentKeys: ['model._request.columns.[]']
-    }),
-
-    [`${CONFIG_PATH}.dimensions`]: [
-      validator(
-        'length',
-        { min: 1 },
-        {
-          disabled: computed('chartType', function() {
-            return this.chartType !== DIMENSION_SERIES;
-          }),
-          dependentKeys: ['model._request.dimensionColumns.[]']
-        }
-      ),
-      validator('dimension-series', {
-        disabled: computed('chartType', function() {
-          return this.chartType !== DIMENSION_SERIES;
-        }),
-        dependentKeys: ['model._request.dimensionColumns.[]']
-      }),
-      validator('request-filters', {
-        disabled: computed('chartType', function() {
-          return this.chartType !== DIMENSION_SERIES;
-        }),
-        dependentKeys: ['model._request.filters.@each.values']
-      })
-    ]
+    })
   },
   {
     //Global Validation Options
@@ -99,6 +75,10 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
     }
   })
   metadata!: LineChartConfig['metadata'];
+
+  get isDimensionSeries(): boolean {
+    return this.metadata.axis.y.series.type === 'dimension';
+  }
 
   /**
    * Rebuild config based on request and response
