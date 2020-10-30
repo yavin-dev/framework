@@ -35,7 +35,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Array} - List of class names added to the gauge component
    */
-  @computed('actualValue')
+  @computed()
   get widgetClassNames() {
     return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }
