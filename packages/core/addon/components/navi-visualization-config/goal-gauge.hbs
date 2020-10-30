@@ -9,10 +9,10 @@
       @autofocus={{false}}
       @name="metric-description-input"
       @type="text"
-      @value={{readonly @options.metricTitle}}
-      @focus-out={{fn this.updateConfig "metricTitle"}}
-      @key-up={{fn this.updateConfig "metricTitle"}}
-      @placeholder={{metric-format (serialize @request.metrics.firstObject) @request.dataSource}}
+      @value={{readonly this.metricColumn.alias}}
+      @focus-out={{fn this.updateLabel}}
+      @key-up={{fn this.updateLabel}}
+      @placeholder={{this.metricColumn.displayName}}
     />
   </div>
   <div class="goal-gauge-config__section-header">
@@ -27,8 +27,8 @@
       @maxlength="22"
       @placeholder="Baseline Value"
       @value={{readonly @options.baselineValue}}
-      @focus-out={{fn this.updateConfig "baselineValue"}}
-      @key-up={{fn this.updateConfig "baselineValue"}}
+      @focus-out={{fn this.updateBaseline}}
+      @key-up={{fn this.updateBaseline}}
     />
   </div>
   <div class="goal-gauge-config__section-header">
@@ -43,8 +43,8 @@
       @maxlength="22"
       @placeholder="Goal Value"
       @value={{readonly @options.goalValue}}
-      @focus-out={{fn this.updateConfig "goalValue"}}
-      @key-up={{fn this.updateConfig "goalValue"}}
+      @focus-out={{fn this.updateGoal}}
+      @key-up={{fn this.updateGoal}}
     />
   </div>
 </div>

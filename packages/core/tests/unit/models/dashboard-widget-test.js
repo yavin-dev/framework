@@ -49,6 +49,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
 
       const serializedWidget = rec.toJSON();
       const cids = serializedWidget.requests[0].columns.map(c => c.cid);
+      const metricCid = serializedWidget.requests[0].columns[1].cid;
       cids.forEach((cid, idx) => {
         assert.equal(cid?.length, 10, 'column cid has proper value');
         //remove from validation since cid value is non deterministic
@@ -62,11 +63,11 @@ module('Unit | Model | dashboard widget', function(hooks) {
           dashboard: '1',
           visualization: {
             type: 'goal-gauge',
-            version: 1,
+            version: 2,
             metadata: {
               baselineValue: 200,
               goalValue: 1000,
-              metric: { metric: 'adClicks', parameters: {} }
+              metricCid: metricCid
             }
           },
           requests: [

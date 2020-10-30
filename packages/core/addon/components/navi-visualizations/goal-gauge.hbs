@@ -7,5 +7,6 @@
   @color={{this.color}}
   @legend={{this.legend}}
   @containerComponent={{@containerComponent}}
-  @metaNamespace={{@request.dataSource}}
+  {{did-insert this._drawTitle @options}}
+  {{did-update (queue this._removeTitle this._drawTitle) @options this.metric.displayName}}
 />
