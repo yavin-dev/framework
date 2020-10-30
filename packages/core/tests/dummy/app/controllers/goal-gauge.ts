@@ -1,5 +1,5 @@
 import Controller from '@ember/controller';
-import { set, computed, action } from '@ember/object';
+import { set, action } from '@ember/object';
 import { merge } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';

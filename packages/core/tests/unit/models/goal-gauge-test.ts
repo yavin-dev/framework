@@ -128,21 +128,9 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
       orginalConfig,
       'returns original config if no request or response is sent to rebuildConfig'
     );
+    assert.deepEqual(newConfig, expectedConfig, 'rebuilds config based on request');
     assert.deepEqual(
-      {
-        type: newConfig.type,
-        version: newConfig.version,
-        metadata: newConfig.metadata
-      },
-      expectedConfig,
-      'rebuilds config based on request'
-    );
-    assert.deepEqual(
-      {
-        type: paramConfig.type,
-        version: paramConfig.version,
-        metadata: paramConfig.metadata
-      },
+      paramConfig,
       expectedParamConfig,
       'rebuilds config based on request with parameterized metrics correctly'
     );
