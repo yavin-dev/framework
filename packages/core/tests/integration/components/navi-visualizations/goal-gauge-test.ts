@@ -27,10 +27,10 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(async function(this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     const MetadataService = this.owner.lookup('service:navi-metadata');
-    MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
+    await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
     this.options = { metricCid: 'cid_pageViews', baselineValue: 290000000, goalValue: 310000000 };
     this.request = store.createFragment('bard-request-v2/request', {
       table: 'inventory',

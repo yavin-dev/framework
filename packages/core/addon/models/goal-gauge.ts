@@ -16,7 +16,9 @@ import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
 const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
-    'metadata.metricCid': validator('request-metric-exist'),
+    'metadata.metricCid': validator('request-metric-exist', {
+      dependentKeys: ['model._request.metricColumns.[]']
+    }),
     'metadata.baselineValue': validator('number', { allowString: false, allowNone: false }),
     'metadata.goalValue': validator('number', { allowString: false, allowNone: false })
   },

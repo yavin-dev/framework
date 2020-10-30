@@ -35,7 +35,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Array} - List of class names added to the gauge component
    */
-  @computed()
+  @computed('actualValue')
   get widgetClassNames() {
     return ['goal-gauge-widget', `${guidFor(this)}-goal-gauge-widget`];
   }
@@ -56,8 +56,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
       const { canonicalName } = this.metric;
-      let actualValue = Number(firstRow[canonicalName]);
-      return actualValue;
+      return Number(firstRow[canonicalName]);
     }
     return 0;
   }
@@ -158,7 +157,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @private
    */
   @action _removeTitle() {
-    let tspans = d3.selectAll(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title > tspan`);
+    const tspans = d3.selectAll(`.${guidFor(this)}-goal-gauge-widget text.c3-chart-arcs-title > tspan`);
     tspans.remove();
   }
 
@@ -208,7 +207,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @returns {String} formatted number
    */
   _formatNumber(value: number) {
-    let formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
+    const formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
     return numeral(value)
       .format(formatStr)
       .toUpperCase();
