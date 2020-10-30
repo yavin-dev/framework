@@ -1,3 +1,4 @@
+import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "app"
@@ -7,6 +8,13 @@ plugins {
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
+    id("com.github.node-gradle.node") version "2.2.4"
+}
+
+node {
+    version = "12.16.0"
+    distBaseUrl = "https://nodejs.org/dist"
+    download = true
 }
 
 repositories {
@@ -28,6 +36,13 @@ dependencies {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
+tasks.withType<ProcessResources> {
+    dependsOn("copyNaviApp")
 }
 
 tasks.withType<KotlinCompile> {
@@ -35,4 +50,22 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "1.8"
     }
+}
+
+tasks.register<NpmTask>("installUIDependencies") {
+    setArgs(listOf("ci"))
+    setExecOverrides(closureOf<ExecSpec> {
+        setWorkingDir("../../../")
+    })
+}
+
+tasks.register<NpmTask>("buildUI") {
+  dependsOn("installUIDependencies")
+  setArgs(listOf("run-script", "build-ui"))
+}
+
+tasks.register<Copy>("copyNaviApp") {
+    dependsOn("buildUI")
+    from("../../app/dist")
+    into("$buildDir/resources/main/META-INF/resources")
 }
