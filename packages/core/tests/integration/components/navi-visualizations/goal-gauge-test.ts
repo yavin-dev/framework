@@ -83,7 +83,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     this.set('options', { metricCid: 'cid_available', baselineValue: 290000000, goalValue: 310000000 });
 
     this.request = store.createFragment('bard-request-v2/request', {
-      table: null,
+      table: 'inventory',
       columns: [
         {
           cid: 'cid_available',
@@ -97,7 +97,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       filters: [],
       sorts: [],
       limit: null,
-      dataSource: 'bardOne',
+      dataSource: 'bardTwo',
       requestVersion: '2.0'
     });
 

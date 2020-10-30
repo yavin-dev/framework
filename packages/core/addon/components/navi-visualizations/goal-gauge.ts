@@ -94,7 +94,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Object} - gauge data to render
    */
-  @computed()
+  @computed('actualValue')
   get data() {
     return {
       columns: [['data', this.actualValue]],
