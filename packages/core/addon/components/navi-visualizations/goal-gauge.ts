@@ -1,12 +1,6 @@
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- *  {{goal-gauge
- *    model=data
- *    options=options
- *  }}
  */
 
 import { readOnly } from '@ember/object/computed';

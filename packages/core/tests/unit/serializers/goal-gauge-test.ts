@@ -46,8 +46,8 @@ module('Unit | Serializer | metric label', function(hooks) {
           metric: 'rupees',
           parameters: {}
         },
-        baselineValue: 200,
-        goalValue: 1000
+        baselineValue: '200',
+        goalValue: '1000'
       }
     };
     const goalGaugeV2Config: GoalGaugeConfig = {
