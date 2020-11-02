@@ -73,11 +73,14 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
 
     assert.deepEqual(
       DimensionChartBuilder.buildData(DATA, { metricCid: 'cid_totalPageViews', dimensions: [] }, REQUEST),
-      [
-        { x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' } },
-        { x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' } },
-        { x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' } }
-      ],
+      {
+        series: [
+          { x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' } },
+          { x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' } },
+          { x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' } }
+        ] as C3Row[],
+        names: {}
+      },
       'Error Case: No series are made when no dimensions are requested'
     );
   });
@@ -97,23 +100,29 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         REQUEST
       ),
-      ([
-        {
-          x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
-          'All Other': 3669828357,
-          'Under 13': 2669828357
-        },
-        {
-          x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
-          'All Other': 4088487125,
-          'Under 13': 3088487125
-        },
-        {
-          x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
-          'All Other': 4024700302,
-          'Under 13': 3024700302
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
+            'series.0': 3669828357,
+            'series.1': 2669828357
+          },
+          {
+            x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
+            'series.0': 4088487125,
+            'series.1': 3088487125
+          },
+          {
+            x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
+            'series.0': 4024700302,
+            'series.1': 3024700302
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'All Other',
+          'series.1': 'Under 13'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series is made for each requested dimension'
     );
   });
@@ -147,13 +156,19 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         request
       ),
-      ([
-        {
-          x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
-          'All Other': 3669828357,
-          'Under 13': 3669828357
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
+            'series.0': 3669828357,
+            'series.1': 3669828357
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'All Other',
+          'series.1': 'Under 13'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series has the properly formatted displayValue'
     );
   });
@@ -189,18 +204,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         request
       ),
-      ([
-        {
-          x: { rawValue: '2016-05-30 00:00:00.000', displayValue: '00:00' },
-          'All Other': 3669828357,
-          'Under 13': 3669828357
-        },
-        {
-          x: { rawValue: '2016-05-30 01:00:00.000', displayValue: '01:00' },
-          'All Other': 4088487125,
-          'Under 13': 4088487125
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-05-30 00:00:00.000', displayValue: '00:00' },
+            'series.0': 3669828357,
+            'series.1': 3669828357
+          },
+          {
+            x: { rawValue: '2016-05-30 01:00:00.000', displayValue: '01:00' },
+            'series.0': 4088487125,
+            'series.1': 4088487125
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'All Other',
+          'series.1': 'Under 13'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series has the properly formmatted displayValue'
     );
   });
@@ -236,18 +257,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         request
       ),
-      ([
-        {
-          x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
-          'All Other': 3669828357,
-          'Under 13': 3669828357
-        },
-        {
-          x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
-          'All Other': 4088487125,
-          'Under 13': 4088487125
+      {
+        series: ([
+          {
+            x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
+            'series.0': 3669828357,
+            'series.1': 3669828357
+          },
+          {
+            x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
+            'series.0': 4088487125,
+            'series.1': 4088487125
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'All Other',
+          'series.1': 'Under 13'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series has the properly formmatted displayValue'
     );
   });
@@ -267,18 +294,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         REQUEST2
       ),
-      ([
-        {
-          x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
-          'All Other | M': 74621538,
-          'Under 13 | F': 158591335
-        },
-        {
-          x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
-          'All Other | M': 72011227,
-          'Under 13 | F': 156664890
+      {
+        series: ([
+          {
+            x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
+            'series.0': 74621538,
+            'series.1': 158591335
+          },
+          {
+            x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
+            'series.0': 72011227,
+            'series.1': 156664890
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'All Other | M',
+          'series.1': 'Under 13 | F'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series is made for each requested dimension with multiple dimension'
     );
   });
@@ -298,18 +331,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         },
         REQUEST2
       ),
-      ([
-        {
-          x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
-          'Under 13 | F': 158591335,
-          'Unknown | M': null
-        },
-        {
-          x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
-          'Under 13 | F': 156664890,
-          'Unknown | M': null
+      {
+        series: ([
+          {
+            x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
+            'series.0': null,
+            'series.1': 158591335
+          },
+          {
+            x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
+            'series.0': null,
+            'series.1': 156664890
+          }
+        ] as unknown) as C3Row[],
+        names: {
+          'series.0': 'Unknown | M',
+          'series.1': 'Under 13 | F'
         }
-      ] as unknown) as C3Row[],
+      },
       'A series is made for each requested dimension with multiple dimension with some that are not found'
     );
   });

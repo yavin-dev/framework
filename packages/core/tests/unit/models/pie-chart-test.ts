@@ -56,14 +56,14 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       }
     };
 
-    assert.ok(
+    assert.notOk(
       PieChart.isValidForRequest(buildTestRequest([{ field: 'm1', cid: '1' }], [{ field: 'd1', cid: '2' }])),
-      'pie-chart is valid when request has at least one dimension'
+      'dimension pie-chart always invalid'
     );
 
-    assert.ok(
-      !PieChart.isValidForRequest(buildTestRequest([{ field: 'm1', cid: '1' }], [{ field: 'd3', cid: '3' }])),
-      'dimension `d3` pie-chart is invalid when request does not have `d3`'
+    assert.notOk(
+      PieChart.isValidForRequest(buildTestRequest([{ field: 'm1', cid: '1' }], [{ field: 'd3', cid: '3' }])),
+      'dimension pie-chart always invalid'
     );
   });
 
@@ -85,7 +85,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       }
     };
 
-    assert.ok(
+    assert.notOk(
       PieChart.isValidForRequest(
         buildTestRequest(
           [
@@ -95,12 +95,12 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
           [{ field: 'd1', cid: '3' }]
         )
       ),
-      'pie-chart is valid when it has a metric in the request metrics'
+      'dimension pie-chart always invalid'
     );
 
     assert.notOk(
       PieChart.isValidForRequest(buildTestRequest([{ field: 'm3', cid: '4' }], [{ field: 'd1', cid: '3' }])),
-      'pie-chart is invalid when it does not have a metric in the request metrics'
+      'dimension pie-chart always invalid'
     );
   });
 
@@ -214,10 +214,13 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
       rows: [
         {
           requestMetric: 1,
+          'd1(field=id)': 'configValue1',
+          'd2(field=id)': 'configValue2'
+        },
+        {
+          requestMetric: 1,
           'd1(field=id)': 'foo1',
-          'd1(field=desc)': 'Foo1',
-          'd2(field=id)': 'bar1',
-          'd2(field=desc)': 'Bar1'
+          'd2(field=id)': 'bar1'
         }
       ]
     });
@@ -238,11 +241,8 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
     const request = buildTestRequest(
       [{ field: 'requestMetric', cid: '1' }],
       [
-        {
-          field: 'd1',
-          cid: '2'
-        },
-        { field: 'd2', cid: '3' }
+        { cid: '2', field: 'd1', parameters: { field: 'id' } },
+        { cid: '3', field: 'd2', parameters: { field: 'id' } }
       ]
     );
     const config = PieChart.rebuildConfig(request, response).toJSON();
@@ -261,13 +261,17 @@ module('Unit | Model | Pie Chart Visualization Fragment', function(hooks) {
                 {
                   name: 'Foo1,Bar1',
                   values: { '2': 'configValue1', '3': 'configValue2' }
+                },
+                {
+                  name: 'foo1,bar1',
+                  values: { '2': 'foo1', '3': 'bar1' }
                 }
               ]
             }
           }
         }
       },
-      'dimension series config regenerated with only metric updated'
+      'dimension series config regenerated with metric updated, old valid series kept, new series added to config'
     );
   });
 

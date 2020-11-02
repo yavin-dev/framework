@@ -3,6 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+const fields = [{ name: 'id' }, { name: 'desc' }];
+
 export default [
   {
     name: 'platform',
@@ -24,30 +26,35 @@ export default [
     name: 'game',
     longName: 'Game',
     cardinality: 50000000,
-    category: 'Other'
+    category: 'Other',
+    fields
   },
   {
     name: 'item',
     longName: 'Item',
     cardinality: 100,
-    category: 'Other'
+    category: 'Other',
+    fields
   },
   {
     name: 'enemy',
     longName: 'Enemy',
     cardinality: 100,
-    category: 'Character'
+    category: 'Character',
+    fields
   },
   {
     name: 'character',
     longName: 'Character',
     cardinality: 100,
-    category: 'Character'
+    category: 'Character',
+    fields
   },
   {
     name: 'location',
     longName: 'Location',
     cardinality: 100,
-    category: 'Other'
+    category: 'Other',
+    fields
   }
 ];

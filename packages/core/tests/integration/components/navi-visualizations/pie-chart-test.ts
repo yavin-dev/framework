@@ -10,7 +10,6 @@ import { initialize as injectC3Enhancements } from 'navi-core/initializers/injec
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext as Context } from 'ember-test-helpers';
 import $ from 'jquery';
-import { next } from '@ember/runloop';
 import { getTranslation } from 'navi-core/utils/chart';
 import { cloneDeep } from 'lodash-es';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -171,11 +170,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-All-Other text')
+      .dom('.chart-series-0 text')
       .hasText('13.02%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
-      .dom('.c3-target-Under-13 text')
+      .dom('.chart-series-1 text')
       .hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
@@ -195,11 +194,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-Total-Page-Views text')
+      .dom('.chart-series-0 text')
       .hasText('66.67%', 'Percentage label shown on slice is formatted properly for `Total Page Views`');
 
     assert
-      .dom('.c3-target-Unique-Identifiers text')
+      .dom('.chart-series-1 text')
       .hasText('33.33%', 'Percentage label shown on slice is formatted properly for `Unique Identifier`');
   });
 
@@ -248,19 +247,17 @@ module('Integration | Component | pie chart', function(hooks) {
       50;
     let yTranslate: number = ((find('svg')?.getAttribute('height') || 0) as number) / 2;
 
-    next(() => {
-      assert.equal(
-        Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).x),
-        Math.round(xTranslate),
-        'The metric name is in the correct X position on initial render'
-      );
+    assert.equal(
+      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).x),
+      Math.round(xTranslate),
+      'The metric name is in the correct X position on initial render'
+    );
 
-      assert.equal(
-        Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).y),
-        Math.round(yTranslate),
-        'The metric name is in the correct Y position on initial render'
-      );
-    });
+    assert.equal(
+      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).y),
+      Math.round(yTranslate),
+      'The metric name is in the correct Y position on initial render'
+    );
 
     /*
      * Resize the parent element of the SVG that the pie chart is drawn in
@@ -361,11 +358,11 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
     assert
-      .dom('.c3-target-All-Other text')
+      .dom('.chart-series-0 text')
       .hasText('40%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
     assert
-      .dom('.c3-target-Under-13 text')
+      .dom('.chart-series-1 text')
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
