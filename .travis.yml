@@ -66,11 +66,11 @@ jobs:
     - env: PACKAGE=navi-reports
   include:
     - stage: 'Publish'
-      if: branch = master AND repo = yahoo/navi AND type = push
+      if: branch = 0.2.x-alpha AND repo = yahoo/navi AND type = push
       node_js: '8'
-      name: 'NPM'
+      name: 'NPM Alpha'
       script: bash ./scripts/npm-publish.sh
-    - if: branch = request-v2 AND repo = yahoo/navi AND type = push
+    - if: branch = master AND repo = yahoo/navi AND type = push
       node_js: '8'
       name: 'NPM Beta'
       script: bash ./scripts/npm-publish-beta.sh
@@ -83,10 +83,10 @@ jobs:
       node_js: '8'
       if: branch = master AND repo = yahoo/navi AND type = push
     - script: bash ./scripts/artifactory-publish.sh
-      name: 'Artifactory'
+      name: 'Artifactory Alpha'
       node_js: '8'
-      if: branch = master AND repo = yahoo/navi AND type = push
-    - if: branch = request-v2 AND repo = yahoo/navi AND type = push
+      if: branch = 0.2.x-alpha AND repo = yahoo/navi AND type = push
+    - if: branch = master AND repo = yahoo/navi AND type = push
       node_js: '8'
       name: 'Artifactory Beta'
       script: bash ./scripts/artifactory-publish-beta.sh
