@@ -98,6 +98,6 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
     };
     const expectedModels = ['foo', 'bar', 'baz'].map(value => NaviDimensionModel.create({ value, dimensionColumn }));
     const actualModels = serializer.normalize(dimensionColumn, payload);
-    assert.deepEqual(actualModels, expectedModels, '`tableSource`, when available, is used to lookup dimension values');
+    assert.deepEqual(actualModels, expectedModels, '`tableSource`, when available, is used to normalize dimension value responses');
   });
 });
