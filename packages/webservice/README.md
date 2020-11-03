@@ -102,8 +102,7 @@ $ ./gradlew bootRun
 To run as Jar file
 
 ```shell script
-$ ./gradlew shadowJar
-$ java -jar app/build/libs/app-0.2.0.jar
+$ ./gradlew execJar
 ```
 
 # License
