@@ -11,6 +11,7 @@ import { ServiceOptions } from 'navi-data/services/navi-dimension';
 import { RequestV2 } from '../facts/interface';
 import ElideFactsAdapter from '../facts/elide';
 import { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
@@ -23,10 +24,9 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   }
 
   find(dimension: DimensionColumn, predicate: DimensionFilter[] = [], options: ServiceOptions = {}): Promise<unknown> {
-    const {
-      columnMetadata: { id, source, tableId },
-      parameters = {}
-    } = dimension;
+    const { columnMetadata, parameters = {} } = dimension;
+    const lookupMetadata = (columnMetadata as ElideDimensionMetadataModel).lookupColumn;
+    const { id, source, tableId } = lookupMetadata;
 
     // Create a request with only one dimension and its appropriate filters
     const request: RequestV2 = {

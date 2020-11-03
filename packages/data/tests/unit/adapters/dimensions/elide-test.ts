@@ -16,9 +16,20 @@ interface TestContext extends Context {
   server: Server;
 }
 
-const fakeResponse: AsyncQueryResponse = {
-  asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] }
-};
+function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
+  const fakeResponse: AsyncQueryResponse = {
+    asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] }
+  };
+  const originalFactAdapter = context.owner.factoryFor('adapter:facts/elide').class;
+  class TestAdapter extends originalFactAdapter {
+    fetchDataForRequest(request: RequestV2, options?: RequestOptions) {
+      callback(request, options);
+      return Promise.resolve(fakeResponse);
+    }
+  }
+  context.owner.unregister('adapter:facts/elide');
+  context.owner.register('adapter:facts/elide', TestAdapter);
+}
 
 module('Unit | Adapter | Dimensions | Elide', function(hooks) {
   setupTest(hooks);
@@ -52,7 +63,6 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
       }
     };
 
-    const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const expectedRequest: RequestV2 = {
       columns: [{ field: 'table0.dimension1', parameters: { foo: 'bar' }, type: 'dimension' }],
       filters: [
@@ -76,25 +86,54 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
       perPage: 24
     };
 
-    class TestAdapter extends originalFactAdapter {
-      fetchDataForRequest(request: RequestV2, options?: RequestOptions) {
-        assert.deepEqual(request, expectedRequest, 'Correct request is sent to elide fact adapter for find');
+    assertRequest(this, (request, options) => {
+      assert.deepEqual(request, expectedRequest, 'Correct request is sent to elide fact adapter for find');
+      assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
+    });
 
-        assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
-        return Promise.resolve(fakeResponse);
-      }
-    }
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', TestAdapter);
     const adapter = this.owner.lookup('adapter:dimensions/elide');
-
     await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }], expectedOptions);
+  });
+
+  test('find - tableSource', async function(this: TestContext, assert) {
+    assert.expect(1);
+
+    const factDimColumn = 'table1.dimension2';
+    const lookupDimColumn = 'table0.dimension0';
+
+    const TestDimensionColumn: DimensionColumn = {
+      columnMetadata: this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as DimensionMetadataModel
+    };
+
+    const expectedRequest: RequestV2 = {
+      columns: [{ field: lookupDimColumn, parameters: {}, type: 'dimension' }],
+      filters: [
+        {
+          field: lookupDimColumn,
+          parameters: {},
+          type: 'dimension',
+          operator: 'in',
+          values: ['v1', 'v2']
+        }
+      ],
+      sorts: [],
+      table: lookupDimColumn.split('.')[0],
+      limit: null,
+      dataSource: 'elideTwo',
+      requestVersion: '2.0'
+    };
+
+    assertRequest(this, (request, _options) => {
+      assert.deepEqual(request, expectedRequest, '`tableSource`, when available, is used to lookup dimension values');
+    });
+
+    const adapter = this.owner.lookup('adapter:dimensions/elide');
+    await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
   });
 
   test('all', async function(this: TestContext, assert) {
     assert.expect(2);
 
-    const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const TestDimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
@@ -117,21 +156,15 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     const expectedOptions = {
       timeout: 30000
     };
-    class TestAdapter extends originalFactAdapter {
-      fetchDataForRequest(request: RequestV2, options?: RequestOptions) {
-        assert.deepEqual(
-          request,
-          expectedRequest,
-          'Correct request is sent to elide fact adapter for all dimension values'
-        );
 
-        assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
-        return Promise.resolve(fakeResponse);
-      }
-    }
-
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', TestAdapter);
+    assertRequest(this, (request, options) => {
+      assert.deepEqual(
+        request,
+        expectedRequest,
+        'Correct request is sent to elide fact adapter for all dimension values'
+      );
+      assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
+    });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
     await adapter.all(TestDimensionColumn, expectedOptions);
@@ -140,7 +173,6 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
   test('search', async function(this: TestContext, assert) {
     assert.expect(2);
 
-    const originalFactAdapter = this.owner.factoryFor('adapter:facts/elide').class;
     const TestDimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
@@ -175,21 +207,15 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
       perPage: 48
     };
 
-    class TestAdapter extends originalFactAdapter {
-      fetchDataForRequest(request: RequestV2, options?: RequestOptions) {
-        assert.deepEqual(
-          request,
-          expectedRequest,
-          'Correct request is sent to elide fact adapter for search of dimension values'
-        );
+    assertRequest(this, (request, options) => {
+      assert.deepEqual(
+        request,
+        expectedRequest,
+        'Correct request is sent to elide fact adapter for search of dimension values'
+      );
 
-        assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
-        return Promise.resolve(fakeResponse);
-      }
-    }
-
-    this.owner.unregister('adapter:facts/elide');
-    this.owner.register('adapter:facts/elide', TestAdapter);
+      assert.deepEqual(options, expectedOptions, 'Options are passed through to the fact adapter');
+    });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
     await adapter.search(TestDimensionColumn, query, expectedOptions);

@@ -17,4 +17,12 @@ export default class ElideDimensionMetadataModel extends DimensionMetadataModel
   valueSourceType!: ValueSourceType;
   tableSource!: string | null;
   values!: string[];
+
+  get lookupColumn(): ElideDimensionMetadataModel {
+    if ('TABLE' === this.valueSourceType) {
+      const lookupColumn = this.tableSource || '';
+      return (this.naviMetadata.getById('dimension', lookupColumn, this.source) || this) as ElideDimensionMetadataModel;
+    }
+    return this;
+  }
 }
