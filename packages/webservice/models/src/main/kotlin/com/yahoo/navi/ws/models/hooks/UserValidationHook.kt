@@ -21,6 +21,7 @@ import java.util.Optional
 class UserValidationHook : LifeCycleHook<User> {
     override fun execute(
         operation: LifeCycleHookBinding.Operation?,
+        phase: LifeCycleHookBinding.TransactionPhase?,
         user: User?,
         requestScope: RequestScope?,
         changes: Optional<ChangeSpec>?
