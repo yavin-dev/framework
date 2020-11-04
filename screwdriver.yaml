@@ -5,13 +5,15 @@ shared:
   image: maven:3.6.3-jdk-8
   environment:
     NODE_VERSION: 12.16.0
+    JOBS: 6
 
 jobs:
   main:
     annotations:
-      screwdriver.cd/ram: TURBO
-      screwdriver.cd/cpu: TURBO
+      screwdriver.cd/ram: HIGH
+      screwdriver.cd/cpu: HIGH
     steps:
+      - test-show-cpu: node -e 'console.log(require("os").cpus().length - 1)'
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
@@ -54,6 +56,9 @@ jobs:
 
   gh-pages:
     requires: main
+    annotations:
+      screwdriver.cd/ram: HIGH
+      screwdriver.cd/cpu: HIGH
     environment:
       BUILD_NAVI_DEMO: true
     steps:
