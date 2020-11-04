@@ -15,3 +15,8 @@ travis_wait*.log
 *.iml
 .idea/
 package-lock.json
+
+#sd gh-pages deploy ignore
+.cache/
+alias/
+versions/
