@@ -13,10 +13,10 @@ jobs:
       screwdriver.cd/ram: HIGH
       screwdriver.cd/cpu: HIGH
     steps:
-      - test-show-cpu: node -e 'console.log(require("os").cpus().length - 1)'
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - test-show-cpu: node -e 'console.log(require("os").cpus().length - 1)'
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
