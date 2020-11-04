@@ -52,16 +52,21 @@ jobs:
       - ARTIFACTORY_USER
       - ARTIFACTORY_KEY
 
-  docs:
+  gh-pages:
     requires: main
+    environment:
+      BUILD_NAVI_DEMO: true
     steps:
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install: npm ci
       - setup-ci: git clone https://github.com/screwdriver-cd/toolbox.git /tmp/ci
-      - docs: |
+      - build-pages: |
+          cd packages/app
+          npx ember github-pages:commit --message "Deploy gh-pages from $SD_BUILD_SHA" --destination ../../
+      - deploy: |
           . /tmp/ci/git-ssh.sh
-          ./scripts/gh-pages-publish.sh
+          git push origin gh-pages:gh-pages
     secrets:
       - GIT_KEY_BASE64
