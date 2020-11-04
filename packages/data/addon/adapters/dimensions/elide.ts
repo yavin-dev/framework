@@ -20,7 +20,7 @@ const enumOperators: Partial<Record<FilterOperator, EnumFilter>> = {
   in: (values, filterValues) => values.filter(value => filterValues.includes(value)),
   eq: (values, filterValues) => values.filter(value => filterValues[0] === value),
   contains: (values, filterValues) =>
-    values.filter(value => ('' + value).toLowerCase().includes(('' + filterValues[0]).toLowerCase()))
+    values.filter(value => `${value}`.toLowerCase().includes(`${filterValues[0]}`.toLowerCase()))
 };
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {

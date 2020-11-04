@@ -12,7 +12,7 @@ import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 
 export type ResponseEdge = {
-  node: Dict<string>;
+  node: Record<string, string>;
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
