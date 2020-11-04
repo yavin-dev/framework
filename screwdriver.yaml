@@ -5,6 +5,7 @@ shared:
   image: maven:3.6.3-jdk-8
   environment:
     NODE_VERSION: 12.16.0
+    JOBS: 4
 
 jobs:
   main:
@@ -54,6 +55,9 @@ jobs:
 
   gh-pages:
     requires: main
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     environment:
       BUILD_NAVI_DEMO: true
     steps:
