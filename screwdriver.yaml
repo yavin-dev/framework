@@ -5,18 +5,17 @@ shared:
   image: maven:3.6.3-jdk-8
   environment:
     NODE_VERSION: 12.16.0
-    JOBS: 6
+    JOBS: 4
 
 jobs:
   main:
     annotations:
-      screwdriver.cd/ram: HIGH
-      screwdriver.cd/cpu: HIGH
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     steps:
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
-      - test-show-cpu: node -e 'console.log(require("os").cpus().length - 1)'
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
@@ -57,8 +56,8 @@ jobs:
   gh-pages:
     requires: main
     annotations:
-      screwdriver.cd/ram: HIGH
-      screwdriver.cd/cpu: HIGH
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     environment:
       BUILD_NAVI_DEMO: true
     steps:
