@@ -122,8 +122,10 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   async search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
+    let predicate: DimensionFilter[];
+
     if (columnMetadata.hasEnumValues) {
-      const predicate: DimensionFilter[] = query.length
+      predicate = query.length
         ? [
             {
               operator: 'contains',
@@ -131,18 +133,19 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
             }
           ]
         : [];
-      return this.findEnum(dimension, predicate, options);
+    } else {
+      predicate = query.length
+        ? [
+            {
+              operator: 'eq',
+              values: [`*${query}*`]
+            }
+          ]
+        : [];
     }
 
-    const predicate: DimensionFilter[] = query.length
-      ? [
-          {
-            operator: 'eq',
-            values: [`*${query}*`]
-          }
-        ]
-      : [];
-
-    return this.findRequest(dimension, predicate, options);
+    return columnMetadata.hasEnumValues
+      ? this.findEnum(dimension, predicate, options)
+      : this.findRequest(dimension, predicate, options);
   }
 }
