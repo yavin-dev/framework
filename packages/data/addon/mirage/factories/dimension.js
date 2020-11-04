@@ -43,7 +43,7 @@ export default Factory.extend({
     return this.valueSourceType === 'ENUM'
       ? new Array(5).fill().map((_, idx) => {
           faker.seed(this.index + idx);
-          return faker.commerce.productName();
+          return `${faker.commerce.productName()} (enum)`;
         })
       : [];
   }

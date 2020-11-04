@@ -10,7 +10,8 @@
     "url": "https://github.com/yahoo/navi"
   },
   "scripts": {
-    "start": "lerna exec --scope navi-app npm start",
+    "build-ui": "lerna run prodbuild --scope navi-app --stream",
+    "start": "cd packages/webservice && ./gradlew bootRun",
     "postinstall": "lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test --stream",
     "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes",

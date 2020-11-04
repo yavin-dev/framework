@@ -9,9 +9,15 @@ plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("com.github.johnrengelman.shadow") version "5.2.0"
-    id("com.moowork.node") version "1.3.1"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
+    id("com.github.node-gradle.node") version "2.2.4"
+}
+
+node {
+    version = "12.16.0"
+    distBaseUrl = "https://nodejs.org/dist"
+    download = true
 }
 
 repositories {
@@ -58,12 +64,9 @@ tasks.register<NpmTask>("installUIDependencies") {
     })
 }
 
-tasks.register<Exec>("buildUI") {
-    dependsOn("installUIDependencies")
-
-    workingDir("../../..")
-
-    commandLine = listOf("npx", "lerna", "run", "prodbuild", "--scope", "navi-app", "--stream")
+tasks.register<NpmTask>("buildUI") {
+  dependsOn("installUIDependencies")
+  setArgs(listOf("run-script", "build-ui"))
 }
 
 tasks.register<Copy>("copyNaviApp") {
