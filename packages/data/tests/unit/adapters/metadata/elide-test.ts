@@ -192,11 +192,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               valueSourceType: 'ENUM',
               valueType: 'TEXT',
               values: [
-                'Practical Frozen Fish',
-                'Practical Concrete Chair',
-                'Awesome Steel Chicken',
-                'Tasty Fresh Towels',
-                'Intelligent Steel Pizza'
+                'Practical Frozen Fish (enum)',
+                'Practical Concrete Chair (enum)',
+                'Awesome Steel Chicken (enum)',
+                'Tasty Fresh Towels (enum)',
+                'Intelligent Steel Pizza (enum)'
               ]
             }
           },
@@ -374,11 +374,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         valueSourceType: 'ENUM',
                         valueType: 'TEXT',
                         values: [
-                          'Practical Frozen Fish',
-                          'Practical Concrete Chair',
-                          'Awesome Steel Chicken',
-                          'Tasty Fresh Towels',
-                          'Intelligent Steel Pizza'
+                          'Practical Frozen Fish (enum)',
+                          'Practical Concrete Chair (enum)',
+                          'Awesome Steel Chicken (enum)',
+                          'Tasty Fresh Towels (enum)',
+                          'Intelligent Steel Pizza (enum)'
                         ]
                       }
                     },

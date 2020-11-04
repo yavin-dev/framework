@@ -30,7 +30,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
-      'table0.dimension1',
+      'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
     const expectedDimensionModels = [
@@ -48,7 +48,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
-      'table0.dimension1',
+      'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
     const findValues = ['Awesome Plastic Fish', 'Refined Fresh Bacon'];

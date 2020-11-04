@@ -25,4 +25,8 @@ export default class ElideDimensionMetadataModel extends DimensionMetadataModel
     }
     return this;
   }
+
+  get hasEnumValues(): boolean {
+    return 'ENUM' === this.valueSourceType;
+  }
 }
