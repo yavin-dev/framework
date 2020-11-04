@@ -6,9 +6,15 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("com.moowork.node") version "1.3.1"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
+    id("com.github.node-gradle.node") version "2.2.4"
+}
+
+node {
+    version = "12.16.0"
+    distBaseUrl = "https://nodejs.org/dist"
+    download = true
 }
 
 repositories {
@@ -18,7 +24,7 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr21")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr23")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
@@ -54,12 +60,9 @@ tasks.register<NpmTask>("installUIDependencies") {
     })
 }
 
-tasks.register<Exec>("buildUI") {
-    dependsOn("installUIDependencies")
-
-    workingDir("../../..")
-
-    commandLine = listOf("npx", "lerna", "run", "prodbuild", "--scope", "navi-app", "--stream")
+tasks.register<NpmTask>("buildUI") {
+  dependsOn("installUIDependencies")
+  setArgs(listOf("run-script", "build-ui"))
 }
 
 tasks.register<Copy>("copyNaviApp") {
