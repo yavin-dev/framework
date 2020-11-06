@@ -4,8 +4,13 @@
  */
 package com.yahoo.navi.ws.config
 
-class AppSettings {
-    var factApiHost = ""
-    var persistenceApiHost = ""
-    var user = ""
+enum class DataSourceTypes {
+    elide
 }
+
+data class DataSource(
+    var name: String,
+    var uri: String,
+    var type: DataSourceTypes,
+    var timeout: Int = 900000
+)

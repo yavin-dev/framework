@@ -9,7 +9,7 @@ import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField, ELIDE_API_DATE_FORMAT } from 'navi-data/adapters/facts/elide';
 
-const HOST = config.navi.dataSources[0].uri;
+const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
 const TestRequest: RequestV2 = {
@@ -270,7 +270,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+    Server.post(HOST, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.deepEqual(
@@ -329,7 +329,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     const response = { errors: [{ message: 'Error in graphql query' }] };
-    Server.post(`${HOST}/graphql`, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
+    Server.post(HOST, () => [200, { 'Content-Type': 'application/json' }, JSON.stringify(response)]);
 
     try {
       await adapter.createAsyncQuery(TestRequest);
@@ -344,7 +344,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+    Server.post(HOST, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.equal(
@@ -369,7 +369,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const result = await adapter.cancelAsyncQuery('request1');
+    const result = await adapter.cancelAsyncQuery('request1', 'elideOne');
     assert.deepEqual(result, response, 'createAsyncQuery returns the correct response payload');
   });
 
@@ -379,7 +379,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+    Server.post(HOST, function({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.equal(
@@ -422,7 +422,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const result = await adapter.fetchAsyncQuery('request1');
+    const result = await adapter.fetchAsyncQuery('request1', 'elideOne');
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
@@ -437,7 +437,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let queryId: string;
 
     let response: TODO;
-    Server.post(`${HOST}/graphql`, function({ requestBody }) {
+    Server.post(HOST, function({ requestBody }) {
       callCount++;
       let result = null;
       const { query, variables } = JSON.parse(requestBody);
@@ -515,7 +515,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let errors = [{ message: 'Bad request' }];
-    Server.post(`${HOST}/graphql`, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
+    Server.post(HOST, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
     try {
       await adapter.fetchDataForRequest(TestRequest);

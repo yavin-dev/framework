@@ -22,12 +22,12 @@ class ServerGeneratedConfigTest : IntegrationTest() {
     @Test
     fun server_generated_config() {
         val expected: String? =
-            """var NAVI_APP = {"appSettings":{"factApiHost":"","persistenceApiHost":"/api/v1","user":"testuser"},"features":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true}};"""
+            """var NAVI_APP = {"user":"testuser","dataSources":[{"name":"default","uri":"/graphql/api/v1","type":"elide","timeout":900000}],"appPersistence":{"name":"persistence","uri":"/api/v1","type":"elide","timeout":900000},"FEATURES":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true}};"""
 
         val actual: String = given()
             .header("User", "testuser")
             .When()
-            .get("/assets/server-generated-config.js")
+            .get("/ui/assets/server-generated-config.js")
             .then()
             .statusCode(200)
             .extract().response().asString()

@@ -15,7 +15,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 class WebConfig : WebMvcConfigurer {
     override fun addViewControllers(registry: ViewControllerRegistry) {
-        registry.addViewController("/ui/**").setViewName("forward:/index.html")
-        registry.addViewController("/").setViewName("redirect:/ui")
+        registry.addViewController("/ui/").setViewName("forward:/ui/index.html")
+        registry.addViewController("/ui/**/{path:[^\\.]*}").setViewName("forward:/ui/")
+        registry.addViewController("/ui").setViewName("redirect:/ui/")
+        registry.addViewController("/").setViewName("redirect:/ui/")
     }
 }

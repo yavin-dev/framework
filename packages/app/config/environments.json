@@ -1,7 +1,11 @@
 {
   "default": {
-    "factApiHost": "https://{filiHostname}",
-    "persistenceApiHost": "https://{naviwsHostname}"
+    "dataSources": [{ "name": "default", "uri": "https://{filiHostname}", "type": "bard" }],
+    "appPersistence": {
+      "type": "elide",
+      "uri": "https://{naviwsHostname}",
+      "timeout": 90000
+    }
   },
   "localhost": {
     "user": "navi_user"

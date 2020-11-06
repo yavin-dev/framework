@@ -20,6 +20,13 @@ module.exports = function(environment) {
     APP: {},
 
     navi: {
+      user: 'navi_user',
+      dataSources: [{ name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' }],
+      appPersistence: {
+        type: 'webservice',
+        uri: 'https://persistence.naviapp.io',
+        timeout: 90000
+      },
       FEATURES: {
         exploreWidget: true,
         enableScheduleReports: true,

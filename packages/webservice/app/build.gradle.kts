@@ -66,13 +66,14 @@ tasks.register<NpmTask>("installUIDependencies") {
 
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
+  setEnvironment(mapOf("DISABLE_MOCKS" to true))
   setArgs(listOf("run-script", "build-ui"))
 }
 
 tasks.register<Copy>("copyNaviApp") {
     dependsOn("buildUI")
     from("../../app/dist")
-    into("$buildDir/resources/main/META-INF/resources")
+    into("$buildDir/resources/main/META-INF/resources/ui")
 }
 
 tasks.withType<ShadowJar> {
