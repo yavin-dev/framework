@@ -17,6 +17,10 @@ elide:
     defaultAsyncQueryDAO: true
   aggregation-store:
     enabled: true
+    default-dialect: H2
+  dynamic-config:
+    enabled: true
+    path: configs
 
 spring:
   application:

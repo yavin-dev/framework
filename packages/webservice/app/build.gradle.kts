@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
 import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -6,6 +8,7 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("com.github.johnrengelman.shadow") version "5.2.0"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
     id("com.github.node-gradle.node") version "2.2.4"
@@ -29,6 +32,7 @@ dependencies {
     implementation("com.h2database", "h2", "1.3.176")
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
     implementation("io.micrometer","micrometer-core", "1.5.1")
+    implementation("org.projectlombok", "lombok", "1.18.10")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
@@ -69,4 +73,25 @@ tasks.register<Copy>("copyNaviApp") {
     dependsOn("buildUI")
     from("../../app/dist")
     into("$buildDir/resources/main/META-INF/resources")
+}
+
+tasks.withType<ShadowJar> {
+    classifier = ""
+
+    // Required for Spring
+    mergeServiceFiles()
+    append("META-INF/spring.handlers")
+    append("META-INF/spring.schemas")
+    transform(PropertiesFileTransformer().apply {
+        paths = listOf("META-INF/spring.factories")
+        mergeStrategy = "append"
+    })
+    manifest {
+        attributes["Main-Class"] = "com.yahoo.navi.ws.AppKt"
+    }
+}
+
+tasks.register<Exec>("execJar") {
+    dependsOn("shadowJar")
+    commandLine = listOf("java", "-jar", "build/libs/app-${project.version}.jar")
 }

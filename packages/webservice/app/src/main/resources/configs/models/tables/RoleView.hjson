@@ -1,0 +1,13 @@
+{
+    tables: [{
+        name: RoleView
+        table: role
+        dimensions : [
+            {
+                name : createdOn
+                type : TEXT
+                definition : '{{createdOn}}'
+            }
+        ]
+    }]
+}
