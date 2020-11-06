@@ -90,5 +90,5 @@ tasks.withType<ShadowJar> {
 
 tasks.register<Exec>("execJar") {
     dependsOn("shadowJar")
-    commandLine = listOf("java", "-jar", "build/libs/app-0.2.0.jar")
+    commandLine = listOf("java", "-jar", "build/libs/app-${project.version}.jar")
 }
