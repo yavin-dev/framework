@@ -48,7 +48,9 @@ export function getMetricCidFromSeries(request: RequestV2, series: LegacyChartSe
   const column = request.columns.find(
     ({ field, parameters }) => canonicalizeMetric({ metric: field, parameters }) === canonicalName
   );
-  assert(`The ${canonicalName} metric should exist and have a cid`, column?.cid);
+  if (!column?.cid) {
+    throw new Error(`The ${canonicalName} metric should exist and have a cid`);
+  }
   return column?.cid;
 }
 

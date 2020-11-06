@@ -107,7 +107,7 @@ module('Unit | Serializer | line chart', function(hooks) {
       () => {
         normalizeLineChartV2(TestRequest, dimensionConfigBadMetricName);
       },
-      /Error: Assertion Failed: The metricName metric should exist and have a cid/,
+      /Error: The metricName metric should exist and have a cid/,
       'a dimension throws an error when trying to match up a nonexistent metric'
     );
 
@@ -148,7 +148,7 @@ module('Unit | Serializer | line chart', function(hooks) {
       () => {
         normalizeLineChartV2(TestRequest, dateTimeConfigBadMetricName);
       },
-      /Error: Assertion Failed: The metricName metric should exist and have a cid/,
+      /Error: The metricName metric should exist and have a cid/,
       'a dimension throws an error when trying to match up a nonexistent metric'
     );
   });
