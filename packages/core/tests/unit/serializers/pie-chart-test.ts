@@ -7,7 +7,7 @@ import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { LegacyPieChartConfig, normalizePieChartV2 } from 'navi-core/serializers/pie-chart';
 import { PieChartConfig } from 'navi-core/models/pie-chart';
 
-function pieChartWithMetric(metric: unknown): LegacyPieChartConfig {
+function pieChartWithMetric(metric: string | { metric: string; parameters?: {} }): LegacyPieChartConfig {
   return {
     type: 'pie-chart',
     version: 1,
@@ -80,22 +80,6 @@ module('Unit | Serializer | pie chart', function(hooks) {
       sorts: [],
       limit: null
     };
-    assert.deepEqual(
-      //@ts-expect-error
-      normalizePieChartV2(request, {}),
-      {
-        type: 'pie-chart',
-        version: 2,
-        metadata: {
-          series: {
-            config: {},
-            //@ts-expect-error
-            type: undefined
-          }
-        }
-      },
-      'empty object return skeleton of v2 pie chart'
-    );
 
     const expected = pieChartExpectedWithMetric('cid_uniqueIdentifier');
     assert.deepEqual(
@@ -114,6 +98,15 @@ module('Unit | Serializer | pie chart', function(hooks) {
       normalizePieChartV2(request, pieChartWithMetric({ metric: 'uniqueIdentifier', parameters: { param: 'val' } })),
       pieChartExpectedWithMetric('cid_uniqueIdentifier(param=val)'),
       'Config with a metric name stored is successfully converted to a cid'
+    );
+
+    const v2Config = { version: 2, blah: true };
+    assert.deepEqual(
+      //@ts-expect-error
+      normalizePieChartV2(request, v2Config),
+      //@ts-expect-error
+      v2Config,
+      'v2 config is returned without changes'
     );
   });
 });

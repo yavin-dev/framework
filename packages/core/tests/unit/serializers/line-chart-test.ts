@@ -99,14 +99,15 @@ module('Unit | Serializer | line chart', function(hooks) {
     );
 
     const dimensionConfigBadMetricName = makeConfig(1, 'dimension', {
-      metric: 'metricName'
+      metric: 'metricName',
+      dimensions: []
     });
 
     assert.throws(
       () => {
         normalizeLineChartV2(TestRequest, dimensionConfigBadMetricName);
       },
-      /Could not find a matching column for metric metricName/,
+      /Error: Assertion Failed: The metricName metric should exist and have a cid/,
       'a dimension throws an error when trying to match up a nonexistent metric'
     );
 
@@ -147,7 +148,7 @@ module('Unit | Serializer | line chart', function(hooks) {
       () => {
         normalizeLineChartV2(TestRequest, dateTimeConfigBadMetricName);
       },
-      /Could not find a matching column for metric metricName/,
+      /Error: Assertion Failed: The metricName metric should exist and have a cid/,
       'a dimension throws an error when trying to match up a nonexistent metric'
     );
   });

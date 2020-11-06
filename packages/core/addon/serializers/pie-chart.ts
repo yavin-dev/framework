@@ -5,14 +5,16 @@
 import { PieChartConfig } from 'navi-core/models/pie-chart';
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import { getMetricCidFromSeries, normalizeDimensionSeriesValues } from './line-chart';
+import { LegacyDimensionSeries, normalizeChartSeriesV2 } from './line-chart';
+import { assert } from '@ember/debug';
 
+type LegacyMetricSeries = { type: 'metric'; config: { metrics: { metric: string; parameters?: {} }[] } };
+type LegacyPieChartSeries = LegacyMetricSeries | LegacyDimensionSeries;
 export type LegacyPieChartConfig = {
   type: 'pie-chart';
   version: 1;
   metadata: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    series: any;
+    series: LegacyPieChartSeries;
   };
 };
 
@@ -23,29 +25,18 @@ export function normalizePieChartV2(
   if (visualization.version === 2) {
     return visualization;
   }
-  const series = visualization.metadata?.series;
 
-  let metricCid;
-  if (series?.config?.metric) {
-    metricCid = getMetricCidFromSeries(request, series);
-    if (!metricCid) {
-      throw new Error(`Could not find a matching column for metric ${series.config.metric}`);
-    }
-  }
-
-  let dimensions = normalizeDimensionSeriesValues(request, series);
+  const newSeries = normalizeChartSeriesV2(request, visualization.metadata?.series);
+  assert(
+    `The updated series should be either metric or dimension`,
+    newSeries.type === 'metric' || newSeries.type === 'dimension'
+  );
 
   return {
     type: 'pie-chart',
     version: 2,
     metadata: {
-      series: {
-        type: series?.type,
-        config: {
-          ...(dimensions ? { dimensions } : {}),
-          ...(metricCid ? { metricCid } : {})
-        }
-      }
+      series: newSeries
     }
   };
 }

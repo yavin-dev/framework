@@ -113,7 +113,7 @@ export function canonicalizeAlias(alias: string, aliasMap: Dict<string> = {}): s
  * @param canonicalName - the metric's canonical name
  * @returns object with base metric and parameters
  */
-export function parseMetricName(canonicalName: string): MetricObject {
+export function parseMetricName(canonicalName: string | MetricObject): MetricObject {
   if (typeof canonicalName !== 'string') {
     return canonicalName;
   }
