@@ -39,6 +39,6 @@ export const RequestActions = {
 
 export default class RequestActionDispatcher extends ActionDispatcher {
   get consumers() {
-    return [...super.consumers, 'request/column', 'request/filter', 'request/table', 'request/sort'];
+    return [...super.consumers, 'request/column', 'request/filter', 'request/fili', 'request/table', 'request/sort'];
   }
 }
