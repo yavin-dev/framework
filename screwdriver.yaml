@@ -1,0 +1,76 @@
+cache:
+  pipeline: [~/.npm]
+
+shared:
+  image: maven:3.6.3-jdk-8
+  environment:
+    NODE_VERSION: 12.16.0
+    JOBS: 4
+
+jobs:
+  main:
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
+    steps:
+      - install-node: |
+          sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
+          export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - install-chrome: ./build-scripts/setup-chrome.sh
+      - install: npm ci
+      - test-navi-admin: npx lerna run test --scope navi-admin --stream;
+      - test-navi-app: npx lerna run test --scope navi-app --stream;
+      - test-navi-core: npx lerna run test --scope navi-core --stream;
+      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream || true;
+      - test-navi-data: npx lerna run test --scope navi-data --stream;
+      - test-navi-directory: npx lerna run test --scope navi-directory --stream;
+      - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
+      - test-navi-reports: npx lerna run test --scope navi-reports --stream || true;
+      - test-navi-search: npx lerna run test --scope navi-search --stream;
+      - test-navi-webservice: cd packages/webservice && ./gradlew assemble && cd -;
+    requires:
+      - ~pr
+      - ~commit
+
+  publish-npm:
+    requires: main
+    environment:
+      GIT_SHALLOW_CLONE: false
+    steps:
+      - install-node: |
+          sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
+          export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - install: npm ci
+      - publish: ./scripts/npm-publish-beta.sh
+    secrets:
+      - NPM_TOKEN
+
+  publish-artifactory:
+    requires: main
+    steps:
+      - publish: ./scripts/artifactory-publish-beta.sh
+    secrets:
+      - ARTIFACTORY_USER
+      - ARTIFACTORY_KEY
+
+  gh-pages:
+    requires: main
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
+    environment:
+      BUILD_NAVI_DEMO: true
+    steps:
+      - install-node: |
+          sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
+          export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - install: npm ci
+      - setup-ci: git clone https://github.com/screwdriver-cd/toolbox.git /tmp/ci
+      - build-pages: |
+          cd packages/app
+          npx ember github-pages:commit --message "Deploy gh-pages from $SD_BUILD_SHA" --destination ../../
+      - deploy: |
+          . /tmp/ci/git-ssh.sh
+          git push origin gh-pages:gh-pages
+    secrets:
+      - GIT_KEY_BASE64
