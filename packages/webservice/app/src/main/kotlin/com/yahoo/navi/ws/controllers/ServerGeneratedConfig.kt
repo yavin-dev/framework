@@ -19,23 +19,14 @@ import java.security.Principal
 @Controller
 class ServerGeneratedConfig @Autowired constructor(naviSettings: NaviConfig, elideSettings: ElideConfigProperties) {
     private val mapper = ObjectMapper()
-    private val naviSettings: NaviConfig
-    private val elideSettings: ElideConfigProperties
+    private val naviSettings: NaviConfig = naviSettings
+    private val elideSettings: ElideConfigProperties = elideSettings
 
-    @GetMapping(value = ["/assets/server-generated-config.js"], produces = ["application/javascript"])
+    @GetMapping(value = ["/ui/assets/server-generated-config.js"], produces = ["application/javascript"])
     @ResponseBody
     @Throws(JsonProcessingException::class)
     fun serverGeneratedConfig(user: Principal): String {
-        naviSettings.appSettings.user = user.name ?: ""
-
-        if (naviSettings.appSettings.persistenceApiHost.isBlank()) {
-            naviSettings.appSettings.persistenceApiHost = elideSettings.jsonApi.path
-        }
+        naviSettings.user = user.name ?: ""
         return "var NAVI_APP = " + mapper.writeValueAsString(naviSettings) + ";"
-    }
-
-    init {
-        this.naviSettings = naviSettings
-        this.elideSettings = elideSettings
     }
 }

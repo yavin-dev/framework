@@ -11,5 +11,5 @@ export default function() {
   /**
    * /graphql endpoint
    */
-  this.post('/graphql', graphQLHandler);
+  this.post('/', graphQLHandler);
 }

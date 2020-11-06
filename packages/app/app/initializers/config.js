@@ -3,24 +3,12 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'navi-app/config/environment';
+import { mergeWith } from 'lodash-es';
 
 export function initialize() {
-  // Add server provided app settings into the environment
-  config.appSettings = window.NAVI_APP.appSettings;
-
   // Navi specific configuration
-  Object.assign(config.navi, {
-    user: config.appSettings.user,
-    /*
-     *TODO: set epoch date
-     *dataEpoch: NAVI_APP.appSettings.dataEpoch,
-     */
-    dataSources: [{ name: 'default', uri: config.appSettings.factApiHost, type: 'bard' }],
-    appPersistence: {
-      type: 'webservice',
-      uri: config.appSettings.persistenceApiHost,
-      timeout: 90000
-    }
+  mergeWith(config.navi, window.NAVI_APP, (a, b) => {
+    Array.isArray(a) ? [...a, ...b] : undefined;
   });
 }
 

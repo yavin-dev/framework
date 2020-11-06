@@ -33,13 +33,15 @@ export default function() {
   this.passthrough('/write-coverage');
 
   // Mock bard facts + metadata
-  this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-  const metricBuilder = (metric, row, dimensionKey) => {
-    faker.seed(hashCode(`${row.dateTime}_${dimensionKey}_${metric}`));
-    return Number(faker.finance.amount());
-  };
-  BardLite.call(this, metricBuilder);
-  BardMeta.call(this);
+  config.navi.dataSources.forEach(({ uri }) => {
+    this.urlPrefix = `${uri}/v1`;
+    const metricBuilder = (metric, row, dimensionKey) => {
+      faker.seed(hashCode(`${row.dateTime}_${dimensionKey}_${metric}`));
+      return Number(faker.finance.amount());
+    };
+    BardLite.call(this, metricBuilder);
+    BardMeta.call(this);
+  });
 
   // Mock persistence
   this.urlPrefix = config.navi.appPersistence.uri;

@@ -4,7 +4,7 @@ module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'navi-app',
     environment,
-    rootURL: '/',
+    rootURL: '/ui',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
@@ -27,16 +27,17 @@ module.exports = function(environment) {
     },
 
     navi: {
-      defaultDataSource: 'default',
       FEATURES: {
         enableDashboardFilters: true,
         multipleExportFileTypes: [],
         enableTableEditing: true
       }
-    }
+    },
+    apollo: {}
   };
 
   if (environment === 'development') {
+    ENV['ember-cli-mirage'] = { enabled: !process.env.DISABLE_MOCKS };
     /*
      * ENV.APP.LOG_RESOLVER = true;
      * ENV.APP.LOG_ACTIVE_GENERATION = true;
