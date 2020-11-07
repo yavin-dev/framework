@@ -32,6 +32,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/camelcase': ['error', { allow: ['_id$'] }],
     '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
     'prettier/prettier': 'error',

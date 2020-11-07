@@ -28,8 +28,8 @@ module.exports = function(environment) {
       dataSources: [
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
         { name: 'bardTwo', uri: 'https://data2.naviapp.com', type: 'bard' },
-        { name: 'elideOne', uri: 'https://data.naviapp.io', type: 'elide' },
-        { name: 'elideTwo', uri: 'https://data2.naviapp.com', type: 'elide' }
+        { name: 'elideOne', uri: 'https://data.naviapp.io/graphql', type: 'elide' },
+        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' }
       ],
       defaultDataSource: 'bardOne',
       searchThresholds: {

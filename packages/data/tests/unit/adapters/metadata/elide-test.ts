@@ -33,7 +33,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
 
     const gqlQuery = print(GQLQueries.table.all).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/graphql', (_schema: TODO, { requestBody }: { requestBody: string }) => {
+    this.server.post('https://data.naviapp.io', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
@@ -54,7 +54,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
 
     const gqlQuery = print(GQLQueries.table.single).trim(); //GQL Query as string
 
-    this.server.post('https://data.naviapp.io/graphql', (_schema: TODO, { requestBody }: { requestBody: string }) => {
+    this.server.post('https://data.naviapp.io', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
       assert.notOk(operationName, 'No operation name specified');
@@ -88,7 +88,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
       '__typename'
     ];
 
-    const { table: tableConnection } = await Adapter.fetchAll('table');
+    const { table: tableConnection } = await Adapter.fetchAll('table', {
+      dataSourceName: 'elideOne'
+    });
     const tables = tableConnection.edges.map((edge: TODO) => edge.node);
 
     // Test that all fields specified in the query are included in the result and none of them are null as they should be populated by the factories
@@ -192,11 +194,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               valueSourceType: 'ENUM',
               valueType: 'TEXT',
               values: [
-                'Practical Frozen Fish',
-                'Practical Concrete Chair',
-                'Awesome Steel Chicken',
-                'Tasty Fresh Towels',
-                'Intelligent Steel Pizza'
+                'Practical Frozen Fish (enum)',
+                'Practical Concrete Chair (enum)',
+                'Awesome Steel Chicken (enum)',
+                'Tasty Fresh Towels (enum)',
+                'Intelligent Steel Pizza (enum)'
               ]
             }
           },
@@ -277,7 +279,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     // Seed our mirage database
     scenario(this.server);
 
-    const result = await Adapter.fetchById('table', 'table0');
+    const result = await Adapter.fetchById('table', 'table0', {
+      dataSourceName: 'elideOne'
+    });
 
     assert.deepEqual(
       result,
@@ -374,11 +378,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         valueSourceType: 'ENUM',
                         valueType: 'TEXT',
                         values: [
-                          'Practical Frozen Fish',
-                          'Practical Concrete Chair',
-                          'Awesome Steel Chicken',
-                          'Tasty Fresh Towels',
-                          'Intelligent Steel Pizza'
+                          'Practical Frozen Fish (enum)',
+                          'Practical Concrete Chair (enum)',
+                          'Awesome Steel Chicken (enum)',
+                          'Tasty Fresh Towels (enum)',
+                          'Intelligent Steel Pizza (enum)'
                         ]
                       }
                     },
@@ -417,8 +421,12 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
   });
 
   test('fetchEverything - response', async function(this: MirageTestContext, assert) {
-    const allTables = await Adapter.fetchAll('table');
-    const everything = await Adapter.fetchEverything();
+    const allTables = await Adapter.fetchAll('table', {
+      dataSourceName: 'elideOne'
+    });
+    const everything = await Adapter.fetchEverything({
+      dataSourceName: 'elideOne'
+    });
     assert.deepEqual(everything, allTables, "`fetchEverything` returns the same payload `fetchAll('table')`");
   });
 });

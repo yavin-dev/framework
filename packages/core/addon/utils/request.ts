@@ -213,7 +213,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     requestV2.filters.push({
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
-      parameters: { field },
+      parameters: { field: field || 'id' },
       operator: operator as FilterOperator,
       values
     })

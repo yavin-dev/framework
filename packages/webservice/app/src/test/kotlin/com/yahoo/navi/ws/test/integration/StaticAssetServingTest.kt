@@ -22,7 +22,7 @@ class StaticAssetServingTest : IntegrationTest() {
 
     @Test
     fun landing_page_test() {
-        val content = this.javaClass::class.java.getResource("/META-INF/resources/index.html").readText()
+        val content = this.javaClass::class.java.getResource("/META-INF/resources/ui/index.html").readText()
 
         val response = given()
             .header("User", "testuser")
@@ -32,7 +32,7 @@ class StaticAssetServingTest : IntegrationTest() {
             .get("/")
 
         val location = response.getHeader("Location")
-        Assertions.assertTrue(location.endsWith("/ui"))
+        Assertions.assertTrue(location.endsWith("/ui/"))
 
         given()
             .header("User", "testuser")
@@ -45,7 +45,7 @@ class StaticAssetServingTest : IntegrationTest() {
 
     @Test
     fun ui_route_test() {
-        val content = this.javaClass::class.java.getResource("/META-INF/resources/index.html").readText()
+        val content = this.javaClass::class.java.getResource("/META-INF/resources/ui/index.html").readText()
 
         given()
             .header("User", "testuser")

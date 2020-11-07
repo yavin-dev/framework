@@ -6,7 +6,7 @@
 import { readOnly } from '@ember/object/computed';
 import { get, computed } from '@ember/object';
 import { attr } from '@ember-data/model';
-import ChartVisualization, { ChartSeries } from './chart-visualization';
+import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
 import RequestFragment from './bard-request-v2/request';
@@ -45,7 +45,7 @@ export type PieChartConfig = {
   type: 'pie-chart';
   version: 2;
   metadata: {
-    series: ChartSeries;
+    series: MetricSeries | DimensionSeries;
   };
 };
 

@@ -20,17 +20,13 @@ module('Unit | Initializers | config', function(hooks) {
 
     initialize(registry, application);
 
-    assert.deepEqual(config.navi.user, window.NAVI_APP.appSettings.user, 'Navi user has been configured');
+    assert.deepEqual(config.navi.user, window.NAVI_APP.user, 'Navi user has been configured');
+
+    assert.deepEqual(config.navi.dataSources, window.NAVI_APP.dataSources, 'Navi api host has been configured');
 
     assert.deepEqual(
-      config.navi.dataSources[0].uri,
-      window.NAVI_APP.appSettings.factApiHost,
-      'Navi api host has been configured'
-    );
-
-    assert.deepEqual(
-      config.navi.appPersistence.uri,
-      window.NAVI_APP.appSettings.persistenceApiHost,
+      config.navi.appPersistence,
+      window.NAVI_APP.appPersistence,
       'Navi persistence api host has been configured'
     );
   });

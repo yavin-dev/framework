@@ -8,10 +8,20 @@ import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
 import NaviDimensionAdapter, { DimensionFilter } from './interface';
 import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import { RequestV2 } from '../facts/interface';
-import ElideFactsAdapter from '../facts/elide';
+import { AsyncQueryResponse, FilterOperator, QueryStatus, RequestV2 } from '../facts/interface';
+import ElideFactsAdapter, { getElideField } from '../facts/elide';
 import { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import { assert } from '@ember/debug';
+
+type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
+
+const enumOperators: Partial<Record<FilterOperator, EnumFilter>> = {
+  in: (values, filterValues) => values.filter(value => filterValues.includes(value)),
+  eq: (values, filterValues) => values.filter(value => filterValues[0] === value),
+  contains: (values, filterValues) =>
+    values.filter(value => `${value}`.toLowerCase().includes(`${filterValues[0]}`.toLowerCase()))
+};
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
   /**
@@ -19,11 +29,72 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
    */
   private factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
-  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<unknown> {
+  private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
+    const { id, tableId } = dimension.columnMetadata;
+    const field = getElideField(id, dimension.parameters);
+    const nodes = values.map(value => `{"node":{"${field}":"${value}"}}`);
+    const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
+
+    return {
+      asyncQuery: {
+        edges: [
+          {
+            node: {
+              id: 'enum query',
+              query: 'n/a - enum',
+              status: QueryStatus.COMPLETE,
+              result: {
+                responseBody,
+                httpStatus: 200,
+                contentLength: 0,
+                recordCount: values.length
+              }
+            }
+          }
+        ]
+      }
+    };
+  }
+
+  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
     return this.find(dimension, [], options);
   }
 
-  find(dimension: DimensionColumn, predicate: DimensionFilter[] = [], options: ServiceOptions = {}): Promise<unknown> {
+  async find(
+    dimension: DimensionColumn,
+    predicate: DimensionFilter[] = [],
+    options: ServiceOptions = {}
+  ): Promise<AsyncQueryResponse> {
+    const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
+
+    return columnMetadata.hasEnumValues
+      ? this.findEnum(dimension, predicate, options)
+      : this.findRequest(dimension, predicate, options);
+  }
+
+  private findEnum(
+    dimension: DimensionColumn,
+    predicate: DimensionFilter[],
+    _options: ServiceOptions
+  ): AsyncQueryResponse {
+    const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
+    const { values } = columnMetadata;
+
+    const filteredValues = predicate.reduce((values, predicate) => {
+      const { operator, values: filterValues } = predicate;
+      const filterFn = enumOperators[operator];
+      assert(`Dimension enum filter operator is not supported: ${operator}`, filterFn);
+      return filterFn(values, filterValues);
+    }, values);
+
+    return this.formatEnumResponse(dimension, filteredValues);
+  }
+
+  private findRequest(
+    dimension: DimensionColumn,
+    predicate: DimensionFilter[] = [],
+    options: ServiceOptions = {}
+  ): Promise<AsyncQueryResponse> {
     const { columnMetadata, parameters = {} } = dimension;
     const lookupMetadata = (columnMetadata as ElideDimensionMetadataModel).lookupColumn;
     const { id, source, tableId } = lookupMetadata;
@@ -48,16 +119,33 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     return this.factAdapter.fetchDataForRequest(request, options);
   }
 
-  search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<unknown> {
-    const predicate: DimensionFilter[] = query.length
-      ? [
-          {
-            operator: 'eq',
-            values: [`*${query}*`]
-          }
-        ]
-      : [];
+  async search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
+    const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
-    return this.find(dimension, predicate, options);
+    let predicate: DimensionFilter[];
+
+    if (columnMetadata.hasEnumValues) {
+      predicate = query.length
+        ? [
+            {
+              operator: 'contains',
+              values: [query]
+            }
+          ]
+        : [];
+    } else {
+      predicate = query.length
+        ? [
+            {
+              operator: 'eq',
+              values: [`*${query}*`]
+            }
+          ]
+        : [];
+    }
+
+    return columnMetadata.hasEnumValues
+      ? this.findEnum(dimension, predicate, options)
+      : this.findRequest(dimension, predicate, options);
   }
 }

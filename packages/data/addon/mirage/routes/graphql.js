@@ -514,5 +514,5 @@ export default function() {
       }
     }
   });
-  this.post('/graphql', graphQLHandler);
+  this.post('/', graphQLHandler);
 }

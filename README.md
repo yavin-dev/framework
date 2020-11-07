@@ -30,7 +30,7 @@ You can install the individual packages via npm
 - [navi-dashboards](https://www.npmjs.com/package/navi-dashboards)
 - [navi-directory](https://www.npmjs.com/package/navi-directory)
 - [navi-data](https://www.npmjs.com/package/navi-data)
-- [navi-app](https://www.npmjs.com/package/navi-app) 
+- [navi-app](https://www.npmjs.com/package/navi-app)
 
 Please see the detailed installation instructions in the README of the individual packages for more info.
 

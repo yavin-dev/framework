@@ -5,6 +5,7 @@ shared:
   image: maven:3.6.3-jdk-8
   environment:
     NODE_VERSION: 12.16.0
+    JOBS: 4
 
 jobs:
   main:
@@ -26,7 +27,7 @@ jobs:
       - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
       - test-navi-reports: npx lerna run test --scope navi-reports --stream || true;
       - test-navi-search: npx lerna run test --scope navi-search --stream;
-      - test-navi-webservice: cd packages/webservice && ./gradlew assemble && cd -;
+      - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
     requires:
       - ~pr
       - ~commit
@@ -54,6 +55,9 @@ jobs:
 
   gh-pages:
     requires: main
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     environment:
       BUILD_NAVI_DEMO: true
     steps:
