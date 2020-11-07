@@ -20,7 +20,7 @@ elide:
     default-dialect: H2
   dynamic-config:
     enabled: true
-    path: configs
+    path: demo-configs
 
 spring:
   application:

@@ -1,0 +1,11 @@
+{
+  dbconfigs: [
+    {
+      name: DemoConnection
+      url: jdbc:h2:mem:SalesDB;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:create-demo-data.sql'
+      driver: org.h2.Driver
+      user: guest
+      dialect: H2
+    }
+  ]
+}

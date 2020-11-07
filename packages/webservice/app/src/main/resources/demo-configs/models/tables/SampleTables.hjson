@@ -1,0 +1,129 @@
+{
+  tables: [
+    {
+      name:  PilotStats
+      table: pilot_stats
+      dbConnectionName: DemoConnection
+      joins: [
+        {
+          name: joined_pilots
+          to: Pilots
+          type: toOne
+          definition: '{{pilot_id}} = {{joined_pilots.p_id}}'
+        }
+        {
+          name: joined_crafts
+          to: Crafts
+          type: toOne
+          definition: '{{craft_id}} = {{joined_crafts.c_id}}'
+        }
+      ]
+      dimensions: [
+        {
+          name: pilot
+          type: TEXT
+          definition: '{{joined_pilots.name}}'
+        }
+        {
+          name: craft
+          type: TEXT
+          definition: '{{joined_crafts.name}}'
+        }
+        {
+          name: battle
+          type: TEXT
+          definition: '{{battle_name}}'
+          values: [
+            'Battle of Scarif'
+            'Battle of Yavin'
+            'Battle of Hoth'
+            'Battle of Endor'
+          ]
+        }
+        {
+          name: victory
+          type: BOOLEAN
+          definition: '{{victory}}'
+          values: [
+            'true'
+            'false'
+          ]
+        }
+        {
+          name: month
+          category: date
+          type: TIME
+          definition: '{{battle_date}}'
+          grain: {
+            type: MONTH
+            sql: '{{}}'
+          }
+        }
+        {
+          name: day
+          type: TIME
+          category: date
+          definition: '{{battle_date}}'
+          grain: {
+            type: DAY
+            sql: '{{}}'
+          }
+        }
+      ]
+      measures: [
+        {
+          name: total_parsecs
+          category: stats
+          type: DECIMAL
+          definition: 'sum({{parsecs}})'
+        }
+        {
+          name: total_battles
+          category: stats
+          type: INTEGER
+          definition: 'count(distinct {{battle_name}})'
+        }
+        {
+          name: total_victories
+          category: stats
+          type: INTEGER
+          definition: 'count(distinct (case when {{victory}} then {{battle_name}} else null end))'
+        }
+      ]
+    }
+    {
+      name:  Crafts
+      table: crafts
+      dbConnectionName: DemoConnection
+      dimensions: [
+        {
+          name: c_id
+          type: INTEGER
+          definition: '{{id}}'
+        }
+        {
+          name: name
+          type: TEXT
+          definition: '{{name}}'
+        }
+      ]
+    }
+    {
+      name:  Pilots
+      table: pilots
+      dbConnectionName: DemoConnection
+      dimensions: [
+        {
+          name: p_id
+          type: INTEGER
+          definition: '{{id}}'
+        }
+        {
+          name: name
+          type: TEXT
+          definition: '{{name}}'
+        }
+      ]
+    }
+  ]
+}
