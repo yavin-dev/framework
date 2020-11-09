@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-import { A as arr } from '@ember/array';
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
@@ -17,7 +16,7 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {Service} metadataService
    */
-  @service('bard-metadata') metadataService;
+  @service('navi-metadata') metadataService;
 
   /**
    * @property {Object} request
@@ -27,11 +26,8 @@ export default class ReportBuilderComponent extends Component {
   /**
    * @property {boolean} -- whether report has valid table
    */
-  @computed('allTables', 'report.request.logicalTable.table.name')
   get hasValidLogicalTable() {
-    const allTables = arr(this.allTables);
-    const tableName = this.report.request.logicalTable.table?.name;
-    return allTables.filter(t => t.name === tableName).length > 0;
+    return !!this.request.tableMetadata;
   }
 
   /**
@@ -70,7 +66,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleDimFilter(dimension) {
-    this._expandFilters(() => arr(this.request.filters).findBy('dimension', dimension));
+    this._expandFilters(() => this.request.dimensionFilters.find(f => f.field === dimension));
   }
 
   /**
@@ -79,7 +75,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleMetricFilter(metric) {
-    this._expandFilters(() => (this.request.having || []).find(having => having.metric.metric.name === metric.name));
+    this._expandFilters(() => this.request.metricFilters.find(f => f.field === metric.name));
   }
 
   /**
@@ -89,9 +85,10 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleParameterizedMetricFilter(metric, parameters) {
+    //TODO clean me up
     this._expandFilters(() =>
-      (this.request.having || []).find(
-        having => having.metric.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
+      this.request.metricFilters.find(
+        filter => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
       )
     );
   }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { typeOf } from '@ember/utils';
@@ -10,6 +10,10 @@ const UNKNOWN_ERROR = 'Server Error';
 const MESSAGE_OVERRIDES = {
   'The adapter operation timed out': 'Data Timeout',
   'The ajax operation timed out': 'Data Timeout'
+};
+
+const REGEX_OVERRIDES = {
+  '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.'
 };
 
 /**
@@ -41,6 +45,13 @@ export function _getErrorText(error = {}) {
  */
 export function getApiErrMsg(error) {
   let errorText = _getErrorText(error) || UNKNOWN_ERROR;
+
+  Object.keys(REGEX_OVERRIDES).forEach(reg => {
+    let regex = new RegExp(reg, 'gi');
+    if (regex.test(errorText)) {
+      errorText = REGEX_OVERRIDES[reg];
+    }
+  });
 
   if (MESSAGE_OVERRIDES[errorText]) {
     errorText = MESSAGE_OVERRIDES[errorText];

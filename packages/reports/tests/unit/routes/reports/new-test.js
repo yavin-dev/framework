@@ -14,7 +14,7 @@ const NEW_MODEL = {
   createdOn: null,
   request: {
     bardVersion: 'v1',
-    dataSource: 'dummy',
+    dataSource: 'bardOne',
     dimensions: [],
     filters: [],
     having: [],
@@ -47,9 +47,8 @@ module('Unit | Route | reports/new', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    let metadataService = this.owner.lookup('service:bard-metadata');
-    metadataService.loadMetadata();
+  hooks.beforeEach(async function() {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     let mockAuthor = this.owner.lookup('service:store').createRecord('user', { id: 'navi_user' });
 
@@ -77,7 +76,7 @@ module('Unit | Route | reports/new', function(hooks) {
     return settled().then(() => {
       let model = this.owner.lookup('route:reports/new')._newModel();
       assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
-      assert.equal(model.request.dataSource, 'dummy', 'Should fall back to default dataSource');
+      assert.equal(model.request.dataSource, 'bardOne', 'Should fall back to default dataSource');
     });
   });
 

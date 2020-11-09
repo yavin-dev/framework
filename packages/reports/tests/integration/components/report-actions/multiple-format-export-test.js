@@ -7,13 +7,14 @@ import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
 const TEMPLATE = hbs`
-    {{#report-actions/multiple-format-export
-        report=report
-        disabled=disabled
-        naviNotifications=mockNotifications
-    }}
-        Export
-    {{/report-actions/multiple-format-export}}
+    <ReportActions::MultipleFormatExport
+      @report={{this.report}}
+      @title={{this.title}}
+      @disabled={{this.disabled}}
+      @naviNotifications={{this.mockNotifications}}
+    >
+      Export
+    </ReportActions::MultipleFormatExport>
     `;
 
 let Store;
@@ -22,7 +23,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
 
     // Mock notifications
@@ -30,21 +31,16 @@ module('Integration | Component | report actions - multiple-format-export', func
       add: () => null
     };
 
-    return this.owner
-      .lookup('service:bard-metadata')
-      .loadMetadata()
-      .then(() => {
-        return Store.findRecord('report', 1);
-      })
-      .then(report => {
-        this.set('report', report);
-      });
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    const report = await Store.findRecord('report', 1);
+    this.set('report', report);
   });
 
   test('export links', async function(assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    let factService = this.owner.lookup('service:navi-facts');
+    const factService = this.owner.lookup('service:navi-facts');
+    const compressionService = this.owner.lookup('service:compression');
 
     await render(TEMPLATE);
 
@@ -59,14 +55,19 @@ module('Integration | Component | report actions - multiple-format-export', func
       'CSV link has appropriate link to API'
     );
 
-    // PDF
-    expectedHref =
-      '/export?reportModel=EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh46qnBoABlXjkIgKfHO8gmEy9YykVSQABqJT0UgYq3pTJZsEvOmvM1vZ01DLYPAENCUqDEGECEoJQpWsSwEHZYBPD3YByBcUM1jQUd02gJgAH14OaVFzmEcRYIZMQE1yCpgCAAA';
-    assert.equal(
-      $('.multiple-format-export__dropdown a:contains("PDF")').attr('href'),
-      expectedHref,
-      'PDF link has appropriate link to export service'
-    );
+    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    const encodedModel = exportHref.split('/export?reportModel=')[1];
+
+    const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
+    const expectedModel = this.report.serialize();
+
+    //strip off owner
+    delete expectedModel.data.relationships;
+
+    assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
+
+    const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
+    assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
   });
 
   test('filename', async function(assert) {
@@ -153,14 +154,14 @@ module('Integration | Component | report actions - multiple-format-export', func
       }
     ]);
     await render(hbs`
-      {{#report-actions/multiple-format-export
-          report=report
-          disabled=disabled
-          naviNotifications=mockNotifications
-          exportFormats=exportFormats
-      }}
-          Export
-      {{/report-actions/multiple-format-export}}
+      <ReportActions::MultipleFormatExport
+        @report={{this.report}}
+        @disabled={{this.disabled}}
+        @naviNotifications={{this.mockNotifications}}
+        @exportFormats={{this.exportFormats}}
+      >
+        Export
+      </ReportActions::MultipleFormatExport>
     `);
 
     await clickTrigger();

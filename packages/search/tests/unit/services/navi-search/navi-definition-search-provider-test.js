@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import Pretender from 'pretender';
-import metadataRoutes from '../../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 
 let Service, Server;
 
@@ -11,7 +11,7 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     Server = new Pretender(metadataRoutes);
     Service = this.owner.lookup('service:navi-search/navi-definition-search-provider');
   });
@@ -46,7 +46,9 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
     metadataRoutes.bind(Server);
     const results = await Service.search.perform('time');
 
+    const makeDateTime = table => ({ id: `${table}.dateTime`, name: 'Date Time' });
     const expectedResults = [
+      ...['network', 'tableA', 'tableB', 'protected', 'tableC'].map(table => makeDateTime(table)),
       {
         id: 'timeSpent',
         name: 'Time Spent'
@@ -75,6 +77,11 @@ module('Unit | Service | navi-definition-search-provider', function(hooks) {
         id: 'tableA',
         name: 'Table A',
         description: 'Table A'
+      },
+      {
+        description: undefined,
+        id: 'tableA.dateTime',
+        name: 'Date Time'
       }
     ];
 

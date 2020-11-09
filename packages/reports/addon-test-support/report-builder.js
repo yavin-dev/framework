@@ -212,29 +212,6 @@ export async function getAll(type, query) {
 }
 
 /**
- * Clicks the metric config trigger for the given metric
- * @param {String} metric - the name of the metric
- * @returns {Function} - resets the search for the given metric
- */
-export async function clickMetricConfigTrigger(metric) {
-  const { item, reset } = await getItem('metric', metric);
-  await click(item.querySelector('.metric-config__trigger-icon'));
-  return reset;
-}
-
-/**
- * Searches for a metric, checks if it has a metric config
- * @param {String} metric - the name of the metric
- * @returns {Boolean} - true if the metric has a metric-config
- */
-export async function hasMetricConfig(metric) {
-  const { item, reset } = await getItem('metric', metric);
-  const result = !!item.querySelector('.metric-config');
-  await reset();
-  return result;
-}
-
-/**
  * Searches for the given timegrain, returns the checkbox and function to reset search
  * @param {String} timeGrain - the name of the timegrain
  * @returns {Function} - resets the search for the given timegrain

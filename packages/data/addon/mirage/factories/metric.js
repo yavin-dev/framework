@@ -8,7 +8,8 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    return `metric${this.index}`;
+    const id = this.table?.id;
+    return `${id ? id + '.' : ''}metric${this.index}`;
   },
 
   name() {
@@ -23,7 +24,7 @@ export default Factory.extend({
 
   valueType: 'NUMBER',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   defaultFormat: 'number',
 

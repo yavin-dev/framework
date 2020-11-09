@@ -51,7 +51,7 @@ export default class NaviCollection extends Component {
   /**
    * @property {String} itemRoute - routes to ${itemType}.${item} by default
    */
-  @computed('config.itemRoute')
+  @computed('config.itemRoute', 'itemType')
   get itemRoute() {
     let itemType = get(this, 'itemType'),
       itemRoute = get(this, 'config.itemRoute') || `${itemType}s.${itemType}`;
@@ -62,7 +62,7 @@ export default class NaviCollection extends Component {
   /**
    * @property {String} itemNewRoute - routes to ${itemType}.new by default
    */
-  @computed('config.itemNewRoute')
+  @computed('config.itemNewRoute', 'itemType')
   get itemNewRoute() {
     let itemType = get(this, 'itemType'),
       itemNewRoute = get(this, 'config.itemNewRoute') || `${itemType}s.new`;

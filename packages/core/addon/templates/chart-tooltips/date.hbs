@@ -1,14 +1,14 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="title">{{this.request.logicalTable.timeGrain}} {{this.x}}</div>
-{{#let (metric-format this.seriesConfig.metric this.request.dataSource) as |metricName|}}
-  <div class="sub-title">{{metricName}}</div>
+<div class="title">{{this.request.timeGrain}} {{this.x}}</div>
+{{#let (find-by "cid" this.seriesConfig.metricCid this.request.columns) as |metric|}}
+  <div class="sub-title">{{metric.displayName}}</div>
   <ol class="hover-metrics">
     {{#each this.tooltipData as |series|}}
       <li class="metric-val">
         <svg class="series-indicator">
           <circle cx="50%" cy="50%" r="40%" class="chart-series-{{series.seriesIndex}}"/>
         </svg>
-        <span>{{tooltip-value-formatter series.value this.seriesConfig.metric (object-at series.seriesIndex this.rowData)}}</span>
+        <span>{{tooltip-value-formatter series.value metric.displayName (object-at series.seriesIndex this.rowData)}}</span>
       </li>
     {{/each}}
   </ol>

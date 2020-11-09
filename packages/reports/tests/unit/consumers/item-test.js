@@ -5,17 +5,16 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { run } from '@ember/runloop';
 import Response from 'ember-cli-mirage/response';
 
-let Store, Container, MetadataService;
+let Store, Container;
 
 module('Unit | Consumer | item', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Container = this.owner;
     Store = Container.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    return MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('delete item - success', function(assert) {

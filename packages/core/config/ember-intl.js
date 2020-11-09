@@ -3,21 +3,6 @@
 module.exports = function(/* env */) {
   return {
     /**
-     * The locales that our application supports.
-     *
-     * This is optional and is automatically set if project stores translations
-     * where ember-intl is able to look them up (<project root>/translations/).
-     *
-     * If the project relies on side-loading translations, then you must explicitly
-     * list out the locales. i.e: ['en-us', 'en-gb', 'fr-fr']
-     *
-     * @property locales
-     * @type {Array?}
-     * @default "null"
-     */
-    locales: null,
-
-    /**
      * baseLocale is used to determine if translation keys are missing from other locales.
      * This property is optional, and if you rely on sideloading translations then
      * this should be null

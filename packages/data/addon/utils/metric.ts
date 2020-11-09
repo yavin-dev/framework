@@ -5,14 +5,15 @@
 import { isEmpty } from '@ember/utils';
 import { get } from '@ember/object';
 
-type Parameters = Dict<string>;
+type Parameters = Record<string, unknown>;
 interface ColumnAttributes {
   name: string;
   parameters: Parameters;
 }
+
 interface MetricObject {
   metric: string;
-  parameters: Parameters;
+  parameters?: Parameters;
 }
 
 /**
@@ -84,9 +85,10 @@ export function canonicalizeColumnAttributes(attributes: ColumnAttributes): stri
  */
 export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
   return metrics.reduce((obj, metric) => {
-    if (hasParameters(metric) && 'as' in metric.parameters) {
+    const { parameters = {} } = metric;
+    if (hasParameters(metric) && 'as' in parameters) {
       return Object.assign({}, obj, {
-        [metric.parameters.as]: canonicalizeMetric(metric)
+        [`${parameters.as}`]: canonicalizeMetric(metric)
       });
     }
     return obj;
@@ -111,7 +113,7 @@ export function canonicalizeAlias(alias: string, aliasMap: Dict<string> = {}): s
  * @param canonicalName - the metric's canonical name
  * @returns object with base metric and parameters
  */
-export function parseMetricName(canonicalName: string): MetricObject {
+export function parseMetricName(canonicalName: string | MetricObject): MetricObject {
   if (typeof canonicalName !== 'string') {
     return canonicalName;
   }

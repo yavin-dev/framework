@@ -4,10 +4,11 @@
  */
 
 import faker from 'faker';
+import { Response } from 'ember-cli-mirage';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';
-import blockheadTableModels from '../fixtures/bard-meta-blockhead-tables';
+import bardTwoTableModels from '../fixtures/bard-meta-bard-two-tables';
 import timeGrainModels from '../fixtures/bard-meta-time-grains';
 import dimModels from '../fixtures/bard-meta-dimensions';
 import metricModels from '../fixtures/bard-meta-metrics';
@@ -17,34 +18,44 @@ import metricModels from '../fixtures/bard-meta-metrics';
  */
 export default function() {
   /**
+   * unsupported metricFunctions endpoint
+   */
+  this.get('metricFunctions', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
+  this.get('metricFunctions/:id', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
+
+  /**
    * /tables endpoint
    */
   this.get('/tables', function(db, req) {
-    let isBlockhead = req.url.startsWith('https://data2');
-    let tables = isBlockhead ? blockheadTableModels : tableModels;
+    let isBardTwo = req.url.startsWith('https://data2');
+    let tables = isBardTwo ? bardTwoTableModels : tableModels;
 
     if (req.queryParams.format === 'fullview') {
       tables = tables.map(table => {
         let timeGrains = timeGrainModels.map(timeGrain => {
-          let tableDimModels = isBlockhead ? dimModels.blockheadDims : dimModels.defaultDims;
-          let defaultMetricModels = isBlockhead ? metricModels.blockheadMetrics : metricModels.defaultMetrics;
+          let tableDimModels = isBardTwo ? dimModels.bardTwoDims : dimModels.defaultDims;
+          let defaultMetricModels = isBardTwo ? metricModels.bardTwoMetrics : metricModels.defaultMetrics;
 
           if (table.name === 'tableC') {
             defaultMetricModels = defaultMetricModels.slice(0, 10);
           }
 
           if (table.name !== 'network') {
-            tableDimModels = tableDimModels.concat(dimModels.highCardinalityDims);
+            tableDimModels = [...tableDimModels, ...dimModels.highCardinalityDims];
           }
 
           if (timeGrain.name === 'day') {
             return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
           } else {
-            if (!isBlockhead) {
-              defaultMetricModels = defaultMetricModels.concat(metricModels.dayAvgMetrics);
+            if (!isBardTwo) {
+              defaultMetricModels = [...defaultMetricModels, ...metricModels.dayAvgMetrics];
             }
 
-            return Object.assign({}, timeGrain, { metrics: defaultMetricModels }, { dimensions: tableDimModels });
+            return {
+              ...timeGrain,
+              metrics: defaultMetricModels.map(m => ({ ...m, description: undefined })), //fullview does not have descriptions
+              dimensions: tableDimModels.map(d => ({ ...d, description: undefined })) //fullview does not have descriptions
+            };
           }
         });
 
@@ -55,8 +66,9 @@ export default function() {
 
         return Object.assign({}, table, { timeGrains });
       });
+      return { tables };
     }
-    return { tables };
+    return { rows: tables };
   });
 
   this.get('/dimensions/:dimension', function(db, request) {
@@ -75,6 +87,7 @@ export default function() {
         .concat(metricModels.dayAvgMetrics)
         .find(metricModel => metricModel.name === metricName);
 
+    faker.seed(metricName.length);
     metric.description = faker.lorem.sentence();
     return metric;
   });

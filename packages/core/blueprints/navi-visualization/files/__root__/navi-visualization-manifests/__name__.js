@@ -1,6 +1,6 @@
-import ManifestBase from 'navi-core/navi-visualization-manifests/base';
+import NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 
-export default class extends ManifestBase {
+export default class <%= classifiedModuleName %> extends NaviVisualizationBaseManifest {
   name = '<%= dasherizedModuleName %>';
 
   niceName = '<%= dasherizedModuleName %>';

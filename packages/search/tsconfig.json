@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
+    "lib": ["es2020", "dom"],
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -27,8 +28,20 @@
       "navi-search/*": ["addon/*"],
       "navi-search/test-support": ["addon-test-support"],
       "navi-search/test-support/*": ["addon-test-support/*"],
+      "navi-core": ["node_modules/navi-core/addon"],
+      "navi-core/*": ["node_modules/navi-core/addon/*"],
+      "navi-data": ["node_modules/navi-data/addon"],
+      "navi-data/*": ["node_modules/navi-data/addon/*"],
       "*": ["types/*"]
     }
   },
-  "include": ["app/**/*", "addon/**/*", "tests/**/*", "types/**/*", "test-support/**/*", "addon-test-support/**/*"]
+  "include": [
+    "app/**/*",
+    "addon/**/*",
+    "tests/**/*",
+    "types/**/*",
+    "test-support/**/*",
+    "addon-test-support/**/*",
+    "../*/config/*"
+  ]
 }

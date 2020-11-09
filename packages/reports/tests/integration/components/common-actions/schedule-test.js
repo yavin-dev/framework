@@ -332,11 +332,8 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - config enableMultipleExport true', async function(assert) {
+  test('format options - fallback to `multipleExportFileTypes`', async function(assert) {
     assert.expect(1);
-
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
-    config.navi.FEATURES.enableMultipleExport = true;
 
     this.set('model', TestModel);
     await render(TEMPLATE);
@@ -346,18 +343,16 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await clickTrigger('.schedule-modal__dropdown--format');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      ['csv', 'pdf'],
+      ['csv', 'pdf', 'png'],
       'Schedule format should have correct options'
     );
-
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
   });
 
-  test('format options - config enableMultipleExport false', async function(assert) {
+  test('format options - config multipleExportFileTypes is empty', async function(assert) {
     assert.expect(2);
 
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
-    config.navi.FEATURES.enableMultipleExport = false;
+    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
+    config.navi.FEATURES.multipleExportFileTypes = [];
 
     this.set('model', TestModel);
 
@@ -372,6 +367,6 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .includesText('csv', 'Schedule format should have correct default option');
 
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
 });

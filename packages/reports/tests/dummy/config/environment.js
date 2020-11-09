@@ -35,8 +35,8 @@ module.exports = function(environment) {
       defaultTimeGrain: 'day',
       defaultDataTable: 'network',
       dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
+        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
       ],
       appPersistence: {
         type: 'webservice',
@@ -45,7 +45,7 @@ module.exports = function(environment) {
       },
       FEATURES: {
         enableScheduleReports: true,
-        enableMultipleExport: true,
+        multipleExportFileTypes: ['pdf', 'png'],
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true

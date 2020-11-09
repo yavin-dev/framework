@@ -8,11 +8,19 @@ elide:
   swagger:
     path: /doc
     enabled: true
+  async:
+    enabled: true
+    threadPoolSize: 7
+    maxRunTime: 65
+    cleanupEnabled: true
+    queryCleanupDays: 7
+    defaultAsyncQueryDAO: true
   aggregation-store:
     enabled: true
+    default-dialect: H2
   dynamic-config:
-    path: src/main/resources/models
     enabled: true
+    path: configs
 
 spring:
   application:

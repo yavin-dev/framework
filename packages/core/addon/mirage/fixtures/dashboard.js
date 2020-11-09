@@ -119,8 +119,8 @@ export default [
     updatedOn: '2016-01-01 03:00:00',
     deliveryRuleIds: [],
     filters: [
-      { dimension: 'dummy.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      { dimension: 'blockhead.container', operator: 'notin', field: 'id', values: [1] }
+      { dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
+      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] }
     ],
     presentation: {
       version: 1,

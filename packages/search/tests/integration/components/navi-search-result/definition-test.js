@@ -6,14 +6,14 @@ import { set } from '@ember/object';
 import Service from '@ember/service';
 
 class MetadataServiceStub extends Service {
-  loadedDataSources = ['dummy', 'blockhead'];
+  loadedDataSources = new Set(['bardOne', 'bardTwo']);
 }
 
 module('Integration | Component | definition', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(async function() {
-    this.owner.register('service:bard-metadata', MetadataServiceStub);
+    this.owner.register('service:navi-metadata', MetadataServiceStub);
   });
 
   test('displays results', async function(assert) {
@@ -88,13 +88,13 @@ module('Integration | Component | definition', function(hooks) {
         id: 'pageViews',
         name: 'Page Views',
         description: 'The number of views of a page.',
-        source: 'dummy'
+        source: 'bardOne'
       },
       {
         id: 'impressions',
         name: 'Impressions',
         description: 'Number of times a user saw the ad.',
-        source: 'blockhead'
+        source: 'bardTwo'
       }
     ];
     set(this, 'data', data);
@@ -115,7 +115,7 @@ module('Integration | Component | definition', function(hooks) {
     );
     assert.deepEqual(
       findAll('.navi-search-definition-result__item-source').map(el => el.textContent.trim()),
-      ['Source: dummy', 'Source: blockhead'],
+      ['Source: bardOne', 'Source: bardTwo'],
       'definitions sources are shown correctly'
     );
   });

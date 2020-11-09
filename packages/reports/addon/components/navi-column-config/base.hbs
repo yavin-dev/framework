@@ -7,43 +7,55 @@
       <span class="navi-column-config-base__header-icons">
         {{!-- TODO: Favorites are not supported yet --}}
         {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
-        <NaviIcon @icon="clone"
-          class="navi-column-config-base__clone-icon {{if (eq @column.name "dateTime") "navi-column-config-base__clone-icon--disabled"}}"
-          role="button"
-          aria-disabled="{{eq @column.name "dateTime"}}"
-          {{on "click" @cloneColumn}} />
+        <NaviIcon @icon="clone" class="navi-column-config-base__clone-icon" role="button" {{on "click" @cloneColumn}} />
         <NaviIcon
-          class="navi-column-config-base__filter-icon
-            {{if @column.isFiltered "navi-column-config-base__filter-icon--active"}}
-            {{if (eq @column.name "dateTime") "navi-column-config-base__filter-icon--disabled"}}"
+          class="navi-column-config-base__filter-icon {{if @column.isFiltered "navi-column-config-base__filter-icon--active"}}"
           @icon="filter"
           role="button"
-          aria-disabled="{{eq @column.name "dateTime"}}"
           {{on "click" @toggleColumnFilter}}
-          />
+        />
       </span>
     </div>
   </div>
 
-    {{!-- TODO: Reenable column relabeling --}}
-    {{!-- <div class="navi-column-config-base__option navi-column-config-base__column-name">
+    <div class="navi-column-config-base__option navi-column-config-base__column-name">
       <label for="{{this.classId}}-column-name-input" class="navi-column-config-base__column-name-label navi-column-config-base__option-label">Column Name</label>
       <Input
         class="navi-column-config-base__column-name-input navi-column-config-base__option-input"
         id="{{this.classId}}-column-name-input"
-        @value={{@column.displayName}}
-        @key-up={{@onUpdateColumnName}}
+        @value={{readonly @column.fragment.alias}}
+        @placeholder={{@column.fragment.displayName}}
+        @key-up={{fn @onRenameColumn}}
       />
-    </div> --}}
+    </div>
 
-    {{#let (component (concat "navi-column-config/" (dasherize @column.type))) as |ColumnConfig|}}
-      <ColumnConfig
-        @column={{@column}}
-        @metadata={{@metadata}}
-        @onUpdateColumnName={{@onUpdateColumnName}}
-        @onUpdateTimeGrain={{update-report-action "ADD_TIME_GRAIN"}}
-        @onUpdateMetricParam={{update-report-action "UPDATE_METRIC_FRAGMENT_WITH_PARAM"}}
-      />
-    {{/let}}
+    {{#each @column.fragment.columnMetadata.parameters as |param|}}
+      <div class="navi-column-config-base__option navi-column-config-item__parameter">
+        <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type
+          {{#if param.description}}
+            <NaviIcon @icon="question-circle-o">
+              <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+                {{param.description}}
+              </EmberTooltip>
+            </NaviIcon>
+          {{/if}}
+        </label>
+        {{#let (await param.values) as |paramValues|}}
+          <PowerSelect
+            @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input"
+            @triggerId="{{this.classId}}-{{param.id}}"
+            @dropdownClass="navi-column-config-item__parameter-dropdown"
+            @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
+            @searchField={{if paramValues.firstObject.name "name" "description"}}
+            @searchPlaceholder="Search {{capitalize param.name}}"
+            @options={{paramValues}}
+            @onchange={{fn this.setParameter param}}
+            as | arg |
+          >
+            <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
+          </PowerSelect>
+        {{/let}}
+      </div>
+    {{/each}}
   </div>
 </div>

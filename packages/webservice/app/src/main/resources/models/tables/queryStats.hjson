@@ -6,25 +6,25 @@
             table: QueryStats
             description:
             '''
-            Carbon Query Stats Table
+            Navi Query Stats Table
             '''
             cardinality: large
             measures :
             [
                 {
                     name: durationInMillis
-                    type: DECIMAL
-                    definition: IF (durationInMillis IS NULL, -1, durationInMillis)
+                    type: INTEGER
+                    definition: IF ({{durationInMillis}} IS NULL, -1, {{durationInMillis}})
                 }
                 {
                     name: rowsReturned
-                    type: DECIMAL
-                    definition: IF (rowsReturned IS NULL, -1, rowsReturned)
+                    type: INTEGER
+                    definition: IF ({{rowsReturned}} IS NULL, -1, {{rowsReturned}})
                 }
                 {
                     name: bytesReturned
-                    type: DECIMAL
-                    definition: IF (bytesReturned IS NULL, -1, bytesReturned)
+                    type: INTEGER
+                    definition: IF ({{bytesReturned}} IS NULL, -1, {{bytesReturned}})
                 }
             ]
             dimensions :
@@ -37,17 +37,17 @@
                 {
                     name : apiVersion
                     type : TEXT
-                    definition : IF (apiVersion IS NULL, 'Unknown', apiVersion)
+                    definition : IF ({{apiVersion}} IS NULL, 'Unknown', {{apiVersion}})
                 }
                 {
                     name : apiQuery
                     type : TEXT
-                    definition : IF (apiQuery IS NULL, 'Unknown', apiQuery)
+                    definition : IF ({{apiQuery}} IS NULL, 'Unknown', {{apiQuery}})
                 }
                 {
                     name : storeQuery
                     type : TEXT
-                    definition : IF (storeQuery IS NULL, 'Unknown', storeQuery)
+                    definition : IF ({{storeQuery}} IS NULL, 'Unknown', {{storeQuery}})
                 }
                 {
                     name : isCached
@@ -57,55 +57,54 @@
                 {
                     name : hostName
                     type : TEXT
-                    definition : IF (hostName IS NULL, 'Unknown', hostName)
+                    definition : IF ({{hostName}} IS NULL, 'Unknown', {{hostName}})
                 }
                 {
                     name : createdOn
                     type : TIME
-                    definition : createdOn
-                    grains: [
+                    definition : "FORMATDATETIME({{createdOn}}, 'yyyy-MM-dd HH:mm')"
+                    grain:
                     {
-                        grain :  MONTH
+                        type :  MINUTE
                         sql :  '''
-                        PARSEDATETIME(FORMATDATETIME({{}}, 'yyyy-MM-01'), 'yyyy-MM-dd')
+                        PARSEDATETIME({{createdOn}}, 'yyyy-MM-dd HH:mm')
                         '''
                     }
-                    ]
                 }
                 {
                     name: modelName
                     type: TEXT
-                    definition: IF (modelName IS NULL, 'Unknown', modelName)
+                    definition: IF ({{modelName}} IS NULL, 'Unknown', {{modelName}})
                 }
                 {
                     name: user
                     type: TEXT
-                    definition: IF (user IS NULL, 'Unknown', user)
+                    definition: IF ({{user}} IS NULL, 'Unknown', {{user}})
                 }
                 {
                     name: status
                     type: TEXT
-                    definition: IF (status IS NULL, 'Unknown', status)
+                    definition: IF ({{status}} IS NULL, 'Unknown', {{status}})
                 }
                 {
                     name: name
                     type: TEXT
-                    definition: IF (name IS NULL, 'Unknown', name)
+                    definition: IF ({{name}} IS NULL, 'Unknown', {{name}})
                 }
                 {
                     name: label
                     type: TEXT
-                    definition: IF (label IS NULL, 'Unknown', label)
+                    definition: IF ({{label}} IS NULL, 'Unknown', {{label}})
                 }
                 {
                     name: sessionId
                     type: TEXT
-                    definition: IF (sessionId IS NULL, 'Unknown', sessionId)
+                    definition: IF ({{sessionId}} IS NULL, 'Unknown', {{sessionId}})
                 }
                 {
                     name: fromUI
                     type: BOOLEAN
-                    definition: IF (fromUI IS NULL, false, fromUI)
+                    definition: IF ({{fromUI}} IS NULL, false, {{fromUI}})
                 }
             ]
         }

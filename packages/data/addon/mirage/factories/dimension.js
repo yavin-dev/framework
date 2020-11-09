@@ -3,12 +3,14 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { Factory } from 'ember-cli-mirage';
+import faker from 'faker';
 
 export default Factory.extend({
   index: i => i,
 
   id() {
-    return `dimension${this.index}`;
+    const id = this.table?.id;
+    return `${id ? id + '.' : ''}dimension${this.index}`;
   },
 
   name() {
@@ -23,9 +25,26 @@ export default Factory.extend({
 
   valueType: 'TEXT',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   columnType: 'field',
 
-  expression: null
+  expression: null,
+
+  valueSourceType(i) {
+    return { 1: 'ENUM', 2: 'TABLE' }[i] || 'NONE';
+  },
+
+  tableSource() {
+    return this.valueSourceType === 'TABLE' ? `table0.dimension0` : null;
+  },
+
+  values() {
+    return this.valueSourceType === 'ENUM'
+      ? new Array(5).fill().map((_, idx) => {
+          faker.seed(this.index + idx);
+          return `${faker.commerce.productName()} (enum)`;
+        })
+      : [];
+  }
 });

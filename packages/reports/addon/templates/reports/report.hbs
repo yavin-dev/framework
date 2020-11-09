@@ -53,34 +53,29 @@
       @onBeforeAddItem={{this.onBeforeAddItem}}
       as |builder|
     >
-      {{#if (feature-flag "enableRequestPreview")}}
-        <NaviColumnConfig
-          class="{{if this.isRunningReport "navi-column-config--disabled"}}"
-          @isOpen={{this.isColumnDrawerOpen}}
-          @lastAddedColumn={{this.lastAddedColumn}}
-          @report={{this.model}}
-          @openFilters={{route-action "openFilters"}}
-          @onRemoveTimeDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_TIME_GRAIN")}}
-          @onRemoveDimension={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_DIMENSION_FRAGMENT")}}
-          @onRemoveMetric={{queue (fn this.updateLastAddedColumn null) (update-report-action "REMOVE_METRIC_FRAGMENT")}}
-          @onAddDimension={{queue (fn this.updateLastAddedColumn "dimension") (update-report-action "ADD_DIMENSION")}}
-          @onAddMetric={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC")}}
-          @onAddMetricWithParameter={{queue (fn this.updateLastAddedColumn "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
-          @onToggleDimFilter={{update-report-action "TOGGLE_DIM_FILTER"}}
-          @onToggleMetricFilter={{update-report-action "TOGGLE_METRIC_FILTER"}}
-          @onToggleParameterizedMetricFilter={{update-report-action "TOGGLE_PARAMETERIZED_METRIC_FILTER"}}
-        />
+      <NaviColumnConfig
+        class="{{if this.isRunningReport "navi-column-config--disabled"}}"
+        @isOpen={{this.isColumnDrawerOpen}}
+        @lastAddedColumn={{this.lastAddedColumn}}
+        @report={{this.model}}
+        @openFilters={{route-action "openFilters"}}
+        @onAddColumn={{update-report-action "ADD_COLUMN_WITH_PARAMS"}}
+        @onRemoveColumn={{update-report-action "REMOVE_COLUMN_FRAGMENT"}}
+        @onToggleFilter={{update-report-action "TOGGLE_FILTER"}}
+        @onRenameColumn={{update-report-action "RENAME_COLUMN_FRAGMENT"}}
+        @onReorderColumn={{update-report-action "REORDER_COLUMN_FRAGMENT"}}
+        @onUpdateColumnParam={{update-report-action "UPDATE_COLUMN_FRAGMENT_WITH_PARAMS"}}
+      />
 
-        <div class="report-view__columns-toggle">
-          <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (fn this.updateColumnDrawerOpen (not this.isColumnDrawerOpen) builder)}}>
-            {{#animated-if this.isColumnDrawerOpen use=this.fadeTransition}}
-              <NaviIcon @icon="chevron-left" class="report-view__columns-icon" />
-            {{else}}
-              <NaviIcon @icon="columns" class="report-view__columns-icon" />
-            {{/animated-if}}
-          </button>
-        </div>
-      {{/if}}
+      <div class="report-view__columns-toggle">
+        <button class="report-view__columns-button" type="button" aria-label="Toggle column drawer" {{on "click" (fn this.updateColumnDrawerOpen (not this.isColumnDrawerOpen) builder)}}>
+          {{#animated-if this.isColumnDrawerOpen use=this.fadeTransition}}
+            <NaviIcon @icon="chevron-left" class="report-view__columns-icon" />
+          {{else}}
+            <NaviIcon @icon="columns" class="report-view__columns-icon" />
+          {{/animated-if}}
+        </button>
+      </div>
       {{outlet}}
     </ReportBuilder>
   </div>
@@ -133,7 +128,7 @@
         <NaviButton
           class="navi-report__revert-btn"
           @type="secondary"
-          @onClick={{queue (fn this.updateLastAddedColumn null) (route-action "revertChanges" this.model)}}
+          @onClick={{route-action "revertChanges" this.model}}
         >
           Revert
         </NaviButton>

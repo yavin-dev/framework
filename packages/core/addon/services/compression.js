@@ -36,7 +36,7 @@ export default Service.extend({
   /**
    * @method decompress
    * @param {String} string - result of a previous call to `compress`
-   * @return {Promise} promise that resolvs to an object
+   * @return {Promise} promise that resolves to an object
    */
   decompress(string) {
     return get(this, 'codec')

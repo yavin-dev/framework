@@ -2,7 +2,7 @@
 
 Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](http://fili.io/).
 
-[![Build Status](https://travis-ci.org/yahoo/navi.svg?branch=master)](https://travis-ci.com/github/yahoo/navi)
+[![Pipeline Status][status-image]][status-url]
 ![npm (custom registry)](https://img.shields.io/npm/v/navi-app/latest)
 ![npm (custom registry)](https://img.shields.io/npm/v/navi-app/canary)
 
@@ -30,7 +30,7 @@ You can install the individual packages via npm
 - [navi-dashboards](https://www.npmjs.com/package/navi-dashboards)
 - [navi-directory](https://www.npmjs.com/package/navi-directory)
 - [navi-data](https://www.npmjs.com/package/navi-data)
-- [navi-app](https://www.npmjs.com/package/navi-app) 
+- [navi-app](https://www.npmjs.com/package/navi-app)
 
 Please see the detailed installation instructions in the README of the individual packages for more info.
 
@@ -77,3 +77,6 @@ For more information on using lerna, visit [https://lerna.js.org](https://lerna.
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md).
+
+[status-image]: https://cd.screwdriver.cd/pipelines/6102/badge
+[status-url]: https://cd.screwdriver.cd/pipelines/6102

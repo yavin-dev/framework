@@ -26,12 +26,12 @@ module.exports = function(environment) {
       widgetsRequestsMaxConcurrency: 2,
       defaultDataTable: 'network',
       dataSources: [
-        { name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' },
-        { name: 'blockhead', uri: 'https://data2.naviapp.io', type: 'bard-facts' }
+        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
+        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
       ],
       FEATURES: {
         enableDashboardExport: true,
-        enableMultipleExport: true,
+        multipleExportFileTypes: ['pdf', 'png'],
         enableScheduleDashboards: true,
         enableDashboardFilters: true
       }

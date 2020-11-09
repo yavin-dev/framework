@@ -1,11 +1,54 @@
-import { set, get } from '@ember/object';
-import { isPresent } from '@ember/utils';
-import { run } from '@ember/runloop';
-import { classify } from '@ember/string';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { indexColumnById } from 'navi-core/models/table';
+import { getContext } from '@ember/test-helpers';
+import { set } from '@ember/object';
+
+let COLUMN_ID_INDEX = 0;
+/**
+ * @function buildTestRequest
+ * @param {Array} dimensions - array of dimensions
+ * @param {Array} metrics - array of metrics
+ * @param {string} timeGrain - timegrain of the request
+ * @returns {Object} request object
+ */
+function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
+  const store = getContext().owner.lookup('service:store');
+
+  return store.createFragment('bard-request-v2/request', {
+    table: 'tableName',
+    requestVersion: '2.0',
+    dataSource: 'bardOne',
+    sorts: [],
+    filters: [],
+    columns: [
+      {
+        cid: `c${COLUMN_ID_INDEX++}`,
+        type: 'timeDimension',
+        field: 'tableName.dateTime',
+        parameters: { grain: timeGrain },
+        source: 'bardOne'
+      },
+      ...metrics.map(({ cid, metric, parameters = {} }) => {
+        return {
+          cid: cid || `c${COLUMN_ID_INDEX++}`,
+          type: 'metric',
+          field: metric,
+          parameters,
+          source: 'bardOne'
+        };
+      }),
+      ...dimensions.map(({ cid, dimension, field }) => {
+        return {
+          cid: cid || `c${COLUMN_ID_INDEX++}`,
+          type: 'dimension',
+          field: dimension,
+          parameters: { field },
+          source: 'bardOne'
+        };
+      })
+    ]
+  });
+}
 
 module('Unit | Model | Table Visualization Fragment', function(hooks) {
   setupTest(hooks);
@@ -17,616 +60,149 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         [{ dimension: 'd1' }, { dimension: 'd2' }],
         [{ metric: 'm1' }, { metric: 'm2' }]
       ],
-      table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table'));
+      table = this.owner
+        .lookup('service:store')
+        .createRecord('all-the-fragments')
+        .get('table');
 
-    assert.ok(
-      !table.isValidForRequest(buildTestRequest(...metricsAndDims)),
-      'the default table fragment values are invalid'
+    assert.strictEqual(
+      table.isValidForRequest(buildTestRequest(...metricsAndDims)),
+      true,
+      'the default table fragment values are valid, no extra attributes are given'
     );
   });
 
   test('valid and invalid table fragment', function(assert) {
-    assert.expect(12);
+    assert.expect(3);
 
     let metricsAndDims = [
-        [
-          { dimension: 'd1' },
-          {
-            dimension: 'd2',
-            fields: ['id', 'desc']
-          }
-        ],
-        [{ metric: 'm1' }, { metric: 'm2' }]
+        [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
+        [{ metric: 'm1' }, { cid: 'thisone', metric: 'm2' }]
       ],
       request = buildTestRequest(...metricsAndDims, 'day'),
-      allTimeGrainRequest = buildTestRequest(...metricsAndDims, 'all'),
-      model = run(() => this.owner.lookup('service:store').createRecord('all-the-fragments'));
+      model = this.owner.lookup('service:store').createRecord('all-the-fragments');
 
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-          [{ metric: 'm1' }, { metric: 'm2' }]
-        )
-      );
-    });
-
-    assert.ok(
+    assert.strictEqual(
       model.get('table').isValidForRequest(request),
-      'a table fragment with the same metrics and dimensions as the request and a datetime column on a non-all timegrain is valid'
+      true,
+      'table with no column attributes are valid'
     );
 
-    assert.notOk(
-      model.get('table').isValidForRequest(allTimeGrainRequest),
-      'a table with all timegrain and a datetime column is invalid'
-    );
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-          [{ metric: 'm1' }, { metric: 'm2' }],
-          false //Don't include a date time column in the config
-        )
-      );
+    set(model, 'table', {
+      metadata: {
+        columnAttributes: {
+          thisone: {
+            format: 'yes'
+          }
+        }
+      }
     });
 
-    assert.notOk(
+    assert.strictEqual(
       model.get('table').isValidForRequest(request),
-      'a table fragment with the same metrics and dimensions as the request but no datetime column on a non-all timegrain is invalid'
+      true,
+      'table with attributes on valid column ids are valid'
     );
-
-    assert.ok(
-      model.get('table').isValidForRequest(allTimeGrainRequest),
-      'a table with all timegrain and no datetime column is valid'
-    );
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig([{ dimension: 'd1' }, { dimension: 'foo' }], [{ metric: 'm1' }, { metric: 'm2' }])
-      );
+    set(model, 'table', {
+      metadata: {
+        columnAttributes: {
+          randomId: {
+            format: 'no'
+          }
+        }
+      }
     });
-
-    assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with mis-match dimensions is invalid');
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [
-            { dimension: 'd2', field: 'id' },
-            { dimension: 'd2', field: 'desc' }
-          ],
-          [{ metric: 'm1' }, { metric: 'm2' }]
-        )
-      );
-    });
-
-    assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with a missing dimension is invalid');
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig([{ dimension: 'd1' }, { dimension: 'd2' }], [{ metric: 'm1' }, { metric: 'm2' }])
-      );
-    });
-
-    assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with no dimension fields is invalid');
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig([{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }], [{ metric: 'm1' }, { metric: 'm2' }])
-      );
-    });
-
-    assert.ok(
-      !model.get('table').isValidForRequest(request),
-      'a table fragment with missing dimension fields is invalid'
-    );
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'm2' }]
-        )
-      );
-    });
-
-    assert.ok(
-      !model.get('table').isValidForRequest(request),
-      'a table fragment with mis-match dimension fields is invalid'
-    );
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-          [{ metric: 'm1' }]
-        )
-      );
-    });
-
-    assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with missing metrics is invalid');
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'foo' }]
-        )
-      );
-    });
-
-    assert.ok(!model.get('table').isValidForRequest(request), 'a table fragment with mis-match metrics is invalid');
-
-    run(() => {
-      set(
-        model,
-        'table',
-        buildTestConfig(
-          [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'foo' }],
-          [{ metric: 'm1' }, { metric: 'm2' }, { metric: 'm3' }]
-        )
-      );
-    });
-
-    assert.ok(
-      !model.get('table').isValidForRequest(request),
-      'a table columns with more metrics than in the request is invalid'
+    assert.strictEqual(
+      model.get('table').isValidForRequest(request),
+      false,
+      'table with attributes for missing column ids are invalid'
     );
   });
 
   test('rebuildConfig', function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
-    let table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table')),
+    const table = this.owner
+        .lookup('service:store')
+        .createRecord('all-the-fragments')
+        .get('table'),
       request1 = buildTestRequest(
         [
           { dimension: 'd1' },
-          {
-            dimension: 'd2',
-            fields: ['id', 'desc']
-          }
+          { cid: 'byedimension', dimension: 'd2', field: 'id' },
+          { dimension: 'd2', field: 'desc' }
         ],
-        [{ metric: 'm1' }, { metric: 'm2' }],
+        [
+          { cid: 'persistme', metric: 'm1', parameters: { gone: 'no' } },
+          { cid: 'byeparam', metric: 'm2', parameters: { gone: 'yes' } }
+        ],
         'month'
       ),
-      config1 = run(() => table.rebuildConfig(request1).toJSON());
+      config1 = table.rebuildConfig(request1).toJSON();
 
     assert.deepEqual(
       config1,
       {
-        type: 'table',
-        version: 1,
         metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            { displayName: 'D1', attributes: { name: 'd1' }, type: 'dimension' },
-            { displayName: 'D2 (id)', attributes: { name: 'd2', field: 'id' }, type: 'dimension' },
-            { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
-            {
-              displayName: 'M1',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            }
-          ]
-        }
+          columnAttributes: {}
+        },
+        type: 'table',
+        version: 2
       },
-      'Date, dimensions, and metrics from request are serialized into columns'
+      'table config is created with no extra attributes when it has no existing column attributes'
     );
 
-    let request2 = buildTestRequest([], [{ metric: 'm1' }, { metric: 'm2' }]),
-      config2 = run(() => table.rebuildConfig(request2).toJSON());
+    set(table, 'metadata', {
+      columnAttributes: {
+        persistme: {
+          format: 'ok'
+        },
+        byeparam: {
+          format: 'bye param'
+        },
+        byedimension: {
+          format: 'bye dimension'
+        }
+      }
+    });
+    const request2 = buildTestRequest(
+      [],
+      [{ cid: 'persistme', metric: 'm1', parameters: { gone: 'no' } }, { metric: 'm2' }]
+    );
+    const config2 = table.rebuildConfig(request2).toJSON();
 
     assert.deepEqual(
       config2,
       {
-        type: 'table',
-        version: 1,
         metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            {
-              displayName: 'M1',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
+          columnAttributes: {
+            persistme: {
+              format: 'ok'
             }
-          ]
-        }
+          }
+        },
+        type: 'table',
+        version: 2
       },
-      'Dimension column is not required'
+      'Only valid existing column attributes are moved over'
     );
 
-    config2.metadata.columns[1].displayName = 'M4';
-    config2.metadata.columns[2].format = 'number';
-    let config3 = run(() => table.rebuildConfig(request2).toJSON());
+    const config3 = table.rebuildConfig(request2).toJSON();
 
     assert.deepEqual(
       config3,
       {
-        type: 'table',
-        version: 1,
         metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            {
-              displayName: 'M4',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
+          columnAttributes: {
+            persistme: {
+              format: 'ok'
             }
-          ]
-        }
+          }
+        },
+        type: 'table',
+        version: 2
       },
       'Columns config should be persistent'
     );
-
-    let allTimeGrainRequest = buildTestRequest(
-      [
-        { dimension: 'd1' },
-        {
-          dimension: 'd2',
-          fields: ['id', 'desc']
-        }
-      ],
-      [{ metric: 'm1' }, { metric: 'm2' }],
-      'all'
-    );
-
-    let allTimeGrainConfig = run(() => table.rebuildConfig(allTimeGrainRequest).toJSON());
-
-    assert.deepEqual(
-      allTimeGrainConfig,
-      {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            { displayName: 'D1', attributes: { name: 'd1' }, type: 'dimension' },
-            { displayName: 'D2 (id)', attributes: { name: 'd2', field: 'id' }, type: 'dimension' },
-            { displayName: 'D2 (desc)', attributes: { name: 'd2', field: 'desc' }, type: 'dimension' },
-            {
-              displayName: 'M4',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            }
-          ]
-        }
-      },
-      'Date time column is not present for request with all time grain'
-    );
   });
-
-  test('rebuildConfig with parameterized metrics', function(assert) {
-    assert.expect(2);
-    let table = run(() => run(() => this.owner.lookup('service:store').createRecord('all-the-fragments')).get('table')),
-      request4 = buildTestRequest(
-        [],
-        [
-          {
-            metric: 'm1',
-            parameters: {
-              param1: 'paramVal1'
-            }
-          },
-          {
-            metric: 'm1',
-            parameters: {
-              param1: 'paramVal2'
-            }
-          },
-          { metric: 'm2' }
-        ]
-      ),
-      config4 = run(() => table.rebuildConfig(request4).toJSON());
-
-    assert.deepEqual(
-      config4,
-      {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            {
-              displayName: 'M1 (paramVal1)',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: { param1: 'paramVal1' },
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M1 (paramVal2)',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: { param1: 'paramVal2' },
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            }
-          ]
-        }
-      },
-      'Columns with parameterized metrics are formatted correctly'
-    );
-
-    let config5 = run(() => table.rebuildConfig(request4).toJSON());
-    assert.deepEqual(
-      config5,
-      {
-        type: 'table',
-        version: 1,
-        metadata: {
-          columns: [
-            {
-              displayName: 'Date',
-              attributes: { name: 'dateTime' },
-              type: 'dateTime'
-            },
-            {
-              displayName: 'M1 (paramVal1)',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: { param1: 'paramVal1' },
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M1 (paramVal2)',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm1',
-                parameters: { param1: 'paramVal2' },
-                format: ''
-              },
-              type: 'metric'
-            },
-            {
-              displayName: 'M2',
-              attributes: {
-                canAggregateSubtotal: true,
-                name: 'm2',
-                parameters: {},
-                format: ''
-              },
-              type: 'metric'
-            }
-          ]
-        }
-      },
-      'Rebuilding again provides consistent results'
-    );
-  });
-
-  test('index column by id', function(assert) {
-    assert.expect(1);
-
-    let dimensionColumn = {
-        type: 'dimension',
-        attributes: {
-          name: 'D1'
-        }
-      },
-      dimensionColumnWithField = {
-        type: 'dimension',
-        attributes: {
-          name: 'D2',
-          field: 'desc'
-        }
-      },
-      metricColumn = {
-        type: 'metric',
-        attributes: {
-          name: 'M'
-        }
-      },
-      rows = [dimensionColumn, dimensionColumnWithField, metricColumn];
-
-    assert.deepEqual(
-      indexColumnById(rows),
-      {
-        D1: dimensionColumn,
-        'D2(desc)': dimensionColumnWithField,
-        M: metricColumn
-      },
-      'Should return object having canonical ids as keys, columns as values'
-    );
-  });
-
-  /**
-   * @function buildTestConfig
-   * @param {Array} dimensions - array of dimensions
-   * @param {Array} metrics - array of metrics
-   * @param {Array} thresholds - array of thresholds
-   * @param {Boolean} includeDateTime - should include DateTime column
-   * @returns {Object} config object
-   */
-  function buildTestConfig(dimensions = [], metrics = [], includeDateTime = true) {
-    let columns = [
-      ...metrics.map(m => {
-        let name = get(m, 'metric'),
-          parameters = get(m, 'parameters') || {},
-          valueType = isPresent(parameters) && get(parameters, 'currency') ? 'money' : 'number';
-        return {
-          attributes: {
-            canAggregateSubtotal: true,
-            name,
-            parameters
-          },
-          type: 'metric',
-          valueType
-        };
-      }),
-      ...dimensions.map(({ dimension, field }) => ({
-        attributes: { name: dimension, field },
-        type: 'dimension'
-      }))
-    ];
-
-    if (includeDateTime) {
-      columns.unshift({
-        attributes: { name: 'dateTime' },
-        type: 'dateTime'
-      });
-    }
-
-    return {
-      metadata: {
-        columns
-      }
-    };
-  }
-
-  /**
-   * @function buildTestRequest
-   * @param {Array} dimensions - array of dimensions
-   * @param {Array} metrics - array of metrics
-   * @param {Array} thresholds - array of thresholds
-   * @returns {Object} request object
-   */
-  function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
-    return {
-      metrics: metrics.map(m => {
-        let metricName = get(m, 'metric'),
-          parameters = get(m, 'parameters') || {},
-          canonicalName = canonicalizeMetric({ metric: metricName, parameters });
-
-        return {
-          metric: {
-            id: metricName,
-            name: classify(metricName),
-            category: 'category',
-            valueType: 'number'
-          },
-          parameters,
-          canonicalName,
-          toJSON() {
-            return {
-              metric: metricName,
-              parameters
-            };
-          }
-        };
-      }),
-      dimensions: dimensions.map(({ dimension, fields }) => ({
-        dimension: {
-          id: dimension,
-          name: classify(dimension),
-          fields,
-          getFieldsForTag: () => (fields ? fields.map(name => ({ name })) : [])
-        }
-      })),
-      logicalTable: {
-        timeGrain
-      }
-    };
-  }
 });

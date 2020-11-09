@@ -12,7 +12,7 @@ import com.yahoo.elide.core.EntityDictionary
 import com.yahoo.elide.core.filter.dialect.RSQLFilterDialect
 import com.yahoo.elide.datastores.aggregation.core.QueryLogger
 import com.yahoo.elide.spring.config.ElideConfigProperties
-import com.yahoo.navi.ws.utilities.CarbonQueryLogger
+import com.yahoo.navi.ws.utilities.NaviQueryLogger
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.util.TimeZone
@@ -21,7 +21,7 @@ import java.util.TimeZone
 class ElideConfig {
     @Bean
     fun buildQueryLogger(): QueryLogger {
-        return CarbonQueryLogger(5, 10000)
+        return NaviQueryLogger(5, 10000)
     }
 
     @Bean

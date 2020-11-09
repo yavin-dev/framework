@@ -114,10 +114,13 @@ export default class DashboardDataService extends Service {
 
       const requestWithFilters = this._applyFilters(dashboard, request);
       const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
-
       const filterErrors = this._getFilterErrors(dashboard, request);
 
-      fetchTasks.push(this._fetchRequest.perform(requestDecorated, options, filterErrors));
+      // Replace serialized request with request fragment
+      let result = this._fetchRequest
+        .perform(requestDecorated, options, filterErrors)
+        .then(response => ({ ...response, request: requestWithFilters }));
+      fetchTasks.push(result);
     });
 
     return yield fetchTasks.length ? all(fetchTasks) : [];
@@ -176,10 +179,9 @@ export default class DashboardDataService extends Service {
    */
   _applyFilters(dashboard, request) {
     const requestClone = request.clone();
-
     this._getValidGlobalFilters(dashboard, request)
-      .filter(filter => filter.get('rawValues').length > 0)
-      .forEach(filter => requestClone.addRawFilter(filter));
+      .filter(filter => get(filter, 'values').length > 0)
+      .forEach(filter => requestClone.addFilter(filter));
 
     return requestClone;
   }
@@ -224,7 +226,7 @@ export default class DashboardDataService extends Service {
     const invalidFilters = this._getInvalidGlobalFilters(dashboard, request);
 
     return invalidFilters.map(filter => ({
-      detail: `"${filter.dimension?.id}" is not a dimension in the "${request.logicalTable.table.id}" table.`,
+      detail: `"${filter.field}" is not a dimension in the "${request.table}" table.`,
       title: 'Invalid Filter'
     }));
   }
@@ -236,8 +238,8 @@ export default class DashboardDataService extends Service {
    * @returns {Boolean}
    */
   _isFilterValid(request, filter) {
-    const validDimensions = request.logicalTable?.table?.dimensionIds;
+    const validDimensions = request.tableMetadata.dimensionIds;
 
-    return filter.dimension.source === request.dataSource && validDimensions.includes(filter.dimension.id);
+    return filter.source === request.dataSource && validDimensions.includes(filter.columnMetadata.id);
   }
 }

@@ -1,3 +1,1 @@
-import { Factory } from 'ember-cli-mirage';
-
-export default Factory.extend({});
+export { default } from 'navi-data/mirage/factories/async-query';

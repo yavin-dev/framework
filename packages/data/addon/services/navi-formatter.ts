@@ -3,22 +3,20 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import Metric from '../models/metadata/metric';
 import { omit } from 'lodash-es';
+import { ColumnMetadata } from 'navi-data/models/metadata/column';
+import { Parameters } from 'navi-data/adapters/facts/interface';
 
 export default class NaviFormatterService extends Service {
-  /**
-   * Formats a metric
-   * @param {Metric} metric - metric metadata object
-   * @param {Dict<string|number>} parameters - metric parameters
-   * @param {string} alias - aliased name for metric
-   * @returns {string} - formatted string
-   */
-  formatMetric(metric?: Metric, parameters?: Dict<string | number>, alias?: string): string {
+  formatColumnName(columnMetadata?: ColumnMetadata, parameters?: Parameters, alias?: string | null): string {
+    if (alias) {
+      return alias;
+    }
+
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
 
-    const name = alias || metric?.name || '--';
+    const name = columnMetadata?.name || '--';
     if (paramValues.length) {
       return `${name} (${paramValues.join(',')})`;
     } else {

@@ -8,10 +8,15 @@ import Controller, { inject as controller } from '@ember/controller';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /**
- * @param {Object} request
- * @returns {Array} canonicalized metrics sorted alphabetically
+ * @param request
+ * @returns canonicalized metrics sorted alphabetically
  */
-const sortedMetrics = request => (request.metrics || []).map(metric => canonicalizeMetric(metric)).sort();
+function sortedColumns(request) {
+  const canonicalNames = request.columns.map(({ field: metric, parameters }) =>
+    canonicalizeMetric({ metric, parameters })
+  );
+  return [...new Set(canonicalNames)].sort();
+}
 
 export default class ReportViewController extends Controller {
   /*
@@ -22,7 +27,10 @@ export default class ReportViewController extends Controller {
   /*
    * @property {Boolean} hasRequestRun
    */
-  @computed('reportController.modifiedRequest', 'model.request')
+  @computed(
+    'reportController.modifiedRequest.{columns.[],filters.[],sorts.[],table,dataSource}',
+    'model.request.{columns.[],filters.[],sorts.[],table,dataSource}'
+  )
   get hasRequestRun() {
     const { modifiedRequest } = this.reportController;
     const { request } = this.model;
@@ -32,12 +40,12 @@ export default class ReportViewController extends Controller {
       return true;
     }
 
-    if (!isEqual(sortedMetrics(request), sortedMetrics(modifiedRequest))) {
+    if (!isEqual(sortedColumns(request), sortedColumns(modifiedRequest))) {
       //changes in metrics outside of order
       return false;
     }
 
-    if (!isEqual(omit(request, 'metrics'), omit(modifiedRequest, 'metrics'))) {
+    if (!isEqual(omit(request, 'columns'), omit(modifiedRequest, 'columns'))) {
       //changes in request outside of metrics
       return false;
     }

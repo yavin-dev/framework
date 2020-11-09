@@ -22,9 +22,9 @@ export default class KegDimensionAdapter extends EmberObject {
   @service keg;
 
   /**
-   * @property {Service} bard metadata
+   * @property {Service} navi metadata
    */
-  @service bardMetadata;
+  @service naviMetadata;
 
   /**
    * @property {Service} bard dimensions
@@ -41,7 +41,7 @@ export default class KegDimensionAdapter extends EmberObject {
    * @returns {Object} metadata object
    */
   _getDimensionMetadata(dimensionName, namespace = getDefaultDataSourceName()) {
-    return this.bardMetadata.getById('dimension', dimensionName, namespace);
+    return this.naviMetadata.getById('dimension', dimensionName, namespace);
   }
 
   /**

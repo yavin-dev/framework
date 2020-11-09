@@ -1,0 +1,34 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="table-widget {{this.extraClassNames}}" ...attributes {{did-insert this.setupElement}}>
+  <div class="table-widget__info-header">
+    <div class="table-widget__row-info">
+      <span class="table-widget__row-info-number">{{if this.rowsInResponse (format-number this.rowsInResponse) 0}}</span>
+      {{#if this.totalRows}}
+      out of <span class="table-widget__row-info-number">{{format-number this.totalRows}}</span>
+      {{/if}}
+      rows
+    </div>
+    {{#if this.isEditingMode}}
+      <div class="table-widget__edit-col-msg">
+        <NaviIcon @icon="pencil"/> <span>Enter custom column names</span>
+      </div>
+    {{/if}}
+  </div>
+  {{#let (component this.tableRenderer) as |TableRenderer|}}
+    <TableRenderer
+      @tableData={{this.tableData}}
+      @request={{this.request}}
+      @columns={{this.columns}}
+      @isDraggingDisabled={{this.isDraggingDisabled}}
+      @occlusion={{this.occlusion}}
+      @estimateHeight={{this.estimateHeight}}
+      @bufferSize={{this.bufferSize}}
+      @isEditingMode={{this.isEditingMode}}
+      @cellRendererPrefix={{this.cellRendererPrefix}}
+      @headerClicked={{this.headerClicked}}
+      @updateColumnOrder={{this.updateColumnOrder}}
+      @updateColumnDisplayName={{this.updateColumnDisplayName}}
+      @onUpdateReport={{@onUpdateReport}}
+    />
+  {{/let}}
+</div>

@@ -12,20 +12,26 @@ import { getOwner } from '@ember/application';
 import { setProperties } from '@ember/object';
 
 type Identifier = string | number;
-type Record = unknown & {
-  partialData?: boolean;
-  [key: string]: unknown;
-};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type KegRecord = Record<string, any>;
+
 interface Factory {
-  create(obj: object): Record;
+  create(obj: object): KegRecord;
   identifierField: string;
 }
+
 type Options = {
   modelFactory: string; // name of explicit modelFactory to store
   namespace: string; // namespace to store data under, defaults to 'navi'
 };
 
-type FilterFn = (value: Record, index: number, array: Record[]) => boolean;
+type InsertOptions = {
+  identifierField: string; // id field for record, defaults to 'id'
+  namespace: string; // namespace to store data under, defaults to 'navi'
+};
+
+type FilterFn = (value: KegRecord, index: number, array: KegRecord[]) => boolean;
 
 export default class KegService extends Service {
   /**
@@ -36,12 +42,12 @@ export default class KegService extends Service {
   /**
    * @property {Object} recordKeg - Object of record arrays
    */
-  recordKegs: Dict<MutableArray<Record>> = {};
+  recordKegs: Dict<MutableArray<KegRecord>> = {};
 
   /**
-   * @property {Object} idIndexes - Object of record idexes
+   * @property {Object} idIndexes - Object of record indexes
    */
-  idIndexes: Dict<Dict<Record>> = {};
+  idIndexes: Dict<Dict<KegRecord>> = {};
 
   /**
    * @property {String} defaultNamespace
@@ -81,8 +87,53 @@ export default class KegService extends Service {
    * @param {String} [options.modelFactory] - name of explicit modelFactory to store
    * @returns {Object} record that was pushed to the keg
    */
-  push(type: string, rawRecord: Record, options: Partial<Options>) {
-    return this.pushMany(type, [rawRecord], options).get('firstObject');
+  push(type: string, rawRecord: KegRecord, options: Partial<Options>) {
+    return this.pushMany(type, [rawRecord], options).firstObject;
+  }
+
+  /**
+   * Inserts a single record into the store
+   *
+   * @param type - name of the model type
+   * @param record - record to be inserted into the keg
+   * @param options - config object
+   */
+  insert(type: string, record: KegRecord, options: Partial<InsertOptions> = {}): KegRecord {
+    return this.insertMany(type, [record], options).firstObject as KegRecord;
+  }
+
+  /**
+   * Inserts an array of records into the store
+   *
+   * @param type - type name of the model type
+   * @param record - record to be inserted into the keg
+   * @param options - config object
+   */
+  insertMany(type: string, records: Array<KegRecord>, options: Partial<InsertOptions> = {}): EmberArray<KegRecord> {
+    const recordKeg = this._getRecordKegForType(type);
+    const idIndex = this._getIdIndexForType(type);
+    const namespace = options.namespace || this.defaultNamespace;
+    const identifierField = options.identifierField || KegService.identifierField;
+
+    const returnedRecords: MutableArray<KegRecord> = A();
+    for (let i = 0; i < records.length; i++) {
+      const id = records[i][identifierField] as Identifier;
+      const existingRecord = this.getById(type, id, namespace);
+
+      if (existingRecord) {
+        if (existingRecord.partialData && !records[i].partialData) {
+          delete existingRecord.partialData;
+        }
+        setProperties(existingRecord, records[i]);
+        returnedRecords.pushObject(existingRecord);
+      } else {
+        const record = records[i];
+        idIndex[`${namespace}.${id}`] = record;
+        recordKeg.pushObject(record);
+        returnedRecords.pushObject(record);
+      }
+    }
+    return returnedRecords;
   }
 
   /**
@@ -94,7 +145,7 @@ export default class KegService extends Service {
    * @param {Options} [options] - config object
    * @returns {Array} records that were pushed to the keg
    */
-  pushMany(type: string, rawRecords: Array<Record>, options: Partial<Options> = {}) {
+  pushMany(type: string, rawRecords: Array<KegRecord>, options: Partial<Options> = {}): EmberArray<KegRecord> {
     const factory = this._getFactoryForType(options.modelFactory || type);
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
@@ -102,7 +153,7 @@ export default class KegService extends Service {
     const identifierField = factory?.identifierField || KegService.identifierField;
     const owner = getOwner(this);
 
-    const returnedRecords = A();
+    const returnedRecords: MutableArray<KegRecord> = A();
     for (let i = 0; i < rawRecords.length; i++) {
       const id = rawRecords[i][identifierField] as Identifier;
       const existingRecord = this.getById(type, id, namespace);
@@ -133,7 +184,7 @@ export default class KegService extends Service {
    * @param {string} namespace - (optional) namespace for the id
    * @returns {Object|undefined} the found record
    */
-  getById(type: string, id: Identifier, namespace?: string): Record | undefined {
+  getById(type: string, id: Identifier, namespace?: string): KegRecord | undefined {
     let idIndex = this._getIdIndexForType(type) || {};
     let source = namespace || this.defaultNamespace;
     return idIndex[`${source}.${id}`];
@@ -145,11 +196,11 @@ export default class KegService extends Service {
    * @method getBy
    * @param {String} type - type name of the model type
    * @param {Dict<unknown|Array<unknown>>|FilterFn} clause
-   * @returns {EmberArray<Record>} array of found records
+   * @returns {EmberArray<KegRecord>} array of found records
    */
-  getBy(type: string, clause: Dict<unknown | Array<unknown>> | FilterFn): EmberArray<Record> {
+  getBy(type: string, clause: Dict<unknown | Array<unknown>> | FilterFn): EmberArray<KegRecord> {
     const recordKeg = this._getRecordKegForType(type);
-    let foundRecords: EmberArray<Record> = A();
+    let foundRecords: EmberArray<KegRecord> = A();
 
     if (typeof clause === 'object') {
       foundRecords = recordKeg;
@@ -180,7 +231,7 @@ export default class KegService extends Service {
    * @param {string} namespace - (optional) namespace for the id
    * @returns {Array} array of records of the provided type
    */
-  all(type: string, namespace: string): EmberArray<Record> {
+  all(type: string, namespace?: string): EmberArray<KegRecord> {
     const all = this._getRecordKegForType(type);
     if (namespace && all.any(item => !!item.source)) {
       return A(all.filter(item => item.source === namespace));
@@ -210,9 +261,9 @@ export default class KegService extends Service {
    * @private
    * @method _getRecordKegForType
    * @param {string} type - type name of the model type
-   * @returns {EmberArray<Record>} - record keg
+   * @returns {EmberArray<KegRecord>} - record keg
    */
-  _getRecordKegForType(type: string): MutableArray<Record> {
+  _getRecordKegForType(type: string): MutableArray<KegRecord> {
     const { recordKegs } = this;
 
     recordKegs[type] = recordKegs[type] || A();
@@ -225,9 +276,9 @@ export default class KegService extends Service {
    * @private
    * @method _getIdIndexForType
    * @param {string} type - type name of the model type
-   * @returns {Dict<Record>} - record id index
+   * @returns {Dict<KegRecord>} - record id index
    */
-  _getIdIndexForType(type: string): Dict<Record> {
+  _getIdIndexForType(type: string): Dict<KegRecord> {
     const { idIndexes } = this;
 
     idIndexes[type] = idIndexes[type] || {};

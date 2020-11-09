@@ -8,6 +8,6 @@ module('Unit | Service | navi-elide-apollo', function(hooks) {
   // Replace this with your real tests.
   test('_buildURLPath', function(assert) {
     const service = this.owner.lookup('service:navi-elide-apollo');
-    assert.equal(service._buildURLPath(), `${config.navi.dataSources[0].uri}/graphql`, 'URL path is built correctly');
+    assert.equal(service._buildURLPath('elideOne'), `${config.navi.dataSources[2].uri}`, 'URL path is built correctly');
   });
 });

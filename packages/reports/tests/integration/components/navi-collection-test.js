@@ -84,8 +84,6 @@ module('Integration | Component | navi collection', function(hooks) {
   });
 
   test('Favorite icon', async function(assert) {
-    assert.expect(2);
-
     this.set('reports', REPORTS);
 
     await render(TEMPLATE);
@@ -94,8 +92,8 @@ module('Integration | Component | navi collection', function(hooks) {
     await selectChoose('.navi-collection__filter-trigger', 'All');
 
     assert
-      .dom(findByContains('td', 'Hyrule News').querySelector('i'))
-      .doesNotHaveClass('favorite-item--active', 'Report that is not a favorite does not have favorite icon');
+      .dom(findByContains('td', 'Hyrule News').querySelector('.favorite-item--active'))
+      .doesNotExist('Report that is not a favorite does not have favorite icon');
 
     assert
       .dom(findByContains('td', 'Hyrule Ad&Nav Clicks').querySelector('i'))

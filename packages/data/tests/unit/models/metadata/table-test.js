@@ -18,7 +18,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
       timeGrainIds: ['day', 'month', 'week'],
-      source: 'dummy',
+      source: 'bardOne',
       tags: ['DISPLAY']
     };
 
@@ -34,9 +34,9 @@ module('Unit | Metadata Model | Table', function(hooks) {
         name: 'Page Views',
         description: 'Page Views',
         category: 'Page Views',
-        source: 'dummy'
+        source: 'bardOne'
       },
-      { namespace: 'dummy' }
+      { namespace: 'bardOne' }
     );
     Keg.push(
       'metadata/dimension',
@@ -45,9 +45,9 @@ module('Unit | Metadata Model | Table', function(hooks) {
         name: 'Age',
         description: 'Age',
         category: 'category',
-        source: 'dummy'
+        source: 'bardOne'
       },
-      { namespace: 'dummy' }
+      { namespace: 'bardOne' }
     );
     Keg.push(
       'metadata/time-dimension',
@@ -56,9 +56,9 @@ module('Unit | Metadata Model | Table', function(hooks) {
         name: 'Order Date',
         description: 'Order Date',
         category: 'category',
-        source: 'dummy'
+        source: 'bardOne'
       },
-      { namespace: 'dummy' }
+      { namespace: 'bardOne' }
     );
 
     TableFactory = this.owner.factoryFor('model:metadata/table').class;
@@ -102,10 +102,9 @@ module('Unit | Metadata Model | Table', function(hooks) {
 
   test('Metric in Table', function(assert) {
     assert.expect(1);
-
     assert.equal(
       Model.metrics[0],
-      Keg.getById('metadata/metric', 'pv', 'dummy'),
+      Keg.getById('metadata/metric', 'pv', 'bardOne'),
       'The Page view metric is properly hydrated'
     );
   });
@@ -115,7 +114,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
 
     assert.equal(
       Model.dimensions[0],
-      Keg.getById('metadata/dimension', 'age', 'dummy'),
+      Keg.getById('metadata/dimension', 'age', 'bardOne'),
       'The age dimension is properly hydrated'
     );
   });
@@ -125,7 +124,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
 
     assert.equal(
       Model.timeDimensions[0],
-      Keg.getById('metadata/time-dimension', 'orderDate', 'dummy'),
+      Keg.getById('metadata/timeDimension', 'orderDate', 'bardOne'),
       'The Order date time-dimension is properly hydrated'
     );
   });

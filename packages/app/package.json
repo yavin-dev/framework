@@ -14,6 +14,7 @@
   "main": "index.js",
   "scripts": {
     "build": "ember build",
+    "prodbuild": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "lint": "npm run lint:hbs && npm run lint:js",
@@ -63,7 +64,7 @@
     "ember-raf-scheduler": "^0.1.0",
     "ember-resolver": "^7.0.0",
     "ember-source": "~3.15.0",
-    "ember-test-waiters": "~1.1.1",
+    "ember-test-waiters": "^1.1.1",
     "eslint-config-prettier": "^3.0.1",
     "eslint-plugin-ember": "^7.7.1",
     "eslint-plugin-node": "^10.0.0",

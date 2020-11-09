@@ -5,7 +5,6 @@ declare module 'navi-data/templates/*' {
   export default tmpl;
 }
 
-declare module 'ember-get-config';
 declare module 'ember-apollo-client';
 declare module 'ember-apollo-client/services/apollo';
 declare module 'ember-uuid';

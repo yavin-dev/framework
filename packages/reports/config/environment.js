@@ -6,14 +6,6 @@ module.exports = function(/* environment, appConfig */) {
       includeTimezone: 'all'
     },
     navi: {
-      user: 'navi_user',
-      dataEpoch: '2013-01-01',
-      dataSources: [{ name: 'dummy', uri: 'https://data.naviapp.io', type: 'bard-facts' }],
-      appPersistence: {
-        type: 'webservice',
-        uri: 'https://persistence.naviapp.io',
-        timeout: 90000
-      },
       predefinedIntervalRanges: {
         hour: ['P1D', 'P7D', 'P14D', 'P30D'],
         day: ['P1D', 'P7D', 'P14D', 'P30D', 'P60D', 'P90D', 'P180D', 'P400D'],
@@ -22,16 +14,12 @@ module.exports = function(/* environment, appConfig */) {
         quarter: ['P3M', 'P6M', 'P12M', 'P24M'],
         year: ['P1Y', 'P2Y']
       },
-      notifications: {
-        short: 3000,
-        medium: 10000
-      },
       schedule: {
         formats: null,
         frequencies: null
       },
       FEATURES: {
-        enableMultipleExport: false,
+        multipleExportFileTypes: [],
         enabledNotifyIfData: false
       }
     }

@@ -1,40 +1,30 @@
-import { run } from '@ember/runloop';
 import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { get } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, triggerEvent } from '@ember/test-helpers';
+import { render, triggerEvent } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
 import config from 'ember-get-config';
-import {
-  clickItem,
-  clickItemFilter,
-  clickShowSelected,
-  hasMetricConfig,
-  getAll,
-  getItem,
-  renderAll
-} from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter, getAll, getItem, renderAll } from 'navi-reports/test-support/report-builder';
 
-let Store, MetadataService, AdClicks, PageViews;
+let Store, MetadataService, AdClicks;
 
 const TEMPLATE = hbs`<MetricSelector
   @request={{this.request}}
-  @onAddMetric={{this.addMetric}}
-  @onRemoveMetric={{this.removeMetric}}
-  @onToggleMetricFilter={{this.addMetricFilter}}
+  @onAddMetric={{this.onAddMetric}}
+  @onToggleMetricFilter={{this.onToggleMetricFilter}}
 />`;
 
 module('Integration | Component | metric selector', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     this.owner.register(
       'helper:update-report-action',
@@ -49,40 +39,20 @@ module('Integration | Component | metric selector', function(hooks) {
       { instantiate: false }
     );
 
-    this.set('addMetric', () => {});
-    this.set('removeMetric', () => {});
-    this.set('addMetricFilter', () => {});
+    this.set('onAddMetric', () => {});
+    this.set('onToggleMetricFilter', () => {});
 
-    return MetadataService.loadMetadata().then(async () => {
-      AdClicks = MetadataService.getById('metric', 'adClicks');
-      PageViews = MetadataService.getById('metric', 'pageViews');
-      //set report object
-      this.set(
-        'request',
-        Store.createFragment('bard-request/request', {
-          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-            table: MetadataService.getById('table', 'tableA'),
-            timeGrain: 'day'
-          }),
-          metrics: [
-            {
-              metric: AdClicks,
-              parameters: {
-                adType: 'BannerAds'
-              }
-            },
-            {
-              metric: AdClicks,
-              parameters: {
-                adType: 'VideoAds'
-              }
-            }
-          ],
-          having: A([{ metric: { metric: AdClicks } }]),
-          responseFormat: 'csv'
-        })
-      );
-    });
+    await MetadataService.loadMetadata();
+    AdClicks = MetadataService.getById('metric', 'adClicks', 'bardOne');
+    //set report object
+    this.set(
+      'request',
+      Store.createFragment('bard-request-v2/request', {
+        table: 'tableA',
+        dataSource: 'bardOne',
+        filters: [{ field: 'adClicks', type: 'metric', source: 'bardOne', operator: 'in', values: [1] }]
+      })
+    );
   });
 
   test('it renders', async function(assert) {
@@ -99,143 +69,22 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the metric selector');
   });
 
-  test('show selected', async function(assert) {
-    assert.expect(9);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
+  test('add metric actions', async function(assert) {
+    assert.expect(2);
 
     await render(TEMPLATE);
 
-    await renderAll('metric');
-
-    assert.ok(
-      findAll('.grouped-list__item').length > this.get('request.metrics.length'),
-      'Initially all the metrics are shown in the metric selector'
-    );
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText('Show Selected (1)', 'The Show Selected link has the correct number of selected base metrics shown');
-
-    let resetShowSelected = await clickShowSelected('metric');
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks'],
-      'When show selected is clicked the selected adClicks base metric is still shown'
-    );
-
-    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
-
-    let metrics = get(this, 'request.metrics');
-    metrics.removeFragment(metrics.toArray()[0]);
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks'],
-      "Removing one metric while another metric with the same base is still selected does not change 'Show Selected'"
-    );
-
-    await resetShowSelected();
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText(
-        'Show Selected (1)',
-        'The Show Selected link still has the correct number of selected base metrics shown'
-      );
-
-    run(() => {
-      metrics.createFragment({
-        metric: PageViews,
-        parameters: 'Param1'
-      });
-    });
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .hasText(
-        'Show Selected (2)',
-        'The Show Selected link increases the count when a metric with a different base is added'
-      );
-
-    resetShowSelected = await clickShowSelected('metric');
-
-    assert.deepEqual(
-      findAll('.grouped-list__item').map(el => el.textContent.trim()),
-      ['Ad Clicks', 'Page Views'],
-      'Adding a new metric will show its base metric as selected'
-    );
-
-    assert.dom('.grouped-list__add-icon--deselected').doesNotExist('No unselected metrics are shown');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('show selected with enableRequestPreview', async function(assert) {
-    assert.expect(1);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    await render(TEMPLATE);
-
-    assert
-      .dom('.navi-list-selector__show-link')
-      .doesNotExist('Show Selected toggle is hidden if enableRequestPreview flag is turned on');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('add and remove metric actions', async function(assert) {
-    assert.expect(4);
-
-    await render(TEMPLATE);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    //enableRequestPreview feature flag off
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    this.set('addMetric', metric => {
+    this.set('onAddMetric', metric => {
       assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
 
-    this.set('removeMetric', metric => {
-      assert.equal(metric.name, 'Ad Clicks', 'the clicked metric is passed as a param to the action');
-    });
-
-    //add total clicks
-    await clickItem('metric', 'Total Clicks');
-
-    //remove ad clicks
-    await clickItem('metric', 'Ad Clicks');
-
-    //enableRequestPreview feature flag on
-    config.navi.FEATURES.enableRequestPreview = true;
-
-    this.set('addMetric', metric => {
-      assert.equal(
-        metric.get('name'),
-        'Total Clicks',
-        'the clicked metric is passed as a param to the action when enableRequestPreview is on'
-      );
-    });
-
-    this.set('removeMetric', () => assert.notOk(true, 'removeMetric is not called when enableRequestPreview is on'));
-
     await render(TEMPLATE);
 
     //add total clicks
     await clickItem('metric', 'Total Clicks');
 
-    //clicking again adds when feature flag is on
+    //clicking again adds column
     await clickItem('metric', 'Total Clicks');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('filter icon', async function(assert) {
@@ -257,7 +106,7 @@ module('Integration | Component | metric selector', function(hooks) {
     );
     await totalClicksReset();
 
-    this.set('addMetricFilter', metric => {
+    this.set('onToggleMetricFilter', metric => {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
@@ -290,28 +139,12 @@ module('Integration | Component | metric selector', function(hooks) {
     });
   });
 
-  test('metric config for metric with parameters', async function(assert) {
-    assert.expect(2);
-
-    await render(TEMPLATE);
-
-    assert.notOk(
-      await hasMetricConfig('Ad Clicks'),
-      'The metric config trigger icon is not present for a metric without parameters'
-    );
-
-    assert.ok(
-      await hasMetricConfig('Revenue'),
-      'The metric config trigger icon is present for a metric with parameters'
-    );
-  });
-
   test('ranked search', async function(assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
-    const tableMetrics = MetadataService.getById('table', 'tableA', 'dummy').metrics;
+    const tableMetrics = MetadataService.getById('table', 'tableA', 'bardOne').metrics;
 
     // Sort by category then by name
     const groupedSortedMetrics = A(tableMetrics.filter(m => m.name.includes('Page')))

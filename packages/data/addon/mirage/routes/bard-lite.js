@@ -152,7 +152,7 @@ function _loadPredefinedDimensions() {
 
 export default function(
   metricBuilder = () => {
-    return faker.finance.amount();
+    return Number(faker.finance.amount());
   }
 ) {
   _loadPredefinedDimensions();
@@ -241,6 +241,7 @@ export default function(
   });
 
   this.get('/dimensions/:dimension/values', function(db, request) {
+    faker.seed(request.url.length);
     let dimension = request.params.dimension,
       rows = _getDimensionValues(dimension);
 

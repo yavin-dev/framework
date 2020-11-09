@@ -16,15 +16,20 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
         {
           requests: arr([
             {
-              logicalTable: {
-                table: {
-                  id: 'a',
-                  dimensions: [
-                    { id: 'dim1', name: 'dim1', category: 'cat1' },
-                    { id: 'dim2', name: 'dim2', category: 'cat2' }
-                  ]
-                },
-                timeGrain: 'day'
+              dataSource: 'bardOne',
+              requestVersion: '2.0',
+              sorts: [],
+              columns: [],
+              filters: [],
+              limit: null,
+              table: 'a',
+              tableMetadata: {
+                id: 'a',
+                timeDimensions: [],
+                dimensions: [
+                  { id: 'dim1', name: 'dim1', category: 'cat1' },
+                  { id: 'dim2', name: 'dim2', category: 'cat2' }
+                ]
               }
             }
           ])
@@ -33,15 +38,20 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
         {
           requests: arr([
             {
-              logicalTable: {
-                table: {
-                  id: 'b',
-                  dimensions: [
-                    { id: 'dim3', name: 'dim3', category: 'cat2' },
-                    { id: 'dim1', name: 'dim1', category: 'cat1' }
-                  ]
-                },
-                timeGrain: 'day'
+              dataSource: 'bardOne',
+              requestVersion: '2.0',
+              sorts: [],
+              columns: [],
+              filters: [],
+              limit: null,
+              table: 'b',
+              tableMetadata: {
+                id: 'b',
+                timeDimensions: [],
+                dimensions: [
+                  { id: 'dim3', name: 'dim3', category: 'cat2' },
+                  { id: 'dim1', name: 'dim1', category: 'cat1' }
+                ]
               }
             }
           ])
@@ -54,12 +64,12 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
     this.set('changeme', function(selection) {
       assert.deepEqual(
         selection,
-        { dimension: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'dummy' },
+        { type: 'dimension', field: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'bardOne' },
         'Selection sends correct dimension object'
       );
     });
 
-    await render(hbs`{{dashboard-dimension-selector dashboard=dashboard onChange=changeme}}`);
+    await render(hbs`<DashboardDimensionSelector @dashboard={{this.dashboard}} @onChange={{this.changeme}} />`);
 
     await settled();
 
@@ -85,35 +95,42 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
         {
           requests: arr([
             {
-              dataSource: 'dummy',
-              logicalTable: {
-                table: {
-                  id: 'a',
-                  dimensions: [
-                    { id: 'dim1', name: 'dim1', category: 'cat1' },
-                    { id: 'dim2', name: 'dim2', category: 'cat2' }
-                  ]
-                },
-                timeGrain: 'day'
+              dataSource: 'bardOne',
+              requestVersion: '2.0',
+              sorts: [],
+              columns: [],
+              filters: [],
+              limit: null,
+              table: 'a',
+              tableMetadata: {
+                id: 'a',
+                timeDimensions: [],
+                dimensions: [
+                  { id: 'dim1', name: 'dim1', category: 'cat1' },
+                  { id: 'dim2', name: 'dim2', category: 'cat2' }
+                ]
               }
             }
           ])
         },
-
         {
           requests: arr([
             {
-              dataSource: 'blockhead',
-              logicalTable: {
-                table: {
-                  id: 'b',
-                  dimensions: [
-                    { id: 'dim3', name: 'dim3', category: 'cat3' },
-                    { id: 'dim4', name: 'dim4', category: 'cat1' },
-                    { id: 'dim2', name: 'dim2', category: 'cat4' }
-                  ]
-                },
-                timeGrain: 'day'
+              dataSource: 'bardTwo',
+              requestVersion: '2.0',
+              sorts: [],
+              columns: [],
+              filters: [],
+              limit: null,
+              table: 'b',
+              tableMetadata: {
+                id: 'b',
+                timeDimensions: [],
+                dimensions: [
+                  { id: 'dim3', name: 'dim3', category: 'cat3' },
+                  { id: 'dim4', name: 'dim4', category: 'cat1' },
+                  { id: 'dim2', name: 'dim2', category: 'cat4' }
+                ]
               }
             }
           ])
@@ -125,7 +142,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     this.set('changeme', () => undefined);
 
-    await this.render(hbs`{{dashboard-dimension-selector dashboard=dashboard onChange=changeme}}`);
+    await render(hbs`<DashboardDimensionSelector @dashboard={{this.dashboard}} @onChange={{this.changeme}} />`);
 
     await settled();
 
@@ -135,7 +152,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
 
     assert.deepEqual(
       structure(dropdown),
-      { 'cat1 (blockhead)': ['dim4'], 'cat1 (dummy)': ['dim1'], cat2: ['dim2'], cat3: ['dim3'], cat4: ['dim2'] },
+      { 'cat1 (bardTwo)': ['dim4'], 'cat1 (bardOne)': ['dim1'], cat2: ['dim2'], cat3: ['dim3'], cat4: ['dim2'] },
       'Correct select structure is shown'
     );
   });

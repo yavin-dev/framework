@@ -14,6 +14,12 @@ import metricModels from './fixtures/metadata-metrics';
  */
 export default function() {
   /**
+   * unsupported metricFunctions endpoint
+   */
+  this.get('metricFunctions', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
+  this.get('metricFunctions/:id', () => new Response(404, { 'Content-Type': 'text/plain' }, 'Resource Not Found'));
+
+  /**
    * /tables endpoint
    */
   this.get('/tables', (db, req) => {

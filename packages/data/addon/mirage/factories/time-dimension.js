@@ -8,7 +8,8 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    return `timeDimension${this.index}`;
+    const id = this.table?.id;
+    return `${id ? id + '.' : ''}timeDimension${this.index}`;
   },
 
   name() {
@@ -23,13 +24,11 @@ export default Factory.extend({
 
   valueType: 'TIME',
 
-  columnTags: () => ['DISPLAY'],
+  tags: () => ['DISPLAY'],
 
   columnType: 'field',
 
   expression: null,
-
-  supportedGrains: () => [],
 
   timeZone() {
     return { short: 'UTC', long: 'Universal Time Coordinated' };

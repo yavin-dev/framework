@@ -21,7 +21,6 @@ import { observes } from '@ember-decorators/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
@@ -42,9 +41,7 @@ class ReportView extends Component {
 
   get classNames() {
     const classNames = ['report-view'];
-    if (featureFlag('enableRequestPreview')) {
-      classNames.push('report-view--request-preview');
-    }
+
     return classNames;
   }
 
@@ -61,7 +58,7 @@ class ReportView extends Component {
    * @property {Array} visualizations - array of available visualizations
    * annotated with a field corresponding to whether the visualization type is valid based on the request
    */
-  @computed('response.rows')
+  @computed('response.rows', 'report.request')
   get validVisualizations() {
     return get(this, 'naviVisualizations').validVisualizations(get(this, 'report.request'));
   }
@@ -129,7 +126,7 @@ class ReportView extends Component {
    *
    * @method filterCountOrCollapsedDidChange
    */
-  @observes('isFiltersCollapsed', 'report.request.{filters.[],having.[],intervals.[]}')
+  @observes('isFiltersCollapsed', 'report.request.filters.[]')
   filterCountOrCollapsedDidChange() {
     scheduleOnce('afterRender', this, 'resizeVisualization');
   }

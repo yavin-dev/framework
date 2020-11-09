@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import moment from 'moment';
-import DateUtils from 'navi-core/utils/date';
+import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 
 module('Unit | Transform | moment', function(hooks) {
   setupTest(hooks);
@@ -12,7 +12,7 @@ module('Unit | Transform | moment', function(hooks) {
     let transform = this.owner.lookup('transform:moment');
 
     let date = '2015-04-10 00:00:00.000',
-      expectedMoment = moment.utc(date, DateUtils.API_DATE_FORMAT_STRING),
+      expectedMoment = moment.utc(date, API_DATE_FORMAT_STRING),
       actualMoment = transform.deserialize(date);
 
     assert.ok(actualMoment.isSame(expectedMoment), 'transform correctly deserialized a string to a moment object');
@@ -26,7 +26,7 @@ module('Unit | Transform | moment', function(hooks) {
     let transform = this.owner.lookup('transform:moment');
 
     let expectedDate = '2015-04-10 00:00:00.000',
-      testMoment = moment.utc(expectedDate, DateUtils.API_DATE_FORMAT_STRING),
+      testMoment = moment.utc(expectedDate, API_DATE_FORMAT_STRING),
       actualDate = transform.serialize(testMoment);
 
     assert.equal(actualDate, expectedDate, 'transform correctly serialized a moment into a date string');

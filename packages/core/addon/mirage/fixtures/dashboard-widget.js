@@ -288,7 +288,7 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['personalSold', 'globalySold']
+                metrics: ['personalSold', 'globallySold']
               }
             }
           }
@@ -301,7 +301,7 @@ export default [
           table: 'inventory',
           timeGrain: 'day'
         },
-        metrics: [{ metric: 'personalSold' }, { metric: 'globalySold' }],
+        metrics: [{ metric: 'personalSold' }, { metric: 'globallySold' }],
         dimensions: [],
         filters: [],
         intervals: [
@@ -312,7 +312,7 @@ export default [
         ],
         bardVersion: 'v1',
         requestVersion: 'v1',
-        dataSource: 'blockhead'
+        dataSource: 'bardTwo'
       }
     ],
     createdOn: '2016-01-01 00:00:00',
@@ -392,7 +392,7 @@ export default [
         ],
         bardVersion: 'v1',
         requestVersion: 'v1',
-        dataSource: 'dummy'
+        dataSource: 'bardOne'
       }
     ],
     createdOn: '2016-01-01 00:00:00',

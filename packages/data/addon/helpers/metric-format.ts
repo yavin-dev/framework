@@ -14,17 +14,14 @@ import { inject as service } from '@ember/service';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import NaviFormatterService from '../services/navi-formatter';
 import Metric from '../models/metadata/metric';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export default class MetricFormatHelper extends Helper {
-  /**
-   * @property {Service} bardMetadata
-   */
-  @service bardMetadata!: TODO;
+  @service
+  private naviMetadata!: NaviMetadataService;
 
-  /**
-   * @property {Service} metricName
-   */
-  @service naviFormatter!: NaviFormatterService;
+  @service
+  private naviFormatter!: NaviFormatterService;
 
   /**
    * returns formatted metric
@@ -34,10 +31,10 @@ export default class MetricFormatHelper extends Helper {
    * @returns {string} - formatted metric
    */
   compute([metric, namespace = getDefaultDataSourceName(), alias /*...rest*/]: [TODO?, string?, string?]): string {
-    const metricMeta = this.bardMetadata.getById('metric', metric?.metric, namespace) as Metric | undefined;
+    const metricMeta = this.naviMetadata.getById('metric', metric?.field, namespace) as Metric | undefined;
     if (metricMeta) {
-      return this.naviFormatter.formatMetric(metricMeta, metric?.parameters, alias);
+      return this.naviFormatter.formatColumnName(metricMeta, metric?.parameters, alias);
     }
-    return this.naviFormatter.formatMetric({ name: metric?.metric } as Metric, metric?.parameters, alias);
+    return this.naviFormatter.formatColumnName({ name: metric?.field } as Metric, metric?.parameters, alias);
   }
 }

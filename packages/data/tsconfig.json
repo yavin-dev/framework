@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
+    "lib": ["es2020", "dom"],
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -31,5 +32,12 @@
       "*": ["types/*"]
     }
   },
-  "include": ["app/**/*", "addon/**/*", "tests/**/*", "types/**/*", "test-support/**/*", "addon-test-support/**/*"]
+  "include": [
+    "app/**/*",
+    "addon/**/*",
+    "tests/**/*",
+    "types/**/*",
+    "addon-test-support/**/*",
+    "../*/config/*"
+  ]
 }

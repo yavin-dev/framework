@@ -99,6 +99,12 @@ To run the demo app
 $ ./gradlew bootRun
 ```
 
+To run as Jar file
+
+```shell script
+$ ./gradlew execJar
+```
+
 # License
 
 This project is licensed under the [MIT License](LICENSE.md)

@@ -11,7 +11,7 @@ module('Unit | Model | dashboard', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
     await this.owner.lookup('service:user').findUser();
   });
 
@@ -27,26 +27,38 @@ module('Unit | Model | dashboard', function(hooks) {
           createdOn: '2016-02-01 00:00:00.000',
           filters: [
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'contains',
               values: ['114', '100001']
             },
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'notin',
               values: ['1']
             },
             {
-              dimension: 'property',
-              field: 'id',
+              type: 'dimension',
+              field: 'property',
+              parameters: {
+                field: 'id'
+              },
               operator: 'notin',
               values: ['2', '3']
             },
             {
-              dimension: 'eventId',
-              field: 'id',
+              type: 'dimension',
+              field: 'eventId',
+              parameters: {
+                field: 'id'
+              },
               operator: 'in',
               values: ['1']
             }
@@ -133,15 +145,31 @@ module('Unit | Model | dashboard', function(hooks) {
 
       assert.deepEqual(clonedModel, expectedModel, 'The cloned dashboard model has the same attrs as original model');
 
-      await this.owner.lookup('service:bard-metadata').loadMetadata({ dataSourceName: 'blockhead' });
+      await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
 
       const filterModel = await Store.findRecord('dashboard', 6);
       const clonedFilterModel = filterModel.clone().toJSON();
       assert.deepEqual(
         clonedFilterModel.filters,
         [
-          { dimension: 'dummy.age', field: 'id', operator: 'in', values: [1, 2, 3] },
-          { dimension: 'blockhead.container', field: 'id', operator: 'notin', values: [1] }
+          {
+            type: 'dimension',
+            field: 'age',
+            parameters: {
+              field: 'id'
+            },
+            operator: 'in',
+            values: [1, 2, 3]
+          },
+          {
+            type: 'dimension',
+            field: 'container',
+            parameters: {
+              field: 'id'
+            },
+            operator: 'notin',
+            values: [1]
+          }
         ],
         'multi datasource filters has the datasource specified'
       );

@@ -11,4 +11,6 @@ export default class TopBarComponent extends Component {
    * @property {String} loggedInUser - logged in User's id
    */
   loggedInUser = config.navi.user;
+
+  rootURL = config.rootURL;
 }

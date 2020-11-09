@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import Pretender from 'pretender';
-import metadataRoutes from '../../helpers/metadata-routes';
+import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import { groupBy } from 'lodash-es';
 
 const HOST = config.navi.dataSources[0].uri;
@@ -59,7 +59,7 @@ module('Unit | Service | metric parameter', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    MetadataService = this.owner.lookup('service:bard-metadata');
+    MetadataService = this.owner.lookup('service:navi-metadata');
 
     //setup Pretender
     Server = new Pretender(function() {
@@ -158,7 +158,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'arg0',
             type: 'ref',
@@ -201,7 +201,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     const service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'one',
             type: 'ref',
@@ -239,7 +239,7 @@ module('Unit | Service | metric parameter', function(hooks) {
 
     let service = this.owner.lookup('service:metric-parameter'),
       metricMeta = {
-        arguments: [
+        parameters: [
           {
             id: 'one',
             type: 'ref',

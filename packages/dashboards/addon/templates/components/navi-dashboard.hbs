@@ -44,12 +44,12 @@
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
       <DashboardActions::Export
-        class="action export btn"
+        class="action export btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
         @dashboard={{@dashboard}}
         @disabled={{not @dashboard.validations.isTruelyValid}}
       >
         <NaviIcon @icon="download" class="navi-icon__download" />
-        PDF Export
+        Export
       </DashboardActions::Export>
     {{/if}}
 

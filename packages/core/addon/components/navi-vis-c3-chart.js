@@ -14,7 +14,7 @@
  *   point=pointConfig
  *   tooltip=tooltipConfig
  *   containerComponent=container
- *   metaNamespace=namespace
+ *   metrics=metrics
  *  }}
  */
 import { next, scheduleOnce } from '@ember/runloop';
@@ -23,15 +23,9 @@ import { set, getProperties, get, computed } from '@ember/object';
 import C3Chart from 'ember-c3/components/c3-chart';
 import c3 from 'c3';
 import { A } from '@ember/array';
-import { inject as service } from '@ember/service';
 import $ from 'jquery';
 
 export default C3Chart.extend({
-  /**
-   * @property {Service} metricName
-   */
-  metricName: service(),
-
   /**
    * @property {Array} classNames
    */
@@ -121,12 +115,9 @@ export default C3Chart.extend({
     let dataSelection = get(this, 'dataSelection');
     if (dataSelection) {
       dataSelection.then(insightsData => {
-        let metricName = get(this, 'metricName'),
-          metrics = get(this, 'axis.y.series.config.metrics').map(metric =>
-            metricName.getDisplayName(metric, this.metaNamespace)
-          ),
-          dataSelectionIndices = insightsData.mapBy('index');
-        get(this, 'chart').select(metrics, dataSelectionIndices);
+        const series = Object.keys(this.data.json[0]).filter(series => series !== 'x');
+        const dataSelectionIndices = insightsData.mapBy('index');
+        get(this, 'chart').select(series, dataSelectionIndices);
       });
     } else {
       /*

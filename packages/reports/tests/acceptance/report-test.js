@@ -12,13 +12,7 @@ import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import moment from 'moment';
-import {
-  clickItem,
-  clickItemFilter,
-  getTimeGrainCheckbox,
-  getAllSelected,
-  getItem
-} from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
 import { animationsSettled } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -147,21 +141,13 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Revert changes when exiting report - existing report', async function(assert) {
-    assert.expect(5);
-
     // visit report 1
     await visit('/reports/1/view');
 
-    let dayTimeGrain = await getTimeGrainCheckbox('Day');
-    assert.dom(dayTimeGrain.item).isChecked('Day timegrain is checked by default');
-    await dayTimeGrain.reset();
+    assert.dom('.filter-builder__subject').hasText('Date Time (Day)');
 
-    // uncheck the day timegrain
-    await clickItem('timeGrain', 'Day');
-
-    dayTimeGrain = await getTimeGrainCheckbox('Day');
-    assert.dom(dayTimeGrain.item).isNotChecked('Day timegrain is unchecked after clicking on it');
-    await dayTimeGrain.reset();
+    // remove the dateTime column
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -175,9 +161,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.navi-report__revert-btn')
       .isNotVisible('After navigating away and back to the route, the Revert button disappears');
 
-    dayTimeGrain = await getTimeGrainCheckbox('Day');
-    assert.dom(dayTimeGrain.item).isChecked('After navigating away and back to the route, changes are reverted');
-    await dayTimeGrain.reset();
+    assert.dom('.navi-column-config-item[data-name="dateTime"]');
+    assert.dom('.filter-builder__subject').hasText('Date Time (Day)');
   });
 
   test('Revert changes - existing report', async function(assert) {
@@ -191,7 +176,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Remove a metric
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -284,7 +269,8 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-btn');
 
     // Change the Dim
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -337,7 +323,8 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -369,6 +356,44 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
   });
 
+  test('Save As change title manually', async function(assert) {
+    assert.expect(6);
+    await visit('/reports/1');
+    // Change the Dim
+    await clickItem('timeGrain', 'Month');
+
+    // And click Save AS the report
+    await click('.navi-report__save-as-btn');
+
+    // The Modal with buttons is Visible
+    assert.dom('.save-as__save-as-modal-btn').isVisible('Save As Modal is visible with save as key');
+
+    //fill in new title
+    await fillIn('.navi-modal .text-input.dashboard-title', 'Title of Hyrule');
+
+    // Press the save as
+    await click('.save-as__save-as-modal-btn');
+
+    assert.ok(!!$('.filter-builder__subject:contains(Month)').length, 'The new Dim is shown in the new report.');
+
+    // New Report is run
+    let emberId = find('.report-view.ember-view').id,
+      component = this.owner.lookup('-view-registry:main')[emberId];
+    assert.equal(
+      component.get('report.visualization.type'),
+      'table',
+      'Report has a valid visualization type after running then reverting.'
+    );
+
+    assert.dom('.navi-report__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
+
+    await visit('/reports/1');
+
+    assert.ok(!!$('.filter-builder__subject:contains(Day)').length, 'Old unsaved report have the old DIM.');
+
+    assert.dom('.navi-report__title').hasText('Hyrule News', 'Old Report with unchanged title is being viewed.');
+  });
+
   test('Save As on failure', async function(assert) {
     assert.expect(3);
 
@@ -378,7 +403,8 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // Change the Dim
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
@@ -454,8 +480,6 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Export action - enabled/disabled', async function(assert) {
-    assert.expect(4);
-
     await visit('/reports/1/view');
 
     assert
@@ -470,15 +494,15 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
 
     // Remove new dimension to make it in sync with the visualization
-    await clickItem('dimension', 'Product Family');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Product Family"]');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Remove all metrics to create an invalid report
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
@@ -488,10 +512,10 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Export action - href', async function(assert) {
     assert.expect(4);
 
-    let originalFeatureFlag = config.navi.FEATURES.enableMultipleExport;
+    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.enableMultipleExport = false;
+    config.navi.FEATURES.multipleExportFileTypes = [];
 
     await visit('/reports/1/view');
 
@@ -535,7 +559,7 @@ module('Acceptance | Navi Report', function(hooks) {
       'Filter updates are automatically included in export url'
     );
 
-    config.navi.FEATURES.enableMultipleExport = originalFeatureFlag;
+    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action - csv href', async function(assert) {
@@ -589,30 +613,37 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
   });
 
-  test('Multi export action - pdf href', async function(assert) {
-    assert.expect(4);
+  test('Multi export action - pdf and png href', async function(assert) {
+    assert.expect(5);
 
-    const initialUrl =
-      '/export?reportModel=EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh46qnBoABlXjkIgKfHO8gmEy9YykVSQABqJT0UgYq3pTJZsEvOmvM1vZ01DLYPAENCUqDEGECEoJQpWsSwEHZYBPD3YByBcUM1jQUd02gJgAH14OaVFzmEcRYIZMQE1yCpgCAAA';
+    const store = this.owner.lookup('service:store');
+
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
 
-    assert.equal(
-      $('.multiple-format-export__dropdown a:contains(PDF)').attr('href'),
-      initialUrl,
-      'Export url contains serialized report'
-    );
+    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
+    let encodedModel = exportHref.split('/export?reportModel=')[1];
+
+    const actualModel = (await CompressionService.decompressModel(encodedModel)).serialize();
+    const expectedModel = (await store.findRecord('report', 1)).serialize();
+
+    //strip off owner
+    delete expectedModel.data.relationships;
+
+    assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
+
+    const exportToPngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
+    assert.equal(`${exportHref}&fileType=png`, exportToPngHref, 'PNG link has appropriate link to export service');
 
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    let modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
       .attr('href')
-      .split('=')[1];
-
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'request.dimensions')
           .objectAt(1)
@@ -627,10 +658,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
       .attr('href')
-      .split('=')[1];
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'visualization.type'),
         'table',
@@ -644,10 +675,11 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
-    modelStr = $('.multiple-format-export__dropdown a:contains(PDF)')
+    encodedModel = $('.multiple-format-export__dropdown a:contains("PNG")')
       .attr('href')
-      .split('=')[1];
-    await CompressionService.decompressModel(modelStr).then(model => {
+      .replace('&fileType=png', '')
+      .split('/export?reportModel=')[1];
+    await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
         get(model, 'visualization.metadata.showTotals.grandTotal'),
         true,
@@ -959,7 +991,8 @@ module('Acceptance | Navi Report', function(hooks) {
       'After navigating out of the route, the report model is rolled back'
     );
 
-    await clickItem('timeGrain', 'Week');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     //Navigate out of report
     await click('.navi-report__breadcrumb-link');
@@ -1159,7 +1192,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await clickItem('metric', 'Ad Clicks');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom('.navi-report__save-btn')
@@ -1294,7 +1327,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Revert report to its original state == */
-    await clickItem('metric', 'Time Spent');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Time Spent"]');
     await click('.navi-report__run-btn');
 
     assert.notOk(
@@ -1479,91 +1512,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Dimension selector', async function(assert) {
-    assert.expect(9);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Property'],
-      'Selected dimensions and time grain initially include "Day" and "Property"'
-    );
-
-    let dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
-
-    // Add Dimension
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Adding a dimension changes selected dimensions'
-    );
-
-    // Add selected dimension as filter
-    await clickItemFilter('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Adding a selected dimension as filter does not change the selected items'
-    );
-
-    // Remove the selected dimension filter
-    await clickItemFilter('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Removing a filter of a dimension already selected does not change selected items'
-    );
-
-    // Add unselected dimension as filter
-    await clickItemFilter('dimension', 'Gender');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Adding an unselected dimension as filter does not change the selected items'
-    );
-
-    // Remove the unselected dimension filter
-    await clickItemFilter('dimension', 'Gender');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Operating System', 'Property'],
-      'Removing a filter of an unselected dimension does not change selected items'
-    );
-
-    // Remove Dimension
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Day', 'Property'],
-      'Removing a dimension as a filter and dimension changes the selected items'
-    );
-
-    dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Removed dimension row has a plus icon');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('Dimension selector - enableRequestPreview', async function(assert) {
     assert.expect(7);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/1');
 
@@ -1611,88 +1560,10 @@ module('Acceptance | Navi Report', function(hooks) {
     dimensionItem = await getItem('dimension', 'Operating System');
 
     assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Dimension row still has a plus icon');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Metric selector', async function(assert) {
-    assert.expect(8);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = false;
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks'],
-      'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
-    );
-
-    let metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'An unselected metric row has a plus icon');
-
-    // Add Metric
-    await clickItem('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Adding a metric changes selected metrics'
-    );
-
-    // Add selected metric as filter
-    await clickItemFilter('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Adding a selected metric as filter does not change the selected items'
-    );
-
-    // Remove the selected metric filter
-    await clickItemFilter('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Removing a filter of a metric already selected does not change selected items'
-    );
-
-    // Add unselected metric as filter
-    await clickItemFilter('metric', 'Other Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Other Clicks', 'Total Clicks'],
-      'Adding an unselected metric as filter selects the metric'
-    );
-
-    // Remove Metrics
-    await clickItem('metric', 'Total Clicks');
-    await clickItem('metric', 'Other Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks'],
-      'Removing a metric changes selected metrics'
-    );
-
-    metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Removed metric row has a plus icon');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
-  });
-
-  test('Metric selector - enableRequestPreview', async function(assert) {
     assert.expect(6);
-
-    const originalFeatureFlag = config.navi.FEATURES.enableRequestPreview;
-
-    config.navi.FEATURES.enableRequestPreview = true;
 
     await visit('/reports/1');
 
@@ -1731,8 +1602,6 @@ module('Acceptance | Navi Report', function(hooks) {
     metricItem = await getItem('metric', 'Total Clicks');
 
     assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Metric row still has a plus icon');
-
-    config.navi.FEATURES.enableRequestPreview = originalFeatureFlag;
   });
 
   test('Test filter "Is Empty" is accepted', async function(assert) {
@@ -1771,7 +1640,8 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(6);
 
     await visit('/reports/1');
-    await clickItem('timeGrain', 'Month');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Month');
 
     // Select the month Jan
     await clickTrigger('.filter-values--date-range-input__low-value');
@@ -1783,7 +1653,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'Start Month is changed to Jan 2015');
     assert.dom('.filter-values--date-range-input__high-value').hasText('Jan 2015', 'End Month is changed to Jan 2015');
 
-    await clickItem('timeGrain', 'Day');
+    await selectChoose('.navi-column-config-item__parameter', 'Day');
     await click('.navi-report__run-btn');
 
     assert
@@ -1793,7 +1663,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
 
-    await clickItem('timeGrain', 'Week');
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
     await click('.navi-report__run-btn');
 
     assert
@@ -1929,7 +1799,8 @@ module('Acceptance | Navi Report', function(hooks) {
       );
 
     //select month grain
-    await clickItem('timeGrain', 'Month');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Month');
 
     assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 2015', 'The start date is month Nov 2015');
     assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 2015', 'The end date is month Nov 2015');
@@ -1964,7 +1835,8 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     // select month grain
-    await clickItem('timeGrain', 'Month');
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Month');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
     await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
@@ -1976,7 +1848,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
 
     // select 'all' grain
-    await clickItem('timeGrain', 'Month');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Month)"]');
 
     assert
       .dom('.filter-values--date-range-input__low-value')

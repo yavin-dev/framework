@@ -12,13 +12,13 @@
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
       <li class="action">
+        <EmberTooltip @text="Export the dashboard"/>
         <DashboardActions::Export
-          class="export btn"
+          class="export btn {{unless dashboard.validations.isTruelyValid "disabled"}}"
           @dashboard={{dashboard}}
           @disabled={{not dashboard.validations.isTruelyValid}}
         >
           <NaviIcon @icon="download" class="navi-icon__download" />
-          <EmberTooltip @text="Export the dashboard"/>
         </DashboardActions::Export>
       </li>
     {{/if}}

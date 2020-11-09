@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -76,9 +76,15 @@
       cursor: pointer;
       font-family: @font-family-sans-serif;
       margin-right: 15px;
+      padding: 0;
 
       a {
         color: @navi-gray-800;
+      }
+
+      &.disabled {
+        color: @disabled-gray;
+        cursor: not-allowed;
       }
     }
 

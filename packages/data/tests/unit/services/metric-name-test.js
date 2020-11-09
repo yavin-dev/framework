@@ -2,32 +2,31 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Service | metric long name', function(hooks) {
+module('Unit | Service | metric name', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('getName', function(assert) {
-    assert.expect(2);
-    let service = this.owner.lookup('service:metric-name');
+    const service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getName('revenue'),
+      service.getName('revenue', 'bardOne'),
       'Revenue',
-      'Service can succesfully retrieve the long name for a valid metric'
+      'Service can successfully retrieve the long name for a valid metric'
     );
 
-    assert.equal(service.getName('foo'), 'foo', 'The metric id is returned if there is no metadata found');
+    assert.equal(service.getName('foo', 'bardOne'), 'foo', 'The metric id is returned if there is no metadata found');
   });
 
   test('getDisplayName', function(assert) {
-    let service = this.owner.lookup('service:metric-name');
+    const service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getDisplayName({ metric: 'adClicks', parameters: {} }),
+      service.getDisplayName({ metric: 'adClicks', parameters: {}, source: 'bardOne' }),
       'Ad Clicks',
       'Service returns the long name for a non parameterized metric'
     );
@@ -36,7 +35,8 @@ module('Unit | Service | metric long name', function(hooks) {
       service.getDisplayName({
         metric: 'revenue',
         parameters: { currency: 'USD' },
-        canonicalName: 'revenue(currency=USD)'
+        canonicalName: 'revenue(currency=USD)',
+        source: 'bardOne'
       }),
       'Revenue (USD)',
       'Service returns a correctly formatted metric name for a parameterized metric'
@@ -44,25 +44,20 @@ module('Unit | Service | metric long name', function(hooks) {
   });
 
   test('multi-data source support', async function(assert) {
-    assert.expect(2);
-    const metaData = this.owner.lookup('service:bard-metadata');
-    metaData._keg.reset();
-    await metaData.loadMetadata({ dataSourceName: 'blockhead' });
-
-    let service = this.owner.lookup('service:metric-name');
+    const metaData = this.owner.lookup('service:navi-metadata');
+    await metaData.loadMetadata({ dataSourceName: 'bardTwo' });
+    const service = this.owner.lookup('service:metric-name');
 
     assert.equal(
-      service.getDisplayName({ metric: 'usedAmount', parameters: {} }, 'blockhead'),
+      service.getDisplayName({ metric: 'usedAmount', parameters: {}, source: 'bardTwo' }),
       'Used Amount',
       'Service returns the long name for a non parameterized metric'
     );
 
     assert.equal(
-      service.getName('available', 'blockhead'),
+      service.getName('available', 'bardTwo'),
       'How many are available',
-      'Service can succesfully retrieve the long name for a valid metric'
+      'Service can successfully retrieve the long name for a valid metric'
     );
-
-    metaData._keg.reset();
   });
 });

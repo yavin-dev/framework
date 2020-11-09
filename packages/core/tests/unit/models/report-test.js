@@ -7,33 +7,64 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
 import DeliverableItem from 'navi-core/models/deliverable-item';
+import { unset } from 'lodash-es';
 
-let Store, MetadataService;
+let Store;
 
 const ExpectedRequest = {
-    logicalTable: {
-      table: 'network',
-      timeGrain: 'day'
-    },
-    metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-    dimensions: [{ dimension: 'property' }],
-    filters: [],
-    having: [],
-    sort: [
+    filters: [
       {
-        metric: 'navClicks',
-        direction: 'asc'
+        operator: 'bet',
+        values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'],
+        field: 'network.dateTime',
+        parameters: {
+          grain: 'day'
+        },
+        type: 'timeDimension'
       }
     ],
-    intervals: [
+    columns: [
       {
-        end: '2015-11-16 00:00:00.000',
-        start: '2015-11-09 00:00:00.000'
+        alias: null,
+        field: 'network.dateTime',
+        parameters: {
+          grain: 'day'
+        },
+        type: 'timeDimension'
+      },
+      {
+        alias: null,
+        field: 'property',
+        parameters: {
+          field: 'id'
+        },
+        type: 'dimension'
+      },
+      {
+        alias: null,
+        field: 'adClicks',
+        parameters: {},
+        type: 'metric'
+      },
+      {
+        alias: null,
+        field: 'navClicks',
+        parameters: {},
+        type: 'metric'
       }
     ],
-    bardVersion: 'v1',
-    requestVersion: 'v1',
-    dataSource: 'dummy'
+    table: 'network',
+    sorts: [
+      {
+        direction: 'asc',
+        field: 'navClicks',
+        parameters: {},
+        type: 'metric'
+      }
+    ],
+    limit: null,
+    requestVersion: '2.0',
+    dataSource: 'bardOne'
   },
   ExpectedReport = {
     data: {
@@ -42,19 +73,18 @@ const ExpectedRequest = {
         request: ExpectedRequest,
         visualization: {
           type: 'line-chart',
-          version: 1,
+          version: 2,
           metadata: {
             axis: {
               y: {
                 series: {
                   type: 'dimension',
                   config: {
-                    metric: { metric: 'adClicks', parameters: {} },
-                    dimensionOrder: ['property'],
+                    metricCid: 'cid_adClicks',
                     dimensions: [
-                      { name: 'Property 1', values: { property: '114' } },
-                      { name: 'Property 2', values: { property: '100001' } },
-                      { name: 'Property 3', values: { property: '100002' } }
+                      { name: 'Property 1', values: { 'cid_property(field=id)': '114' } },
+                      { name: 'Property 2', values: { 'cid_property(field=id)': '100001' } },
+                      { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } }
                     ]
                   }
                 }
@@ -81,19 +111,38 @@ module('Unit | Model | report', function(hooks) {
 
   hooks.beforeEach(async function() {
     Store = this.owner.lookup('service:store');
-    MetadataService = this.owner.lookup('service:bard-metadata');
-    await MetadataService.loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   test('Retrieving records', async function(assert) {
-    assert.expect(3);
+    assert.expect(6);
 
     await run(async () => {
       const report = await Store.findRecord('report', 1);
+      const cids = report.request.columns.mapBy('cid');
+      const cidToReadable = report.request.columns.reduce((map, col) => {
+        map[col.cid] = `cid_${col.canonicalName}`;
+        return map;
+      }, {});
+      const vizConfig = report.visualization.metadata.axis.y.series.config;
+      vizConfig.metricCid = cidToReadable[vizConfig.metricCid];
+      vizConfig.dimensions.forEach(series => {
+        Object.keys(series.values).forEach(key => {
+          series.values[cidToReadable[key]] = series.values[key];
+          delete series.values[key];
+        });
+      });
+      const serialized = report.serialize();
 
-      assert.ok(report, 'Found report with id 1');
+      cids.forEach((cid, idx) => {
+        assert.equal(cid.length, 10, 'column cid has proper value');
+        //TODO remove this once fixtures are converted request v2
+        //remove from validation since cid value is non deterministic
+        unset(serialized, `data.attributes.request.columns[${idx}].cid`);
+      });
+
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-      assert.deepEqual(report.serialize(), ExpectedReport, 'Fetched report has all attributes as expected');
+      assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
 

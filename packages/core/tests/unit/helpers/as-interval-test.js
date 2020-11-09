@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import Interval from 'navi-core/utils/classes/interval';
+import Interval from 'navi-data/utils/classes/interval';
 import { asInterval } from 'navi-core/helpers/as-interval';
 
 module('Unit | Helper | as interval', function() {

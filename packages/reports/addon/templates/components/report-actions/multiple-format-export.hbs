@@ -12,7 +12,7 @@
             <li>
               <NaviIcon @icon={{exportFormat.icon}} />
               <a
-                download={{dasherize @report.title}}
+                download={{dasherize this.filename}}
                 href={{await exportFormat.href}}
                 {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
               >

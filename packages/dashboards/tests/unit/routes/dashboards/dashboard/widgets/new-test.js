@@ -10,24 +10,13 @@ const NEW_MODEL = {
   createdOn: null,
   requests: [
     {
-      bardVersion: 'v1',
-      dataSource: 'dummy',
-      dimensions: [],
+      table: 'tableA',
       filters: [],
-      intervals: [
-        {
-          end: 'current',
-          start: 'P1D'
-        }
-      ],
-      logicalTable: {
-        table: 'tableA',
-        timeGrain: 'hour'
-      },
-      metrics: [],
-      having: [],
-      sort: [],
-      requestVersion: 'v1'
+      columns: [],
+      sorts: [],
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne'
     }
   ],
   title: 'Untitled Widget',
@@ -66,7 +55,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
 
     set(config, 'navi.defaultDataTable', 'tableA');
 
-    await this.owner.lookup('service:bard-metadata').loadMetadata();
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
   hooks.afterEach(function() {

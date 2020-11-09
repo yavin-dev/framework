@@ -1,11 +1,9 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <NaviListSelector
-  @items={{this.listItems}}
+  @items={{this.allDimensions}}
   @searchField="name"
-  @selected={{this.selectedColumnsAndFilters}}
   @title="Dimensions"
   @contentClass="navi-list-selector__content--dimension"
-  class="{{if (feature-flag "enableRequestPreview") "navi-list-selector--request-preview"}}"
   as | items areItemsFiltered |
 >
   <GroupedList
@@ -15,65 +13,34 @@
     @sortByField={{unless areItemsFiltered "name"}}
     as | item |
   >
-    {{#if item.dateTimeDimension}}
-      {{#if (feature-flag "enableRequestPreview")}}
-        <div class="grouped-list__item-container {{if this.selectedTimeGrain "grouped-list__item-container--selected"}}">
-          <button class="grouped-list__item-label"
-            role="button"
-            type="button"
-            {{on "click" (fn this.itemClicked item)}}>
-            <NaviIcon
-              @icon="plus-circle"
-              class="grouped-list__add-icon"
-            />
-            {{item.name}}
-          </button>
-        </div>
-      {{else}}
-        <div class="grouped-list__item-checkbox-container">
-          <input
-            type="checkbox"
-            class="grouped-list__item-checkbox"
-            id={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
-            checked={{get-shallow this.itemsChecked item.id}}
-            {{on "change" (fn this.itemClicked item)}}
-          >
-          <label for={{concat "grouped-list-item-checkbox-" (dasherize item.name)}}
-            class="grouped-list__item-label">
-            {{item.name}}
-          </label>
-        </div>
-      {{/if}}
-    {{else}}
-      <div class="grouped-list__item-container {{if (and (get-shallow this.itemsChecked item.id) (feature-flag "enableRequestPreview")) "grouped-list__item-container--selected"}}">
-        <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button" type="button">
-          <NaviIcon
-            @icon={{if (and (get-shallow this.itemsChecked item.id) (not (feature-flag "enableRequestPreview"))) "minus-circle" "plus-circle"}}
-            class="grouped-list__add-icon {{if (not (or (feature-flag "enableRequestPreview") (get-shallow this.itemsChecked item.id))) "grouped-list__add-icon--deselected"}}"
-          />
-          {{item.name}}
-        </button>
+    <div class="grouped-list__item-container {{if (get-shallow this.selectedColumns item.id) "grouped-list__item-container--selected"}}">
+      <button class="grouped-list__item-label" {{on "click" (fn this.itemClicked item)}} role="button" type="button">
+        <NaviIcon
+          @icon="plus-circle"
+          class="grouped-list__add-icon"
+        />
+        {{item.name}}
+      </button>
 
-        <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
-          <EmberTooltip @side="right" @popperContainer="body" @effect="none">
-            {{#if (is-pending item.extended)}}
-              <NaviLoadingMessage />
-            {{else}}
-              {{#let (await item.extended) as |extended|}}
-                {{or extended.description "No description available"}}
-              {{/let}}
-            {{/if}}
-          </EmberTooltip>
-        </NaviIcon>
+      <NaviIcon @icon="question-circle-o" class="grouped-list__item-info">
+        <EmberTooltip @side="right" @popperContainer="body" @effect="none">
+          {{#if (is-pending item.extended)}}
+            <NaviLoadingMessage />
+          {{else}}
+            {{#let (await item.extended) as |extended|}}
+              {{or extended.description "No description available"}}
+            {{/let}}
+          {{/if}}
+        </EmberTooltip>
+      </NaviIcon>
 
-        <div class="grouped-list__icon-set">
-          <NaviIcon
-            @icon="filter"
-            class={{concat (if (get-shallow this.dimensionsFiltered item.id) "grouped-list__filter--active ") "grouped-list__filter"}}
-            {{on "click" (fn this.onToggleDimFilter item)}}
-          />
-        </div>
+      <div class="grouped-list__icon-set">
+        <NaviIcon
+          @icon="filter"
+          class={{concat (if (get-shallow this.dimensionsFiltered item.id) "grouped-list__filter--active ") "grouped-list__filter"}}
+          {{on "click" (fn this.onToggleDimFilter item)}}
+        />
       </div>
-    {{/if}}
+    </div>
   </GroupedList>
 </NaviListSelector>

@@ -1,11 +1,11 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
-  <div class="report-builder__side {{if (feature-flag "enableRequestPreview") "report-builder__side--request-preview"}}">
+  <div class="report-builder__side report-builder__side">
     {{#if (or (gt this.allTables.length 1) (not this.hasValidLogicalTable))}}
       <NaviTableSelect
         class={{concat "report-builder__container report-builder__container--table" (if @disabled " report-builder__container--disabled" "")}}
         @options={{this.allTables}}
-        @selected={{this.request.logicalTable.table}}
+        @selected={{this.request.tableMetadata}}
         @onChange={{update-report-action "UPDATE_TABLE"}}
       />
     {{/if}}
@@ -14,20 +14,14 @@
         <DimensionSelector
           class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
           @request={{this.request}}
-          @onAddTimeGrain={{queue (fn (optional @onBeforeAddItem) this "timeDimension") (update-report-action "ADD_TIME_GRAIN")}}
-          @onAddDimension={{queue (fn (optional @onBeforeAddItem) this "dimension") (update-report-action "ADD_DIMENSION")}}
-          @onRemoveTimeGrain={{update-report-action "REMOVE_TIME_GRAIN"}}
-          @onRemoveDimension={{update-report-action "REMOVE_DIMENSION"}}
-          @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIM_FILTER") this.onToggleDimFilter}}
+          @onAddDimension={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+          @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIMENSION_FILTER") this.onToggleDimFilter}}
         />
         <MetricSelector
           class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
           @request={{this.request}}
-          @onAddMetric={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC")}}
-          @onAddMetricWithParameter={{queue (fn (optional @onBeforeAddItem) this "metric") (update-report-action "ADD_METRIC_WITH_PARAM")}}
-          @onRemoveMetric={{update-report-action "REMOVE_METRIC"}}
+          @onAddMetric={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
           @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") this.onToggleMetricFilter}}
-          @onToggleParameterizedMetricFilter={{this.onToggleParameterizedMetricFilter}}
         />
       {{/if}}
     </div>

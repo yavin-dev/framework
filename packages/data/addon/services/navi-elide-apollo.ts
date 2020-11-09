@@ -8,11 +8,6 @@ import { configHost } from 'navi-data/utils/adapter';
 
 export default class NaviElideApolloService extends ApolloService {
   /**
-   * @property {String} namespace
-   */
-  namespace = 'graphql';
-
-  /**
    * @override
    * @method clientOptions
    * @returns options
@@ -72,9 +67,7 @@ export default class NaviElideApolloService extends ApolloService {
    */
   _buildURLPath(dataSourceName: string): string {
     const host = configHost({ dataSourceName });
-    const { namespace } = this;
-
-    return `${host}/${namespace}`;
+    return new URL(host, `${document.location.protocol}${document.location.host}`).href;
   }
 }
 

@@ -9,11 +9,11 @@
  *   />
  */
 import { A as arr } from '@ember/array';
-import { set, computed, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import BaseFilterBuilderComponent from './base';
-import Interval from 'navi-core/utils/classes/interval';
-import Duration, { parseDuration } from 'navi-core/utils/classes/duration';
-import { getFirstDayOfIsoDateTimePeriod } from 'navi-core/utils/date';
+import Interval from 'navi-data/utils/classes/interval';
+import Duration, { parseDuration } from 'navi-data/utils/classes/duration';
+import { getFirstDayOfIsoDateTimePeriod } from 'navi-data/utils/date';
 import moment from 'moment';
 
 export const MONTHS_IN_QUARTER = 3;
@@ -29,15 +29,10 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   /**
    * @property {String} dateTimePeriodName - the date time period
    */
-  @computed('request.logicalTable.{timeGrain,table.timeGrains.[]}')
+  @computed('request.{timeGrain,tableMetadata.timeGrains}')
   get dateTimePeriodName() {
-    const {
-      logicalTable: {
-        timeGrain,
-        table: { timeGrains }
-      }
-    } = this.request;
-    return timeGrains.find(grain => grain.id === timeGrain)?.name;
+    const { timeGrain, tableMetadata } = this.request;
+    return tableMetadata.timeGrains.find(t => t.id === timeGrain).name;
   }
 
   /**
@@ -156,13 +151,13 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
    * @property {Object} filter
    * @override
    */
-  @computed('requestFragment.interval', 'dateTimePeriodName')
+  @computed('request.interval', 'dateTimePeriodName')
   get filter() {
-    const interval = this.requestFragment?.interval;
+    const interval = this.request.interval;
 
     return {
       subject: { name: `Date Time (${this.dateTimePeriodName})` },
-      operator: this.operatorForInterval(interval),
+      operator: this.operatorForInterval(interval).id,
       values: arr([interval])
     };
   }
@@ -174,21 +169,21 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
   @action
   setOperator(operatorObject) {
     const newOperator = operatorObject.id;
-    const oldOperator = this.filter.operator.id;
+    const oldOperator = this.filter.operator;
 
     if (oldOperator === newOperator) {
       return;
     }
 
-    const dateTimePeriod = this.request.logicalTable?.timeGrain;
-    const originalInterval = this.requestFragment?.interval;
+    const dateTimePeriod = this.request.timeGrain;
+    const originalInterval = this.request.interval;
 
     const newInterval = this.intervalForOperator(originalInterval, dateTimePeriod, newOperator);
-    set(this, 'requestFragment.interval', newInterval);
+    const { start, end } = newInterval.asStrings();
 
     this.onUpdateFilter({
       operator: newOperator,
-      values: arr([newInterval])
+      values: arr([start, end])
     });
   }
 }
