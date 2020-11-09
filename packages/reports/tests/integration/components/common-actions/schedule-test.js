@@ -343,7 +343,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await clickTrigger('.schedule-modal__dropdown--format');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      ['csv', 'pdf', 'png'],
+      ['csv', 'pdf', 'png', 'gsheet'],
       'Schedule format should have correct options'
     );
   });

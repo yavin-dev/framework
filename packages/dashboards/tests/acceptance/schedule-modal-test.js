@@ -41,7 +41,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     await clickTrigger('.schedule-modal__dropdown--format');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      ['pdf', 'png'],
+      ['pdf', 'png', 'gsheet'],
       'Schedule format should have correct options'
     );
 

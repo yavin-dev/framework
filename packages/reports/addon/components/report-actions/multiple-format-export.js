@@ -80,9 +80,17 @@ export default class MultipleFormatExport extends Component {
   }
 
   /**
+   * @property {String} gsheetExportHref - href for google sheet exports
+   */
+  @computed('report.id')
+  get gsheetExportHref() {
+    return `/gsheet-export/report/${this.report.id}`;
+  }
+
+  /**
    * @property {Array} exportFormats - A list of export formats
    */
-  @computed('csvHref', 'exportHref', 'supportedFileTypes')
+  @computed('csvHref', 'exportHref', 'supportedFileTypes', 'gsheetExportHref')
   get exportFormats() {
     const { supportedFileTypes } = this;
 
@@ -90,7 +98,8 @@ export default class MultipleFormatExport extends Component {
       {
         type: 'CSV',
         href: this.csvHref,
-        icon: 'file-text-o'
+        icon: 'file-text-o',
+        requiresSaved: false
       }
     ];
 
@@ -99,7 +108,8 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'PDF',
           href: this.exportHref,
-          icon: 'file-pdf-o'
+          icon: 'file-pdf-o',
+          requiresSaved: false
         });
       }
 
@@ -107,7 +117,17 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'PNG',
           href: this.exportHref.then(href => `${href}&fileType=png`),
-          icon: 'file-image-o'
+          icon: 'file-image-o',
+          requiresSaved: false
+        });
+      }
+
+      if (supportedFileTypes.includes('gsheet') || supportedFileTypes.includes('GSHEET')) {
+        exportFormats.push({
+          type: 'Google Sheet',
+          href: this.gsheetExportHref,
+          icon: 'google',
+          requiresSaved: true
         });
       }
     }

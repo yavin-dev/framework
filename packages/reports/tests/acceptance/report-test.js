@@ -702,6 +702,47 @@ module('Acceptance | Navi Report', function(hooks) {
     });
   });
 
+  test('Google Sheets export', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+
+    await clickTrigger('.multiple-format-export');
+
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("Google Sheet")')[0],
+      undefined,
+      'Sheet Export does not exist for new documents'
+    );
+
+    // Remove all metrics
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
+
+    // add filter
+    await clickItem('dimension', 'Operating System');
+    await click('.navi-report__run-btn');
+
+    await clickTrigger('.multiple-format-export');
+
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("Google Sheet")')[0],
+      undefined,
+      'Sheet Export does not exist for new documents even after run'
+    );
+
+    await click('.navi-report__save-btn');
+
+    await clickTrigger('.multiple-format-export');
+
+    assert
+      .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
+      .exists('Sheet Export does not exist for new documents even after run');
+
+    assert
+      .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
+      .hasAttribute('href', /^\/gsheet-export\/report\/\d+$/, 'Export link has correct href');
+  });
+
   test('Get API action - enabled/disabled', async function(assert) {
     assert.expect(2);
 

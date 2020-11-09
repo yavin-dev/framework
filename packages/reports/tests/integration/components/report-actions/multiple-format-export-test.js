@@ -43,7 +43,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   });
 
   test('export links', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     const factService = this.owner.lookup('service:navi-facts');
     const compressionService = this.owner.lookup('service:compression');
@@ -74,6 +74,9 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
     assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
+
+    const gSheetHref = $('.multiple-format-export__dropdown a:contains("Google Sheet")').attr('href');
+    assert.equal(`/gsheet-export/report/1`, gSheetHref);
   });
 
   test('filename', async function(assert) {

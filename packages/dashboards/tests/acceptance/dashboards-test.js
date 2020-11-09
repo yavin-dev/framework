@@ -6,6 +6,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 
@@ -735,5 +736,20 @@ module('Acceptance | Dashboards', function(hooks) {
       ['Date', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
+  });
+
+  test('Export links test', async function(assert) {
+    assert.expect(6);
+    await visit('/dashboards/1');
+    await clickTrigger('.multiple-format-export');
+    const exportLinks = findAll('.multiple-format-export__dropdown a');
+    assert.dom(exportLinks[0]).hasAttribute('href', '/export?dashboard=1', 'pdf link is correct');
+    assert.dom(exportLinks[0]).hasText('PDF');
+
+    assert.dom(exportLinks[1]).hasAttribute('href', '/export?dashboard=1&fileType=png', 'png link is correct');
+    assert.dom(exportLinks[1]).hasText('PNG');
+
+    assert.dom(exportLinks[2]).hasAttribute('href', '/gsheet-export/dashbord/1', 'google sheet link is correct');
+    assert.dom(exportLinks[2]).hasText('Google Sheet');
   });
 });
