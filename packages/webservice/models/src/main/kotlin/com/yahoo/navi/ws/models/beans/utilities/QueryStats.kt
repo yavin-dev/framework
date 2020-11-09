@@ -37,7 +37,7 @@ class QueryStats(id: UUID) {
     var apiQuery: String? = null
 
     @Column
-    var storeQuery: String? = null
+    var storeQuery: MutableList<String>? = null
 
     @Column
     var modelName: String? = null

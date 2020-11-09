@@ -100,10 +100,10 @@ open class NaviQueryLogger constructor(
         }
     }
 
-    override fun processQuery(queryId: UUID, query: Query, apiQuery: (Mutable)List<String>, isCached: Boolean) {
+    override fun processQuery(queryId: UUID, query: Query, apiQuery: MutableList<String>, isCached: Boolean) {
         var qstat: QueryStats = queryWatcher[queryId]!!
 
-        qstat.modelName = query.table.name
+        qstat.modelName = query.scope.user.name
         qstat.storeQuery = apiQuery
         qstat.status = QueryStatus.INPROGRESS
         qstat.isCached = isCached
