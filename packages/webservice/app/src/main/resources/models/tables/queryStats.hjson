@@ -32,7 +32,7 @@
                 {
                     name: requestId
                     type: TEXT
-                    definition: requestId
+                    definition: {{requestId}}
                 }
                 {
                     name : apiVersion
