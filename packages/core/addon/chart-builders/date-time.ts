@@ -21,7 +21,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { BaseChartBuilder, C3Row, TooltipData } from './base';
+import { BaseChartBuilder, C3Row, EmptyC3Data, TooltipData } from './base';
 import { tracked } from '@glimmer/tracking';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
@@ -226,6 +226,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): string {
+    assert('request should have a timeGrainColumn', request.timeGrainColumn);
     const colName = request.timeGrainColumn.canonicalName;
     const date = row[colName];
     assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
@@ -233,6 +234,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
   }
 
   getXValue(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): number {
+    assert('request should have a timeGrainColumn', request.timeGrainColumn);
     const colName = request.timeGrainColumn.canonicalName;
     const date = row[colName];
     assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
@@ -244,6 +246,11 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     config: DateTimeSeries['config'],
     request: RequestFragment
   ): { series: C3Row[]; names: Record<string, string> } {
+    assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
+    if (!(request.timeGrainColumn && response.getIntervalForTimeDimension(request.timeGrainColumn))) {
+      return EmptyC3Data;
+    }
+
     // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
     this.byXSeries = new DataGroup(response.rows, row => {
       let seriesName = this.getSeriesName(row, config, request),
@@ -254,7 +261,9 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     const grouper = _getGrouper(request, config);
     let { metricCid } = config;
     const metric = request.columns.find(c => c.cid === metricCid);
-    assert(`a metric with cid ${metricCid} should be found`, metric);
+    if (!metric) {
+      return EmptyC3Data;
+    }
 
     let seriesMap = _groupDataBySeries(
       response.rows,

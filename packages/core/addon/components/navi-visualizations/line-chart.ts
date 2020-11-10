@@ -127,12 +127,11 @@ export default class LineChart extends ChartBuildersBase<Args> {
     if ('metricCid' in seriesConfig.config) {
       const { metricCid } = seriesConfig.config;
       const metric = this.request.columns.find(({ cid }) => cid === metricCid);
-      assert(`a metric with cid ${seriesConfig.config.metricCid} should be found`, metric);
       return {
         axis: {
           y: {
             label: {
-              text: metric.displayName
+              text: metric?.displayName
             }
           }
         }

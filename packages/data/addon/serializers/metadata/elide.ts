@@ -269,7 +269,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
           _localValues: grainNodes.map(grain => ({
-            id: grain.id,
+            id: grain.grain.toLowerCase(),
             description: upperFirst(grain.grain.toLowerCase()),
             name: grain.grain.toLowerCase()
           }))

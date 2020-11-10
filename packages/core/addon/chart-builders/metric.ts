@@ -20,7 +20,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import EmberObject, { computed } from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { BaseChartBuilder, C3Row } from './base';
+import { BaseChartBuilder, C3Row, EmptyC3Data } from './base';
 import { tracked } from '@glimmer/tracking';
 import { MetricSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
@@ -32,6 +32,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
    * @inheritdoc
    */
   getXValue(row: ResponseRow, _config: MetricSeries['config'], request: RequestFragment): string {
+    assert('request should have a timeGrainColumn', request.timeGrainColumn);
     const colName = request.timeGrainColumn.canonicalName;
     const date = row[colName];
     assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
@@ -47,6 +48,10 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
     request: RequestFragment
   ): { series: C3Row[]; names: Record<string, string> } {
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
+    if (!(request.timeGrainColumn && response.getIntervalForTimeDimension(request.timeGrainColumn))) {
+      return EmptyC3Data;
+    }
+
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
     const { timeGrain } = request;

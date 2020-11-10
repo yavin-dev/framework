@@ -2,19 +2,19 @@
 <div class="filter-values--dimension-date-range-input" ...attributes>
   {{#if @isCollapsed}}
     {{#if (and this.startDate this.endDate)}}
-      {{moment-format this.startDate "MMM DD, YYYY"}} and {{moment-format this.endDate "MMM DD, YYYY"}}
+      {{format-date-for-granularity this.startDate this.timeGrain}} and {{format-date-for-granularity this.endDate this.timeGrain}}
     {{else}}
       <FilterValues::InvalidValue/>
     {{/if}}
   {{else}}
     <DropdownDatePicker
-      @dateTimePeriod="day"
+      @dateTimePeriod={{this.timeGrain}}
       @date={{moment this.startDate}}
       @onUpdate={{this.setLowValue}}
       class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__low-value"
     >
       {{#if this.startDate}}
-        {{moment-format this.startDate "MMM DD, YYYY"}}
+        {{format-date-for-granularity this.startDate this.timeGrain}}
       {{else}}
         <span class="date__placeholder">{{this.lowPlaceholder}}</span>
       {{/if}}
@@ -23,13 +23,13 @@
     <span class="filter-values--dimension-date-range-input__separator">and</span>
 
     <DropdownDatePicker
-      @dateTimePeriod="day"
+      @dateTimePeriod={{this.timeGrain}}
       @date={{moment this.endDate}}
       @onUpdate={{this.setHighValue}}
       class="filter-values--dimension-date-range-input__trigger filter-values--dimension-date-range-input__high-value"
     >
       {{#if this.endDate}}
-        {{moment-format this.endDate "MMM DD, YYYY"}}
+        {{format-date-for-granularity this.endDate this.timeGrain}}
       {{else}}
         <span class="date__placeholder">{{this.highPlaceholder}}</span>
       {{/if}}

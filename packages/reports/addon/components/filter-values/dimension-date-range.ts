@@ -8,14 +8,12 @@
  *     @onUpdateFilter={{this.update}}
  *   />
  */
-
-import Component from '@glimmer/component';
+import BaseDateSelector from './base-date';
 import { action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import moment from 'moment';
-import Args from './args-interface';
 
-export default class DimensionDateRange extends Component<Args> {
+export default class DimensionDateRange extends BaseDateSelector {
   /**
    * @property {String} startDate - date (YYYY-MM-DD) of beginning of interval
    */

@@ -32,7 +32,7 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import { groupDataByDimensions } from 'navi-core/utils/chart-data';
-import { BaseChartBuilder, C3Row, TooltipData } from './base';
+import { BaseChartBuilder, C3Row, EmptyC3Data, TooltipData } from './base';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
@@ -55,6 +55,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
    * @inheritdoc
    */
   getXValue(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
+    assert('request should have a timeGrainColumn', request.timeGrainColumn);
     const colName = request.timeGrainColumn.canonicalName;
     const date = row[colName];
     assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
@@ -70,6 +71,10 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     request: RequestFragment
   ): { series: C3Row[]; names: Record<string, string> } {
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
+    if (!(request.timeGrainColumn && response.getIntervalForTimeDimension(request.timeGrainColumn))) {
+      return EmptyC3Data;
+    }
+
     const timeGrainColumn = request.timeGrainColumn.canonicalName;
     const interval = response.getIntervalForTimeDimension(request.timeGrainColumn);
     const { timeGrain, nonTimeDimensions } = request;
@@ -84,7 +89,9 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
 
     const { metricCid } = config;
     const metric = request.columns.find(({ cid }) => cid === metricCid);
-    assert(`a metric with cid ${metricCid} should be found`, metric);
+    if (!metric) {
+      return EmptyC3Data;
+    }
     const seriesKey = config.dimensions.map(s => nonTimeDimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
     const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumn] as string)); // Group by dates for easier lookup
 
