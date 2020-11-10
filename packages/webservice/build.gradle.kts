@@ -32,7 +32,6 @@ plugins {
     base
     kotlin("jvm") version "1.3.72" apply false
     id("org.jmailen.kotlinter") version "2.4.1"
-    id("org.liquibase.gradle") version "2.0.3"
 }
 
 subprojects {
