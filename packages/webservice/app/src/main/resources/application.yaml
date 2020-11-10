@@ -31,7 +31,7 @@ spring:
       naming:
         physical-strategy: 'org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl'
       dialect: 'org.hibernate.dialect.H2Dialect'
-      ddl-auto: 'create'
+      ddl-auto: 'none'
       jdbc:
         use_scrollable_resultset: true
   datasource:
@@ -39,6 +39,8 @@ spring:
     username: 'navidev'
     password: ''
     driver-class-name: 'org.h2.Driver'
+  liquibase:
+    change-log: 'classpath:db/changelog/changelog.xml'
 server:
   port: 8080
 

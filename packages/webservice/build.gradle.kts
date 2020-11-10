@@ -32,6 +32,7 @@ plugins {
     base
     kotlin("jvm") version "1.3.72" apply false
     id("org.jmailen.kotlinter") version "2.4.1"
+    id("org.liquibase.gradle") version "2.0.3"
 }
 
 subprojects {
@@ -49,6 +50,11 @@ subprojects {
         implementation("com.fasterxml.jackson.core:jackson-databind") {
             version {
                 strictly("2.10.1")
+            }
+        }
+        implementation("org.liquibase:liquibase-core") {
+            version {
+                strictly("3.8.1")
             }
         }
     }

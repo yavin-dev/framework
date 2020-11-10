@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="admin" id="1539122075">
+        <sql>
+          CREATE TABLE AsyncQuery (
+              id varchar(36) NOT NULL,
+              asyncAfterSeconds int,
+              requestId varchar(36),
+              principalName varchar(255),
+              query varchar(1024) NOT NULL,
+              queryType int NOT NULL,
+              status varchar(20) NOT NULL,
+              createdOn timestamp NOT NULL,
+              updatedOn timestamp NOT NULL,
+              completedOn timestamp,
+              contentLength integer,
+              responseBody varchar(10485760),
+              resultType varchar(15),
+              httpStatus integer,
+              resultFormatType varchar(15),
+              recordCount integer,
+              PRIMARY KEY (id)
+          );
+
+          CREATE TABLE User (
+              id varchar(255) not null,
+              createdOn timestamp default current_timestamp,
+              updatedOn timestamp default current_timestamp,
+              PRIMARY KEY (id)
+          );
+
+          CREATE TABLE Asset (
+              asset_type varchar(31) not null,
+              id integer AUTO_INCREMENT,
+              createdOn timestamp default current_timestamp,
+              title varchar(255),
+              updatedOn timestamp default current_timestamp,
+              author varchar(255),
+              PRIMARY KEY (id),
+              FOREIGN KEY (author) references User(id)
+          );
+
+          CREATE TABLE custom_reports (
+              id integer not null,
+              request MEDIUMTEXT,
+              visualization MEDIUMTEXT,
+              PRIMARY KEY (id),
+              FOREIGN KEY (id) references Asset(id)
+          );
+
+          CREATE TABLE Dashboard (
+              id integer not null,
+              filters MEDIUMTEXT,
+              presentation MEDIUMTEXT,
+              PRIMARY KEY (id),
+              FOREIGN KEY (id) references Asset(id)
+          );
+
+          CREATE TABLE DashboardWidget (
+              id integer AUTO_INCREMENT,
+              createdOn timestamp default current_timestamp,
+              title varchar(255),
+              updatedOn timestamp default current_timestamp,
+              dashboard integer,
+              requests MEDIUMTEXT,
+              visualization MEDIUMTEXT,
+              PRIMARY KEY (id),
+              FOREIGN KEY (dashboard) references Dashboard(id)
+          );
+
+          CREATE TABLE map_editor_to_dashboard_collections (
+              user_id varchar(255) not null,
+              dashboard_collection_id integer not null,
+              PRIMARY KEY (user_id, dashboard_collection_id),
+              FOREIGN KEY (dashboard_collection_id) references Dashboard(id),
+              FOREIGN KEY (user_id) references User(id)
+          );
+
+          CREATE TABLE map_user_to_fav_dashboards (
+             user_id varchar(255) not null,
+             dashboard_id integer not null,
+             PRIMARY KEY (user_id, dashboard_id),
+             FOREIGN KEY (dashboard_id) references Dashboard(id),
+             FOREIGN KEY (user_id) references User(id)
+         );
+
+         CREATE TABLE map_user_to_fav_reports (
+             user_id varchar(255) not null,
+             report_id integer not null,
+             PRIMARY KEY (user_id, report_id),
+             FOREIGN KEY (report_id) references custom_reports(id),
+             FOREIGN KEY (user_id) references User(id)
+         );
+
+         CREATE TABLE Role (
+             id varchar(255) not null,
+             createdOn timestamp default current_timestamp,
+             updatedOn timestamp default current_timestamp,
+             PRIMARY KEY (id)
+        );
+
+        CREATE TABLE User_Role (
+            user_id varchar(255) not null,
+            roles_id varchar(255) not null,
+            PRIMARY KEY (user_id, roles_id),
+            FOREIGN KEY (roles_id) references Role(id),
+            FOREIGN KEY (user_id) references User(id)
+        );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
