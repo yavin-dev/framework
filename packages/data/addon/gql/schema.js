@@ -27,6 +27,7 @@ const schema = gql`
   type Table implements Node {
     id: DeferredID!
     name: String
+    isFact: Boolean
     description: String
     category: String
     metrics: MetricConnection

@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@miragejs/graphql": "^0.1.8",
+    "@rsql/parser": "^1.0.2",
     "apollo-link-context": "^1.0.19",
     "broccoli-funnel": "^3.0.1",
     "broccoli-merge-trees": "^3.0.2",
