@@ -12,6 +12,7 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
     id("com.github.node-gradle.node") version "2.2.4"
+    id("org.liquibase.gradle") version "2.0.4"
 }
 
 node {
@@ -22,6 +23,9 @@ node {
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs("../lib")
+    }
 }
 
 dependencies {
@@ -29,7 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr24")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("com.h2database", "h2", "1.3.176")
+    implementation("com.h2database", "h2", "1.4.199")
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
     implementation("io.micrometer","micrometer-core", "1.5.1")
     implementation("org.projectlombok", "lombok", "1.18.10")
@@ -37,6 +41,12 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("com.jayway.restassured", "rest-assured", "2.9.0")
+    //testCompile("com.h2database","h2","1.3.148")
+    //testImplementation("com.h2database", "h2", "1.4.197")
+    implementation("org.liquibase:liquibase-core:3.4.1")
+    implementation("org.liquibase:liquibase-gradle-plugin:2.0.4")
+    add( "liquibaseRuntime", "org.liquibase:liquibase-core:3.4.1")
+    add("liquibaseRuntime", "org.liquibase:liquibase-gradle-plugin:2.0.4")
 }
 
 tasks.withType<Test> {
@@ -66,6 +76,7 @@ tasks.register<NpmTask>("installUIDependencies") {
 
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
+  dependsOn("update")
   setEnvironment(mapOf("DISABLE_MOCKS" to true))
   setArgs(listOf("run-script", "build-ui"))
 }
@@ -95,4 +106,14 @@ tasks.withType<ShadowJar> {
 tasks.register<Exec>("execJar") {
     dependsOn("shadowJar")
     commandLine = listOf("java", "-jar", "build/libs/app-${project.version}.jar")
+}
+
+liquibase {
+    activities.register("main") {
+        this.arguments = mapOf(
+                "logLevel" to "debug",
+                "changeLogFile" to "src/main/resources/changelog/changelog-demo.xml",
+                "url" to "jdbc:h2:mem:SalesDB;DB_CLOSE_DELAY=-1",
+                "username" to "guest")
+    }
 }
