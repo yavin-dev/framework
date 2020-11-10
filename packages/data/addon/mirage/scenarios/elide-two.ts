@@ -10,6 +10,7 @@ const timeDimIds = ['eventTime', 'orderTime'];
 // TODO: Replace any with type supplied by new version of mirage
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function(server: any) {
+  server.create('time-zone', { id: 'UTC', short: 'UTC', long: 'Universal Time Coordinated' });
   const [table0, table1] = server.createList('table', 2);
   server.createList('metric', 1, { table: table0 });
   server.createList('metric', 2, { table: table1 });
@@ -25,7 +26,7 @@ export default function(server: any) {
           expression: null,
           grain: grain.toUpperCase()
         });
-        server.create('time-dimension', { id: idWithGrain, table, supportedGrain: [newGrain] });
+        server.create('time-dimension', { id: idWithGrain, table, supportedGrainIds: [newGrain.id] });
       });
     });
   });
