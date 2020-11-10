@@ -794,11 +794,14 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             type: 'ref',
             expression: INTRINSIC_VALUE_EXPRESSION,
             defaultValue: 'day',
-            _localValues: grainNodes.map(grain => ({
-              id: grain.id,
-              description: capitalize(grain.grain.toLowerCase()),
-              name: grain.grain.toLowerCase()
-            }))
+            _localValues: grainNodes.map(grain => {
+              const grainName = grain.grain.toLowerCase();
+              return {
+                id: grainName,
+                description: capitalize(grainName),
+                name: grainName
+              };
+            })
           }
         ]
       },
