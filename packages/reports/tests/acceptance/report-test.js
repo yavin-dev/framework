@@ -703,16 +703,8 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Google Sheets export', async function(assert) {
-    assert.expect(4);
+    assert.expect(5);
     await visit('/reports/new');
-
-    await clickTrigger('.multiple-format-export');
-
-    assert.equal(
-      $('.multiple-format-export__dropdown a:contains("Google Sheet")')[0],
-      undefined,
-      'Sheet Export does not exist for new documents'
-    );
 
     // Remove all metrics
     await clickItem('metric', 'Ad Clicks');
@@ -727,8 +719,12 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(
       $('.multiple-format-export__dropdown a:contains("Google Sheet")')[0],
       undefined,
-      'Sheet Export does not exist for new documents even after run'
+      'Sheet Export is not active even after run'
     );
+
+    assert
+      .dom('.multiple-format-export__dropdown-link--disabled')
+      .hasText('Google Sheet', 'Google Sheets is shown with disabled link');
 
     await click('.navi-report__save-btn');
 
@@ -736,7 +732,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert
       .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
-      .exists('Sheet Export does not exist for new documents even after run');
+      .exists('Sheet Export does exist for saved documents');
+
+    assert.dom('.multiple-format-export__dropdown-link--disabled').doesNotExist('disabled link does not render');
 
     assert
       .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
