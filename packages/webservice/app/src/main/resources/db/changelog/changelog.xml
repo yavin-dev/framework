@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <!--Drop the tables in test context, so that they can be recreated.-->
     <changeSet author="admin" id="1" runAlways="true" context="test">
         <sql>
           DROP TABLE if exists Asset CASCADE;
@@ -123,6 +124,7 @@
         );
         </sql>
     </changeSet>
+    <!--Remove the entry for id=2 so that the tables can be recreated in test context.-->
     <changeSet author="admin" id="3" runAlways="true" context="test">
         <sql>
           DELETE FROM PUBLIC.DATABASECHANGELOG where id = 2;
