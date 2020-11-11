@@ -7,7 +7,7 @@ import TableFragment from '../fragments/table';
 
 const query = gql`
   query {
-    table {
+    table(filter: "isFact==true") {
       edges {
         node {
           ...TableFragment

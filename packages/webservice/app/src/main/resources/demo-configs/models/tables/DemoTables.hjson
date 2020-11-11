@@ -93,6 +93,7 @@
       name:  Crafts
       table: crafts
       dbConnectionName: DemoConnection
+      isFact: false
       dimensions: [
         {
           name: c_id
@@ -110,6 +111,7 @@
       name:  Pilots
       table: pilots
       dbConnectionName: DemoConnection
+      isFact: false
       dimensions: [
         {
           name: p_id

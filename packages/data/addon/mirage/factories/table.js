@@ -15,6 +15,8 @@ export default Factory.extend({
     return `Table ${this.index}`;
   },
 
+  isFact: true,
+
   description() {
     return `This is Table ${this.index}`;
   },

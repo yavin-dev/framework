@@ -9,6 +9,7 @@ import faker from 'faker';
 import moment from 'moment';
 import { capitalize } from '@ember/string';
 import { orderBy } from 'lodash-es';
+import { parse } from '@rsql/parser';
 
 const ASYNC_RESPONSE_DELAY = 2000; // ms before async api response result is populated
 const DATE_FORMATS = {
@@ -429,10 +430,19 @@ export default function() {
     resolvers: {
       Query: {
         table(obj, args, context, info) {
-          const { op, ids } = args;
+          const { op, ids, filter } = args;
           // Mirage tries to filter on the `op` argument, but this isn't truly a filter in our usecase, so we don't tell mirage about it
           if (op) {
             delete args.op;
+          }
+          if (filter) {
+            const rsql = parse(filter);
+            if ('COMPARISON' === rsql.type && '==' === rsql.operator) {
+              args[rsql.left.selector] = rsql.right.value;
+            } else {
+              throw new Error(`rsql expression is not currently support in mirage mocks: ${filter}`);
+            }
+            delete args.filter;
           }
           // Mirage tries to filter on an `ids` field on each table, but we want to filter on the `id` of each table
           if (ids) {
