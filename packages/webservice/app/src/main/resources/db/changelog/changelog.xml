@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="admin" id="1539122075">
+    <changeSet author="admin" id="1" runAlways="true" context="test">
+        <sql>
+          DROP TABLE if exists Asset CASCADE;
+          DROP TABLE if exists AsyncQuery CASCADE;
+          DROP TABLE if exists custom_reports CASCADE;
+          DROP TABLE if exists Dashboard CASCADE;
+          DROP TABLE if exists DashboardWidget CASCADE;
+          DROP TABLE if exists map_editor_to_dashboard_collections CASCADE;
+          DROP TABLE if exists map_user_to_fav_dashboards CASCADE;
+          DROP TABLE if exists map_user_to_fav_reports CASCADE;
+          DROP TABLE if exists Role CASCADE;
+          DROP TABLE if exists User CASCADE;
+          DROP TABLE if exists User_Role CASCADE;
+        </sql>
+    </changeSet>
+    <changeSet author="admin" id="2" context="test or non-test">
         <sql>
           CREATE TABLE AsyncQuery (
               id varchar(36) NOT NULL,
@@ -106,6 +121,11 @@
             FOREIGN KEY (roles_id) references Role(id),
             FOREIGN KEY (user_id) references User(id)
         );
+        </sql>
+    </changeSet>
+    <changeSet author="admin" id="3" runAlways="true" context="test">
+        <sql>
+          DELETE FROM PUBLIC.DATABASECHANGELOG where id = 2;
         </sql>
     </changeSet>
 </databaseChangeLog>

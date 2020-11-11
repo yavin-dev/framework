@@ -51,10 +51,5 @@ subprojects {
                 strictly("2.10.1")
             }
         }
-        implementation("org.liquibase:liquibase-core") {
-            version {
-                strictly("3.8.1")
-            }
-        }
     }
 }
