@@ -33,6 +33,7 @@ dependencies {
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
     implementation("io.micrometer","micrometer-core", "1.5.1")
     implementation("org.projectlombok", "lombok", "1.18.10")
+    implementation("org.liquibase", "liquibase-core", "3.8.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
