@@ -28,6 +28,10 @@ allOpen {
     annotation("javax.persistence.MappedSuperclass")
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation("com.yahoo.elide", "elide-core", "5.0.0-pr24")
     implementation("javax.persistence", "javax.persistence-api", "2.2")

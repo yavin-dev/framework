@@ -39,15 +39,11 @@ spring:
     username: 'navidev'
     password: ''
     driver-class-name: 'org.h2.Driver'
-  liquibase:
-    change-log: classpath:/db/changelog/changelog-demo.xml
-
 server:
   port: 8080
 
 logging:
   path: /tmp
-
 
 ---
 

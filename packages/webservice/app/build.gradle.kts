@@ -23,9 +23,6 @@ node {
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs("../lib")
-    }
 }
 
 dependencies {
@@ -41,10 +38,13 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("com.jayway.restassured", "rest-assured", "2.9.0")
-    //testCompile("com.h2database","h2","1.3.148")
-    //testImplementation("com.h2database", "h2", "1.4.197")
-    implementation("org.liquibase:liquibase-core:3.4.1")
-    implementation("org.liquibase:liquibase-gradle-plugin:2.0.4")
+    implementation("org.liquibase:liquibase-core") {
+        version {
+            strictly("3.8.1")
+        }
+    }
+    implementation("com.h2database","h2","1.4.197")
+    add("liquibaseRuntime","com.h2database:h2:1.4.197")
     add( "liquibaseRuntime", "org.liquibase:liquibase-core:3.4.1")
     add("liquibaseRuntime", "org.liquibase:liquibase-gradle-plugin:2.0.4")
 }
@@ -112,8 +112,8 @@ liquibase {
     activities.register("main") {
         this.arguments = mapOf(
                 "logLevel" to "debug",
-                "changeLogFile" to "src/main/resources/changelog/changelog-demo.xml",
-                "url" to "jdbc:h2:mem:SalesDB;DB_CLOSE_DELAY=-1",
+                "changeLogFile" to "src/main/resources/db/changelog/changelog-demo.xml",
+                "url" to "jdbc:h2:file:./SalesDB;DB_CLOSE_DELAY=-1",
                 "username" to "guest")
     }
 }
