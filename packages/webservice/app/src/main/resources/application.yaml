@@ -49,8 +49,8 @@ logging:
   path: /tmp
 
 ---
-
 spring:
   profiles: test
   liquibase:
     contexts: test
+    drop-first: true
