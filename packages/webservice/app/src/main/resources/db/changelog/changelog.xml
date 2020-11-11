@@ -16,7 +16,7 @@
           DROP TABLE if exists User_Role CASCADE;
         </sql>
     </changeSet>
-    <changeSet author="admin" id="2" context="test or non-test">
+    <changeSet author="admin" id="2">
         <sql>
           CREATE TABLE AsyncQuery (
               id varchar(36) NOT NULL,
