@@ -6,7 +6,7 @@
   @center={{this.centerDate}}
   @onCenterChange={{this.setCenterDate}} as |powerCalendar|
 >
-  {{#if (or (eq this.dateTimePeriod "hour") (eq this.dateTimePeriod "day") (eq this.dateTimePeriod "week"))}}
+  {{#if (contains this.dateTimePeriod (w "hour day week month"))}}
     <powerCalendar.Nav>
       {{#if (not-eq this.dateTimePeriod "month")}}
         <span class="with-invisible-select">
@@ -36,7 +36,7 @@
         {{/with}}
       </span>
     </powerCalendar.Nav>
-  {{else if (or (eq this.dateTimePeriod "month") (eq this.dateTimePeriod "quarter"))}}
+  {{else if (eq this.dateTimePeriod "quarter")}}
     <PowerCalendarSelectorsNav @calendar={{powerCalendar}} @by="year" />
   {{else if (eq this.dateTimePeriod "year")}}
     <PowerCalendarSelectorsNav @calendar={{powerCalendar}} @by="decade" />

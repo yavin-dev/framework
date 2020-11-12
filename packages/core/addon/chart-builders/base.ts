@@ -27,16 +27,17 @@ export type TooltipData = {
   seriesIndex: number;
   value: number;
 };
+
+type C3Data = { series: C3Row[]; names: Record<string, string> };
+
+//@ts-expect-error
+export const EmptyC3Data: C3Data = { series: [{ x: { rawValue: null, displayValue: '' } } as C3Row], names: {} };
 export interface BaseChartBuilder {
   byXSeries?: DataGroup<ResponseRow>;
 
   getXValue(row: ResponseRow, config: SeriesConfig, request: RequestFragment): string | number;
 
-  buildData(
-    response: NaviFactResponse,
-    _config: SeriesConfig,
-    request: RequestFragment
-  ): { series: C3Row[]; names: Record<string, string> };
+  buildData(response: NaviFactResponse, _config: SeriesConfig, request: RequestFragment): C3Data;
 
   buildTooltip(
     _config: SeriesConfig,

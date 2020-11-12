@@ -268,11 +268,14 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
-          _localValues: grainNodes.map(grain => ({
-            id: grain.id,
-            description: upperFirst(grain.grain.toLowerCase()),
-            name: grain.grain.toLowerCase()
-          }))
+          _localValues: grainNodes.map(grain => {
+            const grainName = grain.grain.toLowerCase();
+            return {
+              id: grainName,
+              description: upperFirst(grainName),
+              name: grainName
+            };
+          })
         }
       ]
     };

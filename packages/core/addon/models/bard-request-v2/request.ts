@@ -188,8 +188,9 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime timeDimension
    */
   @computed('columns.[]')
-  get timeGrainColumn(): ColumnFragment<'timeDimension'> {
-    return this.columns.filter(column => column.type === 'timeDimension')[0] as ColumnFragment<'timeDimension'>;
+  get timeGrainColumn(): ColumnFragment<'timeDimension'> | undefined {
+    const timeCols = this.columns.filter(({ type }) => type === 'timeDimension') as ColumnFragment<'timeDimension'>[];
+    return timeCols[0];
   }
 
   @computed('columns.[]')
