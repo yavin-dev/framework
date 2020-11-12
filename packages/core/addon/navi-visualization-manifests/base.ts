@@ -10,6 +10,10 @@ import { assert } from '@ember/debug';
 import EmberObject from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
+function isPresent<T>(t: T | undefined | null | void): t is T {
+  return t !== undefined && t !== null;
+}
+
 export default class NaviVisualizationBaseManifest extends EmberObject {
   name!: string;
   niceName!: string;
@@ -39,19 +43,9 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
   /**
    * checks if the request has single time bucket
    */
-  hasInterval(request: RequestFragment): boolean {
-    const { timeGrain, interval } = request;
-
-    return !!(timeGrain && interval);
-  }
-
-  /**
-   * checks if the request has single time bucket
-   */
   hasExplicitSingleTimeBucket(request: RequestFragment): boolean {
     const { timeGrain, interval } = request;
-    assert('request should have a timeGrain', timeGrain);
-    if (this.hasInterval(request)) {
+    if (isPresent(timeGrain) && isPresent(interval)) {
       return interval?.diffForTimePeriod(timeGrain) === 1;
     }
 
