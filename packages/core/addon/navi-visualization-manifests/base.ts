@@ -53,6 +53,14 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
   }
 
   /**
+   * checks if the request groups by a time dimension
+   */
+  hasTimeGroupBy(request: RequestFragment): boolean {
+    const { timeGrainColumn } = request;
+    return isPresent(timeGrainColumn);
+  }
+
+  /**
    * checks if the request has no group by
    */
   hasNoGroupBy(request: RequestFragment): boolean {
@@ -70,7 +78,7 @@ export default class NaviVisualizationBaseManifest extends EmberObject {
    * checks if the request has multiple time buckets
    */
   hasPotentialMultipleTimeBuckets(request: RequestFragment): boolean {
-    return !this.hasExplicitSingleTimeBucket(request);
+    return this.hasTimeGroupBy(request) && !this.hasExplicitSingleTimeBucket(request);
   }
 
   /**
