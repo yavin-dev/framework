@@ -1,8 +1,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { visit, findAll, currentURL, click } from '@ember/test-helpers';
-import { clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { visit, currentURL, click } from '@ember/test-helpers';
 
 module('Acceptance | Navi Report | Invalid Route', function(hooks) {
   setupApplicationTest(hooks);

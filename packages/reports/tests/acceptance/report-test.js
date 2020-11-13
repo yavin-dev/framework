@@ -1423,6 +1423,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test("filtering on a dimension with a storage strategy of 'none'", async function(assert) {
+    assert.expect(4);
     //Add filter for a dimension where storageStrategy is 'none' and try to run the report
     await visit('/reports/13/view');
     await clickItem('dimension', 'Context Id');
