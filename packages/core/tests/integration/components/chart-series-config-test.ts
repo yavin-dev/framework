@@ -53,7 +53,7 @@ module('Integration | Component | chart series config', function(hooks) {
 
     assert.deepEqual(
       findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
-      ['Property 1', 'Property 2', 'Property 3'],
+      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'Component renders dimension names correctly'
     );
   });
