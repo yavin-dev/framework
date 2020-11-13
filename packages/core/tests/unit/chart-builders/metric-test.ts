@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { TestContext } from 'ember-test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 import { buildTestRequest } from '../../helpers/request';
 import MetricChartBuilder from 'navi-core/chart-builders/metric';
 //@ts-ignore
@@ -13,6 +13,11 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import { setOwner } from '@ember/application';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import StoreService from '@ember-data/store';
+
+interface TestContext extends Context {
+  store: StoreService;
+}
 
 const DATA = NaviFactResponse.create({
   rows: [
@@ -58,6 +63,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
       'day'
     );
+    this.store = this.owner.lookup('service:store') as StoreService;
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
@@ -204,7 +210,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
           'series.0': 'Total Page Views'
         }
       },
-      'A series has the properly formmatted displayValue'
+      'A series has the properly formatted displayValue'
     );
   });
 
@@ -241,7 +247,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
           'series.0': 'Total Page Views'
         }
       },
-      'A series has the properly formmatted displayValue'
+      'A series has the properly formatted displayValue'
     );
   });
 
@@ -274,6 +280,45 @@ module('Unit | Chart Builders | Metric', function(hooks) {
         }
       },
       'Zero values are not considered gaps in data'
+    );
+  });
+
+  test('buildData - no time dimension', function(assert) {
+    const request = this.store.createFragment('bard-request-v2/request', {
+      columns: [
+        { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
+        { type: 'metric', field: 'pageViews', parameters: {}, source: 'bardOne' }
+      ],
+      filters: [],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
+      table: 'network'
+    });
+
+    const data = NaviFactResponse.create({
+      rows: [{ pageViews: 10, uniqueIdentifier: 22 }]
+    });
+
+    assert.deepEqual(
+      ChartBuilder.buildData(data, {}, request),
+      {
+        names: {
+          'series.0': 'Unique Identifiers',
+          'series.1': 'Page Views'
+        },
+        series: ([
+          {
+            'series.0': 22,
+            'series.1': 10,
+            x: {
+              displayValue: '',
+              rawValue: ''
+            }
+          }
+        ] as unknown) as C3Row[]
+      },
+      '`buildData` constructs a single c3 row when a time dimension is not requested'
     );
   });
 
