@@ -703,7 +703,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Google Sheets export', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
     await visit('/reports/new');
 
     // Remove all metrics
@@ -731,14 +731,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.multiple-format-export');
 
     assert
-      .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
+      .dom($('.multiple-format-export__dropdown button:contains("Google Sheet")')[0])
       .exists('Sheet Export does exist for saved documents');
 
     assert.dom('.multiple-format-export__dropdown-link--disabled').doesNotExist('disabled link does not render');
-
-    assert
-      .dom($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0])
-      .hasAttribute('href', /^\/gsheet-export\/report\/\d+$/, 'Export link has correct href');
   });
 
   test('Get API action - enabled/disabled', async function(assert) {

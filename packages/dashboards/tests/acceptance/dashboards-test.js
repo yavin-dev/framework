@@ -739,7 +739,7 @@ module('Acceptance | Dashboards', function(hooks) {
   });
 
   test('Export links test', async function(assert) {
-    assert.expect(6);
+    assert.expect(5);
     await visit('/dashboards/1');
     await clickTrigger('.multiple-format-export');
     const exportLinks = findAll('.multiple-format-export__dropdown a');
@@ -749,7 +749,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.dom(exportLinks[1]).hasAttribute('href', '/export?dashboard=1&fileType=png', 'png link is correct');
     assert.dom(exportLinks[1]).hasText('PNG');
 
-    assert.dom(exportLinks[2]).hasAttribute('href', '/gsheet-export/dashbord/1', 'google sheet link is correct');
-    assert.dom(exportLinks[2]).hasText('Google Sheet');
+    const exportButtons = findAll('.multiple-format-export__dropdown button');
+
+    assert.dom(exportButtons[0]).hasText('Google Sheet');
   });
 });

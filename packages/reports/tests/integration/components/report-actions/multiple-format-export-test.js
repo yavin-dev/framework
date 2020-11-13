@@ -44,7 +44,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   });
 
   test('export links', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     const factService = this.owner.lookup('service:navi-facts');
     const compressionService = this.owner.lookup('service:compression');
@@ -75,9 +75,6 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
     assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
-
-    const gSheetHref = $('.multiple-format-export__dropdown a:contains("Google Sheet")').attr('href');
-    assert.equal(`/gsheet-export/report/1`, gSheetHref);
   });
 
   test('filename', async function(assert) {
@@ -193,7 +190,7 @@ module('Integration | Component | report actions - multiple-format-export', func
       } else {
         assert.equal(
           message?.string,
-          'Your export is done and available at <a href="https://google.com/sheets/blah" target="_blank">here &raquo;</a>',
+          'Your export is done and available at <a href="https://google.com/sheets/blah" target="_blank" rel="noopener noreferrer">here &raquo;</a>',
           'Second notification after ajax call comes back'
         );
       }
@@ -219,6 +216,6 @@ module('Integration | Component | report actions - multiple-format-export', func
     `);
 
     await clickTrigger();
-    await click($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0]);
+    await click($('.multiple-format-export__dropdown button:contains("Google Sheet")')[0]);
   });
 });

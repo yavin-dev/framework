@@ -175,30 +175,30 @@ export default class MultipleFormatExport extends Component {
   }
 
   @action
-  async handleAsync(isAsync, event) {
-    if (isAsync) {
-      const href = event.target.href;
-      event.preventDefault();
-      try {
-        const response = await fetch(href);
-        const json = await response.json();
-        this.naviNotifications.clearMessages();
-        this.naviNotifications.add({
-          message: json.url
-            ? htmlSafe(`Your export is done and available at <a href="${json.url}" target="_blank">here &raquo;</a>`)
-            : 'Your export has finished!',
-          type: 'info',
-          timeout: 'long'
-        });
-      } catch (e) {
-        console.error(e);
-        this.naviNotifications.clearMessages();
-        this.naviNotifications.add({
-          message: e.message,
-          type: 'danger',
-          timeout: 'medium'
-        });
-      }
+  async handleAsync(href, event) {
+    event.preventDefault();
+    const naviNotifications = this.naviNotifications;
+    try {
+      const response = await fetch(href);
+      const json = await response.json();
+      naviNotifications?.clearMessages();
+      naviNotifications?.add({
+        message: json.url
+          ? htmlSafe(
+              `Your export is done and available at <a href="${json.url}" target="_blank" rel="noopener noreferrer">here &raquo;</a>`
+            )
+          : 'Your export has finished!',
+        type: 'info',
+        timeout: 'long'
+      });
+    } catch (e) {
+      console.error(e);
+      naviNotifications?.clearMessages();
+      naviNotifications?.add({
+        message: e.message,
+        type: 'danger',
+        timeout: 'medium'
+      });
     }
   }
 }

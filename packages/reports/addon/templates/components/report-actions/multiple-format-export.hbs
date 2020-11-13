@@ -15,11 +15,18 @@
                 {{#if (and @report.isNew exportFormat.requiresSaved)}}
                   <span class="multiple-format-export__dropdown-link--disabled">{{exportFormat.type}}</span>
                   <EmberTooltip @side="left" @popperContainer="body" @text="Save report to enable this option" />
+                {{else if exportFormat.async}}
+                    <button
+                      type="button"
+                      {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.href) (fn this.close dd))}}
+                    >
+                      {{exportFormat.type}}
+                    </button>
                 {{else}}
                   <a
                     download={{dasherize this.filename}}
                     href={{await exportFormat.href}}
-                    {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.async) (fn this.close dd))}}
+                    {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
                   >
                     {{exportFormat.type}}
                   </a>
