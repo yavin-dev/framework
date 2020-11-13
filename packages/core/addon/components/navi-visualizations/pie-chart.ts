@@ -91,14 +91,10 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
    */
   @computed('request.columns.[]', 'seriesConfig.metricCid')
   get metric() {
-    if ('metricCid' in this.seriesConfig) {
-      const {
-        request,
-        seriesConfig: { metricCid }
-      } = this;
-      return request.columns.findBy('cid', metricCid);
-    }
-    return undefined;
+    const { request, seriesConfig } = this;
+    return seriesConfig && 'metricCid' in seriesConfig
+      ? request.columns.findBy('cid', seriesConfig.metricCid)
+      : undefined;
   }
 
   /**
