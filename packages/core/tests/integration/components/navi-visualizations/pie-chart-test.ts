@@ -2,7 +2,7 @@
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { render, find, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
@@ -17,6 +17,7 @@ import { Args as ComponentArgs } from 'navi-core/components/navi-visualizations/
 import { VisualizationModel, VisualizationModelEntry } from 'navi-core/components/navi-visualizations/table';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::PieChart
@@ -309,6 +310,43 @@ module('Integration | Component | pie chart', function(hooks) {
       Math.round(yTranslate),
       'The metric name is in the correct Y position after the pie chart moves'
     );
+  });
+
+  test('metric label - column alias', async function(this: TestContext, assert) {
+    this.set('options', {
+      series: {
+        type: 'dimension',
+        config: {
+          metricCid: 'cid_totalPageViews',
+          dimensions: [
+            {
+              name: 'All Other',
+              values: { 'cid_age(field=desc)': 'All Other' }
+            },
+            {
+              name: 'Under 13',
+              values: { 'cid_age(field=desc)': 'Under 13' }
+            }
+          ]
+        }
+      }
+    });
+
+    await render(TEMPLATE);
+    assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
+
+    const metricColumn = this.model.firstObject?.request.columns.firstObject as ColumnFragment;
+
+    // set alias
+    const alias = 'Metric Alias';
+    metricColumn.set('alias', alias);
+    await settled();
+    assert.dom('.c3-title').hasText(alias, 'The metric alias is rendered on update');
+
+    // unset alias
+    metricColumn.set('alias', undefined);
+    await settled();
+    assert.dom('.c3-title').hasText('Total Page Views', 'The original metric name is restored on update');
   });
 
   test('parameterized metric renders correctly for dimension series', async function(assert) {
