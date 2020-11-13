@@ -11,8 +11,13 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { TestContext } from 'ember-test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
+import StoreService from '@ember-data/store';
+
+interface TestContext extends Context {
+  store: StoreService;
+}
 
 const DimensionChartBuilder = BuilderClass.create();
 
@@ -63,6 +68,7 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
       'day'
     );
+    this.store = this.owner.lookup('service:store') as StoreService;
     REQUEST2 = buildTestRequest(metrics, [ageDim, genderDim], { start: 'P2D', end: '2016-01-03 00:00:00.000' }, 'day');
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
@@ -82,6 +88,59 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         names: {}
       },
       'Error Case: No series are made when no dimensions are requested'
+    );
+  });
+
+  test('buildData - no time dimension', function(assert) {
+    const request = this.store.createFragment('bard-request-v2/request', {
+      columns: [
+        { type: 'metric', field: 'totalPageViews', cid: 'cid_totalPageViews', parameters: {}, source: 'bardOne' },
+        { type: 'dimension', field: 'age', cid: 'cid_age', parameters: {}, source: 'bardOne' },
+        { type: 'dimension', field: 'gender', cid: 'cid_gender', parameters: {}, source: 'bardOne' }
+      ],
+      filters: [],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
+      table: 'network'
+    });
+
+    const data = NaviFactResponse.create({
+      rows: [
+        { totalPageViews: 10, age: '-2', gender: 'm' },
+        { totalPageViews: 12, age: '1', gender: 'f' }
+      ]
+    });
+
+    assert.deepEqual(
+      DimensionChartBuilder.buildData(
+        data,
+        {
+          metricCid: 'cid_totalPageViews',
+          dimensions: [
+            { name: 'All Other | M', values: { cid_age: '-2', cid_gender: 'm' } },
+            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } }
+          ]
+        },
+        request
+      ),
+      {
+        names: {
+          'series.0': 'All Other | M',
+          'series.1': 'Under 13 | F'
+        },
+        series: ([
+          {
+            'series.0': 10,
+            'series.1': 12,
+            x: {
+              displayValue: '',
+              rawValue: ''
+            }
+          }
+        ] as unknown) as C3Row[]
+      },
+      '`buildData` constructs a single c3 row when a time dimension is not requested'
     );
   });
 
