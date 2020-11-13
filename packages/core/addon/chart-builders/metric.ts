@@ -60,7 +60,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
 
     const { timeGrain, metricColumns } = request;
 
-    const names = request.metricColumns.reduce((names: Record<string, string>, metric, index) => {
+    const names = metricColumns.reduce((names: Record<string, string>, metric, index) => {
       names[`series.${index}`] = metric.displayName;
       return names;
     }, {});
