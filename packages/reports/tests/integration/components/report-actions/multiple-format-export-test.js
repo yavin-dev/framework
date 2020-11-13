@@ -28,7 +28,8 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     // Mock notifications
     this.mockNotifications = {
-      add: () => null
+      add: () => null,
+      clearMessages: () => {}
     };
 
     return this.owner
@@ -175,5 +176,49 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await clickTrigger();
     await click($('.multiple-format-export__dropdown a:contains("CSV")')[0]);
+  });
+
+  test('GSheet Notification', async function(assert) {
+    assert.expect(2);
+
+    let addCalls = 0;
+    this.mockNotifications.add = ({ message }) => {
+      addCalls += 1;
+      if (addCalls == 1) {
+        assert.equal(
+          message,
+          'We are building your spreadsheet and sending to Google Drive.  Keep an eye out for the email!',
+          'A notification is added for the clicked export type'
+        );
+      } else {
+        assert.equal(
+          message?.string,
+          'Your export is done and available at <a href="https://google.com/sheets/blah" target="_blank">here &raquo;</a>',
+          'Second notification after ajax call comes back'
+        );
+      }
+    };
+
+    this.set('exportFormats', [
+      {
+        type: 'Google Sheet',
+        href: '/gsheet-export/report/1',
+        icon: 'google',
+        async: true
+      }
+    ]);
+    await render(hbs`
+      <ReportActions::MultipleFormatExport
+        @report={{this.report}}
+        @disabled={{this.disabled}}
+        @naviNotifications={{this.mockNotifications}}
+        @exportFormats={{this.exportFormats}}
+      >
+        Export
+      </ReportActions::MultipleFormatExport>
+    `);
+
+    await clickTrigger();
+    await click($('.multiple-format-export__dropdown a:contains("Google Sheet")')[0]);
   });
 });

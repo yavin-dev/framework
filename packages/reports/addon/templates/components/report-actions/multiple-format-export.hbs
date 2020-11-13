@@ -19,7 +19,7 @@
                   <a
                     download={{dasherize this.filename}}
                     href={{await exportFormat.href}}
-                    {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
+                    {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.async) (fn this.close dd))}}
                   >
                     {{exportFormat.type}}
                   </a>

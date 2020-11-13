@@ -12,4 +12,9 @@ const useConfigMiddleware = require('../server-lib/use-config-middleware');
  */
 module.exports = function(app) {
   useConfigMiddleware(app);
+
+  app.get('/gsheet-export/:type/:id', async (req, res) => {
+    await new Promise(r => setTimeout(r, 5000));
+    res.status(200).json({ url: 'https://google.com/somesheet' });
+  });
 };
