@@ -17,7 +17,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     assert.deepEqual(
       findAll('.c3-legend-item').map(el => el.textContent.trim()),
-      ['Property 1', 'Property 2', 'Property 3'],
+      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'Without filters, three series are shown in the chart'
     );
 

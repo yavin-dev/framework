@@ -9,19 +9,13 @@ module('Acceptance | Navi Report | Invalid Route', function(hooks) {
   setupMirage(hooks);
 
   test('Error data request', async function(assert) {
-    assert.expect(2);
-
     await visit('/reports/5/view');
 
-    await clickItemFilter('metric', 'Ad Clicks');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-report__run-btn');
 
     assert.ok(currentURL().endsWith('/invalid'), 'We are on the edit report route');
-
-    assert.deepEqual(
-      findAll('.navi-column-config-item__name').map(e => e.textContent),
-      ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
-      'The column config is displayed in the error route'
-    );
   });
 });

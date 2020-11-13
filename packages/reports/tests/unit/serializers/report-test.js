@@ -62,7 +62,8 @@ module('Unit | Serializer | Report', function(hooks) {
                       dimensions: [
                         { name: 'Property 1', values: { property: '114' } },
                         { name: 'Property 2', values: { property: '100001' } },
-                        { name: 'Property 3', values: { property: '100002' } }
+                        { name: 'Property 3', values: { property: '100002' } },
+                        { name: 'Property 4', values: { property: '100003' } }
                       ]
                     }
                   }

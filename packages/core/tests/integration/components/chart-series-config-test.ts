@@ -16,7 +16,7 @@ const TEMPLATE = hbs`
 />`;
 
 const SERIES_CONFIG = {
-  dimensions: [{ name: 'Property 1' }, { name: 'Property 2' }, { name: 'Property 3' }]
+  dimensions: [{ name: 'Property 1' }, { name: 'Property 2' }, { name: 'Property 3' }, { name: 'Property 4' }]
 };
 
 module('Integration | Component | chart series config', function(hooks) {
