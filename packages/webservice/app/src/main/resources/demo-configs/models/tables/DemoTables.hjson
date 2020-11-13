@@ -20,19 +20,19 @@
       ]
       dimensions: [
         {
-          category: War Attributes
+          category: Attributes
           name: pilot
           type: TEXT
           definition: '{{joined_pilots.name}}'
         }
         {
-          category: War Attributes
+          category: Attributes
           name: craft
           type: TEXT
           definition: '{{joined_crafts.name}}'
         }
         {
-          category: War Attributes
+          category: Attributes
           name: battle
           type: TEXT
           definition: '{{battle_name}}'
@@ -44,7 +44,7 @@
           ]
         }
         {
-          category: War Attributes
+          category: Attributes
           name: victory
           type: BOOLEAN
           definition: '{{victory}}'
