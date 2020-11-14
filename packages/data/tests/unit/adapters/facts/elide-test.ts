@@ -564,7 +564,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     //test all of the escaped functionalities and verify them in the below assert
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d6=in=('with\\\\, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\'single quote\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
+      `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
