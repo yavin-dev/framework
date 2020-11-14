@@ -125,5 +125,95 @@
         }
       ]
     }
+    {
+      name:  NetflixTitles
+      table: netflix_titles
+      dbConnectionName: DemoConnection
+      dimensions: [
+        {
+          name: title_id
+          type: TEXT
+          definition: '{{title_id}}'
+        }
+        {
+          name: show_type
+          type: TEXT
+          definition: '{{type}}'
+        }
+        {
+          name: title
+          type: TEXT
+          definition: '{{title}}'
+        }
+        {
+          name: type
+          type: TEXT
+          definition: '{{type}}'
+        }
+        {
+          name: director
+          type: TEXT
+          definition: '{{director}}'
+        }
+        {
+          name: cast
+          type: TEXT
+          definition: '{{cast_list}}'
+        }
+        {
+          name: country
+          type: TEXT
+          definition: '{{country}}'
+        }
+        {
+          name: date_available
+          type: TIME
+          definition: '{{date_added}}'
+          grain: {
+            type: DAY
+          }
+        }
+        {
+          name: release_year
+          type: TIME
+          definition: '{{release_year}}'
+          grain: {
+            type: YEAR
+          }
+        }
+        {
+          name: film_rating
+          type: TEXT
+          definition: '{{rating}}'
+        }
+        {
+          name: genre
+          type: TEXT
+          definition: '{{listed_in}}'
+        }
+        {
+          name: description
+          type: TEXT
+          definition: '{{description}}'
+        }
+      ]
+      measures: [
+        {
+          name: count
+          type: INTEGER
+          definition: 'count({{title_id}})'
+        }
+        {
+          name: total_seasons
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
+        }
+        {
+          name: movie_duration
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
+        }
+      ]
+    }
   ]
 }
