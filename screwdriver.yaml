@@ -74,9 +74,7 @@ jobs:
       - ARTIFACTORY_KEY
 
   gh-pages:
-    requires:
-      - main
-      - alpha-main
+    requires: main
     annotations:
       screwdriver.cd/ram: TURBO
       screwdriver.cd/cpu: TURBO
