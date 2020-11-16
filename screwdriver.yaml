@@ -31,11 +31,35 @@ jobs:
     requires:
       - ~pr
       - ~commit
+
+  alpha-main:
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
+    steps:
+      - install-node: |
+          sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
+          export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - install-chrome: ./build-scripts/setup-chrome.sh
+      - install: npm ci
+      - test-navi-admin: npx lerna run test --scope navi-admin --stream;
+      - test-navi-app: npx lerna run test --scope navi-app --stream;
+      - test-navi-core: npx lerna run test --scope navi-core --stream;
+      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream
+      - test-navi-data: npx lerna run test --scope navi-data --stream;
+      - test-navi-directory: npx lerna run test --scope navi-directory --stream;
+      - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
+      - test-navi-reports: npx lerna run test --scope navi-reports --stream;
+      - test-navi-search: npx lerna run test --scope navi-search --stream;
+      - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
+    requires:
       - ~commit:0.2.x-alpha
       - ~pr:0.2.x-alpha
 
   publish-npm:
-    requires: main
+    requires:
+      - main
+      - alpha-main
     environment:
       GIT_SHALLOW_CLONE: false
     steps:
@@ -48,7 +72,9 @@ jobs:
       - NPM_TOKEN
 
   publish-artifactory:
-    requires: main
+    requires:
+      - main
+      - alpha-main
     steps:
       - publish: ./scripts/artifactory-publish.sh
     secrets:
@@ -56,7 +82,9 @@ jobs:
       - ARTIFACTORY_KEY
 
   gh-pages:
-    requires: main
+    requires:
+      - main
+      - alpha-main
     annotations:
       screwdriver.cd/ram: TURBO
       screwdriver.cd/cpu: TURBO

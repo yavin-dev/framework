@@ -6,15 +6,15 @@ echo 'Publishing build...'
 # Login to NPM
 npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
-branch=`git branch --show-current`;
+BRANCH=$(git branch --show-current);
 
-echo $branch
+echo "Deploying navi npm packages for branch $BRANCH"
 
-if [ $branch = 'master' ]
+if [ $BRANCH = 'master' ]
 then
     echo 'Publishing beta build...'
     npm run-script lerna-ci-publish-beta
-elif [ $branch = '0.2.x-alpha' ]
+elif [ $BRANCH = '0.2.x-alpha' ]
 then
     echo 'Publishing alpha build...'
     npm run-script lerna-ci-publish

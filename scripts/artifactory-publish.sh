@@ -5,15 +5,15 @@ echo 'Deploying navi webservice models to artifactory'
 
 cd packages/webservice
 
-branch=`git branch --show-current`;
+BRANCH=$(git branch --show-current);
 
-echo $branch
+echo "Deploying navi webservice models to artifactory for branch $BRANCH"
 
-if [ $branch = 'master' ]
+if [ $BRANCH = 'master' ]
 then
     echo 'Publishing beta build...'
     ./gradlew -PpublishTag=beta -p models artifactoryPublish
-elif [ $branch = '0.2.x-alpha' ]
+elif [ $BRANCH = '0.2.x-alpha' ]
 then
     echo 'Publishing alpha build...'
     ./gradlew -p models artifactoryPublish
