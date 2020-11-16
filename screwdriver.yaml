@@ -31,6 +31,8 @@ jobs:
     requires:
       - ~pr
       - ~commit
+      - ~commit:0.2.x-alpha
+      - ~pr:0.2.x-alpha
 
   publish-npm:
     requires: main
@@ -41,14 +43,14 @@ jobs:
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install: npm ci
-      - publish: ./scripts/npm-publish-beta.sh
+      - publish: ./scripts/npm-publish.sh
     secrets:
       - NPM_TOKEN
 
   publish-artifactory:
     requires: main
     steps:
-      - publish: ./scripts/artifactory-publish-beta.sh
+      - publish: ./scripts/artifactory-publish.sh
     secrets:
       - ARTIFACTORY_USER
       - ARTIFACTORY_KEY
