@@ -42,15 +42,7 @@ jobs:
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci
-      - test-navi-admin: npx lerna run test --scope navi-admin --stream;
-      - test-navi-app: npx lerna run test --scope navi-app --stream;
-      - test-navi-core: npx lerna run test --scope navi-core --stream;
-      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream
-      - test-navi-data: npx lerna run test --scope navi-data --stream;
-      - test-navi-directory: npx lerna run test --scope navi-directory --stream;
-      - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
-      - test-navi-reports: npx lerna run test --scope navi-reports --stream;
-      - test-navi-search: npx lerna run test --scope navi-search --stream;
+      - test-navi: npx lerna run test --stream;
       - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
     requires:
       - ~commit:0.2.x-alpha
