@@ -146,11 +146,6 @@
           definition: '{{title}}'
         }
         {
-          name: type
-          type: TEXT
-          definition: '{{type}}'
-        }
-        {
           name: director
           type: TEXT
           definition: '{{director}}'
@@ -187,7 +182,7 @@
           definition: '{{rating}}'
         }
         {
-          name: genre
+          name: genres
           type: TEXT
           definition: '{{listed_in}}'
         }
