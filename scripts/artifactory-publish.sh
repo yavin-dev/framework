@@ -11,7 +11,6 @@ echo $branch
 
 if [ $branch = 'master' ]
 then
-    # Publish dev build via lerna
     echo 'Publishing beta build...'
     ./gradlew -PpublishTag=beta -p models artifactoryPublish
 elif [ $branch = '0.2.x-alpha' ]

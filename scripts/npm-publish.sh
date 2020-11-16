@@ -12,7 +12,6 @@ echo $branch
 
 if [ $branch = 'master' ]
 then
-    # Publish dev build via lerna
     echo 'Publishing beta build...'
     npm run-script lerna-ci-publish-beta
 elif [ $branch = '0.2.x-alpha' ]
