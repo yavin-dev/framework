@@ -1938,6 +1938,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(1);
     await visit('/reports/9');
 
+    debugger;
     assert
       .dom('.navi-info-message__error-list-item')
       .hasText(
