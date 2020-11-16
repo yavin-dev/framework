@@ -2,7 +2,7 @@
   dbconfigs: [
     {
       name: DemoConnection
-      url: jdbc:h2:file:./SalesDB;DB_CLOSE_DELAY=-1
+      url: jdbc:h2:file:/tmp/demoDB;DB_CLOSE_DELAY=-1
       driver: org.h2.Driver
       user: guest
       dialect: H2

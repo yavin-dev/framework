@@ -3,6 +3,7 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTra
 import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 description = "app"
 
 plugins {
@@ -113,7 +114,7 @@ liquibase {
         this.arguments = mapOf(
                 "logLevel" to "debug",
                 "changeLogFile" to "src/main/resources/db/changelog/changelog-demo.xml",
-                "url" to "jdbc:h2:file:./SalesDB;DB_CLOSE_DELAY=-1",
+                "url" to "jdbc:h2:file:/tmp/demoDB;DB_CLOSE_DELAY=-1",
                 "username" to "guest")
     }
 }
