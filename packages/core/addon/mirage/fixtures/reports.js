@@ -639,25 +639,14 @@ export default [
     deliveryRuleIds: [],
     visualization: {
       type: 'table',
-      version: 1,
+      version: 2,
       metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date'
-          },
-          {
-            field: 'property',
-            type: 'dimension',
-            displayName: 'Property'
-          },
-          {
-            field: 'adClicks',
-            type: 'metric',
-            displayName: 'Ad Clicks'
-          }
-        ]
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+          c3: { canAggregateSubtotal: false },
+          c2: { canAggregateSubtotal: false }
+        },
+        showTotals: []
       }
     },
     request: {
