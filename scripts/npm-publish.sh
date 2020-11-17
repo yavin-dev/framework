@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e # Exit with nonzero exit code if anything fails
 
-echo 'Publishing build...'
-
 # Login to NPM
 npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
