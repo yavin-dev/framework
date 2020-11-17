@@ -50,8 +50,8 @@ jobs:
 
   publish-npm:
     requires:
-      - main
-      - alpha-main
+      - ~main
+      - ~alpha-main
     environment:
       GIT_SHALLOW_CLONE: false
     steps:
@@ -65,8 +65,8 @@ jobs:
 
   publish-artifactory:
     requires:
-      - main
-      - alpha-main
+      - ~main
+      - ~alpha-main
     steps:
       - publish: ./scripts/artifactory-publish.sh
     secrets:
