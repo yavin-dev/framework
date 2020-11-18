@@ -42,6 +42,7 @@ jobs:
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci
+      - test-git: git rev-parse --abbrev-ref HEAD
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
