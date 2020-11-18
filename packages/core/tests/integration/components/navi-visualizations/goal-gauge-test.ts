@@ -391,4 +391,28 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       .dom('text.c3-chart-arcs-title > tspan')
       .exists({ count: 3 }, 'on rerender render, 3 title tspans are present');
   });
+
+  test('goal-gauge - missing metric', async function(this: TestContext, assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    this.request = store.createFragment('bard-request-v2/request', {
+      table: null,
+      columns: [],
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0'
+    });
+    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
+    this.set('options', {
+      baselineValue: 0,
+      goalValue: 1,
+      metricCid: undefined
+    });
+    await render(TEMPLATE);
+    assert.dom('.metric-title').hasNoText('metric title is empty when a metric is missing');
+    assert.dom('.value-title').hasText('0', 'value title is `0` when a metric is missing');
+    assert.dom('.c3-chart-arcs-gauge-min').hasText('0', 'min gauge label is `0` when a metric is missing');
+    assert.dom('.c3-chart-arcs-gauge-max').hasText('1', 'max gauge label is `1` when a metric is missing');
+  });
 });
