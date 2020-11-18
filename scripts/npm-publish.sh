@@ -4,7 +4,7 @@ set -e # Exit with nonzero exit code if anything fails
 # Login to NPM
 npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
-BRANCH=$(git branch --show-current);
+BRANCH=$(git rev-parse --abbrev-ref HEAD);
 
 echo "Deploying navi npm packages for branch $BRANCH"
 
