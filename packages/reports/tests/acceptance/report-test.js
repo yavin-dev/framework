@@ -61,9 +61,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await clickItem('dimension', 'Property');
     await clickItem('metric', 'Ad Clicks');
-    await clickItemFilter('dimension', 'Operating System');
-    // Fix the errors and run report
-    await click('.filter-collection__row:nth-of-type(2) .filter-collection__remove');
     await click('.navi-report__run-btn');
 
     assert.equal(currentURL(), '/reports/13/view', 'Fixing errors and clicking "Run" returns user to view route');
@@ -84,11 +81,16 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/13');
     // Add a dimension filter
-    await clickItemFilter('dimension', 'Operating System');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click($('.navi-report__action-link:contains(Clone)')[0]);
 
     //fails because of server error and stays at /reports/13/edit
-    assert.equal(currentURL(), '/reports/13/edit');
+    assert.ok(
+      currentURL().endsWith('/edit'),
+      'After clicking the run button, the route transitions to the invalid route'
+    );
   });
 
   test('New report', async function(assert) {
