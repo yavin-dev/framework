@@ -16,6 +16,7 @@ jobs:
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+      - test-git: echo $GIT_BRANCH
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
