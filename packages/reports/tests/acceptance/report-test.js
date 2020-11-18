@@ -77,8 +77,6 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Clone invalid report', async function(assert) {
-    assert.expect(1);
-
     await visit('/reports/13');
     // Add a dimension filter
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
@@ -90,6 +88,8 @@ module('Acceptance | Navi Report', function(hooks) {
       currentURL().endsWith('/edit'),
       'After clicking the run button, the route transitions to the invalid route'
     );
+
+    assert.notOk(currentURL().startsWith('/reports/13'), 'After clicking, the url no longer is on report 13');
   });
 
   test('New report', async function(assert) {
