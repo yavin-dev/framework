@@ -77,6 +77,8 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Clone invalid report', async function(assert) {
+    assert.expect(2);
+
     await visit('/reports/13');
     // Add a dimension filter
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
