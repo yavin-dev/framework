@@ -115,7 +115,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
-    await click($('li.ember-power-select-option:contains(Between)')[0]);
+    await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
 
@@ -147,7 +147,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //set the filter interval
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
-    await click($('li.ember-power-select-option:contains(Between)')[0]);
+    await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
     await click('.ember-power-calendar-day[data-date="2020-11-05"]');
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
@@ -1110,7 +1110,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
-    await click($('li.ember-power-select-option:contains(Between)')[0]);
+    await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
 
@@ -1962,7 +1962,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
     await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
-    await click($('li.ember-power-select-option:contains(Between)')[0]);
+    await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
