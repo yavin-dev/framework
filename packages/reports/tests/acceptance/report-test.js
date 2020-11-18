@@ -86,7 +86,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click($('.navi-report__action-link:contains(Clone)')[0]);
 
-    //fails because of server error and stays at /reports/13/edit
     assert.ok(
       currentURL().endsWith('/edit'),
       'After clicking the run button, the route transitions to the invalid route'
@@ -114,7 +113,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
-    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
@@ -146,7 +144,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
 
     //set the filter interval
-    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
     await click('.ember-power-calendar-day[data-date="2020-11-05"]');
@@ -1109,7 +1106,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
-    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
@@ -1961,7 +1957,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
-    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
