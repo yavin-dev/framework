@@ -3,7 +3,7 @@ set -e # Exit with nonzero exit code if anything fails
 
 cd packages/webservice
 
-BRANCH=$(git branch --show-current);
+BRANCH=$(git rev-parse --abbrev-ref HEAD);
 
 echo "Deploying navi webservice models to artifactory for branch $BRANCH"
 
