@@ -117,9 +117,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
 
-    await click('.ember-power-calendar-day[data-date="2020-11-05"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day[data-date="2020-11-10"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(currentURL().endsWith('/view'), 'Running a report with no errors transitions to view route');
@@ -1112,9 +1112,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
 
-    await click('.ember-power-calendar-day[data-date="2020-11-09"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day[data-date="2020-11-10"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(!!findAll('.table-widget').length, 'Table visualization is shown by default');
@@ -1957,6 +1957,16 @@ module('Acceptance | Navi Report', function(hooks) {
     await selectChoose('.navi-table-select__dropdown', 'Table A');
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
+    await clickItem('dimension', 'Date Time');
+    await clickItemFilter('dimension', 'Date Time');
+    await click($('.filter-builder__operator:contains(Since) .filter-builder__select-trigger')[0]);
+    await click($('li.ember-power-select-option:contains(Between)')[0]);
+
+    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+
+    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
     // Grab one of the dim names after running a report
