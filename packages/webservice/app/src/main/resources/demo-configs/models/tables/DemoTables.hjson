@@ -7,36 +7,43 @@
       dimensions: [
         {
           name: title_id
+          category: Attributes
           type: TEXT
           definition: '{{title_id}}'
         }
         {
           name: show_type
+          category: Attributes
           type: TEXT
           definition: '{{type}}'
         }
         {
           name: title
+          category: Attributes
           type: TEXT
           definition: '{{title}}'
         }
         {
           name: director
+          category: Attributes
           type: TEXT
           definition: '{{director}}'
         }
         {
           name: cast
+          category: Attributes
           type: TEXT
           definition: '{{cast_list}}'
         }
         {
           name: country
+          category: Attributes
           type: TEXT
           definition: '{{country}}'
         }
         {
           name: date_available
+          category: Date
           type: TIME
           definition: '{{date_added}}'
           grain: {
@@ -45,6 +52,7 @@
         }
         {
           name: release_year
+          category: Date
           type: TIME
           definition: '{{release_year}}'
           grain: {
@@ -53,16 +61,19 @@
         }
         {
           name: film_rating
+          category: Attributes
           type: TEXT
           definition: '{{rating}}'
         }
         {
           name: genres
+          category: Attributes
           type: TEXT
           definition: '{{listed_in}}'
         }
         {
           name: description
+          category: Attributes
           type: TEXT
           definition: '{{description}}'
         }
@@ -70,16 +81,19 @@
       measures: [
         {
           name: count
+          category: Stats
           type: INTEGER
           definition: 'count({{title_id}})'
         }
         {
           name: total_seasons
+          category: TV Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
         }
         {
           name: movie_duration
+          category: Movie Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
         }
