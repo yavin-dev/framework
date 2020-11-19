@@ -84,7 +84,8 @@ const ExpectedRequest = {
                     dimensions: [
                       { name: 'Property 1', values: { 'cid_property(field=id)': '114' } },
                       { name: 'Property 2', values: { 'cid_property(field=id)': '100001' } },
-                      { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } }
+                      { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } },
+                      { name: 'Property 4', values: { 'cid_property(field=id)': '101272' } }
                     ]
                   }
                 }

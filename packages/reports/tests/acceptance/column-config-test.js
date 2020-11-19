@@ -512,7 +512,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     await animationsSettled();
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Age (id)', 'Browser (id)', 'Ad Clicks', 'Nav Link Clicks', 'Ad Clicks'],
+      ['Date Time (day)', 'Ad Clicks', 'Age (id)', 'Browser (id)', 'Nav Link Clicks', 'Ad Clicks'],
       'Dimensions, then metrics are displayed in the column config'
     );
   });

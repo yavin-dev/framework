@@ -26,7 +26,8 @@ export default [
                 dimensions: [
                   { name: 'Property 1', values: { property: '114' } },
                   { name: 'Property 2', values: { property: '100001' } },
-                  { name: 'Property 3', values: { property: '100002' } }
+                  { name: 'Property 3', values: { property: '100002' } },
+                  { name: 'Property 4', values: { property: '101272' } }
                 ]
               }
             }
@@ -221,7 +222,29 @@ export default [
     updatedOn: '2015-07-01 00:00:00',
     authorId: 'navi_user',
     deliveryRuleIds: [],
-    visualization: null,
+    visualization: {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          {
+            field: 'dateTime',
+            type: 'dateTime',
+            displayName: 'Date'
+          },
+          {
+            field: 'adClicks',
+            type: 'metric',
+            displayName: 'Ad Clicks'
+          },
+          {
+            field: 'navClicks',
+            type: 'metric',
+            displayName: 'Nav Clicks'
+          }
+        ]
+      }
+    },
     request: {
       logicalTable: {
         table: 'network',
@@ -250,22 +273,13 @@ export default [
     deliveryRuleIds: [],
     visualization: null,
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
-      },
-      metrics: [],
-      dimensions: [],
+      table: '',
+      dataSource: '',
+      requestVersion: '2.0',
+      limit: null,
+      columns: [],
       filters: [],
-      intervals: [
-        {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
-      ],
-      having: [{ metric: 'adClicks', operator: 'gt', values: [] }],
-      bardVersion: 'v1',
-      requestVersion: 'v1'
+      sorts: []
     }
   },
   {
@@ -614,6 +628,65 @@ export default [
       bardVersion: 'v1',
       requestVersion: 'v1',
       dataSource: 'bardTwo'
+    }
+  },
+  {
+    id: 13,
+    title: 'RequestV2 testing report',
+    createdOn: '2015-04-01 00:00:00',
+    updatedOn: '2015-04-01 00:00:00',
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'table',
+      version: 2,
+      metadata: {
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+          c3: { canAggregateSubtotal: false },
+          c2: { canAggregateSubtotal: false }
+        },
+        showTotals: []
+      }
+    },
+    request: {
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          dataSource: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: []
+        }
+      ],
+      columns: [
+        {
+          cid: 'c1',
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day'
+          },
+          type: 'timeDimension'
+        },
+        {
+          cid: 'c2',
+          type: 'metric',
+          field: 'adClicks',
+          parameters: {}
+        },
+        {
+          cid: 'c3',
+          type: 'dimension',
+          field: 'property',
+          parameters: { field: 'id' }
+        }
+      ],
+      sorts: []
     }
   }
 ];

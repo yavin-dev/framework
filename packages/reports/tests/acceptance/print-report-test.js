@@ -33,7 +33,7 @@ module('Acceptance | print report', function(hooks) {
     assert.dom('.c3-axis-y-label').hasText('Ad Clicks', 'Report chart should have y-axis label');
     assert.deepEqual(
       [...document.querySelectorAll('.c3-legend-item')].map(el => el.textContent.trim()),
-      ['Property 1', 'Property 2', 'Property 3'],
+      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'The legend fills in with widget dimensions'
     );
   });

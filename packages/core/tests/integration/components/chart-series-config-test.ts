@@ -16,7 +16,7 @@ const TEMPLATE = hbs`
 />`;
 
 const SERIES_CONFIG = {
-  dimensions: [{ name: 'Property 1' }, { name: 'Property 2' }, { name: 'Property 3' }]
+  dimensions: [{ name: 'Property 1' }, { name: 'Property 2' }, { name: 'Property 3' }, { name: 'Property 4' }]
 };
 
 module('Integration | Component | chart series config', function(hooks) {
@@ -53,7 +53,7 @@ module('Integration | Component | chart series config', function(hooks) {
 
     assert.deepEqual(
       findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
-      ['Property 1', 'Property 2', 'Property 3'],
+      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'Component renders dimension names correctly'
     );
   });
