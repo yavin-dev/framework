@@ -41,6 +41,15 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
   }
 
   /**
+   * @property {String} gsheetExportHref - Href for google sheet export
+   * @override
+   */
+  @computed('dashboard.id')
+  get gsheetExportHref() {
+    return `/gsheet-export/dashbord/${this.dashboard.id}`;
+  }
+
+  /**
    * @property {Array} exportFormats - A list of export formats
    * @override
    */

@@ -702,6 +702,41 @@ module('Acceptance | Navi Report', function(hooks) {
     });
   });
 
+  test('Google Sheets export', async function(assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+
+    // Remove all metrics
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('metric', 'Nav Link Clicks');
+
+    // add filter
+    await clickItem('dimension', 'Operating System');
+    await click('.navi-report__run-btn');
+
+    await clickTrigger('.multiple-format-export');
+
+    assert.equal(
+      $('.multiple-format-export__dropdown a:contains("Google Sheet")')[0],
+      undefined,
+      'Sheet Export is not active even after run'
+    );
+
+    assert
+      .dom('.multiple-format-export__dropdown-link--disabled')
+      .hasText('Google Sheet', 'Google Sheets is shown with disabled link');
+
+    await click('.navi-report__save-btn');
+
+    await clickTrigger('.multiple-format-export');
+
+    assert
+      .dom($('.multiple-format-export__dropdown button:contains("Google Sheet")')[0])
+      .exists('Sheet Export does exist for saved documents');
+
+    assert.dom('.multiple-format-export__dropdown-link--disabled').doesNotExist('disabled link does not render');
+  });
+
   test('Get API action - enabled/disabled', async function(assert) {
     assert.expect(2);
 

@@ -15,6 +15,7 @@ import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { htmlSafe } from '@ember/template';
 
 @templateLayout(layout)
 @tagName('')
@@ -80,9 +81,17 @@ export default class MultipleFormatExport extends Component {
   }
 
   /**
+   * @property {String} gsheetExportHref - href for google sheet exports
+   */
+  @computed('report.id')
+  get gsheetExportHref() {
+    return `/gsheet-export/report/${this.report.id}`;
+  }
+
+  /**
    * @property {Array} exportFormats - A list of export formats
    */
-  @computed('csvHref', 'exportHref', 'supportedFileTypes')
+  @computed('csvHref', 'exportHref', 'supportedFileTypes', 'gsheetExportHref')
   get exportFormats() {
     const { supportedFileTypes } = this;
 
@@ -90,7 +99,9 @@ export default class MultipleFormatExport extends Component {
       {
         type: 'CSV',
         href: this.csvHref,
-        icon: 'file-text-o'
+        icon: 'file-text-o',
+        async: false,
+        requiresSaved: false
       }
     ];
 
@@ -99,7 +110,9 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'PDF',
           href: this.exportHref,
-          icon: 'file-pdf-o'
+          icon: 'file-pdf-o',
+          async: false,
+          requiresSaved: false
         });
       }
 
@@ -107,7 +120,19 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'PNG',
           href: this.exportHref.then(href => `${href}&fileType=png`),
-          icon: 'file-image-o'
+          icon: 'file-image-o',
+          async: false,
+          requiresSaved: false
+        });
+      }
+
+      if (supportedFileTypes.includes('gsheet') || supportedFileTypes.includes('GSHEET')) {
+        exportFormats.push({
+          type: 'Google Sheet',
+          href: this.gsheetExportHref,
+          icon: 'google',
+          async: true,
+          requiresSaved: true
         });
       }
     }
@@ -139,10 +164,41 @@ export default class MultipleFormatExport extends Component {
    */
   @action
   notify(type) {
+    const typeMessages = {
+      'Google Sheet': 'We are building your spreadsheet and sending to Google Drive.  Keep an eye out for the email!'
+    };
     this.naviNotifications.add({
-      message: `${type}? Got it. The download should begin soon.`,
+      message: typeMessages[type] ?? `${type}? Got it. The download should begin soon.`,
       type: 'info',
       timeout: 'medium'
     });
+  }
+
+  @action
+  async handleAsync(href, event) {
+    event.preventDefault();
+    const naviNotifications = this.naviNotifications;
+    try {
+      const response = await fetch(href);
+      const json = await response.json();
+      naviNotifications?.clearMessages();
+      naviNotifications?.add({
+        message: json.url
+          ? htmlSafe(
+              `Your export is done and available at <a href="${json.url}" target="_blank" rel="noopener noreferrer">here &raquo;</a>`
+            )
+          : 'Your export has finished!',
+        type: 'info',
+        timeout: 'long'
+      });
+    } catch (e) {
+      console.error(e);
+      naviNotifications?.clearMessages();
+      naviNotifications?.add({
+        message: e.message,
+        type: 'danger',
+        timeout: 'medium'
+      });
+    }
   }
 }

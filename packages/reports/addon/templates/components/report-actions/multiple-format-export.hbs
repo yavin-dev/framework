@@ -9,16 +9,29 @@
       <dd.content>
         <ul class="multiple-format-export__dropdown">
           {{#each this.exportFormats as |exportFormat|}}
-            <li>
-              <NaviIcon @icon={{exportFormat.icon}} />
-              <a
-                download={{dasherize this.filename}}
-                href={{await exportFormat.href}}
-                {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
-              >
-                {{exportFormat.type}}
-              </a>
-            </li>
+              <li>
+                <NaviIcon @icon={{exportFormat.icon}} class={{if (and @report.isNew exportFormat.requiresSaved) "multiple-format-export__dropdown-icon--disabled"}} />
+                {{! @report.isNew is falsey with dashboards so this works as expected in dashboards}}
+                {{#if (and @report.isNew exportFormat.requiresSaved)}}
+                  <span class="multiple-format-export__dropdown-link--disabled">{{exportFormat.type}}</span>
+                  <EmberTooltip @side="left" @popperContainer="body" @text="Save report to enable this option" />
+                {{else if exportFormat.async}}
+                    <button
+                      type="button"
+                      {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.href) (fn this.close dd))}}
+                    >
+                      {{exportFormat.type}}
+                    </button>
+                {{else}}
+                  <a
+                    download={{dasherize this.filename}}
+                    href={{await exportFormat.href}}
+                    {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
+                  >
+                    {{exportFormat.type}}
+                  </a>
+                {{/if}}
+              </li>
           {{/each}}
         </ul>
       </dd.content>
