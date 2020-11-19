@@ -11,7 +11,6 @@
 import Component from '@glimmer/component';
 import numeral from 'numeral';
 import { computed } from '@ember/object';
-import { assert } from '@ember/debug';
 import { VisualizationModel } from './table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
@@ -40,11 +39,10 @@ export default class MetricLabelVisualization extends Component<Args> {
   }
 
   @computed('args.{model.[],options.metricCid}')
-  get metric(): ColumnFragment {
+  get metric(): ColumnFragment | undefined {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
     const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
-    assert(`A metric column should exist with cid: ${metricCid}`, metricColumn);
     return metricColumn;
   }
 
@@ -54,10 +52,11 @@ export default class MetricLabelVisualization extends Component<Args> {
   @computed('args.{options.format,model.[]}', 'metric')
   get value(): string | undefined {
     const { options, model } = this.args;
-    if (model) {
+    const { metric } = this;
+    if (model && metric) {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
-      const { canonicalName } = this.metric;
+      const { canonicalName } = metric;
       const value = firstRow[canonicalName] as string;
 
       return options?.format ? numeral(value).format(options.format) : String(value);
