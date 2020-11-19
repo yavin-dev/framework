@@ -1,9 +1,0 @@
-elide:
-  async:
-    cleanupEnabled: false
-
-spring:
-  profiles: test
-  liquibase:
-    contexts: test
-    drop-first: true
