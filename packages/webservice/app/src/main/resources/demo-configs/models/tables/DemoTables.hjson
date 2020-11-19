@@ -1,127 +1,87 @@
 {
   tables: [
     {
-      name:  PilotStats
-      table: pilot_stats
+      name:  NetflixTitles
+      table: netflix_titles
       dbConnectionName: DemoConnection
-      joins: [
-        {
-          name: joined_pilots
-          to: Pilots
-          type: toOne
-          definition: '{{pilot_id}} = {{joined_pilots.p_id}}'
-        }
-        {
-          name: joined_crafts
-          to: Crafts
-          type: toOne
-          definition: '{{craft_id}} = {{joined_crafts.c_id}}'
-        }
-      ]
       dimensions: [
         {
-          name: pilot
+          name: title_id
           type: TEXT
-          definition: '{{joined_pilots.name}}'
+          definition: '{{title_id}}'
         }
         {
-          name: craft
+          name: show_type
           type: TEXT
-          definition: '{{joined_crafts.name}}'
+          definition: '{{type}}'
         }
         {
-          name: battle
+          name: title
           type: TEXT
-          definition: '{{battle_name}}'
-          values: [
-            'Battle of Scarif'
-            'Battle of Yavin'
-            'Battle of Hoth'
-            'Battle of Endor'
-          ]
+          definition: '{{title}}'
         }
         {
-          name: victory
-          type: BOOLEAN
-          definition: '{{victory}}'
-          values: [
-            'true'
-            'false'
-          ]
+          name: director
+          type: TEXT
+          definition: '{{director}}'
         }
         {
-          name: month
-          category: date
+          name: cast
+          type: TEXT
+          definition: '{{cast_list}}'
+        }
+        {
+          name: country
+          type: TEXT
+          definition: '{{country}}'
+        }
+        {
+          name: date_available
           type: TIME
-          definition: '{{battle_date}}'
-          grain: {
-            type: MONTH
-          }
-        }
-        {
-          name: day
-          type: TIME
-          category: date
-          definition: '{{battle_date}}'
+          definition: '{{date_added}}'
           grain: {
             type: DAY
           }
         }
+        {
+          name: release_year
+          type: TIME
+          definition: '{{release_year}}'
+          grain: {
+            type: YEAR
+          }
+        }
+        {
+          name: film_rating
+          type: TEXT
+          definition: '{{rating}}'
+        }
+        {
+          name: genres
+          type: TEXT
+          definition: '{{listed_in}}'
+        }
+        {
+          name: description
+          type: TEXT
+          definition: '{{description}}'
+        }
       ]
       measures: [
         {
-          name: total_parsecs
-          category: stats
-          type: DECIMAL
-          definition: 'sum({{parsecs}})'
-        }
-        {
-          name: total_battles
-          category: stats
+          name: count
           type: INTEGER
-          definition: 'count(distinct {{battle_name}})'
+          definition: 'count({{title_id}})'
         }
         {
-          name: total_victories
-          category: stats
+          name: total_seasons
           type: INTEGER
-          definition: 'count(distinct (case when {{victory}} then {{battle_name}} else null end))'
+          definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
         }
-      ]
-    }
-    {
-      name:  Crafts
-      table: crafts
-      dbConnectionName: DemoConnection
-      isFact: false
-      dimensions: [
         {
-          name: c_id
+          name: movie_duration
           type: INTEGER
-          definition: '{{id}}'
-        }
-        {
-          name: name
-          type: TEXT
-          definition: '{{name}}'
-        }
-      ]
-    }
-    {
-      name:  Pilots
-      table: pilots
-      dbConnectionName: DemoConnection
-      isFact: false
-      dimensions: [
-        {
-          name: p_id
-          type: INTEGER
-          definition: '{{id}}'
-        }
-        {
-          name: name
-          type: TEXT
-          definition: '{{name}}'
+          definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
         }
       ]
     }
