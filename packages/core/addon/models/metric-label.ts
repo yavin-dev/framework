@@ -31,7 +31,7 @@ export type MetricLabelConfig = {
   version: 2;
   metadata: {
     format?: string;
-    metricCid: string;
+    metricCid?: string;
   };
 };
 
@@ -55,7 +55,7 @@ export default class MetricLabelModel extends VisualizationBase.extend(Validatio
   rebuildConfig(request: RequestFragment, _response: ResponseV1) {
     const format = this.metadata.format || NumberFormats[0].format;
 
-    set(this, 'metadata', { format, metricCid: request.metricColumns[0].cid });
+    set(this, 'metadata', { format, metricCid: request.metricColumns[0]?.cid });
     return this;
   }
 }

@@ -58,16 +58,17 @@ export default class GoalGaugeModel extends VisualizationBase.extend(Validations
    */
   rebuildConfig(request: RequestFragment, response: ResponseV1): GoalGaugeModel {
     if (request && response) {
-      let metricCid = request.metricColumns[0].cid,
-        canonicalName = request.metricColumns[0].canonicalName,
-        firstRow = response?.rows?.[0] || {},
-        actualValue = Number(firstRow[canonicalName]),
-        above = actualValue * 1.1,
-        below = actualValue * 0.9,
-        baselineValue = actualValue > 0 ? below : above,
-        goalValue = actualValue > 0 ? above : below;
+      const metricCid = request.metricColumns[0]?.cid;
+      const canonicalName = request.metricColumns[0]?.canonicalName;
+      const firstRow = response?.rows?.[0] || {};
+      const actualValue = Number(firstRow[canonicalName] || 0);
+      const above = actualValue * 1.1;
+      const below = actualValue * 0.9;
 
-      //handle the zero value casex
+      let baselineValue = actualValue > 0 ? below : above;
+      let goalValue = actualValue > 0 ? above : below;
+
+      //handle the zero value case
       if (actualValue === 0) {
         baselineValue = 0;
         goalValue = 1;

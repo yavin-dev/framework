@@ -7,7 +7,6 @@ import { readOnly } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { assert } from '@ember/debug';
 // @ts-ignore
 import d3 from 'd3';
 import numeral from 'numeral';
@@ -41,21 +40,21 @@ export default class GoalGaugeVisualization extends Component<Args> {
   }
 
   @computed('args.{model.firstObject.request.metricColumns.[],options.metricCid}')
-  get metric(): ColumnFragment {
+  get metric(): ColumnFragment | undefined {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
     const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
-    assert(`A metric column should exist with cid: ${metricCid}`, metricColumn);
     return metricColumn;
   }
 
   @computed('metric', 'args.model.firstObject.response.rows.[]')
   get actualValue(): number {
     const { model } = this.args;
-    if (model) {
+    const { metric } = this;
+    if (model && metric) {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
-      const { canonicalName } = this.metric;
+      const { canonicalName } = metric;
       return Number(firstRow[canonicalName]);
     }
     return 0;
@@ -187,7 +186,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
     titleElm
       .insert('tspan')
       .attr('class', 'metric-title')
-      .text(metric.displayName)
+      .text(metric?.displayName || '')
       .attr('dy', 26)
       .attr('x', 0);
 

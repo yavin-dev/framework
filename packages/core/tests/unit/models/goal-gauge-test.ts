@@ -150,4 +150,25 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
     newConfig = goalGauge.rebuildConfig(request, response).toJSON();
     assert.deepEqual(newConfig, expectedZeroConfig, 'rebuilds config based on request with zero metric');
   });
+
+  test('rebuildConfig - no columns', function(assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = buildTestRequest([], []);
+    const goalGauge = store.createRecord('all-the-fragments').goalGauge;
+    const response = { rows: [{ rupees: 1 }], meta: {} };
+    const config = goalGauge.rebuildConfig(request, response).toJSON();
+    assert.deepEqual(
+      config,
+      {
+        metadata: {
+          baselineValue: 0,
+          goalValue: 1,
+          metricCid: undefined
+        },
+        type: 'goal-gauge',
+        version: 2
+      },
+      'config can be generated when no columns are present'
+    );
+  });
 });

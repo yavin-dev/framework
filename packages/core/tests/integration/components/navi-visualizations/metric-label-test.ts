@@ -110,4 +110,17 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
     await render(TEMPLATE);
     assert.dom('.metric-label-vis__value').hasText('$ 1,000,000', 'metric value is formatted correctly');
   });
+
+  test('metric label - missing metric', async function(this: TestContext, assert) {
+    const request = this.model.firstObject?.request as RequestFragment;
+    request.columns.clear();
+    this.options = {
+      format: '$ 0,0[.]00',
+      metricCid: undefined
+    };
+
+    _setModel({ rupees: 1000000 });
+    await render(TEMPLATE);
+    assert.dom('.metric-label-vis__value').hasNoText('metric value is blank when metric is missing');
+  });
 });

@@ -49,4 +49,23 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       'config regenerated with metric updated'
     );
   });
+
+  test('rebuildConfig - no columns', function(assert) {
+    const metricLabel = Store.createRecord('all-the-fragments').metricLabel;
+    const request = buildTestRequest([]);
+    const config = metricLabel.rebuildConfig(request, { rows: [{ rupees: 999, hp: 0 }], meta: {} }).toJSON();
+
+    assert.deepEqual(
+      config,
+      {
+        metadata: {
+          format: '0,0.00',
+          metricCid: undefined
+        },
+        type: 'metric-label',
+        version: 2
+      },
+      'config can be generated when no columns are present'
+    );
+  });
 });
