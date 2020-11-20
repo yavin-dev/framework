@@ -54,3 +54,6 @@ spring:
   liquibase:
     contexts: test
     drop-first: true
+elide:
+  async:
+    cleanupEnabled: false
