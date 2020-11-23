@@ -4,9 +4,9 @@
  */
 package com.yahoo.navi.ws.models.checks
 
-import com.yahoo.elide.security.ChangeSpec
-import com.yahoo.elide.security.RequestScope
-import com.yahoo.elide.security.checks.OperationCheck
+import com.yahoo.elide.core.security.ChangeSpec
+import com.yahoo.elide.core.security.RequestScope
+import com.yahoo.elide.core.security.checks.OperationCheck
 import com.yahoo.navi.ws.models.beans.HasAuthor
 import com.yahoo.navi.ws.models.beans.User
 import java.util.Optional
