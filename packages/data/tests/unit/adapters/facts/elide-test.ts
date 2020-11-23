@@ -7,7 +7,7 @@ import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
-import ElideFactsAdapter, { getElideField, ELIDE_API_DATE_FORMAT } from 'navi-data/adapters/facts/elide';
+import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 
 const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -25,8 +25,20 @@ const TestRequest: RequestV2 = {
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
     { field: 'table1.d5', operator: 'null', values: [], type: 'dimension', parameters: {} },
-    { field: 'table1.time', operator: 'gte', values: ['2015-01-03'], type: 'timeDimension', parameters: {} },
-    { field: 'table1.time', operator: 'lt', values: ['2015-01-04'], type: 'timeDimension', parameters: {} },
+    {
+      field: 'table1.time',
+      operator: 'gte',
+      values: ['2015-01-03'],
+      type: 'timeDimension',
+      parameters: { grain: 'day' }
+    },
+    {
+      field: 'table1.time',
+      operator: 'lt',
+      values: ['2015-01-04'],
+      type: 'timeDimension',
+      parameters: { grain: 'day' }
+    },
     { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
   ],
   sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
@@ -208,9 +220,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       }),
       `{"query":"{ myTable(filter: \\"time=ge=(${moment()
         .subtract(1, 'month')
-        .format(ELIDE_API_DATE_FORMAT)});time=le=(${moment().format(
-        ELIDE_API_DATE_FORMAT
-      )})\\") { edges { node { time d1 } } } }"}`,
+        .format('YYYY-MM')});time=le=(${moment().format('YYYY-MM')})\\") { edges { node { time d1 } } } }"}`,
       'Macros and durations in time-dimension filters are converted to date strings properly'
     );
 

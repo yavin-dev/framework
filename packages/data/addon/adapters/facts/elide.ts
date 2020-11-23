@@ -11,17 +11,17 @@ import NaviFactAdapter, {
   Parameters,
   QueryStatus,
   RequestV2,
-  FilterOperator
+  FilterOperator,
+  Filter
 } from './interface';
 import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
-import { assert } from '@ember/debug';
 import { v1 } from 'ember-uuid';
-
-export const ELIDE_API_DATE_FORMAT = 'YYYY-MM-DD'; //TODO: Update to include time when elide supports using full iso date strings
+import moment, { Moment } from 'moment';
+import { Grain } from 'navi-data/utils/date';
 
 const escape = (value: string | number) => `${value}`.replace(/'/g, "\\\\'");
 
@@ -55,6 +55,54 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   _pollingInterval = 3000;
 
+  private readonly grainFormats: Partial<Record<Grain, string>> = {
+    second: 'yyy-MM-DDTHH:mm:ss',
+    minute: 'yyyy-MM-DDTHH:mm',
+    hour: 'yyyy-MM-DDTHH',
+    day: 'yyyy-MM-DD',
+    week: 'yyyy-MM-DD',
+    isoWeek: 'yyyy-MM-DD',
+    month: 'yyyy-MM',
+    quarter: 'yyyy-MM',
+    year: 'yyyy'
+  };
+
+  private formatTimeValue(value: Moment | string, grain: Grain) {
+    return moment(value).format(this.grainFormats[grain]);
+  }
+
+  private buildFilterStr(filters: Filter[]): string {
+    const filterStrings = filters.map(filter => {
+      const { field, parameters, operator, values, type } = filter;
+      const fieldStr = getElideField(field, parameters);
+      const operatorStr = OPERATOR_MAP[operator as FilterOperator] || `=${operator}=`;
+      let filterVals = values;
+
+      if (type === 'timeDimension') {
+        const grain = filter.parameters.grain as Grain;
+        let timeValues: (Moment | string | number)[] = filterVals;
+        if (['bet', 'nbet'].includes(operator)) {
+          const { start, end } = Interval.parseFromStrings(
+            String(filterVals[0]),
+            String(filterVals[1])
+          ).asMomentsForTimePeriod(grain);
+          timeValues = [start, end];
+        }
+        filterVals = timeValues.map(v => this.formatTimeValue(`${v}`, grain));
+      }
+
+      if (['bet', 'nbet'].includes(operator)) {
+        return 'bet' === operator
+          ? `${fieldStr}=ge=(${escape(filterVals[0])});${fieldStr}=le=(${escape(filterVals[1])})`
+          : `${fieldStr}=lt=(${escape(filterVals[0])}),${fieldStr}=gt=(${escape(filterVals[1])})`;
+      }
+      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${escape(v)}'`).join(',')})` : '';
+      return `${fieldStr}${operatorStr}${valuesStr}`;
+    });
+
+    return filterStrings.join(';');
+  }
+
   /**
    * @param request
    * @returns graphql query string for a v2 request
@@ -64,30 +112,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const { table, columns, sorts, limit, filters } = request;
     const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
 
-    const filterStrings = filters.map(filter => {
-      const { field, parameters, operator, values, type } = filter;
-      const fieldStr = getElideField(field, parameters);
-      const operatorStr = OPERATOR_MAP[operator as FilterOperator] || `=${operator}=`;
-      let filterVals = values;
-      if (type === 'timeDimension' && filterVals.length === 2) {
-        const { start, end } = Interval.parseFromStrings(String(filterVals[0]), String(filterVals[1])).asMoments();
-        assert('The end date of a time dimension filter should be defined', end);
-        filterVals = [start.format(ELIDE_API_DATE_FORMAT), end.format(ELIDE_API_DATE_FORMAT)];
-      }
-
-      // TODO: Remove this when Elide supports the "between" filter operator
-      if (operator === 'bet') {
-        return `${fieldStr}=ge=(${escape(filterVals[0])});${fieldStr}=le=(${escape(filterVals[1])})`;
-      }
-
-      if (operator === 'nbet') {
-        return `${fieldStr}=lt=(${escape(filterVals[0])}),${fieldStr}=gt=(${escape(filterVals[1])})`;
-      }
-
-      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${escape(v)}'`).join(',')})` : '';
-      return `${fieldStr}${operatorStr}${valuesStr}`;
-    });
-    filterStrings.length && args.push(`filter: "${filterStrings.join(';')}"`);
+    const filterString = this.buildFilterStr(filters);
+    filterString.length && args.push(`filter: "${filterString}"`);
 
     const sortStrings = sorts.map(sort => {
       const { field, parameters, direction } = sort;
