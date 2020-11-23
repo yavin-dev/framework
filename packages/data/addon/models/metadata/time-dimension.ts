@@ -4,9 +4,10 @@
  */
 import DimensionMetadataModel, { DimensionMetadata, DimensionMetadataPayload } from './dimension';
 import { ColumnInstance, ColumnType } from './column';
+import { Grain } from 'navi-data/utils/date';
 
 interface TimeDimensionGrain {
-  id: string;
+  id: Grain;
   expression: string;
   grain: string;
 }

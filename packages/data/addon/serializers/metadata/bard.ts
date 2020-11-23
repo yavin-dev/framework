@@ -18,6 +18,7 @@ import {
 } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
 import { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import { Grain } from 'navi-data/utils/date';
 
 const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
 const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
@@ -69,7 +70,7 @@ export type RawColumnFunctionArgument =
   | { type: 'dimension'; defaultValue?: string | null; dimensionName: string; description?: string };
 
 type RawTimeGrainPayload = {
-  name: string;
+  name: Grain;
   longName: string;
   description?: string;
   retention?: string;
@@ -253,7 +254,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       type: 'field',
       valueType: 'date',
       supportedGrains: table.timeGrains.map(({ name }) => ({
-        id: name.toLowerCase(),
+        id: this.normalizeTimeGrain(name),
         expression: '',
         grain: capitalize(name)
       })),
@@ -263,12 +264,20 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
   }
 
   /**
+   * Normalize raw bard time grains
+   */
+  private normalizeTimeGrain(rawGrain: string): Grain {
+    const grain = rawGrain.toLowerCase() as Grain;
+    return 'week' === grain ? 'isoWeek' : grain; //bard's week is typically an iso week
+  }
+
+  /**
    * Creates a column function to select the time grains from a given table
    * @param table - the table to create a dateTime for
    * @param dataSourceName - data source name
    */
   private createTimeGrainColumnFunction(table: RawTablePayload, dataSourceName: string): ColumnFunctionMetadataModel {
-    const grainIds = table.timeGrains.map(g => g.name);
+    const grainIds = table.timeGrains.map(g => this.normalizeTimeGrain(g.name));
     const grains = grainIds.sort().join(',');
     const columnFunctionId = `${this.namespace}:timeGrain(table=${table.name};grains=${grains})`;
     let defaultValue;
@@ -293,7 +302,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
           _localValues: table.timeGrains.map(grain => ({
-            id: grain.name,
+            id: this.normalizeTimeGrain(grain.name),
             description: grain.description,
             name: grain.longName
           }))

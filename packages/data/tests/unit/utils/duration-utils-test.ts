@@ -1,5 +1,5 @@
 import DurationUtils from 'navi-data/utils/duration-utils';
-import { getFirstDayEpochIsoDateTimePeriod, PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { getFirstDayEpochForGrain, PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
 import moment from 'moment';
@@ -97,7 +97,7 @@ module('Unit | Utils | DurationUtils', function() {
 
     /* == All Duration == */
     let endDate = moment('2015-01-01', PARAM_DATE_FORMAT_STRING);
-    const expectedDate = getFirstDayEpochIsoDateTimePeriod('week');
+    const expectedDate = getFirstDayEpochForGrain('week');
     let startOfInterval = DurationUtils.computeStartOfInterval(endDate, Duration.all(), 'week');
     assert.ok(startOfInterval.isSame(expectedDate), 'computeStartOfInterval returns epoch week for all duration');
 
@@ -112,10 +112,7 @@ module('Unit | Utils | DurationUtils', function() {
     );
 
     /* == date range exceeds epoch == */
-    expectedMoment = moment(
-      getFirstDayEpochIsoDateTimePeriod('month', PARAM_DATE_FORMAT_STRING),
-      PARAM_DATE_FORMAT_STRING
-    );
+    expectedMoment = moment(getFirstDayEpochForGrain('month', PARAM_DATE_FORMAT_STRING), PARAM_DATE_FORMAT_STRING);
     endDate = expectedMoment.clone().add(1, 'month');
     startOfInterval = DurationUtils.computeStartOfInterval(endDate, duration, 'month');
     assert.ok(

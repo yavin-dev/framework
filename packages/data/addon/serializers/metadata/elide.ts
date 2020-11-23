@@ -16,6 +16,7 @@ import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-p
 import { assert } from '@ember/debug';
 import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import { getOwner } from '@ember/application';
+import { Grain } from 'navi-data/utils/date';
 
 type Edge<T> = {
   node: T;
@@ -221,7 +222,10 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         columnFunctionId: columnFunctionPayload.id,
         source,
         tags: node.tags,
-        supportedGrains: node.supportedGrain.edges.map(edge => edge.node),
+        supportedGrains: node.supportedGrain.edges
+          .map(({ node }) => node)
+          .map(({ expression, grain }) => ({ id: this.normalizeTimeGrain(grain), expression, grain })),
+
         timeZone: node.timeZone,
         type: node.columnType,
         expression: node.expression
@@ -231,6 +235,14 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         columnFunction: this.columnFunctionFactory.create(columnFunctionPayload)
       };
     });
+  }
+
+  /**
+   * Normalize raw elide time grains
+   */
+  private normalizeTimeGrain(rawGrain: string): Grain {
+    const grain = rawGrain.toLowerCase() as Grain | 'isoweek';
+    return 'isoweek' === grain ? 'isoWeek' : grain;
   }
 
   /**

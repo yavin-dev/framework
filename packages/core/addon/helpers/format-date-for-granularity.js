@@ -50,7 +50,7 @@ export function formatDateForGranularity(date, granularity) {
     return '--';
   }
 
-  if (granularity === 'week') {
+  if (granularity === 'week' || granularity === 'isoWeek') {
     return _formatWeek(date);
   }
 

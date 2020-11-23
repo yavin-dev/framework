@@ -15,12 +15,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
 import { range } from 'lodash-es';
-import {
-  getFirstDayEpochIsoDateTimePeriod,
-  getFirstDayOfIsoDateTimePeriod,
-  getLastDayOfIsoDateTimePeriod,
-  getIsoDateTimePeriod
-} from 'navi-data/utils/date';
+import { getFirstDayEpochForGrain, getFirstDayOfGrain, getLastDayOfGrain } from 'navi-data/utils/date';
 
 @templateLayout(layout)
 @tagName('')
@@ -31,7 +26,7 @@ class NaviDatePicker extends Component {
    */
   init() {
     super.init(...arguments);
-    this.centerDate = this.centerDate || this.date || getFirstDayOfIsoDateTimePeriod(moment(), this.dateTimePeriod);
+    this.centerDate = this.centerDate || this.date || getFirstDayOfGrain(moment(), this.dateTimePeriod);
   }
 
   /**
@@ -50,7 +45,7 @@ class NaviDatePicker extends Component {
       set(this, 'centerDate', newDate);
     }
 
-    //Store old date for rerender logic above
+    //Store old date for re-render logic above
     set(this, 'previousDate', date);
     set(this, '_lastTimeDate', date);
   }
@@ -75,7 +70,7 @@ class NaviDatePicker extends Component {
    */
   @computed('dateTimePeriod')
   get minDate() {
-    return new Date(getFirstDayEpochIsoDateTimePeriod(this.dateTimePeriod));
+    return new Date(getFirstDayEpochForGrain(this.dateTimePeriod));
   }
 
   /**
@@ -126,12 +121,35 @@ class NaviDatePicker extends Component {
    * @param {Array} weeks - The weeks being shown for the calendar
    * @returns {string}
    */
+  selectedIsoWeekClass(day, calendar, weeks) {
+    const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
+    const classes = ['ember-power-calendar-week-day'];
+    if (selected) {
+      const selectedWeekStart = moment(getFirstDayOfGrain(selected.moment, 'isoWeek'));
+      const selectedWeekEnd = moment(getLastDayOfGrain(selectedWeekStart, 'isoWeek'));
+      if (day.moment.isBetween(selectedWeekStart, selectedWeekEnd, undefined, '[]')) {
+        classes.push('ember-power-calendar-day--selected');
+      }
+    }
+
+    return classes.join(' ');
+  }
+
+  /**
+   * Applies a selected class to each day if it lies within the week being selected. This visually represents an
+   * entire week being selected on the calendar even though it is only the first day that is actually selected.
+   *
+   * @param {Object} day - The day to apply a custom style for
+   * @param {Object} calendar - The calendar object being rendered on
+   * @param {Array} weeks - The weeks being shown for the calendar
+   * @returns {string}
+   */
   selectedWeekClass(day, calendar, weeks) {
     const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
     const classes = ['ember-power-calendar-week-day'];
     if (selected) {
-      const selectedWeekStart = moment(getFirstDayOfIsoDateTimePeriod(selected.moment, 'week'));
-      const selectedWeekEnd = moment(getLastDayOfIsoDateTimePeriod(selectedWeekStart, 'week'));
+      const selectedWeekStart = moment(getFirstDayOfGrain(selected.moment, 'week'));
+      const selectedWeekEnd = moment(getLastDayOfGrain(selectedWeekStart, 'week'));
       if (day.moment.isBetween(selectedWeekStart, selectedWeekEnd, undefined, '[]')) {
         classes.push('ember-power-calendar-day--selected');
       }
@@ -185,8 +203,7 @@ class NaviDatePicker extends Component {
     }
 
     // Convert date to start of time period
-    let dateTimePeriod = getIsoDateTimePeriod(this.dateTimePeriod);
-    const selectedDate = moment(newDate).startOf(dateTimePeriod);
+    const selectedDate = moment(newDate).startOf(this.dateTimePeriod);
 
     set(this, 'selectedDate', selectedDate);
     const handleUpdate = this.onUpdate;
