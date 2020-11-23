@@ -7,9 +7,9 @@ package com.yahoo.navi.ws.models.hooks
 
 import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.core.exceptions.BadRequestException
-import com.yahoo.elide.functions.LifeCycleHook
-import com.yahoo.elide.security.ChangeSpec
-import com.yahoo.elide.security.RequestScope
+import com.yahoo.elide.core.lifecycle.LifeCycleHook
+import com.yahoo.elide.core.security.ChangeSpec
+import com.yahoo.elide.core.security.RequestScope
 import com.yahoo.navi.ws.models.beans.User
 import java.util.Optional
 

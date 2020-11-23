@@ -4,7 +4,7 @@
  */
 package com.yahoo.navi.ws.models.checks
 
-import com.yahoo.elide.security.checks.prefab.Role
+import com.yahoo.elide.core.security.checks.prefab.Role
 
 open class DefaultEverybodyCheck : Role.ALL() {
     companion object {

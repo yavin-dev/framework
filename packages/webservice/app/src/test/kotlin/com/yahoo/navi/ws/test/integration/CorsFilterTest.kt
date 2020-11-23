@@ -5,7 +5,7 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
-import com.yahoo.elide.core.HttpStatus
+import com.yahoo.elide.core.exceptions.HttpStatus
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.junit.jupiter.api.Test
 

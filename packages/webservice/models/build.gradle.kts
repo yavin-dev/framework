@@ -29,7 +29,7 @@ allOpen {
 }
 
 dependencies {
-    implementation("com.yahoo.elide", "elide-core", "5.0.0-pr25")
+    implementation("com.yahoo.elide", "elide-core", "5.0.0-pr27")
     implementation("javax.persistence", "javax.persistence-api", "2.2")
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
 }
