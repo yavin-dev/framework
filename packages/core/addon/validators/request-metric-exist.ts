@@ -13,7 +13,7 @@ type ValidatorOptions = {
 export default class RequestMetricExists extends BaseValidator {
   validate(value: string, options: ValidatorOptions /* model, attribute */) {
     const { request } = options;
-    if (value) {
+    if (value && request) {
       return request.metricColumns.some(({ cid }) => cid === value);
     }
     return false;
