@@ -14,6 +14,7 @@ import NaviFactAdapter, {
   FilterOperator,
   Filter
 } from './interface';
+import { assert } from '@ember/debug';
 import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -25,15 +26,6 @@ import { Grain } from 'navi-data/utils/date';
 
 const escape = (value: string | number) => `${value}`.replace(/'/g, "\\\\'");
 
-export const OPERATOR_MAP: Partial<Record<FilterOperator, string>> = {
-  eq: '==',
-  neq: '!=',
-  notin: '=out=',
-  null: '=isnull=true',
-  notnull: '=isnull=false',
-  gte: '=ge=',
-  lte: '=le='
-};
 /**
  * Formats elide request field
  */
@@ -71,12 +63,27 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     return moment(value).format(this.grainFormats[grain]);
   }
 
+  private filterBuilders: Record<FilterOperator, (field: string, value: string[]) => string> = {
+    eq: (f, v) => `${f}==('${v[0]}')`,
+    neq: (f, v) => `${f}!=('${v[0]}')`,
+    in: (f, v) => `${f}=in=(${v.map(e => `'${e}'`).join(',')})`,
+    notin: (f, v) => `${f}=out=(${v.map(e => `'${e}'`).join(',')})`,
+    contains: (f, v) => `${f}=in=(${v.map(e => `'*${e}*'`).join(',')})`,
+    null: (f, _v) => `${f}=isnull=true`,
+    notnull: (f, _v) => `${f}=isnull=false`,
+    lte: (f, v) => `${f}=le=('${v}')`,
+    gte: (f, v) => `${f}=ge=('${v}')`,
+    lt: (f, v) => `${f}=lt=('${v}')`,
+    gt: (f, v) => `${f}=gt=('${v}')`,
+    bet: (f, v) => `${f}=ge=('${v[0]}');${f}=le=('${v[1]}')`,
+    nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`
+  };
+
   private buildFilterStr(filters: Filter[]): string {
     const filterStrings = filters.map(filter => {
       const { field, parameters, operator, values, type } = filter;
       const fieldStr = getElideField(field, parameters);
-      const operatorStr = OPERATOR_MAP[operator as FilterOperator] || `=${operator}=`;
-      let filterVals = values;
+      let filterVals = values.map(v => escape(v));
 
       if (type === 'timeDimension') {
         const grain = filter.parameters.grain as Grain;
@@ -90,14 +97,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
         }
         filterVals = timeValues.map(v => this.formatTimeValue(`${v}`, grain));
       }
-
-      if (['bet', 'nbet'].includes(operator)) {
-        return 'bet' === operator
-          ? `${fieldStr}=ge=(${escape(filterVals[0])});${fieldStr}=le=(${escape(filterVals[1])})`
-          : `${fieldStr}=lt=(${escape(filterVals[0])}),${fieldStr}=gt=(${escape(filterVals[1])})`;
-      }
-      const valuesStr = filterVals.length ? `(${filterVals.map(v => `'${escape(v)}'`).join(',')})` : '';
-      return `${fieldStr}${operatorStr}${valuesStr}`;
+      const builderFn = this.filterBuilders[operator];
+      assert(`Filter operator not supported: ${operator}`, builderFn);
+      return builderFn(fieldStr, filterVals);
     });
 
     return filterStrings.join(';');

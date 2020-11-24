@@ -35,7 +35,7 @@ const TestRequest = {
     { field: 'table1.metric1', operator: 'gt', values: ['0'], parameters: {}, type: 'metric' },
     {
       field: 'table1.eventTimeDay',
-      operator: 'ge',
+      operator: 'gte',
       values: ['2015-01-29'],
       parameters: {},
       type: 'timeDimension'
@@ -49,7 +49,7 @@ const TestRequest = {
     },
     {
       field: 'table1.orderTimeDay',
-      operator: 'ge',
+      operator: 'gte',
       values: ['2014-01-05'],
       parameters: {},
       type: 'timeDimension'
@@ -258,7 +258,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     const filters = [
       {
         field: 'table1.eventTimeDay',
-        operator: 'ge',
+        operator: 'gte',
         values: ['2015-01-29'],
         parameters: {},
         type: 'timeDimension'
@@ -272,7 +272,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       },
       {
         field: 'table1.eventTimeDay',
-        operator: 'ge',
+        operator: 'gte',
         values: ['2015-02-05'],
         parameters: {},
         type: 'timeDimension'
@@ -351,7 +351,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         filters: [
           {
             field: 'table1.eventTimeMonth',
-            operator: 'ge',
+            operator: 'gte',
             values: ['2015-01-01'],
             parameters: {},
             type: 'timeDimension'
@@ -427,7 +427,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           filters: [
             {
               field: 'table1.eventTimeDay',
-              operator: 'ge',
+              operator: 'gte',
               values: [
                 moment()
                   .subtract(2, 'days')
@@ -484,7 +484,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         filters: [
           {
             field: 'table1.eventTimeDay',
-            operator: 'ge',
+            operator: 'gte',
             values: ['2015-01-01'],
             parameters: {},
             type: 'timeDimension'
@@ -636,7 +636,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           filters: [
             {
               field: 'table1.eventTimeDay',
-              operator: 'ge',
+              operator: 'gte',
               values: ['2015-01-01'],
               parameters: {},
               type: 'timeDimension'
@@ -694,7 +694,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
           filters: [
             {
               field: 'table1.eventTimeDay',
-              operator: 'ge',
+              operator: 'gte',
               values: ['2015-01-01'],
               parameters: {},
               type: 'timeDimension'
