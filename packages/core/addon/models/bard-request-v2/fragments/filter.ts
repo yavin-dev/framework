@@ -5,7 +5,7 @@
 import attr from 'ember-data/attr';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from './base';
-import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';
+import { Filter } from 'navi-data/adapters/facts/interface';
 
 const Validations = buildValidations({
   operator: validator('presence', {
@@ -26,8 +26,8 @@ const Validations = buildValidations({
  */
 export default class FilterFragment extends BaseFragment.extend(Validations) implements Filter {
   @attr('string', { defaultValue: 'in' })
-  operator!: FilterOperator;
+  operator!: Filter['operator'];
 
   @attr({ defaultValue: () => [] })
-  values!: (string | number)[];
+  values!: Filter['values'];
 }

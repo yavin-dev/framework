@@ -60,9 +60,9 @@ export default class FragmentFactory extends Service {
    */
   createFilterFromMeta(
     columnMetadata: ColumnMetadata,
-    parameters: Dict<string> = {},
-    operator: string,
-    values: Array<string | number>
+    parameters: FilterFragment['parameters'],
+    operator: FilterFragment['operator'],
+    values: FilterFragment['values']
   ): FilterFragment {
     const { id: field, metadataType: type, source } = columnMetadata;
     return this.createFilter(type, source, field, parameters, operator, values);
@@ -78,12 +78,12 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilter(
-    type: ColumnType,
-    dataSource: string,
-    field: string,
-    parameters: Dict<string> = {},
-    operator: string,
-    values: Array<string | number>
+    type: FilterFragment['type'],
+    dataSource: FilterFragment['source'],
+    field: FilterFragment['field'],
+    parameters: FilterFragment['parameters'],
+    operator: FilterFragment['operator'],
+    values: FilterFragment['values']
   ): FilterFragment {
     return this.store.createFragment('bard-request-v2/fragments/filter', {
       field,

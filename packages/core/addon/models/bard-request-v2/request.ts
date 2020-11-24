@@ -35,7 +35,7 @@ type BaseLiteral = {
   type: ColumnType;
   source: string;
   field: string;
-  parameters: Parameters | undefined;
+  parameters: Parameters;
 };
 
 const Validations = buildValidations({
@@ -324,7 +324,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     parameters,
     operator,
     values
-  }: BaseLiteral & { operator: string; values: (string | number)[] }) {
+  }: BaseLiteral & { operator: FilterFragment['operator']; values: FilterFragment['values'] }) {
     this.filters.pushObject(this.fragmentFactory.createFilter(type, source, field, parameters, operator, values));
   }
 

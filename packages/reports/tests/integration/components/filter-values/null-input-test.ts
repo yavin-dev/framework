@@ -20,7 +20,7 @@ module('Integration | Component | filter values/null input', function(hooks) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'bet', [1000, 2000]);
     this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
-      assert.deepEqual(changeSet.values, [], '`onUpdateFilter` is called when filter `values` is not empty');
+      assert.deepEqual(changeSet.values, [true], '`onUpdateFilter` set `values` to true');
     };
 
     await render(hbs`
@@ -28,22 +28,5 @@ module('Integration | Component | filter values/null input', function(hooks) {
         @filter={{this.filter}}
         @onUpdateFilter={{this.onUpdateFilter}}
       />`);
-  });
-
-  test('onUpdateFilter - empty values', async function(this: TestContext, assert) {
-    assert.expect(1);
-
-    this.fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.filter = this.fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'null', []);
-    this.onUpdateFilter = (_changeSet: Partial<FilterFragment>) => {
-      assert.notOk(true, '`onUpdateFilter` should not be called when filter `values` is empty');
-    };
-
-    await render(hbs`
-      <FilterValues::NullInput
-        @filter={{this.filter}}
-        @onUpdateFilter={{this.onUpdateFilter}}
-      />`);
-    assert.ok('`FilterValues::NullInput instantiates without error');
   });
 });

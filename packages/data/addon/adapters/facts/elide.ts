@@ -24,7 +24,7 @@ import { v1 } from 'ember-uuid';
 import moment, { Moment } from 'moment';
 import { Grain } from 'navi-data/utils/date';
 
-const escape = (value: string | number) => `${value}`.replace(/'/g, "\\\\'");
+const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
 /**
  * Formats elide request field
@@ -82,8 +82,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private buildFilterStr(filters: Filter[]): string {
     const filterStrings = filters.map(filter => {
       const { field, parameters, operator, values, type } = filter;
+
+      //skip filters without values
+      if (0 === values.length) {
+        return null;
+      }
+
       const fieldStr = getElideField(field, parameters);
-      let filterVals = values.map(v => escape(v));
+      let filterVals = values.map(v => escape(`${v}`));
 
       if (type === 'timeDimension') {
         const grain = filter.parameters.grain as Grain;
@@ -102,7 +108,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       return builderFn(fieldStr, filterVals);
     });
 
-    return filterStrings.join(';');
+    return filterStrings.filter(f => f).join(';');
   }
 
   /**

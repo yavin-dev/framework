@@ -55,7 +55,7 @@ export type Filter = {
   parameters: Parameters;
   type: ColumnType;
   operator: FilterOperator;
-  values: (string | number)[];
+  values: (string | number | boolean)[];
 };
 
 export type Sort = {

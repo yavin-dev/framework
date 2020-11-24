@@ -24,7 +24,7 @@ const TestRequest: RequestV2 = {
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'table1.d5', operator: 'null', values: [], type: 'dimension', parameters: {} },
+    { field: 'table1.d5', operator: 'null', values: [true], type: 'dimension', parameters: {} },
     {
       field: 'table1.time',
       operator: 'gte',
@@ -238,7 +238,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             operator: 'null',
-            values: []
+            values: [true]
           }
         ],
         requestVersion: '2.0',
@@ -609,6 +609,46 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       adapter['buildFilterStr'](escapedFilter),
       "dim1=in=('*\\\\'*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter and escaped value'
+    );
+  });
+
+  test('buildFilterStr - filter out empty values', async function(assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const noValues: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: []
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](noValues),
+      '',
+      '`buildFilterStr` returns an empty string if no filters have values'
+    );
+
+    const someValues: Filter[] = [
+      {
+        field: 'table1.dim2',
+        parameters: {},
+        type: 'dimension',
+        operator: 'eq',
+        values: [1]
+      },
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: []
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](someValues),
+      "dim2==('1')",
+      '`buildFilterStr` filters out filters with empty values'
     );
   });
 });

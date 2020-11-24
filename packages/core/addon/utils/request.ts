@@ -215,7 +215,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       field: removeNamespace(dimension, dataSource),
       parameters: { field: field || 'id' },
       operator: operator as FilterOperator,
-      values
+      values: ['null', 'notnull'].includes(operator) ? [true] : values
     })
   );
 
