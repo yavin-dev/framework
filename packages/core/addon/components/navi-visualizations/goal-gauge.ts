@@ -6,6 +6,7 @@
 import { readOnly } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
+import { isPresent } from '@ember/utils';
 import { guidFor } from '@ember/object/internals';
 // @ts-ignore
 import d3 from 'd3';
@@ -42,9 +43,8 @@ export default class GoalGaugeVisualization extends Component<Args> {
   @computed('args.{model.firstObject.request.metricColumns.[],options.metricCid}')
   get metric(): ColumnFragment | undefined {
     const { request } = this.args.model?.firstObject || {};
-    const { metricCid } = this.args.options;
-    const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
-    return metricColumn;
+    const { metricCid } = this.args.options || {};
+    return isPresent(metricCid) ? request?.metricColumns.find(({ cid }) => cid === metricCid) : undefined;
   }
 
   @computed('metric', 'args.model.firstObject.response.rows.[]')
