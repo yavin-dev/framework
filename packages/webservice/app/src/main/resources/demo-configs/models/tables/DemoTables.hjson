@@ -87,13 +87,13 @@
         }
         {
           name: total_seasons
-          category: TV Stats
+          category: Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
         }
         {
           name: movie_duration
-          category: Movie Stats
+          category: Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
         }
