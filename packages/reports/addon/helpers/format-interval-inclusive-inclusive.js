@@ -6,7 +6,6 @@ import { helper as buildHelper } from '@ember/component/helper';
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
 import Duration from 'navi-data/utils/classes/duration';
-import DateUtils from 'navi-data/utils/date';
 
 /**
  * Converts a duration into string representing how long ago duration is from today
