@@ -57,6 +57,6 @@ module('Integration | Component | filter-builders/date-dimension', function(hook
 
     assert
       .dom('.filter-builder')
-      .hasText(`${this.filter.displayName} since (>=) Sep 08, 2020`, 'Rendered correctly when collapsed');
+      .hasText(`${this.filter.displayName} since (>=) 09/08/2020`, 'Rendered correctly when collapsed');
   });
 });

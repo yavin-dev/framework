@@ -51,20 +51,20 @@ module('Acceptance | date filter', function(hooks) {
 
     assert
       .dom('.filter-values--dimension-date-range-input__low-value .dropdown-date-picker__trigger')
-      .includesText('04,', 'The low value is set');
+      .includesText('04', 'The low value is set');
     assert
       .dom('.filter-values--dimension-date-range-input__high-value .dropdown-date-picker__trigger')
-      .includesText('05,', 'The high value is set');
+      .includesText('05', 'The high value is set');
 
     await click('.navi-report__save-btn');
 
     assert
       .dom('.filter-values--dimension-date-range-input__low-value .dropdown-date-picker__trigger')
-      .includesText('04,', 'The low value is still set after the report is saved');
+      .includesText('04', 'The low value is still set after the report is saved');
 
     assert
       .dom('.filter-values--dimension-date-range-input__high-value .dropdown-date-picker__trigger')
-      .includesText('05,', 'The high value is still set after the report is saved');
+      .includesText('05', 'The high value is still set after the report is saved');
   });
 
   skip('verify the different time grains work as expected - bard', async function(assert) {

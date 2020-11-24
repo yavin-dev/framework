@@ -39,9 +39,13 @@ module('Integration | Component | filter values/date', function(hooks) {
   });
 
   test('Displayed text', async function(this: TestContext, assert) {
-    assert.dom('.filter-values--date').hasText('Oct 31, 2018', 'The selected date is displayed');
+    assert.dom('.filter-values--date').hasText('10/31/2018', 'The selected date is displayed');
 
-    this.set('filter', { values: [''] });
+    const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
+    this.set(
+      'filter',
+      fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'gte', [''])
+    );
     assert
       .dom('.filter-values--date')
       .hasText('Select date', 'The placeholder text is displayed when no date is selected');
@@ -61,9 +65,13 @@ module('Integration | Component | filter values/date', function(hooks) {
 
   test('collapsed', async function(assert) {
     this.set('isCollapsed', true);
-    assert.dom().hasText('Oct 31, 2018', 'Selected date is rendered correctly');
+    assert.dom().hasText('10/31/2018', 'Selected date is rendered correctly');
 
-    this.set('filter', { values: [''] });
+    const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
+    this.set(
+      'filter',
+      fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'gte', [''])
+    );
     assert.dom('.filter-values--selected-error').exists('Error is rendered when date is invalid');
   });
 });

@@ -80,7 +80,8 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
 
     let dimension = {
       id: 'property',
-      name: 'Property'
+      name: 'Property',
+      source: 'bardOne'
     };
 
     this.setProperties({
@@ -299,7 +300,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
   test('Search dimension with smart key', async function(assert) {
     assert.expect(1);
     this.setProperties({
-      dimension: { id: 'multiSystemId', name: 'Multi System Id' },
+      dimension: { id: 'multiSystemId', name: 'Multi System Id', source: 'bardOne' },
       onSelectValues: () => {},
       onCancel: () => {},
       queryIds: ['6', '7']
@@ -325,7 +326,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.expect(1);
     const rawQuery = 'yes, comma';
     this.setProperties({
-      dimension: { id: 'commaDim', name: 'Dimension With Comma' },
+      dimension: { id: 'commaDim', name: 'Dimension With Comma', source: 'bardOne' },
       onSelectValues: () => {},
       onCancel: () => {},
       rawQuery,

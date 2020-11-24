@@ -1938,7 +1938,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(1);
     await visit('/reports/9');
 
-    debugger;
     assert
       .dom('.navi-info-message__error-list-item')
       .hasText(
@@ -1994,44 +1993,32 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('dimension contains filter works by letting users select field', async function(assert) {
+    assert.expect(1);
     await visit('/reports/new');
     await clickItemFilter('dimension', 'Multi System Id');
 
-    assert.dom('.filter-builder-dimension__operator').exists('Operator dropdown should exist for the dimension');
-    assert.dom('.filter-builder-dimension__field').doesNotExist('field dropdown does not exist');
-
-    await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
-    await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)')[0]);
-
-    assert.dom('.filter-builder-dimension__field').isVisible('field dropdown is now showing');
-    assert.dom('.filter-builder-dimension__field').hasText('key', 'field shows key');
-
-    await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
-    await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
-
-    assert.dom('.filter-builder-dimension__field').hasText('desc', 'field shows desc');
-
-    await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
-    await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Equals)')[0]);
-
-    assert.dom('.filter-builder-dimension__field').doesNotExist('field dropdown does not exist');
-
-    await click('.filter-builder-dimension__operator .filter-builder-dimension__select-trigger');
-    await click($('.filter-builder-dimension__operator-dropdown .ember-power-select-option:contains(Contains)')[0]);
-
-    assert.dom('.filter-builder-dimension__field').hasText('key', 'field shows key after switching back');
-
-    await click('.filter-builder-dimension__field .filter-builder-dimension__select-trigger');
-    await click($('.filter-builder-dimension__field-dropdown .ember-power-select-option:contains(desc)')[0]);
-
+    await selectChoose('.filter-builder-dimension__operator', 'Contains');
     await fillIn('.filter-builder-dimension__values input', 'foo');
     await blur('.filter-builder-dimension__values input');
+    await clickItemFilter('dimension', 'Date Time');
+    await clickItem('dimension', 'Date Time');
+
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+
+    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click('.navi-report__run-btn');
 
     await click('.get-api__btn');
 
+    const url = find('.navi-modal__input').value;
+    const expectedFilter = 'multiSystemId|id-contains["foo"]';
     assert.ok(
-      decodeURIComponent(find('.navi-modal__input').value).includes('multiSystemId|desc-contains["foo"]'),
-      'Generated API URL is correct'
+      decodeURIComponent(url).includes(expectedFilter),
+      `Generated API URL, ${url} is contains filter ${expectedFilter}`
     );
   });
 
@@ -2041,6 +2028,17 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await selectChoose('.filter-values--dimension-select__trigger', 'no');
     await selectChoose('.filter-values--dimension-select__trigger', 'yes');
+
+    await clickItemFilter('dimension', 'Date Time');
+    await clickItem('dimension', 'Date Time');
+
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+
+    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
 
     assert.deepEqual(
       findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map(el =>
@@ -2073,15 +2071,15 @@ module('Acceptance | Navi Report', function(hooks) {
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Clicks)',
+      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
       '.table-header-row-vc--view .dimension:contains(Property)',
       '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .dateTime'
+      '.table-header-row-vc--view .timeDimension'
     );
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
-      ['Nav Clicks', 'Property', 'Ad Clicks', 'Date'],
+      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -2092,22 +2090,22 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
-      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'],
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'The headers are ordered correctly'
     );
 
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Clicks)',
+      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
       '.table-header-row-vc--view .dimension:contains(Property)',
       '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .dateTime'
+      '.table-header-row-vc--view .timeDimension'
     );
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.innerText.trim()),
-      ['Nav Clicks', 'Property', 'Ad Clicks', 'Date'],
+      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)'],
       'The headers are reordered as specified by the reorder'
     );
 
@@ -2116,7 +2114,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent.trim()),
-      ['Nav Clicks', 'Property', 'Ad Clicks', 'Date', 'Total Clicks'],
+      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)', 'Total Clicks'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -2149,7 +2147,7 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     // Load the report without waiting for it to finish loading
-    visit('/reports/1').catch(error => {
+    visit('/reports/13').catch(error => {
       //https://github.com/emberjs/ember-test-helpers/issues/332
       const { message } = error;
       if (message !== 'TransitionAborted') {
@@ -2184,7 +2182,7 @@ module('Acceptance | Navi Report', function(hooks) {
     /* ================= Cancel Report ================= */
     await click($('.navi-report__cancel-btn')[0]);
 
-    assert.equal(currentURL(), '/reports/1/edit', 'Clicking `Cancel` brings the user to the edit route');
+    assert.equal(currentURL(), '/reports/13/edit', 'Clicking `Cancel` brings the user to the edit route');
 
     assert.deepEqual(
       findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
@@ -2194,7 +2192,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Run the report
     await click('.navi-report__run-btn');
-    assert.equal(currentURL(), '/reports/1/view', 'Running the report brings the user to the view route');
+    assert.equal(currentURL(), '/reports/13/view', 'Running the report brings the user to the view route');
 
     assert.deepEqual(
       findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
@@ -2220,25 +2218,33 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/2/view');
 
     const columns = () => findAll('.table-widget__table-headers .table-header-cell').map(el => el.textContent.trim());
-    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report loads with expected columns');
+    assert.deepEqual(
+      columns(),
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'Report loads with expected columns'
+    );
 
     await clickItem('metric', 'Page Views');
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
 
     await click('.navi-report__revert-btn');
-    assert.deepEqual(columns(), ['Date', 'Property', 'Ad Clicks', 'Nav Clicks'], 'Report revertted successfully');
+    assert.deepEqual(
+      columns(),
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'Report revertted successfully'
+    );
 
     //make same changes and make sure it's runnable
     await clickItem('metric', 'Page Views');
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date', 'Property', 'Ad Clicks', 'Nav Clicks', 'Page Views'],
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
   });
@@ -2253,7 +2259,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
 
     const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
-    assert.dom(navClicksCell()).hasText('718', 'The original metric value has no formatting');
+    assert.dom(navClicksCell()).hasText('717.78', 'The original metric value has no formatting');
     assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
 
     find('.number-format-selector__radio-money input').checked = true; // change format to money
