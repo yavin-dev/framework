@@ -11,7 +11,7 @@ import moment from 'moment';
 import config from 'ember-get-config';
 
 module('Unit | Utils | DateUtils', function() {
-  test('getFirstDayEpochForGrain - Epoc date as mid of DateTimePeriod', function(assert) {
+  test('getFirstDayEpochForGrain - Epoch date as mid of DateTimePeriod', function(assert) {
     const dateFormat = 'YYYY-MM-DD';
     const originalEpoch = config.navi.dataEpoch;
 
