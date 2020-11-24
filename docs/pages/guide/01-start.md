@@ -4,6 +4,9 @@ group: guide
 title: Product Overview
 ---
 
+* TOC
+{:toc}
+
 ## <span class="c5">Yavin overview</span>
 
 <img src="assets/images/Yavin_logo.png" width="200"/>
@@ -79,7 +82,7 @@ diagram illustrates the Duplos available in Yavin today:</span>
 
 ### <span class="c2">Denali Overview</span>
 
-### <span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 145.47px; height: 39.28px;">![](assets/images/Denali_logo.png)</span>
+<span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 145.47px; height: 39.28px;">![](assets/images/Denali_logo.png)</span>
 
 Yavin uses Denali's themeable design system. Denali was developed as a
 way to quickly create unified product families with intuitive user
@@ -91,7 +94,7 @@ class="c0">.</span>
 
 ### <span class="c2">Elide Overview</span>
 
-### <span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 2.67px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 131.51px; height: 43.84px;">![](assets/images/Elide_logo.png)</span>
+<span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 2.67px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 131.51px; height: 43.84px;">![](assets/images/Elide_logo.png)</span>
 
 <span class="c0">Yavin uses Elide as its web service and data model
 building language. Elide is a Java library that lets you setup model
@@ -109,10 +112,9 @@ For more information on Elide, visit <span
 class="c17"><a href="https://www.google.com/url?q=http://elide.io&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw2jtjGW202zysi6LjUbgJng" class="c3">elide.io</a></span><span
 class="c0">.</span>
 
-### <span class="c2">Navi Overview </span>
+### <span class="c2">Navi Overview</span>
 
-<span
-style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 154.00px; height: 39.00px;">![](assets/images/Navi_logo.png)</span>
+<span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 2.67px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 131.51px; height: 43.84px;">![](assets/images/Navi_logo.png)</span>
 
 Navi represents the UI layer of Yavin. Navi is an open source analytics
 reporting UI. Navi uses Ember, which is a JavaScript framework for
