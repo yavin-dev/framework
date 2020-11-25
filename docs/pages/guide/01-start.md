@@ -7,45 +7,38 @@ title: Product Overview
 * TOC
 {:toc}
 
-## <span class="c5">Yavin overview</span>
+## Yavin overview
 
 <img src="assets/images/Yavin_logo.png" width="200"/>
 
 Yavin is a framework for rapidly building custom data applications that
 offers both a UI and an API. In addition, Yavin can be deployed as a
 standalone Business Intelligence tool. It is scalable
-and secure and it’s 
-intuitive visualization interface allows for 
+and secure and it’s
+intuitive visualization interface allows for
 fast drill-downs of very large data sets through
 simple interface and visualization blocks. With Yavin, you can easily
 and intuitively create reports, which focus on
-arbitrary drill downs for a single visualization, or 
+arbitrary drill downs for a single visualization, or
 dashboards, which are collections of visualizations,
-for rapidly distilling information
-. 
+for rapidly distilling information.
 
 
 Disclaimer : For the sample demos that come with Yavin, we are using the
-“<span
-class="c17"><a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" class="c3">Netflix Movie and TV Shows</a></span>”
-data set that is sourced from <span
-class="c17"><a href="https://www.google.com/url?q=https://www.kaggle.com/&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw2MS0pMaHmAABG0JmQABGOV" class="c3">Kaggle</a></span><span
-class="c0"> (Timestamped 11/2020). The use of this data is only for
-demonstrating the ease of onboarding any dataset to Yavin. And has no
-correlation with Yavin as a product or an Open Source Software.</span>
+“<a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" >Netflix Movie and TV Shows</a>” data set that is sourced from <a href="https://www.google.com/url?q=https://www.kaggle.com/&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw2MS0pMaHmAABG0JmQABGOV" >Kaggle</a> (Timestamped 11/2020). The use of this data is only for
+demonstrating the ease of onboarding any dataset to Yavin. And has no correlation with Yavin as a product or an Open Source Software.
 
 
-Yavin is a combination of three major modules.  They
-are:
+Yavin is a combination of three major modules.  They are:
 - Denali (The design layer)
 - Elide (The Web Service layer)
 - Navi (The UI layer)
 
-Here is a short video of Yavin “in action” : 
+Here is a short video of Yavin “in action” :
 
 <figure><img style="border:2px solid black;" src="assets/images/Get_to_know_yavin.gif" width="800" /><figcaption>Yavin simplicity “in action”</figcaption></figure>
 
-## <span class="c5">Building with Legos ® & Duplos ®</span>
+## Building with Duplos ®
 
 In the software industry, when discovering patterns, we
 often build abstractions and libraries to provide reusable software. The
@@ -73,33 +66,25 @@ Yavin uses Denali's themeable design system. Denali was developed as a
 way to quickly create unified product families with intuitive user
 experiences. Denali components are built to be themeable by nature,
 which means we aren’t tied to their components visual design. For more
-information on denali, visit <span
-class="c17"><a href="https://www.google.com/url?q=http://denali.design&amp;sa=D&amp;ust=1606182367633000&amp;usg=AOvVaw3vxbzIhWRHGVWve5Y_S6bE" class="c3">denali.design</a></span><span
-class="c0">.</span>
+information on denali, visit <a href="https://www.google.com/url?q=http://denali.design&amp;sa=D&amp;ust=1606182367633000&amp;usg=AOvVaw3vxbzIhWRHGVWve5Y_S6bE" >denali.design</a>.
 
-### <span class="c2">Elide Overview</span>
+### Elide Overview
 <img src="assets/images/Elide_logo.png" width="200"/>
 
 Yavin uses Elide as its web service and data model
 building language. Elide is a Java library that lets you setup model
 driven GraphQL or JSON-API web services with minimal effort. Elide
 supports two variants of APIs:
-1.  <span class="c0">A CRUD (Create, Read, Update, Delete) API for
-    reading and manipulating models.</span>
-1.  <span class="c0">An analytic API for aggregating measures over zero
-    or more model dimensions.</span>
+1.  A CRUD (Create, Read, Update, Delete) API for reading and manipulating models.
+1.  An analytic API for aggregating measures over zero or more model dimensions.
 
 
-For more information on Elide, visit <span
-class="c17"><a href="https://www.google.com/url?q=http://elide.io&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw2jtjGW202zysi6LjUbgJng" class="c3">elide.io</a></span><span
-class="c0">.</span>
+For more information on Elide, visit <a href="https://www.google.com/url?q=http://elide.io&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw2jtjGW202zysi6LjUbgJng">elide.io</a>
 
-### <span class="c2">Navi Overview</span>
+### Navi Overview
 <img src="assets/images/Navi_logo.png" width="200"/>
 
 Navi represents the UI layer of Yavin. Navi is an open source analytics
 reporting UI. Navi uses Ember, which is a JavaScript framework for
 building modern web applications. It includes everything you need to
-build rich UIs that work on any device. (<span
-class="c17"><a href="https://www.google.com/url?q=https://guides.emberjs.com/release/&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw0WaN1j1olmMWQvD7Y9spa6" class="c3">Ember Guide</a></span><span
-class="c0">)</span>
+build rich UIs that work on any device. (<a href="https://www.google.com/url?q=https://guides.emberjs.com/release/&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw0WaN1j1olmMWQvD7Y9spa6">Ember Guide</a>)

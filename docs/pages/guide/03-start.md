@@ -77,7 +77,7 @@ the separation of reporting, from physical data design.
 Aspects of the data source you can configure include Tables, Dimensions and Measures.
 
 More  information on the Elide Analytics query support and data
-modelling can be found at this URL: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23overview&amp;sa=D&amp;ust=1606228594027000&amp;usg=AOvVaw2q1sp9bx_xpv3bXaEJGwG4" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
+modeling can be found at this URL: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23overview&amp;sa=D&amp;ust=1606228594027000&amp;usg=AOvVaw2q1sp9bx_xpv3bXaEJGwG4" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
 
 ### Writing your first data model
 
@@ -88,13 +88,7 @@ leverages the Elide HJSON configuration language to define the semantic
 model.  For complete documentation on the language, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw0bWaOa678DAXH4CB2iucYe" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>.
  For a getting started tutorial, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23example-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw2kw5ry4iUdA4oVVcADetKl" >https://elide.io/pages/guide/v5/04-analytics.html#example-configuration</a>.
 
-
-
-Yavin comes bundled with example Netflix data for
-movies and television shows.  The following sections will illustrate how
-Yavin is configured to explore this data.
-
-
+Yavin comes bundled with example Netflix data for movies and television shows.  The following sections will illustrate how Yavin is configured to explore this data.
 
 #### Our example use case
 
@@ -277,8 +271,7 @@ Yavin Quick Start Guide
 Here is the complete quick start steps for setting up Yavin with your data source and your data models:
 1.  Check the "Quick Start Guide" to install Yavin on your local host
 1.  Upon installation (Step 1) you will have the Yavin repo on your
-    local machine: <a href="https://www.google.com/url?q=https://github.com/yahoo/navi/&amp;sa=D&amp;ust=1606228594056000&amp;usg=AOvVaw10XIwf--cXX0UU921zZVk3" >https://github.com/yahoo/navi/</a>. Your repo will include the following key
-    subdirectories:
+    local machine: <a href="https://www.google.com/url?q=https://github.com/yahoo/navi/&amp;sa=D&amp;ust=1606228594056000&amp;usg=AOvVaw10XIwf--cXX0UU921zZVk3" >https://github.com/yahoo/navi/</a>. Your repo will include the following key subdirectories:
 <table border="4" >
 <colgroup>
 <col style="width: 50%" />
@@ -346,12 +339,6 @@ Here is the complete quick start steps for setting up Yavin with your data sourc
 10. To run Yavin, execute the following command:
 ```cd packages/webservice && ./gradlew```
 
-Within minutes, you will be able to launch Yavin on your local browser
-connection to the “Netflix movies and TV shows data source”, by
-launching the  following URL: <a href="https://www.google.com/url?q=http://localhost:8080/&amp;sa=D&amp;ust=1606228594068000&amp;usg=AOvVaw2gdZXVvyL6hXTtw2z4ml8p" >http://localhost:8080</a>
+Within minutes, you will be able to launch Yavin on your local browser connection to the “Netflix movies and TV shows data source”, by launching the  following URL: <a href="https://www.google.com/url?q=http://localhost:8080/&amp;sa=D&amp;ust=1606228594068000&amp;usg=AOvVaw2gdZXVvyL6hXTtw2z4ml8p" >http://localhost:8080</a>
 
-
-
-This Quickstart video takes you through the
-steps on configuring, loading data through Presto, using data models and
-starting to use Yavin. Enjoy!
+This quick start video takes you through the steps on configuring, loading data through Presto, using data models and starting to use Yavin. Enjoy!
