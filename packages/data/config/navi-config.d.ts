@@ -1,3 +1,5 @@
+import { Grain } from 'navi-data/utils/date';
+
 declare module 'navi-config' {
   type NaviDataSource = {
     name: string;
@@ -10,6 +12,6 @@ declare module 'navi-config' {
     dataSources: NaviDataSource[];
     defaultDataSource?: string;
     searchThresholds: TODO;
-    defaultTimeGrain?: string;
+    defaultTimeGrain?: Grain;
   }
 }

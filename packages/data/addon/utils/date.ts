@@ -13,133 +13,60 @@ export const PARAM_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 export const CAL_DATE_FORMAT_STRING = 'MM-DD-YYYY';
 export const CAL_DISPLAY_DATE_FORMAT_STRING = 'M/D/YYYY';
 
-type BaseDateTimePeriod = 'second' | 'minute' | 'hour' | 'day' | 'month' | 'quarter' | 'year';
-export type DateTimePeriod = BaseDateTimePeriod | 'week';
-export type Grain = DateTimePeriod | 'all';
-type IsoDateTimePeriod = BaseDateTimePeriod | 'isoWeek';
+export type DateTimePeriod = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
+type StandardGrain = DateTimePeriod | 'isoWeek';
+export type Grain = StandardGrain | 'all';
 
 /**
- * Given a dateTimePeriod this functions returns its equivalent ISO dateTimePeriod
- *
- * @method getIsoDateTimePeriod
- * @param dateTimePeriod
- * @return ISO equivalent dateTimePeriod
+ * Returns a date time period for a gain
  */
-export function getIsoDateTimePeriod(dateTimePeriod: DateTimePeriod): IsoDateTimePeriod {
-  if (dateTimePeriod) {
-    if (dateTimePeriod === 'week') {
-      return 'isoWeek';
-    }
-    return dateTimePeriod;
-  } else {
-    throw new Error('getIsoDateTimePeriod : Required DateTimePeriod is missing');
+export function getPeriodForGrain(grain: Grain): DateTimePeriod {
+  if ('all' === grain) {
+    return 'day';
   }
+
+  if ('isoWeek' === grain) {
+    return 'week';
+  }
+  return grain;
 }
 
 /**
- * Converts the epoch date obtained from the getEpochDate function by rounding the beginning to the start of the next DateTimePeriod
- * if the feature flag is on,else rounds the epoch date configured by the dataEpoch configuration to the start of next DateTimePeriod and returns it.
- *
- * @method getFirstDayEpochIsoDateTimePeriod
- * @param dateTimePeriod
- * @param dateFormat
- * @return date
+ * Returns the epoch date at the start of the given grain
  */
-export function getFirstDayEpochIsoDateTimePeriod(
-  dateTimePeriod: DateTimePeriod,
-  dateFormat: string = API_DATE_FORMAT_STRING
-): string {
-  const isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
+export function getFirstDayEpochForGrain(grain: StandardGrain, dateFormat: string = API_DATE_FORMAT_STRING): string {
+  const period = getPeriodForGrain(grain);
   const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
 
   return epochDate
-    .add(1, dateTimePeriod)
+    .add(1, period)
     .subtract(1, 'day')
-    .startOf(isoDateTimePeriod)
+    .startOf(grain)
     .format(dateFormat);
 }
 
 /**
- * Returns the first day of the previous dateTimePeriod in the specified format
- *
- * @method getLastDayOfPrevIsoDateTimePeriod
- * @param dateTimePeriod
- * @param dateFormat
- * @return date
+ * Returns last day of grain for a given date
  */
-export function getFirstDayOfPrevIsoDateTimePeriod(
-  dateTimePeriod: DateTimePeriod,
-  dateFormat: string = API_DATE_FORMAT_STRING
-): string {
-  const isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-  return moment()
-    .subtract(1, dateTimePeriod)
-    .startOf(isoDateTimePeriod)
-    .format(dateFormat);
-}
-
-/**
- * Returns the Last day of the previous dateTimePeriod in the specified format
- *
- * @param dateTimePeriod
- * @param dateFormat
- * @return date
- */
-export function getLastDayOfPrevIsoDateTimePeriod(
-  dateTimePeriod: DateTimePeriod,
-  dateFormat: string = API_DATE_FORMAT_STRING
-): string {
-  const isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-  return moment()
-    .startOf(isoDateTimePeriod)
-    .subtract(1, 'day')
-    .format(dateFormat);
-}
-
-/**
- * Given a date, dateTimePeriod and format this function returns the Last day of the passed-in dateTimePeriod in the specified format
- *
- * @method getLastDayOfIsoDateTimePeriod
- * @param date
- * @param dateTimePeriod
- * @param dateFormat
- * @return string
- */
-export function getLastDayOfIsoDateTimePeriod(
+export function getLastDayOfGrain(
   date: Moment,
-  dateTimePeriod: DateTimePeriod,
+  grain: StandardGrain,
   dateFormat: string = API_DATE_FORMAT_STRING
 ): string {
-  if (date && dateTimePeriod) {
-    const isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-    return moment(date)
-      .endOf(isoDateTimePeriod)
-      .format(dateFormat);
-  } else {
-    throw new Error('getLastDayOfIsoDateTimePeriod : Required Date/DateTimePeriod is missing');
-  }
+  return moment(date)
+    .endOf(grain)
+    .format(dateFormat);
 }
 
 /**
- * Given a date, dateTimePeriod and format this function returns the first day of the passed-in ISO dateTimePeriod in the specified format
- *
- * @method getFirstDayOfIsoDateTimePeriod
- * @param date
- * @param dateTimePeriod
- * @param dateFormat
- * @return date
+ * Returns first day of grain for a given date
  */
-export function getFirstDayOfIsoDateTimePeriod(
+export function getFirstDayOfGrain(
   date: Moment,
-  dateTimePeriod: DateTimePeriod,
+  grain: StandardGrain,
   dateFormat: string = API_DATE_FORMAT_STRING
 ): string {
-  if (date && dateTimePeriod) {
-    const isoDateTimePeriod = getIsoDateTimePeriod(dateTimePeriod);
-    return moment(date)
-      .startOf(isoDateTimePeriod)
-      .format(dateFormat);
-  } else {
-    throw new Error('getFirstDayOfIsoDateTimePeriod : Required Date/DateTimePeriod is missing');
-  }
+  return moment(date)
+    .startOf(grain)
+    .format(dateFormat);
 }

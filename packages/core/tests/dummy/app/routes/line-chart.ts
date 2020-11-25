@@ -7,15 +7,15 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 /*eslint max-len: ["error", { "code": 250 }]*/
 // prettier-ignore
 const defaultRows = [
-  { 'network.dateTime(grain=week)': '2015-12-14 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 155191081, totalPageViews: 3072620639, 'revenue(currency=USD)': 1421982310.09 },
-  { 'network.dateTime(grain=week)': '2015-12-21 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 172724594, totalPageViews: 3697156058, 'revenue(currency=USD)': 2252948122.21 },
-  { 'network.dateTime(grain=week)': '2015-12-28 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183380921, totalPageViews: 4024700302, 'revenue(currency=USD)': 2104188223.24 },
-  { 'network.dateTime(grain=week)': '2016-01-11 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183206656, totalPageViews: 4088487125, 'revenue(currency=USD)': 2290494122.96 },
-  { 'network.dateTime(grain=week)': '2016-01-18 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183380921, totalPageViews: null, 'revenue(currency=USD)': 1124124124.66 },
-  { 'network.dateTime(grain=week)': '2016-01-25 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: null, totalPageViews: 3950276031, 'revenue(currency=USD)': 2032578202.2 },
-  { 'network.dateTime(grain=week)': '2016-02-01 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 172724594, totalPageViews: 3697156058, 'revenue(currency=USD)': 1250391422.72 },
-  { 'network.dateTime(grain=week)': '2016-02-08 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 152298735, totalPageViews: 3008425744, 'revenue(currency=USD)': null },
-  { 'network.dateTime(grain=week)': '2016-02-15 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 155191081, totalPageViews: 3072620639, 'revenue(currency=USD)': 1082313292.1 }
+  { 'network.dateTime(grain=isoWeek)': '2015-12-14 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 155191081, totalPageViews: 3072620639, 'revenue(currency=USD)': 1421982310.09 },
+  { 'network.dateTime(grain=isoWeek)': '2015-12-21 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 172724594, totalPageViews: 3697156058, 'revenue(currency=USD)': 2252948122.21 },
+  { 'network.dateTime(grain=isoWeek)': '2015-12-28 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183380921, totalPageViews: 4024700302, 'revenue(currency=USD)': 2104188223.24 },
+  { 'network.dateTime(grain=isoWeek)': '2016-01-11 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183206656, totalPageViews: 4088487125, 'revenue(currency=USD)': 2290494122.96 },
+  { 'network.dateTime(grain=isoWeek)': '2016-01-18 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 183380921, totalPageViews: null, 'revenue(currency=USD)': 1124124124.66 },
+  { 'network.dateTime(grain=isoWeek)': '2016-01-25 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: null, totalPageViews: 3950276031, 'revenue(currency=USD)': 2032578202.2 },
+  { 'network.dateTime(grain=isoWeek)': '2016-02-01 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 172724594, totalPageViews: 3697156058, 'revenue(currency=USD)': 1250391422.72 },
+  { 'network.dateTime(grain=isoWeek)': '2016-02-08 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 152298735, totalPageViews: 3008425744, 'revenue(currency=USD)': null },
+  { 'network.dateTime(grain=isoWeek)': '2016-02-15 00:00:00.000', 'age(field=id)': '-3', 'age(field=desc)': 'All Other', uniqueIdentifier: 155191081, totalPageViews: 3072620639, 'revenue(currency=USD)': 1082313292.1 }
 ];
 
 // prettier-ignore
@@ -246,7 +246,7 @@ export default class LineChartRoute extends Route {
         { field: 'revenue', parameters: { currency: 'USD' } }
       ],
       [],
-      'week',
+      'isoWeek',
       { start: '2015-12-14 00:00:00.000', end: '2016-02-22 00:00:00.000' }
     );
   }

@@ -7,7 +7,7 @@ import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
 import Duration, { isIsoDurationString } from './duration';
 import DurationUtils from '../duration-utils';
-import { API_DATE_FORMAT_STRING, getIsoDateTimePeriod, Grain } from '../date';
+import { API_DATE_FORMAT_STRING, getPeriodForGrain, Grain } from '../date';
 
 const CURRENT = 'current';
 const NEXT = 'next';
@@ -122,33 +122,34 @@ export default class Interval {
   }
 
   /**
-   * Converts interval into a POJO with moments that are aligned to the given time period
-   * @param timePeriod - period to align to
+   * Converts interval into a POJO with moments that are aligned to the given time grain
+   * @param grain - grain to align to
    * @param makeEndInclusiveIfSame - add an extra time period to include end date if it's equal to start date
    * @returns object with start and end properties
    */
-  asMomentsForTimePeriod(timePeriod: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
+  asMomentsForTimePeriod(grain: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
     /*
      * moment does not know how to deal with all,
      * and we only concern day here, so use day as base unit
      */
-    if (timePeriod === 'all') {
-      timePeriod = 'day';
+    if (grain === 'all') {
+      grain = 'day';
     }
+    const period = getPeriodForGrain(grain);
 
     let { start, end } = this.asMoments();
 
     // Handle the case where the end is undefined, hence it is 'next'
     if (end === undefined) {
-      end = moment().add(1, timePeriod);
+      end = moment().add(1, period);
     }
 
     // Make sure moments are start of time period
-    start.startOf(getIsoDateTimePeriod(timePeriod));
-    end.startOf(getIsoDateTimePeriod(timePeriod));
+    start.startOf(grain);
+    end.startOf(grain);
 
     if (makeEndInclusiveIfSame && start.isSame(end)) {
-      end.startOf(getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
+      end.startOf(grain).add(1, period);
     }
 
     return {
@@ -159,32 +160,33 @@ export default class Interval {
 
   /**
    * Converts interval from [inclusive, inclusive] to [inclusive, exclusive] for the given grain
-   * @param timePeriod - period to align to
+   * @param grain - grain to align to
    * @returns new interval with inclusive exclusive
    */
-  makeEndExclusiveFor(timePeriod: Grain): Interval {
+  makeEndExclusiveFor(grain: Grain): Interval {
     /*
      * moment does not know how to deal with all,
      * and we only concern day here, so use day as base unit
      */
-    if (timePeriod === 'all') {
-      timePeriod = 'day';
+    if (grain === 'all') {
+      grain = 'day';
     }
+    const period = getPeriodForGrain(grain);
 
     let { start, end } = this.asMoments();
     assert('when making the end of an interval exclusive, the end should exist', end);
-    end.startOf(getIsoDateTimePeriod(timePeriod)).add(1, timePeriod);
+    end.startOf(grain).add(1, period);
 
     return new Interval(start, end);
   }
 
   /**
-   * Converts interval into another interval with moments that are aligned to the given time period
-   * @param timePeriod - period to align to
+   * Converts interval into another interval with moments that are aligned to the given grain
+   * @param grain - grain to align to
    * @returns object with start and end properties
    */
-  asIntervalForTimePeriod(timePeriod: Grain): Interval {
-    let { start, end } = this.asMomentsForTimePeriod(timePeriod);
+  asIntervalForTimePeriod(grain: Grain): Interval {
+    let { start, end } = this.asMomentsForTimePeriod(grain);
     return new Interval(start, end);
   }
 
@@ -202,12 +204,13 @@ export default class Interval {
 
   /**
    * Computes the difference in time buckets (inclusive) in the interval for a given timePeriod
-   * @param timePeriod  corresponds to the timeGrain string used in the navi request object
-   * @returns end - start / time Period e.g. tomorrow(day) - today(day) / (1 (day)/ 24 (hours)) = 24 hours
+   * @param grain - time grain
+   * @returns end - start / time grain e.g. tomorrow(day) - today(day) / (1 (day)/ 24 (hours)) = 24 hours
    */
-  diffForTimePeriod(timePeriod: Grain): number {
-    let moments = this.asMomentsForTimePeriod(timePeriod);
-    return timePeriod === 'all' ? 1 : moments.end.diff(moments.start, timePeriod);
+  diffForTimePeriod(grain: Grain): number {
+    const moments = this.asMomentsForTimePeriod(grain);
+    const period = getPeriodForGrain(grain);
+    return grain === 'all' ? 1 : moments.end.diff(moments.start, period);
   }
 
   /**
@@ -230,9 +233,10 @@ export default class Interval {
       return [currentDate.clone()];
     }
 
+    const period = getPeriodForGrain(grain);
     while (currentDate.isBefore(range.end)) {
       dates.push(currentDate.clone());
-      currentDate.add(1, grain);
+      currentDate.add(1, period);
     }
 
     return dates;

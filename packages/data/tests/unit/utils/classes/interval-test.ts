@@ -1,7 +1,7 @@
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
-import { getIsoDateTimePeriod } from 'navi-data/utils/date';
+import { getPeriodForGrain } from 'navi-data/utils/date';
 import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';
@@ -126,12 +126,12 @@ module('Unit | Utils | Interval Class', function() {
     assert.expect(2);
 
     let testInterval = new Interval(moment('4-9-2017', 'D-M-Y'), moment('25-9-2017', 'D-M-Y')),
-      dates = testInterval.getDatesForInterval('week');
+      dates = testInterval.getDatesForInterval('isoWeek');
 
     assert.deepEqual(
       dates.map(date => date.format('D-M-Y')),
       ['4-9-2017', '11-9-2017', '18-9-2017'],
-      'A moment for each week between Sep 4 and Sep 25 (exclusive) is returned'
+      'A moment for each isoWeek between Sep 4 and Sep 25 (exclusive) is returned'
     );
 
     dates = testInterval.getDatesForInterval('all');
@@ -166,7 +166,7 @@ module('Unit | Utils | Interval Class', function() {
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT),
-      moments = new Interval(start, end).asMomentsForTimePeriod('week');
+      moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek');
 
     assert.ok(moments.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
@@ -177,8 +177,8 @@ module('Unit | Utils | Interval Class', function() {
     assert.expect(1);
 
     // end is next, which will be undefined as moment
-    let moments = new Interval('current', 'next').asMomentsForTimePeriod('week');
-    let expected = moments.end.startOf(getIsoDateTimePeriod('week'));
+    let moments = new Interval('current', 'next').asMomentsForTimePeriod('isoWeek');
+    let expected = moments.end.startOf(getPeriodForGrain('isoWeek'));
 
     assert.ok(moments.end.isSame(expected), 'Setting end to next will be computed correctly');
   });
@@ -188,13 +188,13 @@ module('Unit | Utils | Interval Class', function() {
 
     let start = moment('2017-10-10', FORMAT),
       end = moment('2017-10-10', FORMAT),
-      moments = new Interval(start, end).asMomentsForTimePeriod('week');
+      moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek');
 
     assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
     assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of next isoWeek');
 
-    moments = new Interval(start, end).asMomentsForTimePeriod('week', false);
+    moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek', false);
 
     assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
   });
@@ -240,11 +240,11 @@ module('Unit | Utils | Interval Class', function() {
     );
     assert.equal(
       interval
-        .makeEndExclusiveFor('week')
+        .makeEndExclusiveFor('isoWeek')
         .asMoments()
         .end?.toISOString(),
       '2017-10-16T00:00:00.000Z',
-      'interval is inclusive of the week'
+      'interval is inclusive of the isoWeek'
     );
     assert.equal(
       interval
@@ -277,7 +277,7 @@ module('Unit | Utils | Interval Class', function() {
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
 
     assert.ok(newInterval.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
@@ -289,7 +289,7 @@ module('Unit | Utils | Interval Class', function() {
 
     let start = moment('2017-10-10', FORMAT),
       end = moment('2017-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('week').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
 
     assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 

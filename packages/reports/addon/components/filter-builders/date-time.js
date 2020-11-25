@@ -13,7 +13,7 @@ import { computed, action } from '@ember/object';
 import BaseFilterBuilderComponent from './base';
 import Interval from 'navi-data/utils/classes/interval';
 import Duration, { parseDuration } from 'navi-data/utils/classes/duration';
-import { getFirstDayOfIsoDateTimePeriod } from 'navi-data/utils/date';
+import { getFirstDayOfGrain } from 'navi-data/utils/date';
 import moment from 'moment';
 
 export const MONTHS_IN_QUARTER = 3;
@@ -122,7 +122,7 @@ export default class DateTimeFilterBuilder extends BaseFilterBuilderComponent {
       const intervalDateTimePeriod = isQuarter ? 'month' : isHour ? 'day' : dateTimePeriod;
 
       let intervalValue;
-      if (end.isSame(moment(getFirstDayOfIsoDateTimePeriod(moment(), dateTimePeriod)))) {
+      if (end.isSame(moment(getFirstDayOfGrain(moment(), dateTimePeriod)))) {
         // end is 'current', get lookback amount
         intervalValue = interval.diffForTimePeriod(intervalDateTimePeriod);
       } else {

@@ -6,7 +6,7 @@
 import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
 import Duration from './classes/duration';
-import { DateTimePeriod, getFirstDayEpochIsoDateTimePeriod } from './date';
+import { DateTimePeriod, getFirstDayEpochForGrain } from './date';
 
 /**
  * Map of durations equivalent to a year for different time units
@@ -58,7 +58,7 @@ export default {
     validateDurationArgument(duration);
     assert('Date should be a moment object', moment.isMoment(endDate));
 
-    let epochDate = moment(getFirstDayEpochIsoDateTimePeriod(dateTimePeriod));
+    let epochDate = moment(getFirstDayEpochForGrain(dateTimePeriod));
     if (Duration.isAll(duration)) {
       return epochDate;
     }

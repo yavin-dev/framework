@@ -45,7 +45,9 @@
   {{#if (or (eq this.dateTimePeriod "hour") (eq this.dateTimePeriod "day"))}}
     <powerCalendar.Days @startOfWeek={{1}} @minDate={{this.minDate}} />
   {{else if (eq this.dateTimePeriod "week")}}
-    <powerCalendar.Days @startOfWeek={{1}} @minDate={{this.minDate}} @dayClass={{this.selectedWeekClass}} />
+    <powerCalendar.Days @startOfWeek={{0}} @minDate={{this.minDate}} @dayClass={{this.selectedWeekClass}} />
+  {{else if (eq this.dateTimePeriod "isoWeek")}}
+    <powerCalendar.Days @startOfWeek={{1}} @minDate={{this.minDate}} @dayClass={{this.selectedIsoWeekClass}} />
   {{else if (eq this.dateTimePeriod "month")}}
     <PowerCalendarMonths @calendar={{powerCalendar}} @minDate={{this.minDate}} @showQuarters={{false}} />
   {{else if (eq this.dateTimePeriod "quarter")}}

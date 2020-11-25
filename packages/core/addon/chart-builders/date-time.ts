@@ -108,6 +108,19 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
     by: {
       year: {
         xValueCount: 53,
+        getXValue: (dateTime: Moment) => dateTime.week(),
+        getXDisplay: (x: number) =>
+          moment(YEAR_WITH_53_ISOWEEKS)
+            .isoWeek(x)
+            .format('MMM'),
+        getSeries: (dateTime: Moment) => dateTime.format('GGGG')
+      }
+    }
+  },
+  isoWeek: {
+    by: {
+      year: {
+        xValueCount: 53,
         getXValue: (dateTime: Moment) => dateTime.isoWeek(),
         getXDisplay: (x: number) =>
           moment(YEAR_WITH_53_ISOWEEKS)

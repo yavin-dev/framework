@@ -27,13 +27,13 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
       { start: '2016-01-01 00:00:00.000', end: '2016-01-04 00:00:00.000' },
-      'week'
+      'isoWeek'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
     const response = NaviFactResponse.create({
       rows: [
-        { 'network.dateTime(grain=week)': '2016-01-04 00:00:00.000', pageViews: 2 }, // Week 1, 2016
-        { 'network.dateTime(grain=week)': '2016-01-01 00:00:00.000', pageViews: 1 } // Week 53, 2015
+        { 'network.dateTime(grain=isoWeek)': '2016-01-04 00:00:00.000', pageViews: 2 }, // Week 1, 2016
+        { 'network.dateTime(grain=isoWeek)': '2016-01-01 00:00:00.000', pageViews: 1 } // Week 53, 2015
       ]
     });
     const data = DateChartBuilder.buildData(response, config, request);

@@ -6,7 +6,6 @@ import { helper as buildHelper } from '@ember/component/helper';
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
 import Duration from 'navi-data/utils/classes/duration';
-import DateUtils from 'navi-data/utils/date';
 
 /**
  * Converts a duration into string representing how long ago duration is from today
@@ -59,15 +58,15 @@ export function formatDurationFromCurrent(duration, timePeriod) {
 export function formatDateRange(start, end, timePeriod) {
   assert('Start & End dates and time period  must be defined', start && end && timePeriod);
 
-  let formats = {
+  const formats = {
     month: 'MMM YYYY',
     quarter: '[Q]Q YYYY',
     year: 'YYYY'
   };
 
-  let format = formats[timePeriod] || 'MMM DD, YYYY',
-    startString = start.format(format),
-    endString = end.endOf(DateUtils.getIsoDateTimePeriod(timePeriod)).format(format);
+  const format = formats[timePeriod] || 'MMM DD, YYYY';
+  const startString = start.format(format);
+  const endString = end.endOf(timePeriod).format(format);
 
   if (startString === endString) {
     return startString;

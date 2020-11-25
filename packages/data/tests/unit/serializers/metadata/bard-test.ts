@@ -421,7 +421,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
   },
   {
     category: 'Date',
-    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
     description: undefined,
     fields: undefined,
     id: 'secondTable.dateTime',
@@ -436,7 +436,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         expression: '',
         grain: 'Week',
-        id: 'week'
+        id: 'isoWeek'
       }
     ],
     timeZone: 'UTC',
@@ -649,7 +649,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
     ]
   },
   {
-    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,week)',
+    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -670,7 +670,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           },
           {
             description: 'The secondTable week grain',
-            id: 'week',
+            id: 'isoWeek',
             name: 'Week'
           }
         ]
@@ -940,9 +940,9 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       ]
     };
 
-    config.navi.defaultTimeGrain = 'week';
+    config.navi.defaultTimeGrain = 'isoWeek';
     let columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
-    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'week', 'Picks default from config');
+    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'isoWeek', 'Picks default from config');
 
     config.navi.defaultTimeGrain = 'year';
     columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');

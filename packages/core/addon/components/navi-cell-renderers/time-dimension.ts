@@ -14,15 +14,16 @@ import BaseCellRenderer from './base';
 import { computed } from '@ember/object';
 //@ts-ignore
 import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
+import { Grain } from 'navi-data/addon/utils/date';
 
 export default class TimeDimensionCellRenderer extends BaseCellRenderer {
   /**
    * Time Grain in request
    */
   @computed('args.column.fragment.parameters.grain')
-  get timeGrain() {
+  get timeGrain(): Grain {
     const { fragment } = this.args.column;
-    return fragment.parameters?.grain;
+    return fragment.parameters?.grain as Grain;
   }
 
   get displayValue() {
