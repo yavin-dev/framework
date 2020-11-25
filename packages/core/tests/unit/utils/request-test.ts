@@ -24,6 +24,18 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'desc',
           operator: 'contains',
           values: ['win']
+        },
+        {
+          dimension: 'platform',
+          field: 'id',
+          operator: 'notnull',
+          values: []
+        },
+        {
+          dimension: 'gender',
+          field: 'id',
+          operator: 'null',
+          values: []
         }
       ],
       metrics: [
@@ -214,6 +226,18 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'desc',
           operator: 'contains',
           values: ['win']
+        },
+        {
+          dimension: 'platform',
+          field: 'id',
+          operator: 'notnull',
+          values: []
+        },
+        {
+          dimension: 'gender',
+          field: 'id',
+          operator: 'null',
+          values: []
         }
       ],
       'filters are normalized correctly'
@@ -314,6 +338,24 @@ module('Unit | Utils | Request', function(hooks) {
           },
           type: 'dimension',
           values: ['win']
+        },
+        {
+          field: 'platform',
+          operator: 'notnull',
+          parameters: {
+            field: 'id'
+          },
+          type: 'dimension',
+          values: [true]
+        },
+        {
+          field: 'gender',
+          operator: 'null',
+          parameters: {
+            field: 'id'
+          },
+          type: 'dimension',
+          values: [true]
         },
         {
           field: 'revenue',

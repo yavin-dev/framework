@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
@@ -24,7 +24,7 @@ const TestRequest: RequestV2 = {
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'table1.d5', operator: 'null', values: [], type: 'dimension', parameters: {} },
+    { field: 'table1.d5', operator: 'null', values: [true], type: 'dimension', parameters: {} },
     {
       field: 'table1.time',
       operator: 'gte',
@@ -174,7 +174,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"m1=ge=(v1);m1=le=(v2)\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"m1=ge=('v1');m1=le=('v2')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
     );
 
@@ -193,7 +193,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"m1=lt=(v1),m1=gt=(v2)\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"m1=lt=('v1'),m1=gt=('v2')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
@@ -218,9 +218,9 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"time=ge=(${moment()
+      `{"query":"{ myTable(filter: \\"time=ge=('${moment()
         .subtract(1, 'month')
-        .format('YYYY-MM')});time=le=(${moment().format('YYYY-MM')})\\") { edges { node { time d1 } } } }"}`,
+        .format('YYYY-MM')}');time=le=('${moment().format('YYYY-MM')}')\\") { edges { node { time d1 } } } }"}`,
       'Macros and durations in time-dimension filters are converted to date strings properly'
     );
 
@@ -238,7 +238,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             operator: 'null',
-            values: []
+            values: [true]
           }
         ],
         requestVersion: '2.0',
@@ -270,7 +270,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"time=ge=(2020-05-05);time=le=(2020-05-09)\\") { edges { node { time d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"time=ge=('2020-05-05');time=le=('2020-05-09')\\") { edges { node { time d1 } } } }"}`,
       'Filter with 2 non-macro date values is unaffected'
     );
   });
@@ -576,6 +576,79 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       queryStr,
       `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
+    );
+  });
+
+  test('buildFilterStr - contains', async function(assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const filters: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: ['v1']
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](filters),
+      "dim1=in=('*v1*')",
+      '`buildFilterStr` builds correct filter string for a `contains` filter'
+    );
+
+    const escapedFilter: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: ["'"]
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](escapedFilter),
+      "dim1=in=('*\\\\'*')",
+      '`buildFilterStr` builds correct filter string for a `contains` filter and escaped value'
+    );
+  });
+
+  test('buildFilterStr - filter out empty values', async function(assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const noValues: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: []
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](noValues),
+      '',
+      '`buildFilterStr` returns an empty string if no filters have values'
+    );
+
+    const someValues: Filter[] = [
+      {
+        field: 'table1.dim2',
+        parameters: {},
+        type: 'dimension',
+        operator: 'eq',
+        values: [1]
+      },
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: []
+      }
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](someValues),
+      "dim2==('1')",
+      '`buildFilterStr` filters out filters with empty values'
     );
   });
 });

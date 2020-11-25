@@ -31,8 +31,8 @@ module('Integration | Component | filter collection', function(hooks) {
       store.createFragment('bard-request-v2/request', {
         columns: [],
         filters: [
-          factory.createFilter('dimension', 'bardOne', 'age', {}, 'notnull', []),
-          factory.createFilter('dimension', 'bardOne', 'property', {}, 'null', []),
+          factory.createFilter('dimension', 'bardOne', 'age', {}, 'notnull', [true]),
+          factory.createFilter('dimension', 'bardOne', 'property', {}, 'null', [true]),
           factory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []),
           factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', ['1000']),
           factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'bet', ['1000', '2000'])

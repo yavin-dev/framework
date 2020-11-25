@@ -12,9 +12,10 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Args from './args-interface';
+import { Filter } from 'navi-data/addon/adapters/facts/interface';
 
 export default class MultiValueInput extends Component<Args> {
-  @tracked tags: (string | number)[] = [];
+  @tracked tags: Filter['values'] = [];
 
   constructor(owner: unknown, args: Args) {
     super(owner, args);
