@@ -1,477 +1,357 @@
 ---
 layout: guide
 group: guide
-title: Getting Started with the UI
+title: Setup and Installation Guide
 ---
 
 * TOC
 {:toc}
 
-<span class="c5">After you have Yavin configured and running, we’ll
-begin detailing how to use the platform.  </span>
 
-<span class="c7">Yavin landing Page</span>
+Yavin UI browser support
+-------------------------------------------------
+
+Yavin UI is an HTML-based browser application that is
+supported on the most recent three major versions of the following
+browsers:
+-   Chrome
+-   Firefox
+-   Safari
+
+Yavin installation guide
+-------------------------------------------------
+
+The “Quick Start Guide” link
+takes you through the step-by-step guide in installing all the packages
+and files needed to have a full operational Yavin on your system.
+
+About data ingestion and data sources
+--------------------------------------------------------------
+
+Before you can use Yavin to visualize and analyze data, you need to
+configure the Elide portion of Yavin to access the data you wish to
+report on. You do so by defining a data
+source including the database connection
+configuration itself and its schema.
+
+### Data source dialects
+
+Elide analytic APIs generate SQL queries against your
+target database(s). Elide must be configured with a Dialect to correctly
+generate native SQL that matches the database grammar. Elide supports
+the following dialects by default:
+
+
+|      Name                       |  Availability                         |
+|---------------------------------|---------------------------------------|
+| H2     | Now          |
+| Hive   | Now          |
+| Presto | Now          |
+| MySQL  | Now          |
+{:.table}
+
+More information on dialects and how to use them can be found at:
+<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23dialects&amp;sa=D&amp;ust=1606228594025000&amp;usg=AOvVaw3kCKuvbnXUCJCPe8SCcGF7" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>
+
+About data models
 ------------------------------------------
 
-The default landing page of Yavin is the start of your data exploration.
-From there you can go to the <span class="c16">directory</span> listing
-(Listing all visualizations and visualization groups), or go to
-saved/shared <span class="c16">reports</span> (visualization) lists, the
-<span class="c16">dashboards</span> (group of visualization) list or
-start building your data analytics and reporting visualizations with the
-“<span class="c16">Start Exploring</span><span class="c5">” button.
- </span>
+A semantic model is a simplified representation of the data that resides
+in your database.  Semantic models consist of concepts like Tables,
+Dimensions, and Measures.  While the physical database schema (The
+schema describes the data, how it is organized and managed in the
+physical data source) can be complex, the semantic model is flat (there
+are no relationships between tables) and the columns are referenced by
+simple names (as opposed to complex formulas or derivations). A data model is an abstraction
+which describes how you can use the data once it has been loaded. Note
+that the model need not be a one to one match to the schema in the Data
+source! While models can correspond to your underlying data store schema
+as a one-to-one representation, Yavin does not require this and the
+operating model of Yavin encourages you to think of data models as being
+isolated on a per service basis. We recommend creating data models that
+only support precisely the bits of data you need from your underlying
+schema and no more!  A design that emphasizes isolation makes Yavin an
+effective tool to reduce interdependency among services and maximizing
+the separation of reporting, from physical data design.
 
-<span class="c5"></span>
+Aspects of the data source you can configure include Tables, Dimensions and Measures.
 
+More  information on the Elide Analytics query support and data
+modelling can be found at this URL: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23overview&amp;sa=D&amp;ust=1606228594027000&amp;usg=AOvVaw2q1sp9bx_xpv3bXaEJGwG4" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
 
-<img style="border:2px solid black;" src="assets/images/GS_Yavin_landing_page.png" width="800"/>
+### Writing your first data model
 
-
-<span class="c2">Yavin landing page</span>
-
-<span class="c7">Directory / “My Data” </span>
-----------------------------------------------
-
-The Directory/“My Data” view carries all the active reports/Dashboards
-that you have previously created as well as any reports and dashboards
-that have been <span class="c16">shared</span><span class="c5"> with
-you. Within the “My Data” page you can:</span>
-
--   <span class="c16">Create</span><span class="c5"> new Reports and/or
-    Dashboards</span>
--   Filter based on your “<span class="c16">Favorites</span><span
-    class="c5">” Reports/Dashboards</span>
--   <span class="c16">Search</span><span class="c5"> for specific
-    Reports/Dashboards</span>
--   <span class="c16">Filter</span><span class="c5"> by
-    Reports/Dashboards</span>
--   <span class="c16">Perform actions</span> on a <span
-    class="c16">report</span><span class="c5"> (Clone, Export, Share,
-    Schedule, Delete)</span>
--   <span class="c16">Perform actions</span> on a <span
-    class="c16">dashboard</span><span class="c5"> (Clone, Export, Share,
-    Delete)</span>
+The “<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594028000&amp;usg=AOvVaw1vAW2xdLnJnsUQnKsE9jO5" >Getting Started Docs</a>”
+on models takes you, in depth, through the step to step instruction on
+writing your Elide data model and testing it appropriately. Yavin
+leverages the Elide HJSON configuration language to define the semantic
+model.  For complete documentation on the language, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw0bWaOa678DAXH4CB2iucYe" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>.
+ For a getting started tutorial, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23example-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw2kw5ry4iUdA4oVVcADetKl" >https://elide.io/pages/guide/v5/04-analytics.html#example-configuration</a>.
 
 
-<img style="border:2px solid black;" src="assets/images/GS_my_data_list.gif" width="800"/>
+
+Yavin comes bundled with example Netflix data for
+movies and television shows.  The following sections will illustrate how
+Yavin is configured to explore this data.
 
 
-<span class="c2">What can you do  in the directory view of Yavin</span>
 
-<span class="c5"></span>
+#### Our example use case
 
-<span class="c5">Let’s go through some of these options one at a
-time.</span>
+Analytics on Netflix movie and TV shows titles
 
-<span class="c5"></span>
+#### Connections, Tables, Dimensions, Measures and Joins
 
-<span class="c1">Perform actions on a report: </span>
+Your connection can be set up as: dialect: H2
 
-<span
-style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 160.00px; height: 39.00px;">![](assets/images/GS_report_options.png)</span>
+```
+{
+  dbconfigs: [
+    {
+      name: DemoConnection
+      url: jdbc:h2:mem:DemoDB;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:create-demo-data.sql'
+      driver: org.h2.Driver
+      user: guest
+      dialect: H2
+    }
+  ]
+}
 
-<img style="border:2px solid black;" src="assets/images/GS_navigating_my_data.gif" width="800"/>
+```
 
-<span class="c2">From the list of reports in the  directory, you can
-clone, export, share and delete </span>
 
-<span class="c5"></span>
+Defining your Table/s: netflix_titles
 
-<span id="t.877201f991e69fdef47ce03bf7603419a4692622"></span><span
-id="t.0"></span>
+```
+name:  NetflixTitles
+table: netflix_titles
+```
 
-<table border="4" class="c25">
+Defining your Dimensions title_id, show_type, title  (What are Dimensions?)
+
+```
+  dimensions: [
+        {
+          name: title_id
+          type: TEXT
+          definition: '{{title_id}}'
+        }
+        {
+          name: show_type
+          type: TEXT
+          definition: '{{type}}'
+        }
+......
+```
+
+Defining your Measures/Metrics count, total_seasons, movie_duration  (What are Measures/Metrics?)
+
+```
+measures: [
+        {
+          name: count
+          type: INTEGER
+          definition: 'count({{title_id}})'
+        }
+        {
+          name: total_seasons
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
+        }
+        {
+          name: movie_duration
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
+        }
+```
+
+Defining your Joins NA for this demo. Since there is no joins with the "Netflix data set", this is jus Sample on how it can be :
+
+```
+      joins: [
+        {
+          name:
+          to:
+          type:
+          definition: '{{X_id}} = {{Y.p_id}}'
+        }
+      ]
+```
+Putting it all together, the MySQL data model will be written as:     
+
+```
+      name:  NetflixTitles
+      table: netflix_titles
+      dbConnectionName: DemoConnection
+      dimensions: [
+        {
+          name: title_id
+          type: TEXT
+          definition: '{{title_id}}'
+        }
+        {
+          name: show_type
+          type: TEXT
+          definition: '{{type}}'
+        }
+        {
+          name: title
+          type: TEXT
+          definition: '{{title}}'
+        }
+        {
+          name: director
+          type: TEXT
+          definition: '{{director}}'
+        }
+        {
+          name: cast
+          type: TEXT
+          definition: '{{cast_list}}'
+        }
+        {
+          name: country
+          type: TEXT
+          definition: '{{country}}'
+        }
+        {
+          name: date_available
+          type: TIME
+          definition: '{{date_added}}'
+          grain: {
+            type: DAY
+          }
+        }
+        {
+          name: release_year
+          type: TIME
+          definition: '{{release_year}}'
+          grain: {
+            type: YEAR
+          }
+        }
+        {
+          name: film_rating
+          type: TEXT
+          definition: '{{rating}}'
+        }
+        {
+          name: genres
+          type: TEXT
+          definition: '{{listed_in}}'
+        }
+        {
+          name: description
+          type: TEXT
+          definition: '{{description}}'
+        }
+      ]
+      measures: [
+        {
+          name: count
+          type: INTEGER
+          definition: 'count({{title_id}})'
+        }
+        {
+          name: total_seasons
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
+        }
+        {
+          name: movie_duration
+          type: INTEGER
+          definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
+        }
+      ]
+    }
+```
+
+Yavin pulls and presents all of the semantic model
+metadata from Elide.
+
+<figure><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
+
+Yavin Quick Start Guide
+-----------------------------------------------
+
+Here is the complete quick start steps for setting up Yavin with your data source and your data models:
+1.  Check the "Quick Start Guide" to install Yavin on your local host
+1.  Upon installation (Step 1) you will have the Yavin repo on your
+    local machine: <a href="https://www.google.com/url?q=https://github.com/yahoo/navi/&amp;sa=D&amp;ust=1606228594056000&amp;usg=AOvVaw10XIwf--cXX0UU921zZVk3" >https://github.com/yahoo/navi/</a>. Your repo will include the following key
+    subdirectories:
+<table border="4" >
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
 <tbody>
 <tr class="odd">
-<td><p><span class="c23">Operation</span></p></td>
-<td><p><span class="c23">Availability</span></p></td>
+<td><p>Path</p></td>
+<td><p>Purpose</p></td>
 </tr>
 <tr class="even">
-<td><p><img src="assets/images/GS_my_data_new.png" width="100"/></p></td>
-<td><p><span class="c14">Now</span></p></td>
+<td><p>../navi/Packages</p></td>
+<td><p>This is where your web service configuration will reside. </p>
+<p></p>
+<ul>
+<li>Your sample data can reside @  ../webservice/app/src/main/resources/</li>
+<li>Your SQL queries can reside @  .../webservice/app/src/main/resources/</li>
+<li>Your dialect connection can reside @  ../webservice/app/src/main/resources/demo-configs/db/sql/</li>
+<li>Your data Models can reside @ ../webservice/app/src/main/resources/demo-configs/models/tables </li>
+</ul></td>
 </tr>
 <tr class="odd">
-<td><p><span class="c16">Clone </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_clone.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
+<td><p>../navi/docs</p></td>
+<td><p>The markdown of Yavin product overview and user documentation.</p></td>
 </tr>
 <tr class="even">
-<td><p><span class="c16">Export </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_download.png" /></span><span class="c1"> </span></p></td>
-<td><p><span class="c14"></span></p></td>
-</tr>
-<tr class="odd">
-<td><p><span class="c16">Share </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_share.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p><span class="c16">Delete </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_delete_icon.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
+<td><p>../navi/scripts</p></td>
+<td><p>The publish script of Yavin</p></td>
 </tr>
 </tbody>
 </table>
 
-<span class="c5"></span>
-
-<span class="c1">Perform actions on a Dashboard: </span>
-
-<span
-style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 160.00px; height: 39.00px;">![](assets/images/GS_dashboard_options.png)</span>
-
-
-<img style="border:2px solid black;" src="assets/images/GS_my_data_browse.gif" width="800"/>
-
-
-<span class="c2">From the list of dashboards in the  directory, you can
-clone, share and delete </span>
-
-<span class="c1"></span>
-
-<span class="c5"></span>
-
-<span id="t.5e545ba9e05190a19ef4f13ebd947441a8abeb05"></span><span
-id="t.1"></span>
-
-<table border="4" class="c25">
-<tbody>
-<tr class="odd">
-<td><p><span class="c23">Operation</span></p></td>
-<td><p><span class="c23">Availability</span></p></td>
-</tr>
-<tr class="even">
-<td><p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 107.93px; height: 109.27px;"><img src="assets/images/GS_my_data_new.png" /></span><span class="c1">(Available at “My Data” list view)</span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 159.00px; height: 39.00px;"><img src="assets/images/GS_new_dashboard.png" /></span><span class="c1">(Available at Dashboard list view)</span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p><span class="c16">Clone </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_clone.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p><span class="c16">Share </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_share.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p><span class="c16">Delete </span><span style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 35.00px; height: 36.00px;"><img src="assets/images/GS_delete_icon.png" /></span></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-</tbody>
-</table>
-
-<span class="c5"></span>
-
-<span class="c7">Reports</span>
--------------------------------
-
-<span class="c5">A report is a user defined query coupled with a visual
-representation (table, graph, etc) of the returned query result. With a
-report, you can freely explore the various dimensions and measures in
-your data. Shown below is a line chart visualization from a report
-showing the “Netflix TV shows release dates”, filtering only for TV
-shows, and release date &gt;= 2014. With “Release Date” as dimension and
-“Total Seasons” and “Count”  as metrics. </span>
-
-<span class="c14"></span>
-
-<span class="c22 c2">A sample Yavin report</span>
-
-<span class="c5"></span>
-
-<span class="c1">From within the report you have multiple options. Each
-option is shown with its associated screen icon. You can do any of the
-following: </span>
-
-
-<img style="border:2px solid black;" src="assets/images/GS_report_action_long_list.png" width="800"/>
-
-<span class="c2">From the report view, you can rename, add to
-favorite, add to dashboard, copy API query, clone, export, share and
-delete</span>
-
-<span class="c5"></span>
-
-<span id="t.b4deb6e8d03dbf766a71517de57fc1e98b1530c9"></span><span
-id="t.2"></span>
-
-<table border="4" class="c25">
-<tbody>
-<tr class="odd">
-<td><p><span class="c23">Operation</span></p></td>
-<td><p><span class="c23">Availability</span></p></td>
-</tr>
-<tr class="even">
-<td><p>  Edit   <img  src="assets/images/GS_edit.png" width="50"/> </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p>   Add too Favorite     <img  src="assets/images/GS_star.png" width="50"/> </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p>    <img  src="assets/images/GS_add_to_dashboard_withText.png" width="150"/></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p>      <img  src="assets/images/GS_copy_api_query_withText.png" width="150"/></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p>    <img  src="assets/images/GS_clone_with_text.png" width="100"/></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p>      <img  src="assets/images/GS_export_with_text.png" width="100"/></p></td>
-<td><p><span class="c14">Q1 2020</span></p></td>
-</tr>
-<tr class="even">
-<td><p>   <img  src="assets/images/GS_share_withText.png" width="100"/></p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p> <img  src="assets/images/GS_delete.png" width="100"/> </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-</tbody>
-</table>
-
-<span class="c5"></span>
-
-<img style="border:2px solid black;" src="assets/images/GS_report_action_anima.gif" width="800"/>
-
-<span class="c2">Tooltips will guide you to the actions in a
-report</span>
-
-<span class="c5"></span>
-
-<span class="c5">You can always take any of the following actions on a
-report:</span>
-
-<span class="c5"></span>
-
-<img  src="assets/images/GS_report_action.png" width="400"/>
-
-
-### <span class="c24">Exploring Reports</span>
-
-<span class="c5">Reports are designed to be explored intuitively, easily
-and quickly. </span>
-
-1.  <span class="c5">Create a new report from Yavin’s directory view</span>
-<img  src="assets/images/GS_my_data_newreport.png" />
-1.  <span class="c5">Select a table</span>
-<img  src="assets/images/GS_table_selector.png" />
-1.  <span class="c5">Select a dimension</span>
-<img  src="assets/images/GS_dimension_selector.png" />
-1.  <span class="c5">Select a metrics</span>
-<img  src="assets/images/GS_metric_selector.png" />
-1.  <span class="c5">Update your filters</span>
-<img  src="assets/images/GS_report_filter_sample.png" width="800"/>
-1.  <span class="c5">Select run report button</span>
-<img  src="assets/images/GS_run_saveReport.png" />
-
-<span class="c5"></span>
-
-<span class="c5">Here is a brief, animated demo of exploring and running
-a Yavin report : </span>
-
-<img style="border:2px solid black;" src="assets/images/GS_managing_reports.gif" width="800"/>
-
-
-<span class="c2">Exploring reports “in action”</span>
-
-<span class="c7">Dashboards</span>
-----------------------------------
-
-<span class="c28">Yavin lets you take multiple reports and organize them
-into a dashboard even if the reports have different visualizations.
-Dashboards allow you to position and size the individual reports as you
-desire. They are useful when your user may need to compare various
-reports or when their decision making requires taking multiple views of
-the data into account.</span>
-
-<img style="border:2px solid black;" src="assets/images/GS_dashboard_sample.png" width="800" />
-
-
-<span class="c2">A Typical Yavin Dashboard with a collection of
-widgets/reports</span>
-
-<span class="c1"></span>
-
-<span class="c16">From within a Dashboard, you can do all of the
-following. As always, the on-screen icon is shown beside the command:
-</span>
-
-<img style="border:2px solid black;" src="assets/images/GS_dashboard_options_long_list.png" width="800" />
-
-<span class="c2">From the dashboard view, you can rename, add
-to favorite, clone, share, delete, add widgets</span>
-
-<span class="c2 c22"></span>
-
-<span class="c5"></span>
-
-<span id="t.86c257ac76548c54eb6bb0b8eaa0d0cfab47c096"></span><span
-id="t.3"></span>
-
-<table border="4" class="c25">
-<tbody>
-<tr class="odd">
-<td><p><span class="c23">Operations</span></p></td>
-<td><p><span class="c23">Availability</span></p></td>
-</tr>
-<tr class="even">
-<td><p><span class="c16">Rename </span>    <img  src="assets/images/GS_edit.png" width="50"/>      </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p><span class="c16">Add to Favorite </span>   <img  src="assets/images/GS_star.png" width="50"/>   </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p>      <img  src="assets/images/GS_clone_with_text.png" width="100"/> </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p>   <img  src="assets/images/GS_share_withText.png" width="100"/> </p></td>
-<td><p><span class="c14">Q1 2020</span></p></td>
-</tr>
-<tr class="even">
-<td><p>   <img  src="assets/images/GS_delete.png" width="100"/>  </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="odd">
-<td><p>   <img  src="assets/images/GS_add_widget.png" width="150"/>  </p></td>
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-<tr class="even">
-<td><p>   <img  src="assets/images/GS_settings_add_filter.png" width="150"/>   </p></td>
-
-
-<td><p><span class="c14">Now</span></p></td>
-</tr>
-</tbody>
-</table>
-
-<span class="c5"></span>
-
-<span class="c5">These Actions are available on the Dashboard:</span>
-
-<span class="c5"></span>
-
-<img  src="assets/images/GS_dashboard_action.png" />
-
-
-### <span class="c24">Exploring Dashboards:</span>
-
-<span class="c5">Dashboards are designed to be explored intuitively,
-easily and quickly.</span>
-
-<span class="c5"></span>
-
-<span class="c5">The reports/widgets in a dashboard can be organized,
-resized, explored, filtered and edited to align with how we want the
-Dashboard to look like. Below is a brief, animated demo of the different
-action you can do on a Yavin report : </span>
-
-<img style="border:2px solid black;" src="assets/images/GS_managing_dashboard.gif" width="800"/>
-<span class="c2">Exploring dashboards “in action”</span>
-
-<span class="c5"></span>
-
-1.  Select <img  src="assets/images/GS_add_widget.png" width ="150"/> to add an already existing report to the Dashboard
-1.  <span class="c5">Select the report, like this:</span>
-<img  src="assets/images/GS_add_widget_dialog.png" width="500"/>
-1.  <span class="c5">The Report will be added to the dashboard as a
-    widget:</span> <img  src="assets/images/GS_table_row.png" width="700"/>
-1.  <span class="c5">The Report / Widget can be resized, edited and
-    deleted:</span> <img  src="assets/images/GS_table_sample.png" width="700"/>
-
-### <span class="c24">Managing Dashboards:</span>
-#### <span class="c31">Adding Reports to a Dashboard: </span>
-
-<span class="c27">Dashboards are built by adding reports to them one at
-a time. There are two ways of adding a report to a dashboard. </span>
-
-1.  <span class="c5">A report can be added to the dashboard by selecting
-    a previously saved report through the “Add to Dashboard” option as
-    illustrated below:<br></span> <img  src="assets/images/GS_dashboard_tool_tip.png" width="300"/>
-<br>    
-<span class="c2">From report view, adding reports to dashboards</span> <br>
-<img  src="assets/images/GS_add_to_dashboard.png" width="300"/>
-<img  src="assets/images/GS_add_to_dashboard_select_widget.png" width="300"/>
-
-
-<span class="c2">From the report view, adding a report to a dashboard flow</span>
-<span class="c5"></span>
-<span class="c5"></span>
-
-1.  <span class="c5">From the dashboard itself, use the “+ Add Widget”
-    feature as illustrated below:</span>
-<img  src="assets/images/GS_add_widget.png" width="150"/> <br>
-<img  src="assets/images/GS_add_widget2.png" width="300"/>
-<img  src="assets/images/GS_add_search_widget.png" width="300"/>
-
-
-<span class="c2">From the dashboard view, adding a report to a dashboard
-flow</span>
-
-<span class="c5"></span>
-
-#### <span class="c31">Modifying / Editing Dashboards:</span>
-
-Reports in a Dashboard can be edited by clicking on the pencil icon (<img  src="assets/images/GS_edit.png" width="50"/>) in the header of the
-widget/report. This will activate the edit mode for that report. Reports
-in a dashboard can also be resized, re-arranged and deleted.</span>
-<img  src="assets/images/GS_dashboard_explore_reports.png" width="800"/>
-
-
-<span class="c2">Editing reports on a dashboard</span>
-
-<span class="c7">Dimensions</span>
-----------------------------------
-
-<span class="c5">Dimensions are the primary concept when exploring your
-data. Dimensions are attributes and characteristics of your data. For
-example: In the domain of web analytics, dimensions might include
-properties of your website users - gender, age, location, etc. Dimension
-represents some quality that can distinguish one part of your data from
-another. Dimensions can be used to slice your data into slices, and to
-focus on a specific slice using filters. In Yavin, Dimensions live in
-the dimension panel in the report. They can be  searched for, filtered
-by and added to the report for insight and reporting.</span>
-
-
-<img style="border:2px solid black;" src="assets/images/GS_Dimensions.gif" />
-
-
-<span class="c2">Yavin dimension explorer / selector</span>
-
-<span class="c5"></span>
-
-### <span class="c24">How to define dimensions in your model language?</span>
-
-<span class="c7">Metrics</span>
--------------------------------
-
-Metrics provide a numeric value to associate to dimensions. Yavin has
-the ability to support these kinds of Metrics and many others {a number,
-a Count (a total or a sum), an average, a Ratio (one number divided by
-another number)}. Metrics are measurable. Metrics are math formulas
-applied over the zero or more dimensions that are selected to break down
-your data for a particular query, view, or report. They can give you an
-overview of the components of your data , and help distinguish important
-components from less important ones. In Yavin, Metrics live in the <span
-class="c16">Metrics Panel</span><span class="c5"> in the report. They
-can be  searched for, filtered by, and added to the report.</span>
-
-
-<img style="border:2px solid black;" src="assets/images/GS_metrics.gif" />
-
-
-<span class="c2">Yavin metrics explorer / selector</span>
-
-### <span class="c24">How to define metrics in your model language?</span>
-
-<span class="c5"></span>
+1.  🛑  STOP, If your purpose
+    is check how Yavin works using the demo app provided (Without adding
+    any new data sources or data models). Then, you should be all set to
+    Jump to step 12.
+2.  Select the correct “Data Dialect”. More information on data dialects
+    can be found here: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23dialects&amp;sa=D&amp;ust=1606228594063000&amp;usg=AOvVaw0ii-yOQH1vOGRIOQATpedn" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>.
+3.  You must set both the “enable analytic queries” and the “Hjson
+    configuration” feature flags. Reference: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23feature-flags&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw2hVc2JUMB02Pvo3Qw-khHC" >https://elide.io/pages/guide/v5/04-analytics.html#feature-flags</a>. Path:  
+4.  Configure the files layout: Analytic model configuration can either
+    be specified through JVM classes decorated with Elide annotations or
+    Hjson configuration files. <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23file-layout&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw24D_tV9i7GwhO1RcFecYB0" >https://elide.io/pages/guide/v5/04-analytics.html#file-layout</a>.
+    Path:  ../navi/Packages/
+5.  Set the data source configuration for the Data Source(s) you will be
+    using: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23data-source-configuration&amp;sa=D&amp;ust=1606228594065000&amp;usg=AOvVaw24MdH1Y7-7eGfI1aWGjL6G" >https://elide.io/pages/guide/v5/04-analytics.html#data-source-configuration</a>. Path on where your data source connection can reside:
+     ../navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql/
+6.  Model your data. Your model may be mapped to
+    one or more physical databases, tables, and columns and need
+    not be a “one to one” mirror of the source data models. More details
+    on this step can be found at: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594066000&amp;usg=AOvVaw3z90BeVO5sO_dvqiUivp0o" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>. Path on where your data models can reside:
+     ../navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables
+
+7.  Decide what roles users will need and then configure your security
+    model as per these instructions: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23security-configuration&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw2oLF9OrpETKWP9ac8EdlTZ" >https://elide.io/pages/guide/v5/04-analytics.html#security-configuration</a>. Path:  
+8.  To avoid having to repeat the same configuration block information
+    multiple times, all Hjson files (table, security, and data source)
+    support a variable substitution feature that allows a JSON structure
+    to be associated to a variable name, and then that variable to be
+    used in configuration files. Details can be found at:<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23variable-substitution&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw38PY8IV7HYVX639BIKv00r" >https://elide.io/pages/guide/v5/04-analytics.html#variable-substitution</a> 
+9.  Before proceeding further, you should validate all
+    of your configuration files. All of the Hjson configuration files
+    are validated by a JSON schema. To validate you configuration, run
+    the following command line:
+10. To run Yavin, execute the following command:
+```cd packages/webservice && ./gradlew```
+
+Within minutes, you will be able to launch Yavin on your local browser
+connection to the “Netflix movies and TV shows data source”, by
+launching the  following URL: <a href="https://www.google.com/url?q=http://localhost:8080/&amp;sa=D&amp;ust=1606228594068000&amp;usg=AOvVaw2gdZXVvyL6hXTtw2z4ml8p" >http://localhost:8080</a>
+
+
+
+This Quickstart video takes you through the
+steps on configuring, loading data through Presto, using data models and
+starting to use Yavin. Enjoy!
