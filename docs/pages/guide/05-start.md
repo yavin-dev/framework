@@ -16,7 +16,7 @@ Yavin provides much more than static charts. Yavin provides a wide array of expr
 You can interact directly with your charts  by clicking on various graphical elements to select data components for drill-down and deeper analysis. When you change the dimensions, the possible visualization for the selected dimensions will appear. You can choose the visualization you prefer by clicking of the visualization icons  ![](assets/images/UG_all_viz.png)  , which are located at the top of visualization
 results.  
 
-<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_general_viz.gif" width="800"/><figcaption>Figure - Yavin reports are interactive visualizations  </figcaption> </figure>  
+<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_general_viz.gif" width="800"/><figcaption>Gif animation - Yavin reports are interactive visualizations  </figcaption> </figure>  
 
 ###  Metric label  
  This is the overview visualization that’s shown when there are no dimensions selected to be shown. It presents a numeric summary of the currently selected measures, applying any selected filter criteria.  
@@ -75,7 +75,7 @@ The line chart line style can be changed to an area spline.  The stacked area ch
 ###  Bar chart  
  The bar chart is selected for numeric visualizations. It naturally acts as a histogram, showing the frequency distribution of occurrences over numeric buckets.  
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_bar_chart1.png" width="800"/><figcaption>igure X - Sample Yavin bar chart visualization </figcaption> </figure>
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_bar_chart1.png" width="800"/><figcaption>Figure X - Sample Yavin bar chart visualization </figcaption> </figure>
 
  The bar chart can be edited, allowing you to change the metrics and having them stacked:  
 
@@ -122,20 +122,20 @@ The line chart line style can be changed to an area spline.  The stacked area ch
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_add_filter_tooltip.png" width="300"/><figcaption> Figure - Adding a filter </figcaption> </figure>   
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_add_dim.gif" width="800"/><figcaption> Figure - Filter flow in Yavin </figcaption> </figure>  
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_add_dim.gif" width="800"/><figcaption> Gif animation - Filter flow in Yavin </figcaption> </figure>  
 
 To remove a dimension or metric from the filter, click the filter icon for the corresponding Dimension or Metric. Or select the (x) ![](assets/images/UG_filters_how.png) icon on the filter section.  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_remove_filter.png" width="300"/><figcaption> Figure - Removing a filter from the dimension/metrics selector list </figcaption> </figure>   
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_remove_filters.gif" width="800"/><figcaption> Figure - Removing a filter from the filter box </figcaption> </figure>   
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_remove_filters.gif" width="800"/><figcaption> Gif animation - Removing a filter from the filter box </figcaption> </figure>   
 
 ###  Editing filters  
 Filters can be updated and edited in the filter section of the report. Some dimension filters support “Type Ahead” search in which  you can select one or more strings to filter on based on the suggested values.   Dimension filters which are “String filters” can support “Type Ahead”, but not all dimensions are a “String Filter”. It all depends on how the Yavin user configured the dimension during setup.  
 
 In the example below, gender, which is a dimension, has a limited number of values, and is a String filter. You can exclude certain dimensions or select only the values that contain a specified text.  
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_filter_change.gif" width="800"/><figcaption>Figure - Exploring the filter operations </figcaption> </figure>   
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_filter_change.gif" width="800"/><figcaption>Gif animation - Exploring the filter operations </figcaption> </figure>   
 
 ###  Supported filter operation for Dimensions (String filters)  
 
@@ -162,7 +162,7 @@ In the example below, gender, which is a dimension, has a limited number of valu
 |  &lt;=                         |  Now           |
 {:.table}
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_filters.gif" width="800"/><figcaption>Figure - Filter operation for metrics </figcaption> </figure>
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_filters.gif" width="800"/><figcaption>Gif animation - Filter operation for metrics </figcaption> </figure>
 
 ###  Supported filter operation for Dates (Time filters)   
  Time filters are used for timestamp and date dimensions. You can filter on time and select a filter that is relative to the most recent time of the data.  
@@ -178,12 +178,12 @@ In the example below, gender, which is a dimension, has a limited number of valu
 |  Advanced ( Advanced time ranges allows for between dates and selecting  a specific time range)  |  Q1 2020       |
 {:.table}
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_line_filter_change.gif" width="800"/><figcaption>Figure - Filter operation for dates </figcaption> </figure>
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_line_filter_change.gif" width="800"/><figcaption>Gif animation - Filter operation for dates </figcaption> </figure>
 
 ###  Dashboard filter:  
  You can add a filter to an interactive collection by clicking on the (  ![](assets/images/UG_settings_icon.png)  ) icon then (  ![](assets/images/UG_add_filter.png)  ) to  select the dimension, the operation and the value.
 
- <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_dashboard_filter.gif" width="800"/><figcaption> Figure - Dashboard filters </figcaption> </figure>
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_dashboard_filter.gif" width="800"/><figcaption> Gif animation -  Dashboard filters </figcaption> </figure>
 
  Operations on Reports
 ---------------------------------------------
@@ -202,7 +202,7 @@ In the example below, gender, which is a dimension, has a limited number of valu
  <figure  style="font-size:1vw; color:DodgerBlue;"> <img style="border:2px solid black;" src="assets/images/UG_api.png" width="300"/>
  <figcaption>Figure - Copy API query dialog </figcaption></figure>   
 
-### Export <img src="assets/images/UG_coming_soon.png" width="150"/>  
+### Export <img src="assets/images/UG_coming_soon.png" width="100"/>  
  Allows you export your Report as CSV, PDF or PNG.  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_export_report.png" width="200"/><figcaption>Figure - Export options </figcaption> </figure>   
@@ -212,7 +212,7 @@ In the example below, gender, which is a dimension, has a limited number of valu
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_share.png" width="400"/><figcaption>Figure - Share dialog </figcaption> </figure>   
 
-### Schedule <img src="assets/images/UG_coming_soon.png" width="150"/>  
+### Schedule <img src="assets/images/UG_coming_soon.png" width="100"/>  
  Allows you to schedule your Report by specifying the rules of scheduling including format (CSV, PDF or PNG), the email recipients and the frequency:  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_schedule_report.png" width="400"/><figcaption> Figure - Report schedule dialog </figcaption> </figure>  
@@ -233,7 +233,7 @@ In the example below, gender, which is a dimension, has a limited number of valu
 ###  Clone  
  Creates an exact copy of a dashboard with the name “Copy of ….”.  
 
-### Export <img src="assets/images/UG_coming_soon.png" width="150"/>  
+### Export <img src="assets/images/UG_coming_soon.png" width="100"/>  
  Allows you export your Dashboard as PDF or PNG.  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/UG_export.png" width="200"/><figcaption>Figure - Dashboard export options </figcaption> </figure>  
@@ -243,7 +243,7 @@ In the example below, gender, which is a dimension, has a limited number of valu
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_share_dashboard.png" width="400"/><figcaption> Figure - Dashboard share dialog </figcaption> </figure>   
 
-### Schedule <img src="assets/images/UG_coming_soon.png" width="150"/>  
+### Schedule <img src="assets/images/UG_coming_soon.png" width="100"/>  
  Allows you to schedule your Dashboard by specifying the rules of scheduling including format (PDF or PNG), the email recipients and the frequency:
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_schedule_dashboard.png" width="400"/><figcaption> Figure - Dashboard schedule dialog </figcaption> </figure>  

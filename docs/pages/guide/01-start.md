@@ -23,13 +23,13 @@ Yavin is a combination of three major modules.  They are:
 
 Here is a short video of Yavin “in action” :
 
-<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/Get_to_know_yavin.gif" width="800" /><figcaption>Yavin simplicity “in action”</figcaption></figure>
+<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/Get_to_know_yavin.gif" width="800" /><figcaption>Gif animation - Yavin simplicity “in action”</figcaption></figure>
 
 ## Building with Duplos ®
 
 In the software industry, when discovering patterns, we often build abstractions and libraries to provide reusable software. The D3.JS charting library, Spring Security, and the Flask web framework are all great examples. We often use the metaphor building with Legos ® to illustrate the process of building software with many libraries and frameworks. While this provides a significant productivity gain, especially when compared to writing everything from scratch, it still is costly to build applications. When building applications, it takes time to design a system, wire together libraries, test your logic, handle security concerns, develop a great user interface, build features, and battle test your system. With Carbon, we aim to package fully featured and reusable experiences called Duplos®, or large Legos®, that can be installed in your application with a few commands.  The following diagram illustrates the Duplos available in Yavin today:
 
-<figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/Duplos_img.png" width="800" border=5px/><figcaption>Yavin Duplos</figcaption></figure>
+<figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/Duplos_img.png" width="800" border=5px/><figcaption>Figure - Yavin Duplos</figcaption></figure>
 
 ## An Overview of Yavin’s Main Components
 

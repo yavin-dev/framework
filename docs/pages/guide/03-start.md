@@ -7,7 +7,6 @@ title: Setup and Installation Guide
 * TOC
 {:toc}
 
-
 Yavin UI browser support
 -------------------------------------------------
 
