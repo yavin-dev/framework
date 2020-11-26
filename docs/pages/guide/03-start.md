@@ -263,7 +263,7 @@ Putting it all together, the MySQL data model will be written as:
 Yavin pulls and presents all of the semantic model
 metadata from Elide.
 
-<figure><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
+<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
 
 Yavin Quick Start Guide
 -----------------------------------------------
