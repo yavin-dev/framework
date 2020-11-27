@@ -230,7 +230,7 @@ Putting it all together, the H2 semantic model will be written as:
     }
 ```
 
-Note: Joins was not applicable  for the demo app. But, Elide supports Join with the following attributes:
+Note: Joins was not applicable for the demo app. But, Elide supports Join with the following attributes:
 <pre>      
    joins: [
         {
@@ -244,7 +244,7 @@ Note: Joins was not applicable  for the demo app. But, Elide supports Join with 
 
 Yavin pulls and presents all of the semantic model metadata from Elide.
 
-<figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
+<figure style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
 
 Yavin Example Key Elements
 -----------------------------------------------
