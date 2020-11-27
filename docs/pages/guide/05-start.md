@@ -13,7 +13,7 @@ Yavin provides much more than static charts. Yavin provides a wide array of expr
 
 <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_viz_sample.png" width="800"/><figcaption>Figure - A sample of visualizations supported by Yavin </figcaption> </figure>
 
-You can interact directly with your charts  by clicking on various graphical elements to select data components for drill-down and deeper analysis. When you change the dimensions, the possible visualization for the selected dimensions will appear. You can choose the visualization you prefer by clicking of the visualization icons  ![](assets/images/UG_all_viz.png)  , which are located at the top of visualization
+You can interact directly with your charts  by clicking on various graphical elements to select data components for drill-down and deeper analysis. When you change the dimensions, the possible visualization for the selected dimensions will appear. You can choose the visualization you prefer by clicking the different visualization icons  ![](assets/images/UG_all_viz.png)  , which are located at the top of visualization
 results.  
 
 <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_general_viz.gif" width="800"/><figcaption>Gif animation - Yavin reports are interactive visualizations  </figcaption> </figure>  
@@ -28,16 +28,16 @@ results.
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_metric_viz.png" width="800"/><figcaption>Figure - Editing Yavin metric label  </figcaption> </figure>   
 
 ###  Gauge Chart  
-The <span class="c7 c31">Gauge   visualization is a chart that displays the major contributors or key influencers for a selected result or value. The Gauge chart then displays progress toward a measurable goal.   
+The <span class="c7 c31">Gauge visualization is a chart that displays the major contributors or key influencers for a selected result or value. The Gauge chart then displays progress toward a measurable goal.   
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_gauge_viz.png" width="800"/><figcaption>Figure - Sample Yavin gauge chart visualization </figcaption> </figure>
 
- The gauge chart can be edited to change any of these:: label, baseline and goals  
+ The gauge chart can be edited to change any of these: label, baseline and goals  
 
   <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_gauge_viz2.png" width="250"/><img style="border:2px solid black;" src="assets/images/UG_gauge_viz3.png" width="250"/><img style="border:2px solid black;" src="assets/images/UG_gauge_viz4.png" width="250"/><figcaption> Figure - Editing Yavin gauge chart visualization and changing the baseline </figcaption> </figure>  
 
 ###  Table  
- The table visualization is the default view for a dimension. It presents a table view of the data with ordering that aids visualization of measure magnitude. The Table is available for all Dimension/Metric combinations.  
+ **The table visualization is the default view for a dimension**. It presents a table view of the data with ordering capabilities that aids in visualization of measure magnitude. The Table is available for all Dimension/Metric combinations.  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_table_viz.png" width="800"/><figcaption>Figure - Sample Yavin table visualization </figcaption> </figure>
 
@@ -49,7 +49,7 @@ The table visualization can show multiple dimensions, as well as multiple measur
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_customize_table.png" width="800"/><figcaption>Figure - Editing Yavin table visualization </figcaption> </figure>
 
- “Grand Total” and “Subtotals” can be added to the table calculation if desired.  
+ “**Grand Total**” and “**Subtotals**” of measures by dimension, can be added to the table calculation if desired. The option to add them can be done from the (  ![](assets/images/UG_edit_table.png)  ) option.
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_add_total.png" width="800"/><figcaption>Figure - Table Visualization with no “Grand Total” and “Subtotal” applied  </figcaption> </figure>  
 
