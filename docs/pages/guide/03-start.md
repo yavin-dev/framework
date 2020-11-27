@@ -65,6 +65,7 @@ Your connection can be set up as: dialect: H2
 {
   dbconfigs: [
     {
+      __comment1: "We created the connection for the demo using H2 connection."
       name: DemoConnection
       url: jdbc:h2:mem:DemoDB;  DB_CLOSE_DELAY=-1;  INIT=RUNSCRIPT FROM 'classpath:create-demo-data.sql'
       driver: org.h2.Driver
@@ -89,16 +90,28 @@ Defining your Dimensions title_id, show_type, title  (What are Dimensions?)
 ```
   dimensions: [
         {
+          __comment1: "Dimension (title_id) mapped from (title_id) from the source data."
           category: Attributes
           name: title_id
           type: TEXT
           definition: '{ {title_id} }'
         }
         {
+          __comment1: "Dimension (show_type) mapped from (type) from the source data."
           category: Attributes
           name: show_type
           type: TEXT
           definition: '{ {type} }'
+        }
+        {
+          __comment1: "Dimension (release_year) mapped from (release_year) from the source data, with the year grain."
+          category: Date
+          name: release_year
+          type: TIME
+          definition: '{ {release_year} }'
+          grain: {
+            type: YEAR
+          }
         }
 ......
 ```
@@ -108,23 +121,20 @@ Defining your Measures/Metrics count, total_seasons, movie_duration  (What are M
 ```
 measures: [
         {
+          __comment1: "Measure (count) that is calculated by counting all the (title_id)."
           category: Stats
           name: count
           type: INTEGER
           definition: 'count({ {title_id} })'
         }
         {
+          __comment1: "Measure (total_seasons) that is calculated by summing the (duration)."
           category: Stats
           name: total_seasons
           type: INTEGER
           definition: "sum(cast (case when { {duration} } like '% Seasons' then REPLACE({ {duration} }, ' Seasons', '') else '0' end AS INT))"
         }
-        {
-          category: Stats
-          name: movie_duration
-          type: INTEGER
-          definition: "sum(cast (case when { {duration} } like '% min' then REPLACE({ {duration} }, ' min', '') else '0' end AS INT))"
-        }
+......
 ```
 
 Putting it all together, the H2 semantic model will be written as:     
