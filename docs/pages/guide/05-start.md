@@ -64,7 +64,7 @@ The table visualization can show multiple dimensions, as well as multiple measur
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_time_series.png" width="800"/><figcaption>Figure - Line charts are interactive visualizations </figcaption> </figure>  
 
-The line chart line style can be changed to an area spline.  The stacked area chart is similar to the regular line chart, and can be used in similar situations.   
+The line chart line style can be changed to an area spline. The stacked area chart is similar to the regular line chart, and can be used in similar situations.   
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_change_line_chart.png" width="800"/><figcaption>Figure - Converting a Yavin line chart to a spline chart </figcaption> </figure>   
 
@@ -108,7 +108,7 @@ The line chart line style can be changed to an area spline.  The stacked area ch
 
  Time Series
 -----------------------------------
- It is often useful to be able to see how one value of a dimension can be compared to another within a time span. This type of data is frequently referred to as a time series data <span class="c33 c24">. A time series is a sequence of numerical data points in successive chronological order. For example, in checking audience data, a time series could be used to track the total clicks of the different genders over a specified period of time, with data points recorded at regular time intervals. Time series allows the user to specify a time interval - an inclusive start and exclusive end time or date. In the example below, we show how gender can be compared to  total clicks over a 90 day time period with “day” being the time interval.  
+ It is often useful to be able to see how one value of a dimension can be compared to another within a time span. This type of data is frequently referred to as a time series data. A time series is a sequence of numerical data points in successive chronological order. For example, in checking audience data, a time series could be used to track the total clicks of the different genders over a specified period of time, with data points recorded at regular time intervals. Time series allows the user to specify a time interval - an inclusive start and exclusive end time of date. In the example below, we show how gender can be compared to total clicks over a 90 day time period with “day” being the time interval.  
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_time_series2.png" width="800"/><figcaption>Figure - Time series chart in Yavin </figcaption> </figure>  
 
@@ -116,7 +116,7 @@ The line chart line style can be changed to an area spline.  The stacked area ch
 
  <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/UG_line_chart_sample.png" width="800"/><figcaption> Figure - Yavin time series chart filtered Filters </figcaption> </figure>
 
- Filters limit the data returned in a report. It could be a period or time, a certain country or a number of countries, or any other value of a dimension in your data. The filters live in the filter bar  . We can filter by either dimensions, metrics, or both at the same time . It is often useful to filter out outlying data and edge cases, especially when evaluating any kind of rate data such as click rates. With Yavin, you can filter results against a metric threshold or against a dimension value.   
+ Filters limit the data returned in a report. It could be a period or time, a certain country or a number of countries, or any other value of a dimension in your data. The filters live in the filter bar. We can filter by either dimensions, metrics, or both at the same time. It is often useful to filter out outlying data and edge cases, especially when evaluating any kind of rate data such as click rates. With Yavin, you can filter results against a metric threshold or against a dimension value.   
 
  To add a dimension or metric to a filter criteria, select the filter icon (  ![](assets/images/UG_filter_icon.png)  ) next to the metric   
 
