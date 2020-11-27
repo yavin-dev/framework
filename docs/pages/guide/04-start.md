@@ -1,7 +1,7 @@
 ---
 layout: guide
 group: guide
-title: Getting Started with the UI
+title: Getting Started with the User Interface
 ---
 
 * TOC

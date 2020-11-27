@@ -25,3 +25,12 @@ $ ./gradlew bootRun
 
 ** Ctrl-C to Exit **
 ```
+
+***Congratulations you are all set, you can now Open <a href="http://localhost:8080"> http://localhost:8080</a>.***
+
+<center>
+  <figure style="font-size:1vw; color:DodgerBlue;">
+    <video width="800" controls> <source src="assets/images/Install_Yavin_video.mp4" type="video/mp4"></video>
+    <figcaption>📹A quick video that shows how each step is being executed.</figcaption>
+  </figure>
+</center>
