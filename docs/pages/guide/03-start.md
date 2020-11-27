@@ -32,7 +32,7 @@ Elide analytic APIs **generate SQL queries** against your target database(s). El
 | MySQL  | Now          |
 {:.table}
 
-More information on dialects and how to use them can be found at: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23dialects&amp;sa=D&amp;ust=1606228594025000&amp;usg=AOvVaw3kCKuvbnXUCJCPe8SCcGF7" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>
+More information on dialects and how to use them can be found at: <a href="https://elide.io/pages/guide/v5/04-analytics.html#dialects" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>
 
 About semantic models
 ------------------------------------------
@@ -45,15 +45,15 @@ About semantic models
     - Adding metadata like descriptions, categories, and tags to the semantic model to help users understand it.
     - Mapping the simple semantic model to the potentially more complex physical model. Every concept (table, measure, dimension) in the semantic model can be assigned a native SQL fragment that is used to generate queries against the physical model.
 
-More information on the Elide Analytics query support and data-modeling can be found at this URL: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23overview&amp;sa=D&amp;ust=1606228594027000&amp;usg=AOvVaw2q1sp9bx_xpv3bXaEJGwG4" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
+More information on the Elide Analytics query support and data-modeling can be found at this URL: <a href="https://elide.io/pages/guide/v5/04-analytics.html#overview" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
 
 ### Writing your first semantic model
 
-The “<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594028000&amp;usg=AOvVaw1vAW2xdLnJnsUQnKsE9jO5" >Getting Started with Elide semantic model docs</a>” on models takes you, in depth, through the step to step instruction on writing your Elide semantic model and testing it appropriately. Yavin leverages the Elide HJSON configuration language to define the semantic model.  For complete documentation on the language, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw0bWaOa678DAXH4CB2iucYe" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>.
+The “<a href="https://elide.io/" >Getting Started with Elide semantic model docs</a>” on models takes you, in depth, through the step to step instruction on writing your Elide semantic model and testing it appropriately. Yavin leverages the Elide HJSON configuration language to define the semantic model.  For complete documentation on the language, visit <a href="https://elide.io/pages/guide/v5/04-analytics.html#model-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>.
 
-For a getting started tutorial, visit <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23example-configuration&amp;sa=D&amp;ust=1606228594029000&amp;usg=AOvVaw2kw5ry4iUdA4oVVcADetKl" >https://elide.io/pages/guide/v5/04-analytics.html#example-configuration</a>.
+For a getting started tutorial, visit <a href="https://elide.io/pages/guide/v5/04-analytics.html#example-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#example-configuration</a>.
 
-Yavin comes bundled with a “<a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" >Netflix Movie and TV Shows</a>” data example. The following sections will illustrate how Yavin is configured to explore this data.
+Yavin comes bundled with a “<a href="https://www.kaggle.com/shivamb/netflix-shows" >Netflix Movie and TV Shows</a>” data example. The following sections will illustrate how Yavin is configured to explore this data.
 
 #### Our example use case
 Analytics on Netflix movie and TV shows titles
@@ -66,7 +66,7 @@ Your connection can be set up as: dialect: H2
   dbconfigs: [
     {
       name: DemoConnection
-      url: jdbc:h2:mem:DemoDB;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:create-demo-data.sql'
+      url: jdbc:h2:mem:DemoDB;  DB_CLOSE_DELAY=-1;  INIT=RUNSCRIPT FROM 'classpath:create-demo-data.sql'
       driver: org.h2.Driver
       user: guest
       dialect: H2
@@ -244,7 +244,7 @@ Note: Joins was not applicable for the demo app. But, Elide supports Join with t
 
 Yavin pulls and presents all of the semantic model metadata from Elide.
 
-<figure style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
+<figure style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Figure - Result of the UI pulling the model (Table, Dimension, Metrics, Joins)</figcaption> </figure>
 
 Yavin Example Key Elements
 -----------------------------------------------
@@ -275,13 +275,13 @@ Here is the complete steps for installing and setting up **Yavin** with **your d
 | ```navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables```  | Your semantic models can reside here       |
 {:.table}
 1.  🛑  STOP, **If your purpose is check how Yavin works using the demo app provided (Without adding any new data sources or semantic models). Then, you should be all set to Jump to step 10.**
-2.  Select the correct “Data Dialect”. More information on data dialects can be found here: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23dialects&amp;sa=D&amp;ust=1606228594063000&amp;usg=AOvVaw0ii-yOQH1vOGRIOQATpedn" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>.
-3.  You must set both the “enable analytic queries” and the “Hjson configuration” feature flags. Reference: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23feature-flags&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw2hVc2JUMB02Pvo3Qw-khHC" >https://elide.io/pages/guide/v5/04-analytics.html#feature-flags</a>.  
-4.  Configure the files layout: Analytic model configuration can either be specified through JVM classes decorated with Elide annotations or Hjson configuration files. <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23file-layout&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw24D_tV9i7GwhO1RcFecYB0" >https://elide.io/pages/guide/v5/04-analytics.html#file-layout</a>.Path:  ../navi/Packages/
-5.  Set the data source configuration for the Data Source(s) you will be using: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23data-source-configuration&amp;sa=D&amp;ust=1606228594065000&amp;usg=AOvVaw24MdH1Y7-7eGfI1aWGjL6G" >https://elide.io/pages/guide/v5/04-analytics.html#data-source-configuration</a>. Path on where your data source connection can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql/
-6.  Model your data. Your model may be mapped to one or more physical databases, tables, and columns and need not be a “one to one” mirror of the source semantic models. More details on this step can be found at: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594066000&amp;usg=AOvVaw3z90BeVO5sO_dvqiUivp0o" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>. Path on where your semantic models can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables
-7.  Decide what roles users will need and then configure your security model as per these instructions: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23security-configuration&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw2oLF9OrpETKWP9ac8EdlTZ" >https://elide.io/pages/guide/v5/04-analytics.html#security-configuration</a>.  
-8.  To avoid having to repeat the same configuration block information multiple times, all Hjson files (table, security, and data source) support a variable substitution feature that allows a JSON structure to be associated to a variable name, and then that variable to be used in configuration files. Details can be found at:<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23variable-substitution&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw38PY8IV7HYVX639BIKv00r" >https://elide.io/pages/guide/v5/04-analytics.html#variable-substitution</a> 
+2.  Select the correct “Data Dialect”. More information on data dialects can be found here: <a href="https://elide.io/pages/guide/v5/04-analytics.html#dialects" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>.
+3.  You must set both the “enable analytic queries” and the “Hjson configuration” feature flags. Reference: <a href="https://elide.io/pages/guide/v5/04-analytics.html#feature-flags" >https://elide.io/pages/guide/v5/04-analytics.html#feature-flags</a>.  
+4.  Configure the files layout: Analytic model configuration can either be specified through JVM classes decorated with Elide annotations or Hjson configuration files. <a href="https://elide.io/pages/guide/v5/04-analytics.html#file-layout" >https://elide.io/pages/guide/v5/04-analytics.html#file-layout</a>.Path:  ../navi/Packages/
+5.  Set the data source configuration for the Data Source(s) you will be using: <a href="https://elide.io/pages/guide/v5/04-analytics.html#data-source-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#data-source-configuration</a>. Path on where your data source connection can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql/
+6.  Model your data. Your model may be mapped to one or more physical databases, tables, and columns and need not be a “one to one” mirror of the source semantic models. More details on this step can be found at: <a href="https://elide.io/pages/guide/v5/04-analytics.html#model-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>. Path on where your semantic models can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables
+7.  Decide what roles users will need and then configure your security model as per these instructions: <a href="https://elide.io/pages/guide/v5/04-analytics.html#security-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#security-configuration</a>.  
+8.  To avoid having to repeat the same configuration block information multiple times, all Hjson files (table, security, and data source) support a variable substitution feature that allows a JSON structure to be associated to a variable name, and then that variable to be used in configuration files. Details can be found at:<a href="https://elide.io/pages/guide/v5/04-analytics.html#variable-substitution" >https://elide.io/pages/guide/v5/04-analytics.html#variable-substitution</a> 
 9.  Before proceeding further, you should validate all of your configuration files. All of the Hjson configuration files are validated by a JSON schema. To validate you configuration, run the following command line:
 10. To run Yavin, execute the following command: ```cd packages/webservice && ./gradlew```
 

@@ -13,7 +13,7 @@ title: Product Overview
 
 Yavin is a framework for rapidly **building custom data applications** that offers both a UI and an API. In addition, Yavin can be deployed as a **standalone Business Intelligence tool**. It is **scalable** and **secure** and its intuitive visualization interface allows for fast drill-downs of very large data sets through simple interface and visualization blocks. With Yavin, you can easily **create reports**, which focus on arbitrary drill downs for a single visualization, or **dashboards**, which are collections of visualizations, for rapidly distilling information.
 
-***Disclaimer*** : For the sample demos that come with Yavin, we are using the “<a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" >Netflix Movie and TV Shows</a>” data set that is sourced from <a href="https://www.google.com/url?q=https://www.kaggle.com/&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw2MS0pMaHmAABG0JmQABGOV" >Kaggle</a> (Timestamped 11/2020). The use of this data-set is only in demonstrating the ease of onboarding any dataset to Yavin. It has no correlation with Yavin as a product or an Open Source Software.
+***Disclaimer*** : For the sample demos that come with Yavin, we are using the “<a href="https://www.google.com/url?q=tflix Movie and TV Shows</a>” data set that is sourced from <a href="https://www.kaggle.com" >Kaggle</a> (Timestamped 11/2020). The use of this data-set is only in demonstrating the ease of onboarding any dataset to Yavin. It has no correlation with Yavin as a product or an Open Source Software.
 
 Yavin is a combination of three major modules.  They are:
 - **Denali** (The User Interface design language)
@@ -35,7 +35,7 @@ In the software industry, when discovering patterns, we often build abstractions
 ### Denali Overview
 <img src="assets/images/Denali_logo.png" width="200"/>
 
-**Yavin uses Denali's theme-able design system**. Denali was developed as a way to quickly create unified product families with intuitive user experiences. Denali components are built to be theme-able by nature, which means we aren’t tied to their components visual design. For more information on denali, visit <a href="https://www.google.com/url?q=http://denali.design&amp;sa=D&amp;ust=1606182367633000&amp;usg=AOvVaw3vxbzIhWRHGVWve5Y_S6bE" >denali.design</a>.
+**Yavin uses Denali's theme-able design system**. Denali was developed as a way to quickly create unified product families with intuitive user experiences. Denali components are built to be theme-able by nature, which means we aren’t tied to their components visual design. For more information on denali, visit <a href="http://denali.design" >denali.design</a>.
 
 ### Elide Overview
 <img src="assets/images/Elide_logo.png" width="200"/>
@@ -44,9 +44,9 @@ In the software industry, when discovering patterns, we often build abstractions
 1.  A CRUD (Create, Read, Update, Delete) API for reading and manipulating models.
 1.  An analytic API for aggregating measures over zero or more model dimensions.
 
-For more information on Elide, visit <a href="https://www.google.com/url?q=http://elide.io&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw2jtjGW202zysi6LjUbgJng">elide.io</a>
+For more information on Elide, visit <a href="http://elide.io">elide.io</a>
 
 ### Navi Overview
 <img src="assets/images/Navi_logo.png" width="200"/>
 
-**Navi represents the User Interface layer of Yavin**. Navi is an open source analytics reporting UI. Navi uses Ember, which is a JavaScript framework for building modern web applications. It includes everything you need to build rich UIs that work on any device. (<a href="https://www.google.com/url?q=https://guides.emberjs.com/release/&amp;sa=D&amp;ust=1606182367634000&amp;usg=AOvVaw0WaN1j1olmMWQvD7Y9spa6">Ember Guide</a>)
+**Navi represents the User Interface layer of Yavin**. Navi is an open source analytics reporting UI. Navi uses Ember, which is a JavaScript framework for building modern web applications. It includes everything you need to build rich UIs that work on any device. (<a href="https://guides.emberjs.com">Ember Guide</a>)

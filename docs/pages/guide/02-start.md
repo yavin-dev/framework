@@ -17,7 +17,7 @@ Quick start with demo data ready to view/use
 | Getting Started - First-Time Git Setup  | <a href="https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup">https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup</a> |
 | Prerequisite - JDK 8 or higher  |  <a href="https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html"> https://www.oracle.com/java/technologies/javase/javase-jdk8-downloads.html  </a>    |
 | Yavin Git Repo  |  <a href="https://github.com/yahoo/navi.git"> https://github.com/yahoo/navi.git </a>                                                                                       |
-| "Netflix Movies and TV Shows" data set used for the demo | <a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&sa=D&ust=1606182367630000&usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1"> https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&sa=D&ust=1606182367630000&usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1 </a? |
+| "Netflix Movies and TV Shows" data set used for the demo | <a href="https://www.kaggle.com/shivamb/netflix-shows"> https://www.kaggle.com/shivamb/netflix-shows</a? |
 {:.table}
 
 ### Steps
@@ -38,4 +38,4 @@ $ ./gradlew bootRun
 </center>
 
 ### Result
-***Congratulations you are all set, you can now Open <a href="http://localhost:8080"> http://localhost:8080</a>.*** This will launch the **Yavin** application into your browser with the built in data set for “<a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" >Netflix Movie and TV Shows</a>” that is sourced from <a href="https://www.google.com/url?q=https://www.kaggle.com/&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw2MS0pMaHmAABG0JmQABGOV" >Kaggle</a> data.
+***Congratulations you are all set, you can now Open <a href="http://localhost:8080"> http://localhost:8080</a>.*** This will launch the **Yavin** application into your browser with the built in data set for “<a href="https://www.kaggle.com/shivamb/netflix-shows" >Netflix Movie and TV Shows</a>” that is sourced from <a href="https://www.kaggle.com/" >Kaggle</a> data.
