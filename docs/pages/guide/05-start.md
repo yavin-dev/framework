@@ -187,6 +187,11 @@ In the example below, gender, which is a dimension, has a limited number of valu
 
  Operations on Reports
 ---------------------------------------------
+### Change column name
+ As dimensions ![](assets/images/GS_dim_symbol.png) and metics ![](assets/images/GS_metric_symbol.png) get added to the report, there column-name can be updated in the column tab section ![](assets/images/GS_column_expand.png). The column tab section can minimized and expanded.
+
+ <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/GS_report_change_column_name.gif" width="800"/><figcaption> Gif animation -  Changing column name of a report </figcaption> </figure>
+
 ###  Add to Favorites  
  Add your Report to the favorite bucket.  
 

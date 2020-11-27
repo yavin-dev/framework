@@ -1,7 +1,7 @@
 ---
 layout: guide
 group: guide
-title: Quick Start Quide
+title: Quick Start Guide
 ---
 
 

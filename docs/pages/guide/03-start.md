@@ -93,11 +93,13 @@ Defining your Dimensions title_id, show_type, title  (What are Dimensions?)
 ```
   dimensions: [
         {
+          category: Attributes
           name: title_id
           type: TEXT
           definition: '{ {title_id} }'
         }
         {
+          category: Attributes
           name: show_type
           type: TEXT
           definition: '{ {type} }'
@@ -110,16 +112,19 @@ Defining your Measures/Metrics count, total_seasons, movie_duration  (What are M
 ```
 measures: [
         {
+          category: Stats
           name: count
           type: INTEGER
           definition: 'count({ {title_id} })'
         }
         {
+          category: Stats
           name: total_seasons
           type: INTEGER
           definition: "sum(cast (case when { {duration} } like '% Seasons' then REPLACE({ {duration} }, ' Seasons', '') else '0' end AS INT))"
         }
         {
+          category: Stats
           name: movie_duration
           type: INTEGER
           definition: "sum(cast (case when { {duration} } like '% min' then REPLACE({ {duration} }, ' min', '') else '0' end AS INT))"
@@ -134,36 +139,43 @@ Putting it all together, the H2 semantic model will be written as:
       dbConnectionName: DemoConnection
       dimensions: [
         {
+          category: Attributes
           name: title_id
           type: TEXT
           definition: '{ {title_id} }'
         }
         {
+          category: Attributes
           name: show_type
           type: TEXT
           definition: '{ {type} }'
         }
         {
+          category: Attributes
           name: title
           type: TEXT
           definition: '{ {title} }'
         }
         {
+          category: Attributes
           name: director
           type: TEXT
           definition: '{ {director} }'
         }
         {
+          category: Attributes
           name: cast
           type: TEXT
           definition: '{ {cast_list} }'
         }
         {
+          category: Attributes
           name: country
           type: TEXT
           definition: '{ {country} }'
         }
         {
+          category: Date
           name: date_available
           type: TIME
           definition: '{ {date_added} }'
@@ -172,6 +184,7 @@ Putting it all together, the H2 semantic model will be written as:
           }
         }
         {
+          category: Date
           name: release_year
           type: TIME
           definition: '{ {release_year} }'
@@ -180,16 +193,19 @@ Putting it all together, the H2 semantic model will be written as:
           }
         }
         {
+          category: Attributes
           name: film_rating
           type: TEXT
           definition: '{ {rating} }'
         }
         {
+          category: Attributes
           name: genres
           type: TEXT
           definition: '{ {listed_in} }'
         }
         {
+          category: Attributes
           name: description
           type: TEXT
           definition: '{ {description} }'
@@ -197,16 +213,19 @@ Putting it all together, the H2 semantic model will be written as:
       ]
       measures: [
         {
+          category: Stats
           name: count
           type: INTEGER
           definition: 'count({ {title_id} })'
         }
         {
+          category: Stats
           name: total_seasons
           type: INTEGER
           definition: "sum(cast (case when { {duration} } like '% Seasons' then REPLACE({ {duration} }, ' Seasons', '') else '0' end AS INT))"
         }
         {
+          category: Stats
           name: movie_duration
           type: INTEGER
           definition: "sum(cast (case when { {duration} } like '% min' then REPLACE({ {duration} }, ' min', '') else '0' end AS INT))"
