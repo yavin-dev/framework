@@ -26,7 +26,7 @@ $ ./gradlew bootRun
 ** Ctrl-C to Exit **
 ```
 
-***Congratulations you are all set, you can now Open <a href="http://localhost:8080"> http://localhost:8080</a>.***
+***Congratulations you are all set, you can now Open <a href="http://localhost:8080"> http://localhost:8080</a>.*** This will launch the **Yavin** application into your browser with the built in data set for “<a href="https://www.google.com/url?q=https://www.kaggle.com/shivamb/netflix-shows&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw0vjjwg_hSHcq80D3AjOpp1" >Netflix Movie and TV Shows</a>” that is sourced from <a href="https://www.google.com/url?q=https://www.kaggle.com/&amp;sa=D&amp;ust=1606182367630000&amp;usg=AOvVaw2MS0pMaHmAABG0JmQABGOV" >Kaggle</a> data.
 
 <center>
   <figure style="font-size:1vw; color:DodgerBlue;">

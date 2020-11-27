@@ -15,10 +15,6 @@ Yavin UI is an HTML-based browser application that is supported on the 3 recent 
 -   ***Firefox***
 -   ***Safari***
 
-Yavin installation guide
--------------------------------------------------
-The “<a href="">Quick Start Guide</a>” walks you through the **steps to setup Yavin** on your system with a built in "*Netflix and TV Shows*" data.
-
 About data ingestion and data sources
 --------------------------------------------------------------
 
@@ -250,7 +246,6 @@ Yavin pulls and presents all of the semantic model metadata from Elide.
 
 <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/SAI_Model_in_UI.png" width="200" /><figcaption>Result of the model in the UI</figcaption> </figure>
 
-
 Yavin Example Key Elements
 -----------------------------------------------
 The Yavin example project consists of the following key elements :
@@ -263,38 +258,31 @@ The Yavin example project consists of the following key elements :
 1. Example integration tests that verify the Yavin APIs are working correctly.
 1. An application configuration file that configures web service routes, security, and other service level controls.
 
-
-Yavin Quick Start Guide
+Yavin Detailed Installation Guide
 -----------------------------------------------
-Here is the complete quick start steps for setting up Yavin with your data source and your semantic models:
-1.  Check the "<a href="">Quick Start Guide</a>" to install Yavin on your local host
-1.  Upon installation (Step 1) you will have the Yavin repo on your
-    local machine: <a href="https://www.google.com/url?q=https://github.com/yahoo/navi/&amp;sa=D&amp;ust=1606228594056000&amp;usg=AOvVaw10XIwf--cXX0UU921zZVk3" >https://github.com/yahoo/navi/</a>.
-1.  Your repo will include the following key subdirectories:
-
+Here is the complete steps for installing and setting up **Yavin** with **your data-source** and your **semantic models**:
+-  ***Installation***: The “<a href="">Quick Start Guide</a>” walks you through the **steps to setup Yavin** on your system with a built in "*Netflix and TV Shows*" data.
+-  Upon installation (Step 1) you will have the **Yavin** repo on your local machine: <a href="https://github.com/yahoo/navi" >https://github.com/yahoo/navi/</a>.
+-  Your repo will include the following key subdirectories:
 
 |      Path                      |  Purpose                       |
 |---------------------------------|---------------------------------------|
-| ```navi/Packages/webservice/app/src/main/resources/ ```  | Your sample data can reside         |
-| ```navi/Packages/webservice/app/src/main/resources/ ``` | Your SQL queries can reside          |
-| ```navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql``` | Your dialect connection can reside          |
-| ```navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables```  | Your semantic models can reside         |
 | ```navi/docs``` | The markdown of Yavin product overview and user documentation.          |
-| ```navi/scripts```  | The publish script of Yavin        |
+| ```navi/scripts```  | The published script of Yavin        |
+| ```navi/Packages/webservice/app/src/main/resources/ ```  | Your sample data can reside here       |
+| ```navi/Packages/webservice/app/src/main/resources/ ``` | Your SQL queries can reside here          |
+| ```navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql``` | Your dialect connection can reside here        |
+| ```navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables```  | Your semantic models can reside here       |
 {:.table}
-
 1.  🛑  STOP, **If your purpose is check how Yavin works using the demo app provided (Without adding any new data sources or semantic models). Then, you should be all set to Jump to step 10.**
 2.  Select the correct “Data Dialect”. More information on data dialects can be found here: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23dialects&amp;sa=D&amp;ust=1606228594063000&amp;usg=AOvVaw0ii-yOQH1vOGRIOQATpedn" >https://elide.io/pages/guide/v5/04-analytics.html#dialects</a>.
 3.  You must set both the “enable analytic queries” and the “Hjson configuration” feature flags. Reference: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23feature-flags&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw2hVc2JUMB02Pvo3Qw-khHC" >https://elide.io/pages/guide/v5/04-analytics.html#feature-flags</a>.  
 4.  Configure the files layout: Analytic model configuration can either be specified through JVM classes decorated with Elide annotations or Hjson configuration files. <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23file-layout&amp;sa=D&amp;ust=1606228594064000&amp;usg=AOvVaw24D_tV9i7GwhO1RcFecYB0" >https://elide.io/pages/guide/v5/04-analytics.html#file-layout</a>.Path:  ../navi/Packages/
 5.  Set the data source configuration for the Data Source(s) you will be using: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23data-source-configuration&amp;sa=D&amp;ust=1606228594065000&amp;usg=AOvVaw24MdH1Y7-7eGfI1aWGjL6G" >https://elide.io/pages/guide/v5/04-analytics.html#data-source-configuration</a>. Path on where your data source connection can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/db/sql/
 6.  Model your data. Your model may be mapped to one or more physical databases, tables, and columns and need not be a “one to one” mirror of the source semantic models. More details on this step can be found at: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23model-configuration&amp;sa=D&amp;ust=1606228594066000&amp;usg=AOvVaw3z90BeVO5sO_dvqiUivp0o" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>. Path on where your semantic models can reside: ../navi/Packages/webservice/app/src/main/resources/demo-configs/models/tables
-
 7.  Decide what roles users will need and then configure your security model as per these instructions: <a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23security-configuration&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw2oLF9OrpETKWP9ac8EdlTZ" >https://elide.io/pages/guide/v5/04-analytics.html#security-configuration</a>.  
 8.  To avoid having to repeat the same configuration block information multiple times, all Hjson files (table, security, and data source) support a variable substitution feature that allows a JSON structure to be associated to a variable name, and then that variable to be used in configuration files. Details can be found at:<a href="https://www.google.com/url?q=https://elide.io/pages/guide/v5/04-analytics.html%23variable-substitution&amp;sa=D&amp;ust=1606228594067000&amp;usg=AOvVaw38PY8IV7HYVX639BIKv00r" >https://elide.io/pages/guide/v5/04-analytics.html#variable-substitution</a> 
 9.  Before proceeding further, you should validate all of your configuration files. All of the Hjson configuration files are validated by a JSON schema. To validate you configuration, run the following command line:
 10. To run Yavin, execute the following command: ```cd packages/webservice && ./gradlew```
 
-⏱Within minutes, you will be able to launch Yavin on your local browser connection to the “Netflix movies and TV shows data source”, by launching the  following URL: <a href="https://www.google.com/url?q=http://localhost:8080/&amp;sa=D&amp;ust=1606228594068000&amp;usg=AOvVaw2gdZXVvyL6hXTtw2z4ml8p" >http://localhost:8080</a>
-
-This quick start video takes you through the steps on configuring, loading data through Presto, using semantic models and starting to use Yavin. Enjoy!
+⏱Within minutes, you will be able to launch Yavin on your local browser connection to the “Netflix movies and TV shows data source”, by launching the  following URL: <a href="http://localhost:8080">http://localhost:8080</a>
