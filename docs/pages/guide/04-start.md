@@ -119,7 +119,7 @@ Yavin lets you take multiple reports and organize them into a dashboard even if 
 
 <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/GS_dashboard_sample.png" width="800" /><figcaption>Figure - A Typical Yavin Dashboard with a collection of widgets/reports </figcaption> </figure>
 
-From within a Dashboard, you can do all of the following. As always, the on-screen icon is shown beside the command:
+From within a Dashboard, you can do all of the following. The on-screen icon is shown beside the command:
 
 <figure  style="font-size:1vw; color:DodgerBlue;"><img src="assets/images/GS_dashboard_options_long_list.png" width="800" /><figcaption>Figure - From the dashboard view, you can rename, add to favorite, clone, share, delete, add widgets </figcaption> </figure>
 
@@ -136,23 +136,26 @@ From within a Dashboard, you can do all of the following. As always, the on-scre
 These Actions are available on the Dashboard:
 <img  src="assets/images/GS_dashboard_action.png" width="300"/>
 
-### Exploring Dashboards:
+### Exploring and Managing Dashboards:
 Dashboards are designed to be explored intuitively, easily and quickly.
 
-The reports/widgets in a dashboard can be organized, resized, explored, filtered and edited to align with how we want the Dashboard to look like. Below is a brief, animated demo of the different action you can do on a Yavin report :
-
 <figure  style="font-size:1vw; color:DodgerBlue;"><img style="border:2px solid black;" src="assets/images/GS_managing_dashboard.gif" width="800"/><figcaption>Gif animation - Exploring dashboards “in action” </figcaption> </figure>
+
+Dashboards are built by adding reports to them one at a time. There are two ways of adding a report to a dashboard.
+- Through the Dashboard view.
+- Through the report view.
+
+#### Adding Reports to a Dashboard from the Dashboard view
+From the dashboard itself, use the “+ Add Widget” feature as illustrated: <img  src="assets/images/GS_add_widget.png" width="150"/> <br>
+<figure  style="font-size:1vw; color:DodgerBlue;"><img  src="assets/images/GS_add_widget2.png" width="300"/>
+<img  src="assets/images/GS_add_search_widget.png" width="300"/><figcaption>Figure - From the dashboard view, adding a report to a dashboard flow</figcaption> </figure>
 
 1.  Select <img  src="assets/images/GS_add_widget.png" width ="150"/> to add an already existing report to the Dashboard
 1.  Select the report, like this: <img  src="assets/images/GS_add_widget_dialog.png" width="500"/>
 1.  The Report will be added to the dashboard as a widget: <img  src="assets/images/GS_table_row.png" width="700"/>
 1.  The Report / Widget can be resized, edited and deleted: <img  src="assets/images/GS_table_sample.png" width="700"/>
 
-### Managing Dashboards:
-
-#### Adding Reports to a Dashboard:
-Dashboards are built by adding reports to them one at a time. There are two ways of adding a report to a dashboard.
-
+#### Adding Reports to a Dashboard from the Report view
 1.  A report can be added to the dashboard by selecting a previously saved report through the “Add to Dashboard” option as illustrated below:
 <br>
 <img  src="assets/images/GS_dashboard_tool_tip.png" width="300"/>
@@ -160,12 +163,10 @@ Dashboards are built by adding reports to them one at a time. There are two ways
 From report view, adding reports to dashboards <br>
 <figure  style="font-size:1vw; color:DodgerBlue;"><img  src="assets/images/GS_add_to_dashboard.png" width="300"/>
 <img  src="assets/images/GS_add_to_dashboard_select_widget.png" width="300"/><figcaption>Figure - From the report view, adding a report to a dashboard flow</figcaption> </figure>
-1.  From the dashboard itself, use the “+ Add Widget” feature as illustrated: <img  src="assets/images/GS_add_widget.png" width="150"/> <br>
-<figure  style="font-size:1vw; color:DodgerBlue;"><img  src="assets/images/GS_add_widget2.png" width="300"/>
-<img  src="assets/images/GS_add_search_widget.png" width="300"/><figcaption>Figure - From the dashboard view, adding a report to a dashboard flow</figcaption> </figure>
 
 #### Modifying / Editing Dashboards:
-Reports in a Dashboard can be edited by clicking on the pencil icon (<img  src="assets/images/GS_edit.png" width="50"/>) in the header of the widget/report. This will activate the edit mode for that report. Reports in a dashboard can also be resized, re-arranged and deleted.
+The reports/widgets in a dashboard can be organized, resized, explored, filtered and edited to align with how we want the Dashboard to look like. Reports in a Dashboard can be edited by clicking on the pencil icon (<img  src="assets/images/GS_edit.png" width="50"/>) in the header of the widget/report. This will activate the edit mode for that report. Reports in a dashboard can also be resized, re-arranged and deleted.
+
 <figure  style="font-size:1vw; color:DodgerBlue;"><img  style="border:2px solid black;" src="assets/images/GS_dashboard_explore_reports.png" width="800"/><figcaption>Figure - Editing reports on a dashboard</figcaption> </figure>
 
 Dimensions
