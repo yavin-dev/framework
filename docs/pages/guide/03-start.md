@@ -9,7 +9,6 @@ title: Setup and Installation Guide
 
 Yavin UI browser support
 -------------------------------------------------
-
 Yavin UI is an HTML-based browser application that is supported on the 3 recent versions of the following browsers:
 -   ***Chrome***
 -   ***Firefox***
@@ -17,11 +16,9 @@ Yavin UI is an HTML-based browser application that is supported on the 3 recent 
 
 About data ingestion and data sources
 --------------------------------------------------------------
-
 Before you can use Yavin to **visualize and analyze data**, you need to define your **semantic model** and database configuration in Elide. You do so by defining a data source and including the database connection configuration itself and its schema.
 
 ### Data source dialects
-
 Elide analytic APIs **generate SQL queries** against your target database(s). Elide must be **configured with a Dialect** to correctly generate native SQL that matches the database grammar. Elide supports the following dialects by default:
 
 |      Name     |  Availability         |
@@ -48,7 +45,6 @@ About semantic models
 More information on the Elide Analytics query support and data-modeling can be found at this URL: <a href="https://elide.io/pages/guide/v5/04-analytics.html#overview" >https://elide.io/pages/guide/v5/04-analytics.html#overview</a> 
 
 ### Writing your first semantic model
-
 The “<a href="https://elide.io/" >Getting Started with Elide semantic model docs</a>” on models takes you, in depth, through the step to step instruction on writing your Elide semantic model and testing it appropriately. Yavin leverages the Elide HJSON configuration language to define the semantic model.  For complete documentation on the language, visit <a href="https://elide.io/pages/guide/v5/04-analytics.html#model-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#model-configuration</a>.
 
 For a getting started tutorial, visit <a href="https://elide.io/pages/guide/v5/04-analytics.html#example-configuration" >https://elide.io/pages/guide/v5/04-analytics.html#example-configuration</a>.
