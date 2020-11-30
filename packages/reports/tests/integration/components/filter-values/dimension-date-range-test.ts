@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click } from '@ember/test-helpers';
 import { TestContext as Context } from 'ember-test-helpers';
-import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import hbs from 'htmlbars-inline-precompile';
@@ -99,12 +98,12 @@ module('Integration | Component | filter values/dimension date range', function(
       find('.filter-values--dimension-date-range-input')
         ?.textContent?.replace(/\s\s+/g, ' ')
         .trim(),
-      '01/12/2019 and 01/15/2019',
+      'Jan 12, 2019 and Jan 15, 2019',
       'Appropriate dates are displayed when the filter has dates'
     );
 
     this.set('isCollapsed', true);
-    assert.dom().hasText('01/12/2019 and 01/15/2019', 'Selected range is rendered correctly when collapsed');
+    assert.dom().hasText('Jan 12, 2019 and Jan 15, 2019', 'Selected range is rendered correctly when collapsed');
 
     this.set('filter', { values: [] });
 
