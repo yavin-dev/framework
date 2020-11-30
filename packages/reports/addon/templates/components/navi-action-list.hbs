@@ -11,12 +11,12 @@
         @model={{@item.id}}
       >
         <NaviIcon @icon="copy" />
-        <EmberTooltip @text="Save report to enable clone" />
+        <EmberTooltip @popperContainer="body" @text="Save report to enable clone" />
       </LinkTo>
     {{else}}
       <LinkTo @route="reports.report.clone" @model={{@item.id}} class="navi-reports-index__report-control clone">
         <NaviIcon @icon="copy" />
-        <EmberTooltip @text="Clone the report" />
+        <EmberTooltip @popperContainer="body" @text="Clone the report" />
       </LinkTo>
     {{/if}}
   </li>
@@ -31,7 +31,7 @@
         @disabled={{not @item.request.validations.isTruelyValid}}
       >
         <NaviIcon @icon="download" />
-        <EmberTooltip @targetId={{concat "navi-report-action-export-" @index}}>
+        <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-export-" @index}}>
           {{if @item.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
         </EmberTooltip>
       </ExportAction>
@@ -48,7 +48,7 @@
       @disabled={{@item.isNew}}
     >
       <NaviIcon @icon="share" />
-      <EmberTooltip @targetId={{concat "navi-report-action-share-" @index}}>
+      <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-share-" @index}}>
         {{if @item.isNew "Save report to enable share" "Share the report"}}
       </EmberTooltip>
     </CommonActions::Share>
@@ -68,7 +68,7 @@
           @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
           @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
         >
-          <EmberTooltip @targetId={{concat "navi-report-action-schedule-" @index}}>
+          <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-schedule-" @index}}>
             {{if @item.request.validations.isTruelyValid "Schedule the report" "Validate report to enable scheduling"}}
           </EmberTooltip>
         </CommonActions::Schedule>
@@ -86,7 +86,7 @@
         @deleteAction={{item-action "DELETE_ITEM" @item}}
       >
         <NaviIcon @icon="trash-o" />
-        <EmberTooltip @text="Delete the report" />
+        <EmberTooltip @popperContainer="body" @text="Delete the report" />
       </CommonActions::Delete>
     </li>
 
