@@ -2,6 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, click } from '@ember/test-helpers';
 import { TestContext as Context } from 'ember-test-helpers';
+import { A as arr } from '@ember/array';
 import { get } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import hbs from 'htmlbars-inline-precompile';
@@ -38,10 +39,11 @@ module('Integration | Component | filter values/dimension date range', function(
       />`);
   });
 
-  test('displayed dates and update actions', async function(this: TestContext, assert) {
+  test('displayed dates and update actions', async function(assert) {
     assert.expect(6);
 
     this.set('onUpdateFilter', () => null);
+
     assert.equal(
       find('.filter-values--dimension-date-range-input')
         ?.textContent?.replace(/\s\s+/g, ' ')
@@ -50,14 +52,7 @@ module('Integration | Component | filter values/dimension date range', function(
       'Appropriate placeholders are displayed when the filter has no dates'
     );
 
-    const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
-    this.set(
-      'filter',
-      fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
-        '2019-01-05',
-        ''
-      ])
-    );
+    this.set('filter', { values: arr(['2019-01-05', '']) });
 
     //Check that setting low value sends the new date value to the action
     this.set('onUpdateFilter', (filter: Partial<FilterFragment>) => {
@@ -67,13 +62,7 @@ module('Integration | Component | filter values/dimension date range', function(
     await click('.ember-power-calendar-day[data-date="2019-01-12"]');
 
     //Set a high value so that the calendar opens to January 2019 instead of the month that this test is run
-    this.set(
-      'filter',
-      fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
-        '2019-01-05',
-        '2019-01-12'
-      ])
-    );
+    this.set('filter', { values: arr(['2019-01-05', '2019-01-12']) });
 
     //Check that setting high value sends the new date value to the action
     this.set('onUpdateFilter', (filter: Partial<FilterFragment>) => {
@@ -87,13 +76,7 @@ module('Integration | Component | filter values/dimension date range', function(
     await click('.ember-power-calendar-day[data-date="2019-01-15"]');
 
     //Check that dates are displayed correctly
-    this.set(
-      'filter',
-      fragmentFactory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', [
-        '2019-01-12',
-        '2019-01-15'
-      ])
-    );
+    this.set('filter', { values: arr(['2019-01-12', '2019-01-15']) });
     assert.equal(
       find('.filter-values--dimension-date-range-input')
         ?.textContent?.replace(/\s\s+/g, ' ')
