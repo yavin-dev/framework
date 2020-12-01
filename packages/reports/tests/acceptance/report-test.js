@@ -148,9 +148,9 @@ module('Acceptance | Navi Report', function(hooks) {
     //set the filter interval
     await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day[data-date="2020-11-05"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day[data-date="2020-11-10"]');
+    await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
 
     await click('.navi-report__copy-api-btn .get-api__btn');
 

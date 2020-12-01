@@ -19,7 +19,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
   });
 
   test('multi datasource report', async function(assert) {
-    assert.expect(13);
+    assert.expect(14);
 
     await visit('/reports/new');
 
@@ -67,10 +67,13 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     assert
       .dom('.report-builder__container--filters--collapsed')
       .containsText(
-        'Filters Container (id) equals 1 Date Time (day) between (<=>) 11/04/2020 and 11/05/2020 Used Amount greater than (>) 30',
+        'Filters Container (id) equals 1 Date Time (day) between (<=>)',
         'Collapsed filter contains right text'
       );
 
+    assert
+      .dom('.report-builder__container--filters--collapsed')
+      .containsText('Used Amount greater than (>) 30', 'Collapsed filter contains right text');
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map(el => el.textContent.trim()),
