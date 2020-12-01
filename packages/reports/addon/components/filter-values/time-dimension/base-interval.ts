@@ -6,6 +6,7 @@ import { computed } from '@ember/object';
 import { Moment } from 'moment';
 import { getPeriodForGrain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
+//@ts-expect-error
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import BaseTimeDimensionFilter from './base';
 

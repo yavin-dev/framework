@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, settled } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { TestContext as Context } from 'ember-test-helpers';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import hbs from 'htmlbars-inline-precompile';

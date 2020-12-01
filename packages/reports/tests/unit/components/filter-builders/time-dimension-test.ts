@@ -1,8 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Interval from 'navi-data/utils/classes/interval';
-import moment from 'moment';
 import { set } from '@ember/object';
+//@ts-ignore
 import { createGlimmerComponent } from 'navi-core/test-support';
 import TimeDimensionFilterBuilder from 'navi-reports/components/filter-builders/time-dimension';
 import StoreService from '@ember-data/store';

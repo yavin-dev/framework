@@ -1,6 +1,7 @@
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import Interval from 'navi-data/utils/classes/interval';
-import { Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+//@ts-expect-error
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 
 /**
@@ -11,6 +12,6 @@ export function getDateRangeFormat(filter: FilterFragment) {
   const [startDate, endDate] = filter.values as string[];
   const timeGrain = filter.parameters.grain as Grain;
   const { start, end } = Interval.parseFromStrings(startDate, endDate).asMomentsForTimePeriod(timeGrain);
-  end.subtract(1, timeGrain);
+  end.subtract(1, getPeriodForGrain(timeGrain));
   return formatDateRange(start, end, timeGrain);
 }

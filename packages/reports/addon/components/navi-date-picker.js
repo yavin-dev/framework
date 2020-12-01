@@ -11,7 +11,7 @@
  *   />
  */
 import Component from '@ember/component';
-import { get, set, computed, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import { assert } from '@ember/debug';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
