@@ -4,7 +4,7 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { assert } from '@ember/debug';
 
 export type LegacyGoalGaugeConfig = {

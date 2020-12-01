@@ -8,7 +8,7 @@ import MetricChartBuilder from 'navi-core/chart-builders/metric';
 //@ts-ignore
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';
 import EmberObject from '@ember/object';
-import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import { setOwner } from '@ember/application';

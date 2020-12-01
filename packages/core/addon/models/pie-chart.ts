@@ -10,7 +10,7 @@ import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visua
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
 import RequestFragment from './bard-request-v2/request';
-import NaviFactResponse from 'navi-data/addon/models/navi-fact-response';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 const SERIES_PATH = 'metadata.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;

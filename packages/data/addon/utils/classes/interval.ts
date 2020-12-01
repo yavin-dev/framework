@@ -285,7 +285,7 @@ export default class Interval {
       return new Duration(property);
     } else {
       // Use moment's isValid to determine if string matches the date format
-      let result = moment(property, format);
+      let result = moment.parseZone(property, format);
 
       if (result.isValid()) {
         return result;
