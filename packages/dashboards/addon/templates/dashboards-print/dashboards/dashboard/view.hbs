@@ -1,7 +1,34 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-dashboard navi-dashboard--print">
+<div class="navi-dashboard navi-dashboard--print navi-dashboard--print-{{this.fileType}}">
   <div class="navi-dashboard__body">
-    {{#if @model.dashboard.widgets.length}}
+    {{#if (not @model.dashboard.widgets.length)}}
+      <div class="error-container">
+        <div class="error">
+          <p>Looks like this dashboard has no widgets.</p>
+        </div>
+      </div>
+    {{else if (eq this.fileType 'png')}}
+       <GridStack
+      {{!-- TODO: Investigate why @width causes 'Failing to save a new widget' test to fail --}}
+        @width="12"
+        @locked={{true}}
+        @noMove={{true}}
+        @noResize={{true}}
+      >
+        {{#each @model.dashboard.presentation.layout as |layout|}}
+          {{#with (get-widget layout.widgetId) as |widget|}}
+            {{#if widget}}
+              <NaviWidget
+                @model={{widget}}
+                @layoutOptions={{layout}}
+                @taskInstance={{get @model.taskByWidget widget.id}}
+                @canEdit={{false}}
+              />
+            {{/if}}
+          {{/with}}
+        {{/each}}
+      </GridStack>
+    {{else}}
       <div class="navi-dashboard__widgets">
         {{#each @model.dashboard.presentation.layout as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
@@ -13,12 +40,6 @@
             {{/if}}
           {{/with}}
         {{/each}}
-      </div>
-    {{else}}
-      <div class="error-container">
-        <div class="error">
-          <p>Looks like this dashboard has no widgets.</p>
-        </div>
       </div>
     {{/if}}
   </div>

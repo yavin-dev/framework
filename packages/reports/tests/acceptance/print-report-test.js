@@ -21,10 +21,12 @@ module('Acceptance | print report', function(hooks) {
   });
 
   test('print reports view', async function(assert) {
-    assert.expect(5);
+    assert.expect(6);
     await visit('/print/reports/1/view');
 
     assert.dom('.navi-report__title').hasText('Hyrule News', 'Should show report title');
+
+    assert.dom('.print-report-view__pdf').exists('Should load right filetype class');
 
     assert.dom('.print-report-view__visualization').isVisible('Should show report visualization');
 
@@ -85,5 +87,14 @@ module('Acceptance | print report', function(hooks) {
     assert
       .dom('.line-chart-widget')
       .isVisible('The visualization type passed through the model query param is visible');
+  });
+
+  test('print png report', async function(assert) {
+    assert.expect(2);
+    await visit('/print/reports/1?fileType=png');
+
+    assert.equal(currentURL(), '/print/reports/1/view?fileType=png', 'Redirect to view sub route with correct params');
+
+    assert.dom('.print-report-view__png').exists('Should load right filetype class');
   });
 });
