@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.PropertiesFileTransformer
 import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -77,23 +75,8 @@ tasks.register<Copy>("copyNaviApp") {
     into("$buildDir/resources/main/META-INF/resources/ui")
 }
 
-tasks.withType<ShadowJar> {
-    classifier = ""
-
-    // Required for Spring
-    mergeServiceFiles()
-    append("META-INF/spring.handlers")
-    append("META-INF/spring.schemas")
-    transform(PropertiesFileTransformer().apply {
-        paths = listOf("META-INF/spring.factories")
-        mergeStrategy = "append"
-    })
-    manifest {
-        attributes["Main-Class"] = "com.yahoo.navi.ws.AppKt"
-    }
-}
 
 tasks.register<Exec>("execJar") {
-    dependsOn("shadowJar")
+    dependsOn("bootJar")
     commandLine = listOf("java", "-jar", "build/libs/app-${project.version}.jar")
 }
