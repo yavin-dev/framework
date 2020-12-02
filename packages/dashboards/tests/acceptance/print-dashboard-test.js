@@ -1,4 +1,4 @@
-import { currentURL, visit } from '@ember/test-helpers';
+import { currentURL, visit, findAll } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -32,7 +32,7 @@ module('Acceptance | print dashboard', function(hooks) {
     assert.dom('.dashboard-actions').isNotVisible('Dashboard actions should not be visible');
 
     assert.deepEqual(
-      [...document.querySelectorAll('.navi-widget__title')].map(el => el.textContent.trim()),
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
       'Dashboard widget titles should appear'
     );
@@ -43,9 +43,9 @@ module('Acceptance | print dashboard', function(hooks) {
 
     assert.dom('.line-chart-widget').isVisible('Line chart shows up');
     assert.deepEqual(
-      [...document.querySelectorAll('.line-chart-widget .c3-legend-item')].map(el => el.textContent),
+      findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent),
       ['Ad Clicks', 'Nav Link Clicks'],
-      'The legends fill in with widget dimensions'
+      'The legends fill in with widget metrics'
     );
 
     assert.dom('.table-widget').isVisible('Table shows up');
@@ -62,7 +62,7 @@ module('Acceptance | print dashboard', function(hooks) {
     assert.dom('.grid-stack').exists('Grid stack exists in PNG view');
 
     assert.deepEqual(
-      [...document.querySelectorAll('.navi-widget__title')].map(el => el.textContent.trim()),
+      findAll('.navi-widget__title').map(el => el.textContent.trim()),
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
       'Dashboard widget titles should appear'
     );
@@ -73,9 +73,9 @@ module('Acceptance | print dashboard', function(hooks) {
 
     assert.dom('.line-chart-widget').isVisible('Line chart shows up');
     assert.deepEqual(
-      [...document.querySelectorAll('.line-chart-widget .c3-legend-item')].map(el => el.textContent),
+      findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent),
       ['Ad Clicks', 'Nav Link Clicks'],
-      'The legends fill in with widget dimensions'
+      'The legends fill in with widget metrics'
     );
 
     assert.dom('.table-widget').isVisible('Table shows up');
