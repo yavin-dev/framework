@@ -661,7 +661,7 @@ export default [
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: []
+          values: ['11-04-2020', '11-06-2020']
         }
       ],
       columns: [
