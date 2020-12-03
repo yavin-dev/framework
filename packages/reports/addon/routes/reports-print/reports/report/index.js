@@ -1,8 +1,7 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get } from '@ember/object';
 import Route from '@ember/routing/route';
 
 export default Route.extend({
@@ -11,7 +10,7 @@ export default Route.extend({
    * @method redirect
    * @param {DS.Model} model - report model record
    */
-  redirect(model) {
-    this.replaceWith('reports-print.reports.report.view', get(model, 'id'));
+  redirect(model, transition) {
+    this.replaceWith('reports-print.reports.report.view', model.id, { queryParams: transition.to?.queryParams });
   }
 });

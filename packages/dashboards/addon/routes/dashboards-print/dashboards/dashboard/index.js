@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -10,8 +10,8 @@ export default Route.extend({
    * @method redirect
    * @override
    */
-  redirect() {
+  redirect(model, transition) {
     let { id } = this.modelFor('dashboards-print.dashboards.dashboard');
-    this.replaceWith('dashboards-print.dashboards.dashboard.view', id);
+    this.replaceWith('dashboards-print.dashboards.dashboard.view', id, { queryParams: transition.to?.queryParams });
   }
 });
