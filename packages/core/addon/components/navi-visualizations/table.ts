@@ -267,9 +267,11 @@ export default class Table extends Component<Args> {
     const sortDirection = (sort?.direction || 'none') as SortDirection;
     const direction = this._getNextSortDirection(type, sortDirection);
     //TODO Fetch from report action dispatcher service
-    const actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
-
-    this.args.onUpdateReport(actionType, column.fragment, direction);
+    if (direction === 'none') {
+      this.args.onUpdateReport('removeSort', column.fragment);
+    } else {
+      this.args.onUpdateReport('upsertSort', column.fragment, direction);
+    }
   }
 
   @action

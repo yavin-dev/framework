@@ -20,7 +20,6 @@ import { RequestV2, SortDirection } from 'navi-data/adapters/facts/interface';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import Store from '@ember-data/store';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { ColumnMetadataModels } from './fragments/base';
@@ -380,17 +379,6 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   removeSort(sort: SortFragment) {
     this.sorts.removeFragment(sort);
   }
-
-  /**
-   * Removes all sorts on this metric
-   * @param {ColumnMetadata} metricMetadataModel - the metadata of the metric to remove sorts for
-   */
-  //TODO create metric type
-  removeSortByMeta(metricMetadataModel: ColumnMetadataModels) {
-    const sortsToRemove = this.sorts.filter(sort => sort.columnMetadata === metricMetadataModel);
-    sortsToRemove.forEach(sort => this.removeSort(sort));
-  }
-
   /**
    * Removes a sort if it exists by the given metric name
    * @param {string} metricName - the canonical name of the metric to remove sorts for
@@ -400,20 +388,6 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     if (sort) {
       this.removeSort(sort);
     }
-  }
-
-  /**
-   * Removes a sort if it exists by the given metric with the given parameters
-   * @param {ColumnMetadata} metricMetadataModel - the   metadata of the metric to remove sorts
-   * @param {object} parameters - the parameters applied to the metric
-   */
-  removeSortWithParams(metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
-    this.removeSortByMetricName(
-      canonicalizeMetric({
-        metric: metricMetadataModel.id,
-        parameters
-      })
-    );
   }
 
   /**
