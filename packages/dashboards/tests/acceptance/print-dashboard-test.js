@@ -12,14 +12,14 @@ module('Acceptance | print dashboard', function(hooks) {
     await visit('/print/dashboards/1');
 
     assert.equal(currentURL(), '/print/dashboards/1/view', 'Redirect to view sub route');
-    assert.dom('.navi-dashboard--print-pdf').exists('Correct filetype classes are present');
+    assert.dom('.navi-dashboard--print-single-column').exists('Correct filetype classes are present');
   });
 
   test('print dashboards view', async function(assert) {
     assert.expect(14);
     await visit('/print/dashboards/1/view');
 
-    assert.dom('.navi-dashboard--print-pdf').exists('Correct filetype classes are present');
+    assert.dom('.navi-dashboard--print-single-column').exists('Correct filetype classes are present');
 
     assert.dom('.grid-stack').doesNotExist('grid stack is not loaded for pdf');
 
@@ -52,12 +52,12 @@ module('Acceptance | print dashboard', function(hooks) {
     assert.dom('.table-widget .table-row').exists('Table rows show up');
   });
 
-  test('Dashboard view in PNG mode', async function(assert) {
+  test('Dashboard view in grid mode', async function(assert) {
     assert.expect(11);
-    await visit('/print/dashboards/1?fileType=png');
-    assert.equal(currentURL(), '/print/dashboards/1/view?fileType=png', 'Redirect to view sub route');
+    await visit('/print/dashboards/1?layout=grid');
+    assert.equal(currentURL(), '/print/dashboards/1/view?layout=grid', 'Redirect to view sub route');
 
-    assert.dom('.navi-dashboard--print-png').exists('Correct filetype classes are present');
+    assert.dom('.navi-dashboard--print-grid').exists('Correct filetype classes are present');
 
     assert.dom('.grid-stack').exists('Grid stack exists in PNG view');
 

@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-dashboard navi-dashboard--print navi-dashboard--print-{{this.fileType}}">
+<div class="navi-dashboard navi-dashboard--print navi-dashboard--print-{{if this.isGrid 'grid' 'single-column'}}">
   <div class="navi-dashboard__body">
     {{#if (not @model.dashboard.widgets.length)}}
       <div class="error-container">
@@ -7,7 +7,7 @@
           <p>Looks like this dashboard has no widgets.</p>
         </div>
       </div>
-    {{else if (eq this.fileType 'png')}}
+    {{else if this.isGrid}}
        <GridStack
       {{!-- TODO: Investigate why @width causes 'Failing to save a new widget' test to fail --}}
         @width="12"

@@ -5,9 +5,17 @@
 import Controller from '@ember/controller';
 
 export default class DashboardsPrintDashboardsDashboard extends Controller {
-  queryParams = ['fileType'];
+  queryParams = ['layout'];
 
-  fileType = 'pdf';
+  layout = 'single-column';
+
+  get isSingleColumn(): boolean {
+    return this.layout.toLowerCase() === 'single-column';
+  }
+
+  get isGrid(): boolean {
+    return this.layout.toLowerCase() === 'grid';
+  }
 }
 
 declare module '@ember/controller' {
