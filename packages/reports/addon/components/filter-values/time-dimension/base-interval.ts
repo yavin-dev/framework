@@ -6,7 +6,7 @@ import { computed } from '@ember/object';
 import { Moment } from 'moment';
 import { getPeriodForGrain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
-//@ts-expect-error
+//@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import BaseTimeDimensionFilter from './base';
 
@@ -69,7 +69,8 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
       return undefined;
     }
 
-    const end = calendarDateTimePeriod === 'week' ? endDate.clone().endOf('isoWeek') : endDate;
+    // TODO support calendarDateTimePeriod === 'week'
+    const end = calendarDateTimePeriod === 'isoWeek' ? endDate.clone().endOf('isoWeek') : endDate;
     return end.format(calendarTriggerFormat);
   }
 

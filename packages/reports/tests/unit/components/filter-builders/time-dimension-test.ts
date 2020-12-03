@@ -91,10 +91,10 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
 
     assert.deepEqual(intervalId('current', 'next'), 'current', 'Use current operator for current/next interval');
 
-    assert.deepEqual(intervalId('P1D', 'current'), 'inPast', 'Use lookback operator for P_G/current interval');
-    assert.deepEqual(intervalId('P10W', 'current'), 'inPast', 'Use lookback operator for P_G/current interval');
-    assert.deepEqual(intervalId('P2M', 'current'), 'inPast', 'Use lookback operator for P_G/current interval');
-    assert.deepEqual(intervalId('P3Y', 'current'), 'inPast', 'Use lookback operator for P_G/current interval');
+    assert.deepEqual(intervalId('P1D', 'current'), 'inPast', 'Use lookback operator for P1D/current interval');
+    assert.deepEqual(intervalId('P10W', 'current'), 'inPast', 'Use lookback operator for P10W/current interval');
+    assert.deepEqual(intervalId('P2M', 'current'), 'inPast', 'Use lookback operator for P2M/current interval');
+    assert.deepEqual(intervalId('P3Y', 'current'), 'inPast', 'Use lookback operator for P3Y/current interval');
 
     assert.deepEqual(intervalId('2019-01-01', '2019-01-02'), 'in', 'Use between operator for specific dates interval');
 

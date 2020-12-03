@@ -1,7 +1,7 @@
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import Interval from 'navi-data/utils/classes/interval';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
-//@ts-expect-error
+//@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 
 /**

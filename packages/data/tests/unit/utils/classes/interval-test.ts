@@ -339,7 +339,7 @@ module('Unit | Utils | Interval Class', function() {
     );
 
     assert.ok(
-      (Interval.fromString('2014-10-10 00:00:00.000') as Moment).isSame(moment('2014-10-10', FORMAT)),
+      (Interval.fromString('2014-10-10 00:00:00.000') as Moment).isSame(moment.utc('2014-10-10', FORMAT)),
       'Moments can be parsed from API date string'
     );
 
