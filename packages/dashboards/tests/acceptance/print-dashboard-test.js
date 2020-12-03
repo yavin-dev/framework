@@ -59,7 +59,7 @@ module('Acceptance | print dashboard', function(hooks) {
 
     assert.dom('.navi-dashboard--print-grid').exists('Correct filetype classes are present');
 
-    assert.dom('.grid-stack').exists('Grid stack exists in PNG view');
+    assert.dom('.grid-stack').exists('Grid stack exists in grid layout');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map(el => el.textContent.trim()),
