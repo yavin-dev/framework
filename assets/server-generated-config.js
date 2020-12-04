@@ -6,5 +6,6 @@ window.NAVI_APP = {
     uri: "https://www.naviapp.io/persistence",
     timeout: 90000
   },
-	FEATURES: {},
+  user: 'navi_user',
+	FEATURES: {}
 };
