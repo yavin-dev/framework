@@ -5,6 +5,6 @@ window.NAVI_APP = {
     type: "elide",
     uri: "https://www.naviapp.io/persistence",
     timeout: 90000
-  }
+  },
 	FEATURES: {},
 };
