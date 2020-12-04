@@ -50,6 +50,7 @@ export type Args = {
 export type TableColumn = {
   fragment: ColumnFragment;
   attributes: TableColumnAttributes;
+  sortDirection: string | undefined;
   columnId: string;
 };
 
