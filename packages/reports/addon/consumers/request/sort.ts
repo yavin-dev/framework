@@ -31,10 +31,10 @@ export default class SortConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const sort = request.sorts.find(sort => sort.canonicalName === columnFragment.canonicalName);
+      const sorts = request.sorts.filter(sort => sort.canonicalName === columnFragment.canonicalName);
 
-      if (sort) {
-        set(sort, 'direction', direction);
+      if (sorts.length >= 1) {
+        sorts.forEach(sort => set(sort, 'direction', direction));
       } else {
         request.addSort({
           type: columnFragment.type,
@@ -54,10 +54,9 @@ export default class SortConsumer extends ActionConsumer {
     [RequestActions.REMOVE_SORT](this: SortConsumer, route: Route, columnFragment: ColumnFragment) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const sort = request.sorts.find(sort => sort.canonicalName === columnFragment.canonicalName);
-      if (sort) {
-        request.removeSort(sort);
-      }
+      const sorts = request.sorts.filter(sort => sort.canonicalName === columnFragment.canonicalName);
+
+      sorts.forEach(sort => request.removeSort(sort));
     },
 
     /**
