@@ -36,7 +36,7 @@ export type FilterOperator =
   | 'nbet'
   | 'contains';
 
-export const SORT_DIRECTIONS = ['desc', 'asc'];
+export const SORT_DIRECTIONS = <const>['desc', 'asc'];
 
 export type Parameters = Dict<string>;
 
