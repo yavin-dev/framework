@@ -9,7 +9,7 @@ import { capitalize } from '@ember/string';
 import moment from 'moment';
 import FilterFragment from 'navi-core/addon/models/bard-request-v2/fragments/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
-import { getFirstDayOfGrain, getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { DateTimePeriod, getFirstDayOfGrain, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterBuilderOperators } from './base';
 
@@ -37,13 +37,18 @@ type TimeDimensionFilterArgs = BaseFilterBuilderComponent['args'] & {
  * Converts a grain into a period usable for the interval class
  * @param grain - the grain to turn into a period
  */
-function intervalPeriodForGrain(grain: Grain) {
+type DateGrain = Exclude<DateTimePeriod, 'second' | 'minute' | 'hour'>;
+function intervalPeriodForGrain(grain: Grain): DateGrain {
   if (grain === 'quarter') {
     return 'month';
-  } else if (grain === 'hour') {
-    return 'day';
   }
-  return getPeriodForGrain(grain);
+
+  let period = getPeriodForGrain(grain);
+  if (period === 'hour' || period === 'minute' || period === 'second') {
+    period = 'day';
+  }
+
+  return period;
 }
 
 export default class TimeDimensionFilterBuilder extends BaseFilterBuilderComponent<TimeDimensionFilterArgs> {
