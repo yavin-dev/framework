@@ -407,9 +407,11 @@ function _getResponseBody(db, asyncQueryRecord) {
       });
     }
     return JSON.stringify({
-      errors: {
-        message: 'Invalid query sent with AsyncQuery'
-      }
+      errors: [
+        {
+          message: 'Invalid query sent with AsyncQuery'
+        }
+      ]
     });
   }
   return null;

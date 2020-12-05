@@ -23,7 +23,7 @@ export default class NaviFactsService extends Service {
    * @returns {Adapter} adapter instance for type
    */
   _adapterFor(type = 'bard'): NaviFactAdapter {
-    return getOwner(this).lookup(`adapter:facts/${type}`);
+    return getOwner(this).lookup(`adapter:facts/${type}`) as NaviFactAdapter;
   }
 
   /**
@@ -33,7 +33,7 @@ export default class NaviFactsService extends Service {
    * @returns {Serializer} serializer instance for type
    */
   _serializerFor(type = 'bard'): NaviFactSerializer {
-    return getOwner(this).lookup(`serializer:facts/${type}`);
+    return getOwner(this).lookup(`serializer:facts/${type}`) as NaviFactSerializer;
   }
 
   /**
@@ -87,9 +87,14 @@ export default class NaviFactsService extends Service {
     const adapter = this._adapterFor(type);
     const serializer = this._serializerFor(type);
 
-    const payload = await adapter.fetchDataForRequest(request, options);
-    const response = serializer.normalize(payload, request);
-    return NaviFactsModel.create({ request, response, _factService: this });
+    try {
+      const payload = await adapter.fetchDataForRequest(request, options);
+      const response = serializer.normalize(payload, request);
+      return NaviFactsModel.create({ request, response, _factService: this });
+    } catch (e) {
+      const errorModel: Error = serializer.extractError(e, request);
+      throw errorModel;
+    }
   }
 
   /**

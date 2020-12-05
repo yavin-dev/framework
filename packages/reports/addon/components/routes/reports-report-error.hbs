@@ -1,0 +1,14 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviInfoMessage class="routes-reports-report-error">
+  <NaviIcon @icon="warning" class="routes-reports-report-error__icon"/>
+  <h4 class="routes-reports-report-error__message">{{this.message}}</h4>
+  <ul class="routes-reports-report-error__error-list">
+    {{#each this.details as | detail | }}
+      <li class="navi-info-message__error-list-item">{{detail}} </li>
+    {{else}}
+      <li class="navi-info-message__error-list-item">Unexpected Error</li>
+    {{/each}}
+  </ul>
+  {{!-- The App will handle the look and feel of this component --}}
+  <SubmitDefect />
+</NaviInfoMessage>

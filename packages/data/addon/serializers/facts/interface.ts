@@ -5,9 +5,7 @@
 
 import { RequestV1, RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ResponsePayload = any;
+import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
 export interface ResponseV1 {
   readonly rows: Array<Record<string, unknown>>;
@@ -27,5 +25,12 @@ export default interface NaviFactSerializer {
    * @param payload - payload to normalize
    * @param request - request for response payload
    */
-  normalize(payload: ResponsePayload, request: RequestV1 | RequestV2): NaviFactResponse | undefined;
+  normalize(payload: unknown, request: RequestV1 | RequestV2): NaviFactResponse | undefined;
+
+  /**
+   * Extract errors from server
+   * @param payload - payload to normalize
+   * @param request - request for response payload
+   */
+  extractError(payload: unknown, _request: RequestV1 | RequestV2): NaviAdapterError;
 }

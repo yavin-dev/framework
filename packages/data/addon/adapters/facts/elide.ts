@@ -215,11 +215,18 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @param options
    */
-  fetchDataForRequest(
+  async fetchDataForRequest(
     this: ElideFactsAdapter,
     request: RequestV2,
     options: RequestOptions = {}
   ): Promise<AsyncQueryResponse> {
-    return this.fetchDataForRequestTask.perform(request, options);
+    const payload = await this.fetchDataForRequestTask.perform(request, options);
+    const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
+    const responseBody = JSON.parse(responseStr);
+    if (responseBody.errors) {
+      throw payload;
+    } else {
+      return payload;
+    }
   }
 }
