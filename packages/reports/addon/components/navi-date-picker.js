@@ -67,7 +67,7 @@ class NaviDatePicker extends Component {
       newDate = date.clone().local(true);
     }
 
-    if (!date.isSame(previousDate)) {
+    if (date && !date.isSame(previousDate)) {
       set(this, 'selectedDate', newDate);
       set(this, 'centerDate', newDate);
     }
