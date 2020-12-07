@@ -55,10 +55,10 @@ export default Trigger.extend({
 
     /**
      * Grabs text pasted into search input and opens the bulk import modal if delimeter is present
-     *
      * @action onPaste
      * @param {ClipboardEvent} pasteEvent
      */
+    // TODO Paste has been disabled since bulk import is not working
     onPaste(pasteEvent) {
       // Get pasted data via clipboard API
       let clipboardData = pasteEvent.clipboardData || window.clipboardData,

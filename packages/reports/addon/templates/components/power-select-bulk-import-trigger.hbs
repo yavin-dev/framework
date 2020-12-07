@@ -36,7 +36,8 @@
       placeholder={{maybePlaceholder}}
       disabled={{select.disabled}}
       oninput={{action "onInput"}}
-      onPaste={{action "onPaste"}}
+      {{!-- TODO Paste has been disabled since bulk import is not working --}}
+      {{!-- onPaste={{action "onPaste"}} --}}
       onFocus={{onFocus}}
       onBlur={{onBlur}}
       tabindex={{tabindex}}
