@@ -68,9 +68,9 @@ export default Trigger.extend({
 
       if (isBulkImportRequest) {
         setProperties(this, {
-          _showBulkImport: true,
-          _bulkImportQueryIds: queryIds,
-          _bulkImportRawValue: pastedData
+          //_showBulkImport: true,
+          //_bulkImportQueryIds: queryIds,
+          //_bulkImportRawValue: pastedData
         });
       }
     }
