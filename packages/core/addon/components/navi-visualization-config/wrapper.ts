@@ -4,8 +4,8 @@
  */
 
 import Component from '@glimmer/component';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import VisualizationModel from '../../models/visualization';
 
 type Args = {

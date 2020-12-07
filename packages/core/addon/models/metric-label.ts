@@ -7,7 +7,7 @@ import VisualizationBase from './visualization';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
 import { attr } from '@ember-data/model';
 import RequestFragment from './bard-request-v2/request';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { buildValidations, validator } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 

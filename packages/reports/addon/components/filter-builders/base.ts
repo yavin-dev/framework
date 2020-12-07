@@ -8,36 +8,31 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import EmberArray from '@ember/array';
 import { assert } from '@ember/debug';
-import { FilterOperator } from 'navi-data/addon/adapters/facts/interface';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { FilterOperator } from 'navi-data/adapters/facts/interface';
 
 interface BaseFilterBuilderArgs {
   filter: FilterFragment;
+  request: RequestFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-export type FilterBuilderOperators = {
+export interface FilterBuilderOperators {
   id: FilterOperator;
   name: string;
   valuesComponent: string;
-};
+}
 
-export type FilterConfig = {
-  subject: FilterFragment;
-  operator: FilterBuilderOperators;
-  values: EmberArray<string | number>;
-  validations?: TODO;
-};
-
-export default class BaseFilterBuilder extends Component<BaseFilterBuilderArgs> {
+export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFilterBuilderArgs> extends Component<T> {
   get supportedOperators(): Array<FilterBuilderOperators> {
     return [];
   }
 
   get selectedOperator(): FilterBuilderOperators {
-    const operator = this.supportedOperators.find(({ id }) => id === this.args.filter.operator);
-    assert(`Filter operator: '${this.args.filter.operator}' is not supported in: ${this.constructor.name}`, operator);
+    const { operator: operatorId } = this.args.filter;
+    const operator = this.supportedOperators.find(({ id }) => id === operatorId);
+    assert(`Filter operator: '${operatorId}' is not supported in: ${this.constructor.name}`, operator);
     return operator;
   }
 

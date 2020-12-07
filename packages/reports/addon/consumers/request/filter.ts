@@ -67,6 +67,7 @@ export default class FilterConsumer extends ActionConsumer {
             this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, columnMetadata, parameters);
             break;
           case 'dimension':
+          case 'timeDimension':
             this.requestActionDispatcher.dispatch(
               RequestActions.ADD_DIMENSION_FILTER,
               route,
@@ -74,8 +75,6 @@ export default class FilterConsumer extends ActionConsumer {
               parameters
             );
             break;
-          case 'timeDimension':
-            throw new Error('TODO');
         }
       } else {
         //TODO fix me

@@ -1,6 +1,6 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export default class ApplicationRoute extends Route {
   /**
