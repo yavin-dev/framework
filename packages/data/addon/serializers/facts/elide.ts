@@ -74,7 +74,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
       }
     }
     if (isApolloError(payload)) {
-      errors = (payload.errors || [])?.map(e => ({ detail: e.message }));
+      errors = (payload.errors || []).map(e => ({ detail: e.message }));
     }
     return new NaviFactError('Elide Request Failed', errors, payload);
   }

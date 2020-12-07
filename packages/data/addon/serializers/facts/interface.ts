@@ -32,5 +32,5 @@ export default interface NaviFactSerializer {
    * @param payload - payload to normalize
    * @param request - request for response payload
    */
-  extractError(payload: unknown, _request: RequestV1 | RequestV2): NaviAdapterError;
+  extractError(payload: unknown, request: RequestV1 | RequestV2): NaviAdapterError;
 }
