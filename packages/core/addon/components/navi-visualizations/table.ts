@@ -21,6 +21,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
+import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -28,8 +29,8 @@ const HEADER_TITLE = {
 };
 type TotalType = keyof typeof HEADER_TITLE;
 
-type SortDirection = 'asc' | 'desc' | 'none';
-const NEXT_SORT_DIRECTION: Record<SortDirection, SortDirection> = {
+export type TableSortDirection = SortDirection | 'none';
+const NEXT_SORT_DIRECTION: Record<TableSortDirection, TableSortDirection> = {
   none: 'desc',
   desc: 'asc',
   asc: 'none'
@@ -50,6 +51,7 @@ export type Args = {
 export type TableColumn = {
   fragment: ColumnFragment;
   attributes: TableColumnAttributes;
+  sortDirection?: TableSortDirection;
   columnId: string;
 };
 
@@ -251,7 +253,7 @@ export default class Table extends Component<Args> {
    * @param sortDirection - current sort direction
    * @returns next direction
    */
-  _getNextSortDirection(_type: ColumnFragment['type'], sortDirection: SortDirection): SortDirection {
+  _getNextSortDirection(_type: ColumnFragment['type'], sortDirection: TableSortDirection): TableSortDirection {
     return NEXT_SORT_DIRECTION[sortDirection];
   }
 
@@ -264,12 +266,14 @@ export default class Table extends Component<Args> {
     // TODO: Validate that the column clicked supports sorting
     const { type } = column.fragment;
     const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
-    const sortDirection = (sort?.direction || 'none') as SortDirection;
+    const sortDirection = (sort?.direction || 'none') as TableSortDirection;
     const direction = this._getNextSortDirection(type, sortDirection);
     //TODO Fetch from report action dispatcher service
-    const actionType = direction === 'none' ? 'removeSort' : 'upsertSort';
-
-    this.args.onUpdateReport(actionType, column.fragment, direction);
+    if (direction === 'none') {
+      this.args.onUpdateReport('removeSort', column.fragment);
+    } else {
+      this.args.onUpdateReport('upsertSort', column.fragment, direction);
+    }
   }
 
   @action

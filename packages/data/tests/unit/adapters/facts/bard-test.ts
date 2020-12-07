@@ -588,6 +588,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         { type: 'metric', field: 'valid1', parameters: {} },
         { type: 'metric', field: 'valid2', parameters: {}, direction: 'asc' },
         { type: 'metric', field: 'valid3', parameters: {}, direction: 'desc' },
+        //@ts-expect-error
         { type: 'metric', field: 'invalid', parameters: {}, direction: 'foo' }
       ]
     };

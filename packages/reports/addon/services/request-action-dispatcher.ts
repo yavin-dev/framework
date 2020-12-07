@@ -23,8 +23,6 @@ export const RequestActions = {
   REMOVE_TIME_GRAIN: 'removeTimeGrain',
   REMOVE_FILTER: 'removeFilter',
   REMOVE_SORT: 'removeSort',
-  REMOVE_SORT_BY_COLUMN_META: 'removeSortByColumnMeta',
-  REMOVE_SORT_WITH_PARAMS: 'removeSortWithParams',
 
   TOGGLE_FILTER: 'toggleFilter',
   TOGGLE_DIMENSION_FILTER: 'toggleDimensionFilter',
