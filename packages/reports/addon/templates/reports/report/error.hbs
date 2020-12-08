@@ -1,17 +1,2 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<NaviInfoMessage class="navi-report-error__info-message">
-  <span>
-    <NaviIcon @icon="ambulance" />
-  </span>
-  <p>Oops! There was an error with your request.</p>
-  <ul class="navi-info-message__error-list">
-    {{#let (if this.model.payload.description this.model.payload.description this.model.payload) as | error | }}
-      <li class="navi-info-message__error-list-item">
-        <NaviIcon @icon="times" class="navi-info-message__error-list-icon" />
-        {{error-message (hash detail=error)}}
-      </li>
-    {{/let}}
-  </ul>
-  {{!-- The App will handle the look and feel of this component --}}
-  <SubmitDefect />
-</NaviInfoMessage>
+<Routes::ReportsReportError @error={{this.model}}/>

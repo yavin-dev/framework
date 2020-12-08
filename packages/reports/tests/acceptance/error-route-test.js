@@ -19,7 +19,7 @@ module('Acceptance | Navi Report | Error Route', function(hooks) {
     await visit('/reports/5/view');
 
     assert
-      .dom('.navi-report-error__info-message')
+      .dom('.routes-reports-report-error')
       .hasText(
         'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
         'An error message is displayed for an invalid request'
@@ -42,7 +42,7 @@ module('Acceptance | Navi Report | Error Route', function(hooks) {
     await visit('/reports/5/view');
 
     assert
-      .dom('.navi-report-error__info-message')
+      .dom('.routes-reports-report-error')
       .hasText(
         'Oops! There was an error with your request. Rate limit reached, please try again later.',
         'An error message is displayed for an rate limited request'

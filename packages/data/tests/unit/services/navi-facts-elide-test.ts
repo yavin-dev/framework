@@ -1,10 +1,22 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+// @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 import moment from 'moment';
+import { TestContext as Context } from 'ember-test-helpers';
+import { Server } from 'miragejs';
+import NaviFactsService from 'navi-data/services/navi-facts';
+import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
-const TestRequest = {
+interface TestContext extends Context {
+  service: NaviFactsService;
+  server: Server;
+}
+
+const TestRequest: RequestV2 = {
   table: 'table1',
   columns: [
     { field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' },
@@ -75,14 +87,16 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(async function(this: TestContext) {
     this.service = this.owner.lookup('service:navi-facts');
     GraphQLScenario(this.server);
+    const metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
+    await metadataService.loadMetadata({ dataSourceName: 'elideOne' });
   });
 
-  test('fetch', async function(assert) {
+  test('fetch', async function(this: TestContext, assert) {
     const model = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
-    const { rows, meta } = model.response;
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
       {
@@ -229,7 +243,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch - only metrics', async function(assert) {
+  test('fetch - only metrics', async function(this: TestContext, assert) {
     const model = await this.service.fetch(
       {
         table: 'table1',
@@ -246,7 +260,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
-    const { rows, meta } = model.response;
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
       { rows: [{ 'table1.metric1': '823.11', 'table1.metric2': '823.38' }], meta: {} },
@@ -254,8 +268,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch - invalid date filter', async function(assert) {
-    const filters = [
+  test('fetch - invalid date filter', async function(this: TestContext, assert) {
+    const filters: Filter[] = [
       {
         field: 'table1.eventTimeDay',
         operator: 'gte',
@@ -302,7 +316,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
-    const { rows, meta } = model.response;
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
       {
@@ -329,8 +343,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
     assert.deepEqual(
       {
-        rows: noTimeDimResponse.rows,
-        meta: noTimeDimResponse.meta
+        rows: noTimeDimResponse?.rows,
+        meta: noTimeDimResponse?.meta
       },
       {
         rows: [{ 'table1.metric1': '307.93' }],
@@ -340,7 +354,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch - incomplete date filters', async function(assert) {
+  test('fetch - incomplete date filters', async function(this: TestContext, assert) {
     const model = await this.service.fetch(
       {
         table: 'table1',
@@ -365,7 +379,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
-    const { rows, meta } = model.response;
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
       {
@@ -405,8 +419,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     ).response;
     assert.deepEqual(
       {
-        rows: noStartDateResponse.rows,
-        meta: noStartDateResponse.meta
+        rows: noStartDateResponse?.rows,
+        meta: noStartDateResponse?.meta
       },
       {
         rows: [
@@ -448,8 +462,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
     assert.deepEqual(
       {
-        rows: dateToCurrentResponse.rows,
-        meta: dateToCurrentResponse.meta
+        rows: dateToCurrentResponse?.rows,
+        meta: dateToCurrentResponse?.meta
       },
       {
         rows: [
@@ -473,7 +487,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch - sorts', async function(assert) {
+  test('fetch - sorts', async function(this: TestContext, assert) {
     const model = await this.service.fetch(
       {
         table: 'table1',
@@ -505,7 +519,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
       { dataSourceName: 'elideTwo' }
     );
 
-    const { rows, meta } = model.response;
+    const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
       {
@@ -552,8 +566,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
     assert.deepEqual(
       {
-        rows: multiSortResponse.rows,
-        meta: multiSortResponse.meta
+        rows: multiSortResponse?.rows,
+        meta: multiSortResponse?.meta
       },
       {
         meta: {},
@@ -624,7 +638,7 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  test('fetch - limit', async function(assert) {
+  test('fetch - limit', async function(this: TestContext, assert) {
     const limit = (
       await this.service.fetch(
         {
@@ -660,8 +674,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
     assert.deepEqual(
       {
-        rows: limit.rows,
-        meta: limit.meta
+        rows: limit?.rows,
+        meta: limit?.meta
       },
       {
         meta: {},
@@ -718,8 +732,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
 
     assert.deepEqual(
       {
-        rows: limitless.rows,
-        meta: limitless.meta
+        rows: limitless?.rows,
+        meta: limitless?.meta
       },
       {
         meta: {},
@@ -766,15 +780,26 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
     );
   });
 
-  // TODO: Normalize error handling between elide and fili
-  skip('fetch and catch error', function(assert) {
+  test('fetch and catch error', async function(this: TestContext, assert) {
     assert.expect(2);
 
     // Return an error
-    return this.service.fetch(Object.assign({}, TestRequest, { metrics: [], dimensions: [] })).catch(response => {
-      assert.ok(true, 'A request error falls into the promise catch block');
-
-      assert.equal(response.payload.reason, 'Invalid query sent with AsyncQuery', 'error is passed to catch block');
-    });
+    await this.service
+      .fetch(
+        {
+          table: 'badTable',
+          columns: [{ field: 'badTable.badMetric', parameters: {}, type: 'metric' }],
+          filters: [],
+          sorts: [],
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'elideTwo'
+        },
+        { dataSourceName: 'elideTwo' }
+      )
+      .catch(response => {
+        assert.ok(true, 'A request error falls into the promise catch block');
+        assert.equal(response.details[0], 'Invalid query sent with AsyncQuery', 'error is passed to catch block');
+      });
   });
 });

@@ -7,6 +7,7 @@ import NaviFactsService from 'navi-data/services/navi-facts';
 import { TestContext } from 'ember-test-helpers';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
 let Service: NaviFactsService, Server: PretenderServer;
 
@@ -182,29 +183,37 @@ module('Unit | Service | Navi Facts', function(hooks) {
     );
   });
 
-  test('fetch and catch error', function(assert) {
-    assert.expect(2);
+  test('fetch and catch error', async function(assert) {
+    assert.expect(4);
 
-    // Return an error
+    // Return an error object
     Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
       return [
         507,
         { 'Content-Type': 'application/json' },
         JSON.stringify({
-          reason: 'Result set too large.  Try reducing interval or dimensions.',
-          description: 'Result set too large: 1541214 > 100000'
+          description: 'Result set too large.  Try reducing interval or dimensions.'
         })
       ];
     });
 
-    return Service.fetch(TestRequest).catch(response => {
+    await Service.fetch(TestRequest).catch((response: NaviAdapterError) => {
       assert.ok(true, 'A request error falls into the promise catch block');
-
       assert.equal(
-        response.payload.reason,
+        response.details[0],
         'Result set too large.  Try reducing interval or dimensions.',
         'error is passed to catch block'
       );
+    });
+
+    // Return an error string
+    Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
+      return [500, { 'Content-Type': 'text/plain' }, 'Server Error'];
+    });
+
+    await Service.fetch(TestRequest).catch((response: NaviAdapterError) => {
+      assert.ok(true, 'A request error falls into the promise catch block');
+      assert.equal(response.details[0], 'Server Error', 'String error extracted');
     });
   });
 
