@@ -2,41 +2,48 @@
   tables: [
     {
       name:  NetflixTitles
+      friendlyName: Netflix Titles
       table: netflix_titles
       dbConnectionName: DemoConnection
       dimensions: [
         {
           name: title_id
+          friendlyName: Title Id
           category: Attributes
           type: TEXT
           definition: '{{title_id}}'
         }
         {
           name: show_type
+          friendlyName: Show Type
           category: Attributes
           type: TEXT
           definition: '{{type}}'
         }
         {
           name: title
+          friendlyName: Title
           category: Attributes
           type: TEXT
           definition: '{{title}}'
         }
         {
           name: director
+          friendlyName: Director
           category: Attributes
           type: TEXT
           definition: '{{director}}'
         }
         {
           name: cast
+          friendlyName: Cast List
           category: Attributes
           type: TEXT
           definition: '{{cast_list}}'
         }
         {
           name: country
+          friendlyName: Countries
           category: Attributes
           type: TEXT
           definition: '{{country}}'
@@ -61,18 +68,21 @@
         }
         {
           name: film_rating
+          friendlyName: Film Rating
           category: Attributes
           type: TEXT
           definition: '{{rating}}'
         }
         {
           name: genres
+          friendlyName: Genre
           category: Attributes
           type: TEXT
           definition: '{{listed_in}}'
         }
         {
           name: description
+          friendlyName: Description
           category: Attributes
           type: TEXT
           definition: '{{description}}'
@@ -81,18 +91,21 @@
       measures: [
         {
           name: count
+          friendlyName: Title Count
           category: Stats
           type: INTEGER
           definition: 'count({{title_id}})'
         }
         {
           name: total_seasons
+          friendlyName: Total Seasons
           category: Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% Seasons' then REPLACE({{duration}}, ' Seasons', '') else '0' end AS INT))"
         }
         {
           name: movie_duration
+          friendlyName: Duration (in mins)
           category: Stats
           type: INTEGER
           definition: "sum(cast (case when {{duration}} like '% min' then REPLACE({{duration}}, ' min', '') else '0' end AS INT))"
