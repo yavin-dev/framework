@@ -27,6 +27,7 @@ module.exports = function(environment) {
     },
 
     navi: {
+      dataEpoch: '1900-01-01',
       FEATURES: {
         enableDashboardFilters: true,
         multipleExportFileTypes: [],
