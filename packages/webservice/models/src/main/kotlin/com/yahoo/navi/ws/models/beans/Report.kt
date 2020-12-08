@@ -8,7 +8,6 @@ import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.UpdatePermission
-import com.yahoo.elide.datastores.aggregation.annotation.TableMeta
 import com.yahoo.navi.ws.models.beans.fragments.Request
 import com.yahoo.navi.ws.models.beans.fragments.Visualization
 import com.yahoo.navi.ws.models.checks.DefaultAuthorCheck.Companion.IS_AUTHOR
@@ -26,7 +25,6 @@ import javax.persistence.Table
 @CreatePermission(expression = IS_AUTHOR)
 @UpdatePermission(expression = IS_AUTHOR)
 @DeletePermission(expression = IS_AUTHOR)
-@TableMeta(isFact = false)
 class Report : Asset(), HasAuthor {
 
     @Column(name = "request", columnDefinition = "MEDIUMTEXT")
