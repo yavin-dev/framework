@@ -173,6 +173,7 @@ export default Route.extend({
      */
     revertChanges(report) {
       report.rollbackAttributes();
+      this.send('setModifiedRequest', report.request.serialize());
     },
 
     /**

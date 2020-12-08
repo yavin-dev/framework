@@ -14,6 +14,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import moment from 'moment';
 import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
 import reorder from '../helpers/reorder';
+import { setupAnimationTest } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -25,6 +26,7 @@ let CompressionService;
 
 module('Acceptance | Navi Report', function(hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(function() {

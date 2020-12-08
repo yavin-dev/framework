@@ -105,7 +105,7 @@ export async function getItem(type, query, itemText) {
  * @param {Object} instance - the test or application instance
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
- * @param {String} itemText - The text content of the element to click
+ * @param {String|undefined} itemText - The text content of the element to click
  */
 export async function clickItem(type, query, itemText) {
   assert('clickItem must be passed an accepted type', isAcceptedType(type));

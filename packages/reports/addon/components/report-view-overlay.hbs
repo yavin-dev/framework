@@ -1,0 +1,20 @@
+<div 
+  class="report-view-overlay {{if this.shouldDisplay "report-view-overlay--visible"}}" 
+  ...attributes
+  {{did-update this.resetDismissed @isVisible}}
+>
+  {{#if (and hasBlock this.shouldDisplay)}}
+    {{yield (hash 
+      dismiss=this.dismiss
+    )}}
+  {{else if this.shouldDisplay}}
+    <div class="report-view-overlay__content">
+      <NaviButton title="Run query to update results" class="report-view-overlay__button--run" @onClick={{@runReport}}>
+        Run
+      </NaviButton>
+      <NaviButton title="Continue with old results" class="report-view-overlay__button--dismiss" @type="secondary" @onClick={{this.dismiss}}>
+        Dismiss
+      </NaviButton>
+    </div>
+  {{/if}}
+</div>

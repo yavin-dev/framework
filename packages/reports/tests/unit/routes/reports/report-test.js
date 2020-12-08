@@ -91,25 +91,46 @@ module('Unit | Route | reports/report', function(hooks) {
   });
 
   test('revertChanges action', function(assert) {
-    assert.expect(1);
+    assert.expect(4);
 
+    const serializedRequest = 'serializedRequestValue';
     let mockReport = {
         rollbackAttributes() {
           assert.ok(true, 'Report model is asked to rollback');
+        },
+        request: {
+          serialize() {
+            assert.ok(true, 'Report model is asked to serialize');
+            return serializedRequest;
+          }
         }
       },
       route = this.owner.lookup('route:reports/report');
+
+    route.controllerFor = () => ({
+      set(key, value) {
+        assert.deepEqual(key, 'modifiedRequest', 'The route updates the modified request on the controller');
+        assert.deepEqual(value, serializedRequest, 'The serialized request is passed');
+      }
+    });
 
     route.send('revertChanges', mockReport);
   });
 
   test('deactivate method', function(assert) {
-    assert.expect(1);
+    assert.expect(4);
 
+    const serializedRequest = 'serializedRequestValue';
     const mockReport = {
         hasDirtyAttributes: true,
         rollbackAttributes() {
           assert.ok(true, 'Route model is asked to rollback');
+        },
+        request: {
+          serialize() {
+            assert.ok(true, 'Report model is asked to serialize');
+            return serializedRequest;
+          }
         }
       },
       route = this.owner.factoryFor('route:reports/report').create({
@@ -118,6 +139,13 @@ module('Unit | Route | reports/report', function(hooks) {
         },
         routeName: 'reports.report'
       });
+
+    route.controllerFor = () => ({
+      set(key, value) {
+        assert.deepEqual(key, 'modifiedRequest', 'The route updates the modified request on the controller');
+        assert.deepEqual(value, serializedRequest, 'The serialized request is passed');
+      }
+    });
 
     /* == Transition to different route == */
     route.deactivate();
