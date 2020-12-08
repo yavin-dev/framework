@@ -26,7 +26,8 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@glimmer/component": "^1.0.0",
+    "@denali-design/ember": "^1.0.0-alpha.11",
+    "@glimmer/component": "^1.0.2",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.17.2",
@@ -65,8 +66,8 @@
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-eslint": "^5.1.0",
     "ember-cli-inject-live-reload": "^2.0.2",
-    "ember-cli-less": "^1.5.5",
     "ember-cli-mirage": "~1.1.6",
+    "ember-cli-sass-less": "0.0.1",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-string-helpers": "^5.0.0",
@@ -75,7 +76,7 @@
     "ember-cli-uglify": "^3.0.0",
     "ember-collection": "1.0.0-alpha.9",
     "ember-compatibility-helpers": "^1.2.0",
-    "ember-composable-helpers": "^3.1.1",
+    "ember-composable-helpers": "^4.1.1",
     "ember-concurrency": "1.3.0",
     "ember-cp-validations": "^4.0.0-beta.10",
     "ember-data": "~3.12.0",
@@ -96,7 +97,7 @@
     "ember-tag-input": "^1.2.2",
     "ember-toggle": "^6.0.2",
     "ember-tooltips": "^3.2.0",
-    "ember-truth-helpers": "^2.0.0",
+    "ember-truth-helpers": "^3.0.0",
     "ember-try": "^1.4.0",
     "ember-uuid": "^2.1.0",
     "eslint-config-prettier": "^6.10.0",
@@ -107,6 +108,7 @@
     "loader.js": "^4.7.0",
     "navi-notifications": "0.2.0",
     "qunit-dom": "^1.0.0",
+    "sass": "^1.29.0",
     "typescript": "^3.9.5"
   },
   "engines": {

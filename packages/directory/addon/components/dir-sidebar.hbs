@@ -1,29 +1,29 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dir-sidebar" ...attributes>
-  <section class="dir-sidebar__groups">
-    {{#each this.directories as | directory |}}
-      <LinkTo @route={{directory.routeLink}} @query={{hash filter=null}}
-        class="dir-sidebar__group"
-        {{on "click" (fn (mut this.selectedDirectory) directory)}}
-        {{on "click" (fn (mut this.selectedFilter) (object-at 0 directory.filters))}}
-      >
-        <div>
-          <span class="dir-sidebar__group--icon"><NaviIcon @icon="folder-o"/></span>
-          <span class="dir-sidebar__group--name">{{directory.name}}</span>
-        </div>
-      </LinkTo>
-    {{/each}}
-  </section>
-  <section class="dir-sidebar__filters">
-    {{#each this.filters as | filter |}}
-      <LinkTo @route="directory.my-data" @query={{hash filter=filter.queryParams.filter}}
-        class="dir-sidebar__filter"
-      >
-        <div>
-          <span class="dir-sidebar__filter--icon"><NaviIcon @icon={{filter.icon}}/></span>
-          <span class="dir-sidebar__filter--name">{{filter.name}}</span>
-        </div>
-      </LinkTo>
-    {{/each}}
-  </section>
-</div>
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliSidebar 
+  class="dir-sidebar"
+  ...attributes
+  as |Sidebar| 
+>
+  <DirNewButton/>
+  <li class="dir-sidebar__break"><hr></li>
+  {{#each this.directories as | directory |}}
+    <Sidebar.LinkToTab 
+      @route={{directory.routeLink}} @query={{hash filter=null}}
+      data-title={{directory.name}}
+      class="dir-sidebar__link"
+      {{on "click" (fn (mut this.selectedDirectory) directory)}}
+      {{on "click" (fn (mut this.selectedFilter) (object-at 0 directory.filters))}}
+    >
+      {{directory.name}}
+    </Sidebar.LinkToTab>
+  {{/each}}
+  {{#each this.filters as | filter |}}
+    <Sidebar.LinkToTab 
+      @route="directory.my-data" @query={{hash filter=filter.queryParams.filter}}
+      data-title={{filter.name}}
+      class="dir-sidebar__link"
+    >
+      {{filter.name}}
+    </Sidebar.LinkToTab>
+  {{/each}}
+</DenaliSidebar>

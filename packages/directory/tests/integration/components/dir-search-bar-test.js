@@ -8,9 +8,9 @@ module('Integration | Component | dir search bar', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
-    let fillInText = 'testString';
+    const fillInText = 'testString';
 
     set(this, 'searchFor', val => {
       assert.equal(val, fillInText, 'The entered text is passed on to the action on `key-up`');
@@ -21,10 +21,6 @@ module('Integration | Component | dir search bar', function(hooks) {
     />`);
 
     assert.dom('.dir-search-bar__input').exists('The search bar input is visible when the component is rendered');
-
-    assert
-      .dom('.dir-search-bar__search-icon')
-      .exists('The search bar search icon is visible when the component is rendered');
 
     await fillIn('.dir-search-bar__input', fillInText);
     await triggerEvent('.dir-search-bar__input', 'keyup');

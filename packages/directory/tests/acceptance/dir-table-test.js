@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, currentURL, findAll, visit } from '@ember/test-helpers';
+import { click, currentURL, findAll, fillIn, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -79,16 +79,13 @@ module('Acceptance | dir table', function(hooks) {
   });
 
   test('dir-table-filter', async function(assert) {
-    assert.expect(4);
-
     await visit('/directory/my-data?sortBy=author&sortDir=asc');
 
-    assert.dom('.dir-table-filter__trigger').hasText('All', 'Initially the selected type filter is `all`');
+    assert.dom('.dir-table-filter select').hasValue('All', 'Initially the selected type filter is `all`');
 
-    await click('.dir-table-filter__trigger');
-    let option = findAll('.dir-table-filter__dropdown-option').find(opt => opt.textContent.trim() === 'Reports');
-    await click(option);
-    assert.dom('.dir-table-filter__trigger').hasText('Reports', 'On click the selected option is set');
+    await fillIn('.dir-table-filter select', 'Reports');
+
+    assert.dom('.dir-table-filter select').hasValue('Reports', 'On click the selected option is set');
     assert.equal(
       currentURL(),
       '/directory/my-data?sortBy=author&sortDir=asc&type=reports',
@@ -97,7 +94,7 @@ module('Acceptance | dir table', function(hooks) {
 
     await visit('/directory/my-data?type=dashboards');
     assert
-      .dom('.dir-table-filter__trigger')
-      .hasText('Dashboards', 'The selected type is set based on the query param in the url');
+      .dom('.dir-table-filter select')
+      .hasValue('Dashboards', 'The selected type is set based on the query param in the url');
   });
 });

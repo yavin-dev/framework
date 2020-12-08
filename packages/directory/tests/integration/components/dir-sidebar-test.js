@@ -11,20 +11,12 @@ module('Integration | Component | dir sidebar', function(hooks) {
   });
 
   test('it renders', function(assert) {
-    assert.expect(3);
-
     assert.dom('.dir-sidebar').exists('The sidebar component is rendered');
 
     assert.deepEqual(
-      findAll('.dir-sidebar__group').map(el => el.textContent.trim()),
-      ['My Data', 'Other Data'],
-      'The sidebar component has the right groups'
-    );
-
-    assert.deepEqual(
-      findAll('.dir-sidebar__filter').map(el => el.textContent.trim()),
-      ['Favorites'],
-      `The selected group's filters are shown in the filter section`
+      findAll('.dir-sidebar__link').map(el => el.textContent.trim()),
+      ['My Data', 'Other Data', 'Favorites'],
+      'The sidebar component has the right groups and filters'
     );
   });
 });

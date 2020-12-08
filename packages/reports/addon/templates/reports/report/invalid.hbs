@@ -6,15 +6,15 @@
         <span>
           <NaviIcon @icon="check-square-o" />
         </span>
-        <p>
+        <span>
           Lookin' good. We're ready to
           <LinkTo @route={{sibling-route "view"}} class="navi-link info-message__run-link">run</LinkTo>.
-        </p>
+        </span>
       {{else}}
         <span>
           <NaviIcon @icon="ambulance" />
         </span>
-        <p>Whoa! We can't run this query. Let's figure out what went wrong.</p>
+        <span>Whoa! We can't run this query. Let's figure out what went wrong.</span>
         <ul class="navi-info-message__error-list">
           {{#each validations.messages as |message|}}
             <li class="navi-info-message__error-list-item">

@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, currentURL, findAll, visit } from '@ember/test-helpers';
+import { click, currentURL, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -8,38 +8,33 @@ module('Acceptance | dir sidebar', function(hooks) {
   setupMirage(hooks);
 
   test('transitions for sidebar link-tos', async function(assert) {
-    assert.expect(7);
-
     await visit('/directory');
     assert.equal(currentURL(), '/directory/my-data', 'Directory route redirects to `my-data` child route');
-    assert
-      .dom('.dir-sidebar__group.active')
-      .hasText('My Data', 'The active sidebar link corresponds to the active route');
+    assert.dom('.dir-sidebar .is-active').hasText('My Data', 'The active sidebar link corresponds to the active route');
 
     await visit('/directory/my-data');
     assert
-      .dom('.dir-sidebar .active')
+      .dom('.dir-sidebar .is-active')
       .hasText(
         'My Data',
         'The active sidebar filter link corresponds to the active route and the active filter query param'
       );
 
-    await click('.dir-sidebar__group:nth-of-type(2)');
+    await click('.dir-sidebar__link[data-title="Other Data"] a');
     assert.equal(currentURL(), '/directory/other-data', 'Currently on a different directory subroute than my-data');
 
-    let favoriteFilter = findAll('.dir-sidebar__filter').find(el => el.textContent.trim() === 'Favorites');
-    await click(favoriteFilter);
+    await click('.dir-sidebar__link[data-title="Favorites"] a');
     assert.equal(
       currentURL(),
       '/directory/my-data?filter=favorites',
       '`favorites` is set as the query param and applied to the my-data route when the favorites filter is clicked on'
     );
     assert
-      .dom('.dir-sidebar .active')
+      .dom('.dir-sidebar .is-active')
       .hasText('Favorites', 'The active sidebar filter link now corresponds to `favorites` filter query param');
 
     await visit('/directory/my-data?filter=favorites&sortBy=author&sortDir=asc');
-    await click('.dir-sidebar__group:nth-of-type(2)');
+    await click('.dir-sidebar__link[data-title="Other Data"] a');
     assert.equal(
       currentURL(),
       '/directory/other-data?sortBy=author&sortDir=asc',
