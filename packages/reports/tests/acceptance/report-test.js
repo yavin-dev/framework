@@ -519,7 +519,26 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled from a valid save report');
   });
 
+  test('Export feature flag - disabled', async function(assert) {
+    assert.expect(2);
+
+    let originalFlag = config.navi.FEATURES.enableExport;
+
+    assert.dom($('.navi-report__action-link:contains(Export)')[0]).doesNotExist('Export is disabled by default');
+
+    config.navi.FEATURES.enableExport = true;
+
+    assert.dom($('.navi-report__action-link:contains(Export)')[0]).exists('Export is enabled with the feature flag on');
+
+    config.navi.FEATURES.enableExport = originalFlag;
+  });
+
   test('Export action - enabled/disabled', async function(assert) {
+    assert.expect(4);
+
+    let originalFlag = config.navi.FEATURES.enableExport;
+    config.navi.FEATURES.enableExport = true;
+
     await visit('/reports/1/view');
 
     assert
@@ -548,16 +567,20 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
+
+    config.navi.FEATURES.enableExport = originalFlag;
   });
 
   test('Export action - href', async function(assert) {
     assert.expect(4);
 
     let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
+    let originalExportFlag = config.navi.FEATURES.enableExport;
 
+    // Turn export flag on
+    config.navi.FEATURES.enableExport = true;
     // Turn flag off
     config.navi.FEATURES.multipleExportFileTypes = [];
-
     await visit('/reports/1/view');
 
     assert.ok(
@@ -601,10 +624,14 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
+    config.navi.FEATURES.enableExport = originalExportFlag;
   });
 
   test('Multi export action - csv href', async function(assert) {
     assert.expect(5);
+
+    let originalFlag = config.navi.FEATURES.enableExport;
+    config.navi.FEATURES.enableExport = true;
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
@@ -652,12 +679,16 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
       .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
+
+    config.navi.FEATURES.enableExport = originalFlag;
   });
 
   test('Multi export action - pdf and png href', async function(assert) {
     assert.expect(5);
 
-    let originalFlag = config.navi.FEATURES.enableTotals;
+    let originalExportFlag = config.navi.FEATURES.enableExport;
+    let originalTotalsFlag = config.navi.FEATURES.enableTotals;
+    config.navi.FEATURES.enableExport = true;
     config.navi.FEATURES.enableTotals = true;
 
     const store = this.owner.lookup('service:store');
@@ -732,7 +763,8 @@ module('Acceptance | Navi Report', function(hooks) {
       );
     });
 
-    config.navi.FEATURES.enableTotals = originalFlag;
+    config.navi.FEATURES.enableExport = originalExportFlag;
+    config.navi.FEATURES.enableTotals = originalTotalsFlag;
   });
 
   test('Get API action - enabled/disabled', async function(assert) {

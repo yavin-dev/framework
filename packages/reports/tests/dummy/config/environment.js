@@ -48,7 +48,8 @@ module.exports = function(environment) {
         multipleExportFileTypes: ['pdf', 'png'],
         enabledNotifyIfData: true,
         enableContains: true,
-        enableTableEditing: true
+        enableTableEditing: true,
+        enableExport: false
       }
     }
   };
