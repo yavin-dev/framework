@@ -18,6 +18,7 @@ elide:
   aggregation-store:
     enabled: true
     default-dialect: H2
+    enableMetaDataStore: true
   dynamic-config:
     enabled: true
     path: demo-configs
