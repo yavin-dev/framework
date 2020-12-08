@@ -6,48 +6,55 @@ import { render } from '@ember/test-helpers';
 import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
+import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import Interval from 'navi-data/utils/classes/interval';
 
-const RESPONSE = {
+const TEMPLATE = hbs`
+<ReportView
+  @report={{this.report}}
+  @response={{this.response}}
+/>`;
+
+const RESPONSE = NaviFactResponse.create({
   rows: [
     {
       adClicks: 1707077,
-      dateTime: '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
     },
     {
       adClicks: 1659538,
-      dateTime: '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
     },
     {
       adClicks: 1977070,
-      dateTime: '2015-11-11 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-11 00:00:00.000'
     },
     {
       adClicks: 1755382,
-      dateTime: '2015-11-12 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-12 00:00:00.000'
     },
     {
       adClicks: 1348750,
-      dateTime: '2015-11-13 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-13 00:00:00.000'
     },
     {
       adClicks: 856732,
-      dateTime: '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
     },
     {
       adClicks: 716731,
-      dateTime: '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
     },
     {
       adClicks: 399790,
-      dateTime: '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
     },
     {
       adClicks: 699490,
-      dateTime: '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
     }
   ]
-};
+});
 
 module('Integration | Component | report view', function(hooks) {
   setupRenderingTest(hooks);
@@ -79,17 +86,44 @@ module('Integration | Component | report view', function(hooks) {
     this.set(
       'report',
       store.createRecord('report', {
-        request: store.createFragment('bard-request/request', {
-          logicalTable: store.createFragment('bard-request/fragments/logicalTable', {
-            table: metadataService.getById('table', 'tableA', 'bardOne'),
-            timeGrain: 'day'
-          }),
-          responseFormat: 'csv',
-          intervals: A([{ interval: new Interval('current', 'next') }])
-        }),
+        request: {
+          table: 'network',
+          dataSource: 'bardOne',
+          limit: null,
+          requestVersion: '2.0',
+          filters: [
+            {
+              type: 'timeDimension',
+              dataSource: 'bardOne',
+              field: 'network.dateTime',
+              parameters: { grain: 'day' },
+              operator: 'bet',
+              values: ['11-04-2020', '11-06-2020']
+            }
+          ],
+          columns: [
+            {
+              cid: 'c1',
+              field: 'network.dateTime',
+              parameters: {
+                grain: 'day'
+              },
+              source: 'bardOne',
+              type: 'timeDimension'
+            },
+            {
+              cid: 'c2',
+              type: 'metric',
+              field: 'adClicks',
+              source: 'bardOne',
+              parameters: {}
+            }
+          ],
+          sorts: []
+        },
         visualization: {
           type: 'line-chart',
-          version: 1,
+          version: 2,
           metadata: {
             axis: {
               y: {
@@ -98,9 +132,7 @@ module('Integration | Component | report view', function(hooks) {
                   config: {
                     metrics: [
                       {
-                        metric: 'adClicks',
-                        parameters: {},
-                        canonicalName: 'adClicks'
+                        metricCid: 'c2'
                       }
                     ]
                   }
@@ -117,30 +149,38 @@ module('Integration | Component | report view', function(hooks) {
     assert.expect(2);
 
     this.set('report.request', {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
-      },
-      metrics: [{ metric: 'adClicks' }],
-      dimensions: [],
-      filters: [],
-      sort: [
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          dataSource: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['11-04-2020', '11-06-2020']
+        }
+      ],
+      columns: [
+        {
+          cid: 'c2',
+          dataSource: 'bardOne',
+          type: 'metric',
+          field: 'adClicks',
+          parameters: {}
+        }
+      ],
+      sorts: [
         {
           metric: 'navClicks',
           direction: 'asc'
         }
-      ],
-      intervals: A([{ interval: new Interval('current', 'next') }]),
-      bardVersion: 'v1',
-      requestVersion: 'v1'
+      ]
     });
 
-    await render(hbs`
-      <ReportView
-        @report={{this.report}}
-        @response={{this.response}}
-      />
-    `);
+    await render(TEMPLATE);
 
     assert.dom('.visualization-toggle__option[title="Data Table"]').isVisible('Table Selector is visible');
     assert.dom('.visualization-toggle__option[title="Metric Label"]').isVisible('Metric Label Selector is visible');
@@ -149,12 +189,7 @@ module('Integration | Component | report view', function(hooks) {
   test('visualization is chosen based on report', async function(assert) {
     assert.expect(3);
 
-    await render(hbs`
-      <ReportView
-        @report={{this.report}}
-        @response={{this.response}}
-      />
-    `);
+    await render(TEMPLATE);
 
     assert.ok(
       $('.line-chart-widget').is(':visible'),
@@ -163,20 +198,13 @@ module('Integration | Component | report view', function(hooks) {
 
     this.set('report.visualization', {
       type: 'table',
-      version: 1,
+      version: 2,
       metadata: {
-        columns: [
-          {
-            attributes: { name: 'dateTime' },
-            type: 'dateTime',
-            displayName: 'Date'
-          },
-          {
-            attributes: { name: 'adClicks' },
-            type: 'metric',
-            displayName: 'Ad Clicks'
-          }
-        ]
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+          c2: { canAggregateSubtotal: false }
+        },
+        showTotals: []
       }
     });
 
@@ -198,12 +226,7 @@ module('Integration | Component | report view', function(hooks) {
       }
     });
 
-    await render(hbs`
-      <ReportView
-        @report={{this.report}}
-        @response={{this.response}}
-      />
-    `);
+    await render(TEMPLATE);
 
     assert
       .dom('.report-view__visualization-no-results')

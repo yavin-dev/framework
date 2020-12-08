@@ -9,12 +9,11 @@ import $ from 'jquery';
 import moment from 'moment';
 
 const TEMPLATE = hbs`
-    {{#report-actions/export
-        report=report
-    }}
-        Export
-    {{/report-actions/export}}
-    `;
+  <ReportActions::Export 
+    @report={{this.report}}
+  >
+    Export
+  </ReportActions::Export>`;
 
 let Store;
 
@@ -31,7 +30,7 @@ module('Integration | Component | report actions - export', function(hooks) {
 
     const factService = this.owner.lookup('service:navi-facts');
     this.owner.lookup('service:navi-metadata').loadMetadata();
-    const report = Store.findRecord('report', 1);
+    const report = await Store.findRecord('report', 1);
 
     this.set('report', report);
     await render(TEMPLATE);
@@ -55,15 +54,31 @@ module('Integration | Component | report actions - export', function(hooks) {
 
     run(() => {
       let request = {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day'
-        },
-        intervals: [
-          Store.createFragment('bard-request/fragments/interval', {
-            interval: new Interval(moment('10-02-2015', 'MM-DD-YYYY'), moment('10-14-2015', 'MM-DD-YYYY'))
-          })
-        ]
+        table: 'network',
+        dataSource: 'bardOne',
+        limit: null,
+        requestVersion: '2.0',
+        filters: [
+          {
+            type: 'timeDimension',
+            dataSource: 'bardOne',
+            field: 'network.dateTime',
+            parameters: { grain: 'day' },
+            operator: 'bet',
+            values: ['11-04-2020', '11-06-2020']
+          }
+        ],
+        columns: [
+          {
+            cid: 'c1',
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day'
+            },
+            type: 'timeDimension'
+          }
+        ],
+        sorts: []
       };
       this.set('report', Store.createRecord('report', { title: 'New Report', request }));
     });
