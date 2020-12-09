@@ -3,8 +3,8 @@ import { setupTest } from 'ember-qunit';
 import { UpdateReportActions } from 'navi-reports/services/update-report-action-dispatcher';
 import { TestContext } from 'ember-test-helpers';
 import StoreService from 'ember-data/store';
-import TableVisualizationConsumer from 'dummy/consumers/request/sort';
 import ReportModel from 'navi-core/models/report';
+import TableVisualizationConsumer from 'navi-reports/consumers/report/table-visualization';
 
 let Consumer: TableVisualizationConsumer;
 let Store: StoreService;
