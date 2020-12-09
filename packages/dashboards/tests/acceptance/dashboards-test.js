@@ -271,7 +271,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert
       .dom('.dashboard-filters')
-      .hasText('Settings', 'only settings label is rendered when no filters are associated with dashboard');
+      .hasText('Filters', 'only filters label is rendered when no filters are associated with dashboard');
 
     await visit('/dashboards/2');
 

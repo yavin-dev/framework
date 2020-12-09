@@ -3,5 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'dashboards';
-@import 'reports';
+.dir-sidebar {
+  &.tabs.is-primary .dir-sidebar__break {
+    pointer-events: none;
+    hr {
+      height: 1px;
+    }
+  }
+}

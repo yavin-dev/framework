@@ -35,15 +35,6 @@ export default class DirTableFilterComponent extends Component<DirTableFilterCom
   }
 
   /**
-   * @action close
-   * @param {Object} dropdown
-   */
-  @action
-  close(dropdown: TODO) {
-    dropdown.actions.close();
-  }
-
-  /**
    * @action filterByType
    * @param {String} type - query param value for type
    */

@@ -1,31 +1,22 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<main class="directory">
-
-  <div class="directory__new-button">
-    <DirNewButton class="directory__new-button" />
-  </div>
-
-  <section class="directory__controls">
-    <DirSearchBar
-      class="directory__search"
-      @query={{this.q}}
-      @searchFor={{this.searchFor}}
-    />
-
-    <DirTableFilter
-      class="directory__table-filter"
-      @selectedType={{this.type}}
-      @updateQueryParams={{this.updateQueryParams}}
-    />
-  </section>
-
-  <DirSidebar class="directory__sidebar"/>
-
-  <section class="directory__table">
-    <div class="directory__table-header">
-      <h1>{{this.title}}</h1>
+<DirSidebar/>
+<main class="container p-30">
+  <div class="row m-b-30 space-between">
+    <h2 class="directory__title">{{this.title}}</h2>
+    <div class="flex">
+      <DirTableFilter
+        @selectedType={{this.type}}
+        @updateQueryParams={{this.updateQueryParams}}
+      />
+      <div class="input-group m-l-10">
+        <DirSearchBar
+          @query={{this.q}}
+          @searchFor={{this.searchFor}}
+        />
+      </div>
     </div>
+  </div>
+  <div class="row">
     {{outlet}}
-  </section>
-
+  </div>
 </main>

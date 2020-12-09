@@ -1,13 +1,8 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<header class="navi-app-header">
-  <TopBar />
-  {{#each this.flashMessages.queue as |flash|}}
-    <FlashMessage @flash={{flash}} />
-  {{/each}}
-</header>
-<div class="navi-app-container" id="navi-root">
+<TopBar />
+{{#each this.flashMessages.queue as |flash|}}
+  <FlashMessage @flash={{flash}} />
+{{/each}}
+<div class="flex h-minus-nav">
   {{outlet}}
 </div>
-<footer>
-  {{!-- optional footer --}}
-</footer>

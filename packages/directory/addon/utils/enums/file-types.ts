@@ -4,8 +4,8 @@
  */
 export default {
   definitions: {
-    reports: { iconClass: 'file-text', linkRoute: 'reports.new' },
-    dashboards: { iconClass: 'th-large', linkRoute: 'dashboards.new' }
+    reports: { iconClass: 'file-text', linkRoute: 'reports.new', color: 'green-700' },
+    dashboards: { iconClass: 'dashboard-tile', linkRoute: 'dashboards.new', color: 'orange-500' }
   },
 
   /**

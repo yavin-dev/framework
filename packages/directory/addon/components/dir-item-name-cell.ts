@@ -47,4 +47,9 @@ export default class DirItemNameCellComponent extends Component<DirItemNameCellC
     const type = pluralize(this.type) as 'reports' | 'dashboards';
     return FileTypes.definitions[type]?.iconClass;
   }
+
+  get iconColorClass() {
+    const type = pluralize(this.type) as 'reports' | 'dashboards';
+    return `is-${FileTypes.definitions[type]?.color}`;
+  }
 }

@@ -1,13 +1,15 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="top-bar" ...attributes>
-  <div class="top-bar__left">
-    <LinkTo @route="landing">
-      <img class="top-bar__graph-logo" src="{{this.rootURL}}img/navi-graph.svg" alt="Navi, an indispensible guide to exploring your data.">
-      <span class="top-bar__logo-title">navi</span>
+<DenaliNavbar 
+  @isResponsive={{true}}
+  class="top-bar"
+  as |Nav|
+>
+  <Nav.Left as |Left|>
+    <LinkTo @route="index">
+      <Left.Logo src="{{this.rootURL}}img/navi-graph.svg"/>
     </LinkTo>
-  </div>
-  <div class="top-bar__right">
-    <NaviIcon class="top-bar__user-icon" @icon="user" />
-    <span class="top-bar__user">{{this.loggedInUser}}</span>
-  </div>
-</div>
+  </Nav.Left>
+  <Nav.Right as |Right|>
+    <Right.Item><DenaliIcon class="m-r-10" @icon="user-profile-circle"/>{{this.loggedInUser}}</Right.Item>
+  </Nav.Right>
+</DenaliNavbar>
