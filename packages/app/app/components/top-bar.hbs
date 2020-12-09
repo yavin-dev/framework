@@ -5,7 +5,9 @@
   as |Nav|
 >
   <Nav.Left as |Left|>
-    <Left.Logo src="{{this.rootURL}}img/navi-graph.svg"/>
+    <LinkTo @route="index">
+      <Left.Logo src="{{this.rootURL}}img/navi-graph.svg"/>
+    </LinkTo>
   </Nav.Left>
   <Nav.Right as |Right|>
     <Right.Item><DenaliIcon class="m-r-10" @icon="user-profile-circle"/>{{this.loggedInUser}}</Right.Item>
