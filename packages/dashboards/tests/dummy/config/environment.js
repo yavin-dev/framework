@@ -23,12 +23,18 @@ module.exports = function(environment) {
     },
 
     navi: {
+      user: 'navi_user',
       widgetsRequestsMaxConcurrency: 2,
       defaultDataTable: 'network',
       dataSources: [
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
         { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
       ],
+      appPersistence: {
+        type: 'webservice',
+        uri: 'https://persistence.naviapp.io',
+        timeout: 90000
+      },
       FEATURES: {
         enableDashboardExport: true,
         multipleExportFileTypes: ['pdf', 'png'],
