@@ -526,7 +526,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom($('.navi-report__action-link:contains(Export)')[0]).doesNotExist('Export is disabled by default');
 
-    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     assert.dom($('.navi-report__action-link:contains(Export)')[0]).exists('Export is enabled with the feature flag on');
 
@@ -537,7 +537,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(4);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
-    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/1/view');
 
@@ -627,7 +627,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(5);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
-    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
@@ -684,7 +684,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     let originalExportFlag = config.navi.FEATURES.exportFileTypes;
     let originalTotalsFlag = config.navi.FEATURES.enableTotals;
-    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     config.navi.FEATURES.enableTotals = true;
 
     const store = this.owner.lookup('service:store');
