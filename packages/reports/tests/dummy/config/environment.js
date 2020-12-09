@@ -45,11 +45,10 @@ module.exports = function(environment) {
       },
       FEATURES: {
         enableScheduleReports: true,
-        multipleExportFileTypes: ['pdf', 'png'],
+        multipleExportFileTypes: [],
         enabledNotifyIfData: true,
         enableContains: true,
-        enableTableEditing: true,
-        enableExport: false
+        enableTableEditing: true
       }
     }
   };

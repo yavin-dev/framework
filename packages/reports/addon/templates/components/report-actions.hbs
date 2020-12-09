@@ -45,7 +45,7 @@
 </li>
 
 {{!-- Export only enabled on a valid report --}}
-{{#if (feature-flag "enableExport")}}
+{{#if (feature-flag "multipleExportFileTypes")}}
   <li class="navi-report__action">
     {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "multipleExportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
       <ExportAction
