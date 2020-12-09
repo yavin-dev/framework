@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -45,9 +46,9 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day--current-month:contains(4)');
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click('.ember-power-calendar-day--current-month:contains(5)');
+    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
 
     await click('.navi-report__run-btn');
 
@@ -120,7 +121,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText('Filters Date Time (day) between (<=>)', 'Collapsed filter has the right values');
+      .containsText('Filters Date Time (day) between', 'Collapsed filter has the right values');
 
     //check visualizations are showing up correctly
     assert.deepEqual(
