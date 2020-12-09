@@ -8,7 +8,8 @@
   <li class="dir-sidebar__break"><hr></li>
   {{#each this.directories as | directory |}}
     <Sidebar.LinkToTab 
-      @route={{directory.routeLink}} @query={{hash filter=null}}
+      @route={{directory.routeLink}} 
+      @query={{hash filter=null}}
       data-title={{directory.name}}
       class="dir-sidebar__link"
       {{on "click" (fn (mut this.selectedDirectory) directory)}}
@@ -19,7 +20,8 @@
   {{/each}}
   {{#each this.filters as | filter |}}
     <Sidebar.LinkToTab 
-      @route="directory.my-data" @query={{hash filter=filter.queryParams.filter}}
+      @route="directory.my-data" 
+      @query={{hash filter=filter.queryParams.filter}}
       data-title={{filter.name}}
       class="dir-sidebar__link"
     >

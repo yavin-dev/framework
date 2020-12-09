@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | dir new button', function(hooks) {
@@ -9,7 +9,7 @@ module('Integration | Component | dir new button', function(hooks) {
   test('dir new button', async function(assert) {
     await render(hbs`<DirNewButton />`);
     assert.deepEqual(
-      [...this.element.querySelectorAll('.dir-new-button')].map(elm => elm.innerText.trim()),
+      findAll('.dir-new-button').map(elm => elm.innerText.trim()),
       ['New Report', 'New Dashboard'],
       'Report and Dashboard are the options for creating a new document'
     );
