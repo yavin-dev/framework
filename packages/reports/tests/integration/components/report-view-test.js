@@ -1,4 +1,3 @@
-import { A } from '@ember/array';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
@@ -7,7 +6,6 @@ import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import Interval from 'navi-data/utils/classes/interval';
 
 const TEMPLATE = hbs`
 <ReportView

@@ -45,9 +45,9 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click('.ember-power-calendar-day--current-month:contains(4)');
     await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click('.ember-power-calendar-day--current-month:contains(5)');
 
     await click('.navi-report__run-btn');
 

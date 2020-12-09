@@ -1,11 +1,9 @@
-import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import Interval from 'navi-data/utils/classes/interval';
 
 const TEMPLATE = hbs`
 <PrintReportView
@@ -60,7 +58,6 @@ module('Integration | Component | print report view', function(hooks) {
 
   hooks.beforeEach(async function() {
     const metadataService = this.owner.lookup('service:navi-metadata');
-    const store = this.owner.lookup('service:store');
 
     await metadataService.loadMetadata();
     this.set('response', RESPONSE);
