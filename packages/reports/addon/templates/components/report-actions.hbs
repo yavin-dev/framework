@@ -45,9 +45,9 @@
 </li>
 
 {{!-- Export only enabled on a valid report --}}
-{{#if (feature-flag "multipleExportFileTypes")}}
+{{#if (feature-flag "exportFileTypes")}}
   <li class="navi-report__action">
-    {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "multipleExportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
+    {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "exportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
       <ExportAction
         class="navi-report__action-link {{unless @model.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
         @report={{@model}}

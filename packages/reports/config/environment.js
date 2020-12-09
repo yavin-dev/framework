@@ -19,7 +19,7 @@ module.exports = function(/* environment, appConfig */) {
         frequencies: null
       },
       FEATURES: {
-        multipleExportFileTypes: [],
+        exportFileTypes: [],
         enabledNotifyIfData: false
       }
     }

@@ -47,7 +47,7 @@ export default class MultipleFormatExport extends Component {
   /**
    * @property {Array} supportedFileTypes - supported file types for export
    */
-  supportedFileTypes = featureFlag('multipleExportFileTypes');
+  supportedFileTypes = featureFlag('exportFileTypes');
 
   /**
    * @property {String} csvHref - CSV download link for the report
