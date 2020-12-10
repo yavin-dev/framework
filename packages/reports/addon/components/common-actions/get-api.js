@@ -17,6 +17,19 @@ import { set, action, computed } from '@ember/object';
 import layout from '../../templates/components/common-actions/get-api';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
+/**
+ * Returns true if a string is a URL
+ * @param string the string to check if it is a URL
+ */
+function isValidUrl(string) {
+  try {
+    new URL(string);
+  } catch (_) {
+    return false;
+  }
+  return true;
+}
+
 @templateLayout(layout)
 @tagName('')
 export default class GetApiActionComponent extends Component {
@@ -39,11 +52,7 @@ export default class GetApiActionComponent extends Component {
    */
   @computed('requestUrl')
   get isRequestURL() {
-    if (this.requestUrl.startsWith('https://')) {
-      return true;
-    } else {
-      return false;
-    }
+    return isValidUrl(this.requestUrl);
   }
   /**
    * Sets the notifications to false, used when modal is closed to clean it up.
