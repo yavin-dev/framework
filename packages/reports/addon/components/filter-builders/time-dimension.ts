@@ -9,7 +9,7 @@ import { capitalize } from '@ember/string';
 import moment from 'moment';
 import FilterFragment from 'navi-core/addon/models/bard-request-v2/fragments/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
-import { DateTimePeriod, getFirstDayOfGrain, getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterBuilderOperators } from './base';
 
