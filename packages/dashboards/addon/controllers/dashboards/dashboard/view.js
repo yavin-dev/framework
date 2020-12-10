@@ -117,9 +117,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
       .createFragment('bard-request-v2/fragments/filter', {
         type: filter.type,
         field: filter.field,
-        parameters: {
-          field: dimensionMeta.primaryKeyFieldName
-        },
+        parameters: dimensionMeta.getDefaultParameters(),
         operator: 'in',
         values: [],
         source: filter.dataSource

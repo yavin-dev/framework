@@ -186,7 +186,7 @@
         <button
           type="button"
           class="btn btn-secondary navi-report-widget__revert-btn"
-          onclick={{queue (fn this.updateLastAddedColumn null) (route-action "revertChanges" @model)}}
+          onclick={{route-action "revertChanges" @model}}
         >
           Revert Changes
         </button>
