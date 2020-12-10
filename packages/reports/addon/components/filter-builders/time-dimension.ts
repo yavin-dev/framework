@@ -119,7 +119,13 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
       const nonAllGrain = dateTimePeriod === 'all' ? 'day' : dateTimePeriod;
 
       let intervalValue;
-      if (end.isSame(moment.utc(getFirstDayOfGrain(moment.utc(), nonAllGrain)))) {
+      if (
+        end.isSame(
+          moment()
+            .startOf(nonAllGrain)
+            .utc(true)
+        )
+      ) {
         // end is 'current', get lookback amount
         intervalValue = interval.diffForTimePeriod(intervalTimePeriod);
       } else {
