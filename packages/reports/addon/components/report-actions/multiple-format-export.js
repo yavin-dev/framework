@@ -47,7 +47,7 @@ export default class MultipleFormatExport extends Component {
   /**
    * @property {Array} supportedFileTypes - supported file types for export
    */
-  supportedFileTypes = featureFlag('multipleExportFileTypes');
+  supportedFileTypes = featureFlag('exportFileTypes');
 
   /**
    * @property {String} csvHref - CSV download link for the report
@@ -86,15 +86,17 @@ export default class MultipleFormatExport extends Component {
   get exportFormats() {
     const { supportedFileTypes } = this;
 
-    const exportFormats = [
-      {
-        type: 'CSV',
-        href: this.csvHref,
-        icon: 'file-text-o'
-      }
-    ];
+    const exportFormats = [];
 
     if (Array.isArray(supportedFileTypes)) {
+      if (supportedFileTypes.includes('csv') || supportedFileTypes.includes('CSV')) {
+        exportFormats.push({
+          type: 'CSV',
+          href: this.csvHref,
+          icon: 'file-text-o'
+        });
+      }
+
       if (supportedFileTypes.includes('pdf') || supportedFileTypes.includes('PDF')) {
         exportFormats.push({
           type: 'PDF',

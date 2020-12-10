@@ -37,7 +37,7 @@ module.exports = function(environment) {
       },
       FEATURES: {
         enableDashboardExport: true,
-        multipleExportFileTypes: ['pdf', 'png'],
+        exportFileTypes: ['csv', 'pdf', 'png'],
         enableScheduleDashboards: true,
         enableDashboardFilters: true
       }

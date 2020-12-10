@@ -30,7 +30,7 @@ module.exports = function(environment) {
       dataEpoch: '1900-01-01',
       FEATURES: {
         enableDashboardFilters: true,
-        multipleExportFileTypes: [],
+        exportFileTypes: [],
         enableTableEditing: true
       }
     },

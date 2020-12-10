@@ -145,10 +145,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
   });
 
   skip('Export action', async function(assert) {
-    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
+    let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.multipleExportFileTypes = [];
+    config.navi.FEATURES.exportFileTypes = [];
 
     await visit('/dashboards/1/widgets/2/view');
 
@@ -181,7 +181,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .dom('.navi-report-widget__body .report-builder__container--result')
       .isVisible('Widget body has a visualization on the view route');
 
-    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
+    config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
   skip('Multi export action', async function(assert) {
