@@ -34,7 +34,17 @@ export default class GetApiActionComponent extends Component {
     let request = this.request.serialize();
     return this.facts.getURL(request, { dataSourceName: request.dataSource });
   }
-
+  /**
+   * @property {Boolean} isUrl - is the requestURL string a URL
+   */
+  @computed('requestUrl')
+  get isRequestURL() {
+    if (this.requestUrl.startsWith('https://')) {
+      return true;
+    } else {
+      return false;
+    }
+  }
   /**
    * Sets the notifications to false, used when modal is closed to clean it up.
    */
