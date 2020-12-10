@@ -21,7 +21,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { BaseChartBuilder, C3Row, EmptyC3Data, TooltipData } from './base';
+import { BaseChartBuilder, BLANK_X_VALUE, C3Row, EmptyC3Data, TooltipData } from './base';
 import { tracked } from '@glimmer/tracking';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
@@ -246,12 +246,20 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     return _getGrouper(request, config).getSeries(moment(date));
   }
 
-  getXValue(row: ResponseRow, config: DateTimeSeries['config'], request: RequestFragment): number {
-    assert('request should have a timeGrainColumn', request.timeGrainColumn);
-    const colName = request.timeGrainColumn.canonicalName;
-    const date = row[colName];
-    assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
-    return _getGrouper(request, config).getXValue(moment(date));
+  getXValue(
+    row: ResponseRow,
+    config: DateTimeSeries['config'],
+    request: RequestFragment
+  ): number | typeof BLANK_X_VALUE {
+    const { timeGrainColumn } = request;
+    if (timeGrainColumn) {
+      const date = row[timeGrainColumn.canonicalName];
+      if (typeof date !== 'string') {
+        return BLANK_X_VALUE;
+      }
+      return _getGrouper(request, config).getXValue(moment(date));
+    }
+    return BLANK_X_VALUE;
   }
 
   buildData(
