@@ -79,7 +79,7 @@ export default ActionConsumer.extend({
     },
 
     /**
-     * @action REMOVE_COLUMN_FRAGMENT
+     * @action UPDATE_COLUMN_FRAGMENT_WITH_PARAMS
      * @param route - route that has a model that contains a request property
      * @param columnFragment - data model fragment of the column
      * @param parameterKey - the name of the parameter to update
@@ -90,7 +90,7 @@ export default ActionConsumer.extend({
     },
 
     /**
-     * @action REMOVE_COLUMN_FRAGMENT
+     * @action RENAME_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property
      * @param columnFragment - data model fragment of the column
      * @param alias - the new name for the column
@@ -100,7 +100,7 @@ export default ActionConsumer.extend({
     },
 
     /**
-     * @action REMOVE_COLUMN_FRAGMENT
+     * @action REORDER_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property
      * @param columnFragment - data model fragment of the column
      * @param index - the index to move the selected column
