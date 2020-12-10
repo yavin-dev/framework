@@ -46,7 +46,7 @@
         >
           Copy Link
         </CopyButton>
-        {{#if this.isRequestURL }}
+        {{#if this.isRequestURL}}
           <a class="btn btn-secondary" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
         {{/if}}
         <button type="button" class="btn btn-secondary" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</button>
