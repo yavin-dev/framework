@@ -35,7 +35,7 @@ export default Component.extend({
   /**
    * @property {Object} filters
    */
-  request: computed('dashboard.filters', function() {
+  request: computed('dashboard.filters.[]', function() {
     return this.store.createFragment('bard-request-v2/request', {
       table: null,
       columns: [],
