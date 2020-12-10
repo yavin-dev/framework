@@ -60,7 +60,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   };
 
   private formatTimeValue(value: Moment | string, grain: Grain) {
-    return moment(value).format(this.grainFormats[grain]);
+    return moment.utc(value).format(this.grainFormats[grain]);
   }
 
   private filterBuilders: Record<FilterOperator, (field: string, value: string[]) => string> = {

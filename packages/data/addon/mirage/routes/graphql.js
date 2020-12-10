@@ -60,10 +60,10 @@ const FILTER_REGEX = new RegExp(`(.*?)(?:\\((.+?)\\))?(${Object.values(OPERATORS
 
 //create an inclusive interval of dates based on filter values and operator
 const DATE_FILTER_OPS = {
-  [OPERATORS.lt]: ([val], grain) => [null, moment(val).subtract(1, grain)],
-  [OPERATORS.gt]: ([val], grain) => [moment(val).add(1, grain), null],
-  [OPERATORS.le]: ([val]) => [null, moment(val)],
-  [OPERATORS.ge]: ([val]) => [moment(val), null],
+  [OPERATORS.lt]: ([val], grain) => [null, moment.utc(val).subtract(1, grain)],
+  [OPERATORS.gt]: ([val], grain) => [moment.utc(val).add(1, grain), null],
+  [OPERATORS.le]: ([val]) => [null, moment.utc(val)],
+  [OPERATORS.ge]: ([val]) => [moment.utc(val), null],
   [OPERATORS.isIn]: () => [null, null], //TODO: Not sure if the following operators are really supported for dates
   [OPERATORS.isNull]: () => [null, null],
   [OPERATORS.notNull]: () => [null, null],
@@ -144,19 +144,19 @@ function _datesForInterval(interval, grain) {
 
   // Default interval to at most 1 month long if start or end are null
   if (!interval[0]) {
-    end = moment(interval[1]).startOf(grain);
-    start = moment(end).subtract(1, 'month'); //Default start to 1 month before end
+    end = moment.utc(interval[1]).startOf(grain);
+    start = moment.utc(end).subtract(1, 'month'); //Default start to 1 month before end
   } else if (!interval[1]) {
     start = interval[0].startOf(grain);
-    let monthAhead = moment(start).add(1, 'month');
-    let current = moment();
+    let monthAhead = moment.utc(start).add(1, 'month');
+    let current = moment.utc();
     end = monthAhead.isSameOrBefore(current) ? monthAhead.startOf(grain) : current.startOf(grain); //Default end to current or 1 month past start, whichever is closer to start
   } else {
     start = interval[0].startOf(grain);
     end = interval[1].startOf(grain);
   }
   for (let i = start; i.isSameOrBefore(end); i.add(1, grain)) {
-    dates.push(moment(i));
+    dates.push(moment.utc(i));
   }
   return dates;
 }
