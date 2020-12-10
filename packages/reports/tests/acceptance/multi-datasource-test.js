@@ -45,9 +45,9 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
 
     await click('.navi-report__run-btn');
@@ -67,10 +67,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText(
-        'Filters Container (id) equals 1 Date Time (day) between (<=>)',
-        'Collapsed filter contains right text'
-      );
+      .containsText('Filters Container (id) equals 1 Date Time (day) between', 'Collapsed filter contains right text');
 
     assert
       .dom('.report-builder__container--filters--collapsed')
@@ -81,11 +78,17 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
       ['Container (id)', 'Used Amount', 'Date Time (day)'],
       'Table displays correct header titles'
     );
-    assert.dom('.table-widget__table .table-row-vc').exists({ count: 1 }, 'Table has rows');
+
+    assert.dom('.table-row-vc').exists({ count: 2 }, 'Table has rows');
 
     await click('.visualization-toggle__option[title="Bar Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Bar Chart y axis label is correct');
     assert.dom('.c3-legend-item').containsText('1', 'Bar chart legend has the right value');
+
+    await click('.report-builder__container-header__filters-toggle');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click('.navi-report__run-btn');
 
     await click('.visualization-toggle__option[title="Pie Chart"]');
     assert.dom('.pie-metric-label').hasText('Used Amount', 'Pie chart has the right label');
