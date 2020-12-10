@@ -10,8 +10,10 @@
     </LinkTo>
   </Nav.Left>
   <Nav.Right as |Right|>
-    <a href="https://github.com/yahoo/navi">
-      <Right.Icon @icon="github"/>
+    <a class="nav-item" href="https://github.com/yahoo/navi">
+      {{!-- Change to Right.Icon once `icon-name` support is added to @denali/ember --}}
+      <DenaliIcon @icon="github"/>
+      <span class="icon-name">Github</span>
     </a>
     <Right.Item><DenaliIcon class="m-r-10" @icon="user-profile-circle"/>{{this.loggedInUser}}</Right.Item>
   </Nav.Right>
