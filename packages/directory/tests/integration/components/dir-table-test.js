@@ -217,7 +217,7 @@ module('Integration | Component | dir table', function(hooks) {
     assert
       .dom('.lt-body')
       .hasText(
-        'Welcome to Navi, get started by creating a new report',
+        'Nothing Here Yet There currently is not anything in this collection. New Report New Dashboard',
         "Gives the correct message when no items are present and there's no search query"
       );
 
@@ -229,9 +229,9 @@ module('Integration | Component | dir table', function(hooks) {
     />`);
 
     assert
-      .dom('.lt-body')
+      .dom('.dir-empty-search')
       .hasText(
-        'None of your files or folders match invalidQuery.\nPlease try a different search.',
+        'No Match Found There are not any files that match invalidQuery.',
         'Gives the correct message when no items are present and there is a search query'
       );
   });

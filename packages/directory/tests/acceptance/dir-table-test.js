@@ -64,6 +64,20 @@ module('Acceptance | dir table', function(hooks) {
     );
   });
 
+  test('dir-table - empty collection', async function(assert) {
+    await visit('/');
+    await click('.dir-sidebar__link[data-title="Other Data"] a');
+
+    assert.dom('.dir-empty').exists('An empty placeholder is displayed when a collection has no items');
+
+    const links = findAll('.dir-empty a').map(e => new URL(e.href).pathname);
+    assert.deepEqual(
+      links,
+      ['/reports/new', '/dashboards/new'],
+      'Empty placeholder has links to new reports & dashboards'
+    );
+  });
+
   test('dir-table sorting keeps filter query param', async function(assert) {
     assert.expect(1);
 

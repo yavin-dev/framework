@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'denali/denali';
-@import 'theme.scss';
-@import 'navi-directory';
-@import 'components/index.scss';
+$navbar-bg-color: #190000;
+$navbar-responsive-bg-color: #190000;
+@include navbar-theme;
