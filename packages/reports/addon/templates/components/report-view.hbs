@@ -1,13 +1,17 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-view__visualization-main">
+  <ReportViewOverlay
+    @runReport={{route-action "runReport" @report}}
+    @isVisible={{and @report.request.hasDirtyAttributes (not this.hasRequestRun)}} 
+  />
   <div class="report-view__visualization-header">
     <div class="report-view__visualization-header-left">
       <h3 class="report-view__title">Visualization</h3>
       <VisualizationToggle
-          class="report-view__visualization-toggle"
-          @report={{@report}}
-          @validVisualizations={{this.validVisualizations}}
-          @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
+        class="report-view__visualization-toggle"
+        @report={{@report}}
+        @validVisualizations={{this.validVisualizations}}
+        @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
       />
     </div>
       {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}

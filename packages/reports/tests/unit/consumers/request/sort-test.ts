@@ -4,10 +4,11 @@ import { RequestActions } from 'navi-reports/services/request-action-dispatcher'
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import StoreService from 'ember-data/store';
 import { TestContext } from 'ember-test-helpers';
-import SortConsumer from 'dummy/consumers/request/sort';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
+import SortConsumer from 'navi-reports/consumers/request/sort';
+import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const timeDimension = {
   type: 'timeDimension',
@@ -129,7 +130,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       limit: null,
       dataSource: 'bardOne',
       requestVersion: '2.0',
-      columns: [timeDimension, metric, dimension],
+      columns: [timeDimension, metric, dimension, timeDimension],
       filters: [],
       sorts: [
         { ...timeDimension, direction: 'desc' },
@@ -150,13 +151,22 @@ module('Unit | Consumer | request sort', function(hooks) {
 
     const route = routeFor(request);
 
-    /* == Remove a metric == */
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, request.columns.objectAt(0)?.columnMetadata);
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, request.columns.objectAt(1)?.columnMetadata);
+    const [tDFragment1, mFragment, dFragment, tDFragment2] = request.columns.toArray();
+    request.removeColumn(tDFragment1);
+    Consumer.send(RequestActions.REMOVE_COLUMN, route, tDFragment1.columnMetadata);
+    request.removeColumn(mFragment);
+    Consumer.send(RequestActions.REMOVE_COLUMN, route, mFragment.columnMetadata);
 
-    assert.deepEqual(getSorts(request), { 'age(field=id)': 'desc' }, 'The first two sorts are removed');
+    assert.deepEqual(
+      getSorts(request),
+      { 'network.dateTime(grain=day)': 'desc', 'age(field=id)': 'desc' },
+      'The metric sort is removed'
+    );
 
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, request.columns.objectAt(2)?.columnMetadata);
+    request.removeColumn(tDFragment2);
+    Consumer.send(RequestActions.REMOVE_COLUMN, route, tDFragment2.columnMetadata);
+    request.removeColumn(dFragment);
+    Consumer.send(RequestActions.REMOVE_COLUMN, route, dFragment.columnMetadata);
 
     assert.deepEqual(getSorts(request), {}, 'The last sort is removed');
   });
@@ -175,8 +185,10 @@ module('Unit | Consumer | request sort', function(hooks) {
     assert.deepEqual(getSorts(request), { 'network.dateTime(grain=day)': 'desc' }, 'The existing sort is correct');
 
     const route = routeFor(request);
-    /* == Remove a parameterized metric == */
-    Consumer.send(RequestActions.REMOVE_COLUMN_WITH_PARAMS, route, request.columns.objectAt(0)?.columnMetadata, {
+
+    const first = request.columns.firstObject as ColumnFragment;
+    request.removeColumn(first);
+    Consumer.send(RequestActions.REMOVE_COLUMN_WITH_PARAMS, route, first?.columnMetadata, {
       grain: 'day'
     });
 
