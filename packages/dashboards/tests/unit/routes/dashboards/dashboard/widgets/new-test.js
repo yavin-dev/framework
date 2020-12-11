@@ -23,9 +23,9 @@ const NEW_MODEL = {
   updatedOn: null,
   visualization: {
     type: 'table',
-    version: 1,
+    version: 2,
     metadata: {
-      columns: []
+      columnAttributes: {}
     }
   },
   dashboard: 'dashboard1'

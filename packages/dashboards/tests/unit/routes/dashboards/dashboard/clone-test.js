@@ -55,10 +55,10 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     assert.expect(4);
 
     const dashboard = await Route.store.findRecord('dashboard', 1);
-    const widgetIdInDashboard = dashboard.get('presentation.layout').map(layout => layout.widgetId);
+    const widgetIdInDashboard = dashboard.presentation.layout.map(layout => layout.widgetId);
     const model = await Route._cloneDashboard(dashboard);
     const expectedModel = model.toJSON();
-    const widgetIdInExpectedModel = model.get('presentation.layout').map(layout => layout.widgetId);
+    const widgetIdInExpectedModel = model.presentation.layout.map(layout => layout.widgetId);
 
     assert.equal(expectedModel.title, CLONED_MODEL.title, 'Expected Models title is correct');
 

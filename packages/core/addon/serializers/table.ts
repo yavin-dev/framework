@@ -169,9 +169,11 @@ export function normalizeTableV2(
       `The request column ${requestColumn.field} should have a present 'cid' field`,
       requestColumn.cid !== undefined
     );
+    const canAggregateSubtotal = tableColumn.type === 'metric' ? attributes?.canAggregateSubtotal : undefined;
+    const format = tableColumn.format !== undefined ? tableColumn.format : attributes?.format;
     columns[requestColumn.cid] = {
-      canAggregateSubtotal: tableColumn.type === 'metric' ? attributes?.canAggregateSubtotal : undefined,
-      format: tableColumn.format !== undefined ? tableColumn.format : attributes?.format
+      ...(canAggregateSubtotal !== undefined ? { canAggregateSubtotal } : {}),
+      ...(format !== undefined ? { format } : {})
     };
     return columns;
   }, {} as Record<string, TableColumnAttributes>);
@@ -197,8 +199,8 @@ export function normalizeTableV2(
     metadata: {
       columnAttributes,
       showTotals: {
-        subtotal,
-        grandTotal: showTotals?.grandTotal
+        ...(subtotal !== undefined ? { subtotal } : {}),
+        ...(showTotals?.grandTotal !== undefined ? { grandTotal: showTotals?.grandTotal } : {})
       }
     }
   };
