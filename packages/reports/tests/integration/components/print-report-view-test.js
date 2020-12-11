@@ -99,11 +99,11 @@ module('Integration | Component | print report view', function(hooks) {
         filters: [
           {
             type: 'timeDimension',
-            dataSource: 'bardOne',
+            source: 'bardOne',
             field: 'network.dateTime',
             parameters: { grain: 'day' },
             operator: 'bet',
-            values: ['11-04-2020', '11-06-2020']
+            values: ['2015-11-09', '2015-11-14']
           }
         ],
         columns: [

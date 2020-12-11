@@ -1,4 +1,3 @@
-import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
@@ -49,37 +48,6 @@ module('Integration | Component | report actions - export', function(hooks) {
 
   test('Component is not disabled for unsaved reports', async function(assert) {
     assert.expect(1);
-
-    run(() => {
-      let request = {
-        table: 'network',
-        dataSource: 'bardOne',
-        limit: null,
-        requestVersion: '2.0',
-        filters: [
-          {
-            type: 'timeDimension',
-            dataSource: 'bardOne',
-            field: 'network.dateTime',
-            parameters: { grain: 'day' },
-            operator: 'bet',
-            values: ['11-04-2020', '11-06-2020']
-          }
-        ],
-        columns: [
-          {
-            cid: 'c1',
-            field: 'network.dateTime',
-            parameters: {
-              grain: 'day'
-            },
-            type: 'timeDimension'
-          }
-        ],
-        sorts: []
-      };
-      this.set('report', Store.createRecord('report', { title: 'New Report', request }));
-    });
 
     await render(TEMPLATE);
 

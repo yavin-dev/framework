@@ -92,11 +92,11 @@ module('Integration | Component | report view', function(hooks) {
           filters: [
             {
               type: 'timeDimension',
-              dataSource: 'bardOne',
+              source: 'bardOne',
               field: 'network.dateTime',
               parameters: { grain: 'day' },
               operator: 'bet',
-              values: ['11-04-2020', '11-06-2020']
+              values: ['2015-11-09', '2015-11-14']
             }
           ],
           columns: [
@@ -128,11 +128,7 @@ module('Integration | Component | report view', function(hooks) {
                 series: {
                   type: 'metric',
                   config: {
-                    metrics: [
-                      {
-                        metricCid: 'c2'
-                      }
-                    ]
+                    metrics: [{}]
                   }
                 }
               }
@@ -154,14 +150,20 @@ module('Integration | Component | report view', function(hooks) {
       filters: [
         {
           type: 'timeDimension',
-          dataSource: 'bardOne',
+          source: 'bardOne',
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['11-04-2020', '11-06-2020']
+          values: ['2015-11-09', '2015-11-14']
         }
       ],
       columns: [
+        {
+          type: 'timeDimension',
+          source: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' }
+        },
         {
           cid: 'c2',
           dataSource: 'bardOne',
@@ -201,8 +203,7 @@ module('Integration | Component | report view', function(hooks) {
         columnAttributes: {
           c1: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false }
-        },
-        showTotals: []
+        }
       }
     });
 

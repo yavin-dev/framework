@@ -147,7 +147,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     assert
       .dom('.get-api-modal-container input')
       .hasValue(
-        'https://data.naviapp.io/v1/data/network/day/property/?dateTime=11-04-2020%2F11-06-2020&metrics=adClicks&format=json',
+        'https://data.naviapp.io/v1/data/network/day/property/?dateTime=2015-10-02%2F2015-10-14&metrics=adClicks&format=json',
         'shows api url from bardTwo datasource'
       );
 
@@ -157,7 +157,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
       .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
       .hasAttribute(
         'href',
-        'https://data.naviapp.io/v1/data/network/day/property/?dateTime=11-04-2020%2F11-06-2020&metrics=adClicks&format=csv',
+        'https://data.naviapp.io/v1/data/network/day/property/?dateTime=2015-10-02%2F2015-10-14&metrics=adClicks&format=csv',
         'uses csv export from right datasource'
       );
 

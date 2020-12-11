@@ -15,7 +15,7 @@ module('Acceptance | date filter', function(hooks) {
   test('verify the different time grains work as expected - bard', async function(assert) {
     assert.expect(78);
 
-    await visit('/reports/1/view');
+    await visit('/reports/13/view');
 
     const timeGrains = ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'];
 
