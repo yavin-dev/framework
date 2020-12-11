@@ -6,6 +6,7 @@ import Component from '@glimmer/component';
 import { computed } from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import { dasherize } from '@ember/string';
 
 interface FilterCollectionArgs {
   isCollapsed: boolean;
@@ -32,13 +33,7 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
    * Get appropriate filter builder type based on column type
    */
   private getFilterType(filter: FilterFragment) {
-    const { type, columnMetadata } = filter;
-    if ('timeDimension' === type) {
-      return 'date-dimension';
-    } else if ('dimension' === type) {
-      return columnMetadata?.valueType?.toLowerCase() === 'number' ? 'number-dimension' : 'dimension';
-    } else {
-      return type;
-    }
+    const { type } = filter;
+    return dasherize(type);
   }
 }

@@ -11,15 +11,26 @@ import { AsyncQueryResponse, RequestV2 } from 'navi-data/adapters/facts/interfac
 import { getElideField } from 'navi-data/adapters/facts/elide';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
+import { ExecutionResult } from 'graphql';
+import { assert } from '@ember/debug';
 
+//Elide response type guard
+function isElideResponse(response?: AsyncQueryResponse | ExecutionResult | Error): response is AsyncQueryResponse {
+  return (response as AsyncQueryResponse)?.asyncQuery !== undefined;
+}
+
+//Apollo Error type guard
+function isApolloError(response?: AsyncQueryResponse | ExecutionResult | Error): response is ExecutionResult {
+  return (response as ExecutionResult)?.errors !== undefined;
+}
 export default class ElideFactsSerializer extends EmberObject implements NaviFactSerializer {
   /**
    * @param payload - raw payload string
    * @param request - request object
    */
   private processResponse(payload: string, request: RequestV2): NaviFactResponse {
-    const response = JSON.parse(payload);
-
+    const response = JSON.parse(payload) as ExecutionResult;
     const { table } = request;
     // TODO revisit when Elide adds parameter support
     const elideFields = request.columns.map(({ field, parameters }) => getElideField(field, parameters));
@@ -28,7 +39,9 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
       canonicalizeMetric({ metric, parameters })
     );
 
-    const rawRows = response.data[table].edges;
+    const { data } = response;
+    assert('`data` should be present in successful in a response', data);
+    const rawRows = data[table].edges;
     const totalRows = rawRows.length;
     const totalFields = normalizedFields.length;
     const rows = new Array(totalRows);
@@ -49,5 +62,20 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
   normalize(payload: AsyncQueryResponse, request: RequestV2): NaviFactResponse | undefined {
     const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
     return responseStr ? this.processResponse(responseStr, request) : undefined;
+  }
+
+  extractError(payload: ExecutionResult | AsyncQueryResponse | Error, _request: RequestV2): NaviFactError {
+    let errors: NaviErrorDetails[] = [];
+    if (isElideResponse(payload)) {
+      const responseStr = payload.asyncQuery.edges[0].node.result?.responseBody;
+      if (responseStr) {
+        const responseBody = JSON.parse(responseStr) as ExecutionResult;
+        errors = (responseBody.errors || []).map(e => ({ detail: e.message }));
+      }
+    }
+    if (isApolloError(payload)) {
+      errors = (payload.errors || []).map(e => ({ detail: e.message }));
+    }
+    return new NaviFactError('Elide Request Failed', errors, payload);
   }
 }

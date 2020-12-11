@@ -8,7 +8,7 @@ import VisualizationBase from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
 import RequestFragment from './bard-request-v2/request';
 import { attr } from '@ember-data/model';
-import { ResponseV1 } from 'navi-data/addon/serializers/facts/interface';
+import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object

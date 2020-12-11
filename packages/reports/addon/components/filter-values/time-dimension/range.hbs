@@ -1,0 +1,38 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="filter-values--date-range-input" ...attributes>
+  {{#if @isCollapsed}}
+    {{#if (and this.startDate this.endDate)}}
+      {{this.dateRange}}
+    {{else}}
+      <FilterValues::InvalidValue/>
+    {{/if}}
+  {{else}}
+    <DropdownDatePicker
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
+      @date={{this.startDate}}
+      @onUpdate={{this.setTimeStartMoment}}
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
+    >
+      {{#if this.startDate}}
+        {{this.startDateText}}
+      {{else}}
+        <span class="date__placeholder">{{this.startPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
+
+    <span class="filter-values--date-range-input__separator">and</span>
+
+    <DropdownDatePicker
+      @dateTimePeriod={{this.calendarDateTimePeriod}}
+      @date={{this.endDate}}
+      @onUpdate={{this.setTimeEndMoment}}
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
+    >
+      {{#if this.endDate}}
+        {{this.endDateText}}
+      {{else}}
+        <span class="date__placeholder">{{this.endPlaceholder}}</span>
+      {{/if}}
+    </DropdownDatePicker>
+  {{/if}}
+</div>

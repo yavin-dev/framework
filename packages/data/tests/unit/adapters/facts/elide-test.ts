@@ -270,7 +270,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         dataSource: 'elideOne',
         limit: null
       }),
-      `{"query":"{ myTable(filter: \\"time=ge=('2020-05-05');time=le=('2020-05-09')\\") { edges { node { time d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"time=ge=('2020-05-05');time=le=('2020-05-08')\\") { edges { node { time d1 } } } }"}`,
       'Filter with 2 non-macro date values is unaffected'
     );
   });

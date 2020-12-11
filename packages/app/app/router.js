@@ -14,7 +14,6 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function() {
-  this.route('landing', { path: '/' });
   directoryRoutes(this);
   reportRoutes(this);
   reportCollectionRoutes(this);

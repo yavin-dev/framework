@@ -74,7 +74,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     this.set('dashboard', { filters: [] });
 
-    assert.dom().hasText('Settings', 'When no filters are provided, only "Settings" is rendered');
+    assert.dom().hasText('Filters', 'When no filters are provided, only "Filters" is rendered');
   });
 
   test('toggle collapse', async function(assert) {

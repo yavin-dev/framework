@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, currentURL, fillIn, triggerEvent, visit } from '@ember/test-helpers';
+import { currentURL, fillIn, triggerEvent, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -8,9 +8,7 @@ module('Acceptance | dir search bar', function(hooks) {
   setupMirage(hooks);
 
   test('query param changes as search query is entered', async function(assert) {
-    assert.expect(3);
-
-    let fillInText = 'testString';
+    const fillInText = 'testString';
 
     await visit('/directory');
     assert.equal(
@@ -25,13 +23,6 @@ module('Acceptance | dir search bar', function(hooks) {
       currentURL(),
       `/directory/my-data?q=${fillInText}`,
       'The url has the updated queryparam `q` when the search query is entered in the search bar'
-    );
-
-    await click('.dir-search-bar__clear-icon');
-    assert.equal(
-      currentURL(),
-      '/directory/my-data',
-      'The query param `q` is cleared when the clear search icon is clicked'
     );
   });
 });

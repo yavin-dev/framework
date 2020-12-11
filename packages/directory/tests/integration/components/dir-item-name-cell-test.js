@@ -8,9 +8,7 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
   setupRenderingTest(hooks);
 
   test('dir-item-name-cell', async function(assert) {
-    assert.expect(5);
-
-    let report = {
+    const report = {
         title: 'Report 1',
         id: 1,
         isFavorite: true,
@@ -29,24 +27,22 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     set(this, 'item', report);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.dom('.fa-file-text').exists('The correct icon is used for a report');
+    assert.dom('.d-file-text').exists('The correct icon is used for a report');
 
     assert.dom(this.element).hasText('Report 1', "The item's title is displayed in the component");
 
-    assert.dom('.fa-star').exists('The favorite icon is shown for a favorited item');
+    assert.dom('.d-star-solid').exists('The favorite icon is shown for a favorited item');
 
     set(this, 'item', dashboard);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.dom('.fa-th-large').exists('The correct icon is used for a dashboard');
+    assert.dom('.d-dashboard-tile').exists('The correct icon is used for a dashboard');
 
-    assert.dom('.fa-star').doesNotExist('The favorite icon is not shown for a item that is not a favorite');
+    assert.dom('.d-star-solid').doesNotExist('The favorite icon is not shown for a item that is not a favorite');
   });
 
   test('unsaved report label', async function(assert) {
-    assert.expect(2);
-
-    let report = {
+    const report = {
       title: 'Untitled Report',
       id: null,
       tempId: 'd8828a30-c2ab-11e8-9028-e546f1b5f84f',

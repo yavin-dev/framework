@@ -11,10 +11,36 @@ import Route from '@ember/routing/route';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ReportModel from 'navi-core/models/report';
 import { SortDirection } from 'navi-data/adapters/facts/interface';
-import { ColumnMetadataModels } from 'navi-core/addon/models/bard-request-v2/fragments/base';
+import Base, { ColumnMetadataModels } from 'navi-core/models/bard-request-v2/fragments/base';
+import { ColumnType } from 'navi-data/models/metadata/column';
 
 export default class SortConsumer extends ActionConsumer {
   @service requestActionDispatcher!: RequestActionDispatcher;
+
+  /**
+   * Checks if there were duplicates of a removed column before removing the sorts
+   * @param route - route that has a model that contains a request property
+   * @param columnMetadata - metadata model of column to remove
+   * @param parameters - column parameters
+   */
+  onRemoveColumn(route: Route, columnMetadata: ColumnMetadataModels, parameters?: ColumnFragment['parameters']) {
+    const { routeName } = route;
+    const { request } = route.modelFor(routeName) as ReportModel;
+    const sameBase = (column: Base<ColumnType>) => {
+      const sameColumnMetadataModel = column.columnMetadata === columnMetadata;
+      if (parameters !== undefined) {
+        return sameColumnMetadataModel && isEqual(parameters, column.parameters);
+      }
+      return sameColumnMetadataModel;
+    };
+    if (request.columns.filter(sameBase).length > 0) {
+      return;
+    }
+
+    request.sorts.filter(sameBase).forEach(sort => {
+      this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
+    });
+  }
 
   actions = {
     /**
@@ -65,21 +91,14 @@ export default class SortConsumer extends ActionConsumer {
      * @param columnMetadata - metadata model of column to remove
      */
     [RequestActions.REMOVE_COLUMN](this: SortConsumer, route: Route, columnMetadata: ColumnMetadataModels) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-      const sorts = request.sorts.filter(sort => sort.columnMetadata === columnMetadata);
-
-      // Find and remove any `sorts` for the given column metadata
-      sorts.forEach(sort => {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
-      });
+      this.onRemoveColumn(route, columnMetadata);
     },
 
     /**
      * @action REMOVE_COLUMN_WITH_PARAMS
      * @param route - route that has a model that contains a request property
      * @param columnMetadata - metadata model of column to remove
-     * @param parameters - metric parameters
+     * @param parameters - column parameters
      */
     [RequestActions.REMOVE_COLUMN_WITH_PARAMS](
       this: SortConsumer,
@@ -87,16 +106,7 @@ export default class SortConsumer extends ActionConsumer {
       columnMetadata: ColumnMetadataModels,
       parameters: ColumnFragment['parameters']
     ) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-      const sorts = request.sorts.filter(
-        sort => sort.columnMetadata === columnMetadata && isEqual(parameters, sort.parameters)
-      );
-
-      // Find and remove any `sorts` for the given column metadata and parameters
-      sorts.forEach(sort => {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
-      });
+      this.onRemoveColumn(route, columnMetadata, parameters);
     },
 
     /**
@@ -105,21 +115,12 @@ export default class SortConsumer extends ActionConsumer {
      * @param columnFragment - the fragment of the column to remove sort
      */
     [RequestActions.REMOVE_COLUMN_FRAGMENT](this: SortConsumer, route: Route, columnFragment: ColumnFragment) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
       const { columnMetadata, parameters } = columnFragment;
-      const sorts = request.sorts.filter(
-        sort => sort.columnMetadata === columnMetadata && isEqual(parameters, sort.parameters)
-      );
-
-      // Find and remove any `sorts` attached to the metric and parameters
-      sorts.forEach(sort => {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
-      });
+      this.onRemoveColumn(route, columnMetadata, parameters);
     },
 
     /**
-     * Remove all metric sorts of same base metric if a param is updated
+     * Remove all column sorts of same base column if a param is updated
      * @action UPDATE_COLUMN_FRAGMENT_WITH_PARAMS
      * @param route - route that has a model that contains a request property
      * @param columnFragment - the fragment of the column to remove sort
@@ -129,17 +130,8 @@ export default class SortConsumer extends ActionConsumer {
       route: Route,
       columnFragment: ColumnFragment
     ) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
       const { columnMetadata, parameters } = columnFragment;
-      const sorts = request.sorts.filter(
-        sort => sort.columnMetadata === columnMetadata && isEqual(parameters, sort.parameters)
-      );
-
-      // Find and remove any `sorts` attached to the metric and parameters
-      sorts.forEach(sort => {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
-      });
+      this.onRemoveColumn(route, columnMetadata, parameters);
     }
   };
 }

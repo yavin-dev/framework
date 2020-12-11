@@ -332,7 +332,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - fallback to `multipleExportFileTypes`', async function(assert) {
+  test('format options - fallback to `exportFileTypes`', async function(assert) {
     assert.expect(1);
 
     this.set('model', TestModel);
@@ -348,11 +348,11 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
   });
 
-  test('format options - config multipleExportFileTypes is empty', async function(assert) {
+  test('format options - config exportFileTypes is empty', async function(assert) {
     assert.expect(2);
 
-    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
-    config.navi.FEATURES.multipleExportFileTypes = [];
+    let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = [];
 
     this.set('model', TestModel);
 
@@ -367,6 +367,6 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
       .includesText('csv', 'Schedule format should have correct default option');
 
-    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
+    config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 });

@@ -9,6 +9,8 @@ module('Integration | Component | dir-empty', function(hooks) {
   test('it renders', async function(assert) {
     await render(hbs`<DirEmpty />`);
 
-    assert.dom(this.element).hasText('Welcome to Navi, get started by creating a new report');
+    assert
+      .dom(this.element)
+      .hasText('Nothing Here Yet There currently is not anything in this collection. New Report New Dashboard');
   });
 });

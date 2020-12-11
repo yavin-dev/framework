@@ -10,6 +10,17 @@ import NaviFactSerializer, { ResponseV1 } from './interface';
 import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
+import { AjaxError } from 'ember-ajax/errors';
+
+type BardError = {
+  description: string;
+  druidQuery: {};
+  reason: string;
+  requestId: string;
+  status: number;
+  statusName: string;
+};
 
 export default class BardFactsSerializer extends EmberObject implements NaviFactSerializer {
   /**
@@ -61,5 +72,39 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
 
   normalize(payload: ResponseV1, request: RequestV2): NaviFactResponse | undefined {
     return payload ? this.processResponse(payload, request) : undefined;
+  }
+
+  protected readonly errorMsgOverrides: Record<string, string> = {
+    '^The adapter operation timed out$': 'Data Timeout',
+    '^The ajax operation timed out$': 'Data Timeout',
+    '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.'
+  };
+
+  private normalizeErrorMessage(message: string) {
+    let normalizedMsg = message;
+    Object.keys(this.errorMsgOverrides).forEach(reg => {
+      let regex = new RegExp(reg, 'gi');
+      if (regex.test(message)) {
+        normalizedMsg = this.errorMsgOverrides[reg];
+      }
+    });
+    return normalizedMsg;
+  }
+
+  extractError(error: AjaxError | Error, _request: RequestV2): NaviAdapterError {
+    let errorDetails: NaviErrorDetails = {};
+    if (error instanceof AjaxError) {
+      errorDetails.status = `${error.status}`;
+
+      if (typeof error.payload === 'object') {
+        const bardError = error.payload as BardError;
+        errorDetails.id = bardError.requestId;
+        errorDetails.detail = this.normalizeErrorMessage(bardError.description);
+      } else {
+        errorDetails.detail = this.normalizeErrorMessage(error.payload);
+      }
+    }
+
+    return new NaviAdapterError('Bard Request Failed', [errorDetails], error);
   }
 }

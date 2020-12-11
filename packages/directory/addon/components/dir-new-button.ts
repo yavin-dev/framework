@@ -6,26 +6,13 @@
  */
 
 import Component from '@glimmer/component';
+import { action } from '@ember/object';
 import FileTypes from 'navi-directory/utils/enums/file-types';
+import { inject as service } from '@ember/service';
+import { Registry as Services } from '@ember/service';
 
 export default class DirNewButtonComponent extends Component {
-  /**
-   * @method calculatePosition
-   * @param {HTMLElement} trigger
-   * @param {HTMLElement} content
-   * @returns {Object} - positioning info used by ember-basic-dropdown
-   */
-  calculatePosition(trigger: HTMLElement, content: HTMLElement) {
-    let { top, left, width, height } = trigger.getBoundingClientRect(),
-      { width: contentWidth } = content.getBoundingClientRect(),
-      marginFromTopBar = 15,
-      style = {
-        left: left - contentWidth + width,
-        top: top + height + marginFromTopBar
-      };
-
-    return { style };
-  }
+  @service router!: Services['router'];
 
   /**
    * @property {Array} fileTypeNames - Names of file types in directory
@@ -36,4 +23,9 @@ export default class DirNewButtonComponent extends Component {
    * @property {Object} fileTypes - Object containing file types icon class and route-link with the type name as keys
    */
   fileTypes = FileTypes.definitions;
+
+  @action
+  linkTo(route: string) {
+    this.router.transitionTo(route);
+  }
 }

@@ -20,7 +20,7 @@
     }
   }
 
-  &--range-input {
+  &--date-range-input {
     display: flex;
 
     &__separator {
@@ -34,8 +34,7 @@
     line-height: @filter-collection-row-height;
   }
 
-  &--lookback-input,
-  &--advanced-interval-input {
+  &--lookback-input {
     display: flex;
     flex-direction: row;
 
@@ -58,17 +57,9 @@
   }
 
   &--date-range-input,
-  &--since-input,
-  &--advanced-interval-input,
-  &--dimension-date-range-input {
+  &--date-input {
     display: flex;
     flex-direction: row;
-
-    &__low-value,
-    &__high-value {
-      flex: 2;
-      align-self: center;
-    }
 
     &__separator {
       align-self: center;
@@ -78,6 +69,8 @@
 
     &__trigger {
       text-align: center;
+      flex: 2;
+      align-self: center;
     }
 
     .dropdown-date-picker__trigger {

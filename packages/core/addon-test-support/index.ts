@@ -10,7 +10,7 @@ import GlimmerComponentManager from 'dummy/component-managers/glimmer';
  * @param lookupPath - the `component:${componentName}` path to the component
  * @param args - the named arguments to be supplied as `args` to the glimmer component
  */
-export function createGlimmerComponent(lookupPath: string, args: Record<string, unknown> = {}): Component {
+export function createGlimmerComponent(lookupPath: string, args: object = {}): Component {
   const owner = (getContext() as TestContext).owner;
   const { class: componentClass } = owner.factoryFor(lookupPath);
   return createGlimmerClass(componentClass, args);

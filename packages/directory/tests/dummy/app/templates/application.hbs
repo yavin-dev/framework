@@ -1,11 +1,9 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<header class="navi__top-bar top-bar">
-  <div class="top-bar__logo">
-    <LinkTo @route="directory.my-data">
-      <span class="top-bar__logo-title">navi directory</span>
-    </LinkTo>
-  </div>
-</header>
-<div class="navi__container">
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}} 
+<DenaliNavbar as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.Item>Navi Directory</Left.Item>
+  </Nav.Left>
+</DenaliNavbar>
+<div class="flex h-minus-nav">
   {{outlet}}
 </div>

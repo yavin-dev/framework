@@ -62,7 +62,9 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     if (timeGrainColumn) {
       const colName = timeGrainColumn.canonicalName;
       const date = row[colName];
-      assert(`a date for ${colName} should be found, but got: ${date}`, typeof date === 'string');
+      if (typeof date !== 'string') {
+        return BLANK_X_VALUE;
+      }
       return moment(date).format(API_DATE_FORMAT_STRING);
     }
     return BLANK_X_VALUE;

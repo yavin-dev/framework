@@ -1,19 +1,20 @@
 import Component from '@ember/component';
 import { get } from '@ember/object';
+import { blur, click, currentURL, fillIn, find, findAll, triggerEvent, visit, waitFor } from '@ember/test-helpers';
 import Ember from 'ember';
+import { animationsSettled } from 'ember-animated/test-support';
 import { module, test, skip } from 'qunit';
-import { click, fillIn, visit, currentURL, find, findAll, blur, triggerEvent, waitFor } from '@ember/test-helpers';
 import $ from 'jquery';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { selectChoose, selectSearch } from 'ember-power-select/test-support';
-import { setupApplicationTest } from 'ember-qunit';
-import reorder from '../helpers/reorder';
-import config from 'ember-get-config';
 import { Response } from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import config from 'ember-get-config';
+import { selectChoose, selectSearch } from 'ember-power-select/test-support';
+import { setupApplicationTest } from 'ember-qunit';
 import moment from 'moment';
 import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
-import { animationsSettled } from 'ember-animated/test-support';
+import reorder from '../helpers/reorder';
+import { setupAnimationTest } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -25,6 +26,7 @@ let CompressionService;
 
 module('Acceptance | Navi Report', function(hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(function() {
@@ -519,7 +521,26 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled from a valid save report');
   });
 
+  test('Export feature flag - disabled', async function(assert) {
+    assert.expect(2);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+
+    assert.dom($('.navi-report__action-link:contains(Export)')[0]).doesNotExist('Export is disabled by default');
+
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+
+    assert.dom($('.navi-report__action-link:contains(Export)')[0]).exists('Export is enabled with the feature flag on');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
   test('Export action - enabled/disabled', async function(assert) {
+    assert.expect(4);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+
     await visit('/reports/1/view');
 
     assert
@@ -548,16 +569,17 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('Export action - href', async function(assert) {
     assert.expect(4);
 
-    let originalFeatureFlag = config.navi.FEATURES.multipleExportFileTypes;
+    let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.multipleExportFileTypes = [];
-
+    config.navi.FEATURES.exportFileTypes = [];
     await visit('/reports/1/view');
 
     assert.ok(
@@ -600,11 +622,14 @@ module('Acceptance | Navi Report', function(hooks) {
       'Filter updates are automatically included in export url'
     );
 
-    config.navi.FEATURES.multipleExportFileTypes = originalFeatureFlag;
+    config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action - csv href', async function(assert) {
     assert.expect(5);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/1/view');
     await clickTrigger('.multiple-format-export');
@@ -652,12 +677,16 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
       .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('Multi export action - pdf and png href', async function(assert) {
     assert.expect(5);
 
-    let originalFlag = config.navi.FEATURES.enableTotals;
+    let originalExportFlag = config.navi.FEATURES.exportFileTypes;
+    let originalTotalsFlag = config.navi.FEATURES.enableTotals;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     config.navi.FEATURES.enableTotals = true;
 
     const store = this.owner.lookup('service:store');
@@ -732,7 +761,8 @@ module('Acceptance | Navi Report', function(hooks) {
       );
     });
 
-    config.navi.FEATURES.enableTotals = originalFlag;
+    config.navi.FEATURES.exportFileTypes = originalExportFlag;
+    config.navi.FEATURES.enableTotals = originalTotalsFlag;
   });
 
   test('Get API action - enabled/disabled', async function(assert) {
@@ -1713,18 +1743,12 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Date picker change interval type', async function(assert) {
-    assert.expect(9);
+    assert.expect(6);
 
     await visit('/reports/1');
 
     assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
     assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
-
-    await selectChoose('.filter-builder__select-trigger', 'Advanced');
-    assert.dom(findAll('.filter-values--advanced-interval-input__value')[0]).hasValue('P7D', 'The start date is P7D');
-    assert
-      .dom(findAll('.filter-values--advanced-interval-input__value')[1])
-      .hasValue('2015-11-16', 'The end date is 2015-11-16');
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
     assert
@@ -1734,137 +1758,13 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.filter-values--date-range-input__high-value')
       .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
 
-    await selectChoose('.filter-builder__select-trigger', 'Advanced');
-    await fillIn(findAll('.filter-values--advanced-interval-input__value')[1], 'current');
-    await blur(findAll('.filter-values--advanced-interval-input__value')[1]);
-    assert
-      .dom('.ember-power-select-selected-item')
-      .hasText('In The Past', 'relative/current changes date to in the past');
-
     await selectChoose('.filter-builder__select-trigger', 'Since');
-    const dateFormat = 'MMM DD, YYYY';
-    assert.dom('.dropdown-date-picker__trigger').hasText(
-      moment()
-        .subtract(7, 'day')
-        .format(dateFormat),
-      'The start is 7 days ago'
-    );
+    assert.dom('.filter-values--date-input__trigger').hasText('Nov 09, 2015', 'The start date is still Nov 09, 2015');
 
     await selectChoose('.filter-builder__select-trigger', 'Current Day');
 
-    const today = moment().format(dateFormat);
+    const today = moment().format('MMM DD, YYYY');
     assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
-  });
-
-  test('Date Picker start date beyond end date', async function(assert) {
-    assert.expect(19);
-
-    await visit('/reports/1');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
-
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
-
-    //start date beyond end date
-    await clickTrigger('.filter-values--date-range-input__low-value');
-    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
-
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 18, 2015', 'The start date is Nov 18, 2015');
-    assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
-
-    //collapse filters
-    await click('.report-builder__container-header__filters-toggle');
-    assert
-      .dom('.filter-collection')
-      .hasText('Date Time (Day) between Nov 18, 2015 - Nov 15, 2015', 'Collapsed range is Nov 18, 2015 - Nov 15, 2015');
-    //expand filters
-    await click('.filter-collection--collapsed');
-
-    await click('.navi-report__run-btn');
-
-    assert
-      .dom('.navi-info-message__error-list')
-      .hasText(
-        'The start date should be before end date',
-        '"The start date should be before end date" error is rendered'
-      );
-
-    //start date is equal to end date
-    await clickTrigger('.filter-values--date-range-input__high-value');
-    await click('.ember-power-calendar-day[data-date="2015-11-18"]');
-
-    assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Nov 18, 2015', 'The start date is still Nov 18, 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 18, 2015', 'The end date is Nov 18, 2015');
-
-    //collapse filters
-    await click('.report-builder__container-header__filters-toggle');
-    assert.dom('.filter-collection').hasText('Date Time (Day) between Nov 18, 2015', 'Collapsed range is Nov 18, 2015');
-    //expand filters
-    await click('.filter-collection--collapsed');
-
-    await click('.navi-report__run-btn');
-
-    assert.dom('.navi-info-message__error-list').doesNotExist('No error if dates are equal');
-
-    //start date 1 day beyond end date
-    await clickTrigger('.filter-values--date-range-input__low-value');
-    await click('.ember-power-calendar-day[data-date="2015-11-19"]');
-
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 19, 2015', 'The start date is Nov 19, 2015');
-    assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Nov 18, 2015', 'The end date is still Nov 18, 2015');
-
-    //collapse filters
-    await click('.report-builder__container-header__filters-toggle');
-    assert
-      .dom('.filter-collection')
-      .hasText('Date Time (Day) between Nov 19, 2015 - Nov 18, 2015', 'Collapsed range is Nov 19, 2015 - Nov 18, 2015');
-    //expand filters
-    await click('.filter-collection--collapsed');
-
-    await click('.navi-report__run-btn');
-
-    assert
-      .dom('.navi-info-message__error-list')
-      .hasText(
-        'The start date should be before end date',
-        '"The start date should be before end date" error is rendered when start date is 1 day beyond end date'
-      );
-
-    //select month grain
-    await click('.navi-column-config-item__trigger');
-    await selectChoose('.navi-column-config-item__parameter', 'Month');
-
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 2015', 'The start date is month Nov 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 2015', 'The end date is month Nov 2015');
-
-    await click('.navi-report__run-btn');
-
-    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
-
-    await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
-
-    await click('.navi-report__run-btn');
-
-    assert
-      .dom('.navi-info-message__error-list')
-      .hasText(
-        'The start date should be before end date',
-        '"The start date should be before end date" error is rendered when start month is 1 month beyond end month'
-      );
-
-    await clickTrigger('.filter-values--date-range-input__high-value');
-    await click($('.ember-power-calendar-selector-month:contains(Dec)')[0]);
-
-    await click('.navi-report__run-btn');
-
-    assert.dom('.navi-info-message__error-list').doesNotExist('No error if months are equal');
   });
 
   test('Date picker all timegrain', async function(assert) {
@@ -1886,7 +1786,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
 
     // select 'all' grain
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Month)"]');
+    await selectChoose('.navi-column-config-item__parameter', 'All');
 
     assert
       .dom('.filter-values--date-range-input__low-value')
@@ -1902,7 +1802,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
   });
 
-  test("Date picker advanced doesn't modify interval", async function(assert) {
+  skip("Date picker advanced doesn't modify interval", async function(assert) {
+    //TODO advanced date picker has been disabled
     assert.expect(6);
     await visit('/reports/1/view');
 

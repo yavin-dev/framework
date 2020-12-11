@@ -18,12 +18,12 @@ module('Acceptance | directory', function(hooks) {
     assert.expect(3);
 
     await visit('/directory/my-data');
-    assert.dom('.directory__table h1').hasText('My Data', 'Default title shows correctly');
+    assert.dom('.directory__title').hasText('My Data', 'Default title shows correctly');
 
     await visit('/directory/my-data?filter=favorites');
-    assert.dom('.directory__table h1').hasText('Favorites', 'Title shows correctly when looking at favorites');
+    assert.dom('.directory__title').hasText('Favorites', 'Title shows correctly when looking at favorites');
 
     await visit('/directory/other-data');
-    assert.dom('.directory__table h1').hasText('Other Data', 'Title shows correctly for some other directory');
+    assert.dom('.directory__title').hasText('Other Data', 'Title shows correctly for some other directory');
   });
 });

@@ -1,16 +1,15 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dir-new-button" ...attributes>
-  <BasicDropdown as |dd|>
-    <dd.trigger @class="dir-new-button__trigger btn btn-primary">New</dd.trigger>
-    <dd.content @class="dir-new-button__content dropdown-arrow">
-      {{#each this.fileTypeNames as |typeName|}}
-        {{#with (get this.fileTypes typeName) as |typeObject|}}
-          <LinkTo @route={{typeObject.linkRoute}} class="dir-new-button__dropdown-option">
-            <DirIcon @iconClass={{typeObject.iconClass}} />
-            <span class="dir-new-button__option-text">{{capitalize (singularize typeName) }}</span>
-          </LinkTo>
-        {{/with}}
-      {{/each}}
-    </dd.content>
-  </BasicDropdown>
-</div>
+{{#each this.fileTypeNames as |typeName|}}
+  {{#let (get this.fileTypes typeName) as |typeObject|}}
+    <li class="m-x-20 m-t-20">
+      <DenaliButton 
+        @icon={{typeObject.iconClass}}
+        @style="ghost" 
+        {{on "click" (fn this.linkTo typeObject.linkRoute)}}
+        class="dir-new-button"
+      >
+        New {{capitalize (singularize typeName) }}
+      </DenaliButton>
+    </li>
+  {{/let}}
+{{/each}}

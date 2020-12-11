@@ -4,7 +4,7 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 export type LegacyMetricLabelConfig = {
   type: 'metric-label';

@@ -1,6 +1,18 @@
-{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dir-empty" ...attributes>
-  <NaviInfoMessage>
-    <div>Welcome to Navi, get started by creating a new <LinkTo @route={{this.reportRoute}}>report</LinkTo></div>
-  </NaviInfoMessage>
-</div>
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DirTablePlaceholder
+  class="dir-empty"
+  @icon="folder-open"
+  @title="Nothing Here Yet"
+>
+  <p>There currently is not anything in this collection.</p>
+  {{#each-in (from-entries this.fileTypes) as |typeName fileType|}}
+    <LinkTo @route={{fileType.linkRoute}}>
+      <DenaliButton 
+        @icon={{fileType.iconClass}}
+        @style="text" 
+      >
+        New {{capitalize (singularize typeName) }}
+      </DenaliButton>
+    </LinkTo>
+  {{/each-in}}
+</DirTablePlaceholder>

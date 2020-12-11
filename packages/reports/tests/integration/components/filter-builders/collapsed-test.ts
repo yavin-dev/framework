@@ -6,8 +6,9 @@ import hbs from 'htmlbars-inline-precompile';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext } from 'ember-test-helpers';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
 
-let metadataService: { loadMetadata: () => any };
+let metadataService: NaviMetadataService;
 
 module('Integration | Component | filter-builders/collapsed', function(hooks) {
   setupRenderingTest(hooks);
@@ -15,7 +16,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
 
   hooks.beforeEach(async function(this: TestContext) {
     const factory = this.owner.lookup('service:fragment-factory');
-    metadataService = this.owner.lookup('service:navi-metadata');
+    metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await metadataService.loadMetadata();
     this.set('filter', factory.createFilter('dimension', 'bardOne', 'userDeviceType', {}, 'in', []));
     this.set('selectedOperator', { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' });
