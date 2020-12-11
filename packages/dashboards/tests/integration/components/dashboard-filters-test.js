@@ -10,39 +10,40 @@ import { A as arr } from '@ember/array';
 
 let Store, MetadataService;
 
-const filterFragment1 = {
-    type: 'dimension',
-    field: 'age',
-    operator: 'in',
-    parameters: {
-      field: 'id'
-    },
-    values: ['1', '2'],
-    source: 'bardOne',
-    columnMetadata: {
-      name: 'Age',
-      primaryKeyFieldName: 'id',
-      cardinality: 'SMALL'
-    }
+const serializedFilter1 = {
+  field: 'age',
+  operator: 'in',
+  parameters: {
+    field: 'id'
   },
-  filterFragment2 = {
-    type: 'dimension',
-    field: 'currency',
-    operator: 'contains',
-    parameters: {
-      field: 'desc'
-    },
-    values: ['3', '4'],
-    source: 'bardOne',
-    columnMetadata: {
-      name: 'Currency',
-      primaryKeyFieldName: 'id',
-      cardinality: 'SMALL'
-    }
+  type: 'dimension',
+  values: ['1', '2']
+};
+const mockFragment1 = {
+  ...serializedFilter1,
+  source: 'bardOne',
+  columnMetadata: {
+    name: 'Age',
+    primaryKeyFieldName: 'id',
+    cardinality: 'SMALL'
+  }
+};
+const mockFragment2 = {
+  type: 'dimension',
+  field: 'currency',
+  operator: 'contains',
+  parameters: {
+    field: 'desc'
   },
-  dashboard = {
-    filters: [filterFragment1, filterFragment2]
-  };
+  values: ['3', '4'],
+  source: 'bardOne',
+  columnMetadata: {
+    name: 'Currency',
+    primaryKeyFieldName: 'id',
+    cardinality: 'SMALL'
+  }
+};
+const dashboard = { filters: [mockFragment1, mockFragment2] };
 
 module('Integration | Component | dashboard filters', function(hooks) {
   setupRenderingTest(hooks);
@@ -92,10 +93,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     assert
       .dom('.filter-collection--collapsed')
-      .hasText(
-        'Age equals under 13 (1) 13-17 (2) Currency (desc) contains 3 4',
-        'The filters are rendered correctly when collapsed'
-      );
+      .hasText('Age (id) equals 1 2 Currency (desc) contains 3 4', 'The filters are rendered correctly when collapsed');
 
     await click('.dashboard-filters__expand-button');
 
@@ -193,22 +191,19 @@ module('Integration | Component | dashboard filters', function(hooks) {
 
     assert.dom('.dashboard-filters--expanded-add-row').isNotVisible('add row vanishes again');
 
-    assert.dom('.filter-builder-dimension__subject').hasText('Product Family');
+    assert.dom('.filter-builder-dimension__subject').hasText('Product Family (id)');
   });
 
   test('updating a filter', async function(assert) {
     assert.expect(2);
 
     this.set('onUpdateFilter', (filter, changeSet) => {
-      assert.equal(filter, filterFragment1, 'Filter to update is given to action');
+      assert.deepEqual(filter.serialize(), serializedFilter1, 'Filter to update is given to action');
       assert.deepEqual(
         changeSet,
         {
-          parameters: {
-            field: 'id'
-          },
           operator: 'null',
-          values: []
+          values: [] // would be [true], but it get set in value component after operator is set
         },
         'Operator update is requested'
       );
@@ -223,7 +218,11 @@ module('Integration | Component | dashboard filters', function(hooks) {
     assert.expect(1);
 
     this.set('onRemoveFilter', filter => {
-      assert.equal(filter, filterFragment1, 'When clicking remove icon, remove action is sent with selected filter');
+      assert.deepEqual(
+        filter.serialize(),
+        serializedFilter1,
+        'When clicking remove icon, remove action is sent with selected filter'
+      );
     });
 
     await click('.dashboard-filters__expand-button');
