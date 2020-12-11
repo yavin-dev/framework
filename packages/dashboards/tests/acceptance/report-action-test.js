@@ -1,5 +1,5 @@
 import { click, visit } from '@ember/test-helpers';
-import { module, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
@@ -9,8 +9,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  // TODO: Broken because reports is broken
-  skip('Add to dashboard button - flag true', async function(assert) {
+  test('Add to dashboard button - flag true', async function(assert) {
     assert.expect(1);
 
     await visit('/reports/1/view');
@@ -20,8 +19,7 @@ module('Acceptances | Report to dashboard action', function(hooks) {
     );
   });
 
-  // TODO: Broken because reports is broken
-  skip('Add to dashboard button is hidden when there are unrun request changes', async function(assert) {
+  test('Add to dashboard button is hidden when there are unrun request changes', async function(assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');

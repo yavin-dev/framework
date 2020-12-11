@@ -1,6 +1,6 @@
 import { module } from 'qunit';
 import { visit, click, findAll, currentURL } from '@ember/test-helpers';
-import { setupApplicationTest, test, skip } from 'ember-qunit';
+import { setupApplicationTest, test } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
@@ -51,8 +51,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     );
   });
 
-  // TODO: Broken because reports is broken
-  skip('Create new multisource dashboard', async function(assert) {
+  test('Create new multisource dashboard', async function(assert) {
     assert.expect(8);
 
     await visit('/dashboards/new');

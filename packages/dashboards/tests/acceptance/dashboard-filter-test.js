@@ -1,6 +1,6 @@
 import { click, fillIn, visit, triggerKeyEvent, find, findAll, currentURL } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -20,8 +20,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     window.confirm = confirm;
   });
 
-  // TODO: Broken because reports is broken
-  skip('dashboard filter flow', async function(assert) {
+  test('dashboard filter flow', async function(assert) {
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -444,8 +443,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
   });
 
-  // TODO: Broken because reports is broken
-  skip('breadcrumbs in subroute also have query params', async function(assert) {
+  test('breadcrumbs in subroute also have query params', async function(assert) {
     assert.expect(2);
     await visit(
       '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'

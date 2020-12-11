@@ -1,6 +1,6 @@
 import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur, waitFor } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -401,8 +401,7 @@ module('Acceptance | Dashboards', function(hooks) {
     });
   });
 
-  // TODO: Broken because reports is broken
-  skip('New widget', async function(assert) {
+  test('New widget', async function(assert) {
     assert.expect(15);
 
     // Check original set of widgets
@@ -512,8 +511,7 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.verifySteps(['navigation confirmation denied']);
   });
 
-  // TODO: Broken because reports is broken
-  skip('Failing to save a new widget', async function(assert) {
+  test('Failing to save a new widget', async function(assert) {
     assert.expect(8);
 
     server.patch('/dashboards/1', (_, request) => {
@@ -699,8 +697,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
   });
 
-  // TODO: Broken because reports is broken
-  skip('New widget after clone', async function(assert) {
+  test('New widget after clone', async function(assert) {
     assert.expect(4);
 
     await visit('/dashboards/1');
