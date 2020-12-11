@@ -50,6 +50,7 @@
         }
         {
           name: date_available
+          friendlyName: Available Since
           category: Date
           type: TIME
           definition: '{{date_added}}'
@@ -59,6 +60,7 @@
         }
         {
           name: release_year
+          friendlyName: Release Year
           category: Date
           type: TIME
           definition: '{{release_year}}'
