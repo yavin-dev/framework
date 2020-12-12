@@ -5,27 +5,24 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { normalizeTableV2, TableVisMetadataPayloadV1, TableVisualizationMetadata } from 'navi-core/serializers/table';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
-const defaultAttributes = {
-  canAggregateSubtotal: undefined,
-  format: undefined
-};
+const defaultAttributes = {};
 const expected: TableVisualizationMetadata = {
   metadata: {
     columnAttributes: {
       c0: defaultAttributes,
       c1: defaultAttributes,
       c2: {
-        canAggregateSubtotal: false,
-        format: undefined
+        ...defaultAttributes,
+        canAggregateSubtotal: false
       },
       c3: defaultAttributes,
       c4: defaultAttributes,
       c5: {
-        canAggregateSubtotal: undefined,
+        ...defaultAttributes,
         format: ''
       },
       c6: {
-        canAggregateSubtotal: undefined,
+        ...defaultAttributes,
         format: '0.00'
       },
       c7: defaultAttributes

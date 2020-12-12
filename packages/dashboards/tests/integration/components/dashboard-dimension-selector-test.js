@@ -25,10 +25,9 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
               table: 'a',
               tableMetadata: {
                 id: 'a',
-                timeDimensions: [],
                 dimensions: [
-                  { id: 'dim1', name: 'dim1', category: 'cat1' },
-                  { id: 'dim2', name: 'dim2', category: 'cat2' }
+                  { id: 'dim1', name: 'dim1', category: 'cat1', metadataType: 'dimension' },
+                  { id: 'dim2', name: 'dim2', category: 'cat2', metadataType: 'dimension' }
                 ]
               }
             }
@@ -47,10 +46,9 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
               table: 'b',
               tableMetadata: {
                 id: 'b',
-                timeDimensions: [],
                 dimensions: [
-                  { id: 'dim3', name: 'dim3', category: 'cat2' },
-                  { id: 'dim1', name: 'dim1', category: 'cat1' }
+                  { id: 'dim3', name: 'dim3', category: 'cat2', metadataType: 'dimension' },
+                  { id: 'dim1', name: 'dim1', category: 'cat1', metadataType: 'dimension' }
                 ]
               }
             }

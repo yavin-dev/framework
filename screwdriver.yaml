@@ -21,7 +21,7 @@ jobs:
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
-      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream || true;
+      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream;
       - test-navi-data: npx lerna run test --scope navi-data --stream;
       - test-navi-directory: npx lerna run test --scope navi-directory --stream;
       - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;

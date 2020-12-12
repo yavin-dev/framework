@@ -39,7 +39,7 @@ export default Component.extend({
     return this.store.createFragment('bard-request-v2/request', {
       table: null,
       columns: [],
-      filters: this.dashboard.filters.map(filter => {
+      filters: (this.dashboard.filters || []).map(filter => {
         const newFilter = this.store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,

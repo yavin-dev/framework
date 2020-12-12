@@ -1,12 +1,12 @@
 import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur, waitFor } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
-import { clickItem } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 
 let confirm;
@@ -62,13 +62,12 @@ module('Acceptance | Dashboards', function(hooks) {
       if (url.includes('/v1/data')) {
         dataRequestsCount++;
       }
-      return { rows: [] };
     };
 
     visit('/dashboards/1');
 
     //navigate to index route before widgets finish loading
-    await waitFor('.navi-dashboard__breadcrumb-link');
+    await waitFor('.navi-dashboard__breadcrumb-link', { timeout: 40000 });
     assert.dom('.navi-widget__content.loader-container').exists({ count: 3 });
     await click('.navi-dashboard__breadcrumb-link');
     //navigate to `Dashboard 2`
@@ -281,7 +280,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.ok(
       filters.every(filter =>
-        /^(Property|EventId) (contains|not equals|equals) (.*?\d+.*?)(, .*?\d+.*?)*$/.test(filter)
+        /^(Property|EventId) \(id\) (contains|not equals|equals) (.*?\d+.*?)( .*?\d+.*?)*$/.test(filter)
       ),
       'correct format of filters'
     );
@@ -401,8 +400,7 @@ module('Acceptance | Dashboards', function(hooks) {
     });
   });
 
-  // TODO: Broken because reports is broken
-  skip('New widget', async function(assert) {
+  test('New widget', async function(assert) {
     assert.expect(15);
 
     // Check original set of widgets
@@ -420,6 +418,10 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
 
     // Save without running
@@ -441,7 +443,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date', 'Total Clicks'],
+      ['Date Time (day)', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
 
@@ -450,6 +452,10 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Page Views');
 
     // Run request
@@ -475,7 +481,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date', 'Total Page Views'],
+      ['Date Time (day)', 'Total Page Views'],
       'Table columns for the second new widget are rendered correctly'
     );
 
@@ -512,8 +518,7 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.verifySteps(['navigation confirmation denied']);
   });
 
-  // TODO: Broken because reports is broken
-  skip('Failing to save a new widget', async function(assert) {
+  test('Failing to save a new widget', async function(assert) {
     assert.expect(8);
 
     server.patch('/dashboards/1', (_, request) => {
@@ -531,9 +536,17 @@ module('Acceptance | Dashboards', function(hooks) {
       return new Response(500);
     });
 
-    // Create and save
+    // Create widget
     await visit('/dashboards/1/widgets/new');
+
+    // Build Request
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
+
+    // Save
     await click('.navi-report-widget__run-btn');
     await click('.navi-report-widget__save-btn');
 
@@ -586,6 +599,7 @@ module('Acceptance | Dashboards', function(hooks) {
     });
 
     await visit('/dashboards/2/view');
+
     assert
       .dom('[data-gs-id="4"] .navi-widget__content')
       .hasClass('visualization-container', 'Widget shows visualization for authorized table');
@@ -662,8 +676,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]',
-        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]'
+        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]',
+        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]'
       ],
       'the filters from the request are unmodified from the dashboard'
     );
@@ -692,15 +706,14 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.deepEqual(
       dataRequests.map(thing => thing.queryParams.filters),
       [
-        'property|id-notin["2","3"],property|id-contains["114","100001"]',
-        'property|id-notin["2","3"],property|id-contains["114","100001"]'
+        'property|id-contains["114","100001"],property|id-notin["2","3"]',
+        'property|id-contains["114","100001"],property|id-notin["2","3"]'
       ],
       'the filters reflect the dashboards modified filters'
     );
   });
 
-  // TODO: Broken because reports is broken
-  skip('New widget after clone', async function(assert) {
+  test('New widget after clone', async function(assert) {
     assert.expect(4);
 
     await visit('/dashboards/1');
@@ -714,6 +727,10 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
 
     // Save without running
@@ -735,7 +752,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date', 'Total Clicks'],
+      ['Date Time (day)', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
   });

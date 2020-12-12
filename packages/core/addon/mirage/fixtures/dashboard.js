@@ -84,10 +84,10 @@ export default [
     deliveryRuleIds: [],
     filters: [
       {
-        dimension: 'userSignupDate',
-        operator: 'lt',
+        dimension: 'commaDim',
+        operator: 'in',
         field: 'id',
-        values: ['2019-05-05']
+        values: ['yes, comma']
       }
     ],
     presentation: {
