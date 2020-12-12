@@ -24,7 +24,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@glimmer/component": "^1.0.2",
+    "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.19.0",

@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
-    "@glimmer/component": "^1.0.2",
+    "@glimmer/component": "^1.0.3",
     "@types/ember": "^3.16.0",
     "@types/ember-data": "^3.16.2",
     "@types/ember-data__model": "^3.16.0",
