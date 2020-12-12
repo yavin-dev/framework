@@ -90,7 +90,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
 
         if (!results[dimension.category][`${dataSource}.${dimension.id}`]) {
           results[dimension.category][`${dataSource}.${dimension.id}`] = {
-            type: dimension instanceof TimeDimensionMetadataModel ? 'timeDimension' : 'dimension',
+            type: dimension.metadataType,
             field: dimension.id,
             name: dimension.name,
             tables: [table],
@@ -114,8 +114,9 @@ export default class DashboardDimensionSelectorComponent extends Component {
       // TODO: Consider including timeDimensions? This would potentially conflict with visualization manifests so skipping for now
       const { id: tableKey, dimensions } = widget.requests?.firstObject?.tableMetadata || {};
       const dataSource = widget?.requests?.firstObject?.dataSource;
-      if (!dimensionMap[tableKey]) {
-        dimensionMap[`${dataSource}.${tableKey}`] = [...dimensions];
+      const key = `${dataSource}.${tableKey}`;
+      if (!dimensionMap[key]) {
+        dimensionMap[key] = [...dimensions];
       }
       return dimensionMap;
     }, {});

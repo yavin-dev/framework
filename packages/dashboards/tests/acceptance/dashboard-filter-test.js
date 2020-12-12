@@ -61,7 +61,6 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.dashboard-dimension-selector', 'Platform');
 
     await selectChoose('.filter-collection__row:nth-child(2) .filter-builder-dimension__operator', 'Contains');
-    await selectChoose('.filter-builder-dimension__field', 'desc');
     await fillIn('.filter-collection__row:nth-child(2) .filter-builder-dimension__values input', 'win');
     dataRequests = [];
     await triggerKeyEvent(
@@ -72,7 +71,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.ok(
       dataRequests.every(
-        request => request.queryParams.filters === 'platform|desc-contains["win"],property|id-in["1","2"]'
+        request => request.queryParams.filters === 'property|id-in["1","2"],platform|id-contains["win"]'
       ),
       'each widget request has both filters present after new one is added'
     );
@@ -82,7 +81,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await click('.filter-collection__remove:nth-child(1)');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'platform|desc-contains["win"]'),
+      dataRequests.every(request => request.queryParams.filters == 'platform|id-contains["win"]'),
       'each widget request has the right filters after one has been removed'
     );
     dataRequests = [];
@@ -101,7 +100,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.deepEqual(
       dashboardBody.data.attributes.filters,
-      [{ dimension: 'bardOne.platform', field: 'desc', operator: 'contains', values: ['win'] }],
+      [{ dimension: 'bardOne.platform', field: 'id', operator: 'contains', values: ['win'] }],
       'Correct filters are saved with the dashboard'
     );
   });
@@ -132,12 +131,6 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       'each widget request has the filter added using the key field'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
-
-    await click('.dashboard-filters__expand-button');
-
-    assert
-      .dom('.filter-values--collapsed')
-      .matchesText(/[a-z ]+\(1\)/i, 'filter collapse display should show id and not key');
   });
 
   test('dashboard filter query params - ui changes update the model', async function(assert) {
@@ -150,22 +143,22 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     const INITIAL_FILTERS = [
       {
-        dimension: 'Property',
+        dimension: 'Property (id)',
         operator: 'contains',
         rawValues: ['114', '100001']
       },
       {
-        dimension: 'Property',
+        dimension: 'Property (id)',
         operator: 'not equals',
         rawValues: ['1']
       },
       {
-        dimension: 'Property',
+        dimension: 'Property (id)',
         operator: 'not equals',
         rawValues: ['2', '3']
       },
       {
-        dimension: 'EventId',
+        dimension: 'EventId (id)',
         operator: 'equals',
         rawValues: ['1']
       }
@@ -194,7 +187,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       dirtyFilters,
       [
         {
-          dimension: 'Property',
+          dimension: 'Property (id)',
           operator: 'equals',
           rawValues: ['2', '3']
         }
@@ -234,8 +227,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.deepEqual(
       dataRequests.map(req => req.queryParams.filters),
       [
-        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]',
-        'property|id-notin["2","3"],property|id-notin["1"],property|id-contains["114","100001"]'
+        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]',
+        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]'
       ],
       'The requests are sent with the initial filters'
     );
@@ -245,10 +238,10 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.expect(7);
 
     const dirtyURL =
-      '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2CACYOEAMwQAuuJiJYeIdEPAAvltPAgAAA';
+      '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgCZ6IAzBAC6DKNESwAJpWAFkhFPACe_OcWTEAtoiRpMuGJJlcqJgL5iVRWVOg7qqaHlrAxqPK2QBjRLIBGGlIA8tR-wObC5sBAA';
     const filters = [
       {
-        dimension: 'Property',
+        dimension: 'Property (id)',
         operator: 'equals',
         rawValues: ['2', '3']
       }
@@ -314,11 +307,14 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         filters: [
           {
-            dimension: 'property',
-            field: 'id',
+            type: 'dimension',
+            field: 'property',
+            parameters: {
+              field: 'id'
+            },
             operator: 'in',
             values: [],
-            dataSource: 'bardOne'
+            source: 'bardOne'
           }
         ]
       },
@@ -350,11 +346,14 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         filters: [
           {
-            dimension: 'property',
-            field: 'id',
+            type: 'dimension',
+            field: 'property',
+            parameters: {
+              field: 'id'
+            },
             operator: 'in',
             values: ['1'],
-            dataSource: 'bardOne'
+            source: 'bardOne'
           }
         ]
       },
@@ -399,11 +398,14 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         filters: [
           {
-            dimension: 'property',
-            field: 'id',
+            type: 'dimension',
+            field: 'property',
+            parameters: {
+              field: 'id'
+            },
             operator: 'in',
             values: [],
-            dataSource: 'bardOne'
+            source: 'bardOne'
           }
         ]
       },
@@ -412,7 +414,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
 
     await visit(
-      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'
+      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgBZIRTwAnvQgFiyYgFtESNJlwxBIrlV0BfPjKKih0VdVTQ8tYH1R5WyAMaJRAI0VCA8tXfARriSSmQUesA0csDMbByYWBAAtADMELwQ2sKixADmAXwKSqrqnBhaAtkR0IbG0qYR5pbWttGOzm6e3n4BBtwGwEAAA'
     );
     assert.equal(
       dataRequests.length,
@@ -426,16 +428,24 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         filters: [
           {
-            dimension: 'property',
-            field: 'id',
+            type: 'dimension',
+            field: 'property',
+            parameters: {
+              field: 'id'
+            },
             operator: 'in',
-            values: []
+            values: [],
+            source: 'bardOne'
           },
           {
-            dimension: 'age',
-            field: 'id',
+            type: 'dimension',
+            field: 'age',
+            parameters: {
+              field: 'id'
+            },
             operator: 'in',
-            values: ['-3']
+            values: ['-3'],
+            source: 'bardOne'
           }
         ]
       },

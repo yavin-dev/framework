@@ -3,7 +3,7 @@ import { visit, click, findAll, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest, test } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
-import { clickItem } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | Multi datasource Dashboard', function(hooks) {
   setupApplicationTest(hooks);
@@ -19,16 +19,13 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
 
     assert
       .dom('.filter-collection--collapsed')
-      .hasText(
-        'Age equals under 13 (1) 13-17 (2) 18-20 (3) Container not equals Bag (1)',
-        'Collapsed filter has the right text'
-      );
+      .hasText('Age (id) equals 1 2 3 Container (id) not equals 1', 'Collapsed filter has the right text');
 
     await click('.dashboard-filters__toggle');
 
     assert.deepEqual(
       findAll('.filter-builder-dimension__subject').map(el => el.textContent.trim()),
-      ['Age', 'Container'],
+      ['Age (id)', 'Container (id)'],
       'Dimensions are properly labeled in filters'
     );
 
@@ -46,7 +43,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
           )
         ].map(el => el.textContent.trim())
       ),
-      [['under 13 (1)', '13-17 (2)', '18-20 (3)'], ['Bag (1)']],
+      [['1', '2', '3'], ['1']],
       'Dimension value selector showing the right values'
     );
   });
@@ -67,6 +64,10 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.add-to-dashboard');
 
     await selectChoose('.navi-table-select__dropdown', 'Inventory');
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'Current');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('dimension', 'Container');
     await clickItem('metric', 'Used Amount');
 
@@ -81,10 +82,10 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.dashboard-filters__toggle');
     await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Container');
-    await selectChoose('.filter-builder-dimension__values', 'Bag');
+    await selectChoose('.filter-builder-dimension__values', '1');
 
     const widgetsWithFilterWarning = () =>
-      [...findAll('.navi-widget__filter-errors-icon')].map(el => el.closest('.navi-widget__title').textContent.trim());
+      findAll('.navi-widget__filter-errors-icon').map(el => el.closest('.navi-widget__title').textContent.trim());
 
     assert.deepEqual(
       widgetsWithFilterWarning(),
@@ -95,7 +96,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     //add another filter for other datasource
     await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Age');
-    await selectChoose(findAll('.filter-builder-dimension__values')[1], 'under 13 (1)');
+    await selectChoose(findAll('.filter-builder-dimension__values')[1], '1');
 
     assert.deepEqual(
       widgetsWithFilterWarning(),

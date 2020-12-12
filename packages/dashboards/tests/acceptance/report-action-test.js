@@ -3,7 +3,6 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
-import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
 module('Acceptances | Report to dashboard action', function(hooks) {
   setupApplicationTest(hooks);
@@ -29,16 +28,19 @@ module('Acceptances | Report to dashboard action', function(hooks) {
       'Add to Dashboard button is visible by default'
     );
 
-    // Create empty filter to make request invalid
-    await clickItemFilter('dimension', 'Operating System');
+    // Remove all columns to make invalid
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert.notOk(
       !!$('.navi-report__action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is hidden when all metrics is disabled'
     );
 
-    // Remove empty filter and run query
-    await clickItemFilter('dimension', 'Operating System');
+    // Revert changes and run query
+    await click('.navi-report__revert-btn');
     await click('.navi-report__run-btn');
 
     assert.ok(

@@ -113,13 +113,10 @@ export default class DashboardDataService extends Service {
       options.dataSourceName = request.dataSource || getDefaultDataSourceName();
 
       const requestWithFilters = this._applyFilters(dashboard, request);
-      const requestDecorated = this._decorate(decorators, requestWithFilters.serialize());
       const filterErrors = this._getFilterErrors(dashboard, request);
 
       // Replace serialized request with request fragment
-      let result = this._fetchRequest
-        .perform(requestDecorated, options, filterErrors)
-        .then(response => ({ ...response, request: requestWithFilters }));
+      let result = this._fetchRequest.perform(requestWithFilters, decorators, options, filterErrors);
       fetchTasks.push(result);
     });
 
@@ -135,11 +132,15 @@ export default class DashboardDataService extends Service {
    * @param {Array} filterErrors - invalid Filter error objects
    * @yields {TaskInstance}
    */
-  @(task(function*(request, options, filterErrors) {
+  @(task(function*(requestFragment, decorators, options, filterErrors) {
+    const request = this._decorate(decorators, requestFragment.serialize());
     return yield this._fetch(request, options, filterErrors).then(result => {
       const serverErrors = getWithDefault(result, 'response.meta.errors', []);
 
-      return merge({}, result, { response: { meta: { errors: [...serverErrors, ...filterErrors] } } });
+      return merge({}, result, {
+        request: requestFragment,
+        response: { meta: { errors: [...serverErrors, ...filterErrors] } }
+      });
     });
   })
     .enqueue()

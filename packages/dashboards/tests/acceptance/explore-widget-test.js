@@ -6,7 +6,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -136,7 +136,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (Day)', 'After clicking "Revert Changes", the changed time grain is returned');
+      .hasText('Date Time (day)', 'After clicking "Revert Changes", the changed time grain is returned');
 
     assert
       .dom('.navi-report-widget__revert-btn')
@@ -162,12 +162,13 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
-    // Remove all metrics to create an invalid request
+    // Remove all columns to create an invalid request
     assert
-      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]')
-      .exists('The datesTime remove icon exists');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
+      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]')
+      .exists('The dateTime remove icon exists');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -201,16 +202,10 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .dom('.get-api')
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
-    // Remove all metrics
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
-
-    // Remove all metrics to create an invalid request
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
-
-    // Create empty filter to make request invalid
-    await clickItemFilter('dimension', 'Operating System');
+    // Remove all columns to create an invalid request
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom('.get-api')
@@ -304,9 +299,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/2/widgets/4/view');
     assert
-      .dom('.navi-report-error__info-message')
+      .dom('.routes-reports-report-error__error-list')
       .hasText(
-        'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+        'Cannot merge mismatched time grains month and day',
         'An error message is displayed for an invalid request'
       );
   });
