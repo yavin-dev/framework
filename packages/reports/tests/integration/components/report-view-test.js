@@ -128,7 +128,6 @@ module('Integration | Component | report view', function(hooks) {
                 series: {
                   type: 'metric',
                   config: {
-                    metrics: [{}]
                   }
                 }
               }
