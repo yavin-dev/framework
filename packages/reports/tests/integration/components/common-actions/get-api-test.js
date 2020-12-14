@@ -11,7 +11,7 @@ let Template;
 const MockRequest = {
     serialize: () => 'abc'
   },
-  MockUrl = 'navi.io/api';
+  MockUrl = 'https://navi.io/api';
 
 module('Integration | Component | common actions/get api', function(hooks) {
   setupRenderingTest(hooks);
@@ -113,7 +113,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
     let buttons = findAll('.btn-container .btn');
     assert.deepEqual(
       buttons.map(el => el.textContent.trim()),
-      ['Copy Link', 'Cancel'],
+      ['Copy Link', 'Run API Query in New Tab', 'Cancel'],
       'Copy, New Tab, and Cancel buttons are rendered'
     );
   });
@@ -149,17 +149,5 @@ module('Integration | Component | common actions/get api', function(hooks) {
     await click($('.btn-container button:contains(Cancel)')[0]);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is closed after clicking cancel button');
-  });
-
-  test('Run API Query in New Tab button', async function(assert) {
-    assert.expect(2);
-
-    await render(Template);
-
-    // Click component
-    await click('.get-api > button');
-
-    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
-    assert.dom('.btn-secondary').exists({ count: 1 }, 'There is 1 secondary');
   });
 });
