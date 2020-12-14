@@ -49,6 +49,26 @@ module('Integration | Component | report actions - export', function(hooks) {
   test('Component is not disabled for unsaved reports', async function(assert) {
     assert.expect(1);
 
+    let request = {
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          source: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['current', 'next']
+        }
+      ],
+      columns: [],
+      sorts: []
+    };
+    this.set('report', Store.createRecord('report', { title: 'New Report', request }));
+
     await render(TEMPLATE);
 
     assert.notOk(!!$('a.report-control.disabled').length, 'Component is not disabled for unsaved reports');

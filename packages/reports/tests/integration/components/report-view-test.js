@@ -154,7 +154,7 @@ module('Integration | Component | report view', function(hooks) {
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2015-11-09', '2015-11-14']
+          values: ['current', 'next']
         }
       ],
       columns: [
