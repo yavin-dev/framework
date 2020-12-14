@@ -18,6 +18,8 @@ jobs:
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci --unsafe-perm
+      # TODO add lint meta https://docs.screwdriver.cd/user-guide/metadata#additional-pull-request-checks
+      - lint: npx lerna run lint --stream;
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;

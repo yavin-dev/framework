@@ -127,8 +127,7 @@ module('Integration | Component | report view', function(hooks) {
               y: {
                 series: {
                   type: 'metric',
-                  config: {
-                  }
+                  config: {}
                 }
               }
             }
