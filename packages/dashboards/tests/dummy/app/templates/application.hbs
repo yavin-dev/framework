@@ -1,10 +1,12 @@
-<nav class="header">
-  <h2 class="title"><LinkTo @route="dashboards">navi dashboards</LinkTo></h2>
-  <ul class="dashboard-collections">
-    <li class="collection-link"><LinkTo @route="dashboard-collections.collection" @model={{1}}> Collection 1 </LinkTo></li>
-    <li class="collection-link"><LinkTo @route="dashboard-collections.collection" @model={{2}}> Collection 2 </LinkTo></li>
-  </ul>
-</nav>
+<DenaliNavbar @isResponsive={{true}} as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.LinkTo @route="dashboards">Navi Dashboards</Left.LinkTo>
+  </Nav.Left>
+  <Nav.Center as |Center|>
+    <Center.LinkTo @route="dashboard-collections.collection" @model={{1}}>Collection 1</Center.LinkTo>
+    <Center.LinkTo @route="dashboard-collections.collection" @model={{2}}>Collection 2</Center.LinkTo>
+  </Nav.Center>
+</DenaliNavbar>
 {{outlet}}
 <div class="navi-notifications">
   {{this.naviNotifications.options.message}} {{this.naviNotifications.options.type}}

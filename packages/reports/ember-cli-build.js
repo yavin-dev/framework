@@ -6,6 +6,15 @@ module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
     'ember-cli-babel': {
       includePolyfill: true
+    },
+    sassOptions: {
+      //standard ember-cli-sass options go here
+      excludeFiles: [] // `app/styles` files not to be process as sass files
+    },
+    lessOptions: {
+      //standard ember-cli-less options go here
+      lessFiles: ['app'], // `app/styles` files to process as less files
+      lessSuffix: '.less' // defaults to `.less`, output name suffix (ex: app --> app.less.css)
     }
   });
 
