@@ -1,5 +1,5 @@
 import { helper as buildHelper } from '@ember/component/helper';
-import { module, test, skip } from 'qunit';
+import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import $ from 'jquery';
