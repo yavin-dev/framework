@@ -14,6 +14,8 @@ const MockDispatcher = {
   }
 };
 
+const routeFor = request => ({ modelFor: () => ({ request }) });
+
 module('Unit | Consumer | request column', function(hooks) {
   setupTest(hooks);
 
@@ -24,81 +26,30 @@ module('Unit | Consumer | request column', function(hooks) {
     consumer = this.owner.factoryFor('consumer:request/column').create({ requestActionDispatcher: MockDispatcher });
   });
 
-  test('ADD_COLUMN', function(assert) {
-    assert.expect(1);
-
-    const currentModel = {
-      request: {
-        addColumnFromMeta(columnMetadataModel) {
-          assert.equal(columnMetadataModel, 'age', 'addColumnFromMeta is called with correct model');
-        }
-      }
-    };
-
-    consumer.send(RequestActions.ADD_COLUMN, { currentModel }, 'age');
-  });
-
   test('ADD_COLUMN_WITH_PARAMS', function(assert) {
     assert.expect(2);
 
-    const currentModel = {
-      request: {
-        addColumnFromMetaWithParams(columnMetadataModel, parameters) {
-          assert.equal(columnMetadataModel, 'revenue', 'addColumnFromMetaWithParams is called with correct model');
-          assert.deepEqual(
-            parameters,
-            { currency: 'USD' },
-            'addColumnFromMetaWithParams is called with correct params'
-          );
-        }
+    const request = {
+      addColumnFromMetaWithParams(columnMetadataModel, parameters) {
+        assert.equal(columnMetadataModel, 'revenue', 'addColumnFromMetaWithParams is called with correct model');
+        assert.deepEqual(parameters, { currency: 'USD' }, 'addColumnFromMetaWithParams is called with correct params');
       }
     };
 
-    consumer.send(RequestActions.ADD_COLUMN_WITH_PARAMS, { currentModel }, 'revenue', { currency: 'USD' });
-  });
-
-  test('REMOVE_COLUMN', function(assert) {
-    assert.expect(1);
-
-    const currentModel = {
-      request: {
-        removeColumnByMeta(columnMetadataModel) {
-          assert.equal(columnMetadataModel, 'age', 'removeColumnByMeta is called with correct model');
-        }
-      }
-    };
-
-    consumer.send(RequestActions.REMOVE_COLUMN, { currentModel }, 'age');
-  });
-
-  test('REMOVE_COLUMN_WITH_PARAMS', function(assert) {
-    assert.expect(2);
-
-    const currentModel = {
-      request: {
-        removeColumnByMeta(columnMetadataModel, parameters) {
-          assert.equal(columnMetadataModel, 'revenue', 'removeColumnByMeta is called with correct model');
-          assert.deepEqual(parameters, { currency: 'USD' }, 'removeColumnByMeta is called with correct params');
-        }
-      }
-    };
-
-    consumer.send(RequestActions.REMOVE_COLUMN_WITH_PARAMS, { currentModel }, 'revenue', { currency: 'USD' });
+    consumer.send(RequestActions.ADD_COLUMN_WITH_PARAMS, routeFor(request), 'revenue', { currency: 'USD' });
   });
 
   test('REMOVE_COLUMN_FRAGMENT', function(assert) {
     assert.expect(1);
 
     const column = { type: 'dimension', field: 'age' };
-    const currentModel = {
-      request: {
-        removeColumn(columnFragment) {
-          assert.deepEqual(columnFragment, column, 'removeColumn is called with correct column fragment');
-        }
+    const request = {
+      removeColumn(columnFragment) {
+        assert.deepEqual(columnFragment, column, 'removeColumn is called with correct column fragment');
       }
     };
 
-    consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, { currentModel }, column);
+    consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, routeFor(request), column);
   });
 
   test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function(assert) {
@@ -116,61 +67,57 @@ module('Unit | Consumer | request column', function(hooks) {
   test('RENAME_COLUMN_FRAGMENT', function(assert) {
     assert.expect(2);
 
-    const currentModel = {
-      request: {
-        columns: arr([{ type: 'metric', alias: '', field: 'clicks', parameters: {} }]),
+    const request = {
+      columns: arr([{ type: 'metric', alias: '', field: 'clicks', parameters: {} }]),
 
-        renameColumn(column, alias) {
-          assert.deepEqual(column, currentModel.request.columns[0], 'The correct column is passed in');
-          assert.deepEqual(alias, 'Number', 'The alias is Number');
-        }
+      renameColumn(column, alias) {
+        assert.deepEqual(column, request.columns[0], 'The correct column is passed in');
+        assert.deepEqual(alias, 'Number', 'The alias is Number');
       }
     };
 
-    consumer.send(RequestActions.RENAME_COLUMN_FRAGMENT, { currentModel }, currentModel.request.columns[0], 'Number');
+    consumer.send(RequestActions.RENAME_COLUMN_FRAGMENT, routeFor(request), request.columns[0], 'Number');
   });
 
   test('REORDER_COLUMN_FRAGMENT', function(assert) {
     assert.expect(2);
 
-    const currentModel = {
-      request: {
-        columns: arr([{ field: 'clicks0' }, { field: 'clicks1' }, { field: 'clicks2' }, { field: 'clicks3' }]),
+    const request = {
+      columns: arr([{ field: 'clicks0' }, { field: 'clicks1' }, { field: 'clicks2' }, { field: 'clicks3' }]),
 
-        reorderColumn(column, index) {
-          assert.deepEqual(column, currentModel.request.columns[2], 'The correct column is passed in');
-          assert.deepEqual(index, index, 'The alias is Number');
-        }
+      reorderColumn(column, index) {
+        assert.deepEqual(column, request.columns[2], 'The correct column is passed in');
+        assert.deepEqual(index, index, 'The alias is Number');
       }
     };
 
-    consumer.send(RequestActions.REORDER_COLUMN_FRAGMENT, { currentModel }, currentModel.request.columns[2], 1);
+    consumer.send(RequestActions.REORDER_COLUMN_FRAGMENT, routeFor(request), request.columns[2], 1);
   });
 
   test('ADD_METRIC_FILTER', function(assert) {
     assert.expect(4);
 
-    const currentModel = {
-      request: {
-        columns: [{ type: 'metric', columnMetadata: 'pageViews' }]
-      }
+    const request = {
+      columns: [{ type: 'metric', columnMetadata: 'pageViews' }]
     };
 
-    //existing column should not be added
-    consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'pageViews');
+    const route = routeFor(request);
 
-    consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'adClicks');
-    assert.deepEqual(dispatchedActions, [RequestActions.ADD_COLUMN], 'ADD_COLUMN is dispatched');
+    //existing column should not be added
+    consumer.send(RequestActions.ADD_METRIC_FILTER, route, 'pageViews');
+
+    consumer.send(RequestActions.ADD_METRIC_FILTER, route, 'adClicks');
+    assert.deepEqual(dispatchedActions, [RequestActions.ADD_COLUMN_WITH_PARAMS], 'ADD_COLUMN is dispatched');
     assert.deepEqual(
       dispatchedActionArgs,
-      ['adClicks'],
-      'ADD_COLUMN is dispatched with the correct metric metadata model'
+      ['adClicks', undefined],
+      'ADD_COLUMN_WITH_PARAMS is dispatched with the correct metric metadata model and undefined paramters'
     );
 
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
-    consumer.send(RequestActions.ADD_METRIC_FILTER, { currentModel }, 'revenue', { currency: 'USD' });
+    consumer.send(RequestActions.ADD_METRIC_FILTER, route, 'revenue', { currency: 'USD' });
     assert.deepEqual(
       dispatchedActions,
       [RequestActions.ADD_COLUMN_WITH_PARAMS],
@@ -190,28 +137,26 @@ module('Unit | Consumer | request column', function(hooks) {
       dimensions: ['age'],
       metrics: ['adClicks']
     };
-    const currentModel = {
-      request: {
-        columns: arr([
-          { columnMetadata: 'age' },
-          { columnMetadata: 'browser' },
-          { columnMetadata: 'adClicks' },
-          { columnMetadata: 'pageViews' }
-        ])
-      }
+    const request = {
+      columns: arr([
+        { columnMetadata: 'age' },
+        { columnMetadata: 'browser' },
+        { columnMetadata: 'adClicks' },
+        { columnMetadata: 'pageViews' }
+      ])
     };
 
-    consumer.send(RequestActions.DID_UPDATE_TABLE, { currentModel }, table);
+    consumer.send(RequestActions.DID_UPDATE_TABLE, routeFor(request), table);
 
     assert.deepEqual(
       dispatchedActions,
-      [RequestActions.REMOVE_COLUMN, RequestActions.REMOVE_COLUMN],
+      [RequestActions.REMOVE_COLUMN_FRAGMENT, RequestActions.REMOVE_COLUMN_FRAGMENT],
       'REMOVE_COLUMN is dispatched for each column that is not in the new table'
     );
     assert.deepEqual(
       dispatchedActionArgs,
-      ['browser', 'pageViews'],
-      'REMOVE_COLUMN is called with the correct metadata model'
+      [{ columnMetadata: 'browser' }, { columnMetadata: 'pageViews' }],
+      'REMOVE_COLUMN_FRAGMENT is called with the correct metadata model'
     );
   });
 });

@@ -84,31 +84,6 @@ export default class SortConsumer extends ActionConsumer {
 
       sorts.forEach(sort => request.removeSort(sort));
     },
-
-    /**
-     * @action REMOVE_COLUMN
-     * @param route - route that has a model that contains a request property
-     * @param columnMetadata - metadata model of column to remove
-     */
-    [RequestActions.REMOVE_COLUMN](this: SortConsumer, route: Route, columnMetadata: ColumnMetadataModels) {
-      this.onRemoveColumn(route, columnMetadata);
-    },
-
-    /**
-     * @action REMOVE_COLUMN_WITH_PARAMS
-     * @param route - route that has a model that contains a request property
-     * @param columnMetadata - metadata model of column to remove
-     * @param parameters - column parameters
-     */
-    [RequestActions.REMOVE_COLUMN_WITH_PARAMS](
-      this: SortConsumer,
-      route: Route,
-      columnMetadata: ColumnMetadataModels,
-      parameters: ColumnFragment['parameters']
-    ) {
-      this.onRemoveColumn(route, columnMetadata, parameters);
-    },
-
     /**
      * @action REMOVE_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property

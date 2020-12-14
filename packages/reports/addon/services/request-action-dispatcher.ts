@@ -4,39 +4,31 @@
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
 
-export const RequestActions = {
-  ADD_COLUMN: 'addColumn',
+export const RequestActions = <const>{
   ADD_COLUMN_WITH_PARAMS: 'addColumnWithParams',
-  ADD_DIMENSION_FILTER: 'addDimensionFilter',
-  ADD_METRIC_FILTER: 'addMetricFilter',
-
   DID_ADD_COLUMN: 'didAddColumn',
-
-  DID_UPDATE_TIME_GRAIN: 'didUpdateTimeGrain',
-  DID_UPDATE_TABLE: 'didUpdateTable',
-
-  REMOVE_COLUMN: 'removeColumn',
-  REMOVE_COLUMN_WITH_PARAMS: 'removeColumnWithParams',
+  UPDATE_COLUMN_FRAGMENT_WITH_PARAMS: 'updateColumnFragmentWithParams',
   REMOVE_COLUMN_FRAGMENT: 'removeColumnFragment',
   RENAME_COLUMN_FRAGMENT: 'renameColumnFragment',
   REORDER_COLUMN_FRAGMENT: 'reorderColumnFragment',
-  REMOVE_TIME_GRAIN: 'removeTimeGrain',
-  REMOVE_FILTER: 'removeFilter',
-  REMOVE_SORT: 'removeSort',
 
   TOGGLE_FILTER: 'toggleFilter',
   TOGGLE_DIMENSION_FILTER: 'toggleDimensionFilter',
   TOGGLE_METRIC_FILTER: 'toggleMetricFilter',
-  TOGGLE_PARAMETERIZED_METRIC_FILTER: 'toggleParameterizedMetricFilter',
-
+  ADD_DIMENSION_FILTER: 'addDimensionFilter',
+  ADD_METRIC_FILTER: 'addMetricFilter',
   UPDATE_FILTER: 'updateFilter',
-  UPDATE_COLUMN_FRAGMENT_WITH_PARAMS: 'updateColumnFragmentWithParams',
+  REMOVE_FILTER: 'removeFilter',
+
   UPDATE_TABLE: 'updateTable',
-  UPSERT_SORT: 'upsertSort'
+  DID_UPDATE_TABLE: 'didUpdateTable',
+
+  UPSERT_SORT: 'upsertSort',
+  REMOVE_SORT: 'removeSort'
 };
 
 export default class RequestActionDispatcher extends ActionDispatcher {
   get consumers() {
-    return [...super.consumers, 'request/column', 'request/filter', 'request/fili', 'request/table', 'request/sort'];
+    return [...super.consumers, 'request/column', 'request/filter', 'request/table', 'request/sort', 'request/fili'];
   }
 }

@@ -104,7 +104,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   /**
    * @method clone
-   * @returns {Fragment} copy of this fragment
+   * @returns copy of this fragment
    */
   clone(this: RequestFragment): RequestFragment {
     const { store } = this;
@@ -156,13 +156,16 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * @property {ColumnFragment[]} metricColumns - The metric columns
+   * @property metricColumns - The metric columns
    */
   @computed('columns.[]')
   get metricColumns(): ColumnFragment<'metric'>[] {
     return this.columns.filter(column => column.type === 'metric') as ColumnFragment<'metric'>[];
   }
 
+  /**
+   * @property dimensionColumns - The dimension and time dimension columns
+   */
   @computed('columns.[]')
   get dimensionColumns(): ColumnFragment<'dimension' | 'timeDimension'>[] {
     return this.columns.filter(
@@ -170,13 +173,16 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     ) as ColumnFragment<'dimension' | 'timeDimension'>[];
   }
 
+  /**
+   * @property metricFilters - The metric filters
+   */
   @computed('filters.[]')
   get metricFilters(): FilterFragment[] {
     return this.filters.filter(filter => filter.type === 'metric');
   }
 
   /**
-   * @property {ColumnFragment[]} dimensionFilters - The dimension and timeDimension filters
+   * @property dimensionFilters - The dimension and timeDimension filters
    */
   @computed('filters.[]')
   get dimensionFilters(): FilterFragment[] {
@@ -184,7 +190,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * @property {ColumnFragment} timeGrainColumn - The column containing the dateTime timeDimension
+   * @property timeGrainColumn - The column containing the dateTime timeDimension
    */
   @computed('columns.[]')
   get timeGrainColumn(): ColumnFragment<'timeDimension'> | undefined {
@@ -198,7 +204,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * @property {string} timeGrain - The grain parameter of the column containing the dateTime timeDimension
+   * @property timeGrain - The grain parameter of the column containing the dateTime timeDimension
    */
   @computed('timeGrainColumn.parameters.grain')
   get timeGrain(): Grain | undefined {
@@ -206,7 +212,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * @property {FilterFragment} dateTimeFilter - The filter on the dateTime dimension
+   * @property dateTimeFilter - The filter on the dateTime dimension
    */
   @computed('filters.[]')
   get dateTimeFilter(): FilterFragment | undefined {
@@ -214,7 +220,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * @property {Interval|undefined} interval - The interval to filter the dateTime for
+   * @property interval - The interval to filter the dateTime for
    */
   @computed('dateTimeFilter.values')
   get interval(): Interval | undefined {
@@ -242,25 +248,15 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * Adds a new column with the parameters
+   * Adds a column with it's default parameters
    */
-  addColumnFromMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters): ColumnFragment {
+  addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}): ColumnFragment {
     return this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
   }
 
   /**
-   * Adds a column with it's default parameters
-   */
-  addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}): ColumnFragment {
-    return this.addColumnFromMeta(columnMetadataModel, {
-      ...(columnMetadataModel.getDefaultParameters?.() || {}),
-      ...parameters
-    });
-  }
-
-  /**
    * Removes an exact column from the request
-   * @param {ColumnFragment} column - the fragment of the column to remove
+   * @param column - the fragment of the column to remove
    */
   removeColumn(column: ColumnFragment) {
     this.columns.removeFragment(column);
@@ -268,8 +264,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   /**
    * Removes a column based on it's metadata and the given parameters
-   * @param {ColumnMetadata} columnMetadataModel - the metadata for the column
-   * @param {object} parameters - the parameters to search for to be removed
+   * @param columnMetadataModel - the metadata for the column
+   * @param parameters - the parameters to search for to be removed
    */
   removeColumnByMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters) {
     let columnsToRemove = this.columns.filter(column => column.columnMetadata === columnMetadataModel);
@@ -283,53 +279,41 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   /**
    * Renames an exact column from the request
-   * @param {ColumnFragment} column - the fragment of the column to remove
-   * @param {string} alias - the new alias for the column
+   * @param column - the fragment of the column to remove
+   * @param alias - the new alias for the column
    */
-  renameColumn(column: ColumnFragment, alias: string) {
+  renameColumn(column: ColumnFragment, alias: ColumnFragment['alias']) {
     set(column, 'alias', alias);
   }
 
   /**
    * Updates the parameters of a column
-   * @param {ColumnFragment} column - the fragment of the column to update
-   * @param {object} parameters - the parameters to be updated and their values
+   * @param column - the fragment of the column to update
+   * @param parameters - the parameters to be updated and their values
    */
   updateColumnParameters(column: ColumnFragment, parameters: Parameters) {
     column.updateParameters(parameters);
   }
 
-  updateTimeGrain() {
-    throw new Error('TimeGrain is no longer a top level property');
-  }
-
-  updateInterval() {
-    throw new Error('TimeGrain is no longer a top level property');
-  }
-
-  addDateTimeSort() {
-    throw new Error('DateTime is no longer a top level property');
-  }
-
-  //TODO: handle valueParam values vs rawValues
   /**
    * Adds a filter to the request
-   * @param {object} filter - the filter to add
+   * @param filter - the filter to add
    */
   addFilter({
     type,
-    source,
     field,
     parameters,
     operator,
     values
   }: BaseLiteral & { operator: FilterFragment['operator']; values: FilterFragment['values'] }) {
-    this.filters.pushObject(this.fragmentFactory.createFilter(type, source, field, parameters, operator, values));
+    this.filters.pushObject(
+      this.fragmentFactory.createFilter(type, this.dataSource, field, parameters, operator, values)
+    );
   }
 
   /**
    * Removes a filter by it's fragment
-   * @param {FilterFragment} filter - the filter to remove
+   * @param filter - the filter to remove
    */
   removeFilter(filter: FilterFragment) {
     this.filters.removeFragment(filter);
@@ -337,7 +321,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   /**
    * Adds a sort to the request if it does not exist
-   * @param {SortFragment} sort - the sort to add to the request
+   * @param sort - the sort to add to the request
    */
   addSort({ type, source, field, parameters, direction }: BaseLiteral & { direction: SortDirection }) {
     const canonicalName = canonicalizeMetric({
@@ -352,48 +336,17 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * Adds a sort based on the metric name with the direction
-   * @param {string} metricName - the canonical name of the metric
-   * @param {string} direction - the direction of the sort
-   */
-  addSortByMetricName(metricName: string, direction: SortDirection) {
-    const metricColumn = this.columns.find(
-      column => column.type === 'metric' && column.canonicalName === metricName
-    ) as ColumnFragment;
-
-    assert(`Metric with canonical name "${metricName}" was not found in the request`, metricColumn);
-
-    this.addSort({
-      type: 'metric',
-      source: this.dataSource,
-      field: metricColumn.field,
-      parameters: metricColumn.parameters,
-      direction
-    });
-  }
-
-  /**
    * Removes a sort from the request
-   * @param {SortFragment} sort - the fragment of the sort to remove
+   * @param sort - the fragment of the sort to remove
    */
   removeSort(sort: SortFragment) {
     this.sorts.removeFragment(sort);
   }
-  /**
-   * Removes a sort if it exists by the given metric name
-   * @param {string} metricName - the canonical name of the metric to remove sorts for
-   */
-  removeSortByMetricName(metricName: string) {
-    const sort = this.sorts.find(sort => sort.type === 'metric' && sort.canonicalName === metricName);
-    if (sort) {
-      this.removeSort(sort);
-    }
-  }
 
   /**
    * Moves the given column to the index, shifting everything >= index by one position
-   * @param {ColumnFragment} column - the column fragment that is being moved
-   * @param {number} index - the index to move the selected column
+   * @param column - the column fragment that is being moved
+   * @param index - the index to move the selected column
    */
   reorderColumn(column: ColumnFragment, index: number) {
     this.columns.removeFragment(column);

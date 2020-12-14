@@ -9,6 +9,8 @@ import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/r
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ReportModel from 'navi-core/models/report';
 import { getDataSource } from 'navi-data/utils/adapter';
+import DimensionMetadataModel from 'navi-data/addon/models/metadata/dimension';
+import { Parameters } from 'navi-data/adapters/facts/interface';
 
 export default class FiliConsumer extends ActionConsumer {
   @service requestActionDispatcher!: RequestActionDispatcher;
@@ -45,6 +47,32 @@ export default class FiliConsumer extends ActionConsumer {
       const { timeGrainColumn, dateTimeFilter } = request;
       if (timeGrainColumn === columnFragment && parameterKey === 'grain' && dateTimeFilter) {
         const changeset = { parameters: { ...dateTimeFilter.parameters, [parameterKey]: parameterValue } };
+        this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+      }
+    },
+
+    /**
+     * @action ADD_DIMENSION_FILTER
+     * @param {Object} route - route that has a model that contains a request property
+     * @param {Object} dimension - dimension to filter
+     */
+    [RequestActions.ADD_DIMENSION_FILTER](
+      this: FiliConsumer,
+      route: Route,
+      dimensionMetadataModel: DimensionMetadataModel,
+      _parameters: Parameters
+    ) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
+
+      const { dateTimeFilter, timeGrain } = request;
+      if (
+        dimensionMetadataModel.metadataType === 'timeDimension' &&
+        dimensionMetadataModel === dateTimeFilter?.columnMetadata &&
+        timeGrain &&
+        dateTimeFilter.parameters.grain !== timeGrain
+      ) {
+        const changeset = { parameters: { ...dateTimeFilter.parameters, grain: timeGrain } };
         this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
       }
     }
