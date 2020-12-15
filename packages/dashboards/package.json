@@ -26,11 +26,12 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
+    "@denali-design/ember": "^1.0.0-alpha.11",
     "@ember-decorators/component": "^6.1.1",
     "ember-ajax": "^5.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.17.2",
-    "ember-cli-htmlbars": "^4.2.2",
+    "ember-cli-htmlbars": "^5.1.2",
     "ember-cli-moment-shim": "^3.8.0",
     "ember-collection": "1.0.0-alpha.9",
     "ember-composable-helpers": "^4.1.1",
@@ -81,8 +82,8 @@
     "ember-cli-deprecation-workflow": "^1.0.1",
     "ember-cli-eslint": "^5.1.0",
     "ember-cli-inject-live-reload": "^2.0.2",
-    "ember-cli-less": "^2.0.1",
     "ember-cli-mirage": "~1.1.6",
+    "ember-cli-sass-less": "0.0.1",
     "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-string-helpers": "^5.0.0",
@@ -111,6 +112,7 @@
     "loader.js": "^4.7.0",
     "navi-notifications": "0.2.0",
     "qunit-dom": "^1.0.0",
+    "sass": "^1.30.0",
     "typescript": "^3.9.5"
   },
   "engines": {
