@@ -5,7 +5,7 @@
   "keywords": [
     "ember-addon"
   ],
-  "repository": "https://github.com/yahoo/navi/tree/master/packages/search",
+  "repository": "https://github.com/yahoo/yavin/tree/master/packages/search",
   "license": "MIT",
   "author": "team-navi@googlegroups.com",
   "directories": {

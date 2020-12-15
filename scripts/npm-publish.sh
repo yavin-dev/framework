@@ -6,7 +6,7 @@ npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD);
 
-echo "Deploying navi npm packages for branch $BRANCH"
+echo "Deploying yavin npm packages for branch $BRANCH"
 
 if [ $BRANCH = 'master' ]
 then

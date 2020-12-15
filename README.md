@@ -1,78 +1,62 @@
-![navi-banner](assets/navi-banner.png)
+<p align="center">
+  <a href="https://yavin.dev">
+    <img alt="yavin-logo" src="assets/yavin-logo-transparent.svg" height="150px"/>
+  </a>
+</p>
+<h1 align="center">Yavin</h1>
+<p align="center">Rapidly build production quality analytics applications</p>
+<p align="center">
+    <a href="https://yavin.dev">Docs</a> - <a href="https://yahoo.github.io/yavin">Demo</a> - <a href="https://spectrum.chat/yavin">Community</a>
+</p>
 
-Navi is a production quality analytics reporting UI with _out of the box_ support for [Fili](http://fili.io/).
+## Yavin Framework [![Pipeline Status][status-image]][status-url]
 
-[![Pipeline Status][status-image]][status-url]
-![npm (custom registry)](https://img.shields.io/npm/v/navi-app/latest)
-![npm (custom registry)](https://img.shields.io/npm/v/navi-app/canary)
+Yavin is a framework for rapidly building custom data applications that offers both a UI and an API.
+Yavin can also be deployed as a standalone business intelligence tool in a few simple steps.
+Build reports, assemble dashboards, and explore data with ad-hoc queries.
 
-## Try it
+Jump right in with the [demo app](https://yahoo.github.io/yavin) or run it yourself by following our [quick start guide](https://yavin.dev/pages/guide/02-start.html).
 
-Start exploring our sample data with the [demo app](https://yahoo.github.io/navi).
+![yavin demo app landing page](assets/yavin-demo-app.png)
 
-## Requirements
-
-- node >= 4
-
-## Table of Contents
-
-- [Installation](https://github.com/yahoo/navi#Installation)
-- [SubPackages](https://github.com/yahoo/navi#SubPacakages)
-- [Contribution](https://github.com/yahoo/navi#Contribution)
-- [License](https://github.com/yahoo/navi#License)
-
-## Installation
+## Packages
 
 You can install the individual packages via npm
+![npm (custom registry)](https://img.shields.io/npm/v/navi-app/latest?label=version)
+![npm (custom registry)](https://img.shields.io/npm/v/navi-app/canary?label=alpha)
+![npm (custom registry)](https://img.shields.io/npm/v/navi-app/beta?label=beta)
 
-- [navi-reports](https://www.npmjs.com/package/navi-reports)
-- [navi-core](https://www.npmjs.com/package/navi-core)
-- [navi-dashboards](https://www.npmjs.com/package/navi-dashboards)
-- [navi-directory](https://www.npmjs.com/package/navi-directory)
-- [navi-data](https://www.npmjs.com/package/navi-data)
-- [navi-app](https://www.npmjs.com/package/navi-app)
+| Package                                                                                                                        | Description                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| admin                                                                                                                          | 🚧 Under construction panel for managing users/roles/etc 🚧          |
+| [![navi-core](https://img.shields.io/npm/v/navi-core/beta?label=navi-core)][npm-navi-core]                                     | Library of visualizations and common components                      |
+| [![navi-dashboards](https://img.shields.io/npm/v/navi-dashboards/beta?label=navi-dashboards)][npm-navi-dashboards]             | Collection of components for creating collections of visualization   |
+| [![navi-data](https://img.shields.io/npm/v/navi-data/beta?label=navi-data)][npm-navi-data]                                     | Adapters and serializers for connecting to data sources (elide/fili) |
+| [![navi-directory](https://img.shields.io/npm/v/navi-directory/beta?label=navi-directory)][npm-navi-directory]                 | Overview of all saved/favorited reports and dashboards               |
+| [![navi-notifications](https://img.shields.io/npm/v/navi-notifications/beta?label=navi-notifications)][npm-navi-notifications] | Helper library for in app alerts                                     |
+| [![navi-reports](https://img.shields.io/npm/v/navi-reports/beta?label=navi-reports)][npm-navi-reports]                         | Collection of components for building advanced ad-hoc reports        |
+| [![navi-search](https://img.shields.io/npm/v/navi-search/beta?label=navi-search)][npm-navi-search]                             | Global search bar experience                                         |
 
-Please see the detailed installation instructions in the README of the individual packages for more info.
+## Contributing
 
-## Sub Packages
+Assuming you have git, node (>=10), and [ember-cli](https://cli.emberjs.com/release/)
 
----
-
-- [navi-reports](https://github.com/yahoo/navi/tree/master/packages/reports)
-- [navi-core](https://github.com/yahoo/navi/tree/master/packages/core)
-- [navi-dashboards](https://github.com/yahoo/navi/tree/master/packages/dashboards)
-- [navi-directory](https://github.com/yahoo/navi/tree/master/packages/directory)
-- [navi-data](https://github.com/yahoo/navi/tree/master/packages/data)
-- [navi-app](https://github.com/yahoo/navi/tree/master/packages/app)
-- [navi-webservice](https://github.com/yahoo/navi/tree/master/packages/webservice)
-
-## Contribution
-
-See [CONTRIBUTING.md](https://github.com/yahoo/navi/blob/master/CONTRIBUTING.md)
-
-### Setup
-
-- Clone this repo
+- `git clone https://github.com/yahoo/yavin.git`
+- `cd yavin`
 - `npm install`
+- `cd packages/reports` (or whichever package)
+- `ember s` to run a local server
+- Then `npm test` to test your changes
 
-### Running
+See [CONTRIBUTING.md](https://github.com/yahoo/yavin/blob/master/CONTRIBUTING.md)
 
-#### Navi Application
+## Resources
 
-- `npm start`
-
-#### Sub Packages
-
-- `cd` to the sub-package you want to run
-- `ember serve`
-- Visit your app at [http://localhost:4200](http://localhost:4200).
-
-### Running Tests
-
-- `npm test`
-
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
-For more information on using lerna, visit [https://lerna.js.org](https://lerna.js.org)
+- Documentation on [yavin.dev](https://yavin.dev)
+- Chat on [spectrum.chat](https://spectrum.chat/yavin)
+- Feature Roadmap [projects](https://github.com/yahoo/yavin/projects)
+- For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+- For more information on using lerna, visit [https://lerna.js.org](https://lerna.js.org)
 
 ## License
 
@@ -80,3 +64,10 @@ This project is licensed under the [MIT License](LICENSE.md).
 
 [status-image]: https://cd.screwdriver.cd/pipelines/6102/badge
 [status-url]: https://cd.screwdriver.cd/pipelines/6102
+[npm-navi-core]: https://www.npmjs.com/package/navi-core
+[npm-navi-dashboards]: https://www.npmjs.com/package/navi-dashboards
+[npm-navi-data]: https://www.npmjs.com/package/navi-data
+[npm-navi-directory]: https://www.npmjs.com/package/navi-directory
+[npm-navi-notifications]: https://www.npmjs.com/package/navi-notifications
+[npm-navi-reports]: https://www.npmjs.com/package/navi-reports
+[npm-navi-search]: https://www.npmjs.com/package/navi-search
