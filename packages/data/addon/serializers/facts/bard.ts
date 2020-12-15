@@ -12,6 +12,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
 import { AjaxError } from 'ember-ajax/errors';
+import { FactAdapterError } from 'navi-data/adapters/facts/bard';
 
 type BardError = {
   description: string;
@@ -103,6 +104,9 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       } else {
         errorDetails.detail = this.normalizeErrorMessage(error.payload);
       }
+    } else if (error instanceof FactAdapterError) {
+      errorDetails.title = error.name;
+      errorDetails.detail = error.message;
     }
 
     return new NaviAdapterError('Bard Request Failed', [errorDetails], error);

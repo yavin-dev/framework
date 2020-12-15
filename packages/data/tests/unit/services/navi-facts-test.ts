@@ -184,7 +184,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
   });
 
   test('fetch and catch error', async function(assert) {
-    assert.expect(4);
+    assert.expect(6);
 
     // Return an error object
     Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
@@ -214,6 +214,15 @@ module('Unit | Service | Navi Facts', function(hooks) {
     await Service.fetch(TestRequest).catch((response: NaviAdapterError) => {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(response.details[0], 'Server Error', 'String error extracted');
+    });
+
+    await Service.fetch({ ...TestRequest, filters: [] }).catch((response: NaviAdapterError) => {
+      assert.ok(true, 'A request error falls into the promise catch block');
+      assert.equal(
+        response.details[0],
+        `Exactly one 'table1.dateTime' filter is supported, you have 0`,
+        'Adapter error is shown'
+      );
     });
   });
 

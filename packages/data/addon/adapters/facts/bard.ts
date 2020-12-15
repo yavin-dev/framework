@@ -27,6 +27,10 @@ import { omit } from 'lodash-es';
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export type AliasFn = (column: string) => string;
 
+export class FactAdapterError extends Error {
+  name = 'FactAdapterError';
+}
+
 /**
  * @function formatDimensionFieldName
  * @param field - dimension id
@@ -118,7 +122,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   _buildDateTimeParam(request: RequestV2): string {
     const dateTimeFilters = request.filters.filter(isDateTime);
     if (dateTimeFilters.length !== 1) {
-      throw new Error(
+      throw new FactAdapterError(
         `Exactly one '${request.table}.dateTime' filter is supported, you have ${dateTimeFilters.length}`
       );
     }
@@ -126,7 +130,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const dateTime = request.columns.filter(isDateTime)[0];
     const timeGrain = dateTime?.parameters?.grain || 'all';
     if (timeGrain !== filter.parameters.grain) {
-      throw new Error(
+      throw new FactAdapterError(
         `The requested filter timeGrain '${filter.parameters.grain}', must match the column timeGrain '${timeGrain}'`
       );
     }
@@ -242,7 +246,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     const dateTimeColumns = request.columns.filter(isDateTime);
     if (dateTimeColumns.length > 1) {
-      throw new Error(`Requsting more than one '${request.table}.dateTime' columns is not supported`);
+      throw new FactAdapterError(`Requsting more than one '${request.table}.dateTime' columns is not supported`);
     }
     let timeGrain = dateTimeColumns[0]?.parameters?.grain || 'all';
     timeGrain = 'isoWeek' === timeGrain ? 'week' : timeGrain;
@@ -406,6 +410,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   }
 
   asyncFetchDataForRequest(_request: RequestV2, _options: RequestOptions): Promise<AsyncQueryResponse> {
-    throw new Error('Method not implemented.');
+    throw new FactAdapterError('Method not implemented.');
   }
 }
