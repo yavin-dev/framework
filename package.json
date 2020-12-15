@@ -7,12 +7,12 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/navi"
+    "url": "https://github.com/yahoo/yavin"
   },
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",
     "start": "cd packages/webservice && ./gradlew bootRun",
-    "postinstall": "lerna bootstrap --concurrency 2 --ci",
+    "postinstall": "npx lerna bootstrap --concurrency 2 --ci",
     "test": "lerna run test --stream",
     "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes",
     "lerna-ci-publish-beta": "lerna publish --canary --preid beta --dist-tag beta --exact preminor --force-publish=* --yes"

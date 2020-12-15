@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/navi/tree/master/packages/directory"
+    "url": "https://github.com/yahoo/yavin/tree/master/packages/directory"
   },
   "scripts": {
     "build": "ember build --environment=production",

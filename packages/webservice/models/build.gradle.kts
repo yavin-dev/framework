@@ -106,8 +106,8 @@ bintray {
         name = "navi"
         userOrg = "yahoo"
         desc = "Navi is a production quality analytics reporting UI with out of the box support for Fili."
-        websiteUrl = "https://github.com/yahoo/navi/tree/master/packages/webservice"
-        issueTrackerUrl = "https://github.com/yahoo/navi/issues"
+        websiteUrl = "https://github.com/yahoo/yavin/tree/master/packages/webservice"
+        issueTrackerUrl = "https://github.com/yahoo/yavin/issues"
         vcsUrl = "https://github.com/yahoo/navi.git"
         setLabels("navi", "reports", "dashboards", "visualizations", "elide", "webservice")
         setLicenses("MIT")
