@@ -18,7 +18,7 @@
     "build": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
-    "lint:ts": "tsc --allowJs false --noEmit",
+    "lint:ts": "ember ts:precompile && ember ts:clean",
     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
     "start": "ember serve",
     "test": "npm-run-all lint:* test:*",

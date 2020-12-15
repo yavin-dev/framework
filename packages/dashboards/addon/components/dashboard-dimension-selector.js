@@ -14,7 +14,6 @@ import layout from '../templates/components/dashboard-dimension-selector';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { groupBy } from 'lodash-es';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 
 @templateLayout(layout)
 @tagName('')
