@@ -19,7 +19,7 @@
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
-    "test": "export COVERAGE=true; npx ember test --test-port 0",
+    "test": "export COVERAGE=true; ember test --test-port 0",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
   },
