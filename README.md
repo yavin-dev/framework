@@ -6,7 +6,7 @@
 <h1 align="center">Yavin</h1>
 <p align="center">Rapidly build production quality analytics applications</p>
 <p align="center">
-    <a href="https://yavin.dev">Docs</a> - <a href="https://yahoo.github.io/yavin">Demo app</a>
+    <a href="https://yavin.dev">Docs</a> - <a href="https://yahoo.github.io/yavin">Demo</a> - <a href="https://spectrum.chat/yavin">Community</a>
 </p>
 
 ## Yavin Framework [![Pipeline Status][status-image]][status-url]
