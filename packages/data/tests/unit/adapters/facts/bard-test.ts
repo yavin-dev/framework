@@ -1136,35 +1136,35 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     });
   });
 
-  test('fetchDataForRequest with pagination options', function(assert) {
+  test('fetchDataForRequest with pagination options', async function(assert) {
     assert.expect(1);
-    return Adapter.fetchDataForRequest(TestRequest, {
+    const result = await Adapter.fetchDataForRequest(TestRequest, {
       page: 1,
       perPage: 100
-    }).then(function(result) {
-      return assert.deepEqual(
-        result,
-        {
-          rows: [
-            {
-              table: 'table1',
-              grain: 'grain1'
-            }
-          ],
-          meta: {
-            pagination: {
-              page: '1',
-              perPage: '100'
-            },
-            test: true
-          }
-        },
-        'Ajax GET returns the response object for TEST Request'
-      );
     });
+
+    assert.deepEqual(
+      result,
+      {
+        rows: [
+          {
+            table: 'table1',
+            grain: 'grain1'
+          }
+        ],
+        meta: {
+          pagination: {
+            page: '1',
+            perPage: '100'
+          },
+          test: true
+        }
+      },
+      'Ajax GET returns the response object for TEST Request'
+    );
   });
 
-  test('fetchDataForRequest with client id options', function(assert) {
+  test('fetchDataForRequest with client id options', async function(assert) {
     assert.expect(2);
 
     // Setting up assert for default clientId
@@ -1175,22 +1175,19 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     });
 
     // Sending request for default clientId
-    return Adapter.fetchDataForRequest(TestRequest).then(() => {
-      // Setting up assert for provided clientId
-      Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, request => {
-        assert.equal(request.requestHeaders.clientid, 'test id', 'Client id is set to value given in options');
+    await Adapter.fetchDataForRequest(TestRequest);
+    // Setting up assert for provided clientId
+    Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, request1 => {
+      assert.equal(request1.requestHeaders.clientid, 'test id', 'Client id is set to value given in options');
 
-        return MockBardResponse;
-      });
-
-      // Sending request for provided clientId
-      return Adapter.fetchDataForRequest(TestRequest, {
-        clientId: 'test id'
-      });
+      return MockBardResponse;
+    });
+    await Adapter.fetchDataForRequest(TestRequest, {
+      clientId: 'test id'
     });
   });
 
-  test('fetchDataForRequest with custom headers', function(assert) {
+  test('fetchDataForRequest with custom headers', async function(assert) {
     assert.expect(2);
 
     Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, request => {
@@ -1201,7 +1198,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       return MockBardResponse;
     });
 
-    return Adapter.fetchDataForRequest(TestRequest, {
+    await Adapter.fetchDataForRequest(TestRequest, {
       customHeaders: {
         foo: 'bar',
         baz: 'qux'
@@ -1209,7 +1206,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     });
   });
 
-  test('fetchDataForRequest with alternative datasource', function(assert) {
+  test('fetchDataForRequest with alternative datasource', async function(assert) {
     assert.expect(1);
 
     Server.get(`${HOST2}/v1/data/table1/grain1/d1/d2/`, request => {
@@ -1218,6 +1215,6 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       return MockBardResponse;
     });
 
-    return Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'bardTwo' });
+    await Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'bardTwo' });
   });
 });

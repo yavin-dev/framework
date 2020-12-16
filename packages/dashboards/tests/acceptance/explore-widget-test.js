@@ -1,23 +1,22 @@
 import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit, waitFor } from '@ember/test-helpers';
-import { module, skip } from 'qunit';
+import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
-// TODO: Broken because reports is broken
 module('Acceptance | Exploring Widgets', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  skip('Widget title', async function(assert) {
+  test('Widget title', async function(assert) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/1');
@@ -25,7 +24,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__title').hasText('Mobile DAU Goal', 'Widget title is displayed as the page title');
   });
 
-  skip('Editing widget title', async function(assert) {
+  test('Editing widget title', async function(assert) {
     assert.expect(1);
 
     // Edit title
@@ -43,7 +42,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.ok(widgetNames.includes('A new title'), 'New widget title is saved and persisted on dashboard');
   });
 
-  skip('Breadcrumb', async function(assert) {
+  test('Breadcrumb', async function(assert) {
     assert.expect(4);
     let originalFeatureFlag = config.navi.FEATURES.enableDirectory;
 
@@ -68,7 +67,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     config.navi.FEATURES.enableDirectory = originalFeatureFlag;
   });
 
-  skip('Viewing a widget', async function(assert) {
+  test('Viewing a widget', async function(assert) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -80,7 +79,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .exists('The column config exists on the view route');
   });
 
-  skip('Exploring a widget', async function(assert) {
+  test('Exploring a widget', async function(assert) {
     assert.expect(1);
 
     await visit('/dashboards/1');
@@ -89,7 +88,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.ok(currentURL().endsWith('/dashboards/1/widgets/2/view'), 'Explore action links to widget view route');
   });
 
-  skip('Changing and saving a widget', async function(assert) {
+  test('Changing and saving a widget', async function(assert) {
     assert.expect(4);
 
     // Add a metric to widget 2, save, and return to dashboard route
@@ -118,7 +117,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
   });
 
-  skip('Revert changes', async function(assert) {
+  test('Revert changes', async function(assert) {
     assert.expect(4);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -137,14 +136,14 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (Day)', 'After clicking "Revert Changes", the changed time grain is returned');
+      .hasText('Date Time (day)', 'After clicking "Revert Changes", the changed time grain is returned');
 
     assert
       .dom('.navi-report-widget__revert-btn')
       .isNotVisible('After clicking "Revert Changes", button is once again hidden');
   });
 
-  skip('Export action', async function(assert) {
+  test('Export action', async function(assert) {
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
@@ -163,12 +162,13 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
       .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
 
-    // Remove all metrics to create an invalid request
+    // Remove all columns to create an invalid request
     assert
-      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]')
-      .exists('The datesTime remove icon exists');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
+      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]')
+      .exists('The dateTime remove icon exists');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom($('.navi-report-widget__action-link:contains(Export)')[0])
@@ -184,7 +184,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
-  skip('Multi export action', async function(assert) {
+  test('Multi export action', async function(assert) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -194,7 +194,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /export\?reportModel=/, 'Export url contains serialized report');
   });
 
-  skip('Get API action - enabled/disabled', async function(assert) {
+  test('Get API action - enabled/disabled', async function(assert) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -202,23 +202,17 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .dom('.get-api')
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
-    // Remove all metrics
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
-
-    // Remove all metrics to create an invalid request
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
-
-    // Create empty filter to make request invalid
-    await clickItemFilter('dimension', 'Operating System');
+    // Remove all columns to create an invalid request
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom('.get-api')
       .hasClass('navi-report-widget__action--is-disabled', 'Get API action is disabled when request is not valid');
   });
 
-  skip('Share action', async function(assert) {
+  test('Share action', async function(assert) {
     assert.expect(2);
 
     /* == Unsaved widget == */
@@ -240,7 +234,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasText('Share "Mobile DAU Graph"', 'Clicking share action brings up share modal');
   });
 
-  skip('Delete widget', async function(assert) {
+  test('Delete widget', async function(assert) {
     assert.expect(5);
 
     /* == Not author == */
@@ -273,7 +267,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
   });
 
-  skip('Clone a widget', async function(assert) {
+  test('Clone a widget', async function(assert) {
     assert.expect(4);
     let originalWidgetTitle;
 
@@ -296,7 +290,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .isVisible('Report body has a visualization on the view route');
   });
 
-  skip('Error data request', async function(assert) {
+  test('Error data request', async function(assert) {
     assert.expect(1);
 
     server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
@@ -305,14 +299,14 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/2/widgets/4/view');
     assert
-      .dom('.navi-report-error__info-message')
+      .dom('.routes-reports-report-error__error-list')
       .hasText(
-        'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+        'Cannot merge mismatched time grains month and day',
         'An error message is displayed for an invalid request'
       );
   });
 
-  skip('Cancel Widget', async function(assert) {
+  test('Cancel Widget', async function(assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;

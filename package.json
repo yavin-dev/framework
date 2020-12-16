@@ -7,7 +7,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/navi"
+    "url": "https://github.com/yahoo/yavin"
   },
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",

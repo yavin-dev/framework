@@ -1,0 +1,9 @@
+@use 'denali/denali';
+@use 'navi-dashboards';
+
+.nav-responsive {
+  z-index: 1;
+  &-menu {
+    cursor: pointer;
+  }
+}

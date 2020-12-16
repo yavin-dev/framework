@@ -1,43 +1,17 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
-<nav class="header">
-  <h2 class="title">Navi Visualizations</h2>
-  <ul class="core-links">
-    <li class="core-link">
-      <LinkTo @route="bar-chart">
-        <NaviIcon @icon="bar-chart" /> Bar Chart
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="goal-gauge">
-        <NaviIcon @icon="tachometer" /> Goal Gauge
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="line-chart">
-        <NaviIcon @icon="line-chart" />Line Chart
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="metric-label">
-        <NaviIcon @icon="list-alt" /> Metric Label
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="pie-chart">
-        <NaviIcon @icon="pie-chart" /> Pie Chart
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="table">
-        <NaviIcon @icon="table" /> Table
-      </LinkTo>
-    </li>
-    <li class="core-link">
-      <LinkTo @route="buttons">
-        <NaviIcon @icon="mouse-pointer" /> Buttons
-      </LinkTo>
-    </li>
-  </ul>
-</nav>
+<DenaliNavbar @isResponsive={{true}} as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.Item>Navi Core</Left.Item>
+  </Nav.Left>
+  <Nav.Center as |Center|>
+    <Center.LinkTo @route="bar-chart"><DenaliIcon @icon="chart-bar-vertical" /> Bar Chart</Center.LinkTo>
+    <Center.LinkTo @route="goal-gauge"><DenaliIcon @icon="dashboard" /> Goal Gauge</Center.LinkTo>
+    <Center.LinkTo @route="line-chart"><DenaliIcon @icon="chart-line" /> Line Chart</Center.LinkTo>
+    <Center.LinkTo @route="metric-label"><DenaliIcon @icon="layout-one" /> Metric Label</Center.LinkTo>
+    <Center.LinkTo @route="table"><DenaliIcon @icon="table" /> Table</Center.LinkTo>
+    <Center.LinkTo @route="buttons"><DenaliIcon @icon="cursor-arrow" /> Buttons</Center.LinkTo>
+  </Nav.Center>
+</DenaliNavbar>
+
 <div class="outlet">{{outlet}}</div>

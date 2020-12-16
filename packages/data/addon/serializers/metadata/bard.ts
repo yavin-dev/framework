@@ -210,6 +210,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     dataSourceName: string
   ): ColumnFunctionMetadataModel {
     const { fields = [] } = dimension;
+    const defaultValue = fields.find(field => field.tags && field.tags.includes('primaryKey'))?.name || fields[0]?.name;
     const sorted = fields.map(field => field.name).sort();
     const columnFunctionId = `${this.namespace}:dimensionField(fields=${sorted.join(',')})`;
     const payload: ColumnFunctionMetadataPayload = {
@@ -225,7 +226,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           source: dataSourceName,
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
-          defaultValue: fields[0]?.name,
+          defaultValue,
           _localValues: fields.map(field => ({
             id: field.name,
             description: undefined, // ignoring dimension field description for

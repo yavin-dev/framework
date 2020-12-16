@@ -191,13 +191,16 @@ module('Unit | Service | dashboard data', function(hooks) {
       response = {
         rows: [
           {
-            adClicks: 30
+            adClicks: 30,
+            'network.dateTime(grain=day)': undefined
           },
           {
-            adClicks: 1000
+            adClicks: 1000,
+            'network.dateTime(grain=day)': undefined
           },
           {
-            adClicks: 200
+            adClicks: 200,
+            'network.dateTime(grain=day)': undefined
           }
         ]
       };
@@ -208,7 +211,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     });
 
     return service._fetch(request).then(fetchResponse => {
-      assert.deepEqual(fetchResponse.get('response.rows'), response.rows, 'fetch gets response from web service');
+      assert.deepEqual(fetchResponse.response.rows, response.rows, 'fetch gets response from web service');
     });
   });
 

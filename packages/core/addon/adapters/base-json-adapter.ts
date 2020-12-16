@@ -37,7 +37,7 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
 
     hash.headers = {
       Accept: 'application/vnd.api+json',
-      ...(hash.contentType && { 'Content-Type': hash.contentType })
+      ...(hash.contentType ? { 'Content-Type': hash.contentType } : {})
     };
 
     return hash;

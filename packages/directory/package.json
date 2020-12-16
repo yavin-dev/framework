@@ -13,13 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yahoo/navi/tree/master/packages/directory"
+    "url": "https://github.com/yahoo/yavin/tree/master/packages/directory"
   },
   "scripts": {
     "build": "ember build --environment=production",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint . && tsc --allowJs false --noEmit",
-    "lint": "npm run lint:hbs && npm run lint:js",
+    "lint:ts": "ember ts:precompile && ember ts:clean",
+    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0",
     "prepublishOnly": "ember ts:precompile",
@@ -27,15 +28,15 @@
   },
   "dependencies": {
     "@denali-design/ember": "^1.0.0-alpha.11",
-    "@glimmer/component": "^1.0.2",
+    "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.17.2",
-    "ember-cli-htmlbars": "^4.2.2",
+    "ember-cli-htmlbars": "^5.1.2",
     "ember-cli-moment-shim": "^3.8.0",
     "ember-cli-typescript": "^4.0.0",
     "ember-data-model-fragments": "~4.0.0",
-    "ember-get-config": "^0.2.4",
+    "ember-get-config": "0.2.4",
     "ember-light-table": "^3.0.0-beta.0",
     "ember-moment": "^7.8.1",
     "ember-power-select": "^2.3.5",
@@ -83,7 +84,6 @@
     "ember-disable-prototype-extensions": "^1.1.3",
     "ember-export-application-global": "^2.0.1",
     "ember-font-awesome": "^3.1.1",
-    "ember-get-config": "0.2.4",
     "ember-load-initializers": "^2.1.1",
     "ember-math-helpers": "^2.3.0",
     "ember-maybe-import-regenerator": "^0.1.6",
@@ -107,6 +107,7 @@
     "eslint-plugin-qunit": "^4.0.0",
     "loader.js": "^4.7.0",
     "navi-notifications": "0.2.0",
+    "npm-run-all": "^4.1.5",
     "qunit-dom": "^1.0.0",
     "sass": "^1.30.0",
     "typescript": "^3.9.5"

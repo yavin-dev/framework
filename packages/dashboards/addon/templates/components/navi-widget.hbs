@@ -52,6 +52,7 @@
 
   {{!-- Error --}}
   {{#if @taskInstance.isError}}
+    {{!-- TODO: Use Routes::ReportsReportError --}}
     {{#if (is-forbidden @taskInstance.error)}}
       <UnauthorizedTable @report={{@model}} />
     {{else}}
@@ -64,12 +65,13 @@
   {{!-- Success --}}
   {{#if @taskInstance.isSuccessful}}
     <div class="navi-widget__content visualization-container">
-      {{component
-        (concat this.visualizationPrefix @model.visualization.type)
-        model=this.data
-        options=@model.visualization.metadata
-        containerComponent=item
-      }}
+      {{#let (component (concat this.visualizationPrefix @model.visualization.type)) as |Visualization|}}
+        <Visualization
+          @model={{this.data}}
+          @options={{@model.visualization.metadata}}
+          @containerComponent={{item}}
+        />
+      {{/let}}
     </div>
   {{/if}}
 

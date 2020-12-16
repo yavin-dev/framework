@@ -6,7 +6,7 @@
   "keywords": [
     "ember-addon"
   ],
-  "repository": "https://github.com/yahoo/navi/tree/master/packages/admin",
+  "repository": "https://github.com/yahoo/yavin/tree/master/packages/admin",
   "license": "MIT",
   "author": "team-navi@googlegroups.com",
   "directories": {
@@ -15,20 +15,21 @@
   },
   "scripts": {
     "build": "ember build",
-    "lint": "npm run lint:hbs && npm run lint:js",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
+    "lint:ts": "ember ts:precompile && ember ts:clean",
+    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
     "start": "ember serve",
     "test": "export COVERAGE=true; ember test --test-port 0",
     "prepublishOnly": "ember ts:precompile",
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@glimmer/component": "^1.0.2",
+    "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.19.0",
-    "ember-cli-htmlbars": "^4.3.1",
+    "ember-cli-htmlbars": "^5.1.2",
     "ember-cli-mirage": "~1.1.6",
     "ember-cli-typescript": "^4.0.0",
     "navi-core": "0.2.0"
@@ -42,6 +43,8 @@
     "@types/ember__test-helpers": "^0.7.10",
     "@types/qunit": "^2.9.1",
     "@types/rsvp": "^4.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.23.0",
+    "@typescript-eslint/parser": "^2.23.0",
     "broccoli-asset-rev": "^3.0.0",
     "ember-cli": "~3.18.0",
     "ember-cli-dependency-checker": "^3.2.0",
@@ -65,8 +68,11 @@
     "ember-try": "^1.4.0",
     "ember-uuid": "^2.1.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-ember": "^8.4.0",
     "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-qunit": "^4.0.0",
     "loader.js": "^4.7.0",
     "npm-run-all": "^4.1.5",
     "qunit-dom": "^1.2.0",
