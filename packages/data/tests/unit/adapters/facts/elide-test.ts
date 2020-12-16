@@ -651,4 +651,14 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       '`buildFilterStr` filters out filters with empty values'
     );
   });
+
+  test('urlForFindQuery', function(assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    assert.equal(
+      decodeURIComponent(adapter.urlForFindQuery(TestRequest, {})),
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
+      'urlForFindQuery correctly built the query for the provided request'
+    );
+  });
 });

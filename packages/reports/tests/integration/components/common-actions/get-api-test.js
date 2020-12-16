@@ -11,7 +11,7 @@ let Template;
 const MockRequest = {
     serialize: () => 'abc'
   },
-  MockUrl = 'navi.io/api';
+  MockUrl = 'https://navi.io/api';
 
 module('Integration | Component | common actions/get api', function(hooks) {
   setupRenderingTest(hooks);
