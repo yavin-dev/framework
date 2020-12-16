@@ -10,7 +10,6 @@ import { getOwner } from '@ember/application';
 import NaviFactsModel from 'navi-data/models/navi-facts';
 //@ts-ignore
 import RequestBuilder from 'navi-data/builder/request';
-import config from 'ember-get-config';
 import NaviFactAdapter, { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactSerializer, { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
