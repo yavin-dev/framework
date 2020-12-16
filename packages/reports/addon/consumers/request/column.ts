@@ -31,7 +31,9 @@ export default class ColumnConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const column = request.addColumnFromMetaWithParams(columnMetadataModel, parameters);
+      const defaultParams = columnMetadataModel.getDefaultParameters() || {};
+      const params = { ...defaultParams, ...parameters };
+      const column = request.addColumnFromMetaWithParams(columnMetadataModel, params);
       this.requestActionDispatcher.dispatch(RequestActions.DID_ADD_COLUMN, route, column);
     },
 

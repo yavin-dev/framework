@@ -64,10 +64,10 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.add-to-dashboard');
 
     await selectChoose('.navi-table-select__dropdown', 'Inventory');
-    await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'Current');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
+    await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'Current');
     await clickItem('dimension', 'Container');
     await clickItem('metric', 'Used Amount');
 

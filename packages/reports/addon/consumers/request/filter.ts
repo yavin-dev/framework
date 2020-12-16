@@ -102,8 +102,8 @@ export default class FilterConsumer extends ActionConsumer {
 
     /**
      * @action ADD_DIMENSION_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} dimension - dimension to filter
+     * @param route - route that has a model that contains a request property
+     * @param dimension - dimension to filter
      */
     [RequestActions.ADD_DIMENSION_FILTER](
       route: Route,
@@ -127,11 +127,12 @@ export default class FilterConsumer extends ActionConsumer {
 
       const defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
 
+      const defaultParams = dimensionMetadataModel.getDefaultParameters() || {};
       request.addFilter({
         type: dimensionMetadataModel.metadataType,
         source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
-        parameters: parameters || dimensionMetadataModel.getDefaultParameters(),
+        parameters: { ...defaultParams, ...parameters },
         operator: defaultOperator,
         values: []
       });
@@ -139,26 +140,28 @@ export default class FilterConsumer extends ActionConsumer {
 
     /**
      * @action ADD_METRIC_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metric to filter
-     * @param {Object} [parameters] - metric parameters to filter [optional]
+     * @param route - route that has a model that contains a request property
+     * @param metric - metric to filter
+     * @param parameters - metric parameters to filter [optional]
      */
     [RequestActions.ADD_METRIC_FILTER](route: Route, metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
+
+      const defaultParams = metricMetadataModel.getDefaultParameters() || {};
       request.addFilter({
         type: metricMetadataModel.metadataType,
         source: request.dataSource,
         field: metricMetadataModel.id,
-        parameters,
+        parameters: { ...defaultParams, ...parameters },
         ...DEFAULT_METRIC_FILTER
       });
     },
 
     /**
      * @action TOGGLE_METRIC_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metricMetadataModel - metric to filter
+     * @param route - route that has a model that contains a request property
+     * @param metricMetadataModel - metric to filter
      */
     [RequestActions.TOGGLE_METRIC_FILTER](
       this: FilterConsumer,

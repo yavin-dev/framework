@@ -53,8 +53,8 @@ export default class FiliConsumer extends ActionConsumer {
 
     /**
      * @action ADD_DIMENSION_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} dimension - dimension to filter
+     * @param route - route that has a model that contains a request property
+     * @param dimension - dimension to filter
      */
     [RequestActions.ADD_DIMENSION_FILTER](
       this: FiliConsumer,
