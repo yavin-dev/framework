@@ -55,8 +55,8 @@ export default class NaviFactsService extends Service {
    * @returns {String} - url for the request
    */
   getURL(request: RequestV2, options: RequestOptions = {}) {
-    const type = config.navi.dataSources[0].type;
-    const adapter = this._adapterFor(type);
+    const { type: dataSourceType } = getDataSource(request.dataSource);
+    const adapter = this._adapterFor(dataSourceType);
     return adapter.urlForFindQuery(request, options);
   }
 
