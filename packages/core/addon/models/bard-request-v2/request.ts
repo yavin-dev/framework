@@ -56,7 +56,7 @@ const Validations = buildValidations({
       message: 'At least one column should be selected'
     })
   ],
-  table: validator('presence', {
+  tableMetadata: validator('presence', {
     presence: true,
     message: 'Table is invalid or unavailable'
   }),

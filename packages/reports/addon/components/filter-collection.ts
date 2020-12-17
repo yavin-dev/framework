@@ -11,7 +11,7 @@ import { dasherize } from '@ember/string';
 interface FilterCollectionArgs {
   isCollapsed: boolean;
   request: RequestFragment;
-  onUpdateCollapsed(isCollapsed: boolean): void;
+  onUpdateCollapsed?: (isCollapsed: boolean) => void;
   onRemoveFilter(filter: FilterFragment): void;
   onUpdateFilter(filter: FilterFragment): void;
 }

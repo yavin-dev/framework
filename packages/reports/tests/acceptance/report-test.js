@@ -103,6 +103,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add filter == */
     await clickItemFilter('dimension', 'Operating System');
+    await clickItemFilter('dimension', 'Date Time');
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -113,16 +114,16 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     /* == Fix errors == */
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItemFilter('dimension', 'Operating System');
     await clickItem('metric', 'Ad Clicks');
-    await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
 
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click('.navi-report__run-btn');
 
@@ -149,9 +150,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //set the filter interval
     await selectChoose('.filter-builder__select-trigger', 'Between');
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
 
     await click('.navi-report__copy-api-btn .get-api__btn');
@@ -237,7 +238,12 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports');
     await visit('/reports/new');
 
-    //Add three metrics and save the report
+    await clickItemFilter('dimension', 'Date Time');
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
+    await selectChoose('.filter-builder__select-trigger', 'Between');
+
+    //Add metric and save the report
     await clickItem('metric', 'Page Views');
     await click('.navi-report__save-btn');
 
@@ -294,6 +300,7 @@ module('Acceptance | Navi Report', function(hooks) {
     //Add a metrics and save the report
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
+    await selectChoose('.filter-builder__select-trigger', 'Between');
     await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__save-btn');
 
@@ -312,7 +319,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!$('.filter-builder__subject:contains(week)').length,
+      !!$('.filter-builder__subject:contains(isoWeek)').length,
       'On cancel the dirty state of the report still remains'
     );
 
@@ -335,7 +342,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!$('.filter-builder__subject:contains(week)').length,
+      !!$('.filter-builder__subject:contains(isoWeek)').length,
       'On cancel the dirty state of the report still remains'
     );
 
@@ -366,7 +373,7 @@ module('Acceptance | Navi Report', function(hooks) {
     // Press the save as
     await click('.save-as__save-as-modal-btn');
 
-    assert.ok(!!$('.filter-builder__subject:contains(week)').length, 'The new Dim is shown in the new report.');
+    assert.ok(!!$('.filter-builder__subject:contains(isoWeek)').length, 'The new Dim is shown in the new report.');
 
     // New Report is run
     let emberId = find('.report-view.ember-view').id,
@@ -461,7 +468,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
 
     // Dirty state of old
-    assert.ok(!!$('.filter-builder__subject:contains(week)').length, 'Old unsaved report have the old DIM.');
+    assert.ok(!!$('.filter-builder__subject:contains(isoWeek)').length, 'Old unsaved report have the old DIM.');
   });
 
   test('Save report', async function(assert) {
@@ -522,15 +529,34 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Export feature flag - disabled', async function(assert) {
-    assert.expect(2);
+    assert.expect(1);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
 
-    assert.dom($('.navi-report__action-link:contains(Export)')[0]).doesNotExist('Export is disabled by default');
+    await visit('/reports/1/view');
+
+    assert.deepEqual(
+      findAll('.navi-report__action').map(e => e.textContent.trim()),
+      ['Copy API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
+      'Export is disabled by default'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('Export feature flag - enabled', async function(assert) {
+    assert.expect(1);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+    await visit('/reports/1/view');
 
-    assert.dom($('.navi-report__action-link:contains(Export)')[0]).exists('Export is enabled with the feature flag on');
+    assert.deepEqual(
+      findAll('.navi-report__action').map(e => e.textContent.trim()),
+      ['Copy API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
+      'Export is enabled with the feature flag on'
+    );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -547,24 +573,23 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
-    // Add new dimension to make it out of sync with the visualization
-    await clickItem('dimension', 'Product Family');
+    // Remove dimension to make it out of sync with the visualization
+    await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
 
     //currently failing as it should
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
 
-    // Remove new dimension to make it in sync with the visualization
-    await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Product Family"]');
+    // Revert changes to make it in sync with the visualization
+    await click('.navi-report__revert-btn');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
-    // Remove all metrics to create an invalid report
+    // Remove visualization metric to create an invalid report
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
@@ -579,7 +604,7 @@ module('Acceptance | Navi Report', function(hooks) {
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
-    config.navi.FEATURES.exportFileTypes = [];
+    config.navi.FEATURES.exportFileTypes = ['csv'];
     await visit('/reports/1/view');
 
     assert.ok(
@@ -1137,14 +1162,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose('.filter-builder__select-trigger', 'In The Past');
 
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(!!findAll('.table-widget').length, 'Table visualization is shown by default');
@@ -1527,6 +1548,7 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('filters - collapse and expand', async function(assert) {
+    // TODO: Fix after https://github.com/yahoo/yavin/pull/1171 is merged
     assert.expect(9);
     //adding dimensions and metrics not currently expanding filter collection
 
@@ -1862,10 +1884,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
 
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
@@ -1893,36 +1915,6 @@ module('Acceptance | Navi Report', function(hooks) {
     );
   });
 
-  test('dimension contains filter works by letting users select field', async function(assert) {
-    assert.expect(1);
-    await visit('/reports/new');
-    await clickItemFilter('dimension', 'Multi System Id');
-
-    await selectChoose('.filter-builder-dimension__operator', 'Contains');
-    await fillIn('.filter-builder-dimension__values input', 'foo');
-    await blur('.filter-builder-dimension__values input');
-    await clickItemFilter('dimension', 'Date Time');
-    await clickItem('dimension', 'Date Time');
-
-    await selectChoose('.filter-builder__select-trigger', 'Between');
-
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
-
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
-    await click('.navi-report__run-btn');
-
-    await click('.get-api__btn');
-
-    const url = find('.navi-modal__input').value;
-    const expectedFilter = 'multiSystemId|id-contains["foo"]';
-    assert.ok(
-      decodeURIComponent(url).includes(expectedFilter),
-      `Generated API URL, ${url} is contains filter ${expectedFilter}`
-    );
-  });
-
   test('dimension select filter works with dimension ids containing commas', async function(assert) {
     await visit('/reports/new');
     await clickItemFilter('dimension', 'Dimension with comma');
@@ -1935,10 +1927,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await selectChoose('.filter-builder__select-trigger', 'Between');
 
-    await clickTrigger('.filter-values--dimension-date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
 
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
-    await clickTrigger('.filter-values--dimension-date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
 
     assert.deepEqual(
