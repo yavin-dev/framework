@@ -35,22 +35,22 @@ module('Integration | Component | navi-column-config/time-dimension', function(h
 
       assert.deepEqual(
         `${paramId}=${paramKey}`,
-        'grain=day',
+        'grain=isoWeek',
         'The grain parameter is passed correctly to the action handler'
       );
     };
 
     this.column = {
-      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime', { grain: 'week' }),
+      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }),
       isFiltered: true
     };
     await render(TEMPLATE);
+
+    await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     assert
       .dom('.navi-column-config-item__parameter-label')
       .hasText('Time Grain Type', 'The Time Grain parameters is displayed');
     assert.dom('.navi-column-config-item__parameter-trigger').hasText('Week', 'The "Week" Time Grain is selected');
-
-    await selectChoose('.navi-column-config-item__parameter', 'Day');
   });
 });

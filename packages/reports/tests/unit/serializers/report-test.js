@@ -19,64 +19,76 @@ module('Unit | Serializer | Report', function(hooks) {
     let expectedResult = {
       data: {
         attributes: {
-          title: 'Hyrule News',
           request: {
-            logicalTable: {
-              table: 'network',
-              timeGrain: 'day'
-            },
-            metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-            dimensions: [{ dimension: 'property' }],
-            filters: [],
-            having: [],
-            sort: [
+            columns: [
               {
-                metric: 'navClicks',
-                direction: 'asc'
+                alias: null,
+                cid: 'c1',
+                field: 'network.dateTime',
+                parameters: {
+                  grain: 'day'
+                },
+                type: 'timeDimension'
+              },
+              {
+                alias: null,
+                cid: 'c2',
+                field: 'adClicks',
+                parameters: {},
+                type: 'metric'
+              },
+              {
+                alias: null,
+                cid: 'c3',
+                field: 'property',
+                parameters: {
+                  field: 'id'
+                },
+                type: 'dimension'
               }
             ],
-            intervals: [
+            dataSource: 'bardOne',
+            filters: [
               {
-                end: '2015-11-16 00:00:00.000',
-                start: '2015-11-09 00:00:00.000'
+                field: 'network.dateTime',
+                operator: 'bet',
+                parameters: {
+                  grain: 'day'
+                },
+                type: 'timeDimension',
+                values: ['2015-10-02', '2015-10-14']
               }
             ],
-            bardVersion: 'v1',
-            requestVersion: 'v1',
-            dataSource: 'bardOne'
+            limit: null,
+            requestVersion: '2.0',
+            sorts: [],
+            table: 'network'
           },
+          title: 'RequestV2 testing report',
           visualization: {
-            type: 'line-chart',
-            version: 1,
             metadata: {
-              axis: {
-                y: {
-                  series: {
-                    type: 'dimension',
-                    config: {
-                      metric: {
-                        metric: 'adClicks',
-                        parameters: {}
-                      },
-                      dimensionOrder: ['property'],
-                      dimensions: [
-                        { name: 'Property 1', values: { property: '114' } },
-                        { name: 'Property 2', values: { property: '100001' } },
-                        { name: 'Property 3', values: { property: '100002' } },
-                        { name: 'Property 4', values: { property: '100003' } }
-                      ]
-                    }
-                  }
+              columnAttributes: {
+                c1: {
+                  canAggregateSubtotal: false
+                },
+                c2: {
+                  canAggregateSubtotal: false
+                },
+                c3: {
+                  canAggregateSubtotal: false
                 }
-              }
-            }
+              },
+              showTotals: []
+            },
+            type: 'table',
+            version: 2
           }
         },
         relationships: {
           author: {
             data: {
-              type: 'users',
-              id: 'navi_user'
+              id: 'navi_user',
+              type: 'users'
             }
           }
         },
@@ -84,7 +96,7 @@ module('Unit | Serializer | Report', function(hooks) {
       }
     };
 
-    let report = await Store.findRecord('report', 1);
+    let report = await Store.findRecord('report', 13);
     assert.ok(report.get('createdOn'), 'Report model contains "createdOn" attribute');
 
     assert.ok(report.get('updatedOn'), 'Report model contains "updatedOn" attribute');
@@ -102,90 +114,79 @@ module('Unit | Serializer | Report', function(hooks) {
     let expectedResult = {
       data: {
         attributes: {
-          title: 'Revenue report 2',
           request: {
-            logicalTable: {
-              table: 'tableA',
-              timeGrain: 'day'
-            },
-            metrics: [
+            columns: [
               {
-                metric: 'revenue',
+                alias: null,
+                cid: 'c1',
+                field: 'network.dateTime',
                 parameters: {
-                  currency: 'USD',
-                  as: 'm1'
-                }
+                  grain: 'day'
+                },
+                type: 'timeDimension'
               },
               {
-                metric: 'revenue',
+                alias: null,
+                cid: 'c2',
+                field: 'revenue',
                 parameters: {
-                  currency: 'EUR',
-                  as: 'm2'
-                }
-              }
-            ],
-            dimensions: [{ dimension: 'property' }],
-            filters: [],
-            having: [],
-            sort: [],
-            intervals: [
+                  as: 'm2',
+                  currency: 'EUR'
+                },
+                type: 'metric'
+              },
               {
-                end: '2018-02-16 00:00:00.000',
-                start: '2018-02-09 00:00:00.000'
+                alias: null,
+                cid: 'c3',
+                field: 'property',
+                parameters: {
+                  field: 'id'
+                },
+                type: 'dimension'
               }
             ],
-            bardVersion: 'v1',
-            requestVersion: 'v1',
-            dataSource: 'bardOne'
+            dataSource: 'bardOne',
+            filters: [
+              {
+                field: 'network.dateTime',
+                operator: 'bet',
+                parameters: {
+                  grain: 'day'
+                },
+                type: 'timeDimension',
+                values: ['2015-10-02', '2015-10-14']
+              }
+            ],
+            limit: null,
+            requestVersion: '2.0',
+            sorts: [],
+            table: 'network'
           },
+          title: 'RequestV2 mmuti-param testing report',
           visualization: {
-            type: 'table',
-            version: 1,
             metadata: {
-              columns: [
-                {
-                  attributes: {
-                    name: 'dateTime'
-                  },
-                  type: 'dateTime',
-                  displayName: 'Date'
+              columnAttributes: {
+                c1: {
+                  canAggregateSubtotal: false
                 },
-                {
-                  attributes: {
-                    name: 'property'
-                  },
-                  type: 'dimension',
-                  displayName: 'Property'
+                c2: {
+                  canAggregateSubtotal: false
                 },
-                {
-                  attributes: {
-                    name: 'revenue',
-                    parameters: {
-                      currency: 'USD'
-                    }
-                  },
-                  type: 'metric',
-                  displayName: 'Revenue (USD)'
-                },
-                {
-                  attributes: {
-                    name: 'revenue',
-                    parameters: {
-                      currency: 'EUR'
-                    }
-                  },
-                  type: 'metric',
-                  displayName: 'Revenue (EUR)'
+                c3: {
+                  canAggregateSubtotal: false
                 }
-              ]
-            }
+              },
+              showTotals: []
+            },
+            type: 'table',
+            version: 2
           }
         },
         relationships: {
           author: {
             data: {
-              type: 'users',
-              id: 'navi_user'
+              id: 'navi_user',
+              type: 'users'
             }
           }
         },
@@ -193,7 +194,7 @@ module('Unit | Serializer | Report', function(hooks) {
       }
     };
 
-    let report = await Store.findRecord('report', 8);
+    let report = await Store.findRecord('report', 14);
 
     assert.deepEqual(
       report.serialize(),

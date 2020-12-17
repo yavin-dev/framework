@@ -31,7 +31,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
 
     assert.equal(
       formattedString,
-      'Sep 15, 2014 - Oct 12, 2014',
+      'Sep 14, 2014 - Oct 11, 2014',
       'Interval was converted to inclusive end date and was correctly formatted'
     );
   });

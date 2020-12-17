@@ -29,6 +29,9 @@ module('Integration | Component | unauthorized table', function(hooks) {
 
     assert
       .dom('.navi-report-invalid__unauthorized')
-      .includesText('Protected Table', "Displays table name they don't have access to");
+      .includesText(
+        'You do not have access to run queries against . Please choose another table and run again.',
+        "Displays table name they don't have access to"
+      );
   });
 });

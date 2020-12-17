@@ -657,7 +657,7 @@ export default [
       filters: [
         {
           type: 'timeDimension',
-          dataSource: 'bardOne',
+          source: 'bardOne',
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
@@ -678,6 +678,68 @@ export default [
           type: 'metric',
           field: 'adClicks',
           parameters: {}
+        },
+        {
+          cid: 'c3',
+          type: 'dimension',
+          field: 'property',
+          parameters: { field: 'id' }
+        }
+      ],
+      sorts: []
+    }
+  },
+  {
+    id: 14,
+    title: 'RequestV2 mmuti-param testing report',
+    createdOn: '2015-04-01 00:00:00',
+    updatedOn: '2015-04-01 00:00:00',
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'table',
+      version: 2,
+      metadata: {
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+          c3: { canAggregateSubtotal: false },
+          c2: { canAggregateSubtotal: false }
+        },
+        showTotals: []
+      }
+    },
+    request: {
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          dataSource: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['2015-10-02', '2015-10-14']
+        }
+      ],
+      columns: [
+        {
+          cid: 'c1',
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day'
+          },
+          type: 'timeDimension'
+        },
+        {
+          cid: 'c2',
+          type: 'metric',
+          field: 'revenue',
+          parameters: {
+            currency: 'EUR',
+            as: 'm2'
+          }
         },
         {
           cid: 'c3',

@@ -21,11 +21,14 @@ module('Integration | Component | report builder', function(hooks) {
     this.set(
       'report',
       Store.createRecord('report', {
-        request: Store.createFragment('bard-request/request', {
-          logicalTable: Store.createFragment('bard-request/fragments/logicalTable', {
-            table: MetadataService.getById('table', 'tableA'),
-            timeGrain: 'day'
-          })
+        request: Store.createFragment('bard-request-v2/request', {
+          table: 'tableA',
+          dataSource: 'bardOne',
+          limit: null,
+          requestVersion: '2.0',
+          filters: [],
+          columns: [],
+          sorts: []
         }),
         visualization: {}
       })
@@ -36,13 +39,17 @@ module('Integration | Component | report builder', function(hooks) {
     assert.expect(2);
     //reset meta data and load only one table
     MetadataService.keg.resetByType('metadata/table');
-    MetadataService.loadMetadataForType('table', [
-      {
-        id: 'tableA',
-        name: 'Table A',
-        description: 'Table A'
-      }
-    ]);
+    MetadataService.loadMetadataForType(
+      'table',
+      [
+        {
+          name: 'tableA',
+          longName: 'Table A',
+          description: 'Table A'
+        }
+      ],
+      'bardOne'
+    );
 
     await render(hbs`{{report-builder
       report=report

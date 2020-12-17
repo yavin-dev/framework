@@ -76,24 +76,17 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       .dom('.table-header-row .table-header-cell.metric .navi-table-sort-icon')
       .doesNotHaveClass('navi-table-sort-icon--asc', 'Metric is not sorted asc after third sort click');
 
+    //sort by timeDimension desc
+    await click('.table-header-row .table-header-cell.timeDimension .navi-table-sort-icon');
     assert
-      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
-      .hasClass('navi-table-sort-icon--desc', 'Datetime is sorted desc by default');
+      .dom('.table-header-row .table-header-cell.timeDimension .navi-table-sort-icon')
+      .hasClass('navi-table-sort-icon--desc', 'timeDimension is sorted desc after first sort click');
 
-    //sort by dateTime desc
-    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
+    //sort by timeDimension asc
+    await click('.table-header-row .table-header-cell.timeDimension .navi-table-sort-icon');
     assert
-      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
-      .hasClass('navi-table-sort-icon--asc', 'Datetime is sorted asc after first sort click');
-
-    //sort by dateTime asc
-    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
-    assert
-      .dom('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon')
-      .hasClass('navi-table-sort-icon--desc', 'Datetime is sorted desc after second sort click');
-
-    //remove sort by dateTime
-    await click('.table-header-row .table-header-cell.dateTime .navi-table-sort-icon');
+      .dom('.table-header-row .table-header-cell.timeDimension .navi-table-sort-icon')
+      .hasClass('navi-table-sort-icon--asc', 'timeDimension is sorted asc after second sort click');
 
     //add a parameterized metric with a couple of parameters and run the report
     await clickItem('metric', 'Platform Revenue');
@@ -294,7 +287,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //Update column name
     await click('.report-view__visualization-edit-btn');
-    await fillIn('.dateTime > .table-header-cell__input', 'test');
+    await fillIn('.timeDimension > .table-header-cell__input', 'test');
     await click('.report-view__visualization-edit-btn');
 
     assert

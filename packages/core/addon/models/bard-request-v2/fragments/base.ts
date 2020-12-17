@@ -60,6 +60,7 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
    */
   @computed('field', 'type', 'source')
   get columnMetadata(): MetadataModelRegistry[T] {
+    debugger;
     assert('Source must be set in order to access columnMetadata', isPresent(this.source));
     assert('column type must be set in order to access columnMetadata', isPresent(this.type));
     return this.naviMetadata.getById(this.type, this.field, this.source) as MetadataModelRegistry[T];
