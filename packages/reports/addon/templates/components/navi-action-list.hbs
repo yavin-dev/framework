@@ -23,18 +23,20 @@
 
   <li class="action">
   {{!-- Export only enabled on a validated report --}}
-    {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "exportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
-      <ExportAction
-        id={{concat "navi-report-action-export-" @index}}
-        class="navi-reports-index__report-control export {{unless @item.request.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
-        @report={{@item}}
-        @disabled={{not @item.request.validations.isTruelyValid}}
-      >
-        <NaviIcon @icon="download" />
-        <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-export-" @index}}>
-          {{if @item.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-        </EmberTooltip>
-      </ExportAction>
+    {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+      {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
+        <ExportAction
+          id={{concat "navi-report-action-export-" @index}}
+          class="navi-reports-index__report-control export {{unless @item.request.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
+          @report={{@item}}
+          @disabled={{not @item.request.validations.isTruelyValid}}
+        >
+          <NaviIcon @icon="download" />
+          <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-export-" @index}}>
+            {{if @item.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+          </EmberTooltip>
+        </ExportAction>
+      {{/let}}
     {{/let}}
   </li>
 

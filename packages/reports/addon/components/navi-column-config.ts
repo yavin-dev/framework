@@ -66,7 +66,6 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
 
   /**
    * Adds a copy of the given column to the request including its parameters
-   * @action
    * @param column - The metric/dimension column to make a copy of
    */
   @action
@@ -76,7 +75,6 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   }
 
   /**
-   * @action
    * @param column - the column fragment to be renamed
    * @param index - the new name for the column
    */
@@ -87,12 +85,27 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
 
   /**
    * Opens a column
-   * @action
    * @param column - The column to open
    */
   @action
   openColumn(column: ConfigColumn) {
     this.currentlyOpenColumn = column;
+  }
+
+  /**
+   * Toggles a filter
+   * @param column - The column to open
+   */
+  @action
+  onToggleFilter(column: ColumnFragment) {
+    const { request } = this.args.report;
+    const previousFilters = request.filters.length;
+    this.args.onToggleFilter(column);
+    const newFilters = request.filters.length;
+    // TODO: should be done a level higher
+    if (newFilters > previousFilters) {
+      this.args.openFilters();
+    }
   }
 
   /**
