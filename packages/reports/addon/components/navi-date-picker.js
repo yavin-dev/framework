@@ -17,12 +17,23 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
 import { range } from 'lodash-es';
-import { getFirstDayEpochForGrain, getFirstDayOfGrain, getLastDayOfGrain } from 'navi-data/utils/date';
+import {
+  getFirstDayEpochForGrain,
+  getFirstDayOfGrain,
+  getLastDayOfGrain,
+  getPeriodForGrain
+} from 'navi-data/utils/date';
 
-const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day';
-function isValidCalendarDate(date) {
+const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day grain';
+function isValidCalendarDate(date, dateTimePeriod) {
   if (!moment.isMoment(date) || !date.isUTC()) {
     return false;
+  }
+
+  assert('A dateTimePeriod is provided', dateTimePeriod);
+  const period = getPeriodForGrain(dateTimePeriod);
+  if (['second', 'minute', 'hour'].includes(period)) {
+    return true;
   }
   return date
     .clone()
@@ -39,13 +50,13 @@ class NaviDatePicker extends Component {
    */
   init() {
     super.init(...arguments);
-    const { centerDate, date } = this;
+    const { centerDate, date, dateTimePeriod } = this;
     const localDateAsUTCDay = moment()
       .utc(true)
       .startOf('day');
     const center = centerDate || date || localDateAsUTCDay;
 
-    assert(isValidCalendarDateMessage, isValidCalendarDate(center));
+    assert(isValidCalendarDateMessage, isValidCalendarDate(center, dateTimePeriod));
 
     // convert utc date to local for ember-power-calendar
     this.centerDate = center.clone().local(true);
@@ -58,11 +69,11 @@ class NaviDatePicker extends Component {
   didReceiveAttrs() {
     super.didReceiveAttrs(...arguments);
 
-    const { previousDate, date } = this;
+    const { previousDate, date, dateTimePeriod } = this;
 
     let newDate;
     if (date && date !== previousDate) {
-      assert(isValidCalendarDateMessage, isValidCalendarDate(date));
+      assert(isValidCalendarDateMessage, isValidCalendarDate(date, dateTimePeriod));
       // convert utc date to local for ember-power-calendar
       newDate = date.clone().local(true);
     }

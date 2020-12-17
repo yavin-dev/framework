@@ -27,7 +27,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     assert.expect(1);
 
     let interval = new Interval(new Duration('P4W'), moment('10-14-2014', FORMAT)),
-      formattedString = formatInterval([interval, 'week']);
+      formattedString = formatInterval([interval, 'isoWeek']);
 
     assert.equal(
       formattedString,
@@ -40,7 +40,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     assert.expect(2);
 
     let interval = new Interval(new Duration('P4W'), 'current'),
-      formattedString = formatInterval([interval, 'week']);
+      formattedString = formatInterval([interval, 'isoWeek']);
 
     assert.equal(formattedString, 'Last 4 Weeks', 'Interval was converted to week rolling window');
 

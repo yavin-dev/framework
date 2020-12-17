@@ -13,33 +13,22 @@ const NEW_MODEL = {
   author: 'navi_user',
   createdOn: null,
   request: {
-    bardVersion: 'v1',
+    columns: [],
     dataSource: 'bardOne',
-    dimensions: [],
     filters: [],
-    having: [],
-    intervals: [
-      {
-        end: 'current',
-        start: 'P1D'
-      }
-    ],
-    logicalTable: {
-      table: 'network',
-      timeGrain: 'day'
-    },
-    metrics: [],
-    requestVersion: 'v1',
-    sort: []
+    limit: null,
+    requestVersion: '2.0',
+    sorts: [],
+    table: 'network'
   },
   title: 'Untitled Report',
   updatedOn: null,
   visualization: {
     metadata: {
-      columns: []
+      columnAttributes: {}
     },
     type: 'table',
-    version: 1
+    version: 2
   }
 };
 

@@ -7,6 +7,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import { module, test } from 'qunit';
+import { capitalize } from '@ember/string';
 
 module('Acceptance | date filter', function(hooks) {
   setupApplicationTest(hooks);
@@ -23,7 +24,7 @@ module('Acceptance | date filter', function(hooks) {
 
     for (const grain of timeGrains) {
       await selectChoose('.navi-column-config-item__parameter', grain);
-      const grainId = grain.toLowerCase();
+      const grainId = grain === 'Week' ? 'isoWeek' : grain.toLowerCase();
       assert
         .dom('.navi-column-config-item__name')
         .hasText(`Date Time (${grainId})`, 'The column config grain parameter is updated');
@@ -44,7 +45,7 @@ module('Acceptance | date filter', function(hooks) {
       await selectChoose('.filter-builder__select-trigger', 'Current');
       assert
         .dom('.filter-builder__operator')
-        .hasText(`Current ${grain}`, 'Current is the selected filter builder operator');
+        .hasText(`Current ${capitalize(grainId)}`, 'Current is the selected filter builder operator');
 
       assert.dom('.filter-values--current-period').containsText(`The current ${grainId}`, `Shows current ${grain}`);
 

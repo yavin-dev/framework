@@ -4,22 +4,37 @@ import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const Request = {
-  serialize() {
-    return {
-      dimensions: [{ dimension: 'os' }],
-      metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-      intervals: [
-        {
-          start: '2016-05-30 00:00:00.000',
-          end: '2016-06-04 00:00:00.000'
-        }
-      ],
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day'
-      }
-    };
-  }
+  table: 'network',
+  dataSource: 'bardOne',
+  limit: null,
+  requestVersion: '2.0',
+  filters: [
+    {
+      type: 'timeDimension',
+      source: 'bardOne',
+      field: 'network.dateTime',
+      parameters: { grain: 'day' },
+      operator: 'bet',
+      values: ['2015-10-02', '2015-10-14']
+    }
+  ],
+  columns: [
+    {
+      cid: 'c1',
+      field: 'network.dateTime',
+      parameters: {
+        grain: 'day'
+      },
+      type: 'timeDimension'
+    },
+    {
+      cid: 'c2',
+      type: 'metric',
+      field: 'adClicks',
+      parameters: {}
+    }
+  ],
+  sorts: []
 };
 
 module('Integration | Component | report visualization', function(hooks) {
@@ -28,7 +43,18 @@ module('Integration | Component | report visualization', function(hooks) {
   hooks.beforeEach(function() {
     this.set('report', {
       request: Request,
-      visualization: { type: 'table' }
+      visualization: {
+        type: 'table',
+        version: 2,
+        metadata: {
+          columnAttributes: {
+            c1: { canAggregateSubtotal: false },
+            c3: { canAggregateSubtotal: false },
+            c2: { canAggregateSubtotal: false }
+          },
+          showTotals: {}
+        }
+      }
     });
   });
 
@@ -68,7 +94,24 @@ module('Integration | Component | report visualization', function(hooks) {
 
     this.set('report', {
       request: Request,
-      visualization: { type: 'line-chart' }
+      visualization: {
+        type: 'line-chart',
+        version: 2,
+        metadata: {
+          style: {
+            area: false,
+            stacked: false
+          },
+          axis: {
+            y: {
+              series: {
+                type: 'metric',
+                config: {}
+              }
+            }
+          }
+        }
+      }
     });
     this.set('response', { rows: [] });
 

@@ -145,7 +145,7 @@ module('Integration | Component | print report view', function(hooks) {
           c1: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false }
         },
-        showTotals: []
+        showTotals: {}
       }
     });
 

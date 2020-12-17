@@ -98,7 +98,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('New report', async function(assert) {
     assert.expect(4);
-
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'png'];
     await visit('/reports/new');
 
     /* == Add filter == */
@@ -136,6 +137,7 @@ module('Acceptance | Navi Report', function(hooks) {
         .length,
       'Ad Clicks column is displayed'
     );
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('New report - copy api', async function(assert) {
