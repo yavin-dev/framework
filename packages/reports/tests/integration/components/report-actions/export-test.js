@@ -59,7 +59,7 @@ module('Integration | Component | report actions - export', function(hooks) {
           type: 'timeDimension',
           source: 'bardOne',
           field: 'network.dateTime',
-          parameters: { grain: 'all' },
+          parameters: { grain: 'day' },
           operator: 'bet',
           values: ['current', 'next']
         }
