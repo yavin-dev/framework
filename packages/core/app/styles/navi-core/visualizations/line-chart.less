@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -68,51 +68,6 @@
     r: 6;
     /* clean-css ignore:end */
   }
-
-  // Tooltip
-  .c3-tooltip-container {
-    background-color: @navi-container-gray;
-    padding: 10px;
-    border-bottom: 1px solid @navi-bottom-border-gray;
-    min-width: 150px;
-    font-size: @font-size-mid;
-    font-color: @navi-body-font-gray;
-    line-height: 1.42857143;
-
-    .chart-tooltip-title {
-      text-transform: capitalize;
-    }
-
-    .sub-title {
-      text-transform: capitalize;
-      font-size: @font-size-xsmall;
-      color: @navi-gray;
-      margin-top: 5px;
-    }
-
-    .hover-metrics,
-    .hover-dimension {
-      margin: 5px 0 0 15px;
-      padding: 0;
-    }
-
-    .metric-val {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .series-indicator {
-      height: 8px;
-      width: 8px;
-
-      circle {
-        .generate-chart-colors-for(stroke);
-        fill: transparent;
-      }
-    }
-  }
-
   .c3-xgrid,
   .c3-ygrid {
     stroke-dasharray: 0;

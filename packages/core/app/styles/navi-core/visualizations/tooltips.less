@@ -1,0 +1,54 @@
+/**
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.c3-tooltip-container {
+  background-color: @navi-container-gray;
+  font-size: @font-size-mid;
+  border-bottom: 1px solid @navi-bottom-border-gray;
+  min-width: 150px;
+  padding: 10px;
+
+  .chart-tooltip {
+    &__title {
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    &__break {
+      margin: 5px 0;
+    }
+
+    &__sub-title {
+      text-transform: capitalize;
+    }
+
+    &__value {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    &__table {
+      width: 100%;
+      td {
+        max-width: 200px;
+        overflow: hidden;
+        padding: 0 2px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    &__indicator {
+      svg {
+        height: 8px;
+        width: 8px;
+
+        circle {
+          .generate-chart-colors-for(stroke);
+          .generate-chart-colors-for(fill);
+        }
+      }
+    }
+  }
+}

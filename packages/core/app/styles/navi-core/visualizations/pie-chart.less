@@ -18,53 +18,6 @@
   .pie-metric-label {
     text-transform: capitalize;
   }
-
-  //chart tooltip
-  .c3-tooltip-container {
-    background-color: @navi-container-gray;
-    padding: 10px;
-    border-bottom: 1px solid @navi-bottom-border-gray;
-    min-width: 150px;
-    font-size: @font-size-mid;
-    font-color: @navi-body-font-gray;
-    line-height: @navi-ideal-line-height;
-
-    .title {
-      text-transform: capitalize;
-    }
-
-    .sub-title {
-      text-transform: capitalize;
-      font-size: @font-size-xsmall;
-      color: @navi-gray;
-      margin-top: 5px;
-    }
-
-    .pie-chart-tooltip__hover-dimension {
-      margin: 5px 0 0 5px;
-      padding: 0;
-    }
-
-    .pie-chart-tooltip__metric-val {
-      .display-flex;
-      align-items: center;
-      justify-content: flex-start;
-
-      span {
-        margin-left: 10px;
-      }
-    }
-
-    .pie-chart-tooltip__series-indicator {
-      height: 8px;
-      width: 8px;
-
-      circle {
-        .generate-chart-colors-for(stroke);
-        fill: transparent;
-      }
-    }
-  }
 }
 
 //mixin
