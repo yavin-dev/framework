@@ -78,7 +78,7 @@ module('Unit | Serializer | Report', function(hooks) {
                   canAggregateSubtotal: false
                 }
               },
-              showTotals: []
+              showTotals: {}
             },
             type: 'table',
             version: 2
@@ -162,7 +162,7 @@ module('Unit | Serializer | Report', function(hooks) {
             sorts: [],
             table: 'network'
           },
-          title: 'RequestV2 mmuti-param testing report',
+          title: 'RequestV2 multi-param testing report',
           visualization: {
             metadata: {
               columnAttributes: {
@@ -176,7 +176,7 @@ module('Unit | Serializer | Report', function(hooks) {
                   canAggregateSubtotal: false
                 }
               },
-              showTotals: []
+              showTotals: {}
             },
             type: 'table',
             version: 2

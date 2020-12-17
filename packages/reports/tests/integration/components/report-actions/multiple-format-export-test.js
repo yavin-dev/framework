@@ -76,6 +76,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   test('filename', async function(assert) {
     assert.expect(1);
 
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv'];
     await render(TEMPLATE);
 
@@ -85,7 +86,7 @@ module('Integration | Component | report actions - multiple-format-export', func
       'hyrule-news',
       'The download attribute is set to the dasherized report name'
     );
-    config.navi.FEATURES.exportFileTypes = [];
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('close on click', async function(assert) {

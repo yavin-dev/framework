@@ -273,8 +273,8 @@ export default [
     deliveryRuleIds: [],
     visualization: null,
     request: {
-      table: '',
-      dataSource: '',
+      table: 'network',
+      dataSource: 'bardOne',
       requestVersion: '2.0',
       limit: null,
       columns: [],
@@ -646,7 +646,7 @@ export default [
           c3: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false }
         },
-        showTotals: []
+        showTotals: {}
       }
     },
     request: {
@@ -691,7 +691,7 @@ export default [
   },
   {
     id: 14,
-    title: 'RequestV2 mmuti-param testing report',
+    title: 'RequestV2 multi-param testing report',
     createdOn: '2015-04-01 00:00:00',
     updatedOn: '2015-04-01 00:00:00',
     authorId: 'navi_user',
@@ -705,7 +705,7 @@ export default [
           c3: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false }
         },
-        showTotals: []
+        showTotals: {}
       }
     },
     request: {
@@ -720,7 +720,7 @@ export default [
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2015-10-02', '2015-10-14']
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
         }
       ],
       columns: [
@@ -735,10 +735,10 @@ export default [
         {
           cid: 'c2',
           type: 'metric',
-          field: 'revenue',
+          field: 'multipleParamMetric',
           parameters: {
             currency: 'EUR',
-            as: 'm2'
+            age: '6'
           }
         },
         {

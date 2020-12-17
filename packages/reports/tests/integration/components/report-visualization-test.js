@@ -52,7 +52,7 @@ module('Integration | Component | report visualization', function(hooks) {
             c3: { canAggregateSubtotal: false },
             c2: { canAggregateSubtotal: false }
           },
-          showTotals: []
+          showTotals: {}
         }
       }
     });

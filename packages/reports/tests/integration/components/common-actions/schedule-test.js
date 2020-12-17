@@ -335,6 +335,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
   test('format options - fallback to `exportFileTypes`', async function(assert) {
     assert.expect(1);
 
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
     this.set('model', TestModel);
     await render(TEMPLATE);
@@ -348,7 +349,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'Schedule format should have correct options'
     );
 
-    config.navi.FEATURES.exportFileTypes = [];
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('format options - config exportFileTypes is empty', async function(assert) {

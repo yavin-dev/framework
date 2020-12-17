@@ -2,21 +2,23 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import { setupMirage } from 'ember-cli-mirage/test-support';
+
+let MetadataService, Store;
 
 module('Integration | Component | unauthorized table', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   test('it renders', async function(assert) {
     assert.expect(2);
 
+    MetadataService = this.owner.lookup('service:navi-metadata');
+    Store = this.owner.lookup('service:store');
+
+    await MetadataService.loadMetadata();
     const model = {
-      request: {
-        logicalTable: {
-          table: {
-            name: 'Protected Table'
-          }
-        }
-      }
+      request: Store.createFragment('bard-request-v2/request', { table: 'protected' })
     };
 
     this.set('model', model);
@@ -29,9 +31,6 @@ module('Integration | Component | unauthorized table', function(hooks) {
 
     assert
       .dom('.navi-report-invalid__unauthorized')
-      .includesText(
-        'You do not have access to run queries against . Please choose another table and run again.',
-        "Displays table name they don't have access to"
-      );
+      .includesText('Protected Table', "Displays table name they don't have access to");
   });
 });

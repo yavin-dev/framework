@@ -95,7 +95,7 @@ class NaviDatePicker extends Component {
 
   /**
    * @property {Moment} centerDate - The date that determines the current view of the calendar, defaults to selected date initially
-   */ j;
+   */
   centerDate;
 
   /**

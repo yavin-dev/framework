@@ -114,6 +114,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
   test('multi datasource saved report', async function(assert) {
     assert.expect(14);
 
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/13/view');
@@ -184,6 +185,6 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     );
     assert.deepEqual(await getAllSelected('metric'), ['Ad Clicks'], 'Only Ad Clicks is selected once table is changed');
 
-    config.navi.FEATURES.exportFileTypes = [];
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 });
