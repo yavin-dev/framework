@@ -251,7 +251,10 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * Adds a column with it's default parameters
    */
   addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}): ColumnFragment {
-    return this.columns.pushObject(this.fragmentFactory.createColumnFromMeta(columnMetadataModel, parameters));
+    const defaultParams = columnMetadataModel.getDefaultParameters() || {};
+    return this.columns.pushObject(
+      this.fragmentFactory.createColumnFromMeta(columnMetadataModel, { ...defaultParams, ...parameters })
+    );
   }
 
   /**

@@ -149,14 +149,15 @@ export default class ColumnConsumer extends ActionConsumer {
     [RequestActions.DID_UPDATE_TABLE](this: ColumnConsumer, route: Route, table: TableMetadataModel) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const { metrics, dimensions } = table;
+      const { metrics, dimensions, timeDimensions } = table;
+      const validColumns = [...metrics, ...dimensions, ...timeDimensions];
 
       /*
        * .toArray() is used to clone the array, otherwise removing a column while
        * iterating over `request.columns` causes problems
        */
       request.columns.toArray().forEach(column => {
-        if (![...metrics, ...dimensions].includes(column.columnMetadata)) {
+        if (!validColumns.includes(column.columnMetadata)) {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_COLUMN_FRAGMENT, route, column);
         }
       });

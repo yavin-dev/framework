@@ -19,6 +19,7 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import TableMetadataModel from 'navi-data/models/metadata/table';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
   operator: 'gt',
@@ -198,6 +199,28 @@ export default class FilterConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
       request.removeFilter(filter);
+    },
+
+    /**
+     * @action DID_UPDATE_TABLE
+     * @param route - route that has a model that contains a request property
+     * @param table - table that the request is updated with
+     */
+    [RequestActions.DID_UPDATE_TABLE](this: FilterConsumer, route: Route, table: TableMetadataModel) {
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
+      const { metrics, dimensions, timeDimensions } = table;
+      const validColumns = [...metrics, ...dimensions, ...timeDimensions];
+
+      /*
+       * .toArray() is used to clone the array, otherwise removing a column while
+       * iterating over `request.columns` causes problems
+       */
+      request.filters.toArray().forEach(filter => {
+        if (!validColumns.includes(filter.columnMetadata)) {
+          this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
+        }
+      });
     }
   };
 }

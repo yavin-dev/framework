@@ -661,7 +661,7 @@ export default [
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2015-10-02', '2015-10-14']
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
         }
       ],
       columns: [

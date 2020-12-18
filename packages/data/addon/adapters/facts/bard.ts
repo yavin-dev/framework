@@ -10,7 +10,7 @@ import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
-import { canonicalizeMetric, serializeParameters, getAliasedMetrics, canonicalizeAlias } from '../../utils/metric';
+import { canonicalizeMetric, serializeParameters } from '../../utils/metric';
 import { configHost } from '../../utils/adapter';
 import NaviFactAdapter, {
   Filter,
@@ -25,8 +25,6 @@ import NaviFactAdapter, {
 import { omit } from 'lodash-es';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
-export type AliasFn = (column: string) => string;
-
 export class FactAdapterError extends Error {
   name = 'FactAdapterError';
 }
@@ -185,21 +183,22 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @param aliasFunction function that returns metrics from aliases
    * @return sort param value
    */
-  _buildSortParam(request: RequestV2, aliasFunction: AliasFn = a => a): string | undefined {
-    const { sorts } = request;
+  _buildSortParam(request: RequestV2): string | undefined {
+    const { sorts, table } = request;
 
     if (sorts.length) {
       return sorts
-        .map(sortField => {
-          const field = aliasFunction(sortField.field);
-          const direction = sortField.direction || 'desc';
+        .map(({ direction, field, parameters }) => {
+          const canonicalName =
+            field === `${table}.dateTime` ? 'dateTime' : canonicalizeMetric({ metric: field, parameters });
+          direction = direction || 'desc';
 
           assert(
             `'${direction}' must be a valid sort direction (${SORT_DIRECTIONS.join()})`,
             SORT_DIRECTIONS.includes(direction)
           );
 
-          return `${field}|${direction}`;
+          return `${canonicalName}|${direction}`;
         })
         .join(',');
     }
@@ -209,13 +208,11 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a having param string for a request
    *
-   * @method _buildHavingParam
    * @private
    * @param request
-   * @param aliasFunction function that returns metrics from aliases
    * @return having param value
    */
-  _buildHavingParam(request: RequestV2, aliasFunction: AliasFn = a => a): string | undefined {
+  _buildHavingParam(request: RequestV2): string | undefined {
     const having = request.filters.filter(fil => fil.type === 'metric');
 
     if (having?.length) {
@@ -223,7 +220,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
         .map(having => {
           const { field, operator, values = [] } = having;
 
-          return `${aliasFunction(field)}-${operator}[${values.join(',')}]`;
+          return `${field}-${operator}[${values.join(',')}]`;
         })
         .join(',');
     }
@@ -265,15 +262,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @returns query object
    */
   _buildQuery(request: RequestV2, options?: RequestOptions): Query {
-    const { columns } = request;
-    const metrics = columns
-      .filter(col => col.type === 'metric')
-      .map(col => ({ metric: col.field, parameters: col.parameters }));
-    const aliasMap = getAliasedMetrics(metrics);
-    const aliasFunction: AliasFn = alias => canonicalizeAlias(alias, aliasMap);
     const filters = this._buildFiltersParam(request);
-    const having = this._buildHavingParam(request, aliasFunction);
-    const sort = this._buildSortParam(request, aliasFunction);
+    const having = this._buildHavingParam(request);
+    const sort = this._buildSortParam(request);
     const query: Query = {
       dateTime: this._buildDateTimeParam(request),
       metrics: this._buildMetricsParam(request)

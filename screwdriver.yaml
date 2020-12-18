@@ -27,7 +27,7 @@ jobs:
       - test-navi-data: npx lerna run test --scope navi-data --stream;
       - test-navi-directory: npx lerna run test --scope navi-directory --stream;
       - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
-      - test-navi-reports: npx lerna run test --scope navi-reports --stream || true;
+      - test-navi-reports: npx lerna run test --scope navi-reports --stream;
       - test-navi-search: npx lerna run test --scope navi-search --stream;
       - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
     requires:
