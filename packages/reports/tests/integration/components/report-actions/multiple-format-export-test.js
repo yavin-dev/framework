@@ -5,6 +5,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+import config from 'ember-get-config';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
@@ -39,6 +40,7 @@ module('Integration | Component | report actions - multiple-format-export', func
   test('export links', async function(assert) {
     assert.expect(4);
 
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     const factService = this.owner.lookup('service:navi-facts');
     const compressionService = this.owner.lookup('service:compression');
 
@@ -68,11 +70,14 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     const pngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
     assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
+    config.navi.FEATURES.exportFileTypes = [];
   });
 
   test('filename', async function(assert) {
     assert.expect(1);
 
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv'];
     await render(TEMPLATE);
 
     await clickTrigger();
@@ -81,6 +86,7 @@ module('Integration | Component | report actions - multiple-format-export', func
       'hyrule-news',
       'The download attribute is set to the dasherized report name'
     );
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('close on click', async function(assert) {
@@ -93,6 +99,7 @@ module('Integration | Component | report actions - multiple-format-export', func
         icon: 'file-text-o'
       }
     ]);
+
     await render(hbs`
       {{#report-actions/multiple-format-export
           report=report

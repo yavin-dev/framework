@@ -259,7 +259,7 @@ export default {
       category: 'test',
       datatype: 'text',
       storageStrategy: 'loaded',
-      fields: defaultFields
+      fields: [defaultFields[0]]
     },
     {
       name: 'Budget',

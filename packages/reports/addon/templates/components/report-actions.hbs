@@ -47,15 +47,17 @@
 {{!-- Export only enabled on a valid report --}}
 {{#if (feature-flag "exportFileTypes")}}
   <li class="navi-report__action">
-    {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "exportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
-      <ExportAction
-        class="navi-report__action-link {{unless @model.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
-        @report={{@model}}
-        @disabled={{not @model.validations.isTruelyValid}}
-      >
-        <NaviIcon @icon="download" class="navi-report__action-icon" />
-        Export
-      </ExportAction>
+    {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+      {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
+        <ExportAction
+          class="navi-report__action-link {{unless @model.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
+          @report={{@model}}
+          @disabled={{not @model.validations.isTruelyValid}}
+        >
+          <NaviIcon @icon="download" class="navi-report__action-icon" />
+          Export
+        </ExportAction>
+      {{/let}}
     {{/let}}
     <EmberTooltip>
       {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}

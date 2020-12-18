@@ -53,18 +53,20 @@
 
       <li class="navi-report-widget__action">
         {{!-- Export action is only enabled when request is valid --}}
-        {{#let (component (concat "report-actions/" (unless (is-empty (feature-flag "exportFileTypes")) "multiple-format-export" "export"))) as |ExportAction|}}
-          <ExportAction
-            class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
-            @report={{@model}}
-            @disabled={{not @model.validations.isTruelyValid}}
-          >
-            <NaviIcon @icon="download" class="navi-report-widget__icon" />
-            Export
-            <EmberTooltip>
-              {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-            </EmberTooltip>
-          </ExportAction>
+        {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+          {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
+            <ExportAction
+              class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
+              @report={{@model}}
+              @disabled={{not @model.validations.isTruelyValid}}
+            >
+              <NaviIcon @icon="download" class="navi-report-widget__icon" />
+              Export
+              <EmberTooltip>
+                {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+              </EmberTooltip>
+            </ExportAction>
+          {{/let}}
         {{/let}}
       </li>
 

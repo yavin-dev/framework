@@ -156,4 +156,61 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
     assert.deepEqual(dispatchedActions, [], 'no actions are called when the request is for an elide dataSource');
   });
+
+  test('ADD_DIMENSION_FILTER', function(this: TestContext, assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'existingColumnGrain' },
+          source: 'bardOne'
+        }
+      ]
+    });
+
+    const route = { modelFor: () => ({ request }) };
+
+    // simulate filter being added
+    request.addFilter({
+      type: 'timeDimension',
+      field: 'network.dateTime',
+      parameters: { grain: 'newFilterGrain' },
+      operator: 'bet',
+      values: ['P1D', 'current'],
+      source: 'bardOne'
+    });
+
+    consumer.send(
+      RequestActions.ADD_DIMENSION_FILTER,
+      route,
+      this.metadataService.getById('dimension', 'age', 'bardOne'),
+      {}
+    );
+    assert.deepEqual(dispatchedActions, [], 'Thno actions are called when a dimension is updatede');
+
+    consumer.send(
+      RequestActions.ADD_DIMENSION_FILTER,
+      route,
+      this.metadataService.getById('timeDimension', 'network.dateTime', 'bardOne'),
+      {}
+    );
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER],
+      'When adding a timeDimension with an existing column, the filter is updated'
+    );
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [request.filters.objectAt(0), { parameters: { grain: 'existingColumnGrain' } }],
+      'The filter is updated to match the existingColumnGrain grain'
+    );
+  });
 });

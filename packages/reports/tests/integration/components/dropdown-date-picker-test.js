@@ -12,12 +12,12 @@ module('Integration | Component | dropdown date picker', function(hooks) {
   test('dropdown-date-picker', async function(assert) {
     assert.expect(5);
 
-    this.set('savedDate', '2018-12-25');
+    this.set('savedDate', Moment.utc('2018-12-25'));
     this.set('actions', {
       onUpdate(date) {
         const clickedDate = Moment(date).format('YYYY-MM-DD');
         assert.equal(clickedDate, '2018-12-24', 'The current selected date is sent to the onUpdate action');
-        this.set('savedDate', clickedDate);
+        this.set('savedDate', Moment.utc(date));
       }
     });
 

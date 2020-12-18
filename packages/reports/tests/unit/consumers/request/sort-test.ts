@@ -124,54 +124,7 @@ module('Unit | Consumer | request sort', function(hooks) {
     assert.deepEqual(getSorts(request), {}, 'The adClicks sort is removed');
   });
 
-  test('REMOVE_COLUMN', function(assert) {
-    const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
-      table: 'network',
-      limit: null,
-      dataSource: 'bardOne',
-      requestVersion: '2.0',
-      columns: [timeDimension, metric, dimension, timeDimension],
-      filters: [],
-      sorts: [
-        { ...timeDimension, direction: 'desc' },
-        { ...metric, direction: 'desc' },
-        { ...dimension, direction: 'desc' }
-      ]
-    });
-
-    assert.deepEqual(
-      getSorts(request),
-      {
-        'network.dateTime(grain=day)': 'desc',
-        adClicks: 'desc',
-        'age(field=id)': 'desc'
-      },
-      'The existing sorts are correct'
-    );
-
-    const route = routeFor(request);
-
-    const [tDFragment1, mFragment, dFragment, tDFragment2] = request.columns.toArray();
-    request.removeColumn(tDFragment1);
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, tDFragment1.columnMetadata);
-    request.removeColumn(mFragment);
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, mFragment.columnMetadata);
-
-    assert.deepEqual(
-      getSorts(request),
-      { 'network.dateTime(grain=day)': 'desc', 'age(field=id)': 'desc' },
-      'The metric sort is removed'
-    );
-
-    request.removeColumn(tDFragment2);
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, tDFragment2.columnMetadata);
-    request.removeColumn(dFragment);
-    Consumer.send(RequestActions.REMOVE_COLUMN, route, dFragment.columnMetadata);
-
-    assert.deepEqual(getSorts(request), {}, 'The last sort is removed');
-  });
-
-  test('REMOVE_COLUMN_WITH_PARAMS', function(assert) {
+  test('REMOVE_COLUMN_FRAGMENT', function(assert) {
     const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -188,9 +141,7 @@ module('Unit | Consumer | request sort', function(hooks) {
 
     const first = request.columns.firstObject as ColumnFragment;
     request.removeColumn(first);
-    Consumer.send(RequestActions.REMOVE_COLUMN_WITH_PARAMS, route, first?.columnMetadata, {
-      grain: 'day'
-    });
+    Consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, route, first);
 
     assert.deepEqual(getSorts(request), {}, 'The sorts are removed');
   });

@@ -273,8 +273,8 @@ export default [
     deliveryRuleIds: [],
     visualization: null,
     request: {
-      table: '',
-      dataSource: '',
+      table: 'network',
+      dataSource: 'bardOne',
       requestVersion: '2.0',
       limit: null,
       columns: [],
@@ -646,7 +646,7 @@ export default [
           c3: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false }
         },
-        showTotals: []
+        showTotals: {}
       }
     },
     request: {
@@ -657,7 +657,7 @@ export default [
       filters: [
         {
           type: 'timeDimension',
-          dataSource: 'bardOne',
+          source: 'bardOne',
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
@@ -678,6 +678,68 @@ export default [
           type: 'metric',
           field: 'adClicks',
           parameters: {}
+        },
+        {
+          cid: 'c3',
+          type: 'dimension',
+          field: 'property',
+          parameters: { field: 'id' }
+        }
+      ],
+      sorts: []
+    }
+  },
+  {
+    id: 14,
+    title: 'RequestV2 multi-param testing report',
+    createdOn: '2015-04-01 00:00:00',
+    updatedOn: '2015-04-01 00:00:00',
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'table',
+      version: 2,
+      metadata: {
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+          c3: { canAggregateSubtotal: false },
+          c2: { canAggregateSubtotal: false }
+        },
+        showTotals: {}
+      }
+    },
+    request: {
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          dataSource: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
+        }
+      ],
+      columns: [
+        {
+          cid: 'c1',
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day'
+          },
+          type: 'timeDimension'
+        },
+        {
+          cid: 'c2',
+          type: 'metric',
+          field: 'multipleParamMetric',
+          parameters: {
+            currency: 'EUR',
+            age: '6'
+          }
         },
         {
           cid: 'c3',

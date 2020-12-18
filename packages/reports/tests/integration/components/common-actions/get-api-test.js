@@ -143,7 +143,12 @@ module('Integration | Component | common actions/get api', function(hooks) {
       .dom('.navi-modal__header--secondary')
       .hasText('Select the Copy button to copy to clipboard.', 'Secondary header is visible with instructions');
 
-    assert.dom('.navi-modal__input').hasValue('', 'Modal input box has link to the current page');
+    assert
+      .dom('.navi-modal__input')
+      .hasValue(
+        'https://data.naviapp.io/v1/data/network/day/?dateTime=current%2Fnext&metrics=&format=json',
+        'Modal input box has link to the current page'
+      );
 
     let buttons = findAll('.btn-container .btn');
     assert.deepEqual(

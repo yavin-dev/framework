@@ -10,10 +10,10 @@ module('Acceptance | number dim filters', function(hooks) {
   setupMirage(hooks);
 
   test('number dimension filter', async function(assert) {
-    await visit('/reports/1/view');
+    await visit('/reports/13/view');
     await clickItemFilter('dimension', 'Budget');
 
-    assert.dom('.filter-collection__row:nth-child(2) .filter-builder__operator').hasText('Equals (=)');
+    assert.dom('.filter-collection__row:nth-child(2) .filter-builder__operator').hasText('Equals');
 
     await fillIn('.filter-values--value-input', '123');
 

@@ -14,7 +14,7 @@
             @onOpenColumn={{this.openColumn}}
             @onRemoveColumn={{fn @onRemoveColumn column.fragment}}
             @cloneColumn={{fn this.cloneColumn column}}
-            @toggleColumnFilter={{fn @onToggleFilter column.fragment}}
+            @toggleColumnFilter={{fn this.onToggleFilter column.fragment}}
             @onRenameColumn={{fn @onRenameColumn column.fragment}}
             @onUpdateColumnParam={{fn @onUpdateColumnParam column.fragment}}
           />
