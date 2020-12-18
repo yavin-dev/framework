@@ -1,12 +1,14 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="chart-tooltip-title">{{format-chart-tooltip-date this.request this.x}}</div>
-<ol class="hover-metrics">
-  {{#each this.tooltipData as |series index|}}
-    <li class="metric-val">
-      <svg class="series-indicator">
-        <circle cx="50%" cy="50%" r="40%" class="chart-series-{{series.seriesIndex}}"/>
-      </svg>
-      <span>{{tooltip-value-formatter series.value (get "displayName" (object-at index this.request.metricColumns)) (object-at series.seriesIndex this.rowData)}}</span>
-    </li>
-  {{/each}}
-</ol>
+<div class="chart-tooltip__title">{{format-chart-tooltip-date this.request this.x}}</div>
+<hr class="chart-tooltip__break">
+<table class="chart-tooltip__table">
+  <tbody>
+    {{#each this.tooltipData as |series index|}}
+      <tr class="chart-tooltip__series">
+        <td class="chart-tooltip__indicator"><svg><circle cx="50%" cy="50%" r="40%" class="chart-series-{{series.seriesIndex}}"/></svg></td>
+        <td class="chart-tooltip__name">{{series.name}}</td>
+        <td class="chart-tooltip__value">{{tooltip-value-formatter series.value (get "displayName" (object-at index this.request.metricColumns)) (object-at series.seriesIndex this.rowData)}}</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

@@ -1,4 +1,4 @@
-import { findAll, find, visit, click } from '@ember/test-helpers';
+import { findAll, find, visit, click, waitFor } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { getContext } from '@ember/test-helpers';
@@ -19,19 +19,17 @@ module('Acceptance | line chart', function(hooks) {
 
     await visit('/line-chart');
 
-    showTooltip();
-
     // check text of the tooltip container
-    assert.dom('.sub-title').hasText('Ad Clicks', "The tooltip contains the metric's display name.");
+    await showTooltip();
+    assert.dom('.chart-tooltip__sub-title').hasText('Ad Clicks', "The tooltip contains the metric's display name.");
 
     // Select a different metric
     await selectChoose('.navi-visualization-config .metric-select__select__selector', 'Revenue (USD)');
 
-    showTooltip();
-
     // check text of the tooltip container
+    await showTooltip();
     assert
-      .dom('.sub-title')
+      .dom('.chart-tooltip__sub-title')
       .hasText(
         'Revenue (USD)',
         'The tooltip contains the correct metric display name after a new parameterized metric is selected'
@@ -166,10 +164,11 @@ module('Acceptance | line chart', function(hooks) {
    * @param {Object} container - app container
    * This will show the chart tooltip so that we can fetch its contents.
    */
-  function showTooltip() {
-    let emberId = findAll('.chart-container .navi-vis-c3-chart')[1]?.id,
-      component = (getContext() as TestContext).owner.lookup('-view-registry:main')[emberId],
-      c3 = component.chart;
+  async function showTooltip() {
+    const emberId = findAll('.chart-container .navi-vis-c3-chart')[1]?.id;
+    const component = (getContext() as TestContext).owner.lookup('-view-registry:main')[emberId];
+    const c3 = component.chart;
     c3.tooltip.show({ x: 1 });
+    await waitFor('.c3-tooltip-container');
   }
 });
