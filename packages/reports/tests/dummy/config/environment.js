@@ -36,7 +36,9 @@ module.exports = function(environment) {
       defaultDataTable: 'network',
       dataSources: [
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
+        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' },
+        { name: 'elideOne', uri: 'https://data.naviapp.io/graphql', type: 'elide' },
+        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' }
       ],
       appPersistence: {
         type: 'webservice',
