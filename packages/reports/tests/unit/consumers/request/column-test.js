@@ -29,14 +29,20 @@ module('Unit | Consumer | request column', function(hooks) {
   test('ADD_COLUMN_WITH_PARAMS', function(assert) {
     assert.expect(2);
 
+    const mockColumnMetadata = { id: 'revenue', getDefaultParameters: () => ({}) };
+
     const request = {
       addColumnFromMetaWithParams(columnMetadataModel, parameters) {
-        assert.equal(columnMetadataModel, 'revenue', 'addColumnFromMetaWithParams is called with correct model');
+        assert.equal(
+          columnMetadataModel,
+          mockColumnMetadata,
+          'addColumnFromMetaWithParams is called with correct model'
+        );
         assert.deepEqual(parameters, { currency: 'USD' }, 'addColumnFromMetaWithParams is called with correct params');
       }
     };
 
-    consumer.send(RequestActions.ADD_COLUMN_WITH_PARAMS, routeFor(request), 'revenue', { currency: 'USD' });
+    consumer.send(RequestActions.ADD_COLUMN_WITH_PARAMS, routeFor(request), mockColumnMetadata, { currency: 'USD' });
   });
 
   test('REMOVE_COLUMN_FRAGMENT', function(assert) {
@@ -134,6 +140,7 @@ module('Unit | Consumer | request column', function(hooks) {
     assert.expect(2);
 
     const table = {
+      timeDimensions: [],
       dimensions: ['age'],
       metrics: ['adClicks']
     };
