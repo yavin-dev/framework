@@ -2,7 +2,6 @@ import { reject } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll } from '@ember/test-helpers';
-import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
@@ -49,7 +48,6 @@ const TestRequestBard = {
 
 module('Integration | Component | common actions/get api', function(hooks) {
   setupRenderingTest(hooks);
-  setupMirage(hooks);
   hooks.beforeEach(function() {
     this.TestRequestElide = TestRequestElide;
     this.TestRequestBard = TestRequestBard;
