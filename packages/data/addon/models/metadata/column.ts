@@ -6,7 +6,7 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
-import Table from './table';
+import TableMetadataModel from './table';
 import ColumnFunction from './column-function';
 import FunctionParameter from './function-parameter';
 import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
@@ -44,7 +44,7 @@ export interface ColumnMetadata {
   metadataType: ColumnType;
   category?: string;
   description?: string;
-  table: Table | undefined;
+  table: TableMetadataModel | undefined;
   source: string;
   valueType: TODO<string>;
   type: RawColumnType;
@@ -61,79 +61,78 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   protected naviMetadata!: NaviMetadataService;
 
   /**
-   * @property {string} id
+   * @property id - unique column id
    */
   id!: string;
 
   /**
-   * @property {string} name - Display name
+   * @property name - Display name of column
    */
   name!: string;
 
   /**
-   * @property {string} metadataType - metadata type
+   * @property metadataType - metadata type
    */
   metadataType!: ColumnType;
 
   /**
-   * @property {string|undefined} description - an extended attribute that can be fetched
+   * @property description - an extended attribute that can be fetched
    */
   description?: string;
 
   /**
-   * @property {string} tableId
+   * @property tableId
    */
   tableId?: string;
 
   /**
-   * @property {Table} table
+   * @property table - the table metadata for this column
    */
-  get table(): Table | undefined {
+  get table(): TableMetadataModel | undefined {
     const { tableId, naviMetadata, source } = this;
     if (isNone(tableId)) return undefined;
     return naviMetadata.getById('table', tableId, source);
   }
 
   /**
-   * @property {string} source - name of the data source this column is from.
+   * @property source - name of the data source this column is from.
    */
   source!: string;
 
   /**
-   * @property {ColumnType} type - will be "ref", "formula", or "field" depending on where its values are sourced from
+   * @property type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
   type!: RawColumnType;
 
   /**
-   * @property {string|undefined} expression - e.g. tableA.name if type is ref
+   * @property expression - e.g. tableA.name if type is ref
    */
   expression?: string;
 
   /**
-   * @property {string} category
+   * @property category
    */
   category?: string;
 
   /**
-   * @property {ValueType} valueType - enum value describing what type the values of this column hold
+   * @property valueType - enum value describing what type the values of this column hold
    */
   valueType!: TODO<string>;
 
   /**
-   * @property {string[]} tags
+   * @property tags
    */
   tags?: string[];
 
   partialData?: boolean;
 
   /**
-   * @property {string} columnFunctionId
+   * @property columnFunctionId
    */
   columnFunctionId!: string;
 
   /**
-   * Many to One relationship
-   * @property {ColumnFunction} columnFunction
+   * @property columnFunction - allows parameters to be applied to this column
    */
   get columnFunction(): ColumnFunction | undefined {
     const { columnFunctionId, source, naviMetadata } = this;
@@ -145,33 +144,31 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   }
 
   /**
-   * @property {boolean} hasParameters
+   * @property hasParameters - can this column have parameters
    */
   get hasParameters(): boolean {
     return !!this.parameters?.length;
   }
 
   /**
-   * @property {object[]} parameters - parameters for the column
+   * @property parameters - parameters for the column
    */
   get parameters(): FunctionParameter[] {
     return this.columnFunction?.parameters || [];
   }
 
   /**
-   * @method getParameter - retrieves the queried parameter object from metadata
-   * @param {string} id
-   * @returns {object|undefined}
+   * retrieves the queried parameter object from metadata
+   * @param id
    */
   getParameter(id: string): FunctionParameter | undefined {
     return this.parameters.find(param => param.id === id);
   }
 
   /**
-   * @method getDefaultParameters - retrieves all the default values for all the parameters
-   * @returns {Dict<string>|undefined}
+   * retrieves all the default values for all the parameters
    */
-  getDefaultParameters(): Dict<string> | undefined {
+  getDefaultParameters(): Record<string, string> | undefined {
     if (!this.hasParameters) {
       return undefined;
     }

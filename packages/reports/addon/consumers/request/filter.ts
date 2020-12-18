@@ -7,7 +7,6 @@ import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 import {
   getSelectedMetricsOfBase,
   getFilteredMetricsOfBase,
@@ -18,7 +17,6 @@ import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ReportModel from 'navi-core/models/report';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { Parameters } from 'navi-data/adapters/facts/interface';
-import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
@@ -104,8 +102,8 @@ export default class FilterConsumer extends ActionConsumer {
 
     /**
      * @action ADD_DIMENSION_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} dimension - dimension to filter
+     * @param route - route that has a model that contains a request property
+     * @param dimension - dimension to filter
      */
     [RequestActions.ADD_DIMENSION_FILTER](
       route: Route,
@@ -129,11 +127,12 @@ export default class FilterConsumer extends ActionConsumer {
 
       const defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
 
+      const defaultParams = dimensionMetadataModel.getDefaultParameters() || {};
       request.addFilter({
         type: dimensionMetadataModel.metadataType,
         source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
-        parameters: parameters || dimensionMetadataModel.getDefaultParameters(),
+        parameters: { ...defaultParams, ...parameters },
         operator: defaultOperator,
         values: []
       });
@@ -141,26 +140,28 @@ export default class FilterConsumer extends ActionConsumer {
 
     /**
      * @action ADD_METRIC_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metric - metric to filter
-     * @param {Object} [parameters] - metric parameters to filter [optional]
+     * @param route - route that has a model that contains a request property
+     * @param metric - metric to filter
+     * @param parameters - metric parameters to filter [optional]
      */
     [RequestActions.ADD_METRIC_FILTER](route: Route, metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
+
+      const defaultParams = metricMetadataModel.getDefaultParameters() || {};
       request.addFilter({
-        type: 'metric',
+        type: metricMetadataModel.metadataType,
         source: request.dataSource,
         field: metricMetadataModel.id,
-        parameters,
+        parameters: { ...defaultParams, ...parameters },
         ...DEFAULT_METRIC_FILTER
       });
     },
 
     /**
      * @action TOGGLE_METRIC_FILTER
-     * @param {Object} route - route that has a model that contains a request property
-     * @param {Object} metricMetadataModel - metric to filter
+     * @param route - route that has a model that contains a request property
+     * @param metricMetadataModel - metric to filter
      */
     [RequestActions.TOGGLE_METRIC_FILTER](
       this: FilterConsumer,
@@ -187,37 +188,6 @@ export default class FilterConsumer extends ActionConsumer {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
         });
       }
-    },
-
-    [RequestActions.TOGGLE_PARAMETERIZED_METRIC_FILTER](
-      this: FilterConsumer,
-      route: Route,
-      metricMetadataModel: MetricMetadataModel,
-      parameters: Parameters
-    ) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-
-      const filter = request.filters.find(
-        filter =>
-          filter.type === 'metric' &&
-          filter.canonicalName === canonicalizeMetric({ metric: metricMetadataModel.id, parameters })
-      );
-
-      if (!filter) {
-        this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, metricMetadataModel, parameters);
-      } else {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
-      }
-    },
-
-    [RequestActions.REMOVE_COLUMN](this: FilterConsumer, route: Route, columnMetadataModel: ColumnMetadataModel) {
-      // Find and remove all filters attached to the column
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-
-      const filters = request.filters.filter(filter => filter.columnMetadata === columnMetadataModel);
-      filters.forEach(filter => this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter));
     },
 
     [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {
