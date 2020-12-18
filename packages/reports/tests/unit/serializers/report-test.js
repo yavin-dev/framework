@@ -128,9 +128,9 @@ module('Unit | Serializer | Report', function(hooks) {
               {
                 alias: null,
                 cid: 'c2',
-                field: 'revenue',
+                field: 'multipleParamMetric',
                 parameters: {
-                  as: 'm2',
+                  age: '6',
                   currency: 'EUR'
                 },
                 type: 'metric'
@@ -154,7 +154,7 @@ module('Unit | Serializer | Report', function(hooks) {
                   grain: 'day'
                 },
                 type: 'timeDimension',
-                values: ['2015-10-02', '2015-10-14']
+                values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
               }
             ],
             limit: null,
