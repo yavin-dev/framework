@@ -14,7 +14,7 @@ import { computed, action } from '@ember/object';
 import Duration from 'navi-data/utils/classes/duration';
 import Interval from 'navi-data/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
-import { MONTHS_IN_QUARTER } from '../../filter-builders/time-dimension';
+import { intervalPeriodForGrain, MONTHS_IN_QUARTER } from '../../filter-builders/time-dimension';
 import config from 'ember-get-config';
 import { capitalize } from '@ember/string';
 import { Grain } from 'navi-data/utils/date';
@@ -46,12 +46,9 @@ export default class LookbackInput extends BaseIntervalComponent {
   lookbackToDuration(amount: number, dateTimePeriod: Grain): string {
     if (dateTimePeriod === 'quarter') {
       amount = amount * MONTHS_IN_QUARTER;
-      dateTimePeriod = 'month';
     }
-    if (dateTimePeriod === 'hour') {
-      dateTimePeriod = 'day';
-    }
-    return `P${amount}${dateTimePeriod[0].toUpperCase()}`;
+    const period = intervalPeriodForGrain(dateTimePeriod);
+    return `P${amount}${period[0].toUpperCase()}`;
   }
 
   /**
