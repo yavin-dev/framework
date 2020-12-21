@@ -34,7 +34,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
   });
 
   test('Table column sort', async function(assert) {
-    assert.expect(38);
+    assert.expect(37);
 
     await visit('/reports/2/view');
 

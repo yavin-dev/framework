@@ -7,50 +7,43 @@ import $ from 'jquery';
 
 let TemplateElide;
 let TemplateBard;
-
-const TestRequestElideConst = {
-  table: 'tableA',
-  columns: [
-    { field: 'datestamp', parameters: {}, type: 'timeDimension' },
-    { field: 'userCount', parameters: {}, type: 'metric' }
-  ],
-  filters: [],
-  sorts: [],
-  requestVersion: '2.0',
-  dataSource: 'elideOne'
-};
-
-const TestRequestBardConst = {
-  table: 'network',
-  filters: [
-    {
-      type: 'timeDimension',
-      field: 'network.dateTime',
-      parameters: { grain: 'day' },
-      operator: 'bet',
-      values: ['current', 'next'],
-      source: 'bardOne'
-    }
-  ],
-  columns: [{ type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' }],
-  sorts: [],
-  requestVersion: '2.0',
-  dataSource: 'bardOne'
-};
-
-const TestRequestElide = {
-  serialize: () => TestRequestElideConst
-};
-
-const TestRequestBard = {
-  serialize: () => TestRequestBardConst
-};
+let Store;
 
 module('Integration | Component | common actions/get api', function(hooks) {
   setupRenderingTest(hooks);
+
   hooks.beforeEach(function() {
-    this.TestRequestElide = TestRequestElide;
-    this.TestRequestBard = TestRequestBard;
+    Store = this.owner.lookup('service:store');
+    this.TestRequestElide = Store.createFragment('bard-request-v2/request', {
+      table: 'tableA',
+      columns: [
+        { field: 'datestamp', parameters: {}, type: 'timeDimension' },
+        { field: 'userCount', parameters: {}, type: 'metric' }
+      ],
+      filters: [],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'elideOne'
+    });
+
+    this.TestRequestBard = Store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['current', 'next'],
+          source: 'bardOne'
+        }
+      ],
+      columns: [{ type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' }],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'bardOne'
+    });
+
     TemplateElide = hbs`
       <CommonActions::GetApi
         @request={{this.TestRequestElide}}

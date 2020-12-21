@@ -43,18 +43,10 @@
               {{on "click" (fn @onToggleMetricFilter metric)}}
             >
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">
-                {{#if (has-parameters metric)}}
-                  {{#if (has-unfiltered-parameters metric @request)}}
-                    Add next filter
-                  {{else}}
-                    Remove all
-                  {{/if}}
+                {{#if (get-shallow this.metricsFiltered metric.id)}}
+                  Remove Filter
                 {{else}}
-                  {{#if (get-shallow this.metricsFiltered metric.id)}}
-                    Remove Filter
-                  {{else}}
-                    Add Filter
-                  {{/if}}
+                  Add Filter
                 {{/if}}
               </EmberTooltip>
             </NaviIcon>
