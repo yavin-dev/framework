@@ -5,8 +5,15 @@ import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
-let TemplateElide;
-let TemplateBard;
+const TEMPLATE = hbs`
+      <CommonActions::GetApi
+        @request={{this.TestRequest}}
+        @buttonClassNames={{this.buttonClassNames}}
+        @beforeAction={{this.beforeAction}}
+      >
+        Get API
+      </CommonActions::GetApi>
+    `;
 let Store;
 
 module('Integration | Component | common actions/get api', function(hooks) {
@@ -43,31 +50,13 @@ module('Integration | Component | common actions/get api', function(hooks) {
       requestVersion: '2.0',
       dataSource: 'bardOne'
     });
-
-    TemplateElide = hbs`
-      <CommonActions::GetApi
-        @request={{this.TestRequestElide}}
-        @buttonClassNames={{this.buttonClassNames}}
-        @beforeAction={{this.beforeAction}}
-      >
-        Get API
-      </CommonActions::GetApi>
-    `;
-    TemplateBard = hbs`
-      <CommonActions::GetApi
-        @request={{this.TestRequestBard}}
-        @buttonClassNames={{this.buttonClassNames}}
-        @beforeAction={{this.beforeAction}}
-      >
-        Get API
-      </CommonActions::GetApi>
-    `;
   });
 
   test('Component renders', async function(assert) {
     assert.expect(1);
 
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.get-api').hasText('Get API', 'Component yields given text');
   });
@@ -76,7 +65,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
     assert.expect(1);
 
     this.set('buttonClassNames', 'a-custom-class');
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.ok($('button').is('.a-custom-class'), 'Class names for the button element can be configured');
   });
@@ -87,7 +77,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('beforeAction', () => {
       assert.step('beforeAction is called');
     });
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -110,7 +101,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
       return reject();
     });
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -122,7 +114,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
   test('Modal Bard', async function(assert) {
     assert.expect(5);
 
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
@@ -152,7 +145,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
   test('Modal Elide', async function(assert) {
     assert.expect(5);
 
-    await render(TemplateElide);
+    this.set('TestRequest', this.TestRequestElide);
+    await render(TEMPLATE);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
@@ -182,7 +176,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
   test('Copy Link Notification', async function(assert) {
     assert.expect(2);
 
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -197,7 +192,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
   test('Cancel button', async function(assert) {
     assert.expect(3);
 
-    await render(TemplateBard);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
