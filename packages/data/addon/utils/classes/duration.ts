@@ -10,10 +10,10 @@ import { assert } from '@ember/debug';
  * Enum for supported date units
  * @enum {String}
  */
-type DateUnit = 'day' | 'isoWeek' | 'month' | 'year';
+type DateUnit = 'day' | 'week' | 'month' | 'year';
 const DATE_UNITS: Record<string, DateUnit | undefined> = {
   D: 'day',
-  W: 'isoWeek',
+  W: 'week',
   M: 'month',
   Y: 'year'
 };

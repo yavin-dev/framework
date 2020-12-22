@@ -127,7 +127,6 @@ export function valuesForOperator(
 }
 
 export function internalOperatorForValues(filter: FilterFragment): InternalOperatorType {
-  debugger;
   const { values, operator } = filter;
   const [startStr, endStr] = values as string[];
 
@@ -153,7 +152,7 @@ export function internalOperatorForValues(filter: FilterFragment): InternalOpera
   } else if (
     lookbackDuration &&
     lookbackGrain &&
-    ['day', 'isoWeek', 'month', 'year'].includes(lookbackGrain) &&
+    ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
     end === 'current'
   ) {
     internalId = OPERATORS.lookback;
