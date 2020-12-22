@@ -1,47 +1,62 @@
 import { reject } from 'rsvp';
-import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
-let Template;
-
-const MockRequest = {
-    serialize: () => 'abc'
-  },
-  MockUrl = 'https://navi.io/api';
-
-module('Integration | Component | common actions/get api', function(hooks) {
-  setupRenderingTest(hooks);
-
-  hooks.beforeEach(function() {
-    this.MockRequest = MockRequest;
-
-    Template = hbs`
+const TEMPLATE = hbs`
       <CommonActions::GetApi
-        @request={{this.MockRequest}}
+        @request={{this.TestRequest}}
         @buttonClassNames={{this.buttonClassNames}}
         @beforeAction={{this.beforeAction}}
       >
         Get API
       </CommonActions::GetApi>
     `;
+let Store;
 
-    // Mock fact service
-    this.owner.register(
-      'service:navi-facts',
-      Service.extend({
-        getURL: () => MockUrl
-      })
-    );
+module('Integration | Component | common actions/get api', function(hooks) {
+  setupRenderingTest(hooks);
+
+  hooks.beforeEach(function() {
+    Store = this.owner.lookup('service:store');
+    this.TestRequestElide = Store.createFragment('bard-request-v2/request', {
+      table: 'tableA',
+      columns: [
+        { field: 'datestamp', parameters: {}, type: 'timeDimension' },
+        { field: 'userCount', parameters: {}, type: 'metric' }
+      ],
+      filters: [],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'elideOne'
+    });
+
+    this.TestRequestBard = Store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['current', 'next'],
+          source: 'bardOne'
+        }
+      ],
+      columns: [{ type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' }],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'bardOne'
+    });
   });
 
   test('Component renders', async function(assert) {
     assert.expect(1);
 
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.get-api').hasText('Get API', 'Component yields given text');
   });
@@ -50,7 +65,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
     assert.expect(1);
 
     this.set('buttonClassNames', 'a-custom-class');
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.ok($('button').is('.a-custom-class'), 'Class names for the button element can be configured');
   });
@@ -61,7 +77,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('beforeAction', () => {
       assert.step('beforeAction is called');
     });
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -84,7 +101,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
 
       return reject();
     });
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -93,10 +111,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
       .isNotVisible('Copy modal does not open if `beforeAction` returns a rejected promise');
   });
 
-  test('Modal', async function(assert) {
+  test('Modal Bard', async function(assert) {
     assert.expect(5);
 
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
@@ -108,7 +127,12 @@ module('Integration | Component | common actions/get api', function(hooks) {
       .dom('.navi-modal__header--secondary')
       .hasText('Select the Copy button to copy to clipboard.', 'Secondary header is visible with instructions');
 
-    assert.dom('.navi-modal__input').hasValue(MockUrl, 'Modal input box has link to the current page');
+    assert
+      .dom('.navi-modal__input')
+      .hasValue(
+        'https://data.naviapp.io/v1/data/network/day/?dateTime=current%2Fnext&metrics=&format=json',
+        'Modal input box has link to the current page'
+      );
 
     let buttons = findAll('.btn-container .btn');
     assert.deepEqual(
@@ -118,10 +142,42 @@ module('Integration | Component | common actions/get api', function(hooks) {
     );
   });
 
+  test('Modal Elide', async function(assert) {
+    assert.expect(5);
+
+    this.set('TestRequest', this.TestRequestElide);
+    await render(TEMPLATE);
+
+    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
+
+    await click('.get-api > button');
+
+    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
+
+    assert
+      .dom('.navi-modal__header--secondary')
+      .hasText('Select the Copy button to copy to clipboard.', 'Secondary header is visible with instructions');
+
+    assert
+      .dom('.navi-modal__input')
+      .hasValue(
+        '{"query":"{ tableA { edges { node { datestamp userCount } } } }"}',
+        'Modal input box has link to the current page'
+      );
+
+    let buttons = findAll('.btn-container .btn');
+    assert.deepEqual(
+      buttons.map(el => el.textContent.trim()),
+      ['Copy Link', 'Cancel'],
+      'Copy, New Tab, and Cancel buttons are rendered'
+    );
+  });
+
   test('Copy Link Notification', async function(assert) {
     assert.expect(2);
 
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     await click('.get-api > button');
 
@@ -136,7 +192,8 @@ module('Integration | Component | common actions/get api', function(hooks) {
   test('Cancel button', async function(assert) {
     assert.expect(3);
 
-    await render(Template);
+    this.set('TestRequest', this.TestRequestBard);
+    await render(TEMPLATE);
 
     assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
 
