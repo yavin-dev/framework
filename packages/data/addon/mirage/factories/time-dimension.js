@@ -16,6 +16,10 @@ export default Factory.extend({
     return `Time Dimension ${this.index}`;
   },
 
+  friendlyName() {
+    return `Friendly Time Dimension ${this.index}`;
+  },
+
   description() {
     return `This is time dimension ${this.index}`;
   },

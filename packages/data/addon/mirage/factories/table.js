@@ -15,6 +15,10 @@ export default Factory.extend({
     return `Table ${this.index}`;
   },
 
+  friendlyName() {
+    return `Friendly Table ${this.index}`;
+  },
+
   isFact: true,
 
   description() {

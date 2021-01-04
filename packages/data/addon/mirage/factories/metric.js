@@ -16,6 +16,10 @@ export default Factory.extend({
     return `Metric ${this.index}`;
   },
 
+  friendlyName() {
+    return `Friendly Metric ${this.index}`;
+  },
+
   description() {
     return `This is metric ${this.index}`;
   },

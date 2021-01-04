@@ -17,6 +17,10 @@ export default Factory.extend({
     return `Dimension ${this.index}`;
   },
 
+  friendlyName() {
+    return `Friendly Dimension ${this.index}`;
+  },
+
   description() {
     return `This is dimension ${this.index}`;
   },
