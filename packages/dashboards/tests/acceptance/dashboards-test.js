@@ -155,7 +155,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     await click('.navi-dashboard-container__add-widget-text');
-    assert.dom('.ember-modal-dialog').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
+    assert.dom('.add-widget-modal').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
   test('index route', async function(assert) {

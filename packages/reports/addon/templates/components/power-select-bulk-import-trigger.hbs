@@ -47,7 +47,7 @@
 <span class="ember-power-select-status-icon"></span>
 
 {{!-- Added logic for bulk import --}}
-<NaviModal @isShown={{this._showBulkImport}}>
+<DenaliModal @isOpen={{this._showBulkImport}} @onClose={{set this._showBulkImport false}}>
   <DimensionBulkImport
     @dimension={{@extra.filter.subject}}
     @queryIds={{this._bulkImportQueryIds}}
@@ -55,4 +55,4 @@
     @onSelectValues={{queue (action "importValues") (set this._showBulkImport false)}}
     @onCancel={{set this._showBulkImport false}}
   />
-</NaviModal>
+</DenaliModal>

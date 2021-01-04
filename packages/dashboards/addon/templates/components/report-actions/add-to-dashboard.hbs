@@ -1,46 +1,47 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
-<NaviModal @isShown={{this.showModal}}>
-  <div class="add-to-dashboard-modal">
-    <div class="navi-modal-header">
+<DenaliModal class="add-to-dashboard-modal" @isOpen={{this.showModal}} @onClose={{toggle "showModal" this}} 
+  ...attributes as | modal |>
+    <modal.Header class="navi-modal-header">
       <h1 class="primary-header">Add To Dashboard</h1>
       <h5 class="secondary-header">Please provide a name for this widget and select a dashboard</h5>
-    </div>
-    <div class="modal-header">Widget Title</div>
-    <Input @value={{this.reportName}} class="text-input widget-title" @autofocus={{true}} />
-    <div class="modal-header">Dashboard</div>
-    {{#if this.shouldCreateDashboard}}
-      <Input
-        class="text-input dashboard-title"
-        @placeholder="Enter new dashboard name..."
-        @value={{this.newDashboardTitle}}
-        @autofocus={{true}}
-      />
-      <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</button>
-      <div class="btn-container">
-        <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (fn @onAddToNewDashboard this.newDashboardTitle this.reportName )}} disabled={{this.disableAdd}}>Add To Dashboard</button>
-        <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
-      </div>
-    {{else}}
-      <PowerSelect
-        class="dashboard-select"
-        @options={{this.groupedDashboards}}
-        @placeholder="Select a dashboard..."
-        @selected={{this.selectedDashboard}}
-        @searchField="title"
-        @searchPlaceholder="Search for a dashboard..."
-        @onchange={{fn (mut this.selectedDashboard)}}
-        @tagName="div"
-        @renderInPlace={{true}}
-        as |dashboard|
-      >
-        {{dashboard.title}}
-      </PowerSelect>
-      <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Create new dashboard</button>
-      <div class="btn-container">
-        <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (fn @onAddToDashboard this.selectedDashboard.id this.reportName)}} disabled={{this.disableAdd}}>Add To Dashboard</button>
-        <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
-      </div>
-    {{/if}}
-  </div>
-</NaviModal>
+    </modal.Header>
+    <modal.Content>
+      <div class="modal-header">Widget Title</div>
+      <Input @value={{this.reportName}} class="text-input widget-title" @autofocus={{true}} />
+      <div class="modal-header">Dashboard</div>
+      {{#if this.shouldCreateDashboard}}
+        <Input
+          class="text-input dashboard-title"
+          @placeholder="Enter new dashboard name..."
+          @value={{this.newDashboardTitle}}
+          @autofocus={{true}}
+        />
+        <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</button>
+        <div class="btn-container">
+          <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (fn @onAddToNewDashboard this.newDashboardTitle this.reportName )}} disabled={{this.disableAdd}}>Add To Dashboard</button>
+          <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
+        </div>
+      {{else}}
+        <PowerSelect
+          class="dashboard-select"
+          @options={{this.groupedDashboards}}
+          @placeholder="Select a dashboard..."
+          @selected={{this.selectedDashboard}}
+          @searchField="title"
+          @searchPlaceholder="Search for a dashboard..."
+          @onchange={{fn (mut this.selectedDashboard)}}
+          @tagName="div"
+          @renderInPlace={{true}}
+          as |dashboard|
+        >
+          {{dashboard.title}}
+        </PowerSelect>
+        <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Create new dashboard</button>
+        <div class="btn-container">
+          <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (fn @onAddToDashboard this.selectedDashboard.id this.reportName)}} disabled={{this.disableAdd}}>Add To Dashboard</button>
+          <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
+        </div>
+      {{/if}}
+    </modal.Content>
+</DenaliModal>

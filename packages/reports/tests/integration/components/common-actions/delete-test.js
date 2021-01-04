@@ -36,11 +36,11 @@ module('Integration | Component | common actions/delete', function(hooks) {
 
     await render(Template);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Modal is not visible at the start');
+    assert.dom('.delete-modal').isNotVisible('Modal is not visible at the start');
 
     await click('.delete > button');
 
-    assert.dom('.ember-modal-dialog').isVisible('Modal is visible after clicking the delete action');
+    assert.dom('.delete-modal').isVisible('Modal is visible after clicking the delete action');
 
     assert.dom('.primary-header').includesText('Delete "The Wind Waker"', 'Widget title is included in modal header');
 
@@ -50,7 +50,7 @@ module('Integration | Component | common actions/delete', function(hooks) {
 
     await click($('button:contains(Cancel)')[0]);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Modal is closed after clicking cancel button');
+    assert.dom('.delete-modal').isNotVisible('Modal is closed after clicking cancel button');
   });
 
   test('delete action', async function(assert) {

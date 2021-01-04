@@ -3,28 +3,30 @@
   <button type="button" disabled={{@disabled}} {{on "click" (toggle "showModal" this)}}>
     {{yield}}
   </button>
-  <NaviModal @isShown={{this.showModal}}>
-    <div class="navi-modal-header">
+  <DenaliModal class="navi-modal delete-modal" @isOpen={{this.showModal}} @onClose={{toggle "showModal" this}} ...attributes as | modal |>
+    <modal.Header class="navi-modal-header">
       <h1 class="primary-header">{{this.headerMsg}}</h1>
+    </modal.Header>
+    <modal.Content>
       <h5 class="secondary-header">
         {{this.warnMsg}}
       </h5>
-    </div>
-    {{#if this.isDeleting}}
-      <NaviLoadingMessage>
-        Deleting {{classify this.modelName}}
-      </NaviLoadingMessage>
-    {{/if}}
-    <div class="btn-container">
-      <button
-        type="button"
-        class="btn btn-primary"
-        disabled={{this.isDeleting}}
-        {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) this.closeModal)}}
-      >
-        Confirm
-      </button>
-      <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}} disabled={{this.isDeleting}}>Cancel</button>
-    </div>
-  </NaviModal>
+      {{#if this.isDeleting}}
+        <NaviLoadingMessage>
+          Deleting {{classify this.modelName}}
+        </NaviLoadingMessage>
+      {{/if}}
+      <div class="btn-container">
+        <button
+          type="button"
+          class="btn btn-primary"
+          disabled={{this.isDeleting}}
+          {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) this.closeModal)}}
+        >
+          Confirm
+        </button>
+        <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}} disabled={{this.isDeleting}}>Cancel</button>
+      </div>
+    </modal.Content>
+  </DenaliModal>
 </div>

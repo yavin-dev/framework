@@ -1,40 +1,40 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
-<NaviModal @isShown={{this.showModal}} >
-  <div class="add-widget-modal">
-    <div class="navi-modal-header">
-      <h1 class="primary-header">Add Widget</h1>
-      <h5 class="secondary-header">
-        <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
-      </h5>
-    </div>
-    <PowerSelect
-      @options={{this.reportsWithCreate}}
-      @selected={{this.selectedReport}}
-      @searchField="title"
-      @searchPlaceholder="Search for a report..."
-      @onchange={{fn (mut this.selectedReport)}}
-      @classNames="report-select"
-      @tagName="div"
-      @renderInPlace={{true}}
-      as |report|
-    >
-      {{report.title}}
-    </PowerSelect>
-    <div class="btn-container">
-      {{#if (eq this.selectedReport.id "new")}}
-        <LinkTo @route="dashboards.dashboard.widgets.new" @model={{this.dashboard.id}} class="btn btn-primary add-to-dashboard">Take me there!</LinkTo>
-      {{else}}
-        <button type="button" class="btn btn-primary add-to-dashboard"
-                onclick={{pipe
-                          (fn @onSelectReport this.selectedReport this.dashboard.id this.selectedReport.title)
-                          (toggle "showModal" this)
-                        }}
-        >
-          Add to dashboard
-        </button>
-      {{/if}}
-      <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
-    </div>
-  </div>
-</NaviModal>
+<DenaliModal class="add-widget-modal denali-modal" @isOpen={{this.showModal}} @onClose={{toggle "showModal" this}} ...attributes as | modal |>
+  <modal.Header class="navi-modal-header">
+    <h1 class="primary-header">Add Widget</h1>
+  </modal.Header>
+  <modal.Content>
+    <h5 class="secondary-header">
+      <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
+    </h5>
+      <PowerSelect
+        @options={{this.reportsWithCreate}}
+        @selected={{this.selectedReport}}
+        @searchField="title"
+        @searchPlaceholder="Search for a report..."
+        @onchange={{fn (mut this.selectedReport)}}
+        @classNames="report-select"
+        @tagName="div"
+        @renderInPlace={{true}}
+        as |report|
+      >
+        {{report.title}}
+  </PowerSelect>
+  </modal.Content>
+  <modal.Footer class="btn-container">
+    {{#if (eq this.selectedReport.id "new")}}
+      <LinkTo @route="dashboards.dashboard.widgets.new" @model={{this.dashboard.id}} class="btn btn-primary add-to-dashboard">Take me there!</LinkTo>
+    {{else}}
+      <button type="button" class="btn btn-primary add-to-dashboard"
+              onclick={{pipe
+                        (fn @onSelectReport this.selectedReport this.dashboard.id this.selectedReport.title)
+                        (toggle "showModal" this)
+                      }}
+      >
+        Add to dashboard
+      </button>
+    {{/if}}
+    <button type="button" class="btn btn-secondary" {{on "click" (toggle "showModal" this)}}>Cancel</button>
+  </modal.Footer>
+</DenaliModal>

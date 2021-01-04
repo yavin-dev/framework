@@ -63,13 +63,13 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
 
     assert
-      .dom('.ember-modal-dialog')
+      .dom('.add-to-dashboard-modal')
       .isNotVisible('add to dashboard report action modal is not visible before clicking the component');
 
     await click('.report-control');
 
     assert
-      .dom('.ember-modal-dialog')
+      .dom('.add-to-dashboard-modal')
       .isVisible('add to dashboard report modal dialog pops up on clicking the component');
 
     assert

@@ -9,7 +9,7 @@
       class="emberTagInput-tag navi-tag-input__tag"
       @tag={{tag}}
       @index={{index}}
-      @isRemovable={{_isRemoveButtonVisible}}
+      @isRemovable={{_isRemoveButtonVisible}}   
       @onRemoveTag={{action "removeTag" index}}
     >
       {{yield tag}}
@@ -26,10 +26,10 @@
 </li>
 
 {{!-- Added logic for bulk import --}}
-<NaviModal @isShown={{this._showBulkImport}}>
+<DenaliModal @isOpen={{this._showBulkImport}} @onClose={{action "closeModal"}} >
   <DimensionBulkImportSimple
     @rawInput={{this._bulkImportValue}}
     @onSelectValues={{queue (action "addTags") (action "closeModal")}}
     @onCancel={{action "closeModal"}}
   />
-</NaviModal>
+</DenaliModal>
