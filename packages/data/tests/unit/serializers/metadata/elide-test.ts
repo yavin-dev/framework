@@ -35,6 +35,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             node: {
               id: 'tableA',
               name: 'Table A',
+              friendlyName: 'Friendly Table A',
               description: 'Table A',
               category: 'cat1',
               cardinality: 'SMALL',
@@ -44,6 +45,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableA.m1',
                       name: 'M1',
+                      friendlyName: 'Friendly M1',
                       description: 'Table A Metric 1',
                       category: 'cat1',
                       valueType: 'NUMBER',
@@ -63,6 +65,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableA.d1',
                       name: 'D1',
+                      friendlyName: 'Friendly D1',
                       description: 'Table A Dimension 1',
                       category: 'cat1',
                       valueType: 'TEXT',
@@ -79,6 +82,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableA.d2',
                       name: 'D2',
+                      friendlyName: 'Friendly D2',
                       description: 'Table A Dimension 2',
                       category: 'cat1',
                       valueType: 'TEXT',
@@ -100,6 +104,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableA.td1',
                       name: 'TD1',
+                      friendlyName: 'Friendly TD1',
                       description: 'Table A Time Dimension 1',
                       category: 'cat1',
                       valueType: 'DATE',
@@ -130,6 +135,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             node: {
               id: 'tableB',
               name: 'Table B',
+              friendlyName: 'Friendly Table B',
               description: 'Table B',
               category: 'cat2',
               cardinality: 'MEDIUM',
@@ -139,6 +145,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableB.m2',
                       name: 'M2',
+                      friendlyName: 'Friendly M2',
                       description: 'Table B Metric 2',
                       category: 'cat2',
                       valueType: 'NUMBER',
@@ -153,6 +160,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableB.m3',
                       name: 'M3',
+                      friendlyName: 'Friendly M3',
                       description: 'Table B Metric 3',
                       category: 'cat2',
                       valueType: 'NUMBER',
@@ -172,6 +180,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableB.d1',
                       name: 'D1',
+                      friendlyName: 'Friendly D1',
                       description: 'Table B Dimension 1',
                       category: 'cat2',
                       valueType: 'TEXT',
@@ -188,6 +197,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                     node: {
                       id: 'tableB.d2',
                       name: 'D2',
+                      friendlyName: 'Friendly D2',
                       description: 'Table B Dimension 2',
                       category: 'cat2',
                       valueType: 'TEXT',
@@ -426,6 +436,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'clicks',
             name: 'Clicks',
+            friendlyName: 'Friendly Clicks',
             description: 'Clicks',
             category: 'userMetrics',
             valueType: 'NUMBER',
@@ -440,6 +451,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'impressions',
             name: 'Impressions',
+            friendlyName: 'Friendly Impressions',
             description: 'Impressions',
             category: 'userMetrics',
             valueType: 'NUMBER',
@@ -504,6 +516,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'age',
             name: 'Age',
+            friendlyName: 'Friendly Age',
             description: 'User Age',
             category: 'userDimensions',
             valueType: 'TEXT',
@@ -520,6 +533,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'gender',
             name: 'Gender',
+            friendlyName: 'Friendly Gender',
             description: 'User Gender',
             category: 'userDimensions',
             valueType: 'TEXT',
@@ -591,6 +605,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'userSignupDate',
             name: 'User Signup Date',
+            friendlyName: 'Friendly User Signup Date',
             description: 'Date that the user signed up',
             category: 'userDimensions',
             valueType: 'DATE',
@@ -616,6 +631,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           node: {
             id: 'orderMonth',
             name: 'Order Month',
+            friendlyName: 'Friendly Order Month',
             description: 'Month an order was placed',
             category: 'userDimensions',
             valueType: 'DATE',
