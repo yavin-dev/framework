@@ -8,7 +8,7 @@ module('Unit | Builder | Request V2', function() {
     const request = new RequestV2Builder();
     const built: RequestV2 = request
       .setTable('clicks')
-      .addTimeRangeFilter('day', 'P3D', 'current')
+      .addTimeRangeFilter('clicks.dateTime', 'day', 'P3D', 'current')
       .addMetric('clicks', { aggregation: '2DayAvg', trend: 'YoY' })
       .addDimension('browser')
       .addFilter('dimension', 'browser', { field: 'id' }, 'eq', ['chrome'])
@@ -103,7 +103,7 @@ module('Unit | Builder | Request V2', function() {
     const baseRequest = new RequestV2Builder();
     const built = baseRequest
       .setTable('clicks')
-      .addTimeRangeFilter('day', 'P1D', 'current')
+      .addTimeRangeFilter('clicks.dateTime', 'day', 'P1D', 'current')
       .build();
 
     const fullRequest = new RequestV2Builder(built);

@@ -9,7 +9,6 @@ import { Grain } from 'navi-data/utils/date';
 import { ColumnType } from 'navi-data/models/metadata/column';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { nanoid } from 'nanoid';
-import { assert } from '@ember/debug';
 
 /**
  * Utility Class for building a request V2
@@ -153,19 +152,11 @@ export default class RequestV2Builder {
    * @param start Period, datestring or macro
    * @param end Period, datestring or macro
    */
-  addTimeRangeFilter(grain: Grain, start: string, end: string): RequestV2Builder {
-    const table = this.request.table;
-    assert('Set the table before you set the interval', table.length !== 0);
-
-    this.addColumn('timeDimension', `${table}.dateTime`, { grain }).addFilter(
-      'timeDimension',
-      `${table}.dateTime`,
-      { grain },
-      'bet',
-      [start, end]
-    );
-
-    return this;
+  addTimeRangeFilter(columnId: string, grain: Grain, start: string, end: string): RequestV2Builder {
+    return this.addColumn('timeDimension', columnId, { grain }).addFilter('timeDimension', columnId, { grain }, 'bet', [
+      start,
+      end
+    ]);
   }
 
   /**
