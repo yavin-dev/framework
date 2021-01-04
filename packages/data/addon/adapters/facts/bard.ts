@@ -166,7 +166,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return filters param value
    */
   _buildFiltersParam(request: RequestV2): string | undefined {
-    const filters = request.filters.filter((fil: Filter) => fil.type === 'dimension');
+    const filters = request.filters.filter(fil => fil.type === 'dimension' && fil.values.length !== 0);
 
     if (filters?.length) {
       return serializeFilters(filters);
@@ -213,7 +213,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return having param value
    */
   _buildHavingParam(request: RequestV2): string | undefined {
-    const having = request.filters.filter(fil => fil.type === 'metric');
+    const having = request.filters.filter(fil => fil.type === 'metric' && fil.values.length !== 0);
 
     if (having?.length) {
       return having
