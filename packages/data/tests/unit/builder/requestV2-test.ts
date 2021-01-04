@@ -7,14 +7,14 @@ module('Unit | Builder | Request V2', function() {
     assert.expect(1);
     const request = new RequestV2Builder();
     const built: RequestV2 = request
-      .table('clicks')
-      .interval('day', 'P3D', 'current')
-      .metric('clicks', { aggregation: '2DayAvg', trend: 'YoY' })
-      .dimension('browser')
-      .filter('dimension', 'browser', { field: 'id' }, 'eq', ['chrome'])
-      .filter('metric', 'clicks', { aggregation: '2DayAvg', trend: 'YoY' }, 'gt', [80000])
-      .limit(80000)
-      .sort('metric', 'clicks', { aggregation: '2DayAvg', trend: 'YoY' }, 'desc')
+      .setTable('clicks')
+      .addTimeRangeFilter('day', 'P3D', 'current')
+      .addMetric('clicks', { aggregation: '2DayAvg', trend: 'YoY' })
+      .addDimension('browser')
+      .addFilter('dimension', 'browser', { field: 'id' }, 'eq', ['chrome'])
+      .addFilter('metric', 'clicks', { aggregation: '2DayAvg', trend: 'YoY' }, 'gt', [80000])
+      .setLimit(80000)
+      .addSort('metric', 'clicks', { aggregation: '2DayAvg', trend: 'YoY' }, 'desc')
       .build();
 
     //strip out cid for easy compare
@@ -102,15 +102,15 @@ module('Unit | Builder | Request V2', function() {
     assert.expect(1);
     const baseRequest = new RequestV2Builder();
     const built = baseRequest
-      .table('clicks')
-      .interval('day', 'P1D', 'current')
+      .setTable('clicks')
+      .addTimeRangeFilter('day', 'P1D', 'current')
       .build();
 
     const fullRequest = new RequestV2Builder(built);
     const fullBuild = fullRequest
-      .metric('clicks')
-      .dimension('browser')
-      .filter('metric', 'clicks', {}, 'gt', [10000])
+      .addMetric('clicks')
+      .addDimension('browser')
+      .addFilter('metric', 'clicks', {}, 'gt', [10000])
       .build();
 
     //strip out cid for easy compare
