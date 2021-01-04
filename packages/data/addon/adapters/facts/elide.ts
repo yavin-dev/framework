@@ -69,8 +69,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     in: (f, v) => `${f}=in=(${v.map(e => `'${e}'`).join(',')})`,
     notin: (f, v) => `${f}=out=(${v.map(e => `'${e}'`).join(',')})`,
     contains: (f, v) => `${f}=in=(${v.map(e => `'*${e}*'`).join(',')})`,
-    null: (f, _v) => `${f}=isnull=true`,
-    notnull: (f, _v) => `${f}=isnull=false`,
+    isnull: (f, v) => `${f}=isnull=${v[0]}`,
     lte: (f, v) => `${f}=le=('${v}')`,
     gte: (f, v) => `${f}=ge=('${v}')`,
     lt: (f, v) => `${f}=lt=('${v}')`,
@@ -91,7 +90,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       const fieldStr = getElideField(field, parameters);
       let filterVals = values.map(v => escape(`${v}`));
 
-      if (type === 'timeDimension') {
+      if (type === 'timeDimension' && operator !== 'isnull') {
         const grain = filter.parameters.grain as Grain;
         let timeValues: (Moment | string)[] = filterVals;
         if (['bet', 'nbet'].includes(operator)) {

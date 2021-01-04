@@ -50,8 +50,8 @@ const TestRequest: RequestV2 = {
         field: 'd5',
         parameters: { field: 'id' },
         type: 'dimension',
-        operator: 'notnull',
-        values: ['']
+        operator: 'isnull',
+        values: [false]
       },
       {
         field: 'm1',
@@ -689,7 +689,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -723,7 +723,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, { format: 'jsonApi' }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'jsonApi'
@@ -739,7 +739,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(sortRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -752,7 +752,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, { cache: false }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -778,7 +778,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, options),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -797,7 +797,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -810,7 +810,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, {}),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json'
@@ -823,7 +823,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, { page: 1, perPage: 100 }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
@@ -837,7 +837,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       Adapter._buildQuery(TestRequest, { format: 'csv' }),
       {
         dateTime: '2015-01-03/2015-01-04',
-        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notnull[""]',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'csv'

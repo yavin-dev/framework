@@ -10,7 +10,8 @@ import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { FilterOperator } from 'navi-data/adapters/facts/interface';
+import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';
+import { isEqual } from 'lodash-es';
 
 interface BaseFilterBuilderArgs {
   filter: FilterFragment;
@@ -18,34 +19,52 @@ interface BaseFilterBuilderArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-export interface FilterBuilderOperators {
-  id: FilterOperator;
+export interface FilterValueBuilder {
+  operator: FilterOperator;
   name: string;
-  valuesComponent: string;
+  component: string;
+  defaultValues?: Filter['values'];
 }
 
 export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFilterBuilderArgs> extends Component<T> {
-  get supportedOperators(): Array<FilterBuilderOperators> {
+  get valueBuilders(): Array<FilterValueBuilder> {
     return [];
   }
 
-  get selectedOperator(): FilterBuilderOperators {
+  get selectedValueBuilder(): FilterValueBuilder {
     const { operator: operatorId } = this.args.filter;
-    const operator = this.supportedOperators.find(({ id }) => id === operatorId);
-    assert(`Filter operator: '${operatorId}' is not supported in: ${this.constructor.name}`, operator);
-    return operator;
+    const builders = this.valueBuilders.filter(({ operator }) => operator === operatorId);
+    assert(
+      `Filter operator: '${operatorId}' does not provide a single builder in: ${this.constructor.name}`,
+      builders.length === 1
+    );
+    return builders[0];
   }
 
   @action
-  setOperator(operatorObject: FilterBuilderOperators) {
-    const changeSet = { operator: operatorObject.id };
-    /*
-     * Clear values in case they are incompatible with new operator,
-     * unless operators share valuesComponent
-     */
-    if (this.selectedOperator?.valuesComponent !== operatorObject.valuesComponent) {
-      Object.assign(changeSet, { values: [] });
+  setOperator(newBuilder: FilterValueBuilder) {
+    const {
+      selectedValueBuilder,
+      args: { filter }
+    } = this;
+    const changeSet: Partial<FilterFragment> = { operator: newBuilder.operator };
+
+    if (selectedValueBuilder !== newBuilder) {
+      if (newBuilder.defaultValues) {
+        // use new builder's default values if available
+        changeSet.values = newBuilder.defaultValues;
+      } else if (selectedValueBuilder.component !== newBuilder.component) {
+        // if the components are different clear values in case they are incompatible
+        changeSet.values = [];
+      }
     }
+
+    // Trim equal properties
+    Object.keys(changeSet).forEach((key: keyof typeof changeSet) => {
+      if (isEqual(changeSet[key], filter[key])) {
+        delete changeSet[key];
+      }
+    });
     this.args.onUpdateFilter(changeSet);
   }
 

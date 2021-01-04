@@ -202,8 +202,8 @@ module('Integration | Component | dashboard filters', function(hooks) {
       assert.deepEqual(
         changeSet,
         {
-          operator: 'null',
-          values: [] // would be [true], but it get set in value component after operator is set
+          operator: 'isnull',
+          values: [true]
         },
         'Operator update is requested'
       );

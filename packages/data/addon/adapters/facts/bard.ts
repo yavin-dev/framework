@@ -58,12 +58,21 @@ function formatDimensionFieldName(field: string, parameters: Parameters, include
 export function serializeFilters(filters: Filter[]): string {
   return filters
     .map(filter => {
-      const { field, operator, values, parameters } = filter;
-      const serializedValues = values
+      let { field, operator, values, parameters } = filter;
+      let serializedValues = values
         .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
         .map(v => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
       const formattedFieldName = formatDimensionFieldName(field, parameters, true);
+      if (operator === 'isnull') {
+        if (values[0] === true) {
+          operator = 'in';
+          serializedValues = '""';
+        } else if (values[0] == false) {
+          operator = 'notin';
+          serializedValues = '""';
+        }
+      }
 
       return `${formattedFieldName}-${operator}[${serializedValues}]`;
     })

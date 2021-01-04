@@ -341,16 +341,16 @@ module('Unit | Utils | Request', function(hooks) {
         },
         {
           field: 'platform',
-          operator: 'notnull',
+          operator: 'isnull',
           parameters: {
             field: 'id'
           },
           type: 'dimension',
-          values: [true]
+          values: [false]
         },
         {
           field: 'gender',
-          operator: 'null',
+          operator: 'isnull',
           parameters: {
             field: 'id'
           },

@@ -19,6 +19,14 @@ interface TestContext extends Context {
   onRemoveFilter(): null;
 }
 
+const TEMPLATE = hbs`
+<FilterCollection
+  @request={{this.request}}
+  @onUpdateFilter={{this.onUpdateFilter}}
+  @onRemoveFilter={{this.onRemoveFilter}}
+  @isCollapsed={{this.isCollapsed}}
+  @onUpdateCollapsed={{this.onUpdateCollapsed}}
+/>`;
 module('Integration | Component | filter collection', function(hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
@@ -31,8 +39,8 @@ module('Integration | Component | filter collection', function(hooks) {
       store.createFragment('bard-request-v2/request', {
         columns: [],
         filters: [
-          factory.createFilter('dimension', 'bardOne', 'age', {}, 'notnull', [true]),
-          factory.createFilter('dimension', 'bardOne', 'property', {}, 'null', [true]),
+          factory.createFilter('dimension', 'bardOne', 'age', {}, 'isnull', [false]),
+          factory.createFilter('dimension', 'bardOne', 'property', {}, 'isnull', [true]),
           factory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []),
           factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', ['1000']),
           factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'bet', ['1000', '2000'])
@@ -47,14 +55,6 @@ module('Integration | Component | filter collection', function(hooks) {
     this.onRemoveFilter = () => null;
 
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
-    await render(hbs`
-      <FilterCollection
-        @request={{this.request}}
-        @onUpdateFilter={{this.onUpdateFilter}}
-        @onRemoveFilter={{this.onRemoveFilter}}
-        @isCollapsed={{this.isCollapsed}}
-        @onUpdateCollapsed={{this.onUpdateCollapsed}}
-      />`);
   });
 
   test('it renders', async function(assert) {
@@ -63,6 +63,7 @@ module('Integration | Component | filter collection', function(hooks) {
     this.set('onUpdateCollapsed', () =>
       assert.ok(false, 'onUpdateCollapsed is not called on click when not collapsed')
     );
+    await render(TEMPLATE);
 
     assert.dom('.filter-collection__row').exists({ count: 5 }, 'Each request filter is represented by a filter row');
 
@@ -83,6 +84,7 @@ module('Integration | Component | filter collection', function(hooks) {
     this.set('onUpdateCollapsed', (collapsed: boolean) =>
       assert.notOk(collapsed, 'onUpdateCollapsed(false) is called on click')
     );
+    await render(TEMPLATE);
 
     assert
       .dom('span.filter-collection--collapsed-item')
@@ -97,9 +99,11 @@ module('Integration | Component | filter collection', function(hooks) {
     /* == Changing operator == */
     this.set('onUpdateFilter', (filter: FilterFragment, changeSet: Partial<FilterFragment>) => {
       assert.equal(filter, this.request.filters.objectAt(0), 'Filter to update is given to action');
-      assert.deepEqual(changeSet, { operator: 'null' }, 'Operator update is requested');
+      assert.deepEqual(changeSet, { values: [true] }, 'Operator update is requested');
     });
-    await clickTrigger(`#${$('.filter-builder-dimension__operator').attr('id')}`);
+    await render(TEMPLATE);
+
+    await clickTrigger('.filter-builder-dimension__operator');
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 
@@ -113,6 +117,9 @@ module('Integration | Component | filter collection', function(hooks) {
         'When clicking remove icon, remove action is sent with selected filter'
       );
     });
+
+    await render(TEMPLATE);
+
     await click(findAll('.filter-collection__remove')[1]);
   });
 });

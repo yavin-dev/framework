@@ -62,12 +62,14 @@ module('Integration | Component | filter-builders/base', function(hooks) {
   });
 
   test('changing operator', async function(assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
-      assert.equal(changeSet.operator, 'notin', 'Selected operator is given to action');
-      assert.notOk(
-        'values' in changeSet,
+      assert.deepEqual(
+        changeSet,
+        {
+          operator: 'notin'
+        },
         'Values is not reset when changing between operator with the same valuesComponent'
       );
     });
@@ -84,7 +86,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     /* == Operator with different valuesComponent == */
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
-      assert.deepEqual(changeSet.values, [], 'Values is reset when changing between operators to avoid conflicts');
+      assert.deepEqual(changeSet.values, [true], 'Values is set to default value when changing between operators');
     });
     await clickTrigger();
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
