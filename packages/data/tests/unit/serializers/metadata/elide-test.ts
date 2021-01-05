@@ -253,7 +253,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     const expectedMetricPayloads: MetricMetadataPayload[] = [
       {
         id: 'tableA.m1',
-        name: 'M1',
+        name: 'Friendly M1',
         description: 'Table A Metric 1',
         category: 'cat1',
         valueType: 'NUMBER',
@@ -266,7 +266,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'tableB.m2',
-        name: 'M2',
+        name: 'Friendly M2',
         description: 'Table B Metric 2',
         category: 'cat2',
         valueType: 'NUMBER',
@@ -279,7 +279,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'tableB.m3',
-        name: 'M3',
+        name: 'Friendly M3',
         description: 'Table B Metric 3',
         category: 'cat2',
         valueType: 'NUMBER',
@@ -295,7 +295,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     const expectedDimensionPayloads: ElideDimensionMetadataPayload[] = [
       {
         id: 'tableA.d1',
-        name: 'D1',
+        name: 'Friendly D1',
         description: 'Table A Dimension 1',
         category: 'cat1',
         valueType: 'TEXT',
@@ -310,7 +310,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'tableA.d2',
-        name: 'D2',
+        name: 'Friendly D2',
         description: 'Table A Dimension 2',
         category: 'cat1',
         valueType: 'TEXT',
@@ -325,7 +325,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'tableB.d1',
-        name: 'D1',
+        name: 'Friendly D1',
         description: 'Table B Dimension 1',
         category: 'cat2',
         valueType: 'TEXT',
@@ -340,7 +340,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'tableB.d2',
-        name: 'D2',
+        name: 'Friendly D2',
         description: 'Table B Dimension 2',
         category: 'cat2',
         valueType: 'TEXT',
@@ -358,7 +358,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     const expectedTimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         id: 'tableA.td1',
-        name: 'TD1',
+        name: 'Friendly TD1',
         description: 'Table A Time Dimension 1',
         category: 'cat1',
         valueType: 'DATE',
@@ -469,7 +469,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     const expectedMetricPayloads: MetricMetadataPayload[] = [
       {
         id: 'clicks',
-        name: 'Clicks',
+        name: 'Friendly Clicks',
         description: 'Clicks',
         category: 'userMetrics',
         valueType: 'NUMBER',
@@ -482,7 +482,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'impressions',
-        name: 'Impressions',
+        name: 'Friendly Impressions',
         description: 'Impressions',
         category: 'userMetrics',
         valueType: 'NUMBER',
@@ -553,7 +553,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     const expectedDimensionPayloads: ElideDimensionMetadataPayload[] = [
       {
         id: 'age',
-        name: 'Age',
+        name: 'Friendly Age',
         description: 'User Age',
         category: 'userDimensions',
         valueType: 'TEXT',
@@ -568,7 +568,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       },
       {
         id: 'gender',
-        name: 'Gender',
+        name: 'Friendly Gender',
         description: 'User Gender',
         category: 'userDimensions',
         valueType: 'TEXT',
@@ -660,7 +660,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       {
         timeDimension: {
           id: 'userSignupDate',
-          name: 'User Signup Date',
+          name: 'Friendly User Signup Date',
           description: 'Date that the user signed up',
           category: 'userDimensions',
           valueType: 'DATE',
@@ -715,7 +715,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
       {
         timeDimension: {
           id: 'orderMonth',
-          name: 'Order Month',
+          name: 'Friendly Order Month',
           description: 'Month an order was placed',
           category: 'userDimensions',
           valueType: 'DATE',
