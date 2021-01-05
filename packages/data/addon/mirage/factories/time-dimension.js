@@ -8,7 +8,7 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    const id = this.table?.id;
+    const id = this.id;
     return `${id ? id + '.' : ''}timeDimension${this.index}`;
   },
 
@@ -17,7 +17,7 @@ export default Factory.extend({
   },
 
   friendlyName() {
-    return `Friendly Time Dimension ${this.index}`;
+    return `Time Dimension ${this.index}`;
   },
 
   description() {
