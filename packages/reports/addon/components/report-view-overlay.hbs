@@ -1,21 +1,33 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div 
-  class="report-view-overlay {{if this.shouldDisplay "report-view-overlay--visible"}}" 
+<div
+  class="report-view-overlay {{if this.shouldDisplay "report-view-overlay--visible"}}"
   ...attributes
   {{did-update this.resetDismissed @isVisible}}
 >
   {{#if (and hasBlock this.shouldDisplay)}}
-    {{yield (hash 
+    {{yield (hash
       dismiss=this.dismiss
     )}}
   {{else if this.shouldDisplay}}
-    <div class="report-view-overlay__content">
-      <NaviButton title="Run query to update results" class="report-view-overlay__button report-view-overlay__button--run" @onClick={{@runReport}}>
-        Run
-      </NaviButton>
-      <NaviButton title="Continue with old results" class="report-view-overlay__button report-view-overlay__button--dismiss" @type="secondary" @onClick={{this.dismiss}}>
-        Dismiss
-      </NaviButton>
+    <NaviModal
+    @isShown={{this.shouldDisplay}}
+    @onClose={{this.resetDismissed}}>
+    <div class="get-api-modal-container">
+      <div class="navi-modal__header">
+        <div class="navi-modal__header--primary">Rerun Query</div>
+        <div class="navi-modal__header--secondary">Select the Run button to rerun the query</div>
+        <div class="report-view-overlay__content">
+          <div class="btn-container">
+            <NaviButton title="Run query to update results" class="report-view-overlay__button report-view-overlay__button--run" @onClick={{@runReport}}>
+              Run
+            </NaviButton>
+            <NaviButton title="Continue with old results" class="report-view-overlay__button report-view-overlay__button--dismiss" @type="secondary" @onClick={{this.dismiss}}>
+              Dismiss
+            </NaviButton>
+          </div>
+        </div>
+      </div>
     </div>
+    </NaviModal>
   {{/if}}
 </div>
