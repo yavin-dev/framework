@@ -9,6 +9,7 @@ import { computed, action } from '@ember/object';
 import layout from '../templates/components/report-builder';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { A } from '@ember/array';
 
 @templateLayout(layout)
 @tagName('')
@@ -35,7 +36,8 @@ export default class ReportBuilderComponent extends Component {
    */
   @computed
   get allTables() {
-    return this.metadataService.all('table').sortBy('name');
+    const factTables = this.metadataService.all('table').filter(t => t.isFact === true);
+    return A(factTables).sortBy('name');
   }
 
   /**

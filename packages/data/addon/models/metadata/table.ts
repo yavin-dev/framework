@@ -23,6 +23,7 @@ export interface TableMetadataPayload {
   category?: string;
   description?: string;
   cardinality: typeof CARDINALITY_SIZES[number];
+  isFact: boolean;
   metricIds: string[];
   dimensionIds: string[];
   timeDimensionIds: string[];
@@ -37,6 +38,7 @@ export interface TableMetadata {
   category?: string;
   description?: string;
   cardinality: typeof CARDINALITY_SIZES[number];
+  isFact: boolean;
   metrics: MetricMetadataModel[];
   dimensions: DimensionMetadataModel[];
   timeDimensions: TimeDimensionMetadataModel[];
@@ -83,6 +85,11 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
    * @param {CaridnalitySize} cardinality
    */
   cardinality!: typeof CARDINALITY_SIZES[number];
+
+  /**
+   * @param {boolean} isFact
+   */
+  isFact = true;
 
   /**
    * @property {string[]} metricIds - array of metric ids

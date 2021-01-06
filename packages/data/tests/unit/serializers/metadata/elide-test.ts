@@ -38,6 +38,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
               description: 'Table A',
               category: 'cat1',
               cardinality: 'SMALL',
+              isFact: true,
               metrics: {
                 edges: [
                   {
@@ -133,6 +134,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
               description: 'Table B',
               category: 'cat2',
               cardinality: 'MEDIUM',
+              isFact: true,
               metrics: {
                 edges: [
                   {
@@ -222,6 +224,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         description: 'Table A',
         category: 'cat1',
         cardinality: 'SMALL',
+        isFact: true,
         metricIds: ['tableA.m1'],
         dimensionIds: ['tableA.d1', 'tableA.d2'],
         timeDimensionIds: ['tableA.td1'],
@@ -233,6 +236,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         description: 'Table B',
         category: 'cat2',
         cardinality: 'MEDIUM',
+        isFact: true,
         metricIds: ['tableB.m2', 'tableB.m3'],
         dimensionIds: ['tableB.d1', 'tableB.d2'],
         timeDimensionIds: [],

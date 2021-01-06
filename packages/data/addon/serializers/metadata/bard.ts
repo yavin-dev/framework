@@ -181,6 +181,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         description: table.description,
         category: table.category,
         cardinality: allTableColumns.tableCardinality,
+        isFact: true,
         timeGrainIds: table.timeGrains.map(grain => grain.name),
         source: dataSourceName,
         metricIds: [...allTableColumns.tableMetricIds],

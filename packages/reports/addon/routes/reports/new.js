@@ -8,6 +8,7 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import { get } from '@ember/object';
 import config from 'ember-get-config';
+import { A } from '@ember/array';
 
 export default Route.extend({
   /**
@@ -113,10 +114,10 @@ export default Route.extend({
    */
   _getDefaultTable() {
     const { metadataService } = this;
-    let table = metadataService.all('table').findBy('id', config.navi.defaultDataTable);
+    const factTables = metadataService.all('table').filter(t => t.isFact === true);
+    let table = factTables.find(t => t.id === config.navi.defaultDataTable);
     if (!table) {
-      let tables = metadataService.all('table').sortBy('name');
-      table = tables[0];
+      table = A(factTables).sortBy('name')[0];
     }
     return table;
   }
