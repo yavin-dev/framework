@@ -59,6 +59,7 @@ type TableNode = {
   description: string;
   category: string;
   cardinality: typeof CARDINALITY_SIZES[number];
+  isFact: boolean;
   metrics: Connection<MetricNode>;
   dimensions: Connection<DimensionNode>;
   timeDimensions: Connection<TimeDimensionNode>;
@@ -95,6 +96,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         category: table.category,
         description: table.description,
         cardinality: table.cardinality,
+        isFact: table.isFact,
         metricIds: [],
         dimensionIds: [],
         timeDimensionIds: [],

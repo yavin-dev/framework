@@ -82,6 +82,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
       'description',
       'category',
       'cardinality',
+      'isFact',
       'metrics',
       'dimensions',
       'timeDimensions',
@@ -297,6 +298,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                 description: 'This is Table 0',
                 category: 'categoryOne',
                 cardinality: 'SMALL',
+                isFact: true,
                 metrics: {
                   edges: [
                     {

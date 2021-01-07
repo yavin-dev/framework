@@ -11,6 +11,7 @@ const fragment = gql`
     description
     category
     cardinality
+    isFact
     metrics {
       edges {
         node {

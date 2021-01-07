@@ -298,6 +298,7 @@ const Payload: RawEverythingPayload = {
 const TablePayloads: TableMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
+    isFact: true,
     category: 'General',
     description: 'Table Description',
     dimensionIds: ['dimensionOne', 'dimensionTwo'],
@@ -310,6 +311,7 @@ const TablePayloads: TableMetadataPayload[] = [
   },
   {
     cardinality: 'MEDIUM',
+    isFact: true,
     category: 'Special',
     description: "Second table's description",
     dimensionIds: ['dimensionTwo'],
