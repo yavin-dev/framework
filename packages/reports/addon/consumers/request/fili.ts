@@ -9,8 +9,10 @@ import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/r
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ReportModel from 'navi-core/models/report';
 import { getDataSource } from 'navi-data/utils/adapter';
-import DimensionMetadataModel from 'navi-data/addon/models/metadata/dimension';
+import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { Parameters } from 'navi-data/adapters/facts/interface';
+import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
+import { Grain } from 'navi-data/utils/date';
 
 export default class FiliConsumer extends ActionConsumer {
   @service requestActionDispatcher!: RequestActionDispatcher;
@@ -46,7 +48,8 @@ export default class FiliConsumer extends ActionConsumer {
 
       const { timeGrainColumn, dateTimeFilter } = request;
       if (timeGrainColumn === columnFragment && parameterKey === 'grain' && dateTimeFilter) {
-        const changeset = { parameters: { ...dateTimeFilter.parameters, [parameterKey]: parameterValue } };
+        const values = valuesForOperator(dateTimeFilter, parameterValue as Grain);
+        const changeset = { parameters: { ...dateTimeFilter.parameters, [parameterKey]: parameterValue }, values };
         this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
       }
     },

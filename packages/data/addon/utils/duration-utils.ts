@@ -6,7 +6,7 @@
 import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
 import Duration from './classes/duration';
-import { DateTimePeriod, getFirstDayEpochForGrain } from './date';
+import { DateTimePeriod, getFirstDayEpochForGrain, getPeriodForGrain } from './date';
 
 /**
  * Map of durations equivalent to a year for different time units
@@ -41,9 +41,10 @@ export default {
     const value = duration.getValue();
     const unit = duration.getUnit();
     assert('The duration unit must be defined', unit);
+    const period = getPeriodForGrain(unit);
     assert('The duration has a number value of units', typeof value === 'number');
     // Moment subtract mutates original date object hence the clone
-    return date.clone().subtract(value, unit);
+    return date.clone().subtract(value, period);
   },
 
   /**

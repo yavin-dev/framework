@@ -1,11 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
 import Duration from 'navi-data/utils/classes/duration';
+import { getPeriodForGrain } from 'navi-data/utils/date';
 
 /**
  * Converts a duration into string representing how long ago duration is from today
@@ -37,13 +38,15 @@ export function formatDurationFromCurrent(duration, timePeriod) {
     assert('Formatting hour the same way as we do day', durationUnit === 'day');
   }
 
+  const period = getPeriodForGrain(durationUnit);
+
   // Singular
   if (durationValue === 1) {
-    return `Last ${capitalize(durationUnit)}`;
+    return `Last ${capitalize(period)}`;
   }
 
   // Standard case
-  return `Last ${durationValue} ${capitalize(durationUnit)}s`;
+  return `Last ${durationValue} ${capitalize(period)}s`;
 }
 
 /**

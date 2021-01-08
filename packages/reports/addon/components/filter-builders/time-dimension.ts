@@ -7,7 +7,7 @@ import { assert, warn } from '@ember/debug';
 import { action, computed } from '@ember/object';
 import { capitalize } from '@ember/string';
 import moment from 'moment';
-import FilterFragment from 'navi-core/addon/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
 import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
@@ -38,7 +38,7 @@ type TimeDimensionFilterArgs = BaseFilterBuilderComponent['args'] & {
  * @param grain - the grain to turn into a period
  */
 type DateGrain = Exclude<DateTimePeriod, 'second' | 'minute' | 'hour'>;
-function intervalPeriodForGrain(grain: Grain): DateGrain {
+export function intervalPeriodForGrain(grain: Grain): DateGrain {
   if (grain === 'quarter') {
     return 'month';
   }
@@ -51,6 +51,123 @@ function intervalPeriodForGrain(grain: Grain): DateGrain {
   return period;
 }
 
+/**
+ * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
+ * e.g. ([P7D, current], day, in) -> [2020-01-01,2020-01-08]
+ * @param prevValues - the previous filter values
+ * @param dateTimePeriod - the time period being requested
+ * @param newOperator - the operator to build values for
+ */
+export function valuesForOperator(
+  filter: FilterFragment,
+  dateTimePeriod: Grain,
+  newOperator?: InternalOperatorType
+): TimeFilterValues {
+  newOperator = newOperator || internalOperatorForValues(filter);
+  const prevValues = filter.values as TimeFilterValues;
+  const startStr = prevValues[0] || 'P1D';
+  let endStr = prevValues[1];
+  if (!endStr) {
+    endStr = 'current';
+  }
+
+  if (newOperator === OPERATORS.current) {
+    return ['current', 'next'];
+  } else if (newOperator === OPERATORS.lookback) {
+    const interval = Interval.parseFromStrings(startStr, endStr);
+    const end = interval.asMomentsForTimePeriod(dateTimePeriod).end.utc(true);
+    let intervalTimePeriod = intervalPeriodForGrain(dateTimePeriod);
+    const nonAllGrain = dateTimePeriod === 'all' ? 'day' : dateTimePeriod;
+
+    let intervalValue;
+    if (
+      end.isSame(
+        moment()
+          .startOf(nonAllGrain)
+          .utc(true)
+      )
+    ) {
+      // end is 'current', get lookback amount
+      intervalValue = interval.diffForTimePeriod(intervalTimePeriod);
+    } else {
+      intervalValue = 1;
+    }
+
+    if (dateTimePeriod === 'quarter') {
+      // round to quarter
+      const quarters = Math.max(Math.floor(intervalValue / MONTHS_IN_QUARTER), 1);
+      intervalValue = quarters * MONTHS_IN_QUARTER;
+    }
+
+    const dateTimePeriodLabel = intervalTimePeriod[0].toUpperCase();
+    return [`P${intervalValue}${dateTimePeriodLabel}`, 'current'];
+  } else if (newOperator === OPERATORS.since) {
+    const interval = Interval.parseFromStrings(startStr, endStr);
+    const { start } = interval.asMomentsForTimePeriod(dateTimePeriod);
+    return [start.utc(true).toISOString()];
+  } else if (newOperator === OPERATORS.before) {
+    const interval = Interval.parseFromStrings(startStr, endStr);
+    const { end } = interval.asMomentsForTimePeriod(dateTimePeriod);
+    return [
+      end
+        .utc(true)
+        .subtract(1, getPeriodForGrain(dateTimePeriod))
+        .toISOString()
+    ];
+  } else if (newOperator === OPERATORS.dateRange) {
+    const interval = Interval.parseFromStrings(startStr, endStr);
+    const { start, end } = interval.asMomentsForTimePeriod(dateTimePeriod);
+    return [start.utc(true).toISOString(), end.utc(true).toISOString()];
+  }
+  warn(`No operator was found for the values '${prevValues.join(',')}'`, {
+    id: 'time-dimension-filter-builder-no-operator'
+  });
+
+  return [];
+}
+
+export function internalOperatorForValues(filter: FilterFragment): InternalOperatorType {
+  const { values, operator } = filter;
+  const [startStr, endStr] = values as string[];
+
+  if (!startStr && !endStr && operator === 'bet') {
+    // there's no values
+    return OPERATORS.dateRange;
+  } else if (!(startStr && endStr)) {
+    // there's only one value
+    if (operator === 'gte') {
+      return OPERATORS.since;
+    } else if (operator === 'lte') {
+      return OPERATORS.before;
+    }
+  }
+
+  const interval = Interval.parseFromStrings(startStr, endStr);
+  const { start, end } = interval.asStrings();
+  const [lookbackDuration, lookbackGrain] = parseDuration(start) || [];
+
+  let internalId: InternalOperatorType;
+  if (start === 'current' && end === 'next') {
+    internalId = OPERATORS.current;
+  } else if (
+    lookbackDuration &&
+    lookbackGrain &&
+    ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
+    end === 'current'
+  ) {
+    internalId = OPERATORS.lookback;
+  } else if (moment.isMoment(interval['_start']) && end === 'current') {
+    internalId = OPERATORS.since;
+  } else if (moment.isMoment(interval['_start']) && moment.isMoment(interval['_end'])) {
+    internalId = OPERATORS.dateRange;
+  } else {
+    internalId = OPERATORS.dateRange;
+  }
+
+  assert(`A component for ${operator} [${values.join(',')}] exists`, internalId);
+  return internalId;
+}
+
 export default class TimeDimensionFilterBuilder extends BaseFilterBuilderComponent<TimeDimensionFilterArgs> {
   @computed('args.filter.parameters.grain')
   get timeGrainName() {
@@ -58,7 +175,7 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
   }
 
   /**
-   * list of valid operators for a date-time filter
+   * list of valid operators for a time-dimension filter
    */
   @computed('args.filter.parameters.grain', 'timeGrainName')
   get supportedOperators(): InteralFilterBuilderOperators[] {
@@ -97,112 +214,15 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
   }
 
   /**
-   * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
-   * e.g. ([P7D, current], day, in) -> [2020-01-01,2020-01-08]
-   * @param prevValues - the previous filter values
-   * @param dateTimePeriod - the time period being requested
-   * @param newOperator - the operator to build values for
-   */
-  valuesForOperator(prevValues: TimeFilterValues, dateTimePeriod: Grain, newOperator: InternalOperatorType) {
-    const startStr = prevValues[0] || 'P1D';
-    let endStr = prevValues[1];
-    if (!endStr) {
-      endStr = 'current';
-    }
-
-    if (newOperator === OPERATORS.current) {
-      return ['current', 'next'];
-    } else if (newOperator === OPERATORS.lookback) {
-      const interval = Interval.parseFromStrings(startStr, endStr);
-      const end = interval.asMomentsForTimePeriod(dateTimePeriod).end.utc(true);
-      let intervalTimePeriod = intervalPeriodForGrain(dateTimePeriod);
-      const nonAllGrain = dateTimePeriod === 'all' ? 'day' : dateTimePeriod;
-
-      let intervalValue;
-      if (
-        end.isSame(
-          moment()
-            .startOf(nonAllGrain)
-            .utc(true)
-        )
-      ) {
-        // end is 'current', get lookback amount
-        intervalValue = interval.diffForTimePeriod(intervalTimePeriod);
-      } else {
-        intervalValue = 1;
-      }
-
-      if (dateTimePeriod === 'quarter') {
-        // round to quarter
-        const quarters = Math.max(Math.floor(intervalValue / MONTHS_IN_QUARTER), 1);
-        intervalValue = quarters * MONTHS_IN_QUARTER;
-      }
-
-      const dateTimePeriodLabel = intervalTimePeriod[0].toUpperCase();
-      return [`P${intervalValue}${dateTimePeriodLabel}`, 'current'];
-    } else if (newOperator === OPERATORS.since) {
-      const interval = Interval.parseFromStrings(startStr, endStr);
-      const { start } = interval.asMomentsForTimePeriod(dateTimePeriod);
-      return [start.utc(true).toISOString()];
-    } else if (newOperator === OPERATORS.before) {
-      const interval = Interval.parseFromStrings(startStr, endStr);
-      const { end } = interval.asMomentsForTimePeriod(dateTimePeriod);
-      return [
-        end
-          .utc(true)
-          .subtract(1, getPeriodForGrain(dateTimePeriod))
-          .toISOString()
-      ];
-    } else if (newOperator === OPERATORS.dateRange) {
-      const interval = Interval.parseFromStrings(startStr, endStr);
-      const { start, end } = interval.asMomentsForTimePeriod(dateTimePeriod);
-      return [start.utc(true).toISOString(), end.utc(true).toISOString()];
-    }
-    warn(`No operator was found for the values '${prevValues.join(',')}'`, {
-      id: 'time-dimension-filter-builder-no-operator'
-    });
-
-    return [];
-  }
-
-  /**
    * Finds the appropriate interval operator to modify an existing interval
-   * @param interval - the interval to choose an operator for
    * @returns the best supported operator for this interval
    */
   @computed('args.filter.{values,operator}', 'supportedOperators')
   get selectedOperator(): InteralFilterBuilderOperators {
-    const { values, operator } = this.args.filter;
-    const [startStr, endStr] = values;
-    if (!(startStr && endStr)) {
-      const filterValueBuilder = this.supportedOperators.find(({ id }) => id === operator);
-      assert(`A filter value component for ${operator} operator exists`, filterValueBuilder);
-      return filterValueBuilder;
-    }
-    const interval = Interval.parseFromStrings(startStr, endStr);
-    const { start, end } = interval.asStrings();
-
-    const [lookbackDuration, lookbackGrain] = parseDuration(start) || [];
-    let operatorId: InternalOperatorType;
-    if (start === 'current' && end === 'next') {
-      operatorId = OPERATORS.current;
-    } else if (
-      lookbackDuration &&
-      lookbackGrain &&
-      ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
-      end === 'current'
-    ) {
-      operatorId = OPERATORS.lookback;
-    } else if (moment.isMoment(interval['_start']) && end === 'current') {
-      operatorId = OPERATORS.since;
-    } else if (moment.isMoment(interval['_start']) && moment.isMoment(interval['_end'])) {
-      operatorId = OPERATORS.dateRange;
-    } else {
-      operatorId = OPERATORS.dateRange;
-    }
+    const operatorId = internalOperatorForValues(this.args.filter);
 
     const filterValueBuilder = this.supportedOperators.find(({ internalId }) => internalId === operatorId);
-    assert(`A filter value component for ${operator} operator exists`, filterValueBuilder);
+    assert(`A filter value component for ${operatorId} operator exists`, filterValueBuilder);
     return filterValueBuilder;
   }
 
@@ -217,12 +237,10 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
       return;
     }
 
-    const {
-      parameters: { grain },
-      values
-    } = this.args.filter;
+    const { filter } = this.args;
+    const { grain } = filter.parameters;
 
-    const newInterval = this.valuesForOperator(values as TimeFilterValues, grain as Grain, operator.internalId);
+    const newInterval = valuesForOperator(filter, grain as Grain, operator.internalId);
 
     this.args.onUpdateFilter({
       operator: operator.id,

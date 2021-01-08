@@ -134,7 +134,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
     assert.deepEqual(
       dispatchedActionArgs,
-      [request.dateTimeFilter, { parameters: { grain: 'week' } }],
+      [request.dateTimeFilter, { parameters: { grain: 'week' }, values: ['P1W', 'current'] }],
       'UPDATE_FILTER is dispatched with the updated grain parameter'
     );
 
