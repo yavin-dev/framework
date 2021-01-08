@@ -8,11 +8,14 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    const id = this.table?.id;
-    return `${id ? id + '.' : ''}timeDimension${this.index}`;
+    return `${this.table?.id}.timeDimension${this.index}`;
   },
 
   name() {
+    return `timeDimension${this.index}`;
+  },
+
+  friendlyName() {
     return `Time Dimension ${this.index}`;
   },
 

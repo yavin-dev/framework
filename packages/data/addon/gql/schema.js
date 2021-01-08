@@ -27,6 +27,7 @@ const schema = gql`
   type Table implements Node {
     id: DeferredID!
     name: String
+    friendlyName: String
     isFact: Boolean
     description: String
     category: String
@@ -74,6 +75,7 @@ const schema = gql`
   interface ColumnInterface {
     id: DeferredID!
     name: String
+    friendlyName: String
     description: String
     table: Table
     category: String
@@ -86,6 +88,7 @@ const schema = gql`
   type Metric implements Node & ColumnInterface {
     id: DeferredID!
     name: String
+    friendlyName: String
     description: String
     table: Table
     category: String
@@ -106,6 +109,7 @@ const schema = gql`
   type Dimension implements Node & ColumnInterface {
     id: DeferredID!
     name: String!
+    friendlyName: String
     description: String
     table: Table
     category: String
@@ -121,6 +125,7 @@ const schema = gql`
   type TimeDimension implements Node & ColumnInterface {
     id: DeferredID!
     name: String!
+    friendlyName: String
     description: String
     table: Table
     category: String

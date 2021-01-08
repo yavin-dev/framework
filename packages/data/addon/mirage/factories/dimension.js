@@ -9,11 +9,14 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    const id = this.table?.id;
-    return `${id ? id + '.' : ''}dimension${this.index}`;
+    return `${this.table?.id}.dimension${this.index}`;
   },
 
   name() {
+    return `dimension${this.index}`;
+  },
+
+  friendlyName() {
     return `Dimension ${this.index}`;
   },
 
