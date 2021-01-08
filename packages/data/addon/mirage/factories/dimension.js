@@ -9,7 +9,6 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    console.log(`${this.table?.id}.dimension${this.index}`);
     return `${this.table?.id}.dimension${this.index}`;
   },
 

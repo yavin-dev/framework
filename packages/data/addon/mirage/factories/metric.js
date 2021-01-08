@@ -8,7 +8,6 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    console.log(`${this.table?.id}.metric${this.index}`);
     return `${this.table?.id}.metric${this.index}`;
   },
 
