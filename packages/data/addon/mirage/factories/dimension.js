@@ -9,16 +9,16 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    const id = this.table?.id;
-    return `${id ? id + '.' : ''}dimension${this.index}`;
+    console.log(`${this.table?.id}.dimension${this.index}`);
+    return `${this.table?.id}.dimension${this.index}`;
   },
 
   name() {
-    return `Dimension ${this.index}`;
+    return `dimension${this.index}`;
   },
 
   friendlyName() {
-    return `Friendly Dimension ${this.index}`;
+    return `Dimension ${this.index}`;
   },
 
   description() {

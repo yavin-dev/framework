@@ -8,16 +8,16 @@ export default Factory.extend({
   index: i => i,
 
   id() {
-    const id = this.table?.id;
-    return `${id ? id + '.' : ''}metric${this.index}`;
+    console.log(`${this.table?.id}.metric${this.index}`);
+    return `${this.table?.id}.metric${this.index}`;
   },
 
   name() {
-    return `Metric ${this.index}`;
+    return `metric${this.index}`;
   },
 
   friendlyName() {
-    return `Friendly Metric ${this.index}`;
+    return `Metric ${this.index}`;
   },
 
   description() {

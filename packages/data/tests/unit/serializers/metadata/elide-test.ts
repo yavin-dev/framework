@@ -423,7 +423,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
         )
       },
-      'Friendly Table 0'
+      'Table 0'
     );
   });
 

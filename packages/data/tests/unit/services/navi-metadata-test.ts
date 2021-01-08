@@ -235,11 +235,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
       metricOne instanceof MetricMetadataModel,
       '`getById` returns a loaded instance of `MetricMetadataModel` when requesting `metric` type'
     );
-    assert.equal(
-      metricOne?.name,
-      'Friendly Metric 1',
-      '`getById returns a metadata model given a type, id, & datasource'
-    );
+    assert.equal(metricOne?.name, 'Metric 1', '`getById returns a metadata model given a type, id, & datasource');
 
     const revenue = this.service.getById('metric', 'revenue', 'bardTwo');
     assert.ok(

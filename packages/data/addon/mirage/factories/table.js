@@ -12,11 +12,11 @@ export default Factory.extend({
   },
 
   name() {
-    return `Table ${this.index}`;
+    return `table${this.index}`;
   },
 
   friendlyName() {
-    return `Friendly Table ${this.index}`;
+    return `Table ${this.index}`;
   },
 
   isFact: true,
