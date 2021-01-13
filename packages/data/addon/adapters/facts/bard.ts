@@ -67,11 +67,13 @@ export function serializeFilters(filters: Filter[]): string {
       if (operator === 'isnull') {
         if (values[0] === true) {
           operator = 'in';
-          serializedValues = '""';
-        } else if (values[0] == false) {
+        } else if (values[0] === false) {
           operator = 'notin';
-          serializedValues = '""';
+        } else {
+          throw new FactAdapterError(`isnull operator can only have boolean values, found: ${value[0]}`);
         }
+        serializedValues = '""';
+
       }
 
       return `${formattedFieldName}-${operator}[${serializedValues}]`;
