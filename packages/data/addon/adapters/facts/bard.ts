@@ -70,7 +70,7 @@ export function serializeFilters(filters: Filter[]): string {
         } else if (values[0] === false) {
           operator = 'notin';
         } else {
-          throw new FactAdapterError(`isnull operator can only have boolean values, found: ${value[0]}`);
+          throw new FactAdapterError(`isnull operator can only have boolean values, found: ${values[0]}`);
         }
         serializedValues = '""';
 
