@@ -1,38 +1,45 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="filter-values--date-range-input" ...attributes>
-  {{#if @isCollapsed}}
-    {{#if (and this.startDate this.endDate)}}
-      {{this.dateRange}}
-    {{else}}
-      <FilterValues::InvalidValue/>
-    {{/if}}
+{{#if @isCollapsed}}
+  {{#if (and this.startDate this.endDate)}}
+    {{this.dateRange}}
   {{else}}
+    <FilterValues::InvalidValue/>
+  {{/if}}
+{{else}}
+  <div class="filter-values--date-range-input row" ...attributes>
     <DropdownDatePicker
       @dateTimePeriod={{this.calendarDateTimePeriod}}
       @date={{this.startDate}}
       @onUpdate={{this.setTimeStartMoment}}
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value"
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value col-3-7"
     >
-      {{#if this.startDate}}
-        {{this.startDateText}}
-      {{else}}
-        <span class="date__placeholder">{{this.startPlaceholder}}</span>
-      {{/if}}
+      <DenaliInput 
+        @size="medium"
+        @iconBack="calendar-event"
+        @iconBackClass="is-brand-300"
+        value={{this.startDateText}} 
+        readonly={{true}} 
+        placeholder={{this.startPlaceholder}}
+        
+      />
     </DropdownDatePicker>
 
-    <span class="filter-values--date-range-input__separator">and</span>
+    <span class="filter-values--date-range-input__separator flex justify-content-center align-items-center col-1-7">and</span>
 
     <DropdownDatePicker
       @dateTimePeriod={{this.calendarDateTimePeriod}}
       @date={{this.endDate}}
       @onUpdate={{this.setTimeEndMoment}}
-      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value"
+      class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value col-3-7"
     >
-      {{#if this.endDate}}
-        {{this.endDateText}}
-      {{else}}
-        <span class="date__placeholder">{{this.endPlaceholder}}</span>
-      {{/if}}
+      <DenaliInput 
+        @size="medium"
+        @iconBack="calendar-event"
+        @iconBackClass="is-brand-300"
+        value={{this.endDateText}} 
+        readonly={{true}} 
+        placeholder={{this.endPlaceholder}}
+      />
     </DropdownDatePicker>
-  {{/if}}
-</div>
+  </div>
+{{/if}}

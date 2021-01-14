@@ -49,6 +49,6 @@ module('Acceptance | custom reports', function(hooks) {
     // Add filter
     await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', '1');
-    assert.dom('.filter-builder-dimension__values').containsText('1', 'A filter value can be selected');
+    assert.dom('.filter-values--dimension-select__trigger').containsText('1', 'A filter value can be selected');
   });
 });

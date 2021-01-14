@@ -4,7 +4,7 @@ import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 //@ts-ignore
-import { clickTrigger, nativeMouseUp } from '../../helpers/ember-power-select';
+import { nativeMouseUp } from '../../helpers/ember-power-select';
 import StoreService from 'ember-data/store';
 import { TestContext as Context } from 'ember-test-helpers';
 import FragmentFactory from 'navi-core/services/fragment-factory';
@@ -103,7 +103,7 @@ module('Integration | Component | filter collection', function(hooks) {
     });
     await render(TEMPLATE);
 
-    await clickTrigger('.filter-builder-dimension__operator');
+    await click('.filter-builder__operator-trigger');
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 

@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find, findAll } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { A as arr } from '@ember/array';
 
 module('Integration | Component | visualization config/table', function(hooks) {
@@ -116,9 +116,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
       .isNotVisible('The subtotal toggle is not visible when there are no dimension groupbys');
 
     const columns = arr([
-      { cid: 'cid_dateTime', field: 'dateTime' },
-      { cid: 'cid_os', field: 'os' },
-      { cid: 'cid_age', field: 'age' }
+      { cid: 'cid_dateTime', field: 'dateTime', displayName: 'Date Time' },
+      { cid: 'cid_os', field: 'os', OS: 'Operating System' },
+      { cid: 'cid_age', field: 'age', displayName: 'Age' }
     ]);
     this.set('request', {
       columns: arr([{ cid: 'cid_metric', type: 'metric' }, ...columns]),
@@ -135,9 +135,8 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     //click the subtotal toggle
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');
-
     assert
-      .dom('.table-config__subtotal-dimension-select')
+      .dom('.table-config__subtotal-dimension-trigger')
       .isVisible('The dimension dropdown is visible when subtotal is toggled on');
 
     this.set('onUpdateConfig', result => {
@@ -148,14 +147,13 @@ module('Integration | Component | visualization config/table', function(hooks) {
       );
     });
 
-    await toggleSelector('.table-config__subtotal-dimension-select');
-    await toggleOption(find('.subtotal-dimension-select__options .ember-power-select-option[data-option-index="2"]'));
+    await selectChoose('.table-config__subtotal-dimension-trigger', 'Age');
 
     //toggle off subtotal
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');
 
     assert
-      .dom('.table-config__subtotal-dimension-select')
+      .dom('.table-config__subtotal-dimension-trigger')
       .isNotVisible('The dimension dropdown is hidden when subtotal is toggled off');
 
     config.navi.FEATURES.enableTotals = originalFlag;
@@ -188,13 +186,9 @@ module('Integration | Component | visualization config/table', function(hooks) {
       .dom('.table-config__total-toggle-button--subtotal.x-toggle-component .x-toggle-container-checked')
       .isVisible('The subtotal toggle button is checked when the flag in options has a value');
 
-    assert.equal(
-      find('.table-config__subtotal-dimension-select')
-        .textContent.replace(/\s+/g, ' ')
-        .trim(),
-      'by Operating System',
-      'The selected dimension is set when subtotal in options has a value'
-    );
+    assert
+      .dom('.table-config__subtotal-dimension-trigger')
+      .hasText(' Operating System', 'The selected dimension is set when subtotal in options has a value');
 
     config.navi.FEATURES.enableTotals = originalFlag;
   });

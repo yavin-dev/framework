@@ -33,8 +33,10 @@ module('Acceptance | date filter', function(hooks) {
         .dom('.filter-builder__subject')
         .hasText(`Date Time (${grainId})`, `The filter is updated to the ${grainId} grain`);
 
-      await selectChoose('.filter-builder__select-trigger', 'Between');
-      assert.dom('.filter-builder__operator').hasText('Between', 'Between is the selected filter builder operator');
+      await selectChoose('.filter-builder__operator-trigger', 'Between');
+      assert
+        .dom('.filter-builder__operator-trigger')
+        .hasText('Between', 'Between is the selected filter builder operator');
 
       await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Low value calendar opened');
@@ -42,29 +44,31 @@ module('Acceptance | date filter', function(hooks) {
       await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('High value calendar opened');
 
-      await selectChoose('.filter-builder__select-trigger', 'Current');
+      await selectChoose('.filter-builder__operator-trigger', 'Current');
       assert
-        .dom('.filter-builder__operator')
+        .dom('.filter-builder__operator-trigger')
         .hasText(`Current ${capitalize(grainId)}`, 'Current is the selected filter builder operator');
 
       assert.dom('.filter-values--current-period').containsText(`The current ${grainId}`, `Shows current ${grain}`);
 
-      await selectChoose('.filter-builder__select-trigger', 'In The Past');
+      await selectChoose('.filter-builder__operator-trigger', 'In The Past');
       assert
-        .dom('.filter-builder__operator')
+        .dom('.filter-builder__operator-trigger')
         .hasText('In The Past', 'In The Past is the selected filter builder operator');
 
       await clickTrigger('.filter-values--lookback-input .ember-basic-dropdown-trigger');
-      assert.dom('.navi-basic-dropdown-content').exists('Preset dropdown opened');
+      assert.dom('.filter-values--lookback-dropdown').exists('Preset dropdown opened');
 
-      await selectChoose('.filter-builder__select-trigger', 'Since');
-      assert.dom('.filter-builder__operator').hasText('Since', 'Since is the selected filter builder operator');
+      await selectChoose('.filter-builder__operator-trigger', 'Since');
+      assert.dom('.filter-builder__operator-trigger').hasText('Since', 'Since is the selected filter builder operator');
 
       await clickTrigger('.filter-values--date-input__trigger .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Calendar opened');
 
-      await selectChoose('.filter-builder__select-trigger', 'Before');
-      assert.dom('.filter-builder__operator').hasText('Before', 'Before is the selected filter builder operator');
+      await selectChoose('.filter-builder__operator-trigger', 'Before');
+      assert
+        .dom('.filter-builder__operator-trigger')
+        .hasText('Before', 'Before is the selected filter builder operator');
 
       await clickTrigger('.filter-values--date-input__trigger .ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Calendar opened');

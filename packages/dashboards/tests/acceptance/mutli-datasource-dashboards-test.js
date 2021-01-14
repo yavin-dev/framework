@@ -24,19 +24,19 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.dashboard-filters__toggle');
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject').map(el => el.textContent.trim()),
       ['Age (id)', 'Container (id)'],
       'Dimensions are properly labeled in filters'
     );
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__operator').map(el => el.textContent.trim()),
+      findAll('.filter-builder__operator-trigger').map(el => el.textContent.trim()),
       ['Equals', 'Not Equals'],
       'Dimension filter operators are shown correctly'
     );
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__values').map(el =>
+      findAll('.filter-values--dimension-select__trigger').map(el =>
         [
           ...el.querySelectorAll(
             '.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)'
@@ -53,21 +53,21 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
 
     await visit('/dashboards/new');
     await click('.add-widget button');
-    await selectChoose('.report-select', 'Report 12');
+    await selectChoose('.add-widget-modal__report-trigger', 'Report 12');
     await click('.add-to-dashboard');
 
     assert.dom('.navi-widget__header').exists({ count: 1 }, 'One widget loaded');
     assert.dom('.c3-chart-component').exists({ count: 1 }, 'One visualization loaded');
 
     await click('.add-widget button');
-    await selectChoose('.report-select', 'Create new...');
+    await selectChoose('.add-widget-modal__report-trigger', 'Create new...');
     await click('.add-to-dashboard');
 
-    await selectChoose('.navi-table-select__dropdown', 'Inventory');
+    await selectChoose('.navi-table-select__trigger', 'Inventory');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'Current');
+    await selectChoose('.filter-builder__operator-trigger', 'Current');
     await clickItem('dimension', 'Container');
     await clickItem('metric', 'Used Amount');
 
@@ -82,7 +82,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.dashboard-filters__toggle');
     await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Container');
-    await selectChoose('.filter-builder-dimension__values', '1');
+    await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     const widgetsWithFilterWarning = () =>
       findAll('.navi-widget__filter-errors-icon').map(el => el.closest('.navi-widget__title').textContent.trim());
@@ -96,7 +96,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     //add another filter for other datasource
     await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Age');
-    await selectChoose(findAll('.filter-builder-dimension__values')[1], '1');
+    await selectChoose(findAll('.filter-values--dimension-select__trigger')[1], '1');
 
     assert.deepEqual(
       widgetsWithFilterWarning(),

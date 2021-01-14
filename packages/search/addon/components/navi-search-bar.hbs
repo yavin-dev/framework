@@ -6,8 +6,8 @@
     <NaviIcon @icon="search" class="navi-search-bar__icon" />
   </div>
   {{#if (and this.launchQuery.lastSuccessful.value (not-eq this.searchQuery ""))}}
-    <dd.content @class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">
+    <dd.Content @class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">
       <NaviSearchResult::Wrapper @searchResults={{this.launchQuery.lastSuccessful.value}} @closeResults={{fn dd.actions.close this.event}} class="navi-search-results__item navi-search-results--box"/>
-    </dd.content>
+    </dd.Content>
   {{/if}}
 </BasicDropdown>

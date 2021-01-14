@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import $ from 'jquery';
 import { render, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
@@ -60,14 +59,13 @@ module('Integration | Component | filter values/value input', function(hooks) {
   });
 
   test('error state', function(this: TestContext, assert) {
-    assert.expect(3);
-
-    assert.notOk($('.filter-values--value-input--error').is(':visible'), 'The input should not have error state');
+    assert.dom('.input').doesNotHaveClass('is-error', 'The input should not have error state');
 
     this.set('filter', {
       validations: { attrs: { values: { isInvalid: true } } }
     });
-    assert.ok($('.filter-values--value-input--error').is(':visible'), 'The input should have error state');
+
+    assert.dom('.input').hasClass('is-error', 'The input should have error state');
 
     this.set('isCollapsed', true);
     assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');

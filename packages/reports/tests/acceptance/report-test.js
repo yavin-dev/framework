@@ -119,9 +119,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItemFilter('dimension', 'Operating System');
     await clickItem('metric', 'Ad Clicks');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
 
-    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value');
 
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
@@ -151,10 +151,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
 
     //set the filter interval
-    await selectChoose('.filter-builder__select-trigger', 'Between');
-    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
+    await clickTrigger('.filter-values--date-range-input__low-value');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
 
     await click('.navi-report__copy-api-btn .get-api__btn');
@@ -243,7 +243,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     //Add metric and save the report
     await clickItem('metric', 'Page Views');
@@ -302,7 +302,7 @@ module('Acceptance | Navi Report', function(hooks) {
     //Add a metrics and save the report
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
     await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__save-btn');
 
@@ -1166,7 +1166,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
 
     await click('.navi-report__run-btn');
 
@@ -1452,7 +1452,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(5);
     await visit('/reports/new');
 
-    await selectChoose('.navi-table-select__dropdown', 'Protected Table');
+    await selectChoose('.navi-table-select__trigger', 'Protected Table');
 
     await click('.navi-report__run-btn');
 
@@ -1461,7 +1461,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(!!findAll('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
 
     await click('.navi-report__cancel-btn');
-    await selectChoose('.navi-table-select__dropdown', 'Network');
+    await selectChoose('.navi-table-select__trigger', 'Network');
     await click('.navi-report__run-btn');
     await click('.visualization-toggle__option[title="Data Table"]');
 
@@ -1701,7 +1701,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     await clickItemFilter('dimension', 'Operating System');
-    await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Empty');
+    await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator-trigger', 'Is Empty');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -1717,7 +1717,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1');
 
     await clickItemFilter('dimension', 'Operating System');
-    await selectChoose('.filter-collection__row:last-of-type .filter-builder-dimension__operator', 'Is Not Empty');
+    await selectChoose('.filter-collection__row:last-of-type .filter-builder__operator-trigger', 'Is Not Empty');
     await click('.navi-report__run-btn');
 
     assert.ok(
@@ -1742,28 +1742,32 @@ module('Acceptance | Navi Report', function(hooks) {
     await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
     await click('.navi-report__run-btn');
 
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'Start Month is changed to Jan 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('Jan 2015', 'End Month is changed to Jan 2015');
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 2015', 'Start Month is changed to Jan 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Jan 2015', 'End Month is changed to Jan 2015');
 
     await selectChoose('.navi-column-config-item__parameter', 'Day');
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Jan 01, 2015', 'Switching to day time period preserves date to start of month');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 01, 2015', 'Switching to day time period preserves date to start of month');
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Jan 31, 2015', 'Switching to day time period preserves date to end of month');
 
     await selectChoose('.navi-column-config-item__parameter', 'Week');
     await click('.navi-report__run-btn');
 
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Dec 29, 2014', 'Switching to week casts the date to match the start of the date time period');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Dec 29, 2014', 'Switching to week casts the date to match the start of the date time period');
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
   });
 
   test('Date picker change interval type', async function(assert) {
@@ -1771,24 +1775,30 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1');
 
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Nov 09, 2015', 'The start date is Nov 09, 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('Nov 15, 2015', 'The end date is Nov 15, 2015');
-
-    await selectChoose('.filter-builder__select-trigger', 'Between');
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Nov 09, 2015', 'The start date is Nov 09, 2015');
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Nov 15, 2015', 'The end date is still Nov 15, 2015');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Nov 15, 2015', 'The end date is Nov 15, 2015');
 
-    await selectChoose('.filter-builder__select-trigger', 'Since');
-    assert.dom('.filter-values--date-input__trigger').hasText('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Nov 15, 2015', 'The end date is still Nov 15, 2015');
 
-    await selectChoose('.filter-builder__select-trigger', 'Current Day');
+    await selectChoose('.filter-builder__operator-trigger', 'Since');
+    assert
+      .dom('.filter-values--date-input__trigger input')
+      .hasValue('Nov 09, 2015', 'The start date is still Nov 09, 2015');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Current Day');
 
     const today = moment().format('MMM DD, YYYY');
-    assert.dom('.filter-values--current-period').hasText(`The current day. (${today})`, 'The current day');
+    assert.dom('.filter-builder__values').hasText(`The current day. (${today})`, 'The current day');
   });
 
   test('Date picker all timegrain', async function(assert) {
@@ -1806,24 +1816,28 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('.ember-power-calendar-selector-month:contains(May)')[0]);
 
-    assert.dom('.filter-values--date-range-input__low-value').hasText('Jan 2015', 'The start date is month Jan 2015');
-    assert.dom('.filter-values--date-range-input__high-value').hasText('May 2015', 'The end date is month May 2015');
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 2015', 'The start date is month Jan 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('May 2015', 'The end date is month May 2015');
 
     // select 'all' grain
     await selectChoose('.navi-column-config-item__parameter', 'All');
 
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Jan 01, 2015', 'The start date is beginning of Jan, 2015');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 01, 2015', 'The start date is beginning of Jan, 2015');
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('May 31, 2015', 'The end date is end of May, 2015');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('May 31, 2015', 'The end date is end of May, 2015');
 
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click('.ember-power-calendar-day[data-date="2015-05-30"]');
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
   });
 
   skip("Date picker advanced doesn't modify interval", async function(assert) {
@@ -1831,7 +1845,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.expect(6);
     await visit('/reports/1/view');
 
-    await selectChoose('.filter-builder__select-trigger', 'Advanced');
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
     const startInput = findAll('.filter-values--advanced-interval-input__value')[0];
     const endInput = findAll('.filter-values--advanced-interval-input__value')[1];
     assert.dom(startInput).hasValue('P7D', 'The start input is not modified');
@@ -1873,23 +1887,23 @@ module('Acceptance | Navi Report', function(hooks) {
 
   test('Filter with large cardinality dimensions value selection works', async function(assert) {
     assert.expect(2);
-    let option,
-      dropdownSelector = '.filter-values--dimension-select__trigger';
+    let option;
+    const dropdownSelector = '.filter-values--dimension-select__trigger';
     await visit('/reports/new');
 
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
 
-    await selectChoose('.navi-table-select__dropdown', 'Table A');
+    await selectChoose('.navi-table-select__trigger', 'Table A');
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
 
-    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
 
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
@@ -1906,7 +1920,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // Simulate typing a search which pulls large cardinality dimension values from the server
     await selectSearch(dropdownSelector, option.toLowerCase().substring(0, 3));
-    await click($('.filter-values--dimension-select__dropdown .ember-power-select-option:contains(' + option + ')')[0]);
+    await click($(`.filter-values--dimension-select__dropdown .ember-power-select-option:contains('${option}')`)[0]);
 
     // Check if the selected item is still selected after the search
     assert.ok(
@@ -1927,9 +1941,9 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
 
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'Between');
 
-    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value');
 
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
@@ -2068,8 +2082,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.report-builder__metric-selector.report-builder__container--disabled')
       .isVisible('Metric selector is disabled during run');
     assert
-      .dom('.report-builder__container--table.report-builder__container--disabled')
-      .isVisible('Table selector is disabled during run');
+      .dom('.navi-table-select__trigger')
+      .hasAttribute('aria-disabled', 'true', 'Table selector is disabled during run');
     assert
       .dom('.report-builder__container--filters.report-builder__container--disabled')
       .isVisible('Filter collection is disabled during run');
@@ -2102,8 +2116,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.report-builder__metric-selector')
       .doesNotHaveClass('report-builder__container--disabled', 'Metric selector is enabled after run');
     assert
-      .dom('.report-builder__container--table')
-      .doesNotHaveClass('report-builder__container--disabled', 'Table selector is enabled after run');
+      .dom('.navi-table-select__trigger')
+      .doesNotHaveAttribute('aria-disabled', 'true', 'Table selector is enabled after run');
     assert
       .dom('.report-builder__container--filters')
       .doesNotHaveClass('report-builder__container--disabled', 'Filter collection is enabled after run');

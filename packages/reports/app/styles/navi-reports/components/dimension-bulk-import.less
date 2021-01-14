@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -24,12 +24,7 @@
     .last-of-group-form-element;
 
     .item {
-      .navi-pill;
-
-      .remove-pill {
-        .navi-pill-remove-button;
-        user-select: none;
-      }
+      display: inline-block;
     }
   }
 
@@ -50,7 +45,11 @@
   }
 
   .secondary-header {
-    .ellipsed-text;
+    display: inline-block;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .pasted-input {

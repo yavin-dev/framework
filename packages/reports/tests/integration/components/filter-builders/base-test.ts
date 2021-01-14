@@ -35,7 +35,7 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       .dom('.filter-builder__subject')
       .hasText(this.filter.displayName, "Subject's name is display in filter builder");
     assert
-      .dom('.filter-builder__operator .ember-power-select-selected-item')
+      .dom('.filter-builder__operator-trigger')
       .hasText('Equals', 'The filter current operator is selected by default');
 
     assert.dom('.test-filter-value-one').isVisible('The component specified by the filter operator is rendered');

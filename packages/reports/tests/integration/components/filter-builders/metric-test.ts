@@ -38,7 +38,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
       .hasText(this.filter.displayName, "Subject's name is display in filter builder");
 
     assert
-      .dom('.filter-builder__operator .ember-power-select-selected-item')
+      .dom('.filter-builder__operator-trigger')
       .hasText('Greater than (>)', 'The filter current operator is selected by default');
     assert.dom('.filter-values--value-input').hasValue('30', 'The filter values are rendered correctly');
 

@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="dimension-bulk-import-simple" ...attributes>
   <div class="navi-modal-header">
     <div class="text-capitalize primary-header">Paste Import</div>
@@ -12,7 +12,7 @@
       @items={{this.splitValues}}
       as |dimVal|
     >
-      {{dimVal}}
+      <DenaliTag>{{dimVal}}</DenaliTag>
     </PaginatedScrollList>
   </div>
   <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--raw-value">
@@ -22,7 +22,7 @@
       @items={{this.unsplitValue}}
       as |dimVal|
     >
-      {{dimVal}}
+      <DenaliTag>{{dimVal}}</DenaliTag>
     </PaginatedScrollList>
   </div>
 

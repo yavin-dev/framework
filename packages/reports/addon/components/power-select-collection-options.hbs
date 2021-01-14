@@ -1,0 +1,40 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<ul class="power-select-collection-options" role="listbox" aria-controls="ember-power-select-trigger-{{@select.uniqueId}}" {{did-insert this.addHandlers}} {{will-destroy this.removeHandlers}} ...attributes>
+  {{#if @select.loading}}
+    {{#if @loadingMessage}}
+      <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{@loadingMessage}}</li>
+    {{/if}}
+  {{else}}
+    {{#if @extra.allowClear}}
+      <li class="ember-power-select-option ember-power-select-option--clear" {{on "mouseup" this.clear}} role="option">Clear Selection</li>
+    {{/if}}
+  {{/if}}
+  <div class="ember-collection-options" style={{html-safe (concat "position:relative;width:100%;height:" this._height "px")}}>
+    <EmberCollection
+      @buffer={{10}}
+      @items={{this.items}}
+      @cell-layout={{percentage-columns-layout this.items.length this.columns this.itemHeight}}
+      as |opt|
+    >  
+      {{#if opt.groupName}}
+        <li class="ember-power-select-group" aria-disabled={{if @group.disabled "true"}} role="option">
+          <div class="item-row">
+            <div class="item-row-content">
+              <span class="ember-power-select-group-name">{{opt.groupName}} ({{opt.groupSize}})</span>
+            </div>
+          </div>
+        </li>
+      {{else}}
+        <li class="ember-power-select-option"
+          aria-selected="{{ember-power-select-is-selected opt @select.selected}}"
+          aria-disabled={{if opt.disabled "true"}}
+          aria-current="{{eq opt @select.highlighted}}"
+          data-option-index={{opt.idx}}
+          role={{if (eq opt @select.highlighted) "alert" "option"}}
+        >
+          {{yield opt @select}}
+        </li>
+      {{/if}}
+    </EmberCollection>
+  </div>
+</ul>

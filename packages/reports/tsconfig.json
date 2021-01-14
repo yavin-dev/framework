@@ -33,6 +33,7 @@
       "navi-core/*": ["node_modules/navi-core/addon/*"],
       "navi-data": ["node_modules/navi-data/addon"],
       "navi-data/*": ["node_modules/navi-data/addon/*"],
+      "ember-power-select/*": ["node_modules/ember-power-select/addon/*"],
       "*": ["types/*"]
     }
   },

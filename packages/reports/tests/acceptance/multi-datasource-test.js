@@ -26,7 +26,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     await visit('/reports/new');
 
-    await selectChoose('.navi-table-select__dropdown', 'Inventory');
+    await selectChoose('.navi-table-select__trigger', 'Inventory');
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map(el => el.textContent.trim()),
@@ -46,7 +46,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
 
-    await selectChoose('.filter-builder__select-trigger', 'Between');
+    await selectChoose($('.filter-builder__operator-trigger:eq(1)')[0], 'Between');
     await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
@@ -56,13 +56,13 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder-dimension__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject, .filter-builder__subject').map(el => el.textContent.trim()),
       ['Container (id)', 'Date Time (day)', 'Used Amount'],
       'Filter titles rendered correctly'
     );
 
     assert
-      .dom('.filter-builder-dimension__values')
+      .dom('.filter-values--dimension-select__trigger')
       .containsText('× 1', 'Dimension filter input contains the right value');
     assert.dom('.filter-values--value-input').hasValue('30', 'Having input has the right value');
 
@@ -123,7 +123,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder-dimension__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject, .filter-builder__subject').map(el => el.textContent.trim()),
       ['Date Time (day)'],
       'Filter titles rendered correctly'
     );
@@ -171,7 +171,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await click('.navi-modal__close');
 
     //switch tables from a different datasource
-    await selectChoose('.navi-table-select__dropdown', 'Table A');
+    await selectChoose('.navi-table-select__trigger', 'Table A');
 
     //assert filters, metrics and dimensions are reset
     assert

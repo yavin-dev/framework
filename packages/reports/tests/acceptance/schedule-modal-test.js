@@ -32,7 +32,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Week', 'Frequency field is set to the default value when creating a new schedule');
 
     assert
@@ -40,7 +40,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('', 'Recipients field is empty when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
       .hasText('csv', 'Format field is set to the default value when creating a new schedule');
 
     assert
@@ -52,7 +52,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to 'Day'
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click('.schedule-modal__frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     // Toggle mustHaveData to 'on'
@@ -79,11 +79,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Day', 'Frequency field is set by the saved delivery rule');
 
     assert
-      .dom('.schedule-modal__input--recipients .navi-email-tag')
+      .dom('.schedule-modal__input--recipients .tag')
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
 
     assert
@@ -127,7 +127,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click('.schedule-modal__frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     //Save the schedule
@@ -151,11 +151,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Day', 'Changes made to the frequency field are kept after clicking save changes');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io', 'navi_user@navi.io'],
       'Changes made to the recipients field are kept after clicking save changes'
     );
@@ -181,17 +181,17 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Month', 'Frequency field is populated by existing delivery rule');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
       'Recipients field is populated by existing delivery rule'
     );
 
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
       .hasText('csv', 'Format field is populated by existing delivery rule');
 
     await click('.schedule-modal__delete-btn button');
@@ -218,7 +218,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Save', 'The save button says "Save" and not "Save Changes" after the schedule has been deleted');
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Week', 'Frequency field is set to the default value after the schedule has been deleted');
 
     assert
@@ -226,7 +226,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('', 'Recipients field is empty after the schedule has been deleted');
 
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
       .hasText('csv', 'Format field is set to the default value after the schedule has been deleted');
   });
 
@@ -246,7 +246,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click('.schedule-modal__frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     // Set mustHaveData to be true
@@ -262,7 +262,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.navi-collection__row2 .schedule .schedule-action__button');
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Month', 'Frequency field changes to an existing schedule are discarded after clicking cancel');
 
     assert
@@ -270,7 +270,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
       'Recipients field changes to an existing schedule are discarded after clicking cancel'
     );
@@ -288,7 +288,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
+    await click('.schedule-modal__frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     // Set mustHaveData to be true
@@ -302,11 +302,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await click('.navi-collection__row0 .schedule .schedule-action__button');
 
     assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
+      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
       .hasText('Day', 'Frequency field changes to a new schedule are kept but not saved to the store');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
       ['navi_user@navi.io'],
       'Recipients field changes to a new schedule kept but not saved to the store'
     );
@@ -374,7 +374,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .isVisible('Recipients field is still highlighted red when recipients is set to invalid email addresses');
 
     // Set recipients to a valid value
-    await click('.emberTagInput-remove');
+    await click('.tag__remove');
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io ');
     await blur('.js-ember-tag-input-new');
 
@@ -394,7 +394,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
       ['navi_user@navi.io'],
       'The valid recipients were saved successfully'
     );
@@ -431,12 +431,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         'The recipients input field is disabled when there is an error fetching the schedule'
       );
 
-    assert.ok(
-      find('.schedule-modal__dropdown--frequency>.ember-basic-dropdown>.ember-power-select-trigger').getAttribute(
-        'aria-disabled'
-      ),
-      'The frequency field is disabled when there is an error fetching the schedule'
-    );
+    assert
+      .dom('.schedule-modal__frequency-trigger')
+      .hasAttribute(
+        'aria-disabled',
+        'true',
+        'The frequency field is disabled when there is an error fetching the schedule'
+      );
 
     assert
       .dom('.schedule-modal__save-btn')

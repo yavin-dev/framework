@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.lookback}}
     {{this.lookback}} {{this.dateDescription}}
@@ -6,33 +6,26 @@
     <FilterValues::InvalidValue/>
   {{/if}}
 {{else}}
-  <div class="filter-values--lookback-input" ...attributes>
-    <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
-      <dd.trigger>
-        <input
-          class="filter-values--lookback-input__value"
-          value={{this.lookback}}
-          placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
-          type="number"
-          min="1"
-          {{on "input" this.setLookback}}
-        >
-      </dd.trigger>
-      <dd.content @class="navi-basic-dropdown-content">
-        <ul>
-          {{#each this.ranges as |range|}}
-            <li
-              role="button"
-              class="navi-basic-dropdown-option"
-              aria-selected="{{if range.isActive "true" "false"}}"
-              {{on "click" (queue (fn this.setPresetInterval range.interval) dd.actions.close)}}
-            >
-              {{range.text}}
-            </li>
-          {{/each}}
-        </ul>
-      </dd.content>
-    </BasicDropdown>
-    <span class="filter-values--lookback-input__label">{{this.dateDescription}}</span>
+  <div class="filter-values--lookback-input align-items-center flex" ...attributes>
+    <PowerSelect
+      @matcher={{this.noop}}
+      @searchField="noop"
+      @options={{this.ranges}}
+      @selected={{filter-by 'isActive' this.ranges}}
+      @placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
+      @onChange={{pipe (pick 'interval') this.setPresetInterval}}
+      @triggerClass="filter-values--lookback-trigger is-medium"
+      @dropdownClass="filter-values--lookback-dropdown"
+      @triggerComponent="filter-values/time-dimension/lookback-trigger"
+      @extra={{hash 
+        value=this.lookback 
+        onUpdate=this.setLookback
+        placeholder=(capitalize (concat this.calendarDateTimePeriod "s"))
+      }}
+      as |item|
+    >
+      {{item.text}}
+    </PowerSelect>
+    <span class="filter-values--lookback-input__label line-height-compact m-l-4">{{this.dateDescription}}</span>
   </div>
 {{/if}}

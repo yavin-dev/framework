@@ -6,19 +6,27 @@
     {{concat @filter.values.[0] " and " @filter.values.[1]}}
   {{/if}}
 {{else}}
-  <div class="filter-values--range-input" ...attributes>
-    <input
+  <div class="filter-values--range-input row"...attributes>
+    <DenaliInput
+      @wrapperClass="col-3-7"
+      @size="medium"
       value={{this.startDate}}
       placeholder="Low Value"
-      class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
-      {{on "input" this.setLowValue}}>
+      @state={{if @filter.validations.attrs.values.isInvalid "error"}}
+      class="filter-values--range-input__input"
+      {{on "input" this.setLowValue}}
+    />
 
-    <span class="filter-values--range-input__separator">and</span>
+    <span class="filter-values--range-input__separator col-1-7 flex align-items-center justify-content-center">and</span>
 
-    <input
+    <DenaliInput
+      @wrapperClass="col-3-7"
+      @size="medium"
       value={{this.endDate}}
       placeholder="High Value"
-      class="filter-values--range-input__input {{if @filter.validations.attrs.values.isInvalid "filter-values--range-input__input--error"}}"
-      {{on "input" this.setHighValue}}>
+      class="filter-values--range-input__input"
+      @state={{if @filter.validations.attrs.values.isInvalid "error"}}
+      {{on "input" this.setHighValue}}
+    />
   </div>
 {{/if}}

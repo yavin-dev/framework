@@ -1,0 +1,36 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+$filter-builder-padding: 4px;
+
+.filter-builder {
+  &__subject {
+    padding: $filter-builder-padding;
+    padding-bottom: 0; //when on column mode on small screen
+    &-name {
+      align-items: center;
+      display: flex;
+      line-height: 1;
+      min-height: $fields-sizes-md-height;
+    }
+  }
+
+  &__operator {
+    padding: $filter-builder-padding;
+    min-width: 0;
+    .ember-power-select-selected-item {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__values {
+    padding: $filter-builder-padding;
+    .input {
+      width: 100%;
+    }
+  }
+}

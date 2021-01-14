@@ -7,6 +7,7 @@
         @options={{this.allTables}}
         @selected={{this.request.tableMetadata}}
         @onChange={{update-report-action "UPDATE_TABLE"}}
+        @disabled={{@disabled}}
       />
     {{/if}}
     <div class="report-builder__container--builder {{unless this.hasValidLogicalTable "report-builder__container--builder-skel"}}">
