@@ -6,51 +6,32 @@
     {{yield}}
   </button>
 
-  <NaviModal
-    @isShown={{this.showModal}}
-    @onClose={{this.resetNotifications}}
+  <DenaliModal class="get-api-modal-container"
+    @isOpen={{this.showModal}}
+    @onClose={{queue (toggle "showModal" this) this.resetNotifications}}
+    ...attributes as | modal |
   >
-    <div class="get-api-modal-container">
-      <div class="navi-modal__header">
+      <modal.Header class="navi-modal__header">
         <div class="navi-modal__header--primary">API Query</div>
+      </modal.Header>
+      <modal.Content>
+        <input class="navi-modal__input" value={{this.requestUrl}} readonly>
 
-        {{!-- Notification center --}}
-        {{#if this.errorNotification}}
-          <div class="modal-notification alert info">
-            <NaviIcon @icon="exclamation-circle" />
-            <div class="notification-text">Please Type ⌘-c to copy</div>
-            <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" (toggle "errorNotification" this)}} />
-          </div>
-        {{else}}
-          {{#if this.successNotification}}
-            <div class="modal-notification alert success">
-              <NaviIcon @icon="check" />
-              <div class="notification-text">Success! The link has been copied to your clipboard</div>
-              <NaviIcon @icon="times" class="notification-remove-icon clickable"  {{on "click" (toggle "successNotification" this)}} />
-            </div>
-          {{else}}
-            <div class="navi-modal__header--secondary">Select the Copy button to copy to clipboard.</div>
+        {{!-- Buttons --}}
+        <div class="btn-container">
+          <CopyButton
+            class="button is-solid"
+            @clipboardText={{this.requestUrl}}
+            @success={{toggle "successNotification" this}}
+            @error={{toggle "errorNotification" this}}
+          >
+            Copy Link
+          </CopyButton>
+          {{#if this.isRequestURL}}
+            <a class="button is-outline" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
           {{/if}}
-        {{/if}}
-      </div>
-
-      <input class="navi-modal__input" value={{this.requestUrl}} readonly>
-
-      {{!-- Buttons --}}
-      <div class="btn-container">
-        <CopyButton
-          class="btn btn-primary"
-          @clipboardText={{this.requestUrl}}
-          @success={{toggle "successNotification" this}}
-          @error={{toggle "errorNotification" this}}
-        >
-          Copy Link
-        </CopyButton>
-        {{#if this.isRequestURL}}
-          <a class="btn btn-secondary" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
-        {{/if}}
-        <button type="button" class="btn btn-secondary" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</button>
-      </div>
-    </div>
-  </NaviModal>
+          <DenaliButton class="is-outline" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
+        </div>
+      </modal.Content>
+  </DenaliModal>
 </div>

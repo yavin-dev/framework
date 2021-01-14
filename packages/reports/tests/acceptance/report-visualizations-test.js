@@ -148,7 +148,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after first sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //sort by first parameter asc
     await click(
@@ -192,7 +192,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after second sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //remove sort by first parameter
     await click(
@@ -233,7 +233,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after third sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //sort by both parameters
     await click(
@@ -273,7 +273,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after removing the metric'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //verify that the table visualization is still shown and not an error
     await click('.navi-report__run-btn');

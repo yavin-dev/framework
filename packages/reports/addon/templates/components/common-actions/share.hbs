@@ -5,11 +5,12 @@
     {{yield}}
   </button>
 
-  <NaviModal @isShown={{this.showModal}} @onClose={{this.resetNotifications}}>
-    <div class="share-report-modal-container">
-      <div class="navi-modal-header">
+  <DenaliModal @isOpen={{this.showModal}} @onClose={{queue (toggle "showModal" this) this.resetNotifications}}
+  ...attributes as |modal|>
+      <modal.Header class="navi-modal-header">
         <div class="primary-header">Share "{{this.pageTitle}}"</div>
-
+      </modal.Header>
+      <modal.Content>
         {{!-- Notification center --}}
         {{#if this.errorNotification}}
           <div class="modal-notification alert info">
@@ -28,22 +29,18 @@
             <div class="secondary-header">Select the Copy button to copy to clipboard.</div>
           {{/if}}
         {{/if}}
-      </div>
+        <DenaliInput value={{this.currentUrl}} readonly />
 
-      <input class="modal-input-box copy-modal" value={{this.currentUrl}} readonly>
-
-      {{!-- Buttons --}}
-      <div class="btn-container">
+        {{!-- Buttons --}}
         <CopyButton
-          class="btn btn-primary"
+          class="button is-solid m-5"
           @clipboardText={{this.currentUrl}}
           @success={{toggle "successNotification" this}}
           @error={{toggle "errorNotification" this}}
         >
           Copy Link
         </CopyButton>
-        <button type="button" class="btn btn-secondary" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</button>
-      </div>
-    </div>
-  </NaviModal>
+        <DenaliButton class="is-outline m-5" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
+      </modal.Content>
+  </DenaliModal>
 </div>

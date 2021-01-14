@@ -159,20 +159,20 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await click('.navi-report__copy-api-btn .get-api__btn');
 
-    assert.dom('.get-api-modal-container').isVisible('Copy modal is open after fixing error clicking button');
+    assert.dom('.modal-container').isVisible('Copy modal is open after fixing error clicking button');
 
     /* == Add some more metrics and check that copy modal updates == */
-    await click('.navi-modal__close');
+    await click('.d-close');
     await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__copy-api-btn .get-api__btn');
 
     assert.ok(
-      find('.navi-modal__input').value.includes('metrics=adClicks%2CaddPageViews'),
+      find('.modal-container input').value.includes('metrics=adClicks%2CaddPageViews'),
       'API query updates with request'
     );
 
     assert
-      .dom('.get-api-modal-container input')
+      .dom('.modal-container input')
       .hasValue(/^https:\/\/data.naviapp.io\/\S+$/, 'shows api url from right datasource');
   });
 
@@ -317,7 +317,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.save-as__cancel-modal-btn').isVisible('Save As Modal is visible with cancel key');
 
     // Press the Modal X button
-    await click('.navi-modal__close');
+    await click('.save-as__cancel-modal-btn');
 
     // Changes were not reverted, but they were not saved
     assert.ok(
@@ -819,9 +819,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click($('.navi-report__action:contains(Share) button')[0]);
 
-    assert
-      .dom('.navi-modal .primary-header')
-      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
+    assert.dom('.modal .primary-header').hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
@@ -837,31 +835,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom($('.navi-report__action:contains(Share)')[0])
       .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for new report');
-  });
-
-  test('Share report notifications reset', async function(assert) {
-    assert.expect(4);
-
-    /* == Saved report == */
-    await visit('/reports/1/view');
-    await click($('.navi-report__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .primary-header')
-      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
-
-    assert.dom('.navi-modal .modal-notification').isNotVisible('Notification banner is not shown');
-
-    await click('.navi-modal .copy-btn');
-
-    assert.dom('.navi-modal .modal-notification').isVisible('Notification banner is shown');
-
-    await click($('.navi-modal .btn:contains(Cancel)')[0]);
-    await click($('.navi-report__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .modal-notification')
-      .isNotVisible('Notification banner is not shown after close and reopen');
   });
 
   test('Delete report on success', async function(assert) {
@@ -883,7 +856,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
 
-    await click('.navi-modal .btn-primary');
+    await click('.modal .button.is-solid');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -942,7 +915,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/2/view');
     await click($('.navi-report__action:contains(Delete) button')[0]);
-    await click('.navi-modal .btn-primary');
+    await click('.modal .button.is-solid');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
   });
@@ -1045,7 +1018,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.primary-header').hasText('Share "Hyrule News"', 'Share modal pops up when action is clicked');
 
     // Click "Cancel"
-    await click('.navi-modal .btn-secondary');
+    await click('.modal .button.is-outline');
   });
 
   test('reports route actions -- delete', async function(assert) {
@@ -1060,7 +1033,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
 
     //Click "Confirm"
-    await click('.navi-modal .btn-primary');
+    await click('.modal .button.is-solid');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -1842,7 +1815,7 @@ module('Acceptance | Navi Report', function(hooks) {
       find('.navi-modal__input').value.includes('dateTime=P7D%2F2015-11-16'),
       'The while in advanced mode shows exactly what is in the start/end inputs'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     await fillIn(startInput, 'P1M');
     await blur(startInput);
@@ -1856,7 +1829,7 @@ module('Acceptance | Navi Report', function(hooks) {
       find('.navi-modal__input').value.includes('dateTime=P1M%2F2020-04-01'),
       'The query is updated to show the new start/end inputs exactly'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {

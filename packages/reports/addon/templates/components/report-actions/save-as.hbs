@@ -1,28 +1,27 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<NaviModal @isShown={{this.showModal}} ...attributes>
-  <div class="navi-modal-header">
+<DenaliModal @isOpen={{this.showModal}} @onClose={{this.closeModal}} ...attributes as |modal|>
+  <modal.Header>
     <h1 class="primary-header">Save Report As</h1>
+  </modal.Header>
+  <modal.Content>
     <h5 class="secondary-header">This will create a new report with the new given name.</h5>
-  </div>
+    {{!-- input for new Name of the Report --}}
+    <DenaliInput
+      class="dashboard-title"
+      @placeholder={{this.reportName}}
+      @value={{this.reportName}}
+    />
 
-  {{!-- input for new Name of the Report --}}
-  <Input
-    class="text-input dashboard-title"
-    @placeholder={{this.reportName}}
-    @value={{this.reportName}}
-    @autofocus={{true}}
-    @maxlength={{150}}
-  />
-
-  {{!-- Buttons --}}
-  <div class="btn-container">
-    {{!-- Create a new copy of the report --}}
-    <LinkTo @route="reports.report.save-as" @query={{hash title=this.reportName}}
-      @tagName="button"
-      class="btn btn-primary save-as__save-as-modal-btn"
-    >
-      Save
-    </LinkTo>
-    <button type="button" class="btn btn-secondary save-as__cancel-modal-btn" {{on "click" this.closeModal}}>Cancel</button>
-  </div>
-</NaviModal>
+    {{!-- Buttons --}}
+    <div class="btn-container">
+      {{!-- Create a new copy of the report --}}
+      <LinkTo @route="reports.report.save-as" @query={{hash title=this.reportName}}
+        @tagName="button"
+        class="button is-solid save-as__save-as-modal-btn"
+      >
+        Save
+      </LinkTo>
+      <DenaliButton class="is-outline save-as__cancel-modal-btn" {{on "click" this.closeModal}}>Cancel</DenaliButton>
+    </div>
+  </modal.Content>
+</DenaliModal>

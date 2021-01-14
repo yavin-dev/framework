@@ -137,15 +137,17 @@ export default class ScheduleActionComponent extends Component {
 
       return savePromise
         .then(() => {
-          set(this, 'notification', {
-            text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
-            classNames: 'alert success'
+          get(this, 'naviNotifications').add({
+            message: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
+            type: 'success',
+            timeout: 'short'
           });
         })
         .catch(({ errors }) => {
-          set(this, 'notification', {
-            text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
-            classNames: 'alert failure'
+          get(this, 'naviNotifications').add({
+            message: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
+            type: 'danger',
+            timeout: 'short'
           });
         })
         .finally(() => {
@@ -203,6 +205,11 @@ export default class ScheduleActionComponent extends Component {
         set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
       })
       .catch(() => {
+        get(this, 'naviNotifications').add({
+          message: `OOPS! An error occurred while loading the delivery schedule.`,
+          type: 'danger',
+          timeout: 'short'
+        });
         set(this, 'localDeliveryRule', this._createNewDeliveryRule());
       });
   }

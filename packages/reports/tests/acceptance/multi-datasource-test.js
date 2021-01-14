@@ -168,7 +168,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
         'uses csv export from right datasource'
       );
 
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //switch tables from a different datasource
     await selectChoose('.navi-table-select__dropdown', 'Table A');

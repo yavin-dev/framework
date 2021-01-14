@@ -7,13 +7,14 @@ import $ from 'jquery';
 import Mirage from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import Ember from 'ember';
+import { animationsSettled } from 'ember-animated/test-support';
 
 module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function(assert) {
-    assert.expect(13);
+    assert.expect(12);
     await visit('/reports');
 
     // Click "Schedule"
@@ -31,40 +32,40 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__save-btn')
       .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Week', 'Frequency field is set to the default value when creating a new schedule');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Week',
+      'Frequency field is set to the default value when creating a new schedule'
+    );
 
     assert
       .dom('.schedule-modal__input--recipients')
       .hasText('', 'Recipients field is empty when creating a new schedule');
 
-    assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-      .hasText('csv', 'Format field is set to the default value when creating a new schedule');
+    assert.equal(
+      find('.schedule-modal__dropdown--format').selectedOptions[0].textContent.trim(),
+      'csv',
+      'Format field is set to the default value when creating a new schedule'
+    );
 
-    assert
-      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
-      .isNotChecked('mustHaveData is toggled off by default');
+    assert.dom('.schedule-modal__must-have-data-toggle').isNotChecked('mustHaveData is toggled off by default');
 
     // Enter email address
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to 'Day'
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    await click('.schedule-modal__dropdown--frequency');
+    const select = find('.schedule-modal__dropdown--frequency');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     // Toggle mustHaveData to 'on'
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    await click('.schedule-modal__must-have-data-toggle');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.notification-text');
-
-    assert
-      .dom('.success .notification-text')
-      .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
+    await animationsSettled();
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -78,16 +79,18 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
       );
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Day', 'Frequency field is set by the saved delivery rule');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Day',
+      'Frequency field is set by the saved delivery rule'
+    );
 
     assert
       .dom('.schedule-modal__input--recipients .navi-email-tag')
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
 
     assert
-      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .dom('.schedule-modal__must-have-data-toggle')
       .isChecked('mustHaveData field is set by the saved delivery rule');
   });
 
@@ -105,7 +108,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Close', 'The cancel button says "Close" upon opening the schedule modal');
 
     // Change the value of the mustHaveData toggle and make sure the model detects changes
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    await click('.schedule-modal__must-have-data-toggle');
     assert
       .dom('.schedule-modal__cancel-btn')
       .hasText(
@@ -114,7 +117,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     // Reverting the changes are also detected by the model and reflected to the user
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    await click('.schedule-modal__must-have-data-toggle');
     assert
       .dom('.schedule-modal__cancel-btn')
       .hasText(
@@ -127,15 +130,17 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    await click('.schedule-modal__dropdown--frequency');
+    const select = find('.schedule-modal__dropdown--frequency');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.notification-text');
+    await waitFor('.navi-notifcations');
 
     assert
-      .dom('.notification-text ')
+      .dom('.navi-notifcations ')
       .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
 
     // Check that all fields match the delivery rule we just saved
@@ -150,9 +155,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         'The save button says "Save Changes" and not "Save" after a schedule has been modified and saved'
       );
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Day', 'Changes made to the frequency field are kept after clicking save changes');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Week',
+      'Changes made to the frequency field are kept after clicking save changes'
+    );
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -180,9 +187,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         'The save button says "Save Changes" and not "Save" when there is an existing delivery rule'
       );
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Month', 'Frequency field is populated by existing delivery rule');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Month',
+      'Frequency field is populated by existing delivery rule'
+    );
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -190,17 +199,19 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       'Recipients field is populated by existing delivery rule'
     );
 
-    assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-      .hasText('csv', 'Format field is populated by existing delivery rule');
+    assert.equal(
+      find('.schedule-modal__dropdown--format').selectedOptions[0].textContent.trim(),
+      'csv',
+      'Format field is populated by existing delivery rule'
+    );
 
     await click('.schedule-modal__delete-btn button');
     assert
-      .dom('.ember-modal-wrapper:nth-of-type(2) .primary-header')
+      .dom('.delete-modal .primary-header')
       .hasText('Delete schedule for "Report 12"', 'Delete confirmation modal pops up when delete is clicked');
 
     // Click confirm deletion
-    await click('.ember-modal-wrapper:nth-of-type(2) .btn-primary');
+    await click('.delete-modal .button.is-solid');
 
     assert
       .dom('.schedule-modal__header .primary-header')
@@ -217,17 +228,21 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__save-btn')
       .hasText('Save', 'The save button says "Save" and not "Save Changes" after the schedule has been deleted');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Week', 'Frequency field is set to the default value after the schedule has been deleted');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Week',
+      'Frequency field is set to the default value after the schedule has been deleted'
+    );
 
     assert
       .dom('.schedule-modal__input--recipients')
       .hasText('', 'Recipients field is empty after the schedule has been deleted');
 
-    assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-      .hasText('csv', 'Format field is set to the default value after the schedule has been deleted');
+    assert.equal(
+      find('.schedule-modal__dropdown--format').selectedOptions[0].textContent.trim(),
+      'csv',
+      'Format field is set to the default value after the schedule has been deleted'
+    );
   });
 
   test('schedule modal cancel existing schedule', async function(assert) {
@@ -238,7 +253,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.navi-collection__row2 .schedule .schedule-action__button');
 
-    assert.dom('.schedule-modal__must-have-data-toggle .x-toggle').isNotChecked('mustHaveData is false initially');
+    assert.dom('.schedule-modal__must-have-data-toggle').isNotChecked('mustHaveData is false initially');
 
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
@@ -246,11 +261,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    await click('.schedule-modal__dropdown--frequency');
+    const select = find('.schedule-modal__dropdown--frequency');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     // Set mustHaveData to be true
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    await click('.schedule-modal__must-have-data-toggle');
 
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
@@ -261,12 +278,14 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.navi-collection__row2 .schedule .schedule-action__button');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Month', 'Frequency field changes to an existing schedule are discarded after clicking cancel');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Month',
+      'Frequency field changes to an existing schedule are discarded after clicking cancel'
+    );
 
     assert
-      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .dom('.schedule-modal__must-have-data-toggle')
       .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert.deepEqual(
@@ -288,11 +307,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    await click('.schedule-modal__dropdown--frequency');
+    const select = find('.schedule-modal__dropdown--frequency');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     // Set mustHaveData to be true
-    await click('.schedule-modal__must-have-data-toggle .x-toggle');
+    await click('.schedule-modal__must-have-data-toggle');
 
     // Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
@@ -301,9 +322,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .schedule .schedule-action__button');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Day', 'Frequency field changes to a new schedule are kept but not saved to the store');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Day',
+      'Frequency field changes to a new schedule are kept but not saved to the store'
+    );
 
     assert.deepEqual(
       findAll('.schedule-modal__input--recipients .navi-email-tag').map(e => e.innerText.trim()),
@@ -312,7 +335,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     );
 
     assert
-      .dom('.schedule-modal__must-have-data-toggle .x-toggle')
+      .dom('.schedule-modal__must-have-data-toggle')
       .isChecked('mustHaveData field changes to a new schedule are kept but not saved to the store');
 
     assert
@@ -384,10 +407,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Attempt to save the schedule now that recipients is valid
     await click('.schedule-modal__save-btn');
-    await waitFor('.notification-text');
+    await waitFor('.navi-notifications');
 
     assert
-      .dom('.notification-text')
+      .dom('.navi-notifications')
       .hasText(
         'Report delivery schedule successfully saved!',
         'Successful notification is shown after clicking save and the schedule is valid'
@@ -432,9 +455,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert.ok(
-      find('.schedule-modal__dropdown--frequency>.ember-basic-dropdown>.ember-power-select-trigger').getAttribute(
-        'aria-disabled'
-      ),
+      find('.schedule-modal__dropdown--frequency').getAttribute('aria-disabled'),
       'The frequency field is disabled when there is an error fetching the schedule'
     );
 
@@ -485,10 +506,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.notification-text');
+    await waitFor('.navi-notifcations');
 
     assert.equal(
-      find('.failure .notification-text').innerText.trim(),
+      find('.failure .navi-notifcations').innerText.trim(),
       'Must be a valid oath.com or yahoo-inc.com email',
       'failing notification is shown if server returns 400'
     );
@@ -499,10 +520,10 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.notification-text');
+    await waitFor('.navi-notifcations');
 
     assert
-      .dom('.failure .notification-text')
+      .dom('.failure .navi-notifcations')
       .includesText(
         'Oops! There was an error updating your delivery settings',
         'failing notification is shown if server returns 500'

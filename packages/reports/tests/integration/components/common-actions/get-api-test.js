@@ -83,7 +83,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
     await click('.get-api > button');
 
     // Check if modal was opened
-    if ($('.ember-modal-dialog').is(':visible')) {
+    if ($('.modal-container').is(':visible')) {
       assert.step('Copy modal is opened');
     }
 
@@ -107,7 +107,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
     await click('.get-api > button');
 
     assert
-      .dom('.ember-modal-dialog')
+      .dom('.modal-container')
       .isNotVisible('Copy modal does not open if `beforeAction` returns a rejected promise');
   });
 
@@ -117,11 +117,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.modal-container').isNotVisible('Copy modal is not visible before clicking the component');
 
     await click('.get-api > button');
 
-    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.modal-container').isVisible('Copy modal dialog pops up on clicking the component');
 
     assert
       .dom('.navi-modal__header--secondary')
@@ -148,11 +148,11 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('TestRequest', this.TestRequestElide);
     await render(TEMPLATE);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.modal-container').isNotVisible('Copy modal is not visible before clicking the component');
 
     await click('.get-api > button');
 
-    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.modal-container').isVisible('Copy modal dialog pops up on clicking the component');
 
     assert
       .dom('.navi-modal__header--secondary')
@@ -195,16 +195,16 @@ module('Integration | Component | common actions/get api', function(hooks) {
     this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.modal-container').isNotVisible('Copy modal is not visible before clicking the component');
 
     // Click component
     await click('.get-api > button');
 
-    assert.dom('.ember-modal-dialog').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.modal-container').isVisible('Copy modal dialog pops up on clicking the component');
 
     // Click Cancel
     await click($('.btn-container button:contains(Cancel)')[0]);
 
-    assert.dom('.ember-modal-dialog').isNotVisible('Copy modal is closed after clicking cancel button');
+    assert.dom('.modal-container').isNotVisible('Copy modal is closed after clicking cancel button');
   });
 });

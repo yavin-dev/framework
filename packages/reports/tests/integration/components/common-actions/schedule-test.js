@@ -90,7 +90,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    assert.ok($('.navi-modal').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
+    assert.ok($('.modal-container').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
     assert.equal(
       $('.primary-header')
