@@ -3,17 +3,15 @@
   <h3 class="navi-list-selector__title" title="{{@title}}">{{@title}}</h3>
 </div>
 <div class="navi-list-selector__search">
-  <NaviIcon @icon="search" class="navi-list-selector__search-icon" />
-  <Input
+  <DenaliInput
+    @size="small"
+    @iconBack="search"
+    @iconBackClass="navi-list-selector__search-icon"
+    value={{this.query}}
+    type="text"
     placeholder={{concat "Search " (capitalize @title)}}
-    @value={{this.query}}
-    autocomplete="false"
-    spellcheck="false"
     class="navi-list-selector__search-input"
-  />
-  <NaviIcon @icon="times-circle"
-    class="navi-list-selector__search-input-clear"
-    {{on "click" (fn (mut this.query) undefined)}}
+    {{on "input" (pipe (pick 'target.value') (fn (mut this.query) ) )}}
   />
 </div>
 <div class="navi-list-selector__content {{@contentClass}}">
