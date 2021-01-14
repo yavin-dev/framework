@@ -24,7 +24,7 @@ const TestRequest: RequestV2 = {
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
     { field: 'table1.d4', operator: 'in', values: ['v3', 'v4'], type: 'dimension', parameters: {} },
-    { field: 'table1.d5', operator: 'null', values: [true], type: 'dimension', parameters: {} },
+    { field: 'table1.d5', operator: 'isnull', values: [true], type: 'dimension', parameters: {} },
     {
       field: 'table1.time',
       operator: 'gte',
@@ -237,7 +237,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             field: 'myTable.time',
             parameters: { grain: 'day' },
             type: 'timeDimension',
-            operator: 'null',
+            operator: 'isnull',
             values: [true]
           }
         ],

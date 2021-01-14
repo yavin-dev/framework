@@ -30,8 +30,7 @@ export type FilterOperator =
   | 'lte'
   | 'gt'
   | 'gte'
-  | 'null'
-  | 'notnull'
+  | 'isnull'
   | 'bet'
   | 'nbet'
   | 'contains';

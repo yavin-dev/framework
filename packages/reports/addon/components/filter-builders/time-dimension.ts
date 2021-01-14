@@ -11,7 +11,7 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
 import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
-import BaseFilterBuilderComponent, { FilterBuilderOperators } from './base';
+import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
 
 export const MONTHS_IN_QUARTER = 3;
 export const OPERATORS = <const>{
@@ -23,7 +23,7 @@ export const OPERATORS = <const>{
 };
 type InternalOperatorType = typeof OPERATORS[keyof typeof OPERATORS];
 
-interface InteralFilterBuilderOperators extends FilterBuilderOperators {
+interface InteralFilterBuilderOperators extends FilterValueBuilder {
   internalId: InternalOperatorType;
 }
 
@@ -178,37 +178,37 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * list of valid operators for a time-dimension filter
    */
   @computed('args.filter.parameters.grain', 'timeGrainName')
-  get supportedOperators(): InteralFilterBuilderOperators[] {
+  get valueBuilders(): InteralFilterBuilderOperators[] {
     return [
       {
-        id: 'bet' as const,
+        operator: 'bet' as const,
         internalId: OPERATORS.current,
         name: `Current ${this.timeGrainName}`,
-        valuesComponent: 'filter-values/time-dimension/current'
+        component: 'filter-values/time-dimension/current'
       },
       {
-        id: 'bet' as const,
+        operator: 'bet' as const,
         internalId: OPERATORS.lookback,
         name: 'In The Past',
-        valuesComponent: 'filter-values/time-dimension/lookback'
+        component: 'filter-values/time-dimension/lookback'
       },
       {
-        id: 'gte' as const,
+        operator: 'gte' as const,
         internalId: OPERATORS.since,
         name: 'Since',
-        valuesComponent: 'filter-values/time-dimension/date'
+        component: 'filter-values/time-dimension/date'
       },
       {
-        id: 'lte' as const,
+        operator: 'lte' as const,
         internalId: OPERATORS.before,
         name: 'Before',
-        valuesComponent: 'filter-values/time-dimension/date'
+        component: 'filter-values/time-dimension/date'
       },
       {
-        id: 'bet' as const,
+        operator: 'bet' as const,
         internalId: OPERATORS.dateRange,
         name: 'Between',
-        valuesComponent: 'filter-values/time-dimension/range'
+        component: 'filter-values/time-dimension/range'
       }
     ];
   }
@@ -218,11 +218,11 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * @returns the best supported operator for this interval
    */
   @computed('args.filter.{values,operator}', 'supportedOperators')
-  get selectedOperator(): InteralFilterBuilderOperators {
-    const operatorId = internalOperatorForValues(this.args.filter);
+  get selectedValueBuilder(): InteralFilterBuilderOperators {
+    const internalId = internalOperatorForValues(this.args.filter);
 
-    const filterValueBuilder = this.supportedOperators.find(({ internalId }) => internalId === operatorId);
-    assert(`A filter value component for ${operatorId} operator exists`, filterValueBuilder);
+    const filterValueBuilder = this.valueBuilders.find(f => f.internalId === internalId);
+    assert(`A filter value component for ${internalId} operator exists`, filterValueBuilder);
     return filterValueBuilder;
   }
 
@@ -230,20 +230,20 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * @param operator - a value from supportedOperators that should become the filter's operator
    */
   @action
-  setOperator(operator: InteralFilterBuilderOperators) {
-    const oldOperator = this.selectedOperator;
+  setOperator(newBuilder: InteralFilterBuilderOperators) {
+    const oldOperator = this.selectedValueBuilder;
 
-    if (oldOperator.internalId === operator.internalId) {
+    if (oldOperator.internalId === newBuilder.internalId) {
       return;
     }
 
     const { filter } = this.args;
     const { grain } = filter.parameters;
 
-    const newInterval = valuesForOperator(filter, grain as Grain, operator.internalId);
+    const newInterval = valuesForOperator(filter, grain as Grain, newBuilder.internalId);
 
     this.args.onUpdateFilter({
-      operator: operator.id,
+      operator: newBuilder.operator,
       values: arr(newInterval)
     });
   }

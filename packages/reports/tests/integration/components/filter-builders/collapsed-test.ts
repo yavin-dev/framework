@@ -19,7 +19,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
     metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await metadataService.loadMetadata();
     this.set('filter', factory.createFilter('dimension', 'bardOne', 'userDeviceType', {}, 'in', []));
-    this.set('selectedOperator', { id: 'in', name: 'Equals', valuesComponent: 'mock/values-component' });
+    this.set('selectedValueBuilder', { operator: 'in', name: 'Equals', component: 'mock/values-component' });
     this.owner.register(
       'component:mock/values-component',
       Component.extend({
@@ -33,7 +33,7 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
     await render(hbs`<FilterBuilders::Collapsed
       @filter={{this.filter}}
       @field={{this.field}}
-      @selectedOperator={{this.selectedOperator}} />`);
+      @selectedValueBuilder={{this.selectedValueBuilder}} />`);
 
     assert.dom().hasText('User Device Type equals Test', 'Renders correctly without a field');
   });

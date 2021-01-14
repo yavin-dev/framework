@@ -6,50 +6,47 @@
 import BaseFilterBuilderComponent from './base';
 
 export default class MetricFilterBuilderComponent extends BaseFilterBuilderComponent {
-  /**
-   * @property {Object[]} supportedOperators
-   */
-  get supportedOperators() {
+  get valueBuilders() {
     return [
       {
-        id: 'gt' as const,
+        operator: 'gt' as const,
         name: 'Greater than (>)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'gte' as const,
+        operator: 'gte' as const,
         name: 'Greater than or equals (>=)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'lt' as const,
+        operator: 'lt' as const,
         name: 'Less than (<)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'lte' as const,
+        operator: 'lte' as const,
         name: 'Less than or equals (<=)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'eq' as const,
+        operator: 'eq' as const,
         name: 'Equals (=)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'neq' as const,
+        operator: 'neq' as const,
         name: 'Not equals (!=)',
-        valuesComponent: 'filter-values/value-input'
+        component: 'filter-values/value-input'
       },
       {
-        id: 'bet' as const,
+        operator: 'bet' as const,
         name: 'Between (<=>)',
-        valuesComponent: 'filter-values/range-input'
+        component: 'filter-values/range-input'
       },
       {
-        id: 'nbet' as const,
+        operator: 'nbet' as const,
         name: 'Not between (!<=>)',
-        valuesComponent: 'filter-values/range-input'
+        component: 'filter-values/range-input'
       }
     ];
   }

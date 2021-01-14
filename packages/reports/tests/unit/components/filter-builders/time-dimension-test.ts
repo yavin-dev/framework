@@ -52,7 +52,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     ) as TimeDimensionFilterBuilder;
 
     assert.deepEqual(
-      dateBuilder.supportedOperators.map(op => op.name),
+      dateBuilder.valueBuilders.map(op => op.name),
       ['Current Day', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
@@ -60,7 +60,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     filter.updateParameters({ grain: 'isoWeek' });
 
     assert.deepEqual(
-      dateBuilder.supportedOperators.map(op => op.name),
+      dateBuilder.valueBuilders.map(op => op.name),
       ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
@@ -84,7 +84,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     const intervalId = (start: string, end: string) => {
       const { values } = dateBuilder.args.filter;
       set(dateBuilder.args.filter, 'values', [start, end]);
-      const { internalId } = dateBuilder.selectedOperator;
+      const { internalId } = dateBuilder.selectedValueBuilder;
       set(dateBuilder.args.filter, 'values', values);
       return internalId;
     };

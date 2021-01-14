@@ -209,15 +209,25 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   );
 
   //normalize filters
-  normalized.filters.forEach(({ dimension, field, operator, values }) =>
+  normalized.filters.forEach(({ dimension, field, operator, values }) => {
+    let filterValues;
+    if (operator === 'null') {
+      operator = 'isnull';
+      filterValues = [true];
+    } else if (operator === 'notnull') {
+      operator = 'isnull';
+      filterValues = [false];
+    } else {
+      filterValues = values;
+    }
     requestV2.filters.push({
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
       parameters: { field: field || 'id' },
       operator: operator as FilterOperator,
-      values: ['null', 'notnull'].includes(operator) ? [true] : values
-    })
-  );
+      values: filterValues
+    });
+  });
 
   //normalize having
   normalized.having.forEach(({ metric: { metric, parameters = {} }, operator, values }) => {

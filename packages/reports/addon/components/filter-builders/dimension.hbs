@@ -4,7 +4,7 @@
     <FilterBuilders::Collapsed
       @filter={{@filter}}
       @request={{@request}}
-      @selectedOperator={{this.selectedOperator}}
+      @selectedValueBuilder={{this.selectedValueBuilder}}
     />
   </span>
 {{else}}
@@ -15,8 +15,8 @@
     <PowerSelect
       class="filter-builder-dimension__operator"
       @dropdownClass="filter-builder-dimension__operator-dropdown"
-      @options={{this.supportedOperators}}
-      @selected={{this.selectedOperator}}
+      @options={{this.valueBuilders}}
+      @selected={{this.selectedValueBuilder}}
       @searchEnabled={{false}}
       @tagName="span"
       @triggerClass="filter-builder-dimension__select-trigger"
@@ -25,8 +25,8 @@
     >
       {{operator.name}}
     </PowerSelect>
-    <span class="filter-builder-dimension__values {{if this.showFields "filter-builder-dimension__values--short"}}">
-      {{#let (component this.selectedOperator.valuesComponent) as |ValuesComponent|}}
+    <span class="filter-builder-dimension__values">
+      {{#let (component this.selectedValueBuilder.component) as |ValuesComponent|}}
         <ValuesComponent
           @filter={{@filter}}
           @request={{@request}}

@@ -3,16 +3,15 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { replaceNullFilter } from '../request-decorators/replace-null';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 export default class RequestDecoratorService extends Service {
   /**
-   * @method applyGlobalDecorators
-   * @param {Object} request - object to modify
-   * @returns {Object} transformed version of request
+   * @param request - object to modify
+   * @returns transformed version of request
    */
-  applyGlobalDecorators(request: TODO) {
-    return replaceNullFilter(request);
+  applyGlobalDecorators(request: RequestV2): RequestV2 {
+    return request;
   }
 }
 
