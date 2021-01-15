@@ -213,7 +213,7 @@ export default function(
               if (key === 'description') {
                 field = 'desc';
               }
-              if (dimension.show.includes(field)) {
+              if (dimension.show.length !== 0 && dimension.show.includes(field)) {
                 newRow[`${dimension.name}|${field}`] = value[key];
               }
             });
