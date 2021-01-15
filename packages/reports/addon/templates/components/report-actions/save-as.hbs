@@ -7,9 +7,10 @@
     <h5 class="secondary-header">This will create a new report with the new given name.</h5>
     {{!-- input for new Name of the Report --}}
     <DenaliInput
-      class="dashboard-title"
+      class="input dashboard-title"
       @placeholder={{this.reportName}}
       @value={{this.reportName}}
+      {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName)))}}
     />
 
     {{!-- Buttons --}}

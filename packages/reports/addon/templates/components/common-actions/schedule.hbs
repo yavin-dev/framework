@@ -37,6 +37,7 @@
                 @options={{this.frequencies}}
                 @selectedOption={{this.localDeliveryRule.frequency}}
                 @onChange={{fn (mut this.localDeliveryRule.frequency)}}
+                disabled={{is-rejected this.deliveryRule}}
                 as | frequency |
               >
                 {{capitalize frequency}}
@@ -46,13 +47,10 @@
           <DenaliInputGroup @label="Format" as |Group|>
               <Group.Select
                 class="schedule-modal__dropdown schedule-modal__dropdown--format"
-                @disabled={{lt this.formats.length 2}}
+                disabled={{lt this.formats.length 2}}
                 @options={{this.formats}}
-                @renderInPlace={{true}}
-                @selected={{this.localDeliveryRule.format.type}}
-                @searchEnabled={{false}}
-                @tagName="div"
-                @onchange={{this.updateFormat}}
+                @selectedOption={{this.localDeliveryRule.format.type}}
+                @onChange={{this.updateFormat}}
                 as | format |
               >
                 {{format}}
@@ -60,7 +58,7 @@
           </DenaliInputGroup>
           {{#if (feature-flag "enabledNotifyIfData")}}
             <br>
-            <DenaliInputGroup @label="Only Send If Data Is Present" as |Group|>
+            <DenaliInputGroup @label="Only send if data is present" as |Group|>
               <Group.Switch
                 class="schedule-modal__must-have-data-toggle"
                 @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}

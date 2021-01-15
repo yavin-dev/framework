@@ -134,7 +134,7 @@ module('Integration | Component | common actions/get api', function(hooks) {
         'Modal input box has link to the current page'
       );
 
-    let buttons = findAll('.btn-container .btn');
+    let buttons = findAll('.button');
     assert.deepEqual(
       buttons.map(el => el.textContent.trim()),
       ['Copy Link', 'Run API Query in New Tab', 'Cancel'],
@@ -165,28 +165,12 @@ module('Integration | Component | common actions/get api', function(hooks) {
         'Modal input box has link to the current page'
       );
 
-    let buttons = findAll('.btn-container .btn');
+    let buttons = findAll('.button');
     assert.deepEqual(
       buttons.map(el => el.textContent.trim()),
       ['Copy Link', 'Cancel'],
       'Copy, New Tab, and Cancel buttons are rendered'
     );
-  });
-
-  test('Copy Link Notification', async function(assert) {
-    assert.expect(2);
-
-    this.set('TestRequest', this.TestRequestBard);
-    await render(TEMPLATE);
-
-    await click('.get-api > button');
-
-    assert.dom('.modal-notification').isNotVisible('Copy notification is not visible before clicking copy button');
-
-    // Click Copy Link
-    await click($('.btn-container button:contains(Copy Link)')[0]);
-
-    assert.dom('.modal-notification').isVisible('Copy notification message is shown after clicking copy button');
   });
 
   test('Cancel button', async function(assert) {

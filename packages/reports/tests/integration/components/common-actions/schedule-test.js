@@ -2,9 +2,8 @@ import { resolve } from 'rsvp';
 import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
+import { render, click, blur, find, findAll, fillIn, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import config from 'ember-get-config';
 import RSVP from 'rsvp';
 
@@ -101,14 +100,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.deepEqual(
-      $('.schedule-modal__label')
+      $('.input-group label')
         .toArray()
         .map(el =>
           $(el)
             .text()
             .trim()
         ),
-      ['Recipients', 'Frequency', 'Format', 'Only send if data is present'],
+      ['Frequency', 'Format', 'Only send if data is present', ''],
       'Schedule Modal has all the expected sections'
     );
 
@@ -128,17 +127,13 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--frequency')
-        .text()
-        .trim(),
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
       'Week',
       'Week is the default frequency value'
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--format')
-        .text()
-        .trim(),
+      find('.schedule-modal__dropdown--format').selectedOptions[0].textContent.trim(),
       'csv',
       '`.csv` is the default format value'
     );
@@ -163,10 +158,8 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--frequency')
-        .text()
-        .trim(),
-      'Week',
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Day',
       'The frequency is fetched from the delivery rule'
     );
   });
@@ -196,8 +189,10 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
-    await nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
+    await click('.schedule-modal__dropdown--frequency');
+    const select = find('.schedule-modal__dropdown--frequency');
+    select.selectedIndex = 2;
+    await triggerEvent(select, 'change');
 
     assert.notOk(
       $('.schedule-modal__save-btn').attr('disabled'),
@@ -284,9 +279,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await click('.schedule-modal__dropdown--frequency');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.schedule-modal__dropdown--frequency option').map(el => el.textContent.trim()),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
       'Schedule frequency should have correct default options'
     );
@@ -303,9 +298,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await click('.schedule-modal__dropdown--frequency');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.schedule-modal__dropdown--frequency option').map(el => el.textContent.trim()),
       ['Day', 'Week', 'Month'],
       'Schedule frequency should have correct options'
     );
@@ -323,9 +318,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--format');
+    await click('.schedule-modal__dropdown--format');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.schedule-modal__dropdown--format option').map(el => el.textContent.trim()),
       ['csv', 'test'],
       'Schedule format should have correct options'
     );
@@ -342,9 +337,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--format');
+    await click('.schedule-modal__dropdown--format');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.schedule-modal__dropdown--format option').map(el => el.textContent.trim()),
       ['csv', 'pdf', 'png'],
       'Schedule format should have correct options'
     );
@@ -364,11 +359,9 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
+    assert.dom('.schedule-modal__dropdown--format').hasAttribute('disabled');
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-trigger')
-      .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
-    assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .dom('.schedule-modal__dropdown--format')
       .includesText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;

@@ -52,11 +52,11 @@ module('Integration | Component | common actions/share', function(hooks) {
 
     await render(Template);
 
-    assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
+    assert.notOk($('.modal-container').is(':visible'), 'Share modal is not visible before clicking the component');
 
     await click('.share > button');
 
-    assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
+    assert.ok($('.modal-container').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
     assert.equal(
       $('.primary-header')
@@ -74,9 +74,9 @@ module('Integration | Component | common actions/share', function(hooks) {
       'Secondary header is visible with instructions'
     );
 
-    assert.equal($('.modal-input-box').val(), document.location.href, 'Modal input box has link to the current page');
+    assert.equal($('.share-input').val(), document.location.href, 'Modal input box has link to the current page');
 
-    let buttons = $('.btn-container .btn');
+    let buttons = $('.button');
     assert.deepEqual(
       buttons
         .map(function() {
@@ -88,40 +88,22 @@ module('Integration | Component | common actions/share', function(hooks) {
     );
   });
 
-  test('Copy Link Notification', async function(assert) {
-    assert.expect(2);
-
-    await render(Template);
-
-    await click('.share > button');
-
-    assert.notOk(
-      $('.modal-notification').is(':visible'),
-      'Copy notification is not visible before clicking copy button'
-    );
-
-    // Click Copy Link
-    await click($('.btn-container button:contains(Copy Link)')[0]);
-
-    assert.ok($('.modal-notification').is(':visible'), 'Copy notification message is shown after clicking copy button');
-  });
-
   test('Cancel button', async function(assert) {
     assert.expect(3);
 
     await render(Template);
 
-    assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is not visible before clicking the component');
+    assert.notOk($('.modal-container').is(':visible'), 'Share modal is not visible before clicking the component');
 
     // Click component
     await click('.share > button');
 
-    assert.ok($('.ember-modal-dialog').is(':visible'), 'Share modal dialog pops up on clicking the component');
+    assert.ok($('.modal-container').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
     // Click Cancel
-    await click($('.btn-container button:contains(Cancel)')[0]);
+    await click('.button.is-outline');
 
-    assert.notOk($('.ember-modal-dialog').is(':visible'), 'Share modal is closed after clicking cancel button');
+    assert.notOk($('.modal-container').is(':visible'), 'Share modal is closed after clicking cancel button');
   });
 
   test('buildUrl option', async function(assert) {
@@ -134,10 +116,6 @@ module('Integration | Component | common actions/share', function(hooks) {
     // Click component
     await click('.share > button');
 
-    assert.equal(
-      $('.modal-input-box').val(),
-      'www.navi.com/customUrlToShare',
-      'buildUrl option allows custom url logic'
-    );
+    assert.equal($('.share-input').val(), 'www.navi.com/customUrlToShare', 'buildUrl option allows custom url logic');
   });
 });

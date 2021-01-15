@@ -17,8 +17,6 @@ module('Acceptance | share link', function(hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-collection__row0 .share .btn');
 
-    assert
-      .dom('.modal-input-box')
-      .hasValue(`${baseUrl}/reports/1`, 'The share link is built correctly by buildReportUrl');
+    assert.dom('.share-input').hasValue(`${baseUrl}/reports/1`, 'The share link is built correctly by buildReportUrl');
   });
 });
