@@ -15,13 +15,13 @@
         <div class="navi-modal__header--primary">API Query</div>
       </modal.Header>
       <modal.Content>
-        <div class="navi-modal__header--secondary">Select the Copy button to copy to clipboard.</div>
-        <input class="navi-modal__input" value={{this.requestUrl}} readonly>
+        <div class="navi-modal__header--secondary m-b-30">Select the Copy button to copy to clipboard.</div>
+        <DenaliInput class="navi-modal-input m-b-30" value={{this.requestUrl}} readonly />
 
         {{!-- Buttons --}}
         <div class="btn-container">
           <CopyButton
-            class="button is-solid"
+            class="button is-solid m-5"
             @clipboardText={{this.requestUrl}}
             @success={{toggle "successNotification" this}}
             @error={{toggle "errorNotification" this}}
@@ -29,9 +29,9 @@
             Copy Link
           </CopyButton>
           {{#if this.isRequestURL}}
-            <a class="button is-outline" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
+            <a class="button is-outline m-5" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
           {{/if}}
-          <DenaliButton class="is-outline" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
+          <DenaliButton class="is-outline m-5" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
         </div>
       </modal.Content>
   </DenaliModal>

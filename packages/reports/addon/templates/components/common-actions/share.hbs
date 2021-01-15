@@ -11,25 +11,8 @@
         <div class="primary-header">Share "{{this.pageTitle}}"</div>
       </modal.Header>
       <modal.Content>
-        {{!-- Notification center --}}
-        {{#if this.errorNotification}}
-          <div class="modal-notification alert info">
-            <NaviIcon @icon="exclamation-circle" />
-            <div class="notification-text">Please Type ⌘-c to copy</div>
-            <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" (toggle "errorNotification" this)}} />
-          </div>
-        {{else}}
-          {{#if this.successNotification}}
-            <div class="modal-notification alert success">
-              <NaviIcon @icon="check" />
-              <div class="notification-text">Success! The link has been copied to your clipboard</div>
-              <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" (toggle "successNotification" this)}} />
-            </div>
-          {{else}}
-            <div class="secondary-header">Select the Copy button to copy to clipboard.</div>
-          {{/if}}
-        {{/if}}
-        <DenaliInput class="share-input" value={{this.currentUrl}} readonly />
+        <div class="secondary-header m-b-30">Select the Copy button to copy to clipboard.</div>
+        <DenaliInput class="share-input m-b-30" value={{this.currentUrl}} readonly />
 
         {{!-- Buttons --}}
         <CopyButton

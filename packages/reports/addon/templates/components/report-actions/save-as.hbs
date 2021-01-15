@@ -7,7 +7,7 @@
     <h5 class="secondary-header">This will create a new report with the new given name.</h5>
     {{!-- input for new Name of the Report --}}
     <DenaliInput
-      class="input dashboard-title"
+      class="input dashboard-title m-b-30"
       @placeholder={{this.reportName}}
       @value={{this.reportName}}
       {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName)))}}
@@ -18,11 +18,11 @@
       {{!-- Create a new copy of the report --}}
       <LinkTo @route="reports.report.save-as" @query={{hash title=this.reportName}}
         @tagName="button"
-        class="button is-solid save-as__save-as-modal-btn"
+        class="button is-solid save-as__save-as-modal-btn m-5"
       >
         Save
       </LinkTo>
-      <DenaliButton class="is-outline save-as__cancel-modal-btn" {{on "click" this.closeModal}}>Cancel</DenaliButton>
+      <DenaliButton class="is-outline save-as__cancel-modal-btn m-5" {{on "click" this.closeModal}}>Cancel</DenaliButton>
     </div>
   </modal.Content>
 </DenaliModal>

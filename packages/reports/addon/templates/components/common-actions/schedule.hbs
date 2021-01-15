@@ -27,11 +27,10 @@
             @onUpdateEmails={{this.updateRecipients}}
             @isDisabled={{is-rejected this.deliveryRule}}
           />
-          <div class="schedule-modal__helper-recipients">
+          <div class="schedule-modal__helper-recipients  m-b-30">
             Please enter valid email addresses separated by commas.
           </div>
-          <br>
-          <DenaliInputGroup @label="Frequency" as |Group|>
+          <DenaliInputGroup class="m-b-30" @label="Frequency" as |Group|>
               <Group.Select
                 class="schedule-modal__dropdown schedule-modal__dropdown--frequency"
                 @options={{this.frequencies}}
@@ -43,8 +42,7 @@
                 {{capitalize frequency}}
               </Group.Select>
           </DenaliInputGroup>
-          <br>
-          <DenaliInputGroup @label="Format" as |Group|>
+          <DenaliInputGroup class="m-b-30" @label="Format" as |Group|>
               <Group.Select
                 class="schedule-modal__dropdown schedule-modal__dropdown--format"
                 disabled={{lt this.formats.length 2}}
@@ -57,8 +55,7 @@
               </Group.Select>
           </DenaliInputGroup>
           {{#if (feature-flag "enabledNotifyIfData")}}
-            <br>
-            <DenaliInputGroup @label="Only send if data is present" as |Group|>
+            <DenaliInputGroup class="m-b-30" @label="Only send if data is present" as |Group|>
               <Group.Switch
                 class="schedule-modal__must-have-data-toggle"
                 @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}
@@ -69,7 +66,7 @@
           <div class="schedule-modal__btn-container btn-container">
             {{#if (is-rejected this.deliveryRule)}}
               <DenaliButton
-                class="schedule-modal__cancel-btn button is-solid btn-primary"
+                class="schedule-modal__cancel-btn button is-solid btn-primary m-5"
                 disabled={{this.isSaving}}
                 type="button"
                 {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
@@ -104,7 +101,7 @@
             {{/if}}
             {{#unless this.localDeliveryRule.isNew}}
               <CommonActions::Delete
-                class="schedule-modal__delete-btn"
+                class="schedule-modal__delete-btn m-5"
                 @disabled={{this.isSaving}}
                 @model={{this.localDeliveryRule}}
                 @modelName="schedule"

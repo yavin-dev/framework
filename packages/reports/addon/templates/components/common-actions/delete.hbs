@@ -8,7 +8,7 @@
       <h1 class="primary-header">{{this.headerMsg}}</h1>
     </modal.Header>
     <modal.Content>
-      <h5 class="secondary-header">
+      <h5 class="secondary-header m-b-30">
         {{this.warnMsg}}
       </h5>
       {{#if this.isDeleting}}
@@ -16,8 +16,6 @@
           Deleting {{classify this.modelName}}
         </NaviLoadingMessage>
       {{/if}}
-    </modal.Content>
-    <modal.Footer>
       <DenaliButton
         type="button"
         class="button is-solid m-5"
@@ -26,7 +24,7 @@
       >
         Confirm
       </DenaliButton>
-      <DenaliButton type="button" class="button is-outline btn-secondary m-5" {{on "click" (toggle "showModal" this)}} disabled={{this.isDeleting}}>Cancel</DenaliButton>
-    </modal.Footer>
+      <DenaliButton type="button m-5" class="button is-outline btn-secondary m-5" {{on "click" (toggle "showModal" this)}} disabled={{this.isDeleting}}>Cancel</DenaliButton>
+    </modal.Content>
   </DenaliModal>
 </div>
