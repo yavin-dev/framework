@@ -6,10 +6,10 @@
   <DenaliInput
     @size="small"
     @iconBack="search"
-    @iconBackClass="navi-list-selector__search-icon"
+    @iconBackClass="is-brand-300"
     value={{this.query}}
     type="text"
-    placeholder={{concat "Search " (capitalize @title)}}
+    placeholder="Search {{capitalize @title}}"
     class="navi-list-selector__search-input"
     {{on "input" (pipe (pick 'target.value') (fn (mut this.query) ) )}}
   />
