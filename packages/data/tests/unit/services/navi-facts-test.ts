@@ -83,7 +83,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
 
     //setup Pretender
     Server = new Pretender(function() {
-      this.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, function(request) {
+      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, function(request) {
         if (request.queryParams.page && request.queryParams.perPage) {
           return [
             200,
@@ -117,7 +117,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
   test('getURL', function(assert) {
     assert.deepEqual(
       Service.getURL(TestRequest),
-      `${HOST}/v1/data/table1/grain1/d1/d2/?` +
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/?` +
         'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
         'filters=d3%7Cid-in%5B%22v1%22%2C%22v2%22%5D%2Cd4%7Cid-in%5B%22v3%22%2C%22v4%22%5D&having=m1-gt%5B0%5D&' +
         'format=json',
@@ -126,7 +126,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
 
     assert.deepEqual(
       Service.getURL(TestRequest, { format: 'jsonApi' }),
-      `${HOST}/v1/data/table1/grain1/d1/d2/?` +
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/?` +
         'dateTime=2015-01-03%2F2015-01-04&metrics=m1%2Cm2&' +
         'filters=d3%7Cid-in%5B%22v1%22%2C%22v2%22%5D%2Cd4%7Cid-in%5B%22v3%22%2C%22v4%22%5D&having=m1-gt%5B0%5D&' +
         'format=jsonApi',
@@ -187,7 +187,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     assert.expect(6);
 
     // Return an error object
-    Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
+    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, () => {
       return [
         507,
         { 'Content-Type': 'application/json' },
@@ -207,7 +207,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     });
 
     // Return an error string
-    Server.get(`${HOST}/v1/data/table1/grain1/d1/d2/`, () => {
+    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, () => {
       return [500, { 'Content-Type': 'text/plain' }, 'Server Error'];
     });
 
