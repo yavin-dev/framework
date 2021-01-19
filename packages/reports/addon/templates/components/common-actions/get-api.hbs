@@ -16,7 +16,7 @@
       </modal.Header>
       <modal.Content>
         <div class="navi-modal__header--secondary m-b-30">Select the Copy button to copy to clipboard.</div>
-        <DenaliInput class="navi-modal-input m-b-30" value={{this.requestUrl}} readonly />
+        <DenaliInput class="navi-modal__input m-b-30" value={{this.requestUrl}} readonly />
 
         {{!-- Buttons --}}
         <div class="btn-container">
@@ -31,7 +31,7 @@
           {{#if this.isRequestURL}}
             <a class="button is-outline m-5" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query in New Tab</a>
           {{/if}}
-          <DenaliButton class="is-outline m-5" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
+          <DenaliButton class="m-5" @style="outline" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
         </div>
       </modal.Content>
   </DenaliModal>

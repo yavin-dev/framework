@@ -55,8 +55,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to 'Day'
-    await click('.schedule-modal__dropdown--frequency');
     const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -130,8 +130,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency');
     const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -261,8 +261,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency');
     const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -307,8 +307,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency');
     const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 

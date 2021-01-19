@@ -66,7 +66,8 @@
           <div class="schedule-modal__btn-container btn-container">
             {{#if (is-rejected this.deliveryRule)}}
               <DenaliButton
-                class="schedule-modal__cancel-btn button is-solid btn-primary m-5"
+                class="schedule-modal__cancel-btn m-5"
+                @style="solid"
                 disabled={{this.isSaving}}
                 type="button"
                 {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}

@@ -189,8 +189,8 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
 
-    await click('.schedule-modal__dropdown--frequency');
     const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
     select.selectedIndex = 2;
     await triggerEvent(select, 'change');
 

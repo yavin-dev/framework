@@ -23,7 +23,7 @@
         >
           Copy Link
         </CopyButton>
-        <DenaliButton class="is-outline m-5" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
+        <DenaliButton class="m-5" @style="outline" {{on "click" (queue (toggle "showModal" this) this.resetNotifications)}}>Cancel</DenaliButton>
       </modal.Content>
   </DenaliModal>
 </div>
