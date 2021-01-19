@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, fillIn } from '@ember/test-helpers';
+import { render, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 const TEMPLATE = hbs`
@@ -66,7 +66,7 @@ module('Integration | Component | navi list selector', function(hooks) {
   });
 
   test('search', async function(assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     await render(TEMPLATE);
 
@@ -83,14 +83,6 @@ module('Integration | Component | navi list selector', function(hooks) {
     assert
       .dom('.navi-list-selector__content--error')
       .hasText('No items found', 'No items found error message is displayed when no items match the search query');
-
-    await click('.navi-list-selector__search-input-clear');
-
-    assert.deepEqual(
-      findAll('.test-item').map(el => el.textContent.trim()),
-      ['foo', 'bar', 'baz'],
-      'the search query is cleared and the selected items are rendered as `list-item`s'
-    );
 
     await fillIn('.navi-list-selector__search-input', 'foo');
 
