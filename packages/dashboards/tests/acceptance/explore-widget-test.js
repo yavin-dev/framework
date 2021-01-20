@@ -230,7 +230,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click($('.navi-report-widget__action:contains(Share) button')[0]);
 
     assert
-      .dom('.navi-modal .primary-header')
+      .dom('.modal .modal-header')
       .hasText('Share "Mobile DAU Graph"', 'Clicking share action brings up share modal');
   });
 
@@ -255,9 +255,9 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/1/widgets/2/view');
     await click($('.navi-report-widget__action:contains(Delete) button')[0]);
-    assert.dom('.primary-header').hasText('Delete "Mobile DAU Graph"', 'Delete modal pops up when action is clicked');
+    assert.dom('.modal-header').hasText('Delete "Mobile DAU Graph"', 'Delete modal pops up when action is clicked');
 
-    await click('.navi-modal .btn-primary');
+    await click('.modal .button.is-solid');
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
     assert.deepEqual(

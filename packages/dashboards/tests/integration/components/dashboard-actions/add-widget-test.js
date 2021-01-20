@@ -46,22 +46,22 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
 
     await click('.dashboard-control');
 
-    assert
-      .dom('.add-widget-modal .ember-power-select-selected-item')
-      .hasText('Create new...', 'Create new option is selected by default in the dropdown');
+    assert.equal(
+      find('.report-select').selectedOptions[0].textContent.trim(),
+      'Create new...',
+      'Create new option is selected by default in the dropdown'
+    );
 
     await toggleSelector('.add-widget-modal');
 
     assert.deepEqual(
-      findAll('.add-widget-modal .ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.report-select option').map(el => el.textContent.trim()),
       ['Create new...', 'Report 1', 'Report 2'],
       'The user`s report titles are shown in the dropdown along with create new'
     );
 
     assert.deepEqual(
-      findAll('.add-widget-modal .ember-power-select-group .ember-power-select-option').map(el =>
-        el.textContent.trim()
-      ),
+      findAll('.report-select option').map(el => el.textContent.trim()),
       ['Report 1', 'Report 2'],
       'The user`s report titles are shown under a group in the dropdown'
     );

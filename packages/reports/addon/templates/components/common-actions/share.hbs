@@ -8,7 +8,7 @@
   <DenaliModal @isOpen={{this.showModal}} @onClose={{queue (toggle "showModal" this) this.resetNotifications}}
   ...attributes as |modal|>
       <modal.Header class="navi-modal-header">
-        <div class="primary-header">Share "{{this.pageTitle}}"</div>
+        <div>Share "{{this.pageTitle}}"</div>
       </modal.Header>
       <modal.Content>
         <div class="secondary-header m-b-30">Select the Copy button to copy to clipboard.</div>

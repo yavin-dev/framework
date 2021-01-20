@@ -155,7 +155,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     await click('.navi-dashboard-container__add-widget-text');
-    assert.dom('.add-widget-modal').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
+    assert.dom('.modal-container').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
   test('index route', async function(assert) {
@@ -184,16 +184,14 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.dom('.navi-collection__actions .action').exists({ count: 5 }, 'The second column contains five actions');
 
-    assert
-      .dom('.primary-header')
-      .hasText('Share "Tumblr Goals Dashboard"', 'Share modal pops up when action is clicked');
+    assert.dom('.modal-header').hasText('Share "Tumblr Goals Dashboard"', 'Share modal pops up when action is clicked');
 
     // Cancel modal and click "Delete"
     await click($('button:contains(Cancel)')[0]);
     await click('.navi-collection__row0 .delete button');
 
     assert
-      .dom('.primary-header')
+      .dom('.modal-header')
       .hasText('Delete "Tumblr Goals Dashboard"', 'Delete modal pops up when action is clicked');
 
     // Cancel modal and click "Clone"
@@ -246,7 +244,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.add-widget .btn');
 
     assert
-      .dom('.add-widget-modal .btn')
+      .dom('.modal .button')
       .hasAttribute(
         'href',
         `/dashboards/1/widgets/new`,
@@ -254,7 +252,7 @@ module('Acceptance | Dashboards', function(hooks) {
       );
 
     await selectChoose('.report-select', 'Report 12');
-    await click('.add-widget-modal .btn');
+    await click('. .button');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map(el => el.textContent.trim()),
@@ -415,7 +413,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create new widget
     await click('.add-widget .btn');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.modal-container .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
@@ -449,7 +447,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create another new widget
     await click('.add-widget .btn');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.modal-container .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
@@ -724,7 +722,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Create new widget
     await click('.add-widget .btn');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.modal-container .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');

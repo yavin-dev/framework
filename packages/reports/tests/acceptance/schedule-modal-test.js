@@ -3,7 +3,6 @@
 import { find, click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import $ from 'jquery';
 import Mirage from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import Ember from 'ember';

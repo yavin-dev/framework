@@ -63,17 +63,15 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await render(Template);
 
     assert
-      .dom('.add-to-dashboard-modal')
+      .dom('.modal.is-active')
       .isNotVisible('add to dashboard report action modal is not visible before clicking the component');
 
     await click('.report-control');
 
-    assert
-      .dom('.add-to-dashboard-modal')
-      .isVisible('add to dashboard report modal dialog pops up on clicking the component');
+    assert.dom('.modal.is-active').isVisible('add to dashboard report modal dialog pops up on clicking the component');
 
     assert
-      .dom('.add-to-dashboard-modal .text-input')
+      .dom('.modal.is-active .input')
       .hasValue('Buzz Blob', 'the report title is displayed as the default name for widget title');
   });
 
