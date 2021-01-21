@@ -15,16 +15,12 @@ export const CAL_DISPLAY_DATE_FORMAT_STRING = 'M/D/YYYY';
 
 export type DateTimePeriod = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
 type StandardGrain = DateTimePeriod | 'isoWeek';
-export type Grain = StandardGrain | 'all';
+export type Grain = StandardGrain;
 
 /**
  * Returns a date time period for a gain
  */
 export function getPeriodForGrain(grain: Grain): DateTimePeriod {
-  if ('all' === grain) {
-    return 'day';
-  }
-
   if ('isoWeek' === grain) {
     return 'week';
   }

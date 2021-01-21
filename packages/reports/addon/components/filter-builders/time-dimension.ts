@@ -77,13 +77,13 @@ export function valuesForOperator(
     const interval = Interval.parseFromStrings(startStr, endStr);
     const end = interval.asMomentsForTimePeriod(dateTimePeriod).end.utc(true);
     let intervalTimePeriod = intervalPeriodForGrain(dateTimePeriod);
-    const nonAllGrain = dateTimePeriod === 'all' ? 'day' : dateTimePeriod;
 
     let intervalValue;
     if (
       end.isSame(
-        moment()
-          .startOf(nonAllGrain)
+        moment
+          .utc()
+          .startOf(dateTimePeriod)
           .utc(true)
       )
     ) {
@@ -117,7 +117,16 @@ export function valuesForOperator(
   } else if (newOperator === OPERATORS.dateRange) {
     const interval = Interval.parseFromStrings(startStr, endStr);
     const { start, end } = interval.asMomentsForTimePeriod(dateTimePeriod);
-    return [start.utc(true).toISOString(), end.utc(true).toISOString()];
+    return [
+      start
+        .startOf('day')
+        .utc(true)
+        .toISOString(),
+      end
+        .startOf('day')
+        .utc(true)
+        .toISOString()
+    ];
   }
   warn(`No operator was found for the values '${prevValues.join(',')}'`, {
     id: 'time-dimension-filter-builder-no-operator'

@@ -220,7 +220,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(
         response.details[0],
-        `Exactly one 'table1.dateTime' filter is supported, you have 0`,
+        `Exactly one 'table1.dateTime' filter is required, you have 0`,
         'Adapter error is shown'
       );
     });

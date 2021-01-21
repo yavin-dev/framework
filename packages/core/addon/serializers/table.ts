@@ -119,7 +119,7 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
     if (newCol.type === 'dateTime') {
       const { table } = request;
       const grain = request.columns.find(c => c.field === `${table}.dateTime`)?.parameters.grain;
-      canonicalName = `${table}.${canonicalName}(grain=${grain || 'all'})`;
+      canonicalName = `${table}.${canonicalName}(grain=${grain})`;
     } else if (newCol.type === 'dimension') {
       canonicalName = `${canonicalName}(field=id)`;
     }
@@ -186,7 +186,7 @@ export function normalizeTableV2(
     if (showTotals?.subtotal === 'dateTime') {
       const { table } = request;
       const grain = request.columns.find(c => c.field === `${table}.dateTime`)?.parameters.grain;
-      canonicalName = `${table}.dateTime(grain=${grain || 'all'})`;
+      canonicalName = `${table}.dateTime(grain=${grain})`;
     } else {
       canonicalName = `${showTotals.subtotal}(field=id)`;
     }

@@ -23,16 +23,11 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
   @readOnly('args.filter.parameters.grain') dateTimePeriod!: Grain;
 
   /**
-   * the active dateTimePeriod which does not include 'all'
+   * the active dateTimePeriod
    */
   @computed('dateTimePeriod')
   get calendarDateTimePeriod() {
-    const { dateTimePeriod } = this;
-    if (dateTimePeriod === 'all') {
-      // TODO: Handle all timegrain better
-      return 'day';
-    }
-    return dateTimePeriod;
+    return this.dateTimePeriod;
   }
 
   /**

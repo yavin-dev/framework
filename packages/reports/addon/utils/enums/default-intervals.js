@@ -4,7 +4,6 @@
  */
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
-import moment from 'moment';
 
 export default {
   second: 'P1D',
@@ -15,7 +14,6 @@ export default {
   month: 'P1M',
   quarter: 'P3M',
   year: 'P1Y',
-  all: 'P7D',
 
   /**
    * @method getDefault
@@ -23,11 +21,7 @@ export default {
    * @returns {Interval} default interval for given time grain
    */
   getDefault(timeGrain) {
-    // All timegrain doesn't support `current` macro
     let intervalEnd = 'current';
-    if (timeGrain === 'all') {
-      intervalEnd = moment().startOf('day');
-    }
 
     return new Interval(new Duration(this[timeGrain]), intervalEnd);
   }

@@ -22,6 +22,10 @@ import NaviFactAdapter, {
   Sort
 } from './interface';
 import { omit } from 'lodash-es';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import { Grain } from 'navi-data/utils/date';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export class FactAdapterError extends Error {
@@ -96,18 +100,12 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   namespace = 'v1/data';
 
-  /**
-   * @property {Service} ajax
-   */
   @service ajax: TODO;
+
+  @service naviMetadata!: NaviMetadataService;
 
   /**
    * Builds the dimensions path for a request
-   *
-   * @method _buildDimensionsPath
-   * @private
-   * @param request
-   * @return dimensions path
    */
   _buildDimensionsPath(request: RequestV2 /*options*/): string {
     const dimensionToFields = request.columns
@@ -134,40 +132,32 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds a dateTime param string for a request
-   *
-   * @method _buildDateTimeParam
-   * @private
-   * @param request
-   * @return dateTime param value
    */
   _buildDateTimeParam(request: RequestV2): string {
     const dateTimeFilters = request.filters.filter(isDateTime);
     if (dateTimeFilters.length !== 1) {
       throw new FactAdapterError(
-        `Exactly one '${request.table}.dateTime' filter is supported, you have ${dateTimeFilters.length}`
+        `Exactly one '${request.table}.dateTime' filter is required, you have ${dateTimeFilters.length}`
       );
     }
-    const filter = dateTimeFilters[0];
-    const dateTime = request.columns.filter(isDateTime)[0];
-    const timeGrain = dateTime?.parameters?.grain || 'all';
-    if (timeGrain !== filter.parameters.grain) {
+    const timeFilter = dateTimeFilters[0];
+    const filterGrain = timeFilter?.parameters?.grain;
+
+    const timeColumn = request.columns.filter(isDateTime)[0];
+    const columnGrain = timeColumn?.parameters?.grain;
+    if (timeColumn && columnGrain !== filterGrain) {
       throw new FactAdapterError(
-        `The requested filter timeGrain '${filter.parameters.grain}', must match the column timeGrain '${timeGrain}'`
+        `The requested filter timeGrain '${filterGrain}', must match the column timeGrain '${columnGrain}'`
       );
     }
 
-    const [start, end] = filter.values;
+    const [start, end] = timeFilter.values;
 
     return `${start}/${end}`;
   }
 
   /**
    * Builds a metrics param string for a request
-   *
-   * @method _buildMetricsParam
-   * @private
-   * @param request
-   * @return metrics param value
    */
   _buildMetricsParam(request: RequestV2): string {
     const metrics = request.columns.filter(col => col.type === 'metric');
@@ -182,11 +172,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds a filters param string for a request
-   *
-   * @method _buildFiltersParam
-   * @private
-   * @param request
-   * @return filters param value
    */
   _buildFiltersParam(request: RequestV2): string | undefined {
     const filters = request.filters.filter(fil => fil.type === 'dimension' && fil.values.length !== 0);
@@ -199,12 +184,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds a sort param string for a request
-   *
-   * @method _buildSortParam
-   * @private
-   * @param request
-   * @param aliasFunction function that returns metrics from aliases
-   * @return sort param value
    */
   _buildSortParam(request: RequestV2): string | undefined {
     const { sorts, table } = request;
@@ -230,10 +209,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds a having param string for a request
-   *
-   * @private
-   * @param request
-   * @return having param value
    */
   _buildHavingParam(request: RequestV2): string | undefined {
     const having = request.filters.filter(fil => fil.type === 'metric' && fil.values.length !== 0);
@@ -252,12 +227,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds a URL path for a request
-   *
-   * @method _buildURLPath
-   * @private
-   * @param request
-   * @param options - optional host options
-   * @return URL Path
    */
   _buildURLPath(request: RequestV2, options: RequestOptions = {}): string {
     const host = configHost(options);
@@ -265,67 +234,58 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const table = request.table;
 
     const dateTimeColumns = request.columns.filter(isDateTime);
-    if (dateTimeColumns.length > 1) {
-      throw new FactAdapterError(`Requsting more than one '${request.table}.dateTime' columns is not supported`);
+    const grains = [...new Set(dateTimeColumns.map(c => c.parameters.grain))] as Grain[];
+    if (grains.length > 1) {
+      throw new FactAdapterError(
+        `Requesting more than one '${request.table}.dateTime' grain is not supported. You requested [${grains.join(
+          ','
+        )}]`
+      );
     }
-    let timeGrain = dateTimeColumns[0]?.parameters?.grain || 'all';
+    let timeGrain: GrainWithAll = grains.length === 1 ? grains[0] : 'all';
     timeGrain = 'isoWeek' === timeGrain ? 'week' : timeGrain;
     const dimensions = this._buildDimensionsPath(request);
+
+    const tableMeta = this.naviMetadata.getById('table', table, request.dataSource) as
+      | BardTableMetadataModel
+      | undefined;
+    if (timeGrain === 'all' && tableMeta?.hasAllGrain === false) {
+      throw new FactAdapterError(`Table '${table}' requires exactly 1 'Date Time' column, you have 0.`);
+    }
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   }
 
   /**
    * Builds a query object for a request
-   *
-   * @method _buildQuery
-   * @private
-   * @param request
-   * @param options
-   * @returns query object
    */
   _buildQuery(request: RequestV2, options?: RequestOptions): Query {
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request);
     const sort = this._buildSortParam(request);
+
     const query: Query = {
       dateTime: this._buildDateTimeParam(request),
-      metrics: this._buildMetricsParam(request)
+      metrics: this._buildMetricsParam(request),
+      ...(filters ? { filters } : {}),
+      ...(having ? { having } : {}),
+      ...(sort ? { sort } : {}),
+      format: options?.format ?? 'json'
     };
 
-    if (filters) {
-      query.filters = filters;
+    const { page, perPage, cache, queryParams } = options || {};
+    if (page && perPage) {
+      query.page = page;
+      query.perPage = perPage;
     }
 
-    if (having) {
-      query.having = having;
+    if (cache === false) {
+      query._cache = false;
     }
 
-    if (sort) {
-      query.sort = sort;
-    }
-
-    //default format
-    query.format = 'json';
-
-    if (options) {
-      if (options.page && options.perPage) {
-        query.page = options.page;
-        query.perPage = options.perPage;
-      }
-
-      if (options.format) {
-        query.format = options.format;
-      }
-
-      if (options.cache === false) {
-        query._cache = false;
-      }
-
-      //catch all query param and add to the query
-      if (options.queryParams) {
-        assign(query, options.queryParams);
-      }
+    //catch all query param and add to the query
+    if (queryParams) {
+      assign(query, queryParams);
     }
 
     return query;
@@ -333,55 +293,39 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Returns URL String for a request
-   *
-   * @method urlForFindQuery
-   * @param request
-   * @param options
-   * @return url
    */
   urlForFindQuery(request: RequestV2, options?: RequestOptions): string {
     // Decorate and translate the request
-    let decoratedRequest = this._decorate(request),
-      path = this._buildURLPath(decoratedRequest, options),
-      query = this._buildQuery(decoratedRequest, options),
-      queryStr = Object.entries(query)
-        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
-        .join('&');
+    const decoratedRequest = this._decorate(request);
+    const path = this._buildURLPath(decoratedRequest, options);
+    const query = this._buildQuery(decoratedRequest, options);
+    const queryStr = Object.entries(query)
+      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+      .join('&');
 
     return `${path}?${queryStr}`;
   }
 
   /**
    * Returns URL String for a request
-   *
-   * @method urlForDownloadQuery
-   * @param request
-   * @param options
-   * @return url
    */
   async urlForDownloadQuery(request: RequestV2, options?: RequestOptions): Promise<string> {
     return this.urlForFindQuery(request, options);
   }
   /**
-   * @property {Ember.Service} requestDecorator
+   * @property requestDecorator
    */
   @service requestDecorator: TODO;
 
   /**
-   * @method _decorate
-   * @private
-   * @param request - request to decorate
-   * @returns decorated request
+   * Decorates a requestV2 object
    */
   _decorate(request: RequestV2): RequestV2 {
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
   /**
-   * @method fetchDataForRequest - Uses the url generated using the adapter to make an ajax request
-   * @param request - request (v2) object
-   * @param options - options object
-   * @returns {Promise} - Promise with the response
+   * Uses the url generated using the adapter to make an ajax request
    */
   fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
     assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));

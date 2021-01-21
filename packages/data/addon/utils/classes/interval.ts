@@ -7,7 +7,7 @@ import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
 import Duration, { isIsoDurationString } from './duration';
 import DurationUtils from '../duration-utils';
-import { API_DATE_FORMAT_STRING, getPeriodForGrain, Grain } from '../date';
+import { getPeriodForGrain, Grain } from '../date';
 
 const CURRENT = 'current';
 const NEXT = 'next';
@@ -100,10 +100,10 @@ export default class Interval {
      * Note: currently only supports "current" and "next" macros
      */
     if (start === CURRENT) {
-      start = moment();
+      start = moment.utc();
     }
     if (end === CURRENT) {
-      end = moment();
+      end = moment.utc();
     }
     if (end === NEXT) {
       end = undefined;
@@ -128,20 +128,13 @@ export default class Interval {
    * @returns object with start and end properties
    */
   asMomentsForTimePeriod(grain: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
-    /*
-     * moment does not know how to deal with all,
-     * and we only concern day here, so use day as base unit
-     */
-    if (grain === 'all') {
-      grain = 'day';
-    }
     const period = getPeriodForGrain(grain);
 
     let { start, end } = this.asMoments();
 
     // Handle the case where the end is undefined, hence it is 'next'
     if (end === undefined) {
-      end = moment().add(1, period);
+      end = moment.utc().add(1, period);
     }
 
     // Make sure moments are start of time period
@@ -164,13 +157,6 @@ export default class Interval {
    * @returns new interval with inclusive exclusive
    */
   makeEndExclusiveFor(grain: Grain): Interval {
-    /*
-     * moment does not know how to deal with all,
-     * and we only concern day here, so use day as base unit
-     */
-    if (grain === 'all') {
-      grain = 'day';
-    }
     const period = getPeriodForGrain(grain);
 
     let { start, end } = this.asMoments();
@@ -210,7 +196,7 @@ export default class Interval {
   diffForTimePeriod(grain: Grain): number {
     const moments = this.asMomentsForTimePeriod(grain);
     const period = getPeriodForGrain(grain);
-    return grain === 'all' ? 1 : moments.end.diff(moments.start, period);
+    return moments.end.diff(moments.start, period);
   }
 
   /**
@@ -228,10 +214,6 @@ export default class Interval {
     const range = this.asMomentsForTimePeriod(grain);
     const currentDate = range.start;
     const dates = [];
-
-    if (grain === 'all') {
-      return [currentDate.clone()];
-    }
 
     const period = getPeriodForGrain(grain);
     while (currentDate.isBefore(range.end)) {
@@ -276,7 +258,7 @@ export default class Interval {
    * @param format optional format for date strings
    * @returns object most closely represented by string
    */
-  static fromString(property: string, format = API_DATE_FORMAT_STRING): IntervalStart | IntervalEnd {
+  static fromString(property: string, format?: string): IntervalStart | IntervalEnd {
     assert('Argument must be a string', typeof property === 'string');
 
     if (isMacro(property)) {
@@ -300,9 +282,9 @@ export default class Interval {
    * @param format optional format for date strings
    * @returns string representation of given property
    */
-  private static _stringFromProperty(property: IntervalStart | IntervalEnd, format = API_DATE_FORMAT_STRING): string {
+  private static _stringFromProperty(property: IntervalStart | IntervalEnd, format?: string): string {
     if (moment.isMoment(property)) {
-      return property.format(format);
+      return format ? property.format(format) : property.toISOString();
     } else if (Duration.isDuration(property)) {
       return property.toString();
     } else {

@@ -4,17 +4,11 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import { upperFirst } from 'lodash-es';
 import MetricMetadataModel from './metric';
 import DimensionMetadataModel from './dimension';
 import TimeDimensionMetadataModel from './time-dimension';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-
-export type TimeGrain = {
-  id: string;
-  name: string;
-};
 
 // Shape passed to model constructor
 export interface TableMetadataPayload {
@@ -28,7 +22,6 @@ export interface TableMetadataPayload {
   dimensionIds: string[];
   timeDimensionIds: string[];
   source: string;
-  timeGrainIds?: string[];
   tags?: string[];
 }
 // Shape of public properties on model
@@ -43,7 +36,6 @@ export interface TableMetadata {
   dimensions: DimensionMetadataModel[];
   timeDimensions: TimeDimensionMetadataModel[];
   source: string;
-  timeGrains: TimeGrain[];
   tags: string[];
 }
 
@@ -138,23 +130,6 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
    * @property {string} source - the datasource this metadata is from.
    */
   source!: string;
-
-  /**
-   * @property {string[]} timeGrainIds - supported timegrains for a column
-   */
-  timeGrainIds: string[] = [];
-
-  /**
-   * @property {Object[]} timeGrains - timeGrain objects with id and display name
-   */
-  get timeGrains(): TimeGrain[] {
-    return this.timeGrainIds.map(grain => {
-      return {
-        id: grain,
-        name: upperFirst(grain)
-      };
-    });
-  }
 }
 
 declare module './registry' {

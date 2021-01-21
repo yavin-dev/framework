@@ -85,7 +85,7 @@ module('Unit | Model | navi fact response', function(hooks) {
     ) as TimeDimensionMetadataModel;
     const max = response.getMaxTimeDimension({ columnMetadata });
     assert.ok(
-      moment(rows[2]['table1.eventTimeDay']).isSame(max),
+      moment.parseZone(rows[2]['table1.eventTimeDay']).isSame(max),
       '`getMaxTimeDimension` returns the max dateTime for a column in moment form'
     );
   });
@@ -104,7 +104,7 @@ module('Unit | Model | navi fact response', function(hooks) {
     ) as TimeDimensionMetadataModel;
     const min = response.getMinTimeDimension({ columnMetadata });
     assert.ok(
-      moment(rows[0]['table1.eventTimeDay']).isSame(min),
+      moment.parseZone(rows[0]['table1.eventTimeDay']).isSame(min),
       '`getMinTimeDimension` returns the min dateTime for a column in moment form'
     );
   });
@@ -158,7 +158,7 @@ module('Unit | Model | navi fact response', function(hooks) {
     const maxResponse = NaviFactResponse.create({ rows: maxRows });
     const max = maxResponse.getMaxTimeDimension({ columnMetadata });
     assert.ok(
-      moment(maxRows[2]['table1.eventTimeDay']).isSame(max),
+      moment.parseZone(maxRows[2]['table1.eventTimeDay']).isSame(max),
       '`getMaxTimeDimension` returns max dateTime when date values have gaps'
     );
 
@@ -171,7 +171,7 @@ module('Unit | Model | navi fact response', function(hooks) {
 
     const min = minResponse.getMinTimeDimension({ columnMetadata });
     assert.ok(
-      moment(minRows[2]['table1.eventTimeDay']).isSame(min),
+      moment.parseZone(minRows[2]['table1.eventTimeDay']).isSame(min),
       '`getMinTimeDimension` returns min dateTime when date values have gaps'
     );
   });
@@ -216,8 +216,8 @@ module('Unit | Model | navi fact response', function(hooks) {
     assert.deepEqual(
       interval?.asStrings(),
       {
-        start: '2014-04-02 00:00:00.000',
-        end: '2014-04-04 00:00:00.000'
+        start: '2014-04-02T00:00:00.000Z',
+        end: '2014-04-04T00:00:00.000Z'
       },
       '`getIntervalForTimeDimension` returns an `Interval` object for a time dimension column'
     );

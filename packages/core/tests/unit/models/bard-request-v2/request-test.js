@@ -131,7 +131,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.deepEqual(
       timeDimension.supportedGrains.map(g => g.grain),
-      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year', 'All'],
+      ['Hour', 'Day', 'IsoWeek', 'Month', 'Quarter', 'Year'],
       'meta data is populated on sub fragments'
     );
 
@@ -140,7 +140,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function(hooks) {
 
     assert.deepEqual(
       timeDimension.supportedGrains.map(g => g.grain),
-      ['Day', 'Week', 'Month', 'Quarter', 'Year', 'All'],
+      ['Day', 'IsoWeek', 'Month', 'Quarter', 'Year'],
       'meta data is populated on sub fragments'
     );
 

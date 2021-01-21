@@ -224,6 +224,5 @@ module('Unit | Utils | DateUtils', function() {
     assert.equal(getPeriodForGrain('isoWeek'), 'week', '`getPeriodForGrain` returns correct period for `isoWeek`');
     assert.equal(getPeriodForGrain('month'), 'month', '`getPeriodForGrain` returns correct period for `month`');
     assert.equal(getPeriodForGrain('year'), 'year', '`getPeriodForGrain` returns correct period for `year`');
-    assert.equal(getPeriodForGrain('all'), 'day', '`getPeriodForGrain` returns correct period for `all`');
   });
 });

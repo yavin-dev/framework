@@ -71,7 +71,7 @@ module('Unit | Utils | Interval Class', function() {
   });
 
   test('diffForTimePeriod', function(assert) {
-    assert.expect(8);
+    assert.expect(6);
 
     assert.equal(
       new Interval(new Duration('P7D'), 'current').diffForTimePeriod('day'),
@@ -108,22 +108,10 @@ module('Unit | Utils | Interval Class', function() {
       1,
       'Interval has 1 hour for a 1 hour period'
     );
-
-    assert.equal(
-      new Interval(moment('2015-11-10 10:00:00.000'), moment('2015-11-10 11:00:00.000')).diffForTimePeriod('all'),
-      1,
-      "Interval has 'all' timeGrain and 1 time bucket for 1 hour timePeriod"
-    );
-
-    assert.equal(
-      new Interval(moment('2015-11-10 10:00:00.000'), moment('2015-11-13 11:00:00.000')).diffForTimePeriod('all'),
-      1,
-      "Interval has 'all' timeGrain and 1 time bucket for all timePeriod multiple time buckets"
-    );
   });
 
   test('getDatesForInterval', function(assert) {
-    assert.expect(2);
+    assert.expect(1);
 
     let testInterval = new Interval(moment('4-9-2017', 'D-M-Y'), moment('25-9-2017', 'D-M-Y')),
       dates = testInterval.getDatesForInterval('isoWeek');
@@ -132,13 +120,6 @@ module('Unit | Utils | Interval Class', function() {
       dates.map(date => date.format('D-M-Y')),
       ['4-9-2017', '11-9-2017', '18-9-2017'],
       'A moment for each isoWeek between Sep 4 and Sep 25 (exclusive) is returned'
-    );
-
-    dates = testInterval.getDatesForInterval('all');
-    assert.deepEqual(
-      dates.map(date => date.format('D-M-Y')),
-      ['4-9-2017'],
-      'A moment for all time is returned as the start date'
     );
   });
 
@@ -310,7 +291,7 @@ module('Unit | Utils | Interval Class', function() {
 
     strings = new Interval(start, end).asStrings();
 
-    assert.equal(strings.start, start.format('YYYY-MM-DD HH:mm:ss.SSS'), 'Moments are formatted for API');
+    assert.equal(strings.start, start.toISOString(), 'Moments are formatted for API');
   });
 
   test('_stringFromProperty', function(assert) {
@@ -321,11 +302,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.equal(Interval['_stringFromProperty']('current'), 'current', 'Macro keeps original value');
 
     let start = moment('2014-10-10', FORMAT);
-    assert.equal(
-      Interval['_stringFromProperty'](start),
-      start.format('YYYY-MM-DD HH:mm:ss.SSS'),
-      'Moments are formatted for API'
-    );
+    assert.equal(Interval['_stringFromProperty'](start), start.toISOString(), 'Moments are formatted for API');
   });
 
   test('fromString', function(assert) {
