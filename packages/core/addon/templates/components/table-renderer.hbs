@@ -5,11 +5,12 @@
       <div class="table-header-row table-header-row--edit">
         {{#each @columns as |column|}}
           <div class="table-header-cell {{column.fragment.type}}">
-            <Input
+            <DenaliInput
+              type="text"
+              value={{readonly column.fragment.alias}}
+              placeholder={{column.fragment.displayName}}
               class="table-header-cell__input"
-              @value={{readonly column.fragment.alias}}
-              @placeholder={{column.fragment.displayName}}
-              @focus-out={{fn @updateColumnDisplayName column.fragment}}
+              {{on "input" (pipe (pick 'target.value') (fn @updateColumnDisplayName (mut column.fragment) ) )}}
             />
             {{#if (eq column.fragment.type "metric")}}
               <NumberFormatDropdown class="table-header-cell__number-format-dropdown" @column={{column}} @onUpdateReport={{@onUpdateReport}} />
