@@ -594,7 +594,7 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.expect(2);
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.get('/data/network/day/os', function() {
+    server.get('/data/network/day/os;show=id', function() {
       return new Response(403);
     });
 

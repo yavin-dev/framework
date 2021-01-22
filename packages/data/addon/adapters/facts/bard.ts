@@ -10,11 +10,10 @@ import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
-import { canonicalizeMetric, serializeParameters } from '../../utils/metric';
+import { canonicalizeMetric } from '../../utils/metric';
 import { configHost } from '../../utils/adapter';
 import NaviFactAdapter, {
   Filter,
-  Parameters,
   RequestOptions,
   RequestV2,
   SORT_DIRECTIONS,
@@ -30,24 +29,22 @@ export class FactAdapterError extends Error {
 }
 
 /**
- * @function formatDimensionFieldName
- * @param field - dimension id
- * @param parameters - parameters object
- * @param {boolean} includeFieldProj - whether to include the projected field in the formatted name e.g. age|id  OR  age
+ * @param column - dimension column
  * @returns formatted dimension name
  */
-function formatDimensionFieldName(field: string, parameters: Parameters, includeFieldProj = true): string {
-  assert(`the dimension ${field} specifies a field parameter`, parameters.field);
-  if (field.includes('.')) {
-    warn(`field '${field}' includes '.', which is likely an error, use the parameters instead`);
+function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
+  if (!column.parameters.field) {
+    warn(`Dimension '${column.field}' does not specify a 'field' parameter`, {
+      id: 'formatDimensionFieldName--no-field-paramter'
+    });
   }
-  const restParams = omit(parameters, 'field');
-  let parameterString = serializeParameters(restParams);
-
-  if (parameterString.length > 0) {
-    parameterString = `(${parameterString})`;
+  if (column.field.includes('.')) {
+    warn(`Dimension '${column.field}' includes '.', which is likely an error, use the parameters instead`, {
+      id: 'formatDimensionFieldName--dimension-with-period'
+    });
   }
-  return `${field}${parameterString}${includeFieldProj ? `|${parameters.field}` : ''}`;
+  const parameters = omit(column.parameters, 'field');
+  return canonicalizeMetric({ metric: column.field, parameters });
 }
 
 /**
@@ -58,12 +55,12 @@ function formatDimensionFieldName(field: string, parameters: Parameters, include
 export function serializeFilters(filters: Filter[]): string {
   return filters
     .map(filter => {
-      let { field, operator, values, parameters } = filter;
+      let { operator, values } = filter;
       let serializedValues = values
         .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
         .map(v => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
-      const formattedFieldName = formatDimensionFieldName(field, parameters, true);
+
       if (operator === 'isnull') {
         if (values[0] === true) {
           operator = 'in';
@@ -73,10 +70,11 @@ export function serializeFilters(filters: Filter[]): string {
           throw new FactAdapterError(`isnull operator can only have boolean values, found: ${values[0]}`);
         }
         serializedValues = '""';
-
       }
 
-      return `${formattedFieldName}-${operator}[${serializedValues}]`;
+      const dimension = canonicalizeFiliDimension(filter);
+      const dimensionField = filter.parameters.field || 'id';
+      return `${dimension}|${dimensionField}-${operator}[${serializedValues}]`;
     })
     .join(',');
 }
@@ -88,6 +86,9 @@ export function serializeFilters(filters: Filter[]): string {
 function isDateTime(column: Column | Filter | Sort) {
   return column.type === 'timeDimension' && column.field.endsWith('.dateTime');
 }
+
+export type FilterOperator = 'in' | 'notin' | 'contains';
+export type HavingOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq' | 'bet' | 'nbet';
 
 export default class BardFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
@@ -109,13 +110,24 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * @return dimensions path
    */
   _buildDimensionsPath(request: RequestV2 /*options*/): string {
-    const dimensions = array(request.columns)
-      .filterBy('type', 'dimension')
-      .map(dim => formatDimensionFieldName(dim.field, dim.parameters, false));
+    const dimensionToFields = request.columns
+      .filter(c => c.type === 'dimension')
+      .reduce((dimensionToFields: Record<string, string[]>, dim) => {
+        const dimName = canonicalizeFiliDimension(dim);
+        if (!dimensionToFields[dimName]) {
+          dimensionToFields[dimName] = [];
+        }
+        dimensionToFields[dimName].push(dim.parameters.field);
+        return dimensionToFields;
+      }, {});
 
+    const dimensions = Object.keys(dimensionToFields);
     return dimensions.length
-      ? `/${array(dimensions)
-          .uniq()
+      ? `/${dimensions
+          .map(dim => {
+            const fields = [...new Set(dimensionToFields[dim])].filter(field => !!field);
+            return `${dim}${fields.length > 0 ? `;show=${fields.sort().join(',')}` : ''}`;
+          })
           .join('/')}`
       : '';
   }

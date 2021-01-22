@@ -2,18 +2,26 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { FilterOperator, HavingOperator } from 'navi-data/adapters/facts/bard';
 import { parse, ParseResult } from 'papaparse';
 
 const parseConfig = {
   delimiter: ','
 };
 
+export type FiliFilter = {
+  dimension: string;
+  field: string;
+  operator: FilterOperator;
+  values: string[];
+};
+
 /**
  * Parses a single filter query param
- * @param {String} serializedFilter - a filter in the format of `dim|field-op[values]`
- * @returns {Object} parsed filter
+ * @param serializedFilter - a filter in the format of `dim|field-op[values]`
+ * @returns parsed filter
  */
-export function parseSingleFilter(serializedFilter: string) {
+export function parseSingleFilter(serializedFilter: string): FiliFilter {
   const [, dimension, field, operator, valuesString] = serializedFilter.match(/(.*)\|(.*)-(.*)\[(.*)\]/) || [];
 
   const results: ParseResult<string[]> = parse(valuesString, parseConfig);
@@ -24,15 +32,15 @@ export function parseSingleFilter(serializedFilter: string) {
     throw new Error(`No filter values found for parseFilter() on ${valuesString}`);
   }
 
-  return { dimension, field, operator, values: results.data[0] };
+  return { dimension, field, operator: operator as FilterOperator, values: results.data[0] };
 }
 
 /**
  * Parses the filters query param into an array of filters
- * @param {String} filtersParam - the raw filters query param `filters=dim1|field-op[values],dim2|field-op[values]`
- * @returns {Array} filters
+ * @param filtersParam - the raw filters query param `filters=dim1|field-op[values],dim2|field-op[values]`
+ * @returns filters
  */
-export function parseFilters(filtersParam?: string) {
+export function parseFilters(filtersParam?: string): FiliFilter[] {
   if (!filtersParam) {
     return [];
   }
@@ -43,34 +51,34 @@ export function parseFilters(filtersParam?: string) {
   return filterStrings.map(parseSingleFilter);
 }
 
-type Having = { [key: string]: { operator: string; values: string[] } };
+export type Havings = { [key: string]: { operator: HavingOperator; values: string[] } };
 /**
  * Parses a having into an object of metric to its having
- * @param {String} havingParam - the raw having query param `metric-op[values]`
- * @returns {Object} metric to having
+ * @param havingParam - the raw having query param `metric-op[values]`
+ * @returns metric to having
  */
-export function parseHavings(havingParam?: string): Having {
+export function parseHavings(havingParam?: string): Havings {
   if (!havingParam) {
     return {};
   }
 
-  return havingParam.split(']').reduce((havingObj, currHaving) => {
+  return havingParam.split(']').reduce((havingObj: Havings, currHaving) => {
     if (currHaving.length > 0) {
       if (currHaving[0] === ',') currHaving = currHaving.substring(1);
       let [, metric, operator, valuesArr] = currHaving.match(new RegExp('(.*)-(.*)\\[(.*)')) || [];
       const values = valuesArr.split(',');
 
-      havingObj[metric] = { operator, values };
+      havingObj[metric] = { operator: operator as HavingOperator, values };
     }
 
     return havingObj;
-  }, {} as Having);
+  }, {});
 }
 
 /**
  * Parses a string of metrics into an array of metrics
- * @param {String} metricsParam - the raw having query param `some(param=a),or,normalMetrics`
- * @returns {Array} metrics
+ * @param metricsParam - the raw having query param `some(param=a),or,normalMetrics`
+ * @returns metrics such as ['some(param=a)', 'or', 'normalMetrics']
  */
 export function parseMetrics(metricsParam?: string) {
   if (!metricsParam) {
@@ -94,4 +102,15 @@ export function parseMetrics(metricsParam?: string) {
     }
   }
   return metrics;
+}
+
+export type FiliDimension = { name: string; show: string[] };
+/**
+ * Parses a string dimension for the fili webservice
+ * @param dimensionParam - the dimension path param
+ */
+export function parseDimension(dimensionPath: string): FiliDimension {
+  const [name, showClause] = dimensionPath.split(';show=');
+  const show = (showClause || '').split(',');
+  return { name, show };
 }

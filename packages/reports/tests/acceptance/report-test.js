@@ -612,7 +612,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(
       $('.navi-report__action-link:contains(Export)')
         .attr('href')
-        .includes('/network/day/property/?dateTime='),
+        .includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
 
@@ -623,7 +623,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(
       $('.navi-report__action-link:contains(Export)')
         .attr('href')
-        .includes('/network/day/property/productFamily/?dateTime='),
+        .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
 
@@ -664,7 +664,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(
       $('.multiple-format-export__dropdown a:contains(CSV)')
         .attr('href')
-        .includes('/network/day/property/?dateTime='),
+        .includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
 
@@ -676,7 +676,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.ok(
       $('.multiple-format-export__dropdown a:contains(CSV)')
         .attr('href')
-        .includes('/network/day/property/productFamily/?dateTime='),
+        .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
 
@@ -2154,7 +2154,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
 
     const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
-    assert.dom(navClicksCell()).hasText('717.78', 'The original metric value has no formatting');
+    assert.dom(navClicksCell()).hasText('495.05', 'The original metric value has no formatting');
     assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
 
     find('.number-format-selector__radio-money input').checked = true; // change format to money
@@ -2163,6 +2163,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$717.78', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$495.05', 'The metric is re-rendered in the money format');
   });
 });
