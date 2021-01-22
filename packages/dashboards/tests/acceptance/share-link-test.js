@@ -18,7 +18,7 @@ module('Acceptance | share link', function(hooks) {
     await click('.navi-collection__row0 .share .btn');
 
     assert
-      .dom('.modal-input-box')
+      .dom('.share-input')
       .hasValue(`${baseUrl}/dashboards/1`, 'The share link is built correctly by buildDashboardUrl');
   });
 });

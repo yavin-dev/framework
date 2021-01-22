@@ -36,6 +36,7 @@ module.exports = function(environment) {
         timeout: 90000
       },
       FEATURES: {
+        dashboards: true,
         enableDashboardExport: true,
         exportFileTypes: ['csv', 'pdf', 'png'],
         enableScheduleDashboards: true,

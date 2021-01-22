@@ -252,7 +252,7 @@ module('Acceptance | Dashboards', function(hooks) {
       );
 
     await selectChoose('.report-select', 'Report 12');
-    await click('. .button');
+    await click('.modal-container .button');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map(el => el.textContent.trim()),

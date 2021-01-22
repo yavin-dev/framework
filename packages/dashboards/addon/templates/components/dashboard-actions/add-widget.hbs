@@ -2,35 +2,37 @@
 {{yield}}
 <DenaliModal @isOpen={{this.showModal}} @onClose={{toggle "showModal" this}} ...attributes as | modal |>
   <modal.Header class="navi-modal-header">
-    <h1>Add Widget</h1>
+    <div class="primary-header">Add Widget</div>
   </modal.Header>
   <modal.Content>
-    <div class="secondary-header">
-      <p>To add a widget, choose a report or create a new one using the dropdown below.</p>
+    <div class="secondary-header m-b-5">
+      To add a widget, choose a report or create a new one using the dropdown below.
     </div>
-    <DenaliSelect
+    <PowerSelect
       @options={{this.reportsWithCreate}}
       @selected={{this.selectedReport}}
-      @onChange={{fn (mut this.selectedReport)}}
-      class="report-select"
+      @searchField="title"
+      @searchPlaceholder="Search for a report..."
+      @onchange={{fn (mut this.selectedReport)}}
+      @classNames="report-select"
+      @tagName="div"
+      @renderInPlace={{true}}
       as |report|
     >
       {{report.title}}
-    </DenaliSelect>
-    <div class="btn-container">
-      {{#if (eq this.selectedReport.id "new")}}
-        <LinkTo @route="dashboards.dashboard.widgets.new" @model={{this.dashboard.id}} class="button is-solid add-to-dashboard m-5">Take me there!</LinkTo>
-      {{else}}
-        <DenaliButton class="add-to-dashboard m-5" @style="solid"
-                onclick={{pipe
-                          (fn @onSelectReport this.selectedReport this.dashboard.id this.selectedReport.title)
-                          (toggle "showModal" this)
-                        }}
-        >
-          Add to dashboard
-        </DenaliButton>
-      {{/if}}
-      <DenaliButton class="m-5" @style="outline" {{on "click" (toggle "showModal" this)}}>Cancel</DenaliButton>
-    </div>
+    </PowerSelect>
+    {{#if (eq this.selectedReport.id "new")}}
+      <LinkTo @route="dashboards.dashboard.widgets.new" @model={{this.dashboard.id}} class="button is-solid add-to-dashboard m-5">Take me there!</LinkTo>
+    {{else}}
+      <DenaliButton class="add-to-dashboard m-5" @style="solid"
+              onclick={{pipe
+                        (fn @onSelectReport this.selectedReport this.dashboard.id this.selectedReport.title)
+                        (toggle "showModal" this)
+                      }}
+      >
+        Add to dashboard
+      </DenaliButton>
+    {{/if}}
+    <DenaliButton class="m-5" @style="outline" {{on "click" (toggle "showModal" this)}}>Cancel</DenaliButton>
   </modal.Content>
 </DenaliModal>

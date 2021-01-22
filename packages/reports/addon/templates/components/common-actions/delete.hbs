@@ -5,7 +5,7 @@
   </button>
   <DenaliModal class="delete-modal" @isOpen={{this.showModal}} @onClose={{toggle "showModal" this}} ...attributes as | modal |>
     <modal.Header class="navi-modal-header">
-      <h1 class="primary-header">{{this.headerMsg}}</h1>
+      <div class="primary-header">{{this.headerMsg}}</div>
     </modal.Header>
     <modal.Content>
       <div class="secondary-header m-b-30">

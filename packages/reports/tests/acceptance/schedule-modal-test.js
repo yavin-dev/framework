@@ -55,7 +55,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to 'Day'
     const select = find('.schedule-modal__dropdown--frequency');
-    await click('select');
+    await click(select);
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -130,7 +130,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     const select = find('.schedule-modal__dropdown--frequency');
-    await click('select');
+    await click(select);
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -261,7 +261,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     const select = find('.schedule-modal__dropdown--frequency');
-    await click('select');
+    await click(select);
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 
@@ -307,7 +307,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     // Set frequency to Day
     const select = find('.schedule-modal__dropdown--frequency');
-    await click('select');
+    await click(select);
     select.selectedIndex = 0;
     await triggerEvent(select, 'change');
 

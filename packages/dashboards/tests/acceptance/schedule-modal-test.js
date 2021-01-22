@@ -1,9 +1,7 @@
-import { blur, click, fillIn, findAll, triggerEvent, visit } from '@ember/test-helpers';
+import { blur, click, fillIn, find, findAll, triggerEvent, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import $ from 'jquery';
-import { clickTrigger } from 'ember-power-select/test-support/helpers';
 
 module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
@@ -26,21 +24,25 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
       .dom('.schedule-modal__save-btn')
       .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Week', 'Frequency field is set to the default value when creating a new schedule');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Week',
+      'Frequency field is set to the default value when creating a new schedule'
+    );
 
     assert
       .dom('.schedule-modal__input--recipients input')
       .hasNoValue('Recipients field is empty when creating a new schedule');
 
-    assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
-      .hasText('pdf', 'Format field is set to the default value when creating a new schedule');
+    assert.equal(
+      find('.schedule-modal__dropdown--format').selectedOptions[0].textContent.trim(),
+      'pdf',
+      'Format field is set to the default value when creating a new schedule'
+    );
 
-    await clickTrigger('.schedule-modal__dropdown--format');
+    await click('.schedule-modal__dropdown--format');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.schedule-modal__dropdown--format option').map(el => el.textContent.trim()),
       ['pdf', 'png'],
       'Schedule format should have correct options'
     );
@@ -49,8 +51,10 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -74,9 +78,11 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
         'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
       );
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Day', 'Frequency field is set by the saved delivery rule');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Day',
+      'Frequency field is set by the saved delivery rule'
+    );
 
     assert
       .dom('.schedule-modal__input--recipients .navi-email-tag')
@@ -92,13 +98,17 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
 
     assert.dom('.schedule-modal__header').isVisible('Schedule modal pops up when action is clicked');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Week', 'Frequency field is set to Week');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Week',
+      'Frequency field is set to Week'
+    );
 
     // Set frequency to Day
-    await click('.schedule-modal__dropdown--frequency .ember-power-select-trigger');
-    await click($('.ember-power-select-option:contains(Day)')[0]);
+    const select = find('.schedule-modal__dropdown--frequency');
+    await click('select');
+    select.selectedIndex = 0;
+    await triggerEvent(select, 'change');
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
@@ -116,8 +126,10 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
     // Reopen the modal
     await click('.schedule-action__button');
 
-    assert
-      .dom('.schedule-modal__dropdown--frequency .ember-power-select-selected-item')
-      .hasText('Day', 'Changes are saved');
+    assert.equal(
+      find('.schedule-modal__dropdown--frequency').selectedOptions[0].textContent.trim(),
+      'Day',
+      'Changes are saved'
+    );
   });
 });

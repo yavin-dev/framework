@@ -15,7 +15,7 @@
     ...attributes as | modal |
   >
     <modal.Header class="schedule-modal__header navi-modal-header">
-      <h1 class="schedule-modal__header--primary primary-header">Schedule "{{capitalize @model.title}}"</h1>
+      <div class="schedule-modal__header--primary primary-header">Schedule "{{capitalize @model.title}}"</div>
     </modal.Header>
     <modal.Content>
       {{#if (is-pending this.deliveryRule)}}

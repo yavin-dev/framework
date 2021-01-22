@@ -1,10 +1,10 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <DenaliModal @isOpen={{this.showModal}} @onClose={{this.closeModal}} ...attributes as |modal|>
   <modal.Header>
-    <h1 class="primary-header">Save Report As</h1>
+    <div class="primary-header">Save Report As</div>
   </modal.Header>
   <modal.Content>
-    <h5 class="secondary-header">This will create a new report with the new given name.</h5>
+    <div class="secondary-header">This will create a new report with the new given name.</div>
     {{!-- input for new Name of the Report --}}
     <DenaliInput
       class="input dashboard-title m-b-30"
