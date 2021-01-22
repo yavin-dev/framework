@@ -87,6 +87,9 @@ function isDateTime(column: Column | Filter | Sort) {
   return column.type === 'timeDimension' && column.field.endsWith('.dateTime');
 }
 
+export type FilterOperator = 'in' | 'notin' | 'contains';
+export type HavingOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq' | 'bet' | 'nbet';
+
 export default class BardFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
    * @property namespace

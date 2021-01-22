@@ -2,17 +2,17 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import { FilterOperator, HavingOperator } from 'navi-data/adapters/facts/bard';
 import { parse, ParseResult } from 'papaparse';
 
 const parseConfig = {
   delimiter: ','
 };
 
-type FiliFilterOperator = 'in' | 'notin' | 'contains';
 export type FiliFilter = {
   dimension: string;
   field: string;
-  operator: FiliFilterOperator;
+  operator: FilterOperator;
   values: string[];
 };
 
@@ -32,7 +32,7 @@ export function parseSingleFilter(serializedFilter: string): FiliFilter {
     throw new Error(`No filter values found for parseFilter() on ${valuesString}`);
   }
 
-  return { dimension, field, operator: operator as FiliFilterOperator, values: results.data[0] };
+  return { dimension, field, operator: operator as FilterOperator, values: results.data[0] };
 }
 
 /**
@@ -51,7 +51,6 @@ export function parseFilters(filtersParam?: string): FiliFilter[] {
   return filterStrings.map(parseSingleFilter);
 }
 
-export type HavingOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq' | 'bet' | 'nbet';
 export type Havings = { [key: string]: { operator: HavingOperator; values: string[] } };
 /**
  * Parses a having into an object of metric to its having
