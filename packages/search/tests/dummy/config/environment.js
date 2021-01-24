@@ -23,6 +23,7 @@ module.exports = function(environment) {
     },
 
     navi: {
+      user: 'navi_user',
       dataSources: [
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
         { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
