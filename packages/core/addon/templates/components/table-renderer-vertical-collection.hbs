@@ -50,11 +50,13 @@
           <th>
             <div class="table-header-cell {{column.fragment.type}}">
               {{#if @isEditingMode}}
-                <Input
+                <DenaliInput
+                  type="text"
+                  @size="medium"
+                  value={{readonly column.fragment.alias}}
+                  placeholder={{column.fragment.displayName}}
                   class="table-header-cell__input"
-                  @value={{readonly column.fragment.alias}}
-                  @placeholder={{column.fragment.displayName}}
-                  @focus-out={{fn @updateColumnDisplayName column.fragment}}
+                  {{on "input" (pipe (pick 'target.value') (fn @updateColumnDisplayName (mut column.fragment) ) )}}
                 />
                 {{#if (eq column.fragment.type "metric")}}
                   <NumberFormatDropdown

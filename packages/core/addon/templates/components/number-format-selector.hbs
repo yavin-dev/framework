@@ -28,22 +28,16 @@
     </div>
   </div>
 
-  <div class="number-format-selector__section-header">
-    Format
-  </div>
-  <div class="number-format-selector__format number-format-selector__section">
-    <Input
-      class="number-format-selector__format-input number-format-selector__text-input"
-      @autofocus={{true}}
-      @name="format-input"
-      @type="text"
-      @maxlength="22"
-      @placeholder="Raw Format"
-      @value={{@format}}
-      @enter={{fn @onUpdateFormat}}
-      @focus-out={{fn @onUpdateFormat}}
+  <DenaliInputGroup @label="Format" @isStacked= {{true}} class="number-format-selector__section-header">
+    <DenaliInput
+      @size="medium"
+      type="text"
+      value={{@format}}
+      placeholder="Raw Format"
+      class="number-format-selector__format-input"
+      {{on "input" (pipe (pick 'target.value') (fn @onUpdateFormat ) )}}
     />
-  </div>
+  </DenaliInputGroup>
   <a class="number-format-selector__doc-link"
     href="http://numeraljs.com/#format"
     target="_blank"

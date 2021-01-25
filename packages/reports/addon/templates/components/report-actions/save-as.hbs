@@ -12,7 +12,6 @@
     class="text-input dashboard-title"
     placeholder={{this.reportName}}
     value={{this.reportName}}
-    @autofocus={{true}}
     {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName) ) )}}
   />
   {{!-- Buttons --}}
