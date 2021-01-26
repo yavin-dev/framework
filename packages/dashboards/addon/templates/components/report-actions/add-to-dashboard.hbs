@@ -10,8 +10,7 @@
       <Group.Input
         type="text"
         value={{this.reportName}}
-        class="text-input widget-title"
-        @autofocus={{true}}
+        class="navi-modal__denali-input"
         {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName) ) )}}
       />
     </DenaliInputGroup>
@@ -21,8 +20,7 @@
           type="text"
           placeholder="Enter new dashboard name..."
           value={{this.newDashboardTitle}}
-          class="text-input dashboard-title"
-          @autofocus={{true}}
+          class="navi-modal__denali-input"
           {{on "input" (pipe (pick 'target.value') (fn (mut this.newDashboardTitle) ) )}} />
       </DenaliInputGroup>
       <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</button>

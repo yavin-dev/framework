@@ -9,9 +9,9 @@
   <DenaliInput
     @size="medium"
     type="text"
-    class="text-input dashboard-title"
     placeholder={{this.reportName}}
     value={{this.reportName}}
+    class="navi-modal__denali-input"
     {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName) ) )}}
   />
   {{!-- Buttons --}}
