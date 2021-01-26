@@ -35,7 +35,7 @@
       value={{@format}}
       placeholder="Raw Format"
       class="number-format-selector__format-input"
-      {{on "input" (pipe (pick 'target.value') (fn @onUpdateFormat ) )}}
+      pipe (pick 'target.value') (fn @onUpdateFormat ) )}}
     />
   </DenaliInputGroup>
   <a class="number-format-selector__doc-link"

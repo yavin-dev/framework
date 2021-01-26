@@ -10,6 +10,7 @@
       {{on "input" (pipe (pick 'target.value') (fn this.updateLabel ) )}}
     />
   </DenaliInputGroup>
+
   <DenaliInputGroup @label="Baseline" @isStacked= {{true}} class="goal-gauge-config__section-header">
     <DenaliInput
       @size="medium"
