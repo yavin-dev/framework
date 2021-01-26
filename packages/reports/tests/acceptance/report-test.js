@@ -414,7 +414,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.save-as__save-as-modal-btn').isVisible('Save As Modal is visible with save as key');
 
     //fill in new title
-    await fillIn('.navi-modal .text-input.dashboard-title', 'Title of Hyrule');
+    await fillIn('.navi-modal__denali-input', 'Title of Hyrule');
 
     // Press the save as
     await click('.save-as__save-as-modal-btn');

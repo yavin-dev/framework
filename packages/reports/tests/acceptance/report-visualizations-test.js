@@ -287,7 +287,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
 
     //Update column name
     await click('.report-view__visualization-edit-btn');
-    await fillIn('.timeDimension > .table-header-cell__input', 'test');
+    await fillIn('.timeDimension > .input > .table-header-cell__input', 'test');
     await click('.report-view__visualization-edit-btn');
 
     assert

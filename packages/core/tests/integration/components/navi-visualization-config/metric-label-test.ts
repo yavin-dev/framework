@@ -54,7 +54,7 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     assert
-      .dom('.metric-label-config__description-input')
+      .dom('.metric-label-config__section-header > .input > .label')
       .hasValue(
         "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
         'Component correctly displays initial description'
@@ -83,8 +83,8 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    await fillIn('.metric-label-config__description-input', 'foo');
-    await blur('.metric-label-config__description-input');
+    await fillIn('.metric-label-config__section-header > .input > .label', 'foo');
+    await blur('.metric-label-config__section-header > .input > .label');
 
     assert.deepEqual(this.request.columns.firstObject?.alias, 'foo', 'The column alias is updated');
   });

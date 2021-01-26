@@ -65,8 +65,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
     });
 
     await render(Template);
-    await fillIn('.goal-gauge-config__baseline-input', '1');
-    await blur('.goal-gauge-config__baseline-input');
+    await fillIn('.goal-gauge-config__section-header > .input > .baseline', '1');
+    await blur('.goal-gauge-config__section-header > .input > .baseline');
   });
 
   test('onUpdateConfig goalValue input', async function(this: TestContext, assert) {
@@ -78,8 +78,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    await fillIn('.goal-gauge-config__goal-input', '10');
-    await blur('.goal-gauge-config__goal-input');
+    await fillIn('.goal-gauge-config__section-header > .input > .goal', '10');
+    await blur('.goal-gauge-config__section-header > .input > .goal');
   });
 
   test('onUpdateConfig goal gauge label input', async function(this: TestContext, assert) {
@@ -87,8 +87,8 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
 
     await render(Template);
 
-    await fillIn('.goal-gauge-config__label-input', 'bottles');
-    await blur('.goal-gauge-config__label-input');
+    await fillIn('.goal-gauge-config__section-header > .input > .label', 'bottles');
+    await blur('.goal-gauge-config__section-header > .input > .label');
     assert.equal(this.request.metricColumns[0].alias, 'bottles', 'onUpdateConfig action is called by label input');
   });
 });

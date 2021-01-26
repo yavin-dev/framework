@@ -78,8 +78,8 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.timeDimension > .table-header-cell__input', 'test');
-    await blur('.timeDimension > .table-header-cell__input');
+    await fillIn('.timeDimension > .input > .table-header-cell__input', 'test');
+    await blur('.timeDimension > .input > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
@@ -97,8 +97,8 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.timeDimension > .table-header-cell__input', '');
-    await blur('.timeDimension > .table-header-cell__input');
+    await fillIn('.timeDimension > .input > .table-header-cell__input', '');
+    await blur('.timeDimension > .input > .table-header-cell__input');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert

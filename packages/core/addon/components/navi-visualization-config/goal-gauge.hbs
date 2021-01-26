@@ -5,6 +5,7 @@
     <DenaliInput
       @size="medium"
       type="text"
+      class="label"
       placeholder={{this.metricColumn.displayName}}
       value={{readonly this.metricColumn.alias}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateLabel ) )}}
@@ -15,6 +16,7 @@
     <DenaliInput
       @size="medium"
       type="text"
+      class="baseline"
       placeholder="Baseline Value"
       value={{readonly @options.baselineValue}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateBaseline ) )}}
@@ -25,6 +27,7 @@
     <DenaliInput
       @size="medium"
       type="text"
+      class="goal"
       placeholder="Goal Value"
       value={{readonly @options.goalValue}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateGoal ) )}}
