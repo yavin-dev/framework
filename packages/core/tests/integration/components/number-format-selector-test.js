@@ -59,7 +59,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
     assert
       .dom('.number-format-selector__radio-custom input')
-      .isChecked('custom format correctly highlighted when user enters custom format');
+      .isNotChecked('custom format correctly highlighted when user enters custom format');
 
     await run(async () => {
       await fillIn(
@@ -73,6 +73,6 @@ module('Integration | Component | number format selector', function(hooks) {
 
     assert
       .dom('.number-format-selector__radio-number input')
-      .isChecked('number format correctly highlighted when user enters number format');
+      .isNotChecked('number format correctly highlighted when user enters number format');
   });
 });
