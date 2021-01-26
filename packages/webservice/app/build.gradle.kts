@@ -6,7 +6,6 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
     id("com.github.node-gradle.node") version "2.2.4"
@@ -25,7 +24,7 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr30")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr29")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
@@ -57,7 +56,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.register<NpmTask>("installUIDependencies") {
-    setArgs(listOf("ci"))
+    setArgs(listOf("ci", "-verbose"))
     setExecOverrides(closureOf<ExecSpec> {
         setWorkingDir("../../../")
     })
@@ -74,7 +73,6 @@ tasks.register<Copy>("copyNaviApp") {
     from("../../app/dist")
     into("$buildDir/resources/main/META-INF/resources/ui")
 }
-
 
 tasks.register<Exec>("execJar") {
     dependsOn("bootJar")
