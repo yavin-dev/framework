@@ -11,7 +11,7 @@
     value={{this.value}}
     placeholder="Value"
     @size="medium"
-    @state={{if @filter.validations.attrs.values.isInvalid 'error'}}
+    @state={{if @filter.validations.attrs.values.isInvalid "error"}}
     class="filter-values--value-input"
     {{on "input" this.setValue}}
   />

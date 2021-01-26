@@ -53,7 +53,7 @@ export default class PowerSelectCollectionOptions extends Options {
   /**
    * @property {Array} items - array of options to be used by hbs
    */
-  @computed('options', 'groupKey', 'grouped', 'ungrouped')
+  @computed('args.options', 'groupKey', 'grouped', 'ungrouped')
   get items() {
     return this.groupKey ? this.grouped : this.ungrouped;
   }

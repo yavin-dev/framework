@@ -17,7 +17,7 @@ interface Args {
 
 export default class NaviTableSelectComponent extends Component<Args> {
   get searchEnabled() {
-    return this.args.searchEnabled || false;
+    return !!this.args.searchEnabled;
   }
 
   get searchField() {

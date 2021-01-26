@@ -146,7 +146,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
     assert.equal(options.length, 8, 'There are 8 predefined values');
     assert
       .dom('.ember-power-select-option[aria-selected="true"]')
-      .doesNotExist('7 is the only selected option after being clicked');
+      .doesNotExist('There is no selected option because 22 is not a preset');
     await click('.filter-values--lookback-input');
   });
 });

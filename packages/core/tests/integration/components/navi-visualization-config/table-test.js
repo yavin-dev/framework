@@ -117,7 +117,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
 
     const columns = arr([
       { cid: 'cid_dateTime', field: 'dateTime', displayName: 'Date Time' },
-      { cid: 'cid_os', field: 'os', OS: 'Operating System' },
+      { cid: 'cid_os', field: 'os', displayName: 'Operating System' },
       { cid: 'cid_age', field: 'age', displayName: 'Age' }
     ]);
     this.set('request', {
