@@ -18,6 +18,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import UserModel from './user';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { Moment } from 'moment';
+import FilterFragment from './bard-request-v2/fragments/filter';
 
 const Validations = buildValidations({
   title: [
@@ -46,7 +47,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   widgets!: DS.PromiseManyArray<TODO>;
 
   @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: [] })
-  filters!: FragmentArray<TODO>;
+  filters!: FragmentArray<FilterFragment>;
 
   @fragment('fragments/presentation', { defaultValue: () => ({}) })
   presentation!: TODO;

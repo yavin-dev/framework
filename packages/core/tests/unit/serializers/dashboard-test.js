@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { set } from '@ember/object';
 
 let Serializer, DashboardClass, MetadataService;
 
@@ -131,6 +132,15 @@ module('Unit | Serializer | dashboard', function(hooks) {
       serialized.data.attributes.filters[1],
       { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
       'bardTwo filter serializes correctly with datasource'
+    );
+
+    // Test serializing a filter with no parameters
+    set(dashboard.filters.objectAt(0), 'parameters', {});
+    const serialized2 = dashboard.serialize();
+    assert.deepEqual(
+      serialized2.data.attributes.filters[0],
+      { dimension: 'bardOne.age', operator: 'in', field: undefined, values: [1, 2, 3] },
+      'bardOne filter serializes correctly with datasource'
     );
   });
 });

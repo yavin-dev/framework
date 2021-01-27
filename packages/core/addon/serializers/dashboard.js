@@ -6,6 +6,7 @@
 import AssetSerializer from 'navi-core/serializers/asset';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { getOwner } from '@ember/application';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 function v1ToV2Filter(filter, metadataService) {
   let source;
@@ -75,7 +76,7 @@ export default AssetSerializer.extend({
    * @returns {Object} serialized dashboard
    */
   serialize(snapshot) {
-    const buildKey = filter => `${filter.field}(field=${filter.parameters.field})`;
+    const buildKey = filter => canonicalizeMetric({ metric: filter.field, parameters: filter.parameters });
     const filterSources = Object.fromEntries(
       snapshot.attr('filters').map(filter => [filter.record.canonicalName, filter.attr('source')])
     );
@@ -85,7 +86,7 @@ export default AssetSerializer.extend({
       return {
         dimension: `${source}.${filter.field}`,
         operator: filter.operator,
-        field: filter.parameters.field,
+        field: filter.parameters?.field,
         values: filter.values
       };
     });
