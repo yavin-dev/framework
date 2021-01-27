@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <DirSidebar/>
 <main class="container p-30">
   <div class="row m-b-30 space-between">
@@ -8,12 +8,10 @@
         @selectedType={{this.type}}
         @updateQueryParams={{this.updateQueryParams}}
       />
-      <div class="input-group m-l-10">
-        <DirSearchBar
-          @query={{this.q}}
-          @searchFor={{this.searchFor}}
-        />
-      </div>
+      <DirSearchBar
+        @query={{this.q}}
+        @searchFor={{this.searchFor}}
+      />
     </div>
   </div>
   <div class="row">
