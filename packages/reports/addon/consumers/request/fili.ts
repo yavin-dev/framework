@@ -35,9 +35,8 @@ export default class FiliConsumer extends ActionConsumer {
     /**
      * @action UPDATE_COLUMN_FRAGMENT_WITH_PARAMS
      * @param route - route that has a model that contains a request property
-     * @param columnFragment - data model fragment of the column
-     * @param parameterKey - the name of the parameter to update
-     * @param parameterValue - the value to update the parameter with
+     * @param filterFragment - data model fragment of the filter
+     * @param changeset - the filter properties to update
      */
     [RequestActions.UPDATE_FILTER](
       this: FiliConsumer,

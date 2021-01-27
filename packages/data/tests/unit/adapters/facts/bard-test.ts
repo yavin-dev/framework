@@ -699,7 +699,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName', dataSource: 'bardOne' });
       },
-      /Table 'tableName' requires exactly 1 'Date Time' column, you have 0./,
+      /FactAdapterError: Table 'tableName' requires requesting 'Date Time' column exactly once./,
       '_buildURLPath throws an error for missing dateTime column for table without all grain'
     );
 
@@ -728,7 +728,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildURLPath(twoDateTime);
       },
-      /FactAdapterError: Requesting more than one '.dateTime' grain is not supported. You requested \[day,week\]/,
+      /FactAdapterError: Requesting more than multiple 'Date Time' grains is not supported. You requested \[day,week\]/,
       '_buildURLPath throws an error when more than one dateTime column is requested'
     );
 

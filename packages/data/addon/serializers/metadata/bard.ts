@@ -323,11 +323,10 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     timeGrainInfo: TableTimeGrainInfo,
     dataSourceName: string
   ): ColumnFunctionMetadataModel {
-    const { hasAllGrain } = timeGrainInfo;
     const grainIds = timeGrainInfo.timeGrains.map(g => g.name);
 
     const grains = grainIds.join(',');
-    const columnFunctionId = `${this.namespace}:timeGrain(table=${table.name};grains=${grains};hasAllGrain=${hasAllGrain})`;
+    const columnFunctionId = `${this.namespace}:timeGrain(table=${table.name};grains=${grains})`;
     let defaultValue;
     const { defaultTimeGrain } = config.navi;
     if (defaultTimeGrain && grainIds.includes(defaultTimeGrain)) {
@@ -349,13 +348,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
-          _localValues: table.timeGrains
-            .filter(({ name }) => name !== 'all')
-            .map(grain => ({
-              id: this.normalizeTimeGrain(grain.name),
-              description: grain.description,
-              name: grain.longName
-            }))
+          _localValues: timeGrainInfo.timeGrains.map(grain => ({
+            id: grain.name,
+            description: grain.description,
+            name: grain.longName
+          }))
         }
       ]
     };

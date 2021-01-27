@@ -8,7 +8,6 @@
 import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
-import { assign } from '@ember/polyfills';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric } from '../../utils/metric';
 import { configHost } from '../../utils/adapter';
@@ -237,9 +236,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const grains = [...new Set(dateTimeColumns.map(c => c.parameters.grain))] as Grain[];
     if (grains.length > 1) {
       throw new FactAdapterError(
-        `Requesting more than one '${request.table}.dateTime' grain is not supported. You requested [${grains.join(
-          ','
-        )}]`
+        `Requesting more than multiple 'Date Time' grains is not supported. You requested [${grains.join(',')}]`
       );
     }
     let timeGrain: GrainWithAll = grains.length === 1 ? grains[0] : 'all';
@@ -250,7 +247,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       | BardTableMetadataModel
       | undefined;
     if (timeGrain === 'all' && tableMeta?.hasAllGrain === false) {
-      throw new FactAdapterError(`Table '${table}' requires exactly 1 'Date Time' column, you have 0.`);
+      throw new FactAdapterError(`Table '${table}' requires requesting 'Date Time' column exactly once.`);
     }
 
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
@@ -285,7 +282,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     //catch all query param and add to the query
     if (queryParams) {
-      assign(query, queryParams);
+      Object.assign(query, queryParams);
     }
 
     return query;

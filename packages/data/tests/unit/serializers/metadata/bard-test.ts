@@ -478,7 +478,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
   },
   {
     category: 'Date',
-    columnFunctionId: 'normalizer-generated:timeGrain(table=tableName;grains=day,month;hasAllGrain=true)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     description: undefined,
     fields: undefined,
     id: 'tableName.dateTime',
@@ -502,7 +502,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
   },
   {
     category: 'Date',
-    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek;hasAllGrain=false)',
+    columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
     description: undefined,
     fields: undefined,
     id: 'secondTable.dateTime',
@@ -709,7 +709,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
     source: 'bardOne'
   },
   {
-    id: 'normalizer-generated:timeGrain(table=tableName;grains=day,month;hasAllGrain=true)',
+    id: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -730,7 +730,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
     ]
   },
   {
-    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek;hasAllGrain=false)',
+    id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
     name: 'Time Grain',
     description: 'Time Grain',
     source: 'bardOne',
@@ -906,7 +906,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       },
       {
         description: 'Time Grain',
-        id: 'normalizer-generated:timeGrain(table=tableName;grains=day;hasAllGrain=false)',
+        id: 'normalizer-generated:timeGrain(table=tableName;grains=day)',
         name: 'Time Grain',
         source: 'bardOne',
         _parametersPayload: [

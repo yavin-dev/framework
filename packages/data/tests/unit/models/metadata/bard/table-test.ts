@@ -53,7 +53,7 @@ module('Unit | Model | metadata/bard/table', function(hooks) {
           name: 'Month'
         }
       ],
-      'isFact property is hydrated properly'
+      'timegrains property is hydrated properly'
     );
   });
 });

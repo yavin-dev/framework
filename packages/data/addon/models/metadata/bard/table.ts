@@ -1,4 +1,8 @@
-import { Grain } from 'navi-data/utils/date';
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+import { Grain, Grains } from 'navi-data/utils/date';
 import TableMetadataModel, { TableMetadata, TableMetadataPayload } from '../table';
 import { upperFirst, sortBy } from 'lodash-es';
 
@@ -17,17 +21,7 @@ export interface BardTableMetadata extends TableMetadata {
   hasAllGrain: boolean;
 }
 
-export const GrainOrdering: Record<Grain, number> = {
-  second: 1,
-  minute: 2,
-  hour: 3,
-  day: 4,
-  week: 5,
-  isoWeek: 5,
-  month: 6,
-  quarter: 7,
-  year: 8
-};
+export const GrainOrdering = Object.fromEntries(Grains.map((g, i) => [g, i])) as Record<Grain, number>;
 
 export default class BardTableMetadataModel extends TableMetadataModel implements BardTableMetadataModel {
   init() {
