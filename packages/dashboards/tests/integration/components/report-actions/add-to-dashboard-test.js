@@ -73,7 +73,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .isVisible('add to dashboard report modal dialog pops up on clicking the component');
 
     assert
-      .dom('.add-to-dashboard-modal .navi-modal__denali-input')
+      .dom('.add-to-dashboard-modal .text-input')
       .hasValue('Buzz Blob', 'the report title is displayed as the default name for widget title');
   });
 
@@ -96,7 +96,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await click('.add-to-dashboard-modal button.dashboard-action-text');
 
     assert
-      .dom('.add-to-dashboard-modal .navi-modal__denali-input')
+      .dom('.add-to-dashboard-modal .text-input.dashboard-title')
       .isVisible('Dashboard title input is shown when create dashboard link is clicked');
 
     assert
@@ -156,7 +156,8 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
   });
 
   test('addToNewDashboard action', async function(assert) {
-    assert.expect(0);
+    assert.expect(2);
+
     this.set('addToNewDashboard', (dashboardTitle, widgetTitle) => {
       assert.equal(dashboardTitle, 'Tri Force Heroes', 'the entered dashboard title is passed to the action');
 
@@ -167,7 +168,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await click('.report-control');
 
     await click('.add-to-dashboard-modal button.dashboard-action-text');
-    await fillIn('.add-to-dashboard-modal .navi-modal__denali-input', 'Tri Force Heroes');
+    await fillIn('input.dashboard-title', 'Tri Force Heroes');
     await click('.add-to-dashboard-modal .btn.add-to-dashboard');
   });
 
@@ -184,7 +185,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
 
     await render(Template);
     await click('.report-control');
-    await fillIn('.add-to-dashboard-modal .navi-modal__denali-input', 'ChuChu');
+    await fillIn('input.widget-title', 'ChuChu');
 
     await selectChoose('.add-to-dashboard-modal', 'Tumblr');
 

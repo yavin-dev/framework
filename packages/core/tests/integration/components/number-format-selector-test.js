@@ -7,7 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 let Template = hbs`
   <NumberFormatSelector
     @format={{this.format}}
-    @onUpdateFormat={{fn (mut this.format)}}
+    @onUpdateFormat={{this.onUpdateFormat}}
   />`;
 
 module('Integration | Component | number format selector', function(hooks) {
@@ -15,6 +15,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
   hooks.beforeEach(function() {
     this.set('format', '$0,0[.]00');
+    this.set('onUpdateFormat', newFormat => this.set('format', newFormat));
   });
 
   test('updateFormat from radio button', async function(assert) {

@@ -6,23 +6,16 @@
       <h1 class="primary-header">Add To Dashboard</h1>
       <h5 class="secondary-header">Please provide a name for this widget and select a dashboard</h5>
     </div>
-    <DenaliInputGroup @label="Widget Title" @isStacked= {{true}} as |Group| >
-      <Group.Input
-        type="text"
-        value={{this.reportName}}
-        class="navi-modal__denali-input"
-        {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName) ) )}}
-      />
-    </DenaliInputGroup>
+    <div class="modal-header">Widget Title</div>
+    <Input @value={{this.reportName}} class="text-input widget-title" @autofocus={{true}} />
+    <div class="modal-header">Dashboard</div>
     {{#if this.shouldCreateDashboard}}
-      <DenaliInputGroup @label="Dashboard" @isStacked= {{true}} as |Group|>
-        <Group.Input
-          type="text"
-          placeholder="Enter new dashboard name..."
-          value={{this.newDashboardTitle}}
-          class="navi-modal__denali-input"
-          {{on "input" (pipe (pick 'target.value') (fn (mut this.newDashboardTitle) ) )}} />
-      </DenaliInputGroup>
+      <Input
+        class="text-input dashboard-title"
+        @placeholder="Enter new dashboard name..."
+        @value={{this.newDashboardTitle}}
+        @autofocus={{true}}
+      />
       <button type="button" class="dashboard-action-text" {{on "click" (toggle "shouldCreateDashboard" this)}}>Select from my dashboards</button>
       <div class="btn-container">
         <button type="button" class="btn btn-primary add-to-dashboard" {{on "click" (fn @onAddToNewDashboard this.newDashboardTitle this.reportName )}} disabled={{this.disableAdd}}>Add To Dashboard</button>

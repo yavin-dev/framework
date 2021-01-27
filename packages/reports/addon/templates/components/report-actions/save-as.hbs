@@ -6,14 +6,14 @@
   </div>
 
   {{!-- input for new Name of the Report --}}
-  <DenaliInput
-    @size="medium"
-    type="text"
-    placeholder={{this.reportName}}
-    value={{this.reportName}}
-    class="navi-modal__denali-input"
-    {{on "input" (pipe (pick 'target.value') (fn (mut this.reportName) ) )}}
+  <Input
+    class="text-input dashboard-title"
+    @placeholder={{this.reportName}}
+    @value={{this.reportName}}
+    @autofocus={{true}}
+    @maxlength={{150}}
   />
+
   {{!-- Buttons --}}
   <div class="btn-container">
     {{!-- Create a new copy of the report --}}
