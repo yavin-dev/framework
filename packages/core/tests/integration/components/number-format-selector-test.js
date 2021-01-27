@@ -5,17 +5,16 @@ import { render, settled, click, fillIn, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
-  {{number-format-selector
-    format=format
-    onUpdateFormat=(action onUpdateFormat)
-  }}`;
+  <NumberFormatSelector
+    @format={{this.format}}
+    @onUpdateFormat={{fn (mut this.format)}}
+  />`;
 
 module('Integration | Component | number format selector', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     this.set('format', '$0,0[.]00');
-    this.set('onUpdateFormat', () => null);
   });
 
   test('updateFormat from radio button', async function(assert) {
@@ -59,7 +58,7 @@ module('Integration | Component | number format selector', function(hooks) {
 
     assert
       .dom('.number-format-selector__radio-custom input')
-      .isNotChecked('custom format correctly highlighted when user enters custom format');
+      .isChecked('custom format correctly highlighted when user enters custom format');
 
     await run(async () => {
       await fillIn(
@@ -73,6 +72,6 @@ module('Integration | Component | number format selector', function(hooks) {
 
     assert
       .dom('.number-format-selector__radio-number input')
-      .isNotChecked('number format correctly highlighted when user enters number format');
+      .isChecked('number format correctly highlighted when user enters number format');
   });
 });
