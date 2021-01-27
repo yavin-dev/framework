@@ -23,15 +23,14 @@
       </div>
     {{else}}
       <PowerSelect
-        class="dashboard-select"
+        @triggerClass="dashboard-select"
+        @searchEnabled={{true}}
         @options={{this.groupedDashboards}}
         @placeholder="Select a dashboard..."
         @selected={{this.selectedDashboard}}
         @searchField="title"
         @searchPlaceholder="Search for a dashboard..."
-        @onchange={{fn (mut this.selectedDashboard)}}
-        @tagName="div"
-        @renderInPlace={{true}}
+        @onChange={{fn (mut this.selectedDashboard)}}
         as |dashboard|
       >
         {{dashboard.title}}

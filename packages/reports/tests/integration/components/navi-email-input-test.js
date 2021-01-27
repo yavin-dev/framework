@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, click } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { typeInInput } from '../../helpers/ember-tag-input';
@@ -20,7 +20,7 @@ module('Integration | Component | navi email input', function(hooks) {
     await render(hbs`{{navi-email-input emails=emails}}`);
 
     assert.deepEqual(
-      $('.navi-email-input .navi-email-tag')
+      $('.navi-email-input .tag')
         .toArray()
         .map(e => e.textContent.trim()),
       EMAILS,
@@ -56,6 +56,6 @@ module('Integration | Component | navi email input', function(hooks) {
 
     await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 
-    await click(find('.emberTagInput-remove'));
+    await click('.tag__remove');
   });
 });

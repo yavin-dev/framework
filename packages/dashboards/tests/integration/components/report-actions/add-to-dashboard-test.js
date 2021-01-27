@@ -116,11 +116,11 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await clickTrigger('.add-to-dashboard-modal');
 
     assert
-      .dom('.add-to-dashboard-modal .ember-power-select-group .ember-power-select-group-name')
+      .dom('.ember-power-select-group-name')
       .hasText('My Dashboards', 'The user`s dashboards are grouped under `My Dashboards`');
 
     assert.deepEqual(
-      findAll('.add-to-dashboard-modal .ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       ['Tumblr Goals Dashboard', 'Dashboard 2'],
       'The user`s dashboard titles are shown in the dropdown'
     );

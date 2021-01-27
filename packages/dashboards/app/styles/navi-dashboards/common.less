@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-widget,
@@ -8,7 +8,7 @@
   .error-container,
   .loader-container {
     .display-flex;
-    background-color: #f7f8f9;
+    background-color: @denali-grey-300;
     text-align: center;
     height: 500px;
     border-radius: 2px;
@@ -55,7 +55,6 @@
       }
 
       button {
-        padding: 0;
         font-size: @font-size-base-large;
       }
 
@@ -68,38 +67,5 @@
 
   a {
     text-decoration: none;
-  }
-}
-
-.ember-modal-dialog {
-  .ember-power-select-options {
-    margin-bottom: 0;
-  }
-
-  .ember-power-select-status-icon {
-    display: inline-block;
-    right: 15px;
-  }
-
-  .ember-power-select-trigger {
-    background-color: @navi-white;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
-    border-radius: 0;
-    border-style: solid;
-    border-width: 0 0 1px 0;
-    padding: 10px;
-  }
-
-  .ember-power-select-option {
-    padding: 2px 8px 2px 16px;
-  }
-
-  .ember-power-select-search {
-    background-color: @navi-white;
-    padding: 10px;
-  }
-
-  .ember-power-select-search-input {
-    border: none;
   }
 }

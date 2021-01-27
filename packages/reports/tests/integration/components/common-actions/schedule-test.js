@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger, nativeMouseUp } from 'ember-power-select/test-support/helpers';
+import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import config from 'ember-get-config';
 import RSVP from 'rsvp';
 
@@ -48,7 +48,10 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     this.set('isDisabled', false);
 
-    assert.notOk($('.schedule-action__button').is(':disabled'), 'Scedule is enabled when the disabled is set to false');
+    assert.notOk(
+      $('.schedule-action__button').is(':disabled'),
+      'Schedule is enabled when the disabled is set to false'
+    );
   });
 
   test('schedule modal - test enabled', async function(assert) {
@@ -118,17 +121,17 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.ok(
-      $('.schedule-modal__dropdown--frequency').is(':visible'),
+      $('.schedule-modal__frequency-trigger').is(':visible'),
       'Schedule Modal component renders an dropdown for frequencies'
     );
 
     assert.ok(
-      $('.schedule-modal__dropdown--format').is(':visible'),
+      $('.schedule-modal__format-trigger').is(':visible'),
       'Schedule Modal component renders an dropdown for formats'
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--frequency')
+      $('.schedule-modal__frequency-trigger')
         .text()
         .trim(),
       'Week',
@@ -136,7 +139,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--format')
+      $('.schedule-modal__format-trigger')
         .text()
         .trim(),
       'csv',
@@ -155,7 +158,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await click('.schedule-action__button');
 
     assert.deepEqual(
-      $('.schedule-modal__input--recipients .navi-email-tag')
+      $('.schedule-modal__input--recipients .tag')
         .toArray()
         .map(e => e.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
@@ -163,7 +166,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
 
     assert.equal(
-      $('.schedule-modal__dropdown--frequency')
+      $('.schedule-modal__frequency-trigger')
         .text()
         .trim(),
       'Week',
@@ -196,7 +199,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await click('.schedule-modal__frequency-trigger');
     await nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
 
     assert.notOk(
@@ -284,7 +287,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await click('.schedule-modal__frequency-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
@@ -303,7 +306,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--frequency');
+    await click('.schedule-modal__frequency-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       ['Day', 'Week', 'Month'],
@@ -323,7 +326,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--format');
+    await click('.schedule-modal__format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       ['csv', 'test'],
@@ -342,7 +345,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-action__button');
 
-    await clickTrigger('.schedule-modal__dropdown--format');
+    await click('.schedule-modal__format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
       ['csv', 'pdf', 'png'],
@@ -365,10 +368,10 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await click('.schedule-action__button');
 
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-trigger')
+      .dom('.schedule-modal__format-trigger')
       .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
     assert
-      .dom('.schedule-modal__dropdown--format .ember-power-select-selected-item')
+      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
       .includesText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;

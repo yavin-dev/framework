@@ -18,7 +18,9 @@ type Args = BaseArgs<SeriesConfig> & SeriesOptions;
 
 export default class NaviVisualizationConfigSeriesChartComponent extends Component<Args> {
   get selectedMetric(): ColumnFragment | undefined {
-    assert('seriesType should be dimension', this.args.seriesType === 'dimension');
+    if (this.args.seriesType !== 'dimension') {
+      return undefined;
+    }
     const { metricCid } = this.args.seriesConfig;
     return this.args.request.metricColumns.find(({ cid }) => cid === metricCid);
   }

@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-column-config-base" ...attributes>
   <div class="navi-column-config-base__body">
   <div class="navi-column-config-base__option navi-column-config-base-type">
@@ -42,6 +42,7 @@
         </label>
         {{#let (await param.values) as |paramValues|}}
           <PowerSelect
+            @searchEnabled={{true}}
             @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input"
             @triggerId="{{this.classId}}-{{param.id}}"
             @dropdownClass="navi-column-config-item__parameter-dropdown"
@@ -49,7 +50,7 @@
             @searchField={{if paramValues.firstObject.name "name" "description"}}
             @searchPlaceholder="Search {{capitalize param.name}}"
             @options={{paramValues}}
-            @onchange={{fn this.setParameter param}}
+            @onChange={{fn this.setParameter param}}
             as | arg |
           >
             <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />

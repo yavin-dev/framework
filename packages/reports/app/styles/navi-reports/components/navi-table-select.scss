@@ -1,0 +1,12 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.navi-table-select {
+  &__trigger {
+    background: $color-grey-100;
+    border: 1px solid #f1f1f1;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    margin: 4px;
+  }
+}

@@ -29,7 +29,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
         @selected={{this.selected}}
         @extra={{this.extra}}
         @triggerComponent='power-select-bulk-import-trigger'
-        @onchange={{action this.onChange}}
+        @onChange={{action this.onChange}}
         @searchField="id"
         as |item|>
         <span class='selected-dim-id'>{{item.id}}</span>

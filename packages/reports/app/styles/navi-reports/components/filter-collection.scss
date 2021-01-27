@@ -1,0 +1,31 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.filter-collection {
+  &__row {
+    display: flex;
+  }
+
+  &__remove {
+    padding: 4px 10px;
+  }
+
+  &--collapsed {
+    cursor: pointer;
+
+    &-item:not(:last-child):after {
+      content: ',';
+      margin: 0 4px 0 -2px;
+    }
+
+    &-item {
+      display: inline-block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}

@@ -3,10 +3,10 @@
   <div class="report-builder__side report-builder__side">
     {{#if (or (gt this.allTables.length 1) (not this.hasValidLogicalTable))}}
       <NaviTableSelect
-        class={{concat "report-builder__container report-builder__container--table" (if @disabled " report-builder__container--disabled" "")}}
         @options={{this.allTables}}
         @selected={{this.request.tableMetadata}}
         @onChange={{update-report-action "UPDATE_TABLE"}}
+        @disabled={{@disabled}}
       />
     {{/if}}
     <div class="report-builder__container--builder {{unless this.hasValidLogicalTable "report-builder__container--builder-skel"}}">

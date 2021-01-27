@@ -1,30 +1,31 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021 Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   <span class="filter-builder" ...attributes>
     <FilterBuilders::Collapsed
       @filter={{@filter}}
       @selectedValueBuilder={{this.selectedValueBuilder}}
+      @request={{@request}}
     />
   </span>
 {{else}}
   <div class="filter-builder" ...attributes>
-    <span class="filter-builder__subject">
-      {{@filter.displayName}}
-    </span>
-    <PowerSelect
-      class="filter-builder__operator"
-      @dropdownClass="filter-builder__operator-dropdown"
-      @options={{this.valueBuilders}}
-      @selected={{this.selectedValueBuilder}}
-      @searchEnabled={{false}}
-      @tagName="span"
-      @triggerClass="filter-builder__select-trigger"
-      @onchange={{this.setOperator}}
-      as | operator |
-    >
-      {{operator.name}}
-    </PowerSelect>
-    <span class="filter-builder__values">
+    <div class="filter-builder__subject sm-col-1-1 col-1-5">
+      <div class="filter-builder__subject-name">{{@filter.displayName}}</div>
+    </div>
+    <div class="filter-builder__operator sm-col-1-1 col-1-5">
+      <PowerSelect
+        @triggerClass="filter-builder__operator-trigger is-medium"
+        @options={{this.valueBuilders}}
+        @selected={{this.selectedValueBuilder}}
+        @searchEnabled={{false}}
+        @onChange={{this.setOperator}}
+        data-filter-subject={{@filter.displayName}}
+        as | operator |
+      >
+        {{operator.name}}
+      </PowerSelect>
+    </div>
+    <div class="filter-builder__values sm-col-1-1 col-3-5">
       {{#let (component this.selectedValueBuilder.component) as |ValuesComponent|}}
         <ValuesComponent
           @filter={{@filter}}
@@ -32,6 +33,6 @@
           @onUpdateFilter={{@onUpdateFilter}}
         />
       {{/let}}
-    </span>
+    </div>
   </div>
 {{/if}}

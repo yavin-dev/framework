@@ -21,18 +21,18 @@ module('Integration | Component | filter values/multi value input', function(hoo
     this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', ['10']);
     this.onUpdateFilter = () => null;
 
-    await render(hbs`<FilterValues::MultiValueInput
-            @filter={{this.filter}}
-            @onUpdateFilter={{this.onUpdateFilter}}
-            @isCollapsed={{this.isCollapsed}}
-        />`);
+    await render(hbs`
+      <FilterValues::MultiValueInput
+        @filter={{this.filter}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @isCollapsed={{this.isCollapsed}}
+      />
+    `);
   });
 
   test('it renders', function(this: TestContext, assert) {
-    assert.expect(1);
-
     assert
-      .dom('.emberTagInput-tag')
+      .dom('.tag')
       .hasText(
         this.filter.values[0].toString(),
         'The value select contains an input with the first filter value as a tag'
@@ -68,7 +68,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
       assert.deepEqual(changeSet, { values: ['11', '12'] }, 'Removing a tag updates the filter values');
     });
 
-    await click('.emberTagInput-remove');
+    await click('.tag__remove');
   });
 
   test('error state', function(this: TestContext, assert) {

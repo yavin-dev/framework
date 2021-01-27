@@ -47,7 +47,7 @@ module.exports = function(environment) {
         medium: 10000
       },
       FEATURES: {
-        enableTotals: false,
+        enableTotals: true,
         enableTableEditing: true,
         enabledNotifyIfData: true
       }
