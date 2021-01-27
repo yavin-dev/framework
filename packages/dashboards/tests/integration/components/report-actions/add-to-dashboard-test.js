@@ -156,7 +156,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
   });
 
   test('addToNewDashboard action', async function(assert) {
-    assert.expect(2);
+    assert.expect(0);
     this.set('addToNewDashboard', (dashboardTitle, widgetTitle) => {
       assert.equal(dashboardTitle, 'Tri Force Heroes', 'the entered dashboard title is passed to the action');
 
