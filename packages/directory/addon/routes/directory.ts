@@ -47,7 +47,6 @@ export default class DirectoryRoute extends Route {
 
   @action
   willTransition() {
-    debugger;
     if (this.controller.sidebarOpen) {
       this.controller.set('sidebarOpen', false);
     }

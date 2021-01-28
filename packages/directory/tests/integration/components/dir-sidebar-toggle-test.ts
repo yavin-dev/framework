@@ -5,13 +5,11 @@ import hbs from 'htmlbars-inline-precompile';
 import { TestContext } from 'ember-test-helpers';
 import Service from '@ember/service';
 import ControllerClass from '@ember/controller';
-import { tracked } from '@glimmer/tracking';
 
 const TEMPLATE = hbs`<DirSidebarToggle />`;
 
 class TestRouter extends Service {
-  @tracked
-  currentRouteName = '';
+  isActive = () => false;
 }
 class TestController extends ControllerClass {
   toggleSidebar() {
@@ -41,7 +39,7 @@ module('Integration | Component | dir sidebar toggle', function(hooks) {
     assert.dom(Toggle).doesNotExist('The sidebar toggle component is not rendered on non-directory routes');
 
     await clearRender();
-    Router.currentRouteName = 'directory';
+    Router.isActive = () => true;
     await render(TEMPLATE);
 
     assert.dom(Toggle).exists('The sidebar toggle component is rendered on directory routes');
@@ -53,7 +51,7 @@ module('Integration | Component | dir sidebar toggle', function(hooks) {
     Controller.toggleSidebar = () => {
       assert.ok(true, 'the sidebar was toggled');
     };
-    Router.currentRouteName = 'directory';
+    Router.isActive = () => true;
 
     await render(TEMPLATE);
 

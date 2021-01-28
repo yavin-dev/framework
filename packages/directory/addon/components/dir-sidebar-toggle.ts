@@ -28,7 +28,7 @@ export default class DirSidebarToggleComponent extends Component {
    */
   @computed('router.currentRouteName')
   get isVisible(): boolean {
-    return this.router.currentRouteName.startsWith('directory');
+    return this.router.isActive('directory');
   }
 
   /**
