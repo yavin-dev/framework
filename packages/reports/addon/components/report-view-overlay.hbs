@@ -10,12 +10,21 @@
     )}}
   {{else if this.shouldDisplay}}
     <div class="report-view-overlay__content">
-      <NaviButton title="Run query to update results" class="report-view-overlay__button report-view-overlay__button--run" @onClick={{@runReport}}>
+      <DenaliButton 
+        title="Run query to update results"
+        class="report-view-overlay__button report-view-overlay__button--run"
+        {{on "click" @runReport}}
+      >
         Run
-      </NaviButton>
-      <NaviButton title="Continue with old results" class="report-view-overlay__button report-view-overlay__button--dismiss" @type="secondary" @onClick={{this.dismiss}}>
+      </DenaliButton>
+      <DenaliButton
+        title="Continue with old results"
+        class="report-view-overlay__button report-view-overlay__button--dismiss"
+        @style="outline"
+        {{on "click" this.dismiss}}
+      >
         Dismiss
-      </NaviButton>
+      </DenaliButton>
     </div>
   {{/if}}
 </div>

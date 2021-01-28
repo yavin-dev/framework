@@ -147,51 +147,49 @@
 
   <footer class="navi-report-widget__footer">
     {{#if this.isRunningReport}}
-      <button
-        type="button"
-        class="btn btn-primary navi-report-widget__cancel-btn"
-        onclick={{route-action "cancelReport" @model}}
+      <DenaliButton
+        class="navi-report-widget__cancel-btn"
+        {{on "click" (route-action "cancelReport" @model)}}
       >
         Cancel
-      </button>
+      </DenaliButton>
     {{else}}
-      <button
-        type="button"
-        class="btn btn-primary navi-report-widget__run-btn"
-        onclick={{pipe
+      <DenaliButton
+        class="navi-report-widget__run-btn"
+        {{on "click" (pipe
           (route-action "validate" @model)
           (route-action "runReport" @model)
-        }}
+        )}}
       >
         Run
-      </button>
+      </DenaliButton>
 
       {{#if (and @model.dashboard.canUserEdit @model.hasDirtyAttributes)}}
-        <button
-          type="button"
-          class="btn btn-secondary navi-report-widget__save-btn"
-          onclick={{pipe
+        <DenaliButton
+          class="navi-report-widget__save-btn"
+          @style="outline"
+          {{on "click" (pipe
             (route-action "validate" @model)
             (route-action "runReport" @model)
             (route-action "saveWidget" @model)
-          }}
+          )}}
         >
           {{#if @model.isNew}}
             Save Widget
           {{else}}
             Save Changes
           {{/if}}
-        </button>
+        </DenaliButton>
       {{/if}}
 
       {{#if (and @model.hasDirtyAttributes (not @model.isNew))}}
-        <button
-          type="button"
-          class="btn btn-secondary navi-report-widget__revert-btn"
-          onclick={{route-action "revertChanges" @model}}
+        <DenaliButton
+          @style="outline"
+          class="navi-report-widget__revert-btn"
+          {{on "click" (route-action "revertChanges" @model)}}
         >
           Revert Changes
-        </button>
+        </DenaliButton>
       {{/if}}
     {{/if}}
   </footer>
