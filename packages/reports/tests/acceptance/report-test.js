@@ -2066,7 +2066,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
-    let buttons = findAll('.navi-report__footer .navi-button');
+    let buttons = findAll('.navi-report__footer .button');
     assert.dom('.navi-loader__spinner').isVisible('Report is loading');
 
     assert.deepEqual(
@@ -2094,7 +2094,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/13/edit', 'Clicking `Cancel` brings the user to the edit route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );
@@ -2104,7 +2104,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/13/view', 'Running the report brings the user to the view route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );

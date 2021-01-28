@@ -83,66 +83,51 @@
   <footer class="navi-report__footer">
     {{#unless this.isRunningReport}}
 
-      <NaviButton
+      <DenaliButton
         class="navi-report__run-btn"
-        @onClick={{pipe
-          (route-action "validate" this.model)
-          (route-action "forceRun" this.model)
-        }}
+        {{on "click" (pipe (route-action "validate" this.model) (route-action "forceRun" this.model))}}
       >
         Run
-      </NaviButton>
+      </DenaliButton>
 
       {{#if (and this.model.isOwner this.model.hasDirtyAttributes)}}
-        <NaviButton
+        <DenaliButton
           class="navi-report__save-btn"
-          @type="secondary"
-          @onClick={{pipe
-            (route-action "validate" this.model)
-            (route-action "runReport" this.model)
-            (route-action "saveReport" this.model)
-          }}
+          @style="outline"
+          {{on "click" (pipe (route-action "validate" this.model) (route-action "runReport" this.model) (route-action "saveReport" this.model))}}
         >
           {{#if this.model.isNew}}
             Save Report
           {{else}}
             Save
           {{/if}}
-        </NaviButton>
+        </DenaliButton>
 
         {{#unless this.model.isNew}}
-          <NaviButton
+          <DenaliButton
             class="navi-report__save-as-btn"
-            @type="secondary"
-            @onClick={{pipe
-              (route-action "validate" this.model)
-              (route-action "runReport" this.model)
-              (toggle "showSaveAs" this)
-          }}>
+            @style="outline"
+            {{on "click" (pipe (route-action "validate" this.model) (route-action "runReport" this.model) (toggle "showSaveAs" this))}}
+          >
             Save As ...
-          </NaviButton>
+          </DenaliButton>
         {{/unless}}
       {{/if}}
 
       {{#if (and this.model.hasDirtyAttributes (not this.model.isNew))}}
-        <NaviButton
+        <DenaliButton
           class="navi-report__revert-btn"
-          @type="secondary"
-          @onClick={{route-action "revertChanges" this.model}}
+          @style="outline"
+          {{on "click" (route-action "revertChanges" this.model)}}
         >
           Revert
-        </NaviButton>
+        </DenaliButton>
       {{/if}}
 
     {{else}}
-
-      <NaviButton
-        class="navi-report__cancel-btn"
-        @onClick={{route-action "cancelReport" this.model}}
-      >
+      <DenaliButton class="navi-report__cancel-btn" {{on "click" (route-action "cancelReport" this.model)}}>
         Cancel
-      </NaviButton>
-
+      </DenaliButton>
     {{/unless}}
   </footer>
 </div>
