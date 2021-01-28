@@ -42,22 +42,22 @@ module('Integration | Component | filter-values/time-dimension/range', function(
     await render(TEMPLATE);
 
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Start', 'Placeholder text is present when no date range is selected');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('', 'Placeholder text is present when no date range is selected');
 
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('End', 'Placeholder text is present when no date range is selected');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('', 'Placeholder text is present when no date range is selected');
 
     this.set('filter', { values: ['2019-11-29', '2019-12-06'] });
 
     assert
-      .dom('.filter-values--date-range-input__low-value')
-      .hasText('Nov 29, 2019', 'Placeholder text is inclusive start date');
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Nov 29, 2019', 'Placeholder text is inclusive start date');
 
     assert
-      .dom('.filter-values--date-range-input__high-value')
-      .hasText('Dec 05, 2019', 'Placeholder text is inclusive end date');
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Dec 05, 2019', 'Placeholder text is inclusive end date');
   });
 
   test('changing values', async function(this: TestContext, assert) {

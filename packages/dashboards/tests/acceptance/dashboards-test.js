@@ -241,9 +241,9 @@ module('Acceptance | Dashboards', function(hooks) {
       'There are 3 widgets in the dashboard'
     );
 
-    assert.dom('.add-widget button').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
+    assert.dom('.add-widget').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
 
-    await click('.add-widget .btn');
+    await click('.add-widget');
 
     assert
       .dom('.add-widget-modal .btn')
@@ -253,7 +253,7 @@ module('Acceptance | Dashboards', function(hooks) {
         'Create new assigns the new widget route to the primary button'
       );
 
-    await selectChoose('.report-select', 'Report 12');
+    await selectChoose('.add-widget-modal__report-trigger', 'Report 12');
     await click('.add-widget-modal .btn');
 
     assert.deepEqual(
@@ -414,12 +414,12 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create new widget
-    await click('.add-widget .btn');
+    await click('.add-widget');
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
@@ -448,12 +448,12 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create another new widget
-    await click('.add-widget .btn');
+    await click('.add-widget');
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Page Views');
@@ -541,7 +541,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Build Request
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
@@ -594,7 +594,7 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.expect(2);
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.get('/data/network/day/os', function() {
+    server.get('/data/network/day/os;show=id', function() {
       return new Response(403);
     });
 
@@ -723,12 +723,12 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
-    await click('.add-widget .btn');
+    await click('.add-widget');
     await click('.add-widget-modal .add-to-dashboard');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__select-trigger', 'In The Past');
+    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');

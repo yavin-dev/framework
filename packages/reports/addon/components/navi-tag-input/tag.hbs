@@ -1,0 +1,12 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+<li class="{{this.extraClassNames}}" ...attributes>
+  <DenaliTag
+    @isSmall={{true}}
+    @iconBack={{if @isRemovable 'close'}}
+    @iconBackClass='tag__remove'
+    @state={{this.state}}
+    @onIconBackClick={{@onRemoveTag}}
+  >
+    {{yield}}
+  </DenaliTag>
+</li>

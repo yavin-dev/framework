@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
-import { clickTrigger as toggleSelector, nativeMouseUp as toggleOption } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { TestContext } from 'ember-test-helpers';
 import { buildTestRequest } from 'dummy/tests/helpers/request';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
@@ -57,7 +57,7 @@ module('Integration | Component | visualization config/series chart', function(h
 
     await render(Template);
 
-    assert.dom('.series-chart-config .metric-select').exists('The metric selector component is rendered correctly');
+    assert.dom('.metric-select__select-trigger').exists('The metric selector component is rendered correctly');
 
     this.set('onUpdateChartConfig', (config: Partial<DimensionSeries['config']>) => {
       assert.deepEqual(
@@ -67,18 +67,14 @@ module('Integration | Component | visualization config/series chart', function(h
       );
     });
 
-    await toggleSelector('.metric-select__select__selector');
-
+    await click('.metric-select__select-trigger');
     assert
-      .dom('.metric-select__select__selector .ember-power-select-option[data-option-index="2"]')
+      .dom('.ember-power-select-option[data-option-index="2"]')
       .hasText('Revenue (USD)', 'Parameterized metric is displayed correctly');
 
-    await toggleOption(find('.metric-select__select__selector .ember-power-select-option[data-option-index="1"]'));
+    await selectChoose('.metric-select__select-trigger', 'Page Views');
 
     this.set('seriesType', 'metric');
-
-    await render(Template);
-
     assert
       .dom('.series-chart-config .metric-select')
       .doesNotExist('The metric selector component is not rendered for a metric series');

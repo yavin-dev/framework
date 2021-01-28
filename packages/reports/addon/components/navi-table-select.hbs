@@ -1,0 +1,15 @@
+{{!-- Copyright 2019, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<PowerSelect
+  @options={{@options}}
+  @selected={{@selected}}
+  @searchEnabled={{this.searchEnabled}}
+  @searchField={{this.searchField}}
+  @onChange={{@onChange}}
+  @disabled={{@disabled}}
+  @triggerClass="navi-table-select__trigger is-medium"
+  @dropdownClass="navi-table-select__dropdown"
+  @selectedItemComponent="navi-table-select-trigger"
+  as | item |
+>
+  <NaviTableSelectItem @option={{item}} />
+</PowerSelect>

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
@@ -112,24 +112,21 @@ module('Integration | Component | report actions - multiple-format-export', func
     `);
 
     // Default state
-    assert.notOk(
-      find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
-      'The dropdown is closed by default'
-    );
+    assert
+      .dom('.ember-basic-dropdown-trigger')
+      .hasAttribute('aria-expanded', 'false', 'The dropdown is closed by default');
 
     // Click trigger
     await clickTrigger();
-    assert.ok(
-      find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
-      'The dropdown is open when the trigger is clicked'
-    );
+    assert
+      .dom('.ember-basic-dropdown-trigger')
+      .hasAttribute('aria-expanded', 'true', 'The dropdown is open when the trigger is clicked');
 
     // Click export option
     await click($('.multiple-format-export__dropdown a:contains("CSV")')[0]);
-    assert.notOk(
-      find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
-      'The dropdown is closed when an export option is clicked'
-    );
+    assert
+      .dom('.ember-basic-dropdown-trigger')
+      .hasAttribute('aria-expanded', 'false', 'The dropdown is closed when an export option is clicked');
   });
 
   test('disabled dropdown', async function(assert) {

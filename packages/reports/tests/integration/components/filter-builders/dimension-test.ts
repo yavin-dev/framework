@@ -36,15 +36,15 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     await render(TEMPLATE);
 
     assert
-      .dom('.filter-builder-dimension__subject')
+      .dom('.filter-builder__subject')
       .hasText(this.filter.displayName, "Subject's name is display in filter builder");
 
     assert
-      .dom('.filter-builder-dimension__operator .ember-power-select-selected-item')
+      .dom('.filter-builder__operator-trigger .ember-power-select-selected-item')
       .hasText('Equals', 'The filter current operator is selected by default');
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__values .ember-power-select-multiple-option').map(el =>
+      findAll('.filter-values--dimension-select__trigger .ember-power-select-multiple-option').map(el =>
         el.textContent
           ?.split('\n')
           .map(l => l.trim())

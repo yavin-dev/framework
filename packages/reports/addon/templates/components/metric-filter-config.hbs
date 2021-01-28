@@ -1,17 +1,17 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="metric-filter-config {{unless this.otherParams.length "metric-filter-config__hide"}}" ...attributes>
   <BasicDropdown @calculatePosition={{this.calculatePosition}} as |dd| >
-    <dd.trigger @class="metric-filter-config__dropdown-trigger">
+    <dd.Trigger @class="metric-filter-config__dropdown-trigger">
       <NaviIcon @icon="cog" class="metric-filter-config__trigger-icon" />
-    </dd.trigger>
+    </dd.Trigger>
 
-    <dd.content @class="metric-filter-config__dropdown-container">
+    <dd.Content @class="metric-filter-config__dropdown-container">
       <div class="metric-filter-config__header">{{this.parameter}} ({{this.otherParams.length}})</div>
       <div class="metric-filter-config__items">
         {{#each this.otherParams as | param |}}
           <div class="metric-filter-config__item" role="button" {{on "click" (queue (fn @paramClicked this.parameter param) dd.actions.close)}}>{{param}}</div>
         {{/each}}
       </div>
-    </dd.content>
+    </dd.Content>
   </BasicDropdown>
 </div>

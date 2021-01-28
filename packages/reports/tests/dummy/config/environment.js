@@ -50,7 +50,8 @@ module.exports = function(environment) {
         exportFileTypes: [],
         enabledNotifyIfData: true,
         enableContains: true,
-        enableTableEditing: true
+        enableTableEditing: true,
+        enableTotals: true
       }
     }
   };

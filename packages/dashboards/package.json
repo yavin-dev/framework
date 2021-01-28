@@ -27,7 +27,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.11",
+    "@denali-design/ember": "^1.0.0-alpha.14",
     "@ember-decorators/component": "^6.1.1",
     "ember-ajax": "^5.0.0",
     "ember-auto-import": "^1.5.3",
@@ -97,7 +97,7 @@
     "ember-font-awesome": "3.1.1",
     "ember-load-initializers": "^2.1.1",
     "ember-maybe-import-regenerator": "^0.1.6",
-    "ember-power-select": "^2.3.5",
+    "ember-power-select": "^4.1.0",
     "ember-qunit": "^4.6.0",
     "ember-raf-scheduler": "^0.1.0",
     "ember-resolver": "^7.0.0",

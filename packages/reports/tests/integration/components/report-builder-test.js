@@ -67,6 +67,6 @@ module('Integration | Component | report builder', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.navi-table-select').isVisible('Table renders when there are multiple tables');
+    assert.dom('.navi-table-select__trigger').isVisible('Table renders when there are multiple tables');
   });
 });

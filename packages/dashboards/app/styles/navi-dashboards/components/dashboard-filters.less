@@ -1,119 +1,31 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@add-filter-cell-height: 30px;
-@add-filter-cell-margin: 3px;
-@add-filter-placeholder-color-background: #f3f3f3;
-@add-filter-placeholder-color-border: #a3a3a3;
-
 .dashboard-filters {
-  align-items: flex-start;
-  border-bottom: 2px solid @navi-gray-300;
-  display: flex;
-  font-size: 16px;
-  flex-direction: column;
-  padding: 5px 30px;
-
-  &__toggle {
-    height: 19px;
-    text-align: center;
-    transition: transform 100ms;
-    width: 19px;
-  }
-
-  .filter-collection {
-    font-size: @font-size-base;
-  }
+  padding: 8px 0;
 
   &--collapsed {
+    font-size: 16px;
     flex-direction: row;
-
     .dashboard-filters__toggle {
       transform: rotate(-90deg);
-    }
-
-    .filter-collection {
-      font-size: inherit;
-      padding-right: 20px;
-
-      .filter-values--selected-error {
-        display: none;
-      }
-    }
-  }
-
-  &--expanded {
-    background-color: @navi-white;
-    z-index: 5;
-
-    .filter-collection {
-      align-self: stretch;
-      padding: 5px 20px 0 20px;
-    }
-
-    &__add-filter-button {
-      color: @navi-blue-500;
-      cursor: pointer;
-      font-size: 12px;
-      margin: 5px 15px;
-    }
-
-    &-add-row {
-      align-self: stretch;
-      display: flex;
-      padding: 0 20px;
-
-      &__close {
-        color: @navi-gray-600;
-        cursor: pointer;
-        flex: 0 0 auto;
-        font-size: @font-size-mid;
-        line-height: @add-filter-cell-height;
-        margin: @add-filter-cell-margin;
-        text-align: center;
-      }
-
-      &__dimension-selector {
-        flex: 2;
-        font-size: @font-size-mid;
-        margin: @add-filter-cell-margin;
-        min-height: @add-filter-cell-height;
-
-        .ember-power-select-placeholder {
-          line-height: @add-filter-cell-height - 2;
-        }
-      }
-
-      &__placeholder {
-        &--operator {
-          flex: 2;
-        }
-
-        &--values {
-          flex: 6;
-          margin: @add-filter-cell-margin;
-        }
-      }
-
-      &__placeholder-inner {
-        background-color: @add-filter-placeholder-color-background;
-        border-color: @add-filter-placeholder-color-border;
-        border-style: solid;
-        border-width: 1px;
-        height: @add-filter-cell-height;
-
-        &--operator {
-          margin: @add-filter-cell-margin;
-        }
-      }
     }
   }
 
   &__expand-button {
+    font-size: 16px;
     cursor: pointer;
-    flex-shrink: 0;
-    user-select: none;
+    white-space: nowrap;
+  }
+
+  &__toggle {
+    transition: transform 100ms;
+  }
+
+  &__operator-placeholder,
+  &__values-placeholder {
+    width: 100%;
   }
 }

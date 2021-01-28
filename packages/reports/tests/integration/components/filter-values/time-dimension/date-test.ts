@@ -1,8 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
-//@ts-expect-error
-import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
@@ -43,12 +41,12 @@ module('Integration | Component | filter-values/time-dimension/date', function(h
   test('Displayed text', async function(this: TestContext, assert) {
     await render(TEMPLATE);
 
-    assert.dom('.filter-values--date-input').hasText('Jan 01, 2020', 'The selected date is displayed');
+    assert.dom('.filter-values--date-input input').hasValue('Jan 01, 2020', 'The selected date is displayed');
 
     this.set('filter', { values: [] });
     assert
-      .dom('.filter-values--date-input')
-      .hasText('Select date', 'The placeholder text is displayed when no date is selected');
+      .dom('.filter-values--date-input input')
+      .hasValue('', 'The placeholder text is displayed when no date is selected');
   });
 
   test('onUpdateFilter', async function(this: TestContext, assert) {
@@ -65,8 +63,7 @@ module('Integration | Component | filter-values/time-dimension/date', function(h
         '`onUpdateFilter` correctly provided the new date value'
       );
     });
-
-    await clickTrigger('.filter-values--date-input__trigger');
+    await click('.dropdown-date-picker__trigger');
     await click(`[data-date="${selectedDate}"]`);
   });
 
