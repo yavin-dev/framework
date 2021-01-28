@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
 <div ...attributes>
   {{!-- Check if in need of disabling the button when the action should be disabled --}}
@@ -52,14 +52,12 @@
           <fieldset class="schedule-modal__section">
             <div class="schedule-modal__label">Frequency</div>
             <PowerSelect
-              class="schedule-modal__dropdown schedule-modal__dropdown--frequency"
+              @triggerClass="schedule-modal__frequency-trigger"
               @options={{this.frequencies}}
-              @renderInPlace={{true}}
               @selected={{this.localDeliveryRule.frequency}}
               @disabled={{is-rejected this.deliveryRule}}
               @searchEnabled={{false}}
-              @tagName="div"
-              @onchange={{fn (mut this.localDeliveryRule.frequency)}}
+              @onChange={{fn (mut this.localDeliveryRule.frequency)}}
               as | frequency |
             >
               {{capitalize frequency}}
@@ -68,14 +66,12 @@
           <fieldset class="schedule-modal__section">
             <div class="schedule-modal__label">Format</div>
             <PowerSelect
-              class="schedule-modal__dropdown schedule-modal__dropdown--format"
+              @triggerClass="schedule-modal__format-trigger"
               @disabled={{lt this.formats.length 2}}
               @options={{this.formats}}
-              @renderInPlace={{true}}
               @selected={{this.localDeliveryRule.format.type}}
               @searchEnabled={{false}}
-              @tagName="div"
-              @onchange={{this.updateFormat}}
+              @onChange={{this.updateFormat}}
               as | format |
             >
               {{format}}

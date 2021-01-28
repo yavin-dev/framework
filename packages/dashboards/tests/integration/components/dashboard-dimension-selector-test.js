@@ -81,7 +81,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
       'Correct select structure is shown'
     );
 
-    assert.dom('.ember-power-select-placeholder').hasText('Select a Dimension');
+    assert.dom('.ember-power-select-placeholder').hasText('Dimension');
 
     await selectChoose('.ember-power-select-trigger', 'dim1');
   });

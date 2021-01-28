@@ -5,15 +5,16 @@
 >
   {{#if (is-fulfilled this.groupedDimensions)}}
     <PowerSelect
+      @searchEnabled={{true}}
       @options={{await this.groupedDimensions}}
-      @onchange={{@onChange}}
+      @onChange={{@onChange}}
       @searchField="name"
-      @placeholder="Select a Dimension"
+      @placeholder="Dimension"
       @searchPlaceholder="Search"
-      @beforeOptionsComponent="power-select-search"
+      @triggerClass="is-medium"
       as |dimension|
     >
-      <div title="data source: {{dimension.dataSource}}">{{dimension.name}}</div>
+      <div title="Data Source: {{dimension.dataSource}}">{{dimension.name}}</div>
     </PowerSelect>
   {{/if}}
 </div>

@@ -1,5 +1,7 @@
-@use 'denali/denali';
-@use 'navi-dashboards';
+@import 'denali/denali';
+@import 'denali/ember-power-select';
+@import 'navi-reports';
+@import 'navi-dashboards';
 
 .nav-responsive {
   z-index: 1;

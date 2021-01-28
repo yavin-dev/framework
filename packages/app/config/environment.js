@@ -31,7 +31,8 @@ module.exports = function(environment) {
       FEATURES: {
         enableDashboardFilters: true,
         exportFileTypes: [],
-        enableTableEditing: true
+        enableTableEditing: true,
+        enableTotals: true
       }
     },
     apollo: {}

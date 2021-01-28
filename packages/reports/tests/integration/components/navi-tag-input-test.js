@@ -79,7 +79,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     `);
 
     assert.deepEqual(
-      $('.emberTagInput-tag')
+      $('.tag')
         .toArray()
         .map(e => e.textContent.trim()),
       DIVINE_BEASTS,
@@ -87,7 +87,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     );
 
     // Test tag removal
-    await click(findAll('.emberTagInput-remove')[2]);
+    await click(findAll('.tag__remove')[2]);
   });
 
   test('custom tag component', async function(assert) {
@@ -103,13 +103,13 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     this.set('tags', DIVINE_BEASTS);
 
     await render(hbs`
-      {{#navi-tag-input
-        tags=tags
-        tagComponent='my-wacky-tag'
+      <NaviTagInput
+        @tags={{this.tags}}
+        @tagComponent='my-wacky-tag'
         as |divineBeast|
-      }}
+      > 
         {{divineBeast}}
-      {{/navi-tag-input}}
+      </NaviTagInput>
     `);
 
     assert.deepEqual(
@@ -120,8 +120,6 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
       'Custom tag component can be given to add new behavior'
     );
 
-    assert
-      .dom('.emberTagInput-remove')
-      .doesNotExist('Elements from the default component are not required in a custom tag');
+    assert.dom('.tag__remove').doesNotExist('Elements from the default component are not required in a custom tag');
   });
 });

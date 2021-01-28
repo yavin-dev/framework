@@ -58,26 +58,24 @@ module('Integration | Component | filter values/range input', function(hooks) {
       assert.deepEqual(changeSet, { values: ['aaa', 2000] }, 'User inputted number is given to update action');
     });
 
-    await fillIn('.filter-values--range-input__input:first-child', 'aaa');
+    await fillIn(findAll('input')[0], 'aaa');
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(changeSet, { values: [1000, 'bbb'] }, 'User inputted number is given to update action');
     });
 
-    await fillIn('.filter-values--range-input__input:last-child', 'bbb');
+    await fillIn(findAll('input')[1], 'bbb');
   });
 
   test('error state', function(assert) {
     assert.expect(3);
-    assert.notOk(
-      $('.filter-values--range-input__input--error').is(':visible'),
-      'The input should not have error state'
-    );
+
+    assert.dom('.input').doesNotHaveClass('is-error', 'The input should not have error state');
 
     this.set('filter', {
       validations: { attrs: { values: { isInvalid: true } } }
     });
-    assert.ok($('.filter-values--range-input__input--error').is(':visible'), 'The input should have error state');
+    assert.dom('.input').hasClass('is-error', 'The input should have error state');
 
     this.set('isCollapsed', true);
     assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');

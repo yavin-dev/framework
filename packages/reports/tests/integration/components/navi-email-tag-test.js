@@ -15,20 +15,12 @@ module('Integration | Component | navi email tag', function(hooks) {
 
     await render(TEMPLATE);
 
-    assert
-      .dom('.navi-email-tag')
-      .doesNotHaveClass('navi-email-tag--is-disabled', 'Tag containing a valid email is not given the disabled class');
+    assert.dom('.tag').doesNotHaveClass('is-disabled', 'Tag containing a valid email is not given the disabled class');
   });
 
   test('invalid email address', async function(assert) {
-    assert.expect(1);
-
     this.set('email', 'abcdefg');
-
     await render(TEMPLATE);
-
-    assert
-      .dom('.navi-email-tag')
-      .hasClass('navi-email-tag--is-disabled', 'Tag containing an invalid email is given the disabled class');
+    assert.dom('.tag').hasClass('is-disabled', 'Tag containing an invalid email is given the disabled class');
   });
 });

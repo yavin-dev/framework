@@ -1,0 +1,31 @@
+/*
+ * Copyright 2020, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * These styles exist only to override the default styles that are included
+ * in the ember-tag-input addon
+ */
+
+.navi-tag-input {
+  align-items: center;
+  background: $fields-default-bg;
+  border-radius: $fields-corner-radius;
+  box-shadow: $fields-default-border;
+  border: none;
+  display: flex;
+  flex-wrap: wrap;
+  min-height: $fields-sizes-md-height;
+  padding: 2px 10px;
+
+  &__tag {
+    .tag {
+      margin: 3px 3px 3px 0;
+    }
+  }
+
+  .emberTagInput-input {
+    font: unset;
+    margin: 0;
+    padding: 0;
+  }
+}

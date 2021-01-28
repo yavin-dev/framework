@@ -917,7 +917,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject').map(el => el.textContent.trim()),
       ['Age'],
       'Dimension filter is added'
     );
@@ -945,7 +945,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder-dimension__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject').map(el => el.textContent.trim()),
       [],
       'Dimension filter is removed when clicked on duplicate dimension'
     );

@@ -7,6 +7,9 @@ module.exports = function(defaults) {
     'ember-cli-babel': {
       includePolyfill: true
     },
+    'ember-power-select': {
+      theme: false
+    },
     sassOptions: {
       //standard ember-cli-sass options go here
       excludeFiles: [] // `app/styles` files not to be process as sass files

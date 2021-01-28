@@ -103,6 +103,14 @@ export default class LookbackInput extends BaseIntervalComponent {
   }
 
   /**
+   * No op search matcher
+   */
+  @action
+  noop() {
+    return null;
+  }
+
+  /**
    * @param event - new interval to set in filter
    */
   @action

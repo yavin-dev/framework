@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.date}}
     {{moment-format this.date this.calendarTriggerFormat}}
@@ -13,11 +13,14 @@
       @onUpdate={{this.setDate}}
       class="filter-values--date-input__trigger"
     >
-      {{#if this.date}}
-        {{moment-format this.date this.calendarTriggerFormat}}
-      {{else}}
-        <span class="date__placeholder">Select date</span>
-      {{/if}}
+      <DenaliInput 
+        @size="medium"
+        @iconBack="calendar-event"
+        @iconBackClass="is-brand-300"
+        value={{if this.date (moment-format this.date this.calendarTriggerFormat)}}
+        readonly={{true}} 
+        placeholder="Select Date"
+      />
     </DropdownDatePicker>
   </div>
 {{/if}}
