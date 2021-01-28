@@ -728,8 +728,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildURLPath(twoDateTime);
       },
-      /FactAdapterError: Requesting more than multiple 'Date Time' grains is not supported. You requested \[day,week\]/,
-      '_buildURLPath throws an error when more than one dateTime column is requested'
+      /FactAdapterError: Requesting multiple 'Date Time' grains is not supported. You requested \[day,week\]/,
+      '_buildURLPath throws an error when more than one grain is requested'
     );
 
     assert.equal(

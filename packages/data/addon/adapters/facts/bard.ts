@@ -236,7 +236,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const grains = [...new Set(dateTimeColumns.map(c => c.parameters.grain))] as Grain[];
     if (grains.length > 1) {
       throw new FactAdapterError(
-        `Requesting more than multiple 'Date Time' grains is not supported. You requested [${grains.join(',')}]`
+        `Requesting multiple 'Date Time' grains is not supported. You requested [${grains.join(',')}]`
       );
     }
     let timeGrain: GrainWithAll = grains.length === 1 ? grains[0] : 'all';
