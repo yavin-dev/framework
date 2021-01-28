@@ -5,13 +5,13 @@
 
 .navi-search-definition-result {
   &__item {
-    border-bottom: 1px solid rgba($denali-grey-800, 0.2);
+    border-bottom: 1px solid rgba($color-grey-800, 0.2);
     padding: 14px 10px;
   }
 
   &__item-name {
-    color: $denali-grey-800;
-    font-size: $font-size-base;
+    color: $color-grey-800;
+    font-size: $base-font-size;
     font-weight: 600;
     line-height: 1.5;
     margin-block-start: 0;

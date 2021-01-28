@@ -24,7 +24,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.11",
+    "@denali-design/ember": "^1.0.0-alpha.14",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",

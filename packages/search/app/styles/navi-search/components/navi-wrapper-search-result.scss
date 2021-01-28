@@ -13,8 +13,8 @@
   }
 
   &__item-title {
-    color: $denali-grey-800;
-    font-size: $font-size-xlarge;
+    color: $color-grey-800;
+    font-size: $h3-font-size;
     font-weight: 600;
     line-height: 1.5;
     margin-block-start: 0;
@@ -24,7 +24,7 @@
     height: 10px;
 
     & > .navi-loader__spinner {
-      background-color: $denali-grey-100;
+      background-color: $color-grey-100;
     }
   }
 }
