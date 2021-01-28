@@ -16,5 +16,14 @@
 {{/if}}
 
 {{#if @value.tempId}}
-  <span class="dir-item-name-cell__unsaved-label font-12 is-grey-600 m-l-8">Unsaved</span>
+  <DenaliChip
+    @size="small"
+    @backgroundColor="grey"
+    @backgroundShade="300"
+    @textColor="grey"
+    @textShade="700"
+    class="dir-item-name-cell__unsaved-label"
+  >
+    UNSAVED
+  </DenaliChip>
 {{/if}}
