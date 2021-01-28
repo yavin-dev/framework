@@ -1,9 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
 import { action, set, computed } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import DirectoriesService from 'navi-directory/services/directories';
 import RouterService from '@ember/routing/router-service';
@@ -26,6 +27,8 @@ export default class DirectoryController extends Controller {
    * @property {Service} router - service to check current route
    */
   @service router!: RouterService;
+
+  @tracked sidebarOpen = false;
 
   /**
    * @property {Array} queryParams - array of allowed query params
@@ -85,6 +88,14 @@ export default class DirectoryController extends Controller {
     }
 
     return currentDir?.name;
+  }
+
+  /**
+   * TODO
+   */
+  @action
+  toggleSidebar() {
+    this.toggleProperty('sidebarOpen');
   }
 
   /**

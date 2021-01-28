@@ -1,10 +1,6 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<DenaliSidebar 
-  class="dir-sidebar"
-  ...attributes
-  as |Sidebar| 
->
-  <DirNewButton/>
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliSidebar class="dir-sidebar" tabindex="0" ...attributes as |Sidebar|>
+  <DirNewButton />
   <li class="dir-sidebar__break"><hr></li>
   {{#each this.directories as | directory |}}
     <Sidebar.LinkToTab 
@@ -12,8 +8,10 @@
       @query={{hash filter=null}}
       data-title={{directory.name}}
       class="dir-sidebar__link"
-      {{on "click" (fn (mut this.selectedDirectory) directory)}}
-      {{on "click" (fn (mut this.selectedFilter) (object-at 0 directory.filters))}}
+      {{on "click" (queue
+        (fn (mut this.selectedDirectory) directory)
+        (fn (mut this.selectedFilter) (object-at 0 directory.filters))
+      )}}
     >
       {{directory.name}}
     </Sidebar.LinkToTab>

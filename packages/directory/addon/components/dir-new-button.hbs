@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#each this.fileTypeNames as |typeName|}}
   {{#let (get this.fileTypes typeName) as |typeObject|}}
     <li class="m-x-20 m-t-20">
@@ -8,7 +8,7 @@
         {{on "click" (fn this.linkTo typeObject.linkRoute)}}
         class="dir-new-button"
       >
-        New {{capitalize (singularize typeName) }}
+        New {{capitalize (singularize typeName)}}
       </DenaliButton>
     </li>
   {{/let}}
