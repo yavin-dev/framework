@@ -160,13 +160,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   @computed('response.rows.length')
   get pointConfig() {
     const pointCount = this.response.rows.length;
-
-    //set point radius higher for single data
-    if (pointCount === 1) {
-      return { r: 2 };
-    }
-
-    return { r: 0 };
+    return pointCount === 1 ? { r: 3 } : { r: 2 };
   }
 
   /**
