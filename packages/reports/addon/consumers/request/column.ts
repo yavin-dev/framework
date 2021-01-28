@@ -38,7 +38,7 @@ export default class ColumnConsumer extends ActionConsumer {
     },
 
     /**
-     * @action DID_ADD_COLUMN_
+     * @action DID_ADD_COLUMN
      * @param route - route that has a model that contains a request property
      * @param column - column fragment
      */

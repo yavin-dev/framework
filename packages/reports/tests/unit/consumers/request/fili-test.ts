@@ -10,6 +10,7 @@ import StoreService from 'ember-data/store';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import config from 'ember-get-config';
 import { NaviDataSource } from 'navi-config';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 let consumer: FiliConsumer;
 const dispatchedActions: string[] = [];
@@ -45,6 +46,136 @@ module('Unit | Consumer | request fili', function(hooks) {
 
   hooks.afterEach(async function() {
     config.navi.dataSources = originalDataSources;
+  });
+
+  test('UPDATE_FILTER', function(assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'month' },
+          operator: 'bet',
+          values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+          source: 'bardOne'
+        }
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: []
+    });
+
+    const modelFor = () => ({ request });
+
+    consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, request.dateTimeFilter, {
+      parameters: { grain: 'isoWeek' }
+    });
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER],
+      'When the filter grain is updated, another request to update the filter values is fired off'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [request.dateTimeFilter, { values: ['2020-12-28T00:00:00.000Z', '2021-02-01T00:00:00.000Z'] }],
+      'UPDATE_FILTER is dispatched with the updated values for the filter'
+    );
+  });
+
+  test('DID_ADD_COLUMN', function(assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const requestExistingFilter = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'month' },
+          operator: 'bet',
+          values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+          source: 'bardOne'
+        }
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          source: 'bardOne'
+        }
+      ]
+    });
+
+    const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) });
+
+    consumer.send(
+      RequestActions.DID_ADD_COLUMN,
+      routeFor(requestExistingFilter),
+      requestExistingFilter.timeGrainColumn
+    );
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS],
+      'When a date time column is added with an existing date time filter, the column is updated'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [requestExistingFilter.timeGrainColumn, 'grain', 'month'],
+      'UPDATE_COLUMN_FRAGMENT_WITH_PARAMS is dispatched with the grain from the existing filter'
+    );
+
+    dispatchedActions.length = 0;
+    dispatchedActionArgs.length = 0;
+
+    const requestExistingColumn = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'year' },
+          source: 'bardOne'
+        },
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          source: 'bardOne'
+        }
+      ]
+    });
+
+    consumer.send(
+      RequestActions.DID_ADD_COLUMN,
+      routeFor(requestExistingColumn),
+      requestExistingColumn.columns.objectAt(1)
+    );
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS],
+      'When a date time column is added with an existing date time column, the new column is updated'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [requestExistingColumn.columns.objectAt(1), 'grain', 'year'],
+      'UPDATE_COLUMN_FRAGMENT_WITH_PARAMS is dispatched with the new column to match the grain of the existing one'
+    );
   });
 
   test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function(assert) {
@@ -134,7 +265,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
     assert.deepEqual(
       dispatchedActionArgs,
-      [request.dateTimeFilter, { parameters: { grain: 'week' }, values: ['P1W', 'current'] }],
+      [request.dateTimeFilter, { parameters: { grain: 'week' } }],
       'UPDATE_FILTER is dispatched with the updated grain parameter'
     );
 
@@ -211,6 +342,48 @@ module('Unit | Consumer | request fili', function(hooks) {
       dispatchedActionArgs,
       [request.filters.objectAt(0), { parameters: { grain: 'existingColumnGrain' } }],
       'The filter is updated to match the existingColumnGrain grain'
+    );
+  });
+
+  test('REMOVE_COLUMN_FRAGMENT', function(assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'month' },
+          operator: 'bet',
+          values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+          source: 'bardOne'
+        }
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: []
+    });
+
+    const modelFor = () => ({ request });
+
+    consumer.send(
+      RequestActions.REMOVE_COLUMN_FRAGMENT,
+      { modelFor },
+      //@ts-ignore
+      { type: 'timeDimension', parameters: {} }
+    );
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER],
+      'When the last date time column is removed, the existing date time filter is updated to the lowest grain of the table'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [request.dateTimeFilter, { parameters: { grain: 'hour' } }],
+      'UPDATE_FILTER is dispatched with the lowest grain for the date time'
     );
   });
 });

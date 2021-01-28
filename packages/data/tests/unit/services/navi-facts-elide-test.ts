@@ -443,7 +443,8 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
               field: 'table1.eventTimeDay',
               operator: 'gte',
               values: [
-                moment()
+                moment
+                  .utc()
                   .subtract(2, 'days')
                   .format(DAY_FORMAT)
               ],
@@ -469,16 +470,20 @@ module('Unit | Service | Navi Facts - Elide', function(hooks) {
         rows: [
           {
             'table1.eventTimeDay': moment()
+              .utc()
               .subtract(2, 'days')
               .format(DAY_FORMAT)
           },
           {
             'table1.eventTimeDay': moment()
+              .utc()
               .subtract(1, 'days')
               .format(DAY_FORMAT)
           },
           {
-            'table1.eventTimeDay': moment().format(DAY_FORMAT)
+            'table1.eventTimeDay': moment()
+              .utc()
+              .format(DAY_FORMAT)
           }
         ],
         meta: {}

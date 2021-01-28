@@ -13,18 +13,19 @@ export const PARAM_DATE_FORMAT_STRING = 'YYYY-MM-DD';
 export const CAL_DATE_FORMAT_STRING = 'MM-DD-YYYY';
 export const CAL_DISPLAY_DATE_FORMAT_STRING = 'M/D/YYYY';
 
-export type DateTimePeriod = 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'quarter' | 'year';
-type StandardGrain = DateTimePeriod | 'isoWeek';
-export type Grain = StandardGrain | 'all';
+const weekDown = <const>['second', 'minute', 'hour', 'day', 'week'];
+const monthUp = <const>['month', 'quarter', 'year'];
+
+export const DateTimePeriods = <const>[...weekDown, ...monthUp];
+export const Grains = <const>[...weekDown, 'isoWeek', ...monthUp];
+
+export type DateTimePeriod = typeof DateTimePeriods[number];
+export type Grain = typeof Grains[number];
 
 /**
  * Returns a date time period for a gain
  */
 export function getPeriodForGrain(grain: Grain): DateTimePeriod {
-  if ('all' === grain) {
-    return 'day';
-  }
-
   if ('isoWeek' === grain) {
     return 'week';
   }
@@ -34,7 +35,7 @@ export function getPeriodForGrain(grain: Grain): DateTimePeriod {
 /**
  * Returns the epoch date at the start of the given grain
  */
-export function getFirstDayEpochForGrain(grain: StandardGrain, dateFormat: string = API_DATE_FORMAT_STRING): string {
+export function getFirstDayEpochForGrain(grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
   const period = getPeriodForGrain(grain);
   const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
 
@@ -48,11 +49,7 @@ export function getFirstDayEpochForGrain(grain: StandardGrain, dateFormat: strin
 /**
  * Returns last day of grain for a given date
  */
-export function getLastDayOfGrain(
-  date: Moment,
-  grain: StandardGrain,
-  dateFormat: string = API_DATE_FORMAT_STRING
-): string {
+export function getLastDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
   return moment(date)
     .endOf(grain)
     .format(dateFormat);
@@ -61,11 +58,7 @@ export function getLastDayOfGrain(
 /**
  * Returns first day of grain for a given date
  */
-export function getFirstDayOfGrain(
-  date: Moment,
-  grain: StandardGrain,
-  dateFormat: string = API_DATE_FORMAT_STRING
-): string {
+export function getFirstDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
   return moment(date)
     .startOf(grain)
     .format(dateFormat);
