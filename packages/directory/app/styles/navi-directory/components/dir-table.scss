@@ -1,36 +1,38 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+
+$font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Arial, sans-serif;
 .dir-table {
   height: 80vh;
   overflow-x: auto;
 
   thead {
     th {
-      border-bottom: 1px @navi-gray-500 solid;
-      color: @navi-gray-500;
-      font-family: @font-family-thin;
-      font-size: @font-size-mid-base;
+      border-bottom: 1px $color-grey-600 solid;
+      color: $color-grey-600;
+      font-family: $font-family-thin;
+      font-size: 13px;
       font-weight: normal;
       padding-bottom: 5px;
     }
 
     .lt-sort-icon {
-      color: @navi-gray-300;
+      color: $color-grey-400;
       margin-right: 15px;
       margin-top: 3px;
 
       &.fa-sort-desc,
       &.fa-sort-asc {
-        color: @navi-gray;
+        color: $color-grey-700;
       }
     }
   }
 
   &__row {
-    border-bottom: 1px @navi-gray-300 solid;
-    font-size: @font-size-base;
+    border-bottom: 1px $color-grey-400 solid;
+    font-size: 14px;
     margin: 5px 0;
     padding-left: 5px;
   }

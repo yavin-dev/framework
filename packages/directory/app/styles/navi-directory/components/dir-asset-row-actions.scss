@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .dir-asset-row-actions {
@@ -22,7 +22,7 @@
     }
 
     i {
-      font-size: @font-size-base;
+      font-size: 14px;
       position: relative;
       top: -1px;
     }
@@ -39,7 +39,7 @@
   .delete,
   .schedule,
   button {
-    color: @navi-gray-500;
+    color: $color-grey-600;
     cursor: pointer;
     font-size: 14px;
     height: 17px;
@@ -47,7 +47,7 @@
     vertical-align: bottom;
 
     &:hover {
-      color: @navi-black;
+      color: unset;
     }
 
     &:disabled,
@@ -55,7 +55,7 @@
       cursor: not-allowed;
 
       &:hover {
-        color: @navi-gray-500;
+        color: $color-grey-600;
       }
     }
   }
