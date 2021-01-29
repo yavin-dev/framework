@@ -161,8 +161,20 @@
 {{#if this.dashboardIsDirty}}
   <div class="navi-dashboard__save-dialogue">
     {{#if @dashboard.canUserEdit}}
-      <button type="button" class="btn btn-secondary navi-dashboard__save-button" {{on "click" (queue (route-action "saveDashboard") @onModelSaveOrRevert)}}>Save Changes</button>
+      <DenaliButton 
+        class="navi-dashboard__save-button" 
+        @style="outline" 
+        {{on "click" (queue (route-action "saveDashboard") @onModelSaveOrRevert)}}
+      >
+        Save Changes
+      </DenaliButton>
     {{/if}}
-    <button type="button" class="btn btn-secondary navi-dashboard__revert-button" {{on "click" (queue (route-action "revertDashboard") @onModelSaveOrRevert)}}>Revert Changes</button>
+    <DenaliButton 
+      class="navi-dashboard__revert-button" 
+      @style="outline" 
+      {{on "click" (queue (route-action "revertDashboard") @onModelSaveOrRevert)}}
+    >
+      Revert Changes
+    </DenaliButton>
   </div>
 {{/if}}
