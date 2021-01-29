@@ -1,10 +1,11 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <DenaliNavbar 
   @isResponsive={{true}}
   class="top-bar"
   as |Nav|
 >
   <Nav.Left as |Left|>
+    <DirSidebarToggle />
     <LinkTo @route="index">
       <Left.Logo src="{{this.rootURL}}img/yavin-logo.svg"/>
     </LinkTo>

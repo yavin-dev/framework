@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Lazy render nested component when event triggers
@@ -55,7 +55,15 @@ class LazyRenderComponent extends Component {
     super.didInsertElement(...arguments);
 
     const { targetElement, on } = this;
-    targetElement.addEventListener(on, () => set(this, 'shouldRender', true), { once: true });
+    targetElement.addEventListener(
+      on,
+      () => {
+        if (!this.isDestroyed && !this.isDestroying) {
+          set(this, 'shouldRender', true);
+        }
+      },
+      { once: true }
+    );
   }
 }
 
