@@ -75,7 +75,6 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     await fillIn('.number-format-selector__format-input', 'foo');
-    await blur('.number-format-selector__format-input');
   });
 
   test('onUpdateConfig alias input', async function(this: TestContext, assert) {
@@ -84,7 +83,6 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     await fillIn('.metric-label-config__label-input', 'foo');
-    await blur('.metric-label-config__label-input');
 
     assert.deepEqual(this.request.columns.firstObject?.alias, 'foo', 'The column alias is updated');
   });
