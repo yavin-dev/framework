@@ -10,7 +10,7 @@
       type="text"
       class="metric-label-config__label-input"
       placeholder="No Label"
-      value={{readonly this.metricColumn.displayName}}
+      value={{this.metricColumn.displayName}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateLabel))}}
     />
   </DenaliInputGroup>

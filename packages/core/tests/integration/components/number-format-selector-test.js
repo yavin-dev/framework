@@ -1,7 +1,7 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, fillIn, blur } from '@ember/test-helpers';
+import { render, settled, click, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
@@ -48,11 +48,7 @@ module('Integration | Component | number format selector', function(hooks) {
     await render(Template);
 
     await run(async () => {
-      await fillIn(
-        '.number-format-selector__section-header > .input > .number-format-selector__format-input',
-        '$0,0[.]00a'
-      );
-      await blur('.number-format-selector__section-header > .input > .number-format-selector__format-input');
+      await fillIn('.number-format-selector__format-input', '$0,0[.]00a');
     });
 
     await settled();
@@ -62,11 +58,7 @@ module('Integration | Component | number format selector', function(hooks) {
       .isChecked('custom format correctly highlighted when user enters custom format');
 
     await run(async () => {
-      await fillIn(
-        '.number-format-selector__section-header > .input > .number-format-selector__format-input',
-        '0,0.00'
-      );
-      await blur('.number-format-selector__section-header > .input > .number-format-selector__format-input');
+      await fillIn('.number-format-selector__format-input', '0,0.00');
     });
 
     await settled();

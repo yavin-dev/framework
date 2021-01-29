@@ -1,4 +1,4 @@
-import { click, fillIn, findAll, blur, visit } from '@ember/test-helpers';
+import { click, fillIn, findAll, visit } from '@ember/test-helpers';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
@@ -78,8 +78,7 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.timeDimension > .input > .table-header-cell__input', 'test');
-    await blur('.timeDimension > .input > .table-header-cell__input');
+    await fillIn('.table-header-cell__input', 'test');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
@@ -97,8 +96,7 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.timeDimension > .input > .table-header-cell__input', '');
-    await blur('.timeDimension > .input > .table-header-cell__input');
+    await fillIn('.table-header-cell__input', '');
     await click('.table-config__total-toggle-button .x-toggle-btn');
 
     assert
