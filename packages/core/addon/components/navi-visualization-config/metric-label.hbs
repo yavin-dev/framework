@@ -1,13 +1,17 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="metric-label-config" ...attributes>
-  <DenaliInputGroup @label="Label" @isStacked= {{true}} class="metric-label-config__section-header">
+  <DenaliInputGroup 
+    @label="Label" 
+    @isStacked={{true}}
+    class="metric-label-config__section-header"
+  >
     <DenaliInput
       @size="medium"
       type="text"
       class="label"
       placeholder="No Label"
       value={{readonly this.metricColumn.displayName}}
-      {{on "input" (pipe (pick 'target.value') (fn this.updateLabel) )}}
+      {{on "input" (pipe (pick 'target.value') (fn this.updateLabel))}}
     />
   </DenaliInputGroup>
   <NumberFormatSelector @format={{@options.format}} @onUpdateFormat={{this.updateFormat}} />

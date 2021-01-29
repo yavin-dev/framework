@@ -8,10 +8,10 @@
             <DenaliInput
               type="text"
               @size="medium"
-              value={{readonly column.fragment.alias}}
+              value={{column.fragment.alias}}
               placeholder={{column.fragment.displayName}}
               class="table-header-cell__input"
-              {{on "input" (pipe (pick 'target.value') (fn @updateColumnDisplayName (mut column.fragment) ) )}}
+              {{on "input" (pipe (pick 'target.value') (fn @updateColumnDisplayName column.fragment))}}
             />
             {{#if (eq column.fragment.type "metric")}}
               <NumberFormatDropdown class="table-header-cell__number-format-dropdown" @column={{column}} @onUpdateReport={{@onUpdateReport}} />

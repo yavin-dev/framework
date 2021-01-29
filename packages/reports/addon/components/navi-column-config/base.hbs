@@ -19,19 +19,19 @@
   </div>
   <div class="navi-column-config-base__option navi-column-config-base__column-name">
     <DenaliInputGroup
-    @label="Column Name"
-    @isStacked= {{true}}
+      @label="Column Name"
+      @isStacked= {{true}}
     >
       <DenaliInput
-        @size= "medium"
+        @size="medium"
         type="text"
         class="navi-column-config-base__denali"
-        value={{readonly @column.fragment.alias}}
+        value={{@column.fragment.alias}}
         placeholder={{@column.fragment.displayName}}
-        {{on "input" (pipe (pick 'target.value') (fn @onRenameColumn ) )}}
+        {{on "input" (pipe (pick 'target.value') (fn @onRenameColumn))}}
       />
     </DenaliInputGroup>
- </div>
+  </div>
     {{#each @column.fragment.columnMetadata.parameters as |param|}}
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
         <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type
