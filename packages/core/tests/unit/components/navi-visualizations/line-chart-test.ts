@@ -246,7 +246,7 @@ module('Unit | Component | line chart', function(hooks) {
         y: { show: true }
       },
       point: {
-        r: 0,
+        r: 2,
         focus: {
           expand: {
             r: 4
@@ -369,7 +369,7 @@ module('Unit | Component | line chart', function(hooks) {
     assert.deepEqual(
       component.config.point,
       {
-        r: 2,
+        r: 3,
         focus: {
           expand: { r: 4 }
         }
@@ -409,12 +409,12 @@ module('Unit | Component | line chart', function(hooks) {
     assert.deepEqual(
       component.config.point,
       {
-        r: 0,
+        r: 2,
         focus: {
           expand: { r: 4 }
         }
       },
-      'the point radius is 0 for a multiple data points'
+      'the point radius is 2 for a multiple data points'
     );
   });
 
