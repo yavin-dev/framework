@@ -1,47 +1,47 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="goal-gauge-config" ...attributes>
 
-   <DenaliInputGroup 
-     @label="Label" 
-     @isStacked={{true}} 
+   <DenaliInputGroup
+     @label="Label"
+     @isStacked={{true}}
      class="goal-gauge-config__section-header"
    >
     <DenaliInput
       @size="medium"
       type="text"
-      class="label"
+      class="goal-gauge-config__label-input"
       placeholder={{this.metricColumn.displayName}}
       value={{this.metricColumn.alias}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateLabel))}}
     />
   </DenaliInputGroup>
 
-  <DenaliInputGroup 
-    @label="Baseline" 
-    @isStacked= {{true}} 
+  <DenaliInputGroup
+    @label="Baseline"
+    @isStacked= {{true}}
     class="goal-gauge-config__section-header"
   >
     <DenaliInput
       @size="medium"
       type="number"
       maxlength="22"
-      class="baseline"
+      class="goal-gauge-config__baseline-input"
       placeholder="Baseline Value"
       value={{@options.baselineValue}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateBaseline))}}
     />
   </DenaliInputGroup>
 
-  <DenaliInputGroup 
-    @label="Goal" 
-    @isStacked= {{true}} 
+  <DenaliInputGroup
+    @label="Goal"
+    @isStacked= {{true}}
     class="goal-gauge-config__section-header"
   >
     <DenaliInput
       @size="medium"
       type="number"
       maxlength="22"
-      class="goal"
+      class="goal-gauge-config__goal-input"
       placeholder="Goal Value"
       value={{@options.goalValue}}
       {{on "input" (pipe (pick 'target.value') (fn this.updateGoal))}}
