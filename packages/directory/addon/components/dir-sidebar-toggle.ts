@@ -37,9 +37,8 @@ export default class DirSidebarToggleComponent extends Component {
   @action
   toggleSidebar() {
     this.directory.toggleSidebar();
-    const sidebar = document.querySelector('.dir-sidebar') as HTMLElement | undefined;
-    if (sidebar) {
-      sidebar.focus();
-    }
+    const toggleButton = document.activeElement as HTMLElement;
+    // Blur the toggle to take away the hover state
+    toggleButton.blur();
   }
 }
