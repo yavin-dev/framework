@@ -4,7 +4,7 @@ module.exports = function(environment) {
   let ENV = {
     modulePrefix: 'navi-app',
     environment,
-    rootURL: '/ui',
+    rootURL: '/ui/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
