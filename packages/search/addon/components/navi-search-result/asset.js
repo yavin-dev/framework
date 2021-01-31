@@ -28,7 +28,7 @@ export default class NaviAssetSearchResultComponent extends NaviBaseSearchResult
     return this.data?.map(value => {
       set(value, 'route', this._getRouteFor(value));
       set(value, 'type', value.constructor?.modelName);
-      set(value, 'icon', value.type === 'report' ? 'file-text' : 'bar-chart');
+      set(value, 'icon', value.type === 'report' ? 'file-text' : 'dashboard-tile');
       return value;
     });
   }

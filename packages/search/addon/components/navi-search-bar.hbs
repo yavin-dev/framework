@@ -3,7 +3,7 @@
   <div class="navi-search-bar">
     <Input @type="text" @value={{this.searchQuery}} @placeholder="Search" class="navi-search-bar__input"
       @keyUp={{fn this.onKeyUp dd}} @focusIn={{fn dd.actions.open}} @focusOut={{@focusOut}} data-ebd-id="{{dd.uniqueId}}-trigger" />
-    <NaviIcon @icon="search" class="navi-search-bar__icon" />
+    <DenaliIcon @icon="search" class="navi-search-bar__icon" />
   </div>
   {{#if (and this.launchQuery.lastSuccessful.value (not-eq this.searchQuery ""))}}
     <dd.Content class="navi-search-results navi-search-results--box navi-search-result-wrapper slide-fade">

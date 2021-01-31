@@ -6,57 +6,6 @@
 .navi-search,
 .navi-search-results,
 .navi-search-results__item {
-  border-collapse: collapse;
   color: $color-grey-800;
-  font-family: $font-family-sans-serif;
-  font-weight: 400;
-  font-size: $base-font-size;
-  line-height: 1.5;
-  text-align: left;
   width: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-}
-
-.navi-search {
-  &--link {
-    color: $color-brand-500;
-    font-size: inherit;
-    text-decoration: none;
-  }
-  &--link:hover {
-    color: $color-brand-500;
-  }
-
-  &--link[disabled] {
-    color: $color-grey-800;
-    cursor: not-allowed;
-  }
-}
-
-.navi-search-result-options {
-  &__show-button {
-    align-items: center;
-    background: rgba(0, 0, 0, 0);
-    border: none;
-    border-radius: 4px;
-    box-sizing: border-box;
-    color: $color-brand-400;
-    cursor: pointer;
-    display: inline-flex;
-    font-size: inherit;
-    height: 36px;
-    justify-content: center;
-    margin: 0px;
-    min-width: 120px;
-    outline: 0;
-    padding: 0px 10px;
-    padding-bottom: 1px;
-    transition: background 300ms;
-  }
-
-  &__show-button:hover {
-    background: rgba($color-brand-400, 0.26);
-    color: $color-brand-400;
-  }
 }

@@ -8,7 +8,7 @@
             <td class="navi-search-definition-result__item navi-search-results__item--cell">
                 <h5 class="navi-search-definition-result__item-name">{{result.name}}</h5>
                 {{#if this.hasMultipleDataSources}}
-                  <em class="navi-search-definition-result__item-source">Source: {{result.source}}</em>
+                  <p class="navi-search-definition-result__item-source">Source: {{result.source}}</p>
                 {{/if}}
                 <p class="navi-search-definition-result__item-description">
                   {{#if result.description}}
@@ -25,7 +25,7 @@
   </tbody>
 </table>
 {{#if this.hasMoreResults}}
-  <button {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" type="button">
+  <DenaliButton @style="text" {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" @type="button">
     {{if this.showTop "Show more" "Show less"}}
-  </button>
+  </DenaliButton>
 {{/if}}

@@ -18,14 +18,11 @@
     border-style: solid;
     border-width: 1px;
     box-shadow: none;
-    color: $color-grey-800;
     flex: 1 0 auto;
-    font: inherit;
     height: 36px;
     margin: 0;
     outline: none;
     padding: 0px 12px;
-    text-align: left;
     width: inherit;
   }
 
@@ -54,9 +51,8 @@
   }
 
   &__icon {
-    color: $color-brand-500;
+    color: $color-brand-400;
     display: inline;
-    font-size: $h4-font-size;
     pointer-events: none;
   }
 
