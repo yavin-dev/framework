@@ -32,6 +32,8 @@ class NumberFormatSelectorComponent extends Component {
    */
   @computed('format')
   get customFormat() {
+    // eslint-disable-next-line no-console
+    console.log('customFormat');
     let predefinedFormats = A(get(this, 'predefinedFormats')),
       currentFormat = get(this, 'format'),
       match = predefinedFormats.findBy('format', currentFormat);

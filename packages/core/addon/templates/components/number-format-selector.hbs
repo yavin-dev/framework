@@ -3,31 +3,32 @@
   <div class="number-format-selector__section-header">
     Format Type
   </div>
-  <div class="number-format-selector__format-list number-format-selector__section">
-    {{#each this.predefinedFormats as |predefinedFormat|}}
-      <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
-        <RadioButton
+  <DenaliRadio
+      @onChanged={{queue @onUpdateFormat (fn (mut this.predefinedFormat.format))}}
+      as |Radio|
+    >
+      {{#each this.predefinedFormats as |predefinedFormat|}}
+        <Radio.Option
           @name="format"
-          @groupValue={{readonly @format}}
-          @changed={{fn @onUpdateFormat predefinedFormat.format}}
           @value={{predefinedFormat.format}}
+          @checked={{eq predefinedFormat.name predefinedFormat.format}}
         >
           {{predefinedFormat.name}}
-        </RadioButton>
-      </div>
-    {{/each}}
-    <div class="number-format-selector__radio-custom">
-      <RadioButton
-        @name="format"
-        @groupValue={{readonly @format}}
-        @value={{this.customFormat}}
-        @changed={{fn @onUpdateFormat ""}}
-      >
-        Custom
-      </RadioButton>
-    </div>
-  </div>
-
+        </Radio.Option>
+      {{/each}}
+  </DenaliRadio>
+  <DenaliRadio
+      @onChanged={{queue @onUpdateFormat ""}}
+      as |Radio|
+    >
+        <Radio.Option
+          @name="format"
+          @value={{this.customFormat}}
+          @checked={{false}}
+        >
+          Custom
+        </Radio.Option>
+  </DenaliRadio>
   <DenaliInputGroup @label="Format" @isStacked= {{true}} class="number-format-selector__section-header">
     <DenaliInput
       @size="medium"
@@ -35,7 +36,7 @@
       value={{@format}}
       placeholder="Raw Format"
       class="number-format-selector__format-input"
-      {{on "input" (pipe (pick 'target.value') (fn @onUpdateFormat))}}
+      {{on "input" (pipe (pick 'target.value') (fn @onUpdateFormat ) )}}
     />
   </DenaliInputGroup>
   <a class="number-format-selector__doc-link"
