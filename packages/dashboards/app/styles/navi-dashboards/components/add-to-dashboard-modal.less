@@ -3,25 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-.ember-modal-dialog .add-to-dashboard-modal {
-  .modal-header {
-    font-size: 14px;
-    margin: 10px 0;
-    color: #868787;
-  }
+.modal-container {
+  width: 620px !important;
+}
 
-  .text-input {
-    height: 46px; //match to height of default ember power select input height
-    padding: 12px;
-    &.widget-title {
-      margin-bottom: 15px;
-    }
-
-    &::placeholder {
-      color: @navi-placeholder-gray;
-    }
-  }
-
+.modal-container .add-to-dashboard-modal {
   button.dashboard-action-text {
     .clickable;
     color: @denali-link;

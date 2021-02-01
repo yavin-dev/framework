@@ -819,7 +819,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
     await click($('.navi-report__action:contains(Share) button')[0]);
 
-    assert.dom('.modal .primary-header').hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
+    assert.dom('.modal .modal-header').hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
@@ -1015,7 +1015,7 @@ module('Acceptance | Navi Report', function(hooks) {
     // Click "Share"
     await click('.navi-collection__row0 .share .btn');
 
-    assert.dom('.primary-header').hasText('Share "Hyrule News"', 'Share modal pops up when action is clicked');
+    assert.dom('.modal-header').hasText('Share "Hyrule News"', 'Share modal pops up when action is clicked');
 
     // Click "Cancel"
     await click('.modal .button.is-outline');

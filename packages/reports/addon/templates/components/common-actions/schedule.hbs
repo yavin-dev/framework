@@ -18,6 +18,19 @@
       <div class="schedule-modal__header--primary primary-header">Schedule "{{capitalize @model.title}}"</div>
     </modal.Header>
     <modal.Content>
+      {{#if (is-rejected this.deliveryRule)}}
+          <DenaliAlert @type="danger" class="m-b-30" as |Alert|>
+            <Alert.Title>Error</Alert.Title>
+            <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
+          </DenaliAlert>
+      {{else}}
+          {{#if this.notification}}	
+            <DenaliAlert @type="danger" class="m-b-30" as |Alert|>
+              <Alert.Title>Error</Alert.Title>
+              <Alert.Context>{{this.notification.text}}</Alert.Context>
+            </DenaliAlert>
+          {{/if}}
+      {{/if}}
       {{#if (is-pending this.deliveryRule)}}
           <NaviLoader />
       {{else}}

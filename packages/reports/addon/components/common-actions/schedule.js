@@ -142,12 +142,12 @@ export default class ScheduleActionComponent extends Component {
             type: 'success',
             timeout: 'short'
           });
+          this.closeModal();
         })
         .catch(({ errors }) => {
-          get(this, 'naviNotifications').add({
-            message: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
-            type: 'danger',
-            timeout: 'short'
+          set(this, 'notification', {
+            text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
+            classNames: 'alert failure'
           });
         })
         .finally(() => {
@@ -184,11 +184,7 @@ export default class ScheduleActionComponent extends Component {
       })
       .catch(() => {
         //Add Page notification
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while removing the delivery schedule.`,
-          type: 'danger',
-          timeout: 'short'
-        });
+        set(this, 'notification', 'OOPS! An error occurred while removing the delivery schedule.');
       });
   }
 
@@ -205,11 +201,7 @@ export default class ScheduleActionComponent extends Component {
         set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
       })
       .catch(() => {
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while loading the delivery schedule.`,
-          type: 'danger',
-          timeout: 'short'
-        });
+        set(this, 'notification', 'OOPS! An error occurred while loading the delivery schedule.');
         set(this, 'localDeliveryRule', this._createNewDeliveryRule());
       });
   }

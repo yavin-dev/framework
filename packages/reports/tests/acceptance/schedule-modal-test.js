@@ -6,14 +6,13 @@ import { setupApplicationTest } from 'ember-qunit';
 import Mirage from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import Ember from 'ember';
-import { animationsSettled } from 'ember-animated/test-support';
 
 module('Acceptance | Navi Report Schedule Modal', function(hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function(assert) {
-    assert.expect(12);
+    assert.expect(13);
     await visit('/reports');
 
     // Click "Schedule"
@@ -64,7 +63,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await animationsSettled();
+    assert.dom('.modal-container').isNotVisible('Modal closes on successful save.');
+
+    // Click "Schedule"
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    await click('.navi-collection__row0 .schedule .schedule-action__button');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -136,6 +139,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
+    assert.dom('.modal-container').isNotVisible('Modal closes on save');
     await waitFor('.navi-notifcations');
 
     assert
@@ -406,6 +410,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Attempt to save the schedule now that recipients is valid
     await click('.schedule-modal__save-btn');
+    assert.dom('.modal-container').isNotVisible('Modal closes on save');
     await waitFor('.navi-notifications');
 
     assert
@@ -437,12 +442,11 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     await visit('/reports');
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.navi-collection__row2 .schedule .schedule-action__button');
-    await waitFor('.modal-notification');
 
     assert
-      .dom('.schedule-modal__notification.modal-notification.alert.failure')
+      .dom('.alert p')
       .hasText(
-        'Oops! An error occurred while fetching the schedule for this report.',
+        'An error occurred while fetching the schedule for this report.',
         'Error message is displayed when the server returns an error while fetching a schedule'
       );
 
@@ -454,7 +458,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert.ok(
-      find('.schedule-modal__dropdown--frequency').getAttribute('aria-disabled'),
+      find('.schedule-modal__dropdown--format').hasAttribute('disabled'),
       'The frequency field is disabled when there is an error fetching the schedule'
     );
 
@@ -467,7 +471,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .isNotVisible('The delete button is not available when there is an error fetching the schedule');
 
     assert
-      .dom('.schedule-modal__cancel-btn.btn-primary')
+      .dom('.schedule-modal__cancel-btn')
       .isVisible('The cancel button is the primary button on the modal when there is an error fetching the schedule');
 
     Ember.Logger.error = originalLoggerError;
@@ -505,10 +509,9 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.navi-notifcations');
 
     assert.equal(
-      find('.failure .navi-notifcations').innerText.trim(),
+      find('.alert p').innerText.trim(),
       'Must be a valid oath.com or yahoo-inc.com email',
       'failing notification is shown if server returns 400'
     );
@@ -519,10 +522,9 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.navi-notifcations');
 
     assert
-      .dom('.failure .navi-notifcations')
+      .dom('.alert p')
       .includesText(
         'Oops! There was an error updating your delivery settings',
         'failing notification is shown if server returns 500'

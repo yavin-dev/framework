@@ -59,7 +59,7 @@ module('Integration | Component | common actions/share', function(hooks) {
     assert.ok($('.modal-container').is(':visible'), 'Share modal dialog pops up on clicking the component');
 
     assert.equal(
-      $('.primary-header')
+      $('.modal-header')
         .text()
         .trim(),
       `Share "${pageTitle}"`,
