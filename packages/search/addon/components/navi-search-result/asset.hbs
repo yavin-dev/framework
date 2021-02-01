@@ -16,7 +16,7 @@
   </tbody>
 </table>
 {{#if this.hasMoreResults}}
-  <DenaliButton @style="text" {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" @type="button">
+  <DenaliButton @style="text" {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button">
     {{if this.showTop "Show more" "Show less"}}
   </DenaliButton>
 {{/if}}
