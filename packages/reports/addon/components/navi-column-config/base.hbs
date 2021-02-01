@@ -17,18 +17,21 @@
       </span>
     </div>
   </div>
-
-    <div class="navi-column-config-base__option navi-column-config-base__column-name">
-      <label for="{{this.classId}}-column-name-input" class="navi-column-config-base__column-name-label navi-column-config-base__option-label">Column Name</label>
-      <Input
-        class="navi-column-config-base__column-name-input navi-column-config-base__option-input"
-        id="{{this.classId}}-column-name-input"
-        @value={{readonly @column.fragment.alias}}
-        @placeholder={{@column.fragment.displayName}}
-        @key-up={{fn @onRenameColumn}}
+  <div class="navi-column-config-base__option navi-column-config-base__column-name">
+    <DenaliInputGroup
+      @label="Column Name"
+      @isStacked= {{true}}
+    >
+      <DenaliInput
+        @size="medium"
+        type="text"
+        @wrapperClass="navi-column-config-base__denali"
+        value={{@column.fragment.alias}}
+        placeholder={{@column.fragment.displayName}}
+        {{on "input" (pipe (pick 'target.value') (fn @onRenameColumn))}}
       />
-    </div>
-
+    </DenaliInputGroup>
+  </div>
     {{#each @column.fragment.columnMetadata.parameters as |param|}}
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
         <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type

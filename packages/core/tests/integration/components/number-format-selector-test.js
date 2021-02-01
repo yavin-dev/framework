@@ -1,21 +1,21 @@
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, click, fillIn, blur } from '@ember/test-helpers';
+import { render, settled, click, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 let Template = hbs`
-  {{number-format-selector
-    format=format
-    onUpdateFormat=(action onUpdateFormat)
-  }}`;
+  <NumberFormatSelector
+    @format={{this.format}}
+    @onUpdateFormat={{this.onUpdateFormat}}
+  />`;
 
 module('Integration | Component | number format selector', function(hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
     this.set('format', '$0,0[.]00');
-    this.set('onUpdateFormat', () => null);
+    this.set('onUpdateFormat', newFormat => this.set('format', newFormat));
   });
 
   test('updateFormat from radio button', async function(assert) {
@@ -49,7 +49,6 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await run(async () => {
       await fillIn('.number-format-selector__format-input', '$0,0[.]00a');
-      await blur('.number-format-selector__format-input');
     });
 
     await settled();
@@ -60,7 +59,6 @@ module('Integration | Component | number format selector', function(hooks) {
 
     await run(async () => {
       await fillIn('.number-format-selector__format-input', '0,0.00');
-      await blur('.number-format-selector__format-input');
     });
 
     await settled();
