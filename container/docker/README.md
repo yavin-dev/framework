@@ -44,5 +44,19 @@ To run yavin demo using docker container:
 docker run -p 9999:8080 verizonmedia/yavin_demo:latest
 ```
 
+## Launch in Dokcer using PWD
+[![Click to Launch in Docker instantly](https://raw.githubusercontent.com/play-with-docker/stacks/master/assets/images/button.png)](https://labs.play-with-docker.com/?stack=https://raw.githubusercontent.com/anupkumangodan/navi/pwd_1/container/docker/docker-compose.yml)
+
+You will be taken to "play with docker" UI where you might have to sign-in (or register first) to continue.
+After the initial docker compose and swarm is setup, proceed to click on the port (8080) hyperlink in PWD.
+
+PWD is not production grade platform, so it can show unexpected results. When the above button is clicked and after you sign-in, docker swarm build will start up in a small pop up window. The process will complete in few mins as shown.
+
+![swarm build](images/swarm_build.png)
+
+If the above step completed successfully, click the close button on the popup window.Then you can click (hyperlink) 8080 at the top as shown below.
+
+![ready to open](images/ready_open.png)
+
 ## Heroku launch
 Coming soon...
