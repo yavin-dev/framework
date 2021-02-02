@@ -4,6 +4,7 @@
  */
 import Controller from '@ember/controller';
 import { action, set, computed } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import fade from 'ember-animated/transitions/fade';
 
@@ -15,6 +16,7 @@ const REPORT_STATE = {
 };
 
 export default class ReportsReportController extends Controller {
+  @service screen;
   /**
    * @property {Boolean} showSaveAs - whether the save as dialog is showing
    */
@@ -23,12 +25,12 @@ export default class ReportsReportController extends Controller {
   /**
    * @property {Boolean} isFiltersCollapsed
    */
-  isFiltersCollapsed = false;
+  isFiltersCollapsed;
 
   /**
    * @property {Boolean} isColumnDrawerOpen - Display column config or not
    */
-  isColumnDrawerOpen = true;
+  isColumnDrawerOpen;
 
   /**
    * @property {Object} modifiedRequest - the serialized request after calling `onUpdateReport`
@@ -39,6 +41,13 @@ export default class ReportsReportController extends Controller {
    * @property {Object} lastAddedColumn - the column that has been added last
    */
   lastAddedColumn = null;
+
+  init() {
+    super.init(...arguments);
+    const { isMobile } = this.screen;
+    set(this, 'isColumnDrawerOpen', !isMobile);
+    set(this, 'isFiltersCollapsed', isMobile);
+  }
 
   /**
    * @property {String} reportState - state of the the report

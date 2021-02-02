@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report">
   <div class="navi-report__breadcrumb">
     {{#if (feature-flag "enableDirectory")}}
@@ -8,7 +8,7 @@
     {{/if}}
     <NaviIcon @icon="angle-right" />
   </div>
-  <header class="navi-report__header">
+  <header class="navi-report__header row">
     <span class="navi-report__title">
       {{#if this.model.isOwner}}
         <EditableLabel
@@ -80,11 +80,11 @@
     </ReportBuilder>
   </div>
 
-  <footer class="navi-report__footer">
+  <footer class="navi-report__footer row xs-space-between">
     {{#unless this.isRunningReport}}
 
       <DenaliButton
-        class="navi-report__run-btn"
+        class="navi-report__run-btn xs-col-1-1"
         {{on "click" (pipe (route-action "validate" this.model) (route-action "forceRun" this.model))}}
       >
         Run
@@ -92,8 +92,8 @@
 
       {{#if (and this.model.isOwner this.model.hasDirtyAttributes)}}
         <DenaliButton
-          class="navi-report__save-btn"
-          @style="outline"
+          class="navi-report__save-btn xs-col-1-3"
+          @style="ghost"
           {{on "click" (pipe (route-action "validate" this.model) (route-action "runReport" this.model) (route-action "saveReport" this.model))}}
         >
           {{#if this.model.isNew}}
@@ -105,8 +105,8 @@
 
         {{#unless this.model.isNew}}
           <DenaliButton
-            class="navi-report__save-as-btn"
-            @style="outline"
+            class="navi-report__save-as-btn hide-mobile"
+            @style="text"
             {{on "click" (pipe (route-action "validate" this.model) (route-action "runReport" this.model) (toggle "showSaveAs" this))}}
           >
             Save As ...
@@ -116,8 +116,8 @@
 
       {{#if (and this.model.hasDirtyAttributes (not this.model.isNew))}}
         <DenaliButton
-          class="navi-report__revert-btn"
-          @style="outline"
+          class="navi-report__revert-btn xs-col-1-3"
+          @style="text"
           {{on "click" (route-action "revertChanges" this.model)}}
         >
           Revert
@@ -125,7 +125,7 @@
       {{/if}}
 
     {{else}}
-      <DenaliButton class="navi-report__cancel-btn" {{on "click" (route-action "cancelReport" this.model)}}>
+      <DenaliButton class="navi-report__cancel-btn xs-col-1-1" {{on "click" (route-action "cancelReport" this.model)}}>
         Cancel
       </DenaliButton>
     {{/unless}}

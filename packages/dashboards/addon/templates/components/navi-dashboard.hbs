@@ -163,7 +163,7 @@
     {{#if @dashboard.canUserEdit}}
       <DenaliButton 
         class="navi-dashboard__save-button" 
-        @style="outline" 
+        @style="ghost" 
         {{on "click" (queue (route-action "saveDashboard") @onModelSaveOrRevert)}}
       >
         Save Changes
@@ -171,10 +171,10 @@
     {{/if}}
     <DenaliButton 
       class="navi-dashboard__revert-button" 
-      @style="outline" 
+      @style="text" 
       {{on "click" (queue (route-action "revertDashboard") @onModelSaveOrRevert)}}
     >
-      Revert Changes
+      Revert
     </DenaliButton>
   </div>
 {{/if}}
