@@ -228,7 +228,12 @@ export default function(
     // Add each metric
     rows = rows
       .map(row => {
-        const dimensionKey = dimensions.map(d => `${d}=${row[`${d}|id`]}`).join('_');
+        const dimensionKey = dimensions
+          .map(d => {
+            const fields = d.show.length === 0 ? ['id', 'desc'] : d.show;
+            return fields.map(field => `${d.name}|${field}=${row[`${d.name}|${field}`]}`).join(',');
+          })
+          .join(';');
         const metrics = parseMetrics(request.queryParams.metrics).reduce((metricsObj: ResponseRow, metric) => {
           const having = havings[metric];
           const metricValue = metricBuilder(metric, row, dimensionKey);
