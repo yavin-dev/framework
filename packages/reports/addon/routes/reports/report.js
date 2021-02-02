@@ -77,7 +77,8 @@ export default Route.extend({
       showSaveAs: false,
       isFiltersCollapsed: false,
       modifiedRequest: null,
-      lastAddedColumn: null
+      lastAddedColumn: null,
+      format: 'Custom'
     });
   },
 

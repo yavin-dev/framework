@@ -44,6 +44,13 @@ class NumberFormatDropdownComponent extends Component {
    */
   @action
   setFormat(format) {
+    // eslint-disable-next-line no-console
+    console.log('setFormat');
+    // eslint-disable-next-line no-console
+    console.log(format);
+    // eslint-disable-next-line no-console
+    console.log(this);
+    // eslint-disable-next-line no-console
     set(this, 'format', format);
   }
 }

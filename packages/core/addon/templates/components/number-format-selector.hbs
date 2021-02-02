@@ -4,27 +4,22 @@
     Format Type
   </div>
   <DenaliRadio
-      @onChanged={{queue @onUpdateFormat (fn (mut this.predefinedFormat.format))}}
+      @onChanged={{queue @onUpdateFormat (fn (mut this.customFormat))}}
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
         <Radio.Option
           @name="format"
           @value={{predefinedFormat.format}}
-          @checked={{eq predefinedFormat.name predefinedFormat.format}}
+          @checked={{eq this.customFormat predefinedFormat.format}}
         >
           {{predefinedFormat.name}}
         </Radio.Option>
       {{/each}}
-  </DenaliRadio>
-  <DenaliRadio
-      @onChanged={{queue @onUpdateFormat ""}}
-      as |Radio|
-    >
-        <Radio.Option
+      <Radio.Option
           @name="format"
           @value={{this.customFormat}}
-          @checked={{false}}
+          @checked={{true}}
         >
           Custom
         </Radio.Option>
