@@ -36,8 +36,7 @@ class NumberFormatSelectorComponent extends Component {
     let predefinedFormats = A(get(this, 'predefinedFormats')),
       currentFormat = get(this, 'format'),
       match = predefinedFormats.findBy('format', currentFormat);
-    console.log('currentFormat ', currentFormat);
-    console.log('match ', match);
+
     if (match === undefined) {
       return true;
     } else if (match.format === '') {

@@ -2,7 +2,7 @@
 <div class="number-format-selector" ...attributes>
   <DenaliInputGroup @label="Format Type" @isStacked= {{true}} class="number-format-selector__section-header">
     <DenaliRadio
-      @onChanged={{queue @onUpdateFormat (fn (mut this.predefinedFormat.format))}}
+      @onChanged={{queue @onUpdateFormat (fn (mut this.format))}}
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
@@ -19,7 +19,7 @@
       <div class="number-format-selector__radio-custom">
         <Radio.Option
           @name="format"
-          @value={{if this.isCustomFormat @format}}
+          @value=''
           @checked={{this.isCustomFormat}}
         >
           Custom
