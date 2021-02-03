@@ -43,9 +43,6 @@ class NumberFormatDropdownComponent extends Component {
    */
   @action
   setFormat(format) {
-    console.log('this', this);
-    console.log('format', format);
-
     set(this, 'format', format);
   }
 }
