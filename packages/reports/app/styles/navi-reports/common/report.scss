@@ -3,8 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-$font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Arial, sans-serif;
-
 @mixin navi-report-style {
   display: flex;
   flex: 1;
@@ -24,7 +22,6 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
   &__title {
     color: $color-grey-800;
     display: flex;
-    font-family: $font-family-thin;
     font-size: $h1-font-size;
     text-transform: capitalize;
   }
@@ -44,7 +41,7 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
   }
 
   &-invalid__highlight-text {
-    color: #f05050;
+    color: $color-status-danger;
   }
 
   &-invalid__info-message,
@@ -64,7 +61,6 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
     border-radius: 3px;
     color: $color-grey-800;
     display: inline-block;
-    // font-size: @font-size-base;
     margin: 4px 0 0 5px;
     padding: 3px;
 
@@ -91,7 +87,6 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
     border: 0;
     color: $color-grey-800;
     cursor: pointer;
-    // font-family: @font-family-sans-serif;
     font-size: 14px;
     padding: 0;
     vertical-align: baseline;
