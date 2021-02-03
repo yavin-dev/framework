@@ -246,7 +246,7 @@ module('Integration | Component | dir table', function(hooks) {
       @isLoading={{this.isLoading}}
     />`);
 
-    assert.dom('.navi-loader__spinner').exists('The loader is rendered when `isLoading` property is true');
+    assert.dom('.loader').exists('The loader is rendered when `isLoading` property is true');
 
     set(this, 'isLoading', false);
 
@@ -255,6 +255,6 @@ module('Integration | Component | dir table', function(hooks) {
       @isLoading={{this.isLoading}}
     />`);
 
-    assert.dom('.navi-loader__spinner').doesNotExist('The loader is not rendered when `isLoading` property is false');
+    assert.dom('.loader').doesNotExist('The loader is not rendered when `isLoading` property is false');
   });
 });

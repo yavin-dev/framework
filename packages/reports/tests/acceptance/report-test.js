@@ -2076,8 +2076,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
     let buttons = findAll('.navi-report__footer .button');
-    assert.dom('.navi-loader__spinner').isVisible('Report is loading');
-
+    assert.dom('.loader').isVisible('Report is loading');
     assert.deepEqual(
       buttons.map(e => e.textContent.trim()),
       ['Cancel'],
