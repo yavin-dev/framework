@@ -1,41 +1,47 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-.navi-report {
+
+@mixin navi-report-style {
   display: flex;
   flex: 1;
   flex-flow: column;
   max-width: 100%;
   min-height: 0;
+  margin-top: 10px;
 
   &__breadcrumb {
-    font-size: @font-size-base;
     margin: 5px 0 0 0;
-  }
 
-  &__breadcrumb-link {
-    color: @navi-blue;
+    &-link {
+      color: $color-brand-300;
+    }
   }
 
   &__title {
-    color: @gray-9;
+    color: $color-grey-800;
     display: flex;
-    font-family: @font-family-thin;
-    font-size: @top-level-view-title;
+    font-size: $h1-font-size;
     text-transform: capitalize;
+  }
+
+  &__breadcrumb,
+  &__header {
+    padding: 0 20px 0 25px;
   }
 
   &__header {
     align-items: center;
-    background-color: @navi-white;
+    background-color: $color-grey-100;
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    min-height: min-content;
   }
 
   &-invalid__highlight-text {
-    color: @navi-red;
+    color: $color-status-danger;
   }
 
   &-invalid__info-message,
@@ -53,14 +59,13 @@
 
   &__action {
     border-radius: 3px;
-    color: @body-font-gray;
+    color: $color-grey-800;
     display: inline-block;
-    font-size: @font-size-base;
     margin: 4px 0 0 5px;
     padding: 3px;
 
     &:hover {
-      background-color: @navi-gray-200;
+      background-color: $color-grey-400;
     }
   }
 
@@ -69,17 +74,20 @@
   }
 
   &__action-link {
-    color: @body-font-gray; // Override link color
+    color: $color-grey-800; // Override link color
     display: inline-block;
+
+    &:hover {
+      color: $color-grey-800; // Override link color
+    }
   }
 
   &__action button {
     // Override standard button styles
     border: 0;
-    color: @body-font-gray;
+    color: $color-grey-800;
     cursor: pointer;
-    font-family: @font-family-sans-serif;
-    font-size: @font-size-base;
+    font-size: 14px;
     padding: 0;
     vertical-align: baseline;
     display: inline-block;
@@ -87,14 +95,14 @@
 
   &__action-link--is-disabled,
   &__action--is-disabled button {
-    color: @disabled-gray;
+    color: $color-grey-600;
     cursor: not-allowed;
   }
 
   // TODO :: Investigate why this style could not be consolidated with
   // &__action-link--is-disabled
   &__action-link--force-disabled {
-    color: @disabled-gray !important;
+    color: $color-grey-600 !important;
     cursor: not-allowed !important;
   }
 
@@ -106,19 +114,26 @@
     display: flex;
     flex: 1;
     flex-flow: column;
-    min-height: 0;
+    min-height: min-content;
   }
 
   &__footer {
-    align-items: center;
-    display: flex;
+    padding: 0 15px 0px 20px;
     margin: 10px 0;
-  }
+    min-height: min-content;
 
-  &__save-btn,
-  &__save-as-btn,
-  &__revert-btn {
-    margin-left: 10px;
+    button {
+      margin: 0 5px;
+    }
+
+    @include media-size-only(mobile) {
+      flex-flow: wrap-reverse;
+      padding-bottom: 10px;
+
+      button {
+        margin: 5px 0;
+      }
+    }
   }
 
   &__fav-icon {
@@ -129,4 +144,8 @@
   &__report-action {
     margin-top: 0;
   }
+}
+
+.navi-report {
+  @include navi-report-style;
 }

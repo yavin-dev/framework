@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report-widget">
   {{!-- Breadcrumb --}}
   <div class="navi-report-widget__breadcrumb">
@@ -23,7 +23,7 @@
   </div>
 
   {{!-- Header --}}
-  <header class="navi-report-widget__header">
+  <header class="navi-report-widget__header row">
     <span class="navi-report-widget__title">
       {{#if @model.dashboard.canUserEdit}}
         <EditableLabel
@@ -145,17 +145,17 @@
 
   {{!-- Footer --}}
 
-  <footer class="navi-report-widget__footer">
+  <footer class="navi-report-widget__footer row xs-space-between">
     {{#if this.isRunningReport}}
       <DenaliButton
-        class="navi-report-widget__cancel-btn"
+        class="navi-report-widget__cancel-btn xs-col-1-1"
         {{on "click" (route-action "cancelReport" @model)}}
       >
         Cancel
       </DenaliButton>
     {{else}}
       <DenaliButton
-        class="navi-report-widget__run-btn"
+        class="navi-report-widget__run-btn xs-col-1-1"
         {{on "click" (pipe
           (route-action "validate" @model)
           (route-action "runReport" @model)
@@ -166,8 +166,8 @@
 
       {{#if (and @model.dashboard.canUserEdit @model.hasDirtyAttributes)}}
         <DenaliButton
-          class="navi-report-widget__save-btn"
-          @style="outline"
+          class="navi-report-widget__save-btn xs-col-1-3"
+          @style="ghost"
           {{on "click" (pipe
             (route-action "validate" @model)
             (route-action "runReport" @model)
@@ -184,11 +184,11 @@
 
       {{#if (and @model.hasDirtyAttributes (not @model.isNew))}}
         <DenaliButton
-          @style="outline"
-          class="navi-report-widget__revert-btn"
+          @style="text"
+          class="navi-report-widget__revert-btn xs-col-1-3"
           {{on "click" (route-action "revertChanges" @model)}}
         >
-          Revert Changes
+          Revert
         </DenaliButton>
       {{/if}}
     {{/if}}
