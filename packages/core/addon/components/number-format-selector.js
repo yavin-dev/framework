@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -26,29 +27,17 @@ class NumberFormatSelectorComponent extends Component {
   predefinedFormats = NumberFormats;
 
   /**
-   * @property {String} customFormat
-   * returns empty string if the current format
-   * is one of the predefined formats
-   */
-  @computed('format')
-  get customFormat() {
-    let predefinedFormats = A(get(this, 'predefinedFormats')),
-      currentFormat = get(this, 'format'),
-      match = predefinedFormats.findBy('format', currentFormat);
-    return match ? '' : currentFormat;
-  }
-
-  /**
    * @property {Boolean} isCustomFormat
-   * returns empty string if the current format
-   * is one of the predefined formats
+   * returns true if the current format
+   * is not one of the predefined formats
    */
   @computed('format')
   get isCustomFormat() {
     let predefinedFormats = A(get(this, 'predefinedFormats')),
       currentFormat = get(this, 'format'),
       match = predefinedFormats.findBy('format', currentFormat);
-
+    console.log('currentFormat ', currentFormat);
+    console.log('match ', match);
     if (match === undefined) {
       return true;
     } else if (match.format === '') {

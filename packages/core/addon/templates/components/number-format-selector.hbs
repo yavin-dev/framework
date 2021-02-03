@@ -1,29 +1,32 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="number-format-selector" ...attributes>
-  <div class="number-format-selector__section-header">
-    Format Type
-  </div>
-  <DenaliRadio
+  <DenaliInputGroup @label="Format Type" @isStacked= {{true}} class="number-format-selector__section-header">
+    <DenaliRadio
       @onChanged={{queue @onUpdateFormat (fn (mut this.predefinedFormat.format))}}
       as |Radio|
-  >
-    {{#each this.predefinedFormats as |predefinedFormat|}}
-      <Radio.Option
-        @name="format"
-        @value={{predefinedFormat.format}}
-        @checked={{and (eq this.format predefinedFormat.format) (not this.isCustomFormat)}}
-      >
-        {{predefinedFormat.name}}
-      </Radio.Option>
-    {{/each}}
-    <Radio.Option
-      @name="format"
-      @value={{this.customFormat}}
-      @checked={{this.isCustomFormat}}
     >
-      Custom
-    </Radio.Option>
-  </DenaliRadio>
+      {{#each this.predefinedFormats as |predefinedFormat|}}
+        <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
+          <Radio.Option
+            @name="format"
+            @value={{predefinedFormat.format}}
+            @checked={{and (eq this.format predefinedFormat.format) (not this.isCustomFormat)}}
+          >
+            {{predefinedFormat.name}}
+          </Radio.Option>
+        </div>
+      {{/each}}
+      <div class="number-format-selector__radio-custom">
+        <Radio.Option
+          @name="format"
+          @value={{if this.isCustomFormat @format}}
+          @checked={{this.isCustomFormat}}
+        >
+          Custom
+        </Radio.Option>
+      </div>
+   </DenaliRadio>
+  </DenaliInputGroup>
   <DenaliInputGroup @label="Format" @isStacked= {{true}} class="number-format-selector__section-header">
     <DenaliInput
       @size="medium"
