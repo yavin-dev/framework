@@ -772,7 +772,7 @@ module('Acceptance | Navi Report', function(hooks) {
     /* == Add grand total to table == */
     await click('.report-view__visualization-edit-btn');
     await animationsSettled();
-    await click('.table-config__total-toggle-button--grand-total .x-toggle-btn');
+    await click('.table-config__total-toggle-button--grand-total');
     await click('.navi-report__run-btn');
     await clickTrigger('.multiple-format-export');
 
@@ -782,8 +782,8 @@ module('Acceptance | Navi Report', function(hooks) {
       .split('/export?reportModel=')[1];
     await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
-        get(model, 'visualization.metadata.showTotals.grandTotal'),
-        true,
+        get(model, 'visualization.metadata.showTotals.grandTotal.target.value'),
+        'on',
         'Visualization config changes are automatically included in export url'
       );
     });

@@ -27,22 +27,20 @@
         </div>
         <div class="line-chart-config__area-opt">
           <span class="line-chart-config__area-opt-title">Area</span>
-          <XToggle
+          <DenaliSwitch
             class="line-chart-config__area-opt-select"
-            @value={{readonly @options.style.area}}
-            @size="small"
-            @onToggle={{fn this.onUpdateStyle "area"}}
+            @isEnabled={{readonly @options.style.area}}
+            @onChange={{fn this.onUpdateStyle "area"}}
           />
         </div>
       {{/if}}
       {{#if this.showStackOption}}
         <div class="line-chart-config__stacked-opt">
           <span class="line-chart-config__stacked-opt-title">Stacked</span>
-          <XToggle
+          <DenaliSwitch
             class="line-chart-config__stacked-opt-select"
-            @value={{readonly @options.style.stacked}}
-            @size="small"
-            @onToggle={{fn this.onUpdateStyle "stacked"}}
+            @isEnabled={{readonly @options.style.stacked}}
+            @onChange={{fn this.onUpdateStyle "stacked"}}
           />
         </div>
       {{/if}}

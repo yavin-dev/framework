@@ -53,7 +53,7 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
     assert.dom('.table-header-cell__input').isNotVisible('Table header edit field should not be visible');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert
@@ -77,9 +77,10 @@ module('Acceptance | table', function(hooks) {
 
     await visit('/table');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.table-header-cell__input', 'test');
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
+    await fillIn('.timeDimension > .table-header-cell__input', 'test');
+    await blur('.timeDimension > .table-header-cell__input');
+    await click('.table-config__total-toggle-button');
 
     assert
       .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
@@ -95,9 +96,10 @@ module('Acceptance | table', function(hooks) {
 
     await visit('/table');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.table-header-cell__input', '');
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
+    await fillIn('.timeDimension > .table-header-cell__input', '');
+    await blur('.timeDimension > .table-header-cell__input');
+    await click('.table-config__total-toggle-button');
 
     assert
       .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')

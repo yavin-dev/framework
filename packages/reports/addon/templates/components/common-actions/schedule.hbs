@@ -80,11 +80,10 @@
         </div>
         {{#if (feature-flag "enabledNotifyIfData")}}
           <div class="schedule-modal__section-group">
-            <XToggle
-              @size="small"
+            <DenaliSwitch
               class="schedule-modal__must-have-data-toggle"
-              @value={{this.localDeliveryRule.schedulingRules.mustHaveData}}
-              @onToggle={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}
+              @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}
+              @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}
             />
             <div class="schedule-modal__label">Only send if data is present</div>
           </div>
