@@ -29,8 +29,6 @@ class NumberFormatDropdownComponent extends Component {
    */
   @action
   updateColumnNumberFormat() {
-    // eslint-disable-next-line no-console
-    console.log('updateColumnNumberFormat');
     const { onUpdateReport, column } = this;
     const format = getWithDefault(this, 'format', get(column, 'attributes.format'));
     const updatedColumn = merge({}, column, { attributes: { format } });
@@ -44,13 +42,6 @@ class NumberFormatDropdownComponent extends Component {
    */
   @action
   setFormat(format) {
-    // eslint-disable-next-line no-console
-    console.log('setFormat');
-    // eslint-disable-next-line no-console
-    console.log(format);
-    // eslint-disable-next-line no-console
-    console.log(this);
-    // eslint-disable-next-line no-console
     set(this, 'format', format);
   }
 }

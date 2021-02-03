@@ -32,20 +32,30 @@ class NumberFormatSelectorComponent extends Component {
    */
   @computed('format')
   get customFormat() {
-    // eslint-disable-next-line no-console
-    console.log('customFormat function');
-    // eslint-disable-next-line no-console
-    console.log(this);
     let predefinedFormats = A(get(this, 'predefinedFormats')),
       currentFormat = get(this, 'format'),
       match = predefinedFormats.findBy('format', currentFormat);
-    // eslint-disable-next-line no-console
-    console.log('currentformat');
-    // eslint-disable-next-line no-console
-    console.log(this.currentFormat);
-    // eslint-disable-next-line no-console
-    console.log(this);
     return match ? '' : currentFormat;
+  }
+
+  /**
+   * @property {Boolean} isCustomFormat
+   * returns empty string if the current format
+   * is one of the predefined formats
+   */
+  @computed('format')
+  get isCustomFormat() {
+    let predefinedFormats = A(get(this, 'predefinedFormats')),
+      currentFormat = get(this, 'format'),
+      match = predefinedFormats.findBy('format', currentFormat);
+
+    if (match === undefined) {
+      return true;
+    } else if (match.format === '') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
