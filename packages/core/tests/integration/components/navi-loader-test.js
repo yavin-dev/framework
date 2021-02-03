@@ -9,9 +9,7 @@ module('Integration | Component | navi loader', function(hooks) {
   test('it renders', async function(assert) {
     assert.expect(3);
 
-    await render(hbs`{{navi-loader
-          containerClass='test-container'
-      }}`);
+    await render(hbs`<NaviLoader class="test-container" />`);
 
     assert.dom('.navi-loader__container').exists('The loader container is rendered');
 
