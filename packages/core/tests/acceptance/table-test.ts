@@ -1,4 +1,4 @@
-import { click, fillIn, findAll, visit } from '@ember/test-helpers';
+import { blur, click, fillIn, findAll, visit } from '@ember/test-helpers';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
