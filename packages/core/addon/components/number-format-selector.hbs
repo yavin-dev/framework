@@ -10,7 +10,7 @@
           <Radio.Option
             @name="format"
             @value={{predefinedFormat.format}}
-            @checked={{and (eq this.format predefinedFormat.format) (not this.isCustomFormat)}}
+            @checked={{and (eq @format predefinedFormat.format) (not this.isCustomFormat)}}
           >
             {{predefinedFormat.name}}
           </Radio.Option>
