@@ -8,11 +8,11 @@ import BardMetadataSerializer, {
   RawMetricPayload,
   RawTablePayload
 } from 'navi-data/serializers/metadata/bard';
-import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
 import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -22,6 +22,83 @@ const Payload: RawEverythingPayload = {
       longName: 'tableLongName',
       category: 'General',
       timeGrains: [
+        {
+          name: 'all',
+          description: 'The tableName all grain',
+          metrics: [
+            {
+              category: 'category',
+              name: 'metricOne',
+              longName: 'Metric One',
+              type: 'number'
+            },
+            {
+              category: 'category',
+              name: 'metricFour',
+              longName: 'Metric Four',
+              type: 'money',
+              parameters: {
+                currency: {
+                  type: 'dimension',
+                  dimensionName: 'displayCurrency',
+                  defaultValue: 'USD'
+                },
+                format: {
+                  type: 'dimension',
+                  dimensionName: 'displayFormat',
+                  defaultValue: 'none'
+                }
+              }
+            }
+          ],
+          retention: 'P24M',
+          longName: 'All',
+          dimensions: [
+            {
+              category: 'categoryOne',
+              name: 'dimensionOne',
+              longName: 'Dimension One',
+              cardinality: 10,
+              datatype: 'text',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                },
+                {
+                  name: 'desc',
+                  description: 'Dimension Description'
+                }
+              ]
+            },
+            {
+              category: 'categoryTwo',
+              name: 'dimensionTwo',
+              longName: 'Dimension Two',
+              cardinality: 5,
+              datatype: 'text',
+              fields: [
+                {
+                  name: 'foo',
+                  description: 'bar'
+                }
+              ]
+            },
+            {
+              category: 'dateCategory',
+              name: 'dimensionThree',
+              longName: 'Dimension Three',
+              cardinality: 50000,
+              datatype: 'date',
+              fields: [
+                {
+                  name: 'id',
+                  description: 'Dimension ID'
+                }
+              ]
+            }
+          ]
+        },
         {
           name: 'day',
           description: 'The tableName day grain',
@@ -295,7 +372,7 @@ const Payload: RawEverythingPayload = {
   ]
 };
 // list of table objects, with table->timegrains->dimensions+metrics
-const TablePayloads: TableMetadataPayload[] = [
+const TablePayloads: BardTableMetadataPayload[] = [
   {
     cardinality: 'MEDIUM',
     isFact: true,
@@ -307,7 +384,8 @@ const TablePayloads: TableMetadataPayload[] = [
     name: 'tableLongName',
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'tableName.dateTime'],
-    timeGrainIds: ['day', 'month']
+    timeGrainIds: ['day', 'month'],
+    hasAllGrain: true
   },
   {
     cardinality: 'MEDIUM',
@@ -320,7 +398,8 @@ const TablePayloads: TableMetadataPayload[] = [
     name: 'Second Table',
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'secondTable.dateTime'],
-    timeGrainIds: ['day', 'week']
+    timeGrainIds: ['day', 'isoWeek'],
+    hasAllGrain: false
   }
 ];
 
@@ -437,7 +516,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       },
       {
         expression: '',
-        grain: 'Week',
+        grain: 'IsoWeek',
         id: 'isoWeek'
       }
     ],
@@ -686,14 +765,14 @@ let ColumnFunctions: ColumnFunctionMetadataModel[];
 let Metrics: MetricMetadataModel[];
 let TimeDimensions: TimeDimensionMetadataModel[];
 let Dimensions: DimensionMetadataModel[];
-let Tables: TableMetadataModel[];
+let Tables: BardTableMetadataModel[];
 
 module('Unit | Serializer | metadata/bard', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function(this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
-    Tables = TablePayloads.map(p => TableMetadataModel.create(this.owner.ownerInjection(), p));
+    Tables = TablePayloads.map(p => BardTableMetadataModel.create(this.owner.ownerInjection(), p));
     Dimensions = DimensionsPayloads.map(p => DimensionMetadataModel.create(this.owner.ownerInjection(), p));
     TimeDimensions = TimeDimensionPayloads.map(p => TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p));
     Metrics = MetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p));
@@ -943,15 +1022,16 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     };
 
     config.navi.defaultTimeGrain = 'isoWeek';
-    let columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
+    const tableGrainInfo = Serializer['parseTableGrains'](table);
+    let columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
     assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'isoWeek', 'Picks default from config');
 
     config.navi.defaultTimeGrain = 'year';
-    columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
-    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'day', 'Falls back to first defined grain');
+    columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
+    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'hour', 'Falls back to first defined grain');
 
     config.navi.defaultTimeGrain = 'hour';
-    columnFunction = Serializer['createTimeGrainColumnFunction'](table, 'bardOne');
+    columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
     assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'hour', 'Picks default from config');
 
     config.navi.defaultTimeGrain = originalDefaultTimeGrain;

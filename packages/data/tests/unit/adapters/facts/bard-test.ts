@@ -5,6 +5,7 @@ import config from 'ember-get-config';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import { TestContext } from 'ember-test-helpers';
+import MetadataModelRegistry from 'navi-data/models/metadata/registry';
 
 const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;
@@ -233,7 +234,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         {
           field: 'tableName.dateTime',
           type: 'timeDimension',
-          parameters: { grain: 'all' },
+          parameters: { grain: 'day' },
           operator: 'bet',
           values: ['start', 'end']
         }
@@ -281,7 +282,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildDateTimeParam(noIntervals);
       },
-      /Exactly one '.dateTime' filter is supported, you have 0/,
+      /Exactly one '.dateTime' filter is required, you have 0/,
       '_buildDateTimeParam throws an error for missing dateTime filter'
     );
 
@@ -309,7 +310,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       () => {
         Adapter._buildDateTimeParam(manyIntervals);
       },
-      /Exactly one 'tableName.dateTime' filter is supported, you have 2/,
+      /Exactly one 'tableName.dateTime' filter is required, you have 2/,
       '_buildDateTimeParam throws an error for multiple datetime filters'
     );
   });
@@ -675,28 +676,60 @@ module('Unit | Adapter | facts/bard', function(hooks) {
   });
 
   test('_buildURLPath', function(assert) {
-    assert.expect(4);
+    assert.expect(6);
 
     assert.equal(
-      Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName' }),
+      Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName', dataSource: 'bardOne' }),
       'https://data.naviapp.io/v1/data/tableName/all/',
-      '_buildURLPath throws an error for missing dateTime column'
+      '_buildURLPath assumes the all timeGrain exists if table metadata is not loaded'
     );
+
+    const originalNaviMetadata = Adapter.naviMetadata;
+    //@ts-ignore
+    Adapter.naviMetadata = {
+      getById<K extends keyof MetadataModelRegistry>(
+        _type: K,
+        _id: string,
+        _dataSourceName: string
+      ): MetadataModelRegistry[K] {
+        return ({ hasAllGrain: false } as unknown) as MetadataModelRegistry[K];
+      }
+    };
+    assert.throws(
+      () => {
+        Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName', dataSource: 'bardOne' });
+      },
+      /FactAdapterError: Table 'tableName' requires requesting 'Date Time' column exactly once./,
+      '_buildURLPath throws an error for missing dateTime column for table without all grain'
+    );
+
+    assert.equal(
+      Adapter._buildURLPath({
+        ...EmptyRequest,
+        table: 'tableName',
+        dataSource: 'bardOne',
+        columns: [{ type: 'timeDimension', field: 'tableName.dateTime', parameters: { grain: 'grain' } }]
+      }),
+      'https://data.naviapp.io/v1/data/tableName/grain/',
+      '_buildURLPath does not throw error for table without all grain that specifies a grain to use'
+    );
+    Adapter.naviMetadata = originalNaviMetadata;
 
     const twoDateTime: RequestV2 = {
       ...EmptyRequest,
       columns: [
-        { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'all' } },
+        { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'day' } },
         { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'week' } }
-      ]
+      ],
+      dataSource: 'bardOne'
     };
 
     assert.throws(
       () => {
         Adapter._buildURLPath(twoDateTime);
       },
-      /Requsting more than one '.dateTime' columns is not supported/,
-      '_buildURLPath throws an error when more than one dateTime column is requested'
+      /FactAdapterError: Requesting multiple 'Date Time' grains is not supported. You requested \[day,week\]/,
+      '_buildURLPath throws an error when more than one grain is requested'
     );
 
     assert.equal(

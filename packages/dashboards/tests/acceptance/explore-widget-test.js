@@ -328,7 +328,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.equal(currentRouteName(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer .btn').map(e => e.textContent.trim()),
+      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
       ['Cancel'],
       'When widget is loading, the only footer button is `Cancel`'
     );
@@ -342,8 +342,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer .btn').map(e => e.textContent.trim()),
-      ['Run', 'Save Changes', 'Revert Changes'],
+      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
+      ['Run', 'Save Changes', 'Revert'],
       'When not loading a widget, the standard footer buttons are available'
     );
 
@@ -357,8 +357,8 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer .btn').map(e => e.textContent.trim()),
-      ['Run', 'Save Changes', 'Revert Changes'],
+      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
+      ['Run', 'Save Changes', 'Revert'],
       'When not loading a widget, the standard footer buttons are available'
     );
   });

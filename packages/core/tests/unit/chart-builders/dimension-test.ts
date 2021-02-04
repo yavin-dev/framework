@@ -186,52 +186,6 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
     );
   });
 
-  test('groupDataBySeries all granularity - many dimensions of same type', function(assert) {
-    assert.expect(1);
-
-    const request = buildTestRequest(
-      metrics,
-      [ageDim],
-      { start: '2016-05-30 00:00:00.000', end: '2016-05-30 00:00:00.000' },
-      'all'
-    );
-    const data = NaviFactResponse.create({
-      //prettier-ignore
-      rows: [
-        { 'network.dateTime(grain=all)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
-        { 'network.dateTime(grain=all)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 }
-      ]
-    });
-
-    assert.deepEqual(
-      DimensionChartBuilder.buildData(
-        data,
-        {
-          metricCid: 'cid_totalPageViews',
-          dimensions: [
-            { name: 'All Other', values: { cid_age: '-3' } },
-            { name: 'Under 13', values: { cid_age: '1' } }
-          ]
-        },
-        request
-      ),
-      {
-        series: ([
-          {
-            x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
-            'series.0': 3669828357,
-            'series.1': 3669828357
-          }
-        ] as unknown) as C3Row[],
-        names: {
-          'series.0': 'All Other',
-          'series.1': 'Under 13'
-        }
-      },
-      'A series has the properly formatted displayValue'
-    );
-  });
-
   test('groupDataBySeries hour granularity - many dimensions of same type', function(assert) {
     assert.expect(1);
 

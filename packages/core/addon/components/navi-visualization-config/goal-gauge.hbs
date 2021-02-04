@@ -1,50 +1,50 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="goal-gauge-config" ...attributes>
-  <div class="goal-gauge-config__section-header">
-    Label
-  </div>
-  <div class="goal-gauge-config__description goal-gauge-config__section">
-    <Input
-      class="goal-gauge-config__text-input goal-gauge-config__label-input"
-      @autofocus={{false}}
-      @name="metric-description-input"
-      @type="text"
-      @value={{readonly this.metricColumn.alias}}
-      @focus-out={{fn this.updateLabel}}
-      @key-up={{fn this.updateLabel}}
-      @placeholder={{this.metricColumn.displayName}}
+
+   <DenaliInputGroup
+     @label="Label"
+     @isStacked={{true}}
+     class="goal-gauge-config__section-header"
+   >
+    <DenaliInput
+      @size="medium"
+      type="text"
+      class="goal-gauge-config__label-input"
+      placeholder={{this.metricColumn.displayName}}
+      value={{this.metricColumn.alias}}
+      {{on "input" (pipe (pick 'target.value') (fn this.updateLabel))}}
     />
-  </div>
-  <div class="goal-gauge-config__section-header">
-    Baseline
-  </div>
-  <div class="goal-gauge-config__format goal-gauge-config__section">
-    <Input
-      class="goal-gauge-config__baseline-input goal-gauge-config__text-input"
-      @autofocus={{false}}
-      @name="baseline-input"
-      @type="number"
-      @maxlength="22"
-      @placeholder="Baseline Value"
-      @value={{readonly @options.baselineValue}}
-      @focus-out={{fn this.updateBaseline}}
-      @key-up={{fn this.updateBaseline}}
+  </DenaliInputGroup>
+
+  <DenaliInputGroup
+    @label="Baseline"
+    @isStacked= {{true}}
+    class="goal-gauge-config__section-header"
+  >
+    <DenaliInput
+      @size="medium"
+      type="number"
+      maxlength="22"
+      class="goal-gauge-config__baseline-input"
+      placeholder="Baseline Value"
+      value={{@options.baselineValue}}
+      {{on "input" (pipe (pick 'target.value') (fn this.updateBaseline))}}
     />
-  </div>
-  <div class="goal-gauge-config__section-header">
-    Goal
-  </div>
-  <div class="goal-gauge-config__format goal-gauge-config__section">
-    <Input
-      class="goal-gauge-config__goal-input goal-gauge-config__text-input"
-      @autofocus={{false}}
-      @name="goal-input"
-      @type="number"
-      @maxlength="22"
-      @placeholder="Goal Value"
-      @value={{readonly @options.goalValue}}
-      @focus-out={{fn this.updateGoal}}
-      @key-up={{fn this.updateGoal}}
+  </DenaliInputGroup>
+
+  <DenaliInputGroup
+    @label="Goal"
+    @isStacked= {{true}}
+    class="goal-gauge-config__section-header"
+  >
+    <DenaliInput
+      @size="medium"
+      type="number"
+      maxlength="22"
+      class="goal-gauge-config__goal-input"
+      placeholder="Goal Value"
+      value={{@options.goalValue}}
+      {{on "input" (pipe (pick 'target.value') (fn this.updateGoal))}}
     />
-  </div>
+  </DenaliInputGroup>
 </div>

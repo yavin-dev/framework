@@ -1797,12 +1797,12 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await selectChoose('.filter-builder__operator-trigger', 'Current Day');
 
-    const today = moment().format('MMM DD, YYYY');
+    const today = moment.utc().format('MMM DD, YYYY');
     assert.dom('.filter-builder__values').hasText(`The current day. (${today})`, 'The current day');
   });
 
-  test('Date picker all timegrain', async function(assert) {
-    assert.expect(5);
+  test('Fili Datasource: Remove time column (all grain)', async function(assert) {
+    assert.expect(7);
 
     await visit('/reports/1');
 
@@ -1823,8 +1823,10 @@ module('Acceptance | Navi Report', function(hooks) {
       .dom('.filter-values--date-range-input__high-value input')
       .hasValue('May 2015', 'The end date is month May 2015');
 
-    // select 'all' grain
-    await selectChoose('.navi-column-config-item__parameter', 'All');
+    // Remove date time group by
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (month)"]');
+    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'The filter grain is set to the lowest grain');
+    // TODO: Better support for hour grain
 
     assert
       .dom('.filter-values--date-range-input__low-value input')
@@ -1838,6 +1840,13 @@ module('Acceptance | Navi Report', function(hooks) {
     assert
       .dom('.filter-values--date-range-input__high-value input')
       .hasValue('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
+
+    await click('.navi-report__run-btn');
+    assert.deepEqual(
+      findAll('li.table-header-cell').map(el => el.textContent.trim()),
+      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'The table is successfully queried with no Date Time group by because it supports the all grain'
+    );
   });
 
   skip("Date picker advanced doesn't modify interval", async function(assert) {
@@ -2066,9 +2075,8 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await waitFor('.navi-report__cancel-btn', { timeout: 5000 });
 
-    let buttons = findAll('.navi-report__footer .navi-button');
-    assert.dom('.navi-loader__spinner').isVisible('Report is loading');
-
+    let buttons = findAll('.navi-report__footer .button');
+    assert.dom('.loader').isVisible('Report is loading');
     assert.deepEqual(
       buttons.map(e => e.textContent.trim()),
       ['Cancel'],
@@ -2094,7 +2102,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/13/edit', 'Clicking `Cancel` brings the user to the edit route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );
@@ -2104,7 +2112,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.equal(currentURL(), '/reports/13/view', 'Running the report brings the user to the view route');
 
     assert.deepEqual(
-      findAll('.navi-report__footer .navi-button').map(e => e.textContent.trim()),
+      findAll('.navi-report__footer .button').map(e => e.textContent.trim()),
       ['Run'],
       'When not loading a report, the standard footer buttons are available'
     );

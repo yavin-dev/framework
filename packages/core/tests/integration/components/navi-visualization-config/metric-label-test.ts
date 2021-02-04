@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, fillIn, blur } from '@ember/test-helpers';
+import { render, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
@@ -54,7 +54,7 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     assert
-      .dom('.metric-label-config__description-input')
+      .dom('.metric-label-config__label-input')
       .hasValue(
         "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
         'Component correctly displays initial description'
@@ -75,7 +75,6 @@ module('Integration | Component | visualization config/metric-label', function(h
     await render(Template);
 
     await fillIn('.number-format-selector__format-input', 'foo');
-    await blur('.number-format-selector__format-input');
   });
 
   test('onUpdateConfig alias input', async function(this: TestContext, assert) {
@@ -83,8 +82,7 @@ module('Integration | Component | visualization config/metric-label', function(h
 
     await render(Template);
 
-    await fillIn('.metric-label-config__description-input', 'foo');
-    await blur('.metric-label-config__description-input');
+    await fillIn('.metric-label-config__label-input', 'foo');
 
     assert.deepEqual(this.request.columns.firstObject?.alias, 'foo', 'The column alias is updated');
   });

@@ -9,7 +9,6 @@ const grainFormats: Record<Grain, string> = {
   second: 'HH:mm:ss',
   minute: 'HH:mm:00',
   hour: 'HH:00',
-  all: 'MMM D',
   day: 'MMM D',
   week: 'MMM D',
   isoWeek: 'MMM D',

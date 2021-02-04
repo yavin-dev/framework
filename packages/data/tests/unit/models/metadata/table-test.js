@@ -1,6 +1,5 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { run } from '@ember/runloop';
 
 let Payload, Model, Keg, TableFactory;
 
@@ -17,12 +16,12 @@ module('Unit | Metadata Model | Table', function(hooks) {
       metricIds: ['pv'],
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
-      timeGrainIds: ['day', 'month', 'week'],
+      isFact: true,
       source: 'bardOne',
       tags: ['DISPLAY']
     };
 
-    Model = run(() => this.owner.factoryFor('model:metadata/table').create(Payload));
+    Model = this.owner.factoryFor('model:metadata/table').create(Payload);
 
     //Looking up and injecting keg into the model
     Keg = this.owner.lookup('service:keg');
@@ -83,7 +82,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
       dimensionIds,
       timeDimensionIds,
       source,
-      timeGrainIds,
+      isFact,
       tags
     } = Model;
 
@@ -97,7 +96,7 @@ module('Unit | Metadata Model | Table', function(hooks) {
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');
     assert.equal(source, Payload.source, 'source property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
-    assert.deepEqual(timeGrainIds, Payload.timeGrainIds, 'timeGrainIds property is hydrated properly');
+    assert.deepEqual(isFact, Payload.isFact, 'isFact property is hydrated properly');
   });
 
   test('Metric in Table', function(assert) {

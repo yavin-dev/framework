@@ -139,7 +139,7 @@ module('Integration | Component | navi-column-config', function(hooks) {
       findAll('.navi-column-config-item__parameter-dropdown .ember-power-select-option').map(el =>
         el.textContent.trim()
       ),
-      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year', 'All'],
+      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'],
       'The table time grains are passed correctly to the time grain column'
     );
 

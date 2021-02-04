@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -70,7 +70,8 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         draggable: false,
         classNames: 'dir-table__header-cell dir-table__header-cell--actions',
         cellComponent: 'dir-asset-row-actions',
-        cellClassNames: 'dir-table__cell dir-table__cell--actions'
+        cellClassNames: 'dir-table__cell dir-table__cell--actions',
+        breakpoints: ['tablet', 'desktop', 'jumbo']
       },
       {
         label: 'AUTHOR',

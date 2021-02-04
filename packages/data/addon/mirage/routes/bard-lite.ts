@@ -18,6 +18,7 @@ import {
   parseMetrics
 } from './bard-lite-parsers';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
   DIMENSION_VALUE_MAP: Record<string, DimensionRow[]> = {},
@@ -64,7 +65,7 @@ const global = window as Window &
  * @param end - end of time period - must be 'current' or fixed date
  * @returns list of moments in requested time range
  */
-function _getDates(grain: Grain, start: string, end: string) {
+function _getDates(grain: GrainWithAll, start: string, end: string) {
   const isoGrain = grain === 'week' ? 'isoWeek' : grain; // need to use isoweek, which is what real ws uses
   let endDate;
   const nonAllGrain = isoGrain === 'all' ? 'day' : isoGrain;
@@ -193,11 +194,7 @@ export default function(
     }
 
     // Convert each date into a row of data
-    let rows: ResponseRow[] = dates.map(date => {
-      return {
-        dateTime: date.format(API_DATE_FORMAT)
-      };
-    });
+    let rows: ResponseRow[] = dates.map(date => ({ dateTime: date.format(API_DATE_FORMAT) }));
 
     // Add id and desc for each dimension
     dimensions.forEach(dimension => {
@@ -231,7 +228,12 @@ export default function(
     // Add each metric
     rows = rows
       .map(row => {
-        const dimensionKey = dimensions.map(d => `${d}=${row[`${d}|id`]}`).join('_');
+        const dimensionKey = dimensions
+          .map(d => {
+            const fields = d.show.length === 0 ? ['id', 'desc'] : d.show;
+            return fields.map(field => `${d.name}|${field}=${row[`${d.name}|${field}`]}`).join(',');
+          })
+          .join(';');
         const metrics = parseMetrics(request.queryParams.metrics).reduce((metricsObj: ResponseRow, metric) => {
           const having = havings[metric];
           const metricValue = metricBuilder(metric, row, dimensionKey);

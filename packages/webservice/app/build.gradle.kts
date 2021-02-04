@@ -6,7 +6,6 @@ description = "app"
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
-    id("com.github.johnrengelman.shadow") version "5.2.0"
     kotlin("jvm")
     kotlin("plugin.spring") version "1.3.72"
     id("com.github.node-gradle.node") version "2.2.4"
@@ -57,7 +56,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.register<NpmTask>("installUIDependencies") {
-    setArgs(listOf("ci"))
+    setArgs(listOf("ci", "-verbose"))
     setExecOverrides(closureOf<ExecSpec> {
         setWorkingDir("../../../")
     })
@@ -74,7 +73,6 @@ tasks.register<Copy>("copyNaviApp") {
     from("../../app/dist")
     into("$buildDir/resources/main/META-INF/resources/ui")
 }
-
 
 tasks.register<Exec>("execJar") {
     dependsOn("bootJar")

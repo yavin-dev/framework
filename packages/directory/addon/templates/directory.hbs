@@ -1,20 +1,22 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<DirSidebar/>
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DirSidebar 
+  class="tablet-down-hide-left {{if this.sidebarOpen "tablet-down-toggle-tabs-left"}}"
+  @onRouteChanged={{fn (mut this.sidebarOpen) false}} 
+/>
 <main class="container p-30">
-  <div class="row m-b-30 space-between">
-    <h2 class="directory__title">{{this.title}}</h2>
-    <div class="flex">
+  <div class="row tablet-down-flex-column p-b-20">
+    <div class="row flex-1">
+      <h2 class="directory__title flex-1">{{this.title}}</h2>
       <DirTableFilter
         @selectedType={{this.type}}
         @updateQueryParams={{this.updateQueryParams}}
       />
-      <div class="input-group m-l-10">
-        <DirSearchBar
-          @query={{this.q}}
-          @searchFor={{this.searchFor}}
-        />
-      </div>
     </div>
+
+    <DirSearchBar
+      @query={{this.q}}
+      @searchFor={{this.searchFor}}
+    />
   </div>
   <div class="row">
     {{outlet}}

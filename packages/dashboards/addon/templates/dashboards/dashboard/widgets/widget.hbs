@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report-widget">
   {{!-- Breadcrumb --}}
   <div class="navi-report-widget__breadcrumb">
@@ -23,7 +23,7 @@
   </div>
 
   {{!-- Header --}}
-  <header class="navi-report-widget__header">
+  <header class="navi-report-widget__header row">
     <span class="navi-report-widget__title">
       {{#if @model.dashboard.canUserEdit}}
         <EditableLabel
@@ -145,53 +145,51 @@
 
   {{!-- Footer --}}
 
-  <footer class="navi-report-widget__footer">
+  <footer class="navi-report-widget__footer row xs-space-between">
     {{#if this.isRunningReport}}
-      <button
-        type="button"
-        class="btn btn-primary navi-report-widget__cancel-btn"
-        onclick={{route-action "cancelReport" @model}}
+      <DenaliButton
+        class="navi-report-widget__cancel-btn xs-col-1-1"
+        {{on "click" (route-action "cancelReport" @model)}}
       >
         Cancel
-      </button>
+      </DenaliButton>
     {{else}}
-      <button
-        type="button"
-        class="btn btn-primary navi-report-widget__run-btn"
-        onclick={{pipe
+      <DenaliButton
+        class="navi-report-widget__run-btn xs-col-1-1"
+        {{on "click" (pipe
           (route-action "validate" @model)
           (route-action "runReport" @model)
-        }}
+        )}}
       >
         Run
-      </button>
+      </DenaliButton>
 
       {{#if (and @model.dashboard.canUserEdit @model.hasDirtyAttributes)}}
-        <button
-          type="button"
-          class="btn btn-secondary navi-report-widget__save-btn"
-          onclick={{pipe
+        <DenaliButton
+          class="navi-report-widget__save-btn xs-col-1-3"
+          @style="ghost"
+          {{on "click" (pipe
             (route-action "validate" @model)
             (route-action "runReport" @model)
             (route-action "saveWidget" @model)
-          }}
+          )}}
         >
           {{#if @model.isNew}}
             Save Widget
           {{else}}
             Save Changes
           {{/if}}
-        </button>
+        </DenaliButton>
       {{/if}}
 
       {{#if (and @model.hasDirtyAttributes (not @model.isNew))}}
-        <button
-          type="button"
-          class="btn btn-secondary navi-report-widget__revert-btn"
-          onclick={{route-action "revertChanges" @model}}
+        <DenaliButton
+          @style="text"
+          class="navi-report-widget__revert-btn xs-col-1-3"
+          {{on "click" (route-action "revertChanges" @model)}}
         >
-          Revert Changes
-        </button>
+          Revert
+        </DenaliButton>
       {{/if}}
     {{/if}}
   </footer>

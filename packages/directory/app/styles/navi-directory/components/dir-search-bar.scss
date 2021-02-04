@@ -1,0 +1,14 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.dir-search-bar {
+  display: table; // Fix for safari rendering issue with search icon
+  margin-left: 15px;
+
+  @include media-size-down(tablet) {
+    margin: 10px 0;
+    width: 100%;
+  }
+}
