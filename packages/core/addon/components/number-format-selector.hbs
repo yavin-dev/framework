@@ -1,8 +1,12 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="number-format-selector" ...attributes>
-  <DenaliInputGroup @label="Format Type" @isStacked= {{true}} class="number-format-selector__section-header">
+  <DenaliInputGroup 
+    @label="Format Type" 
+    @isStacked={{true}} 
+ >
     <DenaliRadio
       @onChanged={{queue @onUpdateFormat (fn (mut this.format))}}
+      class="number-format-selector__format-radio"
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
@@ -27,7 +31,10 @@
       </div>
    </DenaliRadio>
   </DenaliInputGroup>
-  <DenaliInputGroup @label="Format" @isStacked= {{true}} class="number-format-selector__section-header">
+  <DenaliInputGroup 
+    @label="Format" 
+    @isStacked={{true}} 
+  >
     <DenaliInput
       @size="medium"
       type="text"
