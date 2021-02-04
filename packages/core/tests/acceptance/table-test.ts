@@ -57,7 +57,7 @@ module('Acceptance | table', function(hooks) {
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert
-      .dom('.timeDimension .number-format-dropdown__trigger')
+      .dom('.timeDimension .input .number-format-dropdown__trigger')
       .isNotVisible('Datetime field should not have format dropdown trigger');
 
     assert
@@ -78,8 +78,8 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button');
-    await fillIn('.timeDimension > .table-header-cell__input', 'test');
-    await blur('.timeDimension > .table-header-cell__input');
+    await fillIn('.timeDimension .input > .table-header-cell__input', 'test');
+    await blur('.timeDimension .input > .table-header-cell__input');
     await click('.table-config__total-toggle-button');
 
     assert
@@ -97,8 +97,8 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
 
     await click('.table-config__total-toggle-button');
-    await fillIn('.timeDimension > .table-header-cell__input', '');
-    await blur('.timeDimension > .table-header-cell__input');
+    await fillIn('.timeDimension .input > .table-header-cell__input', '');
+    await blur('.timeDimension .input > .table-header-cell__input');
     await click('.table-config__total-toggle-button');
 
     assert
