@@ -782,7 +782,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .split('/export?reportModel=')[1];
     await CompressionService.decompressModel(encodedModel).then(model => {
       assert.equal(
-        get(model, 'visualization.metadata.showTotals.grandTotal.target.value'),
+        get(model, 'visualization.metadata.showTotals.grandTotal'),
         'on',
         'Visualization config changes are automatically included in export url'
       );

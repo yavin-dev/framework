@@ -58,9 +58,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
       'The totals toggle is displayed when the feature flag is set'
     );
 
-    assert
-      .dom('.table-config__totals-toggle-section .denali-switch')
-      .exists({ count: 2 }, 'Two toggle buttons are displayed next to the labels');
+    assert.dom('.denali-switch').exists({ count: 2 }, 'Two toggle buttons are displayed next to the labels');
 
     assert
       .dom('.table-config__total-toggle-button--grand-total')

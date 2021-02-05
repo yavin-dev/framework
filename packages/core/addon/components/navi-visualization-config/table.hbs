@@ -14,7 +14,7 @@
         <DenaliSwitch
           class="table-config__total-toggle-button table-config__total-toggle-button--grand-total"
           @isEnabled={{@options.showTotals.grandTotal}}
-          @onChange={{this.onToggleGrandTotal}}
+          @onChange={{pipe (pick 'target.value') (fn this.onToggleGrandTotal )}}
         />
       </div>
 
@@ -25,7 +25,7 @@
           <DenaliSwitch
             class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
             @isEnabled={{this.showSubtotalDropdown}}
-            @onChange={{this.onToggleSubtotal}}
+            @onChange={{pipe (pick 'target.value') (fn this.onToggleSubtotal )}}
           />
         </div>
 
