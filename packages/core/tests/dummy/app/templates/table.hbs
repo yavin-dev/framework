@@ -3,7 +3,7 @@
   <span class="table-config__totals-toggle-label">Edit Header</span>
   <DenaliSwitch
     class="table-config__total-toggle-button"
-    @isEnabled={{readonly this.isEditing}}
+    @isEnabled={{this.isEditing}}
     @onChange={{toggle "isEditing" this}}
   />
 </div>

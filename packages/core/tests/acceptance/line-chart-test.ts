@@ -60,7 +60,7 @@ module('Acceptance | line chart', function(hooks) {
 
     assert.notEqual(linePath, linePathSpline, 'Chart updated with new values');
 
-    await click('.line-chart-config__area-opt .denali-switch');
+    await click('.line-chart-config__area-opt-select');
 
     let linePathSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-lines path')?.getAttribute('d');
     let lineAreaSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-areas path')?.getAttribute('d');

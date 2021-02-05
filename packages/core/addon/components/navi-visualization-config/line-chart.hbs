@@ -29,7 +29,7 @@
           <span class="line-chart-config__area-opt-title">Area</span>
           <DenaliSwitch
             class="line-chart-config__area-opt-select"
-            @isEnabled={{readonly @options.style.area}}
+            @isEnabled={{@options.style.area}}
             @onChange={{fn this.onUpdateStyle "area"}}
           />
         </div>
@@ -39,7 +39,7 @@
           <span class="line-chart-config__stacked-opt-title">Stacked</span>
           <DenaliSwitch
             class="line-chart-config__stacked-opt-select"
-            @isEnabled={{readonly @options.style.stacked}}
+            @isEnabled={{@options.style.stacked}}
             @onChange={{fn this.onUpdateStyle "stacked"}}
           />
         </div>

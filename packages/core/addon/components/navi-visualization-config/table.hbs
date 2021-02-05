@@ -13,7 +13,7 @@
         <span class="table-config__totals-toggle-label">Grand Total</span>
         <DenaliSwitch
           class="table-config__total-toggle-button table-config__total-toggle-button--grand-total"
-          @isEnabled={{readonly @options.showTotals.grandTotal}}
+          @isEnabled={{@options.showTotals.grandTotal}}
           @onChange={{this.onToggleGrandTotal}}
         />
       </div>
@@ -24,7 +24,7 @@
           <span class="table-config__totals-toggle-label">Subtotal</span>
           <DenaliSwitch
             class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
-            @isEnabled={{readonly this.showSubtotalDropdown}}
+            @isEnabled={{this.showSubtotalDropdown}}
             @onChange={{this.onToggleSubtotal}}
           />
         </div>
