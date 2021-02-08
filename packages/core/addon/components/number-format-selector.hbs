@@ -23,7 +23,7 @@
       <div class="number-format-selector__radio-custom">
         <Radio.Option
           @name="format"
-          @value=''
+          @value=""
           @checked={{this.isCustomFormat}}
         >
           Custom
@@ -42,7 +42,7 @@
       value={{@format}}
       placeholder="Raw Format"
       class="number-format-selector__format-input"
-      {{on "input" (pipe (pick 'target.value') (fn @onUpdateFormat ) )}}
+      {{on "input" (pipe (pick "target.value") (fn @onUpdateFormat ) )}}
     />
   </DenaliInputGroup>
   <a class="number-format-selector__doc-link"
