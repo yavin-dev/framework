@@ -11,7 +11,7 @@
     type="text"
     placeholder="Search {{capitalize @title}}"
     class="navi-list-selector__search-input"
-    {{on "input" (pipe (pick 'target.value') (fn (mut this.query) ) )}}
+    {{on "input" (pipe (pick "target.value") (fn (mut this.query) ) )}}
   />
 </div>
 <div class="navi-list-selector__content {{@contentClass}}">

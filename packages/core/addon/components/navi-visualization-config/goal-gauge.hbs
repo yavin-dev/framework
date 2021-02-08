@@ -12,7 +12,7 @@
       class="goal-gauge-config__label-input"
       placeholder={{this.metricColumn.displayName}}
       value={{this.metricColumn.alias}}
-      {{on "input" (pipe (pick 'target.value') (fn this.updateLabel))}}
+      {{on "input" (pipe (pick "target.value") (fn this.updateLabel))}}
     />
   </DenaliInputGroup>
 
@@ -28,7 +28,7 @@
       class="goal-gauge-config__baseline-input"
       placeholder="Baseline Value"
       value={{@options.baselineValue}}
-      {{on "input" (pipe (pick 'target.value') (fn this.updateBaseline))}}
+      {{on "input" (pipe (pick "target.value") (fn this.updateBaseline))}}
     />
   </DenaliInputGroup>
 
@@ -44,7 +44,7 @@
       class="goal-gauge-config__goal-input"
       placeholder="Goal Value"
       value={{@options.goalValue}}
-      {{on "input" (pipe (pick 'target.value') (fn this.updateGoal))}}
+      {{on "input" (pipe (pick "target.value") (fn this.updateGoal))}}
     />
   </DenaliInputGroup>
 </div>
