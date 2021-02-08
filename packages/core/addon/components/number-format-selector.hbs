@@ -1,0 +1,56 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="number-format-selector" ...attributes>
+  <DenaliInputGroup
+    @label="Format Type"
+    @isStacked={{true}}
+ >
+    <DenaliRadio
+      @onChanged={{queue @onUpdateFormat (fn (mut this.format))}}
+      class="number-format-selector__format-radio"
+      as |Radio|
+    >
+      {{#each this.predefinedFormats as |predefinedFormat|}}
+        <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
+          <Radio.Option
+            @name="format"
+            @value={{predefinedFormat.format}}
+            @checked={{eq @format predefinedFormat.format}}
+          >
+            {{predefinedFormat.name}}
+          </Radio.Option>
+        </div>
+      {{/each}}
+      <div class="number-format-selector__radio-custom">
+        <Radio.Option
+          @name="format"
+          @value=""
+          @checked={{this.isCustomFormat}}
+        >
+          Custom
+        </Radio.Option>
+      </div>
+   </DenaliRadio>
+  </DenaliInputGroup>
+
+  <DenaliInputGroup
+    @label="Format"
+    @isStacked={{true}}
+  >
+    <DenaliInput
+      @size="medium"
+      type="text"
+      value={{@format}}
+      placeholder="Raw Format"
+      class="number-format-selector__format-input"
+      {{on "input" (pipe (pick "target.value") (fn @onUpdateFormat ) )}}
+    />
+  </DenaliInputGroup>
+  <a class="number-format-selector__doc-link"
+    href="http://numeraljs.com/#format"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <NaviIcon @icon="life-ring" class="number-format-selector__icon-documentation" />
+    Format Documentation
+  </a>
+</div>
