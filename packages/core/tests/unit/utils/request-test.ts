@@ -1,9 +1,8 @@
 import { module, test } from 'qunit';
-import { toggleAlias, normalizeV1, normalizeV1toV2 } from 'navi-core/utils/request';
-import { RequestV1 } from 'navi-data/adapters/facts/interface';
+import { toggleAlias, normalizeV1, normalizeV1toV2, RequestV1 } from 'navi-core/utils/request';
 import { unset } from 'lodash-es';
 
-let request: RequestV1;
+let request: RequestV1<string>;
 
 module('Unit | Utils | Request', function (hooks) {
   hooks.beforeEach(function () {
@@ -407,6 +406,95 @@ module('Unit | Utils | Request', function (hooks) {
         },
       ],
       'sorts are normalized correctly'
+    );
+  });
+
+  test('normalize v1 to v2 - inclusive end date', function(assert) {
+    assert.expect(5);
+
+    request.logicalTable.timeGrain = 'day';
+    request.intervals[0] = { start: '2021-01-01', end: '2021-01-03' };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne').filters[0],
+      {
+        type: 'timeDimension',
+        field: 'network.dateTime',
+        operator: 'bet',
+        values: ['2021-01-01T00:00:00.000Z', '2021-01-02T00:00:00.000Z'],
+        parameters: {
+          grain: 'day'
+        }
+      },
+      'day timegrain filters are moved to inclusive end date'
+    );
+
+    request.logicalTable.timeGrain = 'week';
+    request.intervals[0] = { start: '2021-02-01', end: '2021-02-08' };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne').filters[0],
+      {
+        type: 'timeDimension',
+        field: 'network.dateTime',
+        operator: 'bet',
+        values: ['2021-02-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+        parameters: {
+          grain: 'isoWeek'
+        }
+      },
+      'week (isoWeek) timegrain filters are moved to inclusive end date'
+    );
+
+    request.logicalTable.timeGrain = 'month';
+    request.intervals[0] = { start: '2021-01-01', end: '2021-03-01' };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne').filters[0],
+      {
+        type: 'timeDimension',
+        field: 'network.dateTime',
+        operator: 'bet',
+        values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+        parameters: {
+          grain: 'month'
+        }
+      },
+      'month timegrain filters are moved to inclusive end date'
+    );
+
+    request.logicalTable.timeGrain = 'quarter';
+    request.intervals[0] = { start: '2021-01-01', end: '2021-04-01' };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne').filters[0],
+      {
+        type: 'timeDimension',
+        field: 'network.dateTime',
+        operator: 'bet',
+        values: ['2021-01-01T00:00:00.000Z', '2021-01-01T00:00:00.000Z'],
+        parameters: {
+          grain: 'quarter'
+        }
+      },
+      'quarter timegrain filters are moved to inclusive end date'
+    );
+
+    request.logicalTable.timeGrain = 'year';
+    request.intervals[0] = { start: '2021-01-01', end: '2022-01-01' };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne').filters[0],
+      {
+        type: 'timeDimension',
+        field: 'network.dateTime',
+        operator: 'bet',
+        values: ['2021-01-01T00:00:00.000Z', '2021-01-01T00:00:00.000Z'],
+        parameters: {
+          grain: 'year'
+        }
+      },
+      'year timegrain filters are moved to inclusive end date'
     );
   });
 });

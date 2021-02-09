@@ -10,7 +10,6 @@
  */
 import { action } from '@ember/object';
 import { Moment } from 'moment';
-import { getPeriodForGrain } from 'navi-data/utils/date';
 import BaseIntervalComponent from './base-interval';
 
 export default class DimensionDateRange extends BaseIntervalComponent {
@@ -27,6 +26,6 @@ export default class DimensionDateRange extends BaseIntervalComponent {
    */
   @action
   setTimeEndMoment(end: Moment) {
-    this.setTimeEnd(end.add(1, getPeriodForGrain(this.dateTimePeriod)).toISOString());
+    this.setTimeEnd(end.toISOString());
   }
 }

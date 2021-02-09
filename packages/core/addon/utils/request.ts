@@ -5,10 +5,12 @@
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
+import moment from 'moment';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 
 type LogicalTable = {
   table: string;
-  timeGrain: string;
+  timeGrain: Grain;
 };
 
 type Interval = {
@@ -43,7 +45,7 @@ type Sort<T> = {
   direction: SortDirection;
 };
 
-type RequestV1<T> = {
+export type RequestV1<T> = {
   requestVersion: 'v1';
   dataSource?: string;
   logicalTable: LogicalTable;
@@ -152,8 +154,10 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
   const {
-    logicalTable: { table, timeGrain: grain },
+    logicalTable: { table, timeGrain },
   } = normalized;
+
+  const grain = timeGrain === 'week' ? 'isoWeek' : timeGrain;
 
   const requestV2: RequestV2 = {
     requestVersion: '2.0',
@@ -196,7 +200,17 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   });
 
   //normalize intervals
-  normalized.intervals.forEach(({ start, end }) =>
+  normalized.intervals.forEach(({ start, end }) => {
+    // if start and end are dates, end.subtract(1, getPeriodForGrain(grain))
+    const startMoment = moment.utc(start);
+    const endMoment = moment.utc(end);
+    if (startMoment.isValid() && endMoment.isValid()) {
+      endMoment.subtract(1, getPeriodForGrain(grain));
+    }
+
+    start = startMoment.isValid() ? startMoment.toISOString() : start;
+    end = endMoment.isValid() ? endMoment.toISOString() : end;
+
     requestV2.filters.push({
       type: 'timeDimension',
       field: `${table}.dateTime`,
@@ -205,8 +219,8 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       parameters: {
         grain,
       },
-    })
-  );
+    });
+  });
 
   //normalize filters
   normalized.filters.forEach(({ dimension, field, operator, values }) => {

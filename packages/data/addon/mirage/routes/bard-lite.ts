@@ -185,6 +185,15 @@ export default function (
 
     // Get date range from query params + grain
     const [start, end] = request.queryParams.dateTime.split('/');
+    if (start === end) {
+      return new Response(
+        400,
+        {},
+        {
+          description: `Date time cannot have zero length intervals. ${start}/${end}.`
+        }
+      );
+    }
     let dates = _getDates(grain, start, end);
     let filters: FiliFilter[] = [];
     if (request.queryParams.filters) {

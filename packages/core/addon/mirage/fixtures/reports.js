@@ -574,9 +574,19 @@ export default [
             displayName: 'Container',
           },
           {
+            field: 'displayCurrency',
+            type: 'dimension',
+            displayName: 'Display Currency'
+          },
+          {
             field: { metric: 'usedAmount', parameters: {} },
             type: 'metric',
-            displayName: 'Used Amount',
+            displayName: 'Used Amount'
+          },
+          {
+            field: { metric: 'revenue', parameters: { currency: 'GIL' } },
+            type: 'metric',
+            displayName: 'Revenue (GIL)',
           },
         ],
       },

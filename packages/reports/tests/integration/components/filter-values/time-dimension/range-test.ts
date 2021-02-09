@@ -57,7 +57,7 @@ module('Integration | Component | filter-values/time-dimension/range', function 
 
     assert
       .dom('.filter-values--date-range-input__high-value input')
-      .hasValue('Dec 05, 2019', 'Placeholder text is inclusive end date');
+      .hasValue('Dec 06, 2019', 'Placeholder text is inclusive end date');
   });
 
   test('changing values', async function (this: TestContext, assert) {
@@ -72,7 +72,7 @@ module('Integration | Component | filter-values/time-dimension/range', function 
     const newStartStr = '2019-11-28';
 
     this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {
-      assert.deepEqual(values, [`${newStartStr}T00:00:00.000Z`, end], 'Updating start date works only updates start');
+      assert.deepEqual(values, [`${newStartStr}T00:00:00.000Z`, end], 'Updating start date changes value');
     });
 
     await click(`.ember-power-calendar-day[data-date="${newStartStr}"]`);
@@ -86,8 +86,8 @@ module('Integration | Component | filter-values/time-dimension/range', function 
     this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {
       assert.deepEqual(
         values,
-        [`${newStartStr}T00:00:00.000Z`, '2019-12-08T00:00:00.000Z'],
-        'Updating inclusive end date adds extra day'
+        [`${newStartStr}T00:00:00.000Z`, `${newEndStr}T00:00:00.000Z`],
+        'Updating end date changes value as [inclusive, inclusive]'
       );
     });
 
@@ -102,7 +102,7 @@ module('Integration | Component | filter-values/time-dimension/range', function 
 
     await render(TEMPLATE);
 
-    assert.dom().hasText('Jan 03, 2020 - Jan 09, 2020', 'Selected range text is rendered correctly');
+    assert.dom().hasText('Jan 03, 2020 - Jan 10, 2020', 'Selected range text is rendered correctly');
 
     this.set('filter', { values: [] });
 

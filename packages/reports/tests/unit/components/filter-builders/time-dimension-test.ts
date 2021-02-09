@@ -182,7 +182,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     filter.values = intervalFor('P9M', 'quarter');
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'inPast'),
-      ['P9M', 'current'],
+      ['P12M', 'current'],
       'Switching to inPast counts the quarters'
     );
 
@@ -221,7 +221,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       'inPast maps invalid interval to P3M/current for day'
     );
 
-    filter.values = ['2019-01-01', '2020-03-02'];
+    filter.values = ['2019-01-01', '2019-03-02'];
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'inPast'),
       ['P1Y', 'current'],
@@ -230,7 +230,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     const currentInterval = (dateTimePeriod: Grain) => {
       const { start, end } = Interval.parseFromStrings('current', 'next').asMomentsForTimePeriod(dateTimePeriod);
-      return [start.utc(true).toISOString(), end.utc(true).toISOString()];
+      return [start.toISOString(), end.toISOString()];
     };
     // 'in' tests
 
@@ -265,28 +265,28 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     filter.values = ['P1D', '2019-01-01'];
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-31T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
       'in translates P1D lookback to concrete'
     );
 
-    filter.values = ['P1W', '2019-01-01'];
+    filter.values = ['P1W', '2018-12-31'];
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-25T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2018-12-31T00:00:00.000Z', '2018-12-31T00:00:00.000Z'],
       'in translates P1W lookback to concrete'
     );
 
     filter.values = ['P1M', '2019-01-01'];
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
       'in translates P1M lookback to concrete'
     );
 
     filter.values = ['P1Y', '2019-01-01'];
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
       'in translates P1Y lookback to concrete'
     );
 

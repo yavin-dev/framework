@@ -85,6 +85,27 @@ module('Unit | Consumer | request fili', function (hooks) {
       [request.dateTimeFilter, { values: ['2020-12-28T00:00:00.000Z', '2021-02-01T00:00:00.000Z'] }],
       'UPDATE_FILTER is dispatched with the updated values for the filter'
     );
+
+    dispatchedActions.length = 0;
+    dispatchedActionArgs.length = 0;
+
+    request.dateTimeFilter!.values = ['P1D', 'current'];
+    request.dateTimeFilter!.parameters.grain = 'day';
+
+    consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, request.dateTimeFilter, {
+      parameters: { grain: 'isoWeek' }
+    });
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER],
+      'When the filter grain is updated, another request to update the filter values is fired off'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs,
+      [request.dateTimeFilter, { values: ['P1W', 'current'] }],
+      'UPDATE_FILTER is dispatched with the updated values for the filter'
+    );
   });
 
   test('DID_ADD_COLUMN', function (assert) {
@@ -382,7 +403,10 @@ module('Unit | Consumer | request fili', function (hooks) {
 
     assert.deepEqual(
       dispatchedActionArgs,
-      [request.dateTimeFilter, { parameters: { grain: 'hour' } }],
+      [
+        request.dateTimeFilter,
+        { parameters: { grain: 'hour' }, values: ['2021-01-01T00:00:00.000Z', '2021-02-28T23:00:00.000Z'] }
+      ],
       'UPDATE_FILTER is dispatched with the lowest grain for the date time'
     );
   });

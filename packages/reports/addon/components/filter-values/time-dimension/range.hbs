@@ -17,6 +17,7 @@
         @size="medium"
         @iconBack="calendar-event"
         @iconBackClass="is-brand-300"
+        title={{object-at @filter.values 0}}
         value={{this.startDateText}} 
         readonly={{true}} 
         placeholder={{this.startPlaceholder}}
@@ -35,6 +36,7 @@
         @size="medium"
         @iconBack="calendar-event"
         @iconBackClass="is-brand-300"
+        title={{object-at @filter.values 1}}
         value={{this.endDateText}} 
         readonly={{true}} 
         placeholder={{this.endPlaceholder}}

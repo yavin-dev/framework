@@ -24,7 +24,8 @@ import { omit } from 'lodash-es';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
-import { Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import moment from 'moment';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export class FactAdapterError extends Error {
@@ -140,7 +141,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       );
     }
     const timeFilter = dateTimeFilters[0];
-    const filterGrain = timeFilter?.parameters?.grain;
+    const filterGrain = timeFilter?.parameters?.grain as Grain;
 
     const timeColumn = request.columns.filter(isDateTime)[0];
     const columnGrain = timeColumn?.parameters?.grain;
@@ -150,8 +151,15 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       );
     }
 
-    const [start, end] = timeFilter.values;
+    let [start, end] = timeFilter.values as string[];
 
+    const endMoment = end ? moment.utc(end) : undefined;
+    if (endMoment?.isValid()) {
+      end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+    }
+
+    start = start.replace('T00:00:00.000Z', '');
+    end = end.replace('T00:00:00.000Z', '');
     return `${start}/${end}`;
   }
 

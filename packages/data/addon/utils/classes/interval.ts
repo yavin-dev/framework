@@ -127,23 +127,43 @@ export default class Interval {
    * @param makeEndInclusiveIfSame - add an extra time period to include end date if it's equal to start date
    * @returns object with start and end properties
    */
-  asMomentsForTimePeriod(grain: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
-    const period = getPeriodForGrain(grain);
+  asMomentsForTimePeriod(grain: Grain): SerializedWithEnd<Moment> {
+    let start = this._start;
+    let end: IntervalEnd | undefined = this._end;
 
-    let { start, end } = this.asMoments();
+    // Copy moments
+    if (moment.isMoment(start)) {
+      start = start.clone();
+    }
+    if (moment.isMoment(end)) {
+      end = end.clone();
+    }
 
-    // Handle the case where the end is undefined, hence it is 'next'
-    if (end === undefined) {
-      end = moment.utc().add(1, period);
+    /*
+     * Macro substitution
+     * Note: currently only supports "current" and "next" macros
+     */
+    if (start === CURRENT) {
+      start = moment.utc();
+    }
+    if (end === CURRENT) {
+      end = moment.utc().subtract(1, getPeriodForGrain(grain));
+    }
+    if (end === NEXT) {
+      end = moment.utc();
+    }
+
+    // Duration substitution
+    if (Duration.isDuration(start)) {
+      const durationGrain = start.getUnit();
+      assert('The duration has a unit', durationGrain);
+      let localEnd = end.clone().add(1, getPeriodForGrain(durationGrain));
+      start = DurationUtils.subtractDurationFromDate(localEnd, start);
     }
 
     // Make sure moments are start of time period
     start.startOf(grain);
     end.startOf(grain);
-
-    if (makeEndInclusiveIfSame && start.isSame(end)) {
-      end.startOf(grain).add(1, period);
-    }
 
     return {
       start,
@@ -196,7 +216,7 @@ export default class Interval {
   diffForTimePeriod(grain: Grain): number {
     const moments = this.asMomentsForTimePeriod(grain);
     const period = getPeriodForGrain(grain);
-    return moments.end.diff(moments.start, period);
+    return moments.end.diff(moments.start, period) + 1;
   }
 
   /**

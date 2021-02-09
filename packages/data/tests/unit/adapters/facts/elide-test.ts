@@ -197,6 +197,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
+    debugger;
     assert.equal(
       adapter['dataQueryFromRequest']({
         table: 'myTable',
@@ -220,8 +221,10 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       }),
       `{"query":"{ myTable(filter: \\"time=ge=('${moment()
         .subtract(1, 'month')
-        .format('YYYY-MM')}');time=le=('${moment().format('YYYY-MM')}')\\") { edges { node { time d1 } } } }"}`,
-      'Macros and durations in time-dimension filters are converted to date strings properly'
+        .format('YYYY-MM')}');time=le=('${moment()
+        .subtract(1, 'month')
+        .format('YYYY-MM')}')\\") { edges { node { time d1 } } } }"}`,
+      'Macros and durations in time-dimension filters are converted to date strings properly ([P1X, current] -> equals 1 X duration)'
     );
 
     assert.equal(
@@ -263,7 +266,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             operator: 'bet',
-            values: ['2020-05-05', '2020-05-09'],
+            values: ['2020-05-05', '2020-05-08'],
           },
         ],
         requestVersion: '2.0',

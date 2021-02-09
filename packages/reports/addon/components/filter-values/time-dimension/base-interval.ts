@@ -1,10 +1,9 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed } from '@ember/object';
 import { Moment } from 'moment';
-import { getPeriodForGrain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 //@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
@@ -49,8 +48,8 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   get endDate() {
     const { interval, calendarDateTimePeriod } = this;
     if (interval) {
-      let { end } = interval.asMomentsForTimePeriod(calendarDateTimePeriod, false);
-      end = end.clone().subtract(1, getPeriodForGrain(calendarDateTimePeriod)).utc(true);
+      let { end } = interval.asMomentsForTimePeriod(calendarDateTimePeriod);
+      end = end.clone().utc(true);
       return end;
     }
     return undefined;
