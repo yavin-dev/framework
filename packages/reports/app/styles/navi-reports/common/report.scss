@@ -58,39 +58,11 @@
   }
 
   &__action {
-    border-radius: 3px;
-    color: $color-grey-800;
     display: inline-block;
-    margin: 4px 0 0 5px;
-    padding: 3px;
-
-    &:hover {
-      background-color: $color-grey-400;
-    }
   }
 
   &__action-icon {
-    margin-right: 3px;
-  }
-
-  &__action-link {
-    color: $color-grey-800; // Override link color
-    display: inline-block;
-
-    &:hover {
-      color: $color-grey-800; // Override link color
-    }
-  }
-
-  &__action button {
-    // Override standard button styles
-    border: 0;
-    color: $color-grey-800;
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0;
-    vertical-align: baseline;
-    display: inline-block;
+    margin-right: 6px;
   }
 
   &__action-link--is-disabled,

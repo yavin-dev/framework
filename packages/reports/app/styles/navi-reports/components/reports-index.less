@@ -16,42 +16,4 @@
   &__new-btn {
     width: 110px;
   }
-
-  .action {
-    display: inline-block;
-    color: @navi-gray-500;
-    cursor: pointer;
-    height: 17px;
-    width: 17px;
-    vertical-align: middle;
-    text-align: center;
-
-    &:hover {
-      color: @navi-black;
-    }
-  }
-
-  .schedule-action__button.btn,
-  .share .btn,
-  .delete button {
-    .action-button();
-  }
-}
-
-.action-button() {
-  cursor: pointer;
-  line-height: 17px;
-
-  &:hover {
-    color: @navi-black;
-  }
-
-  &:disabled,
-  &.disabled {
-    cursor: not-allowed;
-
-    &:hover {
-      color: @navi-gray-500;
-    }
-  }
 }

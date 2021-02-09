@@ -1,0 +1,40 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{yield this.toggleModal}}
+
+<DenaliModal 
+  @isOpen={{this.showModal}} 
+  @onClose={{this.toggleModal}} 
+  class="save-as"
+  ...attributes 
+  as |modal|
+>
+  <modal.Content>
+    <h3 class="m-b-10">Save Report As</h3>
+    <p class="m-b-20">This will create a new report with the new given name.</p>
+
+    <DenaliInput
+      @wrapperClass="w-full"
+      @placeholder={{this.reportName}}
+      class="save-as__report-name m-b-30"
+      value={{this.reportName}}
+      placeholder="Report name"
+      {{on "input" (pipe (pick 'target.value') (fn (mut this.reportTitle)))}}
+    />
+
+    <LinkTo 
+      @route="reports.report.save-as" 
+      @query={{hash title=this.reportName}}
+      @tagName="button"
+      class="save-as__save-as-btn button is-solid m-r-5"
+    >
+      Save
+    </LinkTo>
+    <DenaliButton 
+      @style="ghost" 
+      class="save-as__cancel-btn" 
+      {{on "click" this.toggleModal}}
+    >
+      Cancel
+    </DenaliButton>
+  </modal.Content>
+</DenaliModal>

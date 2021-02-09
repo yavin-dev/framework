@@ -192,13 +192,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
       .hasText('csv', 'Format field is populated by existing delivery rule');
 
-    await click('.schedule-modal__delete-btn button');
+    await click('.schedule-modal__delete-btn');
     assert
-      .dom('.ember-modal-wrapper:nth-of-type(2) .primary-header')
-      .hasText('Delete schedule for "Report 12"', 'Delete confirmation modal pops up when delete is clicked');
+      .dom('.delete__modal-details')
+      .hasText('This action cannot be undone. This will permanently delete the delivery rule.');
 
     // Click confirm deletion
-    await click('.ember-modal-wrapper:nth-of-type(2) .btn-primary');
+    await click('.delete__delete-btn');
 
     assert
       .dom('.schedule-modal__header .primary-header')

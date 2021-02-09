@@ -1,4 +1,4 @@
-import { click, currentURL, fillIn, find, findAll, triggerEvent, visit, blur, waitFor } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, visit, blur, waitFor } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
@@ -154,8 +154,8 @@ module('Acceptance | Dashboards', function(hooks) {
       'Looks like this dashboard has no widgets. Go ahead and add a widget now?'
     );
 
-    await click('.navi-dashboard-container__add-widget-text');
-    assert.dom('.ember-modal-dialog').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
+    await click('.navi-dashboard__add-widget-btn');
+    assert.dom('.add-widget__modal').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
   test('index route', async function(assert) {
@@ -170,37 +170,6 @@ module('Acceptance | Dashboards', function(hooks) {
       ['Tumblr Goals Dashboard', 'Dashboard 2', 'Empty Dashboard'],
       'the dashboard collection component with `navi-users`s dashboards is shown'
     );
-  });
-
-  test('index route actions', async function(assert) {
-    assert.expect(4);
-
-    await visit('/dashboards');
-
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-
-    // Click "Share"
-    await click('.navi-collection__row0 .share .btn');
-
-    assert.dom('.navi-collection__actions .action').exists({ count: 5 }, 'The second column contains five actions');
-
-    assert
-      .dom('.primary-header')
-      .hasText('Share "Tumblr Goals Dashboard"', 'Share modal pops up when action is clicked');
-
-    // Cancel modal and click "Delete"
-    await click($('button:contains(Cancel)')[0]);
-    await click('.navi-collection__row0 .delete button');
-
-    assert
-      .dom('.primary-header')
-      .hasText('Delete "Tumblr Goals Dashboard"', 'Delete modal pops up when action is clicked');
-
-    // Cancel modal and click "Clone"
-    await click($('button:contains(Cancel)')[0]);
-    await click('.navi-icon__copy');
-
-    assert.equal(currentURL(), '/dashboards/7/view', 'A dashboard is cloned when the action is clicked');
   });
 
   test('Add new dashboard in index route', async function(assert) {
@@ -230,7 +199,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/4');
 
     assert
-      .dom('.add-widget button')
+      .dom('.navi-dashboard__add-widget-btn')
       .isNotVisible('The `Add Widget` button is not visible when user cannot edit the dashboard');
 
     await visit('/dashboards/1');
@@ -241,20 +210,21 @@ module('Acceptance | Dashboards', function(hooks) {
       'There are 3 widgets in the dashboard'
     );
 
-    assert.dom('.add-widget').isVisible('The `Add Widget` button is visible when user can edit the dashboard');
-
-    await click('.add-widget');
-
     assert
-      .dom('.add-widget-modal .btn')
+      .dom('.navi-dashboard__add-widget-btn')
+      .isVisible('The `Add Widget` button is visible when user can edit the dashboard');
+
+    await click('.navi-dashboard__add-widget-btn');
+    assert
+      .dom('.add-widget__new-btn')
       .hasAttribute(
         'href',
         `/dashboards/1/widgets/new`,
         'Create new assigns the new widget route to the primary button'
       );
 
-    await selectChoose('.add-widget-modal__report-trigger', 'Report 12');
-    await click('.add-widget-modal .btn');
+    await selectChoose('.add-widget__report-select-trigger', 'Report 12');
+    await click('.add-widget__add-btn');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map(el => el.textContent.trim()),
@@ -301,8 +271,8 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/2');
 
-    await click('.dashboard-actions .delete > button');
-    await click($('button:contains(Confirm)')[0]);
+    await click('.delete__action-btn');
+    await click('.delete__delete-btn');
     assert.equal(currentURL(), '/dashboards', 'Deleting a dashboard transitions to index route');
 
     const newTitles = findAll('.navi-collection .table tr td:first-of-type').map(el => el.textContent.trim());
@@ -414,8 +384,8 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create new widget
-    await click('.add-widget');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.navi-dashboard__add-widget-btn');
+    await click('.add-widget__new-btn');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
@@ -448,8 +418,8 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create another new widget
-    await click('.add-widget');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.navi-dashboard__add-widget-btn');
+    await click('.add-widget__new-btn');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');
@@ -723,8 +693,8 @@ module('Acceptance | Dashboards', function(hooks) {
     assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
-    await click('.add-widget');
-    await click('.add-widget-modal .add-to-dashboard');
+    await click('.navi-dashboard__add-widget-btn');
+    await click('.add-widget__new-btn');
 
     // Fill out request
     await clickItemFilter('dimension', 'Date Time');

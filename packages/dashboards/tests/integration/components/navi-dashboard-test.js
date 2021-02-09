@@ -119,7 +119,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onAddFilter={{this.onAddFilter}}
     />`);
 
-    assert.dom('.action.export').isVisible('Dashboard export button should be visible');
+    assert.dom('.export').isVisible('Dashboard export button should be visible');
 
     config.navi.FEATURES.enableDashboardExport = false;
     await render(hbs`<NaviDashboard
@@ -128,7 +128,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.action.export').isNotVisible('Dashboard export button should not be visible');
+    assert.dom('.export').isNotVisible('Dashboard export button should not be visible');
 
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
   });
@@ -144,8 +144,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-
-    assert.dom('.action.schedule').isVisible('Dashboard schedule button should be visible');
+    assert.dom('.schedule').isVisible('Dashboard schedule button should be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = false;
     await render(hbs`<NaviDashboard
@@ -154,7 +153,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
+    assert.dom('.schedule').isNotVisible('Dashboard schedule button should not be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
   });
@@ -170,6 +169,6 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.action.schedule').isNotVisible('Dashboard schedule button should not be visible');
+    assert.dom('.schedule').isNotVisible('Dashboard schedule button should not be visible');
   });
 });

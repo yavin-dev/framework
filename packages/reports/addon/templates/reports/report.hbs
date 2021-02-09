@@ -104,13 +104,19 @@
         </DenaliButton>
 
         {{#unless this.model.isNew}}
-          <DenaliButton
-            class="navi-report__save-as-btn hide-mobile"
-            @style="text"
-            {{on "click" (pipe (route-action "validate" this.model) (route-action "runReport" this.model) (toggle "showSaveAs" this))}}
+          <ReportActions::SaveAs
+            @model={{this.model}}
+            @showModal={{this.showSaveAs}}
+            as |toggleModal|
           >
-            Duplicate
-          </DenaliButton>
+            <DenaliButton
+              class="navi-report__save-as-btn hide-mobile"
+              @style="text"
+              {{on "click" (pipe (route-action "validate" this.model) toggleModal)}}
+            >
+              Duplicate
+            </DenaliButton>
+          </ReportActions::SaveAs>
         {{/unless}}
       {{/if}}
 
@@ -131,8 +137,3 @@
     {{/unless}}
   </footer>
 </div>
-
-<ReportActions::SaveAs
-  @model={{this.model}}
-  @showModal={{this.showSaveAs}}
-/>

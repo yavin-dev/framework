@@ -4,38 +4,45 @@
 {{#if (and (feature-flag "dashboards") @model.request.validations.isTruelyValid)}}
   <li class="navi-report__action">
     <ReportActions::AddToDashboard
-      @tagName="button"
-      @classNames="btn"
       @report={{@model}}
       @dashboards={{get (get-user) "dashboards"}}
       @onAddToDashboard={{fn @addToDashboard @model}}
       @onAddToNewDashboard={{fn @addToNewDashboard @model}}
+      as |onClick|
     >
-      <NaviIcon @icon="th-large" class="navi-report__action-icon" />
-      Add to Dashboard
+      <button 
+        type="button" 
+        class="button is-text is-medium"
+        {{on "click" onClick}}
+      >
+        <NaviIcon @icon="th-large" class="navi-report__action-icon" />
+        <span>Add to Dashboard</span>
+      </button>
     </ReportActions::AddToDashboard>
     <EmberTooltip @text="Add visualization to Dashboard" />
   </li>
 {{/if}}
 
-{{!-- Copy API Query Enabled only for a valid report --}}
+{{!-- API Query Enabled only for a valid report --}}
 <li class="navi-report__action">
   <CommonActions::GetApi
-    class="navi-report__copy-api-btn {{unless @model.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
     @request={{@model.request}}
     @disabled={{not @model.request.validations.isTruelyValid}}
+    class="navi-report__copy-api-btn button is-text is-medium"
   >
-    <NaviIcon @icon="code" class="navi-report__action-icon" />
-    Copy API Query
+    <NaviIcon @icon="code" class="navi-report__action-icon" />API Query
   </CommonActions::GetApi>
   <EmberTooltip>
-    {{if @model.request.validations.isTruelyValid "Copy API Query of the report" "Run a valid report to enable Copy API Query"}}
+    {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
   </EmberTooltip>
 </li>
 
 {{!-- Clone only enabled on a Saved report --}}
 <li class="navi-report__action">
-  <LinkTo @route="reports.report.clone" @model={{@model.id}} class="navi-report__action-link {{if @model.isNew "navi-report__action-link--force-disabled"}}">
+  <LinkTo 
+    @route="reports.report.clone" 
+    @model={{@model.id}} 
+    class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
     <NaviIcon @icon="copy" class="navi-report__action-icon" />
     Clone
   </LinkTo>
@@ -50,7 +57,7 @@
     {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
       {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
         <ExportAction
-          class="navi-report__action-link {{unless @model.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
+          class="navi-report__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
         >
@@ -68,9 +75,8 @@
 {{!-- Share only enabled on a Valid saved report --}}
 <li class="navi-report__action">
   <CommonActions::Share
-    class={{if @model.isNew "navi-report__action--is-disabled"}}
-    @pageTitle={{@model.title}}
     @disabled={{@model.isNew}}
+    class="button is-text is-medium {{if @model.isNew "is-disabled"}}"
   >
     <NaviIcon @icon="share" class="navi-report__action-icon" />
     Share
@@ -103,6 +109,7 @@
     <CommonActions::Delete
       @model={{@model}}
       @deleteAction={{item-action "DELETE_ITEM" @model}}
+      class="button is-text is-medium"
     >
       <NaviIcon @icon="trash-o" class="navi-report__action-icon" />
       Delete

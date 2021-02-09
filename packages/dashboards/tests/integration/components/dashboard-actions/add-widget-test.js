@@ -3,9 +3,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { clickTrigger as toggleSelector } from 'ember-power-select/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import $ from 'jquery';
 
 const DASHBOARD_ID = 12;
 
@@ -22,35 +20,41 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
       ])
     );
     this.set('dashboard', { id: DASHBOARD_ID });
+    this.set('onAdd', () => null);
 
     await render(hbs`
-      {{#dashboard-actions/add-widget
-        classNames='dashboard-control add-widget'
-        reports=reports
-        dashboard=dashboard
-      }}
-        Add Widget
-      {{/dashboard-actions/add-widget}}
+      <DashboardActions::AddWidget
+        @reports={{this.reports}}
+        @dashboard={{this.dashboard}}
+        @addWidgetToDashboard={{this.onAdd}}
+        as |toggleModal|
+      > 
+        <button 
+          type="button"
+          class="add-widget__action-btn" 
+          {{on "click" toggleModal}}
+        >
+          Add Widget
+        </button>
+      </DashboardActions::AddWidget>
     `);
   });
 
   test('it renders', async function(assert) {
-    assert.expect(2);
-
-    assert.dom('.add-widget').hasText('Add Widget', 'Template component is yielded');
-    assert.dom('.ember-modal-dialog').isNotVisible('The add widget modal is not visible in the beginning');
+    assert.dom('.add-widget__action-btn').hasText('Add Widget', 'Template component is yielded');
+    assert.dom('.add-widget__modal').isNotVisible('The add widget modal is not visible in the beginning');
   });
 
   test('report selector', async function(assert) {
     assert.expect(4);
 
-    await click('.dashboard-control');
+    await click('.add-widget__action-btn');
 
     assert
-      .dom('.ember-power-select-selected-item')
+      .dom('.add-widget__report-select-trigger')
       .hasText('Create new...', 'Create new option is selected by default in the dropdown');
 
-    await toggleSelector('.add-widget-modal');
+    await click('.add-widget__report-select-trigger');
 
     assert.deepEqual(
       findAll('.ember-power-select-option').map(el => el.textContent.trim()),
@@ -69,7 +73,6 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
       .hasText('My Reports', 'The user`s report titles are shown under a group name `My Reports` in the dropdown');
 
     // Clean up
-    await click('.primary-header');
-    await click($('button:contains(Cancel)')[0]);
+    await click('.add-widget__cancel-btn');
   });
 });

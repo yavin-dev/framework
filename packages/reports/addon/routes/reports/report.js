@@ -74,7 +74,6 @@ export default Route.extend({
   setupController(controller) {
     this._super(...arguments);
     controller.setProperties({
-      showSaveAs: false,
       modifiedRequest: null,
       lastAddedColumn: null
     });

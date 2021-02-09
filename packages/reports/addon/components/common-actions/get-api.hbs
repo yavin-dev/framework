@@ -1,0 +1,49 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file
+for terms. --}}
+<button 
+  type="button" 
+  disabled={{@disabled}} 
+  {{on "click" (toggle "showModal" this)}}
+  class="get-api__action-btn" 
+  ...attributes
+>
+  {{yield}}
+</button>
+
+<DenaliModal 
+  class="get-api__modal" 
+  @isOpen={{this.showModal}} 
+  @onClose={{queue (toggle "showModal" this)}} 
+  as | modal |
+>
+  <modal.Content>
+    <h3 class="m-b-30">API Query</h3>
+    <DenaliInput 
+      @wrapperClass="w-full"
+      class="get-api__api-input m-b-30" 
+      value={{this.requestUrl}}
+      readonly={{true}}
+    />
+    <div class="get-api__btn-grp flex space-between">
+      <div>
+        <CopyButton 
+          class="get-api__copy-btn button is-solid m-r-10" 
+          @clipboardText={{this.requestUrl}}
+        >
+          Copy Link
+        </CopyButton>
+        {{#if this.isRequestURL}}
+          <a class="get-api__run-btn button is-ghost m-r-10" href={{this.requestUrl}} target="_blank" rel="noopener noreferrer">Run API Query</a>
+        {{/if}}
+      </div>
+      <DenaliButton 
+        @style="text"
+        @size="medium"
+        class="get-api__cancel-btn"
+        {{on "click" (queue (toggle "showModal" this))}}
+      >
+        Cancel
+      </DenaliButton>
+    </div>
+  </modal.Content>
+</DenaliModal>

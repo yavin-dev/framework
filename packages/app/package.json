@@ -29,7 +29,7 @@
     "merge": "~1.2.0"
   },
   "devDependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.14",
+    "@denali-design/ember": "^1.0.0-alpha.15",
     "@ember/jquery": "^0.6.1",
     "@ember/optional-features": "^1.1.0",
     "@glimmer/component": "^1.0.3",

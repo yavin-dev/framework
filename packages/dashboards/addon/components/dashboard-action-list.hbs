@@ -26,8 +26,6 @@
     {{!-- Share action enabled if the dashboard is valid --}}
     <li class="action">
       <CommonActions::Share
-        class="share"
-        @pageTitle={{dashboard.title}}
         @buildUrl={{fn this.buildUrl dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
         {{!-- TODO: Fix action by removing mixin --}}

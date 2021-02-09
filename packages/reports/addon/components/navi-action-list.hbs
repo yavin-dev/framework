@@ -44,9 +44,9 @@
     {{!-- Share only enabled on a saved report --}}
     <CommonActions::Share
       id={{concat "navi-report-action-share-" @index}}
-      class="navi-reports-index__report-control share {{if @item.isNew "navi-report__action--is-disabled"}}"
+      class="navi-reports-index__report-control share"
       @pageTitle={{@item.title}}
-      @buildUrl={{fn this.buildUrl @item}}
+      @buildUrl={{this.buildUrl}}
       @disabled={{@item.isNew}}
     >
       <NaviIcon @icon="share" />

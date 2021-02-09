@@ -3,7 +3,6 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { buttonContains } from 'navi-core/test-support/contains-helpers';
 
 module('Acceptance | delete transition', function(hooks) {
   setupApplicationTest(hooks);
@@ -16,9 +15,8 @@ module('Acceptance | delete transition', function(hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click(buttonContains('Delete'));
-
-    await click(buttonContains('Confirm'));
+    await click('.delete__action-btn');
+    await click('.delete__delete-btn');
 
     assert.equal(
       currentURL(),
@@ -35,9 +33,8 @@ module('Acceptance | delete transition', function(hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click(buttonContains('Delete'));
-
-    await click(buttonContains('Confirm'));
+    await click('.delete__action-btn');
+    await click('.delete__delete-btn');
 
     assert.equal(
       currentURL(),

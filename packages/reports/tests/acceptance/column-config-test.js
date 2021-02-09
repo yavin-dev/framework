@@ -1320,9 +1320,9 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   }
 
   async function getRequestURL() {
-    await click('.get-api button');
-    const url = find('.get-api-modal-container input').value;
-    await click(findAll('.get-api-modal-container button').find(butt => butt.textContent === 'Cancel'));
+    await click('.get-api__action-btn');
+    const url = find('.get-api__api-input input').value;
+    await click('.get-api__cancel-btn');
     return new URL(url);
   }
 });

@@ -1,0 +1,63 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{yield this.toggleModal}}
+<DenaliModal 
+  @isOpen={{this.showModal}} 
+  @onClose={{this.toggleModal}}
+  class="add-widget__modal"
+  ...attributes 
+  as |modal|
+>
+  <modal.Content>
+    <h3 class="m-b-10">Add Widget</h3>
+    <p class="m-b-20">To add a widget, choose a report or create a new one using the dropdown below.</p>
+    <DenaliInputGroup 
+      @label="Dashboard" 
+      @isStacked={{true}}
+      class="m-b-30"
+    >
+      <PowerSelect
+        @options={{this.reportsWithCreate}}
+        @selected={{if this.selectedReport this.selectedReport this.reportsWithCreate.firstObject}}
+        @searchField="title"
+        @searchPlaceholder="Search for a report..."
+        @onChange={{fn (mut this.selectedReport)}}
+        @renderInPlace={{true}}
+        @triggerClass="add-widget__report-select-trigger"
+        @dropdownClass="w-full"
+        class="w-full"
+        as |report|
+      >
+        {{report.title}}
+      </PowerSelect>
+    </DenaliInputGroup>
+    {{#if (eq this.selectedReport.id "new")}}
+      <LinkTo 
+        @route="dashboards.dashboard.widgets.new" 
+        @model={{@dashboard.id}} 
+        class="add-widget__new-btn button is-solid m-5"
+      >
+        Create New
+      </LinkTo>
+    {{else}}
+      <DenaliButton 
+        class="add-widget__add-btn m-5" 
+        @style="solid"
+        {{on "click" 
+          (pipe 
+            (fn @onSelectReport this.selectedReport @dashboard.id this.selectedReport.title) 
+            this.toggleModal
+          )
+        }}
+      >
+        Add to Dashboard
+      </DenaliButton>
+    {{/if}}
+    <DenaliButton 
+      @style="ghost" 
+      class="add-widget__cancel-btn m-5" 
+      {{on "click" this.toggleModal}}
+    >
+      Cancel
+    </DenaliButton>
+  </modal.Content>
+</DenaliModal>

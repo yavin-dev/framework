@@ -1,0 +1,98 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{yield (fn (toggle "showModal" this))}}
+<DenaliModal 
+  @isOpen={{this.showModal}} 
+  @onClose={{toggle "showModal" this}} 
+  class="add-to-dashboard__modal"
+  ...attributes 
+  as |modal|
+>
+  <modal.Content>
+    <h3 class="m-b-10">Add To Dashboard</h3>
+    <p class="m-b-30">Please provide a name for this widget and select a dashboard</p>
+    <DenaliInputGroup 
+      @label="Widget Title"
+      @isStacked={{true}}
+      placeholder="Widget Title"
+      class="m-b-30" 
+    >
+      <DenaliInput 
+        @wrapperClass="w-full"
+        value={{this.reportName}}
+        class="add-to-dashboard__widget-title"
+        autofocus={{true}}
+        {{on "input" (pipe (pick 'target.value') (fn (mut this.customReportName)))}}
+      />
+    </DenaliInputGroup>
+    {{#if this.shouldCreateDashboard}}
+      <DenaliInputGroup 
+        @label="New Dashboard Title" 
+        @isStacked={{true}}
+      >
+        <DenaliInput 
+          @wrapperClass="w-full"
+          class="add-to-dashboard__dashboard-title"
+          placeholder="Dashboard Title"
+          value={{this.newDashboardTitle}}
+          autofocus={{true}}
+          {{on "input" (pipe (pick 'target.value') (fn (mut this.newDashboardTitle)))}} 
+        />
+      </DenaliInputGroup>
+      <div class="flex align-items-flex-end flex-column m-b-20"> 
+        <span 
+          role="button"
+          class="add-to-dashboard__new-toggle link"
+          {{on "click" (toggle "shouldCreateDashboard" this)}}
+        >
+          Select Existing Dashboard
+        </span>
+      </div>
+    {{else}}
+      <DenaliInputGroup 
+        @label="Existing Dashboard" 
+        @isStacked={{true}}
+      >
+        <PowerSelect
+          @triggerClass="add-to-dashboard__dashboard-select"
+          @dropdownClass="w-full"
+          @searchEnabled={{true}}
+          @options={{this.groupedDashboards}}
+          @placeholder="Select a dashboard..."
+          @selected={{this.selectedDashboard}}
+          @searchField="title"
+          @searchPlaceholder="Search for a dashboard..."
+          @renderInPlace={{true}}
+          @onChange={{fn (mut this.selectedDashboard)}}
+          class="w-full"
+          as |dashboard|
+        >
+          {{dashboard.title}}
+        </PowerSelect>
+      </DenaliInputGroup>
+      <div class="flex align-items-flex-end flex-column m-b-20 "> 
+        <span 
+          role="button"
+          class="add-to-dashboard__new-toggle link"
+          {{on "click" (toggle "shouldCreateDashboard" this)}}
+        >
+          Create new dashboard
+        </span>
+      </div>
+    {{/if}}
+      <DenaliButton 
+        @style="solid" 
+        {{on "click" this.addToDashboard}}
+        disabled={{this.disableAdd}}
+        class="add-to-dashboard__add-btn m-r-5" 
+      >
+        Add To Dashboard
+      </DenaliButton>
+      <DenaliButton 
+        @style="ghost" 
+        class="add-to-dashboard__cancel-btn" 
+        {{on "click" (toggle "showModal" this)}}
+      >
+        Cancel
+      </DenaliButton>
+  </modal.Content>
+</DenaliModal>

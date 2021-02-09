@@ -3,9 +3,15 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, triggerEvent } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Integration | Component | dir-asset-row-actions', function(hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
+  hooks.beforeEach(function() {
+    const router = this.owner.lookup('router:main');
+    router.startRouting(true);
+  });
 
   test('renders correct component', async function(assert) {
     assert.expect(2);
