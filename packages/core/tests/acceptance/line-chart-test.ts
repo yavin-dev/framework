@@ -61,12 +61,16 @@ module('Acceptance | line chart', function(hooks) {
     assert.notEqual(linePath, linePathSpline, 'Chart updated with new values');
 
     await click('.line-chart-config__area-opt-select');
+    assert.dom('.line-chart-config__area-opt-select').isChecked('Area is on');
 
     let linePathSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-lines path')?.getAttribute('d');
     let lineAreaSplineArea = find('svg .c3-chart-line.chart-series-0 .c3-areas path')?.getAttribute('d');
 
     assert.notEqual(linePathSpline, linePathSplineArea, 'lines have been updated');
     assert.notEqual(lineAreaSpline, lineAreaSplineArea, 'Area is updated');
+
+    await click('.line-chart-config__area-opt-select');
+    assert.dom('.line-chart-config__area-opt-select').isNotChecked('Area is off');
   });
 
   test('series reorder - metric', async function(assert) {
