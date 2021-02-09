@@ -59,7 +59,6 @@
     "ember-promise-helpers": "^1.0.6",
     "ember-set-helper": "^0.1.1",
     "ember-tag-input": "^1.2.2",
-    "ember-toggle": "^6.0.2",
     "ember-tooltips": "^3.2.0",
     "ember-truth-helpers": "^3.0.0",
     "ember-uuid": "^2.1.0",

@@ -56,7 +56,7 @@
                   value={{column.fragment.alias}}
                   placeholder={{column.fragment.displayName}}
                   class="table-header-cell__input"
-                  {{on "input" (pipe (pick 'target.value') (fn @updateColumnDisplayName column.fragment))}}
+                  {{on "input" (pipe (pick "target.value") (fn @updateColumnDisplayName column.fragment))}}
                 />
                 {{#if (eq column.fragment.type "metric")}}
                   <NumberFormatDropdown

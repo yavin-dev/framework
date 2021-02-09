@@ -11,11 +11,10 @@
       {{!-- Toggle for grand total --}}
       <div class="table-config__totals-toggle-section">
         <span class="table-config__totals-toggle-label">Grand Total</span>
-        <XToggle
+        <DenaliSwitch
           class="table-config__total-toggle-button table-config__total-toggle-button--grand-total"
-          @value={{readonly @options.showTotals.grandTotal}}
-          @size="small"
-          @onToggle={{this.onToggleGrandTotal}}
+          @isEnabled={{@options.showTotals.grandTotal}}
+          @onChange={{pipe (pick "target.checked") (fn this.onToggleGrandTotal )}}
         />
       </div>
 
@@ -23,11 +22,10 @@
       {{#if @request.dimensionColumns.length}}
         <div class="table-config__totals-toggle-section">
           <span class="table-config__totals-toggle-label">Subtotal</span>
-          <XToggle
+          <DenaliSwitch
             class="table-config__total-toggle-button table-config__total-toggle-button--subtotal"
-            @value={{readonly this.showSubtotalDropdown}}
-            @size="small"
-            @onToggle={{this.onToggleSubtotal}}
+            @isEnabled={{this.showSubtotalDropdown}}
+            @onChange={{pipe (pick "target.checked") (fn this.onToggleSubtotal )}}
           />
         </div>
 

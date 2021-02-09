@@ -1,4 +1,4 @@
-import { click, fillIn, findAll, visit } from '@ember/test-helpers';
+import { blur, click, fillIn, findAll, visit } from '@ember/test-helpers';
 import { module, test, skip } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
@@ -53,11 +53,11 @@ module('Acceptance | table', function(hooks) {
     await visit('/table');
     assert.dom('.table-header-cell__input').isNotVisible('Table header edit field should not be visible');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert
-      .dom('.timeDimension .number-format-dropdown__trigger')
+      .dom('.timeDimension .input .number-format-dropdown__trigger')
       .isNotVisible('Datetime field should not have format dropdown trigger');
 
     assert
@@ -77,9 +77,10 @@ module('Acceptance | table', function(hooks) {
 
     await visit('/table');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.table-header-cell__input', 'test');
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
+    await fillIn('.timeDimension .input > .table-header-cell__input', 'test');
+    await blur('.timeDimension .input > .table-header-cell__input');
+    await click('.table-config__total-toggle-button');
 
     assert
       .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
@@ -95,9 +96,10 @@ module('Acceptance | table', function(hooks) {
 
     await visit('/table');
 
-    await click('.table-config__total-toggle-button .x-toggle-btn');
-    await fillIn('.table-header-cell__input', '');
-    await click('.table-config__total-toggle-button .x-toggle-btn');
+    await click('.table-config__total-toggle-button');
+    await fillIn('.timeDimension .input > .table-header-cell__input', '');
+    await blur('.timeDimension .input > .table-header-cell__input');
+    await click('.table-config__total-toggle-button');
 
     assert
       .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
