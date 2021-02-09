@@ -11,7 +11,7 @@ import DS from 'ember-data';
 interface Args {
   report: ReportModel;
   dashboards: DS.PromiseArray<DashboardModel>;
-  onAddToDashboard: (reportId: number, reportName: string) => void;
+  onAddToDashboard: (reportId: string, reportName: string) => void;
   onAddToNewDashboard: (dashboardTitle: string, reportName: string) => void;
 }
 export default class AddToDashboardComponent extends Component<Args> {
