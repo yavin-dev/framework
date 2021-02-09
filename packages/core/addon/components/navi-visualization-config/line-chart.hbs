@@ -30,7 +30,7 @@
           <DenaliSwitch
             class="line-chart-config__area-opt-select"
             @isEnabled={{@options.style.area}}
-            @onChange={{fn this.onUpdateStyle "area"}}
+            @onChange={{pipe (pick "target.checked") (fn this.onUpdateStyle "area")}}
           />
         </div>
       {{/if}}
@@ -40,7 +40,7 @@
           <DenaliSwitch
             class="line-chart-config__stacked-opt-select"
             @isEnabled={{@options.style.stacked}}
-            @onChange={{fn this.onUpdateStyle "stacked"}}
+            @onChange={{pipe (pick "target.checked") (fn this.onUpdateStyle "stacked")}}
           />
         </div>
       {{/if}}
