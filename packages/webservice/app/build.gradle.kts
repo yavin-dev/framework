@@ -3,13 +3,13 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "app"
 
-val build_env: String by project
+val environment: String by project
 var build_env_final : String
 
-if (!project.hasProperty("build_env")){
-  build_env_final = "dev"
+if (!project.hasProperty("environment")){
+  build_env_final = "development"
 }else{
-  build_env_final = build_env
+  build_env_final = environment
 }
 
 plugins {
@@ -74,7 +74,7 @@ tasks.register<NpmTask>("installUIDependencies") {
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
   setEnvironment(mapOf("DISABLE_MOCKS" to true))
-  setArgs(listOf("run-script", "build","--build_env=${build_env_final}"))
+  setArgs(listOf("run-script", "build","--environment=${build_env_final}"))
 }
 
 tasks.register<Copy>("copyNaviApp") {
