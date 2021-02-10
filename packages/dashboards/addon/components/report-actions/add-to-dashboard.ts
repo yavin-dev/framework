@@ -2,6 +2,7 @@ import { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
+import { assert } from '@ember/debug';
 import { tracked } from '@glimmer/tracking';
 import DashboardModel from 'navi-core/models/dashboard';
 import UserService from 'navi-core/services/user';
@@ -52,10 +53,13 @@ export default class AddToDashboardComponent extends Component<Args> {
 
   @action
   addToDashboard() {
+    const { newDashboardTitle, selectedDashboard } = this;
     if (this.shouldCreateDashboard) {
-      this.args.onAddToNewDashboard(this.newDashboardTitle, this.reportName);
+      assert('`newDashboardTitle` should be set', newDashboardTitle);
+      this.args.onAddToNewDashboard(newDashboardTitle, this.reportName);
     } else {
-      this.args.onAddToDashboard(this.selectedDashboard.id, this.reportName);
+      assert('`selectedDashboard` should be set', selectedDashboard);
+      this.args.onAddToDashboard(selectedDashboard.id, this.reportName);
     }
   }
 }
