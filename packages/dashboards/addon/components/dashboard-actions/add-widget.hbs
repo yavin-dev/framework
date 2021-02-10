@@ -17,7 +17,7 @@
     >
       <PowerSelect
         @options={{this.reportsWithCreate}}
-        @selected={{if this.selectedReport this.selectedReport this.reportsWithCreate.firstObject}}
+        @selected={{this.selectedReport}}
         @searchField="title"
         @searchPlaceholder="Search for a report..."
         @onChange={{fn (mut this.selectedReport)}}
@@ -43,7 +43,7 @@
         class="add-widget__add-btn m-5" 
         @style="solid"
         {{on "click" 
-          (pipe 
+          (queue 
             (fn @onSelectReport this.selectedReport @dashboard.id this.selectedReport.title) 
             this.toggleModal
           )

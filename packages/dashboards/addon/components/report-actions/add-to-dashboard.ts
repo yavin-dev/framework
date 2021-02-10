@@ -22,13 +22,13 @@ export default class AddToDashboardComponent extends Component<Args> {
   shouldCreateDashboard = false;
 
   @tracked
-  selectedDashboard!: DashboardModel;
+  selectedDashboard?: DashboardModel;
 
   @tracked
-  newDashboardTitle!: string;
+  newDashboardTitle?: string;
 
   @tracked
-  customReportName!: string;
+  customReportName?: string;
 
   @service
   user!: UserService;

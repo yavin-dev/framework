@@ -21,7 +21,7 @@
         value={{this.reportName}}
         class="add-to-dashboard__widget-title"
         autofocus={{true}}
-        {{on "input" (pipe (pick 'target.value') (fn (mut this.customReportName)))}}
+        {{on "input" (pipe (pick "target.value") (fn (mut this.customReportName)))}}
       />
     </DenaliInputGroup>
     {{#if this.shouldCreateDashboard}}
