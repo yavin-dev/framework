@@ -24,7 +24,7 @@
 
         {{!-- Dimension dropdown for subtotal --}}
         {{#if this.showSubtotalDropdown}}
-          <DenaliInputGroup @label="Subtotal Column">
+          <DenaliInputGroup @label="Subtotal Column" @isStacked={{true}} class="m-b-30">
             <PowerSelect
               @triggerClass="table-config__subtotal-dimension-trigger"
               @onChange={{this.updateSubtotal}}
