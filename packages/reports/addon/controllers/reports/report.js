@@ -18,11 +18,6 @@ const REPORT_STATE = {
 export default class ReportsReportController extends Controller {
   @service screen;
   /**
-   * @property {Boolean} showSaveAs - whether the save as dialog is showing
-   */
-  showSaveAs = false;
-
-  /**
    * @property {Boolean} isFiltersCollapsed
    */
   isFiltersCollapsed;
@@ -92,14 +87,6 @@ export default class ReportsReportController extends Controller {
   @computed('reportState')
   get didReportFail() {
     return this.reportState === REPORT_STATE.FAILED;
-  }
-
-  /**
-   * Closes save as modal
-   */
-  @action
-  closeSaveAs() {
-    set(this, 'showSaveAs', false);
   }
 
   /**

@@ -39,14 +39,14 @@
       <li class="navi-report-widget__action">
         {{!-- Get API action is only enabled when request is valid --}}
         <CommonActions::GetApi
-          class={{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}
+          class="button is-text is-medium {{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}"
           @request={{@model.request}}
           @disabled={{not @model.request.validations.isTruelyValid}}
         >
           <NaviIcon @icon="code" class="navi-report-widget__icon" />
-          Copy API Query
+            API Query
           <EmberTooltip>
-            {{if @model.request.validations.isTruelyValid "Copy API Query" "Run a valid report to copy"}}
+            {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
           </EmberTooltip>
         </CommonActions::GetApi>
       </li>
@@ -56,9 +56,9 @@
         {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
           {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
             <ExportAction
-              class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "navi-report-widget__action-link--is-disabled"}}"
               @report={{@model}}
               @disabled={{not @model.validations.isTruelyValid}}
+              class="navi-report-widget__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
             >
               <NaviIcon @icon="download" class="navi-report-widget__icon" />
               Export
@@ -71,7 +71,10 @@
       </li>
 
       <li class="navi-report-widget__action">
-        <LinkTo @route="dashboards.dashboard.widgets.widget.clone-to-report" class="navi-report-widget__action-link">
+        <LinkTo 
+          @route="dashboards.dashboard.widgets.widget.clone-to-report" 
+          class="navi-report-widget__action-link button is-text is-medium"
+        >
           <NaviIcon @icon="copy" class="navi-report-widget__icon" />
           Clone As Report
         </LinkTo>
@@ -81,8 +84,8 @@
         {{!-- Share only enabled on a Valid widget --}}
         <li class="navi-report-widget__action">
           <CommonActions::Share
-            @pageTitle={{@model.title}}
             @disabled={{not @model.request.validations.isTruelyValid}}
+            class="button is-text is-medium"
           >
             <NaviIcon @icon="share" class="navi-report-widget__icon" />
             Share
@@ -97,6 +100,7 @@
           <CommonActions::Delete
             @model={{@model}}
             @deleteAction={{route-action "deleteWidget"}}
+            class="button is-text is-medium"
           >
             <NaviIcon @icon="trash-o" class="navi-report-widget__icon" />
             Delete
@@ -194,8 +198,3 @@
     {{/if}}
   </footer>
 </div>
-
-<ReportActions::SaveAs
-  @model={{@model}}
-  @showModal={{@showModal}}
-/>

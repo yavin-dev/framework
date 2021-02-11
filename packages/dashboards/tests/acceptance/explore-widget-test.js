@@ -8,6 +8,7 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
+import Service from '@ember/service';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -199,7 +200,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/1/widgets/2/view');
     assert
-      .dom('.get-api')
+      .dom('.get-api__action-btn')
       .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
@@ -208,12 +209,21 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
-      .dom('.get-api')
+      .dom('.get-api__action-btn')
       .hasClass('navi-report-widget__action--is-disabled', 'Get API action is disabled when request is not valid');
   });
 
   test('Share action', async function(assert) {
-    assert.expect(2);
+    assert.expect(1);
+
+    this.owner.register(
+      'service:navi-notifications',
+      class extends Service {
+        add({ context }) {
+          assert.equal(context, document.location, 'share uses the current location as the default share url');
+        }
+      }
+    );
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
@@ -228,10 +238,6 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');
     await click($('.navi-report-widget__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .primary-header')
-      .hasText('Share "Mobile DAU Graph"', 'Clicking share action brings up share modal');
   });
 
   test('Delete widget', async function(assert) {
@@ -255,9 +261,11 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/1/widgets/2/view');
     await click($('.navi-report-widget__action:contains(Delete) button')[0]);
-    assert.dom('.primary-header').hasText('Delete "Mobile DAU Graph"', 'Delete modal pops up when action is clicked');
+    assert
+      .dom('.delete__modal-details')
+      .hasText('This action cannot be undone. This will permanently delete the Mobile DAU Graph dashboard widget.');
 
-    await click('.navi-modal .btn-primary');
+    await click('.delete__delete-btn');
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
     assert.deepEqual(

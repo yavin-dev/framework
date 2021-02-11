@@ -138,17 +138,17 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with second parameter is not sorted asc after first sort click');
 
     //test API query and close the modal
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
     assert.ok(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)%7Cdesc'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)%7Cdesc'),
       'API query contains sorting by metric with first parameter desc after first sort click'
     );
 
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after first sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //sort by first parameter asc
     await click(
@@ -182,17 +182,17 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       );
 
     //test API query and close the modal
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
     assert.ok(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)%7Casc'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)%7Casc'),
       'API query contains sorting by metric with first parameter asc after second sort click'
     );
 
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after second sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //remove sort by first parameter
     await click(
@@ -223,17 +223,17 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
       .hasNoClass('navi-table-sort-icon--asc', 'Metric with second parameter is not sorted asc after third sort click');
 
     //test API query and close the modal
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)'),
       'API query does not contain sorting by metric with first parameter after third sort click'
     );
 
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after third sort click'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //sort by both parameters
     await click(
@@ -263,17 +263,17 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Platform Revenue (USD)"]');
 
     //test API query and close the modal
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DUSD)'),
       'API query does not contain sorting by metric with first parameter after removing the metric'
     );
 
     assert.notOk(
-      find('.navi-modal__input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
+      find('.get-api__api-input').value.includes('sort=dateTime%7Casc%2CplatformRevenue(currency%3DEUR)'),
       'API query does not contain sorting by metric with second parameter after removing the metric'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //verify that the table visualization is still shown and not an error
     await click('.navi-report__run-btn');

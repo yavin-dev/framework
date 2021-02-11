@@ -142,3 +142,8 @@ export default class NaviFactsService extends Service {
     return null;
   }
 }
+declare module '@ember/service' {
+  interface Registry {
+    'navi-facts': NaviFactsService;
+  }
+}

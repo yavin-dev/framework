@@ -26,10 +26,9 @@
 </li>
 
 {{!-- Added logic for bulk import --}}
-<NaviModal @isShown={{this._showBulkImport}}>
-  <DimensionBulkImportSimple
-    @rawInput={{this._bulkImportValue}}
-    @onSelectValues={{queue (action "addTags") (action "closeModal")}}
-    @onCancel={{action "closeModal"}}
-  />
-</NaviModal>
+<DimensionBulkImportSimple
+  @rawInput={{this._bulkImportValue}}
+  @onSelectValues={{queue (action "addTags") (action "closeModal")}}
+  @isOpen={{this._showBulkImport}} 
+  @onClose={{action "closeModal"}} 
+/>

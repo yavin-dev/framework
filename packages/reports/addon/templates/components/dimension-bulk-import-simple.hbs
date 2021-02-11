@@ -1,34 +1,72 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dimension-bulk-import-simple" ...attributes>
-  <div class="navi-modal-header">
-    <div class="text-capitalize primary-header">Paste Import</div>
-    <div class="secondary-header">If this is a list of values, choose the split ids.</div>
-  </div>
+<DenaliModal 
+  @isOpen={{@isOpen}} 
+  @onClose={{@onClose}}
+  class="dimension-bulk-import-simple"
+  ...attributes
+  as |Modal|
+>
+  <Modal.Content>
+    <h3 class="m-b-10">Paste Import</h3>
+    <p class="m-b-20">Do you want to paste a list of values?</p>
 
-  <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--split-values">
-    <span class="text-capitalize dimension-bulk-import-simple-row__header">Input split by commas ({{this.splitValues.length}})</span>
-    <PaginatedScrollList
-      @trim={{false}}
-      @items={{this.splitValues}}
-      as |dimVal|
+    <DenaliInputGroup 
+      @label="Value Split by Commas ({{this.splitValues.length}})"
+      @isStacked={{true}}
+      class="dimension-bulk-import-simple__split-values m-b-30"
     >
-      <DenaliTag>{{dimVal}}</DenaliTag>
-    </PaginatedScrollList>
-  </div>
-  <div class="dimension-bulk-import-simple-row dimension-bulk-import-simple-row--raw-value">
-    <span class="text-capitalize dimension-bulk-import-simple-row__header">Raw input</span>
-    <PaginatedScrollList
-      @trim={{false}}
-      @items={{this.unsplitValue}}
-      as |dimVal|
+      <PaginatedScrollList
+        @trim={{false}}
+        @items={{this.splitValues}}
+        class="dimension-bulk-import-simple__values"
+        as |dimVal|
+      >
+        <DenaliTag>{{dimVal}}</DenaliTag>
+      </PaginatedScrollList>
+    </DenaliInputGroup>
+    <DenaliInputGroup 
+      @label="Raw Value"
+      @isStacked={{true}}
+      class="dimension-bulk-import-simple__raw-value m-b-20"
     >
-      <DenaliTag>{{dimVal}}</DenaliTag>
-    </PaginatedScrollList>
-  </div>
+      <PaginatedScrollList
+        @trim={{false}}
+        @items={{this.unsplitValue}}
+        class="dimension-bulk-import-simple__values"
+        as |dimVal|
+      >
+        <DenaliTag>{{dimVal}}</DenaliTag>
+      </PaginatedScrollList>
+    </DenaliInputGroup>
 
-  <div class="btn-container">
-    <button type="button" class="btn btn-primary" {{on "click" (fn @onSelectValues this.splitValues)}}>Use split input ({{this.splitValues.length}} values)</button>
-    <button type="button" class="btn btn-primary" {{on "click" (fn @onSelectValues this.unsplitValue)}}>Use raw input</button>
-    <button type="button" class="btn btn-secondary" {{on "click" @onCancel}}>Cancel</button>
-  </div>
-</div>
+
+    <div class="flex space-between">
+      <div>
+        <DenaliButton 
+          {{on "click" (fn @onSelectValues this.splitValues)}}
+          @size="medium"
+          class="dimension-bulk-import-simple__split-btn m-r-10"
+        >
+          Use Split Values
+        </DenaliButton>
+
+        <DenaliButton 
+          @style="ghost"
+          @size="medium"
+          class="dimension-bulk-import-simple__raw-btn"
+          {{on "click" (fn @onSelectValues this.unsplitValue)}}
+
+        >
+          Use Raw Value
+        </DenaliButton>
+      </div>
+      <DenaliButton 
+        @style="text"
+        class="dimension-bulk-import-simple__cancel-btn"
+        {{on "click" @onClose}}
+      >
+        Cancel
+      </DenaliButton>
+    </div>
+  </Modal.Content>
+</DenaliModal>

@@ -1,0 +1,21 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.dimension-bulk-import-simple {
+  &.modal .modal-container {
+    width: 525px;
+  }
+
+  &__values {
+    background: $fields-default-bg;
+    border-radius: $fields-corner-radius;
+    box-shadow: $fields-default-border;
+    color: $fields-default-text-color;
+    max-height: 100px;
+    overflow: auto;
+    padding: 4px;
+    width: 100%;
+  }
+}

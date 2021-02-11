@@ -25,14 +25,14 @@
       <LinkTo
         @route="dashboards.dashboard.widgets.widget.view"
         @models={{array @model.dashboard.id @model.id}}
-        class="navi-widget__action navi-widget__explore-btn"
+        class="navi-widget__explore-btn"
       >
         <NaviIcon @icon="pencil" class="navi-icon__edit" />
         <EmberTooltip @popperContainer="body" @text="Explore" />
       </LinkTo>
       {{#if @canEdit}}
         <CommonActions::Delete
-          class="navi-widget__action navi-widget__delete-btn"
+          class="navi-widget__delete-btn link"
           @model={{@model}}
           @deleteAction={{route-action "deleteWidget"}}
         >

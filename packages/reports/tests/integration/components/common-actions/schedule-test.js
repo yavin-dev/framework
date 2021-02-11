@@ -276,7 +276,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click($('.btn-container button:contains(Delete)')[0]);
 
-    await click($('.btn-container button:contains(Confirm)')[0]);
+    await click('.delete__delete-btn');
   });
 
   test('frequency options - default', async function(assert) {

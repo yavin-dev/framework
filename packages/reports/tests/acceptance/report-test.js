@@ -137,6 +137,7 @@ module('Acceptance | Navi Report', function(hooks) {
         .length,
       'Ad Clicks column is displayed'
     );
+
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
@@ -157,22 +158,22 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
 
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
 
-    assert.dom('.get-api-modal-container').isVisible('Copy modal is open after fixing error clicking button');
+    assert.dom('.get-api__modal').isVisible('Copy modal is open after fixing error clicking button');
 
     /* == Add some more metrics and check that copy modal updates == */
-    await click('.navi-modal__close');
+    await click('.d-close');
     await clickItem('metric', 'Additive Page Views');
-    await click('.navi-report__copy-api-btn .get-api__btn');
+    await click('.get-api__action-btn');
 
     assert.ok(
-      find('.navi-modal__input').value.includes('metrics=adClicks%2CaddPageViews'),
+      find('.get-api__api-input').value.includes('metrics=adClicks%2CaddPageViews'),
       'API query updates with request'
     );
 
     assert
-      .dom('.get-api-modal-container input')
+      .dom('.get-api__api-input')
       .hasValue(/^https:\/\/data.naviapp.io\/\S+$/, 'shows api url from right datasource');
   });
 
@@ -312,12 +313,11 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // And click Save AS the report
     await click('.navi-report__save-as-btn');
-
     // The Modal with buttons is Visible
-    assert.dom('.save-as__cancel-modal-btn').isVisible('Save As Modal is visible with cancel key');
+    assert.dom('.save-as__cancel-btn').isVisible('Save As Modal is visible with cancel key');
 
     // Press the Modal X button
-    await click('.navi-modal__close');
+    await click('.save-as__cancel-btn');
 
     // Changes were not reverted, but they were not saved
     assert.ok(
@@ -337,10 +337,10 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-as-btn');
 
     // The Modal with buttons is Visible
-    assert.dom('.save-as__cancel-modal-btn').isVisible('Save As Modal is visible with cancel key');
+    assert.dom('.save-as__cancel-btn').isVisible('Save As Modal is visible with cancel key');
 
     // Press the Modal cancel button
-    await click('.save-as__cancel-modal-btn');
+    await click('.save-as__cancel-btn');
 
     // Changes were not reverted, but they were not saved
     assert.ok(
@@ -370,10 +370,10 @@ module('Acceptance | Navi Report', function(hooks) {
 
     // The Modal with buttons is Visible
 
-    assert.dom('.save-as__save-as-modal-btn').isVisible('Save As Modal is visible with save as key');
+    assert.dom('.save-as__save-as-btn').isVisible('Save As Modal is visible with save as key');
 
     // Press the save as
-    await click('.save-as__save-as-modal-btn');
+    await click('.save-as__save-as-btn');
 
     assert.ok(!!$('.filter-builder__subject:contains(isoWeek)').length, 'The new Dim is shown in the new report.');
 
@@ -411,13 +411,13 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-as-btn');
 
     // The Modal with buttons is Visible
-    assert.dom('.save-as__save-as-modal-btn').isVisible('Save As Modal is visible with save as key');
+    assert.dom('.save-as__save-as-btn').isVisible('Save As Modal is visible with save as key');
 
     //fill in new title
-    await fillIn('.navi-modal .text-input.dashboard-title', 'Title of Hyrule');
+    await fillIn('.save-as__report-name', 'Title of Hyrule');
 
     // Press the save as
-    await click('.save-as__save-as-modal-btn');
+    await click('.save-as__save-as-btn');
 
     assert.ok(!!$('.filter-builder__subject:contains(month)').length, 'The new Dim is shown in the new report.');
 
@@ -457,7 +457,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click('.navi-report__save-as-btn');
 
     // Press the save as
-    await click('.save-as__save-as-modal-btn');
+    await click('.save-as__save-as-btn');
 
     // An error will occur and it will go back to old report dirty state
 
@@ -539,7 +539,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(
       findAll('.navi-report__action').map(e => e.textContent.trim()),
-      ['Copy API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
+      ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
       'Export is disabled by default'
     );
 
@@ -556,7 +556,7 @@ module('Acceptance | Navi Report', function(hooks) {
 
     assert.deepEqual(
       findAll('.navi-report__action').map(e => e.textContent.trim()),
-      ['Copy API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
+      ['API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
       'Export is enabled with the feature flag on'
     );
 
@@ -581,21 +581,21 @@ module('Acceptance | Navi Report', function(hooks) {
     //currently failing as it should
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
-      .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
+      .hasClass('is-disabled', 'Export action is disabled when report is not valid');
 
     // Revert changes to make it in sync with the visualization
     await click('.navi-report__revert-btn');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
-      .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
+      .hasNoClass('is-disabled', 'Export action is enabled for a valid report');
 
     // Remove visualization metric to create an invalid report
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
       .dom($('.navi-report__action-link:contains(Export)')[0])
-      .hasClass('navi-report__action-link--force-disabled', 'Export action is disabled when report is not valid');
+      .hasClass('is-disabled', 'Export action is disabled when report is not valid');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -793,35 +793,22 @@ module('Acceptance | Navi Report', function(hooks) {
   });
 
   test('Get API action - enabled/disabled', async function(assert) {
-    assert.expect(2);
-
     await visit('/reports/13/view');
 
-    assert
-      .dom('.get-api')
-      .doesNotHaveClass('.navi-report__action--is-disabled', 'Get API action is enabled for a valid report');
+    assert.dom('.get-api__action-btn').isNotDisabled('Get API action is enabled for a valid report');
 
     // Remove all metrics
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
 
-    assert.ok(
-      [...find('.get-api').classList].includes('navi-report__action--is-disabled'),
-      'Get API action is disabled for an invalid report'
-    );
+    assert.dom('.get-api__action-btn').isDisabled('Get API action is disabled for an invalid report');
   });
 
   test('Share report', async function(assert) {
-    assert.expect(3);
-
     /* == Saved report == */
     await visit('/reports/1/view');
     await click($('.navi-report__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .primary-header')
-      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
@@ -839,31 +826,6 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for new report');
   });
 
-  test('Share report notifications reset', async function(assert) {
-    assert.expect(4);
-
-    /* == Saved report == */
-    await visit('/reports/1/view');
-    await click($('.navi-report__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .primary-header')
-      .hasText('Share "Hyrule News"', 'Clicking share action brings up share modal');
-
-    assert.dom('.navi-modal .modal-notification').isNotVisible('Notification banner is not shown');
-
-    await click('.navi-modal .copy-btn');
-
-    assert.dom('.navi-modal .modal-notification').isVisible('Notification banner is shown');
-
-    await click($('.navi-modal .btn:contains(Cancel)')[0]);
-    await click($('.navi-report__action:contains(Share) button')[0]);
-
-    assert
-      .dom('.navi-modal .modal-notification')
-      .isNotVisible('Notification banner is not shown after close and reopen');
-  });
-
   test('Delete report on success', async function(assert) {
     assert.expect(5);
 
@@ -879,11 +841,13 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     await visit('/reports/1/view');
-    await click($('.navi-report__action:contains(Delete) button')[0]);
+    await click('.delete__action-btn');
 
-    assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
+    assert
+      .dom('.delete__modal-details')
+      .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    await click('.navi-modal .btn-primary');
+    await click('.delete__delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -931,18 +895,18 @@ module('Acceptance | Navi Report', function(hooks) {
     // Check Delete modal appear
     await click($('.navi-report__action:contains(Delete) button')[0]);
 
-    assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
+    assert
+      .dom('.delete__modal-details')
+      .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
   });
 
   test('Delete report on failure', async function(assert) {
-    assert.expect(1);
-
     server.urlPrefix = `${config.navi.appPersistence.uri}`;
     server.delete('/reports/:id', () => new Response(500));
 
     await visit('/reports/2/view');
-    await click($('.navi-report__action:contains(Delete) button')[0]);
-    await click('.navi-modal .btn-primary');
+    await click('.delete__action-btn');
+    await click('.delete__delete-btn');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
   });
@@ -1033,34 +997,19 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
-  test('reports route actions -- share', async function(assert) {
-    assert.expect(1);
-
-    await visit('/reports');
-
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-    // Click "Share"
-    await click('.navi-collection__row0 .share .btn');
-
-    assert.dom('.primary-header').hasText('Share "Hyrule News"', 'Share modal pops up when action is clicked');
-
-    // Click "Cancel"
-    await click('.navi-modal .btn-secondary');
-  });
-
   test('reports route actions -- delete', async function(assert) {
     assert.expect(3);
 
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    // Click "Delete"
-    await click('.navi-collection__row0 .delete button');
+    await click('.navi-collection__row0 .delete__action-btn');
 
-    assert.dom('.primary-header').hasText('Delete "Hyrule News"', 'Delete modal pops up when action is clicked');
+    assert
+      .dom('.delete__modal-details')
+      .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    //Click "Confirm"
-    await click('.navi-modal .btn-primary');
+    await click('.delete__delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -1860,12 +1809,12 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom(startInput).hasValue('P7D', 'The start input is not modified');
     assert.dom(endInput).hasValue('2015-11-16', 'The end input is not modified');
 
-    await click('.get-api__btn');
+    await click('.get-api__action-btn');
     assert.ok(
-      find('.navi-modal__input').value.includes('dateTime=P7D%2F2015-11-16'),
+      find('.get-api__api-input').value.includes('dateTime=P7D%2F2015-11-16'),
       'The while in advanced mode shows exactly what is in the start/end inputs'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     await fillIn(startInput, 'P1M');
     await blur(startInput);
@@ -1874,12 +1823,12 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom(startInput).hasValue('P1M', 'The start input was updated exactly');
     assert.dom(endInput).hasValue('2020-04-01', 'The end input was updated exactly');
 
-    await click('.get-api__btn');
+    await click('.get-api__action-btn');
     assert.ok(
-      find('.navi-modal__input').value.includes('dateTime=P1M%2F2020-04-01'),
+      find('.get-api__api-input').value.includes('dateTime=P1M%2F2020-04-01'),
       'The query is updated to show the new start/end inputs exactly'
     );
-    await click('.navi-modal__close');
+    await click('.d-close');
   });
 
   test("Report with an unknown table doesn't crash", async function(assert) {
@@ -1967,9 +1916,9 @@ module('Acceptance | Navi Report', function(hooks) {
     );
 
     await click('.navi-report__run-btn');
-    await click('.get-api__btn');
+    await click('.get-api__action-btn');
 
-    const url = find('.navi-modal__input').value;
+    const url = find('.get-api__api-input').value;
     const expectedFilter = 'commaDim|id-in["no comma","yes, comma"]';
     assert.ok(
       decodeURIComponent(url).includes(expectedFilter),

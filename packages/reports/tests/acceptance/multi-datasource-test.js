@@ -97,9 +97,9 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     assert.dom('.c3-legend-item').containsText('1', 'Pie chart legend has the right value');
 
     //check api url
-    await click('.get-api button');
+    await click('.get-api__action-btn');
     assert
-      .dom('.get-api-modal-container input')
+      .dom('.get-api__modal input')
       .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from bardTwo datasource');
 
     //check CSV export url
@@ -150,9 +150,9 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     assert.dom('.c3-legend-item').containsText('114', 'Line chart has right legend value');
 
     //check api url
-    await click('.get-api button');
+    await click('.get-api__action-btn');
     assert
-      .dom('.get-api-modal-container input')
+      .dom('.get-api__modal input')
       .hasValue(
         'https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-10-02T00%3A00%3A00.000Z%2F2015-10-14T00%3A00%3A00.000Z&metrics=adClicks&format=json',
         'shows api url from bardTwo datasource'
@@ -168,7 +168,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
         'uses csv export from right datasource'
       );
 
-    await click('.navi-modal__close');
+    await click('.d-close');
 
     //switch tables from a different datasource
     await selectChoose('.navi-table-select__trigger', 'Table A');

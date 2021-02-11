@@ -34,17 +34,19 @@
   <div class="dashboard-actions">
 
     {{!-- Clone action enabled at all times --}}
-    <CommonActions::Buttonize class="clone">
-      <LinkTo @route="dashboards.dashboard.clone" @model={{@dashboard.id}}>
-        <NaviIcon @icon="copy" class="navi-icon__copy" />
+    <LinkTo 
+      @route="dashboards.dashboard.clone" 
+      @model={{@dashboard.id}}
+      class="clone button is-text is-medium"
+    >
+       <NaviIcon @icon="copy" class="navi-icon__copy m-r-6" />
         Clone
-      </LinkTo>
-    </CommonActions::Buttonize>
+    </LinkTo>
 
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
       <DashboardActions::Export
-        class="action export btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
+        class="export btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
         @dashboard={{@dashboard}}
         @disabled={{not @dashboard.validations.isTruelyValid}}
       >
@@ -55,11 +57,10 @@
 
     {{!-- Share action enables when dashboard is valid --}}
     <CommonActions::Share
-      class="action share"
-      @pageTitle={{@dashboard.title}}
+      class="share button is-text is-medium"
       @disabled={{not @dashboard.validations.isTruelyValid}}
     >
-      <NaviIcon @icon="share" class="navi-icon__share" />
+      <NaviIcon @icon="share" class="navi-icon__share m-r-6" />
       Share
     </CommonActions::Share>
 
@@ -68,7 +69,7 @@
       {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
       {{#if (feature-flag "enableScheduleDashboards")}}
         <DashboardActions::Schedule
-          class="action schedule"
+          class="schedule button is-text is-medium"
           @model={{@dashboard}}
           @disabled={{not @dashboard.validations.isTruelyValid}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
@@ -80,12 +81,12 @@
       {{/if}}
 
       <CommonActions::Delete
-        class="action delete"
+        class="delete button is-text is-medium"
         @model={{@dashboard}}
         @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
         @deleteAction={{@deleteAction}}
       >
-        <NaviIcon @icon="trash-o" class="navi-icon__delete" />
+        <NaviIcon @icon="trash-o" class="navi-icon__delete m-r-6" />
         Delete
       </CommonActions::Delete>
     {{/if}}
@@ -97,8 +98,15 @@
         @reports={{get (get-user) "reports"}}
         @dashboard={{@dashboard}}
         @onSelectReport={{@addWidgetToDashboard}}
+        as |toggleModal|
       >
-        <DenaliButton @size="medium" type="button">+ Add Widget</DenaliButton>
+        <DenaliButton 
+          @size="medium" 
+          {{on "click" toggleModal}}
+          class="navi-dashboard__add-widget-btn"
+        >
+          Add Widget
+        </DenaliButton>
       </DashboardActions::AddWidget>
     {{/if}}
   </div>
@@ -147,8 +155,9 @@
               @reports={{get (get-user) "reports"}}
               @dashboard={{@dashboard}}
               @onSelectReport={{@addWidgetToDashboard}}
+              as |toggleModal|
             >
-              add a widget
+              <span role="button" {{on "click" toggleModal}}>add a widget</span>
             </DashboardActions::AddWidget>
             now?
           {{/if}}

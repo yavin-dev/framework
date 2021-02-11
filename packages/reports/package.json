@@ -28,7 +28,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.14",
+    "@denali-design/ember": "^1.0.0-alpha.15",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^1.3.0",
     "@ember/render-modifiers": "^1.0.2",
@@ -38,7 +38,7 @@
     "ember-animated": "^0.10.0",
     "ember-auto-import": "^1.5.3",
     "ember-cli-babel": "^7.22.1",
-    "ember-cli-clipboard": "^0.8.1",
+    "ember-cli-clipboard": "^0.15.0",
     "ember-cli-htmlbars": "^5.1.2",
     "ember-cli-moment-shim": "^3.8.0",
     "ember-cli-node-assets": "0.2.2",

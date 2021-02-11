@@ -27,7 +27,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.14",
+    "@denali-design/ember": "^1.0.0-alpha.15",
     "@ember-decorators/component": "^6.1.1",
     "ember-ajax": "^5.0.0",
     "ember-auto-import": "^1.5.3",
@@ -66,6 +66,8 @@
     "@glimmer/tracking": "^1.0.0",
     "@types/ember": "^3.1.2",
     "@types/ember-data": "^3.16.2",
+    "@types/ember-data__model": "^3.16.0",
+    "@types/ember-data__store": "^3.16.0",
     "@types/ember-qunit": "^3.4.8",
     "@types/ember__test-helpers": "^0.7.10",
     "@types/qunit": "^2.9.1",
@@ -76,7 +78,7 @@
     "ember-auto-import": "^1.5.3",
     "ember-basic-dropdown-hover": "^0.6.0",
     "ember-cli": "~3.16.0",
-    "ember-cli-clipboard": "^0.11.1",
+    "ember-cli-clipboard": "^0.15.0",
     "ember-cli-code-coverage": "^1.0.0-beta.8",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-deprecation-workflow": "^1.0.1",

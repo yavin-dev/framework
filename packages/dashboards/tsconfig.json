@@ -29,6 +29,8 @@
       "navi-dashboards/*": ["addon/*"],
       "navi-dashboards/test-support": ["addon-test-support"],
       "navi-dashboards/test-support/*": ["addon-test-support/*"],
+      "navi-reports": ["node_modules/navi-reports/addon"],
+      "navi-reports/*": ["node_modules/navi-reports/addon/*"],
       "navi-core": ["node_modules/navi-core/addon"],
       "navi-core/*": ["node_modules/navi-core/addon/*"],
       "navi-data": ["node_modules/navi-data/addon"],

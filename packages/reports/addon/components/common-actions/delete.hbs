@@ -1,0 +1,42 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<button 
+  type="button" 
+  disabled={{@disabled}} 
+  {{on "click" (toggle "showModal" this)}}
+  class="delete__action-btn"
+  ...attributes
+>
+  {{yield}}
+</button>
+<DenaliModal 
+  class="delete__modal" 
+  @isOpen={{this.showModal}}
+  @onClose={{toggle "showModal" this}} 
+  as | modal |
+>
+  <modal.Content>
+    <h3 class="delete__modal-header m-b-10">Are You Sure?</h3>
+    <p class="delete__modal-details m-b-20">This action cannot be undone. This will permanently delete the <span class="is-bold">{{@model.title}}</span> {{this.modelName}}.</p>
+    {{#if this.isDeleting}}
+      <NaviLoadingMessage>
+        Deleting {{classify this.modelName}}
+      </NaviLoadingMessage>
+    {{/if}}
+    <DenaliButton
+      class="delete__delete-btn m-r-5"
+      @style="danger"
+      disabled={{this.isDeleting}}
+      {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) (toggle "isDeleting" this))}}
+    >
+      Delete
+    </DenaliButton>
+    <DenaliButton 
+      class="delete__cancel-btn m-r-5" 
+      @style="ghost" 
+      disabled={{this.isDeleting}}
+      {{on "click" (toggle "showModal" this)}} 
+    >
+      Cancel
+    </DenaliButton>
+  </modal.Content>
+</DenaliModal>
