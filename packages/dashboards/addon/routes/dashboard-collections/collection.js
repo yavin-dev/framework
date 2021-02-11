@@ -10,7 +10,7 @@ export default Route.extend({
    * @method model
    * @override
    *
-   * Makes an ajax request to retrieve relevant dashbords in the collection
+   * Makes an ajax request to retrieve relevant dashboards in the collection
    */
   model({ collection_id }) {
     return this.store.find('dashboard-collection', collection_id);

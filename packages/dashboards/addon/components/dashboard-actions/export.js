@@ -46,7 +46,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   @computed('dashboard.id')
   get gsheetExportHref() {
-    return `/gsheet-export/dashbord/${this.dashboard.id}`;
+    return `/gsheet-export/dashboard/${this.dashboard.id}`;
   }
 
   /**
