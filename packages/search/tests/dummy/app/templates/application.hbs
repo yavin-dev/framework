@@ -1,12 +1,12 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<header class="navi__top-bar top-bar">
-  <div class="top-bar__logo">
-    <span class="top-bar__logo-title">navi search</span>
-  </div>
-  <div class="top-bar__search">
-    <NaviSearchBar />
-  </div>
-</header>
+<DenaliNavbar as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.Item>Navi Search</Left.Item>
+  </Nav.Left>
+  <Nav.Center as |Center|>
+    <Center.Item><NaviSearchBar class="navi-search-bar"/></Center.Item>
+  </Nav.Center>
+</DenaliNavbar>
 <div class="navi__container">
   {{outlet}}
 </div>

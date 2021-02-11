@@ -3,4 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'components/index';
+.navi-search-definition-result {
+  &__item {
+    border-bottom: 1px solid rgba($color-grey-800, 0.2);
+    padding: 14px 10px;
+  }
+}
