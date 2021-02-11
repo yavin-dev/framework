@@ -53,7 +53,7 @@ module('Acceptance | line chart', function(hooks) {
 
     let linePath = find('svg .c3-chart-line.chart-series-0 .c3-lines path')?.getAttribute('d');
 
-    await selectChoose('.line-chart-config__curve-opt', 'Spline');
+    await selectChoose('.line-chart-config__curve-opt-select', 'Spline');
 
     let linePathSpline = find('svg .c3-chart-line.chart-series-0 .c3-lines path')?.getAttribute('d');
     let lineAreaSpline = find('svg .c3-chart-line.chart-series-0 .c3-areas path')?.getAttribute('d');
@@ -79,14 +79,11 @@ module('Acceptance | line chart', function(hooks) {
     await visit('/line-chart');
 
     // switch on `stacked` and expand the config
-    await click('.chart-container.metric .line-chart-config__stacked-opt .denali-switch');
-    await click('.line-chart-config__series-config__header');
+    await click('.chart-container.metric .line-chart-config__stacked-opt-select');
 
     const beforeOrder = ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'];
     assert.deepEqual(
-      findAll('.chart-container.metric .line-chart-config__series-config__item__content').map(el =>
-        el.textContent?.trim()
-      ),
+      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
       beforeOrder,
       'The headers are ordered in their initial order'
     );
@@ -124,8 +121,7 @@ module('Acceptance | line chart', function(hooks) {
     await visit('/line-chart');
 
     // switch on `stacked` and expand the config
-    await click('.chart-container.dimension .line-chart-config__stacked-opt .denali-switch');
-    await click('.chart-container.dimension .line-chart-config__series-config__header');
+    await click('.chart-container.dimension .line-chart-config__stacked-opt-select');
 
     const beforeOrder = ['-3,All Other', '4,21-24', '5,25-29'];
     assert.deepEqual(

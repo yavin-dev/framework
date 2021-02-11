@@ -34,7 +34,7 @@ module('Integration | Component | visualization config/table', function(hooks) {
   });
 
   test('table config - feature flag set', async function(assert) {
-    assert.expect(5);
+    assert.expect(4);
 
     let originalFlag = config.navi.FEATURES.enableTotals;
     config.navi.FEATURES.enableTotals = true;
@@ -50,10 +50,8 @@ module('Integration | Component | visualization config/table', function(hooks) {
       onUpdateConfig=(action onUpdateConfig)
     }}`);
 
-    assert.dom('.table-config__header').hasText('Totals', 'The header text is displayed correctly');
-
     assert.deepEqual(
-      findAll('.table-config__totals-toggle-label').map(el => el.textContent.trim()),
+      findAll('.input-group').map(el => el.textContent.trim()),
       ['Grand Total', 'Subtotal'],
       'The totals toggle is displayed when the feature flag is set'
     );

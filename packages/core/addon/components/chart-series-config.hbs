@@ -1,30 +1,31 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="line-chart-config__series-config" ...attributes>
-  <div class="line-chart-config__series-config__header">Stack Order</div>
-  <div class="line-chart-config__series-config__content">
-    <SortableGroup
-      class="line-chart-config__series-config__collection"
-      @onChange={{this.onReorderSeries}}
-      @model={{this.seriesData}}
-      as |group|
-    >
-      {{#each group.model as |seriesDataItem index|}}
-        <group.item
-          class={{concat "line-chart-config__series-config__item chart-series-" index}}
-          @model={{readonly seriesDataItem}}
-          as |item|
-        >
-          <div class="line-chart-config__series-config__item__content">
-            {{if (eq @seriesType "dimension") seriesDataItem.name seriesDataItem.displayName}}
-          </div>
-          <item.handle>
-            <div class="line-chart-config__series-config__item__handler">
-              <div></div>
-              <div></div>
+  <DenaliInputGroup @label="Stack Order" @isStacked={{true}}>
+    <div class="line-chart-config__series-config__content">
+      <SortableGroup
+        class="line-chart-config__series-config__collection"
+        @onChange={{this.onReorderSeries}}
+        @model={{this.seriesData}}
+        as |group|
+      >
+        {{#each group.model as |seriesDataItem index|}}
+          <group.item
+            class={{concat "line-chart-config__series-config__item chart-series-" index}}
+            @model={{readonly seriesDataItem}}
+            as |item|
+          >
+            <div class="line-chart-config__series-config__item__content">
+              {{if (eq @seriesType "dimension") seriesDataItem.name seriesDataItem.displayName}}
             </div>
-          </item.handle>
-        </group.item>
-      {{/each}}
-    </SortableGroup>
-  </div>
+            <item.handle>
+              <div class="line-chart-config__series-config__item__handler">
+                <div></div>
+                <div></div>
+              </div>
+            </item.handle>
+          </group.item>
+        {{/each}}
+      </SortableGroup>
+    </div>
+  </DenaliInputGroup>
 </div>

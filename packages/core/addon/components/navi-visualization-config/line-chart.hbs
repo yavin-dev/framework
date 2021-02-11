@@ -9,11 +9,9 @@
   ...attributes
 >
   {{#if (or (eq @type "line-chart") this.showStackOption)}}
-    <div class="line-chart-config__header">Chart Style Options</div>
     <div class="line-chart-config__style-options">
       {{#if (eq @type "line-chart")}}
-        <div class="line-chart-config__curve-opt">
-          <span class="line-chart-config__curve-opt-title">Line Style</span>
+        <DenaliInputGroup @label="Style" class="m-b-30">
           <PowerSelect
             @triggerClass="line-chart-config__curve-opt-select"
             @options={{this.curveOptions}}
@@ -24,25 +22,23 @@
           >
             {{capitalize curve}}
           </PowerSelect>
-        </div>
-        <div class="line-chart-config__area-opt">
-          <span class="line-chart-config__area-opt-title">Area</span>
+        </DenaliInputGroup>
+        <DenaliInputGroup class="m-b-30" @label="Area">
           <DenaliSwitch
             class="line-chart-config__area-opt-select"
             @isEnabled={{@options.style.area}}
             @onChange={{pipe (pick "target.checked") (fn this.onUpdateStyle "area")}}
           />
-        </div>
+        </DenaliInputGroup>
       {{/if}}
       {{#if this.showStackOption}}
-        <div class="line-chart-config__stacked-opt">
-          <span class="line-chart-config__stacked-opt-title">Stacked</span>
+        <DenaliInputGroup @label="Stacked" class="m-b-30">
           <DenaliSwitch
             class="line-chart-config__stacked-opt-select"
             @isEnabled={{@options.style.stacked}}
             @onChange={{pipe (pick "target.checked") (fn this.onUpdateStyle "stacked")}}
           />
-        </div>
+        </DenaliInputGroup>
       {{/if}}
     </div>
     {{#if (and this.showStackOption @options.style.stacked)}}
