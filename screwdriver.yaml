@@ -17,7 +17,7 @@ jobs:
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install-chrome: ./build-scripts/setup-chrome.sh
-      - install: npm ci
+      - install: npm ci --unsafe-perm
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
@@ -41,7 +41,7 @@ jobs:
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - install-chrome: ./build-scripts/setup-chrome.sh
-      - install: npm ci
+      - install: npm ci --unsafe-perm
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
@@ -66,7 +66,7 @@ jobs:
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
-      - install: npm ci
+      - install: npm ci --unsafe-perm
       - publish: ./scripts/npm-publish.sh
     secrets:
       - NPM_TOKEN
@@ -92,7 +92,7 @@ jobs:
       - install-node: |
           sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
           export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
-      - install: npm ci
+      - install: npm ci --unsafe-perm
       - setup-ci: git clone https://github.com/screwdriver-cd/toolbox.git /tmp/ci
       - build-pages: |
           cd packages/app
