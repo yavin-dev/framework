@@ -1,7 +1,7 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="container-full is-marginless">
-  <div class="row is-marginless p-t-10 has-bg-green-400">
-    <div class="xs-col-1-1 sm-col-1-2 col-1-5">
+<div class="container-full m-b-4">
+  <div class="row is-marginless p-t-10">
+    <div class="xs-col-1-1 sm-col-1-2 col-1-5 navi-dashboard__breadcrumb">
       {{#if (feature-flag "enableDirectory")}}
         <LinkTo @route="directory.my-data" class="navi-dashboard__breadcrumb-link">Directory</LinkTo>
       {{else}}
@@ -13,34 +13,37 @@
 </div>
 
 
-<div class="row is-marginless has-bg-grey-400 has-bg-green-300">
-    <div class="xs-col-10-10 sm-col-10-10 col-2-10">
-      {{!-- Editable title --}}
-      <div class="page-title">
-        {{#if @dashboard.canUserEdit}}
-          <EditableLabel
-            class="navi-dashboard__edit-title"
-            @value={{@dashboard.title}}
-            @onChange={{route-action "updateTitle"}}
-          />
-        {{else}}
-          <span>{{@dashboard.title}}</span>
-        {{/if}}
+<div class="row">
+    <div class="xs-col-10-10 sm-col-10-10 col-3-10">
+      <div class="container-full m-b-4">
+        <div class="row">
+            {{!-- Editable title --}}
+        <div class="page-title">
+          {{#if @dashboard.canUserEdit}}
+            <EditableLabel
+              class="navi-dashboard__edit-title"
+              @value={{@dashboard.title}}
+              @onChange={{route-action "updateTitle"}}
+            />
+          {{else}}
+            <span>{{@dashboard.title}}</span>
+          {{/if}}
 
-        <FavoriteItem
-          class="navi-dashboard__fav-icon"
-          @user={{get-user}}
-          @item={{@dashboard}}
-          @click={{route-action "toggleFavorite" @dashboard}}
-        />
+          <FavoriteItem
+            class="navi-dashboard__fav-icon"
+            @user={{get-user}}
+            @item={{@dashboard}}
+            @click={{route-action "toggleFavorite" @dashboard}}
+          />
+          </div>
+    </div>
       </div>
     </div>
-    <div class="xs-hide sm-hide col-3-10 has-bg-green-200">
-
+    <div class="xs-hide sm-hide col-2-10">
     </div>
-    <div class="xs-col-10-10 sm-col-10-10 col-5-10 is-marginless p-t-10 has-bg-green-100">
-      <div class="container-full is-marginless">
-        <div class="row is-marginless reversed">
+    <div class="xs-col-10-10 sm-col-10-10 col-5-10 p-t-10">
+      <div class="container-full">
+        <div class="row reversed">
           {{!-- Actions --}}
           <div class="dashboard-actions">
 
@@ -61,7 +64,7 @@
                 @dashboard={{@dashboard}}
                 @disabled={{not @dashboard.validations.isTruelyValid}}
               >
-                <NaviIcon @icon="download" class="navi-icon__download m-r-6" />
+                <NaviIcon @icon="download" class="navi-icon__download" />
                 Export
               </DashboardActions::Export>
             {{/if}}
@@ -125,16 +128,18 @@
       </div>
     </div>
 </div>
-
-{{#if (feature-flag "enableDashboardFilters")}}
-  <DashboardFilters
-    @dashboard={{@dashboard}}
-    @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
-    @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
-    @onAddFilter={{fn @onAddFilter @dashboard}}
-  />
-{{/if}}
-
+<div class="row is-marginless">
+  <div class="col-1-1">
+    {{#if (feature-flag "enableDashboardFilters")}}
+      <DashboardFilters
+        @dashboard={{@dashboard}}
+        @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
+        @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
+        @onAddFilter={{fn @onAddFilter @dashboard}}
+      />
+    {{/if}}
+  </div>
+</div>
 <div class="navi-dashboard__body">
   {{#if @dashboard.widgets.length}}
     <div class="navi-dashboard__widgets">

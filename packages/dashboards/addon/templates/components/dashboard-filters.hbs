@@ -36,27 +36,27 @@
                 @onChange={{queue @onAddFilter (toggle "isAddingMode" this)}}
               />
             </div>
-            <DenaliInput 
+            <DenaliInput
               @wrapperClass="dashboard-filters__operator-placeholder sm-col-1-1 col-1-5 p-4"
-              @size="medium" 
-              placeholder="Operator" 
+              @size="medium"
+              placeholder="Operator"
               disabled={{true}}
             />
-            <DenaliInput 
-              @wrapperClass="dashboard-filters__values-placeholder sm-col-1-1 col-3-5 p-4" 
-              @size="medium" 
-              placeholder="Filter Values" 
+            <DenaliInput
+              @wrapperClass="dashboard-filters__values-placeholder sm-col-1-1 col-3-5 p-4"
+              @size="medium"
+              placeholder="Filter Values"
               disabled={{true}}
             />
           </div>
         </div>
       {{else}}
-        <DenaliButton 
+        <DenaliButton
           class="dashboard-filters--expanded__add-filter-button"
           @size="medium"
           @icon="filter-add"
           @style="text"
-          {{on "click" (toggle "isAddingMode" this)}} 
+          {{on "click" (toggle "isAddingMode" this)}}
         >
           Add Filter
         </DenaliButton>
