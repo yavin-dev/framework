@@ -8,7 +8,7 @@ Navi is a production quality analytics reporting UI with _out of the box_ suppor
 
 ## Try it
 
-Start exploring our sample data with the [demo app](https://yahoo.github.io/navi).
+Start exploring our sample data with the [demo app](https://yahoo.github.io/yavin).
 
 ## Requirements
 
