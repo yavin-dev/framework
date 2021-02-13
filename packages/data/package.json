@@ -58,6 +58,7 @@
     "@types/ember": "^3.16.0",
     "@types/ember-qunit": "^3.4.9",
     "@types/ember__test-helpers": "^1.7.0",
+    "@types/faker": "^5.1.6",
     "@types/lodash-es": "^4.17.3",
     "@types/papaparse": "^5.0.3",
     "@types/qunit": "^2.9.1",

@@ -1,13 +1,14 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { Factory } from 'ember-cli-mirage';
+import { Factory } from 'miragejs';
 
 export default Factory.extend({
-  index: i => i,
+  index: (i: number) => i,
 
-  id() {
+  id(): string {
+    //@ts-ignore
     return `${this.table?.id}.metric${this.index}`;
   },
 
