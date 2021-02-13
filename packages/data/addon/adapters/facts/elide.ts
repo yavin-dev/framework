@@ -22,7 +22,7 @@ import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 import moment, { Moment } from 'moment';
-import { Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
@@ -94,10 +94,16 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
         const grain = filter.parameters.grain as Grain;
         let timeValues: (Moment | string)[] = filterVals;
         if (['bet', 'nbet'].includes(operator)) {
-          const { start, end } = Interval.parseFromStrings(
-            String(filterVals[0]),
-            String(filterVals[1])
-          ).asMomentsForTimePeriod(grain);
+          let endValue = String(filterVals[1]);
+          const endMoment = moment.utc(String(filterVals[1]));
+          if (endMoment.isValid()) {
+            // convert inclusive filter values to exclusive for Interval
+            endValue = endMoment.add(1, getPeriodForGrain(grain)).toISOString();
+          }
+          const { start, end } = Interval.parseFromStrings(String(filterVals[0]), endValue).asMomentsForTimePeriod(
+            grain
+          );
+          end.subtract(1, getPeriodForGrain(grain));
           timeValues = [start, end];
         }
         filterVals = timeValues.map((v) => this.formatTimeValue(v, grain));

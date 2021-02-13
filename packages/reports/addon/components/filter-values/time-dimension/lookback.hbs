@@ -12,7 +12,7 @@
       @searchField="noop"
       @options={{this.ranges}}
       @selected={{filter-by 'isActive' this.ranges}}
-      @placeholder={{capitalize (concat this.calendarDateTimePeriod "s")}}
+      @placeholder={{capitalize (concat this.grain "s")}}
       @onChange={{pipe (pick 'interval') this.setPresetInterval}}
       @triggerClass="filter-values--lookback-trigger is-medium"
       @dropdownClass="filter-values--lookback-dropdown"
@@ -20,7 +20,7 @@
       @extra={{hash 
         value=this.lookback 
         onUpdate=this.setLookback
-        placeholder=(capitalize (concat this.calendarDateTimePeriod "s"))
+        placeholder=(capitalize (concat this.grain "s"))
       }}
       as |item|
     >

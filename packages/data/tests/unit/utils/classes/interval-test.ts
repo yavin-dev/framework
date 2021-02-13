@@ -86,13 +86,13 @@ module('Unit | Utils | Interval Class', function () {
     );
 
     assert.equal(
-      new Interval(moment('2014-10-10'), moment('2015-10-09')).diffForTimePeriod('day'),
+      new Interval(moment('2014-10-10'), moment('2015-10-10')).diffForTimePeriod('day'),
       365,
       'Interval has 365 days for a 1 year period'
     );
 
     assert.equal(
-      new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-10 09:00:00.000')).diffForTimePeriod('hour'),
+      new Interval(moment('2015-11-09 00:00:00.000'), moment('2015-11-10 10:00:00.000')).diffForTimePeriod('hour'),
       34,
       'Interval has 34 hours for a 1 day 10 hour time period'
     );
@@ -179,9 +179,9 @@ module('Unit | Utils | Interval Class', function () {
 
     assert.equal(moments.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
-    assert.equal(moments.end.format(FORMAT), '2017-10-09', 'End moment is at start of next isoWeek');
+    assert.equal(moments.end.format(FORMAT), '2017-10-16', 'End moment is at start of next isoWeek');
 
-    moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek');
+    moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek', false);
 
     assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
   });
@@ -256,7 +256,7 @@ module('Unit | Utils | Interval Class', function () {
 
     assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
-    assert.equal(newInterval.end?.format(FORMAT), '2017-10-09', 'End moment is at start of isoWeek');
+    assert.equal(newInterval.end?.format(FORMAT), '2017-10-16', 'End moment is at start of isoWeek');
   });
 
   test('asStrings', function (assert) {

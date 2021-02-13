@@ -55,7 +55,7 @@ export function intervalPeriodForGrain(grain: Grain): DateGrain {
  * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
  * e.g. ([P7D, current], day, in) -> [2020-01-01,2020-01-08]
  * @param prevValues - the previous filter values
- * @param dateTimePeriod - the time period being requested
+ * @param grain - the time period being requested
  * @param newOperator - the operator to build values for
  */
 export function valuesForOperator(
@@ -64,25 +64,27 @@ export function valuesForOperator(
   newOperator?: InternalOperatorType
 ): TimeFilterValues {
   newOperator = newOperator || internalOperatorForValues(filter);
-  const prevValues = filter.values as TimeFilterValues;
-  const startStr = prevValues[0] || 'P1D';
-  let endStr = prevValues[1];
-  if (!endStr) {
-    endStr = 'next';
+  const filterPeriod = getPeriodForGrain(filter.parameters.grain as Grain);
+  const [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
+
+  let end = endStr;
+  if (moment.utc(endStr).isValid()) {
+    end = moment
+      .utc(endStr)
+      .add(1, filterPeriod)
+      .toISOString();
   }
+
+  const interval = Interval.parseFromStrings(startStr, end);
 
   if (newOperator === OPERATORS.current) {
     return ['current', 'next'];
   } else if (newOperator === OPERATORS.lookback) {
-    const interval = Interval.parseFromStrings(startStr, endStr);
+    const currentEnd = Interval.parseFromStrings('P1D', 'current').asMomentsForTimePeriod(grain, false).end;
     const end = interval.asMomentsForTimePeriod(grain).end;
-    let intervalTimePeriod = intervalPeriodForGrain(grain);
 
     let intervalValue = 1;
-    if (end.isSame(moment.utc().startOf(grain)
-          .subtract(1, getPeriodForGrain(grain))
-          .utc(true)
-      )) {
+    if (end.isSame(currentEnd)) {
       // end is 'current', get lookback amount
       intervalValue = interval.diffForTimePeriod(grain);
     }
@@ -93,22 +95,19 @@ export function valuesForOperator(
       intervalValue = intervalValue * MONTHS_IN_QUARTER;
     }
 
-    const dateTimePeriodLabel = intervalTimePeriod[0].toUpperCase();
-    return [`P${intervalValue}${dateTimePeriodLabel}`, 'current'];
+    const grainLabel = intervalPeriodForGrain(grain)[0].toUpperCase();
+    return [`P${intervalValue}${grainLabel}`, 'current'];
   } else if (newOperator === OPERATORS.since) {
-    const interval = Interval.parseFromStrings(startStr, endStr);
     const { start } = interval.asMomentsForTimePeriod(grain);
-    return [start.utc(true).toISOString()];
+    return [start.toISOString()];
   } else if (newOperator === OPERATORS.before) {
-    const interval = Interval.parseFromStrings(startStr, endStr);
     const { end } = interval.asMomentsForTimePeriod(grain);
     return [end.toISOString()];
   } else if (newOperator === OPERATORS.dateRange) {
-    const interval = Interval.parseFromStrings(startStr, endStr);
     const { start, end } = interval.asMomentsForTimePeriod(grain);
-    return [start.toISOString(), end.toISOString()];
+    return [start.toISOString(), end.subtract(1, filterPeriod).toISOString()];
   }
-  warn(`No operator was found for the values '${prevValues.join(',')}'`, {
+  warn(`No operator was found for the values '${filter.values.join(',')}'`, {
     id: 'time-dimension-filter-builder-no-operator',
   });
 

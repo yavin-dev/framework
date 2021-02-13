@@ -2116,7 +2116,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
 
     const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
-    assert.dom(navClicksCell()).hasText('967.4', 'The original metric value has no formatting');
+    assert.dom(navClicksCell()).hasText('880.41', 'The original metric value has no formatting');
     assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
 
     find('.number-format-selector__radio-money input').checked = true; // change format to money
@@ -2125,6 +2125,6 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$967.40', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$880.41', 'The metric is re-rendered in the money format');
   });
 });

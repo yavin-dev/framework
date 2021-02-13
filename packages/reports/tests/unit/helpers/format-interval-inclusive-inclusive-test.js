@@ -22,12 +22,12 @@ module('Unit | Helper | format interval inclusive inclusive', function () {
   test('Formatting start and end', function (assert) {
     assert.expect(1);
 
-    let interval = new Interval(new Duration('P3W'), moment.utc('10-07-2014', FORMAT)),
+    let interval = new Interval(new Duration('P4W'), moment.utc('10-14-2014', FORMAT)),
       formattedString = formatInterval([interval, 'isoWeek']);
 
     assert.equal(
       formattedString,
-      'Sep 22, 2014 - Oct 12, 2014',
+      'Sep 15, 2014 - Oct 12, 2014',
       'Interval was converted to inclusive end date and was correctly formatted'
     );
   });

@@ -108,6 +108,7 @@ export function formatInterval([interval, timePeriod]) {
      * range for user display
      */
     let range = interval.asMomentsForTimePeriod(timePeriod);
+    range.end.subtract(1, timePeriod);
 
     return formatDateRange(range.start, range.end, timePeriod);
   }

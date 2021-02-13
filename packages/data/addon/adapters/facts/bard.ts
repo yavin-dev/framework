@@ -158,8 +158,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
     }
 
-    start = start.replace('T00:00:00.000Z', '');
-    end = end.replace('T00:00:00.000Z', '');
+    // Removing Z to strip off time zone if it's there
+    start = start.replace('Z', '');
+    end = end.replace('Z', '');
     return `${start}/${end}`;
   }
 

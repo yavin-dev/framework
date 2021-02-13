@@ -41,7 +41,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     await clickItemFilter('metric', 'Used Amount');
-    await fillIn('input.filter-values--value-input', '30');
+    await fillIn('input.filter-values--value-input', '1');
 
     await clickItem('dimension', 'Date Time');
     await clickItemFilter('dimension', 'Date Time');
@@ -64,7 +64,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     assert
       .dom('.filter-values--dimension-select__trigger')
       .containsText('× 1', 'Dimension filter input contains the right value');
-    assert.dom('.filter-values--value-input').hasValue('30', 'Having input has the right value');
+    assert.dom('.filter-values--value-input').hasValue('1', 'Having input has the right value');
 
     await click('.report-builder__container-header__filters-toggle');
     assert
@@ -73,7 +73,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText('Used Amount greater than (>) 30', 'Collapsed filter contains right text');
+      .containsText('Used Amount greater than (>) 1', 'Collapsed filter contains right text');
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),

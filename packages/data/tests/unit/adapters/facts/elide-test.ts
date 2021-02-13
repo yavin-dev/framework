@@ -197,7 +197,6 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
-    debugger;
     assert.equal(
       adapter['dataQueryFromRequest']({
         table: 'myTable',
