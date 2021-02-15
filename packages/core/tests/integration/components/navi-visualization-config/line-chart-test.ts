@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render } from '@ember/test-helpers';
+import { click, find, render, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext } from 'ember-test-helpers';
 import BaseVisualizationManifest from 'navi-core/navi-visualization-manifests/base';
@@ -84,7 +84,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
       .isVisible('The series config component is rendered when `stacked` option is on');
 
     await click('.line-chart-config__stacked-opt-select');
-    assert.dom('.line-chart-config__series-config').isVisible('Stacked it not true');
+    assert.dom('.line-chart-config__stacked-opt-select').isNotChecked('Stacked toggle is checked');
 
     this.set('request', {
       hasGroupBy: false,
