@@ -11,7 +11,7 @@
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
-        <div class={{concat "m-b-5 number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
+        <div class="number-format-selector__radio-{{dasherize predefinedFormat.name}} m-b-5">
           <Radio.Option
             @name="format"
             @value={{predefinedFormat.format}}

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, find, render, waitUntil } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext } from 'ember-test-helpers';
 import BaseVisualizationManifest from 'navi-core/navi-visualization-manifests/base';
