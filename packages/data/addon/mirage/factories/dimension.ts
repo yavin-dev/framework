@@ -1,12 +1,12 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { Factory } from 'ember-cli-mirage';
 import faker from 'faker';
 
 export default Factory.extend({
-  index: i => i,
+  index: (i: number) => i,
 
   id() {
     return `${this.table?.id}.dimension${this.index}`;
@@ -34,8 +34,13 @@ export default Factory.extend({
 
   expression: null,
 
-  valueSourceType(i) {
-    return { 1: 'ENUM', 2: 'TABLE' }[i] || 'NONE';
+  valueSourceType(i: number) {
+    if (i === 1) {
+      return 'ENUM';
+    } else if (i === 2) {
+      return 'TABLE';
+    }
+    return 'NONE';
   },
 
   tableSource() {
@@ -44,7 +49,7 @@ export default Factory.extend({
 
   values() {
     return this.valueSourceType === 'ENUM'
-      ? new Array(5).fill().map((_, idx) => {
+      ? new Array(5).fill(undefined).map((_, idx) => {
           faker.seed(this.index + idx);
           return `${faker.commerce.productName()} (enum)`;
         })
