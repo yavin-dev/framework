@@ -96,7 +96,7 @@ dependencies {
 To run the demo app
 
 ```shell script
-$ ./gradlew bootRun -Pbuild_env=prod
+$ ./gradlew bootRun -Penvironment=production
 ```
 
 Build for dev environment
