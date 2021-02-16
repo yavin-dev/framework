@@ -4,7 +4,7 @@
     {{#each this.results as |result|}}
       <tr class="navi-search-asset-result navi-search-results__item--row">
        <td class="navi-search-asset-result__icon navi-search-results__item--icon navi-search-results__item--cell">
-           <NaviIcon @icon={{result.icon}} />
+           <DenaliIcon @icon={{result.icon}} />
         </td>
         <td class="navi-search-asset-result__item navi-search-results__item--cell">
           <LinkTo @route={{result.route}} @model={{result.modelId}} {{on "click" @closeResults}} class="navi-search--link">
@@ -16,7 +16,7 @@
   </tbody>
 </table>
 {{#if this.hasMoreResults}}
-  <button {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button" type="button">
+  <DenaliButton @style="text" {{on "click" (toggle "showTop" this)}} class="navi-search-result-options__show-button">
     {{if this.showTop "Show more" "Show less"}}
-  </button>
+  </DenaliButton>
 {{/if}}

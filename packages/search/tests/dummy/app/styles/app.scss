@@ -3,4 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'components/index';
+@import 'denali/denali';
+@import 'navi-search';
+
+.navi-search-bar {
+  width: 600px;
+}
