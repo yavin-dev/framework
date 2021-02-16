@@ -7,7 +7,7 @@
  * Usage:
  *  <NaviColumnConfig::Base
  *    @column={{this.column}}
- *    @toggleColumnFilter={{this.toggleColumnFilter}}
+ *    @onAddFilter={{this.onAddFilter}}
  *    @onRenameColumn={{this.onRenameColumn}}
  *    @onUpdateColumnParam={{this.onUpdateColumnParam}}
  *  />

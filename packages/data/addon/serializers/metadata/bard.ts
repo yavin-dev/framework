@@ -8,6 +8,9 @@ import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import RequestConstraintMetadataModel, {
+  RequestConstraintMetadataPayload
+} from 'navi-data/models/metadata/request-constraint';
 import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
 import { assert } from '@ember/debug';
 import { isNone } from '@ember/utils';
@@ -117,6 +120,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     const metrics: { [k: string]: MetricMetadataModel } = {};
     const dimensions: { [k: string]: DimensionMetadataModel } = {};
     const timeDimensions: { [k: string]: TimeDimensionMetadataModel } = {};
+    const requestConstraints: { [k: string]: RequestConstraintMetadataModel } = {};
     const convertedToColumnFunctions: { [k: string]: ColumnFunctionMetadataModel } = {};
     const tablePayloads: BardTableMetadataPayload[] = rawTables.map((table: RawTablePayload) => {
       // Reduce all columns regardless of timegrain into one object
@@ -191,6 +195,15 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       allTableColumns.timeDimensions[dateTime.id] = dateTime;
       allTableColumns.tableTimeDimensionIds.add(dateTime.id);
 
+      const requiredDateTimeFilter = this.createRequiredDateTimeFilterConstraint(table, dataSourceName);
+      requestConstraints[requiredDateTimeFilter.id] = requiredDateTimeFilter;
+      const constraints = [requiredDateTimeFilter.id];
+      if (!timeGrainInfo.hasAllGrain) {
+        const requiredDateTimeColumn = this.createRequiredDateTimeColumnConstraint(table, dataSourceName);
+        requestConstraints[requiredDateTimeColumn.id] = requiredDateTimeColumn;
+        constraints.push(requiredDateTimeColumn.id);
+      }
+
       return {
         id: table.name,
         name: table.longName,
@@ -204,6 +217,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         metricIds: [...allTableColumns.tableMetricIds],
         dimensionIds: [...allTableColumns.tableDimensionIds],
         timeDimensionIds: [...allTableColumns.tableTimeDimensionIds],
+        requestConstraintIds: [...constraints],
       };
     });
 
@@ -215,6 +229,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       metrics: Object.values(metrics),
       timeDimensions: Object.values(timeDimensions),
       columnFunctions: [...columnFunctions, ...Object.values(convertedToColumnFunctions)],
+      requestConstraints: Object.values(requestConstraints),
     };
   }
 
@@ -304,6 +319,60 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       timeZone: 'UTC',
     };
     return this.timeDimensionFactory.create(payload);
+  }
+
+  /**
+   * Constructs a request constraint that requires a date time column
+   * @param table - the table to create a dateTime for
+   * @param dataSourceName - data source name
+   */
+  private createRequiredDateTimeColumnConstraint(
+    table: RawTablePayload,
+    dataSourceName: string
+  ): RequestConstraintMetadataModel {
+    const id = `${table.name}.dateTime`;
+    const payload: RequestConstraintMetadataPayload = {
+      id: `${this.namespace}:requestConstraint(columns=${id})`,
+      name: 'Date Time Column',
+      description: `The request has a Date Time column.`,
+      source: dataSourceName,
+      type: 'existence',
+      constraint: {
+        property: 'columns',
+        matches: {
+          type: 'timeDimension',
+          field: id
+        }
+      }
+    };
+    return this.requestConstraintFactory.create(payload);
+  }
+
+  /**
+   * Constructs a request constraint that requires a date time filter
+   * @param table - the table to create a dateTime for
+   * @param dataSourceName - data source name
+   */
+  private createRequiredDateTimeFilterConstraint(
+    table: RawTablePayload,
+    dataSourceName: string
+  ): RequestConstraintMetadataModel {
+    const id = `${table.name}.dateTime`;
+    const payload: RequestConstraintMetadataPayload = {
+      id: `${this.namespace}:requestConstraint(filters=${id})`,
+      name: 'Date Time Filter',
+      description: 'The request has a Date Time filter that specifies an interval.',
+      source: dataSourceName,
+      type: 'existence',
+      constraint: {
+        property: 'filters',
+        matches: {
+          type: 'timeDimension',
+          field: id
+        }
+      }
+    };
+    return this.requestConstraintFactory.create(payload);
   }
 
   /**
@@ -505,7 +574,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
   }
 
   /**
-   * @param metricFunctions - raw metric functions
+   * @param columnFunctions - raw column functions
    * @param dataSourceName - data source name
    */
   private normalizeColumnFunctions(

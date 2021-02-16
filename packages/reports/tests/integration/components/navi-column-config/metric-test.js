@@ -12,7 +12,7 @@ const TEMPLATE = hbs`
 <NaviColumnConfig::Base
   @column={{this.column}}
   @cloneColumn={{optional this.cloneColumn}}
-  @toggleColumnFilter={{optional this.toggleColumnFilter}}
+  @onAddFilter={{optional this.onAddFilter}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{this.onUpdateColumnParam}}
 />

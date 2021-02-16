@@ -6,9 +6,9 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
 <NaviColumnConfig::Base
-  @column={{this.column}} 
+  @column={{this.column}}
   @cloneColumn={{optional this.cloneColumn}}
-  @toggleColumnFilter={{optional this.toggleColumnFilter}}
+  @onAddFilter={{optional this.onAddFilter}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
 />`;
@@ -69,7 +69,7 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
       fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
     };
     this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
-    this.toggleColumnFilter = () => assert.ok(true, 'toggleColumnFilter is called when filter is clicked');
+    this.onAddFilter = () => assert.ok(true, 'onAddFilter is called when filter is clicked');
     this.onUpdateColumnName = (newName) =>
       assert.equal(newName, 'Some other value', 'onUpdateColumnName action is called with new column name');
 

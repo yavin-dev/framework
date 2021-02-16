@@ -12,7 +12,7 @@
  *    @onOpenColumn={{this.openColumn}}
  *    @onRemoveColumn={{fn @onRemoveColumn column.fragment}}
  *    @cloneColumn={{fn this.cloneColumn column}}
- *    @toggleColumnFilter={{fn @onToggleFilter column}}
+ *    @onAddFilter={{fn @onAddFilter column}}
  *    @onRenameColumn={{fn @onRenameColumn column.fragment}}
  *    @onUpdateColumnParam={{fn @onUpdateColumnParam column.fragment}}
  *  />

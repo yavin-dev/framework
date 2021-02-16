@@ -7,10 +7,7 @@ import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import {
-  getSelectedMetricsOfBase,
-  getFilteredMetricsOfBase,
-  getUnfilteredMetricsOfBase,
+import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase ,
 } from 'navi-reports/utils/request-metric';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
@@ -20,6 +17,8 @@ import { Parameters } from 'navi-data/adapters/facts/interface';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import TableMetadataModel from 'navi-data/models/metadata/table';
+import { OPERATORS, valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
+import { Grain } from 'navi-data/utils/date';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
   operator: 'gt',
@@ -53,51 +52,13 @@ export default class FilterConsumer extends ActionConsumer {
   }
 
   actions = {
-    [RequestActions.TOGGLE_FILTER](this: FilterConsumer, route: Route, column: ColumnFragment) {
-      const { canonicalName, columnMetadata, type, parameters } = column;
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-      const filter = request.filters.find((filter) => filter.canonicalName === canonicalName);
+    [RequestActions.ADD_FILTER](this: FilterConsumer, route: Route, column: ColumnFragment) {
+      const { columnMetadata, type, parameters } = column;
 
-      //do not add filter if it already exists
-      if (!filter) {
-        switch (type) {
-          case 'metric':
-            this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, columnMetadata, parameters);
-            break;
-          case 'dimension':
-          case 'timeDimension':
-            this.requestActionDispatcher.dispatch(
-              RequestActions.ADD_DIMENSION_FILTER,
-              route,
-              columnMetadata,
-              parameters
-            );
-            break;
-        }
+      if (type === 'metric') {
+        this.requestActionDispatcher.dispatch(RequestActions.ADD_METRIC_FILTER, route, columnMetadata, parameters);
       } else {
-        //TODO fix me
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, column);
-      }
-    },
-
-    [RequestActions.TOGGLE_DIMENSION_FILTER](
-      this: FilterConsumer,
-      route: Route,
-      dimensionMetadataModel: DimensionMetadataModel
-    ) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-      const filter = request.filters.find(
-        ({ type, columnMetadata }) =>
-          ['dimension', 'timeDimension'].includes(type) && columnMetadata === dimensionMetadataModel
-      );
-
-      //do not add filter if it already exists
-      if (!filter) {
-        this.requestActionDispatcher.dispatch(RequestActions.ADD_DIMENSION_FILTER, route, dimensionMetadataModel);
-      } else {
-        this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
+        this.requestActionDispatcher.dispatch(RequestActions.ADD_DIMENSION_FILTER, route, columnMetadata, parameters);
       }
     },
 
@@ -118,7 +79,7 @@ export default class FilterConsumer extends ActionConsumer {
         type = type?.toLowerCase();
         const opDictionary: Record<string, FilterFragment['operator']> = {
           time: 'gte',
-          date: 'gte',
+          date: 'bet',
           number: 'eq',
           default: 'in',
         };
@@ -127,15 +88,23 @@ export default class FilterConsumer extends ActionConsumer {
       };
 
       const defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
-
       const defaultParams = dimensionMetadataModel.getDefaultParameters() || {};
-      request.addFilter({
+      const filter = {
         type: dimensionMetadataModel.metadataType,
         source: dimensionMetadataModel.source,
         field: dimensionMetadataModel.id,
         parameters: { ...defaultParams, ...parameters },
         operator: defaultOperator,
         values: [],
+      };
+      let values;
+      if (dimensionMetadataModel.metadataType === 'timeDimension') {
+        values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
+      }
+
+      request.addFilter({
+        ...filter,
+        ...(values ? { values } : {})
       });
     },
 
@@ -157,38 +126,6 @@ export default class FilterConsumer extends ActionConsumer {
         parameters: { ...defaultParams, ...parameters },
         ...DEFAULT_METRIC_FILTER,
       });
-    },
-
-    /**
-     * @action TOGGLE_METRIC_FILTER
-     * @param route - route that has a model that contains a request property
-     * @param metricMetadataModel - metric to filter
-     */
-    [RequestActions.TOGGLE_METRIC_FILTER](
-      this: FilterConsumer,
-      route: Route,
-      metricMetadataModel: MetricMetadataModel
-    ) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-
-      const metricFilters = getFilteredMetricsOfBase(metricMetadataModel, request);
-
-      const nextParameter = this._getNextParameterForMetric(metricMetadataModel, request);
-      const shouldAdd = !!nextParameter || !metricFilters.length;
-
-      if (shouldAdd) {
-        this.requestActionDispatcher.dispatch(
-          RequestActions.ADD_METRIC_FILTER,
-          route,
-          metricMetadataModel,
-          nextParameter
-        );
-      } else {
-        metricFilters.forEach((filter) => {
-          this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
-        });
-      }
     },
 
     [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {

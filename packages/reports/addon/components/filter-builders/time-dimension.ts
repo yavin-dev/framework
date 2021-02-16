@@ -51,6 +51,8 @@ export function intervalPeriodForGrain(grain: Grain): DateGrain {
   return period;
 }
 
+type FilterLike = { values: FilterFragment['values']; operator: FilterFragment['operator'] };
+
 /**
  * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
  * e.g. ([P7D, current], day, in) -> [2020-01-01,2020-01-08]
@@ -59,7 +61,7 @@ export function intervalPeriodForGrain(grain: Grain): DateGrain {
  * @param newOperator - the operator to build values for
  */
 export function valuesForOperator(
-  filter: FilterFragment,
+  filter: FilterLike,
   grain: Grain,
   newOperator?: InternalOperatorType
 ): TimeFilterValues {
@@ -106,7 +108,7 @@ export function valuesForOperator(
   return [];
 }
 
-export function internalOperatorForValues(filter: FilterFragment): InternalOperatorType {
+export function internalOperatorForValues(filter: FilterLike): InternalOperatorType {
   const { values, operator } = filter;
   const [startStr, endStr] = values as string[];
 

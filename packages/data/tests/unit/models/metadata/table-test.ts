@@ -1,7 +1,10 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import KegService from 'navi-data/services/keg';
 
-let Payload, Model, Keg, TableFactory;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegService, TableFactory: any;
 
 module('Unit | Metadata Model | Table', function (hooks) {
   setupTest(hooks);
@@ -16,6 +19,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
       metricIds: ['pv'],
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
+      requestConstraintIds: ['constraint'],
       isFact: true,
       source: 'bardOne',
       tags: ['DISPLAY'],
@@ -49,12 +53,24 @@ module('Unit | Metadata Model | Table', function (hooks) {
       { namespace: 'bardOne' }
     );
     Keg.push(
-      'metadata/time-dimension',
+      'metadata/timeDimension',
       {
         id: 'orderDate',
         name: 'Order Date',
         description: 'Order Date',
         category: 'category',
+        source: 'bardOne',
+      },
+      { namespace: 'bardOne' }
+    );
+    Keg.push(
+      'metadata/requestConstraint',
+      {
+        id: 'constraint',
+        name: 'Constraint',
+        description: 'Constraint',
+        type: 'existence',
+        constraint: {},
         source: 'bardOne',
       },
       { namespace: 'bardOne' }
@@ -70,7 +86,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
   });
 
   test('it properly hydrates properties', function (assert) {
-    assert.expect(11);
+    assert.expect(12);
 
     const {
       id,
@@ -81,6 +97,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
       metricIds,
       dimensionIds,
       timeDimensionIds,
+      requestConstraintIds,
       source,
       isFact,
       tags,
@@ -94,6 +111,11 @@ module('Unit | Metadata Model | Table', function (hooks) {
     assert.deepEqual(metricIds, Payload.metricIds, 'metricIds property is hydrated properly');
     assert.deepEqual(dimensionIds, Payload.dimensionIds, 'dimensionIds property is hydrated properly');
     assert.deepEqual(timeDimensionIds, Payload.timeDimensionIds, 'timeDimensionIds property is hydrated properly');
+    assert.deepEqual(
+      requestConstraintIds,
+      Payload.requestConstraintIds,
+      'requestConstraintIds property is hydrated properly'
+    );
     assert.equal(source, Payload.source, 'source property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
     assert.deepEqual(isFact, Payload.isFact, 'isFact property is hydrated properly');
@@ -125,6 +147,16 @@ module('Unit | Metadata Model | Table', function (hooks) {
       Model.timeDimensions[0],
       Keg.getById('metadata/timeDimension', 'orderDate', 'bardOne'),
       'The Order date time-dimension is properly hydrated'
+    );
+  });
+
+  test('Request Constraint in Table', function (assert) {
+    assert.expect(1);
+
+    assert.equal(
+      Model.requestConstraints[0],
+      Keg.getById('metadata/requestConstraint', 'constraint', 'bardOne'),
+      'The requestConstraint is properly hydrated'
     );
   });
 });

@@ -22,7 +22,7 @@ const TEMPLATE = hbs`
   @report={{this.report}}
   @onAddColumn={{optional this.onAddColumn}}
   @onRemoveColumn={{optional this.onRemoveColumn}}
-  @onToggleFilter={{optional this.onToggleFilter}}
+  @onAddFilter={{optional this.onAddFilter}}
   @openFilters={{optional this.openFilters}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onReorderColumn={{optional this.onReorderColumn}}
@@ -334,7 +334,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
 
     this.onAddColumn = () => assert.ok(true, 'onAddColumn was called for time dimension column');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called for time dimension column');
-    this.onToggleFilter = () => assert.ok(true, 'onToggleFilter was called for time dimension column');
+    this.onAddFilter = () => assert.ok(true, 'onAddFilter was called for time dimension column');
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
     await render(TEMPLATE);
@@ -358,7 +358,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     assert.expect(8);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onToggleFilter = () => assert.ok(true, 'Filter was called');
+    this.onAddFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('metric', 'navClicks', 'bardOne');
     await render(TEMPLATE);
@@ -396,7 +396,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     assert.expect(8);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onToggleFilter = () => assert.ok(true, 'Filter was called');
+    this.onAddFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('dimension', 'browser', 'bardOne');
 

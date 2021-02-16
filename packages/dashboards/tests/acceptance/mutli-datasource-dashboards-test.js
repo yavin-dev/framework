@@ -3,7 +3,7 @@ import { visit, click, findAll, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest, test } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
@@ -65,7 +65,6 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     await selectChoose('.navi-table-select__trigger', 'Inventory');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Current');
     await clickItem('dimension', 'Container');
     await clickItem('metric', 'Used Amount');

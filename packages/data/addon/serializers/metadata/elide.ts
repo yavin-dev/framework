@@ -102,6 +102,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         metricIds: [],
         dimensionIds: [],
         timeDimensionIds: [],
+        requestConstraintIds: [],
         source,
       };
 
@@ -133,6 +134,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       dimensions,
       timeDimensions,
       columnFunctions,
+      requestConstraints: [],
     };
   }
 

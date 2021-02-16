@@ -35,10 +35,11 @@
       </NaviIcon>
 
       <div class="grouped-list__icon-set">
-        <NaviIcon
-          @icon="filter"
+        <DenaliIcon
+          @size="small"
+          @icon="filter-add"
           class={{concat (if (get-shallow this.dimensionsFiltered item.id) "grouped-list__filter--active ") "grouped-list__filter"}}
-          {{on "click" (fn this.onToggleDimFilter item)}}
+          {{on "click" (fn @onAddDimensionFilter item undefined)}}
         />
       </div>
     </div>

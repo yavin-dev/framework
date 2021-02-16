@@ -32,6 +32,11 @@ export default Route.extend({
   updateReportActionDispatcher: service(),
 
   /**
+   * @property {Service} requestConstrainer
+   */
+  requestConstrainer: service(),
+
+  /**
    * @property {String} defaultVisualizationType - visualization type if not
    *                                               specified in report
    */
@@ -58,6 +63,8 @@ export default Route.extend({
    * @override
    */
   afterModel(report) {
+    this.requestConstrainer.constrain(this);
+
     if (get(report, 'isNew') && get(report, 'request.validations.isInvalid')) {
       return this.replaceWith(`${this.routeName}.edit`, get(report, 'tempId'));
     }

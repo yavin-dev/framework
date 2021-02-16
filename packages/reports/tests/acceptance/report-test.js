@@ -104,7 +104,6 @@ module('Acceptance | Navi Report', function (hooks) {
 
     /* == Add filter == */
     await clickItemFilter('dimension', 'Operating System');
-    await clickItemFilter('dimension', 'Date Time');
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -149,7 +148,6 @@ module('Acceptance | Navi Report', function (hooks) {
 
     //add date-dimension
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
 
     //set the filter interval
     await selectChoose('.filter-builder__operator-trigger', 'Between');
@@ -241,7 +239,6 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports');
     await visit('/reports/new');
 
-    await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
@@ -302,7 +299,6 @@ module('Acceptance | Navi Report', function (hooks) {
 
     //Add a metrics and save the report
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
     await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__save-btn');
@@ -484,8 +480,6 @@ module('Acceptance | Navi Report', function (hooks) {
     // Build a report
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
-    await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await click('.navi-report__run-btn');
 
     assert.ok(TempIdRegex.test(currentURL()), 'Creating a report brings user to /view route with a temp id');
@@ -1107,7 +1101,6 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
 
     await click('.navi-report__run-btn');
@@ -1455,37 +1448,44 @@ module('Acceptance | Navi Report', function (hooks) {
       .isVisible("Dimension select is used when the dimension's storage strategy is not 'none'");
   });
 
-  test('filter - add and remove using filter icon', async function (assert) {
+  test('filter - add using filter icon', async function (assert) {
     assert.expect(4);
 
     await visit('/reports/1');
     //add dimension filter
     await clickItemFilter('dimension', 'Operating System');
 
-    assert.ok(
-      !!$('.filter-builder__subject:contains(Operating System)'.length),
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Operating System)').length,
+      1,
       'The Operating System dimension filter is added'
     );
 
     //remove filter by clicking on filter icon again
     await clickItemFilter('dimension', 'Operating System');
 
-    assert.notOk(
-      !!$('.filter-builder__subject:contains(Operating System)').length,
-      'The Operating System dimension filter is removed when filter icon is clicked again'
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Operating System)').length,
+      2,
+      'The Operating System dimension filter is added a second time'
     );
 
     //add metric filter
     await clickItemFilter('metric', 'Ad Clicks');
 
-    assert.ok(!!$('.filter-builder__subject:contains(Ad Clicks)').length, 'The Ad Clicks metric filter is added');
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Ad Clicks)').length,
+      1,
+      'The Ad Clicks metric filter is added'
+    );
 
     //remove metric filter by clicking on filter icon again
     await clickItemFilter('metric', 'Ad Clicks');
 
-    assert.notOk(
-      !!$('.filter-builder__subject:contains(Ad Clicks)').length,
-      'The Ad Clicks metric filter is removed when filter icon is clicked again'
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Ad Clicks)').length,
+      2,
+      'The Ad Clicks metric filter is added a second time'
     );
   });
 
@@ -1846,7 +1846,6 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
@@ -1887,10 +1886,9 @@ module('Acceptance | Navi Report', function (hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', 'no');
     await selectChoose('.filter-values--dimension-select__trigger', 'yes');
 
-    await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
 
-    await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
 

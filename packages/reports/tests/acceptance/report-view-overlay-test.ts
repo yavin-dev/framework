@@ -57,11 +57,11 @@ module('Acceptance | report-view-overlay', function (hooks) {
     assert.expect(4);
 
     await visit('/reports/1/view');
-    await clickItem('metric', 'Nav Link Clicks', undefined);
+    await clickItem('metric', 'Nav Link Clicks');
     assertOverlayNotVisible(assert, 'The overlay is not visible when a duplicate column is added');
     await click('[aria-label="delete metric Nav Link Clicks"]');
     assertOverlayNotVisible(assert, 'The overlay is not visible when a duplicate column is removed');
-    await clickItem('metric', 'Revenue', undefined);
+    await clickItem('metric', 'Revenue');
     assertOverlayVisible(assert, 'The overlay is visible when a new column is added');
     await clickRevertReport();
     assertOverlayNotVisible(assert);
@@ -71,12 +71,12 @@ module('Acceptance | report-view-overlay', function (hooks) {
     assert.expect(5);
 
     await visit('/reports/1/view');
-    await clickItem('metric', 'Revenue', undefined);
+    await clickItem('metric', 'Revenue');
     assertOverlayVisible(assert, 'The overlay is visible when a new column is added');
     await clickOverlayDismiss();
     assertOverlayNotVisible(assert, 'The overlay is not visible after being dismissed');
     assertReportNeedsRun(assert, 'Dismissing the overlay does not update the report');
-    await clickItem('dimension', 'Age', undefined);
+    await clickItem('dimension', 'Age');
     assertOverlayNotVisible(assert, 'The overlay is not visible when new updates are made');
     assertReportNeedsRun(assert, 'The report still needs to be run');
   });

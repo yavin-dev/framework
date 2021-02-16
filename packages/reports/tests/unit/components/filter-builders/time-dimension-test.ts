@@ -42,6 +42,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
+      isRequired: false,
       filter,
       onUpdateFilter: () => undefined,
     };
@@ -72,6 +73,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     filter.updateParameters({ grain: 'isoWeek' });
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
+      isRequired: false,
       filter,
       onUpdateFilter: () => undefined,
     };

@@ -13,6 +13,9 @@ import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-d
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import RequestConstraintMetadataModel, {
+  RequestConstraintMetadataPayload
+} from 'navi-data/models/metadata/request-constraint';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -385,6 +388,7 @@ const TablePayloads: BardTableMetadataPayload[] = [
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'tableName.dateTime'],
     timeGrainIds: ['day', 'month'],
+    requestConstraintIds: ['normalizer-generated:requestConstraint(filters=tableName.dateTime)'],
     hasAllGrain: true,
   },
   {
@@ -399,6 +403,10 @@ const TablePayloads: BardTableMetadataPayload[] = [
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'secondTable.dateTime'],
     timeGrainIds: ['day', 'isoWeek'],
+    requestConstraintIds: [
+      'normalizer-generated:requestConstraint(filters=secondTable.dateTime)',
+      'normalizer-generated:requestConstraint(columns=secondTable.dateTime)'
+    ],
     hasAllGrain: false,
   },
 ];
@@ -760,8 +768,36 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
   },
 ];
 
+const RequestConstraintPayloads: RequestConstraintMetadataPayload[] = [
+  {
+    id: 'normalizer-generated:requestConstraint(filters=tableName.dateTime)',
+    name: 'Date Time Filter',
+    description: 'The request has a Date Time filter that specifies an interval.',
+    type: 'existence',
+    constraint: { property: 'filters', matches: { type: 'timeDimension', field: 'tableName.dateTime' } },
+    source: 'bardOne'
+  },
+  {
+    id: 'normalizer-generated:requestConstraint(filters=secondTable.dateTime)',
+    name: 'Date Time Filter',
+    description: 'The request has a Date Time filter that specifies an interval.',
+    type: 'existence',
+    constraint: { property: 'filters', matches: { type: 'timeDimension', field: 'secondTable.dateTime' } },
+    source: 'bardOne'
+  },
+  {
+    id: 'normalizer-generated:requestConstraint(columns=secondTable.dateTime)',
+    name: 'Date Time Column',
+    description: 'The request has a Date Time column.',
+    type: 'existence',
+    constraint: { property: 'columns', matches: { type: 'timeDimension', field: 'secondTable.dateTime' } },
+    source: 'bardOne'
+  }
+];
+
 let Serializer: BardMetadataSerializer;
 let ColumnFunctions: ColumnFunctionMetadataModel[];
+let RequestConstraints: RequestConstraintMetadataModel[];
 let Metrics: MetricMetadataModel[];
 let TimeDimensions: TimeDimensionMetadataModel[];
 let Dimensions: DimensionMetadataModel[];
@@ -781,6 +817,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
     ColumnFunctions = ColumnFunctionPayloads.map((p) =>
       ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
     );
+    RequestConstraints = RequestConstraintPayloads.map(p =>
+      RequestConstraintMetadataModel.create(this.owner.ownerInjection(), p)
+    );
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
@@ -792,6 +831,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         timeDimensions: TimeDimensions,
         tables: Tables,
         columnFunctions: ColumnFunctions,
+        requestConstraints: RequestConstraints,
       },
       'One column function is created for all metrics with only the currency parameter'
     );

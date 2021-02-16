@@ -362,6 +362,20 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       .doesNotExist('No column is highlighted after removing the parameterized metric');
   });
 
+  test('clicking filter button always adds a new filter', async function(assert) {
+    assert.expect(3);
+    await visit('/reports/new');
+
+    assert.dom('.filter-builder__subject').exists({ count: 1 }, 'There is 1 filter to start');
+    await clickItem('dimension', 'Age');
+
+    await click('.navi-column-config-base__filter-icon');
+    assert.dom('.filter-builder__subject').exists({ count: 2 }, 'Clicking the filter button adds a new filter');
+
+    await click('.navi-column-config-base__filter-icon');
+    assert.dom('.filter-builder__subject').exists({ count: 3 }, 'Clicking the filter button again adds a new filter');
+  });
+
   skip('adding, removing and changing - date time', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(7);

@@ -11,7 +11,9 @@
       type="button"
       aria-label="delete {{dasherize @column.fragment.type}} {{@column.fragment.displayName}}"
       class="navi-column-config-item__remove-icon"
-      {{on "click" @onRemoveColumn}}>
+      disabled={{@column.isRequired}}
+      {{on "click" @onRemoveColumn}}
+    >
       <NaviIcon @icon="minus-circle" />
     </button>
 
@@ -34,7 +36,7 @@
     <NaviColumnConfig::Base
       @column={{@column}}
       @cloneColumn={{@cloneColumn}}
-      @toggleColumnFilter={{@toggleColumnFilter}}
+      @onAddFilter={{@onAddFilter}}
       @onRenameColumn={{@onRenameColumn}}
       @onUpdateColumnParam={{@onUpdateColumnParam}}
     />

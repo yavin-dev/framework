@@ -8,11 +8,12 @@
         {{!-- TODO: Favorites are not supported yet --}}
         {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
         <NaviIcon @icon="clone" class="navi-column-config-base__clone-icon" role="button" {{on "click" @cloneColumn}} />
-        <NaviIcon
+        <DenaliIcon
+          @icon="filter-add"
+          @size="small"
           class="navi-column-config-base__filter-icon {{if @column.isFiltered "navi-column-config-base__filter-icon--active"}}"
-          @icon="filter"
           role="button"
-          {{on "click" @toggleColumnFilter}}
+          {{on "click" @onAddFilter}}
         />
       </span>
     </div>

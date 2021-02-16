@@ -6,7 +6,7 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 
 let confirm;
@@ -388,7 +388,6 @@ module('Acceptance | Dashboards', function (hooks) {
     await click('.add-widget__new-btn');
 
     // Fill out request
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
@@ -422,7 +421,6 @@ module('Acceptance | Dashboards', function (hooks) {
     await click('.add-widget__new-btn');
 
     // Fill out request
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
@@ -510,7 +508,6 @@ module('Acceptance | Dashboards', function (hooks) {
     await visit('/dashboards/1/widgets/new');
 
     // Build Request
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
@@ -697,7 +694,6 @@ module('Acceptance | Dashboards', function (hooks) {
     await click('.add-widget__new-btn');
 
     // Fill out request
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');

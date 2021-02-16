@@ -20,7 +20,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource report', async function (assert) {
-    assert.expect(14);
+    assert.expect(15);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -44,9 +44,8 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await fillIn('input.filter-values--value-input', '1');
 
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
 
-    await selectChoose($('.filter-builder__operator-trigger:eq(1)')[0], 'Between');
+    await selectChoose($('.filter-builder__operator-trigger:eq(0)')[0], 'Between');
     await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
@@ -57,7 +56,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //Check if filters meta data is displaying properly
     assert.deepEqual(
       findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Container (id)', 'Date Time (day)', 'Used Amount'],
+      ['Date Time (day)', 'Container (id)', 'Used Amount'],
       'Filter titles rendered correctly'
     );
 
@@ -69,11 +68,14 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText('Filters Container (id) equals 1 Date Time (day) between', 'Collapsed filter contains right text');
+      .containsText('Filters Date Time (day) between', 'Collapsed date filter contains right text');
+    assert
+      .dom('.report-builder__container--filters--collapsed')
+      .containsText('Container (id) equals 1', 'Collapsed dimension filter contains right text');
 
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText('Used Amount greater than (>) 1', 'Collapsed filter contains right text');
+      .containsText('Used Amount greater than (>) 1', 'Collapsed metric filter contains right text');
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
@@ -176,7 +178,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //assert filters, metrics and dimensions are reset
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .doesNotIncludeText('Date Time (day)', 'Filters do not include dimension filters from external table');
+      .includesText('Date Time (day)', 'The request is constrained and adds back the required filters');
 
     assert.deepEqual(await getAllSelected('dimension'), [], 'All dimensions are removed when table is changed');
     assert.deepEqual(await getAllSelected('metric'), [], 'All metrics are removed when table is changed');

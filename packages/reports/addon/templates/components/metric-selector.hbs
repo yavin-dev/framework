@@ -37,19 +37,12 @@
 
         <div class="grouped-list__icon-set {{if (not (can-having metric)) "grouped-list__icon-set--no-filter"}}">
           {{#if (can-having metric)}}
-            <NaviIcon
-              @icon="filter"
+            <DenaliIcon
+              @icon="filter-add"
+              @size="small"
               class={{concat (if (get-shallow this.metricsFiltered metric.id) "grouped-list__filter--active ") "grouped-list__filter"}}
-              {{on "click" (fn @onToggleMetricFilter metric)}}
-            >
-              <EmberTooltip @side="right" @popperContainer="body" @effect="none">
-                {{#if (get-shallow this.metricsFiltered metric.id)}}
-                  Remove Filter
-                {{else}}
-                  Add Filter
-                {{/if}}
-              </EmberTooltip>
-            </NaviIcon>
+              {{on "click" (fn @onAddMetricFilter metric undefined)}}
+            />
           {{/if}}
         </div>
       </div>

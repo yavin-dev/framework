@@ -9,6 +9,7 @@ import DimensionMetadataModel from './dimension';
 import TimeDimensionMetadataModel from './time-dimension';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
+import RequestConstraintMetadataModel from './request-constraint';
 
 // Shape passed to model constructor
 export interface TableMetadataPayload {
@@ -21,6 +22,7 @@ export interface TableMetadataPayload {
   metricIds: string[];
   dimensionIds: string[];
   timeDimensionIds: string[];
+  requestConstraintIds: string[];
   source: string;
   tags?: string[];
 }
@@ -35,6 +37,7 @@ export interface TableMetadata {
   metrics: MetricMetadataModel[];
   dimensions: DimensionMetadataModel[];
   timeDimensions: TimeDimensionMetadataModel[];
+  requestConstraints: RequestConstraintMetadataModel[];
   source: string;
   tags: string[];
 }
@@ -99,6 +102,11 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   timeDimensionIds!: string[];
 
   /**
+   * @property {string[]} requestConstraintIds - array of request constraint ids
+   */
+  requestConstraintIds!: string[];
+
+  /**
    * @param {Metric[]} metrics
    */
   get metrics(): MetricMetadataModel[] {
@@ -118,6 +126,12 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   get timeDimensions(): TimeDimensionMetadataModel[] {
     return this.timeDimensionIds
       .map((id) => this.naviMetadata.getById('timeDimension', id, this.source))
+      .filter(isPresent);
+  }
+
+  get requestConstraints(): RequestConstraintMetadataModel[] {
+    return this.requestConstraintIds
+      .map(id => this.naviMetadata.getById('requestConstraint', id, this.source))
       .filter(isPresent);
   }
 

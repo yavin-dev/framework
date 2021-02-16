@@ -7,6 +7,8 @@ import { computed } from '@ember/object';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { dasherize } from '@ember/string';
+import { inject as service } from '@ember/service';
+import RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface FilterCollectionArgs {
   isCollapsed: boolean;
@@ -16,17 +18,26 @@ interface FilterCollectionArgs {
   onUpdateFilter(filter: FilterFragment): void;
 }
 
+type FilterItem = {
+  type: string;
+  isRequired: boolean;
+  fragment: FilterFragment;
+};
 export default class FilterCollection extends Component<FilterCollectionArgs> {
+  @service requestConstrainer!: RequestConstrainer;
+
   /**
    * Ordered collection of date, metric, and dimension filters from request
    */
   @computed('args.request.filters.[]')
-  get filters() {
+  get filters(): FilterItem[] {
     const { request } = this.args;
-    return [
-      ...request.dimensionFilters.map((fragment) => ({ type: this.getFilterType(fragment), fragment })),
-      ...request.metricFilters.map((fragment) => ({ type: this.getFilterType(fragment), fragment })),
-    ];
+    const requiredFilters = this.requestConstrainer.getConstrainedProperties(request).filters || new Set();
+    return [...request.dimensionFilters, ...request.metricFilters].map(fragment => ({
+      type: this.getFilterType(fragment),
+      isRequired: requiredFilters.has(fragment),
+      fragment,
+    }));
   }
 
   /**

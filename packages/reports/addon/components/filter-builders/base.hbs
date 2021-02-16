@@ -2,6 +2,7 @@
 {{#if @isCollapsed}}
   <span class="filter-builder" ...attributes>
     <FilterBuilders::Collapsed
+      @isRequired={{@isRequired}}
       @filter={{@filter}}
       @selectedValueBuilder={{this.selectedValueBuilder}}
       @request={{@request}}
@@ -28,6 +29,7 @@
     <div class="filter-builder__values xs-col-1-1 sm-col-1-1 col-3-5">
       {{#let (component this.selectedValueBuilder.component) as |ValuesComponent|}}
         <ValuesComponent
+          @isRequired={{@isRequired}}
           @filter={{@filter}}
           @request={{@request}}
           @onUpdateFilter={{@onUpdateFilter}}

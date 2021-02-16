@@ -12,9 +12,7 @@ export const RequestActions = <const>{
   RENAME_COLUMN_FRAGMENT: 'renameColumnFragment',
   REORDER_COLUMN_FRAGMENT: 'reorderColumnFragment',
 
-  TOGGLE_FILTER: 'toggleFilter',
-  TOGGLE_DIMENSION_FILTER: 'toggleDimensionFilter',
-  TOGGLE_METRIC_FILTER: 'toggleMetricFilter',
+  ADD_FILTER: 'addFilter',
   ADD_DIMENSION_FILTER: 'addDimensionFilter',
   ADD_METRIC_FILTER: 'addMetricFilter',
   UPDATE_FILTER: 'updateFilter',
@@ -29,6 +27,14 @@ export const RequestActions = <const>{
 
 export default class RequestActionDispatcher extends ActionDispatcher {
   get consumers() {
-    return [...super.consumers, 'request/column', 'request/filter', 'request/table', 'request/sort', 'request/fili'];
+    return [
+      ...super.consumers,
+      'request/column',
+      'request/filter',
+      'request/table',
+      'request/sort',
+      'request/fili',
+      'request/constraint'
+    ];
   }
 }

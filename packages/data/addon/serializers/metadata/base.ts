@@ -8,6 +8,7 @@ import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
+import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 import { getOwner } from '@ember/application';
 
 export interface EverythingMetadataPayload {
@@ -16,11 +17,13 @@ export interface EverythingMetadataPayload {
   dimensions: DimensionMetadataModel[];
   timeDimensions: TimeDimensionMetadataModel[];
   columnFunctions?: ColumnFunctionMetadataModel[];
+  requestConstraints: RequestConstraintMetadataModel[];
 }
 
 export interface MetadataModelMap {
   everything: EverythingMetadataPayload;
   table: TableMetadataModel[];
+  requestConstraint: RequestConstraintMetadataModel[];
   metric: MetricMetadataModel[];
   dimension: DimensionMetadataModel[];
   timeDimension: TimeDimensionMetadataModel[];
@@ -33,6 +36,7 @@ export default abstract class NaviMetadataSerializer extends EmberObject {
   protected metricFactory = getOwner(this).factoryFor('model:metadata/metric');
   protected dimensionFactory = getOwner(this).factoryFor('model:metadata/dimension');
   protected timeDimensionFactory = getOwner(this).factoryFor('model:metadata/time-dimension');
+  protected requestConstraintFactory = getOwner(this).factoryFor('model:metadata/request-constraint');
   protected tableFactory = getOwner(this).factoryFor('model:metadata/table');
   protected columnFunctionFactory = getOwner(this).factoryFor('model:metadata/column-function');
 

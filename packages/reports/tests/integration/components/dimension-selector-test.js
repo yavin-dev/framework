@@ -13,7 +13,7 @@ let Store, MetadataService, Age;
 const TEMPLATE = hbs`<DimensionSelector
   @request={{this.request}}
   @onAddDimension={{this.onAddDimension}}
-  @onToggleDimFilter={{this.onToggleDimFilter}}
+  @onAddDimensionFilter={{this.onAddDimensionFilter}}
 />`;
 
 module('Integration | Component | dimension selector', function (hooks) {
@@ -25,7 +25,7 @@ module('Integration | Component | dimension selector', function (hooks) {
     MetadataService = this.owner.lookup('service:navi-metadata');
 
     this.set('onAddDimension', () => {});
-    this.set('onToggleDimFilter', () => {});
+    this.set('onAddDimensionFilter', () => {});
 
     await MetadataService.loadMetadata();
     Age = MetadataService.getById('dimension', 'age', 'bardOne');
@@ -88,7 +88,7 @@ module('Integration | Component | dimension selector', function (hooks) {
     //addDimension when an unselected dimension is clicked
     await clickItem('dimension', 'Gender');
 
-    //clicking again adds when feature flag is on
+    //clicking again adds again
     await clickItem('dimension', 'Gender');
   });
 
@@ -112,7 +112,7 @@ module('Integration | Component | dimension selector', function (hooks) {
       );
     await resetGender();
 
-    this.set('onToggleDimFilter', (dimension) => {
+    this.set('onAddDimensionFilter', (dimension) => {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 

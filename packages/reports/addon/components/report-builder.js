@@ -7,7 +7,6 @@ import { inject as service } from '@ember/service';
 import Component from '@ember/component';
 import { computed, action } from '@ember/object';
 import layout from '../templates/components/report-builder';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { A } from '@ember/array';
 
@@ -63,35 +62,10 @@ export default class ReportBuilderComponent extends Component {
   }
 
   /**
-   * @action onToggleDimFilter
-   * @param {Object} dimension
+   * @action onAddFilter
    */
   @action
-  onToggleDimFilter(dimension) {
-    this._expandFilters(() => this.request.dimensionFilters.find((f) => f.field === dimension));
-  }
-
-  /**
-   * @action onToggleMetricFilter
-   * @param {Object} metric
-   */
-  @action
-  onToggleMetricFilter(metric) {
-    this._expandFilters(() => this.request.metricFilters.find((f) => f.field === metric.name));
-  }
-
-  /**
-   * @action onToggleParameterizedMetricFilter
-   * @param {Object} metric
-   * @param {Object} parameters
-   */
-  @action
-  onToggleParameterizedMetricFilter(metric, parameters) {
-    //TODO clean me up
-    this._expandFilters(() =>
-      this.request.metricFilters.find(
-        (filter) => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
-      )
-    );
+  onAddFilter() {
+    this._expandFilters(() => true);
   }
 }

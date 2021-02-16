@@ -14,6 +14,7 @@ import { Parameters } from 'navi-data/adapters/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
+import RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface NaviColumnConfigArgs {
   isOpen: boolean;
@@ -21,7 +22,7 @@ interface NaviColumnConfigArgs {
   lastAddedColumn: ColumnFragment;
   onAddColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
   onRemoveColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
-  onToggleFilter(column: ColumnFragment): void;
+  onAddFilter(column: ColumnFragment): void;
   onRenameColumn(column: ColumnFragment, alias: string): void;
   onReorderColumn(column: ColumnFragment, index: number): void;
   openFilters(): void;
@@ -30,16 +31,20 @@ interface NaviColumnConfigArgs {
 
 type ConfigColumn = {
   isFiltered: boolean;
+  isRequired: boolean;
   fragment: ColumnFragment;
 };
 
 export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
+  @service requestConstrainer!: RequestConstrainer;
+
   /**
    * Dimension and metric columns from the request
    */
   @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[]}')
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
+    const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();
     if (request.table !== undefined) {
       const { columns, filters } = request;
 
@@ -48,6 +53,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
       return columns.map((column) => {
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
+          isRequired: requiredColumns.has(column),
           fragment: column,
         };
       });
@@ -97,15 +103,11 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
    * @param column - The column to open
    */
   @action
-  onToggleFilter(column: ColumnFragment) {
-    const { request } = this.args.report;
-    const previousFilters = request.filters.length;
-    this.args.onToggleFilter(column);
-    const newFilters = request.filters.length;
+  onAddFilter(column: ColumnFragment) {
+    this.args.onAddFilter(column);
+
     // TODO: should be done a level higher
-    if (newFilters > previousFilters) {
-      this.args.openFilters();
-    }
+    this.args.openFilters();
   }
 
   /**
