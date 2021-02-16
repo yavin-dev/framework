@@ -4,13 +4,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 description = "app"
 
 val environment: String by project
-var build_env_final : String
 
-if (!project.hasProperty("environment")){
-  build_env_final = "development"
-}else{
-  build_env_final = environment
-}
+val buildEnv = if (!project.hasProperty("environment")) "development" else environment
+
+
 
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
@@ -74,7 +71,7 @@ tasks.register<NpmTask>("installUIDependencies") {
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
   setEnvironment(mapOf("DISABLE_MOCKS" to true))
-  setArgs(listOf("run-script", "build","--environment=${build_env_final}"))
+  setArgs(listOf("run-script", "build-ui","--environment=${buildEnv}"))
 }
 
 tasks.register<Copy>("copyNaviApp") {

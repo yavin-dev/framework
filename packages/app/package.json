@@ -13,7 +13,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build-ui": "cmd=\"ember build --environment=$npm_config_environment\" && echo $cmd && eval $cmd ",
+    "build": "cmd=\"ember build --environment=$npm_config_environment\" && echo $cmd && eval $cmd ",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "lint": "npm run lint:hbs && npm run lint:js",
