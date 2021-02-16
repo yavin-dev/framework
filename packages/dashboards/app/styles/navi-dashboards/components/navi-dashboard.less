@@ -41,6 +41,15 @@
     padding: 20px 0;
   }
 
+  &__row {
+    @media (min-width: 0px) and (max-width: 1199px) {
+      justify-content: flex-start;
+    }
+    @media (min-width: 1200px) {
+      justify-content: flex-end;
+    }
+  }
+
   &__save-dialogue {
     background: white;
     bottom: 0px;
@@ -53,13 +62,6 @@
       position: relative;
       visibility: hidden;
     }
-  }
-
-  .page-header {
-    .display-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: space-between;
   }
 
   .page-title {
@@ -76,6 +78,8 @@
       cursor: pointer;
       font-family: @font-family-sans-serif;
       padding: 0px;
+      margin-left: -20px;
+      margin-right: -20px;
 
       a {
         color: @navi-gray-800;

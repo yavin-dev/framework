@@ -42,8 +42,8 @@
     <div class="xs-hide sm-hide col-2-10">
     </div>
     <div class="xs-col-10-10 sm-col-10-10 col-5-10 p-t-10">
-      <div class="container-full">
-        <div class="row reversed">
+      <div class="container-full is-marginless">
+        <div class="navi-dashboard__row row">
           {{!-- Actions --}}
           <div class="dashboard-actions">
 
@@ -54,7 +54,7 @@
               class="clone button is-text is-medium"
             >
               <NaviIcon @icon="copy" class="navi-icon__copy m-r-6" />
-                Clone
+              Clone
             </LinkTo>
 
             {{#if (feature-flag "enableDashboardExport")}}
@@ -64,7 +64,7 @@
                 @dashboard={{@dashboard}}
                 @disabled={{not @dashboard.validations.isTruelyValid}}
               >
-                <NaviIcon @icon="download" class="navi-icon__download" />
+                <NaviIcon @icon="download" class="navi-icon__download m-r-6" />
                 Export
               </DashboardActions::Export>
             {{/if}}
