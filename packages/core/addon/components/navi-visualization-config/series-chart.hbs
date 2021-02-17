@@ -2,19 +2,18 @@
 <div class="series-chart-config" ...attributes>
   {{#if this.showMetricSelect}}
     <div class="metric-select">
-      <div class="metric-select__header">Metric</div>
-      <div class="metric-select__select">
+      <DenaliInputGroup @label="Metric" class="metric-select__select m-b-30">
         <PowerSelect
           @options={{@request.metricColumns}}
           @selected={{this.selectedMetric}}
           @searchEnabled={{false}}
           @onChange={{this.onUpdateChartMetric}}
-          @triggerClass="metric-select__select-trigger"
+          @triggerClass="metric-select__select-trigger w-full"
           as |metric|
         >
           {{metric.displayName}}
         </PowerSelect>
-      </div>
+      </DenaliInputGroup>
     </div>
   {{/if}}
   {{yield}}

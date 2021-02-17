@@ -54,7 +54,7 @@ module('Integration | Component | visualization config/goal gauge', function(hoo
     await render(hbs`<NaviVisualizationConfig::GoalGauge/>`);
 
     const headers = findAll('.goal-gauge-config__section-header').map(el => el?.textContent?.trim());
-    assert.deepEqual(headers, ['Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
+    assert.deepEqual(headers, ['Goal Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
   });
 
   test('onUpdateConfig baselineValue input', async function(this: TestContext, assert) {

@@ -1,9 +1,8 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="line-chart-config__series-config" ...attributes>
-  <div class="line-chart-config__series-config__header">Stack Order</div>
-  <div class="line-chart-config__series-config__content">
+  <DenaliInputGroup @label="Stack Order" @isStacked={{true}}>
     <SortableGroup
-      class="line-chart-config__series-config__collection"
+      class="line-chart-config__series-config-collection m-t-10 w-full"
       @onChange={{this.onReorderSeries}}
       @model={{this.seriesData}}
       as |group|
@@ -26,5 +25,5 @@
         </group.item>
       {{/each}}
     </SortableGroup>
-  </div>
+  </DenaliInputGroup>
 </div>

@@ -3,6 +3,7 @@
   <DenaliInputGroup
     @label="Format Type"
     @isStacked={{true}}
+    class="m-b-30"
  >
     <DenaliRadio
       @onChanged={{queue @onUpdateFormat (fn (mut this.format))}}
@@ -10,7 +11,7 @@
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
-        <div class={{concat "number-format-selector__radio-" (dasherize predefinedFormat.name)}}>
+        <div class="number-format-selector__radio-{{dasherize predefinedFormat.name}} m-b-5">
           <Radio.Option
             @name="format"
             @value={{predefinedFormat.format}}
@@ -45,12 +46,14 @@
       {{on "input" (pipe (pick "target.value") (fn @onUpdateFormat ) )}}
     />
   </DenaliInputGroup>
-  <a class="number-format-selector__doc-link"
-    href="http://numeraljs.com/#format"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    <NaviIcon @icon="life-ring" class="number-format-selector__icon-documentation" />
-    Format Documentation
-  </a>
+  <div class="flex align-items-flex-end flex-column m-b-20 ">
+    <a class="number-format-selector__doc-link"
+      href="http://numeraljs.com/#format"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <NaviIcon @icon="life-ring" class="number-format-selector__icon-documentation" />
+      Format Documentation
+    </a>
+  </div>
 </div>
