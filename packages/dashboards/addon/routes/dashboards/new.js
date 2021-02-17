@@ -73,11 +73,11 @@ export default Route.extend({
   _newModel(title = 'Untitled Dashboard') {
     return get(this, 'user')
       .findOrRegister()
-      .then(author =>
+      .then((author) =>
         this.store
           .createRecord('dashboard', {
             author,
-            title
+            title,
           })
           .save()
       );
@@ -89,13 +89,12 @@ export default Route.extend({
      * action to handle errors in route
      */
     error() {
-      let message = 'OOPS! An error occurred while creating a new dashboard.';
-      get(this, 'naviNotifications').add({
-        message,
-        type: 'danger',
-        timeout: 'short'
+      this.naviNotifications.add({
+        title: 'An error occurred while creating a new dashboard',
+        style: 'danger',
+        timeout: 'medium',
       });
       this.replaceWith('dashboards');
-    }
-  }
+    },
+  },
 });

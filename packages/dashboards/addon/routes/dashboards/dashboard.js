@@ -54,8 +54,8 @@ export default class DashboardsDashboardRoute extends Route {
     const { currentDashboard } = this;
     const layout = currentDashboard?.presentation?.layout;
 
-    makeArray(updatedWidgets).forEach(updatedWidget => {
-      let modelWidget = layout.find(widget => widget.get('widgetId') === Number(updatedWidget.id));
+    makeArray(updatedWidgets).forEach((updatedWidget) => {
+      let modelWidget = layout.find((widget) => widget.get('widgetId') === Number(updatedWidget.id));
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
@@ -72,11 +72,11 @@ export default class DashboardsDashboardRoute extends Route {
    * @param {String} message - The notification error message to be displayed
    * @returns {Void}
    */
-  showErrorNotification(message) {
+  showErrorNotification(title) {
     this.naviNotifications.add({
-      message: message,
-      type: 'danger',
-      timeout: 'medium'
+      title,
+      style: 'danger',
+      timeout: 'medium',
     });
   }
 
@@ -100,9 +100,9 @@ export default class DashboardsDashboardRoute extends Route {
   cacheQuery(transition) {
     const controller = this.controllerFor(this.routeName);
     if (transition.from && transition.from.queryParams) {
-      const fromRoute = transition.from.find(info => info.paramNames.includes('dashboard_id'));
+      const fromRoute = transition.from.find((info) => info.paramNames.includes('dashboard_id'));
       const fromDashboardId = fromRoute ? fromRoute.params.dashboard_id : null;
-      const toRoute = transition.to && transition.to.find(info => info.paramNames.includes('dashboard_id'));
+      const toRoute = transition.to && transition.to.find((info) => info.paramNames.includes('dashboard_id'));
       const toDashboardId = toRoute ? toRoute.params.dashboard_id : null;
 
       if (fromDashboardId === toDashboardId) {
@@ -133,12 +133,12 @@ export default class DashboardsDashboardRoute extends Route {
 
     return currentDashboard
       .save()
-      .then(all(widgets.map(async widget => widget.hasDirtyAttributes && widget.save())))
+      .then(all(widgets.map(async (widget) => widget.hasDirtyAttributes && widget.save())))
       .catch(() => {
         this.naviNotifications.add({
-          message: 'OOPS! An error occured while trying to save your dashboard.',
-          type: 'danger',
-          timeout: 'short'
+          title: 'An error occurred while trying to save your dashboard.',
+          style: 'danger',
+          timeout: 'medium',
         });
       });
   }
@@ -202,7 +202,7 @@ export default class DashboardsDashboardRoute extends Route {
   @action
   revertDashboard() {
     const { currentDashboard } = this;
-    currentDashboard.widgets.forEach(widget => widget.rollbackAttributes());
+    currentDashboard.widgets.forEach((widget) => widget.rollbackAttributes());
     currentDashboard.rollbackAttributes();
   }
 

@@ -112,7 +112,7 @@ export default class ScheduleActionComponent extends Component {
   _createNewDeliveryRule() {
     return get(this, 'store').createRecord('delivery-rule', {
       deliveryType: get(this, 'model.constructor.modelName'),
-      format: { type: get(this, 'formats.firstObject') }
+      format: { type: get(this, 'formats.firstObject') },
     });
   }
 
@@ -127,7 +127,7 @@ export default class ScheduleActionComponent extends Component {
       // Only add relationships to the new delivery rule if the fields are valid
       setProperties(deliveryRule, {
         deliveredItem: get(this, 'model'),
-        owner: get(this, 'user').getUser()
+        owner: get(this, 'user').getUser(),
       });
 
       set(this, 'attemptedSave', false);
@@ -139,13 +139,13 @@ export default class ScheduleActionComponent extends Component {
         .then(() => {
           set(this, 'notification', {
             text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
-            classNames: 'alert success'
+            classNames: 'alert success',
           });
         })
         .catch(({ errors }) => {
           set(this, 'notification', {
             text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
-            classNames: 'alert failure'
+            classNames: 'alert failure',
           });
         })
         .finally(() => {
@@ -174,18 +174,18 @@ export default class ScheduleActionComponent extends Component {
         set(this, 'localDeliveryRule', undefined);
 
         //Add Page notification
-        get(this, 'naviNotifications').add({
-          message: `Delivery schedule successfully removed!`,
-          type: 'success',
-          timeout: 'short'
+        this.naviNotifications.add({
+          title: `Delivery schedule removed`,
+          style: 'success',
+          timeout: 'short',
         });
       })
       .catch(() => {
         //Add Page notification
-        get(this, 'naviNotifications').add({
-          message: `OOPS! An error occurred while removing the delivery schedule.`,
-          type: 'danger',
-          timeout: 'short'
+        this.naviNotifications.add({
+          title: `An error occurred while removing the delivery schedule`,
+          style: 'danger',
+          timeout: 'medium',
         });
       });
   }
@@ -199,7 +199,7 @@ export default class ScheduleActionComponent extends Component {
     set(this, 'deliveryRule', get(this, 'model.deliveryRuleForUser'));
 
     get(this, 'deliveryRule')
-      .then(rule => {
+      .then((rule) => {
         set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
       })
       .catch(() => {

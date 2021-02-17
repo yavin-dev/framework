@@ -7,20 +7,20 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let CompressionService, confirm;
 
-module('Acceptance | Dashboard Filters', function(hooks) {
+module('Acceptance | Dashboard Filters', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     CompressionService = this.owner.lookup('service:compression');
     confirm = window.confirm;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     window.confirm = confirm;
   });
 
-  test('dashboard filter flow', async function(assert) {
+  test('dashboard filter flow', async function (assert) {
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -42,7 +42,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'property|id-in["1"]'),
+      dataRequests.every((request) => request.queryParams.filters == 'property|id-in["1"]'),
       'each widget request has the right filter with property in 1'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -52,7 +52,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '2');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'property|id-in["1","2"]'),
+      dataRequests.every((request) => request.queryParams.filters == 'property|id-in["1","2"]'),
       'each widget request has the right filter with values of both 1 and 2'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
@@ -67,7 +67,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     assert.ok(
       dataRequests.every(
-        request => request.queryParams.filters === 'property|id-in["1","2"],platform|id-contains["win"]'
+        (request) => request.queryParams.filters === 'property|id-in["1","2"],platform|id-contains["win"]'
       ),
       'each widget request has both filters present after new one is added'
     );
@@ -77,7 +77,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await click('.filter-collection__remove:nth-child(1)');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'platform|id-contains["win"]'),
+      dataRequests.every((request) => request.queryParams.filters == 'platform|id-contains["win"]'),
       'each widget request has the right filters after one has been removed'
     );
     dataRequests = [];
@@ -101,7 +101,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     );
   });
 
-  test('adding dimension with key primary id field creates correct request', async function(assert) {
+  test('adding dimension with key primary id field creates correct request', async function (assert) {
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -123,13 +123,13 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     assert.ok(
-      dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in["k1"]'),
+      dataRequests.every((request) => request.queryParams.filters == 'multiSystemId|key-in["k1"]'),
       'each widget request has the filter added using the key field'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
   });
 
-  test('dashboard filter query params - ui changes update the model', async function(assert) {
+  test('dashboard filter query params - ui changes update the model', async function (assert) {
     assert.expect(12);
 
     window.confirm = () => {
@@ -141,23 +141,23 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         dimension: 'Property (id)',
         operator: 'contains',
-        rawValues: ['114', '100001']
+        rawValues: ['114', '100001'],
       },
       {
         dimension: 'Property (id)',
         operator: 'not equals',
-        rawValues: ['1']
+        rawValues: ['1'],
       },
       {
         dimension: 'Property (id)',
         operator: 'not equals',
-        rawValues: ['2', '3']
+        rawValues: ['2', '3'],
       },
       {
         dimension: 'EventId (id)',
         operator: 'equals',
-        rawValues: ['1']
-      }
+        rawValues: ['1'],
+      },
     ];
 
     await visit('/dashboards/2/view');
@@ -185,8 +185,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
         {
           dimension: 'Property (id)',
           operator: 'equals',
-          rawValues: ['2', '3']
-        }
+          rawValues: ['2', '3'],
+        },
       ],
       'Filters are changed from their initial state'
     );
@@ -221,16 +221,16 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.dom('.navi-dashboard__save-dialogue').isNotVisible('The dashboard is in a clean state');
 
     assert.deepEqual(
-      dataRequests.map(req => req.queryParams.filters),
+      dataRequests.map((req) => req.queryParams.filters),
       [
         'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]',
-        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]'
+        'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]',
       ],
       'The requests are sent with the initial filters'
     );
   });
 
-  test('dashboard filter query params - query params change model on load', async function(assert) {
+  test('dashboard filter query params - query params change model on load', async function (assert) {
     assert.expect(7);
 
     const dirtyURL =
@@ -239,8 +239,8 @@ module('Acceptance | Dashboard Filters', function(hooks) {
       {
         dimension: 'Property (id)',
         operator: 'equals',
-        rawValues: ['2', '3']
-      }
+        rawValues: ['2', '3'],
+      },
     ];
 
     //Load filters from query params
@@ -267,14 +267,14 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     await visit('/dashboards/2/view?filters=blahblahblah_this_isnt_valid');
     assert
-      .dom('.navi-notifications')
+      .dom('.alert.is-danger')
       .hasText(
-        'Error decoding filter query params. Using default dashboard filters. danger',
+        'Error decoding filter query params. Using default dashboard filters.',
         'Notification shown when error decompressing filter query params'
       );
   });
 
-  test('dashboard filter query params - returns cached dashboard widget data on filter add', async function(assert) {
+  test('dashboard filter query params - returns cached dashboard widget data on filter add', async function (assert) {
     assert.expect(9);
 
     let dataRequests = [];
@@ -306,13 +306,13 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             type: 'dimension',
             field: 'property',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
             values: [],
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       },
       'A filter with no values was added'
     );
@@ -345,13 +345,13 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             type: 'dimension',
             field: 'property',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
             values: ['1'],
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       },
       'A value was added to the filter'
     );
@@ -362,7 +362,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.equal(dataRequests.length, 9, 'New requests run when nonempty filter is removed');
   });
 
-  test('dashboard filter query params - visiting route with one more filter and same empty filter', async function(assert) {
+  test('dashboard filter query params - visiting route with one more filter and same empty filter', async function (assert) {
     /**
      * This is to test a specific corner case where a new filter is added (no values) and then the user pastes a
      * link to the same dashboard with the same filters except has one more added filter with a value
@@ -397,13 +397,13 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             type: 'dimension',
             field: 'property',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
             values: [],
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       },
       'A filter with no values was added'
     );
@@ -427,29 +427,29 @@ module('Acceptance | Dashboard Filters', function(hooks) {
             type: 'dimension',
             field: 'property',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
             values: [],
-            source: 'bardOne'
+            source: 'bardOne',
           },
           {
             type: 'dimension',
             field: 'age',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
             values: ['-3'],
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       },
       'The expected filters are set in the query params'
     );
   });
 
-  test('breadcrumbs in subroute also have query params', async function(assert) {
+  test('breadcrumbs in subroute also have query params', async function (assert) {
     assert.expect(2);
     await visit(
       '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAE2gFtEA7VaAexMwgAdkLaV4BPCAGgkZQEN4LkNYNGrBOwAG49YAV0Tpg2ALriYiWHiHRNwAL7tcBYmUqiMEHgHNEHLk2R8BW0eKmz5mLBAC0AZggqEGoaWjq6SrrAQA'
@@ -478,11 +478,11 @@ module('Acceptance | Dashboard Filters', function(hooks) {
  * @returns {Object}
  */
 function extractCollapsedFilters() {
-  return findAll('.filter-collection--collapsed-item').map(el => ({
+  return findAll('.filter-collection--collapsed-item').map((el) => ({
     dimension: el.querySelector('.filter-dimension--collapsed').textContent.trim(),
     operator: el.querySelector('.filter-operator--collapsed').textContent.trim(),
     rawValues: [...el.querySelectorAll('.filter-values--collapsed--value')].map(
-      elm => elm.textContent.trim().match(/\d+/)[0]
-    )
+      (elm) => elm.textContent.trim().match(/\d+/)[0]
+    ),
   }));
 }

@@ -54,9 +54,9 @@ export default Route.extend({
     let cloneDashboard = dashboardModel.clone();
     set(cloneDashboard, 'title', `Copy of ${get(cloneDashboard, 'title')}`.substring(0, 150));
 
-    return cloneDashboard.save().then(cloneDashboardModel =>
-      this._cloneWidgets(dashboardModel, cloneDashboardModel).then(widgetPromiseArray =>
-        all(widgetPromiseArray).then(newWidgets => {
+    return cloneDashboard.save().then((cloneDashboardModel) =>
+      this._cloneWidgets(dashboardModel, cloneDashboardModel).then((widgetPromiseArray) =>
+        all(widgetPromiseArray).then((newWidgets) => {
           let layout = cloneDashboardModel.get('presentation.layout');
 
           //Replace original widget IDs with newly cloned widget IDs
@@ -79,11 +79,11 @@ export default Route.extend({
    * @returns {DS.PromiseArray} - Array of widget promises ordered to match dashboard layout array
    */
   _cloneWidgets(dashboardModel, cloneDashboardModel) {
-    return dashboardModel.get('widgets').then(widgets => {
+    return dashboardModel.get('widgets').then((widgets) => {
       let widgetsById = [];
-      widgets.forEach(rec => (widgetsById[rec.id] = rec));
+      widgets.forEach((rec) => (widgetsById[rec.id] = rec));
 
-      return cloneDashboardModel.get('presentation.layout').map(item => {
+      return cloneDashboardModel.get('presentation.layout').map((item) => {
         let widget = widgetsById[item.get('widgetId')],
           cloneWidget = widget.clone();
 
@@ -99,13 +99,12 @@ export default Route.extend({
      * action to handle errors in route
      */
     error() {
-      let message = 'OOPS! An error occurred while cloning the dashboard.';
-      get(this, 'naviNotifications').add({
-        message,
-        type: 'danger',
-        timeout: 'short'
+      this.naviNotifications.add({
+        title: 'An error occurred while cloning the dashboard',
+        style: 'danger',
+        timeout: 'medium',
       });
       this.replaceWith('dashboards');
-    }
-  }
+    },
+  },
 });

@@ -4,53 +4,53 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Route | reports/report', function(hooks) {
+module('Unit | Route | reports/report', function (hooks) {
   setupTest(hooks);
 
-  test('model hook', function(assert) {
+  test('model hook', function (assert) {
     assert.expect(2);
 
     const localReports = [
         {
           id: undefined,
-          tempId: '123-456'
-        }
+          tempId: '123-456',
+        },
       ],
       webserviceReports = [
         {
-          id: 1
-        }
+          id: 1,
+        },
       ];
 
     let route = this.owner.factoryFor('route:reports/report').create({
       store: {
         findRecord: (type, id) => A(webserviceReports).findBy('id', id),
-        peekAll: () => localReports
+        peekAll: () => localReports,
       },
       user: {
-        findOrRegister: () => resolve()
+        findOrRegister: () => resolve(),
       },
-      _defaultVisualization: report => report
+      _defaultVisualization: (report) => report,
     });
 
-    return route.model({ report_id: 1 }).then(model => {
+    return route.model({ report_id: 1 }).then((model) => {
       assert.equal(model.id, 1, 'Route model looks up report based on id');
 
-      return route.model({ report_id: '123-456' }).then(model => {
+      return route.model({ report_id: '123-456' }).then((model) => {
         assert.equal(model.tempId, '123-456', 'Route can find reports based on temp id');
       });
     });
   });
 
-  test('_findByTempId', function(assert) {
+  test('_findByTempId', function (assert) {
     assert.expect(2);
 
     let route = this.owner.factoryFor('route:reports/report').create({
       store: {
         peekAll() {
           return [{ tempId: 1 }, { tempId: 2 }, { tempId: 3 }];
-        }
-      }
+        },
+      },
     });
 
     assert.equal(route._findByTempId(2).tempId, 2, 'Reports can be found by temp id');
@@ -58,18 +58,18 @@ module('Unit | Route | reports/report', function(hooks) {
     assert.equal(route._findByTempId(50), undefined, 'Undefined is returned when no report has the given temp id');
   });
 
-  test('_defaultVisualization', function(assert) {
+  test('_defaultVisualization', function (assert) {
     assert.expect(2);
 
     let mockReport = {
-        visualization: null
+        visualization: null,
       },
       route = this.owner.factoryFor('route:reports/report').create({
         store: {
-          createFragment: type => {
+          createFragment: (type) => {
             return { type };
-          }
-        }
+          },
+        },
       });
 
     assert.deepEqual(
@@ -79,7 +79,7 @@ module('Unit | Route | reports/report', function(hooks) {
     );
 
     let visualization = {
-      type: 'line-chart'
+      type: 'line-chart',
     };
     mockReport.visualization = visualization;
 
@@ -90,7 +90,7 @@ module('Unit | Route | reports/report', function(hooks) {
     );
   });
 
-  test('revertChanges action', function(assert) {
+  test('revertChanges action', function (assert) {
     assert.expect(4);
 
     const serializedRequest = 'serializedRequestValue';
@@ -102,8 +102,8 @@ module('Unit | Route | reports/report', function(hooks) {
           serialize() {
             assert.ok(true, 'Report model is asked to serialize');
             return serializedRequest;
-          }
-        }
+          },
+        },
       },
       route = this.owner.lookup('route:reports/report');
 
@@ -111,13 +111,13 @@ module('Unit | Route | reports/report', function(hooks) {
       set(key, value) {
         assert.deepEqual(key, 'modifiedRequest', 'The route updates the modified request on the controller');
         assert.deepEqual(value, serializedRequest, 'The serialized request is passed');
-      }
+      },
     });
 
     route.send('revertChanges', mockReport);
   });
 
-  test('deactivate method', function(assert) {
+  test('deactivate method', function (assert) {
     assert.expect(4);
 
     const serializedRequest = 'serializedRequestValue';
@@ -130,52 +130,52 @@ module('Unit | Route | reports/report', function(hooks) {
           serialize() {
             assert.ok(true, 'Report model is asked to serialize');
             return serializedRequest;
-          }
-        }
+          },
+        },
       },
       route = this.owner.factoryFor('route:reports/report').create({
         modelFor() {
           return mockReport;
         },
-        routeName: 'reports.report'
+        routeName: 'reports.report',
       });
 
     route.controllerFor = () => ({
       set(key, value) {
         assert.deepEqual(key, 'modifiedRequest', 'The route updates the modified request on the controller');
         assert.deepEqual(value, serializedRequest, 'The serialized request is passed');
-      }
+      },
     });
 
     /* == Transition to different route == */
     route.deactivate();
   });
 
-  test('saveReport action', function(assert) {
+  test('saveReport action', function (assert) {
     assert.expect(2);
 
     let savePromise = reject(),
       mockReport = {
-        save: () => savePromise
+        save: () => savePromise,
       },
       mockNotificationService = {},
       route = this.owner.factoryFor('route:reports/report').create({
         naviNotifications: mockNotificationService,
-        replaceWith: () => null // Functionality covered in acceptance test
+        replaceWith: () => null, // Functionality covered in acceptance test
       });
 
     return run(() => {
       /* == Error save == */
-      mockNotificationService.add = ({ type }) => {
-        assert.equal(type, 'danger', 'Danger notification is shown when save was unsuccesful');
+      mockNotificationService.add = ({ style }) => {
+        assert.equal(style, 'danger', 'Danger notification is shown when save was unsuccessful');
       };
 
       route.send('saveReport', mockReport);
 
       return savePromise.catch(() => {
-        /* == Succesful save == */
-        mockNotificationService.add = ({ type }) => {
-          assert.equal(type, 'success', 'Success notification is shown when save was succesful');
+        /* == Successful save == */
+        mockNotificationService.add = ({ style }) => {
+          assert.equal(style, 'success', 'Success notification is shown when save was successful');
         };
         savePromise = resolve();
 
@@ -185,16 +185,16 @@ module('Unit | Route | reports/report', function(hooks) {
     });
   });
 
-  test('updateTitle action', function(assert) {
+  test('updateTitle action', function (assert) {
     assert.expect(2);
 
     let mockReport = {
-        title: 'Default Title'
+        title: 'Default Title',
       },
       route = this.owner.factoryFor('route:reports/report').create({
         modelFor() {
           return mockReport;
-        }
+        },
       });
 
     assert.equal(route.modelFor(route.routeName).title, 'Default Title', '`Default Title` is the current report title');

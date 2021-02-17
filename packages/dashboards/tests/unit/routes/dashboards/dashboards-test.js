@@ -8,22 +8,22 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 
-const serializeLayout = layout => JSON.parse(JSON.stringify(layout));
+const serializeLayout = (layout) => JSON.parse(JSON.stringify(layout));
 
-module('Unit | Route | dashboards/dashboard', function(hooks) {
+module('Unit | Route | dashboards/dashboard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('it exists', function(assert) {
+  test('it exists', function (assert) {
     assert.expect(1);
     assert.ok(this.owner.lookup('route:dashboards/dashboard'), 'Route Exists');
   });
 
-  test('model', async function(assert) {
+  test('model', async function (assert) {
     assert.expect(4);
 
     const route = this.owner.lookup('route:dashboards/dashboard');
@@ -41,14 +41,14 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
       const widgets = await dashboard.get('widgets');
       assert.deepEqual(
-        widgets.map(w => w.id),
+        widgets.map((w) => w.id),
         ['1', '2', '3'],
         'The requested dashboard is retrieved with the three widgets'
       );
     });
   });
 
-  test('currentDashboard', function(assert) {
+  test('currentDashboard', function (assert) {
     assert.expect(1);
 
     const model = {};
@@ -65,7 +65,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
   });
 
-  test('_updateLayout', function(assert) {
+  test('_updateLayout', function (assert) {
     assert.expect(2);
 
     const dashboard = {
@@ -73,9 +73,9 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
         layout: [
           emberObj.create({ widgetId: 1, column: 0, row: 0, height: 4, width: 4 }),
           emberObj.create({ widgetId: 2, column: 0, row: 4, height: 3, width: 3 }),
-          emberObj.create({ widgetId: 3, column: 1, row: 7, height: 3, width: 9 })
-        ]
-      }
+          emberObj.create({ widgetId: 3, column: 1, row: 7, height: 3, width: 9 }),
+        ],
+      },
     };
     const TestRoute = class extends DashboardsDashboardRoute {
       currentDashboard = dashboard;
@@ -84,13 +84,13 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     route._updateLayout([
       { id: 1, x: 1, y: 1, height: 3, width: 1 },
-      { id: 2, x: 2, y: 4, height: 4, width: 5 }
+      { id: 2, x: 2, y: 4, height: 4, width: 5 },
     ]);
 
     const expectedLayout = [
       { widgetId: 1, column: 1, row: 1, height: 3, width: 1 },
       { widgetId: 2, column: 2, row: 4, height: 4, width: 5 },
-      { widgetId: 3, column: 1, row: 7, height: 3, width: 9 }
+      { widgetId: 3, column: 1, row: 7, height: 3, width: 9 },
     ];
 
     const actualLayout = serializeLayout(route.currentDashboard.presentation.layout);
@@ -106,12 +106,12 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
   });
 
-  test('saveDashboard', async function(assert) {
+  test('saveDashboard', async function (assert) {
     assert.expect(1);
 
     const dashboard = {
       save: () => resolve(),
-      widgets: []
+      widgets: [],
     };
 
     const TestRoute = class extends DashboardsDashboardRoute {
@@ -122,14 +122,14 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     assert.ok(true, 'saveDashboard saves dashboard model when user can edit');
   });
 
-  test('didUpdateLayout - user can edit', async function(assert) {
+  test('didUpdateLayout - user can edit', async function (assert) {
     assert.expect(1);
 
     const currentDashboard = {
       canUserEdit: true,
       save: () => resolve(),
       widgets: [],
-      presentation: { layout: [emberObj.create({ widgetId: 1 }), emberObj.create({ widgetId: 2 })] }
+      presentation: { layout: [emberObj.create({ widgetId: 1 }), emberObj.create({ widgetId: 2 })] },
     };
 
     const TestRoute = class extends DashboardsDashboardRoute {
@@ -139,14 +139,14 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
 
     route.send('didUpdateLayout', undefined, [
       { id: 1, x: 1, y: 2, height: 5, width: 12 },
-      { id: 2, x: 3, y: 3, height: 4, width: 6 }
+      { id: 2, x: 3, y: 3, height: 4, width: 6 },
     ]);
 
     assert.deepEqual(
       serializeLayout(route.get('currentDashboard.presentation.layout')),
       [
         { widgetId: 1, column: 1, row: 2, height: 5, width: 12 },
-        { widgetId: 2, column: 3, row: 3, height: 4, width: 6 }
+        { widgetId: 2, column: 3, row: 3, height: 4, width: 6 },
       ],
       'layout is updaded'
     );
@@ -154,7 +154,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     await settled();
   });
 
-  test('didUpdateLayout - user cannot edit', async function(assert) {
+  test('didUpdateLayout - user cannot edit', async function (assert) {
     assert.expect(1);
 
     const currentDashboard = { canUserEdit: false };
@@ -172,7 +172,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     await settled();
   });
 
-  test('delete widget - success', async function(assert) {
+  test('delete widget - success', async function (assert) {
     assert.expect(4);
 
     const store = this.owner.lookup('service:store');
@@ -208,13 +208,13 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     assert.equal(dashboard.widgets.length, originalWidgetCount - 1, 'Dashboard has one less widget after a delete');
 
     assert.equal(
-      dashboard.presentation.layout.find(w => w.widgetId === 2),
+      dashboard.presentation.layout.find((w) => w.widgetId === 2),
       undefined,
       'Dashboard layout no longer has reference to deleted widget'
     );
   });
 
-  test('delete widget - failure', async function(assert) {
+  test('delete widget - failure', async function (assert) {
     assert.expect(3);
 
     //Mock Server Endpoint
@@ -226,16 +226,12 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     const TestRoute = class extends DashboardsDashboardRoute {
       currentDashboard = dashboard;
       naviNotifications = {
-        add({ message }) {
-          assert.equal(
-            message,
-            'OOPS! An error occurred while deleting widget "Mobile DAU Graph"',
-            'A notification is sent containing the widget title'
-          );
-        }
+        add({ title }) {
+          assert.equal(title, 'An error occurred while deleting widget', 'A error notification is sent on error');
+        },
       };
       transitionTo(routeName) {
-        assert.equal(routeName, 'dashboards.dashboard', 'transtion back to dashboard after delete');
+        assert.equal(routeName, 'dashboards.dashboard', 'transition back to dashboard after delete');
       }
     };
     const route = TestRoute.create();
@@ -256,7 +252,7 @@ module('Unit | Route | dashboards/dashboard', function(hooks) {
     );
 
     assert.notEqual(
-      dashboard.presentation.layout.find(w => w.widgetId === 2),
+      dashboard.presentation.layout.find((w) => w.widgetId === 2),
       undefined,
       'Dashboard layout still has reference to widget after a failed delete'
     );

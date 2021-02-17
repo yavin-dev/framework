@@ -8,10 +8,10 @@ import { triggerCopySuccess } from 'ember-cli-clipboard/test-support';
 
 let Template, NotificationCallback;
 
-module('Integration | Component | common actions/share', function(hooks) {
+module('Integration | Component | common actions/share', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     NotificationCallback = () => null;
 
     this.owner.register(
@@ -35,15 +35,15 @@ module('Integration | Component | common actions/share', function(hooks) {
     `;
   });
 
-  test('Component renders', async function(assert) {
+  test('Component renders', async function (assert) {
     assert.expect(2);
 
     await render(Template);
 
     assert.dom('.share').hasText('Share Report', 'Component yields given text');
 
-    NotificationCallback = ({ context }) => {
-      assert.equal(context, document.location, 'share uses the current location as the default share url');
+    NotificationCallback = ({ extra }) => {
+      assert.equal(extra, document.location, 'share uses the current location as the default share url');
     };
 
     await render(Template);
@@ -52,7 +52,7 @@ module('Integration | Component | common actions/share', function(hooks) {
     await triggerCopySuccess('.share__action-btn');
   });
 
-  test('Component is enabled / disabled', async function(assert) {
+  test('Component is enabled / disabled', async function (assert) {
     assert.expect(2);
 
     this.set('isDisabled', true);
@@ -66,13 +66,13 @@ module('Integration | Component | common actions/share', function(hooks) {
     assert.notOk($('button:contains("Share")').prop('disabled'), 'Share is enabled when the disabled is set to false');
   });
 
-  test('buildUrl option', async function(assert) {
+  test('buildUrl option', async function (assert) {
     assert.expect(1);
 
     const url = 'www.navi.com/customUrlToShare';
     this.set('buildUrl', () => url);
-    NotificationCallback = ({ context }) => {
-      assert.equal(context, url, 'share uses `buildUrl` arg to produce a share url');
+    NotificationCallback = ({ extra }) => {
+      assert.equal(extra, url, 'share uses `buildUrl` arg to produce a share url');
     };
 
     await render(Template);
