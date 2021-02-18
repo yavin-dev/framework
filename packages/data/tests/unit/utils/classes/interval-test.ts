@@ -98,7 +98,7 @@ module('Unit | Utils | Interval Class', function () {
     );
 
     assert.equal(
-      new Interval(moment('2015-11-09'), moment('2015-11-09')).diffForTimePeriod('day'),
+      new Interval(moment('2015-11-09'), moment('2015-11-10')).diffForTimePeriod('day'),
       1,
       'Interval has 1 day for a 1 day period'
     );
@@ -110,7 +110,7 @@ module('Unit | Utils | Interval Class', function () {
     );
 
     assert.equal(
-      new Interval(moment('2015-11-10 10:00:00.000'), moment('2015-11-10 10:00:00.000')).diffForTimePeriod('hour'),
+      new Interval(moment('2015-11-10 10:00:00.000'), moment('2015-11-10 11:00:00.000')).diffForTimePeriod('hour'),
       1,
       'Interval has 1 hour for a 1 hour period'
     );
