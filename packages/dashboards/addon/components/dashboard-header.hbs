@@ -15,26 +15,25 @@
     <div class="xs-col-10-10 sm-col-10-10 col-3-10">
       <div class="container-full m-b-4">
         <div class="row">
-            {{!-- Editable title --}}
-        <div class="page-title">
-          {{#if @dashboard.canUserEdit}}
-            <EditableLabel
-              class="navi-dashboard__edit-title"
-              @value={{@dashboard.title}}
-              @onChange={{route-action "updateTitle"}}
+          {{!-- Editable title --}}
+          <div class="page-title">
+            {{#if @dashboard.canUserEdit}}
+              <EditableLabel
+                class="navi-dashboard__edit-title"
+                @value={{@dashboard.title}}
+                @onChange={{route-action "updateTitle"}}
+              />
+            {{else}}
+              <span>{{@dashboard.title}}</span>
+            {{/if}}
+            <FavoriteItem
+              class="navi-dashboard__fav-icon"
+              @user={{get-user}}
+              @item={{@dashboard}}
+              @click={{route-action "toggleFavorite" @dashboard}}
             />
-          {{else}}
-            <span>{{@dashboard.title}}</span>
-          {{/if}}
-
-          <FavoriteItem
-            class="navi-dashboard__fav-icon"
-            @user={{get-user}}
-            @item={{@dashboard}}
-            @click={{route-action "toggleFavorite" @dashboard}}
-          />
           </div>
-    </div>
+        </div>
       </div>
     </div>
     <div class="xs-hide sm-hide col-2-10">
@@ -44,7 +43,6 @@
         <div class="navi-dashboard__row row">
           {{!-- Actions --}}
           <div class="dashboard-actions">
-
             {{!-- Clone action enabled at all times --}}
             <LinkTo
               @route="dashboards.dashboard.clone"
