@@ -9,8 +9,8 @@ module.exports = {
     return this.addAddonsToProject({
       packages: [
         { name: 'navi-notifications' }, // default notification provider
-        { name: 'ember-font-awesome' } // default icon provider
-      ]
+        { name: 'ember-font-awesome' }, // default icon provider
+      ],
     });
-  }
+  },
 };

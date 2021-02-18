@@ -17,8 +17,8 @@ const Request = {
       parameters: { grain: 'day' },
       operator: 'bet',
       values: ['2015-10-02', '2015-10-14'],
-      source: 'bardOne'
-    }
+      source: 'bardOne',
+    },
   ],
   columns: [
     {
@@ -26,27 +26,27 @@ const Request = {
       type: 'timeDimension',
       field: 'network.dateTime',
       parameters: {
-        grain: 'day'
+        grain: 'day',
       },
-      source: 'bardOne'
+      source: 'bardOne',
     },
     {
       cid: 'c2',
       type: 'metric',
       field: 'adClicks',
       parameters: {},
-      source: 'bardOne'
-    }
+      source: 'bardOne',
+    },
   ],
-  sorts: []
+  sorts: [],
 };
 
 let Store;
-module('Integration | Component | report visualization', function(hooks) {
+module('Integration | Component | report visualization', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
     this.set(
@@ -60,16 +60,16 @@ module('Integration | Component | report visualization', function(hooks) {
             columnAttributes: {
               c1: { canAggregateSubtotal: false },
               c3: { canAggregateSubtotal: false },
-              c2: { canAggregateSubtotal: false }
+              c2: { canAggregateSubtotal: false },
             },
-            showTotals: {}
-          }
-        }
+            showTotals: {},
+          },
+        },
       })
     );
   });
 
-  test('it renders the specified visualization', async function(assert) {
+  test('it renders the specified visualization', async function (assert) {
     assert.expect(2);
 
     await render(hbs`
@@ -87,7 +87,7 @@ module('Integration | Component | report visualization', function(hooks) {
     );
   });
 
-  test('it renders the specified print visualization', async function(assert) {
+  test('it renders the specified print visualization', async function (assert) {
     assert.expect(1);
 
     await render(hbs`
@@ -100,7 +100,7 @@ module('Integration | Component | report visualization', function(hooks) {
     assert.ok(!!findAll('.table-widget--print').length, 'report-visualization renders the correct print visualization');
   });
 
-  test('it renders the specified fallback print visualization', async function(assert) {
+  test('it renders the specified fallback print visualization', async function (assert) {
     assert.expect(2);
 
     this.set(
@@ -113,18 +113,18 @@ module('Integration | Component | report visualization', function(hooks) {
           metadata: {
             style: {
               area: false,
-              stacked: false
+              stacked: false,
             },
             axis: {
               y: {
                 series: {
                   type: 'metric',
-                  config: {}
-                }
-              }
-            }
-          }
-        }
+                  config: {},
+                },
+              },
+            },
+          },
+        },
       })
     );
     this.set('response', NaviFactResponse.create({ rows: [] }));

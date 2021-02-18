@@ -12,10 +12,10 @@ const serializedFilter1 = {
   field: 'age',
   operator: 'in',
   parameters: {
-    field: 'id'
+    field: 'id',
   },
   type: 'dimension',
-  values: ['1', '2']
+  values: ['1', '2'],
 };
 const mockFragment1 = {
   ...serializedFilter1,
@@ -23,31 +23,31 @@ const mockFragment1 = {
   columnMetadata: {
     name: 'Age',
     primaryKeyFieldName: 'id',
-    cardinality: 'SMALL'
-  }
+    cardinality: 'SMALL',
+  },
 };
 const mockFragment2 = {
   type: 'dimension',
   field: 'currency',
   operator: 'contains',
   parameters: {
-    field: 'desc'
+    field: 'desc',
   },
   values: ['3', '4'],
   source: 'bardOne',
   columnMetadata: {
     name: 'Currency',
     primaryKeyFieldName: 'id',
-    cardinality: 'SMALL'
-  }
+    cardinality: 'SMALL',
+  },
 };
 const dashboard = { filters: [mockFragment1, mockFragment2] };
 
-module('Integration | Component | dashboard filters', function(hooks) {
+module('Integration | Component | dashboard filters', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
@@ -56,7 +56,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
     this.setProperties({
       onUpdateFilter: () => null,
       onRemoveFilter: () => null,
-      onAddFilter: () => null
+      onAddFilter: () => null,
     });
 
     await render(hbs`
@@ -68,7 +68,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
       />`);
   });
 
-  test('it renders empty', async function(assert) {
+  test('it renders empty', async function (assert) {
     assert.expect(1);
 
     this.set('dashboard', { filters: [] });
@@ -76,7 +76,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
     assert.dom().hasText('Filters', 'When no filters are provided, only "Filters" is rendered');
   });
 
-  test('toggle collapse', async function(assert) {
+  test('toggle collapse', async function (assert) {
     assert.expect(2);
 
     assert.dom('.dashboard-filters--collapsed').isVisible('Filters component is collapsed initially');
@@ -86,7 +86,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
     assert.dom('.dashboard-filters--expanded').isVisible('Filters component expands when expand button is clicked');
   });
 
-  test('it renders all filters attached to the dashboard', async function(assert) {
+  test('it renders all filters attached to the dashboard', async function (assert) {
     assert.expect(2);
 
     assert
@@ -100,7 +100,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
       .exists({ count: 2 }, 'A filter collection row is rendered for each filter when expanded');
   });
 
-  test('A filter can be added', async function(assert) {
+  test('A filter can be added', async function (assert) {
     assert.expect(10);
 
     this.set('dashboard', {
@@ -114,13 +114,13 @@ module('Integration | Component | dashboard filters', function(hooks) {
                 id: 'a',
                 dimensions: [
                   { id: 'productFamily', name: 'Product Family', category: 'cat1', primaryKeyFieldName: 'id' },
-                  { id: 'dim2', name: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' }
+                  { id: 'dim2', name: 'dim2', category: 'cat2', primaryKeyFieldName: 'id' },
                 ],
-                timeDimensions: []
+                timeDimensions: [],
               },
-              dataSource: 'bardOne'
-            }
-          ])
+              dataSource: 'bardOne',
+            },
+          ]),
         },
 
         {
@@ -131,27 +131,27 @@ module('Integration | Component | dashboard filters', function(hooks) {
                 id: 'b',
                 dimensions: [
                   { id: 'dim3', name: 'dim3', category: 'cat2', primaryKeyFieldName: 'id' },
-                  { id: 'dim1', name: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' }
+                  { id: 'dim1', name: 'dim1', category: 'cat1', primaryKeyFieldName: 'id' },
                 ],
-                timeDimensions: []
+                timeDimensions: [],
               },
-              dataSource: 'bardOne'
-            }
-          ])
-        }
-      ])
+              dataSource: 'bardOne',
+            },
+          ]),
+        },
+      ]),
     });
 
-    this.set('onAddFilter', dimension => {
+    this.set('onAddFilter', (dimension) => {
       const filter = Store.createFragment('bard-request-v2/fragments/filter', {
         type: 'dimension',
         field: dimension.field,
         parameters: {
-          field: 'id'
+          field: 'id',
         },
         operator: 'in',
         values: [],
-        source: 'bardOne'
+        source: 'bardOne',
       });
 
       this.get('dashboard.filters').pushObject(filter);
@@ -192,7 +192,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
     assert.dom('.filter-builder__subject').hasText('Product Family (id)');
   });
 
-  test('updating a filter', async function(assert) {
+  test('updating a filter', async function (assert) {
     assert.expect(2);
 
     this.set('onUpdateFilter', (filter, changeSet) => {
@@ -201,7 +201,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
         changeSet,
         {
           operator: 'isnull',
-          values: [true]
+          values: [true],
         },
         'Operator update is requested'
       );
@@ -211,10 +211,10 @@ module('Integration | Component | dashboard filters', function(hooks) {
     await selectChoose('.filter-builder__operator-trigger', 'Is Empty');
   });
 
-  test('remove a filter', async function(assert) {
+  test('remove a filter', async function (assert) {
     assert.expect(1);
 
-    this.set('onRemoveFilter', filter => {
+    this.set('onRemoveFilter', (filter) => {
       assert.deepEqual(
         filter.serialize(),
         serializedFilter1,

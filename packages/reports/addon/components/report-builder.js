@@ -36,7 +36,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @computed
   get allTables() {
-    const factTables = this.metadataService.all('table').filter(t => t.isFact === true);
+    const factTables = this.metadataService.all('table').filter((t) => t.isFact === true);
     return A(factTables).sortBy('name');
   }
 
@@ -68,7 +68,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleDimFilter(dimension) {
-    this._expandFilters(() => this.request.dimensionFilters.find(f => f.field === dimension));
+    this._expandFilters(() => this.request.dimensionFilters.find((f) => f.field === dimension));
   }
 
   /**
@@ -77,7 +77,7 @@ export default class ReportBuilderComponent extends Component {
    */
   @action
   onToggleMetricFilter(metric) {
-    this._expandFilters(() => this.request.metricFilters.find(f => f.field === metric.name));
+    this._expandFilters(() => this.request.metricFilters.find((f) => f.field === metric.name));
   }
 
   /**
@@ -90,7 +90,7 @@ export default class ReportBuilderComponent extends Component {
     //TODO clean me up
     this._expandFilters(() =>
       this.request.metricFilters.find(
-        filter => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
+        (filter) => filter.canonicalName === canonicalizeMetric({ metric: metric.name, parameters })
       )
     );
   }

@@ -21,7 +21,7 @@ import {
   getFirstDayEpochForGrain,
   getFirstDayOfGrain,
   getLastDayOfGrain,
-  getPeriodForGrain
+  getPeriodForGrain,
 } from 'navi-data/utils/date';
 
 const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day grain';
@@ -35,10 +35,7 @@ function isValidCalendarDate(date, dateTimePeriod) {
   if (['second', 'minute', 'hour'].includes(period)) {
     return true;
   }
-  return date
-    .clone()
-    .startOf('day')
-    .isSame(date);
+  return date.clone().startOf('day').isSame(date);
 }
 
 @templateLayout(layout)
@@ -51,9 +48,7 @@ class NaviDatePicker extends Component {
   init() {
     super.init(...arguments);
     const { centerDate, date, dateTimePeriod } = this;
-    const localDateAsUTCDay = moment()
-      .utc(true)
-      .startOf('day');
+    const localDateAsUTCDay = moment().utc(true).startOf('day');
     const center = centerDate || date || localDateAsUTCDay;
 
     assert(isValidCalendarDateMessage, isValidCalendarDate(center, dateTimePeriod));
@@ -134,7 +129,7 @@ class NaviDatePicker extends Component {
   get years() {
     const start = moment(this.minDate).year();
     const end = moment().year() + 1;
-    return range(start, end).map(y => y.toString());
+    return range(start, end).map((y) => y.toString());
   }
 
   /**
@@ -144,9 +139,7 @@ class NaviDatePicker extends Component {
    * @param e - the input event
    */
   changeCenter(unit, calendar, e) {
-    let newCenter = moment(calendar.center)
-      .clone()
-      [unit](e.target.value);
+    let newCenter = moment(calendar.center).clone()[unit](e.target.value);
     return calendar.actions.changeCenter(newCenter);
   }
 
@@ -160,7 +153,7 @@ class NaviDatePicker extends Component {
    * @returns {string}
    */
   selectedIsoWeekClass(day, calendar, weeks) {
-    const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
+    const selected = weeks.flatMap((w) => w.days).find((d) => d.isSelected);
     const classes = ['ember-power-calendar-week-day'];
     if (selected) {
       const selectedWeekStart = moment(getFirstDayOfGrain(selected.moment, 'isoWeek'));
@@ -183,7 +176,7 @@ class NaviDatePicker extends Component {
    * @returns {string}
    */
   selectedWeekClass(day, calendar, weeks) {
-    const selected = weeks.flatMap(w => w.days).find(d => d.isSelected);
+    const selected = weeks.flatMap((w) => w.days).find((d) => d.isSelected);
     const classes = ['ember-power-calendar-week-day'];
     if (selected) {
       const selectedWeekStart = moment(getFirstDayOfGrain(selected.moment, 'week'));

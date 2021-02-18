@@ -12,7 +12,7 @@ export default [
     authorId: 'navi_user',
     createdOn: '2017-01-01 00:00:00',
     updatedOn: '2017-01-01 00:00:00',
-    reportIds: [1, 3]
+    reportIds: [1, 3],
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ export default [
     authorId: 'ciela',
     createdOn: '2017-01-01 00:00:00',
     updatedOn: '2017-01-01 00:00:00',
-    reportIds: [2, 4]
+    reportIds: [2, 4],
   },
   {
     id: 3,
@@ -28,6 +28,6 @@ export default [
     authorId: 'navi_user',
     createdOn: '2019-01-01 00:00:00',
     updatedOn: '2019-01-01 00:00:00',
-    reportIds: [1]
-  }
+    reportIds: [1],
+  },
 ];

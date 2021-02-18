@@ -15,22 +15,22 @@ const TEMPLATE = hbs`
   />
 `;
 
-module('Integration | Component | navi-column-config/time-dimension', function(hooks) {
+module('Integration | Component | navi-column-config/time-dimension', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.fragmentFactory = this.owner.lookup('service:fragment-factory');
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('Configuring time grain', async function(assert) {
+  test('Configuring time grain', async function (assert) {
     assert.expect(3);
 
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
         ...this.column.fragment.parameters,
-        [paramId]: paramKey
+        [paramId]: paramKey,
       });
 
       assert.deepEqual(
@@ -42,7 +42,7 @@ module('Integration | Component | navi-column-config/time-dimension', function(h
 
     this.column = {
       fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }),
-      isFiltered: true
+      isFiltered: true,
     };
     await render(TEMPLATE);
 

@@ -13,8 +13,8 @@ module.exports = {
 
   options: {
     autoImport: {
-      exclude: ['papaparse'] // only included during development
-    }
+      exclude: ['papaparse'], // only included during development
+    },
   },
 
   treeForAddon(tree) {
@@ -59,5 +59,5 @@ module.exports = {
     if (this._isMirageEnabled()) {
       this.import('vendor/papaparse.js', { using: [{ transformation: 'amd', as: 'papaparse' }] });
     }
-  }
+  },
 };

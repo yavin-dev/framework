@@ -27,18 +27,18 @@ export default [
                   { name: 'Property 1', values: { property: '114' } },
                   { name: 'Property 2', values: { property: '100001' } },
                   { name: 'Property 3', values: { property: '100002' } },
-                  { name: 'Property 4', values: { property: '101272' } }
-                ]
-              }
-            }
-          }
-        }
-      }
+                  { name: 'Property 4', values: { property: '101272' } },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [{ dimension: 'property' }],
@@ -46,18 +46,18 @@ export default [
       sort: [
         {
           metric: 'navClicks',
-          direction: 'asc'
-        }
+          direction: 'asc',
+        },
       ],
       intervals: [
         {
           end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
+          start: '2015-11-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 2,
@@ -74,55 +74,55 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'property',
             type: 'dimension',
-            displayName: 'Property'
+            displayName: 'Property',
           },
           {
             field: 'adClicks',
             type: 'metric',
-            displayName: 'Ad Clicks'
+            displayName: 'Ad Clicks',
           },
           {
             field: 'navClicks',
             type: 'metric',
-            displayName: 'Nav Clicks'
-          }
-        ]
-      }
+            displayName: 'Nav Clicks',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [
         {
-          dimension: 'property'
-        }
+          dimension: 'property',
+        },
       ],
       filters: [
         {
           dimension: 'property',
           operator: 'in',
           field: 'id',
-          values: ['114', '100001']
-        }
+          values: ['114', '100001'],
+        },
       ],
       intervals: [
         {
           end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
+          start: '2015-11-09 00:00:00.000',
+        },
       ],
       having: [{ metric: 'adClicks', operator: 'gt', values: [1000] }],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 3,
@@ -139,25 +139,25 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'adClicks',
             type: 'metric',
-            displayName: 'Ad Clicks'
+            displayName: 'Ad Clicks',
           },
           {
             field: 'navClicks',
             type: 'metric',
-            displayName: 'Nav Clicks'
-          }
-        ]
-      }
+            displayName: 'Nav Clicks',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
@@ -166,12 +166,12 @@ export default [
       intervals: [
         {
           end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
+          start: '2015-11-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 4,
@@ -189,17 +189,17 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
@@ -208,12 +208,12 @@ export default [
       intervals: [
         {
           end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
+          start: '2015-11-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 5,
@@ -230,25 +230,25 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'adClicks',
             type: 'metric',
-            displayName: 'Ad Clicks'
+            displayName: 'Ad Clicks',
           },
           {
             field: 'navClicks',
             type: 'metric',
-            displayName: 'Nav Clicks'
-          }
-        ]
-      }
+            displayName: 'Nav Clicks',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
@@ -257,12 +257,12 @@ export default [
       intervals: [
         {
           end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000'
-        }
+          start: '2015-11-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 6,
@@ -279,8 +279,8 @@ export default [
       limit: null,
       columns: [],
       filters: [],
-      sorts: []
-    }
+      sorts: [],
+    },
   },
   {
     id: 7,
@@ -297,40 +297,40 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'revenue(currency=USD)',
             type: 'metric',
-            displayName: 'Revenue (USD)'
-          }
-        ]
-      }
+            displayName: 'Revenue (USD)',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'tableA',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [
         {
           metric: 'revenue',
           parameters: {
-            currency: 'USD'
-          }
-        }
+            currency: 'USD',
+          },
+        },
       ],
       dimensions: [],
       filters: [],
       intervals: [
         {
           end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000'
-        }
+          start: '2018-02-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 8,
@@ -347,60 +347,60 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'property',
             type: 'dimension',
-            displayName: 'Property'
+            displayName: 'Property',
           },
           {
             field: 'revenue(currency=USD)',
             type: 'metric',
-            displayName: 'Revenue (USD)'
+            displayName: 'Revenue (USD)',
           },
           {
             field: 'revenue(currency=EUR)',
             type: 'metric',
-            displayName: 'Revenue (EUR)'
-          }
-        ]
-      }
+            displayName: 'Revenue (EUR)',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'tableA',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [
         {
           metric: 'revenue',
           parameters: {
-            currency: 'USD'
-          }
+            currency: 'USD',
+          },
         },
         {
           metric: 'revenue',
           parameters: {
-            currency: 'EUR'
-          }
-        }
+            currency: 'EUR',
+          },
+        },
       ],
       dimensions: [
         {
-          dimension: 'property'
-        }
+          dimension: 'property',
+        },
       ],
       filters: [],
       intervals: [
         {
           end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000'
-        }
+          start: '2018-02-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 9,
@@ -417,40 +417,40 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'revenue(currency=USD)',
             type: 'metric',
-            displayName: 'Revenue (USD)'
-          }
-        ]
-      }
+            displayName: 'Revenue (USD)',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'oak',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [
         {
           metric: 'revenue',
           parameters: {
-            currency: 'USD'
-          }
-        }
+            currency: 'USD',
+          },
+        },
       ],
       dimensions: [],
       filters: [],
       intervals: [
         {
           end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000'
-        }
+          start: '2018-02-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 10,
@@ -468,17 +468,17 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['uniqueIdentifier']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['uniqueIdentifier'],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'uniqueIdentifier' }],
       dimensions: [],
@@ -487,12 +487,12 @@ export default [
       intervals: [
         {
           end: '2018-11-18 00:00:00.000',
-          start: '2018-11-11 00:00:00.000'
-        }
+          start: '2018-11-11 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 11,
@@ -509,47 +509,47 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'property',
             type: 'dimension',
-            displayName: 'Property'
+            displayName: 'Property',
           },
           {
             field: { metric: 'revenue', parameters: {} },
             type: 'metric',
-            displayName: 'Revenue'
-          }
-        ]
-      }
+            displayName: 'Revenue',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'tableA',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [
         {
           metric: 'revenue',
-          parameters: {}
-        }
+          parameters: {},
+        },
       ],
       dimensions: [
         {
-          dimension: 'property'
-        }
+          dimension: 'property',
+        },
       ],
       filters: [],
       intervals: [
         {
           end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000'
-        }
+          start: '2018-02-09 00:00:00.000',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 12,
@@ -566,69 +566,69 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'container',
             type: 'dimension',
-            displayName: 'Container'
+            displayName: 'Container',
           },
           {
             field: { metric: 'usedAmount', parameters: {} },
             type: 'metric',
-            displayName: 'Used Amount'
-          }
-        ]
-      }
+            displayName: 'Used Amount',
+          },
+        ],
+      },
     },
     request: {
       logicalTable: {
         table: 'inventory',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       metrics: [
         {
           metric: 'usedAmount',
-          parameters: {}
+          parameters: {},
         },
         {
           metric: 'revenue',
-          parameters: { currency: 'GIL' }
-        }
+          parameters: { currency: 'GIL' },
+        },
       ],
       dimensions: [
         {
-          dimension: 'container'
+          dimension: 'container',
         },
         {
-          dimension: 'displayCurrency'
-        }
+          dimension: 'displayCurrency',
+        },
       ],
       filters: [
         {
           dimension: 'container',
           field: 'id',
           operator: 'in',
-          values: ['2']
-        }
+          values: ['2'],
+        },
       ],
       having: [
         {
           metric: 'usedAmount',
           operator: 'gt',
-          values: [50]
-        }
+          values: [50],
+        },
       ],
       intervals: [
         {
           end: 'current',
-          start: 'P3D'
-        }
+          start: 'P3D',
+        },
       ],
       bardVersion: 'v1',
       requestVersion: 'v1',
-      dataSource: 'bardTwo'
-    }
+      dataSource: 'bardTwo',
+    },
   },
   {
     id: 13,
@@ -644,10 +644,10 @@ export default [
         columnAttributes: {
           c1: { canAggregateSubtotal: false },
           c3: { canAggregateSubtotal: false },
-          c2: { canAggregateSubtotal: false }
+          c2: { canAggregateSubtotal: false },
         },
-        showTotals: {}
-      }
+        showTotals: {},
+      },
     },
     request: {
       table: 'network',
@@ -661,33 +661,33 @@ export default [
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
-        }
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+        },
       ],
       columns: [
         {
           cid: 'c1',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
-          type: 'timeDimension'
+          type: 'timeDimension',
         },
         {
           cid: 'c2',
           type: 'metric',
           field: 'adClicks',
-          parameters: {}
+          parameters: {},
         },
         {
           cid: 'c3',
           type: 'dimension',
           field: 'property',
-          parameters: { field: 'id' }
-        }
+          parameters: { field: 'id' },
+        },
       ],
-      sorts: []
-    }
+      sorts: [],
+    },
   },
   {
     id: 14,
@@ -703,10 +703,10 @@ export default [
         columnAttributes: {
           c1: { canAggregateSubtotal: false },
           c3: { canAggregateSubtotal: false },
-          c2: { canAggregateSubtotal: false }
+          c2: { canAggregateSubtotal: false },
         },
-        showTotals: {}
-      }
+        showTotals: {},
+      },
     },
     request: {
       table: 'network',
@@ -720,17 +720,17 @@ export default [
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
-        }
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+        },
       ],
       columns: [
         {
           cid: 'c1',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
-          type: 'timeDimension'
+          type: 'timeDimension',
         },
         {
           cid: 'c2',
@@ -738,17 +738,17 @@ export default [
           field: 'multipleParamMetric',
           parameters: {
             currency: 'EUR',
-            age: '6'
-          }
+            age: '6',
+          },
         },
         {
           cid: 'c3',
           type: 'dimension',
           field: 'property',
-          parameters: { field: 'id' }
-        }
+          parameters: { field: 'id' },
+        },
       ],
-      sorts: []
-    }
-  }
+      sorts: [],
+    },
+  },
 ];

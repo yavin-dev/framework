@@ -7,11 +7,11 @@ import { unset } from 'lodash-es';
 
 let Store;
 
-module('Unit | Model | dashboard widget', function(hooks) {
+module('Unit | Model | dashboard widget', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
 
     Store.createRecord('user', { id: 'navi_user' });
@@ -20,13 +20,13 @@ module('Unit | Model | dashboard widget', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('tempId', async function(assert) {
+  test('tempId', async function (assert) {
     assert.expect(3);
 
     await run(async () => {
       const dashboard = await Store.findRecord('dashboard', 1);
       const widget = Store.createRecord('dashboard-widget', {
-        dashboard
+        dashboard,
       });
 
       assert.ok(!!get(widget, 'tempId'), '`tempId` exists when `id` does not');
@@ -39,7 +39,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
     });
   });
 
-  test('Retrieving Records', async function(assert) {
+  test('Retrieving Records', async function (assert) {
     assert.expect(4);
 
     await run(async () => {
@@ -48,7 +48,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
       const rec = widgets.objectAt(0);
 
       const serializedWidget = rec.toJSON();
-      const cids = serializedWidget.requests[0].columns.map(c => c.cid);
+      const cids = serializedWidget.requests[0].columns.map((c) => c.cid);
       const metricCid = serializedWidget.requests[0].columns[1].cid;
       cids.forEach((cid, idx) => {
         assert.equal(cid?.length, 10, 'column cid has proper value');
@@ -67,8 +67,8 @@ module('Unit | Model | dashboard widget', function(hooks) {
             metadata: {
               baselineValue: 200,
               goalValue: 1000,
-              metricCid: metricCid
-            }
+              metricCid: metricCid,
+            },
           },
           requests: [
             {
@@ -77,22 +77,22 @@ module('Unit | Model | dashboard widget', function(hooks) {
                   alias: null,
                   field: 'network.dateTime',
                   parameters: {
-                    grain: 'day'
+                    grain: 'day',
                   },
-                  type: 'timeDimension'
+                  type: 'timeDimension',
                 },
                 {
                   alias: null,
                   field: 'adClicks',
                   parameters: {},
-                  type: 'metric'
+                  type: 'metric',
                 },
                 {
                   alias: null,
                   field: 'navClicks',
                   parameters: {},
-                  type: 'metric'
-                }
+                  type: 'metric',
+                },
               ],
               dataSource: 'bardOne',
               filters: [
@@ -100,27 +100,27 @@ module('Unit | Model | dashboard widget', function(hooks) {
                   field: 'network.dateTime',
                   operator: 'bet',
                   parameters: {
-                    grain: 'day'
+                    grain: 'day',
                   },
                   type: 'timeDimension',
-                  values: ['P1D', 'current']
-                }
+                  values: ['P1D', 'current'],
+                },
               ],
               limit: null,
               requestVersion: '2.0',
               sorts: [],
-              table: 'network'
-            }
+              table: 'network',
+            },
           ],
           createdOn: '2016-01-01 00:00:00.000',
-          updatedOn: '2016-01-01 00:00:00.000'
+          updatedOn: '2016-01-01 00:00:00.000',
         },
         'dashboard-widget record with id 1 is found in the store'
       );
     });
   });
 
-  test('Request property', async function(assert) {
+  test('Request property', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -136,7 +136,7 @@ module('Unit | Model | dashboard widget', function(hooks) {
     });
   });
 
-  test('Cloning Dashboard Widgets', async function(assert) {
+  test('Cloning Dashboard Widgets', async function (assert) {
     assert.expect(1);
 
     await run(async () => {

@@ -22,5 +22,5 @@ export default RouteAction.extend({
     let actionName = UpdateReportActions[reportAction];
     assert(`The action name "${actionName}" is not a valid update report action`, actionName);
     return this._super([ROUTE_ACTION, actionName, ...params]);
-  }
+  },
 });

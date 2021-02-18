@@ -7,7 +7,7 @@ module.exports = {
   locals(options) {
     const importComponent = `import Component from '@ember/component';`;
 
-    const importTemplate = type => {
+    const importTemplate = (type) => {
       // if we're in an addon, build import statement
       if (options.project.isEmberCLIAddon() || (options.inRepoAddon && !options.inDummy)) {
         const path = `../../templates/components/${type}/${dasherize(options.entity.name)}`;
@@ -27,7 +27,7 @@ module.exports = {
     return {
       importComponent,
       importTemplate,
-      defaultExport
+      defaultExport,
     };
-  }
+  },
 };

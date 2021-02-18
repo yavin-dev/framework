@@ -23,11 +23,11 @@ export function getVerticalCollection(selector = 'body') {
   const allVCs = Object.values(viewRegistry).filter(isVerticalCollection);
 
   let verticalCollection;
-  const byId = allVCs.find(vc => `#${vc.elementId}` === selector);
+  const byId = allVCs.find((vc) => `#${vc.elementId}` === selector);
   if (byId) {
     verticalCollection = byId;
   } else {
-    const visibleVCs = allVCs.filter(verticalCollection => {
+    const visibleVCs = allVCs.filter((verticalCollection) => {
       const { elementId } = verticalCollection;
       return !!document.querySelector(`${selector} #${elementId}`);
     });

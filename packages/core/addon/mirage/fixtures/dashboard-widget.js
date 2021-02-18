@@ -10,14 +10,14 @@ export default [
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metric: { metric: 'adClicks', parameters: {} }
-      }
+        metric: { metric: 'adClicks', parameters: {} },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -25,15 +25,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P1D'
-          }
+            start: 'P1D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 2,
@@ -49,18 +49,18 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -68,15 +68,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 3,
@@ -91,31 +91,31 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'os',
             type: 'dimension',
-            displayName: 'OS'
+            displayName: 'OS',
           },
           {
             field: 'uniqueIdentifier',
             type: 'metric',
-            displayName: 'Unique Identifier'
+            displayName: 'Unique Identifier',
           },
           {
             field: 'totalPageViews',
             type: 'metric',
-            displayName: 'Total Page Views'
-          }
-        ]
-      }
+            displayName: 'Total Page Views',
+          },
+        ],
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
         dimensions: [{ dimension: 'os' }],
@@ -123,15 +123,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 4,
@@ -147,18 +147,18 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -166,15 +166,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 5,
@@ -189,31 +189,31 @@ export default [
           {
             field: 'dateTime',
             type: 'dateTime',
-            displayName: 'Date'
+            displayName: 'Date',
           },
           {
             field: 'os',
             type: 'dimension',
-            displayName: 'OS'
+            displayName: 'OS',
           },
           {
             field: 'uniqueIdentifier',
             type: 'metric',
-            displayName: 'Unique Identifier'
+            displayName: 'Unique Identifier',
           },
           {
             field: 'totalPageViews',
             type: 'metric',
-            displayName: 'Total Page Views'
-          }
-        ]
-      }
+            displayName: 'Total Page Views',
+          },
+        ],
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
         dimensions: [{ dimension: 'os' }],
@@ -221,15 +221,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 6,
@@ -245,18 +245,18 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -264,15 +264,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 7,
@@ -288,18 +288,18 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['personalSold', 'globallySold']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['personalSold', 'globallySold'],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'inventory',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'personalSold' }, { metric: 'globallySold' }],
         dimensions: [],
@@ -307,16 +307,16 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
         requestVersion: 'v1',
-        dataSource: 'bardTwo'
-      }
+        dataSource: 'bardTwo',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 8,
@@ -329,14 +329,14 @@ export default [
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metric: { metric: 'adClicks', parameters: {} }
-      }
+        metric: { metric: 'adClicks', parameters: {} },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -344,15 +344,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P1D'
-          }
+            start: 'P1D',
+          },
         ],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
+        requestVersion: 'v1',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
+    updatedOn: '2016-01-01 00:00:00',
   },
   {
     id: 9,
@@ -368,18 +368,18 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks']
-              }
-            }
-          }
-        }
-      }
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
           table: 'network',
-          timeGrain: 'day'
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
         dimensions: [],
@@ -387,15 +387,15 @@ export default [
         intervals: [
           {
             end: 'current',
-            start: 'P7D'
-          }
+            start: 'P7D',
+          },
         ],
         bardVersion: 'v1',
         requestVersion: 'v1',
-        dataSource: 'bardOne'
-      }
+        dataSource: 'bardOne',
+      },
     ],
     createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00'
-  }
+    updatedOn: '2016-01-01 00:00:00',
+  },
 ];

@@ -33,7 +33,7 @@ export default Helper.extend({
    * @method contentDidChange
    * @returns {Void}
    */
-  contentDidChange: observer('content', function() {
+  contentDidChange: observer('content', function () {
     this.recompute();
-  })
+  }),
 });

@@ -43,7 +43,7 @@ export default ActionConsumer.extend({
         .then(() => {
           promise.resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           promise.reject(error);
         });
     },
@@ -56,6 +56,6 @@ export default ActionConsumer.extend({
       if (rule && !get(rule, 'isNew')) {
         rule.rollbackAttributes();
       }
-    }
-  }
+    },
+  },
 });

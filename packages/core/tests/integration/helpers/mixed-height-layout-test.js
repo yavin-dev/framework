@@ -12,10 +12,10 @@ const TEMPLATE = hbs`
     {{/ember-collection}}
   </div>`;
 
-module('Integration | Helper | mixed height layout', function(hooks) {
+module('Integration | Helper | mixed height layout', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('layout', async function(assert) {
+  test('layout', async function (assert) {
     assert.expect(2);
 
     let items = [1, 2, 3, 4, 5],
@@ -32,7 +32,7 @@ module('Integration | Helper | mixed height layout', function(hooks) {
         { height: 10, left: 0, top: 10, width: 10 },
         { height: 10, left: 0, top: 20, width: 10 },
         { height: 10, left: 0, top: 30, width: 10 },
-        { height: 10, left: 0, top: 40, width: 10 }
+        { height: 10, left: 0, top: 40, width: 10 },
       ],
       'mixed height layout correctly laid out each item'
     );
@@ -49,7 +49,7 @@ module('Integration | Helper | mixed height layout', function(hooks) {
         { height: 10, left: 0, top: 20, width: 10 },
         { height: 10, left: 0, top: 30, width: 10 },
         { height: 10, left: 0, top: 40, width: 10 },
-        { height: 10, left: 0, top: 50, width: 10 }
+        { height: 10, left: 0, top: 50, width: 10 },
       ],
       'mixed height layout correctly laid out each item with mixed heights'
     );
@@ -57,7 +57,7 @@ module('Integration | Helper | mixed height layout', function(hooks) {
 
   function findItems() {
     // scrollable content rows
-    return findAll('.mixed-height-layout-test > div > div > div > div').map(element => {
+    return findAll('.mixed-height-layout-test > div > div > div > div').map((element) => {
       let parentRect = element.parentElement.getBoundingClientRect(),
         elementRect = element.getBoundingClientRect();
 
@@ -65,7 +65,7 @@ module('Integration | Helper | mixed height layout', function(hooks) {
         left: elementRect.left - parentRect.left,
         top: elementRect.top - parentRect.top,
         width: elementRect.width,
-        height: elementRect.height
+        height: elementRect.height,
       };
     });
   }

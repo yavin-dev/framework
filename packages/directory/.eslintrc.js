@@ -1,6 +1,6 @@
 module.exports = {
   globals: {
-    server: true
+    server: true,
   },
   root: true,
   parser: '@typescript-eslint/parser',
@@ -11,10 +11,10 @@ module.exports = {
     'plugin:qunit/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'prettier/@typescript-eslint'
+    'prettier/@typescript-eslint',
   ],
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     // ember specific
@@ -31,7 +31,7 @@ module.exports = {
     'prettier/prettier': 'error',
 
     // better handled by prettier:
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
   },
   overrides: [
     // node files
@@ -44,22 +44,22 @@ module.exports = {
         'testem.js',
         'blueprints/*/index.js',
         'config/**/*.js',
-        'tests/dummy/config/**/*.js'
+        'tests/dummy/config/**/*.js',
       ],
       excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
-        sourceType: 'script'
+        sourceType: 'script',
       },
       env: {
         browser: false,
-        node: true
+        node: true,
       },
       plugins: ['node'],
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
         '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
+        '@typescript-eslint/no-var-requires': 'off',
         // add your custom rules and overrides for node files here
-      })
-    }
-  ]
+      }),
+    },
+  ],
 };

@@ -90,16 +90,16 @@ export default class KegDimensionAdapter extends EmberObject {
             pagination: {
               rowsPerPage: options.perPage,
               numberOfResults: records.length,
-              currentPage: options.page
-            }
+              currentPage: options.page,
+            },
           },
-          rows: newRows
+          rows: newRows,
         };
       }
     }
 
     return {
-      rows: records
+      rows: records,
     };
   }
 
@@ -161,7 +161,7 @@ export default class KegDimensionAdapter extends EmberObject {
     if (!Array.isArray(andQueries)) {
       // if not array
       warn('find() was not passed an array of queries, wrapping as single query array', {
-        id: 'keg-find-query-as-array'
+        id: 'keg-find-query-as-array',
       });
       andQueries = [andQueries]; // wrap
     }
@@ -169,27 +169,27 @@ export default class KegDimensionAdapter extends EmberObject {
     // defaults to 'in' operation if operator is not specified
     assert(
       "Only 'in' operation is currently supported in Keg",
-      andQueries.filter(q => q.operator).every(q => q.operator === 'in')
+      andQueries.filter((q) => q.operator).every((q) => q.operator === 'in')
     );
 
-    const stringQueries = andQueries.filter(q => typeof q.values === 'string');
+    const stringQueries = andQueries.filter((q) => typeof q.values === 'string');
     if (stringQueries.length) {
       warn('find() was passed query.values as a string, falling back to splitting by commas', {
-        id: 'keg-find-query-values-as-array'
+        id: 'keg-find-query-values-as-array',
       });
-      stringQueries.forEach(query => (query.values = query.values.split(',')));
+      stringQueries.forEach((query) => (query.values = query.values.split(',')));
     }
     assert(
       "Only 'Array' query values are currently supported in Keg",
-      andQueries.every(q => Array.isArray(q.values))
+      andQueries.every((q) => Array.isArray(q.values))
     );
 
     let defaultQueryOptions = {
       field: this._getDimensionMetadata(dimension, namespace).primaryKeyFieldName,
-      values: []
+      values: [],
     };
 
-    andQueries = andQueries.map(query => assign({}, defaultQueryOptions, query));
+    andQueries = andQueries.map((query) => assign({}, defaultQueryOptions, query));
 
     //convert navi-data query object interface to keg query object interface
     const query = andQueries.reduce((all, query) => {
@@ -229,7 +229,7 @@ export default class KegDimensionAdapter extends EmberObject {
       assign(
         {
           modelFactory,
-          namespace
+          namespace,
         },
         options
       )

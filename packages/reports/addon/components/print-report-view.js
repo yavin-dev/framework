@@ -24,7 +24,7 @@ export default Component.extend({
   /**
    * @property {Boolean} hasNoData - whether or not there is data to display
    */
-  hasNoData: computed('response.meta.pagination.numberOfResults', function() {
+  hasNoData: computed('response.meta.pagination.numberOfResults', function () {
     return get(this, 'response.meta.pagination.numberOfResults') === 0;
-  })
+  }),
 });

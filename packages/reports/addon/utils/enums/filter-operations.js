@@ -18,29 +18,29 @@ export default {
       {
         id: 'in',
         name: 'Equals',
-        valuesComponent: 'filter-form/select-input'
+        valuesComponent: 'filter-form/select-input',
       },
       {
         id: 'notin',
         name: 'Not Equals',
-        valuesComponent: 'filter-form/select-input'
+        valuesComponent: 'filter-form/select-input',
       },
       {
         id: 'null',
         name: 'Is Empty',
-        valuesComponent: 'filter-form/null-input'
+        valuesComponent: 'filter-form/null-input',
       },
       {
         id: 'notnull',
         name: 'Is Not Empty',
-        valuesComponent: 'filter-form/null-input'
-      }
+        valuesComponent: 'filter-form/null-input',
+      },
     ]);
     if (get(config, 'navi.FEATURES.enableContains')) {
       defaultOperations.pushObject({
         id: 'contains',
         name: 'Contains',
-        valuesComponent: 'filter-form/text-input'
+        valuesComponent: 'filter-form/text-input',
       });
     }
     return defaultOperations;
@@ -65,5 +65,5 @@ export default {
   getById(id) {
     assert(`id: \`${id}\` should be of type string and non-empty`, typeOf(id) === 'string' && id !== '');
     return this._definitions().findBy('id', id);
-  }
+  },
 };

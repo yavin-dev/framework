@@ -108,7 +108,7 @@ export default Component.extend({
    * @private
    * @property {Array} _itemsToRender - items to render
    */
-  _itemsToRender: computed('items.[]', '_perPage', function() {
+  _itemsToRender: computed('items.[]', '_perPage', function () {
     return A(get(this, 'items').slice(0, get(this, '_perPage')));
   }),
 
@@ -116,7 +116,7 @@ export default Component.extend({
    * @private
    * @property {Boolean} _isTrimmed - true of items collection is trimmed else false
    */
-  _isTrimmed: computed('trim', '_itemsExceedMaxHt', '_hasMoreItems', function() {
+  _isTrimmed: computed('trim', '_itemsExceedMaxHt', '_hasMoreItems', function () {
     return get(this, 'trim') && (get(this, '_itemsExceedMaxHt') || get(this, '_hasMoreItems'));
   }),
 
@@ -124,7 +124,7 @@ export default Component.extend({
    * @private
    * @property {Number} _perPage - number of items loaded per page based on trim flag
    */
-  _perPage: computed('trim', 'perPage', 'initialItemsToRender', function() {
+  _perPage: computed('trim', 'perPage', 'initialItemsToRender', function () {
     if (get(this, 'trim')) {
       return get(this, 'initialItemsToRender');
     }
@@ -145,7 +145,7 @@ export default Component.extend({
    * @private
    * @property {Boolean} _hasMoreItems - true if infinite scroll has more items to render else false
    */
-  _hasMoreItems: computed('items.[]', '_itemsToRender.[]', function() {
+  _hasMoreItems: computed('items.[]', '_itemsToRender.[]', function () {
     return get(this, 'items.length') > get(this, '_itemsToRender.length');
   }),
 
@@ -178,7 +178,7 @@ export default Component.extend({
   /**
    * @event willDestroyElement
    */
-  willDestroyElement: function() {
+  willDestroyElement: function () {
     let containerSelector = `.${get(this, '_containerClass')}`;
     // Unbind scroll event
     this.$(containerSelector).off('scroll.paginated-scroll');
@@ -224,6 +224,6 @@ export default Component.extend({
     onShowMore() {
       set(this, 'trim', false);
       get(this, 'attrs.showMore')();
-    }
-  }
+    },
+  },
 });

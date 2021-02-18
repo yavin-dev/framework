@@ -9,11 +9,11 @@ import TableMetadataModel from 'navi-data/models/metadata/table';
 let MetadataService, Store;
 
 const TEMPLATE = hbs`<ReportBuilder @report={{this.report}} />`;
-module('Integration | Component | report builder', function(hooks) {
+module('Integration | Component | report builder', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
 
@@ -30,14 +30,14 @@ module('Integration | Component | report builder', function(hooks) {
           requestVersion: '2.0',
           filters: [],
           columns: [],
-          sorts: []
+          sorts: [],
         }),
-        visualization: {}
+        visualization: {},
       })
     );
   });
 
-  test("Single table in meta shouldn't show table selector", async function(assert) {
+  test("Single table in meta shouldn't show table selector", async function (assert) {
     assert.expect(2);
     //reset meta data and load only one table
     MetadataService.keg.resetByType('metadata/table');
@@ -50,8 +50,8 @@ module('Integration | Component | report builder', function(hooks) {
           description: 'Table A',
           metricIds: [],
           dimensionIds: [],
-          timeDimensionIds: []
-        })
+          timeDimensionIds: [],
+        }),
       ],
       'bardOne'
     );
@@ -62,7 +62,7 @@ module('Integration | Component | report builder', function(hooks) {
     assert.dom('.navi-table-select').isNotVisible('Table selector does not render with only one table');
   });
 
-  test('Multiple tables in meta should show table selector', async function(assert) {
+  test('Multiple tables in meta should show table selector', async function (assert) {
     assert.expect(1);
 
     await render(TEMPLATE);

@@ -4,11 +4,11 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { getContext } from '@ember/test-helpers';
 
-module('Acceptance | Add New Widget', function(hooks) {
+module('Acceptance | Add New Widget', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('visiting /dashboards/dashboard/widgets/Adds without param', async function(assert) {
+  test('visiting /dashboards/dashboard/widgets/Adds without param', async function (assert) {
     assert.expect(1);
 
     //Initial state
@@ -23,7 +23,7 @@ module('Acceptance | Add New Widget', function(hooks) {
     );
   });
 
-  test('visiting /dashboards/dashboard/widgets/add with unsavedWidgetId param', async function(assert) {
+  test('visiting /dashboards/dashboard/widgets/add with unsavedWidgetId param', async function (assert) {
     assert.expect(6);
 
     //Check initial state

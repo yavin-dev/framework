@@ -24,7 +24,7 @@ class MixedHeightLayout {
   contentSize(clientWidth /*, clientHeight*/) {
     let size = {
       width: clientWidth,
-      height: this.bin.height(MOCK_WIDTH)
+      height: this.bin.height(MOCK_WIDTH),
     };
     return size;
   }
@@ -62,10 +62,10 @@ class MixedHeightLayout {
 export function formatItemDimension(height) {
   return {
     height,
-    width: MOCK_WIDTH
+    width: MOCK_WIDTH,
   };
 }
 
-export default buildHelper(function(params /*, hash */) {
+export default buildHelper(function (params /*, hash */) {
   return new MixedHeightLayout(params[0]);
 });

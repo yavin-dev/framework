@@ -13,19 +13,19 @@ export default [
     ownerId: 'navi_user',
     deliveredItemId: {
       type: 'report',
-      id: 3
+      id: 3,
     },
     deliveryType: 'report',
     frequency: 'week',
     schedulingRules: {
       stopAfter: '2017-09-04 00:00:00',
-      every: '2 weeks'
+      every: '2 weeks',
     },
     format: {
-      type: 'csv'
+      type: 'csv',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
-    version: 1
+    version: 1,
   },
   {
     id: 2,
@@ -34,19 +34,19 @@ export default [
     ownerId: 'navi_user',
     deliveredItemId: {
       type: 'report',
-      id: 4
+      id: 4,
     },
     deliveryType: 'report',
     frequency: 'month',
     schedulingRules: {
       stopAfter: '2017-09-01 00:00:00',
-      every: '2 weeks'
+      every: '2 weeks',
     },
     format: {
-      type: 'csv'
+      type: 'csv',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
-    version: 1
+    version: 1,
   },
   {
     id: 3,
@@ -55,15 +55,15 @@ export default [
     ownerId: 'navi_user',
     deliveredItemId: {
       type: 'dashboard',
-      id: 2
+      id: 2,
     },
     deliveryType: 'dashboard',
     frequency: 'week',
     schedulingRules: {},
     format: {
-      type: 'pdf'
+      type: 'pdf',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
-    version: 1
-  }
+    version: 1,
+  },
 ];

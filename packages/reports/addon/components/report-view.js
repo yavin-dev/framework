@@ -68,10 +68,7 @@ class ReportView extends Component {
    */
   @computed('report.visualization.type')
   get visualizationTypeLabel() {
-    return get(this, 'report.visualization.type')
-      .split('-')
-      .map(capitalize)
-      .join(' ');
+    return get(this, 'report.visualization.type').split('-').map(capitalize).join(' ');
   }
 
   /**
@@ -156,11 +153,11 @@ class ReportView extends Component {
     const {
       report,
       report: { request },
-      response
+      response,
     } = this;
 
     let newVisualization = this.store.createFragment(type, {
-      _request: request //Provide request for validation
+      _request: request, //Provide request for validation
     });
     newVisualization.rebuildConfig(request, response);
     set(report, 'visualization', newVisualization);
@@ -172,7 +169,7 @@ class ReportView extends Component {
    */
   *visFadeTransition({ removedSprites, insertedSprites }) {
     // fadeIn a little bit longer so we can see the fade after the drawer closes
-    yield Promise.all(insertedSprites.map(s => fadeIn(s, { duration: 500 })));
+    yield Promise.all(insertedSprites.map((s) => fadeIn(s, { duration: 500 })));
     yield Promise.all(removedSprites.map(fadeOut));
   }
 
@@ -184,7 +181,7 @@ class ReportView extends Component {
   *drawerTransition({ insertedSprites, removedSprites }) {
     const x = document.querySelector('.report-view__animation-container').getBoundingClientRect().right;
     yield Promise.all(
-      insertedSprites.map(sprite => {
+      insertedSprites.map((sprite) => {
         sprite.startAtPixel({ x });
         sprite.applyStyles({ 'z-index': '1' });
         return move(sprite, { easing: easeOut });
@@ -192,7 +189,7 @@ class ReportView extends Component {
     );
 
     yield Promise.all(
-      removedSprites.map(sprite => {
+      removedSprites.map((sprite) => {
         sprite.applyStyles({ 'z-index': '1' });
         sprite.endAtPixel({ x });
         return move(sprite, { easing: easeIn });

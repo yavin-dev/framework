@@ -8,11 +8,11 @@ import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
 
-module('Integration | Component | navi dashboard', function(hooks) {
+module('Integration | Component | navi dashboard', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const { owner } = this;
 
     owner.register(
@@ -30,14 +30,14 @@ module('Integration | Component | navi dashboard', function(hooks) {
         layout: [
           { column: 0, row: 0, height: 4, width: 3, widgetId: 1 },
           { column: 3, row: 0, height: 4, width: 6, widgetId: 2 },
-          { column: 0, row: 5, height: 1, width: 1, widgetId: 123456 } // Test a widget that doesn't exist
+          { column: 0, row: 5, height: 1, width: 1, widgetId: 123456 }, // Test a widget that doesn't exist
         ],
-        columns: 20
+        columns: 20,
       },
       constructor: { modelName: 'dashboard' },
       get(key) {
         return get(this, key);
-      }
+      },
     };
 
     this.set('dashboardModel', dashboardModel);
@@ -56,7 +56,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     });
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(4);
 
     await render(hbs`<NaviDashboard
@@ -81,7 +81,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       .hasAttribute('data-gs-width', '6', 'Widget width is based on layout');
   });
 
-  test('widget tasks', async function(assert) {
+  test('widget tasks', async function (assert) {
     assert.expect(2);
 
     const taskByWidget = { 1: 'foo', 2: 'bar' };
@@ -98,7 +98,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     const { owner } = this;
     const components = owner.lookup('-view-registry:main');
 
-    findAll('.navi-widget').forEach(el => {
+    findAll('.navi-widget').forEach((el) => {
       const emberId = el.getAttribute('id');
       const component = components[emberId].parentView;
       const { id } = component.model;
@@ -107,7 +107,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     });
   });
 
-  test('dashboard export', async function(assert) {
+  test('dashboard export', async function (assert) {
     assert.expect(2);
     const originalFeatureFlag = config.navi.FEATURES.enableDashboardExport;
 
@@ -133,7 +133,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
   });
 
-  test('dashboard schedule - config', async function(assert) {
+  test('dashboard schedule - config', async function (assert) {
     assert.expect(2);
     const originalFeatureFlag = config.navi.FEATURES.enableScheduleDashboards;
 
@@ -158,7 +158,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
     config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
   });
 
-  test('dashboard schedule - isUserOwner', async function(assert) {
+  test('dashboard schedule - isUserOwner', async function (assert) {
     assert.expect(1);
 
     this.set('dashboardModel.isUserOwner', false);

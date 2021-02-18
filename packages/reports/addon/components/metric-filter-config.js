@@ -31,7 +31,7 @@ export default class MetricFilterConfig extends Component {
     let unFilteredMetrics = getUnfilteredMetricsOfBase(this.metric.metric, this.request),
       otherParameters = arr(unFilteredMetrics).mapBy('parameters');
 
-    return otherParameters.map(metricParam => {
+    return otherParameters.map((metricParam) => {
       let entries = arr(Object.entries(metricParam)).reject(([key]) => key === 'as');
       return entries.map(([, value]) => value);
     });
@@ -42,7 +42,7 @@ export default class MetricFilterConfig extends Component {
    */
   @computed('metric.parameters')
   get parameter() {
-    return arr(Object.keys(this.metric.parameters)).reject(key => key === 'as')[0];
+    return arr(Object.keys(this.metric.parameters)).reject((key) => key === 'as')[0];
   }
 
   /**
@@ -55,7 +55,7 @@ export default class MetricFilterConfig extends Component {
       marginTop = 22,
       style = {
         left: left + width + marginLeft,
-        top: top + window.pageYOffset + height / 2 - marginTop
+        top: top + window.pageYOffset + height / 2 - marginTop,
       };
 
     return { style };

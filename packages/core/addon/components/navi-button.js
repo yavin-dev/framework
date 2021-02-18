@@ -18,10 +18,10 @@ import layout from '../templates/components/navi-button';
 export default Component.extend({
   layout,
   tagName: '',
-  class: computed('disabled', 'type', function() {
+  class: computed('disabled', 'type', function () {
     const type = this.type || 'primary';
     const diabledModifier = this.disabled ? '-disabled' : '';
     const modifier = `navi-button--${type}${diabledModifier}`;
     return `navi-button ${modifier}`;
-  })
+  }),
 });

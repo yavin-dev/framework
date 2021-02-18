@@ -64,7 +64,7 @@ export function formatDateRange(start, end, timePeriod) {
   const formats = {
     month: 'MMM YYYY',
     quarter: '[Q]Q YYYY',
-    year: 'YYYY'
+    year: 'YYYY',
   };
 
   const format = formats[timePeriod] || 'MMM DD, YYYY';

@@ -5,14 +5,14 @@ import ActionConsumer from 'navi-core/consumers/action-consumer';
 
 let Container;
 
-module('Unit | Helper | item action', function(hooks) {
+module('Unit | Helper | item action', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Container = this.owner;
   });
 
-  test('item action', function(assert) {
+  test('item action', function (assert) {
     assert.expect(4);
 
     Container.register(
@@ -26,7 +26,7 @@ module('Unit | Helper | item action', function(hooks) {
             [{ title: 'Report' }],
             'consumer receives the correct params from the item-action helper'
           );
-        }
+        },
       })
     );
 
@@ -37,8 +37,8 @@ module('Unit | Helper | item action', function(hooks) {
     let action = actionHelper.compute([
       'DELETE_ITEM',
       {
-        title: 'Report'
-      }
+        title: 'Report',
+      },
     ]);
 
     assert.equal(typeof action, 'function', 'The helper returns a function that dispatches the desired action');

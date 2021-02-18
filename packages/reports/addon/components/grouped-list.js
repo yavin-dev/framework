@@ -47,8 +47,8 @@ class GroupedListComponent extends Component {
     const parentClasses = parentView.element.querySelector(`.${groupedListClass}`).parentElement.classList.value;
     const parentSelector = parentClasses
       .split(' ')
-      .filter(cls => cls.length)
-      .map(cls => `.${cls}`)
+      .filter((cls) => cls.length)
+      .map((cls) => `.${cls}`)
       .join('');
     return parentSelector;
   }
@@ -60,7 +60,7 @@ class GroupedListComponent extends Component {
   get groupedItems() {
     const { items, groupByField, sortByField } = this;
 
-    const grouped = groupBy(items, row => row[groupByField]?.split(',')[0] || `Uncategorized`);
+    const grouped = groupBy(items, (row) => row[groupByField]?.split(',')[0] || `Uncategorized`);
 
     if (!isBlank(sortByField)) {
       Object.entries(grouped).forEach(([key, value]) => {

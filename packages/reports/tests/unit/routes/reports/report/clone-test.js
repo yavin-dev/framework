@@ -3,10 +3,10 @@ import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Route | reports/report/clone', function(hooks) {
+module('Unit | Route | reports/report/clone', function (hooks) {
   setupTest(hooks);
 
-  test('_cloneReport', function(assert) {
+  test('_cloneReport', function (assert) {
     assert.expect(3);
 
     return run(() => {
@@ -16,7 +16,7 @@ module('Unit | Route | reports/report/clone', function(hooks) {
       this.owner.register(
         'service:user',
         Service.extend({
-          getUser: () => mockAuthor
+          getUser: () => mockAuthor,
         })
       );
 
@@ -25,11 +25,11 @@ module('Unit | Route | reports/report/clone', function(hooks) {
           title: 'Twilight Princess',
           author: 'Wolf Link',
           request: {
-            responseFormat: 'json'
+            responseFormat: 'json',
           },
           clone() {
             return Object.assign({}, this);
-          }
+          },
         },
         clonedReport = route._cloneReport(originalReport);
 

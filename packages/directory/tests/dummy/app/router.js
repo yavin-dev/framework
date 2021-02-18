@@ -10,8 +10,8 @@ export default class Router extends EmberRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function() {
-  directoryRoutes(this, function() {
+Router.map(function () {
+  directoryRoutes(this, function () {
     this.route('other-data');
   });
   reportRoutes(this);

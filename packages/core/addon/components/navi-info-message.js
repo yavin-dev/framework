@@ -10,5 +10,5 @@
 import Component from '@ember/component';
 
 export default Component.extend({
-  classNames: ['navi-info-message']
+  classNames: ['navi-info-message'],
 });

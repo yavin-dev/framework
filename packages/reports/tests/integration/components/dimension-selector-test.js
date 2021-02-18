@@ -16,11 +16,11 @@ const TEMPLATE = hbs`<DimensionSelector
   @onToggleDimFilter={{this.onToggleDimFilter}}
 />`;
 
-module('Integration | Component | dimension selector', function(hooks) {
+module('Integration | Component | dimension selector', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:navi-metadata');
 
@@ -43,14 +43,14 @@ module('Integration | Component | dimension selector', function(hooks) {
             type: 'dimension',
             source: 'bardOne',
             operator: 'in',
-            values: [1]
-          }
-        ]
+            values: [1],
+          },
+        ],
       })
     );
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -64,24 +64,24 @@ module('Integration | Component | dimension selector', function(hooks) {
     assert.dom('.grouped-list').exists('a grouped-list component is rendered as part of the dimension selector');
   });
 
-  test('groups', async function(assert) {
+  test('groups', async function (assert) {
     assert.expect(1);
 
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.grouped-list__group-header').map(el => el.textContent.trim()),
+      findAll('.grouped-list__group-header').map((el) => el.textContent.trim()),
       ['test (27)', 'Asset (4)', 'Date (1)'],
       'The groups rendered by the component include dimension groups and Date'
     );
   });
 
-  test('add dimension', async function(assert) {
+  test('add dimension', async function (assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
-    this.set('onAddDimension', item => {
+    this.set('onAddDimension', (item) => {
       assert.equal(item.name, 'Gender', 'the gender dimension item is passed as a param to the action');
     });
 
@@ -92,7 +92,7 @@ module('Integration | Component | dimension selector', function(hooks) {
     await clickItem('dimension', 'Gender');
   });
 
-  test('filter icon', async function(assert) {
+  test('filter icon', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -112,19 +112,19 @@ module('Integration | Component | dimension selector', function(hooks) {
       );
     await resetGender();
 
-    this.set('onToggleDimFilter', dimension => {
+    this.set('onToggleDimFilter', (dimension) => {
       assert.deepEqual(dimension, Age, 'The age dimension is passed to the action when filter icon is clicked');
     });
 
     await clickItemFilter('dimension', 'Age');
   });
 
-  test('tooltip', async function(assert) {
+  test('tooltip', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
 
-    this.server.get(`${config.navi.dataSources[0].uri}/v1/dimensions/age`, function() {
+    this.server.get(`${config.navi.dataSources[0].uri}/v1/dimensions/age`, function () {
       return {
         name: 'age',
         longName: 'Age',
@@ -132,7 +132,7 @@ module('Integration | Component | dimension selector', function(hooks) {
         category: 'test',
         datatype: 'text',
         storageStrategy: 'loaded',
-        description: 'foo'
+        description: 'foo',
       };
     });
     assertTooltipNotRendered(assert);
@@ -145,19 +145,19 @@ module('Integration | Component | dimension selector', function(hooks) {
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
-      contentString: 'foo'
+      contentString: 'foo',
     });
     await resetAge();
   });
 
-  test('ranked search', async function(assert) {
+  test('ranked search', async function (assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
     const allDimensions = await getAll('dimension');
     assert.deepEqual(
-      allDimensions.filter(dim => dim.includes('Country')),
+      allDimensions.filter((dim) => dim.includes('Country')),
       ['Property Country', 'User Country'],
       'Initially the country dimensions are ordered alphabetically'
     );

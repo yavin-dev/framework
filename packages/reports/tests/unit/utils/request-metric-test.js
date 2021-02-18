@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import {
   getSelectedMetricsOfBase,
   getFilteredMetricsOfBase,
-  getUnfilteredMetricsOfBase
+  getUnfilteredMetricsOfBase,
 } from 'navi-reports/utils/request-metric';
 import { A as arr } from '@ember/array';
 
@@ -12,29 +12,29 @@ const foo1 = {
   type: 'metric',
   field: 'foo',
   parameters: {
-    thing: '1'
+    thing: '1',
   },
   canonicalName: 'foo(thing=1)',
-  columnMetadata: { id: 'foo' }
+  columnMetadata: { id: 'foo' },
 };
 const foo2 = {
   type: 'metric',
   field: 'foo',
   parameters: {
-    thing: '2'
+    thing: '2',
   },
   canonicalName: 'foo(thing=2)',
-  columnMetadata: { id: 'foo' }
+  columnMetadata: { id: 'foo' },
 };
 const bar = {
   type: 'metric',
   field: 'bar',
   parameters: {},
   canonicalName: 'bar',
-  columnMetadata: { id: 'bar' }
+  columnMetadata: { id: 'bar' },
 };
-module('Unit | Utils | request metric', function() {
-  test('getSelectedMetricsOfBase', function(assert) {
+module('Unit | Utils | request metric', function () {
+  test('getSelectedMetricsOfBase', function (assert) {
     assert.expect(2);
 
     const request = { columns: [foo1, foo2, bar], filters: [] };
@@ -52,7 +52,7 @@ module('Unit | Utils | request metric', function() {
     );
   });
 
-  test('getFilteredMetricsOfBase', function(assert) {
+  test('getFilteredMetricsOfBase', function (assert) {
     assert.expect(2);
 
     const request = { columns: [], filters: [foo1, foo2, bar] };
@@ -70,7 +70,7 @@ module('Unit | Utils | request metric', function() {
     );
   });
 
-  test('getUnfilteredMetricsOfBase', function(assert) {
+  test('getUnfilteredMetricsOfBase', function (assert) {
     assert.expect(2);
 
     const request = { columns: [foo1, foo2, bar], filters: [foo1] };

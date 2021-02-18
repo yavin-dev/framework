@@ -2,10 +2,10 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Validator | array-number', function(hooks) {
+module('Unit | Validator | array-number', function (hooks) {
   setupTest(hooks);
 
-  test('validate array-number', function(assert) {
+  test('validate array-number', function (assert) {
     assert.expect(3);
 
     let Validator = this.owner.lookup('validator:array-number'),

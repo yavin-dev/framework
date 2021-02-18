@@ -47,12 +47,12 @@ export default class DashboardsDashboardViewController extends Controller.extend
     origFilter.source = originalFilter.source;
     const newFilters = get(dashboard, 'filters')
       .toArray()
-      .map(fil => {
+      .map((fil) => {
         const newFil = fil.serialize();
         newFil.source = fil.source;
         return newFil;
       }); //Native array of serialized filters
-    const filterToUpdate = newFilters.find(fil => isEqual(fil, origFilter));
+    const filterToUpdate = newFilters.find((fil) => isEqual(fil, origFilter));
 
     setProperties(filterToUpdate, changeSet);
 
@@ -63,7 +63,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
         type: filterToUpdate.type,
         operator: filterToUpdate.operator,
         values: filterToUpdate.values,
-        source: filterToUpdate.source
+        source: filterToUpdate.source,
       })
       .serialize();
     newFilter.source = originalFilter.source;
@@ -87,12 +87,12 @@ export default class DashboardsDashboardViewController extends Controller.extend
     removedFilter.source = filter.source;
     const newFilters = get(dashboard, 'filters')
       .toArray()
-      .map(fil => {
+      .map((fil) => {
         const newFil = fil.serialize();
         newFil.source = fil.source;
         return newFil;
       })
-      .filter(fil => !isEqual(fil, removedFilter));
+      .filter((fil) => !isEqual(fil, removedFilter));
     const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
@@ -107,7 +107,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
   async addFilter(dashboard, filter) {
     const store = this.store;
     const { metadataService } = this;
-    const filters = dashboard.filters.toArray().map(fil => {
+    const filters = dashboard.filters.toArray().map((fil) => {
       const newFil = fil.serialize();
       newFil.source = fil.source;
       return newFil;
@@ -120,7 +120,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
         parameters: dimensionMeta.getDefaultParameters(),
         operator: 'in',
         values: [],
-        source: filter.dataSource
+        source: filter.dataSource,
       })
       .serialize();
     newFilter.source = filter.dataSource;

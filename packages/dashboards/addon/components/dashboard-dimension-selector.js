@@ -29,7 +29,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
      * do this so each table/timegrain combination is unique and we don't have to flatten more than we have to.
      * shape will be: {table: [{id, name, category}, ...], ...}
      */
-    return widgetPromises.then(this.mergeWidgetDimensions).then(dimensionMap => {
+    return widgetPromises.then(this.mergeWidgetDimensions).then((dimensionMap) => {
       /*
        * merge and build category: dimension map
        * shape will be: {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
@@ -61,7 +61,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
         dims.sort((a, b) => a.name.localeCompare(b.name));
         selectOptions.push({
           groupName: needsDatasourceSpecifier ? `${category} (${dataSource})` : category,
-          options: dims
+          options: dims,
         });
       });
       return selectOptions;
@@ -82,7 +82,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
         table = table.join('.');
       }
 
-      dimensions.forEach(dimension => {
+      dimensions.forEach((dimension) => {
         if (!results[dimension.category]) {
           results[dimension.category] = {};
         }
@@ -93,7 +93,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
             field: dimension.id,
             name: dimension.name,
             tables: [table],
-            dataSource
+            dataSource,
           };
         } else {
           results[dimension.category][`${dataSource}.${dimension.id}`].tables.push(table);

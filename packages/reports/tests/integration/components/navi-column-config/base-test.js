@@ -13,20 +13,20 @@ const TEMPLATE = hbs`
   @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
 />`;
 
-module('Integration | Component | navi-column-config/base', function(hooks) {
+module('Integration | Component | navi-column-config/base', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.fragmentFactory = this.owner.lookup('service:fragment-factory');
 
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('it renders ', async function(assert) {
+  test('it renders ', async function (assert) {
     this.set('column', {
       isFiltered: false,
-      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
     });
 
     await render(TEMPLATE);
@@ -44,7 +44,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       );
 
     this.set('column', {
-      fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks')
+      fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks'),
     });
 
     assert
@@ -52,7 +52,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders metric API column name');
 
     this.set('column', {
-      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime')
+      fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime'),
     });
 
     assert
@@ -63,14 +63,14 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
       );
   });
 
-  test('it supports action', async function(assert) {
+  test('it supports action', async function (assert) {
     assert.expect(2);
     this.column = {
-      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
     };
     this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
     this.toggleColumnFilter = () => assert.ok(true, 'toggleColumnFilter is called when filter is clicked');
-    this.onUpdateColumnName = newName =>
+    this.onUpdateColumnName = (newName) =>
       assert.equal(newName, 'Some other value', 'onUpdateColumnName action is called with new column name');
 
     await render(TEMPLATE);
@@ -88,12 +88,12 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
     await click('.navi-column-config-base__filter-icon');
   });
 
-  test('Filter is active when column is filtered', async function(assert) {
+  test('Filter is active when column is filtered', async function (assert) {
     assert.expect(2);
 
     this.column = {
       isFiltered: false,
-      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property')
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
     };
 
     await render(TEMPLATE);
@@ -104,7 +104,7 @@ module('Integration | Component | navi-column-config/base', function(hooks) {
 
     this.set('column', {
       ...this.column,
-      isFiltered: true
+      isFiltered: true,
     });
 
     assert

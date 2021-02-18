@@ -10,26 +10,26 @@ import { A } from '@ember/array';
 export default A([
   {
     id: 'gt',
-    name: 'greater than (>)'
+    name: 'greater than (>)',
   },
   {
     id: 'gte',
-    name: 'greater than or equals (>=)'
+    name: 'greater than or equals (>=)',
   },
   {
     id: 'lt',
-    name: 'less than (<)'
+    name: 'less than (<)',
   },
   {
     id: 'lte',
-    name: 'less than or equals (<=)'
+    name: 'less than or equals (<=)',
   },
   {
     id: 'eq',
-    name: 'equals (=)'
+    name: 'equals (=)',
   },
   {
     id: 'neq',
-    name: 'not equals (!=)'
-  }
+    name: 'not equals (!=)',
+  },
 ]);

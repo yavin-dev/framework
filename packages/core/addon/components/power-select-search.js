@@ -13,5 +13,5 @@ import BeforeOptionsComponent from 'ember-power-select/components/power-select/b
 import layout from '../templates/components/power-select-search';
 
 export default BeforeOptionsComponent.extend({
-  layout
+  layout,
 });

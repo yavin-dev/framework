@@ -1,13 +1,13 @@
 import { formatDimension } from '../../../helpers/format-dimension';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | format dimension', function() {
-  test('Formatted id', function(assert) {
+module('Unit | Helper | format dimension', function () {
+  test('Formatted id', function (assert) {
     assert.expect(6);
 
     let testDim = {
       id: 'rainbow_road',
-      description: 'Rainbow Road'
+      description: 'Rainbow Road',
     };
 
     assert.equal(
@@ -28,7 +28,7 @@ module('Unit | Helper | format dimension', function() {
     let fieldDim = {
       id: 'moo_moo_meadows',
       description: 'Moo Moo Meadows',
-      nickname: 'Cowabunga'
+      nickname: 'Cowabunga',
     };
     assert.equal(
       formatDimension([fieldDim, 'nickname']),

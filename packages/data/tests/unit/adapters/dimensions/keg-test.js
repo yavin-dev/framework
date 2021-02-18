@@ -9,8 +9,8 @@ const Response1 = {
   rows: [
     { id: 1, description: 'foo', meta: 'ember' },
     { id: 2, description: 'bar', meta: 'bard' },
-    { id: 3, description: 'gar', meta: 'navi' }
-  ]
+    { id: 3, description: 'gar', meta: 'navi' },
+  ],
 };
 
 const MetaObj = {
@@ -18,9 +18,9 @@ const MetaObj = {
     pagination: {
       rowsPerPage: 3,
       numberOfResults: 3,
-      currentPage: 1
-    }
-  }
+      currentPage: 1,
+    },
+  },
 };
 
 const Response2 = assign(MetaObj, Response1);
@@ -32,10 +32,10 @@ const Record1 = { id: 1, description: 'foo', meta: 'ember' },
 
 let Adapter, Keg, Server;
 
-module('Unit | Adapters | Dimensions | Keg', function(hooks) {
+module('Unit | Adapters | Dimensions | Keg', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.register('model:dimension/bardOne.dimensionOne', EmberObject.extend({ name: 'dimensionOne' }));
     this.owner.register('model:dimension/bardTwo.dimensionFour', EmberObject.extend({ name: 'dimensionFour' }));
 
@@ -47,10 +47,10 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
       'dimension/bardTwo.dimensionFour',
       [
         { id: 1, description: 'one' },
-        { id: 2, description: 'two' }
+        { id: 2, description: 'two' },
       ],
       {
-        namespace: 'bardTwo'
+        namespace: 'bardTwo',
       }
     );
 
@@ -60,15 +60,15 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
 
     return Promise.all([
       this.owner.lookup('service:navi-metadata').loadMetadata(),
-      this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' })
+      this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' }),
     ]);
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     Server.shutdown();
   });
 
-  test('_buildResponse', function(assert) {
+  test('_buildResponse', function (assert) {
     assert.expect(2);
 
     assert.deepEqual(
@@ -84,7 +84,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
   });
 
-  test('all', async function(assert) {
+  test('all', async function (assert) {
     assert.expect(3);
 
     const result = await Adapter.all('dimensionOne');
@@ -105,10 +105,10 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     assert.deepEqual(nonFoundResult.rows.mapBy('id'), [], "all() returns empty array when dimension can't be found");
   });
 
-  test('find', async function(assert) {
+  test('find', async function (assert) {
     assert.expect(9);
 
-    const assertThrowOperator = query => {
+    const assertThrowOperator = (query) => {
       assert.throws(
         () => {
           Adapter.find('dimensionOne', query);
@@ -121,42 +121,42 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     assertThrowOperator([{ operator: 'contains' }]);
     assertThrowOperator([{}, { operator: 'in' }, { operator: 'contains' }]);
 
-    const assertEquals = (expected, message) => result => {
+    const assertEquals = (expected, message) => (result) => {
       assert.deepEqual(result.rows.mapBy('id'), expected, message);
     };
 
     await Adapter.find('dimensionOne', {
       field: 'description',
-      values: 'bar,gar'
+      values: 'bar,gar',
     }).then(assertEquals([2, 3], 'find() returns expected when values is a string'));
     await Adapter.find('dimensionOne', [
       {
         field: 'description',
-        values: 'bar,gar'
-      }
+        values: 'bar,gar',
+      },
     ]).then(assertEquals([2, 3], 'find() returns expected when passed an array of queries'));
     await Adapter.find('dimensionOne', [
       {
         field: 'description',
-        values: ['bar', 'gar']
-      }
+        values: ['bar', 'gar'],
+      },
     ]).then(assertEquals([2, 3], 'find() returns expected when values is an array'));
     await Adapter.find('dimensionOne', [
       { field: 'id', values: [1, 2, 3] },
-      { field: 'description', values: ['bar'] }
+      { field: 'description', values: ['bar'] },
     ]).then(assertEquals([2], 'find() returns expected when passed multiple filters'));
     await Adapter.find('dimensionOne', [
       { field: 'id', values: [1, 2, 3] },
       { field: 'id', values: [3, 4] },
-      { field: 'description', values: ['bar', 'gar'] }
+      { field: 'description', values: ['bar', 'gar'] },
     ]).then(assertEquals([3], 'find() returns expected when passed multiple overlapping filters'));
 
     await Adapter.find('dimensionFour', [{ field: 'description', values: ['two'] }], {
-      dataSourceName: 'bardTwo'
+      dataSourceName: 'bardTwo',
     }).then(assertEquals([2], 'find() returns expected when using a dimension from a different data source'));
   });
 
-  test('findById', async function(assert) {
+  test('findById', async function (assert) {
     assert.expect(2);
 
     const result = await Adapter.findById('dimensionOne', '1');
@@ -174,7 +174,7 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
   });
 
-  test('getById', function(assert) {
+  test('getById', function (assert) {
     assert.expect(4);
 
     assert.deepEqual(
@@ -202,20 +202,20 @@ module('Unit | Adapters | Dimensions | Keg', function(hooks) {
     );
   });
 
-  test('pushMany', function(assert) {
+  test('pushMany', function (assert) {
     assert.expect(4);
     Adapter.pushMany('dimensionOne', [
       { id: 22, foo: 'bar' },
-      { id: 44, foo: 'baz' }
+      { id: 44, foo: 'baz' },
     ]);
     Adapter.pushMany(
       'dimensionFour',
       [
         { id: 77, foo: 'quux' },
-        { id: 99, foo: 'plugh' }
+        { id: 99, foo: 'plugh' },
       ],
       {
-        dataSourceName: 'bardTwo'
+        dataSourceName: 'bardTwo',
       }
     );
 

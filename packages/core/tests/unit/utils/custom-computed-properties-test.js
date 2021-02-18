@@ -2,16 +2,16 @@ import EmberObject, { set, get } from '@ember/object';
 import { module, test } from 'qunit';
 import { computedSetDiff } from 'navi-core/utils/custom-computed-properties';
 
-module('Unit | Utils | Custom Computed Properties Utils', function() {
-  test('computedSetDiff', function(assert) {
+module('Unit | Utils | Custom Computed Properties Utils', function () {
+  test('computedSetDiff', function (assert) {
     assert.expect(11);
 
     let testClass = EmberObject.extend({
-        setDiffProp: computedSetDiff('setAProperty', 'setBProperty')
+        setDiffProp: computedSetDiff('setAProperty', 'setBProperty'),
       }),
       testInstance = testClass.create({
         setAProperty: [1, 2, 3, 4],
-        setBProperty: [2, 4]
+        setBProperty: [2, 4],
       });
 
     assert.deepEqual(get(testInstance, 'setDiffProp'), [1, 3], 'Returns set operation A-B when B is a subset of A');

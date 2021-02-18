@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 export function reportRoutes(router) {
-  router.route('reports', function() {
+  router.route('reports', function () {
     this.route('new');
-    this.route('report', { path: '/:report_id' }, function() {
+    this.route('report', { path: '/:report_id' }, function () {
       this.route('clone');
       this.route('save-as');
       this.route('invalid');
@@ -17,15 +17,15 @@ export function reportRoutes(router) {
 }
 
 export function reportCollectionRoutes(router) {
-  router.route('report-collections', function() {
+  router.route('report-collections', function () {
     this.route('collection', { path: '/:collection_id' });
   });
 }
 
 export function reportPrintRoutes(router) {
-  router.route('reports-print.reports', { path: '/print/reports' }, function() {
+  router.route('reports-print.reports', { path: '/print/reports' }, function () {
     this.route('new');
-    this.route('report', { path: '/:report_id' }, function() {
+    this.route('report', { path: '/:report_id' }, function () {
       this.route('view');
       this.route('invalid');
     });

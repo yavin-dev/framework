@@ -24,5 +24,5 @@ export default {
     let intervalEnd = 'current';
 
     return new Interval(new Duration(this[timeGrain]), intervalEnd);
-  }
+  },
 };

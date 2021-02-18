@@ -7,5 +7,5 @@ import DS from 'ember-data';
 
 export default DS.Model.extend({
   createdOn: DS.attr('moment'),
-  updatedOn: DS.attr('moment')
+  updatedOn: DS.attr('moment'),
 });

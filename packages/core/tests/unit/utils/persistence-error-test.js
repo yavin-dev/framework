@@ -1,8 +1,8 @@
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | persistence error', function() {
-  test('getApiErrMsg', function(assert) {
+module('Unit | Utility | persistence error', function () {
+  test('getApiErrMsg', function (assert) {
     assert.expect(3);
 
     assert.equal(getApiErrMsg({}, 'default'), 'default', 'getApiErrMsg returns the default message if no detail');

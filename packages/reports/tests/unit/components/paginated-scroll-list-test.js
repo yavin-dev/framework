@@ -4,17 +4,17 @@ import { setupTest } from 'ember-qunit';
 
 const ITEMS = [1, 2, 3, 4, 5, 6, 7, 8];
 
-module('Unit | Component | Paginated Scroll List', function(hooks) {
+module('Unit | Component | Paginated Scroll List', function (hooks) {
   setupTest(hooks);
 
-  test('_appendPaginatedResults', function(assert) {
+  test('_appendPaginatedResults', function (assert) {
     assert.expect(6);
 
     let component = this.owner.factoryFor('component:paginated-scroll-list').create({
       perPage: 3,
       trim: false,
       items: ITEMS,
-      _setItemsExceedMaxHt: () => {} //Suppress hook
+      _setItemsExceedMaxHt: () => {}, //Suppress hook
     });
 
     assert.equal(get(component, '_page'), 0, 'page number is 0 initially');

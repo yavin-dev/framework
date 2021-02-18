@@ -10,7 +10,7 @@ import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
 import role from './routes/role';
 
-export default function() {
+export default function () {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
 

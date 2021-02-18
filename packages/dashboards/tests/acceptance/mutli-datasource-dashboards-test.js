@@ -5,10 +5,10 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 
-module('Acceptance | Multi datasource Dashboard', function(hooks) {
+module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-  test('Load multi-datasource dashboard', async function(assert) {
+  test('Load multi-datasource dashboard', async function (assert) {
     assert.expect(7);
     await visit('/dashboards/6/view');
 
@@ -24,31 +24,31 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.dashboard-filters__toggle');
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
       ['Age (id)', 'Container (id)'],
       'Dimensions are properly labeled in filters'
     );
 
     assert.deepEqual(
-      findAll('.filter-builder__operator-trigger').map(el => el.textContent.trim()),
+      findAll('.filter-builder__operator-trigger').map((el) => el.textContent.trim()),
       ['Equals', 'Not Equals'],
       'Dimension filter operators are shown correctly'
     );
 
     assert.deepEqual(
-      findAll('.filter-values--dimension-select__trigger').map(el =>
+      findAll('.filter-values--dimension-select__trigger').map((el) =>
         [
           ...el.querySelectorAll(
             '.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)'
-          )
-        ].map(el => el.textContent.trim())
+          ),
+        ].map((el) => el.textContent.trim())
       ),
       [['1', '2', '3'], ['1']],
       'Dimension value selector showing the right values'
     );
   });
 
-  test('Create new multisource dashboard', async function(assert) {
+  test('Create new multisource dashboard', async function (assert) {
     assert.expect(8);
 
     await visit('/dashboards/new');
@@ -84,7 +84,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     const widgetsWithFilterWarning = () =>
-      findAll('.navi-widget__filter-errors-icon').map(el => el.closest('.navi-widget__title').textContent.trim());
+      findAll('.navi-widget__filter-errors-icon').map((el) => el.closest('.navi-widget__title').textContent.trim());
 
     assert.deepEqual(
       widgetsWithFilterWarning(),

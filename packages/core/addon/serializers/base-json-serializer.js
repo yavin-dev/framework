@@ -15,7 +15,7 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} attr - attribute name
    * @return {String} normalized key
    */
-  keyForAttribute: attr => attr,
+  keyForAttribute: (attr) => attr,
 
   /**
    * Normalize relationship key
@@ -25,7 +25,7 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} attr - attribute name
    * @return {String} normalized key
    */
-  keyForRelationship: attr => camelize(attr),
+  keyForRelationship: (attr) => camelize(attr),
 
   /**
    * Camelize model key
@@ -35,7 +35,7 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} attr - attribute name
    * @return {String} normalized key
    */
-  keyForModel: attr => camelize(attr),
+  keyForModel: (attr) => camelize(attr),
 
   /**
    * @override
@@ -43,7 +43,7 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} key - type from payload
    * @return {String} model name
    */
-  modelNameFromPayloadKey: key => dasherize(singularize(key)),
+  modelNameFromPayloadKey: (key) => dasherize(singularize(key)),
 
   /**
    * @method payloadTypeFromModelName
@@ -51,5 +51,5 @@ export default DS.JSONAPISerializer.extend({
    * @param {String} modelname modelName from the record
    * @return {String} payloadType
    */
-  payloadKeyFromModelName: modelName => camelize(pluralize(modelName))
+  payloadKeyFromModelName: (modelName) => camelize(pluralize(modelName)),
 });

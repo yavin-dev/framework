@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | navi-button', function(hooks) {
+module('Integration | Component | navi-button', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     await render(hbs`
       <NaviButton
         class="custom-class"
@@ -20,7 +20,7 @@ module('Integration | Component | navi-button', function(hooks) {
     assert.dom('.navi-button').hasAttribute('title', 'I am a title', 'button spreads attributes');
   });
 
-  test('type', async function(assert) {
+  test('type', async function (assert) {
     await render(hbs`
       <NaviButton
         @type={{type}}
@@ -37,7 +37,7 @@ module('Integration | Component | navi-button', function(hooks) {
     assert.dom('.navi-button').hasClass('navi-button--secondary', 'button creates correct class for secondary type');
   });
 
-  test('disabled', async function(assert) {
+  test('disabled', async function (assert) {
     this.set('type', 'primary');
     this.set('disabled', false);
 
@@ -58,7 +58,7 @@ module('Integration | Component | navi-button', function(hooks) {
     assert.dom('.navi-button').hasClass('navi-button--secondary-disabled', 'button has correct class when disabled');
   });
 
-  test('onClick', async function(assert) {
+  test('onClick', async function (assert) {
     assert.expect(1);
 
     this.set('onClick', () => assert.ok('onClick fired'));

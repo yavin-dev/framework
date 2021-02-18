@@ -2,11 +2,11 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Route | dashboard collections/collection', function(hooks) {
+module('Unit | Route | dashboard collections/collection', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('model', async function(assert) {
+  test('model', async function (assert) {
     assert.expect(4);
 
     const params = { collection_id: 1 };

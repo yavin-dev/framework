@@ -34,7 +34,7 @@ export default class DashboardDataService extends Service {
   get widgetOptions() {
     return {
       page: 1,
-      perPage: 10000
+      perPage: 10000,
     };
   }
 
@@ -66,10 +66,10 @@ export default class DashboardDataService extends Service {
     // sort widgets by order in layout
     const sortedWidgets = arr(layout)
       .sortBy('row', 'column')
-      .map(layoutItem => widgets.find(widget => widget.id == layoutItem.widgetId))
-      .filter(widget => widget);
+      .map((layoutItem) => widgets.find((widget) => widget.id == layoutItem.widgetId))
+      .filter((widget) => widget);
 
-    sortedWidgets.forEach(widget => {
+    sortedWidgets.forEach((widget) => {
       const taskInstance = this._fetchRequestsForWidget.perform(dashboardId, widget, decorators, options, uuid);
 
       taskByWidget[widget.id] = taskInstance;
@@ -79,7 +79,7 @@ export default class DashboardDataService extends Service {
        * task still expectedly fails.
        * TODO: no need for catch block when ^ resolves (needlessly catches task cancelation errors as well)
        */
-      taskInstance.catch(e => {
+      taskInstance.catch((e) => {
         if (didCancel(e) || isForbidden(e)) {
           return;
         }
@@ -100,14 +100,14 @@ export default class DashboardDataService extends Service {
    * @param {String} uuid - v1 UUID
    * @yields {TaskInstance}
    */
-  @task(function*(dashboardId, widget, decorators, options, uuid) {
+  @task(function* (dashboardId, widget, decorators, options, uuid) {
     const { dashboard, requests, id: widgetId } = widget;
     const fetchTasks = [];
 
-    requests.forEach(request => {
+    requests.forEach((request) => {
       //construct custom header for each widget with uuid
       options.customHeaders = {
-        uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`
+        uiView: `dashboard.${dashboardId}.${uuid}.${widgetId}`,
       };
 
       options.dataSourceName = request.dataSource || getDefaultDataSourceName();
@@ -132,14 +132,14 @@ export default class DashboardDataService extends Service {
    * @param {Array} filterErrors - invalid Filter error objects
    * @yields {TaskInstance}
    */
-  @(task(function*(requestFragment, decorators, options, filterErrors) {
+  @(task(function* (requestFragment, decorators, options, filterErrors) {
     const request = this._decorate(decorators, requestFragment.serialize());
-    return yield this._fetch(request, options, filterErrors).then(result => {
+    return yield this._fetch(request, options, filterErrors).then((result) => {
       const serverErrors = getWithDefault(result, 'response.meta.errors', []);
 
       return merge({}, result, {
         request: requestFragment,
-        response: { meta: { errors: [...serverErrors, ...filterErrors] } }
+        response: { meta: { errors: [...serverErrors, ...filterErrors] } },
       });
     });
   })
@@ -181,8 +181,8 @@ export default class DashboardDataService extends Service {
   _applyFilters(dashboard, request) {
     const requestClone = request.clone();
     this._getValidGlobalFilters(dashboard, request)
-      .filter(filter => get(filter, 'values').length > 0)
-      .forEach(filter => requestClone.addFilter(filter));
+      .filter((filter) => get(filter, 'values').length > 0)
+      .forEach((filter) => requestClone.addFilter(filter));
 
     return requestClone;
   }
@@ -198,7 +198,7 @@ export default class DashboardDataService extends Service {
   _getInvalidGlobalFilters(dashboard, request) {
     const filters = get(dashboard, 'filters') || [];
 
-    return filters.filter(filter => !this._isFilterValid(request, filter));
+    return filters.filter((filter) => !this._isFilterValid(request, filter));
   }
 
   /**
@@ -212,7 +212,7 @@ export default class DashboardDataService extends Service {
   _getValidGlobalFilters(dashboard, request) {
     const filters = get(dashboard, 'filters') || [];
 
-    return filters.filter(filter => this._isFilterValid(request, filter));
+    return filters.filter((filter) => this._isFilterValid(request, filter));
   }
 
   /**
@@ -226,9 +226,9 @@ export default class DashboardDataService extends Service {
   _getFilterErrors(dashboard, request) {
     const invalidFilters = this._getInvalidGlobalFilters(dashboard, request);
 
-    return invalidFilters.map(filter => ({
+    return invalidFilters.map((filter) => ({
       detail: `"${filter.field}" is not a dimension in the "${request.table}" table.`,
-      title: 'Invalid Filter'
+      title: 'Invalid Filter',
     }));
   }
 

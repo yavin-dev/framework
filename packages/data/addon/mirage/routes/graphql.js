@@ -18,12 +18,12 @@ const DATE_FORMATS = {
   isoweek: 'YYYY-MM-DD',
   month: 'YYYY MMM',
   quarter: 'YYYY [Q]Q',
-  year: 'YYYY'
+  year: 'YYYY',
 };
 const GRAINS = Object.keys(DATE_FORMATS);
 const TIME_DIMENSION_REGEX = new RegExp(
   `(.+)(${Object.keys(DATE_FORMATS)
-    .map(grain => capitalize(grain))
+    .map((grain) => capitalize(grain))
     .join('|')})`
 );
 const REMOVE_TABLE_REGEX = /.+?\.(.+)/;
@@ -37,24 +37,24 @@ const OPERATORS = {
   lt: '=lt=',
   gt: '=gt=',
   le: '=le=',
-  ge: '=ge='
+  ge: '=ge=',
 };
 const FILTER_OPS = {
-  [OPERATORS.lt]: ([filterVal], vals) => vals.filter(val => val < filterVal),
-  [OPERATORS.gt]: ([filterVal], vals) => vals.filter(val => val > filterVal),
-  [OPERATORS.le]: ([filterVal], vals) => vals.filter(val => val <= filterVal),
-  [OPERATORS.ge]: ([filterVal], vals) => vals.filter(val => val >= filterVal),
-  [OPERATORS.isIn]: (filterVals, vals) => vals.filter(val => filterVals.includes(val)),
-  [OPERATORS.notIn]: (filterVals, vals) => vals.filter(val => !filterVals.includes(val)),
-  [OPERATORS.isNull]: (_, vals) => vals.filter(val => !val),
+  [OPERATORS.lt]: ([filterVal], vals) => vals.filter((val) => val < filterVal),
+  [OPERATORS.gt]: ([filterVal], vals) => vals.filter((val) => val > filterVal),
+  [OPERATORS.le]: ([filterVal], vals) => vals.filter((val) => val <= filterVal),
+  [OPERATORS.ge]: ([filterVal], vals) => vals.filter((val) => val >= filterVal),
+  [OPERATORS.isIn]: (filterVals, vals) => vals.filter((val) => filterVals.includes(val)),
+  [OPERATORS.notIn]: (filterVals, vals) => vals.filter((val) => !filterVals.includes(val)),
+  [OPERATORS.isNull]: (_, vals) => vals.filter((val) => !val),
   [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),
   [OPERATORS.eq]: ([filterVal], vals) =>
-    vals.filter(val => {
+    vals.filter((val) => {
       //If filterVal is wrapped in wildcard operators, match all values that contain the filterVal
       const match = /\*(.*)\*/.exec(filterVal);
       return match ? val.includes(match[1]) : val === filterVal;
     }),
-  [OPERATORS.neq]: ([filterVal], vals) => vals.filter(val => val !== filterVal)
+  [OPERATORS.neq]: ([filterVal], vals) => vals.filter((val) => val !== filterVal),
 };
 const FILTER_REGEX = new RegExp(`(.*?)(?:\\((.+?)\\))?(${Object.values(OPERATORS).join('|')})\\((.+?)\\)`);
 
@@ -69,7 +69,7 @@ const DATE_FILTER_OPS = {
   [OPERATORS.notNull]: () => [null, null],
   [OPERATORS.isEmpty]: () => [null, null],
   [OPERATORS.eq]: () => [null, null],
-  [OPERATORS.neq]: () => [null, null]
+  [OPERATORS.neq]: () => [null, null],
 };
 
 /**
@@ -92,11 +92,11 @@ function _getSeedForRequest(table, args, fields) {
  * @returns {Array<Moment|null>} - lowerbound and upperbound of moments for interval
  */
 function _createInterval(filters) {
-  const intervals = filters.map(f => DATE_FILTER_OPS[f.operator](f.values, f.grain));
-  const lowerLimits = intervals.map(interval => interval[0]).filter(Boolean);
+  const intervals = filters.map((f) => DATE_FILTER_OPS[f.operator](f.values, f.grain));
+  const lowerLimits = intervals.map((interval) => interval[0]).filter(Boolean);
   const lowerBound = lowerLimits.length ? moment.max(lowerLimits) : null;
 
-  const upperLimits = intervals.map(interval => interval[1]).filter(Boolean);
+  const upperLimits = intervals.map((interval) => interval[1]).filter(Boolean);
   const upperBound = upperLimits.length ? moment.min(upperLimits) : null;
 
   if (!upperBound && !lowerBound) {
@@ -117,7 +117,7 @@ function _intervalsForFilters(filters) {
     const filterObject = {
       ...filter,
       fieldWithoutGrain,
-      grain: grain === 'Week' ? 'Isoweek' : grain
+      grain: grain === 'Week' ? 'Isoweek' : grain,
     };
     byField[fieldWithoutGrain] = [...(byField[fieldWithoutGrain] || []), filterObject];
     return byField;
@@ -174,7 +174,7 @@ function _getDates(filters, requestedColumns) {
     const column = {
       ...col,
       fieldWithoutGrain,
-      grain: grain === 'Week' ? 'Isoweek' : grain
+      grain: grain === 'Week' ? 'Isoweek' : grain,
     };
 
     // Insert column into field bucket in order
@@ -206,7 +206,7 @@ function _getDates(filters, requestedColumns) {
 
     // For each date for a field, add each date under the field's column names as keys with the date formatted depending on the grain
     if (!rows.length) {
-      rows = datesForField.map(date =>
+      rows = datesForField.map((date) =>
         columnsForField.reduce((row, column) => {
           row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
           return row;
@@ -216,13 +216,13 @@ function _getDates(filters, requestedColumns) {
       rows = rows.reduce((newRows, currentRow) => {
         return [
           ...newRows,
-          ...datesForField.map(date => ({
+          ...datesForField.map((date) => ({
             ...currentRow,
             ...columnsForField.reduce((row, column) => {
               row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
               return row;
-            }, {})
-          }))
+            }, {}),
+          })),
         ];
       }, []);
     }
@@ -265,8 +265,8 @@ function _parseGQLQuery(queryStr) {
       return argsObj;
     }, {}),
     fields: selection?.selectionSet.selections[0].selectionSet.selections[0].selectionSet.selections.map(
-      field => `${table}.${field.name.value}`
-    )
+      (field) => `${table}.${field.name.value}`
+    ),
   };
 }
 
@@ -277,25 +277,25 @@ function _parseGQLQuery(queryStr) {
  */
 function _parseArgs(args, table) {
   const parsers = {
-    filter: filter =>
+    filter: (filter) =>
       filter
         .split(';')
         .filter(Boolean)
-        .map(f => {
+        .map((f) => {
           const [, field, parameters, operator, values] = f.match(FILTER_REGEX);
           return {
             field: `${table}.${field}`,
-            parameters: parameters && Object.fromEntries(parameters.split(',').map(p => p.split(': '))),
+            parameters: parameters && Object.fromEntries(parameters.split(',').map((p) => p.split(': '))),
             operator,
-            values: values.split(',').map(v => v.match(/'(.*)'/)[1]),
-            canonicalName: `${table}.${field}${parameters ? `(${parameters})` : ''}`
+            values: values.split(',').map((v) => v.match(/'(.*)'/)[1]),
+            canonicalName: `${table}.${field}${parameters ? `(${parameters})` : ''}`,
           };
         }),
-    sort: sort =>
+    sort: (sort) =>
       sort
         .split(',')
         .filter(Boolean)
-        .map(s => {
+        .map((s) => {
           let field = s;
           let direction = 'asc';
           if (s.startsWith('-')) {
@@ -305,7 +305,7 @@ function _parseArgs(args, table) {
           // We don't need to prefix the sort field with the table name because by the time sort is applied, the table names are removed
           return { field, direction };
         }),
-    first: limit => limit
+    first: (limit) => limit,
   };
 
   const parsed = {};
@@ -337,7 +337,7 @@ function _getResponseBody(db, asyncQueryRecord) {
     if (db.tables.find(table) && fields.length) {
       const columns = fields.reduce(
         (groups, column) => {
-          const type = ['metrics', 'dimensions', 'timeDimensions'].find(t => db[t].find(column));
+          const type = ['metrics', 'dimensions', 'timeDimensions'].find((t) => db[t].find(column));
 
           if (type) {
             groups[type].push(column);
@@ -352,33 +352,33 @@ function _getResponseBody(db, asyncQueryRecord) {
       let rows =
         columns.timeDimensions.length > 0
           ? _getDates(
-              filter.filter(fil => columns.timeDimensions.includes(fil.field)),
+              filter.filter((fil) => columns.timeDimensions.includes(fil.field)),
               db.timeDimensions.find(columns.timeDimensions)
             )
           : [{}];
 
       // Add each dimension
-      columns.dimensions.forEach(dimension => {
-        const filterForDim = filter.find(f => f.field === dimension); // TODO: Handle parameterized dimensions
+      columns.dimensions.forEach((dimension) => {
+        const filterForDim = filter.find((f) => f.field === dimension); // TODO: Handle parameterized dimensions
         const dimensionValues = _dimensionValues(filterForDim);
 
         rows = rows.reduce((newRows, currentRow) => {
           return [
             ...newRows,
-            ...dimensionValues.map(value => ({
+            ...dimensionValues.map((value) => ({
               ...currentRow,
-              [REMOVE_TABLE_REGEX.exec(dimension)[1]]: value
-            }))
+              [REMOVE_TABLE_REGEX.exec(dimension)[1]]: value,
+            })),
           ];
         }, []);
       });
 
       // Add each metric
-      rows = rows.map(currRow =>
+      rows = rows.map((currRow) =>
         columns.metrics.reduce(
           (row, metric) => ({
             ...row,
-            [REMOVE_TABLE_REGEX.exec(metric)[1]]: faker.finance.amount()
+            [REMOVE_TABLE_REGEX.exec(metric)[1]]: faker.finance.amount(),
           }),
           currRow
         )
@@ -393,25 +393,25 @@ function _getResponseBody(db, asyncQueryRecord) {
       if (sort.length) {
         rows = orderBy(
           rows,
-          sort.map(r => row => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
-          sort.map(r => r.direction)
+          sort.map((r) => (row) => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
+          sort.map((r) => r.direction)
         );
       }
 
       return JSON.stringify({
         data: {
           [table]: {
-            edges: rows.map(node => ({ node }))
-          }
-        }
+            edges: rows.map((node) => ({ node })),
+          },
+        },
       });
     }
     return JSON.stringify({
       errors: [
         {
-          message: 'Invalid query sent with AsyncQuery'
-        }
-      ]
+          message: 'Invalid query sent with AsyncQuery',
+        },
+      ],
     });
   }
   return null;
@@ -420,7 +420,7 @@ function _getResponseBody(db, asyncQueryRecord) {
 /**
  * Method to configure metadata endpoints
  */
-export default function() {
+export default function () {
   // need access to the mirage server to create a new instance of the asyncQueryResult model
   // Mirage won't allow just using a POJO to represent the asyncQueryResult
   // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -456,7 +456,7 @@ export default function() {
         asyncQuery(obj, args, context, info) {
           const { op, ids } = args;
           const {
-            mirageSchema: { db }
+            mirageSchema: { db },
           } = context;
           // Mirage tries to filter on the `op` argument, but this isn't truly a filter in our usecase, so we don't tell mirage about it
           if (op) {
@@ -472,7 +472,7 @@ export default function() {
           if (asyncQueryRecord && ['PROCESSING', 'QUEUED'].includes(asyncQueryRecord.status)) {
             const result = server.create('async-query-result', {
               httpStatus: 200,
-              responseBody: _getResponseBody(db, asyncQueryRecord)
+              responseBody: _getResponseBody(db, asyncQueryRecord),
             });
             if (result.responseBody !== null) {
               db.asyncQueries.update(asyncQueryRecord.id, { status: 'COMPLETE' });
@@ -480,14 +480,14 @@ export default function() {
             records.edges[0].node = db.asyncQueries.update(asyncQueryRecord.id, { result });
           }
           return records;
-        }
+        },
       },
       Mutation: {
         asyncQuery(obj, { op, data }, context) {
           const {
             mirageSchema: {
-              db: { asyncQueries }
-            }
+              db: { asyncQueries },
+            },
           } = context;
           data = data[0];
           const queryIds = data.id ? [data.id] : [];
@@ -501,7 +501,7 @@ export default function() {
           if (op === 'UPSERT' && existingQueries.length === 0) {
             const node = asyncQueries.firstOrCreate(
               {
-                id: data.id
+                id: data.id,
               },
               {
                 asyncAfterSeconds: data.asyncAfterSeconds,
@@ -510,21 +510,21 @@ export default function() {
                 queryType: data.queryType,
                 status: data.status,
                 createdOn: Date.now(),
-                result: null
+                result: null,
               }
             );
             return { edges: [{ node }] };
           } else if (op === 'UPDATE' && existingQueries.length > 0) {
-            existingQueries.forEach(query => {
+            existingQueries.forEach((query) => {
               query.status = data.status;
             });
-            return { edges: existingQueries.map(node => ({ node })) };
+            return { edges: existingQueries.map((node) => ({ node })) };
           } else {
             throw new Error(`Unable to ${op} when ${existingQueries.length} queries exist with id `);
           }
-        }
-      }
-    }
+        },
+      },
+    },
   });
   this.post('/', graphQLHandler);
 }

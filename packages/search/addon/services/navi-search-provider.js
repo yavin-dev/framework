@@ -30,9 +30,9 @@ export default class NaviSearchProviderService extends Service {
   _all() {
     const searchProvidersRegex = new RegExp(`^(?:${config.modulePrefix}/)?services/navi-search/([a-z-]*)$`),
       searchProviderServices = Object.keys(requirejs.entries)
-        .filter(requirejsFileName => searchProvidersRegex.test(requirejsFileName))
-        .map(fileName => searchProvidersRegex.exec(fileName)[1]);
-    return searchProviderServices.map(providerName => this.getProvider(providerName));
+        .filter((requirejsFileName) => searchProvidersRegex.test(requirejsFileName))
+        .map((fileName) => searchProvidersRegex.exec(fileName)[1]);
+    return searchProviderServices.map((providerName) => this.getProvider(providerName));
   }
 
   /**
@@ -42,6 +42,6 @@ export default class NaviSearchProviderService extends Service {
    */
   search(query) {
     const searchProviders = this._all();
-    return searchProviders.map(provider => provider.search.perform(query));
+    return searchProviders.map((provider) => provider.search.perform(query));
   }
 }

@@ -13,5 +13,5 @@ export default BaseValidator.extend({
       return options.message;
     }
     return true;
-  }
+  },
 });

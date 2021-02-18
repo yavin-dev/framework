@@ -40,5 +40,5 @@ export default Helper.extend({
     deliveryRuleAction[actionId] = true;
 
     return deliveryRuleAction;
-  }
+  },
 });

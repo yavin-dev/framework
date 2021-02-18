@@ -9,14 +9,14 @@ const TEMPLATE = hbs`
   @onChange={{this.onChange}}
 />`;
 
-module('Integration | Component | Editable Label', function(hooks) {
+module('Integration | Component | Editable Label', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('edit label triggers action', async function(assert) {
+  test('edit label triggers action', async function (assert) {
     assert.expect(3);
 
     this.set('value', 'Default Value');
-    this.set('onChange', value => {
+    this.set('onChange', (value) => {
       assert.equal(value, 'Edited Value', '`onChange` action sent an updated value');
     });
 
@@ -33,7 +33,7 @@ module('Integration | Component | Editable Label', function(hooks) {
     assert.equal(this.value, 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
   });
 
-  test('no change in value', async function(assert) {
+  test('no change in value', async function (assert) {
     assert.expect(1);
 
     this.set('value', 'Default Value');
@@ -54,7 +54,7 @@ module('Integration | Component | Editable Label', function(hooks) {
     );
   });
 
-  test('_inputSize', async function(assert) {
+  test('_inputSize', async function (assert) {
     assert.expect(3);
 
     this.set('value', '');
@@ -75,14 +75,12 @@ module('Integration | Component | Editable Label', function(hooks) {
         'Size of the input is the string length plus 1'
       );
 
-    let longValue = Array(100)
-      .fill(1)
-      .join('');
+    let longValue = Array(100).fill(1).join('');
     await fillIn('.editable-label__input', longValue);
     assert.dom('.editable-label__input').hasAttribute('size', '50', 'Size of the input is less than or equal to 50');
   });
 
-  test('value is reset when editing', async function(assert) {
+  test('value is reset when editing', async function (assert) {
     assert.expect(3);
 
     this.set('value', 'Initial value');

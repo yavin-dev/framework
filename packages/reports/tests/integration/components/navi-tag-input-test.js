@@ -7,23 +7,23 @@ import $ from 'jquery';
 
 const DIVINE_BEASTS = ['Ruta', 'Medoh', 'Neboris', 'Rudania'];
 
-module('Integration | Component | navi tag input/tag', function(hooks) {
+module('Integration | Component | navi tag input/tag', function (hooks) {
   setupRenderingTest(hooks);
 
   async function paste(text) {
     const selector = '.emberTagInput-input';
     await triggerEvent(selector, 'paste', {
       clipboardData: {
-        getData: () => text
-      }
+        getData: () => text,
+      },
     });
   }
 
-  test('Pasting input only shows helper if input has commas and splitOnPaste is true', async function(assert) {
+  test('Pasting input only shows helper if input has commas and splitOnPaste is true', async function (assert) {
     assert.expect(4);
     this.set('tags', []);
     this.set('splitOnPaste', false);
-    this.set('addTag', value => {
+    this.set('addTag', (value) => {
       assert.equal(value, 2, 'TODO');
     });
 
@@ -59,12 +59,12 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
       .exists('The modal popped up because the input contains a comma, and splitOnPaste is true');
   });
 
-  test('default tag component', async function(assert) {
+  test('default tag component', async function (assert) {
     assert.expect(2);
 
     this.set('tags', DIVINE_BEASTS);
 
-    this.set('removeTagAtIndex', index => {
+    this.set('removeTagAtIndex', (index) => {
       assert.equal(index, 2, 'Clicking remove icon on calls removeTagAtIndex with the clicked tag index');
     });
 
@@ -81,7 +81,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     assert.deepEqual(
       $('.tag')
         .toArray()
-        .map(e => e.textContent.trim()),
+        .map((e) => e.textContent.trim()),
       DIVINE_BEASTS,
       'Default tag component provides ember tag input class and yields'
     );
@@ -90,13 +90,13 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     await click(findAll('.tag__remove')[2]);
   });
 
-  test('custom tag component', async function(assert) {
+  test('custom tag component', async function (assert) {
     assert.expect(2);
 
     this.owner.register(
       'component:my-wacky-tag',
       Component.extend({
-        classNames: 'my-wacky-tag'
+        classNames: 'my-wacky-tag',
       })
     );
 
@@ -115,7 +115,7 @@ module('Integration | Component | navi tag input/tag', function(hooks) {
     assert.deepEqual(
       $('.my-wacky-tag')
         .toArray()
-        .map(e => e.textContent.trim()),
+        .map((e) => e.textContent.trim()),
       DIVINE_BEASTS,
       'Custom tag component can be given to add new behavior'
     );

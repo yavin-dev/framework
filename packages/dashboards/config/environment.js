@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(/* environment, appConfig */) {
+module.exports = function (/* environment, appConfig */) {
   return {
     moment: {
-      includeTimezone: 'all'
+      includeTimezone: 'all',
     },
     navi: {
       widgetsRequestsMaxConcurrency: 15, // Remove or set to Infinity to run all concurrently
@@ -11,12 +11,12 @@ module.exports = function(/* environment, appConfig */) {
         dashboards: true,
         enableDashboardExport: false,
         enableScheduleDashboards: false,
-        enableDashboardFilters: false
-      }
+        enableDashboardFilters: false,
+      },
     },
     'ember-gridstack': {
       // Exclude the optional jquery.ui.touch-punch dependency
-      exclude: ['jquery.ui.touch-punch']
-    }
+      exclude: ['jquery.ui.touch-punch'],
+    },
   };
 };

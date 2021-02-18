@@ -5,18 +5,18 @@ import { set } from '@ember/object';
 
 let Serializer, DashboardClass, MetadataService;
 
-module('Unit | Serializer | dashboard', function(hooks) {
+module('Unit | Serializer | dashboard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Serializer = this.owner.lookup('serializer:dashboard');
     DashboardClass = this.owner.lookup('service:store').modelFor('dashboard');
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
   });
 
-  test('_addLinks', function(assert) {
+  test('_addLinks', function (assert) {
     assert.expect(2);
 
     let dashboard = {
@@ -24,9 +24,9 @@ module('Unit | Serializer | dashboard', function(hooks) {
         type: 'dashboards',
         relationships: {
           widgets: {
-            data: 'abc'
-          }
-        }
+            data: 'abc',
+          },
+        },
       },
       serializedRecord = Serializer._addLinks(dashboard, 'widgets');
 
@@ -39,7 +39,7 @@ module('Unit | Serializer | dashboard', function(hooks) {
     );
   });
 
-  test('normalize', function(assert) {
+  test('normalize', function (assert) {
     assert.expect(2);
 
     let dashboard = {
@@ -49,11 +49,11 @@ module('Unit | Serializer | dashboard', function(hooks) {
           filters: null,
           presentation: {
             version: 1,
-            layout: []
+            layout: [],
           },
-          title: 'Unfiltered'
+          title: 'Unfiltered',
         },
-        relationships: {}
+        relationships: {},
       },
       serializedRecord = Serializer.normalize(DashboardClass, dashboard),
       expectedRecord = Object.assign({}, { data: dashboard });
@@ -71,16 +71,16 @@ module('Unit | Serializer | dashboard', function(hooks) {
               dimension: 'os',
               operator: 'notin',
               field: 'id',
-              values: ['a', 'b']
-            }
+              values: ['a', 'b'],
+            },
           ],
           presentation: {
             version: 1,
-            layout: []
+            layout: [],
           },
-          title: 'Filtered'
+          title: 'Filtered',
         },
-        relationships: {}
+        relationships: {},
       },
       serializedRecord2 = Serializer.normalize(DashboardClass, dashboard2),
       expectedRecord2 = {
@@ -93,21 +93,21 @@ module('Unit | Serializer | dashboard', function(hooks) {
                 type: 'dimension',
                 field: 'os',
                 parameters: {
-                  field: 'id'
+                  field: 'id',
                 },
                 operator: 'notin',
                 values: ['a', 'b'],
-                source: 'bardOne'
-              }
+                source: 'bardOne',
+              },
             ],
             presentation: {
               version: 1,
-              layout: []
+              layout: [],
             },
-            title: 'Filtered'
+            title: 'Filtered',
           },
-          relationships: {}
-        }
+          relationships: {},
+        },
       };
 
     assert.deepEqual(
@@ -117,7 +117,7 @@ module('Unit | Serializer | dashboard', function(hooks) {
     );
   });
 
-  test('serialize', async function(assert) {
+  test('serialize', async function (assert) {
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     const dashboard = await this.owner.lookup('service:store').findRecord('dashboard', 6);
     const serialized = dashboard.serialize();

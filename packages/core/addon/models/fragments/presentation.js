@@ -24,7 +24,7 @@ export default Fragment.extend(Copyable, {
     return this.store.createFragment('fragments/presentation', {
       columns: presentation.columns,
       version: presentation.version,
-      layout: presentation.layout.map(cell => this.store.createFragment('fragments/layout', cell))
+      layout: presentation.layout.map((cell) => this.store.createFragment('fragments/layout', cell)),
     });
-  }
+  },
 });

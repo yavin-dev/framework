@@ -4,17 +4,17 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let metadataService, service;
 
-module('Unit | Service | fragmentFactory', function(hooks) {
+module('Unit | Service | fragmentFactory', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     metadataService = this.owner.lookup('service:navi-metadata');
     service = this.owner.lookup('service:fragment-factory');
     await metadataService.loadMetadata();
   });
 
-  test('Build Column Fragments From Meta', function(assert) {
+  test('Build Column Fragments From Meta', function (assert) {
     const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
     const dimMeta = metadataService.getById('dimension', 'browser', 'bardOne');
 
@@ -49,7 +49,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     );
   });
 
-  test('Build Column Fragments Without Meta', function(assert) {
+  test('Build Column Fragments Without Meta', function (assert) {
     const metricMetaFragment = service.createColumn(
       'metric',
       'bardOne',
@@ -83,7 +83,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     );
   });
 
-  test('Build Filter Fragments From Meta', function(assert) {
+  test('Build Filter Fragments From Meta', function (assert) {
     const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
     const dimMeta = metadataService.getById('dimension', 'browser', 'bardOne');
 
@@ -112,11 +112,11 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     );
   });
 
-  test('Build Filter Fragments Without Meta', function(assert) {
+  test('Build Filter Fragments Without Meta', function (assert) {
     const metricMetaFragment = service.createFilter('metric', 'bardOne', 'navClicks', { avg: 'trailing31day' }, 'in', [
       1,
       2,
-      3
+      3,
     ]);
     assert.equal(metricMetaFragment.field, 'navClicks', 'Metric has right field');
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
@@ -127,7 +127,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
 
     const dimensionMetaFragment = service.createFilter('dimension', 'bardOne', 'browser', {}, 'contains', [
       'chrome',
-      'firefox'
+      'firefox',
     ]);
     assert.equal(dimensionMetaFragment.field, 'browser', 'Dimension has right field');
     assert.deepEqual(dimensionMetaFragment.parameters, {}, 'Dimension fragment has right parameters');
@@ -145,7 +145,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     );
   });
 
-  test('Build Sort Fragments From Meta', function(assert) {
+  test('Build Sort Fragments From Meta', function (assert) {
     const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
 
     const metricMetaFragment = service.createSortFromMeta(metricMeta, { avg: 'trailing31day' }, 'asc');
@@ -156,7 +156,7 @@ module('Unit | Service | fragmentFactory', function(hooks) {
     assert.equal(metricMetaFragment.columnMetadata.source, 'bardOne', 'Sort fragment meta data has right datasource');
   });
 
-  test('Build Sort Fragments Without Meta', function(assert) {
+  test('Build Sort Fragments Without Meta', function (assert) {
     const metricMetaFragment = service.createSort('metric', 'bardOne', 'revenue', { currency: 'USD' }, 'desc');
     assert.equal(metricMetaFragment.field, 'revenue', 'Sort Fragment has right field');
     assert.equal(metricMetaFragment.parameters.currency, 'USD', 'Sort fragment has right parameters');

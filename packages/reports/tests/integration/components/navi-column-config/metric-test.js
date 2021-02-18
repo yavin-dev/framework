@@ -17,18 +17,18 @@ const TEMPLATE = hbs`
   @onUpdateColumnParam={{this.onUpdateColumnParam}}
 />
 `;
-module('Integration | Component | navi-column-config/metric', function(hooks) {
+module('Integration | Component | navi-column-config/metric', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
 
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
         ...this.column.fragment.parameters,
-        [paramId]: paramKey
+        [paramId]: paramKey,
       });
     };
   });
@@ -40,11 +40,11 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     return {
       isFiltered: false,
-      fragment
+      fragment,
     };
   }
 
-  test('Configuring multiple parameters', async function(assert) {
+  test('Configuring multiple parameters', async function (assert) {
     assert.expect(6);
 
     this.column = await getMetricColumn('multipleParamMetric', {
@@ -52,24 +52,24 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       aggregation: 'total',
       age: '6',
       currency: 'USD',
-      currencyButNullDefault: 'CAD'
+      currencyButNullDefault: 'CAD',
     });
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-label').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent.trim()),
       ['Type Type', 'Aggregation Type', 'Age Type', 'Currency Type', 'CurrencyButNullDefault Type'],
       'Multiple parameters config lists are displayed'
     );
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Multiple parameters values are filled in with selected values'
     );
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Left', 'Right', 'Middle'],
       'Param values with name key show up correctly'
     );
@@ -81,7 +81,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Drams');
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
@@ -94,11 +94,11 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     assertTooltipContent(assert, {
       targetSelector: '.ember-tooltip-target',
-      contentString: 'Gives the metric power to have directionality'
+      contentString: 'Gives the metric power to have directionality',
     });
   });
 
-  test('Configuring null parameter', async function(assert) {
+  test('Configuring null parameter', async function (assert) {
     assert.expect(2);
 
     this.column = await getMetricColumn('multipleParamMetric', {
@@ -106,12 +106,12 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       aggregation: 'total',
       age: '6',
       currency: 'USD',
-      currencyButNullDefault: null
+      currencyButNullDefault: null,
     });
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['', 'Total', '30-34', 'Dollars (USD)', ''],
       'Null parameters have no selected values in trigger'
     );
@@ -120,13 +120,13 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await selectChoose('.navi-column-config-item__parameter:last-child', 'Dollars (CAD)');
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Right', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Null value parameters can be changed'
     );
   });
 
-  test('Configuring metric column', async function(assert) {
+  test('Configuring metric column', async function (assert) {
     assert.expect(4);
 
     this.column = await getMetricColumn('revenue', { currency: 'USD' });
@@ -141,7 +141,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
         ...this.column.fragment.parameters,
-        [paramId]: paramKey
+        [paramId]: paramKey,
       });
       assert.equal(`${paramId}=${paramKey}`, 'currency=CAD', 'Parameter is passed to onUpdateColumnParam method');
     };
@@ -154,7 +154,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       [
         'NULL',
         'UNKNOWN',
@@ -169,7 +169,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
         'Dollars (CAD)',
         'Dollars (USD)',
         'Euro',
-        'Rupees'
+        'Rupees',
       ],
       'The parameter values are loaded into the dropdown'
     );

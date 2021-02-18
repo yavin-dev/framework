@@ -8,16 +8,16 @@ import hbs from 'htmlbars-inline-precompile';
 
 let route;
 
-module('Integration | Helper | model for', function(hooks) {
+module('Integration | Helper | model for', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     let controller = {};
     this.owner.register('route:mock-route', Route.extend({ controller }));
     route = this.owner.lookup('route:mock-route');
   });
 
-  test('modelFor', async function(assert) {
+  test('modelFor', async function (assert) {
     assert.expect(2);
 
     set(route, 'controller.model', 'foo');
@@ -28,7 +28,7 @@ module('Integration | Helper | model for', function(hooks) {
     assert.dom('span').hasText('bar', "model-for helper recomputes when the route's model changes");
   });
 
-  test('modelFor - missing route', async function(assert) {
+  test('modelFor - missing route', async function (assert) {
     assert.expect(1);
 
     await render(hbs`<span>{{model-for 'missing-route'}}</span>`);

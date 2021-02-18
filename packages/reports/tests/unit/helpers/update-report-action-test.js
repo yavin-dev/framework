@@ -6,17 +6,17 @@ import { setOwner } from '@ember/application';
 
 let Container, helper;
 
-module('Unit | Helper | update report action', function(hooks) {
+module('Unit | Helper | update report action', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Container = this.owner;
     let helperFactory = this.owner.lookup('helper:update-report-action');
     helper = helperFactory.create();
     setOwner(helper, this.owner);
   });
 
-  test('update-report-action helper calls the correct route action', function(assert) {
+  test('update-report-action helper calls the correct route action', function (assert) {
     assert.expect(4);
 
     createMockRoute((actionType, helperParam, invocationParam) => {
@@ -36,7 +36,7 @@ module('Unit | Helper | update report action', function(hooks) {
     helper.compute(['UPDATE_TABLE', 'helperParam'])('invocationParam');
   });
 
-  test('update-report-action errors', function(assert) {
+  test('update-report-action errors', function (assert) {
     assert.expect(1);
 
     assert.throws(() => helper.compute(['BAD NAME']), 'report action throws error if report action cannot be found');
@@ -50,11 +50,11 @@ module('Unit | Helper | update report action', function(hooks) {
           currentHandlerInfos: [
             {
               handler: Route.extend({
-                actions: { onUpdateReport }
-              }).create()
-            }
-          ]
-        }
+                actions: { onUpdateReport },
+              }).create(),
+            },
+          ],
+        },
       },
       { instantiate: false }
     );
@@ -66,11 +66,11 @@ module('Unit | Helper | update report action', function(hooks) {
           currentHandlerInfos: [
             {
               handler: Route.extend({
-                actions: { onUpdateReport }
-              }).create()
-            }
-          ]
-        }
+                actions: { onUpdateReport },
+              }).create(),
+            },
+          ],
+        },
       },
       { instantiate: false }
     );

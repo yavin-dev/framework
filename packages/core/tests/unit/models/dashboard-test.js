@@ -5,17 +5,17 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Store;
 
-module('Unit | Model | dashboard', function(hooks) {
+module('Unit | Model | dashboard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     await this.owner.lookup('service:user').findUser();
   });
 
-  test('Retrieving Records', async function(assert) {
+  test('Retrieving Records', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -30,38 +30,38 @@ module('Unit | Model | dashboard', function(hooks) {
               type: 'dimension',
               field: 'property',
               parameters: {
-                field: 'id'
+                field: 'id',
               },
               operator: 'contains',
-              values: ['114', '100001']
+              values: ['114', '100001'],
             },
             {
               type: 'dimension',
               field: 'property',
               parameters: {
-                field: 'id'
+                field: 'id',
               },
               operator: 'notin',
-              values: ['1']
+              values: ['1'],
             },
             {
               type: 'dimension',
               field: 'property',
               parameters: {
-                field: 'id'
+                field: 'id',
               },
               operator: 'notin',
-              values: ['2', '3']
+              values: ['2', '3'],
             },
             {
               type: 'dimension',
               field: 'eventId',
               parameters: {
-                field: 'id'
+                field: 'id',
               },
               operator: 'in',
-              values: ['1']
-            }
+              values: ['1'],
+            },
           ],
           presentation: {
             columns: 40,
@@ -71,20 +71,20 @@ module('Unit | Model | dashboard', function(hooks) {
                 height: 6,
                 row: 0,
                 widgetId: 4,
-                width: 9
+                width: 9,
               },
               {
                 column: 0,
                 height: 5,
                 row: 6,
                 widgetId: 5,
-                width: 9
-              }
+                width: 9,
+              },
             ],
-            version: 1
+            version: 1,
           },
           title: 'Dashboard 2',
-          updatedOn: '2016-02-01 00:00:00.000'
+          updatedOn: '2016-02-01 00:00:00.000',
         },
         'dashboard record with id 2 is found in the store'
       );
@@ -97,7 +97,7 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  test('user relationship', async function(assert) {
+  test('user relationship', async function (assert) {
     assert.expect(4);
 
     await run(async () => {
@@ -115,7 +115,7 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  test('isFavorite', async function(assert) {
+  test('isFavorite', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -129,7 +129,7 @@ module('Unit | Model | dashboard', function(hooks) {
     });
   });
 
-  test('Cloning Dashboards', async function(assert) {
+  test('Cloning Dashboards', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -156,20 +156,20 @@ module('Unit | Model | dashboard', function(hooks) {
             type: 'dimension',
             field: 'age',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'in',
-            values: [1, 2, 3]
+            values: [1, 2, 3],
           },
           {
             type: 'dimension',
             field: 'container',
             parameters: {
-              field: 'id'
+              field: 'id',
             },
             operator: 'notin',
-            values: [1]
-          }
+            values: [1],
+          },
         ],
         'multi datasource filters has the datasource specified'
       );
@@ -177,17 +177,17 @@ module('Unit | Model | dashboard', function(hooks) {
   });
 
   // TODO Fix test after moving to core
-  skip('deliveryRuleForUser', function(assert) {
+  skip('deliveryRuleForUser', function (assert) {
     assert.expect(1);
 
     return run(() => {
       return Store.findRecord('user', 'navi_user').then(() => {
-        return Store.findRecord('dashboard', 2).then(dashboardModel => {
+        return Store.findRecord('dashboard', 2).then((dashboardModel) => {
           dashboardModel.user = {
-            getUser: () => Store.peekRecord('user', 'navi_user')
+            getUser: () => Store.peekRecord('user', 'navi_user'),
           };
 
-          return dashboardModel.get('deliveryRuleForUser').then(rule => {
+          return dashboardModel.get('deliveryRuleForUser').then((rule) => {
             assert.deepEqual(rule, Store.peekRecord('deliveryRule', 3), 'deliveryRule is fetched for current user');
           });
         });

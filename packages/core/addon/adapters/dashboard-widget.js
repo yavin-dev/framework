@@ -64,5 +64,5 @@ export default BaseAdapter.extend({
     }
 
     return url;
-  }
+  },
 });

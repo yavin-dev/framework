@@ -1,8 +1,8 @@
 import FilterOperations from 'navi-reports/utils/enums/filter-operations';
 import { module, test } from 'qunit';
 
-module('Unit | Utils | Enums - Filter Operations', function() {
-  test('all', function(assert) {
+module('Unit | Utils | Enums - Filter Operations', function () {
+  test('all', function (assert) {
     assert.expect(1);
 
     let allFilterOperations = FilterOperations.all(),
@@ -10,34 +10,34 @@ module('Unit | Utils | Enums - Filter Operations', function() {
         {
           id: 'in',
           name: 'Equals',
-          valuesComponent: 'filter-form/select-input'
+          valuesComponent: 'filter-form/select-input',
         },
         {
           id: 'notin',
           name: 'Not Equals',
-          valuesComponent: 'filter-form/select-input'
+          valuesComponent: 'filter-form/select-input',
         },
         {
           id: 'null',
           name: 'Is Empty',
-          valuesComponent: 'filter-form/null-input'
+          valuesComponent: 'filter-form/null-input',
         },
         {
           id: 'notnull',
           name: 'Is Not Empty',
-          valuesComponent: 'filter-form/null-input'
+          valuesComponent: 'filter-form/null-input',
         },
         {
           id: 'contains',
           name: 'Contains',
-          valuesComponent: 'filter-form/text-input'
-        }
+          valuesComponent: 'filter-form/text-input',
+        },
       ];
 
     assert.deepEqual(allFilterOperations, expectedOperations, 'all returns the expected array of response formats');
   });
 
-  test('getById', function(assert) {
+  test('getById', function (assert) {
     assert.expect(7);
 
     /* == Valid cases == */
@@ -58,7 +58,7 @@ module('Unit | Utils | Enums - Filter Operations', function() {
 
     /* == Invalid cases == */
     assert.throws(
-      function() {
+      function () {
         FilterOperations.getById();
       },
       /^Error.*id: `undefined` should be of type string and non-empty$/,
@@ -66,7 +66,7 @@ module('Unit | Utils | Enums - Filter Operations', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         FilterOperations.getById(null);
       },
       /^Error.*id: `null` should be of type string and non-empty$/,
@@ -74,7 +74,7 @@ module('Unit | Utils | Enums - Filter Operations', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         FilterOperations.getById(23);
       },
       /^Error.*id: `23` should be of type string and non-empty$/,
@@ -82,7 +82,7 @@ module('Unit | Utils | Enums - Filter Operations', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         FilterOperations.getById('');
       },
       /^Error.*id: `` should be of type string and non-empty$/,

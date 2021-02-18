@@ -9,11 +9,11 @@ import User from 'navi-core/models/user';
 export function initialize(/* application */) {
   User.reopen({
     dashboards: DS.hasMany('dashboard', { async: true, inverse: 'author' }),
-    favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null })
+    favoriteDashboards: DS.hasMany('dashboard', { async: true, inverse: null }),
   });
 }
 
 export default {
   name: 'user-model',
-  initialize
+  initialize,
 };

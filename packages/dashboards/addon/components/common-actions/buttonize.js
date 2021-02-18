@@ -17,5 +17,5 @@ export default Component.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: ['action']
+  classNames: ['action'],
 });

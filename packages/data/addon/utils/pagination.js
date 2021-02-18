@@ -28,5 +28,5 @@ export default {
       endIndex = page * limit || limit;
 
     return allRecords.slice(startIndex, endIndex);
-  }
+  },
 };

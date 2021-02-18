@@ -32,7 +32,7 @@ export default Component.extend({
   /**
    * @property {String} collectionRenderer - chooses which collection renderer to use
    */
-  collectionRenderer: computed('useVerticalCollection', function() {
+  collectionRenderer: computed('useVerticalCollection', function () {
     return get(this, 'useVerticalCollection') ? 'vertical-collection' : 'ember-collection';
-  })
+  }),
 });

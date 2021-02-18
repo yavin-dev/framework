@@ -3,8 +3,8 @@ import { module, test, skip } from 'qunit';
 
 const Request = RequestBuilder.create();
 
-module('Unit | Builder | Request', function() {
-  test('logical table', function(assert) {
+module('Unit | Builder | Request', function () {
+  test('logical table', function (assert) {
     assert.expect(3);
 
     assert.deepEqual(Request.logicalTable, {}, 'logicalTable is initially an empty object');
@@ -15,7 +15,7 @@ module('Unit | Builder | Request', function() {
       updatedRequest.logicalTable,
       {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       'logicalTable can be updated with set function'
     );
@@ -23,7 +23,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('dimensions', function(assert) {
+  test('dimensions', function (assert) {
     assert.expect(4);
 
     assert.equal(Request.dimensions.length, 0, 'dimensions is initially an empty array');
@@ -34,11 +34,11 @@ module('Unit | Builder | Request', function() {
       updatedRequest.dimensions,
       [
         {
-          dimension: 'age'
+          dimension: 'age',
         },
         {
-          dimension: 'gender'
-        }
+          dimension: 'gender',
+        },
       ],
       'dimensions can be updated with add function'
     );
@@ -48,11 +48,11 @@ module('Unit | Builder | Request', function() {
       updatedRequest.dimensions,
       [
         {
-          dimension: 'property'
+          dimension: 'property',
         },
         {
-          dimension: 'browser'
-        }
+          dimension: 'browser',
+        },
       ],
       'dimensions can be replaced with set function'
     );
@@ -60,7 +60,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('metrics', function(assert) {
+  test('metrics', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(Request.metrics, [], 'metrics is initially an empty array');
@@ -74,14 +74,14 @@ module('Unit | Builder | Request', function() {
       updatedRequest.metrics,
       [
         {
-          metric: 'pageViews'
+          metric: 'pageViews',
         },
         {
           metric: 'adClicks',
           parameters: {
-            type: 'dimension'
-          }
-        }
+            type: 'dimension',
+          },
+        },
       ],
       'metrics can be updated with add function'
     );
@@ -91,11 +91,11 @@ module('Unit | Builder | Request', function() {
       updatedRequest.metrics,
       [
         {
-          metric: 'navClicks'
+          metric: 'navClicks',
         },
         {
-          metric: 'navClicksWoW'
-        }
+          metric: 'navClicksWoW',
+        },
       ],
       'metrics can be replaced with set function'
     );
@@ -105,11 +105,11 @@ module('Unit | Builder | Request', function() {
       updatedRequest.metrics,
       [
         {
-          metric: 'adClicks'
+          metric: 'adClicks',
         },
         {
-          metric: 'adClicksDoD'
-        }
+          metric: 'adClicksDoD',
+        },
       ],
       'metrics can be set with only the metric name'
     );
@@ -117,7 +117,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('intervals', function(assert) {
+  test('intervals', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(Request.intervals, [], 'intervals is initially an empty array');
@@ -130,8 +130,8 @@ module('Unit | Builder | Request', function() {
       [
         {
           start: 'P7D',
-          end: 'current'
-        }
+          end: 'current',
+        },
       ],
       'intervals can be updated with shorthand add function'
     );
@@ -139,7 +139,7 @@ module('Unit | Builder | Request', function() {
     /* == Add Intervals == */
     updatedRequest = updatedRequest.addIntervals({
       start: 'P14D',
-      end: 'current'
+      end: 'current',
     });
 
     assert.deepEqual(
@@ -147,12 +147,12 @@ module('Unit | Builder | Request', function() {
       [
         {
           start: 'P7D',
-          end: 'current'
+          end: 'current',
         },
         {
           start: 'P14D',
-          end: 'current'
-        }
+          end: 'current',
+        },
       ],
       'intervals can be updated with add function'
     );
@@ -165,8 +165,8 @@ module('Unit | Builder | Request', function() {
       [
         {
           start: 'P4W',
-          end: 'prev'
-        }
+          end: 'prev',
+        },
       ],
       'intervals can be replaced with set function'
     );
@@ -174,7 +174,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  skip('filters', function(assert) {
+  skip('filters', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(Request.filters, [], 'filters is initially an empty array');
@@ -188,8 +188,8 @@ module('Unit | Builder | Request', function() {
         {
           dimension: 'gender',
           operator: 'notin',
-          values: ['m', 'f']
-        }
+          values: ['m', 'f'],
+        },
       ],
       'filters can be updated with shorthand add function'
     );
@@ -198,7 +198,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = updatedRequest.addFilters({
       dimension: 'browser',
       operator: 'in',
-      values: ['firefox']
+      values: ['firefox'],
     });
 
     assert.deepEqual(
@@ -207,13 +207,13 @@ module('Unit | Builder | Request', function() {
         {
           dimension: 'gender',
           operator: 'notin',
-          values: ['m', 'f']
+          values: ['m', 'f'],
         },
         {
           dimension: 'browser',
           operator: 'in',
-          values: ['firefox']
-        }
+          values: ['firefox'],
+        },
       ],
       'filters can be updated with add function'
     );
@@ -222,7 +222,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = updatedRequest.setFilters({
       dimension: 'browser',
       operator: 'in',
-      values: ['chrome']
+      values: ['chrome'],
     });
 
     assert.deepEqual(
@@ -231,8 +231,8 @@ module('Unit | Builder | Request', function() {
         {
           dimension: 'browser',
           operator: 'in',
-          values: ['chrome']
-        }
+          values: ['chrome'],
+        },
       ],
       'filters can be updated with setfunction'
     );
@@ -240,7 +240,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('having', function(assert) {
+  test('having', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(Request.having, [], 'having is initially an empty array');
@@ -254,8 +254,8 @@ module('Unit | Builder | Request', function() {
         {
           metric: 'pageViews',
           operator: 'gt',
-          values: [1000]
-        }
+          values: [1000],
+        },
       ],
       'having can be updated with shorthand add function'
     );
@@ -264,7 +264,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = updatedRequest.addHavings({
       metric: 'adClicks',
       operator: 'gt',
-      values: [500]
+      values: [500],
     });
 
     assert.deepEqual(
@@ -273,13 +273,13 @@ module('Unit | Builder | Request', function() {
         {
           metric: 'pageViews',
           operator: 'gt',
-          values: [1000]
+          values: [1000],
         },
         {
           metric: 'adClicks',
           operator: 'gt',
-          values: [500]
-        }
+          values: [500],
+        },
       ],
       'having can be updated with add function'
     );
@@ -288,7 +288,7 @@ module('Unit | Builder | Request', function() {
     updatedRequest = updatedRequest.setHavings({
       metric: 'navClicks',
       operator: 'gt',
-      values: [10]
+      values: [10],
     });
 
     assert.deepEqual(
@@ -297,8 +297,8 @@ module('Unit | Builder | Request', function() {
         {
           metric: 'navClicks',
           operator: 'gt',
-          values: [10]
-        }
+          values: [10],
+        },
       ],
       'having can be replaced with set function'
     );
@@ -306,7 +306,7 @@ module('Unit | Builder | Request', function() {
     assert.notEqual(Request, updatedRequest, 'original request was not modified');
   });
 
-  test('sort', function(assert) {
+  test('sort', function (assert) {
     assert.expect(6);
 
     assert.deepEqual(Request.sort, [], 'sort is initially an empty array');
@@ -319,8 +319,8 @@ module('Unit | Builder | Request', function() {
       [
         {
           metric: 'pageViews',
-          direction: 'desc'
-        }
+          direction: 'desc',
+        },
       ],
       'sort can be updated with shorthand add function without specifying a sort direction'
     );
@@ -333,8 +333,8 @@ module('Unit | Builder | Request', function() {
       [
         {
           metric: 'pageViews',
-          direction: 'asc'
-        }
+          direction: 'asc',
+        },
       ],
       'sort can be updated with shorthand add function'
     );
@@ -342,7 +342,7 @@ module('Unit | Builder | Request', function() {
     /* == Add sort == */
     updatedRequest = updatedRequest.addSorts({
       metric: 'adClicks',
-      direction: 'desc'
+      direction: 'desc',
     });
 
     assert.deepEqual(
@@ -350,12 +350,12 @@ module('Unit | Builder | Request', function() {
       [
         {
           metric: 'pageViews',
-          direction: 'asc'
+          direction: 'asc',
         },
         {
           metric: 'adClicks',
-          direction: 'desc'
-        }
+          direction: 'desc',
+        },
       ],
       'sort can be updated with add function'
     );
@@ -363,7 +363,7 @@ module('Unit | Builder | Request', function() {
     /* == Set sort == */
     updatedRequest = updatedRequest.setSorts({
       metric: 'navClicks',
-      direction: 'asc'
+      direction: 'asc',
     });
 
     assert.deepEqual(
@@ -371,8 +371,8 @@ module('Unit | Builder | Request', function() {
       [
         {
           metric: 'navClicks',
-          direction: 'asc'
-        }
+          direction: 'asc',
+        },
       ],
       'sort can be replaced with set function'
     );

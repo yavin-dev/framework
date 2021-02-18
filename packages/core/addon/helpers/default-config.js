@@ -42,5 +42,5 @@ export default Helper.extend({
       visualizationFragment = store.createFragment(visualizationName).rebuildConfig(request, response);
 
     return visualizationFragment.get('metadata');
-  }
+  },
 });

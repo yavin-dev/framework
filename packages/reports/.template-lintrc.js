@@ -6,6 +6,6 @@ module.exports = {
   rules: {
     'simple-unless': false,
     'no-inline-styles': false,
-    'no-partial': false
-  }
+    'no-partial': false,
+  },
 };

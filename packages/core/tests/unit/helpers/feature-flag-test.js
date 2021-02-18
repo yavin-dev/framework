@@ -2,8 +2,8 @@ import { featureFlag } from '../../../helpers/feature-flag';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 
-module('Unit | Helper | feature flag', function() {
-  test('flag value is returned', function(assert) {
+module('Unit | Helper | feature flag', function () {
+  test('flag value is returned', function (assert) {
     let originalFeatures = config.navi.FEATURES;
 
     config.navi.FEATURES = {};

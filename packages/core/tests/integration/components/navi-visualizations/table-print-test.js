@@ -19,29 +19,29 @@ const ROWS = [
     'os(field=id)': 'All Other',
     'os(field=desc)': 'All Other',
     uniqueIdentifier: 172933788,
-    totalPageViews: 3669828357
+    totalPageViews: 3669828357,
   },
   {
     'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
     'os(field=id)': 'Android',
     'os(field=desc)': 'Android',
     uniqueIdentifier: 183206656,
-    totalPageViews: 4088487125
+    totalPageViews: 4088487125,
   },
   {
     'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
     'os(field=id)': 'BlackBerry',
     'os(field=desc)': 'BlackBerry OS',
     uniqueIdentifier: 183380921,
-    totalPageViews: 4024700302
-  }
+    totalPageViews: 4024700302,
+  },
 ];
 
-module('Integration | Component | navi visualizations/table print', function(hooks) {
+module('Integration | Component | navi visualizations/table print', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
 
     const store = this.owner.lookup('service:store');
@@ -57,18 +57,18 @@ module('Integration | Component | navi visualizations/table print', function(hoo
             { type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
             { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
             { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
-            { type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' }
+            { type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' },
           ],
-          sorts: []
+          sorts: [],
         }),
         response: {
-          rows: ROWS
-        }
-      }
+          rows: ROWS,
+        },
+      },
     ]);
 
     const Options = {
-      columnAttributes: {}
+      columnAttributes: {},
     };
     this.set('model', Model);
     this.set('options', Options);
@@ -77,18 +77,18 @@ module('Integration | Component | navi visualizations/table print', function(hoo
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
 
     assert.dom('.table-widget').isVisible('The table widget component is visible');
 
-    let headers = findAll('.table-header-row-vc div.table-header-cell').map(el => el.textContent.trim());
+    let headers = findAll('.table-header-row-vc div.table-header-cell').map((el) => el.textContent.trim());
 
     assert.deepEqual(
       headers,
@@ -96,8 +96,8 @@ module('Integration | Component | navi visualizations/table print', function(hoo
       'The table renders the headers correctly based on the request'
     );
 
-    let body = findAll('tbody tr').map(row =>
-      [...row.querySelectorAll('.table-cell')].map(cell => cell.textContent.trim())
+    let body = findAll('tbody tr').map((row) =>
+      [...row.querySelectorAll('.table-cell')].map((cell) => cell.textContent.trim())
     );
 
     assert.deepEqual(
@@ -105,7 +105,7 @@ module('Integration | Component | navi visualizations/table print', function(hoo
       [
         ['05/30/2016', 'All Other', 'All Other', '172933788', '3669828357'],
         ['05/30/2016', 'Android', 'Android', '183206656', '4088487125'],
-        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183380921', '4024700302']
+        ['05/30/2016', 'BlackBerry', 'BlackBerry OS', '183380921', '4024700302'],
       ],
       'The table renders the response dataset correctly'
     );

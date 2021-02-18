@@ -11,5 +11,5 @@ export default Fragment.extend({
   row: DS.attr('number'),
   width: DS.attr('number'),
   height: DS.attr('number'),
-  widgetId: DS.attr('number')
+  widgetId: DS.attr('number'),
 });

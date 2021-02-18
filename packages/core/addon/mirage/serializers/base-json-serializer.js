@@ -4,11 +4,11 @@ import { camelize } from '@ember/string';
 export default JSONAPISerializer.extend({
   alwaysIncludeLinkageData: true,
 
-  keyForAttribute: attr => attr,
+  keyForAttribute: (attr) => attr,
 
-  keyForModel: attr => camelize(attr),
+  keyForModel: (attr) => camelize(attr),
 
-  keyForRelationship: attr => camelize(attr),
+  keyForRelationship: (attr) => camelize(attr),
 
-  serializeIds: 'always'
+  serializeIds: 'always',
 });

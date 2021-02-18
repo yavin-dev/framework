@@ -1,15 +1,15 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Controller | reports/report', function(hooks) {
+module('Unit | Controller | reports/report', function (hooks) {
   setupTest(hooks);
 
-  test('it exists', function(assert) {
+  test('it exists', function (assert) {
     const controller = this.owner.lookup('controller:reports/report');
     assert.ok(controller);
   });
 
-  test('reportState', function(assert) {
+  test('reportState', function (assert) {
     const controller = this.owner.lookup('controller:reports/report');
 
     const getProps = () =>
@@ -22,7 +22,7 @@ module('Unit | Controller | reports/report', function(hooks) {
         isEditingReport: true,
         isRunningReport: false,
         didReportComplete: false,
-        didReportFail: false
+        didReportFail: false,
       },
       'Setting reportState to `editing` updates computed properties correctly'
     );
@@ -34,7 +34,7 @@ module('Unit | Controller | reports/report', function(hooks) {
         isEditingReport: false,
         isRunningReport: true,
         didReportComplete: false,
-        didReportFail: false
+        didReportFail: false,
       },
       'Setting reportState to `running` updates computed properties correctly'
     );
@@ -46,7 +46,7 @@ module('Unit | Controller | reports/report', function(hooks) {
         isEditingReport: false,
         isRunningReport: false,
         didReportComplete: true,
-        didReportFail: false
+        didReportFail: false,
       },
       'Setting reportState to `completed` updates computed properties correctly'
     );
@@ -58,13 +58,13 @@ module('Unit | Controller | reports/report', function(hooks) {
         isEditingReport: false,
         isRunningReport: false,
         didReportComplete: false,
-        didReportFail: true
+        didReportFail: true,
       },
       'Setting reportState to `completed` updates computed properties correctly'
     );
   });
 
-  test('Invalid reportState', function(assert) {
+  test('Invalid reportState', function (assert) {
     const controller = this.owner.lookup('controller:reports/report');
 
     assert.throws(

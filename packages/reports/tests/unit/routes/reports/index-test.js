@@ -4,23 +4,23 @@ import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Route | reports/index', function(hooks) {
+module('Unit | Route | reports/index', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('reports model', function(assert) {
+  test('reports model', function (assert) {
     assert.expect(2);
 
     return settled().then(() => {
       let route = this.owner.lookup('route:reports/index');
 
       return run(() => {
-        return route.model().then(model => {
-          return model.get('reports').then(reports => {
+        return route.model().then((model) => {
+          return model.get('reports').then((reports) => {
             assert.deepEqual(reports.mapBy('id'), ['1', '2', '4'], 'Routes model returns the reports');
 
             assert.deepEqual(

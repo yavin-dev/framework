@@ -19,5 +19,5 @@ export default BaseValidator.extend({
     }
 
     return true;
-  }
+  },
 });

@@ -4,4 +4,4 @@ export function stringContains(source, substring) {
   return source.includes(substring);
 }
 
-export default buildHelper(args => stringContains(...args));
+export default buildHelper((args) => stringContains(...args));

@@ -7,15 +7,15 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let OriginalLoggerError, OriginalTestAdapterException;
 
-module('Acceptance | Report Collections', function(hooks) {
+module('Acceptance | Report Collections', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     teardownModal();
   });
 
-  test('report-collection success', async function(assert) {
+  test('report-collection success', async function (assert) {
     assert.expect(2);
 
     await visit('/report-collections/1');
@@ -26,14 +26,14 @@ module('Acceptance | Report Collections', function(hooks) {
       .isVisible('the report collection component is rendered when route is successfully loaded');
   });
 
-  test('report-collection error', async function(assert) {
+  test('report-collection error', async function (assert) {
     assert.expect(2);
 
     // Allow testing of errors - https://github.com/emberjs/ember.js/issues/11469
     OriginalLoggerError = Ember.Logger.error;
     OriginalTestAdapterException = Ember.Test.adapter.exception;
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
+    Ember.Logger.error = function () {};
+    Ember.Test.adapter.exception = function () {};
 
     server.get('/reportCollections/:id', { errors: ['The report-collections endpoint is down'] }, 500);
 
@@ -46,7 +46,7 @@ module('Acceptance | Report Collections', function(hooks) {
     Ember.Test.adapter.exception = OriginalTestAdapterException;
   });
 
-  test('report-collection link', async function(assert) {
+  test('report-collection link', async function (assert) {
     assert.expect(1);
     await visit('/report-collections/1');
     await click('.navi-collection table > tbody > tr > td > a');
@@ -54,7 +54,7 @@ module('Acceptance | Report Collections', function(hooks) {
     assert.ok(urlRe.test(currentURL()), 'Navigate to the report when link is clicked');
   });
 
-  test('report-collection loading', async function(assert) {
+  test('report-collection loading', async function (assert) {
     assert.expect(1);
 
     await visit('/report-collections/loading');
