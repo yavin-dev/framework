@@ -3,8 +3,8 @@ import { module, test } from 'qunit';
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
 
-module('Unit | Utils | Enums - Default Intervals', function() {
-  test('getDefault', function(assert) {
+module('Unit | Utils | Enums - Default Intervals', function () {
+  test('getDefault', function (assert) {
     assert.expect(1);
 
     assert.ok(

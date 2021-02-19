@@ -8,23 +8,23 @@ import config from 'ember-get-config';
 
 let MetadataService, Store;
 
-module('Unit | Service | dashboard data', function(hooks) {
+module('Unit | Service | dashboard data', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
     await MetadataService.loadMetadata();
   });
 
-  test('fetch data for dashboard', async function(assert) {
+  test('fetch data for dashboard', async function (assert) {
     assert.expect(3);
 
     const mockDashboard = {
       id: 1,
       widgets: resolve([1, 2, 3]),
-      presentation: { layout: 'fooLayout' }
+      presentation: { layout: 'fooLayout' },
     };
 
     const service = this.owner.factoryFor('service:dashboard-data').create({
@@ -41,7 +41,7 @@ module('Unit | Service | dashboard data', function(hooks) {
         assert.equal(layout, 'fooLayout', 'Layout is passed through to fetchDataForWidgets');
 
         return widgets;
-      }
+      },
     });
 
     const dataForWidget = await service.fetchDataForDashboard(mockDashboard);
@@ -52,7 +52,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     );
   });
 
-  test('fetch data for widget', async function(assert) {
+  test('fetch data for widget', async function (assert) {
     assert.expect(11);
 
     let fetchCalls = [];
@@ -63,9 +63,9 @@ module('Unit | Service | dashboard data', function(hooks) {
         fetchCalls.push(request.data);
         return resolve({
           request,
-          response: { data: request.data }
+          response: { data: request.data },
         });
-      }
+      },
     });
 
     let data = service.fetchDataForWidgets(1);
@@ -83,29 +83,29 @@ module('Unit | Service | dashboard data', function(hooks) {
       },
       table: 'table1',
       tableMetadata: {
-        dimensionIds: []
+        dimensionIds: [],
       },
       data,
       filters,
       sorts: [],
       columns: [],
       dataSource: 'test',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     const dashboard = {
-      filters: []
+      filters: [],
     };
 
     let widgets = [
         { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
         { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] },
-        { id: 3, dashboard: cloneDeep(dashboard), requests: [] }
+        { id: 3, dashboard: cloneDeep(dashboard), requests: [] },
       ],
       layout = [
         { widgetId: 1, row: 4, column: 0 },
         { widgetId: 2, row: 0, column: 0 },
-        { widgetId: 3, row: 4, column: 4 }
+        { widgetId: 3, row: 4, column: 4 },
       ];
 
     data = service.fetchDataForWidgets(1, widgets, layout);
@@ -117,7 +117,7 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const widgetData = await get(data, '1');
     assert.deepEqual(
-      widgetData.map(res => get(res, 'response.data')),
+      widgetData.map((res) => get(res, 'response.data')),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
@@ -128,18 +128,18 @@ module('Unit | Service | dashboard data', function(hooks) {
     assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
     /* == Decorators == */
-    data = service.fetchDataForWidgets(1, widgets, layout, [obj => merge({}, obj, { data: obj.data + 1 })]);
+    data = service.fetchDataForWidgets(1, widgets, layout, [(obj) => merge({}, obj, { data: obj.data + 1 })]);
 
     const decoratorWidgetData = await get(data, '1');
     assert.deepEqual(
-      decoratorWidgetData.map(obj => get(obj, 'response.data')),
+      decoratorWidgetData.map((obj) => get(obj, 'response.data')),
       [2, 3, 4],
       'each response is modified by the decorators'
     );
 
     /* == Options == */
     let optionsObject = {
-      page: 1
+      page: 1,
     };
 
     service.set('_fetch', (request, options) => {
@@ -165,7 +165,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     );
   });
 
-  test('_fetch', function(assert) {
+  test('_fetch', function (assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:dashboard-data'),
@@ -177,32 +177,32 @@ module('Unit | Service | dashboard data', function(hooks) {
             field: 'network.dateTime',
             parameters: { grain: 'day' },
             operator: 'bet',
-            values: ['P7D', 'current']
-          }
+            values: ['P7D', 'current'],
+          },
         ],
         sorts: [],
         columns: [
           { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
-          { type: 'metric', field: 'adClicks', parameters: {} }
+          { type: 'metric', field: 'adClicks', parameters: {} },
         ],
         requestVersion: '2.0',
-        dataSource: 'bardOne'
+        dataSource: 'bardOne',
       },
       response = {
         rows: [
           {
             adClicks: 30,
-            'network.dateTime(grain=day)': undefined
+            'network.dateTime(grain=day)': undefined,
           },
           {
             adClicks: 1000,
-            'network.dateTime(grain=day)': undefined
+            'network.dateTime(grain=day)': undefined,
           },
           {
             adClicks: 200,
-            'network.dateTime(grain=day)': undefined
-          }
-        ]
+            'network.dateTime(grain=day)': undefined,
+          },
+        ],
       };
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -210,17 +210,17 @@ module('Unit | Service | dashboard data', function(hooks) {
       return response;
     });
 
-    return service._fetch(request).then(fetchResponse => {
+    return service._fetch(request).then((fetchResponse) => {
       assert.deepEqual(fetchResponse.response.rows, response.rows, 'fetch gets response from web service');
     });
   });
 
-  test('_decorate', function(assert) {
+  test('_decorate', function (assert) {
     assert.expect(2);
 
     let service = this.owner.lookup('service:dashboard-data'),
-      add = number => number + 5,
-      subtract = number => number - 3;
+      add = (number) => number + 5,
+      subtract = (number) => number - 3;
 
     assert.equal(
       service._decorate([add, subtract], 1),
@@ -231,7 +231,7 @@ module('Unit | Service | dashboard data', function(hooks) {
     assert.equal(service._decorate([], 1), 1, 'empty array of decorators has no effect');
   });
 
-  test('global filter application and error injection.', async function(assert) {
+  test('global filter application and error injection.', async function (assert) {
     assert.expect(4);
 
     const DIMENSIONS = ['os', 'age', 'gender', 'platform', 'property', 'browser', 'userCountry', 'screenType'];
@@ -246,11 +246,11 @@ module('Unit | Service | dashboard data', function(hooks) {
           request,
           response: {
             meta: {
-              errors: [{ title: 'Server Error' }]
-            }
-          }
+              errors: [{ title: 'Server Error' }],
+            },
+          },
         });
-      }
+      },
     });
 
     const makeFilter = ({ dimension }) => {
@@ -259,17 +259,17 @@ module('Unit | Service | dashboard data', function(hooks) {
         type: 'dimension',
         field: dimension,
         parameter: {
-          field: 'id'
+          field: 'id',
         },
         operator: 'in',
         values,
-        source: 'bardOne'
+        source: 'bardOne',
       });
     };
 
     const dashboard = {
       id: 10,
-      filters: DASHBOARD_FILTERS.map(dimension => makeFilter({ dimension }))
+      filters: DASHBOARD_FILTERS.map((dimension) => makeFilter({ dimension })),
     };
 
     const makeRequest = (data, filters) => ({
@@ -287,32 +287,32 @@ module('Unit | Service | dashboard data', function(hooks) {
       sorts: [],
       columns: [
         { type: 'timeDimension', field: 'table1.dateTime', parameters: { grain: 'day' } },
-        { type: 'metric', field: 'adClicks', parameters: {} }
+        { type: 'metric', field: 'adClicks', parameters: {} },
       ],
       tableMetadata: {
-        dimensionIds: VALID_FILTERS
+        dimensionIds: VALID_FILTERS,
       },
       requestVersion: '2.0',
       data,
-      dataSource: 'bardOne'
+      dataSource: 'bardOne',
     });
 
     const widgets = [
       {
         dashboard,
         id: 1,
-        requests: [makeRequest(0), makeRequest(1, []), makeRequest(2)]
+        requests: [makeRequest(0), makeRequest(1, []), makeRequest(2)],
       },
       {
         dashboard,
         id: 2,
-        requests: [makeRequest(3)]
+        requests: [makeRequest(3)],
       },
       {
         dashboard,
         id: 3,
-        requests: []
-      }
+        requests: [],
+      },
     ];
 
     const layout = [{ widgetId: 1 }, { widgetId: 2 }, { widgetId: 3 }];
@@ -324,59 +324,59 @@ module('Unit | Service | dashboard data', function(hooks) {
     const widget3 = await get(data, '3');
 
     assert.deepEqual(
-      widget1.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
+      widget1.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
       [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
-      widget2.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
+      widget2.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
       [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
     assert.deepEqual(
-      widget3.map(result => get(result, 'request.filters').map(filter => get(filter, 'field'))),
+      widget3.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
       [],
       'Applicable global filters are applied to widget 3 requests'
     );
 
     assert.deepEqual(
-      widget1.map(result => get(result, 'response.meta.errors')),
+      widget1.map((result) => get(result, 'response.meta.errors')),
       [
         [
           {
-            title: 'Server Error'
+            title: 'Server Error',
           },
           {
             detail: '"age" is not a dimension in the "table1" table.',
-            title: 'Invalid Filter'
-          }
+            title: 'Invalid Filter',
+          },
         ],
         [
           {
-            title: 'Server Error'
+            title: 'Server Error',
           },
           {
             detail: '"age" is not a dimension in the "table1" table.',
-            title: 'Invalid Filter'
-          }
+            title: 'Invalid Filter',
+          },
         ],
         [
           {
-            title: 'Server Error'
+            title: 'Server Error',
           },
           {
             detail: '"age" is not a dimension in the "table1" table.',
-            title: 'Invalid Filter'
-          }
-        ]
+            title: 'Invalid Filter',
+          },
+        ],
       ],
       'Errors are injected into the response.'
     );
   });
 
-  test('multi-datasource validFilters', function(assert) {
+  test('multi-datasource validFilters', function (assert) {
     assert.expect(4);
     const request = {
       table: 'foo',
@@ -386,18 +386,18 @@ module('Unit | Service | dashboard data', function(hooks) {
           field: 'foo.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['P7D', 'current']
-        }
+          values: ['P7D', 'current'],
+        },
       ],
       columns: [
         { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' } },
-        { type: 'metric', field: 'adClicks', parameters: {} }
+        { type: 'metric', field: 'adClicks', parameters: {} },
       ],
       requestVersion: '2.0',
       tableMetadata: {
-        dimensionIds: ['ham', 'spam']
+        dimensionIds: ['ham', 'spam'],
       },
-      dataSource: 'one'
+      dataSource: 'one',
     };
 
     const service = this.owner.lookup('service:dashboard-data');

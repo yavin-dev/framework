@@ -15,8 +15,8 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
    * @param {String} query
    * @returns {Object} Object containing results and dislay component
    */
-  @(task(function*(query) {
-    let data = yield new Promise(function(resolve, reject) {
+  @(task(function* (query) {
+    let data = yield new Promise(function (resolve, reject) {
       let payload = [];
       if (query.toLowerCase().includes('sample')) {
         payload = ['Revenue result', 'Revenue success'];
@@ -28,7 +28,7 @@ export default class NaviSampleSearchProviderService extends NaviBaseSearchProvi
     return {
       component: 'navi-search-result/sample',
       title: 'Sample',
-      data
+      data,
     };
   }).restartable())
   search;

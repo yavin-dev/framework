@@ -9,21 +9,21 @@ const Directories = [
       {
         name: 'Favorites',
         icon: 'star-o',
-        queryParams: { filter: 'favorites' }
-      }
-    ]
+        queryParams: { filter: 'favorites' },
+      },
+    ],
   },
   {
     name: 'Other Data',
     routeLink: 'directory.other-data',
-    filters: []
-  }
+    filters: [],
+  },
 ];
 
-module('Unit | Service | directories', function(hooks) {
+module('Unit | Service | directories', function (hooks) {
   setupTest(hooks);
 
-  test('returns directories', function(assert) {
+  test('returns directories', function (assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:directories');

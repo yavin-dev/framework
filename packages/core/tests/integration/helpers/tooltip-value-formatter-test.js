@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('helper:tooltip-value-formatter', function(hooks) {
+module('helper:tooltip-value-formatter', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('makes a call to smart-format-number by default', async function(assert) {
+  test('makes a call to smart-format-number by default', async function (assert) {
     assert.expect(4);
 
     this.set('inputValue', '1234');

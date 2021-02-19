@@ -7,7 +7,7 @@ module.exports = {
 
   afterInstall() {
     return this.addAddonsToProject({
-      packages: [{ name: 'navi-core' }]
+      packages: [{ name: 'navi-core' }],
     });
-  }
+  },
 };

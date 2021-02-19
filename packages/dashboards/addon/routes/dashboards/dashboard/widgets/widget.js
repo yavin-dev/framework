@@ -46,32 +46,30 @@ export default ReportRoute.extend({
       if (tempId) {
         this.transitionTo('dashboards.dashboard.widgets.add', {
           queryParams: {
-            unsavedWidgetId: tempId
-          }
+            unsavedWidgetId: tempId,
+          },
         });
       } else {
         widget
           .save()
           .then(() => {
-            get(this, 'naviNotifications').add({
-              message: 'Widget was successfully saved!',
-              type: 'success',
-              timeout: 'short'
+            this.naviNotifications.add({
+              title: 'Widget saved',
+              style: 'success',
+              timeout: 'short',
             });
 
             // Refresh the parent route to have the latest widget changes
-            getOwner(this)
-              .lookup('route:dashboards/dashboard')
-              .refresh();
+            getOwner(this).lookup('route:dashboards/dashboard').refresh();
           })
           .catch(() => {
-            get(this, 'naviNotifications').add({
-              message: 'OOPS! An error occurred while saving',
-              type: 'danger',
-              timeout: 'medium'
+            this.naviNotifications.add({
+              title: 'An error occurred while saving the widget',
+              style: 'danger',
+              timeout: 'medium',
             });
           });
       }
-    }
-  }
+    },
+  },
 });

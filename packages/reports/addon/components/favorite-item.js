@@ -26,14 +26,14 @@ export default Component.extend({
   /**
    * @property {String} itemType
    */
-  itemType: computed('item.constructor.modelName', function() {
+  itemType: computed('item.constructor.modelName', function () {
     return get(this, 'item.constructor.modelName');
   }),
 
   /**
    * @property {Array} favoriteItems - array of the favorite items retrieved from the user
    */
-  favoriteItems: computed('itemType', function() {
+  favoriteItems: computed('itemType', function () {
     let itemType = get(this, 'itemType'),
       pluralizedType = capitalize(pluralize(itemType));
 
@@ -43,8 +43,8 @@ export default Component.extend({
   /**
    * @property {Boolean} isFavorite - whether or not the given user favorites the given item
    */
-  isFavorite: computed('favoriteItems.[]', 'item', function() {
+  isFavorite: computed('favoriteItems.[]', 'item', function () {
     let items = A(get(this, 'favoriteItems'));
     return items.includes(get(this, 'item'));
-  })
+  }),
 });

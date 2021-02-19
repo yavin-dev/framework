@@ -6,10 +6,10 @@ import hbs from 'htmlbars-inline-precompile';
 
 let Template;
 
-module('Integration | Component | common actions/delete', function(hooks) {
+module('Integration | Component | common actions/delete', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Template = hbs`
       <CommonActions::Delete
         class="delete"
@@ -23,13 +23,13 @@ module('Integration | Component | common actions/delete', function(hooks) {
     set(this, 'widget', {
       id: 10,
       title: 'The Wind Waker',
-      constructor: { modelName: 'test-widget' }
+      constructor: { modelName: 'test-widget' },
     });
 
     set(this, 'deleteWidget', () => {});
   });
 
-  test('confirm modal', async function(assert) {
+  test('confirm modal', async function (assert) {
     await render(Template);
 
     assert.dom('.delete__modal').isNotVisible('Modal is not visible at the start');
@@ -50,10 +50,10 @@ module('Integration | Component | common actions/delete', function(hooks) {
     assert.dom('.delete__modal').isNotVisible('Modal is closed after clicking cancel button');
   });
 
-  test('delete action', async function(assert) {
+  test('delete action', async function (assert) {
     assert.expect(1);
 
-    this.set('deleteWidget', widget => {
+    this.set('deleteWidget', (widget) => {
       assert.equal(widget, this.widget, 'the selected widget is passed to the action');
     });
 

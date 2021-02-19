@@ -15,7 +15,7 @@ import layout from '../templates/components/navi-table-sort-icon';
 const SORT_ICONS = {
   asc: 'navi-table-sort-icon--asc',
   desc: 'navi-table-sort-icon--desc',
-  none: 'navi-table-sort-icon--none'
+  none: 'navi-table-sort-icon--none',
 };
 
 export default Component.extend({
@@ -39,7 +39,7 @@ export default Component.extend({
   /**
    * @property {String} sortClass
    */
-  sortClass: computed('direction', function() {
+  sortClass: computed('direction', function () {
     return SORT_ICONS[get(this, 'direction')];
-  })
+  }),
 });

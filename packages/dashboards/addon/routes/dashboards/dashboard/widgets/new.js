@@ -29,7 +29,7 @@ export default ReportsNewRoute.extend({
   _newModel() {
     let dashboard = this.modelFor('dashboards.dashboard');
 
-    return this.user.findOrRegister().then(author => {
+    return this.user.findOrRegister().then((author) => {
       const defaultVisualization = get(this, 'naviVisualizations').defaultVisualization();
       const table = this._getDefaultTable();
 
@@ -39,13 +39,13 @@ export default ReportsNewRoute.extend({
         requests: A([
           this.store.createFragment('bard-request-v2/request', {
             table: table.id,
-            dataSource: table.source
-          })
+            dataSource: table.source,
+          }),
         ]),
-        visualization: { type: defaultVisualization }
+        visualization: { type: defaultVisualization },
       });
 
       return widget;
     });
-  }
+  },
 });

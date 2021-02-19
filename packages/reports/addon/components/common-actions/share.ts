@@ -5,13 +5,14 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
+import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
 
 interface Args {
   buildUrl?: () => string;
 }
 export default class ShareActionComponent extends Component<Args> {
   @service
-  naviNotifications!: TODO;
+  naviNotifications!: NaviNotificationsService;
 
   get shareUrl() {
     // Allow custom url logic for sharing something other than current page
@@ -22,10 +23,10 @@ export default class ShareActionComponent extends Component<Args> {
   @action
   onSuccess() {
     this.naviNotifications.add({
-      message: 'Link Copied',
-      context: this.shareUrl,
-      type: 'success',
-      timeout: 'short'
+      title: 'Link copied',
+      style: 'info',
+      timeout: 'short',
+      extra: this.shareUrl,
     });
   }
 }

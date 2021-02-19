@@ -4,25 +4,25 @@ import { render } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | dir-item-name-cell', function(hooks) {
+module('Integration | Component | dir-item-name-cell', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('dir-item-name-cell', async function(assert) {
+  test('dir-item-name-cell', async function (assert) {
     const report = {
         title: 'Report 1',
         id: 1,
         isFavorite: true,
         constructor: {
-          modelName: 'report'
-        }
+          modelName: 'report',
+        },
       },
       dashboard = {
         title: 'Dashboard 1',
         id: 2,
         isFavorite: false,
         constructor: {
-          modelName: 'dashboard'
-        }
+          modelName: 'dashboard',
+        },
       };
     set(this, 'item', report);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
@@ -41,15 +41,15 @@ module('Integration | Component | dir-item-name-cell', function(hooks) {
     assert.dom('.d-star-solid').doesNotExist('The favorite icon is not shown for a item that is not a favorite');
   });
 
-  test('unsaved report label', async function(assert) {
+  test('unsaved report label', async function (assert) {
     const report = {
       title: 'Untitled Report',
       id: null,
       tempId: 'd8828a30-c2ab-11e8-9028-e546f1b5f84f',
       isFavorite: false,
       constructor: {
-        modelName: 'report'
-      }
+        modelName: 'report',
+      },
     };
 
     set(this, 'item', report);

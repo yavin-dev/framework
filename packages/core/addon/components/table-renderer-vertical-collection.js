@@ -39,10 +39,10 @@ let supportsPassive = false;
 //detect passive feature
 try {
   let opts = Object.defineProperty({}, 'passive', {
-    get: function() {
+    get: function () {
       supportsPassive = true;
       return true;
-    }
+    },
   });
   window.addEventListener('testPassive', null, opts);
   window.removeEventListener('testPassive', null, opts);
@@ -107,13 +107,13 @@ class TableRendererVerticalCollectionComponent extends Component {
    * @returns {void}
    */
   _registerTableScroll() {
-    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach(elm =>
+    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach((elm) =>
       elm.addEventListener(SCROLL_EVENT, () => this._syncScroll(), supportsPassive ? { passive: true } : false)
     );
 
     get(this, 'tableHeadersDomElement').addEventListener(
       WHEEL_EVENT,
-      e => this._headerWheelSync(e),
+      (e) => this._headerWheelSync(e),
       supportsPassive ? { passive: true } : false
     );
   }
@@ -139,7 +139,7 @@ class TableRendererVerticalCollectionComponent extends Component {
         })
       );
     }
-    document.querySelectorAll('.table-header-row-vc th').forEach(el => this.resizeObserver.observe(el));
+    document.querySelectorAll('.table-header-row-vc th').forEach((el) => this.resizeObserver.observe(el));
   }
 
   /**
@@ -186,7 +186,7 @@ class TableRendererVerticalCollectionComponent extends Component {
     }
 
     let widths = Array.from(this.element.querySelectorAll('.table-header-row-vc th')).map(
-      elm => elm.getBoundingClientRect().width
+      (elm) => elm.getBoundingClientRect().width
     );
 
     let prevWidths = get(this, 'columnsWidth'),
@@ -257,11 +257,11 @@ class TableRendererVerticalCollectionComponent extends Component {
    */
   willDestroyElement() {
     //turn off scroll listener
-    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach(elm =>
+    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach((elm) =>
       elm.removeEventListener(SCROLL_EVENT, () => this._syncScroll())
     );
 
-    get(this, 'tableHeadersDomElement').removeEventListener(WHEEL_EVENT, e => this._headerWheelSync(e));
+    get(this, 'tableHeadersDomElement').removeEventListener(WHEEL_EVENT, (e) => this._headerWheelSync(e));
 
     //turn off resize Observer
     this.resizeObserver.disconnect();
@@ -290,7 +290,7 @@ class TableRendererVerticalCollectionComponent extends Component {
 
       document
         .querySelectorAll('tr.table-header-row-vc')
-        .forEach(el => this.mutationObserver.observe(el, { attributes: false, childList: true, subtree: true }));
+        .forEach((el) => this.mutationObserver.observe(el, { attributes: false, childList: true, subtree: true }));
     }
   }
 }

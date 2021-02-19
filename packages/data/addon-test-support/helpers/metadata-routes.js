@@ -6,28 +6,28 @@ export const MetricOne = {
   category: 'category',
   name: 'metricOne',
   longName: 'Metric One',
-  description: 'This is Metric One'
+  description: 'This is Metric One',
 };
 
 export const MetricTwo = {
   category: 'category',
   name: 'metricTwo',
   longName: 'Metric Two',
-  description: 'This is Metric Two'
+  description: 'This is Metric Two',
 };
 
 export const MetricThree = {
   category: 'category',
   name: 'metricThree',
   longName: 'Metric Three',
-  description: 'This is Metric Three'
+  description: 'This is Metric Three',
 };
 
 export const MetricFour = {
   category: 'category',
   name: 'metricFour',
   longName: 'Metric Four',
-  description: 'This is Metric Four'
+  description: 'This is Metric Four',
 };
 
 export const PageViews = {
@@ -35,14 +35,14 @@ export const PageViews = {
   id: 'pageViews',
   name: 'Page Views',
   description: 'Views of a page',
-  cardinality: 100
+  cardinality: 100,
 };
 
 export const MetricFive = {
   category: 'currencyMetrics',
   name: 'metricFive',
   longName: 'Metric Five',
-  metricFunctionId: 'moneyMetric'
+  metricFunctionId: 'moneyMetric',
 };
 
 export const MetricSix = {
@@ -53,9 +53,9 @@ export const MetricSix = {
     currency: {
       defaultValue: 'USD',
       type: 'dimension',
-      dimensionName: 'displayCurrency'
-    }
-  }
+      dimensionName: 'displayCurrency',
+    },
+  },
 };
 
 export const IDOnlyDim = {
@@ -68,9 +68,9 @@ export const IDOnlyDim = {
     {
       name: 'id',
       description: 'description',
-      tags: ['primaryKey', 'display']
-    }
-  ]
+      tags: ['primaryKey', 'display'],
+    },
+  ],
 };
 
 export const DimensionOne = {
@@ -81,8 +81,8 @@ export const DimensionOne = {
   cardinality: 60,
   fields: [
     { name: 'id', description: 'Dimension ID' },
-    { name: 'desc', description: 'Dimension Description' }
-  ]
+    { name: 'desc', description: 'Dimension Description' },
+  ],
 };
 
 export const DimensionTwo = {
@@ -95,14 +95,14 @@ export const DimensionTwo = {
     {
       name: 'key',
       description: 'description',
-      tags: ['primaryKey', 'display']
+      tags: ['primaryKey', 'display'],
     },
     {
       name: 'description',
       description: 'description',
-      tags: ['description', 'display']
-    }
-  ]
+      tags: ['description', 'display'],
+    },
+  ],
 };
 
 export const DimensionThree = {
@@ -115,14 +115,14 @@ export const DimensionThree = {
     {
       name: 'id',
       description: 'description',
-      tags: ['primaryKey', 'display']
+      tags: ['primaryKey', 'display'],
     },
     {
       name: 'description',
       description: 'description',
-      tags: ['description', 'display']
-    }
-  ]
+      tags: ['description', 'display'],
+    },
+  ],
 };
 
 export const DimensionFour = {
@@ -135,14 +135,14 @@ export const DimensionFour = {
     {
       name: 'id',
       description: 'description',
-      tags: ['primaryKey', 'display']
+      tags: ['primaryKey', 'display'],
     },
     {
       name: 'description',
       description: 'description',
-      tags: ['description', 'display']
-    }
-  ]
+      tags: ['description', 'display'],
+    },
+  ],
 };
 
 export const DimensionFive = {
@@ -155,14 +155,14 @@ export const DimensionFive = {
     {
       name: 'id',
       description: 'description',
-      tags: ['primaryKey', 'display']
+      tags: ['primaryKey', 'display'],
     },
     {
       name: 'description',
       description: 'description',
-      tags: ['description', 'display']
-    }
-  ]
+      tags: ['description', 'display'],
+    },
+  ],
 };
 
 export const TableOne = {
@@ -177,9 +177,9 @@ export const TableOne = {
       longName: 'Day',
       metricIds: ['metricOne'],
       name: 'day',
-      retention: 'P24M'
-    }
-  ]
+      retention: 'P24M',
+    },
+  ],
 };
 
 export const TableTwo = {
@@ -194,9 +194,9 @@ export const TableTwo = {
       longName: 'Day',
       metricIds: ['metricTwo'],
       name: 'week',
-      retention: 'P24M'
-    }
-  ]
+      retention: 'P24M',
+    },
+  ],
 };
 
 export const Tables = [
@@ -212,9 +212,9 @@ export const Tables = [
         metrics: [MetricOne],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionOne, DimensionThree]
-      }
-    ]
+        dimensions: [DimensionOne, DimensionThree],
+      },
+    ],
   },
   {
     name: 'table2',
@@ -228,9 +228,9 @@ export const Tables = [
         metrics: [MetricTwo],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionTwo, IDOnlyDim]
-      }
-    ]
+        dimensions: [DimensionTwo, IDOnlyDim],
+      },
+    ],
   },
   {
     name: 'smallTable',
@@ -244,10 +244,10 @@ export const Tables = [
         metrics: [MetricOne, MetricFive],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionOne]
-      }
-    ]
-  }
+        dimensions: [DimensionOne],
+      },
+    ],
+  },
 ];
 
 export const Tables2 = [
@@ -263,9 +263,9 @@ export const Tables2 = [
         metrics: [MetricThree],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionFour, DimensionFive]
-      }
-    ]
+        dimensions: [DimensionFour, DimensionFive],
+      },
+    ],
   },
   {
     name: 'table4',
@@ -279,9 +279,9 @@ export const Tables2 = [
         metrics: [MetricFour],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionFour, DimensionFive]
-      }
-    ]
+        dimensions: [DimensionFour, DimensionFive],
+      },
+    ],
   },
   {
     name: 'table5',
@@ -295,10 +295,10 @@ export const Tables2 = [
         metrics: [MetricFour],
         retention: 'P24M',
         longName: 'Day',
-        dimensions: [DimensionFour]
-      }
-    ]
-  }
+        dimensions: [DimensionFour],
+      },
+    ],
+  },
 ];
 
 export const ColumnFunctionMoneyMetric = {
@@ -312,15 +312,15 @@ export const ColumnFunctionMoneyMetric = {
       values: [
         {
           description: 'US Dollars',
-          id: 'USD'
+          id: 'USD',
         },
         {
           description: 'Euros',
-          id: 'EUR'
-        }
-      ]
-    }
-  }
+          id: 'EUR',
+        },
+      ],
+    },
+  },
 };
 
 export const ColumnFunctionAggTrend = {
@@ -333,29 +333,29 @@ export const ColumnFunctionAggTrend = {
       values: [
         {
           id: '7DayAvg',
-          description: '7 Day Average'
+          description: '7 Day Average',
         },
         {
           id: '28DayAvg',
-          description: '28 Day Average'
-        }
+          description: '28 Day Average',
+        },
       ],
-      type: 'enum'
+      type: 'enum',
     },
     trend: {
       defaultValue: 'DO_D',
       values: [
         {
           id: 'DO_D',
-          description: 'Day over Day'
+          description: 'Day over Day',
         },
         {
           id: 'WO_W',
-          description: 'Week over Week'
-        }
-      ]
-    }
-  }
+          description: 'Week over Week',
+        },
+      ],
+    },
+  },
 };
 
 const METRIC_MAP = {
@@ -365,36 +365,36 @@ const METRIC_MAP = {
   metricFour: MetricFour,
   metricFive: MetricFive,
   metricSix: MetricSix,
-  pageViews: PageViews
+  pageViews: PageViews,
 };
 
-export default function(index = 0) {
+export default function (index = 0) {
   const host = config.navi.dataSources[index].uri;
-  this.get(`${host}/v1/tables`, function() {
+  this.get(`${host}/v1/tables`, function () {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ tables: index > 0 ? Tables2 : Tables })];
   });
 
-  this.get(`${host}/v1/metrics/:id`, function({ params: { id } }) {
+  this.get(`${host}/v1/metrics/:id`, function ({ params: { id } }) {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(METRIC_MAP[id])];
   });
 
-  this.get(`${host}/v1/dimensions/dimensionOne`, function() {
+  this.get(`${host}/v1/dimensions/dimensionOne`, function () {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(DimensionOne)];
   });
 
-  this.get(`${host}/v1/metricFunctions/moneyMetric`, function() {
+  this.get(`${host}/v1/metricFunctions/moneyMetric`, function () {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(ColumnFunctionMoneyMetric)];
   });
 
-  this.get(`${host}/v1/metricFunctions/aggregationTrend`, function() {
+  this.get(`${host}/v1/metricFunctions/aggregationTrend`, function () {
     return [200, { 'Content-Type': 'application/json' }, JSON.stringify(ColumnFunctionAggTrend)];
   });
 
-  this.get(`${host}/v1/metricFunctions/`, function() {
+  this.get(`${host}/v1/metricFunctions/`, function () {
     return [
       200,
       { 'Content-Type': 'application/json' },
-      JSON.stringify({ rows: [ColumnFunctionMoneyMetric, ColumnFunctionAggTrend] })
+      JSON.stringify({ rows: [ColumnFunctionMoneyMetric, ColumnFunctionAggTrend] }),
     ];
   });
 }

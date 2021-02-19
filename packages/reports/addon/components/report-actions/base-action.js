@@ -34,14 +34,14 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     warn('report should be of type report', get(this, 'report.constructor.modelName') === 'report', {
-      id: 'navi-report-actions.base-action'
+      id: 'navi-report-actions.base-action',
     });
   },
 
   /**
    * @property {Boolean} - actionDisabled
    */
-  actionDisabled: computed('checkPermission', 'report.{isOwner,isNew}', function() {
+  actionDisabled: computed('checkPermission', 'report.{isOwner,isNew}', function () {
     if (get(this, 'report.isNew')) {
       return true;
     }
@@ -51,5 +51,5 @@ export default Component.extend({
     }
 
     return false;
-  })
+  }),
 });

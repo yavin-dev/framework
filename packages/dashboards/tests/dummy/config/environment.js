@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'dummy',
     environment,
@@ -13,8 +13,8 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
@@ -28,20 +28,20 @@ module.exports = function(environment) {
       defaultDataTable: 'network',
       dataSources: [
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' }
+        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' },
       ],
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',
-        timeout: 90000
+        timeout: 90000,
       },
       FEATURES: {
         enableDashboardExport: true,
         exportFileTypes: ['csv', 'pdf', 'png'],
         enableScheduleDashboards: true,
-        enableDashboardFilters: true
-      }
-    }
+        enableDashboardFilters: true,
+      },
+    },
   };
 
   if (environment === 'development') {

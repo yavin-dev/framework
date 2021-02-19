@@ -17,48 +17,48 @@ const RESPONSE = NaviFactResponse.create({
   rows: [
     {
       adClicks: 1707077,
-      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000',
     },
     {
       adClicks: 1659538,
-      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000',
     },
     {
       adClicks: 1977070,
-      'network.dateTime(grain=day)': '2015-11-11 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-11 00:00:00.000',
     },
     {
       adClicks: 1755382,
-      'network.dateTime(grain=day)': '2015-11-12 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-12 00:00:00.000',
     },
     {
       adClicks: 1348750,
-      'network.dateTime(grain=day)': '2015-11-13 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-13 00:00:00.000',
     },
     {
       adClicks: 856732,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 716731,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 399790,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 699490,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
-    }
-  ]
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
+    },
+  ],
 });
 
-module('Integration | Component | report view', function(hooks) {
+module('Integration | Component | report view', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.owner.register(
       'helper:route-action',
       buildHelper(() => {
@@ -96,28 +96,28 @@ module('Integration | Component | report view', function(hooks) {
               field: 'network.dateTime',
               parameters: { grain: 'day' },
               operator: 'bet',
-              values: ['2015-11-09', '2015-11-14']
-            }
+              values: ['2015-11-09', '2015-11-14'],
+            },
           ],
           columns: [
             {
               cid: 'c1',
               field: 'network.dateTime',
               parameters: {
-                grain: 'day'
+                grain: 'day',
               },
               source: 'bardOne',
-              type: 'timeDimension'
+              type: 'timeDimension',
             },
             {
               cid: 'c2',
               type: 'metric',
               field: 'adClicks',
               source: 'bardOne',
-              parameters: {}
-            }
+              parameters: {},
+            },
           ],
-          sorts: []
+          sorts: [],
         },
         visualization: {
           type: 'line-chart',
@@ -127,17 +127,17 @@ module('Integration | Component | report view', function(hooks) {
               y: {
                 series: {
                   type: 'metric',
-                  config: {}
-                }
-              }
-            }
-          }
-        }
+                  config: {},
+                },
+              },
+            },
+          },
+        },
       })
     );
   });
 
-  test('metric label visualization selector is available on single metric, single time bucket, no dimensions', async function(assert) {
+  test('metric label visualization selector is available on single metric, single time bucket, no dimensions', async function (assert) {
     assert.expect(2);
 
     this.set('report.request', {
@@ -152,30 +152,30 @@ module('Integration | Component | report view', function(hooks) {
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['current', 'next']
-        }
+          values: ['current', 'next'],
+        },
       ],
       columns: [
         {
           type: 'timeDimension',
           source: 'bardOne',
           field: 'network.dateTime',
-          parameters: { grain: 'day' }
+          parameters: { grain: 'day' },
         },
         {
           cid: 'c2',
           dataSource: 'bardOne',
           type: 'metric',
           field: 'adClicks',
-          parameters: {}
-        }
+          parameters: {},
+        },
       ],
       sorts: [
         {
           metric: 'navClicks',
-          direction: 'asc'
-        }
-      ]
+          direction: 'asc',
+        },
+      ],
     });
 
     await render(TEMPLATE);
@@ -184,7 +184,7 @@ module('Integration | Component | report view', function(hooks) {
     assert.dom('.visualization-toggle__option[title="Metric Label"]').isVisible('Metric Label Selector is visible');
   });
 
-  test('visualization is chosen based on report', async function(assert) {
+  test('visualization is chosen based on report', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -200,9 +200,9 @@ module('Integration | Component | report view', function(hooks) {
       metadata: {
         columnAttributes: {
           c1: { canAggregateSubtotal: false },
-          c2: { canAggregateSubtotal: false }
-        }
-      }
+          c2: { canAggregateSubtotal: false },
+        },
+      },
     });
 
     assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
@@ -210,7 +210,7 @@ module('Integration | Component | report view', function(hooks) {
     assert.notOk($('.line-chart-widget').is(':visible'), 'Old visualization is removed');
   });
 
-  test('no data', async function(assert) {
+  test('no data', async function (assert) {
     assert.expect(1);
     this.set('response', {
       rows: [],
@@ -218,9 +218,9 @@ module('Integration | Component | report view', function(hooks) {
         pagination: {
           currentPage: 1,
           rowsPerPage: 10000,
-          numberOfResults: 0
-        }
-      }
+          numberOfResults: 0,
+        },
+      },
     });
 
     await render(TEMPLATE);

@@ -3,13 +3,13 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Service | navi-search-provider', function(hooks) {
+module('Unit | Service | navi-search-provider', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   let service;
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     // Load metadata needed for request fragment
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     service = this.owner.lookup('service:navi-search-provider');
@@ -18,34 +18,34 @@ module('Unit | Service | navi-search-provider', function(hooks) {
     this.owner.register(
       'service:user',
       Service.extend({
-        getUser: () => mockAuthor
+        getUser: () => mockAuthor,
       })
     );
   });
 
-  test('get all search providers', function(assert) {
+  test('get all search providers', function (assert) {
     assert.expect(1);
 
     let availableSearchProviders = service._all();
     let systemSearchProviders = [
       'NaviSampleSearchProviderService',
       'NaviAssetSearchProviderService',
-      'NaviDefinitionSearchProviderService'
+      'NaviDefinitionSearchProviderService',
     ];
     assert.deepEqual(
-      availableSearchProviders.map(provider => provider.constructor.name).sort(),
+      availableSearchProviders.map((provider) => provider.constructor.name).sort(),
       systemSearchProviders.sort(),
       'Discovered 2 search provider.'
     );
   });
 
-  test('search all providers', async function(assert) {
+  test('search all providers', async function (assert) {
     assert.expect(1);
 
     let results = service.search('sample');
 
     assert.deepEqual(
-      results.map(result => result.context.constructor.name),
+      results.map((result) => result.context.constructor.name),
       ['NaviAssetSearchProviderService', 'NaviDefinitionSearchProviderService', 'NaviSampleSearchProviderService'],
       'Search returns a task instance of every available search provider'
     );

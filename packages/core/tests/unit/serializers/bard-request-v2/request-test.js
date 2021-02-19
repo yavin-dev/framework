@@ -4,105 +4,105 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let Store;
 
-module('Unit | Serializer | Request', function(hooks) {
+module('Unit | Serializer | Request', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
     return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('v1 normalization', async function(assert) {
+  test('v1 normalization', async function (assert) {
     assert.expect(29);
 
     const requestV1 = {
       requestVersion: 'v1',
       logicalTable: {
         table: 'network',
-        timeGrain: 'day'
+        timeGrain: 'day',
       },
       intervals: [
         {
           end: 'current',
-          start: 'P7D'
-        }
+          start: 'P7D',
+        },
       ],
       dimensions: [
         {
-          dimension: 'age'
+          dimension: 'age',
         },
         {
-          dimension: 'platform'
-        }
+          dimension: 'platform',
+        },
       ],
       filters: [
         {
           dimension: 'age',
           field: 'id',
           operator: 'in',
-          values: ['2']
+          values: ['2'],
         },
         {
           dimension: 'platform',
           field: 'desc',
           operator: 'contains',
-          values: ['win']
-        }
+          values: ['win'],
+        },
       ],
       metrics: [
         {
           metric: 'revenue',
           parameters: {
             currency: 'USD',
-            as: 'm1'
-          }
+            as: 'm1',
+          },
         },
         {
           metric: 'revenue',
           parameters: {
             currency: 'CAD',
-            as: 'm2'
-          }
+            as: 'm2',
+          },
         },
         {
-          metric: 'adClicks'
-        }
+          metric: 'adClicks',
+        },
       ],
       having: [
         {
           metric: 'm1',
           operator: 'lt',
-          values: [24]
+          values: [24],
         },
         {
           metric: 'adClicks',
           operator: 'gt',
-          values: [11]
-        }
+          values: [11],
+        },
       ],
       sort: [
         {
           metric: 'dateTime',
-          direction: 'desc'
+          direction: 'desc',
         },
         {
           metric: 'm2',
-          direction: 'asc'
-        }
-      ]
+          direction: 'asc',
+        },
+      ],
     };
 
     Store.pushPayload({
       data: {
         type: 'fragments-v2-mock',
         id: '99',
-        attributes: { request: requestV1 }
-      }
+        attributes: { request: requestV1 },
+      },
     });
 
     const {
-      request: { filters, columns, sorts, table, requestVersion }
+      request: { filters, columns, sorts, table, requestVersion },
     } = Store.peekRecord('fragments-v2-mock', '99');
 
     assert.equal(table, 'network', 'table name is normalized correctly');

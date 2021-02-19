@@ -1,14 +1,14 @@
 import { formatFilterOperator } from '../../../helpers/format-filter-operator';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | format filter operator', function() {
-  test('Invalid and No operator', function(assert) {
+module('Unit | Helper | format filter operator', function () {
+  test('Invalid and No operator', function (assert) {
     assert.expect(3);
 
     assert.ok(formatFilterOperator, 'Helper is present');
 
     assert.throws(
-      function() {
+      function () {
         formatFilterOperator([]);
       },
       /^Error.*id: `undefined` should be of type string and non-empty$/,
@@ -16,7 +16,7 @@ module('Unit | Helper | format filter operator', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         formatFilterOperator(['']);
       },
       /^Error.*id: `` should be of type string and non-empty$/,
@@ -24,7 +24,7 @@ module('Unit | Helper | format filter operator', function() {
     );
   });
 
-  test('Valid operator', function(assert) {
+  test('Valid operator', function (assert) {
     assert.expect(4);
 
     assert.equal(formatFilterOperator(['in']), 'Equals', 'Helper returns `Equals` as expected when operator is `in`');

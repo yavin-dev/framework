@@ -4,22 +4,22 @@ import { buildTestRequest } from '../../helpers/request';
 import { setOwner } from '@ember/application';
 
 let helper;
-module('Unit | Helper | default config', function(hooks) {
+module('Unit | Helper | default config', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     helper = this.owner.lookup('helper:default-config');
     helper = helper.create();
     setOwner(helper, this.owner);
   });
 
-  test('default config', function(assert) {
+  test('default config', function (assert) {
     assert.expect(1);
 
     const rows = [{ rupees: 999, hp: 0 }];
     const request = buildTestRequest([
       { cid: 'cid_rupees', field: 'rupees' },
-      { cid: 'cid_hp', field: 'hp' }
+      { cid: 'cid_hp', field: 'hp' },
     ]);
     const generatedConfig = helper.compute(['metric-label', request, { rows }]);
 
@@ -27,19 +27,19 @@ module('Unit | Helper | default config', function(hooks) {
       generatedConfig,
       {
         metricCid: 'cid_rupees',
-        format: '0,0.00'
+        format: '0,0.00',
       },
       'A config is generated for the given visualization, request, and response'
     );
   });
 
-  test('bad visualization', function(assert) {
+  test('bad visualization', function (assert) {
     assert.expect(1);
 
     const rows = [{ rupees: 999, hp: 0 }];
     const request = buildTestRequest([
       { cid: 'cid_rupees', field: 'rupees' },
-      { cid: 'cid_hp', field: 'hp' }
+      { cid: 'cid_hp', field: 'hp' },
     ]);
 
     assert.throws(

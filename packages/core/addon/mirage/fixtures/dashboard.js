@@ -12,10 +12,10 @@ export default [
       layout: [
         { column: 0, row: 0, height: 4, width: 6, widgetId: 1 },
         { column: 6, row: 0, height: 4, width: 6, widgetId: 2 },
-        { column: 0, row: 4, height: 4, width: 12, widgetId: 3 }
+        { column: 0, row: 4, height: 4, width: 12, widgetId: 3 },
       ],
-      columns: 12
-    }
+      columns: 12,
+    },
   },
   {
     id: 2,
@@ -30,35 +30,35 @@ export default [
         dimension: 'property',
         operator: 'contains',
         field: 'id',
-        values: ['114', '100001']
+        values: ['114', '100001'],
       },
       {
         dimension: 'property',
         operator: 'notin',
         field: 'id',
-        values: ['1']
+        values: ['1'],
       },
       {
         dimension: 'property',
         operator: 'notin',
         field: 'id',
-        values: ['2', '3']
+        values: ['2', '3'],
       },
       {
         dimension: 'eventId',
         operator: 'in',
         field: 'id',
-        values: ['1']
-      }
+        values: ['1'],
+      },
     ],
     presentation: {
       version: 1,
       layout: [
         { column: 0, row: 0, height: 6, width: 9, widgetId: 4 },
-        { column: 0, row: 6, height: 5, width: 9, widgetId: 5 }
+        { column: 0, row: 6, height: 5, width: 9, widgetId: 5 },
       ],
-      columns: 40
-    }
+      columns: 40,
+    },
   },
   {
     id: 3,
@@ -71,8 +71,8 @@ export default [
     presentation: {
       version: 1,
       layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 4 }],
-      columns: 40
-    }
+      columns: 40,
+    },
   },
   {
     id: 4,
@@ -87,14 +87,14 @@ export default [
         dimension: 'commaDim',
         operator: 'in',
         field: 'id',
-        values: ['yes, comma']
-      }
+        values: ['yes, comma'],
+      },
     ],
     presentation: {
       version: 1,
       layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 6 }],
-      columns: 40
-    }
+      columns: 40,
+    },
   },
   {
     id: 5,
@@ -107,8 +107,8 @@ export default [
     presentation: {
       version: 1,
       layout: [],
-      columns: 15
-    }
+      columns: 15,
+    },
   },
   {
     id: 6,
@@ -120,16 +120,16 @@ export default [
     deliveryRuleIds: [],
     filters: [
       { dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] }
+      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
     ],
     presentation: {
       version: 1,
       layout: [
         { column: 0, row: 0, height: 4, width: 6, widgetId: 9 },
         { column: 6, row: 0, height: 4, width: 6, widgetId: 7 },
-        { column: 0, row: 4, height: 4, width: 12, widgetId: 8 }
+        { column: 0, row: 4, height: 4, width: 12, widgetId: 8 },
       ],
-      columns: 12
-    }
-  }
+      columns: 12,
+    },
+  },
 ];

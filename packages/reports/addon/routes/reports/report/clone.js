@@ -48,9 +48,9 @@ export default Route.extend({
     // Making sure the title does not exceed the 150 char limit
     setProperties(clonedReportModel, {
       title: `Copy of ${clonedReportModel.title}`.substring(0, 150),
-      author
+      author,
     });
 
     return clonedReportModel;
-  }
+  },
 });

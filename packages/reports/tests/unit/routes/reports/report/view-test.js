@@ -4,10 +4,10 @@ import { resolve } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Route | reports/report/view', function(hooks) {
+module('Unit | Route | reports/report/view', function (hooks) {
   setupTest(hooks);
 
-  test('model', async function(assert) {
+  test('model', async function (assert) {
     assert.expect(5);
 
     const serializedRequest = 'foo',
@@ -15,7 +15,7 @@ module('Unit | Route | reports/report/view', function(hooks) {
       reportModel = {
         id: 1,
         request: {
-          serialize: () => serializedRequest
+          serialize: () => serializedRequest,
         },
         visualization: {
           type: 'table',
@@ -32,8 +32,8 @@ module('Unit | Route | reports/report/view', function(hooks) {
               factServiceResponse,
               'When config is invalid, rebuildConfig is given fact service response'
             );
-          }
-        }
+          },
+        },
       };
 
     let route = this.owner.factoryFor('route:reports/report/view').create({
@@ -49,16 +49,16 @@ module('Unit | Route | reports/report/view', function(hooks) {
               perPage: 10000,
               clientId: 'customReports',
               customHeaders: {
-                uiView: 'report.spv.1'
+                uiView: 'report.spv.1',
               },
-              dataSourceName: undefined
+              dataSourceName: undefined,
             },
             'Options from route are passed to fact service'
           );
 
           return resolve({ request: serializedRequest, response: factServiceResponse });
-        }
-      }
+        },
+      },
     });
 
     let model = await route.model();
@@ -70,21 +70,21 @@ module('Unit | Route | reports/report/view', function(hooks) {
     );
   });
 
-  test('invalid visualization', function(assert) {
+  test('invalid visualization', function (assert) {
     assert.expect(1);
 
     this.owner.register(
       'navi-visualization-manifest:invalid-type',
       EmberObject.extend({
-        typeIsValid: () => false
+        typeIsValid: () => false,
       })
     );
 
     let route = this.owner.lookup('route:reports/report/view'),
       report = {
         visualization: {
-          type: 'invalid-type'
-        }
+          type: 'invalid-type',
+        },
       };
 
     run(() => {
@@ -94,7 +94,7 @@ module('Unit | Route | reports/report/view', function(hooks) {
     assert.equal(get(report, 'visualization.type'), 'table', 'Any invalid visualization types are defaulted to table');
   });
 
-  test('runReport action', function(assert) {
+  test('runReport action', function (assert) {
     assert.expect(2);
 
     const route = this.owner.factoryFor('route:reports/report/view').create({
@@ -103,7 +103,7 @@ module('Unit | Route | reports/report/view', function(hooks) {
       },
       refresh() {
         throw new Error('The route should not refresh if the request has not changed');
-      }
+      },
     });
 
     /* == Request has no changes == */

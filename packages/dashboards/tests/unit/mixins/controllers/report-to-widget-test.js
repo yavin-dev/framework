@@ -3,8 +3,8 @@ import Ember from 'ember';
 import ReportToWidgetMixin from 'navi-dashboards/mixins/controllers/report-to-widget';
 import { module, test } from 'qunit';
 
-module('Unit | Mixin | controllers/report to widget', function() {
-  test('addToDashboard', function(assert) {
+module('Unit | Mixin | controllers/report to widget', function () {
+  test('addToDashboard', function (assert) {
     assert.expect(3);
 
     const visualizationMetadata = 'foo bar',
@@ -13,11 +13,11 @@ module('Unit | Mixin | controllers/report to widget', function() {
       tempWidgetId = 1000,
       reportModel = {
         request: {
-          clone: () => serializedRequest
+          clone: () => serializedRequest,
         },
         visualization: {
-          serialize: () => visualizationMetadata
-        }
+          serialize: () => visualizationMetadata,
+        },
       },
       subject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
         /* == Transition Asserts == */
@@ -31,20 +31,20 @@ module('Unit | Mixin | controllers/report to widget', function() {
           assert.equal(id, dashboardId, 'addToDashboard transitions to correct dashboard id');
 
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
-        }
+        },
       }).create({
         store: {
           createRecord() {
             return { tempId: tempWidgetId };
-          }
-        }
+          },
+        },
       });
 
     // Trigger the action
     subject.send('addToDashboard', reportModel, dashboardId, 'Test Title');
   });
 
-  test('addToNewDashboard', function(assert) {
+  test('addToNewDashboard', function (assert) {
     assert.expect(3);
 
     const visualizationMetadata = 'foo bar',
@@ -52,11 +52,11 @@ module('Unit | Mixin | controllers/report to widget', function() {
       tempWidgetId = 1000,
       reportModel = {
         request: {
-          clone: () => serializedRequest
+          clone: () => serializedRequest,
         },
         visualization: {
-          serialize: () => visualizationMetadata
-        }
+          serialize: () => visualizationMetadata,
+        },
       },
       subject = EmberObject.extend(ReportToWidgetMixin, Ember.ActionHandler, {
         /* == Transition Asserts == */
@@ -66,20 +66,20 @@ module('Unit | Mixin | controllers/report to widget', function() {
           assert.equal(queryParams.title, 'Custom Dashboard Title', 'Dashboard title is passed as a query param');
 
           assert.equal(queryParams.unsavedWidgetId, tempWidgetId, "Widget's temporary id is passed as a query param");
-        }
+        },
       }).create({
         store: {
           createRecord() {
             return { tempId: tempWidgetId };
-          }
-        }
+          },
+        },
       });
 
     // Trigger the action
     subject.send('addToNewDashboard', reportModel, 'Custom Dashboard Title', 'Test Title');
   });
 
-  test('_createWidget', function(assert) {
+  test('_createWidget', function (assert) {
     assert.expect(4);
 
     let visualizationMetadata = 'foo bar',
@@ -87,11 +87,11 @@ module('Unit | Mixin | controllers/report to widget', function() {
       tempWidgetId = 1000,
       reportModel = {
         request: {
-          clone: () => serializedRequest
+          clone: () => serializedRequest,
         },
         visualization: {
-          serialize: () => visualizationMetadata
-        }
+          serialize: () => visualizationMetadata,
+        },
       },
       subject = EmberObject.extend(ReportToWidgetMixin).create({
         /* == Store Asserts == */
@@ -114,10 +114,10 @@ module('Unit | Mixin | controllers/report to widget', function() {
             );
 
             return {
-              tempId: tempWidgetId
+              tempId: tempWidgetId,
             };
-          }
-        }
+          },
+        },
       });
 
     subject._createWidget(reportModel, 'Test Title');

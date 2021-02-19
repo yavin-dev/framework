@@ -46,6 +46,6 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   @computed('exportHref')
   get exportFormats() {
-    return super.exportFormats.filter(format => format.type !== 'CSV');
+    return super.exportFormats.filter((format) => format.type !== 'CSV');
   }
 }

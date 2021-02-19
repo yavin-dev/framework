@@ -9,11 +9,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Template;
 
-module('Integration | Component | report actions/add to dashboard', function(hooks) {
+module('Integration | Component | report actions/add to dashboard', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Template = hbs`
       <ReportActions::AddToDashboard
         @report={{this.report}}
@@ -34,7 +34,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     set(this, 'report', {
       id: 1,
       title: 'Buzz Blob',
-      author: 'navi_user'
+      author: 'navi_user',
     });
 
     set(
@@ -43,12 +43,12 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       arr([
         {
           id: 1,
-          title: 'Tumblr Goals Dashboard'
+          title: 'Tumblr Goals Dashboard',
         },
         {
           id: 2,
-          title: 'Dashboard 2'
-        }
+          title: 'Dashboard 2',
+        },
       ])
     );
 
@@ -56,12 +56,12 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     set(this, 'addToNewDashboard', () => undefined);
   });
 
-  test('component renders', async function(assert) {
+  test('component renders', async function (assert) {
     await render(Template);
     assert.dom('.action-btn').hasText('Add to Dashboard', 'Template content is yielded');
   });
 
-  test('component`s Modal', async function(assert) {
+  test('component`s Modal', async function (assert) {
     await render(Template);
 
     assert
@@ -79,7 +79,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .hasValue('Buzz Blob', 'the report title is displayed as the default name for widget title');
   });
 
-  test('create vs select', async function(assert) {
+  test('create vs select', async function (assert) {
     await render(Template);
     await click('.action-btn');
 
@@ -104,7 +104,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .hasText('Select Existing Dashboard', 'Select Existing Dashboard link is also shown after link click');
   });
 
-  test('dropdown options', async function(assert) {
+  test('dropdown options', async function (assert) {
     await render(Template);
     await click('.action-btn');
     await click('.add-to-dashboard__dashboard-select');
@@ -114,7 +114,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
       .hasText('My Dashboards', 'The user`s dashboards are grouped under `My Dashboards`');
 
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Tumblr Goals Dashboard', 'Dashboard 2'],
       'The user`s dashboard titles are shown in the dropdown'
     );
@@ -124,7 +124,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await click('.add-to-dashboard__cancel-btn');
   });
 
-  test('addToDashboard action', async function(assert) {
+  test('addToDashboard action', async function (assert) {
     assert.expect(4);
 
     this.set('addToDashboard', (dashboardId, widgetTitle) => {
@@ -146,7 +146,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await click('.add-to-dashboard__add-btn');
   });
 
-  test('addToNewDashboard action', async function(assert) {
+  test('addToNewDashboard action', async function (assert) {
     assert.expect(2);
 
     this.set('addToNewDashboard', (dashboardTitle, widgetTitle) => {
@@ -162,7 +162,7 @@ module('Integration | Component | report actions/add to dashboard', function(hoo
     await click('.add-to-dashboard__add-btn');
   });
 
-  test('one way widget title', async function(assert) {
+  test('one way widget title', async function (assert) {
     assert.expect(2);
 
     this.set('addToDashboard', (dashboardId, widgetTitle) => {

@@ -4,5 +4,3 @@ declare module 'navi-notifications/templates/*' {
   const tmpl: TemplateFactory;
   export default tmpl;
 }
-
-type TODO<T = any> = T;

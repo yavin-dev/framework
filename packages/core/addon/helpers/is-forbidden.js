@@ -10,7 +10,7 @@ import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
 export function isForbidden(reason) {
   if (reason instanceof NaviAdapterError) {
-    return reason.errors.some(error => error.status === '403');
+    return reason.errors.some((error) => error.status === '403');
   }
   return isForbiddenError(reason);
 }

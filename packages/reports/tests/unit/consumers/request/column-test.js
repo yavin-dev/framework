@@ -11,22 +11,22 @@ const MockDispatcher = {
   dispatch(action, route, ...args) {
     dispatchedActions.push(action);
     dispatchedActionArgs.push(...args);
-  }
+  },
 };
 
-const routeFor = request => ({ modelFor: () => ({ request }) });
+const routeFor = (request) => ({ modelFor: () => ({ request }) });
 
-module('Unit | Consumer | request column', function(hooks) {
+module('Unit | Consumer | request column', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
     consumer = this.owner.factoryFor('consumer:request/column').create({ requestActionDispatcher: MockDispatcher });
   });
 
-  test('ADD_COLUMN_WITH_PARAMS', function(assert) {
+  test('ADD_COLUMN_WITH_PARAMS', function (assert) {
     assert.expect(2);
 
     const mockColumnMetadata = { id: 'revenue', getDefaultParameters: () => ({}) };
@@ -39,38 +39,38 @@ module('Unit | Consumer | request column', function(hooks) {
           'addColumnFromMetaWithParams is called with correct model'
         );
         assert.deepEqual(parameters, { currency: 'USD' }, 'addColumnFromMetaWithParams is called with correct params');
-      }
+      },
     };
 
     consumer.send(RequestActions.ADD_COLUMN_WITH_PARAMS, routeFor(request), mockColumnMetadata, { currency: 'USD' });
   });
 
-  test('REMOVE_COLUMN_FRAGMENT', function(assert) {
+  test('REMOVE_COLUMN_FRAGMENT', function (assert) {
     assert.expect(1);
 
     const column = { type: 'dimension', field: 'age' };
     const request = {
       removeColumn(columnFragment) {
         assert.deepEqual(columnFragment, column, 'removeColumn is called with correct column fragment');
-      }
+      },
     };
 
     consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, routeFor(request), column);
   });
 
-  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function(assert) {
+  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
     assert.expect(1);
 
     const column = {
       updateParameters(parameters) {
         assert.deepEqual(parameters, { revenue: 'USD' }, 'updateParameters is called with correct parameters');
-      }
+      },
     };
 
     consumer.send(RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS, null, column, 'revenue', 'USD');
   });
 
-  test('RENAME_COLUMN_FRAGMENT', function(assert) {
+  test('RENAME_COLUMN_FRAGMENT', function (assert) {
     assert.expect(2);
 
     const request = {
@@ -79,13 +79,13 @@ module('Unit | Consumer | request column', function(hooks) {
       renameColumn(column, alias) {
         assert.deepEqual(column, request.columns[0], 'The correct column is passed in');
         assert.deepEqual(alias, 'Number', 'The alias is Number');
-      }
+      },
     };
 
     consumer.send(RequestActions.RENAME_COLUMN_FRAGMENT, routeFor(request), request.columns[0], 'Number');
   });
 
-  test('REORDER_COLUMN_FRAGMENT', function(assert) {
+  test('REORDER_COLUMN_FRAGMENT', function (assert) {
     assert.expect(2);
 
     const request = {
@@ -94,17 +94,17 @@ module('Unit | Consumer | request column', function(hooks) {
       reorderColumn(column, index) {
         assert.deepEqual(column, request.columns[2], 'The correct column is passed in');
         assert.deepEqual(index, index, 'The alias is Number');
-      }
+      },
     };
 
     consumer.send(RequestActions.REORDER_COLUMN_FRAGMENT, routeFor(request), request.columns[2], 1);
   });
 
-  test('ADD_METRIC_FILTER', function(assert) {
+  test('ADD_METRIC_FILTER', function (assert) {
     assert.expect(4);
 
     const request = {
-      columns: [{ type: 'metric', columnMetadata: 'pageViews' }]
+      columns: [{ type: 'metric', columnMetadata: 'pageViews' }],
     };
 
     const route = routeFor(request);
@@ -136,21 +136,21 @@ module('Unit | Consumer | request column', function(hooks) {
     );
   });
 
-  test('DID_UPDATE_TABLE', function(assert) {
+  test('DID_UPDATE_TABLE', function (assert) {
     assert.expect(2);
 
     const table = {
       timeDimensions: [],
       dimensions: ['age'],
-      metrics: ['adClicks']
+      metrics: ['adClicks'],
     };
     const request = {
       columns: arr([
         { columnMetadata: 'age' },
         { columnMetadata: 'browser' },
         { columnMetadata: 'adClicks' },
-        { columnMetadata: 'pageViews' }
-      ])
+        { columnMetadata: 'pageViews' },
+      ]),
     };
 
     consumer.send(RequestActions.DID_UPDATE_TABLE, routeFor(request), table);

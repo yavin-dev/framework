@@ -7,16 +7,16 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const DASHBOARD_ID = 12;
 
-module('Integration | Component | dashboard actions/add widget', function(hooks) {
+module('Integration | Component | dashboard actions/add widget', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.set(
       'reports',
       arr([
         { id: 1, title: 'Report 1' },
-        { id: 2, title: 'Report 2' }
+        { id: 2, title: 'Report 2' },
       ])
     );
     this.set('dashboard', { id: DASHBOARD_ID });
@@ -40,12 +40,12 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
     `);
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.dom('.add-widget__action-btn').hasText('Add Widget', 'Template component is yielded');
     assert.dom('.add-widget__modal').isNotVisible('The add widget modal is not visible in the beginning');
   });
 
-  test('report selector', async function(assert) {
+  test('report selector', async function (assert) {
     assert.expect(4);
 
     await click('.add-widget__action-btn');
@@ -57,13 +57,13 @@ module('Integration | Component | dashboard actions/add widget', function(hooks)
     await click('.add-widget__report-select-trigger');
 
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Create new...', 'Report 1', 'Report 2'],
       'The user`s report titles are shown in the dropdown along with create new'
     );
 
     assert.deepEqual(
-      findAll('.ember-power-select-group .ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-group .ember-power-select-option').map((el) => el.textContent.trim()),
       ['Report 1', 'Report 2'],
       'The user`s report titles are shown under a group in the dropdown'
     );

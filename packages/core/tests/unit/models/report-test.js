@@ -18,40 +18,40 @@ const ExpectedRequest = {
         values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'],
         field: 'network.dateTime',
         parameters: {
-          grain: 'day'
+          grain: 'day',
         },
-        type: 'timeDimension'
-      }
+        type: 'timeDimension',
+      },
     ],
     columns: [
       {
         alias: null,
         field: 'network.dateTime',
         parameters: {
-          grain: 'day'
+          grain: 'day',
         },
-        type: 'timeDimension'
+        type: 'timeDimension',
       },
       {
         alias: null,
         field: 'property',
         parameters: {
-          field: 'id'
+          field: 'id',
         },
-        type: 'dimension'
+        type: 'dimension',
       },
       {
         alias: null,
         field: 'adClicks',
         parameters: {},
-        type: 'metric'
+        type: 'metric',
       },
       {
         alias: null,
         field: 'navClicks',
         parameters: {},
-        type: 'metric'
-      }
+        type: 'metric',
+      },
     ],
     table: 'network',
     sorts: [
@@ -59,12 +59,12 @@ const ExpectedRequest = {
         direction: 'asc',
         field: 'navClicks',
         parameters: {},
-        type: 'metric'
-      }
+        type: 'metric',
+      },
     ],
     limit: null,
     requestVersion: '2.0',
-    dataSource: 'bardOne'
+    dataSource: 'bardOne',
   },
   ExpectedReport = {
     data: {
@@ -85,37 +85,37 @@ const ExpectedRequest = {
                       { name: 'Property 1', values: { 'cid_property(field=id)': '114' } },
                       { name: 'Property 2', values: { 'cid_property(field=id)': '100001' } },
                       { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } },
-                      { name: 'Property 4', values: { 'cid_property(field=id)': '101272' } }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
+                      { name: 'Property 4', values: { 'cid_property(field=id)': '101272' } },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       relationships: {
         author: {
           data: {
             type: 'users',
-            id: 'navi_user'
-          }
-        }
+            id: 'navi_user',
+          },
+        },
       },
-      type: 'reports'
-    }
+      type: 'reports',
+    },
   };
 
-module('Unit | Model | report', function(hooks) {
+module('Unit | Model | report', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('Retrieving records', async function(assert) {
+  test('Retrieving records', async function (assert) {
     assert.expect(6);
 
     await run(async () => {
@@ -127,8 +127,8 @@ module('Unit | Model | report', function(hooks) {
       }, {});
       const vizConfig = report.visualization.metadata.axis.y.series.config;
       vizConfig.metricCid = cidToReadable[vizConfig.metricCid];
-      vizConfig.dimensions.forEach(series => {
-        Object.keys(series.values).forEach(key => {
+      vizConfig.dimensions.forEach((series) => {
+        Object.keys(series.values).forEach((key) => {
           series.values[cidToReadable[key]] = series.values[key];
           delete series.values[key];
         });
@@ -147,7 +147,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('Coalescing find requests', async function(assert) {
+  test('Coalescing find requests', async function (assert) {
     assert.expect(1);
 
     this.server.urlPrefix = `${config.navi.appPersistence.uri}`;
@@ -166,12 +166,12 @@ module('Unit | Model | report', function(hooks) {
       all([
         this.owner.lookup('service:store').findRecord('report', 1),
         this.owner.lookup('service:store').findRecord('report', 2),
-        this.owner.lookup('service:store').findRecord('report', 4)
+        this.owner.lookup('service:store').findRecord('report', 4),
       ]).catch(() => 'Ignore empty response error')
     );
   });
 
-  test('Saving records', async function(assert) {
+  test('Saving records', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -179,7 +179,7 @@ module('Unit | Model | report', function(hooks) {
       const report = {
         title: 'New Report',
         author: user,
-        request: null
+        request: null,
       };
 
       const savedReport = await Store.createRecord('report', report).save();
@@ -191,7 +191,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('Cloning Reports', async function(assert) {
+  test('Cloning Reports', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -209,7 +209,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('isOwner', async function(assert) {
+  test('isOwner', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -224,7 +224,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('isFavorite', async function(assert) {
+  test('isFavorite', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -239,14 +239,14 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('tempId', async function(assert) {
+  test('tempId', async function (assert) {
     assert.expect(3);
 
     await run(async () => {
       const author = await Store.findRecord('user', 'navi_user');
       const report = Store.createRecord('report', {
         author,
-        request: null
+        request: null,
       });
 
       assert.ok(!!get(report, 'tempId'), '`tempId` exists when `id` does not');
@@ -258,7 +258,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('delivery rules relationship', async function(assert) {
+  test('delivery rules relationship', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -273,7 +273,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('Validations', async function(assert) {
+  test('Validations', async function (assert) {
     assert.expect(5);
 
     await run(async () => {
@@ -291,7 +291,7 @@ module('Unit | Model | report', function(hooks) {
     });
   });
 
-  test('deliveryRuleForUser', async function(assert) {
+  test('deliveryRuleForUser', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -299,7 +299,7 @@ module('Unit | Model | report', function(hooks) {
       const reportModel = await Store.findRecord('report', 3);
 
       Object.defineProperty(reportModel, 'user', {
-        value: { getUser: () => user }
+        value: { getUser: () => user },
       });
 
       const rule = await reportModel.get('deliveryRuleForUser');

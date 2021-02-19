@@ -26,7 +26,7 @@ class ReportVisualization extends Component {
   get visualizationHash() {
     return {
       request: this.report.request,
-      response: this.response || { rows: [] }
+      response: this.response || { rows: [] },
     };
   }
 

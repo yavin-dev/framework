@@ -28,5 +28,5 @@ export default Component.extend({
   init() {
     this._super(...arguments);
     set(this, 'tableName', this.report?.request?.tableMetadata?.name);
-  }
+  },
 });

@@ -8,11 +8,11 @@ import Mirage from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import Ember from 'ember';
 
-module('Acceptance | Navi Report Schedule Modal', function(hooks) {
+module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('schedule modal save new schedule', async function(assert) {
+  test('schedule modal save new schedule', async function (assert) {
     assert.expect(13);
     await visit('/reports');
 
@@ -89,7 +89,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .isChecked('mustHaveData field is set by the saved delivery rule');
   });
 
-  test('schedule modal save changes to existing schedule', async function(assert) {
+  test('schedule modal save changes to existing schedule', async function (assert) {
     assert.expect(8);
     await visit('/reports');
 
@@ -153,13 +153,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Day', 'Changes made to the frequency field are kept after clicking save changes');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map((e) => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io', 'navi_user@navi.io'],
       'Changes made to the recipients field are kept after clicking save changes'
     );
   });
 
-  test('schedule modal delete action', async function(assert) {
+  test('schedule modal delete action', async function (assert) {
     assert.expect(12);
     await visit('/reports');
 
@@ -183,7 +183,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Month', 'Frequency field is populated by existing delivery rule');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map((e) => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
       'Recipients field is populated by existing delivery rule'
     );
@@ -228,7 +228,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('csv', 'Format field is set to the default value after the schedule has been deleted');
   });
 
-  test('schedule modal cancel existing schedule', async function(assert) {
+  test('schedule modal cancel existing schedule', async function (assert) {
     assert.expect(5);
     await visit('/reports');
 
@@ -268,13 +268,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .isNotChecked('mustHaveData changes to an existing schedule are discarded after clicking cancel');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map((e) => e.innerText.trim()),
       ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
       'Recipients field changes to an existing schedule are discarded after clicking cancel'
     );
   });
 
-  test('schedule modal cancel new schedule', async function(assert) {
+  test('schedule modal cancel new schedule', async function (assert) {
     assert.expect(4);
     await visit('/reports');
 
@@ -304,7 +304,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Day', 'Frequency field changes to a new schedule are kept but not saved to the store');
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map((e) => e.innerText.trim()),
       ['navi_user@navi.io'],
       'Recipients field changes to a new schedule kept but not saved to the store'
     );
@@ -318,7 +318,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       .hasText('Save', 'The cancel button does not save a new delivery rule to the store');
   });
 
-  test('schedule modal in report view', async function(assert) {
+  test('schedule modal in report view', async function (assert) {
     assert.expect(4);
     await visit('/reports/1/view');
     assert.dom('.schedule-action__button').isVisible('Button shows up on saved, owned form');
@@ -333,7 +333,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     assert.dom('.schedule-action__button').isNotVisible("Button shouldn't show up on unowned reports");
   });
 
-  test('schedule modal validations', async function(assert) {
+  test('schedule modal validations', async function (assert) {
     assert.expect(9);
 
     await visit('/reports');
@@ -392,13 +392,13 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert.deepEqual(
-      findAll('.schedule-modal__input--recipients .tag').map(e => e.innerText.trim()),
+      findAll('.schedule-modal__input--recipients .tag').map((e) => e.innerText.trim()),
       ['navi_user@navi.io'],
       'The valid recipients were saved successfully'
     );
   });
 
-  test('schedule modal error when fetching existing schedule', async function(assert) {
+  test('schedule modal error when fetching existing schedule', async function (assert) {
     assert.expect(6);
 
     //suppress errors and exceptions for this test because 500 response will throw an error
@@ -453,7 +453,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
     Ember.Test.adapter.exception = originalException;
   });
 
-  test('schedule modal error when saving schedule', async function(assert) {
+  test('schedule modal error when saving schedule', async function (assert) {
     assert.expect(2);
 
     //suppress errors and exceptions for this test because 500 response will throw an error
@@ -469,8 +469,8 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
         {},
         {
           errors: [
-            'InvalidValueException: Invalid value: Invalid Email: must be a valid oath.com or yahoo-inc.com email'
-          ]
+            'InvalidValueException: Invalid value: Invalid Email: must be a valid oath.com or yahoo-inc.com email',
+          ],
         }
       );
     });

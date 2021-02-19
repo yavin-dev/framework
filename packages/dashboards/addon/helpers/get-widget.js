@@ -15,5 +15,5 @@ export default Helper.extend({
    */
   compute([id]) {
     return this.get('store').peekRecord('dashboard-widget', id);
-  }
+  },
 });

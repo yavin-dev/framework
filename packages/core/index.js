@@ -5,5 +5,5 @@ module.exports = {
 
   isDevelopingAddon() {
     return process.env.DEV_NAVI;
-  }
+  },
 };

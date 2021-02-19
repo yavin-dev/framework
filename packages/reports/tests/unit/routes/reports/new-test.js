@@ -19,24 +19,24 @@ const NEW_MODEL = {
     limit: null,
     requestVersion: '2.0',
     sorts: [],
-    table: 'network'
+    table: 'network',
   },
   title: 'Untitled Report',
   updatedOn: null,
   visualization: {
     metadata: {
-      columnAttributes: {}
+      columnAttributes: {},
     },
     type: 'table',
-    version: 2
-  }
+    version: 2,
+  },
 };
 
-module('Unit | Route | reports/new', function(hooks) {
+module('Unit | Route | reports/new', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     let mockAuthor = this.owner.lookup('service:store').createRecord('user', { id: 'navi_user' });
@@ -44,12 +44,12 @@ module('Unit | Route | reports/new', function(hooks) {
     this.owner.register(
       'service:user',
       Service.extend({
-        getUser: () => mockAuthor
+        getUser: () => mockAuthor,
       })
     );
   });
 
-  test('model', function(assert) {
+  test('model', function (assert) {
     assert.expect(1);
 
     return settled().then(() => {
@@ -59,7 +59,7 @@ module('Unit | Route | reports/new', function(hooks) {
     });
   });
 
-  test('_newModel', function(assert) {
+  test('_newModel', function (assert) {
     assert.expect(2);
 
     return settled().then(() => {
@@ -69,14 +69,14 @@ module('Unit | Route | reports/new', function(hooks) {
     });
   });
 
-  test('_deserializeUrlModel', function(assert) {
+  test('_deserializeUrlModel', function (assert) {
     assert.expect(3);
 
     return settled().then(() => {
       return this.owner
         .lookup('route:reports/new')
         ._deserializeUrlModel(SERIALIZED_MODEL)
-        .then(newModel => {
+        .then((newModel) => {
           assert.ok(newModel.get('isNew'), 'A new ember data model is returned');
 
           assert.ok(get(newModel, 'tempId'), 'A tempId is present');
@@ -90,14 +90,14 @@ module('Unit | Route | reports/new', function(hooks) {
     });
   });
 
-  test('_deserializeUrlModel - error', function(assert) {
+  test('_deserializeUrlModel - error', function (assert) {
     assert.expect(1);
 
     return settled().then(() => {
       return this.owner
         .lookup('route:reports/new')
         ._deserializeUrlModel('not actually a model')
-        .catch(error =>
+        .catch((error) =>
           assert.equal(
             error.message,
             'Could not parse model query param',
@@ -107,7 +107,7 @@ module('Unit | Route | reports/new', function(hooks) {
     });
   });
 
-  test('_getDefaultTable', function(assert) {
+  test('_getDefaultTable', function (assert) {
     assert.expect(2);
 
     return settled().then(() => {

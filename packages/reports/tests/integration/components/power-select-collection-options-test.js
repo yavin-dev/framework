@@ -4,25 +4,25 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
-module('Integration | Component | Power Select Collection Options', function(hooks) {
+module('Integration | Component | Power Select Collection Options', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('options', [
       { id: 1, name: 'foo' },
       { id: 2, name: 'bar' },
-      { id: 3, name: 'baz' }
+      { id: 3, name: 'baz' },
     ]);
 
     this.set('select', {
       actions: {
         highlighted: () => null,
-        scrollTo: () => null
-      }
+        scrollTo: () => null,
+      },
     });
   });
 
-  test('it renders - with clear selection', async function(assert) {
+  test('it renders - with clear selection', async function (assert) {
     assert.expect(1);
 
     await render(hbs`
@@ -38,17 +38,13 @@ module('Integration | Component | Power Select Collection Options', function(hoo
     assert.deepEqual(
       $('.ember-power-select-option')
         .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      ['Clear Selection', ...this.get('options').map(o => o.name)],
+        .map((el) => $(el).text().trim()),
+      ['Clear Selection', ...this.get('options').map((o) => o.name)],
       'it renders a list of options with clear selection'
     );
   });
 
-  test('it renders - without clear selection', async function(assert) {
+  test('it renders - without clear selection', async function (assert) {
     assert.expect(1);
 
     await render(hbs`
@@ -63,12 +59,8 @@ module('Integration | Component | Power Select Collection Options', function(hoo
     assert.deepEqual(
       $('.ember-power-select-option')
         .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      this.get('options').map(o => o.name),
+        .map((el) => $(el).text().trim()),
+      this.get('options').map((o) => o.name),
       'it renders a list of options without clear selection'
     );
   });

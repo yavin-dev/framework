@@ -18,11 +18,11 @@ const TEMPLATE = hbs`<MetricSelector
   @onToggleMetricFilter={{this.onToggleMetricFilter}}
 />`;
 
-module('Integration | Component | metric selector', function(hooks) {
+module('Integration | Component | metric selector', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     MetadataService = this.owner.lookup('service:navi-metadata');
 
@@ -50,12 +50,12 @@ module('Integration | Component | metric selector', function(hooks) {
       Store.createFragment('bard-request-v2/request', {
         table: 'tableA',
         dataSource: 'bardOne',
-        filters: [{ field: 'adClicks', type: 'metric', source: 'bardOne', operator: 'in', values: [1] }]
+        filters: [{ field: 'adClicks', type: 'metric', source: 'bardOne', operator: 'in', values: [1] }],
       })
     );
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -69,12 +69,12 @@ module('Integration | Component | metric selector', function(hooks) {
     assert.dom('.grouped-list').isVisible('a grouped-list component is rendered as part of the metric selector');
   });
 
-  test('add metric actions', async function(assert) {
+  test('add metric actions', async function (assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
 
-    this.set('onAddMetric', metric => {
+    this.set('onAddMetric', (metric) => {
       assert.equal(metric.name, 'Total Clicks', 'the clicked metric is passed as a param to the action');
     });
 
@@ -87,7 +87,7 @@ module('Integration | Component | metric selector', function(hooks) {
     await clickItem('metric', 'Total Clicks');
   });
 
-  test('filter icon', async function(assert) {
+  test('filter icon', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -106,26 +106,26 @@ module('Integration | Component | metric selector', function(hooks) {
     );
     await totalClicksReset();
 
-    this.set('onToggleMetricFilter', metric => {
+    this.set('onToggleMetricFilter', (metric) => {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 
     await clickItemFilter('metric', 'Ad Clicks');
   });
 
-  test('tooltip', async function(assert) {
+  test('tooltip', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
 
     assertTooltipNotRendered(assert);
-    this.server.get(`${config.navi.dataSources[0].uri}/v1/metrics/adClicks`, function() {
+    this.server.get(`${config.navi.dataSources[0].uri}/v1/metrics/adClicks`, function () {
       return {
         category: 'Clicks',
         name: 'adClicks',
         longName: 'Ad Clicks',
         type: 'number',
-        description: 'foo'
+        description: 'foo',
       };
     });
 
@@ -135,11 +135,11 @@ module('Integration | Component | metric selector', function(hooks) {
 
     assertTooltipRendered(assert);
     assertTooltipContent(assert, {
-      contentString: 'foo'
+      contentString: 'foo',
     });
   });
 
-  test('ranked search', async function(assert) {
+  test('ranked search', async function (assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
@@ -147,7 +147,7 @@ module('Integration | Component | metric selector', function(hooks) {
     const tableMetrics = MetadataService.getById('table', 'tableA', 'bardOne').metrics;
 
     // Sort by category then by name
-    const groupedSortedMetrics = A(tableMetrics.filter(m => m.name.includes('Page')))
+    const groupedSortedMetrics = A(tableMetrics.filter((m) => m.name.includes('Page')))
       .sortBy('name')
       .reduce((acc, metric) => {
         const { category: cat, name } = metric;
@@ -156,7 +156,7 @@ module('Integration | Component | metric selector', function(hooks) {
       }, {});
     const expectedPageResults = Object.values(groupedSortedMetrics).flat();
 
-    const pageResults = (await getAll('metric')).filter(item => item.includes('Page'));
+    const pageResults = (await getAll('metric')).filter((item) => item.includes('Page'));
     assert.deepEqual(
       pageResults,
       expectedPageResults,
@@ -180,13 +180,13 @@ module('Integration | Component | metric selector', function(hooks) {
         'Additive Page Views per Unique Identifier',
         'Page Views per Unique Identifier (Daily Avg)',
         'Total Page Views per Unique Identifier (Daily Avg)',
-        'Additive Page Views per Unique Identifier (Daily Avg)'
+        'Additive Page Views per Unique Identifier (Daily Avg)',
       ],
       'The search results are ranked based on relevance'
     );
   });
 
-  test('hide filter if metric not allowed to show filter on base metric', async function(assert) {
+  test('hide filter if metric not allowed to show filter on base metric', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);

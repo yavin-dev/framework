@@ -10,5 +10,5 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
-  dashboards: DS.hasMany('dashboard', { async: true })
+  dashboards: DS.hasMany('dashboard', { async: true }),
 });

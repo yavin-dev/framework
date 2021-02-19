@@ -35,7 +35,7 @@ export default Helper.extend({
    * @method pathDidChange
    * @returns {Void}
    */
-  pathDidChange: observer('currentPath', function() {
+  pathDidChange: observer('currentPath', function () {
     this.recompute();
-  })
+  }),
 });

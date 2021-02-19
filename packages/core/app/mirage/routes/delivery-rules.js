@@ -4,11 +4,11 @@ import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function() {
+export default function () {
   /**
    * deliveryrules/:id - GET endpoint to fetch deliveryrules by id
    */
-  this.get('/deliveryRules/:id', function({ deliveryRules }, request) {
+  this.get('/deliveryRules/:id', function ({ deliveryRules }, request) {
     let id = request.params.id,
       deliveryRule = deliveryRules.find(id);
 
@@ -18,7 +18,7 @@ export default function() {
   /**
    * deliveryrules/ - GET endpoint to fetch many deliveryrules
    */
-  this.get('/deliveryRules', function({ deliveryRules }, request) {
+  this.get('/deliveryRules', function ({ deliveryRules }, request) {
     let idFilter = request.queryParams['filter[delivery-rules.id]'],
       rules = deliveryRules;
 
@@ -34,14 +34,14 @@ export default function() {
   /**
    * deliveryrules/ - POST endpoint to add a new deliveryrule
    */
-  this.post('/deliveryRules', function({ deliveryRules, db }) {
+  this.post('/deliveryRules', function ({ deliveryRules, db }) {
     let attrs = this.normalizedRequestAttrs(),
       deliveryRule = deliveryRules.create(attrs);
 
     // Init properties
     db.deliveryRules.update(deliveryRule.id, {
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
-      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
+      updatedOn: moment.utc().format(TIMESTAMP_FORMAT),
     });
 
     return deliveryRule;
@@ -55,7 +55,7 @@ export default function() {
   /**
    * deliveryrules/ - DELETE endpoint to delete a deliveryrule by id
    */
-  this.del('/deliveryRules/:id', function({ deliveryRules, users, reports, dashboards }, request) {
+  this.del('/deliveryRules/:id', function ({ deliveryRules, users, reports, dashboards }, request) {
     let id = request.params.id,
       deliveryRule = deliveryRules.find(id),
       deliveredItemType = deliveryRule.deliveryType,
@@ -69,11 +69,11 @@ export default function() {
 
     // Delete delivery rule from deliveredItem
     deliveredItem.update({
-      deliveryRules: deliveredItem.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
+      deliveryRules: deliveredItem.deliveryRules.filter((id) => id.toString() !== deliveryRule.id),
     });
     // Delete delivery rule from user
     user.update({
-      deliveryRules: user.deliveryRules.filter(id => id.toString() !== deliveryRule.id)
+      deliveryRules: user.deliveryRules.filter((id) => id.toString() !== deliveryRule.id),
     });
 
     deliveryRule.destroy();

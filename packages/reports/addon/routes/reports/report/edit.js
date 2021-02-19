@@ -9,6 +9,6 @@ export default Route.extend({
     didTransition() {
       this.send('setReportState', 'editing');
       return true; // Bubble the didTransition event
-    }
-  }
+    },
+  },
 });

@@ -17,5 +17,5 @@ export default Component.extend({
   /**
    * @property {String} tagName
    */
-  tagName: 'button'
+  tagName: 'button',
 });

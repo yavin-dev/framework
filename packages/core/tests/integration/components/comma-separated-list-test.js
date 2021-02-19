@@ -5,10 +5,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | comma separated list', function(hooks) {
+module('Integration | Component | comma separated list', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('comma separated list', async function(assert) {
+  test('comma separated list', async function (assert) {
     assert.expect(5);
 
     let list = A([]);
@@ -30,7 +30,7 @@ module('Integration | Component | comma separated list', function(hooks) {
     run(() => list.pushObject('three'));
     assert.dom().hasText('one, two, and three', 'Three strings are turned into a comma separated list');
 
-    const customElementText = findAll('.custom-element').map(el => el.textContent.trim());
+    const customElementText = findAll('.custom-element').map((el) => el.textContent.trim());
     assert.deepEqual(
       customElementText,
       ['one', 'two', 'three'],

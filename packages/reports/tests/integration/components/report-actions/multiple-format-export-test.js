@@ -20,16 +20,16 @@ const TEMPLATE = hbs`
 
 let Store;
 
-module('Integration | Component | report actions - multiple-format-export', function(hooks) {
+module('Integration | Component | report actions - multiple-format-export', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
 
     // Mock notifications
     this.mockNotifications = {
-      add: () => null
+      add: () => null,
     };
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
@@ -37,7 +37,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.set('report', report);
   });
 
-  test('export links', async function(assert) {
+  test('export links', async function (assert) {
     assert.expect(4);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
@@ -73,7 +73,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = [];
   });
 
-  test('filename', async function(assert) {
+  test('filename', async function (assert) {
     assert.expect(1);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
@@ -89,15 +89,15 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
-  test('close on click', async function(assert) {
+  test('close on click', async function (assert) {
     assert.expect(3);
 
     this.set('exportFormats', [
       {
         type: 'CSV',
         href: null,
-        icon: 'file-text-o'
-      }
+        icon: 'file-text-o',
+      },
     ]);
 
     await render(hbs`
@@ -129,7 +129,7 @@ module('Integration | Component | report actions - multiple-format-export', func
       .hasAttribute('aria-expanded', 'false', 'The dropdown is closed when an export option is clicked');
   });
 
-  test('disabled dropdown', async function(assert) {
+  test('disabled dropdown', async function (assert) {
     assert.expect(1);
 
     this.set('disabled', true);
@@ -139,13 +139,13 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert.dom('.ember-basic-dropdown-content-placeholder').isNotVisible('Dropdown should not be visible');
   });
 
-  test('notifications', async function(assert) {
+  test('notifications', async function (assert) {
     assert.expect(1);
 
-    this.mockNotifications.add = ({ message }) => {
+    this.mockNotifications.add = ({ title }) => {
       assert.equal(
-        message,
-        'CSV? Got it. The download should begin soon.',
+        title,
+        'The CSV download should begin shortly',
         'A notification is added for the clicked export type'
       );
     };
@@ -154,8 +154,8 @@ module('Integration | Component | report actions - multiple-format-export', func
       {
         type: 'CSV',
         href: null,
-        icon: 'file-text-o'
-      }
+        icon: 'file-text-o',
+      },
     ]);
     await render(hbs`
       <ReportActions::MultipleFormatExport

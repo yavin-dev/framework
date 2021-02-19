@@ -3,8 +3,8 @@ import { A } from '@ember/array';
 import SearchUtils from 'navi-data/utils/search';
 import { module, test } from 'qunit';
 
-module('Unit - Utils - Search Utils', function() {
-  test('getPartialMatchWeight', function(assert) {
+module('Unit - Utils - Search Utils', function () {
+  test('getPartialMatchWeight', function (assert) {
     assert.expect(4);
 
     assert.equal(
@@ -31,7 +31,7 @@ module('Unit - Utils - Search Utils', function() {
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
   });
 
-  test('getExactMatchWeight', function(assert) {
+  test('getExactMatchWeight', function (assert) {
     assert.expect(3);
 
     assert.equal(
@@ -48,26 +48,26 @@ module('Unit - Utils - Search Utils', function() {
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
   });
 
-  test('searchDimensionRecords', function(assert) {
+  test('searchDimensionRecords', function (assert) {
     assert.expect(8);
 
     const records = A([
       EmberObject.create({
         id: 'bike',
-        description: 'All Bikes'
+        description: 'All Bikes',
       }),
       EmberObject.create({
         id: '123456',
-        description: 'Sport Bike'
+        description: 'Sport Bike',
       }),
       EmberObject.create({
         id: '1234567',
-        description: 'Bowser'
+        description: 'Bowser',
       }),
       EmberObject.create({
         id: '123',
-        description: 'Standard Kart'
-      })
+        description: 'Standard Kart',
+      }),
     ]);
 
     let results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
@@ -98,38 +98,38 @@ module('Unit - Utils - Search Utils', function() {
     const expectedResults = [
       {
         record: records[3],
-        relevance: 1
+        relevance: 1,
       },
       {
         record: records[1],
-        relevance: 4
+        relevance: 4,
       },
       {
         record: records[2],
-        relevance: 5
-      }
+        relevance: 5,
+      },
     ];
     assert.deepEqual(results, expectedResults, 'Results contain expected records, order, and relevance');
   });
 
-  test('searchDimensionRecords - without description', function(assert) {
+  test('searchDimensionRecords - without description', function (assert) {
     assert.expect(2);
 
     let records = A([
       {
         id: 'bike',
-        description: 'All Bikes'
+        description: 'All Bikes',
       },
       {
-        id: '123456'
+        id: '123456',
       },
       {
-        id: '1234567'
+        id: '1234567',
       },
       {
         id: '123',
-        description: 'Standard Kart'
-      }
+        description: 'Standard Kart',
+      },
     ]);
 
     let results = A(SearchUtils.searchDimensionRecords(records, 'bike', 100));

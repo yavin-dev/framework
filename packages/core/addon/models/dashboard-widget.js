@@ -17,9 +17,9 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The widget must have a title'
-    })
-  ]
+      message: 'The widget must have a title',
+    }),
+  ],
 });
 
 export default DS.Model.extend(hasVisualization, Validations, {
@@ -28,28 +28,28 @@ export default DS.Model.extend(hasVisualization, Validations, {
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
   requests: fragmentArray('bard-request-v2/request', {
-    defaultValue: () => []
+    defaultValue: () => [],
   }),
 
   /**
    * Author retrived from dashboard
    * @property author
    */
-  author: computed('dashboard', function() {
+  author: computed('dashboard', function () {
     return get(this, 'dashboard.author');
   }),
 
   /**
    * @property {MF.Fragment} request - first request object
    */
-  request: computed('requests', function() {
+  request: computed('requests', function () {
     return get(this, 'requests.firstObject');
   }),
 
   /**
    * @property {String} tempId - uuid for unsaved records
    */
-  tempId: computed('id', function() {
+  tempId: computed('id', function () {
     if (get(this, 'id')) {
       return null;
     } else {
@@ -69,7 +69,7 @@ export default DS.Model.extend(hasVisualization, Validations, {
     return this.store.createRecord('dashboard-widget', {
       title: clonedWidget.title,
       visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization),
-      requests: get(this, 'requests').map(request => request.clone())
+      requests: get(this, 'requests').map((request) => request.clone()),
     });
-  }
+  },
 });

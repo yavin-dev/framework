@@ -4,19 +4,19 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Integration | Helper | metric-format', function(hooks) {
+module('Integration | Helper | metric-format', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('it renders with serialized metric object', async function(assert) {
+  test('it renders with serialized metric object', async function (assert) {
     assert.expect(7);
     this.set('metric', {
       field: 'revenue',
-      parameters: { currency: 'USD', as: 'revenueUSD' }
+      parameters: { currency: 'USD', as: 'revenueUSD' },
     });
 
     await render(hbs`{{metric-format this.metric}}`);
@@ -24,7 +24,7 @@ module('Integration | Helper | metric-format', function(hooks) {
 
     this.set('metric', {
       field: 'revenue',
-      parameters: { currency: 'CAD', as: 'revenueUSD' }
+      parameters: { currency: 'CAD', as: 'revenueUSD' },
     });
     assert.dom().hasText('Revenue (CAD)');
 
@@ -44,7 +44,7 @@ module('Integration | Helper | metric-format', function(hooks) {
     assert.dom().hasText('foo');
   });
 
-  test('multi-datasource support', async function(assert) {
+  test('multi-datasource support', async function (assert) {
     assert.expect(3);
     const metaData = this.owner.lookup('service:navi-metadata');
     metaData.keg.reset();
@@ -52,7 +52,7 @@ module('Integration | Helper | metric-format', function(hooks) {
 
     this.set('metric', {
       field: 'usedAmount',
-      parameters: {}
+      parameters: {},
     });
 
     this.set('namespace', 'bardTwo');
@@ -61,7 +61,7 @@ module('Integration | Helper | metric-format', function(hooks) {
 
     this.set('metric', {
       field: 'navClicks',
-      parameters: {}
+      parameters: {},
     });
     assert.dom().hasText('navClicks', 'Fall back works');
 

@@ -17,48 +17,48 @@ const CLONED_MODEL = {
         height: 4,
         row: 0,
         widgetId: 10,
-        width: 6
+        width: 6,
       },
       {
         column: 6,
         height: 4,
         row: 0,
         widgetId: 11,
-        width: 6
+        width: 6,
       },
       {
         column: 0,
         height: 4,
         row: 4,
         widgetId: 12,
-        width: 12
-      }
+        width: 12,
+      },
     ],
-    version: 1
+    version: 1,
   },
   title: 'Copy of Tumblr Goals Dashboard',
-  updatedOn: null
+  updatedOn: null,
 };
 
-module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
+module('Unit | Route | dashboards/dashboard/clone', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Route = this.owner.lookup('route:dashboards/dashboard/clone');
     this.owner.lookup('service:user').findUser();
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('_cloneDashboard - valid dashboard', async function(assert) {
+  test('_cloneDashboard - valid dashboard', async function (assert) {
     assert.expect(4);
 
     const dashboard = await Route.store.findRecord('dashboard', 1);
-    const widgetIdInDashboard = dashboard.presentation.layout.map(layout => layout.widgetId);
+    const widgetIdInDashboard = dashboard.presentation.layout.map((layout) => layout.widgetId);
     const model = await Route._cloneDashboard(dashboard);
     const expectedModel = model.toJSON();
-    const widgetIdInExpectedModel = model.presentation.layout.map(layout => layout.widgetId);
+    const widgetIdInExpectedModel = model.presentation.layout.map((layout) => layout.widgetId);
 
     assert.equal(expectedModel.title, CLONED_MODEL.title, 'Expected Models title is correct');
 
@@ -77,7 +77,7 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     );
   });
 
-  test('_cloneDashboard - invalid widgets for a dashboard', async function(assert) {
+  test('_cloneDashboard - invalid widgets for a dashboard', async function (assert) {
     assert.expect(1);
 
     //Mock Server Endpoint
@@ -89,7 +89,7 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     });
   });
 
-  test('_cloneWidget - valid widget', async function(assert) {
+  test('_cloneWidget - valid widget', async function (assert) {
     assert.expect(15);
 
     const dashboard = await Route.store.findRecord('dashboard', 1);
@@ -125,12 +125,12 @@ module('Unit | Route | dashboards/dashboard/clone', function(hooks) {
     });
   });
 
-  test('afterModel', function(assert) {
+  test('afterModel', function (assert) {
     assert.expect(1);
 
     const dashboard = { id: 6 };
 
-    Route.replaceWith = destinationRoute => {
+    Route.replaceWith = (destinationRoute) => {
       assert.equal(destinationRoute, 'dashboards.dashboard', 'Route redirects to dashboard/:id route ');
     };
     Route.afterModel(dashboard);

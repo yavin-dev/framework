@@ -2,11 +2,11 @@ import { module, test } from 'qunit';
 import { isEqual } from '@ember/utils';
 import BardDimension from 'navi-data/models/legacy-bard-dimension';
 
-module('Unit | Model | Legacy Bard Dimension', function() {
-  test('toString', function(assert) {
+module('Unit | Model | Legacy Bard Dimension', function () {
+  test('toString', function (assert) {
     assert.expect(1);
     let factory = BardDimension.extend().reopenClass({
-      dimensionName: 'testDimension'
+      dimensionName: 'testDimension',
     });
 
     assert.equal(
@@ -16,10 +16,10 @@ module('Unit | Model | Legacy Bard Dimension', function() {
     );
   });
 
-  test('isEqual', function(assert) {
+  test('isEqual', function (assert) {
     let dim1 = BardDimension.extend().reopenClass({
       dimensionName: 'testDimension1',
-      identifierField: 'key'
+      identifierField: 'key',
     });
 
     assert.ok(

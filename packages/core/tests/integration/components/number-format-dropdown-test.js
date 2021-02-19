@@ -10,24 +10,24 @@ let Template = hbs`
     @onUpdateReport={{this.onUpdateReport}}
   />`;
 
-module('Integration | Component | number format dropdown', function(hooks) {
+module('Integration | Component | number format dropdown', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('column', {
       type: 'metric',
       displayName: 'Coins',
       attributes: {
         name: 'coins',
         parameters: {},
-        format: '$0,0[.]00'
+        format: '$0,0[.]00',
       },
       hasCustomDisplayName: false,
-      sortDirection: 'none'
+      sortDirection: 'none',
     });
   });
 
-  test('updating format', async function(assert) {
+  test('updating format', async function (assert) {
     assert.expect(3);
 
     this.set('onUpdateReport', (action, updatedColumn) => {
@@ -39,10 +39,10 @@ module('Integration | Component | number format dropdown', function(hooks) {
           attributes: {
             name: 'coins',
             parameters: {},
-            format: '0.0a'
+            format: '0.0a',
           },
           hasCustomDisplayName: false,
-          sortDirection: 'none'
+          sortDirection: 'none',
         },
         'onUpdateFormat is called on close with a deeply merged updated column'
       );

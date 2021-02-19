@@ -16,7 +16,7 @@ import metricModels from '../fixtures/bard-meta-metrics';
 /**
  * Method to configure metadata endpoints
  */
-export default function() {
+export default function () {
   /**
    * unsupported metricFunctions endpoint
    */
@@ -26,13 +26,13 @@ export default function() {
   /**
    * /tables endpoint
    */
-  this.get('/tables', function(db, req) {
+  this.get('/tables', function (db, req) {
     let isBardTwo = req.url.startsWith('https://data2');
     let tables = isBardTwo ? bardTwoTableModels : tableModels;
 
     if (req.queryParams.format === 'fullview') {
-      tables = tables.map(table => {
-        let timeGrains = timeGrainModels.map(timeGrain => {
+      tables = tables.map((table) => {
+        let timeGrains = timeGrainModels.map((timeGrain) => {
           let tableDimModels = isBardTwo ? dimModels.bardTwoDims : dimModels.defaultDims;
           let defaultMetricModels = isBardTwo ? metricModels.bardTwoMetrics : metricModels.defaultMetrics;
 
@@ -53,8 +53,8 @@ export default function() {
 
             return {
               ...timeGrain,
-              metrics: defaultMetricModels.map(m => ({ ...m, description: undefined })), //fullview does not have descriptions
-              dimensions: tableDimModels.map(d => ({ ...d, description: undefined })) //fullview does not have descriptions
+              metrics: defaultMetricModels.map((m) => ({ ...m, description: undefined })), //fullview does not have descriptions
+              dimensions: tableDimModels.map((d) => ({ ...d, description: undefined })), //fullview does not have descriptions
             };
           }
         });
@@ -71,21 +71,21 @@ export default function() {
     return { rows: tables };
   });
 
-  this.get('/dimensions/:dimension', function(db, request) {
+  this.get('/dimensions/:dimension', function (db, request) {
     let dimensionName = request.params.dimension,
       dimension = dimModels.defaultDims
         .concat(dimModels.highCardinalityDims)
-        .find(dimModel => dimModel.name === dimensionName);
+        .find((dimModel) => dimModel.name === dimensionName);
 
     dimension.description = faker.lorem.sentence();
     return dimension;
   });
 
-  this.get('/metrics/:metric', function(db, request) {
+  this.get('/metrics/:metric', function (db, request) {
     let metricName = request.params.metric,
       metric = metricModels.defaultMetrics
         .concat(metricModels.dayAvgMetrics)
-        .find(metricModel => metricModel.name === metricName);
+        .find((metricModel) => metricModel.name === metricName);
 
     faker.seed(metricName.length);
     metric.description = faker.lorem.sentence();

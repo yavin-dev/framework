@@ -6,16 +6,16 @@ import config from 'ember-get-config';
 
 let Store;
 
-module('Unit | Model | user', function(hooks) {
+module('Unit | Model | user', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('Retrieving records', async function(assert) {
+  test('Retrieving records', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -24,7 +24,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('Saving records', async function(assert) {
+  test('Saving records', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -38,7 +38,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('Linking Reports to Users', function(assert) {
+  test('Linking Reports to Users', function (assert) {
     assert.expect(3);
 
     run(() => {
@@ -46,18 +46,18 @@ module('Unit | Model | user', function(hooks) {
 
       Store.createRecord('report', {
         title: 'How I died! By Jon Snow',
-        author: user
+        author: user,
       });
 
       Store.createRecord('report', {
         title: 'You know nothing, Jon Snow',
-        author: user
+        author: user,
       });
 
       assert.equal(user.get('reports.length'), 2, 'Two reports are linked to the user');
 
       assert.deepEqual(
-        user.get('reports').map(report => {
+        user.get('reports').map((report) => {
           return report.get('title');
         }),
         ['How I died! By Jon Snow', 'You know nothing, Jon Snow'],
@@ -72,7 +72,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('Favoriting reports', async function(assert) {
+  test('Favoriting reports', async function (assert) {
     assert.expect(3);
 
     let naviUser = config.navi.user;
@@ -118,7 +118,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('delivery rules relationship', async function(assert) {
+  test('delivery rules relationship', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -130,7 +130,7 @@ module('Unit | Model | user', function(hooks) {
     });
   });
 
-  test('roles relationship', async function(assert) {
+  test('roles relationship', async function (assert) {
     assert.expect(1);
 
     const roleModel = await Store.findRecord('role', 'admin');

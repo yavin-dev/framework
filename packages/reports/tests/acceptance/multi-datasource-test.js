@@ -8,18 +8,18 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 
-module('Acceptance | multi-datasource report builder', function(hooks) {
+module('Acceptance | multi-datasource report builder', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  test('multi datasource report', async function(assert) {
+  test('multi datasource report', async function (assert) {
     assert.expect(14);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
@@ -29,7 +29,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     await selectChoose('.navi-table-select__trigger', 'Inventory');
 
     assert.deepEqual(
-      findAll('.grouped-list__group-header-content').map(el => el.textContent.trim()),
+      findAll('.grouped-list__group-header-content').map((el) => el.textContent.trim()),
       ['Personal (4)', 'World (2)', 'Asset (2)', 'Date (1)', 'World (3)', 'Personal (3)'],
       'Metric and dimension categories switched to metrics/dimensions of new datasource'
     );
@@ -56,7 +56,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
       ['Container (id)', 'Date Time (day)', 'Used Amount'],
       'Filter titles rendered correctly'
     );
@@ -76,7 +76,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
       .containsText('Used Amount greater than (>) 30', 'Collapsed filter contains right text');
     //check visualizations are showing up correctly
     assert.deepEqual(
-      findAll('.table-widget__table-headers .table-header-cell__title').map(el => el.textContent.trim()),
+      findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
       ['Container (id)', 'Used Amount', 'Date Time (day)'],
       'Table displays correct header titles'
     );
@@ -105,13 +105,13 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     //check CSV export url
     await clickTrigger('.multiple-format-export');
     assert
-      .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
+      .dom(findAll('.multiple-format-export__dropdown a').filter((el) => el.textContent.trim() === 'CSV')[0])
       .hasAttribute('href', /^https:\/\/data2.naviapp.io\/\S+$/, 'uses csv export from right datasource');
 
     config.navi.FEATURES.exportFileTypes = [];
   });
 
-  test('multi datasource saved report', async function(assert) {
+  test('multi datasource saved report', async function (assert) {
     assert.expect(14);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
@@ -123,7 +123,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
       ['Date Time (day)'],
       'Filter titles rendered correctly'
     );
@@ -135,7 +135,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
 
     //check visualizations are showing up correctly
     assert.deepEqual(
-      findAll('.table-widget__table-headers .table-header-cell__title').map(el => el.textContent.trim()),
+      findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
       ['Date Time (day)', 'Ad Clicks', 'Property (id)'],
       'Table displays correct header titles'
     );
@@ -161,7 +161,7 @@ module('Acceptance | multi-datasource report builder', function(hooks) {
     //check CSV export url
     await clickTrigger('.multiple-format-export');
     assert
-      .dom(findAll('.multiple-format-export__dropdown a').filter(el => el.textContent.trim() === 'CSV')[0])
+      .dom(findAll('.multiple-format-export__dropdown a').filter((el) => el.textContent.trim() === 'CSV')[0])
       .hasAttribute(
         'href',
         'https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-10-02T00%3A00%3A00.000Z%2F2015-10-14T00%3A00%3A00.000Z&metrics=adClicks&format=csv',

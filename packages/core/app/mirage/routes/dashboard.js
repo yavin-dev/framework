@@ -5,7 +5,7 @@ import { filterModel } from 'navi-core/mirage/utils/rsql-utils';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function() {
+export default function () {
   this.get('dashboards/:id', ({ dashboards }, request) => {
     let id = request.params.id,
       dashboard = dashboards.find(id);
@@ -17,7 +17,7 @@ export default function() {
     return dashboard;
   });
 
-  this.patch('dashboards/:id', function({ dashboards }, request) {
+  this.patch('dashboards/:id', function ({ dashboards }, request) {
     let { id } = request.params,
       attrs = this.normalizedRequestAttrs();
 
@@ -36,7 +36,7 @@ export default function() {
 
     // Delete dashboard from user
     user.update({
-      dashboards: user.dashboards.filter(id => id.toString() !== dashboard.id)
+      dashboards: user.dashboards.filter((id) => id.toString() !== dashboard.id),
     });
 
     dashboard.destroy();
@@ -61,7 +61,7 @@ export default function() {
     return dashboardObject;
   });
 
-  this.post('/dashboards', function({ dashboards, users }) {
+  this.post('/dashboards', function ({ dashboards, users }) {
     let attrs = this.normalizedRequestAttrs(),
       dashboard = dashboards.create(attrs),
       author = users.find(dashboard.authorId);
@@ -73,7 +73,7 @@ export default function() {
     dashboard.update({
       widgetIds: [],
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
-      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
+      updatedOn: moment.utc().format(TIMESTAMP_FORMAT),
     });
 
     return dashboard;

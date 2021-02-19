@@ -14,15 +14,15 @@ const TEMPLATE = hbs`
 
 let Store;
 
-module('Integration | Component | report actions - export', function(hooks) {
+module('Integration | Component | report actions - export', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
   });
 
-  test('Component Renders', async function(assert) {
+  test('Component Renders', async function (assert) {
     assert.expect(4);
 
     const factService = this.owner.lookup('service:navi-facts');
@@ -41,12 +41,12 @@ module('Integration | Component | report actions - export', function(hooks) {
     assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
 
     const expectedHref = factService.getURL(report.get('request').serialize(), {
-      format: 'csv'
+      format: 'csv',
     });
     assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
   });
 
-  test('Component is not disabled for unsaved reports', async function(assert) {
+  test('Component is not disabled for unsaved reports', async function (assert) {
     assert.expect(1);
 
     let request = {
@@ -61,11 +61,11 @@ module('Integration | Component | report actions - export', function(hooks) {
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['current', 'next']
-        }
+          values: ['current', 'next'],
+        },
       ],
       columns: [],
-      sorts: []
+      sorts: [],
     };
     this.set('report', Store.createRecord('report', { title: 'New Report', request }));
 

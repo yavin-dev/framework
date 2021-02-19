@@ -99,7 +99,7 @@ export default {
         // If record matched search query, include it in the filtered results in the desire form
         results.push({
           relevance: relevance,
-          record: record
+          record: record,
         });
       }
     }
@@ -107,5 +107,5 @@ export default {
     results = A(results).sortBy('relevance');
 
     return PaginationUtils.getPaginatedRecords(results, resultLimit, page);
-  }
+  },
 };
