@@ -1,5 +1,5 @@
 /*
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * These styles exist only to override the default styles that are included
@@ -21,6 +21,10 @@
     .tag {
       margin: 3px 3px 3px 0;
     }
+  }
+
+  &__tag-remove {
+    cursor: pointer;
   }
 
   .emberTagInput-input {

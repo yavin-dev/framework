@@ -372,7 +372,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .isVisible('Recipients field is still highlighted red when recipients is set to invalid email addresses');
 
     // Set recipients to a valid value
-    await click('.tag__remove');
+    await click('.navi-tag-input__tag-remove');
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io ');
     await blur('.js-ember-tag-input-new');
 
