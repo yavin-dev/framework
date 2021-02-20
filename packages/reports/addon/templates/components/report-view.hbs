@@ -1,8 +1,8 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-view__visualization-main">
   <ReportViewOverlay
     @runReport={{route-action "runReport" @report}}
-    @isVisible={{and @report.request.hasDirtyAttributes (not this.hasRequestRun)}} 
+    @isVisible={{and @report.request.hasDirtyAttributes (not this.hasRequestRun)}}
   />
   <div class="report-view__visualization-header">
     <div class="report-view__visualization-header-left">
@@ -14,16 +14,21 @@
         @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
       />
     </div>
-      {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}
-        <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
-          Edit {{this.visualizationTypeLabel}}
-          <NaviIcon @icon="pencil" />
-        </div>
-      {{/animated-if}}
-      {{#animated-if (not this.hasRequestRun) use=this.visFadeTransition duration=200}}
-        <div class="report-view__info-text">
-        <NaviIcon @icon="exclamation-circle" /> Run request to update {{this.visualizationTypeLabel}}</div>
-      {{/animated-if}}
+    {{#animated-if (and this.hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}
+      <DenaliButton
+        @size="medium"
+        @style="text"
+        {{on "click" this.toggleEditVisualization}}
+        class="report-view__visualization-edit-btn"
+      >
+        Edit {{this.visualizationTypeLabel}}
+      </DenaliButton>
+    {{/animated-if}}
+    {{#animated-if (not this.hasRequestRun) use=this.visFadeTransition duration=200}}
+      <span class="report-view__info-text">
+        <DenaliIcon @icon="warning" @size="small" class="is-status-warning"/> Run request to update {{this.visualizationTypeLabel}}
+      </span>
+    {{/animated-if}}
   </div>
   <div class= "report-view__visualization-body">
     <div class="report-view__visualization-container">
@@ -57,11 +62,13 @@
   {{#animated-if (and this.isEditingVisualization @hasRequestRun) use=this.drawerTransition duration=400}}
     <div class="report-view__visualization-edit">
       <div class="report-view__visualization-edit-header">
-        <div class="clickable report-view__visualization-edit-btn" role="button" {{on "click" this.toggleEditVisualization}}>
-          Edit
-          {{this.visualizationTypeLabel}}
-          <NaviIcon @icon="times"/>
-        </div>
+        <span>Edit {{this.visualizationTypeLabel}}</span>
+        <DenaliIcon
+          role="button"
+          @icon="close"
+          class="report-view__visualization-edit-close"
+          {{on "click" this.toggleEditVisualization}}
+        />
       </div>
       <NaviVisualizationConfig::Wrapper
         @request={{@report.request}}

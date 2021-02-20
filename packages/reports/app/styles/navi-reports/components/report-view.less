@@ -53,13 +53,23 @@
     overflow: hidden;
   }
 
-  &__visualization-edit-btn {
+  &__visualization-edit-header {
+    align-items: center;
+    display: flex;
     font-size: @font-size-base;
-    text-align: right;
+    font-weight: bold;
+    justify-content: space-between;
+    padding: 10px 20px;
   }
 
-  &__visualization-edit-header {
-    margin: 14px 11px;
+  &__visualization-edit-close {
+    color: @denali-grey-800; //TODO make themable var
+    opacity: 0.4;
+    line-height: 14px;
+    &:hover {
+      color: @denali-grey-800;
+      opacity: 0.6;
+    }
   }
 
   &__visualization-header {
