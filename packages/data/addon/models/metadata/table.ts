@@ -131,7 +131,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
 
   get requestConstraints(): RequestConstraintMetadataModel[] {
     return this.requestConstraintIds
-      .map(id => this.naviMetadata.getById('requestConstraint', id, this.source))
+      .map((id) => this.naviMetadata.getById('requestConstraint', id, this.source))
       .filter(isPresent);
   }
 

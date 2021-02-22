@@ -51,7 +51,7 @@ module('Integration | Component | report builder', function (hooks) {
           metricIds: [],
           dimensionIds: [],
           timeDimensionIds: [],
-          requestConstraintIds: []
+          requestConstraintIds: [],
         }),
       ],
       'bardOne'

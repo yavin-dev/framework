@@ -9,7 +9,7 @@ import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/met
 import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
 import RequestConstraintMetadataModel, {
-  RequestConstraintMetadataPayload
+  RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
 import { assert } from '@ember/debug';
@@ -341,9 +341,9 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         property: 'columns',
         matches: {
           type: 'timeDimension',
-          field: id
-        }
-      }
+          field: id,
+        },
+      },
     };
     return this.requestConstraintFactory.create(payload);
   }
@@ -368,9 +368,9 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         property: 'filters',
         matches: {
           type: 'timeDimension',
-          field: id
-        }
-      }
+          field: id,
+        },
+      },
     };
     return this.requestConstraintFactory.create(payload);
   }

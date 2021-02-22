@@ -362,7 +362,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       .doesNotExist('No column is highlighted after removing the parameterized metric');
   });
 
-  test('clicking filter button always adds a new filter', async function(assert) {
+  test('clicking filter button always adds a new filter', async function (assert) {
     assert.expect(3);
     await visit('/reports/new');
 

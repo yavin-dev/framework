@@ -18,11 +18,11 @@ interface TestContext extends Context {
   metadataService: NaviMetadataService;
 }
 
-module('Unit | Consumer | request constraint', function(hooks) {
+module('Unit | Consumer | request constraint', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     consumer = this.owner
       .factoryFor('consumer:request/constraint')
       .create({ requestConstrainer: MockConstrainer }) as ConstraintConsumer;
@@ -30,11 +30,11 @@ module('Unit | Consumer | request constraint', function(hooks) {
     await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('DID_UPDATE_TABLE', function(assert) {
+  test('DID_UPDATE_TABLE', function (assert) {
     assert.expect(1);
     const mockRoute = ({ modelFor: () => ({ request: 'fakeRequest' }) } as unknown) as Route;
 
-    MockConstrainer.constrain = route => {
+    MockConstrainer.constrain = (route) => {
       assert.deepEqual(route, mockRoute, 'The constrainer service is called after a table update is done');
 
       return route.modelFor(route.routeName) as ReportModel;

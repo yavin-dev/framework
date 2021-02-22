@@ -34,7 +34,7 @@ export default class RequestActionDispatcher extends ActionDispatcher {
       'request/table',
       'request/sort',
       'request/fili',
-      'request/constraint'
+      'request/constraint',
     ];
   }
 }

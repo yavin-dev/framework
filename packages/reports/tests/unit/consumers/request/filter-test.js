@@ -27,7 +27,7 @@ module('Unit | Consumer | request filter', function (hooks) {
     await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('ADD_DIMENSION_FILTER', function(assert) {
+  test('ADD_DIMENSION_FILTER', function (assert) {
     assert.expect(2);
 
     const dimensionMetadataModel = this.metadataService.getById('dimension', 'age', 'bardOne');

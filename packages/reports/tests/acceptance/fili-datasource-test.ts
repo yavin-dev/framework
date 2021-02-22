@@ -80,7 +80,7 @@ module('Acceptance | fili datasource', function (hooks) {
     }
   });
 
-  test('Fili Required filters on new report', async function(assert) {
+  test('Fili Required filters on new report', async function (assert) {
     assert.expect(5);
 
     await visit('/reports/new');
@@ -98,7 +98,7 @@ module('Acceptance | fili datasource', function (hooks) {
       .isNotDisabled('The date time can be removed when there is an all grain');
   });
 
-  test('Fili Required filters when changing table', async function(assert) {
+  test('Fili Required filters when changing table', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/new');
@@ -110,7 +110,7 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
   });
 
-  test('Fili Required filters when changing table without all grain', async function(assert) {
+  test('Fili Required filters when changing table without all grain', async function (assert) {
     assert.expect(4);
 
     await visit('/reports/new');

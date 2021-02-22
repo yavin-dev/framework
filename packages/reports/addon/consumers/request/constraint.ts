@@ -21,6 +21,6 @@ export default class ConstraintConsumer extends ActionConsumer {
      */
     [RequestActions.DID_UPDATE_TABLE](this: ConstraintConsumer, route: Route, _table: TableMetadataModel) {
       this.requestConstrainer.constrain(route);
-    }
+    },
   };
 }

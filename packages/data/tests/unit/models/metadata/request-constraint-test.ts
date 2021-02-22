@@ -5,7 +5,7 @@ import { TestContext } from 'ember-test-helpers';
 // @ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import RequestConstraintMetadataModel, {
-  RequestConstraintMetadataPayload
+  RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
@@ -13,10 +13,10 @@ let server: Server;
 let Payload: RequestConstraintMetadataPayload;
 let RequestConstraint: RequestConstraintMetadataModel;
 
-module('Unit | Model | metadata/request constraint', function(hooks) {
+module('Unit | Model | metadata/request constraint', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
@@ -26,17 +26,17 @@ module('Unit | Model | metadata/request constraint', function(hooks) {
       description: 'The request has a Date Time filter that specifies an interval.',
       type: 'existence',
       constraint: { property: 'filters', matches: { type: 'timeDimension', field: 'tableName.dateTime' } },
-      source: 'bardOne'
+      source: 'bardOne',
     };
 
     RequestConstraint = RequestConstraintMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     server.shutdown();
   });
 
-  test('it properly hydrates properties', function(assert) {
+  test('it properly hydrates properties', function (assert) {
     assert.expect(6);
 
     assert.deepEqual(RequestConstraint.id, Payload.id, 'id property is hydrated properly');
@@ -52,7 +52,7 @@ module('Unit | Model | metadata/request constraint', function(hooks) {
     assert.deepEqual(RequestConstraint.source, Payload.source, 'source property was properly hydrated');
   });
 
-  test('constraint can be satisfied', function(assert) {
+  test('constraint can be satisfied', function (assert) {
     assert.expect(2);
 
     const EmptyRequest: RequestV2 = {
@@ -62,7 +62,7 @@ module('Unit | Model | metadata/request constraint', function(hooks) {
       limit: null,
       columns: [],
       filters: [],
-      sorts: []
+      sorts: [],
     };
 
     assert.notOk(
@@ -73,7 +73,7 @@ module('Unit | Model | metadata/request constraint', function(hooks) {
     assert.ok(
       RequestConstraint.isSatisfied({
         ...EmptyRequest,
-        filters: [{ type: 'timeDimension', field: 'tableName.dateTime', parameters: {}, operator: 'bet', values: [] }]
+        filters: [{ type: 'timeDimension', field: 'tableName.dateTime', parameters: {}, operator: 'bet', values: [] }],
       }),
       'request constraint is satisfied when there is a matching filter'
     );

@@ -14,7 +14,7 @@ import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/met
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
 import RequestConstraintMetadataModel, {
-  RequestConstraintMetadataPayload
+  RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 
 const Payload: RawEverythingPayload = {
@@ -405,7 +405,7 @@ const TablePayloads: BardTableMetadataPayload[] = [
     timeGrainIds: ['day', 'isoWeek'],
     requestConstraintIds: [
       'normalizer-generated:requestConstraint(filters=secondTable.dateTime)',
-      'normalizer-generated:requestConstraint(columns=secondTable.dateTime)'
+      'normalizer-generated:requestConstraint(columns=secondTable.dateTime)',
     ],
     hasAllGrain: false,
   },
@@ -775,7 +775,7 @@ const RequestConstraintPayloads: RequestConstraintMetadataPayload[] = [
     description: 'The request has a Date Time filter that specifies an interval.',
     type: 'existence',
     constraint: { property: 'filters', matches: { type: 'timeDimension', field: 'tableName.dateTime' } },
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     id: 'normalizer-generated:requestConstraint(filters=secondTable.dateTime)',
@@ -783,7 +783,7 @@ const RequestConstraintPayloads: RequestConstraintMetadataPayload[] = [
     description: 'The request has a Date Time filter that specifies an interval.',
     type: 'existence',
     constraint: { property: 'filters', matches: { type: 'timeDimension', field: 'secondTable.dateTime' } },
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     id: 'normalizer-generated:requestConstraint(columns=secondTable.dateTime)',
@@ -791,8 +791,8 @@ const RequestConstraintPayloads: RequestConstraintMetadataPayload[] = [
     description: 'The request has a Date Time column.',
     type: 'existence',
     constraint: { property: 'columns', matches: { type: 'timeDimension', field: 'secondTable.dateTime' } },
-    source: 'bardOne'
-  }
+    source: 'bardOne',
+  },
 ];
 
 let Serializer: BardMetadataSerializer;
@@ -817,7 +817,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
     ColumnFunctions = ColumnFunctionPayloads.map((p) =>
       ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
     );
-    RequestConstraints = RequestConstraintPayloads.map(p =>
+    RequestConstraints = RequestConstraintPayloads.map((p) =>
       RequestConstraintMetadataModel.create(this.owner.ownerInjection(), p)
     );
   });

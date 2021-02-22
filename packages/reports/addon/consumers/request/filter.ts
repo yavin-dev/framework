@@ -7,8 +7,7 @@ import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase ,
-} from 'navi-reports/utils/request-metric';
+import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ReportModel from 'navi-core/models/report';
@@ -104,7 +103,7 @@ export default class FilterConsumer extends ActionConsumer {
 
       request.addFilter({
         ...filter,
-        ...(values ? { values } : {})
+        ...(values ? { values } : {}),
       });
     },
 

@@ -33,7 +33,7 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
   get filters(): FilterItem[] {
     const { request } = this.args;
     const requiredFilters = this.requestConstrainer.getConstrainedProperties(request).filters || new Set();
-    return [...request.dimensionFilters, ...request.metricFilters].map(fragment => ({
+    return [...request.dimensionFilters, ...request.metricFilters].map((fragment) => ({
       type: this.getFilterType(fragment),
       isRequired: requiredFilters.has(fragment),
       fragment,
