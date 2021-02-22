@@ -2,7 +2,6 @@
 
 {{!-- Add to Dashboard visible if a report has been run--}}
 {{#if (and (feature-flag "dashboards") @model.request.validations.isTruelyValid)}}
-  <li class="navi-report__action">
     <ReportActions::AddToDashboard
       @report={{@model}}
       @dashboards={{get (get-user) "dashboards"}}
@@ -10,8 +9,8 @@
       @onAddToNewDashboard={{fn @addToNewDashboard @model}}
       as |onClick|
     >
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="button is-text is-medium"
         {{on "click" onClick}}
       >
@@ -20,11 +19,9 @@
       </button>
     </ReportActions::AddToDashboard>
     <EmberTooltip @text="Add visualization to Dashboard" />
-  </li>
 {{/if}}
 
 {{!-- API Query Enabled only for a valid report --}}
-<li class="navi-report__action">
   <CommonActions::GetApi
     @request={{@model.request}}
     @disabled={{not @model.request.validations.isTruelyValid}}
@@ -35,13 +32,11 @@
   <EmberTooltip>
     {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
   </EmberTooltip>
-</li>
 
 {{!-- Clone only enabled on a Saved report --}}
-<li class="navi-report__action">
-  <LinkTo 
-    @route="reports.report.clone" 
-    @model={{@model.id}} 
+  <LinkTo
+    @route="reports.report.clone"
+    @model={{@model.id}}
     class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
     <NaviIcon @icon="copy" class="navi-report__action-icon" />
     Clone
@@ -49,11 +44,9 @@
   <EmberTooltip>
     {{if @model.isNew "Save report to enable clone" "Clone the report"}}
   </EmberTooltip>
-</li>
 
 {{!-- Export only enabled on a valid report --}}
 {{#if (feature-flag "exportFileTypes")}}
-  <li class="navi-report__action">
     {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
       {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
         <ExportAction
@@ -69,11 +62,9 @@
     <EmberTooltip>
       {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
     </EmberTooltip>
-  </li>
 {{/if}}
 
 {{!-- Share only enabled on a Valid saved report --}}
-<li class="navi-report__action">
   <CommonActions::Share
     @disabled={{@model.isNew}}
     class="button is-text is-medium {{if @model.isNew "is-disabled"}}"
@@ -84,12 +75,10 @@
   <EmberTooltip>
     {{if @model.isNew "Save report to enable share" "Share the report"}}
   </EmberTooltip>
-</li>
 
 {{#if @model.isOwner}}
   {{!-- Schedule only visible for an owned and not is new report --}}
   {{#if (and (feature-flag "enableScheduleReports") (not @model.isNew))}}
-    <li class="navi-report__action">
       <CommonActions::Schedule
         @model={{@model}}
         @disabled={{not @model.request.validations.isTruelyValid}}
@@ -101,11 +90,9 @@
         Schedule
       </CommonActions::Schedule>
       <EmberTooltip @text="Schedule a report run" />
-    </li>
   {{/if}}
 
   {{!-- Delete enabled on an owned report --}}
-  <li class="navi-report__action">
     <CommonActions::Delete
       @model={{@model}}
       @deleteAction={{item-action "DELETE_ITEM" @model}}
@@ -115,5 +102,4 @@
       Delete
     </CommonActions::Delete>
     <EmberTooltip @text="Delete the report"/>
-  </li>
 {{/if}}

@@ -1,15 +1,22 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report">
-  <div class="navi-report__breadcrumb">
-    {{#if (feature-flag "enableDirectory")}}
-      <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
-    {{else}}
-      <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
-    {{/if}}
-    <NaviIcon @icon="angle-right" />
+  <div class="container-full m-b-4 navi-report__breadcrumb">
+    <div class="row m-t-10">
+      <div class="xs-col-1-1 sm-col-1-2 col-1-5">
+        {{#if (feature-flag "enableDirectory")}}
+          <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
+        {{else}}
+          <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
+        {{/if}}
+        <NaviIcon @icon="angle-right" />
+      </div>
+    </div>
   </div>
-  <header class="navi-report__header row">
-    <span class="navi-report__title">
+  <div class="row">
+    <div class="xs-col-10-10 sm-col-10-10 col-3-10">
+      <div class="container-full m-b-4">
+        <div class="row">
+          <span class="navi-report__title">
       {{#if this.model.isOwner}}
         <EditableLabel
           class="navi-report__edit-title"
@@ -31,19 +38,26 @@
           />
         {{/let}}
       {{/unless}}
-
-    </span>
-    <ul class="navi-report__actions">
-      {{#if (feature-flag "dashboards")}}
-        {{!-- Disabling to allow calling report-to-widget mixin actions --}}
-        {{!-- template-lint-disable no-action --}}
-        <ReportActions @model={{this.model}} @addToDashboard={{action "addToDashboard"}} @addToNewDashboard={{action "addToNewDashboard"}} />
-      {{else}}
-        <ReportActions @model={{this.model}} />
-      {{/if}}
-    </ul>
-  </header>
-
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="xs-hide sm-hide col-2-10">
+    </div>
+    <div class="xs-col-10-10 sm-col-10-10 col-5-10 p-t-10">
+      <div class="container-full is-marginless">
+        <div class="row navi-report__header">
+            {{#if (feature-flag "dashboards")}}
+              {{!-- Disabling to allow calling report-to-widget mixin actions --}}
+              {{!-- template-lint-disable no-action --}}
+              <ReportActions @model={{this.model}} @addToDashboard={{action "addToDashboard"}} @addToNewDashboard={{action "addToNewDashboard"}} />
+            {{else}}
+              <ReportActions @model={{this.model}} />
+            {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="navi-report__body">
     <ReportBuilder
       @report={{this.model}}

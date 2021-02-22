@@ -12,7 +12,7 @@
   margin-top: 10px;
 
   &__breadcrumb {
-    margin: 5px 0 0 0;
+    // margin-left: -10px;
 
     &-link {
       color: $color-brand-300;
@@ -24,20 +24,24 @@
     display: flex;
     font-size: $h1-font-size;
     text-transform: capitalize;
-  }
-
-  &__breadcrumb,
-  &__header {
-    padding: 0 20px 0 25px;
+    //margin-left: -10px;
   }
 
   &__header {
     align-items: center;
     background-color: $color-grey-100;
     display: flex;
-    justify-content: space-between;
     margin-bottom: 10px;
     min-height: min-content;
+  }
+
+  &__row {
+    @media (min-width: 0px) and (max-width: 1199px) {
+      justify-content: flex-start;
+    }
+    @media (min-width: 1200px) {
+      justify-content: flex-end;
+    }
   }
 
   &-invalid__highlight-text {
@@ -51,10 +55,6 @@
 
   &-invalid__unauthorized-body {
     text-align: center;
-  }
-
-  &__actions {
-    margin-right: 10px;
   }
 
   &__action {
@@ -111,10 +111,6 @@
   &__fav-icon {
     font-size: 18px;
     margin: 12px 10px 0 10px;
-  }
-
-  &__report-action {
-    margin-top: 0;
   }
 }
 
