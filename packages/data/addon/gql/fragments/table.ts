@@ -58,7 +58,7 @@ const fragment = gql`
           tags
           columnType
           expression
-          supportedGrain {
+          supportedGrains {
             edges {
               node {
                 grain

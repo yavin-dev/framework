@@ -110,7 +110,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       category: 'cat1',
                       valueType: 'DATE',
                       tags: ['IMPORTANT'],
-                      supportedGrain: {
+                      supportedGrains: {
                         edges: [
                           { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
                           { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
@@ -614,7 +614,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             category: 'userDimensions',
             valueType: 'DATE',
             tags: ['DISPLAY'],
-            supportedGrain: {
+            supportedGrains: {
               edges: [
                 { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
                 { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
@@ -640,7 +640,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             category: 'userDimensions',
             valueType: 'DATE',
             tags: ['DISPLAY'],
-            supportedGrain: {
+            supportedGrains: {
               edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }],
               pageInfo: [],
             },
