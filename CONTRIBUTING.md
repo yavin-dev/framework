@@ -4,7 +4,7 @@ First, thanks for taking the time to contribute to our project! The following in
 
 ## Code of Conduct
 
-By participating in this project, you agree to abide by the [Verizon Media Code of Conduct](Code-of-Conduct.md). Everyone is welcome to submit a pull request or open an issue to improve the documentation, add improvements, or report bugs.
+We encourage inclusive and professional interactions on our project. We welcome everyone to open an issue, improve the documentation, report bug or submit a pull request. By participating in this project, you agree to abide by the [Verizon Media Code of Conduct](Code-Of-Conduct.md). If you feel there is a conduct issue related to this project, please raise it per the Code of Conduct process and we will address it.
 
 ## How to Contribute
 
@@ -165,6 +165,14 @@ Crazy, right?
 
 Sweet, we'd love to accept your contribution! Open a new pull request and fill
 out the provided form.
+
+We only seek to accept code that you are authorized to contribute to the project.
+We have added a pull request template on our projects so that your contributions
+are made with the following confirmation:
+
+> I confirm that this contribution is made under the terms of the license found in the
+> root directory of this repository's source tree and that I have the authority necessary
+> to make this contribution on behalf of its copyright owner.
 
 If your pull-request addresses an issue then please add the corresponding
 issue's number to the description of your pull-request.
