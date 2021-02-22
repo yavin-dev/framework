@@ -1148,7 +1148,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.report-view__visualization-edit').exists('visualization config is opened after clicking edit button');
 
     /* == Close config == */
-    await click('.report-view__visualization-edit-btn');
+    await click('.report-view__visualization-edit-close');
     await animationsSettled();
 
     assert
@@ -1200,7 +1200,7 @@ module('Acceptance | Navi Report', function (hooks) {
       .isVisible('Visualization edit panel is still visible after making changes that do not change the request');
 
     assert
-      .dom('.report-view__visualization-edit-btn')
+      .dom('.report-view__visualization-edit-close')
       .isVisible('Visualization edit button is is still visible after making changes that do not change the request');
 
     assert
