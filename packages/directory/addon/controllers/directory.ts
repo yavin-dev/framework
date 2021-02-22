@@ -76,11 +76,11 @@ export default class DirectoryController extends Controller {
   @computed('filter', 'router.currentRouteName')
   get title() {
     const { router, directories, filter } = this;
-    const currentDir = directories.getDirectories().find(dir => dir.routeLink === router.currentRouteName);
+    const currentDir = directories.getDirectories().find((dir) => dir.routeLink === router.currentRouteName);
 
     const queryParams = { filter };
     const match = currentDir?.filters?.filter(
-      filter => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams)
+      (filter) => JSON.stringify(filter.queryParams) === JSON.stringify(queryParams)
     );
 
     if (match?.length === 1) {

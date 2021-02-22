@@ -88,7 +88,7 @@ export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
     const { parameters = {} } = metric;
     if (hasParameters(metric) && 'as' in parameters) {
       return Object.assign({}, obj, {
-        [`${parameters.as}`]: canonicalizeMetric(metric)
+        [`${parameters.as}`]: canonicalizeMetric(metric),
       });
     }
     return obj;
@@ -138,7 +138,7 @@ export function parseMetricName(canonicalName: string | MetricObject): MetricObj
     metric = canonicalName.slice(0, canonicalName.indexOf('('));
     parameters = paramStr
       .split(',')
-      .map(paramEntry => paramEntry.split('='))
+      .map((paramEntry) => paramEntry.split('='))
       .reduce((obj, [key, val]) => Object.assign({}, obj, { [key.trim()]: val }), {});
   }
 
@@ -153,6 +153,6 @@ export function parseMetricName(canonicalName: string | MetricObject): MetricObj
 
   return {
     metric,
-    parameters
+    parameters,
   };
 }

@@ -3,18 +3,18 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Helper | get-shallow', function(hooks) {
+module('Integration | Helper | get-shallow', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(3);
 
     this.set('object', {
       'foo.bar': 'baz',
       foo: {
-        bar: 'wrong'
+        bar: 'wrong',
       },
-      buzz: 'bang'
+      buzz: 'bang',
     });
 
     this.set('key', 'foo.bar');

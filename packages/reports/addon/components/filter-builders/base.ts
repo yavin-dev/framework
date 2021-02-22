@@ -45,7 +45,7 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
   setOperator(newBuilder: FilterValueBuilder) {
     const {
       selectedValueBuilder,
-      args: { filter }
+      args: { filter },
     } = this;
     const changeSet: Partial<FilterFragment> = { operator: newBuilder.operator };
 
@@ -71,7 +71,7 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
   @action
   updateParameters(key: string, value: string) {
     this.args.onUpdateFilter({
-      parameters: { ...this.args.filter.parameters, [key]: value }
+      parameters: { ...this.args.filter.parameters, [key]: value },
     });
   }
 }

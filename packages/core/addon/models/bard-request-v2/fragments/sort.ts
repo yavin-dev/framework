@@ -10,8 +10,8 @@ import { SortDirection, Sort } from 'navi-data/adapters/facts/interface';
 const Validations = buildValidations({
   direction: validator('inclusion', {
     in: ['asc', 'desc'],
-    message: 'The `direction` sort field must equal to `asc` or `desc`'
-  })
+    message: 'The `direction` sort field must equal to `asc` or `desc`',
+  }),
 });
 
 /**

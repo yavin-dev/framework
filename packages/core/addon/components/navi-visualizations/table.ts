@@ -25,7 +25,7 @@ import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
-  subtotal: 'Subtotal'
+  subtotal: 'Subtotal',
 };
 type TotalType = keyof typeof HEADER_TITLE;
 
@@ -33,7 +33,7 @@ export type TableSortDirection = SortDirection | 'none';
 const NEXT_SORT_DIRECTION: Record<TableSortDirection, TableSortDirection> = {
   none: 'desc',
   desc: 'asc',
-  asc: 'none'
+  asc: 'none',
 };
 
 type TotalRow = ResponseRow;
@@ -150,7 +150,7 @@ export default class Table extends Component<Args> {
 
     totalRow.__meta__ = {
       isTotalRow: true,
-      hasPartialData
+      hasPartialData,
     };
 
     return totalRow;
@@ -180,7 +180,7 @@ export default class Table extends Component<Args> {
   @computed('selectedSubtotal', 'rawData', 'request.{columns.[]}')
   get groupedData(): Record<string, ResponseRow[]> {
     let { selectedSubtotal, rawData, request } = this;
-    const canonicalName = request.columns.find(column => column.cid === selectedSubtotal)?.canonicalName as string;
+    const canonicalName = request.columns.find((column) => column.cid === selectedSubtotal)?.canonicalName as string;
 
     return groupBy(rawData, (row: ResponseRow) => row[canonicalName]);
   }
@@ -200,13 +200,13 @@ export default class Table extends Component<Args> {
   @computed('args.options.columnAttributes', 'request.{columns.[],sorts.[]}')
   get columns(): TableColumn[] {
     const { columnAttributes } = this.args.options;
-    return this.request.columns.map(column => {
-      const sort = this.request.sorts.find(sort => sort.canonicalName === column.canonicalName);
+    return this.request.columns.map((column) => {
+      const sort = this.request.sorts.find((sort) => sort.canonicalName === column.canonicalName);
       return {
         fragment: column,
         attributes: columnAttributes[column.cid] || {},
         sortDirection: sort?.direction || 'none',
-        columnId: column.cid
+        columnId: column.cid,
       };
     });
   }
@@ -265,7 +265,7 @@ export default class Table extends Component<Args> {
   headerClicked(column: TableColumn): void {
     // TODO: Validate that the column clicked supports sorting
     const { type } = column.fragment;
-    const sort = this.request.sorts.find(sort => sort.canonicalName === column.fragment.canonicalName);
+    const sort = this.request.sorts.find((sort) => sort.canonicalName === column.fragment.canonicalName);
     const sortDirection = (sort?.direction || 'none') as TableSortDirection;
     const direction = this._getNextSortDirection(type, sortDirection);
     //TODO Fetch from report action dispatcher service

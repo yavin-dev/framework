@@ -18,7 +18,7 @@ export default class ChartBuildersBase<Args> extends Component<Args> {
   get chartBuilders() {
     // Find all chart builders registered in requirejs under the namespace "chart-builders"
     const builderRegExp = new RegExp(`^${config.modulePrefix}/chart-builders/(.*)`);
-    const chartBuilderEntries = Object.keys(global.requirejs.entries).filter(key => builderRegExp.test(key));
+    const chartBuilderEntries = Object.keys(global.requirejs.entries).filter((key) => builderRegExp.test(key));
 
     const owner = getOwner(this);
     const builderMap = chartBuilderEntries.reduce((map: Record<string, BaseChartBuilder | undefined>, builderName) => {

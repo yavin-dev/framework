@@ -15,7 +15,7 @@ export const DATE_TIME_FORMATS: Record<DateTimePeriod, string> = {
   week: 'MM/DD',
   month: 'MMM YYYY',
   quarter: '[Q]Q YYYY',
-  year: 'YYYY'
+  year: 'YYYY',
 };
 
 /*

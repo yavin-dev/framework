@@ -26,7 +26,7 @@ const DEFAULT_OPTIONS = <const>{
   style: {
     curve: 'line',
     area: false,
-    stacked: false
+    stacked: false,
   },
   axis: {
     x: {
@@ -34,32 +34,32 @@ const DEFAULT_OPTIONS = <const>{
       categories: [],
       tick: {
         culling: true,
-        multiline: false
-      }
+        multiline: false,
+      },
     },
     y: {
       series: {
         type: 'metric',
-        config: {}
+        config: {},
       },
       tick: {
         format: (val: number) => numeral(val).format('0.00a'),
-        count: 4
+        count: 4,
       },
       label: {
-        position: 'outer-middle'
-      }
-    }
+        position: 'outer-middle',
+      },
+    },
   },
   grid: {
-    y: { show: true }
+    y: { show: true },
   },
   point: {
     r: 0,
     focus: {
-      expand: { r: 4 }
-    }
-  }
+      expand: { r: 4 },
+    },
+  },
 };
 
 type InsightsData = { index: number; actual: number; predicted: number; standardDeviation: number };
@@ -88,7 +88,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   get builder(): BaseChartBuilder {
     const {
       seriesConfig: { type },
-      chartBuilders
+      chartBuilders,
     } = this;
 
     const chartBuilder = chartBuilders[type];
@@ -131,10 +131,10 @@ export default class LineChart extends ChartBuildersBase<Args> {
         axis: {
           y: {
             label: {
-              text: metric?.displayName
-            }
-          }
-        }
+              text: metric?.displayName,
+            },
+          },
+        },
       };
     }
 
@@ -225,9 +225,9 @@ export default class LineChart extends ChartBuildersBase<Args> {
         names: seriesData.names,
         order,
         selection: {
-          enabled: true
-        }
-      }
+          enabled: true,
+        },
+      },
     };
   }
 
@@ -282,7 +282,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
       owner.ownerInjection(),
       builder.buildTooltip(seriesConfig.config, request),
       {
-        renderer: owner.lookup('renderer:-dom')
+        renderer: owner.lookup('renderer:-dom'),
       }
     );
 
@@ -303,19 +303,14 @@ export default class LineChart extends ChartBuildersBase<Args> {
   get xAxisTickValuesByGrain(): Partial<Record<Grain, number[] | undefined>> {
     const dayValues = [];
     for (let i = 0; i < 12; i++) {
-      dayValues.push(
-        moment()
-          .startOf('year')
-          .month(i)
-          .dayOfYear()
-      );
+      dayValues.push(moment().startOf('year').month(i).dayOfYear());
     }
 
     return {
       day: dayValues,
       // week.by.year in date-time is hardcoded to YEAR_WITH_53_ISOWEEKS (2015)
       week: [1, 5, 9, 13, 18, 22, 26, 31, 35, 39, 44, 48],
-      month: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      month: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     };
   }
 
@@ -337,10 +332,10 @@ export default class LineChart extends ChartBuildersBase<Args> {
           tick: {
             values,
             fit: !values,
-            culling: !values
-          }
-        }
-      }
+            culling: !values,
+          },
+        },
+      },
     };
   }
 
@@ -365,7 +360,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
             tooltipData,
             x,
             request,
-            seriesConfig
+            seriesConfig,
           });
 
         run(() => {
@@ -376,7 +371,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
         let innerHTML = tooltip.element.innerHTML;
         tooltip.destroy();
         return innerHTML;
-      }
+      },
     };
   }
 

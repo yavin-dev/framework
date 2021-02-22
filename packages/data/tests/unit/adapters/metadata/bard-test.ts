@@ -7,15 +7,15 @@ import { TestContext } from 'ember-test-helpers';
 
 let Adapter: BardMetadataAdapter;
 
-module('Unit | Adapter | metadata/bard', function(hooks) {
+module('Unit | Adapter | metadata/bard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Adapter = this.owner.lookup('adapter:metadata/bard');
   });
 
-  test('_buildURLPath', function(assert) {
+  test('_buildURLPath', function (assert) {
     assert.equal(
       Adapter['buildURLPath']('table', '', {}),
       'https://data.naviapp.io/v1/tables/',
@@ -23,7 +23,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
     );
   });
 
-  test('fetchEverything', async function(assert) {
+  test('fetchEverything', async function (assert) {
     const { tables } = await Adapter.fetchEverything();
     assert.deepEqual(
       tables.map((t: TODO) => ({
@@ -40,20 +40,20 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
             (all: Array<string>, g: TODO) => [...all, ...g.dimensions.map(({ name }: { name: string }) => name)],
             []
           )
-        ).size
+        ).size,
       })),
       [
         { dimensions: 29, grains: 7, metrics: 42, name: 'network' },
         { dimensions: 31, grains: 7, metrics: 42, name: 'tableA' },
         { dimensions: 31, grains: 6, metrics: 42, name: 'tableB' },
         { dimensions: 31, grains: 7, metrics: 42, name: 'protected' },
-        { dimensions: 31, grains: 7, metrics: 33, name: 'tableC' }
+        { dimensions: 31, grains: 7, metrics: 33, name: 'tableC' },
       ],
       '`fetchEverything` correctly requested all datasource metadata'
     );
   });
 
-  test('fetchAll', async function(assert) {
+  test('fetchAll', async function (assert) {
     const tables = await Adapter.fetchAll('table');
     assert.deepEqual(
       tables.map((t: { name: string }) => t.name),
@@ -62,7 +62,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
     );
   });
 
-  test('fetchById', async function(assert) {
+  test('fetchById', async function (assert) {
     const payload = await Adapter.fetchById('metric', 'pageViews');
     const metric = payload?.[0];
     assert.deepEqual(
@@ -72,7 +72,7 @@ module('Unit | Adapter | metadata/bard', function(hooks) {
         description: 'Commodi et et.',
         longName: 'Page Views',
         name: 'pageViews',
-        type: 'number'
+        type: 'number',
       },
       '`fetchById` correctly requested a single metric'
     );

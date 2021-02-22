@@ -17,7 +17,7 @@ const MockDispatcher = {
   dispatch(action: string, _route: Route, ...args: unknown[]) {
     dispatchedActions.push(action);
     dispatchedActionArgs.push(...args);
-  }
+  },
 };
 
 const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) });
@@ -26,11 +26,11 @@ let Consumer: TableConsumer;
 let MetadataService: NaviMetadataService;
 let Store: StoreService;
 
-module('Unit | Consumer | request table', function(hooks) {
+module('Unit | Consumer | request table', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
@@ -44,7 +44,7 @@ module('Unit | Consumer | request table', function(hooks) {
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
   });
 
-  test('UPDATE_TABLE', function(assert) {
+  test('UPDATE_TABLE', function (assert) {
     const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -52,7 +52,7 @@ module('Unit | Consumer | request table', function(hooks) {
       requestVersion: '2.0',
       columns: [],
       filters: [],
-      sorts: []
+      sorts: [],
     });
 
     const newTable = MetadataService.getById('table', 'inventory', 'bardTwo');

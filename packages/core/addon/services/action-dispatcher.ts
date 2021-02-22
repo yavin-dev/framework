@@ -24,7 +24,7 @@ export default class ActionDispatcher extends Service {
 
   init() {
     super.init();
-    this.consumers.forEach(consumer => this.registerConsumer(consumer));
+    this.consumers.forEach((consumer) => this.registerConsumer(consumer));
   }
 
   /**
@@ -39,6 +39,6 @@ export default class ActionDispatcher extends Service {
    * Dispatches an action to all of the consumers
    */
   dispatch(actionType: string, ...params: unknown[]) {
-    this._registeredConsumers.forEach(consumer => consumer.send(actionType, ...params));
+    this._registeredConsumers.forEach((consumer) => consumer.send(actionType, ...params));
   }
 }

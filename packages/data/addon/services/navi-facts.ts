@@ -116,7 +116,7 @@ export default class NaviFactsService extends Service {
       if (currentPage < totalPages) {
         return this.fetch(request, {
           page: currentPage + 1,
-          perPage: perPage
+          perPage: perPage,
         });
       }
     }
@@ -135,7 +135,7 @@ export default class NaviFactsService extends Service {
       if (currentPage > 1) {
         return this.fetch(request, {
           page: currentPage - 1,
-          perPage: rowsPerPage
+          perPage: rowsPerPage,
         });
       }
     }

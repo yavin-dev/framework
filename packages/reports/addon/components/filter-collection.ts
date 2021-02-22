@@ -24,8 +24,8 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
   get filters() {
     const { request } = this.args;
     return [
-      ...request.dimensionFilters.map(fragment => ({ type: this.getFilterType(fragment), fragment })),
-      ...request.metricFilters.map(fragment => ({ type: this.getFilterType(fragment), fragment }))
+      ...request.dimensionFilters.map((fragment) => ({ type: this.getFilterType(fragment), fragment })),
+      ...request.metricFilters.map((fragment) => ({ type: this.getFilterType(fragment), fragment })),
     ];
   }
 

@@ -67,5 +67,5 @@ export default Mixin.create({
    */
   didLoad() {
     this._cachePersistedVisualization();
-  }
+  },
 });

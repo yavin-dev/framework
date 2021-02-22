@@ -31,32 +31,32 @@ const Validations = buildValidations(
           }
           return numDimensions === 0;
         },
-        dependentKeys: ['model._request.columns.[]']
-      })
+        dependentKeys: ['model._request.columns.[]'],
+      }),
     ],
 
     [`${CONFIG_PATH}.timeGrain`]: validator('request-time-grain', {
-      disabled: computed('chartType', function() {
+      disabled: computed('chartType', function () {
         return this.chartType !== DATE_TIME_SERIES;
       }),
-      dependentKeys: ['model._request.filters.[]']
+      dependentKeys: ['model._request.filters.[]'],
     }),
 
     //Dimension Series Validations
     [`${CONFIG_PATH}.metricCid`]: validator('request-metric-exist', {
-      disabled: computed('chartType', function() {
+      disabled: computed('chartType', function () {
         return this.chartType !== DIMENSION_SERIES && this.chartType !== DATE_TIME_SERIES;
       }),
-      dependentKeys: ['model._request.columns.[]']
-    })
+      dependentKeys: ['model._request.columns.[]'],
+    }),
   },
   {
     //Global Validation Options
-    chartType: computed('model._request.{columns.[],filters.[]}', function() {
+    chartType: computed('model._request.{columns.[],filters.[]}', function () {
       const { request } = this;
       return request && chartTypeForRequest(request);
     }),
-    request: readOnly('model._request')
+    request: readOnly('model._request'),
   }
 );
 
@@ -72,7 +72,7 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
   @attr({
     defaultValue(): LineChartConfig['metadata'] {
       return { axis: { y: { series: { type: 'metric', config: {} } } } };
-    }
+    },
   })
   metadata!: LineChartConfig['metadata'];
 
@@ -98,8 +98,8 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
     set(this, 'metadata', {
       style,
       axis: {
-        y: { series }
-      }
+        y: { series },
+      },
     });
     return this;
   }

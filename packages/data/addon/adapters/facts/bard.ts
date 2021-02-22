@@ -18,7 +18,7 @@ import NaviFactAdapter, {
   SORT_DIRECTIONS,
   AsyncQueryResponse,
   Column,
-  Sort
+  Sort,
 } from './interface';
 import { omit } from 'lodash-es';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -38,12 +38,12 @@ export class FactAdapterError extends Error {
 function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
   if (!column.parameters.field) {
     warn(`Dimension '${column.field}' does not specify a 'field' parameter`, {
-      id: 'formatDimensionFieldName--no-field-paramter'
+      id: 'formatDimensionFieldName--no-field-paramter',
     });
   }
   if (column.field.includes('.')) {
     warn(`Dimension '${column.field}' includes '.', which is likely an error, use the parameters instead`, {
-      id: 'formatDimensionFieldName--dimension-with-period'
+      id: 'formatDimensionFieldName--dimension-with-period',
     });
   }
   const parameters = omit(column.parameters, 'field');
@@ -57,11 +57,11 @@ function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
  */
 export function serializeFilters(filters: Filter[]): string {
   return filters
-    .map(filter => {
+    .map((filter) => {
       let { operator, values } = filter;
       let serializedValues = values
         .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
-        .map(v => `"${v}"`) // wrap each "value"
+        .map((v) => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
 
       if (operator === 'isnull') {
@@ -108,7 +108,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildDimensionsPath(request: RequestV2 /*options*/): string {
     const dimensionToFields = request.columns
-      .filter(c => c.type === 'dimension')
+      .filter((c) => c.type === 'dimension')
       .reduce((dimensionToFields: Record<string, string[]>, dim) => {
         const dimName = canonicalizeFiliDimension(dim);
         if (!dimensionToFields[dimName]) {
@@ -121,8 +121,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const dimensions = Object.keys(dimensionToFields);
     return dimensions.length
       ? `/${dimensions
-          .map(dim => {
-            const fields = [...new Set(dimensionToFields[dim])].filter(field => !!field);
+          .map((dim) => {
+            const fields = [...new Set(dimensionToFields[dim])].filter((field) => !!field);
             return `${dim}${fields.length > 0 ? `;show=${fields.sort().join(',')}` : ''}`;
           })
           .join('/')}`
@@ -159,21 +159,19 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * Builds a metrics param string for a request
    */
   _buildMetricsParam(request: RequestV2): string {
-    const metrics = request.columns.filter(col => col.type === 'metric');
-    const metricIds = metrics.map(metric =>
+    const metrics = request.columns.filter((col) => col.type === 'metric');
+    const metricIds = metrics.map((metric) =>
       canonicalizeMetric({ metric: metric.field, parameters: metric.parameters })
     );
 
-    return array(metricIds)
-      .uniq()
-      .join(',');
+    return array(metricIds).uniq().join(',');
   }
 
   /**
    * Builds a filters param string for a request
    */
   _buildFiltersParam(request: RequestV2): string | undefined {
-    const filters = request.filters.filter(fil => fil.type === 'dimension' && fil.values.length !== 0);
+    const filters = request.filters.filter((fil) => fil.type === 'dimension' && fil.values.length !== 0);
 
     if (filters?.length) {
       return serializeFilters(filters);
@@ -210,11 +208,11 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * Builds a having param string for a request
    */
   _buildHavingParam(request: RequestV2): string | undefined {
-    const having = request.filters.filter(fil => fil.type === 'metric' && fil.values.length !== 0);
+    const having = request.filters.filter((fil) => fil.type === 'metric' && fil.values.length !== 0);
 
     if (having?.length) {
       return having
-        .map(having => {
+        .map((having) => {
           const { field, operator, values = [] } = having;
 
           return `${field}-${operator}[${values.join(',')}]`;
@@ -233,7 +231,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const table = request.table;
 
     const dateTimeColumns = request.columns.filter(isDateTime);
-    const grains = [...new Set(dateTimeColumns.map(c => c.parameters.grain))] as Grain[];
+    const grains = [...new Set(dateTimeColumns.map((c) => c.parameters.grain))] as Grain[];
     if (grains.length > 1) {
       throw new FactAdapterError(
         `Requesting multiple 'Date Time' grains is not supported. You requested [${grains.join(',')}]`
@@ -267,7 +265,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       ...(filters ? { filters } : {}),
       ...(having ? { having } : {}),
       ...(sort ? { sort } : {}),
-      format: options?.format ?? 'json'
+      format: options?.format ?? 'json',
     };
 
     const { page, perPage, cache, queryParams } = options || {};
@@ -352,15 +350,15 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     return this.ajax.request(url, {
       xhrFields: {
-        withCredentials: true
+        withCredentials: true,
       },
       beforeSend(xhr: TODO) {
         xhr.setRequestHeader('clientid', clientId);
-        Object.keys(customHeaders).forEach(name => xhr.setRequestHeader(name, customHeaders[name]));
+        Object.keys(customHeaders).forEach((name) => xhr.setRequestHeader(name, customHeaders[name]));
       },
       crossDomain: true,
       data: query,
-      timeout: timeout
+      timeout: timeout,
     });
   }
 

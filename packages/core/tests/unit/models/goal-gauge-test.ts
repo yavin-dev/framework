@@ -4,10 +4,10 @@ import { set } from '@ember/object';
 import { buildTestRequest } from '../../helpers/request';
 import StoreService from '@ember-data/store';
 
-module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
+module('Unit | Model | Gauge Visualization Fragment', function (hooks) {
   setupTest(hooks);
 
-  test('isValidForRequest', function(assert) {
+  test('isValidForRequest', function (assert) {
     let request = buildTestRequest([{ field: 'rupees', parameters: {}, cid: 'cid_rupees' }], []);
     const store = this.owner.lookup('service:store') as StoreService;
     const { goalGauge } = store.createRecord('all-the-fragments');
@@ -23,7 +23,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
     set(goalGauge, 'metadata', {
       metricCid: 'cid_rupees',
       baselineValue: 34,
-      goalValue: 50
+      goalValue: 50,
     });
     assert.ok(
       goalGauge.isValidForRequest(request),
@@ -34,7 +34,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
       metricCid: 'cid_rupees',
       //@ts-expect-error
       baselineValue: 'e',
-      goalValue: 50
+      goalValue: 50,
     });
     assert.notOk(
       goalGauge.isValidForRequest(request),
@@ -45,14 +45,14 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
       metricCid: 'cid_rupees',
       baselineValue: 34,
       //@ts-expect-error
-      goalValue: 'abc'
+      goalValue: 'abc',
     });
     assert.notOk(goalGauge.isValidForRequest(request), 'config for goal gauge is invalid when goal is not a number');
 
     request = buildTestRequest(
       [
         { field: 'swords', parameters: {}, cid: 'cid_swords' },
-        { field: 'hp', parameters: {}, cid: 'cid_hp' }
+        { field: 'hp', parameters: {}, cid: 'cid_hp' },
       ],
       []
     );
@@ -62,7 +62,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
     );
   });
 
-  test('rebuildConfig', function(assert) {
+  test('rebuildConfig', function (assert) {
     let request = buildTestRequest([{ field: 'rupees', cid: 'cid_rupees', parameters: {} }], []),
       requestWithParams = buildTestRequest(
         [{ field: 'revenue', cid: 'cid_revenue', parameters: { currency: 'HYR' } }],
@@ -81,46 +81,46 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metricCid: 'cid_rupees'
+          metricCid: 'cid_rupees',
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       },
       expectedFloatConfig = {
         metadata: {
           baselineValue: 0.9,
           goalValue: 1.1,
-          metricCid: 'cid_rupees'
+          metricCid: 'cid_rupees',
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       },
       expectedNegativeConfig = {
         metadata: {
           baselineValue: -11,
           goalValue: -9,
-          metricCid: 'cid_rupees'
+          metricCid: 'cid_rupees',
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       },
       expectedZeroConfig = {
         metadata: {
           baselineValue: 0,
           goalValue: 1,
-          metricCid: 'cid_rupees'
+          metricCid: 'cid_rupees',
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       },
       expectedParamConfig = {
         metadata: {
           baselineValue: 9,
           goalValue: 11,
-          metricCid: 'cid_revenue'
+          metricCid: 'cid_revenue',
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       };
     // positive integer
     assert.deepEqual(
@@ -151,7 +151,7 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
     assert.deepEqual(newConfig, expectedZeroConfig, 'rebuilds config based on request with zero metric');
   });
 
-  test('rebuildConfig - no columns', function(assert) {
+  test('rebuildConfig - no columns', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = buildTestRequest([], []);
     const goalGauge = store.createRecord('all-the-fragments').goalGauge;
@@ -163,10 +163,10 @@ module('Unit | Model | Gauge Visualization Fragment', function(hooks) {
         metadata: {
           baselineValue: 0,
           goalValue: 1,
-          metricCid: undefined
+          metricCid: undefined,
         },
         type: 'goal-gauge',
-        version: 2
+        version: 2,
       },
       'config can be generated when no columns are present'
     );

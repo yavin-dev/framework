@@ -24,7 +24,7 @@ export const RequestActions = <const>{
   DID_UPDATE_TABLE: 'didUpdateTable',
 
   UPSERT_SORT: 'upsertSort',
-  REMOVE_SORT: 'removeSort'
+  REMOVE_SORT: 'removeSort',
 };
 
 export default class RequestActionDispatcher extends ActionDispatcher {

@@ -24,7 +24,8 @@ export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
 
 export type TimeDimensionColumn = ColumnInstance<TimeDimensionMetadataModel>;
 
-export default class TimeDimensionMetadataModel extends DimensionMetadataModel
+export default class TimeDimensionMetadataModel
+  extends DimensionMetadataModel
   implements TimeDimensionMetadata, TimeDimensionMetadataPayload {
   metadataType: ColumnType = 'timeDimension';
   /**

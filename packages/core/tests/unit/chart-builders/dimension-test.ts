@@ -57,11 +57,11 @@ const genderDim = { cid: 'cid_gender', field: 'gender', parameters: { field: 'id
 
 let REQUEST: RequestFragment, REQUEST2: RequestFragment;
 
-module('Unit | Chart Builders | Dimension', function(hooks) {
+module('Unit | Chart Builders | Dimension', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     REQUEST = buildTestRequest(
       metrics,
       [ageDim],
@@ -74,7 +74,7 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('buildData - no dimensions', function(assert) {
+  test('buildData - no dimensions', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -83,33 +83,33 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         series: [
           { x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' } },
           { x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' } },
-          { x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' } }
+          { x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' } },
         ] as C3Row[],
-        names: {}
+        names: {},
       },
       'Error Case: No series are made when no dimensions are requested'
     );
   });
 
-  test('buildData - no time dimension', function(assert) {
+  test('buildData - no time dimension', function (assert) {
     const request = this.store.createFragment('bard-request-v2/request', {
       columns: [
         { type: 'metric', field: 'totalPageViews', cid: 'cid_totalPageViews', parameters: {}, source: 'bardOne' },
         { type: 'dimension', field: 'age', cid: 'cid_age', parameters: {}, source: 'bardOne' },
-        { type: 'dimension', field: 'gender', cid: 'cid_gender', parameters: {}, source: 'bardOne' }
+        { type: 'dimension', field: 'gender', cid: 'cid_gender', parameters: {}, source: 'bardOne' },
       ],
       filters: [],
       sorts: [],
       requestVersion: '2.0',
       dataSource: 'bardOne',
-      table: 'network'
+      table: 'network',
     });
 
     const data = NaviFactResponse.create({
       rows: [
         { totalPageViews: 10, age: '-2', gender: 'm' },
-        { totalPageViews: 12, age: '1', gender: 'f' }
-      ]
+        { totalPageViews: 12, age: '1', gender: 'f' },
+      ],
     });
 
     assert.deepEqual(
@@ -119,15 +119,15 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other | M', values: { cid_age: '-2', cid_gender: 'm' } },
-            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } }
-          ]
+            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } },
+          ],
         },
         request
       ),
       {
         names: {
           'series.0': 'All Other | M',
-          'series.1': 'Under 13 | F'
+          'series.1': 'Under 13 | F',
         },
         series: ([
           {
@@ -135,16 +135,16 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
             'series.1': 12,
             x: {
               displayValue: '',
-              rawValue: ''
-            }
-          }
-        ] as unknown) as C3Row[]
+              rawValue: '',
+            },
+          },
+        ] as unknown) as C3Row[],
       },
       '`buildData` constructs a single c3 row when a time dimension is not requested'
     );
   });
 
-  test('groupDataBySeries - many dimensions of same type', function(assert) {
+  test('groupDataBySeries - many dimensions of same type', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -154,8 +154,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other', values: { cid_age: '-3' } },
-            { name: 'Under 13', values: { cid_age: '1' } }
-          ]
+            { name: 'Under 13', values: { cid_age: '1' } },
+          ],
         },
         REQUEST
       ),
@@ -164,29 +164,29 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
             'series.0': 3669828357,
-            'series.1': 2669828357
+            'series.1': 2669828357,
           },
           {
             x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
             'series.0': 4088487125,
-            'series.1': 3088487125
+            'series.1': 3088487125,
           },
           {
             x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
             'series.0': 4024700302,
-            'series.1': 3024700302
-          }
+            'series.1': 3024700302,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'All Other',
-          'series.1': 'Under 13'
-        }
+          'series.1': 'Under 13',
+        },
       },
       'A series is made for each requested dimension'
     );
   });
 
-  test('groupDataBySeries hour granularity - many dimensions of same type', function(assert) {
+  test('groupDataBySeries hour granularity - many dimensions of same type', function (assert) {
     assert.expect(1);
 
     let request = buildTestRequest(
@@ -202,7 +202,7 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         { 'network.dateTime(grain=hour)': '2016-05-30 01:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
         { 'network.dateTime(grain=hour)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=hour)': '2016-05-30 01:00:00.000', 'age(field=id)': '1', totalPageViews: 4088487125 }
-      ]
+      ],
     });
 
     assert.deepEqual(
@@ -212,8 +212,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other', values: { cid_age: '-3' } },
-            { name: 'Under 13', values: { cid_age: '1' } }
-          ]
+            { name: 'Under 13', values: { cid_age: '1' } },
+          ],
         },
         request
       ),
@@ -222,24 +222,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: '00:00' },
             'series.0': 3669828357,
-            'series.1': 3669828357
+            'series.1': 3669828357,
           },
           {
             x: { rawValue: '2016-05-30 01:00:00.000', displayValue: '01:00' },
             'series.0': 4088487125,
-            'series.1': 4088487125
-          }
+            'series.1': 4088487125,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'All Other',
-          'series.1': 'Under 13'
-        }
+          'series.1': 'Under 13',
+        },
       },
       'A series has the properly formmatted displayValue'
     );
   });
 
-  test('groupDataBySeries month granularity - many dimensions of same type', function(assert) {
+  test('groupDataBySeries month granularity - many dimensions of same type', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -255,7 +255,7 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 4088487125 }
-      ]
+      ],
     });
 
     assert.deepEqual(
@@ -265,8 +265,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other', values: { cid_age: '-3' } },
-            { name: 'Under 13', values: { cid_age: '1' } }
-          ]
+            { name: 'Under 13', values: { cid_age: '1' } },
+          ],
         },
         request
       ),
@@ -275,24 +275,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           {
             x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
             'series.0': 3669828357,
-            'series.1': 3669828357
+            'series.1': 3669828357,
           },
           {
             x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
             'series.0': 4088487125,
-            'series.1': 4088487125
-          }
+            'series.1': 4088487125,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'All Other',
-          'series.1': 'Under 13'
-        }
+          'series.1': 'Under 13',
+        },
       },
       'A series has the properly formmatted displayValue'
     );
   });
 
-  test('groupDataBySeries - many dimensions of different type', function(assert) {
+  test('groupDataBySeries - many dimensions of different type', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -302,8 +302,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other | M', values: { cid_age: '-2', cid_gender: 'm' } },
-            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } }
-          ]
+            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } },
+          ],
         },
         REQUEST2
       ),
@@ -312,24 +312,24 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           {
             x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
             'series.0': 74621538,
-            'series.1': 158591335
+            'series.1': 158591335,
           },
           {
             x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
             'series.0': 72011227,
-            'series.1': 156664890
-          }
+            'series.1': 156664890,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'All Other | M',
-          'series.1': 'Under 13 | F'
-        }
+          'series.1': 'Under 13 | F',
+        },
       },
       'A series is made for each requested dimension with multiple dimension'
     );
   });
 
-  test('groupDataBySeries - many dimensions of different type with some that are not found', function(assert) {
+  test('groupDataBySeries - many dimensions of different type with some that are not found', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -339,8 +339,8 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'Unknown | M', values: { cid_age: '-3', cid_gender: 'm' } },
-            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } }
-          ]
+            { name: 'Under 13 | F', values: { cid_age: '1', cid_gender: 'f' } },
+          ],
         },
         REQUEST2
       ),
@@ -349,32 +349,32 @@ module('Unit | Chart Builders | Dimension', function(hooks) {
           {
             x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
             'series.0': null,
-            'series.1': 158591335
+            'series.1': 158591335,
           },
           {
             x: { displayValue: 'Jan 2', rawValue: '2016-01-02 00:00:00.000' },
             'series.0': null,
-            'series.1': 156664890
-          }
+            'series.1': 156664890,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'Unknown | M',
-          'series.1': 'Under 13 | F'
-        }
+          'series.1': 'Under 13 | F',
+        },
       },
       'A series is made for each requested dimension with multiple dimension with some that are not found'
     );
   });
 
-  test('buildTooltip', function(assert) {
+  test('buildTooltip', function (assert) {
     assert.expect(2);
 
     const config = {
       metricCid: 'cid_totalPageViews',
       dimensions: [
         { name: 'All Other', values: { cid_age: '-3' } },
-        { name: 'Under 13', values: { cid_age: '1' } }
-      ]
+        { name: 'Under 13', values: { cid_age: '1' } },
+      ],
     };
     const x = '2016-05-31 00:00:00.000';
     const tooltipData = [{ x, id: -3, name: 'All Other', value: 4088487125 }];

@@ -53,7 +53,7 @@ export default class DirSidebarComponent extends Component<DirSidebarComponentAr
     {
       name: 'Favorites',
       icon: 'star-o',
-      queryParams: { filter: 'favorites' }
-    }
+      queryParams: { filter: 'favorites' },
+    },
   ];
 }

@@ -20,10 +20,10 @@ const TEMPLATE = hbs`<FilterValues::TimeDimension::Lookback
   @isCollapsed={{this.isCollapsed}}
 />`;
 
-module('Integration | Component | filter-values/time-dimension/lookback', function(hooks) {
+module('Integration | Component | filter-values/time-dimension/lookback', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
 
     this.filter = fragmentFactory.createFilter(
@@ -43,7 +43,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
     };
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
@@ -56,7 +56,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
       .hasValue('4', 'The input value is the number of days to look back');
   });
 
-  test('changing values', async function(this: TestContext, assert) {
+  test('changing values', async function (this: TestContext, assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -74,7 +74,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
       .hasValue('5', 'The input value changed along with the interval');
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     this.isCollapsed = true;
 
     await render(TEMPLATE);
@@ -85,7 +85,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
       .hasText(`4 days (${getDateRangeFormat(this.filter)})`, 'The lookback is rendered correctly when collapsed');
   });
 
-  test('selecting preset values', async function(this: TestContext, assert) {
+  test('selecting preset values', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     // Set to 7
@@ -113,7 +113,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
     await click('.filter-values--lookback-trigger');
   });
 
-  test('typing in a predefined lookback value', async function(this: TestContext, assert) {
+  test('typing in a predefined lookback value', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     // type in 14
@@ -128,7 +128,7 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
     await click('.filter-values--lookback-trigger');
   });
 
-  test('typing in a not predefined lookback value', async function(this: TestContext, assert) {
+  test('typing in a not predefined lookback value', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     await selectChoose('.filter-values--lookback-trigger', '7 Days');

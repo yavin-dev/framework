@@ -29,7 +29,7 @@ const metricResponse = NaviFactResponse.create({
     { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', uniqueIdentifier: 183380921, totalPageViews: 4024700302 },
     { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', uniqueIdentifier: 180559793, totalPageViews: 3950276031 },
     { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
-  ]
+  ],
 });
 
 const dimensionReponse = NaviFactResponse.create({
@@ -76,14 +76,14 @@ const dimensionReponse = NaviFactResponse.create({
     { 'network.dateTime(grain=week)': '2016-02-01 00:00:00.000', 'age(field=id)': '4', uniqueIdentifier: 72724594, totalPageViews: 97156058 },
     { 'network.dateTime(grain=week)': '2016-02-08 00:00:00.000', 'age(field=id)': '4', uniqueIdentifier: 52298735, totalPageViews: 8425744 },
     { 'network.dateTime(grain=week)': '2016-02-15 00:00:00.000', 'age(field=id)': '4', uniqueIdentifier: 55191081, totalPageViews: 72620639 }
-  ]
+  ],
 });
 
-module('Integration | Component | bar chart', function(hooks) {
+module('Integration | Component | bar chart', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     injectC3Enhancements();
 
     this.set('options', {
@@ -91,16 +91,16 @@ module('Integration | Component | bar chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     });
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(2);
 
     const singleMetricRequest = buildTestRequest(
@@ -120,7 +120,7 @@ module('Integration | Component | bar chart', function(hooks) {
     assert.dom('.c3-bar').exists({ count: 5 }, '5 bars are present on the chart');
   });
 
-  test('multiple metric series', async function(assert) {
+  test('multiple metric series', async function (assert) {
     assert.expect(1);
 
     const multipleMetricRequest = buildTestRequest(
@@ -137,7 +137,7 @@ module('Integration | Component | bar chart', function(hooks) {
     assert.dom('.c3-bar').exists({ count: 10 }, 'Ten bars are present in the bar based on the metrics in the request');
   });
 
-  test('multiple dimension series', async function(assert) {
+  test('multiple dimension series', async function (assert) {
     assert.expect(2);
 
     this.set('options', {
@@ -152,12 +152,12 @@ module('Integration | Component | bar chart', function(hooks) {
                 { name: 'under 13', values: { cid_age: '1' } },
                 { name: '13 - 25', values: { cid_age: '2' } },
                 { name: '25 - 35', values: { cid_age: '3' } },
-                { name: '35 - 45', values: { cid_age: '4' } }
-              ]
-            }
-          }
-        }
-      }
+                { name: '35 - 45', values: { cid_age: '4' } },
+              ],
+            },
+          },
+        },
+      },
     });
     const dimensionRequest = buildTestRequest(
       [{ field: 'uniqueIdentifier' }, { cid: 'cid_totalPageViews', field: 'totalPageViews' }],

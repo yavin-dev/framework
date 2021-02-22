@@ -11,10 +11,10 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { Grain } from 'navi-data/utils/date';
 
 let Request: RequestFragment;
-module('Unit | Component | filter-builders/time-dimension', function(hooks) {
+module('Unit | Component | filter-builders/time-dimension', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     Request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -24,26 +24,26 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
           operator: 'bet',
           values: ['P7D', 'current'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
   });
 
-  test('filter property', function(assert) {
+  test('filter property', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
       filter,
-      onUpdateFilter: () => undefined
+      onUpdateFilter: () => undefined,
     };
 
     let dateBuilder = createGlimmerComponent(
@@ -52,7 +52,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     ) as TimeDimensionFilterBuilder;
 
     assert.deepEqual(
-      dateBuilder.valueBuilders.map(op => op.name),
+      dateBuilder.valueBuilders.map((op) => op.name),
       ['Current Day', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
@@ -60,20 +60,20 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     filter.updateParameters({ grain: 'isoWeek' });
 
     assert.deepEqual(
-      dateBuilder.valueBuilders.map(op => op.name),
+      dateBuilder.valueBuilders.map((op) => op.name),
       ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
   });
 
-  test('Interval operator', function(assert) {
+  test('Interval operator', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     filter.values = ['P1W', 'current'];
     filter.updateParameters({ grain: 'isoWeek' });
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
       filter,
-      onUpdateFilter: () => undefined
+      onUpdateFilter: () => undefined,
     };
 
     let dateBuilder = createGlimmerComponent(
@@ -113,7 +113,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
   });
 
-  test('Switching operator', function(assert) {
+  test('Switching operator', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     filter.updateParameters({ grain: 'isoWeek' });
 

@@ -38,7 +38,7 @@ export default class NaviVisualizationConfigSeriesChartComponent extends Compone
     assert('seriesType should be dimension', this.args.seriesType === 'dimension');
     const newConfig: DimensionSeries['config'] = {
       ...this.args.seriesConfig,
-      metricCid: metric.cid
+      metricCid: metric.cid,
     };
     this.args.onUpdateConfig(newConfig);
   }

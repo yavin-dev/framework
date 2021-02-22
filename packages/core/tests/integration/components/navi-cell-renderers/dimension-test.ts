@@ -18,7 +18,7 @@ const TEMPLATE = hbs`
 
 const data: CellRendererArgs['data'] = {
   'os(field=id)': 'BlackBerry',
-  'os(field=desc)': 'BlackBerry OS'
+  'os(field=desc)': 'BlackBerry OS',
 };
 
 interface TestContext extends Context {
@@ -27,10 +27,10 @@ interface TestContext extends Context {
   request: RequestFragment;
 }
 
-module('Integration | Component | cell renderers/dimension', function(hooks) {
+module('Integration | Component | cell renderers/dimension', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
 
     this.set('data', data);
@@ -39,13 +39,13 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
       store.createFragment('bard-request-v2/request', {
         columns: [
           { type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
-          { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' }
+          { type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
         ],
         filters: [],
         sorts: [],
         requestVersion: '2.0',
         dataSource: 'bardOne',
-        table: 'network'
+        table: 'network',
       })
     );
 
@@ -53,12 +53,12 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: fragment.cid
+      columnId: fragment.cid,
     };
     this.set('column', column);
   });
 
-  test('dimension renders given field', async function(this: TestContext, assert) {
+  test('dimension renders given field', async function (this: TestContext, assert) {
     assert.expect(3);
     await render(TEMPLATE);
 
@@ -70,7 +70,7 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: 'cid_osDesc'
+      columnId: 'cid_osDesc',
     };
     this.set('column', column);
 
@@ -79,7 +79,7 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
       .hasText('BlackBerry OS', 'The dimension cell switches to the other field based on the parameter');
   });
 
-  test('dimension renders no value with dashes correctly', async function(assert) {
+  test('dimension renders no value with dashes correctly', async function (assert) {
     assert.expect(1);
 
     this.set('data', {});

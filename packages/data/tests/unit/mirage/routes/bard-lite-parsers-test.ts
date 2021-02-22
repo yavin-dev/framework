@@ -1,16 +1,16 @@
 import { module, test } from 'qunit';
 import { parseFilters, parseHavings, parseMetrics } from 'navi-data/mirage/routes/bard-lite-parsers';
 
-module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
-  module('parseFilters', function() {
-    test('empty', function(assert) {
+module('Unit | Mirage | Routes | Bard Lite Parsers', function () {
+  module('parseFilters', function () {
+    test('empty', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(parseFilters(''), [], 'empty string parses to empty array');
       assert.deepEqual(parseFilters(), [], 'undefined parses to empty array');
     });
 
-    test('simple', function(assert) {
+    test('simple', function (assert) {
       assert.expect(4);
 
       assert.deepEqual(
@@ -38,7 +38,7 @@ module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
       );
     });
 
-    test('multiple values', function(assert) {
+    test('multiple values', function (assert) {
       assert.expect(3);
 
       assert.deepEqual(
@@ -60,14 +60,14 @@ module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
       );
     });
 
-    test('multiple dimensions', function(assert) {
+    test('multiple dimensions', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(
         parseFilters('dim|id-in[value,value 2],dim2|id-in[this]'),
         [
           { dimension: 'dim', field: 'id', operator: 'in', values: ['value', 'value 2'] },
-          { dimension: 'dim2', field: 'id', operator: 'in', values: ['this'] }
+          { dimension: 'dim2', field: 'id', operator: 'in', values: ['this'] },
         ],
         'parses multiple filters with different structures'
       );
@@ -76,22 +76,22 @@ module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
         parseFilters('dim|id-in[value,value 2],dim2|key-contains["the values","like",these]'),
         [
           { dimension: 'dim', field: 'id', operator: 'in', values: ['value', 'value 2'] },
-          { dimension: 'dim2', field: 'key', operator: 'contains', values: ['the values', 'like', 'these'] }
+          { dimension: 'dim2', field: 'key', operator: 'contains', values: ['the values', 'like', 'these'] },
         ],
         'parses multiple filters with different value formats'
       );
     });
   });
 
-  module('parseHavings', function() {
-    test('empty', function(assert) {
+  module('parseHavings', function () {
+    test('empty', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(parseHavings(''), {}, 'empty string parses to empty object');
       assert.deepEqual(parseHavings(), {}, 'undefined parses to empty object');
     });
 
-    test('simple', function(assert) {
+    test('simple', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(
@@ -107,29 +107,29 @@ module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
       );
     });
 
-    test('multiple', function(assert) {
+    test('multiple', function (assert) {
       assert.expect(1);
 
       assert.deepEqual(
         parseHavings('metric-bet[0,100],metric2-nbet[100,0]'),
         {
           metric: { operator: 'bet', values: ['0', '100'] },
-          metric2: { operator: 'nbet', values: ['100', '0'] }
+          metric2: { operator: 'nbet', values: ['100', '0'] },
         },
         'parses multiple havings with multiple params'
       );
     });
   });
 
-  module('parseMetrics', function() {
-    test('empty', function(assert) {
+  module('parseMetrics', function () {
+    test('empty', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(parseMetrics(''), [], 'empty string parses to empty array');
       assert.deepEqual(parseMetrics(), [], 'undefined parses to empty array');
     });
 
-    test('simple', function(assert) {
+    test('simple', function (assert) {
       assert.expect(2);
 
       assert.deepEqual(parseMetrics('metric1'), ['metric1'], 'parses filter with one unquoted value');
@@ -137,7 +137,7 @@ module('Unit | Mirage | Routes | Bard Lite Parsers', function() {
       assert.deepEqual(parseMetrics('metric1,metric2'), ['metric1', 'metric2'], 'parses multiple metrics');
     });
 
-    test('parameterized', function(assert) {
+    test('parameterized', function (assert) {
       assert.expect(5);
       assert.deepEqual(parseMetrics('params(a=b,c=4)'), ['params(a=b,c=4)'], 'parses parameterized metric');
 

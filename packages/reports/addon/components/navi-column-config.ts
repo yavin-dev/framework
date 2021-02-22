@@ -45,10 +45,10 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
 
       const filteredColumns = filters.map(({ canonicalName }) => canonicalName);
 
-      return columns.map(column => {
+      return columns.map((column) => {
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
-          fragment: column
+          fragment: column,
         };
       });
     }
@@ -136,7 +136,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
         sprite.startAtPixel({ x });
         sprite.applyStyles({ 'z-index': '1' });
         return move(sprite, { easing: easeOut });
-      })
+      }),
     ]);
     this.args.drawerDidChange?.();
   }

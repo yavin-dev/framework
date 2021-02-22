@@ -6,7 +6,7 @@ import { FilterOperator, HavingOperator } from 'navi-data/adapters/facts/bard';
 import { parse, ParseResult } from 'papaparse';
 
 const parseConfig = {
-  delimiter: ','
+  delimiter: ',',
 };
 
 export type FiliFilter = {
@@ -46,8 +46,8 @@ export function parseFilters(filtersParam?: string): FiliFilter[] {
   }
   const filterStrings = (filtersParam + ',')
     .split('],')
-    .filter(f => f.length > 0)
-    .map(f => `${f}]`);
+    .filter((f) => f.length > 0)
+    .map((f) => `${f}]`);
   return filterStrings.map(parseSingleFilter);
 }
 

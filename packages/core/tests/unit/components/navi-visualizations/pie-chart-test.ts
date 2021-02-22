@@ -13,11 +13,11 @@ import { C3Row } from 'navi-core/chart-builders/base';
 
 let Request: RequestFragment;
 
-module('Unit | Component | pie chart', function(hooks) {
+module('Unit | Component | pie chart', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     Request = this.owner.lookup('service:store').createFragment('bard-request-v2/request', {
       columns: [
@@ -26,48 +26,48 @@ module('Unit | Component | pie chart', function(hooks) {
           field: 'age',
           parameters: { field: 'desc' },
           type: 'dimension',
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           cid: 'cid_totalPageViews',
           field: 'totalPageViews',
           parameters: {},
           type: 'metric',
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           cid: 'cid_uniqueIdentifier',
           field: 'uniqueIdentifier',
           parameters: {},
           type: 'metric',
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           cid: 'cid_network.dateTime',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
           type: 'timeDimension',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [
         {
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
           operator: 'bet',
           values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
           type: 'timeDimension',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       table: 'network',
       dataSource: 'bardOne',
       sorts: [],
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
   });
 
@@ -78,37 +78,37 @@ module('Unit | Component | pie chart', function(hooks) {
         'age(field=id)': '-3',
         'age(field=desc)': 'All Other',
         uniqueIdentifier: 155191081,
-        totalPageViews: 3072620639
+        totalPageViews: 3072620639,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '1',
         'age(field=desc)': 'under 13',
         uniqueIdentifier: 55191081,
-        totalPageViews: 2072620639
+        totalPageViews: 2072620639,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '2',
         'age(field=desc)': '13 - 25',
         uniqueIdentifier: 55191081,
-        totalPageViews: 2620639
+        totalPageViews: 2620639,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '3',
         'age(field=desc)': '25 - 35',
         uniqueIdentifier: 55191081,
-        totalPageViews: 72620639
+        totalPageViews: 72620639,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
         'age(field=id)': '4',
         'age(field=desc)': '35 - 45',
         uniqueIdentifier: 55191081,
-        totalPageViews: 72620639
-      }
-    ]
+        totalPageViews: 72620639,
+      },
+    ],
   });
 
   const DIMENSION_SERIES_OPTIONS: PieChartOptions = {
@@ -119,27 +119,27 @@ module('Unit | Component | pie chart', function(hooks) {
         dimensions: [
           {
             name: 'All Other',
-            values: { 'cid_age(field=desc)': 'All Other' }
+            values: { 'cid_age(field=desc)': 'All Other' },
           },
           {
             name: 'under 13',
-            values: { 'cid_age(field=desc)': 'under 13' }
+            values: { 'cid_age(field=desc)': 'under 13' },
           },
           {
             name: '13 - 25',
-            values: { 'cid_age(field=desc)': '13 - 25' }
+            values: { 'cid_age(field=desc)': '13 - 25' },
           },
           {
             name: '25 - 35',
-            values: { 'cid_age(field=desc)': '25 - 35' }
+            values: { 'cid_age(field=desc)': '25 - 35' },
           },
           {
             name: '35 - 45',
-            values: { 'cid_age(field=desc)': '35 - 45' }
-          }
-        ]
-      }
-    }
+            values: { 'cid_age(field=desc)': '35 - 45' },
+          },
+        ],
+      },
+    },
   };
 
   const METRIC_SERIES_OPTIONS: PieChartOptions = {
@@ -150,33 +150,33 @@ module('Unit | Component | pie chart', function(hooks) {
           {
             metric: 'totalPageViews',
             parameters: {},
-            canonicalName: 'totalPageViews'
+            canonicalName: 'totalPageViews',
           },
           {
             metric: 'uniqueIdentifier',
             parameters: {},
-            canonicalName: 'uniqueIdentifier'
-          }
-        ]
-      }
-    }
+            canonicalName: 'uniqueIdentifier',
+          },
+        ],
+      },
+    },
   };
 
-  test('pieConfig', function(assert) {
+  test('pieConfig', function (assert) {
     assert.expect(1);
 
     let component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
-      model: A([{ Request, response: RESPONSE }])
+      model: A([{ Request, response: RESPONSE }]),
     }) as PieChart;
 
     assert.notEqual(component.pieConfig.pie.label.format, undefined, 'Pie chart has label function defined');
   });
 
-  test('dataConfig', function(assert) {
+  test('dataConfig', function (assert) {
     const model = A([{ request: Request, response: RESPONSE }]);
     const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
       model,
-      options: DIMENSION_SERIES_OPTIONS
+      options: DIMENSION_SERIES_OPTIONS,
     }) as PieChart;
 
     assert.equal(component.dataConfig.data.type, 'pie', 'Data config contains the type property as `pie`');
@@ -192,9 +192,9 @@ module('Unit | Component | pie chart', function(hooks) {
           'series.4': 72620639,
           x: {
             displayValue: 'Dec 14',
-            rawValue: '2015-12-14 00:00:00.000'
-          }
-        }
+            rawValue: '2015-12-14 00:00:00.000',
+          },
+        },
       ] as unknown) as C3Row[],
       'Data config contains json property with values for each slice of pie'
     );
@@ -206,7 +206,7 @@ module('Unit | Component | pie chart', function(hooks) {
         'series.1': 'under 13',
         'series.2': '13 - 25',
         'series.3': '25 - 35',
-        'series.4': '35 - 45'
+        'series.4': '35 - 45',
       },
       'Data config contains names property mapping series to display name'
     );
@@ -219,27 +219,27 @@ module('Unit | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'under 13',
-              values: { 'cid_age(field=desc)': 'under 13' }
+              values: { 'cid_age(field=desc)': 'under 13' },
             },
             {
               name: '13 - 25',
-              values: { 'cid_age(field=desc)': '13 - 25' }
+              values: { 'cid_age(field=desc)': '13 - 25' },
             },
             {
               name: '25 - 35',
-              values: { 'cid_age(field=desc)': '25 - 35' }
+              values: { 'cid_age(field=desc)': '25 - 35' },
             },
             {
               name: '35 - 45',
-              values: { 'cid_age(field=desc)': '35 - 45' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': '35 - 45' },
+            },
+          ],
+        },
+      },
     };
 
     set(component.args, 'options', updatedOptions);
@@ -255,9 +255,9 @@ module('Unit | Component | pie chart', function(hooks) {
           'series.4': 55191081,
           x: {
             displayValue: 'Dec 14',
-            rawValue: '2015-12-14 00:00:00.000'
-          }
-        }
+            rawValue: '2015-12-14 00:00:00.000',
+          },
+        },
       ] as unknown) as C3Row[],
       'Data config updates when metric has been changed in series options'
     );
@@ -269,7 +269,7 @@ module('Unit | Component | pie chart', function(hooks) {
         'series.1': 'under 13',
         'series.2': '13 - 25',
         'series.3': '25 - 35',
-        'series.4': '35 - 45'
+        'series.4': '35 - 45',
       },
       'Data config contains names property mapping series to display name'
     );
@@ -284,9 +284,9 @@ module('Unit | Component | pie chart', function(hooks) {
           'series.1': 155191081,
           x: {
             displayValue: 'Dec 14',
-            rawValue: '2015-12-14 00:00:00.000'
-          }
-        }
+            rawValue: '2015-12-14 00:00:00.000',
+          },
+        },
       ] as unknown) as C3Row[],
       'Data config updates correctly for a metrics series according to first row of response'
     );
@@ -295,32 +295,32 @@ module('Unit | Component | pie chart', function(hooks) {
       component.dataConfig.data.names,
       {
         'series.0': 'Total Page Views',
-        'series.1': 'Unique Identifiers'
+        'series.1': 'Unique Identifiers',
       },
       'Data config contains names property mapping series to display name'
     );
   });
 
-  test('tooltipComponent', function(assert) {
+  test('tooltipComponent', function (assert) {
     assert.expect(1);
 
     const model = A([{ request: Request, response: RESPONSE }]);
     const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
       model,
-      options: DIMENSION_SERIES_OPTIONS
+      options: DIMENSION_SERIES_OPTIONS,
     }) as PieChart;
     component.dataConfig;
     const x = '2015-12-14 00:00:00.000';
     const requiredToolTipData = {
       x,
       id: '13 - 25',
-      name: '13 - 25'
+      name: '13 - 25',
     };
 
     const tooltipComponent = component.tooltipComponent;
     const tooltip = tooltipComponent.create({
       requiredToolTipData,
-      x
+      x,
     });
 
     assert.deepEqual(tooltip.rowData, RESPONSE.rows[2], 'The correct response row is passed to the tooltip');

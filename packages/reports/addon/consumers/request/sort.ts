@@ -37,7 +37,7 @@ export default class SortConsumer extends ActionConsumer {
       return;
     }
 
-    request.sorts.filter(sameBase).forEach(sort => {
+    request.sorts.filter(sameBase).forEach((sort) => {
       this.requestActionDispatcher.dispatch(RequestActions.REMOVE_SORT, route, sort);
     });
   }
@@ -57,17 +57,17 @@ export default class SortConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const sorts = request.sorts.filter(sort => sort.canonicalName === columnFragment.canonicalName);
+      const sorts = request.sorts.filter((sort) => sort.canonicalName === columnFragment.canonicalName);
 
       if (sorts.length >= 1) {
-        sorts.forEach(sort => set(sort, 'direction', direction));
+        sorts.forEach((sort) => set(sort, 'direction', direction));
       } else {
         request.addSort({
           type: columnFragment.type,
           field: columnFragment.field,
           parameters: columnFragment.parameters,
           source: columnFragment.source,
-          direction
+          direction,
         });
       }
     },
@@ -80,9 +80,9 @@ export default class SortConsumer extends ActionConsumer {
     [RequestActions.REMOVE_SORT](this: SortConsumer, route: Route, columnFragment: ColumnFragment) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const sorts = request.sorts.filter(sort => sort.canonicalName === columnFragment.canonicalName);
+      const sorts = request.sorts.filter((sort) => sort.canonicalName === columnFragment.canonicalName);
 
-      sorts.forEach(sort => request.removeSort(sort));
+      sorts.forEach((sort) => request.removeSort(sort));
     },
     /**
      * @action REMOVE_COLUMN_FRAGMENT
@@ -107,6 +107,6 @@ export default class SortConsumer extends ActionConsumer {
     ) {
       const { columnMetadata, parameters } = columnFragment;
       this.onRemoveColumn(route, columnMetadata, parameters);
-    }
+    },
   };
 }

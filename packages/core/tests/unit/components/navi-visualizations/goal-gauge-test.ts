@@ -14,18 +14,18 @@ import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 let Store: StoreService;
 let Component: GoalGauge;
 
-module('Unit | Component | Goal Gauge', function(hooks) {
+module('Unit | Component | Goal Gauge', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     Store = this.owner.lookup('service:store') as StoreService;
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadata;
     await naviMetadata.loadMetadata();
 
     const response = NaviFactResponse.create({
       //prettier-ignore
-      rows: [{ m1: 75 }]
+      rows: [{ m1: 75 }],
     });
     const request = Store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -36,43 +36,43 @@ module('Unit | Component | Goal Gauge', function(hooks) {
           parameters: {},
           alias: '',
           source: 'bardOne',
-          cid: 'cid_m1'
-        }
+          cid: 'cid_m1',
+        },
       ],
       filters: [{}],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     let options = {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'cid_m1'
+      metricCid: 'cid_m1',
     } as GoalGaugeConfig['metadata'];
 
     const args: GoalGauge['args'] = {
       model: arr([{ request, response }]),
-      options
+      options,
     };
     Component = createGlimmerComponent('component:navi-visualizations/goal-gauge', args) as GoalGauge;
   });
 
-  test('data', function(assert) {
+  test('data', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
       Component.data,
       {
         columns: [['data', 75]],
-        type: 'gauge'
+        type: 'gauge',
       },
       'data is correctly computed based on actualValue'
     );
   });
 
-  test('gauge', function(assert) {
+  test('gauge', function (assert) {
     assert.expect(2);
 
     assert.equal(
@@ -84,7 +84,7 @@ module('Unit | Component | Goal Gauge', function(hooks) {
     assert.equal(Component.gauge.max, Component.config.goalValue, 'gauge.max is correctly set based on goal property');
   });
 
-  test('thresholdValues', function(assert) {
+  test('thresholdValues', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -94,7 +94,7 @@ module('Unit | Component | Goal Gauge', function(hooks) {
     );
   });
 
-  test('color', function(assert) {
+  test('color', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -104,14 +104,14 @@ module('Unit | Component | Goal Gauge', function(hooks) {
         threshold: {
           max: 100,
           unit: 'value',
-          values: [87.5, 92.5, 100]
-        }
+          values: [87.5, 92.5, 100],
+        },
       },
       'color is correctly computed based on goal & baseline values'
     );
   });
 
-  test('_formatNumber', function(assert) {
+  test('_formatNumber', function (assert) {
     assert.expect(2);
 
     assert.equal(

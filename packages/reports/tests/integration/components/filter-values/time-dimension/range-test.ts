@@ -18,11 +18,11 @@ const TEMPLATE = hbs`<FilterValues::TimeDimension::Range
   @isCollapsed={{this.isCollapsed}}
 />`;
 
-module('Integration | Component | filter-values/time-dimension/range', function(hooks) {
+module('Integration | Component | filter-values/time-dimension/range', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
@@ -36,7 +36,7 @@ module('Integration | Component | filter-values/time-dimension/range', function(
     ) as FilterFragment & { values: string[] };
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     assert.expect(4);
 
     await render(TEMPLATE);
@@ -60,7 +60,7 @@ module('Integration | Component | filter-values/time-dimension/range', function(
       .hasValue('Dec 05, 2019', 'Placeholder text is inclusive end date');
   });
 
-  test('changing values', async function(this: TestContext, assert) {
+  test('changing values', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const end = '2019-12-06';
@@ -94,7 +94,7 @@ module('Integration | Component | filter-values/time-dimension/range', function(
     await click(`.ember-power-calendar-day[data-date="${newEndStr}"]`);
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     assert.expect(2);
 
     this.filter.values = ['2020-01-03', '2020-01-10'];

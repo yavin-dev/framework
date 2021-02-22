@@ -5,10 +5,10 @@ import { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
 
 let Payload: BardTableMetadataPayload, Model: BardTableMetadataModel;
 
-module('Unit | Model | metadata/bard/table', function(hooks) {
+module('Unit | Model | metadata/bard/table', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Payload = {
       id: 'tableA',
       name: 'Table A',
@@ -22,19 +22,19 @@ module('Unit | Model | metadata/bard/table', function(hooks) {
       timeGrainIds: ['day', 'month', 'week'],
       hasAllGrain: false,
       source: 'bardOne',
-      tags: ['DISPLAY']
+      tags: ['DISPLAY'],
     };
 
     Model = BardTableMetadataModel.create(Payload);
   });
 
-  test('it properly hydrates properties', function(assert) {
+  test('it properly hydrates properties', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(Model.timeGrainIds, ['day', 'week', 'month'], 'timeGrainIds property is hydrated properly');
   });
 
-  test('it returns timegrains', function(assert) {
+  test('it returns timegrains', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -42,16 +42,16 @@ module('Unit | Model | metadata/bard/table', function(hooks) {
       [
         {
           id: 'day',
-          name: 'Day'
+          name: 'Day',
         },
         {
           id: 'week',
-          name: 'Week'
+          name: 'Week',
         },
         {
           id: 'month',
-          name: 'Month'
-        }
+          name: 'Month',
+        },
       ],
       'timegrains property is hydrated properly'
     );

@@ -21,10 +21,10 @@ let Controller: TestController;
 
 const Toggle = '#dir-sidebar-toggle';
 
-module('Integration | Component | dir sidebar toggle', function(hooks) {
+module('Integration | Component | dir sidebar toggle', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.owner.unregister('controller:directory');
     this.owner.register('controller:directory', TestRouter);
     Controller = this.owner.lookup('controller:directory');
@@ -34,7 +34,7 @@ module('Integration | Component | dir sidebar toggle', function(hooks) {
     Router = this.owner.lookup('service:router');
   });
 
-  test('it renders only on directory routes', async function(assert) {
+  test('it renders only on directory routes', async function (assert) {
     await render(TEMPLATE);
     assert.dom(Toggle).doesNotExist('The sidebar toggle component is not rendered on non-directory routes');
 
@@ -45,7 +45,7 @@ module('Integration | Component | dir sidebar toggle', function(hooks) {
     assert.dom(Toggle).exists('The sidebar toggle component is rendered on directory routes');
   });
 
-  test('it handles clicks', async function(assert) {
+  test('it handles clicks', async function (assert) {
     assert.expect(2);
 
     Controller.toggleSidebar = () => {

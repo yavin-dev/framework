@@ -102,14 +102,14 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
    * @param {Metric[]} metrics
    */
   get metrics(): MetricMetadataModel[] {
-    return this.metricIds.map(id => this.naviMetadata.getById('metric', id, this.source)).filter(isPresent);
+    return this.metricIds.map((id) => this.naviMetadata.getById('metric', id, this.source)).filter(isPresent);
   }
 
   /**
    * @param {Dimension[]} dimensions
    */
   get dimensions(): DimensionMetadataModel[] {
-    return this.dimensionIds.map(id => this.naviMetadata.getById('dimension', id, this.source)).filter(isPresent);
+    return this.dimensionIds.map((id) => this.naviMetadata.getById('dimension', id, this.source)).filter(isPresent);
   }
 
   /**
@@ -117,7 +117,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
    */
   get timeDimensions(): TimeDimensionMetadataModel[] {
     return this.timeDimensionIds
-      .map(id => this.naviMetadata.getById('timeDimension', id, this.source))
+      .map((id) => this.naviMetadata.getById('timeDimension', id, this.source))
       .filter(isPresent);
   }
 

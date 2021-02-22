@@ -13,10 +13,10 @@ let Payload: MetricMetadataPayload,
   ClicksMetric: MetricMetadataModel,
   server: Server;
 
-module('Unit | Metadata Model | Metric', function(hooks) {
+module('Unit | Metadata Model | Metric', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
@@ -26,7 +26,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       name: 'Page Views (Daily Avg)',
       category: 'Page Views',
       valueType: 'number',
-      source: 'bardOne'
+      source: 'bardOne',
     };
 
     Metric = MetricMetadataModel.create(this.owner.ownerInjection(), Payload);
@@ -36,7 +36,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       columnFunctionId: 'moneyMetric',
       source: 'bardOne',
       valueType: 'number',
-      type: 'field'
+      type: 'field',
     };
     MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), moneyMetricPayload);
     const clicksMetric: MetricMetadataPayload = {
@@ -45,22 +45,22 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       columnFunctionId: 'aggregationTrend',
       source: 'bardOne',
       valueType: 'number',
-      type: 'field'
+      type: 'field',
     };
     ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), clicksMetric);
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     server.shutdown();
   });
 
-  test('factory has identifierField defined', function(assert) {
+  test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
     assert.equal(MetricMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
-  test('it properly hydrates properties', function(assert) {
+  test('it properly hydrates properties', function (assert) {
     assert.expect(4);
 
     assert.deepEqual(Metric.id, Payload.id, 'id property is hydrated properly');
@@ -72,7 +72,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.equal(Metric.valueType, Payload.valueType, 'valueType property was properly hydrated');
   });
 
-  test('Metric with Column Function', async function(assert) {
+  test('Metric with Column Function', async function (assert) {
     assert.expect(4);
 
     const payload: MetricMetadataPayload = {
@@ -81,7 +81,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
       columnFunctionId: 'moneyMetric',
       source: 'bardOne',
       valueType: 'number',
-      type: 'field'
+      type: 'field',
     };
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
@@ -93,19 +93,19 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
     assert.deepEqual(
-      metricOne.parameters.map(param => param.id),
+      metricOne.parameters.map((param) => param.id),
       ['currency'],
       'Arguments of the associated column function are shown through parameters'
     );
 
     assert.deepEqual(
       metricOne.getParameter('currency'),
-      expectedColumnFunc.parameters.find(param => param.id === 'currency'),
+      expectedColumnFunc.parameters.find((param) => param.id === 'currency'),
       'the queried column function parameter object is retrieved from parameters'
     );
   });
 
-  test('Metric without Column Function', async function(assert) {
+  test('Metric without Column Function', async function (assert) {
     assert.expect(3);
 
     let payload: MetricMetadataPayload = {
@@ -114,7 +114,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
         name: 'Page Views (Daily Avg)',
         category: 'Page Views',
         valueType: 'number',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
@@ -129,7 +129,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     );
   });
 
-  test('getDefaultParameters', async function(assert) {
+  test('getDefaultParameters', async function (assert) {
     assert.expect(3);
 
     assert.deepEqual(
@@ -144,7 +144,7 @@ module('Unit | Metadata Model | Metric', function(hooks) {
         type: 'field',
         category: 'Page Views',
         valueType: 'number',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
 
@@ -161,11 +161,11 @@ module('Unit | Metadata Model | Metric', function(hooks) {
     );
   });
 
-  test('extended property', async function(assert) {
+  test('extended property', async function (assert) {
     assert.expect(3);
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), {
       id: 'metricOne',
-      source: 'bardOne'
+      source: 'bardOne',
     });
 
     const result = await metricOne.extended;

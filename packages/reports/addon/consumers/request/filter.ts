@@ -10,7 +10,7 @@ import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/r
 import {
   getSelectedMetricsOfBase,
   getFilteredMetricsOfBase,
-  getUnfilteredMetricsOfBase
+  getUnfilteredMetricsOfBase,
 } from 'navi-reports/utils/request-metric';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
@@ -23,7 +23,7 @@ import TableMetadataModel from 'navi-data/models/metadata/table';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
   operator: 'gt',
-  values: [0]
+  values: [0],
 };
 
 export default class FilterConsumer extends ActionConsumer {
@@ -57,7 +57,7 @@ export default class FilterConsumer extends ActionConsumer {
       const { canonicalName, columnMetadata, type, parameters } = column;
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const filter = request.filters.find(filter => filter.canonicalName === canonicalName);
+      const filter = request.filters.find((filter) => filter.canonicalName === canonicalName);
 
       //do not add filter if it already exists
       if (!filter) {
@@ -120,7 +120,7 @@ export default class FilterConsumer extends ActionConsumer {
           time: 'gte',
           date: 'gte',
           number: 'eq',
-          default: 'in'
+          default: 'in',
         };
 
         return opDictionary[type] || opDictionary.default;
@@ -135,7 +135,7 @@ export default class FilterConsumer extends ActionConsumer {
         field: dimensionMetadataModel.id,
         parameters: { ...defaultParams, ...parameters },
         operator: defaultOperator,
-        values: []
+        values: [],
       });
     },
 
@@ -155,7 +155,7 @@ export default class FilterConsumer extends ActionConsumer {
         source: request.dataSource,
         field: metricMetadataModel.id,
         parameters: { ...defaultParams, ...parameters },
-        ...DEFAULT_METRIC_FILTER
+        ...DEFAULT_METRIC_FILTER,
       });
     },
 
@@ -185,7 +185,7 @@ export default class FilterConsumer extends ActionConsumer {
           nextParameter
         );
       } else {
-        metricFilters.forEach(filter => {
+        metricFilters.forEach((filter) => {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
         });
       }
@@ -216,11 +216,11 @@ export default class FilterConsumer extends ActionConsumer {
        * .toArray() is used to clone the array, otherwise removing a column while
        * iterating over `request.columns` causes problems
        */
-      request.filters.toArray().forEach(filter => {
+      request.filters.toArray().forEach((filter) => {
         if (!validColumns.includes(filter.columnMetadata)) {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_FILTER, route, filter);
         }
       });
-    }
+    },
   };
 }

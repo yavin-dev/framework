@@ -19,42 +19,42 @@ const TestRequest: RequestV2 = {
     { type: 'metric', field: 'm1', parameters: {} },
     { type: 'metric', field: 'm2', parameters: {} },
     { type: 'dimension', field: 'd1', parameters: { field: 'id' } },
-    { type: 'dimension', field: 'd2', parameters: { field: 'id' } }
+    { type: 'dimension', field: 'd2', parameters: { field: 'id' } },
   ],
   filters: [
     {
       type: 'timeDimension',
       field: 'table1.dateTime',
       parameters: {
-        grain: 'grain1'
+        grain: 'grain1',
       },
       operator: 'bet',
-      values: ['2015-01-03', '2015-01-04']
+      values: ['2015-01-03', '2015-01-04'],
     },
     {
       type: 'dimension',
       field: 'd3',
       parameters: { field: 'id' },
       operator: 'in',
-      values: ['v1', 'v2']
+      values: ['v1', 'v2'],
     },
     {
       type: 'dimension',
       field: 'd4',
       parameters: { field: 'id' },
       operator: 'in',
-      values: ['v3', 'v4']
+      values: ['v3', 'v4'],
     },
     {
       type: 'metric',
       field: 'm1',
       parameters: {},
       operator: 'gt',
-      values: [0]
-    }
+      values: [0],
+    },
   ],
   sorts: [],
-  dataSource: 'bardOne'
+  dataSource: 'bardOne',
 };
 
 const Response: ResponseV1 = {
@@ -64,26 +64,26 @@ const Response: ResponseV1 = {
       'd1|id': undefined,
       'd2|id': undefined,
       m1: undefined,
-      m2: undefined
-    }
+      m2: undefined,
+    },
   ],
   meta: {
     //@ts-expect-error
-    test: true
-  }
+    test: true,
+  },
 };
 
 const HOST = config.navi.dataSources[0].uri;
 
-module('Unit | Service | Navi Facts', function(hooks) {
+module('Unit | Service | Navi Facts', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Service = this.owner.lookup('service:navi-facts');
 
     //setup Pretender
-    Server = new Pretender(function() {
-      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, function(request) {
+    Server = new Pretender(function () {
+      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, function (request) {
         if (request.queryParams.page && request.queryParams.perPage) {
           return [
             200,
@@ -93,10 +93,10 @@ module('Unit | Service | Navi Facts', function(hooks) {
               meta: {
                 paginated: {
                   page: request.queryParams.page,
-                  perPage: request.queryParams.perPage
-                }
-              }
-            })
+                  perPage: request.queryParams.perPage,
+                },
+              },
+            }),
           ];
         } else {
           return [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
@@ -105,16 +105,16 @@ module('Unit | Service | Navi Facts', function(hooks) {
     });
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     //shutdown pretender
     Server.shutdown();
   });
 
-  test('Service Exists', function(assert) {
+  test('Service Exists', function (assert) {
     assert.ok(!!Service, 'Service exists');
   });
 
-  test('getURL', function(assert) {
+  test('getURL', function (assert) {
     assert.deepEqual(
       Service.getURL(TestRequest),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/?` +
@@ -134,7 +134,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     );
   });
 
-  test('fetch', async function(assert) {
+  test('fetch', async function (assert) {
     const model = await Service.fetch(TestRequest);
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
@@ -146,12 +146,12 @@ module('Unit | Service | Navi Facts', function(hooks) {
             'd2(field=id)': undefined,
             m1: undefined,
             m2: undefined,
-            'table1.dateTime(grain=grain1)': undefined
-          }
+            'table1.dateTime(grain=grain1)': undefined,
+          },
         ],
         meta: {
-          test: true
-        }
+          test: true,
+        },
       },
       'Fetch returns a navi response model object for TestRequest'
     );
@@ -165,7 +165,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     );
   });
 
-  test('fetch with pagination', async function(assert) {
+  test('fetch with pagination', async function (assert) {
     const model = await Service.fetch(TestRequest, { page: 2, perPage: 10 });
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
@@ -175,15 +175,15 @@ module('Unit | Service | Navi Facts', function(hooks) {
         meta: {
           paginated: {
             page: '2',
-            perPage: '10'
-          }
-        }
+            perPage: '10',
+          },
+        },
       },
       'Fetch returns a navi response model object for the paginated request'
     );
   });
 
-  test('fetch and catch error', async function(assert) {
+  test('fetch and catch error', async function (assert) {
     assert.expect(6);
 
     // Return an error object
@@ -192,8 +192,8 @@ module('Unit | Service | Navi Facts', function(hooks) {
         507,
         { 'Content-Type': 'application/json' },
         JSON.stringify({
-          description: 'Result set too large.  Try reducing interval or dimensions.'
-        })
+          description: 'Result set too large.  Try reducing interval or dimensions.',
+        }),
       ];
     });
 
@@ -226,7 +226,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     });
   });
 
-  skip('request builder', function(/*assert*/) {
+  skip('request builder', function (/*assert*/) {
     // TODO: Remove request builder?
     /*
     let requestBuilder = Service.request({
@@ -262,7 +262,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     */
   });
 
-  test('fetchNext', function(assert) {
+  test('fetchNext', function (assert) {
     assert.expect(2);
 
     const originalFetch = Service.fetch;
@@ -278,9 +278,9 @@ module('Unit | Service | Navi Facts', function(hooks) {
         pagination: {
           currentPage: 2,
           perPage: 10,
-          numberOfResults: 30
-        }
-      }
+          numberOfResults: 30,
+        },
+      },
     };
     const request = {} as RequestV2;
 
@@ -293,7 +293,7 @@ module('Unit | Service | Navi Facts', function(hooks) {
     Service.fetch = originalFetch;
   });
 
-  test('fetchPrevious', function(assert) {
+  test('fetchPrevious', function (assert) {
     assert.expect(2);
 
     const originalFetch = Service.fetch;
@@ -309,9 +309,9 @@ module('Unit | Service | Navi Facts', function(hooks) {
         pagination: {
           currentPage: 2,
           perPage: 10,
-          numberOfResults: 30
-        }
-      }
+          numberOfResults: 30,
+        },
+      },
     };
     const request = {} as RequestV2;
 

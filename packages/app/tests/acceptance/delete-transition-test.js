@@ -4,11 +4,11 @@ import { setupApplicationTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Acceptance | delete transition', function(hooks) {
+module('Acceptance | delete transition', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('transitions to directory on asset deletion', async function(assert) {
+  test('transitions to directory on asset deletion', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/1');
@@ -25,7 +25,7 @@ module('Acceptance | delete transition', function(hooks) {
     );
   });
 
-  test('transitions to asset route on deletion', async function(assert) {
+  test('transitions to asset route on deletion', async function (assert) {
     assert.expect(2);
     config.navi.FEATURES.enableDirectory = false;
 

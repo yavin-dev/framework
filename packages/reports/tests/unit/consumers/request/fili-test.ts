@@ -21,18 +21,18 @@ const MockDispatcher = {
   dispatch(action: string, _route: Route, ...args: unknown[]) {
     dispatchedActions.push(action);
     dispatchedActionArgs.push(...args);
-  }
+  },
 };
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
 }
 
-module('Unit | Consumer | request fili', function(hooks) {
+module('Unit | Consumer | request fili', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
     originalDataSources = config.navi.dataSources;
@@ -44,11 +44,11 @@ module('Unit | Consumer | request fili', function(hooks) {
     await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  hooks.afterEach(async function() {
+  hooks.afterEach(async function () {
     config.navi.dataSources = originalDataSources;
   });
 
-  test('UPDATE_FILTER', function(assert) {
+  test('UPDATE_FILTER', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -59,20 +59,20 @@ module('Unit | Consumer | request fili', function(hooks) {
           parameters: { grain: 'month' },
           operator: 'bet',
           values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
       requestVersion: '2.0',
-      columns: []
+      columns: [],
     });
 
     const modelFor = () => ({ request });
 
     consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, request.dateTimeFilter, {
-      parameters: { grain: 'isoWeek' }
+      parameters: { grain: 'isoWeek' },
     });
     assert.deepEqual(
       dispatchedActions,
@@ -87,7 +87,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
   });
 
-  test('DID_ADD_COLUMN', function(assert) {
+  test('DID_ADD_COLUMN', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const requestExistingFilter = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -98,8 +98,8 @@ module('Unit | Consumer | request fili', function(hooks) {
           parameters: { grain: 'month' },
           operator: 'bet',
           values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
@@ -110,9 +110,9 @@ module('Unit | Consumer | request fili', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: { grain: 'hour' },
-          source: 'bardOne'
-        }
-      ]
+          source: 'bardOne',
+        },
+      ],
     });
 
     const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) });
@@ -149,15 +149,15 @@ module('Unit | Consumer | request fili', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: { grain: 'year' },
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: { grain: 'hour' },
-          source: 'bardOne'
-        }
-      ]
+          source: 'bardOne',
+        },
+      ],
     });
 
     consumer.send(
@@ -178,7 +178,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
   });
 
-  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function(assert) {
+  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -189,8 +189,8 @@ module('Unit | Consumer | request fili', function(hooks) {
           parameters: { grain: 'day' },
           operator: 'bet',
           values: ['P1D', 'current'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
@@ -201,21 +201,21 @@ module('Unit | Consumer | request fili', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: { grain: 'day' },
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           type: 'metric',
           field: 'adClicks',
           parameters: {},
-          source: 'bardOne'
+          source: 'bardOne',
         },
         {
           type: 'dimension',
           field: 'age',
           parameters: { field: 'id' },
-          source: 'bardOne'
-        }
-      ]
+          source: 'bardOne',
+        },
+      ],
     });
 
     const modelFor = () => ({ request });
@@ -274,7 +274,7 @@ module('Unit | Consumer | request fili', function(hooks) {
 
     config.navi.dataSources = [
       ...config.navi.dataSources,
-      { name: 'Other Data Source', uri: 'data://stuff', type: 'elide' }
+      { name: 'Other Data Source', uri: 'data://stuff', type: 'elide' },
     ];
     request.dataSource = 'Other Data Source';
 
@@ -288,7 +288,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     assert.deepEqual(dispatchedActions, [], 'no actions are called when the request is for an elide dataSource');
   });
 
-  test('ADD_DIMENSION_FILTER', function(this: TestContext, assert) {
+  test('ADD_DIMENSION_FILTER', function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -302,9 +302,9 @@ module('Unit | Consumer | request fili', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: { grain: 'existingColumnGrain' },
-          source: 'bardOne'
-        }
-      ]
+          source: 'bardOne',
+        },
+      ],
     });
 
     const route = { modelFor: () => ({ request }) };
@@ -316,7 +316,7 @@ module('Unit | Consumer | request fili', function(hooks) {
       parameters: { grain: 'newFilterGrain' },
       operator: 'bet',
       values: ['P1D', 'current'],
-      source: 'bardOne'
+      source: 'bardOne',
     });
 
     consumer.send(
@@ -345,7 +345,7 @@ module('Unit | Consumer | request fili', function(hooks) {
     );
   });
 
-  test('REMOVE_COLUMN_FRAGMENT', function(assert) {
+  test('REMOVE_COLUMN_FRAGMENT', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -356,14 +356,14 @@ module('Unit | Consumer | request fili', function(hooks) {
           parameters: { grain: 'month' },
           operator: 'bet',
           values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
       requestVersion: '2.0',
-      columns: []
+      columns: [],
     });
 
     const modelFor = () => ({ request });

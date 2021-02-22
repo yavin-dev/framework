@@ -12,7 +12,7 @@ export default class OtherData extends Route {
   model() {
     //returning an object so that the table can handle the promise
     return {
-      items: []
+      items: [],
     };
   }
 }

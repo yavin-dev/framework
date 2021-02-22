@@ -9,11 +9,11 @@ import { setupApplicationTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import { capitalize } from '@ember/string';
 
-module('Acceptance | date filter', function(hooks) {
+module('Acceptance | date filter', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('verify the different time grains work as expected - bard', async function(assert) {
+  test('verify the different time grains work as expected - bard', async function (assert) {
     assert.expect(78);
 
     await visit('/reports/13/view');

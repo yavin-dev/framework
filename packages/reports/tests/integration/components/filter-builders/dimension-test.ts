@@ -18,11 +18,11 @@ const TEMPLATE = hbs`
     @isCollapsed={{this.isCollapsed}}
   />`;
 
-module('Integration | Component | filter-builders/dimension', function(hooks) {
+module('Integration | Component | filter-builders/dimension', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const factory = this.owner.lookup('service:fragment-factory');
     this.set(
       'filter',
@@ -32,7 +32,7 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     assert
@@ -44,10 +44,10 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
       .hasText('Equals', 'The filter current operator is selected by default');
 
     assert.deepEqual(
-      findAll('.filter-values--dimension-select__trigger .ember-power-select-multiple-option').map(el =>
+      findAll('.filter-values--dimension-select__trigger .ember-power-select-multiple-option').map((el) =>
         el.textContent
           ?.split('\n')
-          .map(l => l.trim())
+          .map((l) => l.trim())
           .join('')
       ),
       ['×1', '×2', '×3'],
@@ -56,13 +56,13 @@ module('Integration | Component | filter-builders/dimension', function(hooks) {
 
     await clickTrigger();
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['Equals', 'Not Equals', 'Is Empty', 'Is Not Empty', 'Contains'],
       'All supported operators show up as options in the operator selector'
     );
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     this.set('isCollapsed', true);
     await render(TEMPLATE);
 

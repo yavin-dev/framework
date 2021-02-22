@@ -12,7 +12,7 @@ import NaviFactAdapter, {
   QueryStatus,
   RequestV2,
   FilterOperator,
-  Filter
+  Filter,
 } from './interface';
 import { assert } from '@ember/debug';
 import Interval from '../../utils/classes/interval';
@@ -56,7 +56,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     isoWeek: 'yyyy-MM-DD',
     month: 'yyyy-MM',
     quarter: 'yyyy-MM',
-    year: 'yyyy'
+    year: 'yyyy',
   };
 
   private formatTimeValue(value: Moment | string, grain: Grain) {
@@ -66,20 +66,20 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private filterBuilders: Record<FilterOperator, (field: string, value: string[]) => string> = {
     eq: (f, v) => `${f}==('${v[0]}')`,
     neq: (f, v) => `${f}!=('${v[0]}')`,
-    in: (f, v) => `${f}=in=(${v.map(e => `'${e}'`).join(',')})`,
-    notin: (f, v) => `${f}=out=(${v.map(e => `'${e}'`).join(',')})`,
-    contains: (f, v) => `${f}=in=(${v.map(e => `'*${e}*'`).join(',')})`,
+    in: (f, v) => `${f}=in=(${v.map((e) => `'${e}'`).join(',')})`,
+    notin: (f, v) => `${f}=out=(${v.map((e) => `'${e}'`).join(',')})`,
+    contains: (f, v) => `${f}=in=(${v.map((e) => `'*${e}*'`).join(',')})`,
     isnull: (f, v) => `${f}=isnull=${v[0]}`,
     lte: (f, v) => `${f}=le=('${v}')`,
     gte: (f, v) => `${f}=ge=('${v}')`,
     lt: (f, v) => `${f}=lt=('${v}')`,
     gt: (f, v) => `${f}=gt=('${v}')`,
     bet: (f, v) => `${f}=ge=('${v[0]}');${f}=le=('${v[1]}')`,
-    nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`
+    nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
   };
 
   private buildFilterStr(filters: Filter[]): string {
-    const filterStrings = filters.map(filter => {
+    const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
 
       //skip filters without values
@@ -88,7 +88,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
 
       const fieldStr = getElideField(field, parameters);
-      let filterVals = values.map(v => escape(`${v}`));
+      let filterVals = values.map((v) => escape(`${v}`));
 
       if (type === 'timeDimension' && operator !== 'isnull') {
         const grain = filter.parameters.grain as Grain;
@@ -105,14 +105,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
           }
           timeValues = [start, end];
         }
-        filterVals = timeValues.map(v => this.formatTimeValue(v, grain));
+        filterVals = timeValues.map((v) => this.formatTimeValue(v, grain));
       }
       const builderFn = this.filterBuilders[operator];
       assert(`Filter operator not supported: ${operator}`, builderFn);
       return builderFn(fieldStr, filterVals);
     });
 
-    return filterStrings.filter(f => f).join(';');
+    return filterStrings.filter((f) => f).join(';');
   }
 
   /**
@@ -122,12 +122,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private dataQueryFromRequest(request: RequestV2): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
-    const columnsStr = columns.map(col => getElideField(col.field, col.parameters)).join(' ');
+    const columnsStr = columns.map((col) => getElideField(col.field, col.parameters)).join(' ');
 
     const filterString = this.buildFilterStr(filters);
     filterString.length && args.push(`filter: "${filterString}"`);
 
-    const sortStrings = sorts.map(sort => {
+    const sortStrings = sorts.map((sort) => {
       const { field, parameters, direction } = sort;
       const column = getElideField(field, parameters);
       return `${direction === 'desc' ? '-' : ''}${column}`;
@@ -140,7 +140,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const argsString = args.length ? `(${args.join(',')})` : '';
 
     return JSON.stringify({
-      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } } } }`
+      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } } } }`,
     });
   }
 
@@ -199,7 +199,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @param options
    */
-  @task(function*(this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
+  @task(function* (this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
     const { id } = asyncQuery;

@@ -17,14 +17,14 @@ const Validations = buildValidations(
   {
     //Selected metric list  is the same as request metric list
     'metadata.metricCid': validator('request-metric-exist', {
-      dependentKeys: ['model._request.metricColumns.[]']
+      dependentKeys: ['model._request.metricColumns.[]'],
     }),
     'metadata.baselineValue': validator('number', { allowString: false, allowNone: false }),
-    'metadata.goalValue': validator('number', { allowString: false, allowNone: false })
+    'metadata.goalValue': validator('number', { allowString: false, allowNone: false }),
   },
   {
     //Global Validation Options
-    request: readOnly('model._request')
+    request: readOnly('model._request'),
   }
 );
 
@@ -77,7 +77,7 @@ export default class GoalGaugeModel extends VisualizationBase.extend(Validations
       this.set('metadata', {
         metricCid,
         baselineValue,
-        goalValue
+        goalValue,
       });
     }
     return this;

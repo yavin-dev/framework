@@ -40,7 +40,7 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
       day: 'MMM DD, YYYY',
       month: 'MMM YYYY',
       quarter: '[Q]Q YYYY',
-      year: 'YYYY'
+      year: 'YYYY',
     };
     return dateMap[this.calendarDateTimePeriod] || dateMap.day;
   }

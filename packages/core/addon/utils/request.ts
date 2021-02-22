@@ -77,7 +77,7 @@ export function toggleAlias(
   if (!field) {
     return [];
   }
-  return field.map(obj => {
+  return field.map((obj) => {
     const metricName: string =
       typeof obj.metric === 'object' ? canonicalizeMetric(obj.metric) || obj.metric.metric : obj.metric;
 
@@ -113,17 +113,17 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   const canonToMetric = request.metrics.reduce(
     (obj, metric) =>
       Object.assign({}, obj, {
-        [canonicalizeMetric(metric)]: metric
+        [canonicalizeMetric(metric)]: metric,
       }),
     {
       //add dateTime to cannonicalName -> metric map
-      dateTime: { metric: 'dateTime' }
+      dateTime: { metric: 'dateTime' },
     }
   );
 
   const normalized = Object.assign({}, request, {
     having: toggleAlias(request.having, aliasToCanon, canonToMetric),
-    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric)
+    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric),
   });
 
   if (!normalized.dataSource && namespace) {
@@ -131,7 +131,7 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   }
 
   //remove AS from metric parameters
-  normalized.metrics = request.metrics.map(metric => {
+  normalized.metrics = request.metrics.map((metric) => {
     if (hasParameters(metric)) {
       delete metric.parameters?.as;
     }
@@ -152,7 +152,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
   const {
-    logicalTable: { table, timeGrain: grain }
+    logicalTable: { table, timeGrain: grain },
   } = normalized;
 
   const requestV2: RequestV2 = {
@@ -162,7 +162,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     columns: [],
     filters: [],
     sorts: [],
-    limit: null
+    limit: null,
   };
 
   //normalize dateTime column
@@ -170,7 +170,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     cid: nanoid(10),
     type: 'timeDimension',
     field: `${table}.dateTime`,
-    parameters: { grain }
+    parameters: { grain },
   });
 
   //normalize dimensions
@@ -180,8 +180,8 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
       parameters: {
-        field: 'id'
-      }
+        field: 'id',
+      },
     })
   );
 
@@ -191,7 +191,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       cid: nanoid(10),
       type: 'metric',
       field: removeNamespace(metric, dataSource),
-      parameters
+      parameters,
     });
   });
 
@@ -203,8 +203,8 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       operator: 'bet',
       values: [start, end],
       parameters: {
-        grain
-      }
+        grain,
+      },
     })
   );
 
@@ -225,7 +225,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       field: removeNamespace(dimension, dataSource),
       parameters: { field: field || 'id' },
       operator: operator as FilterOperator,
-      values: filterValues
+      values: filterValues,
     });
   });
 
@@ -236,7 +236,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       field: removeNamespace(metric, dataSource),
       parameters,
       operator: operator as FilterOperator,
-      values
+      values,
     });
   });
 
@@ -247,7 +247,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: isDateTime ? 'timeDimension' : 'metric',
       field: isDateTime ? `${table}.dateTime` : removeNamespace(metric, dataSource),
       parameters: isDateTime ? { grain } : parameters,
-      direction
+      direction,
     });
   });
 

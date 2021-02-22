@@ -16,17 +16,17 @@ interface TestContext extends Context {
   server: Server;
 }
 
-module('Unit | Service | navi-dimension', function(hooks) {
+module('Unit | Service | navi-dimension', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     GraphQLScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
   });
 
-  test('all', async function(this: TestContext, assert) {
+  test('all', async function (this: TestContext, assert) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
@@ -37,14 +37,14 @@ module('Unit | Service | navi-dimension', function(hooks) {
       'Handcrafted Frozen Mouse',
       'Licensed Soft Ball',
       'Awesome Concrete Table',
-      'Handcrafted Concrete Mouse'
-    ].map(dimVal => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
+      'Handcrafted Concrete Mouse',
+    ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
     const all = await service.all({ columnMetadata });
 
     assert.deepEqual(all, expectedDimensionModels, '`all` gets all the unfiltered values for a dimension');
   });
 
-  test('find', async function(this: TestContext, assert) {
+  test('find', async function (this: TestContext, assert) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(
       'dimension',
@@ -53,7 +53,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
     ) as DimensionMetadataModel;
     const findValues = ['Awesome Plastic Fish', 'Refined Fresh Bacon'];
     const filters: DimensionFilter[] = [{ operator: 'in', values: findValues }];
-    const expectedDimensionModels = findValues.map(dimVal =>
+    const expectedDimensionModels = findValues.map((dimVal) =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
     );
     const find = await service.find({ columnMetadata }, filters);
@@ -64,7 +64,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
     );
   });
 
-  test('search', async function(this: TestContext, assert) {
+  test('search', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
@@ -74,7 +74,7 @@ module('Unit | Service | navi-dimension', function(hooks) {
       'elideOne'
     ) as DimensionMetadataModel;
     const search = await service.search({ columnMetadata }, 'Plastic');
-    const expectedDimensionModels = ['Licensed Plastic Pants', 'Awesome Plastic Fish'].map(dimVal =>
+    const expectedDimensionModels = ['Licensed Plastic Pants', 'Awesome Plastic Fish'].map((dimVal) =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
     );
     assert.deepEqual(

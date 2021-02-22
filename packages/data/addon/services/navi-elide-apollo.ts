@@ -18,15 +18,15 @@ export default class NaviElideApolloService extends ApolloService {
       cache: this.cache(),
       defaultOptions: {
         watchQuery: {
-          fetchPolicy: 'no-cache'
+          fetchPolicy: 'no-cache',
         },
         query: {
-          fetchPolicy: 'no-cache'
+          fetchPolicy: 'no-cache',
         },
         mutate: {
-          fetchPolicy: 'no-cache'
-        }
-      }
+          fetchPolicy: 'no-cache',
+        },
+      },
     };
   }
 
@@ -38,7 +38,7 @@ export default class NaviElideApolloService extends ApolloService {
     const defaultOptions = super.options;
 
     return Object.assign({}, defaultOptions, {
-      requestCredentials: 'include'
+      requestCredentials: 'include',
     });
   }
 
@@ -51,7 +51,7 @@ export default class NaviElideApolloService extends ApolloService {
     const httpLink = super.link();
     const headersLink = setContext((_, context) => {
       context.headers = Object.assign(context.headers || {}, {
-        clientId: 'UI'
+        clientId: 'UI',
       });
       context.uri = this._buildURLPath(context.dataSourceName); // set request uri based on datasource
 

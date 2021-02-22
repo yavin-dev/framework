@@ -20,7 +20,7 @@ interface TestContext extends Context {
 
 function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
   const fakeResponse: AsyncQueryResponse = {
-    asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] }
+    asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] },
   };
   const originalFactAdapter = context.owner.factoryFor('adapter:facts/elide').class;
   class TestAdapter extends originalFactAdapter {
@@ -40,11 +40,11 @@ function extractDimValues(dimension: DimensionColumn, rawResponse: AsyncQueryRes
   return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node[getElideField(dimensionName)]);
 }
 
-module('Unit | Adapter | Dimensions | Elide', function(hooks) {
+module('Unit | Adapter | Dimensions | Elide', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     ElideOneScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
@@ -58,7 +58,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await this.metadataService.loadMetadata({ dataSourceName: 'elideTwo' });
   });
 
-  test('find', async function(this: TestContext, assert) {
+  test('find', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -68,8 +68,8 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'elideTwo'
       ) as DimensionMetadataModel,
       parameters: {
-        foo: 'bar'
-      }
+        foo: 'bar',
+      },
     };
 
     const expectedRequest: RequestV2 = {
@@ -80,19 +80,19 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
           parameters: { foo: 'bar' },
           type: 'dimension',
           operator: 'in',
-          values: ['v1', 'v2']
-        }
+          values: ['v1', 'v2'],
+        },
       ],
       sorts: [],
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
     const expectedOptions = {
       timeout: 30000,
       page: 6,
-      perPage: 24
+      perPage: 24,
     };
 
     assertRequest(this, (request, options) => {
@@ -104,7 +104,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }], expectedOptions);
   });
 
-  test('find - enum', async function(this: TestContext, assert) {
+  test('find - enum', async function (this: TestContext, assert) {
     assert.expect(5);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -112,7 +112,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'dimension',
         'table0.dimension1',
         'elideOne'
-      ) as DimensionMetadataModel
+      ) as DimensionMetadataModel,
     };
 
     assertRequest(this, (_request, _options) => {
@@ -146,7 +146,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
 
     const filtersResponse = await adapter.find(TestDimensionColumn, [
       { operator: 'in', values: inValues },
-      { operator: 'eq', values: eqValues }
+      { operator: 'eq', values: eqValues },
     ]);
 
     assert.deepEqual(
@@ -166,14 +166,14 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     }
   });
 
-  test('find - tableSource', async function(this: TestContext, assert) {
+  test('find - tableSource', async function (this: TestContext, assert) {
     assert.expect(1);
 
     const factDimColumn = 'table1.dimension2';
     const lookupDimColumn = 'table0.dimension0';
 
     const TestDimensionColumn: DimensionColumn = {
-      columnMetadata: this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as DimensionMetadataModel
+      columnMetadata: this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as DimensionMetadataModel,
     };
 
     const expectedRequest: RequestV2 = {
@@ -184,14 +184,14 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
           parameters: {},
           type: 'dimension',
           operator: 'in',
-          values: ['v1', 'v2']
-        }
+          values: ['v1', 'v2'],
+        },
       ],
       sorts: [],
       table: lookupDimColumn.split('.')[0],
       limit: null,
       dataSource: 'elideTwo',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     assertRequest(this, (request, _options) => {
@@ -202,7 +202,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
   });
 
-  test('all', async function(this: TestContext, assert) {
+  test('all', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -212,8 +212,8 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'elideTwo'
       ) as DimensionMetadataModel,
       parameters: {
-        foo: 'baz'
-      }
+        foo: 'baz',
+      },
     };
     const expectedRequest: RequestV2 = {
       columns: [{ field: 'table0.dimension0', parameters: { foo: 'baz' }, type: 'dimension' }],
@@ -222,10 +222,10 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
     const expectedOptions = {
-      timeout: 30000
+      timeout: 30000,
     };
 
     assertRequest(this, (request, options) => {
@@ -241,7 +241,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.all(TestDimensionColumn, expectedOptions);
   });
 
-  test('all - enum', async function(this: TestContext, assert) {
+  test('all - enum', async function (this: TestContext, assert) {
     assert.expect(1);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -249,7 +249,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'dimension',
         'table0.dimension1',
         'elideTwo'
-      ) as DimensionMetadataModel
+      ) as DimensionMetadataModel,
     };
 
     assertRequest(this, (_request, _options) => {
@@ -265,13 +265,13 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'Practical Concrete Chair (enum)',
         'Awesome Steel Chicken (enum)',
         'Tasty Fresh Towels (enum)',
-        'Intelligent Steel Pizza (enum)'
+        'Intelligent Steel Pizza (enum)',
       ],
       'all returns enum values for dimensions that provide them'
     );
   });
 
-  test('search', async function(this: TestContext, assert) {
+  test('search', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -281,8 +281,8 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'elideOne'
       ) as DimensionMetadataModel,
       parameters: {
-        bang: 'boom'
-      }
+        bang: 'boom',
+      },
     };
     const query = 'something';
 
@@ -294,18 +294,18 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
           parameters: { bang: 'boom' },
           type: 'dimension',
           operator: 'eq',
-          values: ['*something*']
-        }
+          values: ['*something*'],
+        },
       ],
       sorts: [],
       table: 'table0',
       limit: null,
       dataSource: 'elideOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
     const expectedOptions = {
       timeout: 30000,
-      perPage: 48
+      perPage: 48,
     };
 
     assertRequest(this, (request, options) => {
@@ -322,7 +322,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
     await adapter.search(TestDimensionColumn, query, expectedOptions);
   });
 
-  test('search - enum', async function(this: TestContext, assert) {
+  test('search - enum', async function (this: TestContext, assert) {
     assert.expect(1);
 
     const TestDimensionColumn: DimensionColumn = {
@@ -330,7 +330,7 @@ module('Unit | Adapter | Dimensions | Elide', function(hooks) {
         'dimension',
         'table0.dimension1',
         'elideOne'
-      ) as DimensionMetadataModel
+      ) as DimensionMetadataModel,
     };
 
     assertRequest(this, (_request, _options) => {

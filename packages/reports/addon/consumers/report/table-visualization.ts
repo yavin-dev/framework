@@ -27,7 +27,7 @@ export default class TableVisualizationConsumer extends ActionConsumer {
       const report = route.modelFor(routeName) as ReportModel;
       assert('Visualization must be a table', report.visualization.type === 'table');
 
-      const reorderedColumns = newColumnOrder.map(c => c.fragment);
+      const reorderedColumns = newColumnOrder.map((c) => c.fragment);
 
       //@ts-expect-error
       set(report.request, 'columns', reorderedColumns);
@@ -51,6 +51,6 @@ export default class TableVisualizationConsumer extends ActionConsumer {
       columnAttributes[updatedColumn.fragment.cid] = updatedColumn.attributes;
 
       set(report.visualization, 'metadata', { ...metadata, columnAttributes });
-    }
+    },
   };
 }

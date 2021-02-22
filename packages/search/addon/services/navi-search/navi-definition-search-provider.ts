@@ -29,20 +29,20 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @returns {Object} Object containing, component, title and data
    */
   // eslint-disable-next-line require-yield
-  @(task(function*(this: NaviDefinitionSearchProviderService, query: TODO) {
+  @(task(function* (this: NaviDefinitionSearchProviderService, query: TODO) {
     const types: MetadataModelTypes[] = ['table', 'dimension', 'metric', 'timeDimension'];
     const kegData: TODO = [];
     let data = [];
 
     if (query?.length > 0) {
-      types.forEach(type => kegData.push(...this.naviMetadata.all(type).toArray()));
+      types.forEach((type) => kegData.push(...this.naviMetadata.all(type).toArray()));
       data = searchRecordsByFields(kegData, query, ['id', 'name', 'description']);
     }
 
     return {
       component: this.displayComponentName,
       title: 'Definition',
-      data: data.slice(0, this.resultThreshold)
+      data: data.slice(0, this.resultThreshold),
     };
   }).restartable())
   search: TODO;

@@ -5,8 +5,8 @@ import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';
 
-module('Unit | Utils | DurationUtils', function() {
-  test('subtractDurationFromDate', function(assert) {
+module('Unit | Utils | DurationUtils', function () {
+  test('subtractDurationFromDate', function (assert) {
     assert.expect(4);
 
     let duration = new Duration('P2D');
@@ -34,7 +34,7 @@ module('Unit | Utils | DurationUtils', function() {
     );
   });
 
-  test('isDurationOverAYear', function(assert) {
+  test('isDurationOverAYear', function (assert) {
     assert.expect(8);
 
     assert.throws(
@@ -90,7 +90,7 @@ module('Unit | Utils | DurationUtils', function() {
     );
   });
 
-  test('computeStartOfInterval', function(assert) {
+  test('computeStartOfInterval', function (assert) {
     assert.expect(5);
 
     /* == valid cases == */

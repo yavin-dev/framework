@@ -12,7 +12,7 @@ export default class Screen extends Service {
     super(...arguments);
     const query = window.matchMedia('(max-width: 599px)');
     this.isMobile = query.matches;
-    query.addEventListener('change', e => (this.isMobile = e.matches));
+    query.addEventListener('change', (e) => (this.isMobile = e.matches));
   }
 }
 

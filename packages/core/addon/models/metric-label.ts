@@ -17,12 +17,12 @@ import { readOnly } from '@ember/object/computed';
 const Validations = buildValidations(
   {
     'metadata.metricCid': validator('request-metric-exist', {
-      dependentKeys: ['model._request.metricColumns.[]']
-    })
+      dependentKeys: ['model._request.metricColumns.[]'],
+    }),
   },
   {
     //Global Validation Options
-    request: readOnly('model._request')
+    request: readOnly('model._request'),
   }
 );
 

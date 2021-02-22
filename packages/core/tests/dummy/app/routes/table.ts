@@ -13,7 +13,7 @@ const MOCK_ROWS = [
     'os(field=desc)': 'All Other',
     uniqueIdentifier: undefined,
     totalPageViews: 3669828357,
-    totalPageViewsWoW: undefined
+    totalPageViewsWoW: undefined,
   },
   {
     'network.dateTime(grain=week)': '2016-05-31 00:00:00.000',
@@ -22,7 +22,7 @@ const MOCK_ROWS = [
       'Lorem ipsum dolor sit amet, laudem tamquam nusquam eum an. Consul corpora eam ad, iusto labore eu vix. Errem sapientem in per. Mei no quot dicat. Eos ludus accumsan an.',
     uniqueIdentifier: 183206656,
     totalPageViews: 4088487125,
-    totalPageViewsWoW: -9.1
+    totalPageViewsWoW: -9.1,
   },
   {
     'network.dateTime(grain=week)': '2016-06-01 00:00:00.000',
@@ -30,7 +30,7 @@ const MOCK_ROWS = [
     'os(field=desc)': 'BlackBerry OS',
     uniqueIdentifier: 0.0,
     totalPageViews: 4024700302,
-    totalPageViewsWoW: 0.0
+    totalPageViewsWoW: 0.0,
   },
   {
     'network.dateTime(grain=week)': '2016-06-02 00:00:00.000',
@@ -38,7 +38,7 @@ const MOCK_ROWS = [
     'os(field=desc)': 'Chrome OS',
     uniqueIdentifier: 180559793,
     totalPageViews: 3950276031,
-    totalPageViewsWoW: -1.2
+    totalPageViewsWoW: -1.2,
   },
   {
     'network.dateTime(grain=week)': '2016-06-03 00:00:00.000',
@@ -46,8 +46,8 @@ const MOCK_ROWS = [
     'os(field=desc)': 'Firefox OS',
     uniqueIdentifier: 172724594,
     totalPageViews: 3697156058,
-    totalPageViewsWoW: -0.9
-  }
+    totalPageViewsWoW: -0.9,
+  },
 ];
 
 export default class TableRoute extends Route {
@@ -62,8 +62,8 @@ export default class TableRoute extends Route {
 
     let meta = {
       pagination: {
-        numberOfResults: rows.length
-      }
+        numberOfResults: rows.length,
+      },
     };
 
     return resolve(
@@ -77,25 +77,25 @@ export default class TableRoute extends Route {
                 field: 'network.dateTime',
                 parameters: { grain: 'week' },
                 alias: null,
-                source: 'bardOne'
+                source: 'bardOne',
               },
               { type: 'dimension', field: 'os', parameters: { field: 'id' }, alias: null, source: 'bardOne' },
               { type: 'dimension', field: 'os', parameters: { field: 'desc' }, alias: null, source: 'bardOne' },
               { type: 'metric', field: 'uniqueIdentifier', parameters: {}, alias: null, source: 'bardOne' },
               { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null, source: 'bardOne' },
-              { type: 'metric', field: 'totalPageViewsWoW', parameters: {}, alias: null, source: 'bardOne' }
+              { type: 'metric', field: 'totalPageViewsWoW', parameters: {}, alias: null, source: 'bardOne' },
             ],
             filters: [],
             sorts: [],
             limit: null,
             dataSource: 'bardOne',
-            requestVersion: '2.0'
+            requestVersion: '2.0',
           }),
           response: {
             rows,
-            meta
-          }
-        }
+            meta,
+          },
+        },
       ])
     );
   }

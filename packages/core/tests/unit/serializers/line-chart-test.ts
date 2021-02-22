@@ -19,27 +19,27 @@ const TestRequest: RequestV2 = {
       type: 'dimension',
       field: 'age',
       parameters: {
-        field: 'id'
-      }
+        field: 'id',
+      },
     },
     {
       cid: 'cid_property(field=id)',
       type: 'dimension',
       field: 'property',
       parameters: {
-        field: 'id'
-      }
+        field: 'id',
+      },
     },
     {
       cid: 'cid_metricName(param=val)',
       type: 'metric',
       field: 'metricName',
       parameters: {
-        param: 'val'
-      }
-    }
+        param: 'val',
+      },
+    },
   ],
-  sorts: []
+  sorts: [],
 };
 
 function makeConfig(version: 1 | 2 = 2, type: SeriesType, config?: any): LegacyLineChartConfig | LineChartConfig {
@@ -51,21 +51,21 @@ function makeConfig(version: 1 | 2 = 2, type: SeriesType, config?: any): LegacyL
         y: {
           series: {
             type,
-            config: config || {}
-          }
-        }
-      }
-    }
+            config: config || {},
+          },
+        },
+      },
+    },
   };
 }
 
-module('Unit | Serializer | line chart', function(hooks) {
+module('Unit | Serializer | line chart', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('normalizeLineChartV2 - metric', function(assert) {
+  test('normalizeLineChartV2 - metric', function (assert) {
     const metricConfig = makeConfig(1, 'metric', {
-      metrics: [{ metric: 'metricName', parameters: { param: 'val' } }]
+      metrics: [{ metric: 'metricName', parameters: { param: 'val' } }],
     });
 
     assert.deepEqual(
@@ -75,10 +75,10 @@ module('Unit | Serializer | line chart', function(hooks) {
     );
   });
 
-  test('normalizeLineChartV2 - dimension', function(assert) {
+  test('normalizeLineChartV2 - dimension', function (assert) {
     const dimensionConfig = makeConfig(1, 'dimension', {
       metric: 'metricName(param=val)',
-      dimensions: [{ name: 'Cool name', values: { age: '-1', property: '2' } }]
+      dimensions: [{ name: 'Cool name', values: { age: '-1', property: '2' } }],
     });
 
     assert.deepEqual(
@@ -90,17 +90,17 @@ module('Unit | Serializer | line chart', function(hooks) {
             name: 'Cool name',
             values: {
               'cid_age(field=id)': '-1',
-              'cid_property(field=id)': '2'
-            }
-          }
-        ]
+              'cid_property(field=id)': '2',
+            },
+          },
+        ],
       }),
       'a dimension series updates the metric key to be a cid, and updates dimension series values to use cid'
     );
 
     const dimensionConfigBadMetricName = makeConfig(1, 'dimension', {
       metric: 'metricName',
-      dimensions: []
+      dimensions: [],
     });
 
     assert.throws(
@@ -113,7 +113,7 @@ module('Unit | Serializer | line chart', function(hooks) {
 
     const dimensionConfigBadSeries = makeConfig(1, 'dimension', {
       metric: 'metricName(param=val)',
-      dimensions: [{ name: 'Name', values: { gender: 0 } }]
+      dimensions: [{ name: 'Name', values: { gender: 0 } }],
     });
 
     assert.throws(
@@ -125,23 +125,23 @@ module('Unit | Serializer | line chart', function(hooks) {
     );
   });
 
-  test('normalizeLineChartV2 - dateTime', function(assert) {
+  test('normalizeLineChartV2 - dateTime', function (assert) {
     const dateTimeConfig = makeConfig(1, 'dateTime', {
       metric: 'metricName(param=val)',
-      timeGrain: 'day'
+      timeGrain: 'day',
     });
 
     assert.deepEqual(
       normalizeLineChartV2(TestRequest, dateTimeConfig),
       makeConfig(2, 'dateTime', {
         metricCid: 'cid_metricName(param=val)',
-        timeGrain: 'day'
+        timeGrain: 'day',
       }),
       'a dateTime series updates the metric key to be a cid'
     );
 
     const dateTimeConfigBadMetricName = makeConfig(1, 'dateTime', {
-      metric: 'metricName'
+      metric: 'metricName',
     });
 
     assert.throws(

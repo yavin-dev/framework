@@ -21,20 +21,20 @@ export default class DirectoryRoute extends Route {
    */
   queryParams = {
     filter: {
-      refreshModel: true
+      refreshModel: true,
     },
     type: {
-      refreshModel: true
+      refreshModel: true,
     },
     q: {
-      replace: true
+      replace: true,
     },
     sortBy: {
-      replace: true
+      replace: true,
     },
     sortDir: {
-      replace: true
-    }
+      replace: true,
+    },
   };
 
   /**

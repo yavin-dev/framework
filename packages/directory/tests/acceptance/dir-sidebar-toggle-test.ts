@@ -8,11 +8,11 @@ const sidebarToggle = '#dir-sidebar-toggle';
 const sidebarOpenClass = 'tablet-down-toggle-tabs-left';
 const sidebar = '.dir-sidebar';
 
-module('Acceptance | dir sidebar toggle', function(hooks) {
+module('Acceptance | dir sidebar toggle', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('toggle opens and closes sidebar', async function(assert) {
+  test('toggle opens and closes sidebar', async function (assert) {
     await visit('/directory/my-data');
     assert.dom(sidebarToggle).exists('The sidebar toggle button exists');
 
@@ -25,7 +25,7 @@ module('Acceptance | dir sidebar toggle', function(hooks) {
     assert.dom(sidebar).doesNotHaveClass(sidebarOpenClass, 'After clicking the toggle again the sidebar is closed');
   });
 
-  test('Changing filters via sidebar closes the sidebar', async function(assert) {
+  test('Changing filters via sidebar closes the sidebar', async function (assert) {
     await visit('/directory/my-data');
 
     await click(sidebarToggle);
@@ -38,7 +38,7 @@ module('Acceptance | dir sidebar toggle', function(hooks) {
     assert.dom(sidebar).doesNotHaveClass(sidebarOpenClass, 'The sidebar is close after going to another route');
   });
 
-  test('navigating away closes the sidebar', async function(assert) {
+  test('navigating away closes the sidebar', async function (assert) {
     await visit('/directory/my-data');
 
     await click(sidebarToggle);

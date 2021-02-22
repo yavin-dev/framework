@@ -18,14 +18,14 @@ type ComponentArgs = NaviVisualizationConfigMetricLabelComponent['args'];
 
 interface TestContext extends Context, ComponentArgs {}
 
-module('Integration | Component | visualization config/metric-label', function(hooks) {
+module('Integration | Component | visualization config/metric-label', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     this.options = {
       format: '$0,0[.]00',
-      metricCid: 'cid_bubbles'
+      metricCid: 'cid_bubbles',
     };
     this.onUpdateConfig = () => null;
     this.request = store.createFragment('bard-request-v2/request', {
@@ -36,19 +36,19 @@ module('Integration | Component | visualization config/metric-label', function(h
           field: 'bubbles',
           parameters: {},
           alias: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       requestVersion: '2.0',
       dataSource: 'bardOne',
-      table: 'network'
+      table: 'network',
     });
     this.response = { rows: [], meta: {} };
   });
 
-  test('component renders', async function(assert) {
+  test('component renders', async function (assert) {
     assert.expect(2);
 
     await render(Template);
@@ -65,10 +65,10 @@ module('Integration | Component | visualization config/metric-label', function(h
       .hasValue('$0,0[.]00', 'Component correctly displays initial format');
   });
 
-  test('onUpdateConfig format input', async function(this: TestContext, assert) {
+  test('onUpdateConfig format input', async function (this: TestContext, assert) {
     assert.expect(1);
 
-    this.onUpdateConfig = result => {
+    this.onUpdateConfig = (result) => {
       assert.equal(result.format, 'foo', 'onUpdateConfig action is called by format input');
     };
 
@@ -77,7 +77,7 @@ module('Integration | Component | visualization config/metric-label', function(h
     await fillIn('.number-format-selector__format-input', 'foo');
   });
 
-  test('onUpdateConfig alias input', async function(this: TestContext, assert) {
+  test('onUpdateConfig alias input', async function (this: TestContext, assert) {
     assert.expect(1);
 
     await render(Template);

@@ -7,25 +7,25 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
 import { reorder } from 'ember-sortable/test-support/helpers';
 
-module('Acceptance | table', function(hooks) {
+module('Acceptance | table', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
-  skip('visiting /table', async function(assert) {
+  skip('visiting /table', async function (assert) {
     assert.expect(2);
 
     await visit('/table');
 
     assert.deepEqual(
-      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent?.trim()),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent?.trim()),
       ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers for the table are as specified'
     );
@@ -41,13 +41,13 @@ module('Acceptance | table', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.table-header-row-vc--view .table-header-cell__title').map(el => el.textContent?.trim()),
+      findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent?.trim()),
       ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
       'The headers are reordered as specified by the reorder'
     );
   });
 
-  test('toggle table editing', async function(assert) {
+  test('toggle table editing', async function (assert) {
     assert.expect(6);
 
     await visit('/table');
@@ -72,7 +72,7 @@ module('Acceptance | table', function(hooks) {
     assert.dom('.number-format-dropdown__container').isVisible('Table format dropdown should be visible');
   });
 
-  test('edit table field', async function(assert) {
+  test('edit table field', async function (assert) {
     assert.expect(2);
 
     await visit('/table');
@@ -91,7 +91,7 @@ module('Acceptance | table', function(hooks) {
       .hasClass('table-header-cell__title--custom-name', 'DateTime field should have custom name class after editing');
   });
 
-  test('edit table field - empty title', async function(assert) {
+  test('edit table field - empty title', async function (assert) {
     assert.expect(2);
 
     await visit('/table');

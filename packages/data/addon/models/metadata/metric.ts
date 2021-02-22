@@ -35,7 +35,7 @@ export default class MetricMetadataModel extends ColumnMetadataModel implements 
    */
   get extended(): Promise<MetricMetadataModel> {
     const { naviMetadata, id, source } = this;
-    return naviMetadata.findById('metric', id, source).then(m => m || this);
+    return naviMetadata.findById('metric', id, source).then((m) => m || this);
   }
 }
 

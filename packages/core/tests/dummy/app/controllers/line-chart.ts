@@ -15,10 +15,10 @@ export default class LineChartController extends Controller {
       y: {
         series: {
           type: 'metric',
-          config: {}
-        }
-      }
-    }
+          config: {},
+        },
+      },
+    },
   };
 
   @tracked dimensionOptions = {
@@ -33,35 +33,35 @@ export default class LineChartController extends Controller {
                 name: '-3,All Other',
                 values: {
                   'cid_age(field=id)': '-3',
-                  'cid_age(field=desc)': 'All Other'
-                }
+                  'cid_age(field=desc)': 'All Other',
+                },
               },
               {
                 name: '4,21-24',
                 values: {
                   'cid_age(field=id)': '4',
-                  'cid_age(field=desc)': '21-24'
-                }
+                  'cid_age(field=desc)': '21-24',
+                },
               },
               {
                 name: '5,25-29',
                 values: {
                   'cid_age(field=id)': '5',
-                  'cid_age(field=desc)': '25-29'
-                }
-              }
-            ]
-          }
-        }
-      }
-    }
+                  'cid_age(field=desc)': '25-29',
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
   };
 
   get metricVisualization() {
     return {
       type: this.chartType,
       version: 1,
-      metadata: this.metricOptions
+      metadata: this.metricOptions,
     };
   }
 
@@ -69,7 +69,7 @@ export default class LineChartController extends Controller {
     return {
       type: this.chartType,
       version: 1,
-      metadata: this.dimensionOptions
+      metadata: this.dimensionOptions,
     };
   }
 
@@ -80,21 +80,21 @@ export default class LineChartController extends Controller {
           type: 'dateTime',
           config: {
             metricCid: 'cid_totalPageViews',
-            timeGrain: 'year'
-          }
-        }
-      }
-    }
+            timeGrain: 'year',
+          },
+        },
+      },
+    },
   };
 
   @tracked customOptions = {
     axis: {
       y: {
         series: {
-          type: 'customType'
-        }
-      }
-    }
+          type: 'customType',
+        },
+      },
+    },
   };
 
   @tracked hourByDayTimeOptions = {
@@ -104,11 +104,11 @@ export default class LineChartController extends Controller {
           type: 'dateTime',
           config: {
             metricCid: 'cid_adClicks',
-            timeGrain: 'day'
-          }
-        }
-      }
-    }
+            timeGrain: 'day',
+          },
+        },
+      },
+    },
   };
 
   @tracked minuteByHourTimeOptions = {
@@ -118,11 +118,11 @@ export default class LineChartController extends Controller {
           type: 'dateTime',
           config: {
             metricCid: 'cid_adClicks',
-            timeGrain: 'hour'
-          }
-        }
-      }
-    }
+            timeGrain: 'hour',
+          },
+        },
+      },
+    },
   };
 
   @tracked secondByMinuteTimeOptions = {
@@ -132,11 +132,11 @@ export default class LineChartController extends Controller {
           type: 'dateTime',
           config: {
             metricCid: 'cid_adClicks',
-            timeGrain: 'minute'
-          }
-        }
-      }
-    }
+            timeGrain: 'minute',
+          },
+        },
+      },
+    },
   };
 
   @tracked amomalousOptions = {
@@ -144,10 +144,10 @@ export default class LineChartController extends Controller {
       y: {
         series: {
           type: 'metric',
-          config: {}
-        }
-      }
-    }
+          config: {},
+        },
+      },
+    },
   };
 
   @action
