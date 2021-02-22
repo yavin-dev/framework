@@ -31,7 +31,7 @@ export default class NaviFactResponse extends EmberObject implements ResponseV1 
 
     const { rows = [] } = this;
     const moments = rows
-      .map(row => {
+      .map((row) => {
         const value = row[field];
         return value ? moment.parseZone(value as MomentInput) : null;
       })

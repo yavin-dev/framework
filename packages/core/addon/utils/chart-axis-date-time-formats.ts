@@ -14,7 +14,7 @@ const grainFormats: Record<Grain, string> = {
   isoWeek: 'MMM D',
   month: 'MMM YYYY',
   quarter: '[Q]Q YYYY',
-  year: 'YYYY'
+  year: 'YYYY',
 };
 
 export default grainFormats;

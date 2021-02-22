@@ -15,17 +15,17 @@ interface TestContext extends Context {
   filter: FilterFragment;
 }
 
-module('Integration | Component | filter-builders/base', function(hooks) {
+module('Integration | Component | filter-builders/base', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
     this.set('filter', factory.createFilter('dimension', 'bardOne', 'age', {}, 'in', [1, 2, 3]));
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     await render(hbs`
     <FilterBuilders::Test
       @filter={{this.filter}}
@@ -42,13 +42,13 @@ module('Integration | Component | filter-builders/base', function(hooks) {
 
     await clickTrigger();
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['Equals', 'Not Equals', 'Is Empty'],
       'All supported operators show up as options in the operator selector'
     );
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     this.set('isCollapsed', true);
     await render(hbs`
     <FilterBuilders::Test
@@ -61,14 +61,14 @@ module('Integration | Component | filter-builders/base', function(hooks) {
       .hasText(`${this.filter.displayName} equals Test Filter Value One`, 'Rendered correctly when collapsed');
   });
 
-  test('changing operator', async function(assert) {
+  test('changing operator', async function (assert) {
     assert.expect(2);
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(
         changeSet,
         {
-          operator: 'notin'
+          operator: 'notin',
         },
         'Values is not reset when changing between operator with the same valuesComponent'
       );

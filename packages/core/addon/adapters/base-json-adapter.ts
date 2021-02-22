@@ -28,7 +28,7 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
   ajaxOptions(url: string, type: string, options?: { data?: unknown; contentType?: string }): object {
     const hash = super.ajaxOptions(url, type, options) as Record<string, unknown>;
     hash.xhrFields = {
-      withCredentials: true
+      withCredentials: true,
     };
     hash.crossDomain = true;
 
@@ -37,7 +37,7 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
 
     hash.headers = {
       Accept: 'application/vnd.api+json',
-      ...(hash.contentType ? { 'Content-Type': hash.contentType } : {})
+      ...(hash.contentType ? { 'Content-Type': hash.contentType } : {}),
     };
 
     return hash;
@@ -60,7 +60,7 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
     const filterId = `${filterRoot}.id`;
 
     return this.ajax(url, 'GET', {
-      data: { filter: { [filterId]: ids.join(',') } }
+      data: { filter: { [filterId]: ids.join(',') } },
     });
   }
 
@@ -84,8 +84,8 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
       {
         status: `${status}`,
         title: 'The backend responded with an error',
-        detail
-      }
+        detail,
+      },
     ];
   }
 

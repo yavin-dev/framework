@@ -50,10 +50,7 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
     const { interval, calendarDateTimePeriod } = this;
     if (interval) {
       let { end } = interval.asMomentsForTimePeriod(calendarDateTimePeriod, false);
-      end = end
-        .clone()
-        .subtract(1, getPeriodForGrain(calendarDateTimePeriod))
-        .utc(true);
+      end = end.clone().subtract(1, getPeriodForGrain(calendarDateTimePeriod)).utc(true);
       return end;
     }
     return undefined;

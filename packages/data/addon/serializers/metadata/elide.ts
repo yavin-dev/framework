@@ -102,7 +102,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         metricIds: [],
         dimensionIds: [],
         timeDimensionIds: [],
-        source
+        source,
       };
 
       const newTableMetrics = this._normalizeTableMetrics(table.metrics, table.id, source);
@@ -112,12 +112,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         table.id,
         source
       );
-      const newTableTimeDimensions = newTableTimeDimensionsAndColFuncs.map(obj => obj.timeDimension);
-      const newTableTimeDimensionColFuncs = newTableTimeDimensionsAndColFuncs.map(obj => obj.columnFunction);
+      const newTableTimeDimensions = newTableTimeDimensionsAndColFuncs.map((obj) => obj.timeDimension);
+      const newTableTimeDimensionColFuncs = newTableTimeDimensionsAndColFuncs.map((obj) => obj.columnFunction);
 
-      newTable.metricIds = newTableMetrics.map(m => m.id);
-      newTable.dimensionIds = newTableDimensions.map(d => d.id);
-      newTable.timeDimensionIds = newTableTimeDimensions.map(d => d.id);
+      newTable.metricIds = newTableMetrics.map((m) => m.id);
+      newTable.dimensionIds = newTableDimensions.map((d) => d.id);
+      newTable.timeDimensionIds = newTableTimeDimensions.map((d) => d.id);
 
       metrics = [...metrics, ...newTableMetrics];
       dimensions = [...dimensions, ...newTableDimensions];
@@ -128,11 +128,11 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     });
 
     return {
-      tables: tablePayloads.map(p => this.tableFactory.create(p)),
+      tables: tablePayloads.map((p) => this.tableFactory.create(p)),
       metrics,
       dimensions,
       timeDimensions,
-      columnFunctions
+      columnFunctions,
     };
   }
 
@@ -161,7 +161,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         tags: node.tags,
         defaultFormat: node.defaultFormat,
         type: node.columnType,
-        expression: node.expression
+        expression: node.expression,
       };
       return this.metricFactory.create(payload);
     });
@@ -194,7 +194,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         expression: node.expression,
         valueSourceType: node.valueSourceType,
         tableSource: node.tableSource,
-        values: node.values
+        values: node.values,
       };
       return this.dimensionFactory.create(payload);
     });
@@ -214,7 +214,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   ): { timeDimension: TimeDimensionMetadataModel; columnFunction: ColumnFunctionMetadataModel }[] {
     return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
-      const supportedGrains = node.supportedGrain.edges.map(edge => edge.node);
+      const supportedGrains = node.supportedGrain.edges.map((edge) => edge.node);
       const columnFunctionPayload = this.createTimeGrainColumnFunction(node.id, supportedGrains, source);
       const timeDimensionPayload: TimeDimensionMetadataPayload = {
         id: node.id,
@@ -232,11 +232,11 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
 
         timeZone: node.timeZone,
         type: node.columnType,
-        expression: node.expression
+        expression: node.expression,
       };
       return {
         timeDimension: this.timeDimensionFactory.create(timeDimensionPayload),
-        columnFunction: this.columnFunctionFactory.create(columnFunctionPayload)
+        columnFunction: this.columnFunctionFactory.create(columnFunctionPayload),
       };
     });
   }
@@ -260,7 +260,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     grainNodes: TimeDimensionGrainNode[],
     dataSourceName: string
   ): ColumnFunctionMetadataPayload {
-    const grainIds = grainNodes.map(g => g.grain.toLowerCase());
+    const grainIds = grainNodes.map((g) => g.grain.toLowerCase());
     const grains = grainIds.sort().join(',');
     const columnFunctionId = `${this.namespace}:timeGrain(column=${timeDimensionId};grains=${grains})`;
     let defaultValue;
@@ -284,16 +284,16 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           type: 'ref',
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
-          _localValues: grainNodes.map(grain => {
+          _localValues: grainNodes.map((grain) => {
             const grainName = grain.grain.toLowerCase();
             return {
               id: grainName,
               description: upperFirst(grainName),
-              name: grainName
+              name: grainName,
             };
-          })
-        }
-      ]
+          }),
+        },
+      ],
     };
   }
 

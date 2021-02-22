@@ -162,7 +162,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @param id
    */
   getParameter(id: string): FunctionParameter | undefined {
-    return this.parameters.find(param => param.id === id);
+    return this.parameters.find((param) => param.id === id);
   }
 
   /**

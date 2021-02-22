@@ -5,5 +5,5 @@ export default [
   { name: 'month', longName: 'Month' },
   { name: 'quarter', longName: 'Quarter' },
   { name: 'year', longName: 'Year' },
-  { name: 'all', longName: 'All' }
+  { name: 'all', longName: 'All' },
 ];

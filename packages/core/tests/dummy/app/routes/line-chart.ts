@@ -95,7 +95,7 @@ const hourRows = [
   { 'network.dateTime(grain=hour)': '2017-02-10 20:00:00.000', adClicks: 201723 },
   { 'network.dateTime(grain=hour)': '2017-02-10 21:00:00.000', adClicks: 190928 },
   { 'network.dateTime(grain=hour)': '2017-02-10 22:00:00.000', adClicks: 156252 },
-  { 'network.dateTime(grain=hour)': '2017-02-10 23:00:00.000', adClicks: 132054 }
+  { 'network.dateTime(grain=hour)': '2017-02-10 23:00:00.000', adClicks: 132054 },
 ];
 
 const minuteRows = [
@@ -131,7 +131,7 @@ const minuteRows = [
   { 'network.dateTime(grain=minute)': '2017-02-09 02:07:00.000', adClicks: 93722 },
   { 'network.dateTime(grain=minute)': '2017-02-09 02:08:00.000', adClicks: 61043 },
   { 'network.dateTime(grain=minute)': '2017-02-09 02:09:00.000', adClicks: 42930 },
-  { 'network.dateTime(grain=minute)': '2017-02-09 02:10:00.000', adClicks: 38197 }
+  { 'network.dateTime(grain=minute)': '2017-02-09 02:10:00.000', adClicks: 38197 },
 ];
 
 const secondRows = [
@@ -167,7 +167,7 @@ const secondRows = [
   { 'network.dateTime(grain=second)': '2017-02-09 00:02:07.000', adClicks: 93722 },
   { 'network.dateTime(grain=second)': '2017-02-09 00:02:08.000', adClicks: 61043 },
   { 'network.dateTime(grain=second)': '2017-02-09 00:02:09.000', adClicks: 42930 },
-  { 'network.dateTime(grain=second)': '2017-02-09 00:02:10.000', adClicks: 38197 }
+  { 'network.dateTime(grain=second)': '2017-02-09 00:02:10.000', adClicks: 38197 },
 ];
 
 const anomalousRows = [
@@ -177,7 +177,7 @@ const anomalousRows = [
   { 'network.dateTime(grain=day)': '2017-09-04 00:00:00.000', uniqueIdentifier: 172933788 },
   { 'network.dateTime(grain=day)': '2017-09-05 00:00:00.000', uniqueIdentifier: 183206656 },
   { 'network.dateTime(grain=day)': '2017-09-06 00:00:00.000', uniqueIdentifier: 183380921 },
-  { 'network.dateTime(grain=day)': '2017-09-07 00:00:00.000', uniqueIdentifier: 180559793 }
+  { 'network.dateTime(grain=day)': '2017-09-07 00:00:00.000', uniqueIdentifier: 180559793 },
 ];
 
 export default class LineChartRoute extends Route {
@@ -196,7 +196,7 @@ export default class LineChartRoute extends Route {
           field: 'network.dateTime',
           parameters: { grain },
           alias: null,
-          source: 'bardOne'
+          source: 'bardOne',
         },
         ...metrics.map(({ field, parameters }) => {
           const canonical = canonicalizeMetric({ metric: field, parameters });
@@ -206,7 +206,7 @@ export default class LineChartRoute extends Route {
             field,
             parameters: parameters || {},
             alias: null,
-            source: 'bardOne'
+            source: 'bardOne',
           };
         }),
         ...dimensions.map(({ field, parameters }) => {
@@ -217,9 +217,9 @@ export default class LineChartRoute extends Route {
             field,
             parameters: parameters || {},
             alias: null,
-            source: 'bardOne'
+            source: 'bardOne',
           };
-        })
+        }),
       ],
       filters: [
         {
@@ -228,13 +228,13 @@ export default class LineChartRoute extends Route {
           parameters: { grain: grain },
           operator: 'bet',
           values: [interval.start, interval.end],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
   }
 
@@ -243,7 +243,7 @@ export default class LineChartRoute extends Route {
       [
         { field: 'uniqueIdentifier' },
         { field: 'totalPageViews' },
-        { field: 'revenue', parameters: { currency: 'USD' } }
+        { field: 'revenue', parameters: { currency: 'USD' } },
       ],
       [],
       'isoWeek',
@@ -256,7 +256,7 @@ export default class LineChartRoute extends Route {
       [{ field: 'adClicks' }, { field: 'uniqueIdentifier' }, { field: 'revenue', parameters: { currency: 'USD' } }],
       [
         { field: 'age', parameters: { field: 'id' } },
-        { field: 'age', parameters: { field: 'desc' } }
+        { field: 'age', parameters: { field: 'desc' } },
       ],
       'day',
       { start: '2017-02-09 00:00:00.000', end: '2017-02-19 00:00:00.000' }
@@ -266,28 +266,28 @@ export default class LineChartRoute extends Route {
   get hourGrainRequest() {
     return this.buildRequest([{ field: 'adClicks' }], [], 'hour', {
       start: '2017-02-09 00:00:00.000',
-      end: '2017-02-10 23:00:00.000'
+      end: '2017-02-10 23:00:00.000',
     });
   }
 
   get minuteGrainRequest() {
     return this.buildRequest([{ field: 'adClicks' }], [], 'minute', {
       start: '2017-02-09 00:00:00.000',
-      end: '2017-02-09 02:10:00.000'
+      end: '2017-02-09 02:10:00.000',
     });
   }
 
   get secondGrainRequest() {
     return this.buildRequest([{ field: 'adClicks' }], [], 'second', {
       start: '2017-02-09 00:00:00.000',
-      end: '2017-02-09 00:02:10.000'
+      end: '2017-02-09 00:02:10.000',
     });
   }
 
   get anomalousRequest() {
     return this.buildRequest([{ field: 'uniqueIdentifier' }], [], 'day', {
       start: '2017-09-01 00:00:00.000',
-      end: '2017-09-07 00:00:00.000'
+      end: '2017-09-07 00:00:00.000',
     });
   }
 
@@ -298,7 +298,7 @@ export default class LineChartRoute extends Route {
       hourGrainRequest,
       minuteGrainRequest,
       secondGrainRequest,
-      anomalousRequest
+      anomalousRequest,
     } = this;
     return {
       default: A([{ request: defaultRequest, response: NaviFactResponse.create({ rows: defaultRows }) }]),
@@ -312,10 +312,10 @@ export default class LineChartRoute extends Route {
           A([
             { index: 1, actual: 12, predicted: 172724594.12345, standardDeviation: 123.123456 },
             { index: 3, actual: 10, predicted: 172933788.12345, standardDeviation: 123.123456 },
-            { index: 5, actual: 14, predicted: 183380921.12345, standardDeviation: 123.123456 }
+            { index: 5, actual: 14, predicted: 183380921.12345, standardDeviation: 123.123456 },
           ])
-        )
-      ])
+        ),
+      ]),
     };
   }
 }

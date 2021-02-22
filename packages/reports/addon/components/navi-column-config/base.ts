@@ -16,7 +16,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import FunctionParameterMetadataModel, {
-  ColumnFunctionParametersValues
+  ColumnFunctionParametersValues,
 } from 'navi-data/models/metadata/function-parameter';
 
 interface NaviColumnConfigBaseArgs {

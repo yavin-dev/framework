@@ -19,7 +19,7 @@ const TestRequest: RequestV2 = {
     { field: 'table1.m2', type: 'metric', parameters: {} },
     { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
     { field: 'table1.d1', type: 'dimension', parameters: {} },
-    { field: 'table1.d2', type: 'dimension', parameters: {} }
+    { field: 'table1.d2', type: 'dimension', parameters: {} },
   ],
   filters: [
     { field: 'table1.d3', operator: 'in', values: ['v1', 'v2'], type: 'dimension', parameters: {} },
@@ -30,42 +30,42 @@ const TestRequest: RequestV2 = {
       operator: 'gte',
       values: ['2015-01-03'],
       type: 'timeDimension',
-      parameters: { grain: 'day' }
+      parameters: { grain: 'day' },
     },
     {
       field: 'table1.time',
       operator: 'lt',
       values: ['2015-01-04'],
       type: 'timeDimension',
-      parameters: { grain: 'day' }
+      parameters: { grain: 'day' },
     },
-    { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} }
+    { field: 'table1.m1', operator: 'gt', values: ['0'], type: 'metric', parameters: {} },
   ],
   sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
   limit: 10000,
   requestVersion: '2.0',
-  dataSource: 'elideOne'
+  dataSource: 'elideOne',
 };
 
 let Server: Pretender;
 
-module('Unit | Adapter | facts/elide', function(hooks) {
+module('Unit | Adapter | facts/elide', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Server = new Pretender();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     Server.shutdown();
   });
 
-  test('it exists', function(assert) {
+  test('it exists', function (assert) {
     let adapter = this.owner.lookup('adapter:facts/elide');
     assert.ok(adapter, 'elide-fact adapter exists');
   });
 
-  test('getElideField', function(assert) {
+  test('getElideField', function (assert) {
     assert.equal(getElideField('foo', { bar: 'baz' }), 'foo', 'Field with parameter is not supported');
     assert.equal(
       getElideField('foo', { bar: 'baz', bang: 'boom' }),
@@ -75,7 +75,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.equal(getElideField('foo'), 'foo', 'Name is returned for field with no parameters');
   });
 
-  test('dataQueryFromRequest', function(assert) {
+  test('dataQueryFromRequest', function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
@@ -89,13 +89,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideOne',
       }),
       `{"query":"{ myTable { edges { node { m1 d1 } } } }"}`,
       'Arguments are properly excluded if they are not in the request'
@@ -106,16 +106,16 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', direction: 'desc' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension', direction: 'asc' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension', direction: 'asc' },
         ],
         filters: [],
         limit: null,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideOne',
       }),
       `{"query":"{ myTable(sort: \\"-m1,d1\\") { edges { node { m1 d1 } } } }"}`,
       'Request with sorts and parameters is queried correctly'
@@ -126,17 +126,17 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'in', values: ['v1', 'v2'] },
           { field: 'myTable.d1', parameters: {}, type: 'dimension', operator: 'neq', values: ['a'] },
-          { field: 'myTable.d2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] }
+          { field: 'myTable.d2', parameters: {}, type: 'dimension', operator: 'eq', values: ['b'] },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"m1=in=('v1','v2');d1!=('a');d2==('b')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with filters and parameters is queried correctly'
@@ -147,13 +147,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [],
         limit: 5,
         requestVersion: '2.0',
-        dataSource: 'elideOne'
+        dataSource: 'elideOne',
       }),
       `{"query":"{ myTable(first: \\"5\\") { edges { node { m1 d1 } } } }"}`,
       'Request with limit is queried correctly'
@@ -164,15 +164,15 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
-          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"m1=ge=('v1');m1=le=('v2')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
@@ -183,15 +183,15 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
-          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'nbet', values: ['v1', 'v2'] }
+          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'nbet', values: ['v1', 'v2'] },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"m1=lt=('v1'),m1=gt=('v2')\\") { edges { node { m1 d1 } } } }"}`,
       'Request with "not between" filter operator splits the filter into two correctly'
@@ -202,7 +202,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.time', parameters: { grain: 'month' }, type: 'timeDimension' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
@@ -211,12 +211,12 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             parameters: { grain: 'month' },
             type: 'timeDimension',
             operator: 'bet',
-            values: ['P1M', 'current']
-          }
+            values: ['P1M', 'current'],
+          },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"time=ge=('${moment()
         .subtract(1, 'month')
@@ -229,7 +229,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.time', parameters: { grain: 'day' }, type: 'timeDimension' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
@@ -238,12 +238,12 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             operator: 'isnull',
-            values: [true]
-          }
+            values: [true],
+          },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"time=isnull=true\\") { edges { node { time d1 } } } }"}`,
       'Filter without 2 filter values is unaffected'
@@ -254,7 +254,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         table: 'myTable',
         columns: [
           { field: 'myTable.time', parameters: { grain: 'day' }, type: 'timeDimension' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' }
+          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
         filters: [
@@ -263,24 +263,24 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             operator: 'bet',
-            values: ['2020-05-05', '2020-05-09']
-          }
+            values: ['2020-05-05', '2020-05-09'],
+          },
         ],
         requestVersion: '2.0',
         dataSource: 'elideOne',
-        limit: null
+        limit: null,
       }),
       `{"query":"{ myTable(filter: \\"time=ge=('2020-05-05');time=le=('2020-05-08')\\") { edges { node { time d1 } } } }"}`,
       'Filter with 2 non-macro date values is unaffected'
     );
   });
 
-  test('createAsyncQuery - success', async function(assert) {
+  test('createAsyncQuery - success', async function (assert) {
     assert.expect(5);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(HOST, function({ requestBody }) {
+    Server.post(HOST, function ({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.deepEqual(
@@ -292,13 +292,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
 
       const expectedTable = TestRequest.table;
-      const expectedColumns = TestRequest.columns.map(c => getElideField(c.field, c.parameters)).join(' ');
+      const expectedColumns = TestRequest.columns.map((c) => getElideField(c.field, c.parameters)).join(' ');
       const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
         JSON.stringify({
-          query: `{ ${expectedTable}${expectedArgs} { edges { node { ${expectedColumns} } } } }`
+          query: `{ ${expectedTable}${expectedArgs} { edges { node { ${expectedColumns} } } } }`,
         }).replace(/[ \t\r\n]+/g, ' '),
         'createAsyncQuery sends the correct query variable string'
       );
@@ -318,11 +318,11 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 query: requestObj.variables.query,
                 queryType: 'GRAPHQL_V1_0',
                 status: 'QUEUED',
-                result: null
-              }
-            }
-          ]
-        }
+                result: null,
+              },
+            },
+          ],
+        },
       };
 
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
@@ -333,7 +333,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
 
-  test('createAsyncQuery - error', async function(assert) {
+  test('createAsyncQuery - error', async function (assert) {
     assert.expect(1);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
@@ -348,13 +348,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
-  test('cancelAsyncQuery - success', async function(assert) {
+  test('cancelAsyncQuery - success', async function (assert) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(HOST, function({ requestBody }) {
+    Server.post(HOST, function ({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.equal(
@@ -369,11 +369,11 @@ module('Unit | Adapter | facts/elide', function(hooks) {
             {
               node: {
                 id: requestObj.variables.id,
-                status: 'CANCELLED'
-              }
-            }
-          ]
-        }
+                status: 'CANCELLED',
+              },
+            },
+          ],
+        },
       };
 
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
@@ -383,13 +383,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(result, response, 'createAsyncQuery returns the correct response payload');
   });
 
-  test('fetchAsyncQuery - success', async function(assert) {
+  test('fetchAsyncQuery - success', async function (assert) {
     assert.expect(2);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
-    Server.post(HOST, function({ requestBody }) {
+    Server.post(HOST, function ({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
 
       assert.equal(
@@ -416,17 +416,17 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                         {
                           node: {
                             metric: 123,
-                            dimension: 'foo'
-                          }
-                        }
-                      ]
-                    }
-                  })
-                }
-              }
-            }
-          ]
-        }
+                            dimension: 'foo',
+                          },
+                        },
+                      ],
+                    },
+                  }),
+                },
+              },
+            },
+          ],
+        },
       };
 
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
@@ -436,7 +436,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
-  test('fetchDataForRequest - success', async function(assert) {
+  test('fetchDataForRequest - success', async function (assert) {
     assert.expect(10);
 
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
@@ -447,7 +447,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     let queryId: string;
 
     let response: TODO;
-    Server.post(HOST, function({ requestBody }) {
+    Server.post(HOST, function ({ requestBody }) {
       callCount++;
       let result = null;
       const { query, variables } = JSON.parse(requestBody);
@@ -484,13 +484,13 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                     {
                       node: {
                         column1: '123',
-                        column2: '321'
-                      }
-                    }
-                  ]
-                }
-              }
-            })
+                        column2: '321',
+                      },
+                    },
+                  ],
+                },
+              },
+            }),
           };
         }
       } else {
@@ -506,11 +506,11 @@ module('Unit | Adapter | facts/elide', function(hooks) {
                 query: queryVariable,
                 queryType: 'GRAPHQL_V1_0',
                 status: callCount !== 5 ? 'QUEUED' : 'COMPLETE',
-                result
-              }
-            }
-          ]
-        }
+                result,
+              },
+            },
+          ],
+        },
       };
 
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
@@ -520,7 +520,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
   });
 
-  test('fetchDataForRequest - error', async function(assert) {
+  test('fetchDataForRequest - error', async function (assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
@@ -535,7 +535,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     }
   });
 
-  test('escaped filter values', async function(assert) {
+  test('escaped filter values', async function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const EscapedTest: RequestV2 = {
       table: 'table1',
@@ -546,27 +546,27 @@ module('Unit | Adapter | facts/elide', function(hooks) {
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['with, comma', 'no comma']
+          values: ['with, comma', 'no comma'],
         },
         {
           field: 'table1.d7',
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['with "quote"', 'but why']
+          values: ['with "quote"', 'but why'],
         },
         {
           field: 'table1.d8',
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['okay', "with 'single quote'"]
-        }
+          values: ['okay', "with 'single quote'"],
+        },
       ],
       sorts: [{ field: 'table1.d1', parameters: {}, type: 'dimension', direction: 'asc' }],
       limit: 10000,
       requestVersion: '2.0',
-      dataSource: 'elideOne'
+      dataSource: 'elideOne',
     };
 
     const queryStr = adapter['dataQueryFromRequest'](EscapedTest);
@@ -579,7 +579,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
   });
 
-  test('buildFilterStr - contains', async function(assert) {
+  test('buildFilterStr - contains', async function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const filters: Filter[] = [
       {
@@ -587,8 +587,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         parameters: {},
         type: 'dimension',
         operator: 'contains',
-        values: ['v1']
-      }
+        values: ['v1'],
+      },
     ];
     assert.equal(
       adapter['buildFilterStr'](filters),
@@ -602,8 +602,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         parameters: {},
         type: 'dimension',
         operator: 'contains',
-        values: ["'"]
-      }
+        values: ["'"],
+      },
     ];
     assert.equal(
       adapter['buildFilterStr'](escapedFilter),
@@ -612,7 +612,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
   });
 
-  test('buildFilterStr - filter out empty values', async function(assert) {
+  test('buildFilterStr - filter out empty values', async function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const noValues: Filter[] = [
       {
@@ -620,8 +620,8 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         parameters: {},
         type: 'dimension',
         operator: 'contains',
-        values: []
-      }
+        values: [],
+      },
     ];
     assert.equal(
       adapter['buildFilterStr'](noValues),
@@ -635,15 +635,15 @@ module('Unit | Adapter | facts/elide', function(hooks) {
         parameters: {},
         type: 'dimension',
         operator: 'eq',
-        values: [1]
+        values: [1],
       },
       {
         field: 'table1.dim1',
         parameters: {},
         type: 'dimension',
         operator: 'contains',
-        values: []
-      }
+        values: [],
+      },
     ];
     assert.equal(
       adapter['buildFilterStr'](someValues),
@@ -652,7 +652,7 @@ module('Unit | Adapter | facts/elide', function(hooks) {
     );
   });
 
-  test('urlForFindQuery', function(assert) {
+  test('urlForFindQuery', function (assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     assert.equal(

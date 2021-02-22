@@ -8,9 +8,7 @@ import { PieChartOptions } from '../navi-visualizations/pie-chart';
 import { ChartSeries } from 'navi-core/models/chart-visualization';
 import { cloneDeep } from 'lodash-es';
 
-export default class NaviVisualizationConfigPieChartComponent extends NaviVisualizationConfigBaseComponent<
-  PieChartOptions
-> {
+export default class NaviVisualizationConfigPieChartComponent extends NaviVisualizationConfigBaseComponent<PieChartOptions> {
   /**
    * Method to replace the seriesConfig in visualization config object.
    */

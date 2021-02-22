@@ -39,13 +39,13 @@ export default class ChartSeriesConfigComponent extends Component<Args> {
     if (this.args.seriesType === 'dimension') {
       const newSeriesConfig = {
         ...this.args.seriesConfig,
-        dimensions: reverseSeries
+        dimensions: reverseSeries,
       };
       this.args.onUpdateConfig(newSeriesConfig);
     } else if (this.args.seriesType === 'metric') {
       const { request } = this.args;
       let mIndex = 0;
-      const newColumns = request.columns.map(col => (col.type === 'metric' ? reverseSeries[mIndex++] : col));
+      const newColumns = request.columns.map((col) => (col.type === 'metric' ? reverseSeries[mIndex++] : col));
       // directly setting columns gives TS errors
       // TODO: Extract into arg
       //@ts-expect-error

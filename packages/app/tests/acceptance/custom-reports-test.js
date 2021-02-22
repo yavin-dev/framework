@@ -6,11 +6,11 @@ import { linkContains } from 'navi-core/test-support/contains-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItemFilter } from 'navi-reports/test-support/report-builder';
 
-module('Acceptance | custom reports', function(hooks) {
+module('Acceptance | custom reports', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('Viewing saved reports', async function(assert) {
+  test('Viewing saved reports', async function (assert) {
     assert.expect(3);
 
     await visit('/reports');
@@ -28,7 +28,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.dom('.navi-report__title').hasText(reportTitle, `Report title contains text "${reportTitle}" as expected`);
   });
 
-  test('Accessing Report Builder', async function(assert) {
+  test('Accessing Report Builder', async function (assert) {
     assert.expect(2);
 
     await visit('/reports');
@@ -43,7 +43,7 @@ module('Acceptance | custom reports', function(hooks) {
     assert.dom('.report-builder').exists();
   });
 
-  test('Run report with a filter', async function(assert) {
+  test('Run report with a filter', async function (assert) {
     await visit('/reports/new');
 
     // Add filter

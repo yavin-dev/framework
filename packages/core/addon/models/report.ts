@@ -22,9 +22,9 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The report must have a title'
-    })
-  ]
+      message: 'The report must have a title',
+    }),
+  ],
 });
 
 export default class ReportModel extends DeliverableItem.extend(hasVisualization, Validations) {
@@ -71,7 +71,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
     return {
       title: clonedReport.title,
       visualization: this.store.createFragment(clonedReport.visualization.type, clonedReport.visualization),
-      request: this.get('request').clone()
+      request: this.get('request').clone(),
     };
   }
 }

@@ -7,10 +7,10 @@ import BarChartManifest from 'navi-core/navi-visualization-manifests/bar-chart';
 let ValidRequest: RequestFragment;
 let Manifest: BarChartManifest;
 
-module('Unit | Manifests | bar chart', function(hooks) {
+module('Unit | Manifests | bar chart', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store');
 
     Manifest = this.owner.lookup('navi-visualization-manifest:bar-chart');
@@ -26,25 +26,25 @@ module('Unit | Manifests | bar chart', function(hooks) {
           parameters: { grain: 'day' },
           operator: 'bet',
           values: ['current', 'next'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       columns: [
         { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
-        { type: 'metric', field: 'adClicks', parameters: {}, source: 'bardOne' }
+        { type: 'metric', field: 'adClicks', parameters: {}, source: 'bardOne' },
       ],
-      sorts: [{ type: 'metric', field: 'navClicks', parameters: {}, direction: 'asc', source: 'bardOne' }]
+      sorts: [{ type: 'metric', field: 'navClicks', parameters: {}, direction: 'asc', source: 'bardOne' }],
     });
   });
 
-  test('invalid for single time bucket, no dimension, single metric', function(assert) {
+  test('invalid for single time bucket, no dimension, single metric', function (assert) {
     assert.notOk(
       Manifest.typeIsValid(ValidRequest),
       'bar chart type is invalid for single time bucket, no dimensions, single metric'
     );
   });
 
-  test('valid for single time bucket, no dimensions, multiple metrics', function(assert) {
+  test('valid for single time bucket, no dimensions, multiple metrics', function (assert) {
     const request = ValidRequest.clone();
     request.addColumn({ type: 'metric', field: 'totalPageViews', parameters: {}, source: 'bardOne' });
     assert.ok(
@@ -53,7 +53,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
     );
   });
 
-  test('valid for single time bucket with dimension and a single metric', function(assert) {
+  test('valid for single time bucket with dimension and a single metric', function (assert) {
     const request = ValidRequest.clone();
     request.addColumn({ type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' });
     assert.ok(
@@ -62,13 +62,13 @@ module('Unit | Manifests | bar chart', function(hooks) {
     );
   });
 
-  test('invalid for single time bucket with dimension and no metrics', function(assert) {
+  test('invalid for single time bucket with dimension and no metrics', function (assert) {
     const request = ValidRequest.clone();
     request.columns = [
       //@ts-ignore
       { type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'day' }, source: 'bardOne' },
       //@ts-ignore
-      { type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' }
+      { type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' },
     ];
     assert.notOk(
       Manifest.typeIsValid(request),
@@ -76,7 +76,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
     );
   });
 
-  test('valid for multiple time buckets with dimension and metric', function(assert) {
+  test('valid for multiple time buckets with dimension and metric', function (assert) {
     const request = ValidRequest.clone();
     request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     request.addColumn({ type: 'dimension', field: 'age', parameters: { field: 'id' }, source: 'bardOne' });
@@ -86,7 +86,7 @@ module('Unit | Manifests | bar chart', function(hooks) {
     );
   });
 
-  test('valid for multiple time bucket no dimension and metric', function(assert) {
+  test('valid for multiple time bucket no dimension and metric', function (assert) {
     const request = ValidRequest.clone();
     request.dateTimeFilter!.values = ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'];
     assert.ok(

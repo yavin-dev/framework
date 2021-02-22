@@ -47,7 +47,7 @@ export default class FragmentFactory extends Service {
       type,
       parameters,
       alias,
-      source: dataSource
+      source: dataSource,
     });
   }
 
@@ -91,7 +91,7 @@ export default class FragmentFactory extends Service {
       type,
       operator,
       values,
-      source: dataSource
+      source: dataSource,
     });
   }
 
@@ -130,7 +130,7 @@ export default class FragmentFactory extends Service {
       parameters,
       type,
       direction,
-      source: dataSource
+      source: dataSource,
     });
   }
 }

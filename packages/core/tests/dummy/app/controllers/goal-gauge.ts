@@ -12,14 +12,14 @@ export default class GoalGaugeController extends Controller {
   @tracked goalGaugeOptions: GoalGaugeConfig['metadata'] = {
     metricCid: this.model.firstObject!.request.metricColumns[0].cid,
     baselineValue: 2900000000,
-    goalValue: 3100000000
+    goalValue: 3100000000,
   };
 
   get goalGaugeVisualization(): GoalGaugeConfig {
     return {
       type: 'goal-gauge',
       version: 2,
-      metadata: this.goalGaugeOptions
+      metadata: this.goalGaugeOptions,
     };
   }
 

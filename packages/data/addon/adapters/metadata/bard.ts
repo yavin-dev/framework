@@ -21,7 +21,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
   private ajax!: TODO;
 
   private typeTransform: Record<string, string> = {
-    columnFunction: 'metricFunction'
+    columnFunction: 'metricFunction',
   };
 
   /**
@@ -62,7 +62,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
       beforeSend: (xhr: TODO) => xhr.setRequestHeader('clientid', clientId),
       crossDomain: true,
       data: query,
-      timeout
+      timeout,
     });
   }
 
@@ -74,7 +74,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
   }
 
   async fetchAll(type: MetadataModelTypes, options?: MetadataOptions): Promise<TODO[]> {
-    const payload = await this.query(type, '', options).catch(e => {
+    const payload = await this.query(type, '', options).catch((e) => {
       if (e.status !== 404 && type === 'columnFunction') {
         throw e;
       }
@@ -84,7 +84,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
   }
 
   async fetchById(type: MetadataModelTypes, id: string, options: MetadataOptions = {}): Promise<TODO[] | undefined> {
-    const payload = await this.query(type, id, options).catch(e => {
+    const payload = await this.query(type, id, options).catch((e) => {
       if (e.status !== 404) {
         throw e;
       }

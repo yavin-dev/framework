@@ -10,7 +10,7 @@ import { RawColumnFunctionArguments, RawColumnFunction } from './bard';
 import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import {
   FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION
+  INTRINSIC_VALUE_EXPRESSION,
 } from 'navi-data/models/metadata/function-parameter';
 
 type RawMetricFunctionPayload = {
@@ -27,7 +27,7 @@ export function constructFunctionParameters(
   parameters: RawColumnFunctionArguments,
   source: string
 ): FunctionParameterMetadataPayload[] {
-  return Object.keys(parameters).map(paramName => {
+  return Object.keys(parameters).map((paramName) => {
     const param = parameters[paramName];
     const { defaultValue, description } = param;
 
@@ -39,7 +39,7 @@ export function constructFunctionParameters(
       expression: param.type === 'dimension' ? `dimension:${param.dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
       _localValues: param.type === 'enum' ? param.values : undefined,
       source,
-      defaultValue
+      defaultValue,
     };
     return normalized;
   });
@@ -53,13 +53,13 @@ export function normalizeColumnFunctions(
   columnFunctions: RawColumnFunction[],
   source: string
 ): ColumnFunctionMetadataPayload[] {
-  return columnFunctions.map(func => {
+  return columnFunctions.map((func) => {
     const { id, name, description, arguments: args } = func;
     const normalizedFunc: ColumnFunctionMetadataPayload = {
       id,
       name,
       description,
-      source
+      source,
     };
     if (args) {
       normalizedFunc._parametersPayload = constructFunctionParameters(args, source);

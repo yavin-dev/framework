@@ -34,10 +34,10 @@ const TEMPLATE = hbs`
     @request={{this.request}}
   />`;
 
-module('Integration | Component | cell renderers/time-dimension', function(hooks) {
+module('Integration | Component | cell renderers/time-dimension', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
 
     this.set(
@@ -49,14 +49,14 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
             field: 'network.dateTime',
             parameters: { grain: 'day' },
             alias: null,
-            source: 'bardOne'
-          }
+            source: 'bardOne',
+          },
         ],
         filters: [],
         sorts: [],
         requestVersion: '2.0',
         dataSource: 'bardOne',
-        table: 'network'
+        table: 'network',
       })
     );
 
@@ -64,12 +64,12 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: fragment.cid
+      columnId: fragment.cid,
     };
     this.set('column', column);
   });
 
-  test('time-dimension renders second format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders second format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'second');
@@ -81,7 +81,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       .hasText('06/03/2016 11:12:13', 'The time-dimension cell renders the second value correctly');
   });
 
-  test('time-dimension renders minute format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders minute format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'minute');
@@ -93,7 +93,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       .hasText('06/03/2016 11:12:00', 'The time-dimension cell renders the minute value correctly');
   });
 
-  test('time-dimension renders hour format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders hour format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'hour');
@@ -105,7 +105,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       .hasText('06/03/2016 11:00:00', 'The time-dimension cell renders the hour value correctly');
   });
 
-  test('time-dimension renders day format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders day format correctly', async function (this: TestContext, assert) {
     assert.expect(2);
 
     _setRequestForTimeGrain(this, 'day');
@@ -117,7 +117,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     assert.dom('.table-cell-content').hasText('06/03/2016', 'The time-dimension cell renders the day value correctly');
   });
 
-  test('time-dimension renders week format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders week format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'week');
@@ -129,7 +129,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       .hasText('06/03 - 06/09/2016', 'The time-dimension cell renders a week range with the same years correctly');
   });
 
-  test('time-dimension renders week format with different years correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders week format with different years correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'week');
@@ -145,7 +145,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
       );
   });
 
-  test('time-dimension renders month format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders month format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'month');
@@ -155,7 +155,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     assert.dom('.table-cell-content').hasText('Jun 2016', 'The time-dimension cell renders the month value correctly');
   });
 
-  test('time-dimension renders quarter format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders quarter format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'quarter');
@@ -165,7 +165,7 @@ module('Integration | Component | cell renderers/time-dimension', function(hooks
     assert.dom('.table-cell-content').hasText('Q2 2016', 'The time-dimension cell renders the quarter value correctly');
   });
 
-  test('time-dimension renders year format correctly', async function(this: TestContext, assert) {
+  test('time-dimension renders year format correctly', async function (this: TestContext, assert) {
     assert.expect(1);
 
     _setRequestForTimeGrain(this, 'year');

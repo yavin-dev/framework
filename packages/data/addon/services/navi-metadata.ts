@@ -9,7 +9,7 @@ import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviMetadataSerializer, {
   EverythingMetadataPayload,
-  MetadataModelMap
+  MetadataModelMap,
 } from 'navi-data/serializers/metadata/base';
 import KegService from './keg';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
@@ -74,7 +74,7 @@ export default class NaviMetadataService extends Service {
     dataSourceName: string
   ): EmberArray<MetadataModelRegistry[K]> {
     return this.keg.insertMany(`metadata/${type}`, metadataObjects, {
-      namespace: dataSourceName
+      namespace: dataSourceName,
     }) as EmberArray<MetadataModelRegistry[K]>;
   }
 

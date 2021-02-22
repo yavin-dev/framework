@@ -7,24 +7,24 @@ function buildDuration(isoDuration: string) {
   return new Duration(isoDuration);
 }
 
-module('Unit | Utils | Duration Class', function() {
-  test('Construction of duration objects', function(assert) {
+module('Unit | Utils | Duration Class', function () {
+  test('Construction of duration objects', function (assert) {
     assert.expect(14);
 
-    assert.throws(function() {
+    assert.throws(function () {
       //@ts-expect-error
       buildDuration();
     }, 'error is thrown while constructing a duration object with an undefined ISO duration');
 
-    assert.throws(function() {
+    assert.throws(function () {
       buildDuration('invalid');
     }, 'error is thrown while constructing a duration object with an invalid ISO duration');
 
-    assert.throws(function() {
+    assert.throws(function () {
       buildDuration('P0W');
     }, 'error is thrown while constructing a duration object with zero ISO duration');
 
-    assert.throws(function() {
+    assert.throws(function () {
       buildDuration('PT1J');
     }, 'error is thrown while constructing a duration object with an invalid ISO duration');
 
@@ -49,7 +49,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(duration.getUnit(), undefined, 'duration object has unit as undefined');
   });
 
-  test('humanize', function(assert) {
+  test('humanize', function (assert) {
     assert.expect(4);
 
     let duration = buildDuration('PT1M');
@@ -65,7 +65,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(duration.humanize(), 'All', 'humanize returns "All" for all duration');
   });
 
-  test('toString', function(assert) {
+  test('toString', function (assert) {
     assert.expect(2);
 
     let duration = buildDuration('P8M');
@@ -75,7 +75,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(duration.toString(), ALL, 'toString returns ' + ALL + ' for all duration');
   });
 
-  test('compare', function(assert) {
+  test('compare', function (assert) {
     assert.expect(7);
 
     let duration = buildDuration('P7D');
@@ -87,11 +87,11 @@ module('Unit | Utils | Duration Class', function() {
 
     assert.equal(duration.compare(ALL), -1, 'compare returns -1 when we compare all duration to P7D');
 
-    assert.throws(function() {
+    assert.throws(function () {
       duration.compare('P1W');
     }, 'compare throws error while comparing durations having different units');
 
-    assert.throws(function() {
+    assert.throws(function () {
       duration.compare('invalid');
     }, 'compare throws error while comparing P7D to an invalid duration');
 
@@ -99,7 +99,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(duration.compare(ALL), 0, 'compare returns 0 when we compare all duration to all duration');
   });
 
-  test('isEqual', function(assert) {
+  test('isEqual', function (assert) {
     assert.expect(4);
 
     let duration = buildDuration('P12W');
@@ -118,7 +118,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(duration.isEqual(ALL), true, 'isEqual returns true when both durations are all duration');
   });
 
-  test('isAll', function(assert) {
+  test('isAll', function (assert) {
     assert.expect(4);
 
     let duration = buildDuration('P12W');
@@ -137,13 +137,13 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(Duration.isAll(), false, 'isAll returns false for null duration');
   });
 
-  test('getAllString static method', function(assert) {
+  test('getAllString static method', function (assert) {
     assert.expect(1);
 
     assert.equal(Duration.ALL, '__ALL__', 'ALL static property has value __ALL__');
   });
 
-  test('all static method', function(assert) {
+  test('all static method', function (assert) {
     assert.expect(2);
 
     let duration = Duration.all();
@@ -155,7 +155,7 @@ module('Unit | Utils | Duration Class', function() {
     );
   });
 
-  test('isDuration static method', function(assert) {
+  test('isDuration static method', function (assert) {
     assert.expect(6);
 
     assert.equal(Duration.isDuration(ALL), false, 'isDuration static method returns false for string ' + ALL);
@@ -170,7 +170,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(Duration.isDuration(duration), true, 'isDuration static method returns false for duration of P3W');
   });
 
-  test('parseDuration', function(assert) {
+  test('parseDuration', function (assert) {
     assert.expect(18);
 
     /* == Invalid Cases == */
@@ -217,7 +217,7 @@ module('Unit | Utils | Duration Class', function() {
     assert.equal(unit, undefined, 'parseDuration parses ' + ALL + ' and returns undefined as the unit');
   });
 
-  test('isIsoDurationString', function(assert) {
+  test('isIsoDurationString', function (assert) {
     assert.expect(5);
 
     //@ts-expect-error

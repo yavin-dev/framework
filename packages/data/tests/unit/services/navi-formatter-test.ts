@@ -10,16 +10,16 @@ let Service: NaviFormatterService;
 const metric = { name: 'Revenue' } as Metric;
 const emptyMetric = {} as Metric;
 
-module('Unit | Service | navi formatter', function(hooks) {
+module('Unit | Service | navi formatter', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     Service = this.owner.lookup('service:navi-formatter');
   });
 
-  test('no parameters', async function(assert) {
+  test('no parameters', async function (assert) {
     assert.expect(3);
 
     assert.equal(Service.formatColumnName(metric), 'Revenue', 'Prints name');
@@ -31,7 +31,7 @@ module('Unit | Service | navi formatter', function(hooks) {
     );
   });
 
-  test('parameters', async function(assert) {
+  test('parameters', async function (assert) {
     assert.expect(5);
 
     assert.equal(Service.formatColumnName(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
@@ -57,7 +57,7 @@ module('Unit | Service | navi formatter', function(hooks) {
     );
   });
 
-  test('parameters with alias', async function(assert) {
+  test('parameters with alias', async function (assert) {
     assert.equal(
       Service.formatColumnName(metric, {}, 'override'),
       'override',
@@ -77,7 +77,7 @@ module('Unit | Service | navi formatter', function(hooks) {
     );
   });
 
-  test('empty metric', async function(assert) {
+  test('empty metric', async function (assert) {
     assert.expect(3);
 
     assert.equal(Service.formatColumnName({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');

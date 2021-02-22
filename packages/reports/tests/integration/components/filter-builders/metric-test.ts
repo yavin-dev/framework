@@ -19,18 +19,18 @@ const TEMPLATE = hbs`
     @isCollapsed={{this.isCollapsed}} 
   />`;
 
-module('Integration | Component | filter-builders/metric', function(hooks) {
+module('Integration | Component | filter-builders/metric', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
     this.set('filter', factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', [30]));
     this.set('isCollapsed', false);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('displayName', async function(this: TestContext, assert) {
+  test('displayName', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     assert
@@ -44,7 +44,7 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
 
     await clickTrigger();
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       [
         'Greater than (>)',
         'Greater than or equals (>=)',
@@ -53,13 +53,13 @@ module('Integration | Component | filter-builders/metric', function(hooks) {
         'Equals (=)',
         'Not equals (!=)',
         'Between (<=>)',
-        'Not between (!<=>)'
+        'Not between (!<=>)',
       ],
       'All supported operators show up as options in the operator selector'
     );
   });
 
-  test('collapsed', async function(assert) {
+  test('collapsed', async function (assert) {
     this.set('isCollapsed', true);
     await render(TEMPLATE);
 

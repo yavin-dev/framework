@@ -38,7 +38,7 @@ export default class BardDimensionArray extends ArrayProxy<TODO> {
       if (currPage < totalPages) {
         const options = {
           page: currPage + 1,
-          perPage: perPage
+          perPage: perPage,
         };
         return this._dimensionsService.fetchAll(this.dimension, options);
       }
@@ -56,7 +56,7 @@ export default class BardDimensionArray extends ArrayProxy<TODO> {
       if (this.meta.pagination.currentPage > 1) {
         const options = {
           page: this.meta.pagination.currentPage - 1,
-          perPage: this.meta.pagination.rowsPerPage
+          perPage: this.meta.pagination.rowsPerPage,
         };
         return this._dimensionsService.fetchAll(this.dimension, options);
       }

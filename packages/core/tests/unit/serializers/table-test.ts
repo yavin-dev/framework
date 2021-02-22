@@ -13,34 +13,34 @@ const expected: TableVisualizationMetadata = {
       c1: defaultAttributes,
       c2: {
         ...defaultAttributes,
-        canAggregateSubtotal: false
+        canAggregateSubtotal: false,
       },
       c3: defaultAttributes,
       c4: defaultAttributes,
       c5: {
         ...defaultAttributes,
-        format: ''
+        format: '',
       },
       c6: {
         ...defaultAttributes,
-        format: '0.00'
+        format: '0.00',
       },
-      c7: defaultAttributes
+      c7: defaultAttributes,
     },
     showTotals: {
       grandTotal: true,
-      subtotal: 'c0'
-    }
+      subtotal: 'c0',
+    },
   },
   type: 'table',
-  version: 2
+  version: 2,
 };
 
-module('Unit | Serializer | table', function(hooks) {
+module('Unit | Serializer | table', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('normalizeTableV2', function(assert) {
+  test('normalizeTableV2', function (assert) {
     assert.expect(4);
 
     const initialMetadata: TableVisMetadataPayloadV1 = {
@@ -55,12 +55,12 @@ module('Unit | Serializer | table', function(hooks) {
             displayName: 'Page Views',
             format: '0.00',
             //@ts-expect-error
-            foo: 'bar'
+            foo: 'bar',
           },
           {
             attributes: { name: 'revenue', parameters: { currency: 'EUR' }, canAggregateSubtotal: false },
             type: 'metric',
-            displayName: 'Revenue (EUR)'
+            displayName: 'Revenue (EUR)',
           },
           { field: 'revenue(currency=USD)', type: 'metric', displayName: 'Revenue (USD)', format: '' },
           { field: 'gender', type: 'dimension', displayName: 'Gender' },
@@ -70,15 +70,15 @@ module('Unit | Serializer | table', function(hooks) {
             type: 'dimension',
             displayName: 'Platform',
             //@ts-expect-error
-            foo: 'bar'
+            foo: 'bar',
           },
-          { field: 'dateTime', type: 'dateTime', displayName: 'Date' }
+          { field: 'dateTime', type: 'dateTime', displayName: 'Date' },
         ],
         showTotals: {
           subtotal: 'dateTime',
-          grandTotal: true
-        }
-      }
+          grandTotal: true,
+        },
+      },
     };
 
     const TestRequest: RequestV2 = {
@@ -92,60 +92,60 @@ module('Unit | Serializer | table', function(hooks) {
           cid: 'c0',
           field: 'table1.dateTime',
           parameters: {
-            grain: 'grain1'
+            grain: 'grain1',
           },
-          type: 'timeDimension'
+          type: 'timeDimension',
         },
         {
           cid: 'c1',
           type: 'dimension',
           field: 'platform',
           parameters: {
-            field: 'id'
-          }
+            field: 'id',
+          },
         },
         {
           cid: 'c2',
           type: 'metric',
           field: 'revenue',
-          parameters: { currency: 'EUR' }
+          parameters: { currency: 'EUR' },
         },
         {
           cid: 'c3',
           type: 'dimension',
           field: 'age',
           parameters: {
-            field: 'id'
-          }
+            field: 'id',
+          },
         },
         {
           cid: 'c4',
           type: 'dimension',
           field: 'gender',
           parameters: {
-            field: 'id'
-          }
+            field: 'id',
+          },
         },
         {
           cid: 'c5',
           type: 'metric',
           field: 'revenue',
-          parameters: { currency: 'USD' }
+          parameters: { currency: 'USD' },
         },
         {
           cid: 'c6',
           type: 'metric',
           field: 'pageViews',
-          parameters: {}
+          parameters: {},
         },
         {
           cid: 'c7',
           type: 'metric',
           field: 'clicks',
-          parameters: {}
-        }
+          parameters: {},
+        },
       ],
-      sorts: []
+      sorts: [],
     };
 
     const v2 = { version: 2, foo: 'ok' };
@@ -160,13 +160,13 @@ module('Unit | Serializer | table', function(hooks) {
     const newMetadata = normalizeTableV2(TestRequest, initialMetadata);
 
     assert.deepEqual(
-      TestRequest.columns.map(c => c.field),
+      TestRequest.columns.map((c) => c.field),
       ['clicks', 'pageViews', 'revenue', 'revenue', 'gender', 'age', 'platform', 'table1.dateTime'],
       'The request columns are reordered based on the table ordering'
     );
 
     assert.deepEqual(
-      TestRequest.columns.map(c => c.alias),
+      TestRequest.columns.map((c) => c.alias),
       ['My clicks', undefined, undefined, undefined, undefined, undefined, undefined, undefined],
       'The alias is moved over if it is marked as a custom display name'
     );

@@ -23,13 +23,14 @@ export interface ColumnFunctionMetadata {
   parameters: FunctionParameter[];
 }
 
-export default class ColumnFunctionMetadataModel extends EmberObject
+export default class ColumnFunctionMetadataModel
+  extends EmberObject
   implements ColumnFunctionMetadataPayload, ColumnFunctionMetadata {
   init() {
     //@ts-ignore
     super.init(...arguments);
     const owner = getOwner(this);
-    const parameters = (this._parametersPayload || []).map(param =>
+    const parameters = (this._parametersPayload || []).map((param) =>
       FunctionParameter.create(owner.ownerInjection(), param)
     );
     this.parameters = parameters;

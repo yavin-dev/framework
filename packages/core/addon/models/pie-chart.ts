@@ -25,19 +25,19 @@ const Validations = buildValidations(
 
     //Dimension Series Validations
     [`${CONFIG_PATH}.metricCid`]: validator('request-metric-exist', {
-      disabled: computed('chartType', function() {
+      disabled: computed('chartType', function () {
         return this.chartType && this.chartType !== DIMENSION_SERIES;
       }),
-      dependentKeys: ['model._request.metricColumns.[]']
-    })
+      dependentKeys: ['model._request.metricColumns.[]'],
+    }),
   },
   {
     //Global Validation Options
-    chartType: computed('model._request.{dimensionColumns.[],metricColumns.[],interval}', function() {
+    chartType: computed('model._request.{dimensionColumns.[],metricColumns.[],interval}', function () {
       const request = get(this, 'request');
       return request && chartTypeForRequest(request);
     }),
-    request: readOnly('model._request')
+    request: readOnly('model._request'),
   }
 );
 
@@ -61,10 +61,10 @@ export default class PieChart extends ChartVisualization.extend(Validations) {
       return {
         series: {
           type: null,
-          config: {}
-        }
+          config: {},
+        },
       };
-    }
+    },
   })
   metadata!: PieChartConfig['metadata'];
 

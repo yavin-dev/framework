@@ -29,5 +29,5 @@ export default Factory.extend({
 
   cardinality: 'SMALL',
 
-  tableTags: () => ['IMPORTANT']
+  tableTags: () => ['IMPORTANT'],
 });

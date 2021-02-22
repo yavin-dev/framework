@@ -30,10 +30,10 @@ export default class DirectoriesService extends Service {
         {
           name: 'Favorites',
           icon: 'star-o',
-          queryParams: { filter: 'favorites' }
-        }
-      ]
-    }
+          queryParams: { filter: 'favorites' },
+        },
+      ],
+    },
   ];
 
   /**

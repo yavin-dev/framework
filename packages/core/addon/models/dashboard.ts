@@ -25,9 +25,9 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The dashboard must have a title'
-    })
-  ]
+      message: 'The dashboard must have a title',
+    }),
+  ],
 });
 
 export default class DashboardModel extends DeliverableItem.extend(Validations) {
@@ -91,19 +91,19 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
     const clonedDashboard = Object.assign(this.toJSON(), {
       author: user,
       widgets: [],
-      filters: this.filters.map(filter => {
+      filters: this.filters.map((filter) => {
         return this.store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,
           operator: filter.operator,
           values: filter.values,
-          source: filter.source
+          source: filter.source,
         });
       }),
       presentation: copy(this.presentation),
       createdOn: null,
-      updatedOn: null
+      updatedOn: null,
     });
 
     return this.store.createRecord('dashboard', clonedDashboard);

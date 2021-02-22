@@ -59,13 +59,13 @@ export default class LookbackInput extends BaseIntervalComponent {
     const { dateTimePeriod } = this;
     const predefinedRanges = config.navi.predefinedIntervalRanges[dateTimePeriod] || [];
 
-    return predefinedRanges.map(lookBack => {
+    return predefinedRanges.map((lookBack) => {
       const duration = new Duration(lookBack);
       const interval = new Interval(duration, 'current');
       return {
         isActive: interval.isEqual(this.interval),
         interval,
-        text: this.formatDurationFromCurrent(duration, dateTimePeriod)
+        text: this.formatDurationFromCurrent(duration, dateTimePeriod),
       };
     });
   }

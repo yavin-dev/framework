@@ -17,17 +17,17 @@ interface TestContext extends Context {
   server: Server;
 }
 
-module('Unit | Serializer | Dimensions | Elide', function(hooks) {
+module('Unit | Serializer | Dimensions | Elide', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     GraphQLScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
   });
 
-  test('normalize', function(this: TestContext, assert) {
+  test('normalize', function (this: TestContext, assert) {
     const serializer: ElideDimensionSerializer = this.owner.lookup('serializer:dimensions/elide');
     const payload: AsyncQueryResponse = {
       asyncQuery: {
@@ -42,28 +42,28 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 httpStatus: 200,
                 recordCount: 3,
                 responseBody:
-                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}'
-              }
-            }
-          }
-        ]
-      }
+                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}',
+              },
+            },
+          },
+        ],
+      },
     };
     const dimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
         'table0.dimension1',
         'elideOne'
-      ) as DimensionMetadataModel
+      ) as DimensionMetadataModel,
     };
     assert.deepEqual(serializer.normalize(dimensionColumn), [], 'Empty array is returned for an undefined payload');
 
-    const expectedModels = ['foo', 'bar', 'baz'].map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
     const actualModels = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(actualModels, expectedModels, 'normalize returns the `rows` prop of the raw payload');
   });
 
-  test('normalize - tableSource', function(this: TestContext, assert) {
+  test('normalize - tableSource', function (this: TestContext, assert) {
     const factTable = 'table1';
     const factField = 'dimension2';
     const lookupTable = 'table0';
@@ -82,22 +82,26 @@ module('Unit | Serializer | Dimensions | Elide', function(hooks) {
                 contentLength: 129,
                 httpStatus: 200,
                 recordCount: 3,
-                responseBody: `{"data":{"${lookupTable}":{"edges":[{"node":{"${lookupField}":"foo"}},{"node":{"${lookupField}":"bar"}},{"node":{"${lookupField}":"baz"}}]}}}`
-              }
-            }
-          }
-        ]
-      }
+                responseBody: `{"data":{"${lookupTable}":{"edges":[{"node":{"${lookupField}":"foo"}},{"node":{"${lookupField}":"bar"}},{"node":{"${lookupField}":"baz"}}]}}}`,
+              },
+            },
+          },
+        ],
+      },
     };
     const dimensionColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById(
         'dimension',
         `${factTable}.${factField}`,
         'elideOne'
-      ) as DimensionMetadataModel
+      ) as DimensionMetadataModel,
     };
-    const expectedModels = ['foo', 'bar', 'baz'].map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+    const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
     const actualModels = serializer.normalize(dimensionColumn, payload);
-    assert.deepEqual(actualModels, expectedModels, '`tableSource`, when available, is used to normalize dimension value responses');
+    assert.deepEqual(
+      actualModels,
+      expectedModels,
+      '`tableSource`, when available, is used to normalize dimension value responses'
+    );
   });
 });

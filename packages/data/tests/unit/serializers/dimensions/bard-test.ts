@@ -15,26 +15,26 @@ interface TestContext extends Context {
   metadataService: NaviMetadataService;
 }
 
-module('Unit | Serializer | Dimensions | Bard', function(hooks) {
+module('Unit | Serializer | Dimensions | Bard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.serializer = this.owner.lookup('serializer:dimensions/bard');
     this.metadataService = this.owner.lookup('service:navi-metadata');
     await this.metadataService.loadMetadata({ dataSourceName: 'bardTwo' });
   });
 
-  test('normalize', function(this: TestContext, assert) {
+  test('normalize', function (this: TestContext, assert) {
     const payload: FiliDimensionResponse = {
-      rows: cloneDeep(ContainerDimValues)
+      rows: cloneDeep(ContainerDimValues),
     };
 
     const dimColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
       parameters: {
-        field: 'id'
-      }
+        field: 'id',
+      },
     };
 
     const normalized = this.serializer.normalize(dimColumn, payload);
@@ -50,16 +50,16 @@ module('Unit | Serializer | Dimensions | Bard', function(hooks) {
     );
   });
 
-  test('normalize - desc field', function(this: TestContext, assert) {
+  test('normalize - desc field', function (this: TestContext, assert) {
     const payload: FiliDimensionResponse = {
-      rows: cloneDeep(ContainerDimValues)
+      rows: cloneDeep(ContainerDimValues),
     };
 
     const dimColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
       parameters: {
-        field: 'desc'
-      }
+        field: 'desc',
+      },
     };
 
     const normalized = this.serializer.normalize(dimColumn, payload);
@@ -77,14 +77,14 @@ module('Unit | Serializer | Dimensions | Bard', function(hooks) {
     );
   });
 
-  test('normalize - empty', function(this: TestContext, assert) {
+  test('normalize - empty', function (this: TestContext, assert) {
     const payload: FiliDimensionResponse = { rows: [] };
 
     const dimColumn: DimensionColumn = {
       columnMetadata: this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
       parameters: {
-        field: 'description'
-      }
+        field: 'description',
+      },
     };
     assert.deepEqual(this.serializer.normalize(dimColumn, payload), [], '`normalize` can handle an empty payload');
   });

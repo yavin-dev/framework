@@ -13,16 +13,16 @@ import { TestContext } from 'ember-test-helpers';
 
 const DateChartBuilder = BuilderClass.create();
 
-module('Unit | Chart Builders | Date Time', function(hooks) {
+module('Unit | Chart Builders | Date Time', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('weeks by year uses isoWeekYear', function(assert) {
+  test('weeks by year uses isoWeekYear', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -33,8 +33,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=isoWeek)': '2016-01-04 00:00:00.000', pageViews: 2 }, // Week 1, 2016
-        { 'network.dateTime(grain=isoWeek)': '2016-01-01 00:00:00.000', pageViews: 1 } // Week 53, 2015
-      ]
+        { 'network.dateTime(grain=isoWeek)': '2016-01-01 00:00:00.000', pageViews: 1 }, // Week 53, 2015
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -45,7 +45,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       ({
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': null,
-        'series.1': 2
+        'series.1': 2,
       } as unknown) as C3Row,
       'Weeks are grouped into years based on isoWeekYear'
     );
@@ -53,7 +53,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     assert.deepEqual(data.names, { 'series.0': '2015', 'series.1': '2016' }, 'Series names are mapped properly');
   });
 
-  test('days by month', function(assert) {
+  test('days by month', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -66,8 +66,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=day)': '2015-01-01 00:00:00.000', pageViews: 3 },
-        { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 }
-      ]
+        { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -80,7 +80,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         'series.0': 1,
         'series.1': 2,
         'series.2': 3,
-        'series.3': null
+        'series.3': null,
       } as unknown) as C3Row,
       'Days are grouped into month'
     );
@@ -92,7 +92,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
   });
 
-  test('days by year', function(assert) {
+  test('days by year', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -105,8 +105,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=day)': '2015-01-01 00:00:00.000', pageViews: 3 },
-        { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 }
-      ]
+        { 'network.dateTime(grain=day)': '2016-03-15 00:00:00.000', pageViews: 4 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -117,7 +117,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       ({
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': 3,
-        'series.1': 1
+        'series.1': 1,
       } as unknown) as C3Row,
       'First data point contains values for first day of each year'
     );
@@ -125,7 +125,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     assert.deepEqual(data.names, { 'series.0': '2015', 'series.1': '2016' }, 'Series names are mapped properly');
   });
 
-  test('months by year', function(assert) {
+  test('months by year', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -138,8 +138,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         { 'network.dateTime(grain=month)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=month)': '2016-02-01 00:00:00.000', pageViews: 2 },
         { 'network.dateTime(grain=month)': '2015-01-01 00:00:00.000', pageViews: 3 },
-        { 'network.dateTime(grain=month)': '2014-03-15 00:00:00.000', pageViews: 4 }
-      ]
+        { 'network.dateTime(grain=month)': '2014-03-15 00:00:00.000', pageViews: 4 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -151,7 +151,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': null,
         'series.2': 1,
-        'series.1': 3
+        'series.1': 3,
       } as unknown) as C3Row,
       'First data point contains values for first month of each year'
     );
@@ -163,7 +163,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
   });
 
-  test('hours by day', function(assert) {
+  test('hours by day', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -175,8 +175,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       rows: [
         { 'network.dateTime(grain=hour)': '2016-01-01 01:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=hour)': '2016-01-02 01:00:00.000', pageViews: 2 },
-        { 'network.dateTime(grain=hour)': '2016-01-03 01:00:00.000', pageViews: 3 }
-      ]
+        { 'network.dateTime(grain=hour)': '2016-01-03 01:00:00.000', pageViews: 3 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -188,7 +188,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         x: { rawValue: 2, displayValue: 'Hour 2' },
         'series.0': 1,
         'series.1': 2,
-        'series.2': 3
+        'series.2': 3,
       } as unknown) as C3Row,
       'Data point contains values for hour of each day'
     );
@@ -200,7 +200,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
   });
 
-  test('minutes by hour', function(assert) {
+  test('minutes by hour', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -212,8 +212,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       rows: [
         { 'network.dateTime(grain=minute)': '2016-01-01 00:04:00.000', pageViews: 1 },
         { 'network.dateTime(grain=minute)': '2016-01-01 01:04:00.000', pageViews: 2 },
-        { 'network.dateTime(grain=minute)': '2016-01-02 02:04:00.000', pageViews: 3 }
-      ]
+        { 'network.dateTime(grain=minute)': '2016-01-02 02:04:00.000', pageViews: 3 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -225,7 +225,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         x: { rawValue: 5, displayValue: 'Minute 5' },
         'series.0': 1,
         'series.1': 2,
-        'series.2': 3
+        'series.2': 3,
       } as unknown) as C3Row,
       'Data point contains values for minute of each hour'
     );
@@ -237,7 +237,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
   });
 
-  test('seconds by minute', function(assert) {
+  test('seconds by minute', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -249,8 +249,8 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       rows: [
         { 'network.dateTime(grain=second)': '2016-01-01 00:00:20.000', pageViews: 1 },
         { 'network.dateTime(grain=second)': '2016-01-01 00:01:20.000', pageViews: 2 },
-        { 'network.dateTime(grain=second)': '2016-01-01 00:03:20.000', pageViews: 3 }
-      ]
+        { 'network.dateTime(grain=second)': '2016-01-01 00:03:20.000', pageViews: 3 },
+      ],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -262,7 +262,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
         x: { rawValue: 21, displayValue: 'Second 21' },
         'series.0': 1,
         'series.1': 2,
-        'series.2': 3
+        'series.2': 3,
       } as unknown) as C3Row,
       'Data point contains values for second of each minute'
     );
@@ -274,7 +274,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
   });
 
-  test('Zero in chart data', function(assert) {
+  test('Zero in chart data', function (assert) {
     const request = buildTestRequest(
       [{ cid: 'cid_pageViews', field: 'pageViews' }],
       [],
@@ -283,7 +283,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
     const config = { timeGrain: 'month', metricCid: 'cid_pageViews' };
     const response = NaviFactResponse.create({
-      rows: [{ 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 0 }]
+      rows: [{ 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 0 }],
     });
     const data = DateChartBuilder.buildData(response, config, request);
 
@@ -291,7 +291,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
       data.series[0],
       ({
         x: { rawValue: 1, displayValue: 'Day 1' },
-        'series.0': 0
+        'series.0': 0,
       } as unknown) as C3Row,
       'Zero values are not considered gaps in data'
     );
@@ -299,7 +299,7 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     assert.deepEqual(data.names, { 'series.0': 'Jan 2016' }, 'Series names are mapped properly');
   });
 
-  test('buildTooltip', function(assert) {
+  test('buildTooltip', function (assert) {
     assert.expect(2);
 
     const request = buildTestRequest(
@@ -310,14 +310,14 @@ module('Unit | Chart Builders | Date Time', function(hooks) {
     );
     const config = {
       timeGrain: 'month',
-      metricCid: 'cid_pageViews'
+      metricCid: 'cid_pageViews',
     };
     const response = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:20.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-01-02 00:01:20.000', pageViews: 2 },
-        { 'network.dateTime(grain=day)': '2016-01-03 00:03:20.000', pageViews: 3 }
-      ]
+        { 'network.dateTime(grain=day)': '2016-01-03 00:03:20.000', pageViews: 3 },
+      ],
     });
     const x = 2;
     const tooltipData = [{ x, name: 'Jan 2016', value: 2 }];

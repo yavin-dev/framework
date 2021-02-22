@@ -8,7 +8,7 @@ import {
   MetricNode,
   Connection,
   DimensionNode,
-  TimeDimensionNode
+  TimeDimensionNode,
 } from 'navi-data/serializers/metadata/elide';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
@@ -20,14 +20,14 @@ import ElideDimensionMetadataModel, { ElideDimensionMetadataPayload } from 'navi
 
 let Serializer: ElideMetadataSerializer;
 
-module('Unit | Serializer | metadata/elide', function(hooks) {
+module('Unit | Serializer | metadata/elide', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/elide');
   });
 
-  test('normalize', function(assert) {
+  test('normalize', function (assert) {
     const tableConnectionPayload: TablePayload = {
       table: {
         edges: [
@@ -53,12 +53,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: ''
+                      expression: '',
                     },
-                    cursor: ''
-                  }
+                    cursor: '',
+                  },
                 ],
-                pageInfo: []
+                pageInfo: [],
               },
               dimensions: {
                 edges: [
@@ -75,9 +75,9 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       expression: '',
                       valueSourceType: 'NONE',
                       tableSource: null,
-                      values: []
+                      values: [],
                     },
-                    cursor: ''
+                    cursor: '',
                   },
                   {
                     node: {
@@ -92,12 +92,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       expression: '',
                       valueSourceType: 'NONE',
                       tableSource: null,
-                      values: []
+                      values: [],
                     },
-                    cursor: ''
-                  }
+                    cursor: '',
+                  },
                 ],
-                pageInfo: {}
+                pageInfo: {},
               },
               timeDimensions: {
                 edges: [
@@ -113,24 +113,24 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       supportedGrain: {
                         edges: [
                           { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
-                          { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' }
+                          { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
                         ],
-                        pageInfo: {}
+                        pageInfo: {},
                       },
                       timeZone: 'UTC',
                       columnType: 'field',
                       expression: '',
                       valueSourceType: 'NONE',
                       tableSource: null,
-                      values: []
+                      values: [],
                     },
-                    cursor: ''
-                  }
+                    cursor: '',
+                  },
                 ],
-                pageInfo: {}
-              }
+                pageInfo: {},
+              },
             },
-            cursor: ''
+            cursor: '',
           },
           {
             node: {
@@ -154,9 +154,9 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: ''
+                      expression: '',
                     },
-                    cursor: ''
+                    cursor: '',
                   },
                   {
                     node: {
@@ -169,12 +169,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       tags: ['IMPORTANT'],
                       defaultFormat: 'NONE',
                       columnType: 'field',
-                      expression: ''
+                      expression: '',
                     },
-                    cursor: ''
-                  }
+                    cursor: '',
+                  },
                 ],
-                pageInfo: {}
+                pageInfo: {},
               },
               dimensions: {
                 edges: [
@@ -191,9 +191,9 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       expression: '',
                       valueSourceType: 'NONE',
                       tableSource: null,
-                      values: []
+                      values: [],
                     },
-                    cursor: ''
+                    cursor: '',
                   },
                   {
                     node: {
@@ -208,23 +208,23 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                       expression: '',
                       valueSourceType: 'NONE',
                       tableSource: null,
-                      values: []
+                      values: [],
                     },
-                    cursor: ''
-                  }
+                    cursor: '',
+                  },
                 ],
-                pageInfo: {}
+                pageInfo: {},
               },
               timeDimensions: {
                 edges: [],
-                pageInfo: {}
-              }
+                pageInfo: {},
+              },
             },
-            cursor: ''
-          }
+            cursor: '',
+          },
         ],
-        pageInfo: {}
-      }
+        pageInfo: {},
+      },
     };
 
     const expectedTablePayloads: TableMetadataPayload[] = [
@@ -238,7 +238,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         metricIds: ['tableA.m1'],
         dimensionIds: ['tableA.d1', 'tableA.d2'],
         timeDimensionIds: ['tableA.td1'],
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         id: 'tableB',
@@ -250,8 +250,8 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         metricIds: ['tableB.m2', 'tableB.m3'],
         dimensionIds: ['tableB.d1', 'tableB.d2'],
         timeDimensionIds: [],
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ];
 
     const expectedMetricPayloads: MetricMetadataPayload[] = [
@@ -266,7 +266,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         type: 'field',
         expression: '',
         source: 'bardOne',
-        tableId: 'tableA'
+        tableId: 'tableA',
       },
       {
         id: 'tableB.m2',
@@ -279,7 +279,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         type: 'field',
         expression: '',
         tableId: 'tableB',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         id: 'tableB.m3',
@@ -292,8 +292,8 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         type: 'field',
         expression: '',
         tableId: 'tableB',
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ];
 
     const expectedDimensionPayloads: ElideDimensionMetadataPayload[] = [
@@ -310,7 +310,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         tableId: 'tableA',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
+        values: [],
       },
       {
         id: 'tableA.d2',
@@ -325,7 +325,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         tableId: 'tableA',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
+        values: [],
       },
       {
         id: 'tableB.d1',
@@ -340,7 +340,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         tableId: 'tableB',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
+        values: [],
       },
       {
         id: 'tableB.d2',
@@ -355,8 +355,8 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         tableId: 'tableB',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
-      }
+        values: [],
+      },
     ];
 
     const expectedTimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
@@ -371,13 +371,13 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         expression: '',
         supportedGrains: [
           { id: 'day', grain: 'DAY', expression: '' },
-          { id: 'week', grain: 'WEEK', expression: '' }
+          { id: 'week', grain: 'WEEK', expression: '' },
         ],
         timeZone: 'UTC',
         source: 'bardOne',
         tableId: 'tableA',
-        columnFunctionId: 'normalizer-generated:timeGrain(column=tableA.td1;grains=day,week)'
-      }
+        columnFunctionId: 'normalizer-generated:timeGrain(column=tableA.td1;grains=day,week)',
+      },
     ];
 
     const expectedColumnFunctionsPayloads: ColumnFunctionMetadataPayload[] = [
@@ -392,13 +392,13 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
               {
                 id: 'day',
                 description: 'Day',
-                name: 'day'
+                name: 'day',
               },
               {
                 id: 'week',
                 description: 'Week',
-                name: 'week'
-              }
+                name: 'week',
+              },
             ],
             defaultValue: 'day',
             description: 'The time grain to group dates by',
@@ -406,32 +406,32 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            type: 'ref'
-          }
-        ]
-      }
+            type: 'ref',
+          },
+        ],
+      },
     ];
 
     assert.deepEqual(
       Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
       {
-        tables: expectedTablePayloads.map(p => TableMetadataModel.create(this.owner.ownerInjection(), p)),
-        metrics: expectedMetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
-        dimensions: expectedDimensionPayloads.map(p =>
+        tables: expectedTablePayloads.map((p) => TableMetadataModel.create(this.owner.ownerInjection(), p)),
+        metrics: expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+        dimensions: expectedDimensionPayloads.map((p) =>
           ElideDimensionMetadataModel.create(this.owner.ownerInjection(), p)
         ),
-        timeDimensions: expectedTimeDimensionPayloads.map(p =>
+        timeDimensions: expectedTimeDimensionPayloads.map((p) =>
           TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p)
         ),
-        columnFunctions: expectedColumnFunctionsPayloads.map(p =>
+        columnFunctions: expectedColumnFunctionsPayloads.map((p) =>
           ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
-        )
+        ),
       },
       'Table 0'
     );
   });
 
-  test('_normalizeTableMetrics', function(assert) {
+  test('_normalizeTableMetrics', function (assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
     const metricConnectionPayload: Connection<MetricNode> = {
@@ -447,9 +447,9 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['IMPORTANT'],
             defaultFormat: 'NONE',
             columnType: 'field',
-            expression: ''
+            expression: '',
           },
-          cursor: ''
+          cursor: '',
         },
         {
           node: {
@@ -462,12 +462,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['DISPLAY'],
             defaultFormat: 'NONE',
             columnType: 'field',
-            expression: ''
+            expression: '',
           },
-          cursor: ''
-        }
+          cursor: '',
+        },
       ],
-      pageInfo: {}
+      pageInfo: {},
     };
 
     const expectedMetricPayloads: MetricMetadataPayload[] = [
@@ -482,7 +482,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         source,
         tableId,
         type: 'field',
-        expression: ''
+        expression: '',
       },
       {
         id: 'impressions',
@@ -495,12 +495,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         source,
         tableId,
         type: 'field',
-        expression: ''
-      }
+        expression: '',
+      },
     ];
     assert.deepEqual(
       Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source),
-      expectedMetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
       'Metric connection payload is normalized properly for a table'
     );
 
@@ -511,7 +511,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     );
   });
 
-  test('_normalizeTableDimensions', function(assert) {
+  test('_normalizeTableDimensions', function (assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
     const dimensionConnectionPayload: Connection<DimensionNode> = {
@@ -529,9 +529,9 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             expression: '',
             valueSourceType: 'NONE',
             tableSource: null,
-            values: []
+            values: [],
           },
-          cursor: ''
+          cursor: '',
         },
         {
           node: {
@@ -546,12 +546,12 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             expression: '',
             valueSourceType: 'NONE',
             tableSource: null,
-            values: []
+            values: [],
           },
-          cursor: ''
-        }
+          cursor: '',
+        },
       ],
-      pageInfo: []
+      pageInfo: [],
     };
 
     const expectedDimensionPayloads: ElideDimensionMetadataPayload[] = [
@@ -568,7 +568,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         expression: '',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
+        values: [],
       },
       {
         id: 'gender',
@@ -583,13 +583,13 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
         expression: '',
         valueSourceType: 'NONE',
         tableSource: null,
-        values: []
-      }
+        values: [],
+      },
     ];
 
     assert.deepEqual(
       Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source),
-      expectedDimensionPayloads.map(p => ElideDimensionMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedDimensionPayloads.map((p) => ElideDimensionMetadataModel.create(this.owner.ownerInjection(), p)),
       'Dimension connection payload is normalized properly for a table'
     );
 
@@ -600,7 +600,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     );
   });
 
-  test('_normalizeTableTimeDimensions', function(assert) {
+  test('_normalizeTableTimeDimensions', function (assert) {
     const tableId = 'siteAnalytics';
     const source = 'myApi';
     const timeDimensionPayload: Connection<TimeDimensionNode> = {
@@ -618,18 +618,18 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
               edges: [
                 { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
                 { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
-                { node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }
+                { node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' },
               ],
-              pageInfo: {}
+              pageInfo: {},
             },
             timeZone: 'PST',
             columnType: 'field',
             expression: '',
             valueSourceType: 'NONE',
             tableSource: null,
-            values: []
+            values: [],
           },
-          cursor: ''
+          cursor: '',
         },
         {
           node: {
@@ -642,19 +642,19 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             tags: ['DISPLAY'],
             supportedGrain: {
               edges: [{ node: { id: 'month', grain: 'MONTH', expression: '' }, cursor: '' }],
-              pageInfo: []
+              pageInfo: [],
             },
             timeZone: 'CST',
             columnType: 'field',
             expression: '',
             valueSourceType: 'NONE',
             tableSource: null,
-            values: []
+            values: [],
           },
-          cursor: ''
-        }
+          cursor: '',
+        },
       ],
-      pageInfo: {}
+      pageInfo: {},
     };
 
     const oldDefaultGrain = config.navi.defaultTimeGrain;
@@ -672,14 +672,14 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           supportedGrains: [
             { id: 'day', grain: 'DAY', expression: '' },
             { id: 'week', grain: 'WEEK', expression: '' },
-            { id: 'month', grain: 'MONTH', expression: '' }
+            { id: 'month', grain: 'MONTH', expression: '' },
           ],
           timeZone: 'PST',
           source,
           tableId,
           type: 'field',
           expression: '',
-          columnFunctionId: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)'
+          columnFunctionId: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)',
         },
         columnFunction: {
           id: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)',
@@ -699,22 +699,22 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                 {
                   id: 'day',
                   description: 'Day',
-                  name: 'day'
+                  name: 'day',
                 },
                 {
                   id: 'week',
                   description: 'Week',
-                  name: 'week'
+                  name: 'week',
                 },
                 {
                   id: 'month',
                   description: 'Month',
-                  name: 'month'
-                }
-              ]
-            }
-          ]
-        }
+                  name: 'month',
+                },
+              ],
+            },
+          ],
+        },
       },
       {
         timeDimension: {
@@ -730,7 +730,7 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
           tableId,
           type: 'field',
           expression: '',
-          columnFunctionId: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)'
+          columnFunctionId: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)',
         },
         columnFunction: {
           id: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)',
@@ -750,20 +750,20 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
                 {
                   id: 'month',
                   description: 'Month',
-                  name: 'month'
-                }
-              ]
-            }
-          ]
-        }
-      }
+                  name: 'month',
+                },
+              ],
+            },
+          ],
+        },
+      },
     ];
 
     assert.deepEqual(
       Serializer._normalizeTableTimeDimensions(timeDimensionPayload, tableId, source),
       expected.map(({ timeDimension, columnFunction }) => ({
         timeDimension: TimeDimensionMetadataModel.create(this.owner.ownerInjection(), timeDimension),
-        columnFunction: ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), columnFunction)
+        columnFunction: ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), columnFunction),
       })),
       'Time Dimension connection payload is normalized properly for a table'
     );
@@ -777,24 +777,24 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
     );
   });
 
-  test('createTimeGrainColumnFunction', function(assert) {
+  test('createTimeGrainColumnFunction', function (assert) {
     const timeDimensionId = 'wayTooPersonalTable.userBirthday';
     const grainNodes: TimeDimensionGrainNode[] = [
       {
         id: `${timeDimensionId}.day`,
         grain: 'DAY',
-        expression: 'foo'
+        expression: 'foo',
       },
       {
         id: `${timeDimensionId}.month`,
         grain: 'MONTH',
-        expression: 'foo'
+        expression: 'foo',
       },
       {
         id: `${timeDimensionId}.year`,
         grain: 'YEAR',
-        expression: 'foo'
-      }
+        expression: 'foo',
+      },
     ];
     const dataSource = 'superInvasive';
 
@@ -814,16 +814,16 @@ module('Unit | Serializer | metadata/elide', function(hooks) {
             type: 'ref',
             expression: INTRINSIC_VALUE_EXPRESSION,
             defaultValue: 'day',
-            _localValues: grainNodes.map(grain => {
+            _localValues: grainNodes.map((grain) => {
               const grainName = grain.grain.toLowerCase();
               return {
                 id: grainName,
                 description: capitalize(grainName),
-                name: grainName
+                name: grainName,
               };
-            })
-          }
-        ]
+            }),
+          },
+        ],
       },
       'Column function is generated properly'
     );

@@ -18,9 +18,9 @@ export default class DirectoryMyDataController extends SearchFilterController {
    */
   @computed('directory.{sortKey,sortDir}', 'model.items')
   get sortedItems() {
-    return new Promise<Array<TODO>>(async resolve => {
+    return new Promise<Array<TODO>>(async (resolve) => {
       const {
-        directory: { sortKey, sortDir }
+        directory: { sortKey, sortDir },
       } = this;
       const items = await this.model.items;
 
@@ -28,9 +28,7 @@ export default class DirectoryMyDataController extends SearchFilterController {
       if (sortKey === 'updatedOn') {
         let getUpdatedOn = (item: any) => moment.utc(item.get('updatedOn')),
           comparator = (a: any, b: any) => getUpdatedOn(a).diff(getUpdatedOn(b));
-        sortedItems = arr(items)
-          .slice()
-          .sort(comparator);
+        sortedItems = arr(items).slice().sort(comparator);
       } else {
         sortedItems = arr(items).sortBy(sortKey);
       }

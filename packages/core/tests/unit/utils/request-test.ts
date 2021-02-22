@@ -5,8 +5,8 @@ import { unset } from 'lodash-es';
 
 let request: RequestV1;
 
-module('Unit | Utils | Request', function(hooks) {
-  hooks.beforeEach(function() {
+module('Unit | Utils | Request', function (hooks) {
+  hooks.beforeEach(function () {
     request = {
       requestVersion: 'v1',
       logicalTable: { table: 'network', timeGrain: 'day' },
@@ -17,45 +17,45 @@ module('Unit | Utils | Request', function(hooks) {
           dimension: 'age',
           field: 'id',
           operator: 'in',
-          values: ['2']
+          values: ['2'],
         },
         {
           dimension: 'platform',
           field: 'desc',
           operator: 'contains',
-          values: ['win']
+          values: ['win'],
         },
         {
           dimension: 'platform',
           field: 'id',
           operator: 'notnull',
-          values: []
+          values: [],
         },
         {
           dimension: 'gender',
           field: 'id',
           operator: 'null',
-          values: []
-        }
+          values: [],
+        },
       ],
       metrics: [
         { metric: 'revenue', parameters: { currency: 'USD', as: 'm1' } },
         { metric: 'revenue', parameters: { currency: 'CAD', as: 'm2' } },
-        { metric: 'adClicks' }
+        { metric: 'adClicks' },
       ],
       having: [
         { metric: 'm1', operator: 'lt', values: ['24'] },
         { metric: 'm2', operator: 'gt', values: ['3'] },
-        { metric: 'adClicks', operator: 'gt', values: ['11'] }
+        { metric: 'adClicks', operator: 'gt', values: ['11'] },
       ],
       sort: [
         { metric: 'dateTime', direction: 'desc' },
-        { metric: 'm2', direction: 'asc' }
-      ]
+        { metric: 'm2', direction: 'asc' },
+      ],
     };
   });
 
-  test('toggleAlias', function(assert) {
+  test('toggleAlias', function (assert) {
     assert.expect(2);
 
     //@ts-expect-error
@@ -65,13 +65,13 @@ module('Unit | Utils | Request', function(hooks) {
       request.having,
       {
         m1: 'revenue(currency=USD)',
-        m2: 'revenue(currency=CAD)'
+        m2: 'revenue(currency=CAD)',
       },
       {
         'revenue(currency=USD)': request.metrics[0],
         'revenue(currency=CAD)': request.metrics[1],
         adClicks: request.metrics[2],
-        dateTime: { metric: 'dateTime' }
+        dateTime: { metric: 'dateTime' },
       }
     );
 
@@ -83,36 +83,36 @@ module('Unit | Utils | Request', function(hooks) {
             metric: 'revenue',
             parameters: {
               as: 'm1',
-              currency: 'USD'
-            }
+              currency: 'USD',
+            },
           },
           operator: 'lt',
-          values: ['24']
+          values: ['24'],
         },
         {
           metric: {
             metric: 'revenue',
             parameters: {
               as: 'm2',
-              currency: 'CAD'
-            }
+              currency: 'CAD',
+            },
           },
           operator: 'gt',
-          values: ['3']
+          values: ['3'],
         },
         {
           metric: {
-            metric: 'adClicks'
+            metric: 'adClicks',
           },
           operator: 'gt',
-          values: ['11']
-        }
+          values: ['11'],
+        },
       ],
       'normalizes aliased metrics correctly'
     );
   });
 
-  test('normalizeV1', function(assert) {
+  test('normalizeV1', function (assert) {
     assert.expect(7);
 
     const normalized = normalizeV1(request, 'bardOne');
@@ -127,18 +127,18 @@ module('Unit | Utils | Request', function(hooks) {
         {
           metric: 'revenue',
           parameters: {
-            currency: 'USD'
-          }
+            currency: 'USD',
+          },
         },
         {
           metric: 'revenue',
           parameters: {
-            currency: 'CAD'
-          }
+            currency: 'CAD',
+          },
         },
         {
-          metric: 'adClicks'
-        }
+          metric: 'adClicks',
+        },
       ],
       'metrics are normalized correctly'
     );
@@ -150,29 +150,29 @@ module('Unit | Utils | Request', function(hooks) {
           metric: {
             metric: 'revenue',
             parameters: {
-              currency: 'USD'
-            }
+              currency: 'USD',
+            },
           },
           operator: 'lt',
-          values: ['24']
+          values: ['24'],
         },
         {
           metric: {
             metric: 'revenue',
             parameters: {
-              currency: 'CAD'
-            }
+              currency: 'CAD',
+            },
           },
           operator: 'gt',
-          values: ['3']
+          values: ['3'],
         },
         {
           metric: {
-            metric: 'adClicks'
+            metric: 'adClicks',
           },
           operator: 'gt',
-          values: ['11']
-        }
+          values: ['11'],
+        },
       ],
       'having is normalized correctly'
     );
@@ -183,18 +183,18 @@ module('Unit | Utils | Request', function(hooks) {
         {
           direction: 'desc',
           metric: {
-            metric: 'dateTime'
-          }
+            metric: 'dateTime',
+          },
         },
         {
           direction: 'asc',
           metric: {
             metric: 'revenue',
             parameters: {
-              currency: 'CAD'
-            }
-          }
-        }
+              currency: 'CAD',
+            },
+          },
+        },
       ],
       'sorts are normalized correctly'
     );
@@ -203,11 +203,11 @@ module('Unit | Utils | Request', function(hooks) {
       normalized.dimensions,
       [
         {
-          dimension: 'age'
+          dimension: 'age',
         },
         {
-          dimension: 'platform'
-        }
+          dimension: 'platform',
+        },
       ],
       'dimensions are normalized correctly'
     );
@@ -219,32 +219,32 @@ module('Unit | Utils | Request', function(hooks) {
           dimension: 'age',
           field: 'id',
           operator: 'in',
-          values: ['2']
+          values: ['2'],
         },
         {
           dimension: 'platform',
           field: 'desc',
           operator: 'contains',
-          values: ['win']
+          values: ['win'],
         },
         {
           dimension: 'platform',
           field: 'id',
           operator: 'notnull',
-          values: []
+          values: [],
         },
         {
           dimension: 'gender',
           field: 'id',
           operator: 'null',
-          values: []
-        }
+          values: [],
+        },
       ],
       'filters are normalized correctly'
     );
   });
 
-  test('normalize v1 to v2', function(assert) {
+  test('normalize v1 to v2', function (assert) {
     assert.expect(12);
 
     const normalized = normalizeV1toV2(request, 'bardOne');
@@ -255,7 +255,7 @@ module('Unit | Utils | Request', function(hooks) {
 
     assert.equal(normalized.table, 'network', 'table is normalized correctly');
 
-    const cids = normalized.columns.map(c => c.cid);
+    const cids = normalized.columns.map((c) => c.cid);
     cids.forEach((cid, idx) => {
       assert.equal(cid?.length, 10, 'column cid has proper value');
       //remove from validation since cid value is non deterministic
@@ -268,43 +268,43 @@ module('Unit | Utils | Request', function(hooks) {
         {
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
-          type: 'timeDimension'
+          type: 'timeDimension',
         },
         {
           field: 'age',
           type: 'dimension',
           parameters: {
-            field: 'id'
-          }
+            field: 'id',
+          },
         },
         {
           field: 'platform',
           type: 'dimension',
           parameters: {
-            field: 'id'
-          }
+            field: 'id',
+          },
         },
         {
           field: 'revenue',
           parameters: {
-            currency: 'USD'
+            currency: 'USD',
           },
-          type: 'metric'
+          type: 'metric',
         },
         {
           field: 'revenue',
           parameters: {
-            currency: 'CAD'
+            currency: 'CAD',
           },
-          type: 'metric'
+          type: 'metric',
         },
         {
           field: 'adClicks',
           type: 'metric',
-          parameters: {}
-        }
+          parameters: {},
+        },
       ],
       'columns are normalized correctly'
     );
@@ -318,70 +318,70 @@ module('Unit | Utils | Request', function(hooks) {
           type: 'timeDimension',
           values: ['P7D', 'current'],
           parameters: {
-            grain: 'day'
-          }
+            grain: 'day',
+          },
         },
         {
           field: 'age',
           operator: 'in',
           parameters: {
-            field: 'id'
+            field: 'id',
           },
           type: 'dimension',
-          values: ['2']
+          values: ['2'],
         },
         {
           field: 'platform',
           operator: 'contains',
           parameters: {
-            field: 'desc'
+            field: 'desc',
           },
           type: 'dimension',
-          values: ['win']
+          values: ['win'],
         },
         {
           field: 'platform',
           operator: 'isnull',
           parameters: {
-            field: 'id'
+            field: 'id',
           },
           type: 'dimension',
-          values: [false]
+          values: [false],
         },
         {
           field: 'gender',
           operator: 'isnull',
           parameters: {
-            field: 'id'
+            field: 'id',
           },
           type: 'dimension',
-          values: [true]
+          values: [true],
         },
         {
           field: 'revenue',
           operator: 'lt',
           parameters: {
-            currency: 'USD'
+            currency: 'USD',
           },
           type: 'metric',
-          values: ['24']
+          values: ['24'],
         },
         {
           field: 'revenue',
           operator: 'gt',
           parameters: {
-            currency: 'CAD'
+            currency: 'CAD',
           },
           type: 'metric',
-          values: ['3']
+          values: ['3'],
         },
         {
           field: 'adClicks',
           operator: 'gt',
           type: 'metric',
           values: ['11'],
-          parameters: {}
-        }
+          parameters: {},
+        },
       ],
       'filters are normalized correctly'
     );
@@ -394,17 +394,17 @@ module('Unit | Utils | Request', function(hooks) {
           field: 'network.dateTime',
           type: 'timeDimension',
           parameters: {
-            grain: 'day'
-          }
+            grain: 'day',
+          },
         },
         {
           direction: 'asc',
           field: 'revenue',
           parameters: {
-            currency: 'CAD'
+            currency: 'CAD',
           },
-          type: 'metric'
-        }
+          type: 'metric',
+        },
       ],
       'sorts are normalized correctly'
     );

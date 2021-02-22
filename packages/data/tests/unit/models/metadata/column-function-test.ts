@@ -3,15 +3,15 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import FunctionParameterMetadataModel, {
-  FunctionParameterMetadataPayload
+  FunctionParameterMetadataPayload,
 } from 'navi-data/models/metadata/function-parameter';
 
 let Payload: ColumnFunctionMetadataPayload, ColumnFunction: ColumnFunctionMetadataModel;
 
-module('Unit | Metadata Model | Column Function', function(hooks) {
+module('Unit | Metadata Model | Column Function', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const paramPayload: FunctionParameterMetadataPayload = {
       id: 'currency',
       name: 'Currency',
@@ -19,7 +19,7 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
       source: 'bardOne',
       type: 'ref',
       expression: 'dimension:displayCurrency',
-      defaultValue: 'USD'
+      defaultValue: 'USD',
     };
 
     Payload = {
@@ -27,19 +27,19 @@ module('Unit | Metadata Model | Column Function', function(hooks) {
       name: 'Money Metric',
       description: 'Currency parameter',
       source: 'bardOne',
-      _parametersPayload: [paramPayload]
+      _parametersPayload: [paramPayload],
     };
 
     ColumnFunction = ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
-  test('factory has identifierField defined', function(assert) {
+  test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
     assert.equal(ColumnFunctionMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
-  test('it properly hydrates properties', async function(assert) {
+  test('it properly hydrates properties', async function (assert) {
     const { id, name, description, source, parameters } = ColumnFunction;
 
     assert.equal(id, Payload.id, 'id property is hydrated properly');

@@ -12,12 +12,12 @@ import { tracked } from '@glimmer/tracking';
 const ADMIN_TAB_OPTIONS = [
   {
     title: 'Manage Users',
-    route: 'admin.users'
+    route: 'admin.users',
   },
   {
     title: 'Query Stats',
-    route: 'admin.query-stats'
-  }
+    route: 'admin.query-stats',
+  },
 ];
 
 export default class AdminController extends Controller {

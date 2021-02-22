@@ -23,7 +23,7 @@ interface HasId {
 
 const newReport = {
   id: 'new',
-  title: 'Create new...'
+  title: 'Create new...',
 };
 export default class AddWidgetComponent extends Component<Args> {
   @tracked
@@ -40,8 +40,8 @@ export default class AddWidgetComponent extends Component<Args> {
       newReport,
       {
         groupName: 'My Reports',
-        options: this.args.reports.toArray()
-      }
+        options: this.args.reports.toArray(),
+      },
     ]);
   }
 

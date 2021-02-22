@@ -31,19 +31,19 @@ const clickOverlayRun = () => click(`${overlaySelector} .report-view-overlay__bu
 const clickOverlayDismiss = () => click(`${overlaySelector} .report-view-overlay__button--dismiss`);
 const clickRevertReport = () => click('.navi-report__revert-btn');
 
-module('Acceptance | report-view-overlay', function(hooks) {
+module('Acceptance | report-view-overlay', function (hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
   setupMirage(hooks);
 
-  test('load existing report', async function(assert) {
+  test('load existing report', async function (assert) {
     assert.expect(1);
 
     await visit('/reports/1/view');
     assertOverlayNotVisible(assert);
   });
 
-  test('revert test', async function(assert) {
+  test('revert test', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/1/view');
@@ -53,7 +53,7 @@ module('Acceptance | report-view-overlay', function(hooks) {
     assertOverlayNotVisible(assert);
   });
 
-  test('duplicate column', async function(assert) {
+  test('duplicate column', async function (assert) {
     assert.expect(4);
 
     await visit('/reports/1/view');
@@ -67,7 +67,7 @@ module('Acceptance | report-view-overlay', function(hooks) {
     assertOverlayNotVisible(assert);
   });
 
-  test('new column', async function(assert) {
+  test('new column', async function (assert) {
     assert.expect(5);
 
     await visit('/reports/1/view');
@@ -81,7 +81,7 @@ module('Acceptance | report-view-overlay', function(hooks) {
     assertReportNeedsRun(assert, 'The report still needs to be run');
   });
 
-  test('change parameter', async function(assert) {
+  test('change parameter', async function (assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');

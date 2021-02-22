@@ -27,11 +27,11 @@ const TEMPLATE = hbs`
   @isCollapsed={{this.isCollapsed}}
   @onUpdateCollapsed={{this.onUpdateCollapsed}}
 />`;
-module('Integration | Component | filter collection', function(hooks) {
+module('Integration | Component | filter collection', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     const factory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.set(
@@ -43,12 +43,12 @@ module('Integration | Component | filter collection', function(hooks) {
           factory.createFilter('dimension', 'bardOne', 'property', {}, 'isnull', [true]),
           factory.createFilter('timeDimension', 'bardOne', 'network.dateTime', { grain: 'day' }, 'bet', []),
           factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'gt', ['1000']),
-          factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'bet', ['1000', '2000'])
+          factory.createFilter('metric', 'bardOne', 'pageViews', {}, 'bet', ['1000', '2000']),
         ],
         sorts: [],
         requestVersion: '2.0',
         dataSource: 'bardOne',
-        table: 'network'
+        table: 'network',
       })
     );
     this.onUpdateFilter = () => null;
@@ -57,7 +57,7 @@ module('Integration | Component | filter collection', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(4);
 
     this.set('onUpdateCollapsed', () =>
@@ -76,7 +76,7 @@ module('Integration | Component | filter collection', function(hooks) {
     await click('.filter-collection');
   });
 
-  test('collapsed', async function(assert) {
+  test('collapsed', async function (assert) {
     assert.expect(3);
 
     this.set('isCollapsed', true);
@@ -95,7 +95,7 @@ module('Integration | Component | filter collection', function(hooks) {
     await click('.filter-collection--collapsed-item');
   });
 
-  test('updating a filter', async function(this: TestContext, assert) {
+  test('updating a filter', async function (this: TestContext, assert) {
     /* == Changing operator == */
     this.set('onUpdateFilter', (filter: FilterFragment, changeSet: Partial<FilterFragment>) => {
       assert.equal(filter, this.request.filters.objectAt(0), 'Filter to update is given to action');
@@ -107,7 +107,7 @@ module('Integration | Component | filter collection', function(hooks) {
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 
-  test('remove a filter', async function(this: TestContext, assert) {
+  test('remove a filter', async function (this: TestContext, assert) {
     assert.expect(1);
 
     this.set('onRemoveFilter', (filter: FilterFragment) => {

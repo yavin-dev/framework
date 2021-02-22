@@ -3,10 +3,10 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Store from 'ember-data/store';
 
-module('Unit | Helpers | Format Chart Tooltip Date', function(hooks) {
+module('Unit | Helpers | Format Chart Tooltip Date', function (hooks) {
   setupTest(hooks);
 
-  test('formatChartTooltipDate', function(assert) {
+  test('formatChartTooltipDate', function (assert) {
     assert.expect(8);
 
     const store = this.owner.lookup('service:store') as Store;
@@ -17,7 +17,7 @@ module('Unit | Helpers | Format Chart Tooltip Date', function(hooks) {
       table: 'network',
       filters: [],
       columns: [{ type: 'timeDimension', field: 'network.dateTime', parameters: { grain: 'year' }, source: 'bardOne' }],
-      sorts: []
+      sorts: [],
     });
 
     const setTimeGrain = (grain: string) => request.columns.objectAt(0)?.updateParameters({ grain });

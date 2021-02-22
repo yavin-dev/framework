@@ -17,10 +17,10 @@ const TEMPLATE = hbs`<FilterValues::TimeDimension::Current
   @isCollapsed={{this.isCollapsed}}
 />`;
 
-module('Integration | Component | filter-values/time-dimension/current', function(hooks) {
+module('Integration | Component | filter-values/time-dimension/current', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
 
     this.filter = fragmentFactory.createFilter(
@@ -35,7 +35,7 @@ module('Integration | Component | filter-values/time-dimension/current', functio
     this.onUpdateFilter = () => undefined;
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     assert.expect(2);
 
     await render(TEMPLATE);
@@ -50,7 +50,7 @@ module('Integration | Component | filter-values/time-dimension/current', functio
       .hasText(`The current week. (${getDateRangeFormat(this.filter)})`, 'The current period changes to week');
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     assert.expect(2);
 
     this.isCollapsed = true;

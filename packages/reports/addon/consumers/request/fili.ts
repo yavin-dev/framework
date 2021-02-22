@@ -84,8 +84,8 @@ export default class FiliConsumer extends ActionConsumer {
 
         // update all other date time grains to match
         request.columns
-          .filter(c => c.type === 'timeDimension' && c !== columnFragment)
-          .forEach(dateTimeColumn => {
+          .filter((c) => c.type === 'timeDimension' && c !== columnFragment)
+          .forEach((dateTimeColumn) => {
             if (dateTimeColumn.parameters.grain !== parameterValue) {
               this.requestActionDispatcher.dispatch(
                 RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS,
@@ -160,7 +160,7 @@ export default class FiliConsumer extends ActionConsumer {
       const { dateTimeFilter, tableMetadata } = request;
       // if there are no date time columns, one was just removed, and there is a date time filter then move filter to lowest grain
       if (
-        request.columns.filter(c => c.type === 'timeDimension').length === 0 &&
+        request.columns.filter((c) => c.type === 'timeDimension').length === 0 &&
         column.type === 'timeDimension' &&
         dateTimeFilter
       ) {
@@ -173,6 +173,6 @@ export default class FiliConsumer extends ActionConsumer {
           this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
         }
       }
-    }
+    },
   };
 }

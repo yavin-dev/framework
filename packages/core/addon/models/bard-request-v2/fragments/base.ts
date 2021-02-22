@@ -19,7 +19,7 @@ import NaviFormatterService from 'navi-data/services/navi-formatter';
 const Validations = buildValidations({
   field: validator('presence', {
     presence: true,
-    message: 'The `field` field cannot be empty'
+    message: 'The `field` field cannot be empty',
   }),
   type: validator('inclusion', {
     in: ['dimension', 'metric', 'timeDimension'],
@@ -27,8 +27,8 @@ const Validations = buildValidations({
     message() {
       const { field } = this.model;
       return 'The `type` field of `' + field + '` column must equal to `dimension`, `metric`, or `timeDimension`';
-    }
-  })
+    },
+  }),
 });
 
 export type ColumnMetadataModels = MetadataModelRegistry[ColumnType];
@@ -42,7 +42,7 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   @attr({
     defaultValue() {
       return {};
-    }
+    },
   })
   parameters!: Parameters;
 
@@ -72,7 +72,7 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
     // TODO rename with generic canonicalizeColumn
     return canonicalizeMetric({
       metric,
-      parameters
+      parameters,
     });
   }
 

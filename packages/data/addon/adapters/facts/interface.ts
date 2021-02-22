@@ -81,12 +81,12 @@ export enum QueryStatus {
   PROCESSING = 'PROCESSING',
   CANCELLED = 'CANCELLED',
   TIMEDOUT = 'TIMEDOUT',
-  FAILURE = 'FAILURE'
+  FAILURE = 'FAILURE',
 }
 
 export enum TableExportResultType {
   CSV = 'CSV',
-  JSON = 'JSON'
+  JSON = 'JSON',
 }
 
 export interface AsyncQuery {

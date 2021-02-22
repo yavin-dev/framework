@@ -19,6 +19,6 @@ export default class TableConsumer extends ActionConsumer {
       const { request } = route.modelFor(routeName) as ReportModel;
       request.setTableByMetadata(table);
       this.requestActionDispatcher.dispatch(RequestActions.DID_UPDATE_TABLE, route, table);
-    }
+    },
   };
 }

@@ -6,7 +6,7 @@ import BardMetadataSerializer, {
   RawEverythingPayload,
   RawDimensionPayload,
   RawMetricPayload,
-  RawTablePayload
+  RawTablePayload,
 } from 'navi-data/serializers/metadata/bard';
 import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
@@ -30,7 +30,7 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              type: 'number'
+              type: 'number',
             },
             {
               category: 'category',
@@ -41,15 +41,15 @@ const Payload: RawEverythingPayload = {
                 currency: {
                   type: 'dimension',
                   dimensionName: 'displayCurrency',
-                  defaultValue: 'USD'
+                  defaultValue: 'USD',
                 },
                 format: {
                   type: 'dimension',
                   dimensionName: 'displayFormat',
-                  defaultValue: 'none'
-                }
-              }
-            }
+                  defaultValue: 'none',
+                },
+              },
+            },
           ],
           retention: 'P24M',
           longName: 'All',
@@ -63,13 +63,13 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
+                  description: 'Dimension ID',
                 },
                 {
                   name: 'desc',
-                  description: 'Dimension Description'
-                }
-              ]
+                  description: 'Dimension Description',
+                },
+              ],
             },
             {
               category: 'categoryTwo',
@@ -80,9 +80,9 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'foo',
-                  description: 'bar'
-                }
-              ]
+                  description: 'bar',
+                },
+              ],
             },
             {
               category: 'dateCategory',
@@ -93,11 +93,11 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
-                }
-              ]
-            }
-          ]
+                  description: 'Dimension ID',
+                },
+              ],
+            },
+          ],
         },
         {
           name: 'day',
@@ -107,7 +107,7 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              type: 'number'
+              type: 'number',
             },
             {
               category: 'category',
@@ -118,15 +118,15 @@ const Payload: RawEverythingPayload = {
                 currency: {
                   type: 'dimension',
                   dimensionName: 'displayCurrency',
-                  defaultValue: 'USD'
+                  defaultValue: 'USD',
                 },
                 format: {
                   type: 'dimension',
                   dimensionName: 'displayFormat',
-                  defaultValue: 'none'
-                }
-              }
-            }
+                  defaultValue: 'none',
+                },
+              },
+            },
           ],
           retention: 'P24M',
           longName: 'Day',
@@ -140,13 +140,13 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
+                  description: 'Dimension ID',
                 },
                 {
                   name: 'desc',
-                  description: 'Dimension Description'
-                }
-              ]
+                  description: 'Dimension Description',
+                },
+              ],
             },
             {
               category: 'categoryTwo',
@@ -157,9 +157,9 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'foo',
-                  description: 'bar'
-                }
-              ]
+                  description: 'bar',
+                },
+              ],
             },
             {
               category: 'dateCategory',
@@ -170,11 +170,11 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
-                }
-              ]
-            }
-          ]
+                  description: 'Dimension ID',
+                },
+              ],
+            },
+          ],
         },
         {
           name: 'month',
@@ -184,7 +184,7 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              type: 'number'
+              type: 'number',
             },
             {
               category: 'category',
@@ -195,10 +195,10 @@ const Payload: RawEverythingPayload = {
                 currency: {
                   type: 'dimension',
                   dimensionName: 'displayCurrency',
-                  defaultValue: 'USD'
-                }
-              }
-            }
+                  defaultValue: 'USD',
+                },
+              },
+            },
           ],
           retention: 'P24M',
           longName: 'Month',
@@ -212,13 +212,13 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
+                  description: 'Dimension ID',
                 },
                 {
                   name: 'desc',
-                  description: 'Dimension Description'
-                }
-              ]
+                  description: 'Dimension Description',
+                },
+              ],
             },
             {
               category: 'categoryTwo',
@@ -229,9 +229,9 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'foo',
-                  description: 'bar'
-                }
-              ]
+                  description: 'bar',
+                },
+              ],
             },
             {
               category: 'dateCategory',
@@ -242,13 +242,13 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  description: 'Dimension ID',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'secondTable',
@@ -272,9 +272,9 @@ const Payload: RawEverythingPayload = {
                 whiteNoise: {
                   type: 'dimension',
                   dimensionName: 'displayCurrency',
-                  defaultValue: 'USD'
-                }
-              }
+                  defaultValue: 'USD',
+                },
+              },
             },
             {
               category: 'category',
@@ -285,10 +285,10 @@ const Payload: RawEverythingPayload = {
                 currency: {
                   type: 'dimension',
                   dimensionName: 'displayCurrency',
-                  defaultValue: 'USD'
-                }
-              }
-            }
+                  defaultValue: 'USD',
+                },
+              },
+            },
           ],
           dimensions: [
             {
@@ -300,9 +300,9 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'foo',
-                  description: 'bar'
-                }
-              ]
+                  description: 'bar',
+                },
+              ],
             },
             {
               category: 'dateCategory',
@@ -313,11 +313,11 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
-                }
-              ]
-            }
-          ]
+                  description: 'Dimension ID',
+                },
+              ],
+            },
+          ],
         },
         {
           name: 'week',
@@ -329,14 +329,14 @@ const Payload: RawEverythingPayload = {
               category: 'category',
               name: 'metricOne',
               longName: 'Metric One',
-              type: 'number'
+              type: 'number',
             },
             {
               category: 'category',
               name: 'metricThree',
               longName: 'Metric Three',
-              type: 'number'
-            }
+              type: 'number',
+            },
           ],
           dimensions: [
             {
@@ -348,9 +348,9 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'foo',
-                  description: 'bar'
-                }
-              ]
+                  description: 'bar',
+                },
+              ],
             },
             {
               category: 'dateCategory',
@@ -361,15 +361,15 @@ const Payload: RawEverythingPayload = {
               fields: [
                 {
                   name: 'id',
-                  description: 'Dimension ID'
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
+                  description: 'Dimension ID',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
 };
 // list of table objects, with table->timegrains->dimensions+metrics
 const TablePayloads: BardTableMetadataPayload[] = [
@@ -385,7 +385,7 @@ const TablePayloads: BardTableMetadataPayload[] = [
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'tableName.dateTime'],
     timeGrainIds: ['day', 'month'],
-    hasAllGrain: true
+    hasAllGrain: true,
   },
   {
     cardinality: 'MEDIUM',
@@ -399,8 +399,8 @@ const TablePayloads: BardTableMetadataPayload[] = [
     source: 'bardOne',
     timeDimensionIds: ['dimensionThree', 'secondTable.dateTime'],
     timeGrainIds: ['day', 'isoWeek'],
-    hasAllGrain: false
-  }
+    hasAllGrain: false,
+  },
 ];
 
 const DimensionsPayloads: DimensionMetadataPayload[] = [
@@ -419,13 +419,13 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     fields: [
       {
         name: 'id',
-        description: 'Dimension ID'
+        description: 'Dimension ID',
       },
       {
         name: 'desc',
-        description: 'Dimension Description'
-      }
-    ]
+        description: 'Dimension Description',
+      },
+    ],
   },
   {
     cardinality: 'SMALL',
@@ -440,12 +440,12 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     fields: [
       {
         name: 'foo',
-        description: 'bar'
-      }
+        description: 'bar',
+      },
     ],
     storageStrategy: null,
-    partialData: true
-  }
+    partialData: true,
+  },
 ];
 
 const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
@@ -461,8 +461,8 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     fields: [
       {
         name: 'id',
-        description: 'Dimension ID'
-      }
+        description: 'Dimension ID',
+      },
     ],
     valueType: 'date',
     storageStrategy: null,
@@ -471,10 +471,10 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         expression: '',
         grain: 'Day',
-        id: 'day'
-      }
+        id: 'day',
+      },
     ],
-    timeZone: 'utc'
+    timeZone: 'utc',
   },
   {
     category: 'Date',
@@ -488,17 +488,17 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         expression: '',
         grain: 'Day',
-        id: 'day'
+        id: 'day',
       },
       {
         expression: '',
         grain: 'Month',
-        id: 'month'
-      }
+        id: 'month',
+      },
     ],
     timeZone: 'UTC',
     type: 'field',
-    valueType: 'date'
+    valueType: 'date',
   },
   {
     category: 'Date',
@@ -512,18 +512,18 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         expression: '',
         grain: 'Day',
-        id: 'day'
+        id: 'day',
       },
       {
         expression: '',
         grain: 'IsoWeek',
-        id: 'isoWeek'
-      }
+        id: 'isoWeek',
+      },
     ],
     timeZone: 'UTC',
     type: 'field',
-    valueType: 'date'
-  }
+    valueType: 'date',
+  },
 ];
 
 const MetricPayloads: MetricMetadataPayload[] = [
@@ -536,7 +536,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
-    valueType: 'number'
+    valueType: 'number',
   },
   {
     category: 'category',
@@ -547,7 +547,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
-    valueType: 'money'
+    valueType: 'money',
   },
   {
     category: 'category',
@@ -558,7 +558,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
-    valueType: 'money'
+    valueType: 'money',
   },
   {
     category: 'category',
@@ -569,7 +569,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
-    valueType: 'number'
+    valueType: 'number',
   },
   {
     category: 'category',
@@ -580,8 +580,8 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
-    valueType: 'number'
-  }
+    valueType: 'number',
+  },
 ];
 
 const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
@@ -592,13 +592,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id'
+            name: 'id',
           },
           {
             description: undefined,
             id: 'desc',
-            name: 'desc'
-          }
+            name: 'desc',
+          },
         ],
         defaultValue: 'id',
         description: 'The field to be projected for this dimension',
@@ -606,13 +606,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref'
-      }
+        type: 'ref',
+      },
     ],
     description: 'Dimension Field',
     id: 'normalizer-generated:dimensionField(fields=desc,id)',
     name: 'Dimension Field',
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     _parametersPayload: [
@@ -621,8 +621,8 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'foo',
-            name: 'foo'
-          }
+            name: 'foo',
+          },
         ],
         defaultValue: 'foo',
         description: 'The field to be projected for this dimension',
@@ -630,13 +630,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref'
-      }
+        type: 'ref',
+      },
     ],
     description: 'Dimension Field',
     id: 'normalizer-generated:dimensionField(fields=foo)',
     name: 'Dimension Field',
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     _parametersPayload: [
@@ -645,8 +645,8 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id'
-          }
+            name: 'id',
+          },
         ],
         defaultValue: 'id',
         description: 'The field to be projected for this dimension',
@@ -654,13 +654,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref'
-      }
+        type: 'ref',
+      },
     ],
     description: 'Dimension Field',
     id: 'normalizer-generated:dimensionField(fields=id)',
     name: 'Dimension Field',
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     _parametersPayload: [
@@ -672,7 +672,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         expression: 'dimension:displayCurrency',
         id: 'currency',
         name: 'currency',
-        type: 'ref'
+        type: 'ref',
       },
       {
         _localValues: undefined,
@@ -682,13 +682,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         expression: 'dimension:displayFormat',
         id: 'format',
         name: 'format',
-        type: 'ref'
-      }
+        type: 'ref',
+      },
     ],
     description: '',
     id: 'normalizer-generated:columnFunction(parameters=currency,format)',
     name: '',
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     _parametersPayload: [
@@ -700,13 +700,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         expression: 'dimension:displayCurrency',
         id: 'currency',
         name: 'currency',
-        type: 'ref'
-      }
+        type: 'ref',
+      },
     ],
     description: '',
     id: 'normalizer-generated:columnFunction(parameters=currency)',
     name: '',
-    source: 'bardOne'
+    source: 'bardOne',
   },
   {
     id: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
@@ -724,10 +724,10 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         type: 'ref',
         _localValues: [
           { id: 'day', description: 'The tableName day grain', name: 'Day' },
-          { id: 'month', description: 'The tableName month grain', name: 'Month' }
-        ]
-      }
-    ]
+          { id: 'month', description: 'The tableName month grain', name: 'Month' },
+        ],
+      },
+    ],
   },
   {
     id: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
@@ -747,17 +747,17 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: 'The secondTable day grain',
             id: 'day',
-            name: 'Day'
+            name: 'Day',
           },
           {
             description: 'The secondTable week grain',
             id: 'isoWeek',
-            name: 'Week'
-          }
-        ]
-      }
-    ]
-  }
+            name: 'Week',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 let Serializer: BardMetadataSerializer;
@@ -767,21 +767,23 @@ let TimeDimensions: TimeDimensionMetadataModel[];
 let Dimensions: DimensionMetadataModel[];
 let Tables: BardTableMetadataModel[];
 
-module('Unit | Serializer | metadata/bard', function(hooks) {
+module('Unit | Serializer | metadata/bard', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
-    Tables = TablePayloads.map(p => BardTableMetadataModel.create(this.owner.ownerInjection(), p));
-    Dimensions = DimensionsPayloads.map(p => DimensionMetadataModel.create(this.owner.ownerInjection(), p));
-    TimeDimensions = TimeDimensionPayloads.map(p => TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p));
-    Metrics = MetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p));
-    ColumnFunctions = ColumnFunctionPayloads.map(p =>
+    Tables = TablePayloads.map((p) => BardTableMetadataModel.create(this.owner.ownerInjection(), p));
+    Dimensions = DimensionsPayloads.map((p) => DimensionMetadataModel.create(this.owner.ownerInjection(), p));
+    TimeDimensions = TimeDimensionPayloads.map((p) =>
+      TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p)
+    );
+    Metrics = MetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p));
+    ColumnFunctions = ColumnFunctionPayloads.map((p) =>
       ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
     );
   });
 
-  test('normalize `everything` with metric legacy `parameters`', function(assert) {
+  test('normalize `everything` with metric legacy `parameters`', function (assert) {
     assert.deepEqual(
       Serializer.normalize('everything', Payload, 'bardOne'),
       {
@@ -789,13 +791,13 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         dimensions: Dimensions,
         timeDimensions: TimeDimensions,
         tables: Tables,
-        columnFunctions: ColumnFunctions
+        columnFunctions: ColumnFunctions,
       },
       'One column function is created for all metrics with only the currency parameter'
     );
   });
 
-  test('normalize `everything` with column functions', function(assert) {
+  test('normalize `everything` with column functions', function (assert) {
     const MetricFunctionIdsPayload: RawEverythingPayload = {
       metricFunctions: [
         {
@@ -808,12 +810,12 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
               defaultValue: null,
               values: [
                 { id: 'USD', name: 'USD' },
-                { id: 'CAN', name: 'CAN' }
+                { id: 'CAN', name: 'CAN' },
               ],
-              description: 'Currency Parameter'
-            }
-          }
-        }
+              description: 'Currency Parameter',
+            },
+          },
+        },
       ],
       tables: [
         {
@@ -830,23 +832,23 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
                   category: 'category',
                   name: 'metricOne',
                   longName: 'Metric One',
-                  type: 'number'
+                  type: 'number',
                 },
                 {
                   category: 'category',
                   name: 'metricTwo',
                   longName: 'Metric Two',
                   type: 'money',
-                  metricFunctionId: 'moneyMetric'
-                }
+                  metricFunctionId: 'moneyMetric',
+                },
               ],
               retention: 'P24M',
               longName: 'Day',
-              dimensions: []
-            }
-          ]
-        }
-      ]
+              dimensions: [],
+            },
+          ],
+        },
+      ],
     };
 
     const { metrics, columnFunctions } = Serializer.normalize('everything', MetricFunctionIdsPayload, 'bardOne') || {};
@@ -861,7 +863,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         source: 'bardOne',
         columnFunctionId: undefined,
         type: 'field',
-        partialData: true
+        partialData: true,
       },
       {
         category: 'category',
@@ -872,13 +874,13 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         source: 'bardOne',
         columnFunctionId: 'moneyMetric',
         type: 'field',
-        partialData: true
-      }
+        partialData: true,
+      },
     ];
 
     assert.deepEqual(
       metrics,
-      expectedMetricPayloads.map(p => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
       'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
@@ -888,7 +890,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
           {
             _localValues: [
               { id: 'USD', name: 'USD' },
-              { id: 'CAN', name: 'CAN' }
+              { id: 'CAN', name: 'CAN' },
             ],
             defaultValue: null,
             description: 'Currency Parameter',
@@ -896,13 +898,13 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
             id: 'currency',
             name: 'currency',
             type: 'ref',
-            source: 'bardOne'
-          }
+            source: 'bardOne',
+          },
         ],
         description: 'Mo Problems',
         id: 'moneyMetric',
         name: 'Mo Money',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         description: 'Time Grain',
@@ -922,21 +924,21 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
               {
                 description: 'The tableName day grain',
                 id: 'day',
-                name: 'Day'
-              }
-            ]
-          }
-        ]
-      }
+                name: 'Day',
+              },
+            ],
+          },
+        ],
+      },
     ];
     assert.deepEqual(
       columnFunctions,
-      expectedColumnFunctionPayloads.map(p => ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedColumnFunctionPayloads.map((p) => ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)),
       'Raw column functions are normalized correctly'
     );
   });
 
-  test('normalizeDimensions', function(assert) {
+  test('normalizeDimensions', function (assert) {
     const rawDimension: RawDimensionPayload = {
       category: 'categoryOne',
       name: 'dimensionOne',
@@ -945,14 +947,14 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       fields: [
         {
           name: 'foo',
-          description: 'bar'
+          description: 'bar',
         },
         {
           name: 'baz',
-          description: 'bang'
-        }
+          description: 'bang',
+        },
       ],
-      datatype: 'text'
+      datatype: 'text',
     };
     const source = 'bardOne';
 
@@ -967,7 +969,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       storageStrategy: null,
       fields: rawDimension.fields,
       source,
-      partialData: true
+      partialData: true,
     };
 
     assert.deepEqual(
@@ -977,7 +979,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     );
   });
 
-  test('normalizeMetrics', function(assert) {
+  test('normalizeMetrics', function (assert) {
     const source = 'bardOne';
 
     const rawMetric: RawMetricPayload = {
@@ -985,7 +987,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       name: 'metricOne',
       longName: 'Metric One',
       type: 'number',
-      metricFunctionId: 'money'
+      metricFunctionId: 'money',
     };
 
     const expectedMetricPayload: MetricMetadataPayload = {
@@ -997,7 +999,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
       source,
       columnFunctionId: rawMetric.metricFunctionId,
       type: 'field',
-      partialData: true
+      partialData: true,
     };
 
     assert.deepEqual(
@@ -1007,7 +1009,7 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
     );
   });
 
-  test('configure defaultTimeGrain if it exists', async function(assert) {
+  test('configure defaultTimeGrain if it exists', async function (assert) {
     const originalDefaultTimeGrain = config.navi.defaultTimeGrain;
 
     const table: RawTablePayload = {
@@ -1017,8 +1019,8 @@ module('Unit | Serializer | metadata/bard', function(hooks) {
         { name: 'day', longName: 'Day', metrics: [], dimensions: [] },
         { name: 'hour', longName: 'Hour', metrics: [], dimensions: [] },
         { name: 'week', longName: 'Week', metrics: [], dimensions: [] },
-        { name: 'month', longName: 'Month', metrics: [], dimensions: [] }
-      ]
+        { name: 'month', longName: 'Month', metrics: [], dimensions: [] },
+      ],
     };
 
     config.navi.defaultTimeGrain = 'isoWeek';

@@ -18,19 +18,19 @@ interface Context extends TestContext {
   service: NaviMetadataService;
 }
 
-module('Unit | Service | navi-metadata', function(hooks) {
+module('Unit | Service | navi-metadata', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
-  hooks.beforeEach(function(this: Context) {
+  hooks.beforeEach(function (this: Context) {
     ElideTwoScenario(this.server);
     this.service = this.owner.lookup('service:navi-metadata');
   });
 
-  hooks.afterEach(function(this: Context) {
+  hooks.afterEach(function (this: Context) {
     this.server.shutdown();
   });
 
-  test('loadMetadata - bard', async function(this: Context, assert) {
+  test('loadMetadata - bard', async function (this: Context, assert) {
     const keg = this.service['keg'];
 
     assert.equal(this.service.loadedDataSources.size, 0, '`bardTwo` data source is initially not loaded');
@@ -38,14 +38,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     const tables = keg.all('metadata/table', 'bardTwo');
     assert.ok(
-      tables.every(table => table instanceof TableMetadataModel),
+      tables.every((table) => table instanceof TableMetadataModel),
       '`bardTwo` `TableMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(tables.mapBy('id'), ['inventory'], 'All `bardTwo` tables are loaded');
 
     const dimensions = keg.all('metadata/dimension', 'bardTwo');
     assert.ok(
-      dimensions.every(dim => dim instanceof DimensionMetadataModel),
+      dimensions.every((dim) => dim instanceof DimensionMetadataModel),
       '`bardTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -56,14 +56,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     const timeDimensions = keg.all('metadata/timeDimension', 'bardTwo');
     assert.ok(
-      timeDimensions.every(dim => dim instanceof TimeDimensionMetadataModel),
+      timeDimensions.every((dim) => dim instanceof TimeDimensionMetadataModel),
       '`bardTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(timeDimensions.mapBy('id'), ['inventory.dateTime'], 'All `bardTwo` time dimensions are loaded');
 
     const metrics = keg.all('metadata/metric', 'bardTwo');
     assert.ok(
-      metrics.every(metric => metric instanceof MetricMetadataModel),
+      metrics.every((metric) => metric instanceof MetricMetadataModel),
       '`bardTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -74,7 +74,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     const columnFunctions = keg.all('metadata/columnFunction', 'elideTwo');
     assert.ok(
-      columnFunctions.every(fn => fn instanceof ColumnFunctionMetadataModel),
+      columnFunctions.every((fn) => fn instanceof ColumnFunctionMetadataModel),
       '`bardTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(columnFunctions.mapBy('id'), [], 'All `bardTwo` column functions are loaded');
@@ -82,7 +82,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     assert.ok(this.service.loadedDataSources.has('bardTwo'), '`bardTwo` data source is loaded');
   });
 
-  test('loadMetadata - elide', async function(this: Context, assert) {
+  test('loadMetadata - elide', async function (this: Context, assert) {
     const keg = this.service['keg'];
 
     assert.equal(this.service.loadedDataSources.size, 0, '`elideTwo` data source is initially not loaded');
@@ -90,14 +90,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     const tables = keg.all('metadata/table', 'elideTwo');
     assert.ok(
-      tables.every(table => table instanceof TableMetadataModel),
+      tables.every((table) => table instanceof TableMetadataModel),
       '`elideTwo` `TableMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(tables.mapBy('id'), ['table0', 'table1'], 'All `elideTwo` tables are loaded');
 
     const dimensions = keg.all('metadata/dimension', 'elideTwo');
     assert.ok(
-      dimensions.every(dim => dim instanceof DimensionMetadataModel),
+      dimensions.every((dim) => dim instanceof DimensionMetadataModel),
       '`elideTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -108,14 +108,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
         'table1.dimension2',
         'table1.dimension3',
         'table1.dimension4',
-        'table1.dimension5'
+        'table1.dimension5',
       ],
       'All `elideTwo` dimensions are loaded'
     );
 
     const timeDimensions = keg.all('metadata/timeDimension', 'elideTwo');
     assert.ok(
-      timeDimensions.every(dim => dim instanceof TimeDimensionMetadataModel),
+      timeDimensions.every((dim) => dim instanceof TimeDimensionMetadataModel),
       '`elideTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -132,14 +132,14 @@ module('Unit | Service | navi-metadata', function(hooks) {
         'table1.eventTimeQuarter',
         'table1.orderTimeQuarter',
         'table1.eventTimeYear',
-        'table1.orderTimeYear'
+        'table1.orderTimeYear',
       ],
       'All `elideTwo` time dimensions are loaded'
     );
 
     const metrics = keg.all('metadata/metric', 'elideTwo');
     assert.ok(
-      metrics.every(metric => metric instanceof MetricMetadataModel),
+      metrics.every((metric) => metric instanceof MetricMetadataModel),
       '`elideTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -150,7 +150,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
 
     const columnFunctions = keg.all('metadata/columnFunction', 'elideTwo');
     assert.ok(
-      columnFunctions.every(fn => fn instanceof ColumnFunctionMetadataModel),
+      columnFunctions.every((fn) => fn instanceof ColumnFunctionMetadataModel),
       '`elideTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -167,7 +167,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
         'normalizer-generated:timeGrain(column=table1.eventTimeQuarter;grains=quarter)',
         'normalizer-generated:timeGrain(column=table1.orderTimeQuarter;grains=quarter)',
         'normalizer-generated:timeGrain(column=table1.eventTimeYear;grains=year)',
-        'normalizer-generated:timeGrain(column=table1.orderTimeYear;grains=year)'
+        'normalizer-generated:timeGrain(column=table1.orderTimeYear;grains=year)',
       ],
       'All `elideTwo` column functions are loaded'
     );
@@ -175,30 +175,30 @@ module('Unit | Service | navi-metadata', function(hooks) {
     assert.ok(this.service.loadedDataSources.has('elideTwo'), '`elideTwo` data source is loaded');
   });
 
-  test('loadMetadata - default data source', async function(this: Context, assert) {
+  test('loadMetadata - default data source', async function (this: Context, assert) {
     assert.notOk(this.service.loadedDataSources.has('bardOne'), '`bardOne` data source is initially not loaded');
     await this.service.loadMetadata();
     assert.ok(this.service.loadedDataSources.has('bardOne'), 'default data source is loaded');
   });
 
-  test('loadMetadata - multiple calls', async function(this: Context, assert) {
+  test('loadMetadata - multiple calls', async function (this: Context, assert) {
     assert.expect(1);
 
     this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    this.server.get('/tables', function() {
+    this.server.get('/tables', function () {
       assert.ok(true, 'initial metadata load executes a request');
       return { tables: [] };
     });
     await this.service.loadMetadata();
 
-    this.server.get('/tables', function() {
+    this.server.get('/tables', function () {
       assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
       return { tables: [] };
     });
     await this.service.loadMetadata();
   });
 
-  test('all', async function(this: Context, assert) {
+  test('all', async function (this: Context, assert) {
     await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
     await this.service.loadMetadata({ dataSourceName: 'elideTwo' });
 
@@ -215,7 +215,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
       '`all` returns all loaded tables when data source is not specified'
     );
     assert.ok(
-      allTables.every(table => table instanceof TableMetadataModel),
+      allTables.every((table) => table instanceof TableMetadataModel),
       'All returns instances of `TableMetadataModel`s'
     );
 
@@ -226,7 +226,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     );
   });
 
-  test('getById', async function(this: Context, assert) {
+  test('getById', async function (this: Context, assert) {
     await this.service.loadMetadata({ dataSourceName: 'elideTwo' });
     await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
 
@@ -251,7 +251,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     assert.equal(notLoaded, undefined, '`getById` returns `undefined` when data source is not loaded');
   });
 
-  test('fetchById - elide', async function(this: Context, assert) {
+  test('fetchById - elide', async function (this: Context, assert) {
     assert.rejects(
       this.service.fetchById('metric', 'metric1', 'elideTwo'),
       /Type requested in ElideMetadataAdapter must be defined as a query in the gql\/metadata-queries.js file/,
@@ -259,7 +259,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     );
   });
 
-  test('fetchById - fili', async function(this: Context, assert) {
+  test('fetchById - fili', async function (this: Context, assert) {
     const metric = await this.service.fetchById('metric', 'revenue', 'bardTwo');
     assert.ok(
       metric instanceof MetricMetadataModel,
@@ -278,7 +278,7 @@ module('Unit | Service | navi-metadata', function(hooks) {
     assert.equal(columnFunction, undefined, '`getById returns `undefined` if a model `id` cannot be found');
   });
 
-  test('findById', async function(this: Context, assert) {
+  test('findById', async function (this: Context, assert) {
     assert.equal(this.service.loadedDataSources.size, 0, 'no data sources are initially loaded');
 
     const metric1 = await this.service.findById('metric', 'revenue', 'bardTwo');

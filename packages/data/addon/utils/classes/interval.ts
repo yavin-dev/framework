@@ -117,7 +117,7 @@ export default class Interval {
     // - end as duration not currently supported
     return {
       start,
-      end
+      end,
     };
   }
 
@@ -147,7 +147,7 @@ export default class Interval {
 
     return {
       start,
-      end
+      end,
     };
   }
 
@@ -184,7 +184,7 @@ export default class Interval {
   asStrings(momentFormat?: string): SerializedWithEnd<string> {
     return {
       start: Interval._stringFromProperty(this._start, momentFormat),
-      end: Interval._stringFromProperty(this._end, momentFormat)
+      end: Interval._stringFromProperty(this._end, momentFormat),
     };
   }
 

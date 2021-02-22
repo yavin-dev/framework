@@ -14,15 +14,15 @@ const TEMPLATE = hbs`<ReportViewOverlay
   @runReport={{this.runReport}}
 />`;
 
-module('Integration | Component | report-view-overlay', function(hooks) {
+module('Integration | Component | report-view-overlay', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.isVisible = false;
     this.runReport = () => undefined;
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     assert.expect(5);
 
     this.runReport = () => assert.ok(true, 'Called runReport');
@@ -49,7 +49,7 @@ module('Integration | Component | report-view-overlay', function(hooks) {
     assert.dom('.report-view-overlay__content').exists('The dismiss is reset when the @isVisible prop is updated');
   });
 
-  test('it renders - hasBlock', async function(this: TestContext, assert) {
+  test('it renders - hasBlock', async function (this: TestContext, assert) {
     this.isVisible = false;
     this.runReport = () => undefined;
     await render(hbs`

@@ -6,14 +6,14 @@ import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 
 let Store: StoreService;
-module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
+module('Unit | Model | Metric Label Visualization Fragment', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Store = this.owner.lookup('service:store') as StoreService;
   });
 
-  test('isValidForRequest', function(assert) {
+  test('isValidForRequest', function (assert) {
     let request = buildTestRequest([{ cid: 'cid_rupees', field: 'rupees' }]);
     const metricLabel = Store.createRecord('all-the-fragments').metricLabel;
 
@@ -27,12 +27,12 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
     assert.notOk(metricLabel.isValidForRequest(request), 'config for metric label is invalid when metrics are changed');
   });
 
-  test('rebuildConfig', function(assert) {
+  test('rebuildConfig', function (assert) {
     let metricLabel = Store.createRecord('all-the-fragments').metricLabel;
 
     const request = buildTestRequest([
       { cid: 'cid_rupees', field: 'rupees' },
-      { cid: 'cid_hp', field: 'hp' }
+      { cid: 'cid_hp', field: 'hp' },
     ]);
     const config = metricLabel.rebuildConfig(request, { rows: [{ rupees: 999, hp: 0 }], meta: {} }).toJSON();
 
@@ -41,16 +41,16 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       {
         metadata: {
           format: '0,0.00',
-          metricCid: 'cid_rupees'
+          metricCid: 'cid_rupees',
         },
         type: 'metric-label',
-        version: 2
+        version: 2,
       },
       'config regenerated with metric updated'
     );
   });
 
-  test('rebuildConfig - no columns', function(assert) {
+  test('rebuildConfig - no columns', function (assert) {
     const metricLabel = Store.createRecord('all-the-fragments').metricLabel;
     const request = buildTestRequest([]);
     const config = metricLabel.rebuildConfig(request, { rows: [{ rupees: 999, hp: 0 }], meta: {} }).toJSON();
@@ -60,10 +60,10 @@ module('Unit | Model | Metric Label Visualization Fragment', function(hooks) {
       {
         metadata: {
           format: '0,0.00',
-          metricCid: undefined
+          metricCid: undefined,
         },
         type: 'metric-label',
-        version: 2
+        version: 2,
       },
       'config can be generated when no columns are present'
     );

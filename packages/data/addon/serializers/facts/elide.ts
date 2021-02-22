@@ -70,11 +70,11 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
       const responseStr = payload.asyncQuery.edges[0].node.result?.responseBody;
       if (responseStr) {
         const responseBody = JSON.parse(responseStr) as ExecutionResult;
-        errors = (responseBody.errors || []).map(e => ({ detail: e.message }));
+        errors = (responseBody.errors || []).map((e) => ({ detail: e.message }));
       }
     }
     if (isApolloError(payload)) {
-      errors = (payload.errors || []).map(e => ({ detail: e.message }));
+      errors = (payload.errors || []).map((e) => ({ detail: e.message }));
     }
     return new NaviFactError('Elide Request Failed', errors, payload);
   }
