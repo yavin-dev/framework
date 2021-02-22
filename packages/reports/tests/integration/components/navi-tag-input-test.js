@@ -87,7 +87,7 @@ module('Integration | Component | navi tag input/tag', function (hooks) {
     );
 
     // Test tag removal
-    await click(findAll('.tag__remove')[2]);
+    await click(findAll('.navi-tag-input__tag-remove')[2]);
   });
 
   test('custom tag component', async function (assert) {
@@ -107,7 +107,7 @@ module('Integration | Component | navi tag input/tag', function (hooks) {
         @tags={{this.tags}}
         @tagComponent='my-wacky-tag'
         as |divineBeast|
-      > 
+      >
         {{divineBeast}}
       </NaviTagInput>
     `);
@@ -120,6 +120,8 @@ module('Integration | Component | navi tag input/tag', function (hooks) {
       'Custom tag component can be given to add new behavior'
     );
 
-    assert.dom('.tag__remove').doesNotExist('Elements from the default component are not required in a custom tag');
+    assert
+      .dom('.navi-tag-input__tag-remove')
+      .doesNotExist('Elements from the default component are not required in a custom tag');
   });
 });

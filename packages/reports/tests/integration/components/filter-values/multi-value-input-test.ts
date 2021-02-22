@@ -12,11 +12,11 @@ import MultiValueInput from 'navi-reports/components/filter-values/multi-value-i
 type ComponentArgs = MultiValueInput['args'];
 interface TestContext extends Context, ComponentArgs {}
 
-module('Integration | Component | filter values/multi value input', function(hooks) {
+module('Integration | Component | filter values/multi value input', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.filter = fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', ['10']);
     this.onUpdateFilter = () => null;
@@ -30,7 +30,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
     `);
   });
 
-  test('it renders', function(this: TestContext, assert) {
+  test('it renders', function (this: TestContext, assert) {
     assert
       .dom('.tag')
       .hasText(
@@ -39,7 +39,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
       );
   });
 
-  test('collapsed', function(this: TestContext, assert) {
+  test('collapsed', function (this: TestContext, assert) {
     assert.expect(2);
 
     this.set('isCollapsed', true);
@@ -48,7 +48,7 @@ module('Integration | Component | filter values/multi value input', function(hoo
     assert.dom().hasText('10', 'Selected values are rendered correctly when collapsed');
   });
 
-  test('changing values', async function(this: TestContext, assert) {
+  test('changing values', async function (this: TestContext, assert) {
     assert.expect(3);
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
       assert.deepEqual(changeSet, { values: ['10', '11'] }, 'User inputted values are given to update action');
@@ -68,10 +68,10 @@ module('Integration | Component | filter values/multi value input', function(hoo
       assert.deepEqual(changeSet, { values: ['11', '12'] }, 'Removing a tag updates the filter values');
     });
 
-    await click('.tag__remove');
+    await click('.navi-tag-input__tag-remove');
   });
 
-  test('error state', function(this: TestContext, assert) {
+  test('error state', function (this: TestContext, assert) {
     assert.expect(3);
 
     assert.dom('filter-values--multi-value-input--error').isNotVisible('The input should not have error state');

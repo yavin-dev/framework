@@ -56,6 +56,6 @@ module('Integration | Component | navi email input', function (hooks) {
 
     await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
 
-    await click('.tag__remove');
+    await click('.navi-tag-input__tag-remove');
   });
 });
