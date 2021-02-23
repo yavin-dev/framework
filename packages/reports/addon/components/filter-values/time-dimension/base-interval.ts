@@ -4,12 +4,10 @@
  */
 import { computed } from '@ember/object';
 import { Moment } from 'moment';
-import { getPeriodForGrain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 //@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import BaseTimeDimensionFilter from './base';
-import moment from 'moment';
 
 export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   /**
@@ -20,11 +18,7 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
     const { values } = this.args.filter;
     let [start, end] = values || [];
     if (start && end) {
-      const endMoment = moment.utc(end);
-      if (endMoment.isValid()) {
-        end = endMoment.add(1, getPeriodForGrain(this.grain)).toISOString();
-      }
-      return Interval.parseFromStrings(start, end);
+      return Interval.parseInclusive(start, end, this.grain);
     }
     return undefined;
   }
@@ -35,7 +29,7 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   @computed('interval', 'grain')
   get startDate(): Moment | undefined {
     const { interval, grain } = this;
-    return interval?.asMomentsForTimePeriod(grain).start;
+    return interval?.asMomentsInclusive(grain).start;
   }
 
   /**
@@ -53,11 +47,7 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   @computed('interval', 'grain')
   get endDate() {
     const { interval, grain } = this;
-    if (interval) {
-      let { end } = interval.asMomentsForTimePeriod(grain);
-      return end.subtract(1, getPeriodForGrain(grain));
-    }
-    return undefined;
+    return interval?.asMomentsInclusive(grain).end;
   }
 
   /**

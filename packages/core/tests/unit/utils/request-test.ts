@@ -409,7 +409,7 @@ module('Unit | Utils | Request', function (hooks) {
     );
   });
 
-  test('normalize v1 to v2 - inclusive end date', function(assert) {
+  test('normalize v1 to v2 - inclusive end date', function (assert) {
     assert.expect(5);
 
     request.logicalTable.timeGrain = 'day';
@@ -423,8 +423,8 @@ module('Unit | Utils | Request', function (hooks) {
         operator: 'bet',
         values: ['2021-01-01T00:00:00.000Z', '2021-01-02T00:00:00.000Z'],
         parameters: {
-          grain: 'day'
-        }
+          grain: 'day',
+        },
       },
       'day timegrain filters are moved to inclusive end date'
     );
@@ -440,8 +440,8 @@ module('Unit | Utils | Request', function (hooks) {
         operator: 'bet',
         values: ['2021-02-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
         parameters: {
-          grain: 'isoWeek'
-        }
+          grain: 'isoWeek',
+        },
       },
       'week (isoWeek) timegrain filters are moved to inclusive end date'
     );
@@ -457,8 +457,8 @@ module('Unit | Utils | Request', function (hooks) {
         operator: 'bet',
         values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
         parameters: {
-          grain: 'month'
-        }
+          grain: 'month',
+        },
       },
       'month timegrain filters are moved to inclusive end date'
     );
@@ -474,8 +474,8 @@ module('Unit | Utils | Request', function (hooks) {
         operator: 'bet',
         values: ['2021-01-01T00:00:00.000Z', '2021-01-01T00:00:00.000Z'],
         parameters: {
-          grain: 'quarter'
-        }
+          grain: 'quarter',
+        },
       },
       'quarter timegrain filters are moved to inclusive end date'
     );
@@ -491,8 +491,8 @@ module('Unit | Utils | Request', function (hooks) {
         operator: 'bet',
         values: ['2021-01-01T00:00:00.000Z', '2021-01-01T00:00:00.000Z'],
         parameters: {
-          grain: 'year'
-        }
+          grain: 'year',
+        },
       },
       'year timegrain filters are moved to inclusive end date'
     );

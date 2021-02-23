@@ -46,7 +46,7 @@ export default class FiliConsumer extends ActionConsumer {
             .subtract(1, getPeriodForGrain(newGrain))
             .toISOString();
         } else {
-          const interval = Interval.parseFromStrings(start, end).asMomentsForTimePeriod(newGrain);
+          const interval = Interval.parseInclusive(start, end, oldGrain).asMomentsInclusive(newGrain);
           start = interval.start.toISOString();
           end = interval.end.toISOString();
         }
@@ -56,7 +56,7 @@ export default class FiliConsumer extends ActionConsumer {
 
     const changeset = {
       parameters: { ...dateTimeFilter.parameters, grain: newGrain },
-      ...(values ? { values } : {})
+      ...(values ? { values } : {}),
     };
     this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
   }
@@ -77,6 +77,7 @@ export default class FiliConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
       const { dateTimeFilter } = request;
+      debugger;
 
       const newGrain = changeset.parameters?.grain;
       // the grain was updated but no values were specified

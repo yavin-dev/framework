@@ -190,7 +190,7 @@ export default function (
         400,
         {},
         {
-          description: `Date time cannot have zero length intervals. ${start}/${end}.`
+          description: `Date time cannot have zero length intervals. ${start}/${end}.`,
         }
       );
     }

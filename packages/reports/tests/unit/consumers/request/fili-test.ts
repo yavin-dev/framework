@@ -80,9 +80,11 @@ module('Unit | Consumer | request fili', function (hooks) {
       'When the filter grain is updated, another request to update the filter values is fired off'
     );
 
+    const newValues = ['2020-12-28T00:00:00.000Z', '2021-02-22T00:00:00.000Z'];
+    request.dateTimeFilter!.values = newValues;
     assert.deepEqual(
       dispatchedActionArgs,
-      [request.dateTimeFilter, { values: ['2020-12-28T00:00:00.000Z', '2021-02-01T00:00:00.000Z'] }],
+      [request.dateTimeFilter, { values: newValues }],
       'UPDATE_FILTER is dispatched with the updated values for the filter'
     );
 
@@ -93,7 +95,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     request.dateTimeFilter!.parameters.grain = 'day';
 
     consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, request.dateTimeFilter, {
-      parameters: { grain: 'isoWeek' }
+      parameters: { grain: 'isoWeek' },
     });
     assert.deepEqual(
       dispatchedActions,
@@ -405,7 +407,7 @@ module('Unit | Consumer | request fili', function (hooks) {
       dispatchedActionArgs,
       [
         request.dateTimeFilter,
-        { parameters: { grain: 'hour' }, values: ['2021-01-01T00:00:00.000Z', '2021-02-28T23:00:00.000Z'] }
+        { parameters: { grain: 'hour' }, values: ['2021-01-01T00:00:00.000Z', '2021-02-28T23:00:00.000Z'] },
       ],
       'UPDATE_FILTER is dispatched with the lowest grain for the date time'
     );

@@ -8,7 +8,7 @@ import TimeDimensionFilterBuilder, { valuesForOperator } from 'navi-reports/comp
 import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { Grain } from 'navi-data/utils/date';
 
 let Request: RequestFragment;
 module('Unit | Component | filter-builders/time-dimension', function (hooks) {
@@ -159,9 +159,9 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     );
 
     const intervalFor = (amount: string, grain: Grain): [string, string] => {
-      const { start, end } = Interval.parseFromStrings(amount, 'current').asMomentsForTimePeriod(grain);
+      const { start, end } = Interval.parseFromStrings(amount, 'current').asMomentsInclusive(grain);
       // subtract 1 to store filter values as inclusive
-      return [start.toISOString(), end.subtract(1, getPeriodForGrain(grain)).toISOString()];
+      return [start.toISOString(), end.toISOString()];
     };
     // 'inPast' tests
     filter.values = intervalFor('P4D', 'day');
@@ -245,8 +245,8 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     );
 
     const currentInterval = (dateTimePeriod: Grain) => {
-      const { start, end } = Interval.parseFromStrings('current', 'next').asMomentsForTimePeriod(dateTimePeriod);
-      return [start.toISOString(), end.subtract(1, getPeriodForGrain(dateTimePeriod)).toISOString()];
+      const { start, end } = Interval.parseFromStrings('current', 'next').asMomentsInclusive(dateTimePeriod);
+      return [start.toISOString(), end.toISOString()];
     };
     // 'in' tests
 
@@ -290,11 +290,12 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       'in translates P1D lookback to concrete'
     );
 
+    debugger;
     filter.values = ['P1W', '2018-12-31'];
     filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-31T00:00:00.000Z', '2018-12-31T00:00:00.000Z'],
+      ['2018-12-31T00:00:00.000Z', '2019-01-06T00:00:00.000Z'],
       'in translates P1W lookback to concrete'
     );
 
@@ -302,7 +303,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-31T00:00:00.000Z'],
       'in translates P1M lookback to concrete'
     );
 
@@ -310,7 +311,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
     filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-12-31T00:00:00.000Z'],
       'in translates P1Y lookback to concrete'
     );
 

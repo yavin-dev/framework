@@ -64,18 +64,10 @@ export function valuesForOperator(
   newOperator?: InternalOperatorType
 ): TimeFilterValues {
   newOperator = newOperator || internalOperatorForValues(filter);
-  const filterPeriod = getPeriodForGrain(filter.parameters.grain as Grain);
   const [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
 
-  let end = endStr;
-  if (moment.utc(endStr).isValid()) {
-    end = moment
-      .utc(endStr)
-      .add(1, filterPeriod)
-      .toISOString();
-  }
-
-  const interval = Interval.parseFromStrings(startStr, end);
+  const filterGrain = filter.parameters.grain as Grain;
+  const interval = Interval.parseInclusive(startStr, endStr, filterGrain);
 
   if (newOperator === OPERATORS.current) {
     return ['current', 'next'];
@@ -98,14 +90,14 @@ export function valuesForOperator(
     const grainLabel = intervalPeriodForGrain(grain)[0].toUpperCase();
     return [`P${intervalValue}${grainLabel}`, 'current'];
   } else if (newOperator === OPERATORS.since) {
-    const { start } = interval.asMomentsForTimePeriod(grain);
+    const { start } = interval.asMomentsInclusive(grain);
     return [start.toISOString()];
   } else if (newOperator === OPERATORS.before) {
-    const { end } = interval.asMomentsForTimePeriod(grain);
+    const { end } = interval.asMomentsInclusive(grain);
     return [end.toISOString()];
   } else if (newOperator === OPERATORS.dateRange) {
-    const { start, end } = interval.asMomentsForTimePeriod(grain);
-    return [start.toISOString(), end.subtract(1, filterPeriod).toISOString()];
+    const { start, end } = interval.asMomentsInclusive(grain);
+    return [start.toISOString(), end.toISOString()];
   }
   warn(`No operator was found for the values '${filter.values.join(',')}'`, {
     id: 'time-dimension-filter-builder-no-operator',

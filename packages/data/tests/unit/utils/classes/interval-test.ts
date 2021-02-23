@@ -1,7 +1,7 @@
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
-import { getPeriodForGrain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';
@@ -184,6 +184,58 @@ module('Unit | Utils | Interval Class', function () {
     moments = new Interval(start, end).asMomentsForTimePeriod('isoWeek', false);
 
     assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
+  });
+
+  test('asMomentsInclusive', function (assert) {
+    assert.expect(8);
+
+    const toInclusive = (startStr: string, endStr: string, grain: Grain) => {
+      const { start, end } = Interval.parseFromStrings(startStr, endStr).asMomentsInclusive(grain);
+      return [start.toISOString(), end.toISOString()];
+    };
+    const startStr = '2014-01-01';
+    const endStr = '2015-01-01';
+    const startValue = `${startStr}T00:00:00.000Z`;
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'second'),
+      [startValue, '2014-12-31T23:59:59.000Z'],
+      'End moment is inclusive of the second'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'minute'),
+      [startValue, '2014-12-31T23:59:00.000Z'],
+      'End moment is inclusive of the minute'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'hour'),
+      [startValue, '2014-12-31T23:00:00.000Z'],
+      'End moment is inclusive of the hour'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'day'),
+      [startValue, '2014-12-31T00:00:00.000Z'],
+      'End moment is inclusive of the day'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'isoWeek'),
+      ['2013-12-30T00:00:00.000Z', '2014-12-22T00:00:00.000Z'],
+      'End moment is inclusive of the isoWeek and aligned to isoWeek'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'month'),
+      [startValue, '2014-12-01T00:00:00.000Z'],
+      'End moment is inclusive of the month'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'quarter'),
+      [startValue, '2014-10-01T00:00:00.000Z'],
+      'End moment is inclusive of the quarter'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'year'),
+      [startValue, '2014-01-01T00:00:00.000Z'],
+      'End moment is inclusive of the year'
+    );
   });
 
   test('makeEndExclusiveFor', function (assert) {
