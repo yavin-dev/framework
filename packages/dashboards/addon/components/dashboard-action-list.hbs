@@ -48,7 +48,17 @@
             @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
             @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
             @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+            as |onOpen|
           >
+            <button 
+              type="button"
+              id={{concat "navi-dashboard-action-schedule-" @index}}
+              disabled={{not dashboard.validations.isTruelyValid}}
+              class="schedule schedule-action__button"
+              {{on "click" onOpen}}
+            >
+              <NaviIcon @icon="clock-o" class="schedule" />
+            </button>
             <EmberTooltip @targetId="navi-dashboard-action-schedule-{{@index}}">
               {{if dashboard.validations.isTruelyValid "Schedule the dashboard" "Validate dashboard to enable scheduling"}}
             </EmberTooltip>

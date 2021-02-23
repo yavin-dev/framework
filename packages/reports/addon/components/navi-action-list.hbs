@@ -62,14 +62,22 @@
     {{#if (feature-flag "enableScheduleReports")}}
       <li class="action">
         <CommonActions::Schedule
-          id={{concat "navi-report-action-schedule-" @index}}
-          class="navi-reports-index__report-control schedule {{unless @item.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
           @model={{@item}}
           @disabled={{not @item.request.validations.isTruelyValid}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
           @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
           @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+          as |onOpen|
         >
+          <button 
+            type="button"
+            id={{concat "navi-report-action-schedule-" @index}}
+            disabled={{not @item.request.validations.isTruelyValid}}
+            class="schedule-action__button navi-reports-index__report-control schedule {{unless @item.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
+            {{on "click" onOpen}}
+          >
+            <NaviIcon @icon="clock-o" />
+          </button>
           <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-schedule-" @index}}>
             {{if @item.request.validations.isTruelyValid "Schedule the report" "Validate report to enable scheduling"}}
           </EmberTooltip>

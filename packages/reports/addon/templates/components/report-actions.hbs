@@ -97,8 +97,17 @@
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
         @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+        as |onOpen|
       >
-        Schedule
+        <button 
+          type="button"
+          class="schedule-action__button button is-text is-medium"
+          disabled={{not @model.request.validations.isTruelyValid}}
+          {{on "click" onOpen}}
+        >
+          <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
+          <span>Schedule</span>
+        </button>
       </CommonActions::Schedule>
       <EmberTooltip @text="Schedule a report run" />
     </li>

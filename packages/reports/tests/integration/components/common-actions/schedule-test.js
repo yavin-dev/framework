@@ -29,7 +29,18 @@ const TEMPLATE = hbs`
   @onRevert={{this.onRevertAction}}
   @onDelete={{this.onDeleteAction}}
   @disabled={{this.isDisabled}}
-/>`;
+  as |toggleModal|
+>
+  <button
+    type="button"
+    class="schedule-action__button"
+    disabled={{this.isDisabled}}
+    {{on "click" toggleModal}}
+  >
+    <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
+  </button> 
+</CommonActions::Schedule>
+`;
 
 module('Integration | Component | common actions/schedule', function (hooks) {
   setupRenderingTest(hooks);
@@ -66,22 +77,13 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('it renders', async function (assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     await render(TEMPLATE);
 
     assert.ok($('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
 
-    assert.ok($('.schedule-action__icon').is(':visible'), 'A schedule icon is rendered in the component');
-
-    // Template block usage:
-    await render(hbs`<CommonActions::Schedule @onSave={{this.onSaveAction}} @onRevert={{this.onRevertAction}} @onDelete={{this.onDeleteAction}}>
-      Schedule
-    </CommonActions::Schedule>`);
-
-    assert
-      .dom('.schedule-action__icon-label')
-      .hasText('Schedule', 'When used in block mode, the text `Schedule` is displayed');
+    assert.ok($('.navi-report__action-icon').is(':visible'), 'A schedule icon is rendered in the component');
   });
 
   test('schedule modal', async function (assert) {
@@ -93,19 +95,19 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    assert.ok($('.navi-modal').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
+    assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
     assert.equal(
-      $('.primary-header').text().trim(),
+      $('.schedule-modal__header--primary').text().trim(),
       'Schedule "Test Test"',
       'The primary header makes use of the modelName appropriately'
     );
 
     assert.deepEqual(
-      $('.schedule-modal__label')
+      $('.input-group label')
         .toArray()
         .map((el) => $(el).text().trim()),
-      ['Recipients', 'Frequency', 'Format', 'Only send if data is present'],
+      ['Recipients', 'Frequency', 'Format', 'Only send if data is present', ''],
       'Schedule Modal has all the expected sections'
     );
 
@@ -252,7 +254,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       'Delete button is shown when deliveryRule is present for current user'
     );
 
-    await click($('.btn-container button:contains(Delete)')[0]);
+    await click('.schedule-modal__delete-btn');
 
     await click('.delete__delete-btn');
   });

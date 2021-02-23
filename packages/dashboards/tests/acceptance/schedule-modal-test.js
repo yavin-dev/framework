@@ -13,9 +13,9 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .schedule .schedule-action__button');
+    await click('.schedule');
 
-    assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
 
     assert
       .dom('.schedule-modal__delete-btn')
@@ -55,11 +55,15 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await click('.schedule-modal__save-btn');
 
     assert
-      .dom('.success .notification-text')
+      .dom('.navi-notifications .alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'
       );
+
+    //Reopen the modal because it closed when saved
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    await click('.schedule');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -89,7 +93,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     // Click "Schedule"
     await click('.schedule-action__button');
 
-    assert.dom('.schedule-modal__header').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
 
     assert
       .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
@@ -103,14 +107,11 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await click('.schedule-modal__save-btn');
 
     assert
-      .dom('.success .notification-text')
+      .dom('.navi-notifications .alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'
       );
-
-    // Close the modal
-    await click('.schedule-modal__cancel-btn');
 
     // Reopen the modal
     await click('.schedule-action__button');

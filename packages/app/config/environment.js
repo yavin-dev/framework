@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'navi-app',
     environment,
@@ -15,8 +15,8 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
@@ -29,13 +29,14 @@ module.exports = function(environment) {
     navi: {
       dataEpoch: '1900-01-01',
       FEATURES: {
+        enableScheduleReports: true,
         enableDashboardFilters: true,
         exportFileTypes: [],
         enableTableEditing: true,
-        enableTotals: true
-      }
+        enableTotals: true,
+      },
     },
-    apollo: {}
+    apollo: {},
   };
 
   if (environment === 'development') {

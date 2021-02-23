@@ -1,9 +1,13 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
+* Copyright 2017, Yahoo Holdings Inc.
+* Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+*/
 
 @font-size-helper-text: 12px;
+
+.modal.is-active {
+  visibility: visible !important;
+}
 
 .schedule-action {
   &__icon,
@@ -13,59 +17,12 @@
   }
 }
 
-.schedule-modal {
-  &__btn-container {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  &__dropdown {
-    width: 200px;
-  }
-
-  &__must-have-data-toggle {
-    width: 35px;
-    margin: auto 0;
-    margin-right: 20px;
-  }
-
-  &__label {
-    color: @navi-gray;
-    font-family: inherit;
-    font-size: @font-size-base;
-    margin: 10px 0;
-  }
-
-  &__save-btn {
-    .navi-loading-message {
-      background-color: #6e52a2;
-      border: 0;
-      padding: 3px;
+.modal {
+  .alert {
+    .close {
+      position: relative !important;
+      right: 0px !important;
     }
-  }
-
-  &__section {
-    flex: 1;
-  }
-
-  &__section-group {
-    display: flex;
-    margin-top: 5px;
-  }
-
-  &__delete-btn {
-    margin-right: 0px;
-
-    button {
-      font-size: 14px;
-      padding: 0;
-    }
-  }
-
-  &__helper-text {
-    font-size: @font-size-helper-text;
-    margin-bottom: 1em;
-    vertical-align: top;
   }
 
   &__input--recipients {

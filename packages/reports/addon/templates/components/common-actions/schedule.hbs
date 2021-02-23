@@ -1,149 +1,132 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-
-<div ...attributes>
-  {{!-- Check if in need of disabling the button when the action should be disabled --}}
-  <button type="button" class="schedule-action__button" disabled={{@disabled}} {{on "click" (queue (toggle "showModal" this) this.onOpen)}}>
-    <NaviIcon @icon="clock-o" class="schedule-action__icon" />
-    {{#if hasBlock}}
-      <span class="schedule-action__icon-label">{{yield}}</span>
-    {{/if}}
-  </button>
-
-  <NaviModal
-    @isShown={{this.showModal}}
-    @onClose={{fn this.onRevert this.localDeliveryRule}}
-  >
-    <div class="schedule-modal__header navi-modal-header">
-      <h1 class="schedule-modal__header--primary primary-header">Schedule "{{capitalize @model.title}}"</h1>
-      {{#if (is-rejected this.deliveryRule)}}
-        <div class="schedule-modal__notification modal-notification alert failure">
-          <NaviIcon @icon="exclamation-circle" />
-          <div class="notification-text">Oops! An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</div>
-        </div>
-      {{else}}
-        {{#if this.notification}}
-          <div class="schedule-modal__notification modal-notification {{this.notification.classNames}}">
-            <div class="schedule-modal__notification-text notification-text ">{{this.notification.text}}</div>
-            <NaviIcon @icon="times" class="notification-remove-icon clickable" {{on "click" this.closeNotification}} />
-          </div>
-        {{else}}
-          <h5 class="schedule-modal__header--secondary secondary-header">Please provide delivery rules for your {{this.localDeliveryRule.deliveryType}}</h5>
+{{!-- Check if in need of disabling the button when the action should be disabled --}}
+{{yield (queue (toggle "showModal" this) this.onOpen)}}
+<DenaliModal
+  @isOpen={{this.showModal}}
+  @onClose={{queue this.closeModal (fn this.onRevert this.localDeliveryRule)}}
+  ...attributes as |Modal|
+>
+  <Modal.Content>
+    <h3 class="schedule-modal__header--primary primary-header m-b-10">Schedule "{{capitalize @model.title}}"</h3>
+    {{#if (is-rejected this.deliveryRule)}}
+        <DenaliAlert @style="danger" @onClose={{set this.notification undefined}} class="m-b-30" as |Alert|>
+          <Alert.Title>Error</Alert.Title>
+          <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
+        </DenaliAlert>
+    {{else}}
+        {{#if this.notification}}	
+          <DenaliAlert @style="danger" @onClose={{set this.notification undefined}} class="m-b-30" as |Alert|>
+            <Alert.Title>Error</Alert.Title>
+            <Alert.Context>{{this.notification.text}}</Alert.Context>
+          </DenaliAlert>
         {{/if}}
-      {{/if}}
-    </div>
+    {{/if}}
 
     {{#if (is-pending this.deliveryRule)}}
       <NaviLoader />
     {{else}}
-      <form class="schedule-modal__body navi-modal-body">
-        <fieldset class="{{unless this.isRuleValid "schedule-modal__recipients--invalid"}} schedule-modal__section">
-          <div class="schedule-modal__label">Recipients</div>
-          <NaviEmailInput
-            class="schedule-modal__input--recipients text-input"
-            @emails={{readonly this.localDeliveryRule.recipients}}
-            @onUpdateEmails={{this.updateRecipients}}
-            @isDisabled={{is-rejected this.deliveryRule}}
-          />
-          <div class="schedule-modal__helper-recipients">
-            Please enter valid email addresses separated by commas.
-          </div>
-        </fieldset>
-        <div class="schedule-modal__section-group">
-          <fieldset class="schedule-modal__section">
-            <div class="schedule-modal__label">Frequency</div>
-            <PowerSelect
-              @triggerClass="schedule-modal__frequency-trigger"
-              @options={{this.frequencies}}
-              @selected={{this.localDeliveryRule.frequency}}
-              @disabled={{is-rejected this.deliveryRule}}
-              @searchEnabled={{false}}
-              @onChange={{fn (mut this.localDeliveryRule.frequency)}}
-              as | frequency |
-            >
-              {{capitalize frequency}}
-            </PowerSelect>
-          </fieldset>
-          <fieldset class="schedule-modal__section">
-            <div class="schedule-modal__label">Format</div>
-            <PowerSelect
-              @triggerClass="schedule-modal__format-trigger"
-              @disabled={{lt this.formats.length 2}}
-              @options={{this.formats}}
-              @selected={{this.localDeliveryRule.format.type}}
-              @searchEnabled={{false}}
-              @onChange={{this.updateFormat}}
-              as | format |
-            >
-              {{format}}
-            </PowerSelect>
-          </fieldset>
+      <DenaliInputGroup
+        @label="Recipients"
+        @isStacked={{true}}
+        class="{{unless this.isRuleValid "schedule-modal__recipients--invalid"}} m-b-30"
+      >
+        <NaviEmailInput
+          class="schedule-modal__input--recipients w-full"
+          @emails={{readonly this.localDeliveryRule.recipients}}
+          @onUpdateEmails={{this.updateRecipients}}
+          @isDisabled={{is-rejected this.deliveryRule}}
+        />
+        <div class="schedule-modal__helper-recipients">
+          Please enter valid email addresses separated by commas.
         </div>
-        {{#if (feature-flag "enabledNotifyIfData")}}
-          <div class="schedule-modal__section-group">
-            <DenaliSwitch
-              class="schedule-modal__must-have-data-toggle"
-              @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}
-              @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}
-            />
-            <div class="schedule-modal__label">Only send if data is present</div>
-          </div>
-        {{/if}}
-        <div class="schedule-modal__btn-container btn-container">
-          <div class="button-group">
-            {{#if (is-rejected this.deliveryRule)}}
-              <button
-                class="schedule-modal__cancel-btn btn btn-primary"
-                disabled={{this.isSaving}}
-                type="button"
-                {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
-              > Cancel
-              </button>
-            {{else}}
-              <button
-                class="schedule-modal__save-btn btn btn-primary"
-                disabled={{this.disableSave}}
-                type="button"
-                {{on "click" (queue (toggle "isSaving" this) this.doSave)}}
-              >
-                {{#if this.isSaving}}
-                  <NaviLoadingMessage>
-                    Saving schedule
-                  </NaviLoadingMessage>
-                {{else}}
-                  {{#if this.localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
-                {{/if}}
-              </button>
-              <button
-                class="schedule-modal__cancel-btn btn btn-secondary"
-                disabled={{this.isSaving}}
-                type="button"
-                {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
-              >
-                {{#if this.localDeliveryRule.hasDirtyAttributes}}
-                  Cancel
-                {{else}}
-                  Close
-                {{/if}}
-              </button>
-            {{/if}}
-          </div>
-          <div class="button-group">
-            {{#unless this.localDeliveryRule.isNew}}
-              <CommonActions::Delete
-                class="schedule-modal__delete-btn btn btn-secondary"
-                @disabled={{this.isSaving}}
-                @model={{this.localDeliveryRule}}
-                @modelName="schedule"
-                @headerMsg={{concat "Delete schedule for " "\"" @model.title "\""}}
-                @warnMsg={{concat "Are you sure you want to delete the schedule for this" this.localDeliveryRule.deliveryType}}
-                @deleteAction={{queue this.doDelete this.closeModal}}
-              >
-                Delete
-              </CommonActions::Delete>
-            {{/unless}}
-          </div>
-        </div>
-      </form>
+      </DenaliInputGroup>
+      <DenaliInputGroup @label="Frequency" class="m-b-30">
+        <PowerSelect
+          class="flex-1"
+          @triggerClass="schedule-modal__frequency-trigger flex-1"
+          @options={{this.frequencies}}
+          @selected={{this.localDeliveryRule.frequency}}
+          @disabled={{is-rejected this.deliveryRule}}
+          @searchEnabled={{false}}
+          @onChange={{fn (mut this.localDeliveryRule.frequency)}}
+          @renderInPlace={{true}}
+          as | frequency |
+        >
+          {{capitalize frequency}}
+        </PowerSelect>
+      </DenaliInputGroup>
+      <DenaliInputGroup @label="Format" class="m-b-30">
+        <PowerSelect
+          class="flex-1"
+          @triggerClass="schedule-modal__format-trigger flex-1"
+          @disabled={{lt this.formats.length 2}}
+          @options={{this.formats}}
+          @selected={{this.localDeliveryRule.format.type}}
+          @searchEnabled={{false}}
+          @onChange={{this.updateFormat}}
+          @renderInPlace={{true}}
+          as | format |
+        >
+          {{format}}
+        </PowerSelect>
+      </DenaliInputGroup>
+      {{#if (feature-flag "enabledNotifyIfData")}}
+        <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
+          <DenaliSwitch
+            class="schedule-modal__must-have-data-toggle"
+            @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}
+            @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}/>
+        </DenaliInputGroup>
+      {{/if}}
+      {{#if (is-rejected this.deliveryRule)}}
+        <DenaliButton
+          class="schedule-modal__cancel-btn m-r-5"
+          @style="solid"
+          disabled={{this.isSaving}}
+          type="button"
+          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
+        > Cancel
+        </DenaliButton>
+      {{else}}
+        <DenaliButton
+          class="schedule-modal__save-btn m-r-5"
+          disabled={{this.disableSave}}
+          {{on "click" (queue (toggle "isSaving" this) this.doSave)}}
+        >
+          {{#if this.isSaving}}
+            <NaviLoadingMessage>
+              Saving schedule
+            </NaviLoadingMessage>
+          {{else}}
+            {{#if this.localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
+          {{/if}}
+        </DenaliButton>
+        <DenaliButton
+          class="schedule-modal__cancel-btn m-r-5"
+          disabled={{this.isSaving}}
+          type="button"
+          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
+        >
+          {{#if this.localDeliveryRule.hasDirtyAttributes}}
+            Cancel
+          {{else}}
+            Close
+          {{/if}}
+        </DenaliButton>
+      {{/if}}
+      {{#unless this.localDeliveryRule.isNew}}
+        <CommonActions::Delete
+          class="schedule-modal__delete-btn button is-danger"
+          @disabled={{this.isSaving}}
+          @model={{this.localDeliveryRule}}
+          @modelName="schedule"
+          @headerMsg={{concat "Delete schedule for " "\"" @model.title "\""}}
+          @warnMsg={{concat "Are you sure you want to delete the schedule for this" this.localDeliveryRule.deliveryType}}
+          @deleteAction={{queue this.doDelete this.closeModal}}
+        >
+          Delete
+        </CommonActions::Delete>
+      {{/unless}}
     {{/if}}
-  </NaviModal>
-</div>
+  </Modal.Content>
+</DenaliModal>

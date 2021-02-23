@@ -57,6 +57,11 @@ export default class ScheduleActionComponent extends Component {
   localDeliveryRule = undefined;
 
   /**
+   * @property {DS.Model} notification - Model that stores the values of the modal's fields
+   */
+  notification = undefined;
+
+  /**
    * @property {Array} frequencies
    */
   @computed
@@ -137,15 +142,16 @@ export default class ScheduleActionComponent extends Component {
 
       return savePromise
         .then(() => {
-          set(this, 'notification', {
-            text: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
-            classNames: 'alert success',
+          this.naviNotifications.add({
+            title: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
+            style: 'success',
+            timeout: 'short',
           });
+          this.closeModal();
         })
         .catch(({ errors }) => {
           set(this, 'notification', {
             text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
-            classNames: 'alert failure',
           });
         })
         .finally(() => {
@@ -181,11 +187,8 @@ export default class ScheduleActionComponent extends Component {
         });
       })
       .catch(() => {
-        //Add Page notification
-        this.naviNotifications.add({
-          title: `An error occurred while removing the delivery schedule`,
-          style: 'danger',
-          timeout: 'medium',
+        set(this, 'notification', {
+          text: `An error occurred while removing the delivery schedule`,
         });
       });
   }
