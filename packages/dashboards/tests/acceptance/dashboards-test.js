@@ -67,9 +67,9 @@ module('Acceptance | Dashboards', function(hooks) {
     visit('/dashboards/1');
 
     //navigate to index route before widgets finish loading
-    await waitFor('.navi-dashboard__breadcrumb-link', { timeout: 40000 });
+    await waitFor('.dashboard-header__breadcrumb-link', { timeout: 40000 });
     assert.dom('.navi-widget__content.loader-container').exists({ count: 3 });
-    await click('.navi-dashboard__breadcrumb-link');
+    await click('.dashboard-header__breadcrumb-link');
     //navigate to `Dashboard 2`
     await click('.navi-collection__row1 td:first-child a');
 
@@ -154,7 +154,7 @@ module('Acceptance | Dashboards', function(hooks) {
       'Looks like this dashboard has no widgets. Go ahead and add a widget now?'
     );
 
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     assert.dom('.add-widget__modal').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
@@ -179,7 +179,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await click('.dashboards-index__new-btn');
 
     assert
-      .dom('.navi-dashboard .page-title')
+      .dom('.dashboard-header__page-title')
       .hasText('Untitled Dashboard', 'Adding new dashboard in dashboards route transitions to new dasboard');
 
     await visit('/dashboards');
@@ -199,7 +199,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await visit('/dashboards/4');
 
     assert
-      .dom('.navi-dashboard__add-widget-btn')
+      .dom('.dashboard-header__add-widget-btn')
       .isNotVisible('The `Add Widget` button is not visible when user cannot edit the dashboard');
 
     await visit('/dashboards/1');
@@ -211,10 +211,10 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     assert
-      .dom('.navi-dashboard__add-widget-btn')
+      .dom('.dashboard-header__add-widget-btn')
       .isVisible('The `Add Widget` button is visible when user can edit the dashboard');
 
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     assert
       .dom('.add-widget__new-btn')
       .hasAttribute(
@@ -289,7 +289,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Favorite dashboard 2
     await visit('/dashboards/2');
-    await click('.navi-dashboard__fav-icon');
+    await click('.dashboard-header__fav-icon');
 
     // Filter by favorites
     await visit('/dashboards');
@@ -301,7 +301,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // Unfavorite dashboard 1
     await click($('tbody tr td a:contains(Tumblr Goals Dashboard)')[0]);
-    await click('.navi-dashboard__fav-icon');
+    await click('.dashboard-header__fav-icon');
     await visit('/dashboards');
     await selectChoose('.navi-collection__filter-trigger', 'Favorites');
 
@@ -318,7 +318,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     /* == mark dashboard as favorite == */
     await visit('/dashboards/3');
-    await click('.navi-dashboard__fav-icon');
+    await click('.dashboard-header__fav-icon');
 
     /* == list favorites in list view == */
     await visit('/dashboards');
@@ -336,16 +336,16 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/2');
 
-    originalDashboardTitle = find('.page-title .clickable').textContent.trim();
+    originalDashboardTitle = find('.dashboard-header__page-title .clickable').textContent.trim();
 
     originalWidgetTitles = findAll('.navi-widget__title').map(el => el.textContent.trim());
 
-    await click('.navi-icon__copy');
+    await click('.dashboard-header__clone-btn');
 
     assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     assert
-      .dom('.page-title .clickable')
+      .dom('.dashboard-header__page-title .clickable')
       .hasText(
         `Copy of ${originalDashboardTitle}`,
         'Cloned dashboard has the same title as Original dashboard with `copy of` prefix title'
@@ -365,7 +365,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/2');
 
-    click('.navi-icon__copy').then(() => {
+    click('.dashboard-header__clone-btn').then(() => {
       assert.equal(currentURL(), '/dashboards', 'Transition to `dashboards` route on failed cloning action');
     });
   });
@@ -384,7 +384,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create new widget
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
     // Fill out request
@@ -418,7 +418,7 @@ module('Acceptance | Dashboards', function(hooks) {
     );
 
     // Create another new widget
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
     // Fill out request
@@ -476,12 +476,12 @@ module('Acceptance | Dashboards', function(hooks) {
       return false;
     };
 
-    await click('.navi-dashboard__breadcrumb-link');
+    await click('.dashboard-header__breadcrumb-link');
 
     assert.equal(currentURL(), '/dashboards/1/view', 'We are still on the dashboard route');
 
     await click('.navi-dashboard__save-button');
-    await click('.navi-dashboard__breadcrumb-link');
+    await click('.dashboard-header__breadcrumb-link');
 
     assert.equal(currentURL(), '/dashboards', 'successfully navigated away with no unsaved changes');
 
@@ -552,7 +552,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await blur('.editable-label__input');
 
     assert
-      .dom('.navi-dashboard .page-title')
+      .dom('.dashboard-header__page-title')
       .hasText('A new title', 'New Dashboard title is persisted with value `A new title` ');
 
     //Not Editor
@@ -600,7 +600,7 @@ module('Acceptance | Dashboards', function(hooks) {
     await fillIn('.editable-label__input', 'ABCD');
     await blur('.editable-label__input');
 
-    assert.dom('.navi-dashboard__edit-title').hasText('ABCD', 'Has updated text');
+    assert.dom('.dashboard-header__edit-title').hasText('ABCD', 'Has updated text');
 
     assert.dom('.navi-dashboard__revert-button').isVisible('Revert button appears after dashboard change');
 
@@ -608,7 +608,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     assert.dom('.navi-dashboard__revert-button').isNotVisible('Revert button is not visible after reverting');
 
-    assert.dom('.navi-dashboard__edit-title').hasText('Tumblr Goals Dashboard', 'Has original text');
+    assert.dom('.dashboard-header__edit-title').hasText('Tumblr Goals Dashboard', 'Has original text');
 
     assert.dom('.navi-dashboard__save-button').isNotVisible('Save should not be visible after revert');
 
@@ -623,11 +623,11 @@ module('Acceptance | Dashboards', function(hooks) {
       return new Response(500);
     });
 
-    assert.dom('.navi-dashboard__edit-title').hasText('EFGH', 'Has updated text before save');
+    assert.dom('.dashboard-header__edit-title').hasText('EFGH', 'Has updated text before save');
 
     await click('.navi-dashboard__save-button');
 
-    assert.dom('.navi-dashboard__edit-title').hasText('EFGH', 'Keeps updated text after save');
+    assert.dom('.dashboard-header__edit-title').hasText('EFGH', 'Keeps updated text after save');
   });
 
   test('modifying dashboard filters, navigating away, and coming back to modifications', async function(assert) {
@@ -660,7 +660,7 @@ module('Acceptance | Dashboards', function(hooks) {
 
     // navigate away
     window.confirm = () => true;
-    await click('.navi-dashboard__breadcrumb-link');
+    await click('.dashboard-header__breadcrumb-link');
 
     dataRequests = [];
 
@@ -688,12 +688,12 @@ module('Acceptance | Dashboards', function(hooks) {
 
     await visit('/dashboards/1');
 
-    await click('.navi-icon__copy');
+    await click('.dashboard-header__clone-btn');
 
     assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
     // Fill out request

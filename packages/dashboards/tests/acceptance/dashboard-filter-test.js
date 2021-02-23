@@ -197,7 +197,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     assert.dom('.navi-dashboard__save-dialogue').isVisible('The dashboard is in a dirty state');
 
     //Go back to dashboards index view and return to dashboard still in dirty state
-    await click('.navi-dashboard__breadcrumb-link');
+    await click('.dashboard-header__breadcrumb-link');
     assert.equal(currentURL(), '/dashboards', 'Routed back to dashboards route with no active query params');
     assert.verifySteps(['confirm called']);
 

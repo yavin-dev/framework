@@ -52,14 +52,14 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     assert.expect(8);
 
     await visit('/dashboards/new');
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await selectChoose('.add-widget__report-select-trigger', 'Report 12');
     await click('.add-widget__add-btn');
 
     assert.dom('.navi-widget__header').exists({ count: 1 }, 'One widget loaded');
     assert.dom('.c3-chart-component').exists({ count: 1 }, 'One visualization loaded');
 
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
     await selectChoose('.navi-table-select__trigger', 'Inventory');

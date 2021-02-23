@@ -66,7 +66,9 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onAddFilter={{this.onAddFilter}}
     />`);
 
-    assert.dom('.page-title').hasText(this.dashboardModel.title, 'Component renders header with dashboard title');
+    assert
+      .dom('.dashboard-header__page-title')
+      .hasText(this.dashboardModel.title, 'Component renders header with dashboard title');
 
     assert
       .dom('.grid-stack .grid-stack-item')
@@ -119,7 +121,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onAddFilter={{this.onAddFilter}}
     />`);
 
-    assert.dom('.export').isVisible('Dashboard export button should be visible');
+    assert.dom('.dashboard-header__export-btn').isVisible('Dashboard export button should be visible');
 
     config.navi.FEATURES.enableDashboardExport = false;
     await render(hbs`<NaviDashboard
@@ -128,7 +130,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.export').isNotVisible('Dashboard export button should not be visible');
+    assert.dom('.dashboard-header__export-btn').isNotVisible('Dashboard export button should not be visible');
 
     config.navi.FEATURES.enableDashboardExport = originalFeatureFlag;
   });
@@ -144,7 +146,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.schedule').isVisible('Dashboard schedule button should be visible');
+    assert.dom('.dashboard-header__schedule-btn').isVisible('Dashboard schedule button should be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = false;
     await render(hbs`<NaviDashboard
@@ -153,7 +155,7 @@ module('Integration | Component | navi dashboard', function(hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.schedule').isNotVisible('Dashboard schedule button should not be visible');
+    assert.dom('.dashboard-header__schedule-btn').isNotVisible('Dashboard schedule button should not be visible');
 
     config.navi.FEATURES.enableScheduleDashboards = originalFeatureFlag;
   });

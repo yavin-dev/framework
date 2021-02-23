@@ -40,7 +40,7 @@
           <LinkTo
             @route="dashboards.dashboard.clone"
             @model={{@dashboard.id}}
-            class="clone button is-text is-medium"
+            class="dashboard-header__clone-btn button is-text is-medium"
           >
             <NaviIcon @icon="copy" class="m-r-6" />
             Clone
@@ -49,7 +49,7 @@
           {{#if (feature-flag "enableDashboardExport")}}
             {{!-- Export action enabled if the dashboard is valid --}}
             <DashboardActions::Export
-              class="export button is-text is-medium {{unless @dashboard.validations.isTruelyValid "disabled"}}"
+              class="dashboard-header__export-btn button is-text is-medium {{unless @dashboard.validations.isTruelyValid "disabled"}}"
               @dashboard={{@dashboard}}
               @disabled={{not @dashboard.validations.isTruelyValid}}
             >
@@ -60,7 +60,7 @@
 
           {{!-- Share action enables when dashboard is valid --}}
           <CommonActions::Share
-            class="share button is-text is-medium"
+            class="dashboard-header__share-btn button is-text is-medium"
             @pageTitle={{@dashboard.title}}
             @disabled={{not @dashboard.validations.isTruelyValid}}
           >
@@ -73,7 +73,7 @@
             {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
             {{#if (feature-flag "enableScheduleDashboards")}}
               <DashboardActions::Schedule
-                class="schedule button is-text is-medium"
+                class="dashboard-header__schedule-btn button is-text is-medium"
                 @model={{@dashboard}}
                 @disabled={{not @dashboard.validations.isTruelyValid}}
                 @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
@@ -85,7 +85,7 @@
             {{/if}}
 
             <CommonActions::Delete
-              class="delete button is-text is-medium"
+              class="dashboard-header__delete-btn button is-text is-medium"
               @model={{@dashboard}}
               @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
               @deleteAction={{@deleteAction}}
@@ -98,7 +98,6 @@
           {{!-- Add Widget visible when user has edit permissions --}}
           {{#if @dashboard.canUserEdit}}
             <DashboardActions::AddWidget
-              class="add-widget primary action"
               @reports={{get (get-user) "reports"}}
               @dashboard={{@dashboard}}
               @onSelectReport={{@addWidgetToDashboard}}
@@ -107,7 +106,7 @@
               <DenaliButton
                 @size="medium"
                 {{on "click" toggleModal}}
-                class="m-x-10"
+                class="dashboard-header__add-widget-btn m-x-10"
               >
                 Add Widget
               </DenaliButton>
@@ -121,9 +120,9 @@
       {{#if (feature-flag "enableDashboardFilters")}}
         <DashboardFilters
           @dashboard={{@dashboard}}
-          @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
-          @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
-          @onAddFilter={{fn @onAddFilter @dashboard}}
+          @onUpdateFilter={{@onUpdateFilter}}
+          @onRemoveFilter={{@onRemoveFilter}}
+          @onAddFilter={{@onAddFilter}}
         />
       {{/if}}
     </div>
