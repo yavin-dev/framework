@@ -38,7 +38,7 @@
         <DenaliIcon
           @size="small"
           @icon="filter-add"
-          class={{concat (if (get-shallow this.dimensionsFiltered item.id) "grouped-list__filter--active ") "grouped-list__filter"}}
+          class="{{if (get-shallow this.dimensionsFiltered item.id) "grouped-list__filter--active"}} grouped-list__filter"
           {{on "click" (fn @onAddDimensionFilter item undefined)}}
         />
       </div>

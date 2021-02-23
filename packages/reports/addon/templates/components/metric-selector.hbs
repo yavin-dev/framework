@@ -40,7 +40,7 @@
             <DenaliIcon
               @icon="filter-add"
               @size="small"
-              class={{concat (if (get-shallow this.metricsFiltered metric.id) "grouped-list__filter--active ") "grouped-list__filter"}}
+              class="{{if (get-shallow this.metricsFiltered metric.id) "grouped-list__filter--active"}} grouped-list__filter"
               {{on "click" (fn @onAddMetricFilter metric undefined)}}
             />
           {{/if}}

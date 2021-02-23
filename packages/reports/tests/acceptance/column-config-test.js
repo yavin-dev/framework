@@ -376,37 +376,38 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     assert.dom('.filter-builder__subject').exists({ count: 3 }, 'Clicking the filter button again adds a new filter');
   });
 
-  skip('adding, removing and changing - date time', async function (assert) {
-    //TODO update when filter updates are complete
+  test('adding, removing and changing - date time', async function (assert) {
     assert.expect(7);
     await visit('reports/1/edit');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (Day)', 'Time grain is initially day');
+    assert.dom('.filter-builder__subject').hasText('Date Time (day)', 'Time grain is initially day');
 
-    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (Day)
+    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (day)
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (All)', 'Deselecting day changes time grain to all');
+    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'Deselecting day changes time grain to hour');
     await animationsSettled();
-    assert.deepEqual(getColumns(), ['Property', 'Ad Clicks', 'Nav Link Clicks'], 'Date Time is removed');
+    assert.deepEqual(getColumns(), ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'], 'Date Time is removed');
 
     await clickItem('dimension', 'Date Time');
     await animationsSettled();
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (Day)', 'Default time grain (day) is set on the report');
+    assert
+      .dom('.filter-builder__subject')
+      .hasText('Date Time (hour)', 'Date time matches existing filter grain on the report');
     assert.deepEqual(
       getColumns(),
-      ['Date Time (Day)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
-      'A Date Time (Day) column is added'
+      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (hour)'],
+      'A Date Time (hour) column is added'
     );
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Week');
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (Week)', 'Choosing week changes timegrain from day to week');
+      .hasText('Date Time (isoWeek)', 'Choosing week changes timegrain from day to week');
     assert.deepEqual(
       getColumns(),
-      ['Date Time (Week)', 'Property', 'Ad Clicks', 'Nav Link Clicks'],
-      'Column is changed to Date Time (Week)'
+      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (isoWeek)'],
+      'Column is changed to Date Time (isoWeek)'
     );
   });
 
