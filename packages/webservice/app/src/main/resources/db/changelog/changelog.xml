@@ -99,7 +99,7 @@
              PRIMARY KEY (id)
         );
 
-        CREATE TABLE User_Role (
+        CREATE TABLE User_Roles (
             user_id varchar(255) not null,
             roles_id varchar(255) not null,
             PRIMARY KEY (user_id, roles_id),

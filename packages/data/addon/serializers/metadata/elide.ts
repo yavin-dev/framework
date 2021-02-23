@@ -46,7 +46,7 @@ export type DimensionNode = ColumnNode & {
 };
 
 export type TimeDimensionNode = DimensionNode & {
-  supportedGrain: Connection<TimeDimensionGrainNode>;
+  supportedGrains: Connection<TimeDimensionGrainNode>;
   timeZone: string;
 };
 export type TimeDimensionGrainNode = {
@@ -214,7 +214,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   ): { timeDimension: TimeDimensionMetadataModel; columnFunction: ColumnFunctionMetadataModel }[] {
     return timeDimensionConnection.edges.map((edge: Edge<TimeDimensionNode>) => {
       const { node } = edge;
-      const supportedGrains = node.supportedGrain.edges.map((edge) => edge.node);
+      const supportedGrains = node.supportedGrains.edges.map((edge) => edge.node);
       const columnFunctionPayload = this.createTimeGrainColumnFunction(node.id, supportedGrains, source);
       const timeDimensionPayload: TimeDimensionMetadataPayload = {
         id: node.id,
@@ -226,7 +226,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         columnFunctionId: columnFunctionPayload.id,
         source,
         tags: node.tags,
-        supportedGrains: node.supportedGrain.edges
+        supportedGrains: node.supportedGrains.edges
           .map(({ node }) => node)
           .map(({ expression, grain }) => ({ id: this.normalizeTimeGrain(grain), expression, grain })),
 
