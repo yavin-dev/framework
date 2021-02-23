@@ -3,20 +3,10 @@
   @dashboard={{this.dashboard}}
   @deleteAction={{this.deleteAction}}
   @addWidgetToDashboard={{this.addWidgetToDashboard}}
+  @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
+  @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
+  @onAddFilter={{fn @onAddFilter @dashboard}}
 />
-
-<div class="row is-marginless">
-  <div class="col-1-1 p-t-10">
-    {{#if (feature-flag "enableDashboardFilters")}}
-      <DashboardFilters
-        @dashboard={{@dashboard}}
-        @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
-        @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
-        @onAddFilter={{fn @onAddFilter @dashboard}}
-      />
-    {{/if}}
-  </div>
-</div>
 <div class="navi-dashboard__body">
   {{#if @dashboard.widgets.length}}
     <div class="navi-dashboard__widgets">
