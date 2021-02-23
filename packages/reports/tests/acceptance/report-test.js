@@ -1707,7 +1707,7 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasValue('Dec 29, 2014', 'Switching to week casts the date to match the start of the date time period');
     assert
       .dom('.filter-values--date-range-input__high-value input')
-      .hasValue('Feb 01, 2015', 'Switching to week casts the date to match the end of the date time period');
+      .hasValue('Jan 25, 2015', 'Switching to week casts the date to match the end of the date time period');
   });
 
   test('Date picker change interval type', async function (assert) {
