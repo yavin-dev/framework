@@ -73,7 +73,7 @@ export default class RequestConstrainer extends Service {
     if (unsatisfiedConstraints.length > 0) {
       this.naviNotifications.add({
         title: `The following requirements are not satisfied`,
-        context: unsatisfiedConstraints.map((c, idx) => `${idx}) ${c.description}`).join(' '),
+        context: unsatisfiedConstraints.map((c, idx) => `${idx + 1}) ${c.description}`).join(' '),
         style: 'warning',
         timeout: 'none',
       });

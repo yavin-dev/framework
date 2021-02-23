@@ -143,7 +143,7 @@ module('Unit | Service | request-constrainer', function (hooks) {
       );
       assert.deepEqual(
         context,
-        'Constraint requiring that filters includes a 2 dimension; Constraint requiring that columns includes a 7 dimension',
+        '1) Constraint requiring that filters includes a 2 dimension 2) Constraint requiring that columns includes a 7 dimension',
         'The failed constraints are passed as the context'
       );
     };
