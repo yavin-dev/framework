@@ -14,7 +14,7 @@
         class="button is-text is-medium"
         {{on "click" onClick}}
       >
-        <NaviIcon @icon="th-large" class="navi-report__action-icon" />
+        <NaviIcon @icon="th-large" class="m-r-6" />
         <span>Add to Dashboard</span>
       </button>
     </ReportActions::AddToDashboard>
@@ -27,7 +27,7 @@
     @disabled={{not @model.request.validations.isTruelyValid}}
     class="navi-report__copy-api-btn button is-text is-medium"
   >
-    <NaviIcon @icon="code" class="navi-report__action-icon" />API Query
+    <NaviIcon @icon="code" class="m-r-6" />API Query
   </CommonActions::GetApi>
   <EmberTooltip>
     {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
@@ -38,7 +38,7 @@
     @route="reports.report.clone"
     @model={{@model.id}}
     class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
-    <NaviIcon @icon="copy" class="navi-report__action-icon" />
+    <NaviIcon @icon="copy" class="m-r-6" />
     Clone
   </LinkTo>
   <EmberTooltip>
@@ -54,7 +54,7 @@
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
         >
-          <NaviIcon @icon="download" class="navi-report__action-icon" />
+          <NaviIcon @icon="download" class="m-r-6" />
           Export
         </ExportAction>
       {{/let}}
@@ -69,7 +69,7 @@
     @disabled={{@model.isNew}}
     class="button is-text is-medium {{if @model.isNew "is-disabled"}}"
   >
-    <NaviIcon @icon="share" class="navi-report__action-icon" />
+    <NaviIcon @icon="share" class="m-r-6" />
     Share
   </CommonActions::Share>
   <EmberTooltip>
@@ -98,7 +98,7 @@
       @deleteAction={{item-action "DELETE_ITEM" @model}}
       class="button is-text is-medium"
     >
-      <NaviIcon @icon="trash-o" class="navi-report__action-icon" />
+      <NaviIcon @icon="trash-o" class="m-r-6" />
       Delete
     </CommonActions::Delete>
     <EmberTooltip @text="Delete the report"/>

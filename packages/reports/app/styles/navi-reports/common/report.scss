@@ -12,8 +12,6 @@
   margin-top: 10px;
 
   &__breadcrumb {
-    // margin-left: -10px;
-
     &-link {
       color: $color-brand-300;
     }
@@ -24,22 +22,13 @@
     display: flex;
     font-size: $h1-font-size;
     text-transform: capitalize;
-    //margin-left: -10px;
   }
 
   &__header {
-    align-items: center;
-    background-color: $color-grey-100;
-    display: flex;
-    margin-bottom: 10px;
-    min-height: min-content;
-  }
-
-  &__row {
-    @media (min-width: 0px) and (max-width: 1199px) {
+    @media (min-width: 0px) and (max-width: 899px) {
       justify-content: flex-start;
     }
-    @media (min-width: 1200px) {
+    @media (min-width: 900px) {
       justify-content: flex-end;
     }
   }
