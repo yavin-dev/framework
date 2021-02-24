@@ -51,7 +51,7 @@ export function intervalPeriodForGrain(grain: Grain): DateGrain {
   return period;
 }
 
-type FilterLike = { values: FilterFragment['values']; operator: FilterFragment['operator'] };
+type FilterLike = Pick<FilterFragment, 'values' | 'parameters' | 'operator'>;
 
 /**
  * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible
