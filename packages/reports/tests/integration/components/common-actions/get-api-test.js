@@ -67,10 +67,10 @@ module('Integration | Component | common actions/get api', function (hooks) {
     this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
 
-    assert.dom('.get-api__modal').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.get-api__modal').doesNotExist('Copy modal does not exist before clicking the component');
 
     await click('.get-api__action-btn');
-    assert.dom('.get-api__modal').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.get-api__modal').exists('Copy modal dialog pops up on clicking the component');
 
     assert
       .dom('.get-api__api-input')
@@ -90,11 +90,11 @@ module('Integration | Component | common actions/get api', function (hooks) {
     this.set('TestRequest', this.TestRequestElide);
     await render(TEMPLATE);
 
-    assert.dom('.get-api__modal').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.get-api__modal').doesNotExist('Copy modal does not exist before clicking the component');
 
     await click('.get-api__action-btn');
 
-    assert.dom('.get-api__modal').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.get-api__modal').exists('Copy modal dialog pops up on clicking the component');
 
     assert
       .dom('.get-api__api-input')
@@ -114,7 +114,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
     this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
 
-    assert.dom('.get-api__modal').isNotVisible('Copy modal is not visible before clicking the component');
+    assert.dom('.get-api__modal').doesNotExist('Copy modal does not exist before clicking the component');
 
     // Click component
     await click('.get-api__action-btn');
@@ -124,6 +124,6 @@ module('Integration | Component | common actions/get api', function (hooks) {
     // Click Cancel
     await click('.get-api__cancel-btn');
 
-    assert.dom('.get-api__modal').isNotVisible('Copy modal is closed after clicking cancel button');
+    assert.dom('.get-api__modal').doesNotExist('Copy modal does not exist after clicking cancel button');
   });
 });

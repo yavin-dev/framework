@@ -57,7 +57,7 @@ export default class ScheduleActionComponent extends Component {
   localDeliveryRule = undefined;
 
   /**
-   * @property {DS.Model} notification - Model that stores the values of the modal's fields
+   * @property {object} notification - Object that stores an in modal notification
    */
   notification = undefined;
 
@@ -151,7 +151,7 @@ export default class ScheduleActionComponent extends Component {
         })
         .catch(({ errors }) => {
           set(this, 'notification', {
-            text: getApiErrMsg(errors[0], 'Oops! There was an error updating your delivery settings'),
+            text: getApiErrMsg(errors[0], 'There was an error updating your delivery settings'),
           });
         })
         .finally(() => {

@@ -9,13 +9,13 @@
   <Modal.Content>
     <h3 class="schedule-modal__header--primary primary-header m-b-10">Schedule "{{capitalize @model.title}}"</h3>
     {{#if (is-rejected this.deliveryRule)}}
-        <DenaliAlert @style="danger" @onClose={{set this.notification undefined}} class="m-b-30" as |Alert|>
+        <DenaliAlert @style="danger" @onClose={{this.closeNotification}} class="m-b-30" as |Alert|>
           <Alert.Title>Error</Alert.Title>
           <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
         </DenaliAlert>
     {{else}}
         {{#if this.notification}}	
-          <DenaliAlert @style="danger" @onClose={{set this.notification undefined}} class="m-b-30" as |Alert|>
+          <DenaliAlert @style="danger" @onClose={{this.closeNotification}} class="m-b-30" as |Alert|>
             <Alert.Title>Error</Alert.Title>
             <Alert.Context>{{this.notification.text}}</Alert.Context>
           </DenaliAlert>
@@ -42,8 +42,8 @@
       </DenaliInputGroup>
       <DenaliInputGroup @label="Frequency" class="m-b-30">
         <PowerSelect
-          class="flex-1"
-          @triggerClass="schedule-modal__frequency-trigger flex-1"
+          class="w-full"
+          @triggerClass="schedule-modal__frequency-trigger w-full"
           @options={{this.frequencies}}
           @selected={{this.localDeliveryRule.frequency}}
           @disabled={{is-rejected this.deliveryRule}}
@@ -57,8 +57,8 @@
       </DenaliInputGroup>
       <DenaliInputGroup @label="Format" class="m-b-30">
         <PowerSelect
-          class="flex-1"
-          @triggerClass="schedule-modal__format-trigger flex-1"
+          class="w-full"
+          @triggerClass="schedule-modal__format-trigger w-full"
           @disabled={{lt this.formats.length 2}}
           @options={{this.formats}}
           @selected={{this.localDeliveryRule.format.type}}
