@@ -15,7 +15,7 @@ const ExpectedRequest = {
     filters: [
       {
         operator: 'bet',
-        values: ['2015-11-09 00:00:00.000', '2015-11-16 00:00:00.000'],
+        values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
         field: 'network.dateTime',
         parameters: {
           grain: 'day',

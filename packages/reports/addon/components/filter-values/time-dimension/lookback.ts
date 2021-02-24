@@ -25,12 +25,12 @@ export default class LookbackInput extends BaseIntervalComponent {
    */
   @computed('interval', 'dateTimePeriod')
   get lookback() {
-    const { interval, dateTimePeriod } = this;
+    const { interval, grain } = this;
     const { start } = interval?.asStrings() || {};
     if (start) {
       const duration = new Duration(start);
       const lookback = duration.getValue();
-      if (dateTimePeriod === 'quarter' && typeof lookback === 'number') {
+      if (grain === 'quarter' && typeof lookback === 'number') {
         return lookback / MONTHS_IN_QUARTER;
       }
       return lookback;
@@ -54,10 +54,10 @@ export default class LookbackInput extends BaseIntervalComponent {
   /**
    * list of ranges based on time grain supported look backs
    */
-  @computed('dateTimePeriod', 'interval')
+  @computed('grain', 'interval')
   get ranges() {
-    const { dateTimePeriod } = this;
-    const predefinedRanges = config.navi.predefinedIntervalRanges[dateTimePeriod] || [];
+    const { grain } = this;
+    const predefinedRanges = config.navi.predefinedIntervalRanges[grain] || [];
 
     return predefinedRanges.map((lookBack) => {
       const duration = new Duration(lookBack);
@@ -65,7 +65,7 @@ export default class LookbackInput extends BaseIntervalComponent {
       return {
         isActive: interval.isEqual(this.interval),
         interval,
-        text: this.formatDurationFromCurrent(duration, dateTimePeriod),
+        text: this.formatDurationFromCurrent(duration, grain),
       };
     });
   }
@@ -73,10 +73,10 @@ export default class LookbackInput extends BaseIntervalComponent {
   /**
    * human readable representation of the interval represented
    */
-  @computed('calendarDateTimePeriod', 'lookback', 'dateRange')
+  @computed('grain', 'lookback', 'dateRange')
   get dateDescription(): string {
-    const { calendarDateTimePeriod, dateRange, lookback } = this;
-    let datePeriod = calendarDateTimePeriod;
+    const { grain, dateRange, lookback } = this;
+    let datePeriod = grain;
     if (datePeriod === 'hour') {
       datePeriod = 'day';
     }
@@ -119,7 +119,7 @@ export default class LookbackInput extends BaseIntervalComponent {
     if (isEmpty(value) || lookback < 1) {
       return;
     }
-    const lookbackDuration = this.lookbackToDuration(lookback, this.dateTimePeriod);
+    const lookbackDuration = this.lookbackToDuration(lookback, this.grain);
     return this.setTimeStart(lookbackDuration);
   }
 

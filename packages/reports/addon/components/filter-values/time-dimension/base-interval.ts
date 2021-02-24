@@ -1,10 +1,9 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed } from '@ember/object';
 import { Moment } from 'moment';
-import { getPeriodForGrain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 //@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
@@ -14,12 +13,12 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   /**
    * The interval of the selected date range
    */
-  @computed('args.filter.values.[]')
+  @computed('args.filter.values.[]', 'grain')
   get interval(): Interval | undefined {
     const { values } = this.args.filter;
-    const [start, end] = values || [];
+    let [start, end] = values || [];
     if (start && end) {
-      return Interval.parseFromStrings(start, end);
+      return Interval.parseInclusive(start, end, this.grain);
     }
     return undefined;
   }
@@ -27,10 +26,10 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   /**
    * start of interval
    */
-  @computed('interval', 'calendarDateTimePeriod')
+  @computed('interval', 'grain')
   get startDate(): Moment | undefined {
-    const { interval, calendarDateTimePeriod } = this;
-    return interval?.asMomentsForTimePeriod(calendarDateTimePeriod).start.utc(true);
+    const { interval, grain } = this;
+    return interval?.asMomentsInclusive(grain).start;
   }
 
   /**
@@ -45,40 +44,35 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
   /**
    * end of interval
    */
-  @computed('interval', 'calendarDateTimePeriod')
+  @computed('interval', 'grain')
   get endDate() {
-    const { interval, calendarDateTimePeriod } = this;
-    if (interval) {
-      let { end } = interval.asMomentsForTimePeriod(calendarDateTimePeriod, false);
-      end = end.clone().subtract(1, getPeriodForGrain(calendarDateTimePeriod)).utc(true);
-      return end;
-    }
-    return undefined;
+    const { interval, grain } = this;
+    return interval?.asMomentsInclusive(grain).end;
   }
 
   /**
    * start of interval
    */
-  @computed('endDate', 'calendarDateTimePeriod', 'calendarTriggerFormat')
+  @computed('endDate', 'grain', 'calendarTriggerFormat')
   get endDateText() {
-    const { endDate, calendarDateTimePeriod, calendarTriggerFormat } = this;
+    const { endDate, grain, calendarTriggerFormat } = this;
     if (!endDate) {
       return undefined;
     }
 
-    // TODO support calendarDateTimePeriod === 'week'
-    const end = calendarDateTimePeriod === 'isoWeek' ? endDate.clone().endOf('isoWeek') : endDate;
+    // TODO support grain === 'week'
+    const end = grain === 'isoWeek' ? endDate.clone().endOf('isoWeek') : endDate;
     return end.format(calendarTriggerFormat);
   }
 
   /**
    * The representation of the selected inclusive interval
    */
-  @computed('interval', 'calendarDateTimePeriod')
+  @computed('interval', 'grain')
   get dateRange(): string | undefined {
-    const { startDate, endDate, calendarDateTimePeriod } = this;
+    const { startDate, endDate, grain } = this;
     if (startDate && endDate) {
-      return formatDateRange(startDate, endDate, calendarDateTimePeriod);
+      return formatDateRange(startDate, endDate, grain);
     }
     return undefined;
   }

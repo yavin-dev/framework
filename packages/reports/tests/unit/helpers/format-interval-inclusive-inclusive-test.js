@@ -14,11 +14,7 @@ module('Unit | Helper | format interval inclusive inclusive', function () {
   test('Undefined interval and time period', function (assert) {
     assert.expect(2);
 
-    assert.equal(
-      formatInterval([moment(new Interval('current', 'current')), null]),
-      '',
-      'No time period returns empty string'
-    );
+    assert.equal(formatInterval([new Interval('current', 'current'), null]), '', 'No time period returns empty string');
 
     assert.equal(formatInterval([null, 'week']), '', 'No interval returns empty string');
   });
@@ -26,7 +22,7 @@ module('Unit | Helper | format interval inclusive inclusive', function () {
   test('Formatting start and end', function (assert) {
     assert.expect(1);
 
-    let interval = new Interval(new Duration('P4W'), moment('10-14-2014', FORMAT)),
+    let interval = new Interval(new Duration('P4W'), moment.utc('10-14-2014', FORMAT)),
       formattedString = formatInterval([interval, 'isoWeek']);
 
     assert.equal(

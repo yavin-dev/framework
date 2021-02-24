@@ -13,9 +13,11 @@ import { getDataSource } from 'navi-data/utils/adapter';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
-import { Grain } from 'navi-data/utils/date';
-import { BardTableMetadata } from 'navi-data/models/metadata/bard/table';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { BardTableMetadata, GrainOrdering } from 'navi-data/models/metadata/bard/table';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import moment from 'moment';
+import Interval from 'navi-data/utils/classes/interval';
 
 export default class FiliConsumer extends ActionConsumer {
   @service requestActionDispatcher!: RequestActionDispatcher;
@@ -29,6 +31,34 @@ export default class FiliConsumer extends ActionConsumer {
     const { type } = getDataSource(request.dataSource);
 
     return type === 'bard';
+  }
+
+  expandFilterInterval(route: Route, dateTimeFilter: FilterFragment, newGrain: Grain) {
+    let values;
+    if (dateTimeFilter.operator === 'bet') {
+      const oldGrain = dateTimeFilter.parameters.grain as Grain;
+      let [start, end] = dateTimeFilter.values as string[];
+      if (typeof end === 'string' && moment.utc(end).isValid()) {
+        if (GrainOrdering[oldGrain] > GrainOrdering[newGrain]) {
+          end = moment
+            .utc(end as string)
+            .add(1, getPeriodForGrain(oldGrain))
+            .subtract(1, getPeriodForGrain(newGrain))
+            .toISOString();
+        } else {
+          const interval = Interval.parseInclusive(start, end, oldGrain).asMomentsInclusive(newGrain);
+          start = interval.start.toISOString();
+          end = interval.end.toISOString();
+        }
+        values = [start, end];
+      }
+    }
+
+    const changeset = {
+      parameters: { ...dateTimeFilter.parameters, grain: newGrain },
+      ...(values ? { values } : {}),
+    };
+    this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
   }
 
   actions = {
@@ -49,6 +79,7 @@ export default class FiliConsumer extends ActionConsumer {
       const { dateTimeFilter } = request;
 
       const newGrain = changeset.parameters?.grain;
+      // the grain was updated but no values were specified
       if (dateTimeFilter === filterFragment && newGrain) {
         const values = valuesForOperator(dateTimeFilter, newGrain as Grain);
         const changeset = { values };
@@ -78,8 +109,7 @@ export default class FiliConsumer extends ActionConsumer {
       if (columnFragment.type === 'timeDimension' && parameterKey === 'grain') {
         // and there is a date time filter, update filter grain to match
         if (dateTimeFilter && dateTimeFilter.parameters.grain !== parameterValue) {
-          const changeset = { parameters: { ...dateTimeFilter.parameters, [parameterKey]: parameterValue } };
-          this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+          this.expandFilterInterval(route, dateTimeFilter, parameterValue as Grain);
         }
 
         // update all other date time grains to match
@@ -169,8 +199,7 @@ export default class FiliConsumer extends ActionConsumer {
         const grain = bardTableMetadata.timeGrains[0].id;
 
         if (dateTimeFilter.parameters.grain !== grain) {
-          const changeset = { parameters: { ...dateTimeFilter.parameters, grain } };
-          this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+          this.expandFilterInterval(route, dateTimeFilter, grain);
         }
       }
     },

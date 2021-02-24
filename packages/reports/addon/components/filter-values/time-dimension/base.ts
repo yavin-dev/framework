@@ -20,20 +20,12 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
 
   endPlaceholder = 'End';
 
-  @readOnly('args.filter.parameters.grain') dateTimePeriod!: Grain;
-
-  /**
-   * the active dateTimePeriod
-   */
-  @computed('dateTimePeriod')
-  get calendarDateTimePeriod() {
-    return this.dateTimePeriod;
-  }
+  @readOnly('args.filter.parameters.grain') grain!: Grain;
 
   /**
    * the datetime format to display based on the time grain
    */
-  @computed('calendarDateTimePeriod')
+  @computed('grain')
   get calendarTriggerFormat() {
     const dateMap: Partial<Record<Grain, string>> = {
       hour: 'MMM DD, YYYY',
@@ -42,7 +34,7 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
       quarter: '[Q]Q YYYY',
       year: 'YYYY',
     };
-    return dateMap[this.calendarDateTimePeriod] || dateMap.day;
+    return dateMap[this.grain] || dateMap.day;
   }
 
   /**

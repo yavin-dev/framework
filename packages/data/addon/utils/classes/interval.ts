@@ -152,6 +152,21 @@ export default class Interval {
   }
 
   /**
+   * Converts interval into a POJO with moments that are aligned and inclusive to the given time grain
+   * @param grain - grain to align to
+   * @returns object with start and end properties
+   */
+  asMomentsInclusive(grain: Grain): SerializedWithEnd<Moment> {
+    let { start, end } = this.asMomentsForTimePeriod(grain);
+    end.subtract(1, getPeriodForGrain(grain));
+
+    return {
+      start,
+      end,
+    };
+  }
+
+  /**
    * Converts interval from [inclusive, inclusive] to [inclusive, exclusive] for the given grain
    * @param grain - grain to align to
    * @returns new interval with inclusive exclusive
@@ -242,7 +257,7 @@ export default class Interval {
   /**
    * @param start - interval start
    * @param end - interval end
-   * @returns object parsed from given strings
+   * @returns inclusive/exclusive interval
    */
   static parseFromStrings(start: string, end: string): Interval {
     const intervalEnd = Interval.fromString(end);
@@ -250,6 +265,24 @@ export default class Interval {
     assert('Interval start must not be "next"', intervalStart !== 'next');
     assert('Interval end must be: moment string or macro', !Duration.isDuration(intervalEnd));
 
+    return new Interval(intervalStart, intervalEnd);
+  }
+
+  /**
+   * @param start - interval start
+   * @param end - interval end
+   * @param grain - The grain to be included
+   * @returns inclusive/exclusive interval that includes the end date at the given grain
+   */
+  static parseInclusive(start: string, end: string, grain: Grain): Interval {
+    const intervalStart = Interval.fromString(start);
+    const intervalEnd = Interval.fromString(end);
+    if (moment.isMoment(intervalEnd)) {
+      intervalEnd.add(1, getPeriodForGrain(grain));
+    }
+
+    assert('Interval start must not be "next"', intervalStart !== 'next');
+    assert('Interval end must be: moment string or macro', !Duration.isDuration(intervalEnd));
     return new Interval(intervalStart, intervalEnd);
   }
 

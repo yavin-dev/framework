@@ -753,7 +753,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -777,7 +777,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(noFiltersAndNoHavings),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         metrics: 'm1,m2,r(p=123)',
         format: 'json',
       },
@@ -787,7 +787,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { format: 'jsonApi' }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -803,7 +803,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
@@ -816,7 +816,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { cache: false }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -842,7 +842,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, options),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -861,7 +861,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -874,7 +874,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, {}),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -887,7 +887,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { page: 1, perPage: 100 }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -901,7 +901,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { format: 'csv' }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
@@ -916,13 +916,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForFindQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { format: 'csv' })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForFindQuery correctly built the URL for the provided request with the format option'
     );
 
@@ -940,7 +940,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     };
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(onlyDateFilter)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&format=json`,
       'urlForFindQuery correctly built the URL for a request with no filters'
     );
 
@@ -972,19 +972,19 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     };
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(requestWithSort)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForFindQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { cache: false })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForFindQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'bardTwo' })),
-      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'uriForFindQuery renders alternative host name if option is given'
     );
   });
@@ -993,13 +993,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.expect(6);
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForDownloadQuery correctly built the URL for the provided request with the format option'
     );
 
@@ -1017,7 +1017,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     };
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with only date filter'
     );
 
@@ -1039,19 +1039,19 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     };
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(requestWithSort)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForDownloadQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
-      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery renders alternative host name if option is given'
     );
   });
