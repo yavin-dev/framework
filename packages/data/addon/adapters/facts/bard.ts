@@ -26,6 +26,7 @@ import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import moment from 'moment';
+import config from 'ember-get-config';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
 export class FactAdapterError extends Error {
@@ -151,11 +152,25 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       );
     }
 
-    let [start, end] = timeFilter.values as string[];
-
-    const endMoment = end ? moment.utc(end) : undefined;
-    if (endMoment?.isValid()) {
-      end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+    let start: string, end: string;
+    if (timeFilter.operator === 'bet') {
+      [start, end] = timeFilter.values as string[];
+      // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
+      const endMoment = end ? moment.utc(end) : undefined;
+      if (endMoment?.isValid()) {
+        end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+      }
+    } else if (timeFilter.operator === 'gte') {
+      [start] = timeFilter.values as string[];
+      end = moment.utc('9999-12-31').startOf(filterGrain).toISOString();
+    } else if (timeFilter.operator === 'lte') {
+      start = moment
+        .utc(config.navi.dataEpoch || '0001-01-01')
+        .startOf(filterGrain)
+        .toISOString();
+      [end] = timeFilter.values as string[];
+    } else {
+      assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
     }
 
     // Removing Z to strip off time zone if it's there

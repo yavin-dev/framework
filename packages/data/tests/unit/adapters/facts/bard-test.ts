@@ -225,7 +225,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -313,6 +313,60 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       /Exactly one 'tableName.dateTime' filter is required, you have 2/,
       '_buildDateTimeParam throws an error for multiple datetime filters'
     );
+
+    const since: RequestV2 = {
+      ...EmptyRequest,
+      table: 'tableName',
+      filters: [
+        {
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
+          parameters: {
+            grain: 'isoWeek',
+          },
+          operator: 'gte',
+          values: ['start'],
+        },
+      ],
+    };
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(since),
+      'start/9999-12-27T00:00:00.000',
+      '_buildDateTimeParam uses far future aligned to grain for since operator'
+    );
+
+    const before: RequestV2 = {
+      ...EmptyRequest,
+      table: 'tableName',
+      filters: [
+        {
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
+          parameters: {
+            grain: 'month',
+          },
+          operator: 'lte',
+          values: ['end'],
+        },
+      ],
+    };
+    let originalDataEpoch = config.navi.dataEpoch;
+    // TODO: Remove once dataEpoch is not required
+    //@ts-expect-error
+    config.navi.dataEpoch = undefined;
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      '0001-01-01T00:00:00.000/end',
+      '_buildDateTimeParam uses year 0001 aligned to grain when no dataEpoch is defined'
+    );
+
+    config.navi.dataEpoch = '1999-02-03';
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      '1999-02-01T00:00:00.000/end',
+      '_buildDateTimeParam uses dataEpoch aligned to grain if it is defined'
+    );
+    config.navi.dataEpoch = originalDataEpoch;
   });
 
   test('_buildMetricsParam', function (assert) {
