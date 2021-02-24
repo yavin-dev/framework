@@ -8,7 +8,6 @@
 import EmberObject from '@ember/object';
 import NaviFactSerializer from './interface';
 import { AsyncQueryResponse, RequestV2 } from 'navi-data/adapters/facts/interface';
-import { getElideField } from 'navi-data/adapters/facts/elide';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviFactError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
@@ -32,8 +31,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
   private processResponse(payload: string, request: RequestV2): NaviFactResponse {
     const response = JSON.parse(payload) as ExecutionResult;
     const { table } = request;
-    // TODO revisit when Elide adds parameter support
-    const elideFields = request.columns.map(({ field, parameters }) => getElideField(field, parameters));
+    const elideFields = request.columns.map((_c, idx) => `col${idx}`);
     const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
       // TODO rename with generic canonicalizeColumn
       canonicalizeMetric({ metric, parameters })

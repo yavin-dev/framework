@@ -17,7 +17,7 @@ const TestRequest: RequestV2 = {
   columns: [
     { field: 'table1.m1', type: 'metric', parameters: {} },
     { field: 'table1.m2', type: 'metric', parameters: {} },
-    { field: 'table1.r', type: 'metric', parameters: { p: '123', as: 'a' } },
+    { field: 'table1.r', type: 'metric', parameters: { p: '123' } },
     { field: 'table1.d1', type: 'dimension', parameters: {} },
     { field: 'table1.d2', type: 'dimension', parameters: {} },
   ],
@@ -66,10 +66,10 @@ module('Unit | Adapter | facts/elide', function (hooks) {
   });
 
   test('getElideField', function (assert) {
-    assert.equal(getElideField('foo', { bar: 'baz' }), 'foo', 'Field with parameter is not supported');
-    assert.equal(
-      getElideField('foo', { bar: 'baz', bang: 'boom' }),
-      'foo',
+    assert.equal(getElideField('foo', { bar: 'baz' }), 'foo(bar:"baz")', 'Field with parameter is not supported');
+    assert.throws(
+      () => getElideField('foo', { bar: 'baz', bang: 'boom' }),
+      /There is at most one parameter/,
       'Field with multiple parameters is not supported'
     );
     assert.equal(getElideField('foo'), 'foo', 'Name is returned for field with no parameters');
@@ -80,7 +80,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
     );
 
@@ -97,7 +97,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne',
       }),
-      `{"query":"{ myTable { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable { edges { node { col0:m1(p:\\"q\\") col1:d1 } } } }"}`,
       'Arguments are properly excluded if they are not in the request'
     );
 
@@ -105,6 +105,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
+          { field: 'myTable.m1', parameters: {}, type: 'metric' },
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
           { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
@@ -117,7 +118,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne',
       }),
-      `{"query":"{ myTable(sort: \\"-m1,d1\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(sort: \\"-col1,col2\\") { edges { node { col0:m1 col1:m1(p:\\"q\\") col2:d1 } } } }"}`,
       'Request with sorts and parameters is queried correctly'
     );
 
@@ -125,6 +126,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       adapter['dataQueryFromRequest']({
         table: 'myTable',
         columns: [
+          { field: 'myTable.m1', parameters: {}, type: 'metric' },
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
           { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
@@ -138,7 +140,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"m1=in=('v1','v2');d1!=('a');d2==('b')\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"col1=in=('v1','v2');col2!=('a');d2==('b')\\") { edges { node { col0:m1 col1:m1(p:\\"q\\") col2:d1 } } } }"}`,
       'Request with filters and parameters is queried correctly'
     );
 
@@ -155,7 +157,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne',
       }),
-      `{"query":"{ myTable(first: \\"5\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(first: \\"5\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } } }"}`,
       'Request with limit is queried correctly'
     );
 
@@ -174,7 +176,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"m1=ge=('v1');m1=le=('v2')\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"col0=ge=('v1');col0=le=('v2')\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } } }"}`,
       'Request with "between" filter operator splits the filter into two correctly'
     );
 
@@ -193,7 +195,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"m1=lt=('v1'),m1=gt=('v2')\\") { edges { node { m1 d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"col0=lt=('v1'),col0=gt=('v2')\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } } }"}`,
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
@@ -218,11 +220,13 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"time=ge=('${moment()
+      `{"query":"{ myTable(filter: \\"col0=ge=('${moment()
         .subtract(1, 'month')
-        .format('YYYY-MM')}');time=le=('${moment()
+        .format('YYYY-MM')}');col0=le=('${moment()
         .subtract(1, 'month')
-        .format('YYYY-MM')}')\\") { edges { node { time d1 } } } }"}`,
+        .format(
+        'YYYY-MM'
+      )}')\\") { edges { node { col0:time(grain:\\"MONTH\\") col1:d1 } } } }"}`,
       'Macros and durations in time-dimension filters are converted to date strings properly ([P1X, current] -> equals 1 X duration)'
     );
 
@@ -247,7 +251,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"time=isnull=true\\") { edges { node { time d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"col0=isnull=true\\") { edges { node { col0:time(grain:\\"DAY\\") col1:d1 } } } }"}`,
       'Filter without 2 filter values is unaffected'
     );
 
@@ -272,7 +276,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"time=ge=('2020-05-05');time=le=('2020-05-08')\\") { edges { node { time d1 } } } }"}`,
+      `{"query":"{ myTable(filter: \\"col0=ge=('2020-05-05');col0=le=('2020-05-08')\\") { edges { node { col0:time(grain:\\"DAY\\") col1:d1 } } } }"}`,
       'Filter with 2 non-macro date values is unaffected'
     );
   });
@@ -294,8 +298,10 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
 
       const expectedTable = TestRequest.table;
-      const expectedColumns = TestRequest.columns.map((c) => getElideField(c.field, c.parameters)).join(' ');
-      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')",sort: "d1",first: "10000")`;
+      const expectedColumns = TestRequest.columns
+        .map((c, idx) => getElideField(c.field, c.parameters, `col${idx}`))
+        .join(' ');
+      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10000")`;
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
@@ -581,6 +587,31 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     );
   });
 
+  test('buildFilterStr - alias', async function (assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const filters: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: { p: 'q' },
+        type: 'dimension',
+        operator: 'contains',
+        values: ['v1'],
+      },
+      {
+        field: 'table1.dim1',
+        parameters: {},
+        type: 'dimension',
+        operator: 'contains',
+        values: ['v2'],
+      },
+    ];
+    assert.equal(
+      adapter['buildFilterStr'](filters, { 'table1.dim1(p=q)': 'aliasColumn' }),
+      "aliasColumn=in=('*v1*');dim1=in=('*v2*')",
+      '`buildFilterStr` builds correct filter string for an aliased column'
+    );
+  });
+
   test('buildFilterStr - contains', async function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     const filters: Filter[] = [
@@ -593,7 +624,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](filters),
+      adapter['buildFilterStr'](filters, {}),
       "dim1=in=('*v1*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter'
     );
@@ -608,7 +639,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](escapedFilter),
+      adapter['buildFilterStr'](escapedFilter, {}),
       "dim1=in=('*\\\\'*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter and escaped value'
     );
@@ -626,7 +657,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](noValues),
+      adapter['buildFilterStr'](noValues, {}),
       '',
       '`buildFilterStr` returns an empty string if no filters have values'
     );
@@ -648,7 +679,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](someValues),
+      adapter['buildFilterStr'](someValues, {}),
       "dim2==('1')",
       '`buildFilterStr` filters out filters with empty values'
     );
@@ -659,7 +690,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     assert.equal(
       decodeURIComponent(adapter.urlForFindQuery(TestRequest, {})),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');m1=gt=('0')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node { m1 m2 r d1 d2 } } } }"}`,
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
       'urlForFindQuery correctly built the query for the provided request'
     );
   });
