@@ -15,7 +15,7 @@ let Store, MetadataService, AdClicks;
 const TEMPLATE = hbs`<MetricSelector
   @request={{this.request}}
   @onAddMetric={{this.onAddMetric}}
-  @onToggleMetricFilter={{this.onToggleMetricFilter}}
+  @onAddMetricFilter={{this.onAddMetricFilter}}
 />`;
 
 module('Integration | Component | metric selector', function (hooks) {
@@ -40,7 +40,7 @@ module('Integration | Component | metric selector', function (hooks) {
     );
 
     this.set('onAddMetric', () => {});
-    this.set('onToggleMetricFilter', () => {});
+    this.set('onAddMetricFilter', () => {});
 
     await MetadataService.loadMetadata();
     AdClicks = MetadataService.getById('metric', 'adClicks', 'bardOne');
@@ -106,7 +106,7 @@ module('Integration | Component | metric selector', function (hooks) {
     );
     await totalClicksReset();
 
-    this.set('onToggleMetricFilter', (metric) => {
+    this.set('onAddMetricFilter', (metric) => {
       assert.deepEqual(metric, AdClicks, 'The adclicks metric is passed to the action when filter icon is clicked');
     });
 

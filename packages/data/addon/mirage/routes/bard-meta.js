@@ -63,6 +63,9 @@ export default function () {
         if (table.name === 'tableB') {
           timeGrains.shift();
         }
+        if (table.name === 'tableC') {
+          timeGrains.pop();
+        }
 
         return Object.assign({}, table, { timeGrains });
       });

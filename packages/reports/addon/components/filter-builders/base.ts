@@ -1,10 +1,9 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Base class for filter builders.
  */
-
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
@@ -14,6 +13,7 @@ import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { isEqual } from 'lodash-es';
 
 interface BaseFilterBuilderArgs {
+  isRequired: boolean;
   filter: FilterFragment;
   request: RequestFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;

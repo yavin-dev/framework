@@ -238,6 +238,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         metricIds: ['tableA.m1'],
         dimensionIds: ['tableA.d1', 'tableA.d2'],
         timeDimensionIds: ['tableA.td1'],
+        requestConstraintIds: [],
         source: 'bardOne',
       },
       {
@@ -250,6 +251,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         metricIds: ['tableB.m2', 'tableB.m3'],
         dimensionIds: ['tableB.d1', 'tableB.d2'],
         timeDimensionIds: [],
+        requestConstraintIds: [],
         source: 'bardOne',
       },
     ];
@@ -426,6 +428,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         columnFunctions: expectedColumnFunctionsPayloads.map((p) =>
           ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
         ),
+        requestConstraints: [],
       },
       'Table 0'
     );

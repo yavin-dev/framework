@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, settled } from '@ember/test-helpers';
+import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
@@ -22,7 +22,7 @@ const TEMPLATE = hbs`
   @report={{this.report}}
   @onAddColumn={{optional this.onAddColumn}}
   @onRemoveColumn={{optional this.onRemoveColumn}}
-  @onToggleFilter={{optional this.onToggleFilter}}
+  @onAddFilter={{optional this.onAddFilter}}
   @openFilters={{optional this.openFilters}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onReorderColumn={{optional this.onReorderColumn}}
@@ -334,7 +334,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
 
     this.onAddColumn = () => assert.ok(true, 'onAddColumn was called for time dimension column');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called for time dimension column');
-    this.onToggleFilter = () => assert.ok(true, 'onToggleFilter was called for time dimension column');
+    this.onAddFilter = () => assert.ok(true, 'onAddFilter was called for time dimension column');
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
     await render(TEMPLATE);
@@ -355,10 +355,10 @@ module('Integration | Component | navi-column-config', function (hooks) {
   });
 
   test('Header config buttons - metric', async function (assert) {
-    assert.expect(8);
+    assert.expect(5);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onToggleFilter = () => assert.ok(true, 'Filter was called');
+    this.onAddFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('metric', 'navClicks', 'bardOne');
     await render(TEMPLATE);
@@ -376,27 +376,13 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Metric config has filter icon');
     await click('.navi-column-config-base__filter-icon');
-
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .doesNotHaveClass('navi-column-config-base__filter-icon--active', 'Metric config filter is not active');
-
-    const { request } = this.report;
-    request.addFilter({ ...request.columns.objectAt(0).serialize(), operator: 'in', values: [] });
-    await settled();
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .hasClass('navi-column-config-base__filter-icon--active', 'Metric config filter is active if there is a having');
-
-    await click(findAll('.navi-column-config-item__remove-icon')[0]);
-    await animationsSettled();
   });
 
   test('Header config buttons - dimension', async function (assert) {
-    assert.expect(8);
+    assert.expect(5);
 
     this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onToggleFilter = () => assert.ok(true, 'Filter was called');
+    this.onAddFilter = () => assert.ok(true, 'Filter was called');
     this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
     addItem('dimension', 'browser', 'bardOne');
 
@@ -414,24 +400,6 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Dimension config has filter icon');
     await click('.navi-column-config-base__filter-icon');
-
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .doesNotHaveClass('navi-column-config-base__filter-icon--active', 'Dimension config filter is not active');
-
-    const { request } = this.report;
-    request.addFilter({ ...request.columns.objectAt(0).serialize(), operator: 'in', values: [] });
-    await settled();
-
-    assert
-      .dom('.navi-column-config-base__filter-icon')
-      .hasClass(
-        'navi-column-config-base__filter-icon--active',
-        'Dimension config filter is active if there is a filter'
-      );
-
-    await click(findAll('.navi-column-config-item__remove-icon')[0]);
-    await animationsSettled();
   });
 
   test('last added column', async function (assert) {

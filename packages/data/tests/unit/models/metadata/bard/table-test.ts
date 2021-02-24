@@ -20,6 +20,7 @@ module('Unit | Model | metadata/bard/table', function (hooks) {
       dimensionIds: ['age'],
       timeDimensionIds: ['orderDate'],
       timeGrainIds: ['day', 'month', 'week'],
+      requestConstraintIds: [],
       hasAllGrain: false,
       source: 'bardOne',
       tags: ['DISPLAY'],

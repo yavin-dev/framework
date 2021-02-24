@@ -56,10 +56,11 @@ export default class NaviMetadataService extends Service {
    */
   private loadEverythingMetadataIntoKeg(payload: EverythingMetadataPayload, dataSourceName: string) {
     this.loadMetadataForType('table', payload.tables, dataSourceName);
+    this.loadMetadataForType('metric', payload.metrics, dataSourceName);
     this.loadMetadataForType('dimension', payload.dimensions, dataSourceName);
     this.loadMetadataForType('timeDimension', payload.timeDimensions, dataSourceName);
     this.loadMetadataForType('columnFunction', payload.columnFunctions || [], dataSourceName);
-    this.loadMetadataForType('metric', payload.metrics, dataSourceName);
+    this.loadMetadataForType('requestConstraint', payload.requestConstraints, dataSourceName);
     this.loadedDataSources.add(dataSourceName);
   }
 

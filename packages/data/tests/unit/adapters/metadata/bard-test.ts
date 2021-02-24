@@ -47,7 +47,7 @@ module('Unit | Adapter | metadata/bard', function (hooks) {
         { dimensions: 31, grains: 7, metrics: 42, name: 'tableA' },
         { dimensions: 31, grains: 6, metrics: 42, name: 'tableB' },
         { dimensions: 31, grains: 7, metrics: 42, name: 'protected' },
-        { dimensions: 31, grains: 7, metrics: 33, name: 'tableC' },
+        { dimensions: 31, grains: 6, metrics: 33, name: 'tableC' },
       ],
       '`fetchEverything` correctly requested all datasource metadata'
     );
