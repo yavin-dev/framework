@@ -46,14 +46,6 @@
     text-align: center;
   }
 
-  &__action {
-    display: inline-block;
-  }
-
-  &__action-icon {
-    margin-right: 6px;
-  }
-
   &__action-link--is-disabled,
   &__action--is-disabled button {
     color: $color-grey-600;
