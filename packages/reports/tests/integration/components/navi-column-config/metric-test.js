@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, getContext, triggerEvent } from '@ember/test-helpers';
+import { render, click, findAll, getContext, triggerEvent, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -127,15 +127,12 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
   });
 
   test('Configuring metric column', async function (assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     this.column = await getMetricColumn('revenue', { currency: 'USD' });
-    this.onRenameColumn = (/*newName*/) => {
+    this.onRenameColumn = (newName) => {
       // this must be called with action in the template
-      /**
-       * TODO: Reenable column relabeling, uncomment line below
-       */
-      // assert.equal(newName, 'Money', 'New display name is passed to name update action');
+      assert.equal(newName, 'Money', 'New display name is passed to name update action');
       return undefined;
     };
     this.onUpdateColumnParam = (paramId, paramKey) => {
@@ -147,7 +144,10 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     };
     await render(TEMPLATE);
 
-    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Display name of column is shown in the column input');
+    const columnNameInput = '.navi-column-config-base__column-name input';
+    assert
+      .dom(columnNameInput)
+      .hasProperty('placeholder', 'Revenue (USD)', 'Display name of column is shown as a placeholder');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
@@ -175,13 +175,14 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     );
     await selectChoose('.navi-column-config-item__parameter', 'Dollars (CAD)');
 
-    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
+    assert
+      .dom(columnNameInput)
+      .hasProperty('placeholder', 'Revenue (CAD)', 'Placeholder is updated when parameter is changed');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
 
-    // await fillIn('.navi-column-config-base__column-name-input', 'Money');
-
-    // await triggerKeyEvent('.navi-column-config-base__column-name-input', 'keyup', 13);
+    await fillIn(columnNameInput, 'Money');
+    await triggerKeyEvent(columnNameInput, 'keyup', 13);
   });
 });
