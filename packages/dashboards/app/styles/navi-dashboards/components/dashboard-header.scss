@@ -20,7 +20,7 @@
   }
 
   &__actions {
-
+    display: flex;
     @media (min-width: 0px) and (max-width: 899px) {
       justify-content: flex-start;
       .button {
