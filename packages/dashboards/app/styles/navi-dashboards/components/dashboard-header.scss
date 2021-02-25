@@ -4,15 +4,11 @@
  */
 
 .dashboard-header {
-  &__breadcrumb-link {
-    color: @navi-blue;
-  }
 
   &__page-title {
     font-size: 30px;
     text-transform: capitalize;
-    align-items: center;
-    .display-flex;
+    display: flex;
     min-width: 0;
   }
 
@@ -24,10 +20,11 @@
   }
 
   &__actions {
+
     @media (min-width: 0px) and (max-width: 899px) {
       justify-content: flex-start;
       .button {
-        padding-left: 0px;
+       justify-content: left;
       }
     }
     @media (min-width: 900px) {
