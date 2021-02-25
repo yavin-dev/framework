@@ -1,6 +1,6 @@
 import NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 
-export default class <%= classifiedModuleName %> extends NaviVisualizationBaseManifest {
+export default class <%= classifiedModuleName %>Manifest extends NaviVisualizationBaseManifest {
   name = '<%= dasherizedModuleName %>';
 
   niceName = '<%= dasherizedModuleName %>';
@@ -11,7 +11,7 @@ export default class <%= classifiedModuleName %> extends NaviVisualizationBaseMa
    * Decides whether visualization type is valid given request
    *
    * @method typeIsValid
-   * @param {Object} request - request object
+   * @param {RequestFragment} request - request object
    * @return {Boolean} - visualization type is valid
    */
   typeIsValid(/*request*/) {
