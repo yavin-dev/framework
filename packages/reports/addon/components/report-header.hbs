@@ -1,44 +1,41 @@
   <div class="container-full m-b-4">
     <div class="row m-t-10">
-      <div class="xs-col-1-1 sm-col-1-2 col-1-5 p-x-0">
+      <div class="col-1-1">
         {{#if (feature-flag "enableDirectory")}}
           <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
         {{else}}
           <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
         {{/if}}
-        <NaviIcon @icon="angle-right" />
       </div>
     </div>
     <div class="row">
       <div class="xs-col-10-10 sm-col-10-10 col-3-10 p-x-0">
-        <div class="row">
-          <span class="navi-report__title">
-          {{#if @model.isOwner}}
-            <EditableLabel
-              class="navi-report__edit-title"
-              @value={{@model.title}}
-              @onChange={{route-action "updateTitle"}}
-            />
-          {{else}}
-            <span>{{@model.title}}</span>
-          {{/if}}
+        <span class="navi-report__title">
+        {{#if @model.isOwner}}
+          <EditableLabel
+            class="navi-report__edit-title"
+            @value={{@model.title}}
+            @onChange={{route-action "updateTitle"}}
+          />
+        {{else}}
+          <span>{{@model.title}}</span>
+        {{/if}}
 
-          {{!-- Favorite icon is visible if a report has been saved --}}
-          {{#unless @model.isNew}}
-            {{#let (get-user) as |user|}}
-              <FavoriteItem
-                class="navi-report__fav-icon"
-                @user={{user}}
-                @item={{@model}}
-                @click={{route-action "toggleFavorite" @model}}
-              />
-            {{/let}}
-          {{/unless}}
-          </span>
-        </div>
+        {{!-- Favorite icon is visible if a report has been saved --}}
+        {{#unless @model.isNew}}
+          {{#let (get-user) as |user|}}
+            <FavoriteItem
+              class="navi-report__fav-icon"
+              @user={{user}}
+              @item={{@model}}
+              @click={{route-action "toggleFavorite" @model}}
+            />
+          {{/let}}
+        {{/unless}}
+        </span>
       </div>
       <div class="xs-col-10-10 sm-col-10-10 col-7-10 m-t-10 p-x-0">
-        <div class="row navi-report__header">
+        <div class="navi-report__header">
             {{#if (feature-flag "dashboards")}}
               {{!-- Disabling to allow calling report-to-widget mixin actions --}}
               {{!-- template-lint-disable no-action --}}
