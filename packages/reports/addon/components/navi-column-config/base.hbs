@@ -47,7 +47,7 @@
         {{#let (await param.values) as |paramValues|}}
           <PowerSelect
             @searchEnabled={{true}}
-            @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input"
+            @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
             @triggerId="{{this.classId}}-{{param.id}}"
             @dropdownClass="navi-column-config-item__parameter-dropdown"
             @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
