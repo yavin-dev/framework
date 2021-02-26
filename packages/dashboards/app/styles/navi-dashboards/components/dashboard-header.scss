@@ -6,10 +6,10 @@
 .dashboard-header {
 
   &__page-title {
-    font-size: 30px;
-    text-transform: capitalize;
     display: flex;
+    font-size: 30px;
     min-width: 0;
+    text-transform: capitalize;
   }
 
   &__fav-icon {
@@ -21,13 +21,14 @@
 
   &__actions {
     display: flex;
-    @media (min-width: 0px) and (max-width: 899px) {
+    flex-wrap: wrap;
+    @include media-size-between(mobile, tablet) {
       justify-content: flex-start;
       .button {
        justify-content: left;
       }
     }
-    @media (min-width: 900px) {
+    @include media-size-up(small-desktop) {
       justify-content: flex-end;
     }
   }
