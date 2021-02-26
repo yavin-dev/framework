@@ -3,7 +3,7 @@
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
-  @onClose={{queue this.closeModal (fn this.onRevert this.localDeliveryRule)}}
+  @onClose={{queue this.closeModal (fn @onRevert this.localDeliveryRule)}}
   ...attributes as |Modal|
 >
   <Modal.Content>
@@ -86,7 +86,7 @@
           @style="solid"
           disabled={{this.isSaving}}
           type="button"
-          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
+          {{on "click" (queue this.closeModal (fn @onRevert this.localDeliveryRule))}}
         > Cancel
         </DenaliButton>
       {{else}}
@@ -107,7 +107,7 @@
           class="schedule-modal__cancel-btn m-r-5"
           disabled={{this.isSaving}}
           type="button"
-          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
+          {{on "click" (queue this.closeModal (fn @onRevert this.localDeliveryRule))}}
         >
           {{#if this.localDeliveryRule.hasDirtyAttributes}}
             Cancel
