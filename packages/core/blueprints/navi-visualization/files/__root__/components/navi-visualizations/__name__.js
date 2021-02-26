@@ -1,11 +1,12 @@
 /**
  * Usage:
  * <NaviVisualizations::<%= classifiedModuleName %>
- *   @model=model
- *   @options=options
- *   @incomingEvents=incomingEvents
+ *   @model={{this.model}}
+ *   @options={{this.options}}
  * />
  */
-<%= importComponent %>
-<%= importTemplate('navi-visualizations') %>
-export default <%= defaultExport %>
+import Component from '@glimmer/component';
+
+export default class <%= classifiedModuleName %>Visualization extends Component {
+
+}
