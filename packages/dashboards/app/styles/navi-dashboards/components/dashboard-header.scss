@@ -24,9 +24,6 @@
     flex-wrap: wrap;
     @include media-size-between(mobile, tablet) {
       justify-content: flex-start;
-      .button {
-       justify-content: left;
-      }
     }
     @include media-size-up(small-desktop) {
       justify-content: flex-end;
