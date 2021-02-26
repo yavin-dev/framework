@@ -55,7 +55,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await click('.schedule-modal__save-btn');
 
     assert
-      .dom('.navi-notifications .alert')
+      .dom('.alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'
@@ -107,7 +107,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await click('.schedule-modal__save-btn');
 
     assert
-      .dom('.navi-notifications .alert')
+      .dom('.alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'

@@ -58,7 +58,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.navi-notifications .alert');
+    await waitFor('.alert');
 
     assert
       .dom('.alert')
@@ -136,10 +136,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     //Save the schedule
     await click('.schedule-modal__save-btn');
-    await waitFor('.navi-notifications .alert');
+    await waitFor('.alert');
 
     assert
-      .dom('.navi-notifications .alert ')
+      .dom('.alert ')
       .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
 
     assert.dom('.schedule');
@@ -394,10 +394,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     //Attempt to save the schedule now that recipients is valid
     await click('.schedule-modal__save-btn');
-    await waitFor('.navi-notifications .alert');
+    await waitFor('.alert');
 
     assert
-      .dom('.navi-notifications .alert')
+      .dom('.alert')
       .hasText(
         'Report delivery schedule successfully saved!',
         'Successful notification is shown after clicking save and the schedule is valid'

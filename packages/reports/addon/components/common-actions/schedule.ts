@@ -11,70 +11,84 @@
  */
 
 import { reads } from '@ember/object/computed';
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
-import layout from '../../templates/components/common-actions/schedule';
 import config from 'ember-get-config';
+// @ts-ignore
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
 import { get, set, computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { tracked } from '@glimmer/tracking';
+import StoreService from '@ember-data/store';
+// @ts-ignore
+import DeliveryRuleModel from './delivery-rule';
+import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
+import UserService from 'navi-core/services/user';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
-@templateLayout(layout)
-@tagName('')
-export default class ScheduleActionComponent extends Component {
+interface Args {
+  model: DeliveryRuleModel;
+  onDelete: (arg0: any, arg1: any) => void;
+  onSave: (arg0: any, arg1: any) => void;
+  onRevert: (arg0: any, arg1: any) => void;
+}
+
+export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {Service} store
    */
-  @service store;
+  @service store!: StoreService;
 
   /**
    * @property {Service} user
    */
-  @service user;
+  @service user!: UserService;
 
   /**
    * @property {Service} naviNotifications
    */
-  @service naviNotifications;
+  @service naviNotifications!: NaviNotificationService;
 
   /**
    * This property is set in the onOpen action to make sure
    * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  deliveryRule = undefined;
+  deliveryRule: DeliveryRuleModel;
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
    */
-  localDeliveryRule = undefined;
+  localDeliveryRule: DeliveryRuleModel;
 
   /**
    * @property {object} notification - Object that stores an in modal notification
    */
-  notification = undefined;
+  @tracked notification: { text: string } | undefined;
+
+  @tracked isSaving = false;
+
+  @tracked showModal = false;
 
   /**
    * @property {Array} frequencies
    */
-  @computed
+  @computed('config.navi.schedule.frequencies')
   get frequencies() {
-    return arr(get(config, 'navi.schedule.frequencies') || defaultFrequencies);
+    return arr(config.navi.schedule?.frequencies || defaultFrequencies);
   }
 
   /**
    * @property {Array} formats
    */
-  @computed
+  @computed('config.navi.schedule.formats')
   get formats() {
-    let formats = get(config, 'navi.schedule.formats');
+    let formats = config.navi.schedule.frequencies;
 
     if (!formats) {
       formats = defaultFormats.slice();
@@ -90,18 +104,18 @@ export default class ScheduleActionComponent extends Component {
   /**
    * @property {Boolean} isRuleValid
    */
-  @reads('localDeliveryRule.validations.isValid') isRuleValid;
+  @reads('localDeliveryRule.validations.isValid') isRuleValid = false;
 
   /**
    * @property {Boolean} disableSave
    */
   @computed('localDeliveryRule.hasDirtyAttributes', 'isRuleValid', 'isSaving')
   get disableSave() {
-    if (get(this, 'isSaving')) {
+    if (this.isSaving) {
       return true;
     }
 
-    return !(get(this, 'localDeliveryRule.hasDirtyAttributes') && get(this, 'isRuleValid'));
+    return !(this.localDeliveryRule.hasDirtyAttributes && get(this, 'isRuleValid'));
   }
 
   /**
@@ -115,9 +129,9 @@ export default class ScheduleActionComponent extends Component {
    * @returns {DS.Model} - new delivery rule model
    */
   _createNewDeliveryRule() {
-    return get(this, 'store').createRecord('delivery-rule', {
-      deliveryType: get(this, 'model.constructor.modelName'),
-      format: { type: get(this, 'formats.firstObject') },
+    return this.store.createRecord('delivery-rule', {
+      deliveryType: this.args.model.constructor.modelName,
+      format: { type: this.formats.firstObject },
     });
   }
 
@@ -131,13 +145,13 @@ export default class ScheduleActionComponent extends Component {
     if (get(this, 'isRuleValid')) {
       // Only add relationships to the new delivery rule if the fields are valid
       setProperties(deliveryRule, {
-        deliveredItem: get(this, 'model'),
-        owner: get(this, 'user').getUser(),
+        deliveredItem: this.args.model,
+        owner: this.user.getUser(),
       });
 
       set(this, 'attemptedSave', false);
       let savePromise = new RSVP.Promise((resolve, reject) => {
-        this.onSave(deliveryRule, { resolve, reject });
+        this.args.onSave(deliveryRule, { resolve, reject });
       });
 
       return savePromise
@@ -171,7 +185,7 @@ export default class ScheduleActionComponent extends Component {
   doDelete() {
     let deliveryRule = get(this, 'localDeliveryRule'),
       deletePromise = new RSVP.Promise((resolve, reject) => {
-        this.onDelete(deliveryRule, { resolve, reject });
+        this.args.onDelete(deliveryRule, { resolve, reject });
       });
 
     return deletePromise
@@ -199,10 +213,10 @@ export default class ScheduleActionComponent extends Component {
   @action
   onOpen() {
     //Kick off a fetch for existing delivery rules
-    set(this, 'deliveryRule', get(this, 'model.deliveryRuleForUser'));
+    set(this, 'deliveryRule', this.args.model.deliveryRuleForUser);
 
     get(this, 'deliveryRule')
-      .then((rule) => {
+      .then((rule: DeliveryRuleModel) => {
         set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
       })
       .catch(() => {
@@ -215,8 +229,8 @@ export default class ScheduleActionComponent extends Component {
    * @param {Array} recipients - list of email strings
    */
   @action
-  updateRecipients(recipients) {
-    set(this, 'localDeliveryRule.recipients', recipients);
+  updateRecipients(recipients: string[]) {
+    set(this.localDeliveryRule, 'recipients', recipients);
   }
 
   /**
@@ -224,8 +238,8 @@ export default class ScheduleActionComponent extends Component {
    * @param {String} type - format type
    */
   @action
-  updateFormat(type) {
-    set(this, 'localDeliveryRule.format', { type });
+  updateFormat(type: string) {
+    set(this.localDeliveryRule, 'format', { type });
   }
 
   /**
@@ -238,7 +252,7 @@ export default class ScheduleActionComponent extends Component {
       set(this, 'isSaving', false);
       set(this, 'showModal', false);
       set(this, 'attemptedSave', false);
-      set(this, 'notification', null);
+      set(this, 'notification', undefined);
     }
   }
 
@@ -247,6 +261,6 @@ export default class ScheduleActionComponent extends Component {
    */
   @action
   closeNotification() {
-    set(this, 'notification', null);
+    set(this, 'notification', undefined);
   }
 }

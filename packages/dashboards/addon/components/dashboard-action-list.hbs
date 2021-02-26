@@ -52,7 +52,7 @@
           >
             <button 
               type="button"
-              id={{concat "navi-dashboard-action-schedule-" @index}}
+              id="navi-dashboard-action-schedule-{{@index}}"
               disabled={{not dashboard.validations.isTruelyValid}}
               class="schedule schedule-action__button"
               {{on "click" onOpen}}

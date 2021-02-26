@@ -44,6 +44,7 @@
         <PowerSelect
           class="w-full"
           @triggerClass="schedule-modal__frequency-trigger w-full"
+          @dropdownClass="w-full"
           @options={{this.frequencies}}
           @selected={{this.localDeliveryRule.frequency}}
           @disabled={{is-rejected this.deliveryRule}}
@@ -59,6 +60,7 @@
         <PowerSelect
           class="w-full"
           @triggerClass="schedule-modal__format-trigger w-full"
+          @dropdownClass="w-full"
           @disabled={{lt this.formats.length 2}}
           @options={{this.formats}}
           @selected={{this.localDeliveryRule.format.type}}
