@@ -4,18 +4,17 @@
  */
 
 .navi-dashboard {
+  @extend .flex;
+  @extend .flex-1;
+  @extend .flex-column;
   overflow: hidden;
 
-  .display-flex;
-  .flex-1;
-  flex-flow: column;
-
   &__body {
-    .display-flex;
-    .flex-1;
+    @extend .flex;
+    @extend .flex-1;
 
-    background-color: @denali-grey-300;
-    border-bottom: 2px solid @navi-gray-300;
+    background-color: lighten($body-bg-color, $amount: 5);
+    border-bottom: 2px solid $menu-border-color;
     flex-flow: column;
     overflow-y: hidden;
     padding-bottom: 10px;
@@ -27,7 +26,6 @@
   }
 
   &__save-dialogue {
-    background: white;
     bottom: 0px;
     box-shadow: 0px -2px 2px 0px #a0a0a0;
     padding: 12px 20px;

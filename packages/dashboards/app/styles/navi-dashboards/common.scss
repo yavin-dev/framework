@@ -7,19 +7,12 @@
 .navi-dashboard-container {
   .error-container,
   .loader-container {
-    .display-flex;
-    background-color: @denali-grey-300;
+    @extend .flex;
     text-align: center;
     height: 500px;
     border-radius: 2px;
     align-items: center;
     justify-content: center;
-  }
-
-  &__add-widget-text {
-    .clickable;
-    color: @denali-link;
-    display: inline-block;
   }
 
   .loader-container,

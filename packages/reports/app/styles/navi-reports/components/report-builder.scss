@@ -2,8 +2,11 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+
+$container-disabled-bg-color: rgba($color-grey-800, 0.8);
+
 .report-builder {
-  background-color: @denali-grey-300;
+  background-color: lighten($body-bg-color, $amount: 5);
   display: flex;
   flex: 1;
   padding: 5px;
@@ -14,9 +17,8 @@
   }
 
   &__container {
-    background: @navi-white;
-    border: 1px solid #f1f1f1;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    background: $body-bg-color;
+    border: 1px solid $menu-border-color;
     border-radius: 6px;
     display: flex;
     flex: 1;
@@ -26,7 +28,7 @@
   }
 
   &__container--disabled {
-    background: @denali-gray-300;
+    background: $container-disabled-bg-color;
     cursor: not-allowed;
 
     .filter-collection,
@@ -49,22 +51,14 @@
     margin-bottom: 5px;
     min-height: 0;
     &-skel {
-      border: 1px solid @nv-color-border;
-      background-color: @nv-color-background-primary;
+      border: 1px solid denali-color('grey', '500');
+      background-color: $body-bg-color;
       margin: 5px;
     }
   }
 
   &__container--result {
     padding: 0;
-  }
-
-  &__container--table {
-    // 40px -> vertical padding + header height
-    flex: 0 0 33px;
-    font-size: @font-size-mid-base;
-    display: flex;
-    padding: 4px 10px;
   }
 
   &__container--filters {
@@ -100,8 +94,8 @@
       display: flex;
 
       &-icon {
-        color: @denali-brand-600;
-        font-size: @font-size-large;
+        color: denali-color('brand', '300');
+        font-size: $h2-font-size;
         height: 17px;
         width: 17px;
         text-align: center;
@@ -110,16 +104,16 @@
     }
 
     &__message {
-      font-family: @font-family-thin;
-      font-size: @font-size-mid;
+      // font-family: @font-family-thin;
+      // font-size: @font-size-mid;
 
       &--icon {
-        color: @navi-gray-600;
+        color: denali-color('grey', '600');
       }
     }
 
     &__title {
-      font-size: @font-size-base;
+      font-size: $h3-font-size;
       margin: 0;
 
       &-wrapper {
@@ -136,7 +130,7 @@
     overflow: hidden;
 
     .navi-list-selector .navi-list-selector__title::after {
-      background-color: @denali-graph-orange;
+      background-color: $color-orange;
       border-radius: 50%;
       content: '';
       display: inline-block;
@@ -162,7 +156,7 @@
     overflow: hidden;
 
     .navi-list-selector .navi-list-selector__title::after {
-      background-color: @denali-graph-purple;
+      background-color: $color-purple;
       border-radius: 1px;
       content: '';
       display: inline-block;

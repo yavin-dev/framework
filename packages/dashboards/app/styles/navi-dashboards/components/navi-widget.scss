@@ -6,8 +6,8 @@
 .navi-widget {
   .grid-stack-item-content {
     background-color: $body-bg-color;
-    border: 1px solid #f1f1f1;
-    border-bottom-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid $menu-border-color;
+    border-bottom-color: $menu-border-color;
     border-radius: 6px;
     display: flex;
     flex-flow: column;
