@@ -18,32 +18,29 @@ export default class UserService extends Service {
   /**
    * Gets user model given user ID without triggering a fetch, if  user ID not specified gets logged-in user
    *
-   * @method getUser
-   * @param {String} [userId] - user ID
-   * @returns {DS.Model} - user model, if not found returns null
+   * @param userId - user ID
+   * @returns user model, if not found returns null
    */
-  getUser(userId: string = config.navi.user): TODO {
+  getUser(userId: string = config.navi.user) {
     return this.store.peekRecord('user', userId);
   }
 
   /**
    * Finds user given user ID, if user ID not specified gets logged-in user
    *
-   * @method find
-   * @param {String} [userId] - user ID
-   * @returns {Promise} - Promise containing user model
+   * @param userId - user ID
+   * @returns Promise containing user model
    */
-  findUser(userId = config.navi.user): TODO {
+  findUser(userId = config.navi.user) {
     return this.store.findRecord('user', userId);
   }
 
   /**
    * Registers logged-in user
    *
-   * @method register
-   * @returns {Promise} - Promise containing logged-in user model
+   * @returns Promise containing logged-in user model
    */
-  register(): Promise<TODO> {
+  register() {
     const userId = config.navi.user;
     const userModel = this.store.createRecord('user', { id: userId });
 
@@ -53,10 +50,9 @@ export default class UserService extends Service {
   /**
    * Finds logged-in user, if not present registers user
    *
-   * @method findOrRegister
-   * @returns {Promise} - Promise containing logged-in user model
+   * @returns Promise containing logged-in user model
    */
-  findOrRegister(): Promise<TODO> {
+  findOrRegister() {
     return this.findUser().catch((serverError: any) => {
       if (serverError.errors?.[0]?.status === NOT_FOUND) {
         return this.register();

@@ -5,7 +5,10 @@
 import attr from 'ember-data/attr';
 import Fragment from 'ember-data-model-fragments/fragment';
 
-export default class SchedulingRuleFragment extends Fragment {
-  @attr('boolean')
-  mustHaveData!: boolean;
+export default class LayoutFragment extends Fragment {
+  @attr('number') column!: number;
+  @attr('number') row!: number;
+  @attr('number') width!: number;
+  @attr('number') height!: number;
+  @attr('number') widgetId!: number;
 }
