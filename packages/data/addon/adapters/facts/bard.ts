@@ -162,6 +162,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       }
     } else if (timeFilter.operator === 'gte') {
       [start] = timeFilter.values as string[];
+      if (!moment.utc(start).isValid()) {
+        throw new FactAdapterError(`Since operator only supports datetimes, '${start}' is invalid`);
+      }
       end = moment.utc('9999-12-31').startOf(filterGrain).toISOString();
     } else if (timeFilter.operator === 'lte') {
       start = moment
@@ -169,6 +172,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
         .startOf(filterGrain)
         .toISOString();
       [end] = timeFilter.values as string[];
+      if (!moment.utc(end).isValid()) {
+        throw new FactAdapterError(`Before operator only supports datetimes, '${end}' is invalid`);
+      }
     } else {
       assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
     }
