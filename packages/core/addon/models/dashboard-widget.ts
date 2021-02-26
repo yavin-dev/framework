@@ -22,9 +22,9 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The widget must have a title'
-    })
-  ]
+      message: 'The widget must have a title',
+    }),
+  ],
 });
 
 export default class DashboardWidget extends Model.extend(hasVisualization, Validations) {
@@ -74,7 +74,7 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
     return this.store.createRecord('dashboard-widget', {
       title: clonedWidget.title,
       visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization),
-      requests: get(this, 'requests').map(request => request.clone())
+      requests: get(this, 'requests').map((request) => request.clone()),
     });
   }
 }
