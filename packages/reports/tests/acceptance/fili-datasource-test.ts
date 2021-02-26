@@ -126,4 +126,25 @@ module('Acceptance | fili datasource', function (hooks) {
       .hasText('Date Time (day)', 'A date time column exists after switching to a table with no all grain');
     assert.dom('.navi-column-config-item__remove-icon').isDisabled('The date time column cannot be removed');
   });
+
+  test('Fili supports since and before operators', async function (assert) {
+    assert.expect(2);
+
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    await selectChoose('.navi-column-config-item__parameter', 'Year');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Before');
+    await click('.navi-report__run-btn');
+    assert.dom('.table-row').hasText('2013', 'Results are fetched for Before operator');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Since');
+    await click('.dropdown-date-picker__trigger');
+    await click('.ember-power-calendar-selector-nav-control--previous');
+    await click('[data-date="2015"]');
+
+    await click('.navi-report__run-btn');
+    assert.dom('.table-row').hasText('2015', 'Results are fetched for Since operator');
+  });
 });

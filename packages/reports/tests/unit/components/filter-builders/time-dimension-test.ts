@@ -292,7 +292,6 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       'in translates P1D lookback to concrete'
     );
 
-    debugger;
     filter.values = ['P1W', '2018-12-31'];
     filter.parameters.grain = 'isoWeek';
     assert.deepEqual(

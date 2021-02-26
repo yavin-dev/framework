@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
 import config from 'ember-get-config';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import { TestContext } from 'ember-test-helpers';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
@@ -225,7 +225,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(4);
+    assert.expect(9);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -313,6 +313,64 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       /Exactly one 'tableName.dateTime' filter is required, you have 2/,
       '_buildDateTimeParam throws an error for multiple datetime filters'
     );
+
+    const singleValue = (date: string, operator: Filter['operator']): RequestV2 => ({
+      ...EmptyRequest,
+      table: 'tableName',
+      filters: [
+        {
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
+          parameters: {
+            grain: 'isoWeek',
+          },
+          operator: operator,
+          values: [date],
+        },
+      ],
+    });
+
+    const startDate = '2021-02-01';
+    const since = singleValue(startDate, 'gte');
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(since),
+      `${startDate}/9999-12-27T00:00:00.000`,
+      '_buildDateTimeParam uses far future aligned to grain for since operator'
+    );
+
+    const sinceBadDate = singleValue('fakeDate', 'gte');
+    assert.throws(
+      () => Adapter._buildDateTimeParam(sinceBadDate),
+      /FactAdapterError: Since operator only supports datetimes, 'fakeDate' is invalid/,
+      '_buildDateTimeParam throws error if start date is not a valid datetime'
+    );
+
+    const endDate = '2021-03-01';
+    const before = singleValue(endDate, 'lte');
+    let originalDataEpoch = config.navi.dataEpoch;
+    // TODO: Remove once dataEpoch is not required
+    //@ts-expect-error
+    config.navi.dataEpoch = undefined;
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      `0001-01-01T00:00:00.000/${endDate}`,
+      '_buildDateTimeParam uses year 0001 aligned to grain when no dataEpoch is defined'
+    );
+
+    config.navi.dataEpoch = '1999-02-03';
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      `1999-02-01T00:00:00.000/${endDate}`,
+      '_buildDateTimeParam uses dataEpoch aligned to grain if it is defined'
+    );
+
+    const beforeBadDate = singleValue('fakeDate', 'lte');
+    assert.throws(
+      () => Adapter._buildDateTimeParam(beforeBadDate),
+      /FactAdapterError: Before operator only supports datetimes, 'fakeDate' is invalid/,
+      '_buildDateTimeParam throws error if end date is not a valid datetime'
+    );
+    config.navi.dataEpoch = originalDataEpoch;
   });
 
   test('_buildMetricsParam', function (assert) {
