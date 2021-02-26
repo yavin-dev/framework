@@ -33,6 +33,16 @@ dependencies {
     implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr31")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
+    // drivers for models
+    runtimeOnly("org.apache.hive","hive-jdbc","3.1.2"){
+        exclude(group="org.apache.logging.log4j", module = "log4j-slf4j-impl")
+        exclude(group="org.eclipse.jetty", module="jetty-runner")
+    }
+    runtimeOnly("com.facebook.presto","presto-jdbc","0.247")
+    runtimeOnly("org.apache.calcite.avatica","avatica-core","1.17.0")
+    runtimeOnly("mysql","mysql-connector-java","8.0.23")
+    runtimeOnly("org.postgresql","postgresql","42.2.19")
+    // drivers for models
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
     implementation("io.micrometer","micrometer-core", "1.5.1")
     implementation("org.projectlombok", "lombok", "1.18.10")
