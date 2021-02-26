@@ -78,7 +78,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteDashboards = user.hasMany('favoriteDashboards').ids();
+    const favoriteDashboards = user?.hasMany('favoriteDashboards').ids();
     return A(favoriteDashboards).includes(this.get('id'));
   }
 
