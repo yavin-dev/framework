@@ -13,7 +13,6 @@ function loadEnvironmentSettings(hostname, configFile = './config/environments.j
   const environments = require(path.resolve(configFile));
   const defaultSettings = environments['default'];
 
-  console.log(`process.env.APP_ENV=${process.env.APP_ENV}`) || 'local';
   const environment = process.env.APP_ENV || 'local';
   const settings = environments[environment] || {};
 

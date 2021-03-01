@@ -4,7 +4,7 @@
  */
 /* eslint-env node */
 module.exports = function(app) {
-  const { loadEnvironmentSettings, getUser } = require('./utils.js');
+  const { loadEnvironmentSettings } = require('./utils.js');
   const packageJson = require('../package.json');
 
   app.use('/ui/assets/server-generated-config.js', function(req, res /*next*/) {
