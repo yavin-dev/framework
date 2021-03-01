@@ -51,7 +51,9 @@ tasks.withType<Test> {
 }
 
 tasks.withType<ProcessResources> {
-    dependsOn("copyNaviApp")
+    if(!"localElide".equals(System.getenv("APP_ENV"))) {
+        dependsOn("copyNaviApp")
+    }
 }
 
 tasks.withType<KotlinCompile> {

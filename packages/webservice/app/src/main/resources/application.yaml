@@ -1,4 +1,5 @@
 elide:
+  pageSize: 10000
   json-api:
     path: /api/v1
     enabled: true
