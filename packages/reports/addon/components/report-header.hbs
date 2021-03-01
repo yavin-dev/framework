@@ -1,5 +1,5 @@
   <div class="container-full m-b-4">
-    <div class="row m-t-10">
+    <div class="row">
       <div class="col-1-1">
         {{#if (feature-flag "enableDirectory")}}
           <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
@@ -36,13 +36,7 @@
       </div>
       <div class="xs-col-10-10 sm-col-10-10 col-7-10 m-t-10 p-x-0">
         <div class="navi-report__header">
-            {{#if (feature-flag "dashboards")}}
-              {{!-- Disabling to allow calling report-to-widget mixin actions --}}
-              {{!-- template-lint-disable no-action --}}
-              <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
-            {{else}}
-              <ReportActions @model={{@model}} />
-            {{/if}}
+          <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
         </div>
       </div>
     </div>

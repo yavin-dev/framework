@@ -538,7 +538,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/1/view');
 
     assert.deepEqual(
-      findAll('.navi-report__action').map(e => e.textContent.trim()),
+      findAll('.navi-report__header').map(e => e.textContent.trim()),
       ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
       'Export is disabled by default'
     );
@@ -553,10 +553,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     await visit('/reports/1/view');
-
     assert.deepEqual(
-      findAll('.navi-report__action').map(e => e.textContent.trim()),
-      ['API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
+      findAll('.navi-report__header').map(e => e.textContent.trim()),
+      ['API Query', 'Clone', 'Export', '', 'Schedule', 'Delete'],
       'Export is enabled with the feature flag on'
     );
 
@@ -808,22 +807,22 @@ module('Acceptance | Navi Report', function(hooks) {
   test('Share report', async function(assert) {
     /* == Saved report == */
     await visit('/reports/1/view');
-    await click($('.navi-report__action:contains(Share) button')[0]);
+    await click($('.navi-report__header:contains(Share) button')[0]);
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom($('.navi-report__action:contains(Share)')[0])
-      .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for invalid report');
+      .dom($('.navi-report__header:contains(Share)')[0])
+      .hasNoClass('navi-report__header--is-disabled', 'Share action is disabled for invalid report');
 
     // Share is disabled on new
     await visit('/reports/new');
 
     assert
-      .dom($('.navi-report__action:contains(Share)')[0])
-      .hasNoClass('navi-report__action--is-disabled', 'Share action is disabled for new report');
+      .dom($('.navi-report__header:contains(Share)')[0])
+      .hasNoClass('navi-report__header--is-disabled', 'Share action is disabled for new report');
   });
 
   test('Delete report on success', async function(assert) {
@@ -871,15 +870,15 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports/new');
 
     assert
-      .dom($('.navi-report__action:contains(Delete)')[0])
-      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled for a valid report');
+      .dom($('.navi-report__header:contains(Delete)')[0])
+      .hasNoClass('navi-report__header--is-disabled', 'Delete action is enabled for a valid report');
 
     // Delete is not Disabled on valid
     await visit('/reports/1/view');
 
     assert
-      .dom($('.navi-report__action:contains(Delete)')[0])
-      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled for a valid report');
+      .dom($('.navi-report__header:contains(Delete)')[0])
+      .hasNoClass('navi-report__header--is-disabled', 'Delete action is enabled for a valid report');
 
     /*
      * Remove all metrics to create an invalid report
@@ -889,12 +888,12 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom($('.navi-report__action:contains(Delete)')[0])
-      .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled when report is not valid');
+      .dom($('.navi-report__header:contains(Delete)')[0])
+      .hasNoClass('navi-report__header--is-disabled', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
-    await click($('.navi-report__action:contains(Delete) button')[0]);
-
+    await click($('.navi-report__header:contains(Delete)')[0]);
+    debugger;
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');

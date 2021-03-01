@@ -2,11 +2,17 @@
 <div class="navi-report">
 
   {{!-- template-lint-disable no-action --}}
-  <ReportHeader
-    @model={{this.model}}
-    @addToDashboard={{action "addToDashboard"}}
-    @addToNewDashboard={{action "addToNewDashboard"}}
-  />
+  {{#if (feature-flag "dashboards")}}
+    <ReportHeader
+      @model={{this.model}}
+      @addToDashboard={{action "addToDashboard"}}
+      @addToNewDashboard={{action "addToNewDashboard"}}
+    />
+  {{else}}
+    <ReportHeader
+      @model={{this.model}}
+    />
+  {{/if}}
   <div class="navi-report__body">
     <ReportBuilder
       @report={{this.model}}
