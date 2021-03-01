@@ -97,7 +97,7 @@ export default class FilterConsumer extends ActionConsumer {
         values: [],
       };
       let values;
-      if (dimensionMetadataModel.metadataType === 'timeDimension') {
+      if (dimensionMetadataModel.metadataType === 'timeDimension' && defaultOperator === 'bet') {
         values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
       }
 

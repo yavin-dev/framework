@@ -8,6 +8,7 @@ import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
+import MetadataModelRegistry from 'navi-data/models/metadata/registry';
 
 const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -224,9 +225,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         .subtract(1, 'month')
         .format('YYYY-MM')}');col0=le=('${moment()
         .subtract(1, 'month')
-        .format(
-        'YYYY-MM'
-      )}')\\") { edges { node { col0:time(grain:\\"MONTH\\") col1:d1 } } } }"}`,
+        .format('YYYY-MM')}')\\") { edges { node { col0:time(grain:\\"MONTH\\") col1:d1 } } } }"}`,
       'Macros and durations in time-dimension filters are converted to date strings properly ([P1X, current] -> equals 1 X duration)'
     );
 
@@ -582,7 +581,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     //test all of the escaped functionalities and verify them in the below assert
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\\"quote\\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
+      `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\"quote\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
@@ -606,8 +605,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](filters, { 'table1.dim1(p=q)': 'aliasColumn' }),
-      "aliasColumn=in=('*v1*');dim1=in=('*v2*')",
+      adapter['buildFilterStr'](filters, { 'table1.dim1(p=q)': 'col1' }, 'elideData'),
+      "col1=in=('*v1*');dim1=in=('*v2*')",
       '`buildFilterStr` builds correct filter string for an aliased column'
     );
   });
@@ -624,7 +623,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](filters, {}),
+      adapter['buildFilterStr'](filters, {}, 'elideData'),
       "dim1=in=('*v1*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter'
     );
@@ -639,7 +638,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](escapedFilter, {}),
+      adapter['buildFilterStr'](escapedFilter, {}, 'elideData'),
       "dim1=in=('*\\\\'*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter and escaped value'
     );
@@ -657,7 +656,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](noValues, {}),
+      adapter['buildFilterStr'](noValues, {}, 'elideData'),
       '',
       '`buildFilterStr` returns an empty string if no filters have values'
     );
@@ -679,9 +678,55 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](someValues, {}),
+      adapter['buildFilterStr'](someValues, {}, 'elideData'),
       "dim2==('1')",
       '`buildFilterStr` filters out filters with empty values'
+    );
+  });
+
+  test('buildFilterStr - params', async function (assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    let DefaultParams = {};
+    //@ts-expect-error
+    adapter.naviMetadata = {
+      getById<K extends keyof MetadataModelRegistry>(_type: K, _id: string, _dataSourceName: string) {
+        return ({ getDefaultParameters: () => DefaultParams } as unknown) as MetadataModelRegistry[K];
+      },
+    };
+    const noValues: Filter[] = [
+      {
+        field: 'table1.dim1',
+        parameters: { param: 'val' },
+        type: 'dimension',
+        operator: 'contains',
+        values: ['test'],
+      },
+    ];
+    assert.throws(
+      () => adapter['buildFilterStr'](noValues, {}, 'elideData'),
+      /FactAdapterError: Parameters are not supported in elide unles table1.dim1\(param=val\) is added as a column./,
+      '`buildFilterStr` throws an error when there is no alias if non-default params are used'
+    );
+
+    DefaultParams = { param: 'notval' };
+    assert.throws(
+      () => adapter['buildFilterStr'](noValues, {}, 'elideData'),
+      /FactAdapterError: Parameters are not supported in elide unles table1.dim1\(param=val\) is added as a column./,
+      '`buildFilterStr` throws an error when there is no alias if non-default params are used'
+    );
+
+    assert.deepEqual(
+      adapter['buildFilterStr'](noValues, { 'table1.dim1(param=val)': 'col1' }, 'elideData'),
+      `col1=in=('*test*')`,
+      '`buildFilterStr` returns alias if available when there are non-default params'
+    );
+
+    DefaultParams = { param: 'val' };
+
+    assert.deepEqual(
+      adapter['buildFilterStr'](noValues, {}, 'elideData'),
+      `dim1=in=('*test*')`,
+      '`buildFilterStr` returns a filter with no parameters when all are default'
     );
   });
 

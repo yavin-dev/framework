@@ -12,7 +12,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
 import { AjaxError } from 'ember-ajax/errors';
-import { FactAdapterError } from 'navi-data/adapters/facts/bard';
+import { FactAdapterError } from 'navi-data/adapters/facts/interface';
 
 type BardError = {
   description: string;

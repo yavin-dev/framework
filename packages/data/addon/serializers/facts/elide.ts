@@ -7,7 +7,7 @@
 
 import EmberObject from '@ember/object';
 import NaviFactSerializer from './interface';
-import { AsyncQueryResponse, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { AsyncQueryResponse, FactAdapterError, RequestV2 } from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviFactError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
@@ -73,6 +73,9 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
     }
     if (isApolloError(payload)) {
       errors = (payload.errors || []).map((e) => ({ detail: e.message }));
+    }
+    if (payload instanceof FactAdapterError) {
+      errors = [{ title: payload.name, detail: payload.message }];
     }
     return new NaviFactError('Elide Request Failed', errors, payload);
   }
