@@ -1,27 +1,27 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{!-- Check if in need of disabling the button when the action should be disabled --}}
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
-  @onClose={{queue this.closeModal (fn @onRevert this.localDeliveryRule)}}
+  @onClose={{queue this.closeModal (fn this.onRevert this.localDeliveryRule)}}
   ...attributes as |Modal|
 >
   <Modal.Content>
-    <h3 class="schedule-modal__header--primary primary-header m-b-10">Schedule "{{capitalize @model.title}}"</h3>
+    <h3 class="schedule__header--primary m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
     {{#if (is-rejected this.deliveryRule)}}
-        <DenaliAlert @style="danger" @onClose={{this.closeNotification}} class="m-b-30" as |Alert|>
+        <DenaliAlert @style="danger" class="m-b-30" as |Alert|>
           <Alert.Title>Error</Alert.Title>
           <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
         </DenaliAlert>
     {{else}}
         {{#if this.notification}}	
-          <DenaliAlert @style="danger" @onClose={{this.closeNotification}} class="m-b-30" as |Alert|>
+          <DenaliAlert @style="danger" class="m-b-30" as |Alert|>
             <Alert.Title>Error</Alert.Title>
             <Alert.Context>{{this.notification.text}}</Alert.Context>
           </DenaliAlert>
         {{/if}}
     {{/if}}
 
+    {{debugger}}
     {{#if (is-pending this.deliveryRule)}}
       <NaviLoader />
     {{else}}
@@ -86,28 +86,28 @@
           @style="solid"
           disabled={{this.isSaving}}
           type="button"
-          {{on "click" (queue this.closeModal (fn @onRevert this.localDeliveryRule))}}
+          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
         > Cancel
         </DenaliButton>
       {{else}}
         <DenaliButton
           class="schedule-modal__save-btn m-r-5"
           disabled={{this.disableSave}}
+          isLoading={{this.isSaving}}
           {{on "click" (queue (toggle "isSaving" this) this.doSave)}}
-        >
-          {{#if this.isSaving}}
-            <NaviLoadingMessage>
-              Saving schedule
-            </NaviLoadingMessage>
+        >        
+          {{#if this.localDeliveryRule.isNew}}
+            Save
           {{else}}
-            {{#if this.localDeliveryRule.isNew}}Save{{else}}Save Changes{{/if}}
+            Save Changes
           {{/if}}
         </DenaliButton>
         <DenaliButton
           class="schedule-modal__cancel-btn m-r-5"
           disabled={{this.isSaving}}
+          style="ghost"
           type="button"
-          {{on "click" (queue this.closeModal (fn @onRevert this.localDeliveryRule))}}
+          {{on "click" (queue this.closeModal (fn this.onRevert this.localDeliveryRule))}}
         >
           {{#if this.localDeliveryRule.hasDirtyAttributes}}
             Cancel
@@ -121,9 +121,6 @@
           class="schedule-modal__delete-btn button is-danger"
           @disabled={{this.isSaving}}
           @model={{this.localDeliveryRule}}
-          @modelName="schedule"
-          @headerMsg={{concat "Delete schedule for " "\"" @model.title "\""}}
-          @warnMsg={{concat "Are you sure you want to delete the schedule for this" this.localDeliveryRule.deliveryType}}
           @deleteAction={{queue this.doDelete this.closeModal}}
         >
           Delete

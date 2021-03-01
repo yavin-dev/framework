@@ -20,7 +20,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.schedule');
 
-    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule').isVisible('Schedule modal pops up when action is clicked');
 
     // Default View
     assert
@@ -96,7 +96,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal save changes to existing schedule', async function (assert) {
-    assert.expect(8);
+    assert.expect(9);
     await visit('/reports');
 
     // Open an existing schedule
@@ -142,7 +142,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.alert ')
       .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
 
-    assert.dom('.schedule');
+    assert.dom('.schedule-modal').isNotVisible('Modal closes after successful save');
+
     // Reopen the modal
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.schedule');
@@ -211,9 +212,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     // Click confirm deletion
     await click('.delete__delete-btn');
 
-    assert
-      .dom('.schedule-modal__header .primary-header')
-      .isNotVisible('Schedule modal closes after deleting a schedule');
+    assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
 
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.schedule');
@@ -264,9 +263,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     //Cancel changes to the schedule
     await click('.schedule-modal__cancel-btn');
 
-    assert
-      .dom('.schedule-modal__header .primary-header')
-      .isNotVisible('Schedule modal closes after clicking the cancel button');
+    assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after clicking the cancel button');
 
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.schedule');
@@ -336,7 +333,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.dom('.schedule-action__button').isVisible('Button shows up on saved, owned form');
 
     await click('.schedule-action__button');
-    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule').isVisible('Schedule modal pops up when action is clicked');
 
     await visit('/reports/new');
     assert.dom('.schedule-action__button').isNotVisible("Button shouldn't show up on new reports");
@@ -403,9 +400,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         'Successful notification is shown after clicking save and the schedule is valid'
       );
 
-    assert
-      .dom('.schedule-modal__header .primary-header')
-      .isNotVisible('Schedule modal closes after deleting a schedule');
+    assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
 
     // Reopen the modal
     await triggerEvent('.navi-collection__row0', 'mouseenter');

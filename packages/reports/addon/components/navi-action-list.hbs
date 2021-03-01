@@ -62,6 +62,7 @@
     {{#if (feature-flag "enableScheduleReports")}}
       <li class="action">
         <CommonActions::Schedule
+          class="schedule"
           @model={{@item}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
           @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}

@@ -91,6 +91,7 @@
   {{#if (and (feature-flag "enableScheduleReports") (not @model.isNew))}}
     <li class="navi-report__action">
       <CommonActions::Schedule
+        class="schedule"
         @model={{@model}}
         @disabled={{not @model.request.validations.isTruelyValid}}
         @request={{@model.request}}

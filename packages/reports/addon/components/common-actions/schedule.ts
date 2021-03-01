@@ -32,10 +32,10 @@ const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
 interface Args {
-  model: DeliveryRuleModel;
-  onDelete: (arg0: any, arg1: any) => void;
-  onSave: (arg0: any, arg1: any) => void;
-  onRevert: (arg0: any, arg1: any) => void;
+  model: any;
+  onDelete: (arg0: any, arg1: any) => {};
+  onSave: (arg0: any, arg1: any) => {};
+  onRevert: (arg0: any, arg1: any) => {};
 }
 
 export default class ScheduleActionComponent extends Component<Args> {
@@ -88,7 +88,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @computed('config.navi.schedule.formats')
   get formats() {
-    let formats = config.navi.schedule.frequencies;
+    let formats = config.navi.schedule.formats;
 
     if (!formats) {
       formats = defaultFormats.slice();
@@ -138,40 +138,36 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @action doSave
    */
-  @action
-  doSave() {
-    let deliveryRule = get(this, 'localDeliveryRule');
-
-    if (get(this, 'isRuleValid')) {
+  async doSave() {
+    if (this.isRuleValid) {
       // Only add relationships to the new delivery rule if the fields are valid
-      setProperties(deliveryRule, {
+      setProperties(this.localDeliveryRule, {
         deliveredItem: this.args.model,
         owner: this.user.getUser(),
       });
 
       set(this, 'attemptedSave', false);
       let savePromise = new RSVP.Promise((resolve, reject) => {
-        this.args.onSave(deliveryRule, { resolve, reject });
+        this.args.onSave(this.localDeliveryRule, { resolve, reject });
       });
 
-      return savePromise
-        .then(() => {
-          this.naviNotifications.add({
-            title: `${capitalize(get(deliveryRule, 'deliveryType'))} delivery schedule successfully saved!`,
-            style: 'success',
-            timeout: 'short',
-          });
-          this.closeModal();
-        })
-        .catch(({ errors }) => {
-          set(this, 'notification', {
-            text: getApiErrMsg(errors[0], 'There was an error updating your delivery settings'),
-          });
-        })
-        .finally(() => {
-          set(this, 'isSaving', false);
-          set(this, 'attemptedSave', true);
+      try {
+        await savePromise;
+
+        this.naviNotifications.add({
+          title: `${capitalize(this.localDeliveryRule.deliveryType)} delivery schedule successfully saved!`,
+          style: 'success',
+          timeout: 'short',
         });
+        this.closeModal();
+      } catch (errors) {
+        set(this, 'notification', {
+          text: getApiErrMsg(errors[0], 'There was an error updating your delivery settings'),
+        });
+      } finally {
+        set(this, 'isSaving', false);
+        set(this, 'attemptedSave', true);
+      }
     } else {
       set(this, 'isSaving', false);
       set(this, 'attemptedSave', true);
@@ -181,30 +177,28 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @action doDelete
    */
-  @action
-  doDelete() {
+  async doDelete() {
     let deliveryRule = get(this, 'localDeliveryRule'),
       deletePromise = new RSVP.Promise((resolve, reject) => {
         this.args.onDelete(deliveryRule, { resolve, reject });
       });
 
-    return deletePromise
-      .then(() => {
-        //Make sure there is no more local rule after deletion
-        set(this, 'localDeliveryRule', undefined);
+    try {
+      await deletePromise;
+      //Make sure there is no more local rule after deletion
+      set(this, 'localDeliveryRule', undefined);
 
-        //Add Page notification
-        this.naviNotifications.add({
-          title: `Delivery schedule removed`,
-          style: 'success',
-          timeout: 'short',
-        });
-      })
-      .catch(() => {
-        set(this, 'notification', {
-          text: `An error occurred while removing the delivery schedule`,
-        });
+      //Add Page notification
+      this.naviNotifications.add({
+        title: `Delivery schedule removed`,
+        style: 'success',
+        timeout: 'short',
       });
+    } catch (e) {
+      set(this, 'notification', {
+        text: `An error occurred while removing the delivery schedule`,
+      });
+    }
   }
 
   /**
