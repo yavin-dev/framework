@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
@@ -42,11 +42,9 @@ export function getElideField(fieldName: string, parameters: Parameters = {}, al
   const parts = fieldName.split('.');
   const field = parts[parts.length - 1];
 
-  // TODO: Support multiple parameters serialization
-  assert('There is at most one parameter', Object.keys(parameters).length <= 1);
   const paramsInner = Object.entries(parameters)
     .map(([param, val]) => `${param}:"${val}"`)
-    .join('; ');
+    .join(', ');
   const paramsStr = paramsInner.length > 0 ? `(${paramsInner})` : '';
 
   return `${aliasStr}${field}${paramsStr}`;
