@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "lib": ["es2020", "dom"],
+    "target": "es2020",
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -22,14 +21,24 @@
     "module": "es6",
     "experimentalDecorators": true,
     "paths": {
-      "dummy/tests/*": ["tests/*"],
-      "dummy/*": ["tests/dummy/app/*", "app/*"],
-      "navi-notifications": ["addon"],
-      "navi-notifications/*": ["addon/*"],
-      "navi-notifications/test-support": ["addon-test-support"],
-      "navi-notifications/test-support/*": ["addon-test-support/*"],
-      "*": ["types/*"]
+      "dummy/tests/*": [ "tests/*" ],
+      "dummy/*": [ "tests/dummy/app/*", "app/*" ],
+      "navi-notifications": [ "addon" ],
+      "navi-notifications/*": [ "addon/*" ],
+      "navi-notifications/test-support": [ "addon-test-support" ],
+      "navi-notifications/test-support/*": [ "addon-test-support/*" ],
+      "navi-core": ["../core/addon"],
+      "navi-core/*": ["../core/addon/*"],
+      "ember-cli-flash/*": [ "node_modules/ember-cli-flash" ], //https://github.com/poteto/ember-cli-flash/issues/348
+      "*": [ "types/*" ],
     }
   },
-  "include": ["app/**/*", "addon/**/*", "tests/**/*", "types/**/*", "test-support/**/*", "addon-test-support/**/*"]
+  "include": [
+    "app/**/*",
+    "addon/**/*",
+    "tests/**/*",
+    "types/**/*",
+    "test-support/**/*",
+    "addon-test-support/**/*"
+  ]
 }

@@ -16,9 +16,9 @@ import { makeArray } from '@ember/array';
  * @returns {Ember.computed} - Returns computed property giving set difference i.e. setA - setB
  */
 export function computedSetDiff(setAProperty, setBProperty) {
-  return computed(setAProperty, setBProperty, function() {
+  return computed(setAProperty, setBProperty, function () {
     let setA = makeArray(this.get(setAProperty)),
       setB = makeArray(this.get(setBProperty));
-    return setA.filter(element => setB.indexOf(element) === -1);
+    return setA.filter((element) => setB.indexOf(element) === -1);
   });
 }

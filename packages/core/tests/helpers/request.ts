@@ -32,8 +32,8 @@ export function buildTestRequest(
         parameters: { grain: timeGrain },
         operator: 'bet',
         values: [interval.start, interval.end],
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ],
     sorts: [],
     limit: null,
@@ -44,7 +44,7 @@ export function buildTestRequest(
         type: 'timeDimension',
         field: 'network.dateTime',
         parameters: { grain: timeGrain },
-        source: 'bardOne'
+        source: 'bardOne',
       },
       ...metrics.map(({ cid, field, parameters = {} }) => {
         return {
@@ -52,7 +52,7 @@ export function buildTestRequest(
           type: 'metric',
           field: field,
           parameters,
-          source: 'bardOne'
+          source: 'bardOne',
         };
       }),
       ...dimensions.map(({ cid, field, parameters = {} }) => {
@@ -61,9 +61,9 @@ export function buildTestRequest(
           type: 'dimension',
           field: field,
           parameters,
-          source: 'bardOne'
+          source: 'bardOne',
         };
-      })
-    ]
+      }),
+    ],
   });
 }

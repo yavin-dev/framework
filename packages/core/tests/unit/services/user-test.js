@@ -9,28 +9,28 @@ import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
 let Store, NaviUser;
 
-module('Unit | Service | user', function(hooks) {
+module('Unit | Service | user', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     NaviUser = config.navi.user;
     // Mock fact service
     this.owner.register(
       'model:user',
       DS.Model.extend({
-        reports: DS.attr()
+        reports: DS.attr(),
       })
     );
     this.owner.register('adapter:user', UserAdapter);
     Store = this.owner.lookup('service:store');
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     config.navi.user = NaviUser; //reset user in navi config
   });
 
-  test('getUser - invoked without userId param', function(assert) {
+  test('getUser - invoked without userId param', function (assert) {
     assert.expect(2);
 
     let service = this.owner.lookup('service:user');
@@ -44,7 +44,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('getUser - invoked with userId param', function(assert) {
+  test('getUser - invoked with userId param', function (assert) {
     assert.expect(2);
 
     let service = this.owner.lookup('service:user'),
@@ -59,13 +59,13 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findUser - invoked without userId param', function(assert) {
+  test('findUser - invoked without userId param', function (assert) {
     assert.expect(2);
 
     let service = this.owner.lookup('service:user');
 
     return run(() => {
-      return service.findUser().then(user => {
+      return service.findUser().then((user) => {
         let userModel = Store.peekRecord('user', NaviUser);
 
         assert.equal(user, userModel, `findUser returns model for registered logged-in "${NaviUser}" user`);
@@ -78,14 +78,14 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findUser - invoked with userId param', function(assert) {
+  test('findUser - invoked with userId param', function (assert) {
     assert.expect(3);
 
     let service = this.owner.lookup('service:user'),
       userId = 'ciela';
 
     return run(() => {
-      return service.findUser(userId).then(user => {
+      return service.findUser(userId).then((user) => {
         let userModel = Store.peekRecord('user', userId);
 
         assert.ok(user, 'findUser returns a non empty user model');
@@ -100,7 +100,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('register - unregistered logged-in user', function(assert) {
+  test('register - unregistered logged-in user', function (assert) {
     assert.expect(3);
 
     let service = this.owner.lookup('service:user'),
@@ -109,7 +109,7 @@ module('Unit | Service | user', function(hooks) {
     return run(() => {
       assert.notOk(Store.peekRecord('user', naviUser), `"${naviUser}" user is initially not present in the store`);
 
-      return service.register().then(user => {
+      return service.register().then((user) => {
         let userModel = Store.peekRecord('user', naviUser);
 
         assert.ok(user, 'register returns a non empty model as expected');
@@ -119,7 +119,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('register - handle Server error', function(assert) {
+  test('register - handle Server error', function (assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:user');
@@ -137,7 +137,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findOrRegister - unregistered user', function(assert) {
+  test('findOrRegister - unregistered user', function (assert) {
     assert.expect(2);
 
     let service = this.owner.lookup('service:user'),
@@ -146,7 +146,7 @@ module('Unit | Service | user', function(hooks) {
     return run(() => {
       assert.notOk(Store.peekRecord('user', naviUser), `"${naviUser}" user is initially not present in the store`);
 
-      return service.findOrRegister().then(user => {
+      return service.findOrRegister().then((user) => {
         let userModel = Store.peekRecord('user', naviUser);
 
         assert.equal(user, userModel, 'findOrRegister registers an unregistered user and return model as expected');
@@ -154,7 +154,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findOrRegister - registered user not present in store', function(assert) {
+  test('findOrRegister - registered user not present in store', function (assert) {
     assert.expect(3);
 
     let service = this.owner.lookup('service:user');
@@ -166,7 +166,7 @@ module('Unit | Service | user', function(hooks) {
         `"${NaviUser}" user is initially not present in the store`
       );
 
-      return service.findOrRegister().then(user => {
+      return service.findOrRegister().then((user) => {
         let userModel = Store.peekRecord('user', NaviUser);
 
         assert.ok(user, 'findOrRegister returns a non empty user model');
@@ -176,7 +176,7 @@ module('Unit | Service | user', function(hooks) {
     });
   });
 
-  test('findOrRegister - handle Server errors', function(assert) {
+  test('findOrRegister - handle Server errors', function (assert) {
     assert.expect(1);
 
     let service = this.owner.lookup('service:user');

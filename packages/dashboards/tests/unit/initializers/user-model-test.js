@@ -5,15 +5,15 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Store;
 
-module('Unit | Initializer | user', function(hooks) {
+module('Unit | Initializer | user', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
   });
 
-  test('Linking Dashboards to Users', function(assert) {
+  test('Linking Dashboards to Users', function (assert) {
     assert.expect(4);
 
     return run(() => {
@@ -21,7 +21,7 @@ module('Unit | Initializer | user', function(hooks) {
 
       Store.createRecord('dashboard', {
         title: 'Time and Courage',
-        author: user
+        author: user,
       });
 
       assert.equal(user.get('dashboards.length'), 1, 'One dashboard is linked to the user');

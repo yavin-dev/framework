@@ -22,8 +22,8 @@ class DimensionBulkImportSimpleComponent extends Component {
    */
   listFilter(list) {
     const filter = list
-      .map(v => v.trim()) // remove surrounding space
-      .filter(v => v.length > 0); // remove empty values
+      .map((v) => v.trim()) // remove surrounding space
+      .filter((v) => v.length > 0); // remove empty values
     return [...new Set(filter)]; // only unique values
   }
 

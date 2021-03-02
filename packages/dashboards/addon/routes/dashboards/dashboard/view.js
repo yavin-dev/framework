@@ -5,7 +5,6 @@
 
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { get } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 
 export default Route.extend({
@@ -46,8 +45,8 @@ export default Route.extend({
    */
   queryParams: {
     filters: {
-      refreshModel: true
-    }
+      refreshModel: true,
+    },
   },
 
   /**
@@ -68,16 +67,16 @@ export default Route.extend({
     try {
       await this._addFiltersFromQueryParams(dashboard, filterQueryParams);
     } catch (e) {
-      get(this, 'naviNotifications').add({
-        message: `Error decoding filter query params. Using default dashboard filters.`,
-        type: 'danger',
-        timeout: 'medium'
+      this.naviNotifications.add({
+        title: `Error decoding filter query params. Using default dashboard filters.`,
+        style: 'danger',
+        timeout: 'medium',
       });
     }
     const newFilters = dashboard.get('filters').serialize();
 
-    const originalValuelessFilters = originalFilters.filter(fil => fil.values.length === 0);
-    const newValuelessFilters = newFilters.filter(fil => fil.values.length === 0);
+    const originalValuelessFilters = originalFilters.filter((fil) => fil.values.length === 0);
+    const newValuelessFilters = newFilters.filter((fil) => fil.values.length === 0);
 
     const wasEmptyFilterAdded =
       newValuelessFilters.length === originalValuelessFilters.length + 1 &&
@@ -151,14 +150,14 @@ export default Route.extend({
         modelFilters.removeAt(0, modelFilters.get('length'));
       }
 
-      decompressedFilters.filters.map(fil => {
+      decompressedFilters.filters.map((fil) => {
         const newFragmentFields = {
           type: fil.type,
           field: fil.field,
           parameters: fil.parameters,
           operator: fil.operator,
           values: fil.values,
-          source: fil.source
+          source: fil.source,
         };
 
         const newFragment = this.store.createFragment('bard-request-v2/fragments/filter', newFragmentFields);
@@ -193,6 +192,6 @@ export default Route.extend({
         this._cancelWidgetDataTasks();
       }
       return true;
-    }
-  }
+    },
+  },
 });

@@ -10,10 +10,10 @@ module.exports = {
     'plugin:qunit/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'prettier/@typescript-eslint'
+    'prettier/@typescript-eslint',
   ],
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     'ember/no-observers': 'warn',
@@ -38,7 +38,7 @@ module.exports = {
     'prettier/prettier': 'error',
 
     // better handled by prettier:
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
   },
   overrides: [
     // node files
@@ -51,23 +51,23 @@ module.exports = {
         'testem.js',
         'blueprints/*/index.js',
         'config/**/*.js',
-        'tests/dummy/config/**/*.js'
+        'tests/dummy/config/**/*.js',
       ],
       excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
-        sourceType: 'script'
+        sourceType: 'script',
       },
       env: {
         browser: false,
-        node: true
+        node: true,
       },
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
       rules: {
         'multiline-comment-style': ['error', 'starred-block'],
         '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
-      }
+        '@typescript-eslint/no-var-requires': 'off',
+      },
     },
     {
       files: ['tests/**/*.js', 'tests/test-helper.ts'],
@@ -75,8 +75,8 @@ module.exports = {
         'ember/no-jquery': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/no-empty-function': 'off',
-        '@typescript-eslint/ban-ts-ignore': 'off'
-      }
-    }
-  ]
+        '@typescript-eslint/ban-ts-ignore': 'off',
+      },
+    },
+  ],
 };

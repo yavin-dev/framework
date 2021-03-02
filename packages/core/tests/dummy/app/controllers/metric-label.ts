@@ -9,14 +9,14 @@ export default class MetricLabelController extends Controller {
   model!: ModelFrom<MetricLabelRoute>;
   @tracked metricLabelOptions = {
     format: '$0,0[.]00',
-    metricCid: this.model.bottle.firstObject?.request.metricColumns[0].cid
+    metricCid: this.model.bottle.firstObject?.request.metricColumns[0].cid,
   };
 
   get metricVisualization() {
     return {
       type: 'metric-label',
       version: 2,
-      metadata: this.metricLabelOptions
+      metadata: this.metricLabelOptions,
     };
   }
 

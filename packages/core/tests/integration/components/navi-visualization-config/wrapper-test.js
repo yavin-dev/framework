@@ -14,11 +14,11 @@ let Template = hbs`
     onUpdateConfig=(action onUpdateChartConfig)
   }}`;
 
-module('Integration | Component | visualization config/warpper', function(hooks) {
+module('Integration | Component | visualization config/warpper', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     // mocking viz-config component
     this.owner.register(
       'component:navi-visualization-config/mock',
@@ -27,14 +27,14 @@ module('Integration | Component | visualization config/warpper', function(hooks)
         click() {
           const handleUpdateConfig = this.onUpdateConfig;
           if (handleUpdateConfig) handleUpdateConfig('foo');
-        }
+        },
       }),
       { instantiate: false }
     );
 
     this.set('visualization', {
       type: 'mock',
-      metadata: {}
+      metadata: {},
     });
 
     this.set('onUpdateChartConfig', () => null);
@@ -42,7 +42,7 @@ module('Integration | Component | visualization config/warpper', function(hooks)
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('component renders', async function(assert) {
+  test('component renders', async function (assert) {
     assert.expect(1);
 
     await render(Template);
@@ -52,10 +52,10 @@ module('Integration | Component | visualization config/warpper', function(hooks)
       .exists('The Mock component is correctly rendered based on visualization type');
   });
 
-  test('onUpdateChartConfig', async function(assert) {
+  test('onUpdateChartConfig', async function (assert) {
     assert.expect(1);
 
-    this.set('onUpdateChartConfig', result => {
+    this.set('onUpdateChartConfig', (result) => {
       assert.equal(result, 'foo', 'onUpdateChartConfig action is called by the mock component');
     });
 

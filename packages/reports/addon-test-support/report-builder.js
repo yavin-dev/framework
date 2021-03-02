@@ -18,7 +18,7 @@ const selector = {
   timeGrain: '.checkbox-selector--dimension',
   dimension: '.checkbox-selector--dimension',
   metric: '.checkbox-selector--metric',
-  metricConfig: '.metric-config__dropdown-container'
+  metricConfig: '.metric-config__dropdown-container',
 };
 
 /**
@@ -105,7 +105,7 @@ export async function getItem(type, query, itemText) {
  * @param {Object} instance - the test or application instance
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
- * @param {String|undefined} itemText - The text content of the element to click
+ * @param {String|void} itemText - The text content of the element to click
  */
 export async function clickItem(type, query, itemText) {
   assert('clickItem must be passed an accepted type', isAcceptedType(type));
@@ -184,12 +184,12 @@ export async function getAllSelected(type, query) {
 
   const selected = findAll(`${getSelector(type)} ${groupedListItem}`)
     .filter(
-      el =>
+      (el) =>
         el.querySelector('.fa-minus-circle') ||
         el.querySelector(groupedListItemSelected) ||
         el.querySelector('input:checked')
     )
-    .map(el => el.textContent.trim());
+    .map((el) => el.textContent.trim());
 
   await resetRenderAll();
   return selected;
@@ -205,7 +205,7 @@ export async function getAll(type, query) {
   assert('getAll must be passed an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(type, query);
 
-  const all = findAll(`${getSelector(type)} ${groupedListItem}`).map(el => el.textContent.trim());
+  const all = findAll(`${getSelector(type)} ${groupedListItem}`).map((el) => el.textContent.trim());
 
   await resetRenderAll();
   return all;

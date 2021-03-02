@@ -6,17 +6,17 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { clickItemFilter, clickItem } from 'navi-reports/test-support/report-builder';
 
-module('Acceptance | navi-report - report visualizations', function(hooks) {
+module('Acceptance | navi-report - report visualizations', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('filter changes line chart series', async function(assert) {
+  test('filter changes line chart series', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/1/view');
 
     assert.deepEqual(
-      findAll('.c3-legend-item').map(el => el.textContent.trim()),
+      findAll('.c3-legend-item').map((el) => el.textContent.trim()),
       ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'Without filters, three series are shown in the chart'
     );
@@ -27,13 +27,13 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     await click('.navi-report__run-btn');
 
     assert.deepEqual(
-      findAll('.c3-legend-item').map(el => el.textContent.trim()),
+      findAll('.c3-legend-item').map((el) => el.textContent.trim()),
       ['Property 1'],
       'With filter, only the filtered series is shown'
     );
   });
 
-  test('Table column sort', async function(assert) {
+  test('Table column sort', async function (assert) {
     assert.expect(37);
 
     await visit('/reports/2/view');
@@ -280,7 +280,7 @@ module('Acceptance | navi-report - report visualizations', function(hooks) {
     assert.dom('.table-widget').isVisible('table visualization is still shown');
   });
 
-  test('Table Column Config - Does not prompt for rerun', async function(assert) {
+  test('Table Column Config - Does not prompt for rerun', async function (assert) {
     assert.expect(1);
 
     await visit('/reports/2');

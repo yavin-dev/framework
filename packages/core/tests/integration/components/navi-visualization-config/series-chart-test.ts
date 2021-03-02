@@ -20,18 +20,18 @@ let Template = hbs`
   @onUpdateConfig={{this.onUpdateChartConfig}}
 />`;
 
-module('Integration | Component | visualization config/series chart', function(hooks) {
+module('Integration | Component | visualization config/series chart', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.set('seriesType', 'dimension');
     this.set('seriesConfig', {
       metricCid: 'cid_adClicks',
       dimensions: [
         { name: 'Foo1', values: { cid_age: '1' } },
-        { name: 'Foo2', values: { cid_age: '2' } }
-      ]
+        { name: 'Foo2', values: { cid_age: '2' } },
+      ],
     });
 
     this.setProperties({
@@ -39,20 +39,20 @@ module('Integration | Component | visualization config/series chart', function(h
         [
           { cid: 'cid_adClicks', field: 'adClicks' },
           { cid: 'cid_pageViews', field: 'pageViews' },
-          { cid: 'cid_revenue(currency=USD)', field: 'revenue', parameters: { currency: 'USD' } }
+          { cid: 'cid_revenue(currency=USD)', field: 'revenue', parameters: { currency: 'USD' } },
         ],
         [],
         { start: 'P7D', end: 'current' },
         'day'
       ),
       response: { rows: [], meta: {} },
-      onUpdateChartConfig: () => null
+      onUpdateChartConfig: () => null,
     });
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('metric selector', async function(assert) {
+  test('metric selector', async function (assert) {
     assert.expect(4);
 
     await render(Template);

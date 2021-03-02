@@ -54,5 +54,5 @@ export default Factory.extend({
           return `${faker.commerce.productName()} (enum)`;
         })
       : [];
-  }
+  },
 });

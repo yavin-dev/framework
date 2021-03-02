@@ -9,7 +9,7 @@ export default [
     deliveryRuleIds: [1, 2, 3],
     dashboardIds: [1, 2, 5],
     dashboardWidgetIds: [1, 2, 3, 4, 5],
-    roleIds: []
+    roleIds: [],
   },
   {
     id: 'ciela',
@@ -21,7 +21,7 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [3, 4],
     dashboardWidgetIds: [],
-    roleIds: []
+    roleIds: [],
   },
   {
     id: 'midna',
@@ -33,6 +33,6 @@ export default [
     deliveryRuleIds: [],
     dashboardIds: [],
     dashboardWidgetIds: [],
-    roleIds: ['admin']
-  }
+    roleIds: ['admin'],
+  },
 ];

@@ -33,7 +33,7 @@ type C3Data = { series: C3Row[]; names: Record<string, string> };
 export const BLANK_X_VALUE = '';
 export const EmptyC3Data: C3Data = {
   series: [{ x: { rawValue: BLANK_X_VALUE, displayValue: BLANK_X_VALUE } } as C3Row],
-  names: {}
+  names: {},
 };
 
 export interface BaseChartBuilder {

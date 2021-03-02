@@ -26,7 +26,7 @@ function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
         type: 'timeDimension',
         field: 'tableName.dateTime',
         parameters: { grain: timeGrain },
-        source: 'bardOne'
+        source: 'bardOne',
       },
       ...metrics.map(({ cid, metric, parameters = {} }) => {
         return {
@@ -34,7 +34,7 @@ function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
           type: 'metric',
           field: metric,
           parameters,
-          source: 'bardOne'
+          source: 'bardOne',
         };
       }),
       ...dimensions.map(({ cid, dimension, field }) => {
@@ -43,27 +43,24 @@ function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
           type: 'dimension',
           field: dimension,
           parameters: { field },
-          source: 'bardOne'
+          source: 'bardOne',
         };
-      })
-    ]
+      }),
+    ],
   });
 }
 
-module('Unit | Model | Table Visualization Fragment', function(hooks) {
+module('Unit | Model | Table Visualization Fragment', function (hooks) {
   setupTest(hooks);
 
-  test('default value', function(assert) {
+  test('default value', function (assert) {
     assert.expect(1);
 
     let metricsAndDims = [
         [{ dimension: 'd1' }, { dimension: 'd2' }],
-        [{ metric: 'm1' }, { metric: 'm2' }]
+        [{ metric: 'm1' }, { metric: 'm2' }],
       ],
-      table = this.owner
-        .lookup('service:store')
-        .createRecord('all-the-fragments')
-        .get('table');
+      table = this.owner.lookup('service:store').createRecord('all-the-fragments').get('table');
 
     assert.strictEqual(
       table.isValidForRequest(buildTestRequest(...metricsAndDims)),
@@ -72,12 +69,12 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     );
   });
 
-  test('valid and invalid table fragment', function(assert) {
+  test('valid and invalid table fragment', function (assert) {
     assert.expect(3);
 
     let metricsAndDims = [
         [{ dimension: 'd1' }, { dimension: 'd2', field: 'id' }, { dimension: 'd2', field: 'desc' }],
-        [{ metric: 'm1' }, { cid: 'thisone', metric: 'm2' }]
+        [{ metric: 'm1' }, { cid: 'thisone', metric: 'm2' }],
       ],
       request = buildTestRequest(...metricsAndDims, 'day'),
       model = this.owner.lookup('service:store').createRecord('all-the-fragments');
@@ -92,10 +89,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       metadata: {
         columnAttributes: {
           thisone: {
-            format: 'yes'
-          }
-        }
-      }
+            format: 'yes',
+          },
+        },
+      },
     });
 
     assert.strictEqual(
@@ -107,10 +104,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       metadata: {
         columnAttributes: {
           randomId: {
-            format: 'no'
-          }
-        }
-      }
+            format: 'no',
+          },
+        },
+      },
     });
     assert.strictEqual(
       model.get('table').isValidForRequest(request),
@@ -119,22 +116,19 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     );
   });
 
-  test('rebuildConfig', function(assert) {
+  test('rebuildConfig', function (assert) {
     assert.expect(3);
 
-    const table = this.owner
-        .lookup('service:store')
-        .createRecord('all-the-fragments')
-        .get('table'),
+    const table = this.owner.lookup('service:store').createRecord('all-the-fragments').get('table'),
       request1 = buildTestRequest(
         [
           { dimension: 'd1' },
           { cid: 'byedimension', dimension: 'd2', field: 'id' },
-          { dimension: 'd2', field: 'desc' }
+          { dimension: 'd2', field: 'desc' },
         ],
         [
           { cid: 'persistme', metric: 'm1', parameters: { gone: 'no' } },
-          { cid: 'byeparam', metric: 'm2', parameters: { gone: 'yes' } }
+          { cid: 'byeparam', metric: 'm2', parameters: { gone: 'yes' } },
         ],
         'month'
       ),
@@ -144,10 +138,10 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
       config1,
       {
         metadata: {
-          columnAttributes: {}
+          columnAttributes: {},
         },
         type: 'table',
-        version: 2
+        version: 2,
       },
       'table config is created with no extra attributes when it has no existing column attributes'
     );
@@ -155,15 +149,15 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
     set(table, 'metadata', {
       columnAttributes: {
         persistme: {
-          format: 'ok'
+          format: 'ok',
         },
         byeparam: {
-          format: 'bye param'
+          format: 'bye param',
         },
         byedimension: {
-          format: 'bye dimension'
-        }
-      }
+          format: 'bye dimension',
+        },
+      },
     });
     const request2 = buildTestRequest(
       [],
@@ -177,12 +171,12 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         metadata: {
           columnAttributes: {
             persistme: {
-              format: 'ok'
-            }
-          }
+              format: 'ok',
+            },
+          },
         },
         type: 'table',
-        version: 2
+        version: 2,
       },
       'Only valid existing column attributes are moved over'
     );
@@ -195,12 +189,12 @@ module('Unit | Model | Table Visualization Fragment', function(hooks) {
         metadata: {
           columnAttributes: {
             persistme: {
-              format: 'ok'
-            }
-          }
+              format: 'ok',
+            },
+          },
         },
         type: 'table',
-        version: 2
+        version: 2,
       },
       'Columns config should be persistent'
     );

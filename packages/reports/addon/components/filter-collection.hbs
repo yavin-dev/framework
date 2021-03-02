@@ -5,6 +5,7 @@
       {{#if @isCollapsed}}
         <FilterBuilder
           class="filter-collection--collapsed-item"
+          @isRequired={{filter.isRequired}}
           @filter={{filter.fragment}}
           @request={{@request}}
           @isCollapsed={{true}}
@@ -19,12 +20,13 @@
               @size="medium"
               @icon="minus-circle"
               @iconOnly={{true}}
-              disable={{filter.required}}
+              disabled={{filter.isRequired}}
               {{on "click" (fn @onRemoveFilter filter.fragment)}}
             />
           </div>
           <FilterBuilder
             class="filter-collection__builder row flex-1"
+            @isRequired={{filter.isRequired}}
             @filter={{filter.fragment}}
             @request={{@request}}
             @onUpdateFilter={{fn @onUpdateFilter filter.fragment}}

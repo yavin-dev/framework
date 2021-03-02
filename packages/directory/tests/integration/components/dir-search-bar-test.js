@@ -4,15 +4,15 @@ import { fillIn, render, triggerEvent } from '@ember/test-helpers';
 import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | dir search bar', function(hooks) {
+module('Integration | Component | dir search bar', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(2);
 
     const fillInText = 'testString';
 
-    set(this, 'searchFor', val => {
+    set(this, 'searchFor', (val) => {
       assert.equal(val, fillInText, 'The entered text is passed on to the action on `key-up`');
     });
 

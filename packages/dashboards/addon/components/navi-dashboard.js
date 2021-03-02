@@ -31,7 +31,7 @@ export default Component.extend({
    */
   dashboardIsDirty: computed(
     'dashboard.{hasDirtyAttributes,filters.hasDirtyAttributes,presentation.hasDirtyAttributes}',
-    function() {
+    function () {
       const dashboard = this.get('dashboard');
 
       return (
@@ -40,5 +40,5 @@ export default Component.extend({
         dashboard.get('presentation.hasDirtyAttributes')
       );
     }
-  )
+  ),
 });

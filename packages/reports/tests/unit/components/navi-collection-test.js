@@ -1,14 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Component | navi collection', function(hooks) {
+module('Unit | Component | navi collection', function (hooks) {
   setupTest(hooks);
 
-  test('itemRoute and itemNewRoute', function(assert) {
+  test('itemRoute and itemNewRoute', function (assert) {
     assert.expect(4);
 
     let component = this.owner.factoryFor('component:navi-collection').create({
-      itemType: 'report'
+      itemType: 'report',
     });
 
     assert.equal(component.get('itemRoute'), 'reports.report', 'itemRoute is computed based on itemType');
@@ -17,7 +17,7 @@ module('Unit | Component | navi collection', function(hooks) {
 
     component.set('config', {
       itemRoute: 'customReports.report',
-      itemNewRoute: 'customReports.new'
+      itemNewRoute: 'customReports.new',
     });
 
     assert.equal(

@@ -13,6 +13,6 @@ export default Mixin.create({
      */
     didUpdateVisualization(metadata) {
       set(this, 'currentModel.visualization', metadata);
-    }
-  }
+    },
+  },
 });

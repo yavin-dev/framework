@@ -13,11 +13,11 @@ interface TestContext extends Context {
   filter: FilterFragment;
 }
 
-module('Integration | Component | filter values/invalid value', function(hooks) {
+module('Integration | Component | filter values/invalid value', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     this.fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
     this.set('filter.values', undefined);

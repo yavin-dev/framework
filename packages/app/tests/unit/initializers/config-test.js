@@ -6,16 +6,16 @@ import config from 'navi-app/config/environment';
 
 let registry, application;
 
-module('Unit | Initializers | config', function(hooks) {
-  hooks.beforeEach(function() {
-    run(function() {
+module('Unit | Initializers | config', function (hooks) {
+  hooks.beforeEach(function () {
+    run(function () {
       application = Application.create();
       registry = application.registry;
       application.deferReadiness();
     });
   });
 
-  test('App settings', function(assert) {
+  test('App settings', function (assert) {
     assert.expect(3);
 
     initialize(registry, application);

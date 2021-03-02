@@ -10,11 +10,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-expect-error
 import { drag } from 'ember-sortable/test-support/helpers';
 
-module('Acceptance | line chart', function(hooks) {
+module('Acceptance | line chart', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('tooltip updates', async function(assert) {
+  test('tooltip updates', async function (assert) {
     assert.expect(2);
 
     await visit('/line-chart');
@@ -36,19 +36,19 @@ module('Acceptance | line chart', function(hooks) {
       );
   });
 
-  test('custom chart builders', async function(assert) {
+  test('custom chart builders', async function (assert) {
     assert.expect(1);
 
     await visit('/line-chart');
 
     assert.deepEqual(
-      findAll('.custom-chart-builder .c3-legend-item').map(e => e.textContent),
+      findAll('.custom-chart-builder .c3-legend-item').map((e) => e.textContent),
       ['custom', 'series', 'grouping'],
       'A custom chart builder can be supplied for unique series grouping logic'
     );
   });
 
-  test('line style options', async function(assert) {
+  test('line style options', async function (assert) {
     await visit('/line-chart');
 
     let linePath = find('svg .c3-chart-line.chart-series-0 .c3-lines path')?.getAttribute('d');
@@ -73,7 +73,7 @@ module('Acceptance | line chart', function(hooks) {
     assert.dom('.line-chart-config__area-opt-select').isNotChecked('Area is off');
   });
 
-  test('series reorder - metric', async function(assert) {
+  test('series reorder - metric', async function (assert) {
     assert.expect(4);
 
     await visit('/line-chart');
@@ -83,12 +83,12 @@ module('Acceptance | line chart', function(hooks) {
 
     const beforeOrder = ['Unique Identifiers', 'Total Page Views', 'Revenue (USD)'];
     assert.deepEqual(
-      findAll('.line-chart-config__series-config__item__content').map(el => el.textContent?.trim()),
+      findAll('.line-chart-config__series-config__item__content').map((el) => el.textContent?.trim()),
       beforeOrder,
       'The headers are ordered in their initial order'
     );
     assert.deepEqual(
-      findAll('.chart-container.metric .c3-legend-item').map(el => el.textContent?.trim()),
+      findAll('.chart-container.metric .c3-legend-item').map((el) => el.textContent?.trim()),
       beforeOrder,
       'The legend is ordered in the initial order'
     );
@@ -102,20 +102,20 @@ module('Acceptance | line chart', function(hooks) {
 
     const afterOrder = ['Total Page Views', 'Unique Identifiers', 'Revenue (USD)'];
     assert.deepEqual(
-      findAll('.chart-container.metric .line-chart-config__series-config__item__content').map(el =>
+      findAll('.chart-container.metric .line-chart-config__series-config__item__content').map((el) =>
         el.textContent?.trim()
       ),
       afterOrder,
       'The headers are reordered as specified by the reorder'
     );
     assert.deepEqual(
-      findAll('.chart-container.metric .c3-legend-item').map(el => el.textContent?.trim()),
+      findAll('.chart-container.metric .c3-legend-item').map((el) => el.textContent?.trim()),
       afterOrder,
       'The legend is reordered as specified by the reorder'
     );
   });
 
-  test('series reorder - dimension', async function(assert) {
+  test('series reorder - dimension', async function (assert) {
     assert.expect(4);
 
     await visit('/line-chart');
@@ -125,14 +125,14 @@ module('Acceptance | line chart', function(hooks) {
 
     const beforeOrder = ['-3,All Other', '4,21-24', '5,25-29'];
     assert.deepEqual(
-      findAll('.chart-container.dimension .line-chart-config__series-config__item__content').map(el =>
+      findAll('.chart-container.dimension .line-chart-config__series-config__item__content').map((el) =>
         el.textContent?.trim()
       ),
       beforeOrder,
       'The headers are ordered in their initial order'
     );
     assert.deepEqual(
-      findAll('.chart-container.dimension .c3-legend-item').map(el => el.textContent?.trim()),
+      findAll('.chart-container.dimension .c3-legend-item').map((el) => el.textContent?.trim()),
       beforeOrder,
       'The legend is ordered in the initial order'
     );
@@ -146,14 +146,14 @@ module('Acceptance | line chart', function(hooks) {
 
     const afterOrder = ['4,21-24', '-3,All Other', '5,25-29'];
     assert.deepEqual(
-      findAll('.chart-container.dimension .line-chart-config__series-config__item__content').map(el =>
+      findAll('.chart-container.dimension .line-chart-config__series-config__item__content').map((el) =>
         el.textContent?.trim()
       ),
       afterOrder,
       'The headers are reordered as specified by the reorder'
     );
     assert.deepEqual(
-      findAll('.chart-container.dimension .c3-legend-item').map(el => el.textContent?.trim()),
+      findAll('.chart-container.dimension .c3-legend-item').map((el) => el.textContent?.trim()),
       afterOrder,
       'The legend is reordered as specified by the reorder'
     );

@@ -36,29 +36,29 @@ const RequestJSON = {
       parameters: {},
       type: 'metric',
       cid: 'cid_totalPageViews',
-      source: 'bardOne'
+      source: 'bardOne',
     },
     {
       field: 'uniqueIdentifier',
       parameters: {},
       type: 'metric',
       cid: 'cid_uniqueIdentifier',
-      source: 'bardOne'
+      source: 'bardOne',
     },
     {
       field: 'age',
       parameters: { field: 'desc' },
       type: 'dimension',
       cid: 'cid_age(field=desc)',
-      source: 'bardOne'
+      source: 'bardOne',
     },
     {
       field: 'network.dateTime',
       parameters: { grain: 'day' },
       type: 'timeDimension',
       cid: 'cid_network.dateTime(grain=day)',
-      source: 'bardOne'
-    }
+      source: 'bardOne',
+    },
   ],
   filters: [
     {
@@ -67,21 +67,21 @@ const RequestJSON = {
       type: 'timeDimension',
       operator: 'bet',
       values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
-      source: 'bardOne'
-    }
+      source: 'bardOne',
+    },
   ],
   sorts: [],
   requestVersion: '2.0',
-  dataSource: 'bardOne'
+  dataSource: 'bardOne',
 };
 
 let MetadataService: NaviMetadataService;
 
-module('Integration | Component | pie chart', function(hooks) {
+module('Integration | Component | pie chart', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     injectC3Enhancements();
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
@@ -94,7 +94,7 @@ module('Integration | Component | pie chart', function(hooks) {
           uniqueIdentifier: 155191081,
           totalPageViews: 310382162,
           'revenue(currency=USD)': 200,
-          'revenue(currency=CAD)': 300
+          'revenue(currency=CAD)': 300,
         },
         {
           'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -102,7 +102,7 @@ module('Integration | Component | pie chart', function(hooks) {
           uniqueIdentifier: 55191081,
           totalPageViews: 2072620639,
           'revenue(currency=USD)': 300,
-          'revenue(currency=CAD)': 256
+          'revenue(currency=CAD)': 256,
         },
         {
           'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -110,7 +110,7 @@ module('Integration | Component | pie chart', function(hooks) {
           uniqueIdentifier: 55191081,
           totalPageViews: 2620639,
           'revenue(currency=USD)': 400,
-          'revenue(currency=CAD)': 5236
+          'revenue(currency=CAD)': 5236,
         },
         {
           'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -118,7 +118,7 @@ module('Integration | Component | pie chart', function(hooks) {
           uniqueIdentifier: 55191081,
           totalPageViews: 72620639,
           'revenue(currency=USD)': 500,
-          'revenue(currency=CAD)': 4321
+          'revenue(currency=CAD)': 4321,
         },
         {
           'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -126,24 +126,24 @@ module('Integration | Component | pie chart', function(hooks) {
           uniqueIdentifier: 55191081,
           totalPageViews: 72620639,
           'revenue(currency=USD)': 600,
-          'revenue(currency=CAD)': 132
-        }
-      ]
+          'revenue(currency=CAD)': 132,
+        },
+      ],
     });
     Model = A([
       {
         request: Request,
-        response: Response
-      }
+        response: Response,
+      },
     ]);
     this.model = Model;
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     MetadataService['keg'].reset();
   });
 
-  test('it renders for a dimension series', async function(assert) {
+  test('it renders for a dimension series', async function (assert) {
     assert.expect(4);
 
     this.set('options', {
@@ -154,15 +154,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': 'Under 13' },
+            },
+          ],
+        },
+      },
     });
     await render(TEMPLATE);
 
@@ -179,14 +179,14 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
-  test('it renders for a metric series', async function(assert) {
+  test('it renders for a metric series', async function (assert) {
     assert.expect(4);
 
     this.set('options', {
       series: {
         type: 'metric',
-        config: {}
-      }
+        config: {},
+      },
     });
     await render(TEMPLATE);
 
@@ -203,14 +203,14 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('33.33%', 'Percentage label shown on slice is formatted properly for `Unique Identifier`');
   });
 
-  test('metric label', async function(assert) {
+  test('metric label', async function (assert) {
     assert.expect(7);
 
     this.set('options', {
       series: {
         type: 'metric',
-        config: {}
-      }
+        config: {},
+      },
     });
 
     await render(TEMPLATE);
@@ -225,15 +225,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': 'Under 13' },
+            },
+          ],
+        },
+      },
     });
 
     await render(TEMPLATE);
@@ -275,15 +275,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': 'Under 13' },
+            },
+          ],
+        },
+      },
     });
 
     //Recalculate these after the chart is rerendered
@@ -292,10 +292,7 @@ module('Integration | Component | pie chart', function(hooks) {
       getTranslation(chartElm?.getAttribute('transform') as string).x -
       (chartElm?.getBoundingClientRect().width as number) / 2 -
       50;
-    yTranslate =
-      (($('svg')
-        .css('height')
-        .replace('px', '') as unknown) as number) / 2;
+    yTranslate = (($('svg').css('height').replace('px', '') as unknown) as number) / 2;
 
     assert.dom('.c3-title').hasText('Unique Identifiers', 'The metric label is updated after the metric is changed');
 
@@ -312,7 +309,7 @@ module('Integration | Component | pie chart', function(hooks) {
     );
   });
 
-  test('metric label - column alias', async function(this: TestContext, assert) {
+  test('metric label - column alias', async function (this: TestContext, assert) {
     this.set('options', {
       series: {
         type: 'dimension',
@@ -321,15 +318,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': 'Under 13' },
+            },
+          ],
+        },
+      },
     });
 
     await render(TEMPLATE);
@@ -349,7 +346,7 @@ module('Integration | Component | pie chart', function(hooks) {
     assert.dom('.c3-title').hasText('Total Page Views', 'The original metric name is restored on update');
   });
 
-  test('parameterized metric renders correctly for dimension series', async function(assert) {
+  test('parameterized metric renders correctly for dimension series', async function (assert) {
     const clonedModel = (cloneDeep(Model.firstObject) as unknown) as {
       request: RequestFragment;
       response: NaviFactResponse;
@@ -361,8 +358,8 @@ module('Integration | Component | pie chart', function(hooks) {
         parameters: { currency: 'USD' },
         type: 'metric',
         cid: 'cid_revenue(currency=USD)',
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ];
     clonedModel.request = this.owner
       .lookup('service:store')
@@ -376,15 +373,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' }
+              values: { 'cid_age(field=desc)': 'All Other' },
             },
             {
               name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_age(field=desc)': 'Under 13' },
+            },
+          ],
+        },
+      },
     });
 
     await render(TEMPLATE);
@@ -404,7 +401,7 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
-  test('renders correctly with multi datasource', async function(assert) {
+  test('renders correctly with multi datasource', async function (assert) {
     assert.expect(1);
     MetadataService['keg'].reset();
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
@@ -414,22 +411,22 @@ module('Integration | Component | pie chart', function(hooks) {
         type: 'timeDimension',
         parameters: { grain: 'day' },
         cid: 'cid_inventory.dateTime(grain=day)',
-        source: 'bardTwo'
+        source: 'bardTwo',
       },
       {
         field: 'globallySold',
         parameters: {},
         type: 'metric',
         cid: 'cid_globallySold',
-        source: 'bardTwo'
+        source: 'bardTwo',
       },
       {
         field: 'container',
         parameters: { field: 'desc' },
         type: 'dimension',
         cid: 'cid_container(field=desc)',
-        source: 'bardTwo'
-      }
+        source: 'bardTwo',
+      },
     ];
     const newFilters = [
       {
@@ -438,30 +435,30 @@ module('Integration | Component | pie chart', function(hooks) {
         type: 'timeDimension',
         operator: 'bet',
         values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
-        source: 'bardTwo'
-      }
+        source: 'bardTwo',
+      },
     ];
     const bardTwoModel = {
       request: this.owner.lookup('service:store').createFragment('bard-request-v2/request', {
         ...RequestJSON,
         columns: newColumns,
         filters: newFilters,
-        dataSource: 'bardTwo'
+        dataSource: 'bardTwo',
       }),
       response: NaviFactResponse.create({
         rows: [
           {
             'inventory.dateTime(grain=day)': '2015-12-14 00:00:00.000',
             'container(field=desc)': 'Bag',
-            globallySold: 155191081
+            globallySold: 155191081,
           },
           {
             'inventory.dateTime(grain=day)': '2015-12-14 00:00:00.000',
             'container(field=desc)': 'Bank',
-            globallySold: 55191081
-          }
-        ]
-      })
+            globallySold: 55191081,
+          },
+        ],
+      }),
     };
     this.set('model', A([bardTwoModel]));
 
@@ -473,15 +470,15 @@ module('Integration | Component | pie chart', function(hooks) {
           dimensions: [
             {
               name: 'Bag',
-              values: { 'cid_container(field=desc)': 'Bag' }
+              values: { 'cid_container(field=desc)': 'Bag' },
             },
             {
               name: 'Bank',
-              values: { 'cid_container(field=desc)': 'Bank' }
-            }
-          ]
-        }
-      }
+              values: { 'cid_container(field=desc)': 'Bank' },
+            },
+          ],
+        },
+      },
     });
 
     await render(TEMPLATE);
@@ -491,7 +488,7 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('How many have sold worldwide', 'The metric name is displayed in the metric label correctly');
   });
 
-  test('parameterized metric renders correctly for metric series', async function(assert) {
+  test('parameterized metric renders correctly for metric series', async function (assert) {
     assert.expect(4);
     const clonedModel = cloneDeep(Model.firstObject) as VisualizationModelEntry;
     const newColumns = [
@@ -499,32 +496,32 @@ module('Integration | Component | pie chart', function(hooks) {
         field: 'network.dateTime',
         parameters: { grain: 'day' },
         type: 'timeDimension',
-        cid: 'cid_network.dateTime(grain=day)'
+        cid: 'cid_network.dateTime(grain=day)',
       },
       {
         field: 'revenue',
         parameters: { currency: 'USD' },
         type: 'metric',
-        cid: 'cid_revenue(currency=USD)'
+        cid: 'cid_revenue(currency=USD)',
       },
       {
         field: 'revenue',
         parameters: { currency: 'CAD' },
         type: 'metric',
-        cid: 'cid_revenue(currency=CAD)'
-      }
+        cid: 'cid_revenue(currency=CAD)',
+      },
     ];
     clonedModel.request = this.owner
       .lookup('service:store')
       .createFragment('bard-request-v2/request', { ...RequestJSON, columns: newColumns });
-    clonedModel.request.columns.forEach(c => (c.source = Request.dataSource));
+    clonedModel.request.columns.forEach((c) => (c.source = Request.dataSource));
     this.set('model', A([clonedModel]));
 
     this.set('options', {
       series: {
         type: 'metric',
-        config: {}
-      }
+        config: {},
+      },
     });
 
     await render(TEMPLATE);
@@ -542,7 +539,7 @@ module('Integration | Component | pie chart', function(hooks) {
       .hasText('60%', 'Percentage label shown on slice is formatted properly for `Revenue (CAD)`');
   });
 
-  test('cleanup tooltip', async function(assert) {
+  test('cleanup tooltip', async function (assert) {
     assert.expect(2);
 
     const template = hbs`
@@ -560,10 +557,10 @@ module('Integration | Component | pie chart', function(hooks) {
           metricCid: 'cid_totalPageViews',
           dimensions: [
             { name: 'All Other', values: { 'cid_age(field=desc)': 'All Other' } },
-            { name: 'Under 13', values: { 'cid_age(field=desc)': 'Under 13' } }
-          ]
-        }
-      }
+            { name: 'Under 13', values: { 'cid_age(field=desc)': 'Under 13' } },
+          ],
+        },
+      },
     });
     const owner = this.owner;
     type OwnerWithRegistry = typeof owner & {
@@ -573,7 +570,7 @@ module('Integration | Component | pie chart', function(hooks) {
     };
 
     const findTooltipComponent = () =>
-      Object.keys((owner as OwnerWithRegistry).__registry__.registrations).find(r =>
+      Object.keys((owner as OwnerWithRegistry).__registry__.registrations).find((r) =>
         r.startsWith('component:pie-chart-tooltip-')
       );
 

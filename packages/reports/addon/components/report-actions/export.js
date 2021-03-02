@@ -46,7 +46,7 @@ export default Component.extend({
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
-  download: computed('disabled', function() {
+  download: computed('disabled', function () {
     // No Download for disabled action
     if (get(this, 'disabled')) {
       return null;
@@ -58,7 +58,7 @@ export default Component.extend({
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set target
    */
-  target: computed('disabled', function() {
+  target: computed('disabled', function () {
     // No target for disabled action
     if (get(this, 'disabled')) {
       return null;
@@ -70,7 +70,7 @@ export default Component.extend({
   /**
    * @property {String} href - API link for the report
    */
-  href: computed('report.{request,request.validations.isTruelyValid}', 'disabled', function() {
+  href: computed('report.{request,request.validations.isTruelyValid}', 'disabled', function () {
     /*
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled
@@ -81,5 +81,5 @@ export default Component.extend({
 
     let request = get(this, 'report.request').serialize();
     return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
-  })
+  }),
 });

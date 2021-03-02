@@ -7,15 +7,15 @@ import hbs from 'htmlbars-inline-precompile';
 
 let Store;
 
-module('Integration | Component | dir table', function(hooks) {
+module('Integration | Component | dir table', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
   });
 
-  test('table populates from items correctly', async function(assert) {
+  test('table populates from items correctly', async function (assert) {
     assert.expect(4);
 
     const author = Store.createRecord('user', { id: 'navi_user' });
@@ -23,18 +23,18 @@ module('Integration | Component | dir table', function(hooks) {
       Store.createRecord('report', {
         title: 'Report 1',
         author,
-        updatedOn: '2020-01-01 00:00:00'
+        updatedOn: '2020-01-01 00:00:00',
       }),
       Store.createRecord('dashboard', {
         title: 'Dashboard 1',
         author,
-        updatedOn: '2020-01-02 00:00:00'
+        updatedOn: '2020-01-02 00:00:00',
       }),
       Store.createRecord('report', {
         title: 'Report 2',
         author,
-        updatedOn: '2020-01-03 00:00:00'
-      })
+        updatedOn: '2020-01-03 00:00:00',
+      }),
     ];
 
     set(this, 'items', items);
@@ -48,24 +48,24 @@ module('Integration | Component | dir table', function(hooks) {
     assert.dom('.dir-table__row').exists({ count: 3 }, 'There is one row per item passed to the table');
 
     assert.deepEqual(
-      findAll('th').map(elm => elm.innerText.trim()),
+      findAll('th').map((elm) => elm.innerText.trim()),
       ['NAME', '', 'AUTHOR', 'LAST UPDATED DATE'],
       'The correct columns are generated for the table'
     );
 
     assert.ok(
-      findAll('.dir-table__cell--author').every(elm => elm.innerText.trim() === 'navi_user'),
+      findAll('.dir-table__cell--author').every((elm) => elm.innerText.trim() === 'navi_user'),
       "The author's name is displayed correctly for each row"
     );
 
     assert.deepEqual(
-      findAll('.dir-table__cell--lastUpdatedDate').map(elm => elm.innerText.trim()),
+      findAll('.dir-table__cell--lastUpdatedDate').map((elm) => elm.innerText.trim()),
       ['01/01/2020 - 12:00:00 am', '01/02/2020 - 12:00:00 am', '01/03/2020 - 12:00:00 am'],
       'The last updated dates are formatted and displayed correctly'
     );
   });
 
-  test('table is sorted correctly', async function(assert) {
+  test('table is sorted correctly', async function (assert) {
     assert.expect(3);
 
     set(this, 'items', []);
@@ -83,13 +83,13 @@ module('Integration | Component | dir table', function(hooks) {
     let th = findAll('th');
 
     assert.deepEqual(
-      th.map(elm => elm.className.includes('is-sortable')),
+      th.map((elm) => elm.className.includes('is-sortable')),
       [true, false, true, true],
       'Only title, author and last update columns are sortable'
     );
 
     assert.deepEqual(
-      th.map(elm => {
+      th.map((elm) => {
         let i = elm.querySelector('i');
         return i ? i.className.includes('desc') : false;
       }),
@@ -105,7 +105,7 @@ module('Integration | Component | dir table', function(hooks) {
     />`);
 
     assert.equal(
-      findAll('th').filter(elm => {
+      findAll('th').filter((elm) => {
         let i = elm.querySelector('i');
         return i ? i.className.includes('is-sorted') : false;
       }).length,
@@ -114,7 +114,7 @@ module('Integration | Component | dir table', function(hooks) {
     );
   });
 
-  test('onColumnClick action is called on column click', async function(assert) {
+  test('onColumnClick action is called on column click', async function (assert) {
     assert.expect(4);
 
     set(this, 'items', []);
@@ -124,7 +124,7 @@ module('Integration | Component | dir table', function(hooks) {
 
     set(this, 'sortBy', 'author');
     set(this, 'sortDir', 'asc');
-    set(this, 'onColumnClick', sort => {
+    set(this, 'onColumnClick', (sort) => {
       assert.deepEqual(
         sort,
         { sortBy: 'author', sortDir: 'desc' },
@@ -145,7 +145,7 @@ module('Integration | Component | dir table', function(hooks) {
     // sorting a descending column
 
     set(this, 'sortDir', 'desc');
-    set(this, 'onColumnClick', sort => {
+    set(this, 'onColumnClick', (sort) => {
       assert.deepEqual(
         sort,
         { sortBy: 'author', sortDir: 'asc' },
@@ -166,7 +166,7 @@ module('Integration | Component | dir table', function(hooks) {
     // sorting an unsorted column with sortDescFirst=undefined
 
     set(this, 'sortBy', 'title');
-    set(this, 'onColumnClick', sort => {
+    set(this, 'onColumnClick', (sort) => {
       assert.deepEqual(
         sort,
         { sortBy: 'author', sortDir: 'asc' },
@@ -185,7 +185,7 @@ module('Integration | Component | dir table', function(hooks) {
 
     // sorting an unsorted column with sortDescFirst=true
 
-    set(this, 'onColumnClick', sort => {
+    set(this, 'onColumnClick', (sort) => {
       assert.deepEqual(
         sort,
         { sortBy: 'updatedOn', sortDir: 'desc' },
@@ -203,7 +203,7 @@ module('Integration | Component | dir table', function(hooks) {
     await click('th:nth-child(4)');
   });
 
-  test('search results messaging', async function(assert) {
+  test('search results messaging', async function (assert) {
     assert.expect(2);
 
     set(this, 'items', []);
@@ -236,7 +236,7 @@ module('Integration | Component | dir table', function(hooks) {
       );
   });
 
-  test('table loader', async function(assert) {
+  test('table loader', async function (assert) {
     assert.expect(2);
 
     set(this, 'isLoading', true);

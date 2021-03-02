@@ -26,7 +26,7 @@ export function normalizeGoalGaugeV2(
   }
 
   // Take the first metric column since there should be exactly one
-  const metricColumn = request.columns.find(c => c.type === 'metric');
+  const metricColumn = request.columns.find((c) => c.type === 'metric');
   if (metricColumn === undefined || metricColumn.cid === undefined) {
     throw new Error('There should be exactly one metric column in the request with a cid');
   }
@@ -38,8 +38,8 @@ export function normalizeGoalGaugeV2(
     metadata: {
       baselineValue: Number(visualization.metadata.baselineValue),
       goalValue: Number(visualization.metadata.goalValue),
-      metricCid: metricColumn.cid
-    }
+      metricCid: metricColumn.cid,
+    },
   };
 }
 

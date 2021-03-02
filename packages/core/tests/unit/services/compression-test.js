@@ -4,16 +4,16 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Service;
 
-module('Unit | Service | compression', function(hooks) {
+module('Unit | Service | compression', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Service = this.owner.lookup('service:compression');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('compress and decompress', async function(assert) {
+  test('compress and decompress', async function (assert) {
     assert.expect(3);
 
     const object = { foo: 'bar' };
@@ -35,7 +35,7 @@ module('Unit | Service | compression', function(hooks) {
     assert.deepEqual(decompressedObject, { foo: 'bar' }, 'Decompressing the string returns the original object');
   });
 
-  test('compressModel and decompressModel', async function(assert) {
+  test('compressModel and decompressModel', async function (assert) {
     assert.expect(5);
 
     const store = Service.get('store');
@@ -45,7 +45,7 @@ module('Unit | Service | compression', function(hooks) {
       id: '1234',
       title: 'Hello World',
       author: user,
-      request
+      request,
     });
     const compressedString = await Service.compressModel(report);
 
@@ -73,7 +73,7 @@ module('Unit | Service | compression', function(hooks) {
     assert.equal(decompressedModel.get('request'), request, 'The decompressed model maintains the original fragments');
   });
 
-  test('compressModel: id is required', function(assert) {
+  test('compressModel: id is required', function (assert) {
     assert.expect(1);
     const store = Service.get('store');
     const report = store.createRecord('report', { title: 'Hello World' });
@@ -85,7 +85,7 @@ module('Unit | Service | compression', function(hooks) {
     );
   });
 
-  test('_pushPayload', function(assert) {
+  test('_pushPayload', function (assert) {
     assert.expect(3);
 
     const service = this.owner.lookup('service:compression');

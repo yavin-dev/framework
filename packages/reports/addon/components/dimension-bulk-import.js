@@ -38,7 +38,7 @@ class DimensionBulkImportComponent extends Component {
     const queryIds = get(this, 'queryIds') || [];
 
     //Remove preceding and trailing white spaces, empty strings and duplicates
-    return arr(queryIds.map(key => key.trim()).filter(Boolean)).uniq();
+    return arr(queryIds.map((key) => key.trim()).filter(Boolean)).uniq();
   }
 
   /**
@@ -67,8 +67,8 @@ class DimensionBulkImportComponent extends Component {
   get _invalidDimValueIds() {
     const validDimVals = get(this, '_validDimValues');
     return arr(
-      get(this, '_trimmedQueryIds').reject(queryId =>
-        validDimVals.any(validDimVal => get(validDimVal, 'id') === queryId)
+      get(this, '_trimmedQueryIds').reject((queryId) =>
+        validDimVals.any((validDimVal) => get(validDimVal, 'id') === queryId)
       )
     );
   }
@@ -119,12 +119,12 @@ class DimensionBulkImportComponent extends Component {
         [
           {
             values: get(this, '_trimmedQueryIds'),
-            field: get(this, 'searchableIdField')
-          }
+            field: get(this, 'searchableIdField'),
+          },
         ],
         { dataSourceName: this.dimension?.source }
       )
-      .then(dimValues => {
+      .then((dimValues) => {
         set(this, '_validDimValues', dimValues.toArray());
       });
 
@@ -135,19 +135,19 @@ class DimensionBulkImportComponent extends Component {
         [
           {
             field: get(this, 'searchableIdField'),
-            values: [this.rawQuery]
-          }
+            values: [this.rawQuery],
+          },
         ],
         { dataSourceName: this.dimension?.source }
       )
-      .then(dimValue => set(this, '_validRawInputDimValue', dimValue.toArray()));
+      .then((dimValue) => set(this, '_validRawInputDimValue', dimValue.toArray()));
 
     //set loading promise
     set(
       this,
       '_loadingPromise',
       DS.PromiseObject.create({
-        promise: Promise.all([splitValuesPromise, rawInputPromise])
+        promise: Promise.all([splitValuesPromise, rawInputPromise]),
       })
     );
   }

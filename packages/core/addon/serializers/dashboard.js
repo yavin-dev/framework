@@ -34,11 +34,11 @@ function v1ToV2Filter(filter, metadataService) {
     type,
     field: dimension,
     parameters: {
-      field: filter.field
+      field: filter.field,
     },
     operator: filter.operator,
     values: filter.values,
-    source
+    source,
   };
 }
 
@@ -58,7 +58,7 @@ export default AssetSerializer.extend({
 
       const metadataService = getOwner(this).lookup('service:navi-metadata');
       // TODO: We always convert since we only persist v1 filters
-      newPayload.attributes.filters = newPayload.attributes.filters.map(filter =>
+      newPayload.attributes.filters = newPayload.attributes.filters.map((filter) =>
         v1ToV2Filter(filter, metadataService)
       );
 
@@ -76,18 +76,18 @@ export default AssetSerializer.extend({
    * @returns {Object} serialized dashboard
    */
   serialize(snapshot) {
-    const buildKey = filter => canonicalizeMetric({ metric: filter.field, parameters: filter.parameters });
+    const buildKey = (filter) => canonicalizeMetric({ metric: filter.field, parameters: filter.parameters });
     const filterSources = Object.fromEntries(
-      snapshot.attr('filters').map(filter => [filter.record.canonicalName, filter.attr('source')])
+      snapshot.attr('filters').map((filter) => [filter.record.canonicalName, filter.attr('source')])
     );
     const dashboard = this._super(...arguments);
-    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map(filter => {
+    dashboard.data.attributes.filters = dashboard.data.attributes.filters.map((filter) => {
       const source = filterSources[buildKey(filter)];
       return {
         dimension: `${source}.${filter.field}`,
         operator: filter.operator,
         field: filter.parameters?.field,
-        values: filter.values
+        values: filter.values,
       };
     });
     return dashboard;
@@ -102,7 +102,7 @@ export default AssetSerializer.extend({
   normalizeFindManyResponse(store, type, payload) {
     const dashboards = payload.data;
 
-    dashboards.forEach(dashboard => {
+    dashboards.forEach((dashboard) => {
       this._addLinks(dashboard, 'widgets');
     });
 
@@ -135,9 +135,9 @@ export default AssetSerializer.extend({
     delete dashboard.relationships[type].data;
 
     dashboard.relationships[type].links = {
-      related: `/dashboards/${dashboard.id}/${type}`
+      related: `/dashboards/${dashboard.id}/${type}`,
     };
 
     return dashboard;
-  }
+  },
 });

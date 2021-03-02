@@ -2,10 +2,10 @@ import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Validator | recipients', function(hooks) {
+module('Unit | Validator | recipients', function (hooks) {
   setupTest(hooks);
 
-  test('validate recipients', function(assert) {
+  test('validate recipients', function (assert) {
     assert.expect(4);
 
     let Validator = this.owner.lookup('validator:recipients'),
@@ -18,7 +18,7 @@ module('Unit | Validator | recipients', function(hooks) {
     assert.equal(
       Validator.validate(emptyArr, {
         invalidEmailMsg: badEmails,
-        noRecipientsMsg: emptyText
+        noRecipientsMsg: emptyText,
       }),
       'There must be at least one valid email address',
       'Array is empty'
@@ -27,7 +27,7 @@ module('Unit | Validator | recipients', function(hooks) {
     assert.equal(
       Validator.validate(badArray0, {
         invalidEmailMsg: badEmails,
-        noRecipientsMsg: emptyText
+        noRecipientsMsg: emptyText,
       }),
       'There must be at least one valid email address',
       'Array has an empty string'
@@ -36,7 +36,7 @@ module('Unit | Validator | recipients', function(hooks) {
     assert.equal(
       Validator.validate(badArray1, {
         invalidEmailMsg: badEmails,
-        noRecipientsMsg: emptyText
+        noRecipientsMsg: emptyText,
       }),
       'Array contents are not valid email addresses',
       'Array has values that are almost valid email addresses'
@@ -48,7 +48,7 @@ module('Unit | Validator | recipients', function(hooks) {
     assert.equal(
       Validator.validate(regArray, {
         invalidEmailMsg: messageText,
-        noRecipientsMsg: emptyText
+        noRecipientsMsg: emptyText,
       }),
       true,
       'Array contents are valid email addresses'

@@ -31,13 +31,13 @@ export default class ParamterListItem extends Component<ParamterListItemArgs> {
 
     //normalized grouped parameters and flatten them out
     const normalizedParams: Arg[] = parameters
-      .map(param => {
+      .map((param) => {
         if ('groupName' in param && param.groupName) {
           return param.options;
         }
         return param;
       })
       .flat();
-    return normalizedParams.filter(param => param[this.displayField] === argument[this.displayField]).length > 1;
+    return normalizedParams.filter((param) => param[this.displayField] === argument[this.displayField]).length > 1;
   }
 }

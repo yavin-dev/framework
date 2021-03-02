@@ -56,7 +56,7 @@ export default C3Chart.extend({
     'padding',
     'color',
     'transition',
-    function() {
+    function () {
       const c = this.getProperties([
         'data',
         'axis',
@@ -76,10 +76,10 @@ export default C3Chart.extend({
         'size',
         'padding',
         'color',
-        'transition'
+        'transition',
       ]);
 
-      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach(eventname => {
+      ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach((eventname) => {
         c[eventname] = () => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             const eventAction = this.get(eventname);
@@ -114,8 +114,8 @@ export default C3Chart.extend({
      */
     let dataSelection = get(this, 'dataSelection');
     if (dataSelection) {
-      dataSelection.then(insightsData => {
-        const series = Object.keys(this.data.json[0]).filter(series => series !== 'x');
+      dataSelection.then((insightsData) => {
+        const series = Object.keys(this.data.json[0]).filter((series) => series !== 'x');
         const dataSelectionIndices = insightsData.mapBy('index');
         get(this, 'chart').select(series, dataSelectionIndices);
       });
@@ -133,7 +133,7 @@ export default C3Chart.extend({
   /**
    * @property {Object} chart - c3 object reference
    */
-  chart: computed('_config', 'c3chart', function() {
+  chart: computed('_config', 'c3chart', function () {
     if (!get(this, 'c3chart')) {
       let config = get(this, '_config');
 
@@ -146,7 +146,7 @@ export default C3Chart.extend({
   /**
    * @property {Object} map of series id to series class name
    */
-  dataClasses: computed('data', function() {
+  dataClasses: computed('data', function () {
     let seriesIds = A(get(this, 'chart').data()).mapBy('id');
 
     // Give each series a unique class
@@ -222,5 +222,5 @@ export default C3Chart.extend({
     }
 
     this._teardownChart();
-  }
+  },
 });

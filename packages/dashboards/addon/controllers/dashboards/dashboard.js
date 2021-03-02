@@ -8,5 +8,5 @@ export default Controller.extend({
   /**
    * @param {Object} queryCache - Used to store query parameters from the parent route
    */
-  queryCache: null
+  queryCache: null,
 });

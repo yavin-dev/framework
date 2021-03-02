@@ -1,7 +1,7 @@
 import {
   formatInterval,
   formatDurationFromCurrent,
-  formatDateRange
+  formatDateRange,
 } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
@@ -10,23 +10,19 @@ import moment from 'moment';
 
 const FORMAT = 'MM-DD-YYYY';
 
-module('Unit | Helper | format interval inclusive inclusive', function() {
-  test('Undefined interval and time period', function(assert) {
+module('Unit | Helper | format interval inclusive inclusive', function () {
+  test('Undefined interval and time period', function (assert) {
     assert.expect(2);
 
-    assert.equal(
-      formatInterval([moment(new Interval('current', 'current')), null]),
-      '',
-      'No time period returns empty string'
-    );
+    assert.equal(formatInterval([new Interval('current', 'current'), null]), '', 'No time period returns empty string');
 
     assert.equal(formatInterval([null, 'week']), '', 'No interval returns empty string');
   });
 
-  test('Formatting start and end', function(assert) {
+  test('Formatting start and end', function (assert) {
     assert.expect(1);
 
-    let interval = new Interval(new Duration('P4W'), moment('10-14-2014', FORMAT)),
+    let interval = new Interval(new Duration('P4W'), moment.utc('10-14-2014', FORMAT)),
       formattedString = formatInterval([interval, 'isoWeek']);
 
     assert.equal(
@@ -36,7 +32,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     );
   });
 
-  test('Formatting rolling window', function(assert) {
+  test('Formatting rolling window', function (assert) {
     assert.expect(2);
 
     let interval = new Interval(new Duration('P4W'), 'current'),
@@ -50,7 +46,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     assert.equal(formattedString, 'Last 2 Quarters', 'Interval was converted to quarter rolling window');
   });
 
-  test('Checking Current', function(assert) {
+  test('Checking Current', function (assert) {
     assert.expect(2);
 
     let interval = new Interval('current', 'next'),
@@ -63,7 +59,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     assert.equal(formattedString, 'Current Quarter', 'Interval was converted to Current Quarter');
   });
 
-  test('formatDurationFromCurrent', function(assert) {
+  test('formatDurationFromCurrent', function (assert) {
     assert.expect(7);
 
     assert.equal(formatDurationFromCurrent(), '', 'No duration returns empty string');
@@ -89,7 +85,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     );
   });
 
-  test('formatDurationFromCurrent - quarter not in terms of months', function(assert) {
+  test('formatDurationFromCurrent - quarter not in terms of months', function (assert) {
     assert.expect(1);
 
     assert.throws(
@@ -99,7 +95,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     );
   });
 
-  test('formatDateRange - Undefined start and end', function(assert) {
+  test('formatDateRange - Undefined start and end', function (assert) {
     assert.expect(4);
 
     let error = new Error('Assertion Failed: Start & End dates and time period  must be defined');
@@ -137,7 +133,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     );
   });
 
-  test('formatDateRange - Formatting start and end', function(assert) {
+  test('formatDateRange - Formatting start and end', function (assert) {
     assert.expect(4);
 
     let formattedString = formatDateRange(moment('09-14-2014', FORMAT), moment('10-14-2014', FORMAT), 'day');
@@ -157,7 +153,7 @@ module('Unit | Helper | format interval inclusive inclusive', function() {
     assert.equal(formattedString, '2015 - 2016', 'Given year range was correctly formatted');
   });
 
-  test('formatDateRange - Same start and end dates', function(assert) {
+  test('formatDateRange - Same start and end dates', function (assert) {
     assert.expect(1);
 
     let formattedString = formatDateRange(moment('09-14-2014', FORMAT), moment('09-14-2014', FORMAT), 'day');

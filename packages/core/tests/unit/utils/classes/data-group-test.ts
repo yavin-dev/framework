@@ -7,32 +7,32 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 const DATA = [
   {
     dateTime: '2012-01',
-    adClicks: 12
+    adClicks: 12,
   },
   {
     dateTime: '2012-02',
-    adClicks: 13
+    adClicks: 13,
   },
   {
     dateTime: '2012-02',
-    adClicks: 50
+    adClicks: 50,
   },
   {
     dateTime: '2012-03',
-    adClicks: 14
+    adClicks: 14,
   },
   {
     dateTime: '2012-04',
-    adClicks: 15
-  }
+    adClicks: 15,
+  },
 ];
 
-module('Unit | Utils | DataGroup Class', function() {
-  test('Construction', function(assert) {
+module('Unit | Utils | DataGroup Class', function () {
+  test('Construction', function (assert) {
     assert.expect(2);
 
     assert.throws(
-      function() {
+      function () {
         //@ts-expect-error
         new DataGroup();
       },
@@ -41,7 +41,7 @@ module('Unit | Utils | DataGroup Class', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         //@ts-expect-error
         new DataGroup(DATA);
       },
@@ -50,15 +50,15 @@ module('Unit | Utils | DataGroup Class', function() {
     );
 
     // Test for no error on valid construction
-    new DataGroup(DATA, row => {
+    new DataGroup(DATA, (row) => {
       return row.dateTime as string;
     });
   });
 
-  test('getDataForKey', function(assert) {
+  test('getDataForKey', function (assert) {
     assert.expect(1);
 
-    let dataGroup = new DataGroup(DATA, row => {
+    let dataGroup = new DataGroup(DATA, (row) => {
       return row.dateTime as string;
     });
 
@@ -69,10 +69,10 @@ module('Unit | Utils | DataGroup Class', function() {
     );
   });
 
-  test('getKeys', function(assert) {
+  test('getKeys', function (assert) {
     assert.expect(1);
 
-    let dataGroup = new DataGroup(DATA, row => {
+    let dataGroup = new DataGroup(DATA, (row) => {
       return row.dateTime as string;
     });
 

@@ -4,91 +4,91 @@ export default {
       category: 'Sessions',
       name: 'timeSpent',
       longName: 'Time Spent',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'pageViews',
       longName: 'Page Views',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'addPageViews',
       longName: 'Additive Page Views',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'totalPageViews',
       longName: 'Total Page Views',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'regUsers',
       longName: 'Registered Users',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'uniqueIdentifier',
       longName: 'Unique Identifiers',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'otherClicks',
       longName: 'Other Clicks',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'adClicks',
       longName: 'Ad Clicks',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'totalClicks',
       longName: 'Total Clicks',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'navClicks',
       longName: 'Nav Link Clicks',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'networkSessions',
       longName: 'Network Sessions',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'propertySessions',
       longName: 'Property Sessions',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'propertySubsessions',
       longName: 'Property Sub-Sessions',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'unregThirdPartyCookies',
       longName: 'UnRegistered Third Party Cookies',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Trend',
       name: 'totalPageViewsWoW',
       longName: 'Total Page Views WoW',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Revenue',
@@ -99,9 +99,9 @@ export default {
         currency: {
           type: 'dimension',
           dimensionName: 'displayCurrency',
-          defaultValue: 'USD'
-        }
-      }
+          defaultValue: 'USD',
+        },
+      },
     },
     {
       category: 'Revenue',
@@ -112,9 +112,9 @@ export default {
         currency: {
           type: 'dimension',
           dimensionName: 'displayCurrency',
-          defaultValue: 'USD'
-        }
-      }
+          defaultValue: 'USD',
+        },
+      },
     },
     {
       category: 'Clicks',
@@ -127,11 +127,11 @@ export default {
           values: [
             { id: 'l', description: 'Left' },
             { id: 'r', description: 'Right' },
-            { id: 'm', description: 'Middle' }
+            { id: 'm', description: 'Middle' },
           ],
-          defaultValue: 'l'
-        }
-      }
+          defaultValue: 'l',
+        },
+      },
     },
     {
       category: 'Multiple Params',
@@ -145,35 +145,35 @@ export default {
           values: [
             { id: 'l', name: 'Left' },
             { id: 'r', name: 'Right' },
-            { id: 'm', name: 'Middle' }
+            { id: 'm', name: 'Middle' },
           ],
-          defaultValue: 'l'
+          defaultValue: 'l',
         },
         aggregation: {
           type: 'enum',
           values: [
             { id: 'dayAvg', description: 'Daily Average' },
-            { id: 'total', description: 'Total' }
+            { id: 'total', description: 'Total' },
           ],
-          defaultValue: 'total'
+          defaultValue: 'total',
         },
         age: {
           type: 'dimension',
           dimensionName: 'age',
-          defaultValue: '6'
+          defaultValue: '6',
         },
         currency: {
           type: 'dimension',
           dimensionName: 'displayCurrency',
-          defaultValue: 'USD'
+          defaultValue: 'USD',
         },
         currencyButNullDefault: {
           type: 'dimension',
           dimensionName: 'displayCurrency',
-          defaultValue: null
-        }
-      }
-    }
+          defaultValue: null,
+        },
+      },
+    },
   ],
 
   dayAvgMetrics: [
@@ -181,139 +181,139 @@ export default {
       category: 'Sessions',
       name: 'dayAvgTimeSpent',
       longName: 'Time Spent (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'dayAvgPageViews',
       longName: 'Page Views (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'dayAvgAddPageViews',
       longName: 'Additive Page Views (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Page Views',
       name: 'dayAvgTotalPageViews',
       longName: 'Total Page Views (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'dayAvgRegUsers',
       longName: 'Registered Users (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'dayAvgUnregThirdPartyCookies',
       longName: 'UnRegistered Third Party Cookies (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Identifiers',
       name: 'dayAvgUniqueIdentifier',
       longName: 'Unique Identifiers (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'dayAvgOtherClicks',
       longName: 'Other Clicks (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'dayAvgAdClicks',
       longName: 'Ad Clicks (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'dayAvgNavClicks',
       longName: 'Nav Link Clicks (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Clicks',
       name: 'dayAvgTotalClicks',
       longName: 'Total Clicks (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'dayAvgNetworkSessions',
       longName: 'Network Sessions (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'dayAvgPropertySessions',
       longName: 'Property Sessions (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Sessions',
       name: 'dayAvgPropertySubsessions',
-      longName: 'Property Sub-Sessions (Daily Avg)'
+      longName: 'Property Sub-Sessions (Daily Avg)',
     },
     {
       category: 'Ratios',
       name: 'totalClicksPerUniqueIdentifier',
       longName: 'Total Clicks per Unique Identifier',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'pageViewsPerUniqueIdentifier',
       longName: 'Page Views per Unique Identifier',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'addPageViewsPerUniqueIdentifier',
       longName: 'Additive Page Views per Unique Identifier',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'totalPageViewsPerUniqueIdentifier',
       longName: 'Total Page Views per Unique Identifier',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'dayAvgTotalClicksPerUniqueIdentifier',
       longName: 'Total Clicks per Unique Identifier (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'dayAvgPageViewsPerUniqueIdentifier',
       longName: 'Page Views per Unique Identifier (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'dayAvgAddPageViewsPerUniqueIdentifier',
       longName: 'Additive Page Views per Unique Identifier (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'dayAvgTotalPageViewsPerUniqueIdentifier',
       longName: 'Total Page Views per Unique Identifier (Daily Avg)',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Ratios',
       name: 'dayAvgUniqueIdentifiersPerTotalUniqueIdentifiers',
       longName: 'Unique Identifiers (Daily Avg) per Total Unique Identifiers (Percentage)',
-      type: 'number'
-    }
+      type: 'number',
+    },
   ],
 
   bardTwoMetrics: [
@@ -321,31 +321,31 @@ export default {
       category: 'Personal',
       name: 'ownedQuantity',
       longName: 'Quantity of thing',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Personal',
       name: 'usedAmount',
       longName: 'Used Amount',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'Personal',
       name: 'personalSold',
       longName: 'Personally sold amount',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'World',
       name: 'available',
       longName: 'How many are available',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'World',
       name: 'globallySold',
       longName: 'How many have sold worldwide',
-      type: 'number'
+      type: 'number',
     },
     {
       category: 'World',
@@ -356,9 +356,9 @@ export default {
         currency: {
           type: 'dimension',
           dimensionName: 'displayCurrency',
-          defaultValue: 'GIL'
-        }
-      }
-    }
-  ]
+          defaultValue: 'GIL',
+        },
+      },
+    },
+  ],
 };

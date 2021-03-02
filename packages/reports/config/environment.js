@@ -1,9 +1,9 @@
 'use strict';
 
-module.exports = function(/* environment, appConfig */) {
+module.exports = function (/* environment, appConfig */) {
   return {
     moment: {
-      includeTimezone: 'all'
+      includeTimezone: 'all',
     },
     navi: {
       predefinedIntervalRanges: {
@@ -13,16 +13,16 @@ module.exports = function(/* environment, appConfig */) {
         isoWeek: ['P1W', 'P4W', 'P8W', 'P13W', 'P26W', 'P52W', 'P78W', 'P104W'],
         month: ['P1M', 'P3M', 'P6M', 'P12M', 'P18M', 'P24M'],
         quarter: ['P3M', 'P6M', 'P12M', 'P24M'],
-        year: ['P1Y', 'P2Y']
+        year: ['P1Y', 'P2Y'],
       },
       schedule: {
         formats: null,
-        frequencies: null
+        frequencies: null,
       },
       FEATURES: {
         exportFileTypes: [],
-        enabledNotifyIfData: false
-      }
-    }
+        enabledNotifyIfData: false,
+      },
+    },
   };
 };

@@ -13,7 +13,7 @@ import config from 'ember-get-config';
  */
 export function getDefaultTimeGrain(timeGrains = []) {
   const defaultTimeGrainId = config.navi.defaultTimeGrain;
-  const timeGrain = timeGrains.find(grain => grain.id === defaultTimeGrainId);
+  const timeGrain = timeGrains.find((grain) => grain.id === defaultTimeGrainId);
 
   return timeGrain || timeGrains[0];
 }

@@ -3,11 +3,11 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { visit, currentURL, click } from '@ember/test-helpers';
 
-module('Acceptance | Navi Report | Invalid Route', function(hooks) {
+module('Acceptance | Navi Report | Invalid Route', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('Error data request', async function(assert) {
+  test('Error data request', async function (assert) {
     await visit('/reports/5/view');
 
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');

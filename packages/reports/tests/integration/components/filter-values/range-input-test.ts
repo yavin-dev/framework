@@ -11,11 +11,11 @@ import RangeInput from 'navi-reports/components/filter-values/range-input';
 
 type ComponentArgs = RangeInput['args'];
 interface TestContext extends Context, ComponentArgs {}
-module('Integration | Component | filter values/range input', function(hooks) {
+module('Integration | Component | filter values/range input', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
@@ -30,19 +30,19 @@ module('Integration | Component | filter values/range input', function(hooks) {
       />`);
   });
 
-  test('it renders', function(assert) {
+  test('it renders', function (assert) {
     assert.expect(1);
     assert.deepEqual(
       findAll('.filter-values--range-input__input')
         .map((el: HTMLInputElement) => el.value?.trim())
-        .filter(val => !!val)
-        .map(val => parseInt(val, 10)),
+        .filter((val) => !!val)
+        .map((val) => parseInt(val, 10)),
       [1000, 2000],
       'The value selects contain inputs with the filter values as the text'
     );
   });
 
-  test('collapsed', function(assert) {
+  test('collapsed', function (assert) {
     assert.expect(2);
 
     this.set('isCollapsed', true);
@@ -51,7 +51,7 @@ module('Integration | Component | filter values/range input', function(hooks) {
     assert.dom().hasText('1000 and 2000', 'Selected values are rendered correctly when collapsed');
   });
 
-  test('changing values', async function(assert) {
+  test('changing values', async function (assert) {
     assert.expect(2);
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
@@ -67,13 +67,13 @@ module('Integration | Component | filter values/range input', function(hooks) {
     await fillIn(findAll('input')[1], 'bbb');
   });
 
-  test('error state', function(assert) {
+  test('error state', function (assert) {
     assert.expect(3);
 
     assert.dom('.input').doesNotHaveClass('is-error', 'The input should not have error state');
 
     this.set('filter', {
-      validations: { attrs: { values: { isInvalid: true } } }
+      validations: { attrs: { values: { isInvalid: true } } },
     });
     assert.dom('.input').hasClass('is-error', 'The input should have error state');
 

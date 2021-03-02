@@ -13,5 +13,5 @@ import layout from '../templates/components/navi-loading-message';
 export default Component.extend({
   layout,
 
-  classNames: ['navi-loading-message']
+  classNames: ['navi-loading-message'],
 });

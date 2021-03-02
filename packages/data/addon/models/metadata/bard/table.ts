@@ -27,7 +27,7 @@ export default class BardTableMetadataModel extends TableMetadataModel implement
   init() {
     //@ts-ignore
     super.init(...arguments);
-    this.timeGrainIds = sortBy(this.timeGrainIds, g => GrainOrdering[g]);
+    this.timeGrainIds = sortBy(this.timeGrainIds, (g) => GrainOrdering[g]);
   }
 
   /**
@@ -39,7 +39,7 @@ export default class BardTableMetadataModel extends TableMetadataModel implement
    * @property timeGrains - timeGrain objects with id and display name
    */
   get timeGrains(): TimeGrain[] {
-    return this.timeGrainIds.map(grain => ({ id: grain, name: upperFirst(grain) }));
+    return this.timeGrainIds.map((grain) => ({ id: grain, name: upperFirst(grain) }));
   }
 
   /**

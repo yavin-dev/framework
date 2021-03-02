@@ -1,9 +1,9 @@
 module.exports = {
   env: {
-    embertest: true
+    embertest: true,
   },
   globals: {
     server: true,
-    NAVI_APP_SETTINGS: true
-  }
+    NAVI_APP_SETTINGS: true,
+  },
 };

@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | navi icon', function(hooks) {
+module('Integration | Component | navi icon', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('render icon', async function(assert) {
+  test('render icon', async function (assert) {
     assert.expect(2);
 
     await render(hbs`

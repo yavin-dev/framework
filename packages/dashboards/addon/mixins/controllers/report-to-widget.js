@@ -19,7 +19,7 @@ export default Mixin.create({
     return get(this, 'store').createRecord('dashboard-widget', {
       title,
       requests: [get(report, 'request').clone()],
-      visualization
+      visualization,
     });
   },
 
@@ -39,8 +39,8 @@ export default Mixin.create({
       // Transition to widgets/new route
       this.transitionToRoute('dashboards.dashboard.widgets.add', id, {
         queryParams: {
-          unsavedWidgetId: get(widget, 'tempId')
-        }
+          unsavedWidgetId: get(widget, 'tempId'),
+        },
       });
     },
 
@@ -59,9 +59,9 @@ export default Mixin.create({
       this.transitionToRoute('dashboards.new', {
         queryParams: {
           title: dashboardTitle,
-          unsavedWidgetId: get(widget, 'tempId')
-        }
+          unsavedWidgetId: get(widget, 'tempId'),
+        },
       });
-    }
-  }
+    },
+  },
 });

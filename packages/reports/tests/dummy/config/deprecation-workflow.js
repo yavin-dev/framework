@@ -16,6 +16,6 @@ self.deprecationWorkflow.config = {
     { handler: 'silence', matchId: 'ember-power-select-test-support-clickTrigger' },
     { handler: 'silence', matchId: 'ember-power-select-test-support-nativeMouseUp' },
     { handler: 'silence', matchId: 'object.new-constructor' },
-    { handler: 'silence', matchId: 'deprecate-fetch-ember-data-support' }
-  ]
+    { handler: 'silence', matchId: 'deprecate-fetch-ember-data-support' },
+  ],
 };

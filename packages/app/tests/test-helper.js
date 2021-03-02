@@ -10,9 +10,9 @@ window.NAVI_APP = {
   appPersistence: {
     uri: 'https://persistence.naviapp.io',
     type: 'elide',
-    timeout: 90000
+    timeout: 90000,
   },
-  user: 'navi_user'
+  user: 'navi_user',
 };
 
 setApplication(Application.create(config.APP));

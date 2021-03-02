@@ -3,20 +3,20 @@ import config from 'ember-get-config';
 import { set } from '@ember/object';
 import { getDefaultDataSourceName, configHost, getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
-module('Unit - Utils - Adapter Utils', function() {
-  test('getDataSource correctly returns datasource object', function(assert) {
+module('Unit - Utils - Adapter Utils', function () {
+  test('getDataSource correctly returns datasource object', function (assert) {
     const {
-      navi: { dataSources }
+      navi: { dataSources },
     } = config;
 
     assert.deepEqual(
       getDataSource('bardOne'),
-      dataSources.find(s => s.name === 'bardOne'),
+      dataSources.find((s) => s.name === 'bardOne'),
       'datasource is fetched from config'
     );
     assert.deepEqual(
       getDataSource('bardTwo'),
-      dataSources.find(s => s.name === 'bardTwo'),
+      dataSources.find((s) => s.name === 'bardTwo'),
       'Other datasource is fetched from config'
     );
 
@@ -36,14 +36,14 @@ module('Unit - Utils - Adapter Utils', function() {
     );
   });
 
-  test('getDefaultDataSource returns correct source object depending on configuration', function(assert) {
+  test('getDefaultDataSource returns correct source object depending on configuration', function (assert) {
     const {
-      navi: { defaultDataSource, dataSources }
+      navi: { defaultDataSource, dataSources },
     } = config;
 
     assert.deepEqual(
       getDefaultDataSource(),
-      dataSources.find(d => d.name === defaultDataSource),
+      dataSources.find((d) => d.name === defaultDataSource),
       'Gets the default datasource that is configured'
     );
 
@@ -58,7 +58,7 @@ module('Unit - Utils - Adapter Utils', function() {
     set(config, 'navi.defaultDataSource', oldDefault);
   });
 
-  test('getDefaultDataSourceName gets correct source object name depending on configuration', function(assert) {
+  test('getDefaultDataSourceName gets correct source object name depending on configuration', function (assert) {
     assert.equal(getDefaultDataSourceName(), 'bardOne', 'Gets the default datasource that is configured');
 
     const oldDefault = config.navi.defaultDataSource;
@@ -68,7 +68,7 @@ module('Unit - Utils - Adapter Utils', function() {
     set(config, 'navi.defaultDataSource', oldDefault);
   });
 
-  test('configHost gets correct source object depending on configuration', function(assert) {
+  test('configHost gets correct source object depending on configuration', function (assert) {
     assert.equal(
       configHost({ dataSourceName: 'bardOne' }),
       'https://data.naviapp.io',

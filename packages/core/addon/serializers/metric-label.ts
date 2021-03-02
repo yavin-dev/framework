@@ -25,7 +25,7 @@ export function normalizeMetricLabelV2(
   }
 
   // Take the first metric column since there should be exactly one
-  const metricColumn = request.columns.find(c => c.type === 'metric');
+  const metricColumn = request.columns.find((c) => c.type === 'metric');
   if (metricColumn === undefined || metricColumn.cid === undefined) {
     throw new Error('There should be exactly one metric column in the request with a cid');
   }
@@ -35,8 +35,8 @@ export function normalizeMetricLabelV2(
     version: 2,
     metadata: {
       format: visualization?.metadata.format,
-      metricCid: metricColumn.cid
-    }
+      metricCid: metricColumn.cid,
+    },
   };
 }
 

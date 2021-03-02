@@ -18,5 +18,5 @@ export default Route.extend({
     return get(this, 'user')
       .findOrRegister()
       .then(() => this.get('store').findRecord('reportCollection', collection_id));
-  }
+  },
 });

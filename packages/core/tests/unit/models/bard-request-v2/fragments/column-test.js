@@ -5,11 +5,11 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
+module('Unit | Model | Fragment | BardRequest - Column', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
@@ -19,14 +19,14 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
             parameters: { grain: 'day' },
             type: 'timeDimension',
             alias: 'time',
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       })
     );
   });
 
-  test('Model using the Column Fragment', async function(assert) {
+  test('Model using the Column Fragment', async function (assert) {
     assert.ok(mockModel, 'mockModel is fetched from the store');
 
     const column = mockModel.columns.objectAt(0);
@@ -56,7 +56,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
     assert.equal(column.columnMetadata.id, 'revenue', 'metadata is populated with the right field');
   });
 
-  test('Validation', async function(assert) {
+  test('Validation', async function (assert) {
     const column = mockModel.columns.objectAt(0);
 
     assert.ok(column.validations.isValid, 'column is valid');
@@ -84,7 +84,7 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
     );
   });
 
-  test('Serialization', async function(assert) {
+  test('Serialization', async function (assert) {
     const { cid } = mockModel.columns.firstObject;
     assert.deepEqual(
       mockModel.serialize().data.attributes.columns,
@@ -94,10 +94,10 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
           alias: 'time',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
-          type: 'timeDimension'
-        }
+          type: 'timeDimension',
+        },
       ],
       'The columns model attribute was serialized correctly'
     );
@@ -112,14 +112,14 @@ module('Unit | Model | Fragment | BardRequest - Column', function(hooks) {
           alias: 'time',
           field: 'network.dateTime',
           parameters: {},
-          type: 'timeDimension'
-        }
+          type: 'timeDimension',
+        },
       ],
       'The columns model attribute was serialized correctly when parameters is an empty object'
     );
   });
 
-  test('Display Name', async function(assert) {
+  test('Display Name', async function (assert) {
     const column = mockModel.columns.objectAt(0);
 
     assert.equal(column.displayName, 'time', 'Display name is as expected with an alias');

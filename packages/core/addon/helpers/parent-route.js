@@ -20,5 +20,5 @@ export default CurrentRoute.extend({
     pathElements.pop();
 
     return pathElements.join('.');
-  }
+  },
 });

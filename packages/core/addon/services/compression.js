@@ -19,7 +19,7 @@ export default Service.extend({
   /**
    * @property {Object} codec - compression library
    */
-  codec: computed(function() {
+  codec: computed(function () {
     return new JsonUrl('lzstring');
   }),
 
@@ -41,7 +41,7 @@ export default Service.extend({
   decompress(string) {
     return get(this, 'codec')
       .decompress(string)
-      .then(jsonStr => JSON.parse(jsonStr));
+      .then((jsonStr) => JSON.parse(jsonStr));
   },
 
   /**
@@ -63,7 +63,7 @@ export default Service.extend({
    * @return {Promise} promise that resolvs to a new ember data model
    */
   decompressModel(string) {
-    return this.decompress(string).then(modelPayload => run(() => this._pushPayload(modelPayload)));
+    return this.decompress(string).then((modelPayload) => run(() => this._pushPayload(modelPayload)));
   },
 
   /**
@@ -83,5 +83,5 @@ export default Service.extend({
       normalizedPayload = defaultSerializer._normalizeDocumentHelper(payload);
 
     return store.push(normalizedPayload);
-  }
+  },
 });

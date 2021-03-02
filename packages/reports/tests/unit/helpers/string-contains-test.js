@@ -1,8 +1,8 @@
 import { stringContains } from 'dummy/helpers/string-contains';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | string contains', function() {
-  test('it works', function(assert) {
+module('Unit | Helper | string contains', function () {
+  test('it works', function (assert) {
     assert.expect(2);
 
     let result = stringContains('navi_user', 'user');

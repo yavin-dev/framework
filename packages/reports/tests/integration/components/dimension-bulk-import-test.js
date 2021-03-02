@@ -20,31 +20,31 @@ const COMMON_TEMPLATE = hbs`<DimensionBulkImport
       {
         id: '114',
         propertyEventId: '7645365',
-        description: 'Property 1'
+        description: 'Property 1',
       },
       {
         id: '100001',
         propertyEventId: '1197577085',
-        description: 'Property 2'
+        description: 'Property 2',
       },
       {
         id: '100002',
         propertyEventId: '1197577086',
-        description: 'Property 3'
+        description: 'Property 3',
       },
       {
         id: '100003',
         propertyEventId: '979436095',
-        description: 'Property 4'
-      }
-    ]
+        description: 'Property 4',
+      },
+    ],
   };
 
-module('Integration | Component | Dimension Bulk Import', function(hooks) {
+module('Integration | Component | Dimension Bulk Import', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.server.get(
       `${HOST}/v1/dimensions/property/values/`,
       (schema, request) => {
@@ -64,14 +64,14 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
               {
                 id: '6',
                 key: 'k6',
-                description: 'System ID 1'
+                description: 'System ID 1',
               },
               {
                 id: '7',
                 key: 'k7',
-                description: 'System ID 2'
-              }
-            ]
+                description: 'System ID 2',
+              },
+            ],
           };
         }
       },
@@ -81,20 +81,20 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     let dimension = {
       id: 'property',
       name: 'Property',
-      source: 'bardOne'
+      source: 'bardOne',
     };
 
     this.setProperties({
       dimension,
       onSelectValues: () => {},
       onCancel: () => {},
-      queryIds: ['100001', '100002', '56565565', '78787', '114', '100003']
+      queryIds: ['100001', '100002', '56565565', '78787', '114', '100003'],
     });
 
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('bulk import Component renders', async function(assert) {
+  test('bulk import Component renders', async function (assert) {
     assert.expect(3);
 
     const rawQuery = this.queryIds.join(',');
@@ -104,7 +104,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.dom('.dimension-bulk-import').isVisible('Component renders');
 
     assert.deepEqual(
-      findAll('.btn-container button').map(el => el.textContent.trim()),
+      findAll('.btn-container button').map((el) => el.textContent.trim()),
       ['Include Valid IDs', 'Cancel'],
       'Include and Cancel buttons are rendered in input mode as expected'
     );
@@ -113,7 +113,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     assert.dom('.pasted-input').hasText(rawQuery, 'pasted text is visible');
   });
 
-  test('search dimension IDs', async function(assert) {
+  test('search dimension IDs', async function (assert) {
     assert.expect(6);
 
     render(COMMON_TEMPLATE);
@@ -128,7 +128,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     let validPills = $('.id-container:first .item');
     assert.deepEqual(
       validPills
-        .map(function() {
+        .map(function () {
           return this.childNodes[3].wholeText.trim();
         })
         .get(),
@@ -137,18 +137,12 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
 
     /* == Invalid Ids == */
-    assert.equal(
-      $('.invalid-id-count')
-        .text()
-        .trim(),
-      '2',
-      'Invalid ID count is 2'
-    );
+    assert.equal($('.invalid-id-count').text().trim(), '2', 'Invalid ID count is 2');
 
     let invalidPills = $('.paginated-scroll-list:last .item');
     assert.deepEqual(
       invalidPills
-        .map(function() {
+        .map(function () {
           return this.textContent.trim();
         })
         .get(),
@@ -159,7 +153,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     let buttons = $('.btn-container button');
     assert.deepEqual(
       buttons
-        .map(function() {
+        .map(function () {
           return this.textContent.trim();
         })
         .get(),
@@ -168,10 +162,10 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
   });
 
-  test('onSelectValues action is triggered', async function(assert) {
+  test('onSelectValues action is triggered', async function (assert) {
     assert.expect(2);
 
-    this.set('onSelectValues', validDimVals => {
+    this.set('onSelectValues', (validDimVals) => {
       assert.ok(true, 'onSelectValues action is triggered');
 
       assert.deepEqual(
@@ -187,7 +181,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     await click($('.btn-container button:contains(Include Valid IDs)')[0]);
   });
 
-  test('onCancel action is triggered', async function(assert) {
+  test('onCancel action is triggered', async function (assert) {
     assert.expect(1);
 
     this.set('onCancel', () => {
@@ -201,25 +195,19 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     await click($('.btn-container button:contains(Cancel)')[0]);
   });
 
-  test('remove valid IDs', async function(assert) {
+  test('remove valid IDs', async function (assert) {
     assert.expect(6);
 
     await render(COMMON_TEMPLATE);
 
     await settled();
 
-    assert.equal(
-      $('.valid-id-count')
-        .text()
-        .trim(),
-      '4',
-      'Valid ID count is 4 before removing any pills'
-    );
+    assert.equal($('.valid-id-count').text().trim(), '4', 'Valid ID count is 4 before removing any pills');
 
     let validPills = $('.id-container:first .item');
     assert.deepEqual(
       validPills
-        .map(function() {
+        .map(function () {
           return this.childNodes[3].wholeText.trim();
         })
         .get(),
@@ -230,7 +218,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     let invalidPills = $('.paginated-scroll-list:last .item');
     assert.deepEqual(
       invalidPills
-        .map(function() {
+        .map(function () {
           return this.textContent.trim();
         })
         .get(),
@@ -241,18 +229,12 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     //Remove First Valid Pill, item removed depends on the ordering
     await click('.items-list:first-of-type .item:first-of-type .remove-pill');
 
-    assert.equal(
-      $('.valid-id-count')
-        .text()
-        .trim(),
-      '3',
-      'Valid ID count is 3 after removing a pill'
-    );
+    assert.equal($('.valid-id-count').text().trim(), '3', 'Valid ID count is 3 after removing a pill');
 
     validPills = $('.id-container:first .item');
     assert.deepEqual(
       validPills
-        .map(function() {
+        .map(function () {
           return this.childNodes[3].wholeText.trim();
         })
         .get(),
@@ -263,7 +245,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     invalidPills = $('.paginated-scroll-list:last .item');
     assert.deepEqual(
       invalidPills
-        .map(function() {
+        .map(function () {
           return this.textContent.trim();
         })
         .get(),
@@ -272,7 +254,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     );
   });
 
-  test('behavior of headers', async function(assert) {
+  test('behavior of headers', async function (assert) {
     assert.expect(3);
 
     render(COMMON_TEMPLATE);
@@ -297,13 +279,13 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       .hasText('Search Results for', 'Secondary header has expected result text after searching');
   });
 
-  test('Search dimension with smart key', async function(assert) {
+  test('Search dimension with smart key', async function (assert) {
     assert.expect(1);
     this.setProperties({
       dimension: { id: 'multiSystemId', name: 'Multi System Id', source: 'bardOne' },
       onSelectValues: () => {},
       onCancel: () => {},
-      queryIds: ['6', '7']
+      queryIds: ['6', '7'],
     });
 
     await render(COMMON_TEMPLATE);
@@ -312,7 +294,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       let validPills = $('.id-container:first .item');
       assert.deepEqual(
         validPills
-          .map(function() {
+          .map(function () {
             return this.childNodes[3].wholeText.trim();
           })
           .get(),
@@ -322,7 +304,7 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
     });
   });
 
-  test('Raw input is searched', async function(assert) {
+  test('Raw input is searched', async function (assert) {
     assert.expect(1);
     const rawQuery = 'yes, comma';
     this.setProperties({
@@ -330,14 +312,14 @@ module('Integration | Component | Dimension Bulk Import', function(hooks) {
       onSelectValues: () => {},
       onCancel: () => {},
       rawQuery,
-      queryIds: rawQuery.split(',').map(s => s.trim())
+      queryIds: rawQuery.split(',').map((s) => s.trim()),
     });
 
     await render(COMMON_TEMPLATE);
 
     await settled();
     assert.deepEqual(
-      findAll('.btn-container button').map(el => el.textContent.trim()),
+      findAll('.btn-container button').map((el) => el.textContent.trim()),
       ['Include Valid IDs', 'Include Raw Input', 'Cancel'],
       'The Include Raw Input button shows up for valid rawQuery'
     );

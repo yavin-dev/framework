@@ -205,9 +205,9 @@ export default class KegService extends Service {
     if (typeof clause === 'object') {
       foundRecords = recordKeg;
 
-      Object.keys(clause).forEach(field => {
+      Object.keys(clause).forEach((field) => {
         foundRecords = A(
-          foundRecords.filter(item => {
+          foundRecords.filter((item) => {
             const clauseValue = clause[field];
             if (Array.isArray(clauseValue)) {
               return clauseValue.indexOf(item[field]) > -1;
@@ -233,8 +233,8 @@ export default class KegService extends Service {
    */
   all(type: string, namespace?: string): EmberArray<KegRecord> {
     const all = this._getRecordKegForType(type);
-    if (namespace && all.any(item => !!item.source)) {
-      return A(all.filter(item => item.source === namespace));
+    if (namespace && all.any((item) => !!item.source)) {
+      return A(all.filter((item) => item.source === namespace));
     }
     return all;
   }

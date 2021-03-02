@@ -12,5 +12,5 @@ const CHART_TYPES = A([METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES]);
 export default BaseValidator.extend({
   validate(value /*, options, model, attribute*/) {
     return CHART_TYPES.includes(value);
-  }
+  },
 });

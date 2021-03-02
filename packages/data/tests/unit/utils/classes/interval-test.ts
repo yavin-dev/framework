@@ -1,13 +1,13 @@
 import Interval from 'navi-data/utils/classes/interval';
 import Duration from 'navi-data/utils/classes/duration';
 import { module, test } from 'qunit';
-import { getPeriodForGrain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';
 
-module('Unit | Utils | Interval Class', function() {
-  test('Construction', function(assert) {
+module('Unit | Utils | Interval Class', function () {
+  test('Construction', function (assert) {
     assert.expect(5);
 
     //@ts-expect-error
@@ -31,7 +31,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(new Interval(new Duration('P7D'), moment()), 'proper interval can be built');
   });
 
-  test('isEqual', function(assert) {
+  test('isEqual', function (assert) {
     assert.expect(4);
 
     let interval = new Interval(new Duration('P7D'), moment());
@@ -51,7 +51,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(interval.isEqual(interval), 'Interval equals one with matching start/end');
   });
 
-  test('isAscending', function(assert) {
+  test('isAscending', function (assert) {
     assert.expect(3);
 
     assert.ok(
@@ -70,8 +70,14 @@ module('Unit | Utils | Interval Class', function() {
     );
   });
 
-  test('diffForTimePeriod', function(assert) {
-    assert.expect(6);
+  test('diffForTimePeriod', function (assert) {
+    assert.expect(7);
+
+    assert.equal(
+      new Interval(new Duration('P1D'), moment.utc('2021-02-05')).diffForTimePeriod('day'),
+      1,
+      'Interval has 1 days for absolute day to 1 day ago'
+    );
 
     assert.equal(
       new Interval(new Duration('P7D'), 'current').diffForTimePeriod('day'),
@@ -110,20 +116,20 @@ module('Unit | Utils | Interval Class', function() {
     );
   });
 
-  test('getDatesForInterval', function(assert) {
+  test('getDatesForInterval', function (assert) {
     assert.expect(1);
 
     let testInterval = new Interval(moment('4-9-2017', 'D-M-Y'), moment('25-9-2017', 'D-M-Y')),
       dates = testInterval.getDatesForInterval('isoWeek');
 
     assert.deepEqual(
-      dates.map(date => date.format('D-M-Y')),
+      dates.map((date) => date.format('D-M-Y')),
       ['4-9-2017', '11-9-2017', '18-9-2017'],
       'A moment for each isoWeek between Sep 4 and Sep 25 (exclusive) is returned'
     );
   });
 
-  test('asMoments', function(assert) {
+  test('asMoments', function (assert) {
     assert.expect(3);
 
     let moments = new Interval(new Duration('P7D'), 'current').asMoments(),
@@ -142,7 +148,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.start.isSame(start) && moments.end?.isSame(end), 'Given moments are correctly returned');
   });
 
-  test('asMomentsForTimePeriod', function(assert) {
+  test('asMomentsForTimePeriod', function (assert) {
     assert.expect(2);
 
     let start = moment('2014-10-10', FORMAT),
@@ -154,7 +160,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.end.isSame(end.startOf('isoWeek')), 'End moment is at start of isoWeek');
   });
 
-  test('asMomentsForTimePeriod with current and next for time period', function(assert) {
+  test('asMomentsForTimePeriod with current and next for time period', function (assert) {
     assert.expect(1);
 
     // end is next, which will be undefined as moment
@@ -164,7 +170,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.end.isSame(expected), 'Setting end to next will be computed correctly');
   });
 
-  test('asMomentsForTimePeriod - same start and end date', function(assert) {
+  test('asMomentsForTimePeriod - same start and end date', function (assert) {
     assert.expect(3);
 
     let start = moment('2017-10-10', FORMAT),
@@ -180,80 +186,108 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(moments.start.isSame(moments.end), 'Start moment is same as end moment');
   });
 
-  test('makeEndExclusiveFor', function(assert) {
+  test('asMomentsInclusive', function (assert) {
+    assert.expect(8);
+
+    const toInclusive = (startStr: string, endStr: string, grain: Grain) => {
+      const { start, end } = Interval.parseFromStrings(startStr, endStr).asMomentsInclusive(grain);
+      return [start.toISOString(), end.toISOString()];
+    };
+    const startStr = '2014-01-01';
+    const endStr = '2015-01-01';
+    const startValue = `${startStr}T00:00:00.000Z`;
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'second'),
+      [startValue, '2014-12-31T23:59:59.000Z'],
+      'End moment is inclusive of the second'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'minute'),
+      [startValue, '2014-12-31T23:59:00.000Z'],
+      'End moment is inclusive of the minute'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'hour'),
+      [startValue, '2014-12-31T23:00:00.000Z'],
+      'End moment is inclusive of the hour'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'day'),
+      [startValue, '2014-12-31T00:00:00.000Z'],
+      'End moment is inclusive of the day'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'isoWeek'),
+      ['2013-12-30T00:00:00.000Z', '2014-12-22T00:00:00.000Z'],
+      'End moment is inclusive of the isoWeek and aligned to isoWeek'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'month'),
+      [startValue, '2014-12-01T00:00:00.000Z'],
+      'End moment is inclusive of the month'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'quarter'),
+      [startValue, '2014-10-01T00:00:00.000Z'],
+      'End moment is inclusive of the quarter'
+    );
+    assert.deepEqual(
+      toInclusive(startStr, endStr, 'year'),
+      [startValue, '2014-01-01T00:00:00.000Z'],
+      'End moment is inclusive of the year'
+    );
+  });
+
+  test('makeEndExclusiveFor', function (assert) {
     const start = moment('2017-10-10T00:00:00.000Z').utc();
     const end = moment('2017-10-12T01:02:03.004Z').utc();
     const interval = new Interval(start, end);
 
     assert.equal(
-      interval
-        .makeEndExclusiveFor('second')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('second').asMoments().end?.toISOString(),
       '2017-10-12T01:02:04.000Z',
       'interval is inclusive of the second'
     );
     assert.equal(
-      interval
-        .makeEndExclusiveFor('minute')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('minute').asMoments().end?.toISOString(),
       '2017-10-12T01:03:00.000Z',
       'interval is inclusive of the minute'
     );
 
     assert.equal(
-      interval
-        .makeEndExclusiveFor('hour')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('hour').asMoments().end?.toISOString(),
       '2017-10-12T02:00:00.000Z',
       'interval is inclusive of the hour'
     );
 
     assert.equal(
-      interval
-        .makeEndExclusiveFor('day')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('day').asMoments().end?.toISOString(),
       '2017-10-13T00:00:00.000Z',
       'interval is inclusive of the day'
     );
     assert.equal(
-      interval
-        .makeEndExclusiveFor('isoWeek')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('isoWeek').asMoments().end?.toISOString(),
       '2017-10-16T00:00:00.000Z',
       'interval is inclusive of the isoWeek'
     );
     assert.equal(
-      interval
-        .makeEndExclusiveFor('month')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('month').asMoments().end?.toISOString(),
       '2017-11-01T00:00:00.000Z',
       'interval is inclusive of the month'
     );
     assert.equal(
-      interval
-        .makeEndExclusiveFor('quarter')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('quarter').asMoments().end?.toISOString(),
       '2018-01-01T00:00:00.000Z',
       'interval is inclusive of the quarter'
     );
     assert.equal(
-      interval
-        .makeEndExclusiveFor('year')
-        .asMoments()
-        .end?.toISOString(),
+      interval.makeEndExclusiveFor('year').asMoments().end?.toISOString(),
       '2018-01-01T00:00:00.000Z',
       'interval is inclusive of the year'
     );
   });
 
-  test('asIntervalForTimePeriod', function(assert) {
+  test('asIntervalForTimePeriod', function (assert) {
     assert.expect(2);
 
     let start = moment('2014-10-10', FORMAT),
@@ -265,7 +299,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.ok(newInterval.end?.isSame(end.startOf('isoWeek')), 'End moment is at start of isoWeek');
   });
 
-  test('asIntervalForTimePeriod - same start and end date', function(assert) {
+  test('asIntervalForTimePeriod - same start and end date', function (assert) {
     assert.expect(2);
 
     let start = moment('2017-10-10', FORMAT),
@@ -277,7 +311,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.equal(newInterval.end?.format(FORMAT), '2017-10-16', 'End moment is at start of isoWeek');
   });
 
-  test('asStrings', function(assert) {
+  test('asStrings', function (assert) {
     assert.expect(3);
 
     let strings = new Interval(new Duration('P7D'), 'current').asStrings();
@@ -294,7 +328,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.equal(strings.start, start.toISOString(), 'Moments are formatted for API');
   });
 
-  test('_stringFromProperty', function(assert) {
+  test('_stringFromProperty', function (assert) {
     assert.expect(3);
 
     assert.equal(Interval['_stringFromProperty'](new Duration('P7D')), 'P7D', 'Duration is converted to iso string');
@@ -305,7 +339,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.equal(Interval['_stringFromProperty'](start), start.toISOString(), 'Moments are formatted for API');
   });
 
-  test('fromString', function(assert) {
+  test('fromString', function (assert) {
     assert.expect(5);
 
     assert.equal(Interval.fromString('current'), 'current', 'Macro can be parsed from string');
@@ -338,7 +372,7 @@ module('Unit | Utils | Interval Class', function() {
     );
   });
 
-  test('_isAcceptedType', function(assert) {
+  test('_isAcceptedType', function (assert) {
     assert.expect(4);
 
     let interval = new Interval('current', 'current');
@@ -352,7 +386,7 @@ module('Unit | Utils | Interval Class', function() {
     assert.notOk(interval['_isAcceptedType']({ random: 'object' }), 'Generic objects are not accepted');
   });
 
-  test('isInterval', function(assert) {
+  test('isInterval', function (assert) {
     assert.expect(2);
 
     assert.ok(Interval.isInterval(new Interval('current', 'current')), 'isInterval returns true for intervals');

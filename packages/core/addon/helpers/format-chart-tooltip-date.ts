@@ -14,7 +14,7 @@ const TOOLTIP_DATE_TIME_FORMAT: Record<string, string | undefined> = {
   week: 'MMMM D, YYYY',
   month: 'MMM YYYY',
   quarter: '[Q]Q YYYY',
-  year: 'YYYY'
+  year: 'YYYY',
 };
 
 /**

@@ -4,10 +4,10 @@ import { render, findAll } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { set } from '@ember/object';
 
-module('Integration | Component | navi-search-result-wrapper', function(hooks) {
+module('Integration | Component | navi-search-result-wrapper', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('no successful results tasks', async function(assert) {
+  test('no successful results tasks', async function (assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -17,9 +17,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample',
-          data: []
-        }
-      }
+          data: [],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -31,7 +31,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').doesNotExist('Loader is not shown');
   });
 
-  test('no results tasks return data', async function(assert) {
+  test('no results tasks return data', async function (assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -41,9 +41,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample',
-          data: []
-        }
-      }
+          data: [],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -55,7 +55,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').doesNotExist('Loader is not shown');
   });
 
-  test('results are loading', async function(assert) {
+  test('results are loading', async function (assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -65,9 +65,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample',
-          data: []
-        }
-      }
+          data: [],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -79,7 +79,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').exists('Loader is shown.');
   });
 
-  test('some results are shown and some results are loading', async function(assert) {
+  test('some results are shown and some results are loading', async function (assert) {
     assert.expect(3);
 
     set(this, 'searchResults', [
@@ -89,8 +89,8 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample Loaded',
-          data: ['some data', 'some other data']
-        }
+          data: ['some data', 'some other data'],
+        },
       },
       {
         isRunning: true,
@@ -98,9 +98,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample Loading',
-          data: []
-        }
-      }
+          data: [],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -115,7 +115,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').exists('Loader is shown for pending search results.');
   });
 
-  test('results rendered', async function(assert) {
+  test('results rendered', async function (assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -125,9 +125,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample Loaded',
-          data: ['some data', 'some other data']
-        }
-      }
+          data: ['some data', 'some other data'],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -141,7 +141,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     assert.dom('.navi-search-result-wrapper__loader').doesNotExist('Loader is not shown');
   });
 
-  test('multiple results rendered', async function(assert) {
+  test('multiple results rendered', async function (assert) {
     assert.expect(2);
 
     set(this, 'searchResults', [
@@ -151,8 +151,8 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Sample Loaded',
-          data: ['some data', 'some other data']
-        }
+          data: ['some data', 'some other data'],
+        },
       },
       {
         isRunning: false,
@@ -160,9 +160,9 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
         value: {
           component: 'navi-search-result/sample',
           title: 'Another Sample Loaded',
-          data: ['some data', 'some other data']
-        }
-      }
+          data: ['some data', 'some other data'],
+        },
+      },
     ]);
     set(this, 'closeResults', {});
 
@@ -171,7 +171,7 @@ module('Integration | Component | navi-search-result-wrapper', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.navi-search-result-wrapper__item-title').map(el => el.textContent.trim()),
+      findAll('.navi-search-result-wrapper__item-title').map((el) => el.textContent.trim()),
       ['Sample Loaded', 'Another Sample Loaded'],
       'Loaded search results are displayed'
     );

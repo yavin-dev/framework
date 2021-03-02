@@ -30,9 +30,9 @@ export function topN(rows: ResponseRow[], metric: string, n: number): ResponseRo
  * @returns all data rows containing the most recent dateTime
  */
 export function mostRecentData(rows: ResponseRow[], timeDimensionColumn?: string): ResponseRow[] {
-  const column = timeDimensionColumn || Object.keys(rows[0]).find(c => c.includes('.dateTime'));
+  const column = timeDimensionColumn || Object.keys(rows[0]).find((c) => c.includes('.dateTime'));
   assert('Should define a timeDimensionColumn to find data by', column !== undefined);
-  const byDate = new DataGroup(rows, row => row[column] as string);
+  const byDate = new DataGroup(rows, (row) => row[column] as string);
   const sortedDates = byDate.getKeys().sort();
   const mostRecentDate = sortedDates[sortedDates.length - 1];
 
@@ -46,7 +46,7 @@ export function mostRecentData(rows: ResponseRow[], timeDimensionColumn?: string
  * @param dimensionOrder
  */
 export function dataByDimensions(rows: ResponseRow[], dimensions: ColumnFragment[]): DataGroup<ResponseRow> {
-  return new DataGroup(rows, row => dimensions.map(dimension => row[dimension.canonicalName]).join('|'));
+  return new DataGroup(rows, (row) => dimensions.map((dimension) => row[dimension.canonicalName]).join('|'));
 }
 
 /**
@@ -65,5 +65,5 @@ export function maxDataByDimensions(
   const data = dataByDimensions(rows, dimensions);
   const keys = data.getKeys();
 
-  return keys.map(key => maxBy(data.getDataForKey(key), (row: ResponseRow) => Number(row[metric])) as ResponseRow);
+  return keys.map((key) => maxBy(data.getDataForKey(key), (row: ResponseRow) => Number(row[metric])) as ResponseRow);
 }

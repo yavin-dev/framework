@@ -5,35 +5,35 @@ import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Integration | Component | dir-asset-row-actions', function(hooks) {
+module('Integration | Component | dir-asset-row-actions', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     const router = this.owner.lookup('router:main');
     router.startRouting(true);
   });
 
-  test('renders correct component', async function(assert) {
+  test('renders correct component', async function (assert) {
     assert.expect(2);
 
     let row = {
-        rowId: '123'
+        rowId: '123',
       },
       report = {
         title: 'Report 1',
         id: 1,
         isFavorite: true,
         constructor: {
-          modelName: 'report'
-        }
+          modelName: 'report',
+        },
       },
       dashboard = {
         title: 'Dashboard 1',
         id: 2,
         isFavorite: false,
         constructor: {
-          modelName: 'dashboard'
-        }
+          modelName: 'dashboard',
+        },
       };
     set(this, 'item', report);
     set(this, 'row', row);

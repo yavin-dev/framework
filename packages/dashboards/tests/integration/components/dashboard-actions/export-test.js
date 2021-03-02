@@ -14,16 +14,16 @@ const TEMPLATE = hbs`
   </DashboardActions::Export>
 `;
 
-module('Integration | Component | dashboard actions/export', function(hooks) {
+module('Integration | Component | dashboard actions/export', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.set('dashboard', { id: 123, title: 'Akkala Tech Lab Weekly Reports' });
     this.set('disabled', false);
     await render(TEMPLATE);
   });
 
-  test('export links', async function(assert) {
+  test('export links', async function (assert) {
     assert.expect(4);
 
     assert.dom('.ember-basic-dropdown-trigger').hasText('Export', 'Component yields content as expected');
@@ -48,7 +48,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
     );
   });
 
-  test('export filename', async function(assert) {
+  test('export filename', async function (assert) {
     assert.expect(1);
 
     await clickTrigger();
@@ -59,7 +59,7 @@ module('Integration | Component | dashboard actions/export', function(hooks) {
     );
   });
 
-  test('disabled', async function(assert) {
+  test('disabled', async function (assert) {
     assert.expect(1);
 
     this.set('disabled', true);

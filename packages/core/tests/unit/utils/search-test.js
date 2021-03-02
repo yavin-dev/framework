@@ -2,12 +2,12 @@ import {
   getPartialMatchWeight,
   getExactMatchWeight,
   searchRecords,
-  searchDimensionRecords
+  searchDimensionRecords,
 } from 'navi-core/utils/search';
 import { module, test } from 'qunit';
 
-module('Unit | Utils | Search Utils', function() {
-  test('getPartialMatchWeight', function(assert) {
+module('Unit | Utils | Search Utils', function () {
+  test('getPartialMatchWeight', function (assert) {
     assert.expect(6);
 
     assert.equal(
@@ -45,7 +45,7 @@ module('Unit | Utils | Search Utils', function() {
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
   });
 
-  test('getExactMatchWeight', function(assert) {
+  test('getExactMatchWeight', function (assert) {
     assert.expect(3);
 
     assert.equal(getExactMatchWeight('158', 'karts'), undefined, 'No match weight when query does not match');
@@ -56,26 +56,26 @@ module('Unit | Utils | Search Utils', function() {
     assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
   });
 
-  test('searchRecords', function(assert) {
+  test('searchRecords', function (assert) {
     assert.expect(2);
 
     let records = [
       {
         id: 'bike',
-        description: 'All Bikes'
+        description: 'All Bikes',
       },
       {
         id: '123456',
-        description: 'Sport Bike'
+        description: 'Sport Bike',
       },
       {
         id: '1234567',
-        description: 'Bowser'
+        description: 'Bowser',
       },
       {
         id: '123',
-        description: 'Standard Kart'
-      }
+        description: 'Standard Kart',
+      },
     ];
 
     assert.deepEqual(
@@ -83,12 +83,12 @@ module('Unit | Utils | Search Utils', function() {
       [
         {
           description: 'All Bikes',
-          id: 'bike'
+          id: 'bike',
         },
         {
           description: 'Sport Bike',
-          id: '123456'
-        }
+          id: '123456',
+        },
       ],
       'The matching records are returned and sorted by relevance of description'
     );
@@ -98,41 +98,41 @@ module('Unit | Utils | Search Utils', function() {
       [
         {
           description: 'Standard Kart',
-          id: '123'
+          id: '123',
         },
         {
           description: 'Sport Bike',
-          id: '123456'
+          id: '123456',
         },
         {
           description: 'Bowser',
-          id: '1234567'
-        }
+          id: '1234567',
+        },
       ],
       'The matching records are returned now sorted by relevance of ids'
     );
   });
 
-  test('searchDimensionRecords', function(assert) {
+  test('searchDimensionRecords', function (assert) {
     assert.expect(8);
 
     let records = [
       {
         id: 'bike',
-        description: 'All Bikes'
+        description: 'All Bikes',
       },
       {
         id: '123456',
-        description: 'Sport Bike'
+        description: 'Sport Bike',
       },
       {
         id: '1234567',
-        description: 'Bowser'
+        description: 'Bowser',
       },
       {
         id: '123',
-        description: 'Standard Kart'
-      }
+        description: 'Standard Kart',
+      },
     ];
 
     let results = searchDimensionRecords(records, 'Bike', 100);
@@ -161,16 +161,16 @@ module('Unit | Utils | Search Utils', function() {
     let expectedResults = [
       {
         record: records[3],
-        relevance: 1
+        relevance: 1,
       },
       {
         record: records[1],
-        relevance: 4
+        relevance: 4,
       },
       {
         record: records[2],
-        relevance: 5
-      }
+        relevance: 5,
+      },
     ];
     assert.deepEqual(results, expectedResults, 'Results contain expected records, order, and relevance');
   });

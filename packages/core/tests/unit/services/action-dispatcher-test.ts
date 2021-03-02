@@ -22,27 +22,27 @@ type Consumer = { name: string; actions: object };
 
 function createDispatcher(...consumers: Consumer[]) {
   const owner = (getContext() as TestContext).owner;
-  const consumerRegistries = consumers.map(c => {
+  const consumerRegistries = consumers.map((c) => {
     const registry = `consumer:${c.name}`;
     owner.register(registry, ActionConsumer.extend({ actions: c.actions }));
     return registry;
   });
 
-  let response = registerDispatcher(consumers.map(c => c.name));
+  let response = registerDispatcher(consumers.map((c) => c.name));
 
   return {
     service: response.service,
     destroy: () => {
-      consumerRegistries.forEach(registry => owner.unregister(registry));
+      consumerRegistries.forEach((registry) => owner.unregister(registry));
       response.destroy();
-    }
+    },
   };
 }
 
-module('Unit | Service | action-dispatcher', function(hooks) {
+module('Unit | Service | action-dispatcher', function (hooks) {
   setupTest(hooks);
 
-  test('dispatch calls the correct action', function(assert) {
+  test('dispatch calls the correct action', function (assert) {
     assert.expect(2);
 
     const foo = {
@@ -54,8 +54,8 @@ module('Unit | Service | action-dispatcher', function(hooks) {
         },
         actionTwo() {
           assert.notOk(true, 'this action should not be called');
-        }
-      }
+        },
+      },
     };
 
     const bar = {
@@ -63,8 +63,8 @@ module('Unit | Service | action-dispatcher', function(hooks) {
       actions: {
         actionThree() {
           assert.notOk(true, 'this action should not be called');
-        }
-      }
+        },
+      },
     };
 
     let testService = createDispatcher(foo, bar);
@@ -73,7 +73,7 @@ module('Unit | Service | action-dispatcher', function(hooks) {
     testService.destroy();
   });
 
-  test('dispatch can call an action on multiple consumers', function(assert) {
+  test('dispatch can call an action on multiple consumers', function (assert) {
     assert.expect(5);
 
     const foo = {
@@ -82,8 +82,8 @@ module('Unit | Service | action-dispatcher', function(hooks) {
         actionOne(arg1: number) {
           assert.step('dispatch sent an action to foo consumer');
           assert.equal(arg1, 1, 'dispatch sent the correct argument to the action');
-        }
-      }
+        },
+      },
     };
 
     const bar = {
@@ -92,8 +92,8 @@ module('Unit | Service | action-dispatcher', function(hooks) {
         actionOne(arg1: number) {
           assert.step('dispatch sent an action to bar consumer');
           assert.equal(arg1, 1, 'dispatch sent the correct argument to the action');
-        }
-      }
+        },
+      },
     };
 
     let testService = createDispatcher(foo, bar);

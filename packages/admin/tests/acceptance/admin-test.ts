@@ -6,11 +6,11 @@ import { linkContains } from 'navi-core/test-support/contains-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Acceptance | Admin', function(hooks) {
+module('Acceptance | Admin', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('side bar navigation', async function(assert) {
+  test('side bar navigation', async function (assert) {
     assert.expect(3);
 
     await visit('/admin');

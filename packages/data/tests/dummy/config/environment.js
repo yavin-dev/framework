@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'dummy',
     environment,
@@ -13,8 +13,8 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
@@ -29,14 +29,14 @@ module.exports = function(environment) {
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
         { name: 'bardTwo', uri: 'https://data2.naviapp.com', type: 'bard' },
         { name: 'elideOne', uri: 'https://data.naviapp.io/graphql', type: 'elide' },
-        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' }
+        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' },
       ],
       defaultDataSource: 'bardOne',
       searchThresholds: {
         contains: 600,
-        in: 50000
-      }
-    }
+        in: 50000,
+      },
+    },
   };
 
   if (environment === 'development') {

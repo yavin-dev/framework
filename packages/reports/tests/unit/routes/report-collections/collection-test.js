@@ -3,15 +3,15 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Route | report collections/collection', function(hooks) {
+module('Unit | Route | report collections/collection', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('model', function(assert) {
+  test('model', function (assert) {
     assert.expect(4);
 
     return run(() => {
@@ -21,7 +21,7 @@ module('Unit | Route | report collections/collection', function(hooks) {
 
       assert.ok(modelPromise.then, 'Route returns a promise in the model hook');
 
-      return modelPromise.then(model => {
+      return modelPromise.then((model) => {
         assert.equal(model.id, params.collection_id, 'The requested collection is retrieved');
 
         assert.equal(
@@ -30,7 +30,7 @@ module('Unit | Route | report collections/collection', function(hooks) {
           'The requested collection is retrieved'
         );
 
-        return model.get('reports').then(reports => {
+        return model.get('reports').then((reports) => {
           assert.equal(reports.length, 2, 'The requested collection is retrieved with the two reports');
         });
       });

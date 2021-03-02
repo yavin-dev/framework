@@ -93,7 +93,7 @@ export default class PowerSelectCollectionOptions extends Options {
         return [
           ...previous,
           { groupName, groupSize: grouped[groupName].length },
-          ...this._sortOptions(grouped[groupName])
+          ...this._sortOptions(grouped[groupName]),
         ];
       }, []);
   }

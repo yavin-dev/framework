@@ -29,7 +29,7 @@ export default Service.extend({
    * @returns {Array} visualizations that are valid for request
    */
   validVisualizations(request) {
-    return this.all().filter(vis => vis.typeIsValid(request));
+    return this.all().filter((vis) => vis.typeIsValid(request));
   },
 
   /**
@@ -48,10 +48,10 @@ export default Service.extend({
   all() {
     // Find all visualizations registered in requirejs under the namespace "components/navi-visualizations"
     let visualizationRegExp = new RegExp(`^(?:${config.modulePrefix}/)?navi-visualization-manifests/([a-z-]*)$`),
-      visualizationComponents = Object.keys(requirejs.entries).filter(key => visualizationRegExp.test(key)),
-      visualizationArray = visualizationComponents.map(key => this.getManifest(visualizationRegExp.exec(key)[1]));
+      visualizationComponents = Object.keys(requirejs.entries).filter((key) => visualizationRegExp.test(key)),
+      visualizationArray = visualizationComponents.map((key) => this.getManifest(visualizationRegExp.exec(key)[1]));
 
     // visualization must have a name
-    return visualizationArray.filter(visualization => visualization.name);
-  }
+    return visualizationArray.filter((visualization) => visualization.name);
+  },
 });

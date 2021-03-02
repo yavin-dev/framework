@@ -23,17 +23,17 @@ import { LineChartConfig } from 'navi-core/models/line-chart';
 
 let Store: StoreService;
 
-module('Unit | Component | line chart', function(hooks) {
+module('Unit | Component | line chart', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     Store = this.owner.lookup('service:store') as StoreService;
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadata;
     await naviMetadata.loadMetadata();
   });
 
-  test('dataConfig', function(assert) {
+  test('dataConfig', function (assert) {
     const response = NaviFactResponse.create({
       //prettier-ignore
       rows: [
@@ -42,7 +42,7 @@ module('Unit | Component | line chart', function(hooks) {
         { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', uniqueIdentifier: 183380921, totalPageViews: 4024700302 },
         { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', uniqueIdentifier: 180559793, totalPageViews: 3950276031 },
         { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
-      ]
+      ],
     });
     const request = Store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -52,9 +52,9 @@ module('Unit | Component | line chart', function(hooks) {
           field: 'network.dateTime',
           parameters: { grain: 'day' },
           alias: null,
-          source: 'bardOne'
+          source: 'bardOne',
         },
-        { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null, source: 'bardOne' }
+        { type: 'metric', field: 'totalPageViews', parameters: {}, alias: null, source: 'bardOne' },
       ],
       filters: [
         {
@@ -64,13 +64,13 @@ module('Unit | Component | line chart', function(hooks) {
           alias: null,
           operator: 'bet',
           values: ['2016-05-30 00:00:00.000', '2016-06-04 00:00:00.000'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     let options = {
@@ -79,26 +79,26 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     } as LineChart['args']['options'];
 
     const args: LineChart['args'] = {
       model: A([{ request, response }]),
-      options
+      options,
     };
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', args) as LineChart;
 
-    let expectedData = (response.rows.map(row => {
+    let expectedData = (response.rows.map((row) => {
       const date = row['network.dateTime(grain=day)'] as string;
       return {
         x: {
           rawValue: date,
-          displayValue: moment(date).format('MMM D')
+          displayValue: moment(date).format('MMM D'),
         },
-        'series.0': row.totalPageViews
+        'series.0': row.totalPageViews,
       };
     }) as unknown) as C3Row[];
 
@@ -121,10 +121,10 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     };
 
     set(component.args, 'options', options);
@@ -132,18 +132,18 @@ module('Unit | Component | line chart', function(hooks) {
       type: 'metric',
       field: 'uniqueIdentifier',
       parameters: {},
-      source: 'bardOne'
+      source: 'bardOne',
     });
 
-    expectedData = (response.rows.map(row => {
+    expectedData = (response.rows.map((row) => {
       const date = row['network.dateTime(grain=day)'] as string;
       return {
         x: {
           rawValue: date,
-          displayValue: moment(date).format('MMM D')
+          displayValue: moment(date).format('MMM D'),
         },
         'series.0': row.totalPageViews,
-        'series.1': row.uniqueIdentifier
+        'series.1': row.uniqueIdentifier,
       };
     }) as unknown) as C3Row[];
 
@@ -164,30 +164,30 @@ module('Unit | Component | line chart', function(hooks) {
     );
   });
 
-  test('dataSelectionConfig', function(assert) {
+  test('dataSelectionConfig', function (assert) {
     assert.expect(2);
 
-    const insightsDataPromise = new Promise(resolve => {
+    const insightsDataPromise = new Promise((resolve) => {
       resolve(
         A([
           {
             index: 1,
             actual: 12,
             predicted: 172724594.12345,
-            standardDeviation: 123.123456
-          }
+            standardDeviation: 123.123456,
+          },
         ])
       );
     });
     const args: LineChart['args'] = {
       //@ts-expect-error
-      model: A([{}, insightsDataPromise])
+      model: A([{}, insightsDataPromise]),
     };
     const component = createGlimmerComponent('component:navi-visualizations/line-chart', args) as LineChart;
 
     assert.ok(component.dataSelectionConfig.dataSelection?.then, 'Data selection config returns a promise as expected');
 
-    component.dataSelectionConfig.dataSelection?.then(insightsData => {
+    component.dataSelectionConfig.dataSelection?.then((insightsData) => {
       assert.deepEqual(
         insightsData.mapBy('index'),
         [1],
@@ -196,7 +196,7 @@ module('Unit | Component | line chart', function(hooks) {
     });
   });
 
-  test('config', function(assert) {
+  test('config', function (assert) {
     assert.expect(4);
 
     class TestLineChart extends LineChart {
@@ -211,16 +211,16 @@ module('Unit | Component | line chart', function(hooks) {
       model: A([
         {
           request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews' }]),
-          response: NaviFactResponse.create()
-        }
-      ])
+          response: NaviFactResponse.create(),
+        },
+      ]),
     }) as TestLineChart;
 
     const defaultConfig = {
       style: {
         curve: 'line',
         area: false,
-        stacked: false
+        stacked: false,
       },
       axis: {
         x: {
@@ -228,38 +228,38 @@ module('Unit | Component | line chart', function(hooks) {
           categories: [],
           tick: {
             culling: true,
-            multiline: false
-          }
+            multiline: false,
+          },
         },
         y: {
           label: {
-            position: 'outer-middle'
+            position: 'outer-middle',
           },
           series: {
             type: 'metric',
-            config: {}
+            config: {},
           },
-          tick: component.config.axis.y.tick
-        }
+          tick: component.config.axis.y.tick,
+        },
       },
       grid: {
-        y: { show: true }
+        y: { show: true },
       },
       point: {
         r: 2,
         focus: {
           expand: {
-            r: 4
-          }
-        }
+            r: 4,
+          },
+        },
       },
-      tooltip: component.chartTooltip
+      tooltip: component.chartTooltip,
     };
 
     assert.deepEqual(component.config, defaultConfig, 'Component has a defaultConfig');
 
     let newGrid = {
-      x: { show: false }
+      x: { show: false },
     };
 
     //@ts-expect-error
@@ -269,7 +269,7 @@ module('Unit | Component | line chart', function(hooks) {
       component.config,
       merge({}, defaultConfig, {
         grid: newGrid,
-        tooltip: component.chartTooltip
+        tooltip: component.chartTooltip,
       }),
       'Component merges the defined options with the default config'
     );
@@ -282,11 +282,11 @@ module('Unit | Component | line chart', function(hooks) {
             type: 'dimension',
             config: {
               metricCid: 'cid_totalPageViews',
-              dimensions: []
-            }
-          }
-        }
-      }
+              dimensions: [],
+            },
+          },
+        },
+      },
     };
 
     //set chart type to be dimension
@@ -297,16 +297,16 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           label: {
             text: 'Total Page Views',
-            position: 'outer-middle'
-          }
-        }
-      }
+            position: 'outer-middle',
+          },
+        },
+      },
     };
 
     assert.deepEqual(
       component.config,
       merge({}, defaultConfig, dimensionChartType, yAxislabelOptions, {
-        tooltip: component.chartTooltip
+        tooltip: component.chartTooltip,
       }),
       'Component displays y-axis label for a non-metric chart'
     );
@@ -317,10 +317,10 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     });
 
     assert.deepEqual(
@@ -330,7 +330,7 @@ module('Unit | Component | line chart', function(hooks) {
     );
   });
 
-  test('single data point', function(assert) {
+  test('single data point', function (assert) {
     assert.expect(2);
 
     const model = A([
@@ -346,11 +346,11 @@ module('Unit | Component | line chart', function(hooks) {
             {
               'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
               uniqueIdentifier: 172933788,
-              totalPageViews: 3669828357
-            }
-          ]
-        })
-      }
+              totalPageViews: 3669828357,
+            },
+          ],
+        }),
+      },
     ]);
     const component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model,
@@ -359,11 +359,11 @@ module('Unit | Component | line chart', function(hooks) {
           y: {
             series: {
               type: 'metric',
-              config: {}
-            }
-          }
-        }
-      }
+              config: {},
+            },
+          },
+        },
+      },
     }) as LineChart;
 
     assert.deepEqual(
@@ -371,8 +371,8 @@ module('Unit | Component | line chart', function(hooks) {
       {
         r: 3,
         focus: {
-          expand: { r: 4 }
-        }
+          expand: { r: 4 },
+        },
       },
       'the point radius is 2 for a single data point'
     );
@@ -393,16 +393,16 @@ module('Unit | Component | line chart', function(hooks) {
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 uniqueIdentifier: 172933788,
-                totalPageViews: 3669828357
+                totalPageViews: 3669828357,
               },
               {
                 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
                 uniqueIdentifier: 172933788,
-                totalPageViews: 3669828357
-              }
-            ]
-          })
-        }
+                totalPageViews: 3669828357,
+              },
+            ],
+          }),
+        },
       ])
     );
 
@@ -411,14 +411,14 @@ module('Unit | Component | line chart', function(hooks) {
       {
         r: 2,
         focus: {
-          expand: { r: 4 }
-        }
+          expand: { r: 4 },
+        },
       },
       'the point radius is 2 for a multiple data points'
     );
   });
 
-  test('tooltips', function(assert) {
+  test('tooltips', function (assert) {
     const response = NaviFactResponse.create({
       //prettier-ignore
       rows: [
@@ -427,7 +427,7 @@ module('Unit | Component | line chart', function(hooks) {
         { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', uniqueIdentifier: 183380921, totalPageViews: 4024700302 },
         { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', uniqueIdentifier: 180559793, totalPageViews: 3950276031 },
         { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
-      ]
+      ],
     });
     const request = buildTestRequest(
       [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
@@ -442,14 +442,14 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     };
     const component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model: A([model]),
-      options
+      options,
     }) as LineChart;
 
     component.dataConfig; // since we're unit testing the component, this line is needed
@@ -464,12 +464,12 @@ module('Unit | Component | line chart', function(hooks) {
           index: 5,
           seriesIndex: 0,
           value: 172933788,
-          x: '2016-06-03 00:00:00.000'
-        }
+          x: '2016-06-03 00:00:00.000',
+        },
       ],
       x: '2016-06-03 00:00:00.000',
       seriesConfig: component.seriesConfig,
-      request
+      request,
     });
     run(() => {
       let element = document.createElement('div');
@@ -487,8 +487,8 @@ module('Unit | Component | line chart', function(hooks) {
         { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', navClicks: 4088487125 },
         { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', navClicks: 183380921 },
         { 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', navClicks: 3950276031 },
-        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', navClicks: 172724594 }
-      ]
+        { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', navClicks: 172724594 },
+      ],
     });
 
     set(component.args, 'model', A([{ request, response: response2 }]));
@@ -503,12 +503,12 @@ module('Unit | Component | line chart', function(hooks) {
           index: 5,
           seriesIndex: 0,
           value: 172933788,
-          x: '2016-06-03 00:00:00.000'
-        }
+          x: '2016-06-03 00:00:00.000',
+        },
       ],
       x: '2016-06-03 00:00:00.000',
       seriesConfig: component.seriesConfig,
-      request
+      request,
     });
     run(() => {
       let element = document.createElement('div');
@@ -520,7 +520,7 @@ module('Unit | Component | line chart', function(hooks) {
     );
   });
 
-  test('line chart styles', function(assert) {
+  test('line chart styles', function (assert) {
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model: A([
         {
@@ -529,18 +529,18 @@ module('Unit | Component | line chart', function(hooks) {
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
                 uniqueIdentifier: 172933788,
-                totalPageViews: 3669828357
-              }
-            ]
+                totalPageViews: 3669828357,
+              },
+            ],
           }),
           request: buildTestRequest(
             [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
             [],
             { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
             'day'
-          )
-        }
-      ])
+          ),
+        },
+      ]),
     }) as LineChart;
 
     assert.equal(component.config.data.type, 'line');
@@ -570,7 +570,7 @@ module('Unit | Component | line chart', function(hooks) {
     assert.equal(component.config.data.type, 'line', 'bad config uses default line');
   });
 
-  test('xAxisTickValues', function(assert) {
+  test('xAxisTickValues', function (assert) {
     assert.expect(4);
 
     const getModelDataFor = (start: string, end: string, timeGrain: string) => {
@@ -578,10 +578,10 @@ module('Unit | Component | line chart', function(hooks) {
         response: NaviFactResponse.create({
           rows: [
             { [`network.dateTime(grain=${timeGrain})`]: start, uniqueIdentifier: 172933788 },
-            { [`network.dateTime(grain=${timeGrain})`]: end, uniqueIdentifier: 183206656 }
-          ]
+            { [`network.dateTime(grain=${timeGrain})`]: end, uniqueIdentifier: 183206656 },
+          ],
         }),
-        request: buildTestRequest([], [], { start, end }, timeGrain)
+        request: buildTestRequest([], [], { start, end }, timeGrain),
       };
     };
 
@@ -591,11 +591,11 @@ module('Unit | Component | line chart', function(hooks) {
           series: {
             type: 'dateTime',
             config: {
-              timeGrain: 'year'
-            }
-          }
-        }
-      }
+              timeGrain: 'year',
+            },
+          },
+        },
+      },
     };
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', { options }) as LineChart;
 
@@ -633,10 +633,10 @@ module('Unit | Component | line chart', function(hooks) {
         y: {
           series: {
             type: 'metric',
-            config: {}
-          }
-        }
-      }
+            config: {},
+          },
+        },
+      },
     });
 
     grain = 'day';

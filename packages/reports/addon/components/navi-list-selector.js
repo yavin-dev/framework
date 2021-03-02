@@ -29,7 +29,7 @@ export default Component.extend({
   /*
    * @property {String} errorMessage
    */
-  errorMessage: computed('query.length', 'showSelected', 'title', function() {
+  errorMessage: computed('query.length', 'showSelected', 'title', function () {
     if (get(this, 'query.length') > 0) {
       return `No ${get(this, 'title').toLowerCase()} found`;
     } else if (get(this, 'showSelected')) {
@@ -41,14 +41,14 @@ export default Component.extend({
   /**
    * @property {Boolean} areItemsFiltered - true if items are filtered by selected state or a search query
    */
-  areItemsFiltered: computed('query', function() {
+  areItemsFiltered: computed('query', function () {
     return !!this.query;
   }),
 
   /*
    * @property {Array} filteredItems - items or items filtered by searchQuery
    */
-  filteredItems: computed('items', 'query', 'searchField', function() {
+  filteredItems: computed('items', 'query', 'searchField', function () {
     const { items, query } = this;
 
     //filter items by searchQuery
@@ -57,5 +57,5 @@ export default Component.extend({
     }
 
     return items;
-  })
+  }),
 });

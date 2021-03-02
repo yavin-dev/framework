@@ -31,7 +31,7 @@ export default Mixin.create({
    */
   validate: on(
     'init',
-    observer('selectedItem', 'items.[]', function() {
+    observer('selectedItem', 'items.[]', function () {
       let selectedItem = get(this, 'selectedItem.0') || get(this, 'selectedItem'),
         items = get(this, 'items');
 
@@ -46,5 +46,5 @@ export default Mixin.create({
         assert(`Selected item ${selectedItem} is not present in items array`, A(items).includes(selectedItem));
       }
     })
-  )
+  ),
 });

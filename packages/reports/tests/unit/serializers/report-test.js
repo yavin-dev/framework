@@ -4,16 +4,16 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Store;
 
-module('Unit | Serializer | Report', function(hooks) {
+module('Unit | Serializer | Report', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('Serializing record', async function(assert) {
+  test('Serializing record', async function (assert) {
     assert.expect(3);
 
     let expectedResult = {
@@ -26,26 +26,26 @@ module('Unit | Serializer | Report', function(hooks) {
                 cid: 'c1',
                 field: 'network.dateTime',
                 parameters: {
-                  grain: 'day'
+                  grain: 'day',
                 },
-                type: 'timeDimension'
+                type: 'timeDimension',
               },
               {
                 alias: null,
                 cid: 'c2',
                 field: 'adClicks',
                 parameters: {},
-                type: 'metric'
+                type: 'metric',
               },
               {
                 alias: null,
                 cid: 'c3',
                 field: 'property',
                 parameters: {
-                  field: 'id'
+                  field: 'id',
                 },
-                type: 'dimension'
-              }
+                type: 'dimension',
+              },
             ],
             dataSource: 'bardOne',
             filters: [
@@ -53,47 +53,47 @@ module('Unit | Serializer | Report', function(hooks) {
                 field: 'network.dateTime',
                 operator: 'bet',
                 parameters: {
-                  grain: 'day'
+                  grain: 'day',
                 },
                 type: 'timeDimension',
-                values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
-              }
+                values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+              },
             ],
             limit: null,
             requestVersion: '2.0',
             sorts: [],
-            table: 'network'
+            table: 'network',
           },
           title: 'RequestV2 testing report',
           visualization: {
             metadata: {
               columnAttributes: {
                 c1: {
-                  canAggregateSubtotal: false
+                  canAggregateSubtotal: false,
                 },
                 c2: {
-                  canAggregateSubtotal: false
+                  canAggregateSubtotal: false,
                 },
                 c3: {
-                  canAggregateSubtotal: false
-                }
+                  canAggregateSubtotal: false,
+                },
               },
-              showTotals: {}
+              showTotals: {},
             },
             type: 'table',
-            version: 2
-          }
+            version: 2,
+          },
         },
         relationships: {
           author: {
             data: {
               id: 'navi_user',
-              type: 'users'
-            }
-          }
+              type: 'users',
+            },
+          },
         },
-        type: 'reports'
-      }
+        type: 'reports',
+      },
     };
 
     let report = await Store.findRecord('report', 13);
@@ -108,7 +108,7 @@ module('Unit | Serializer | Report', function(hooks) {
     );
   });
 
-  test('Serializing multi param request', async function(assert) {
+  test('Serializing multi param request', async function (assert) {
     assert.expect(1);
 
     let expectedResult = {
@@ -121,9 +121,9 @@ module('Unit | Serializer | Report', function(hooks) {
                 cid: 'c1',
                 field: 'network.dateTime',
                 parameters: {
-                  grain: 'day'
+                  grain: 'day',
                 },
-                type: 'timeDimension'
+                type: 'timeDimension',
               },
               {
                 alias: null,
@@ -131,19 +131,19 @@ module('Unit | Serializer | Report', function(hooks) {
                 field: 'multipleParamMetric',
                 parameters: {
                   age: '6',
-                  currency: 'EUR'
+                  currency: 'EUR',
                 },
-                type: 'metric'
+                type: 'metric',
               },
               {
                 alias: null,
                 cid: 'c3',
                 field: 'property',
                 parameters: {
-                  field: 'id'
+                  field: 'id',
                 },
-                type: 'dimension'
-              }
+                type: 'dimension',
+              },
             ],
             dataSource: 'bardOne',
             filters: [
@@ -151,47 +151,47 @@ module('Unit | Serializer | Report', function(hooks) {
                 field: 'network.dateTime',
                 operator: 'bet',
                 parameters: {
-                  grain: 'day'
+                  grain: 'day',
                 },
                 type: 'timeDimension',
-                values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z']
-              }
+                values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+              },
             ],
             limit: null,
             requestVersion: '2.0',
             sorts: [],
-            table: 'network'
+            table: 'network',
           },
           title: 'RequestV2 multi-param testing report',
           visualization: {
             metadata: {
               columnAttributes: {
                 c1: {
-                  canAggregateSubtotal: false
+                  canAggregateSubtotal: false,
                 },
                 c2: {
-                  canAggregateSubtotal: false
+                  canAggregateSubtotal: false,
                 },
                 c3: {
-                  canAggregateSubtotal: false
-                }
+                  canAggregateSubtotal: false,
+                },
               },
-              showTotals: {}
+              showTotals: {},
             },
             type: 'table',
-            version: 2
-          }
+            version: 2,
+          },
         },
         relationships: {
           author: {
             data: {
               id: 'navi_user',
-              type: 'users'
-            }
-          }
+              type: 'users',
+            },
+          },
         },
-        type: 'reports'
-      }
+        type: 'reports',
+      },
     };
 
     let report = await Store.findRecord('report', 14);

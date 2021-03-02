@@ -21,7 +21,7 @@ const ANIMATIONS = {
   animation: 'animationend',
   OAnimation: 'oAnimationEnd',
   MozAnimation: 'animationend',
-  WebkitAnimation: 'webkitAnimationEnd'
+  WebkitAnimation: 'webkitAnimationEnd',
 };
 
 /**

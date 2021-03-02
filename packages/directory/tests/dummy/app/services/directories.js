@@ -12,14 +12,14 @@ export default class Directories extends DirectoryService {
         {
           name: 'Favorites',
           icon: 'star-o',
-          queryParams: { filter: 'favorites' }
-        }
-      ]
+          queryParams: { filter: 'favorites' },
+        },
+      ],
     },
     {
       name: 'Other Data',
       routeLink: 'directory.other-data',
-      filters: []
-    }
+      filters: [],
+    },
   ];
 }

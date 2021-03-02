@@ -15,48 +15,48 @@ const RESPONSE = NaviFactResponse.create({
   rows: [
     {
       adClicks: 1707077,
-      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000',
     },
     {
       adClicks: 1659538,
-      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-09 00:00:00.000',
     },
     {
       adClicks: 1977070,
-      'network.dateTime(grain=day)': '2015-11-11 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-11 00:00:00.000',
     },
     {
       adClicks: 1755382,
-      'network.dateTime(grain=day)': '2015-11-12 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-12 00:00:00.000',
     },
     {
       adClicks: 1348750,
-      'network.dateTime(grain=day)': '2015-11-13 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-13 00:00:00.000',
     },
     {
       adClicks: 856732,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 716731,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 399790,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
     },
     {
       adClicks: 699490,
-      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000'
-    }
-  ]
+      'network.dateTime(grain=day)': '2015-11-14 00:00:00.000',
+    },
+  ],
 });
 
-module('Integration | Component | print report view', function(hooks) {
+module('Integration | Component | print report view', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const metadataService = this.owner.lookup('service:navi-metadata');
     const store = this.owner.lookup('service:store');
 
@@ -79,17 +79,17 @@ module('Integration | Component | print report view', function(hooks) {
           metadata: {
             style: {
               area: false,
-              stacked: false
+              stacked: false,
             },
             axis: {
               y: {
                 series: {
                   type: 'metric',
-                  config: {}
-                }
-              }
-            }
-          }
+                  config: {},
+                },
+              },
+            },
+          },
         },
         request: {
           table: 'network',
@@ -103,34 +103,34 @@ module('Integration | Component | print report view', function(hooks) {
               field: 'network.dateTime',
               parameters: { grain: 'day' },
               operator: 'bet',
-              values: ['11-04-2020', '11-06-2020']
-            }
+              values: ['11-04-2020', '11-06-2020'],
+            },
           ],
           columns: [
             {
               cid: 'c1',
               field: 'network.dateTime',
               parameters: {
-                grain: 'day'
+                grain: 'day',
               },
               type: 'timeDimension',
-              source: 'bardOne'
+              source: 'bardOne',
             },
             {
               cid: 'c2',
               type: 'metric',
               field: 'adClicks',
               parameters: {},
-              source: 'bardOne'
-            }
+              source: 'bardOne',
+            },
           ],
-          sorts: []
-        }
+          sorts: [],
+        },
       })
     );
   });
 
-  test('visualization is chosen based on report', async function(assert) {
+  test('visualization is chosen based on report', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -143,10 +143,10 @@ module('Integration | Component | print report view', function(hooks) {
       metadata: {
         columnAttributes: {
           c1: { canAggregateSubtotal: false },
-          c2: { canAggregateSubtotal: false }
+          c2: { canAggregateSubtotal: false },
         },
-        showTotals: {}
-      }
+        showTotals: {},
+      },
     });
 
     assert.dom('.table-widget').exists('Rendered visualization updates with report');
@@ -154,7 +154,7 @@ module('Integration | Component | print report view', function(hooks) {
     assert.dom('.line-chart-widget').doesNotExist('Old visualization is removed');
   });
 
-  test('no data', async function(assert) {
+  test('no data', async function (assert) {
     assert.expect(1);
     this.set('response', {
       rows: [],
@@ -162,9 +162,9 @@ module('Integration | Component | print report view', function(hooks) {
         pagination: {
           currentPage: 1,
           rowsPerPage: 10000,
-          numberOfResults: 0
-        }
-      }
+          numberOfResults: 0,
+        },
+      },
     });
 
     await render(TEMPLATE);

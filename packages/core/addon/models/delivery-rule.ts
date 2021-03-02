@@ -17,21 +17,21 @@ const Validations = buildValidations({
   frequency: [
     validator('presence', {
       presence: true,
-      message: 'Please select a delivery frequency'
-    })
+      message: 'Please select a delivery frequency',
+    }),
   ],
   format: [
     validator('presence', {
       presence: true,
-      message: 'Please select a delivery format'
-    })
+      message: 'Please select a delivery format',
+    }),
   ],
   recipients: [
     validator('recipients', {
       noRecipientsMsg: 'There must be at least one recipient',
-      invalidEmailMsg: 'Not all recipients are valid email addresses'
-    })
-  ]
+      invalidEmailMsg: 'Not all recipients are valid email addresses',
+    }),
+  ],
 });
 
 export default class DeliveryRuleModel extends Model.extend(Validations) {

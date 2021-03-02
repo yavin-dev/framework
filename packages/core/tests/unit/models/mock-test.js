@@ -5,11 +5,11 @@ import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Unit | Adapter | base json adapter', function(hooks) {
+module('Unit | Adapter | base json adapter', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('Coalescing find requests', function(assert) {
+  test('Coalescing find requests', function (assert) {
     assert.expect(1);
     this.server.urlPrefix = config.navi.appPersistence.uri;
     this.server.get('/mocks', (schema, request) => {
@@ -26,7 +26,7 @@ module('Unit | Adapter | base json adapter', function(hooks) {
       all([
         this.owner.lookup('service:store').findRecord('mock', 1),
         this.owner.lookup('service:store').findRecord('mock', 2),
-        this.owner.lookup('service:store').findRecord('mock', 4)
+        this.owner.lookup('service:store').findRecord('mock', 4),
       ]).catch(() => 'Ignore empty response error');
     });
   });

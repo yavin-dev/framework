@@ -12,33 +12,33 @@ const NEW_MODEL = {
   presentation: {
     columns: 12,
     layout: [],
-    version: 1
+    version: 1,
   },
-  updatedOn: null
+  updatedOn: null,
 };
 const NEW_MODEL_WITH_DEFAULT_TITLE = Object.assign({}, NEW_MODEL, {
-  title: 'Untitled Dashboard'
+  title: 'Untitled Dashboard',
 });
 
 const NEW_MODEL_WITH_GIVEN_TITLE = Object.assign({}, NEW_MODEL, {
-  title: 'Dashing Dashboard'
+  title: 'Dashing Dashboard',
 });
 
-module('Unit | Route | dashboards/new', function(hooks) {
+module('Unit | Route | dashboards/new', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Route = this.owner.factoryFor('route:dashboards/new').create({
       router: {
         currentRoute: {
-          queryParams: {}
-        }
-      }
+          queryParams: {},
+        },
+      },
     });
   });
 
-  test('model - new with default title', async function(assert) {
+  test('model - new with default title', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -55,7 +55,7 @@ module('Unit | Route | dashboards/new', function(hooks) {
     });
   });
 
-  test('model - new with given title', async function(assert) {
+  test('model - new with given title', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -69,13 +69,13 @@ module('Unit | Route | dashboards/new', function(hooks) {
     });
   });
 
-  test('afterModel', function(assert) {
+  test('afterModel', function (assert) {
     assert.expect(2);
 
     const dashboard = { id: 3 };
 
     /* == Without unsavedWidgetId == */
-    Route.replaceWith = destinationRoute => {
+    Route.replaceWith = (destinationRoute) => {
       assert.equal(
         destinationRoute,
         'dashboards.dashboard',
@@ -85,7 +85,7 @@ module('Unit | Route | dashboards/new', function(hooks) {
     Route.afterModel(dashboard);
 
     /* == With unsavedWidgetId == */
-    Route.replaceWith = destinationRoute => {
+    Route.replaceWith = (destinationRoute) => {
       assert.equal(
         destinationRoute,
         'dashboards.dashboard.widgets.add',

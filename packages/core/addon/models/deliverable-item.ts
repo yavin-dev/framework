@@ -46,10 +46,10 @@ export default class DeliverableItemModel extends Model {
    */
   @computed('user', 'deliveryRules.[]')
   get deliveryRuleForUser() {
-    const userId = this.user.getUser().id;
+    const userId = this.user.getUser()?.id;
 
-    return this.get('deliveryRules').then(rules =>
-      arr(rules.filter(rule => rule.get('owner').get('id') === userId)).get('firstObject')
+    return this.get('deliveryRules').then((rules) =>
+      arr(rules.filter((rule) => rule.get('owner').get('id') === userId)).get('firstObject')
     );
   }
 }

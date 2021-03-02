@@ -7,18 +7,18 @@ export default EmberObject.extend({
         {
           x: {
             rawValue: 0,
-            displayValue: 0
+            displayValue: 0,
           },
           custom: 123,
           series: 234,
-          grouping: 123
-        }
+          grouping: 123,
+        },
       ],
-      names: undefined
+      names: undefined,
     };
   },
 
   buildTooltip() {
     return {};
-  }
+  },
 });

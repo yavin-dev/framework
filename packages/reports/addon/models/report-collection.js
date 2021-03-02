@@ -10,5 +10,5 @@ export default DS.Model.extend({
   title: DS.attr('string'),
   createdOn: DS.attr('moment'),
   updatedOn: DS.attr('moment'),
-  reports: DS.hasMany('report', { async: true })
+  reports: DS.hasMany('report', { async: true }),
 });

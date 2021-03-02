@@ -18,34 +18,34 @@ const TEMPLATE = hbs`
     {{/each}}
   </NaviListSelector>`;
 
-module('Integration | Component | navi list selector', function(hooks) {
+module('Integration | Component | navi list selector', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.set('items', [
       {
         id: '1',
-        field: 'foo'
+        field: 'foo',
       },
       {
         id: '2',
-        field: 'bar'
+        field: 'bar',
       },
       {
         id: '3',
-        field: 'baz'
-      }
+        field: 'baz',
+      },
     ]);
 
     this.set('selected', [
       {
         id: '1',
-        field: 'foo'
-      }
+        field: 'foo',
+      },
     ]);
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(4);
 
     await render(TEMPLATE);
@@ -65,7 +65,7 @@ module('Integration | Component | navi list selector', function(hooks) {
     assert.dom('.navi-list-selector__search').isVisible('The navi-list-selector`s search bar is rendered');
   });
 
-  test('search', async function(assert) {
+  test('search', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -73,7 +73,7 @@ module('Integration | Component | navi list selector', function(hooks) {
     await fillIn('.navi-list-selector__search-input', 'ba');
 
     assert.deepEqual(
-      findAll('.test-item').map(el => el.textContent.trim()),
+      findAll('.test-item').map((el) => el.textContent.trim()),
       ['bar', 'baz'],
       'the items that match the search query are rendered as `list-item`s'
     );
@@ -87,7 +87,7 @@ module('Integration | Component | navi list selector', function(hooks) {
     await fillIn('.navi-list-selector__search-input', 'foo');
 
     assert.deepEqual(
-      findAll('.test-item__filtered').map(el => el.textContent.trim()),
+      findAll('.test-item__filtered').map((el) => el.textContent.trim()),
       ['foo'],
       'the boolean `areItemsFiltered` is true when item list is filtered by search query'
     );

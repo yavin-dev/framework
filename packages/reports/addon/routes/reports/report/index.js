@@ -13,5 +13,5 @@ export default Route.extend({
    */
   redirect(model) {
     this.replaceWith('reports.report.view', get(model, 'modelId'));
-  }
+  },
 });

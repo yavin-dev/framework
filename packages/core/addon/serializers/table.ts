@@ -74,17 +74,17 @@ function getColumnField(column: LegacyColumn<LegacyFieldType>): Field {
     let { metric, parameters } = parseMetricName(column.field);
     return {
       field: metric,
-      parameters: parameters || {}
+      parameters: parameters || {},
     };
   } else if (typeof column.field === 'object') {
     return {
       field: column.field[column.type],
-      parameters: column.field.parameters || {}
+      parameters: column.field.parameters || {},
     };
   } else {
     return {
       field: column.attributes?.name as string,
-      parameters: column.attributes?.parameters || {}
+      parameters: column.attributes?.parameters || {},
     };
   }
 }
@@ -118,7 +118,7 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
     let canonicalName = canonicalizeMetric({ metric: field, parameters });
     if (newCol.type === 'dateTime') {
       const { table } = request;
-      const grain = request.columns.find(c => c.field === `${table}.dateTime`)?.parameters.grain;
+      const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.${canonicalName}(grain=${grain})`;
     } else if (newCol.type === 'dimension') {
       canonicalName = `${canonicalName}(field=id)`;
@@ -173,7 +173,7 @@ export function normalizeTableV2(
     const format = tableColumn.format !== undefined ? tableColumn.format : attributes?.format;
     columns[requestColumn.cid] = {
       ...(canAggregateSubtotal !== undefined ? { canAggregateSubtotal } : {}),
-      ...(format !== undefined ? { format } : {})
+      ...(format !== undefined ? { format } : {}),
     };
     return columns;
   }, {} as Record<string, TableColumnAttributes>);
@@ -185,7 +185,7 @@ export function normalizeTableV2(
     let canonicalName;
     if (showTotals?.subtotal === 'dateTime') {
       const { table } = request;
-      const grain = request.columns.find(c => c.field === `${table}.dateTime`)?.parameters.grain;
+      const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.dateTime(grain=${grain})`;
     } else {
       canonicalName = `${showTotals.subtotal}(field=id)`;
@@ -200,9 +200,9 @@ export function normalizeTableV2(
       columnAttributes,
       showTotals: {
         ...(subtotal !== undefined ? { subtotal } : {}),
-        ...(showTotals?.grandTotal !== undefined ? { grandTotal: showTotals?.grandTotal } : {})
-      }
-    }
+        ...(showTotals?.grandTotal !== undefined ? { grandTotal: showTotals?.grandTotal } : {}),
+      },
+    },
   };
 }
 

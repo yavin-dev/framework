@@ -8,10 +8,10 @@ module.exports = {
     'plugin:qunit/recommended',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'prettier/@typescript-eslint'
+    'prettier/@typescript-eslint',
   ],
   env: {
-    browser: true
+    browser: true,
   },
   rules: {
     'ember/no-jquery': 'warn',
@@ -31,11 +31,11 @@ module.exports = {
     'prettier/prettier': 'error',
 
     // better handled by prettier:
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
   },
   globals: {
     c3: true,
-    d3: true
+    d3: true,
   },
   overrides: [
     // node files
@@ -48,28 +48,28 @@ module.exports = {
         'testem.js',
         'blueprints/*/index.js',
         'config/**/*.js',
-        'tests/dummy/config/**/*.js'
+        'tests/dummy/config/**/*.js',
       ],
       excludedFiles: ['addon/**', 'addon-test-support/**', 'app/**', 'tests/dummy/app/**'],
       parserOptions: {
-        sourceType: 'script'
+        sourceType: 'script',
       },
       env: {
         browser: false,
-        node: true
+        node: true,
       },
       plugins: ['node'],
       rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
         // add your custom rules and overrides for node files here
         '@typescript-eslint/camelcase': 'off',
-        '@typescript-eslint/no-var-requires': 'off'
-      })
+        '@typescript-eslint/no-var-requires': 'off',
+      }),
     },
     {
       files: ['blueprints/**'],
       rules: {
-        'node/no-extraneous-require': 'off'
-      }
+        'node/no-extraneous-require': 'off',
+      },
     },
     {
       files: ['tests/**/*.{j,t}s', 'addon-test-support/**/*.{j,t}s'],
@@ -77,8 +77,8 @@ module.exports = {
         'ember/no-jquery': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-non-null-assertion': 'off'
-      }
-    }
-  ]
+        '@typescript-eslint/no-non-null-assertion': 'off',
+      },
+    },
+  ],
 };

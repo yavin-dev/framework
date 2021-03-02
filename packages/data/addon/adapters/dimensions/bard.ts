@@ -64,14 +64,14 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     dimension: DimensionColumn,
     andQueries: DimensionFilter[]
   ): Record<string, string | number | boolean> {
-    const requestV2Filters: Filter[] = andQueries.map(query => {
+    const requestV2Filters: Filter[] = andQueries.map((query) => {
       const field = dimension.parameters?.field || DefaultField;
       return {
         type: 'dimension',
         field: dimension.columnMetadata.id,
         parameters: { field },
         operator: query.operator || 'in',
-        values: query.values || []
+        values: query.values || [],
       };
     });
 
@@ -106,14 +106,14 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
 
     return this.ajax.request(url, {
       xhrFields: {
-        withCredentials: true
+        withCredentials: true,
       },
       beforeSend(xhr: TODO) {
         xhr.setRequestHeader('clientid', clientId);
       },
       crossDomain: true,
       data,
-      timeout
+      timeout,
     });
   }
 

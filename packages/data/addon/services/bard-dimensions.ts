@@ -224,7 +224,7 @@ export default class BardDimensionService extends Service {
         dimension,
         content: A(serializedRecords),
         meta: rawPayload.meta,
-        dimensionsService: this
+        dimensionsService: this,
       });
     }
     return undefined;
@@ -276,7 +276,7 @@ export default class BardDimensionService extends Service {
     const andValues = operator === 'contains' ? query.split(/,\s+|\s+/).map((s: string) => s.trim()) : [query];
     const andFilters = andValues.map((v: string) => ({
       operator,
-      values: [v]
+      values: [v],
     }));
     const columnMetadata = this.naviMetadata.getById(
       'dimension',
@@ -357,7 +357,7 @@ export default class BardDimensionService extends Service {
         options
       ).catch(() => ({ rows: [] }));
       const searchByDescription = await this.searchValueField(dimension, 'desc', query, options).catch(() => ({
-        rows: []
+        rows: [],
       }));
 
       const dimensionRecords = A()

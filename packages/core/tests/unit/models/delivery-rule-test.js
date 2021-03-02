@@ -13,25 +13,25 @@ const ExpectedDeliveryRule = {
   deliveryType: 'report',
   frequency: 'week',
   schedulingRules: {
-    mustHaveData: false
+    mustHaveData: false,
   },
   format: {
-    type: 'csv'
+    type: 'csv',
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
-  version: 1
+  version: 1,
 };
 
-module('Unit | Model | delivery rule', function(hooks) {
+module('Unit | Model | delivery rule', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
     return this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('Retrieving records', async function(assert) {
+  test('Retrieving records', async function (assert) {
     assert.expect(2);
 
     await run(async () => {
@@ -46,7 +46,7 @@ module('Unit | Model | delivery rule', function(hooks) {
     });
   });
 
-  test('user relationship', async function(assert) {
+  test('user relationship', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -58,7 +58,7 @@ module('Unit | Model | delivery rule', function(hooks) {
     });
   });
 
-  test('delivered item relationship', async function(assert) {
+  test('delivered item relationship', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -70,7 +70,7 @@ module('Unit | Model | delivery rule', function(hooks) {
     });
   });
 
-  test('Validations', async function(assert) {
+  test('Validations', async function (assert) {
     assert.expect(14);
 
     await run(async () => {

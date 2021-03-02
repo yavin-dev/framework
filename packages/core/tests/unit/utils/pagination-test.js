@@ -1,8 +1,8 @@
 import { getPaginatedRecords } from 'navi-core/utils/pagination';
 import { module, test } from 'qunit';
 
-module('Unit | Utils | Pagination Utils', function() {
-  test('getPaginatedRecords', function(assert) {
+module('Unit | Utils | Pagination Utils', function () {
+  test('getPaginatedRecords', function (assert) {
     assert.expect(9);
 
     let records = ['a', 'b', 'c', 'd', 'e', 'f'];

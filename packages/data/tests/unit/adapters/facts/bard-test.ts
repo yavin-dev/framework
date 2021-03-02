@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
 import config from 'ember-get-config';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import { TestContext } from 'ember-test-helpers';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
@@ -17,7 +17,7 @@ const EmptyRequest: RequestV2 = {
   limit: null,
   columns: [],
   filters: [],
-  sorts: []
+  sorts: [],
 };
 
 const TestRequest: RequestV2 = {
@@ -31,97 +31,97 @@ const TestRequest: RequestV2 = {
         parameters: { grain: 'grain1' },
         type: 'timeDimension',
         operator: 'bet',
-        values: ['2015-01-03', '2015-01-04']
+        values: ['2015-01-03', '2015-01-04'],
       },
       {
         field: 'd3',
         parameters: { field: 'id' },
         type: 'dimension',
         operator: 'in',
-        values: ['v1', 'v2']
+        values: ['v1', 'v2'],
       },
       {
         field: 'd4',
         parameters: { field: 'id' },
         type: 'dimension',
         operator: 'in',
-        values: ['v3', 'v4']
+        values: ['v3', 'v4'],
       },
       {
         field: 'd5',
         parameters: { field: 'id' },
         type: 'dimension',
         operator: 'isnull',
-        values: [false]
+        values: [false],
       },
       {
         field: 'm1',
         parameters: {},
         type: 'metric',
         operator: 'gt',
-        values: [0]
-      }
+        values: [0],
+      },
     ],
     columns: [
       {
         field: 'table1.dateTime',
         parameters: {
-          grain: 'grain1'
+          grain: 'grain1',
         },
-        type: 'timeDimension'
+        type: 'timeDimension',
       },
       {
         field: 'm1',
         parameters: {},
-        type: 'metric'
+        type: 'metric',
       },
       {
         field: 'm2',
         parameters: {},
-        type: 'metric'
+        type: 'metric',
       },
       {
         field: 'r',
         parameters: { p: '123', as: 'a' },
-        type: 'metric'
+        type: 'metric',
       },
       {
         field: 'd1',
         parameters: { field: 'id' },
-        type: 'dimension'
+        type: 'dimension',
       },
       {
         field: 'd2',
         parameters: { field: 'desc' },
-        type: 'dimension'
-      }
+        type: 'dimension',
+      },
     ],
-    sorts: []
+    sorts: [],
   },
   Response = {
     rows: [
       {
         table: 'table1',
-        grain: 'grain1'
-      }
+        grain: 'grain1',
+      },
     ],
     meta: {
-      test: true
-    }
+      test: true,
+    },
   },
   MockBardResponse: ResponseData = [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
 
 let Adapter: BardFactsAdapter, Server: PretenderServer;
 
-module('Unit | Adapter | facts/bard', function(hooks) {
+module('Unit | Adapter | facts/bard', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Adapter = this.owner.lookup('adapter:facts/bard');
 
     //setup Pretender
-    Server = new Pretender(function() {
-      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, function(request) {
+    Server = new Pretender(function () {
+      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, function (request) {
         if (request.queryParams.page && request.queryParams.perPage) {
           let paginatedResponse = {
             ...Response,
@@ -129,9 +129,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
               ...Response.meta,
               pagination: {
                 page: request.queryParams.page,
-                perPage: request.queryParams.perPage
-              }
-            }
+                perPage: request.queryParams.perPage,
+              },
+            },
           };
           return [200, { 'Content-Type': 'application/json' }, JSON.stringify(paginatedResponse)];
         }
@@ -141,17 +141,17 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     });
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     //shutdown pretender
     Server.shutdown();
   });
 
-  test('_buildDimensionsPath', function(assert) {
+  test('_buildDimensionsPath', function (assert) {
     assert.expect(6);
 
     let singleDim: RequestV2 = {
       ...EmptyRequest,
-      columns: [{ field: 'd1', type: 'dimension', parameters: { field: 'id' } }]
+      columns: [{ field: 'd1', type: 'dimension', parameters: { field: 'id' } }],
     };
     assert.equal(
       Adapter._buildDimensionsPath(singleDim),
@@ -163,8 +163,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
-        { field: 'd2', type: 'dimension', parameters: { field: 'id' } }
-      ]
+        { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
+      ],
     };
     assert.equal(
       Adapter._buildDimensionsPath(manyDims),
@@ -177,8 +177,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       columns: [
         { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
         { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
-        { field: 'd1', type: 'dimension', parameters: { field: 'id' } }
-      ]
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+      ],
     };
     assert.equal(
       Adapter._buildDimensionsPath(duplicateDims),
@@ -193,8 +193,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
         { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
         { field: 'd2', type: 'dimension', parameters: { field: 'key' } },
-        { field: 'd1', type: 'dimension', parameters: { field: 'desc' } }
-      ]
+        { field: 'd1', type: 'dimension', parameters: { field: 'desc' } },
+      ],
     };
     assert.equal(
       Adapter._buildDimensionsPath(multipleFields),
@@ -207,8 +207,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       columns: [
         { field: 'd1', type: 'dimension', parameters: {} },
         { field: 'd2', type: 'dimension', parameters: {} },
-        { field: 'd2', type: 'dimension', parameters: {} }
-      ]
+        { field: 'd2', type: 'dimension', parameters: {} },
+      ],
     };
     assert.equal(
       Adapter._buildDimensionsPath(noFields),
@@ -224,8 +224,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildDateTimeParam', function(assert) {
-    assert.expect(4);
+  test('_buildDateTimeParam', function (assert) {
+    assert.expect(9);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -236,9 +236,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           type: 'timeDimension',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['start', 'end']
-        }
-      ]
+          values: ['start', 'end'],
+        },
+      ],
     };
     assert.equal(
       Adapter._buildDateTimeParam(singleInterval),
@@ -253,21 +253,21 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           type: 'timeDimension',
           field: '.dateTime',
           parameters: {
-            grain: 'day'
-          }
-        }
+            grain: 'day',
+          },
+        },
       ],
       filters: [
         {
           type: 'timeDimension',
           field: '.dateTime',
           parameters: {
-            grain: 'week'
+            grain: 'week',
           },
           operator: 'bet',
-          values: []
-        }
-      ]
+          values: [],
+        },
+      ],
     };
     assert.throws(
       () => {
@@ -295,16 +295,16 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           type: 'timeDimension',
           parameters: {},
           operator: 'bet',
-          values: ['start1', 'end1']
+          values: ['start1', 'end1'],
         },
         {
           field: 'tableName.dateTime',
           type: 'timeDimension',
           parameters: {},
           operator: 'bet',
-          values: ['start2', 'end2']
-        }
-      ]
+          values: ['start2', 'end2'],
+        },
+      ],
     };
     assert.throws(
       () => {
@@ -313,9 +313,67 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       /Exactly one 'tableName.dateTime' filter is required, you have 2/,
       '_buildDateTimeParam throws an error for multiple datetime filters'
     );
+
+    const singleValue = (date: string, operator: Filter['operator']): RequestV2 => ({
+      ...EmptyRequest,
+      table: 'tableName',
+      filters: [
+        {
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
+          parameters: {
+            grain: 'isoWeek',
+          },
+          operator: operator,
+          values: [date],
+        },
+      ],
+    });
+
+    const startDate = '2021-02-01';
+    const since = singleValue(startDate, 'gte');
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(since),
+      `${startDate}/9999-12-27T00:00:00.000`,
+      '_buildDateTimeParam uses far future aligned to grain for since operator'
+    );
+
+    const sinceBadDate = singleValue('fakeDate', 'gte');
+    assert.throws(
+      () => Adapter._buildDateTimeParam(sinceBadDate),
+      /FactAdapterError: Since operator only supports datetimes, 'fakeDate' is invalid/,
+      '_buildDateTimeParam throws error if start date is not a valid datetime'
+    );
+
+    const endDate = '2021-03-01';
+    const before = singleValue(endDate, 'lte');
+    let originalDataEpoch = config.navi.dataEpoch;
+    // TODO: Remove once dataEpoch is not required
+    //@ts-expect-error
+    config.navi.dataEpoch = undefined;
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      `0001-01-01T00:00:00.000/${endDate}`,
+      '_buildDateTimeParam uses year 0001 aligned to grain when no dataEpoch is defined'
+    );
+
+    config.navi.dataEpoch = '1999-02-03';
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(before),
+      `1999-02-01T00:00:00.000/${endDate}`,
+      '_buildDateTimeParam uses dataEpoch aligned to grain if it is defined'
+    );
+
+    const beforeBadDate = singleValue('fakeDate', 'lte');
+    assert.throws(
+      () => Adapter._buildDateTimeParam(beforeBadDate),
+      /FactAdapterError: Before operator only supports datetimes, 'fakeDate' is invalid/,
+      '_buildDateTimeParam throws error if end date is not a valid datetime'
+    );
+    config.navi.dataEpoch = originalDataEpoch;
   });
 
-  test('_buildMetricsParam', function(assert) {
+  test('_buildMetricsParam', function (assert) {
     assert.expect(5);
 
     let singleMetric: RequestV2 = {
@@ -324,9 +382,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         {
           field: 'm1',
           parameters: {},
-          type: 'metric'
-        }
-      ]
+          type: 'metric',
+        },
+      ],
     };
     assert.equal(
       Adapter._buildMetricsParam(singleMetric),
@@ -340,14 +398,14 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         {
           field: 'm1',
           parameters: {},
-          type: 'metric'
+          type: 'metric',
         },
         {
           field: 'm2',
           parameters: {},
-          type: 'metric'
-        }
-      ]
+          type: 'metric',
+        },
+      ],
     };
     assert.equal(
       Adapter._buildMetricsParam(manyMetrics),
@@ -361,8 +419,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         { field: 'm1', parameters: {}, type: 'metric' },
         { field: 'm2', parameters: {}, type: 'metric' },
         { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' }
-      ]
+        { field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' },
+      ],
     };
     assert.equal(
       Adapter._buildMetricsParam(differentParams),
@@ -377,8 +435,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         { field: 'm2', parameters: {}, type: 'metric' },
         { field: 'm1', parameters: {}, type: 'metric' },
         { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' }
-      ]
+        { field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' },
+      ],
     };
     assert.equal(
       Adapter._buildMetricsParam(duplicateMetrics),
@@ -395,8 +453,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         //@ts-expect-error
         { field: 'r', parameters: { p: 'xyz', q: null }, type: 'metric' },
         //@ts-expect-error
-        { field: 'r', parameters: { p: 'tuv', q: undefined }, type: 'metric' }
-      ]
+        { field: 'r', parameters: { p: 'tuv', q: undefined }, type: 'metric' },
+      ],
     };
     assert.equal(
       Adapter._buildMetricsParam(nullParams),
@@ -405,12 +463,14 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildFiltersParam', function(assert) {
+  test('_buildFiltersParam', function (assert) {
     assert.expect(9);
 
     let singleFilter: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] }]
+      filters: [
+        { field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(singleFilter),
@@ -422,8 +482,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       filters: [
         { field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
-        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] }
-      ]
+        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(manyFilters),
@@ -443,8 +503,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       filters: [
         { field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: ['v1', 'v2'] },
         { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'in', values: [] },
-        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] }
-      ]
+        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: ['v3', 'v4'] },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(emptyFilterValues),
@@ -457,8 +517,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       filters: [
         { field: 'd1', parameters: { field: 'desc' }, type: 'dimension', operator: 'in', values: [] },
         { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'in', values: [] },
-        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: [] }
-      ]
+        { field: 'd2', parameters: { field: 'id' }, type: 'dimension', operator: 'notin', values: [] },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(allEmptyFilterValues),
@@ -468,7 +528,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
 
     let noDimensionFilters: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ type: 'metric', field: 'm1', parameters: {}, operator: 'in', values: [] }]
+      filters: [{ type: 'metric', field: 'm1', parameters: {}, operator: 'in', values: [] }],
     };
     assert.equal(
       Adapter._buildFiltersParam(noDimensionFilters),
@@ -484,9 +544,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['with, comma', 'no comma']
-        }
-      ]
+          values: ['with, comma', 'no comma'],
+        },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(commaFilters),
@@ -502,9 +562,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['with, comma', 'no comma']
-        }
-      ]
+          values: ['with, comma', 'no comma'],
+        },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(noIdFilters),
@@ -520,9 +580,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { field: 'id' },
           type: 'dimension',
           operator: 'in',
-          values: ['with "quote"', 'but why']
-        }
-      ]
+          values: ['with "quote"', 'but why'],
+        },
+      ],
     };
     assert.equal(
       Adapter._buildFiltersParam(quoteFilters),
@@ -531,12 +591,12 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildSortParam', function(assert) {
+  test('_buildSortParam', function (assert) {
     assert.expect(5);
 
     let singleSort: RequestV2 = {
       ...EmptyRequest,
-      sorts: [{ type: 'metric', field: 'm1', parameters: {}, direction: 'asc' }]
+      sorts: [{ type: 'metric', field: 'm1', parameters: {}, direction: 'asc' }],
     };
     assert.equal(
       Adapter._buildSortParam(singleSort),
@@ -548,8 +608,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       sorts: [
         //@ts-expect-error
-        { type: 'metric', field: 'm1' }
-      ]
+        { type: 'metric', field: 'm1' },
+      ],
     };
     assert.equal(
       Adapter._buildSortParam(sortNoDirection),
@@ -561,8 +621,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       sorts: [
         { type: 'metric', parameters: {}, field: 'm1', direction: 'asc' },
-        { type: 'metric', parameters: {}, field: 'm2', direction: 'asc' }
-      ]
+        { type: 'metric', parameters: {}, field: 'm2', direction: 'asc' },
+      ],
     };
     assert.equal(
       Adapter._buildSortParam(manySorts),
@@ -581,8 +641,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         { type: 'metric', field: 'valid2', parameters: {}, direction: 'asc' },
         { type: 'metric', field: 'valid3', parameters: {}, direction: 'desc' },
         //@ts-expect-error
-        { type: 'metric', field: 'invalid', parameters: {}, direction: 'foo' }
-      ]
+        { type: 'metric', field: 'invalid', parameters: {}, direction: 'foo' },
+      ],
     };
     assert.throws(
       () => {
@@ -593,12 +653,12 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildHavingParam', function(assert) {
+  test('_buildHavingParam', function (assert) {
     assert.expect(7);
 
     let singleHaving: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [0] }]
+      filters: [{ field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [0] }],
     };
     assert.equal(
       Adapter._buildHavingParam(singleHaving),
@@ -610,8 +670,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       filters: [
         { field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [0] },
-        { field: 'm2', type: 'metric', parameters: {}, operator: 'lte', values: [10] }
-      ]
+        { field: 'm2', type: 'metric', parameters: {}, operator: 'lte', values: [10] },
+      ],
     };
     assert.equal(
       Adapter._buildHavingParam(manyHavings),
@@ -631,8 +691,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       filters: [
         { field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [0] },
         { field: 'm2', type: 'metric', parameters: {}, operator: 'gt', values: [] },
-        { field: 'm3', type: 'metric', parameters: {}, operator: 'lte', values: [10] }
-      ]
+        { field: 'm3', type: 'metric', parameters: {}, operator: 'lte', values: [10] },
+      ],
     };
     assert.equal(
       Adapter._buildHavingParam(emptyFilterValues),
@@ -645,8 +705,8 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       filters: [
         { field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [] },
         { field: 'm2', type: 'metric', parameters: {}, operator: 'gt', values: [] },
-        { field: 'm3', type: 'metric', parameters: {}, operator: 'lte', values: [] }
-      ]
+        { field: 'm3', type: 'metric', parameters: {}, operator: 'lte', values: [] },
+      ],
     };
     assert.equal(
       Adapter._buildHavingParam(allEmptyFilterValues),
@@ -656,7 +716,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
 
     let onlyDimFilters: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ field: 'foo', type: 'dimension', parameters: { field: 'id' }, operator: 'gt', values: [0] }]
+      filters: [{ field: 'foo', type: 'dimension', parameters: { field: 'id' }, operator: 'gt', values: [0] }],
     };
     assert.equal(
       Adapter._buildHavingParam(onlyDimFilters),
@@ -666,7 +726,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
 
     let havingValueArray: RequestV2 = {
       ...EmptyRequest,
-      filters: [{ field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [1, 2, 3] }]
+      filters: [{ field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [1, 2, 3] }],
     };
     assert.equal(
       Adapter._buildHavingParam(havingValueArray),
@@ -675,7 +735,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildURLPath', function(assert) {
+  test('_buildURLPath', function (assert) {
     assert.expect(6);
 
     assert.equal(
@@ -693,7 +753,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         _dataSourceName: string
       ): MetadataModelRegistry[K] {
         return ({ hasAllGrain: false } as unknown) as MetadataModelRegistry[K];
-      }
+      },
     };
     assert.throws(
       () => {
@@ -708,7 +768,7 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         ...EmptyRequest,
         table: 'tableName',
         dataSource: 'bardOne',
-        columns: [{ type: 'timeDimension', field: 'tableName.dateTime', parameters: { grain: 'grain' } }]
+        columns: [{ type: 'timeDimension', field: 'tableName.dateTime', parameters: { grain: 'grain' } }],
       }),
       'https://data.naviapp.io/v1/data/tableName/grain/',
       '_buildURLPath does not throw error for table without all grain that specifies a grain to use'
@@ -719,9 +779,9 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       ...EmptyRequest,
       columns: [
         { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'day' } },
-        { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'week' } }
+        { field: '.dateTime', type: 'timeDimension', parameters: { grain: 'week' } },
       ],
-      dataSource: 'bardOne'
+      dataSource: 'bardOne',
     };
 
     assert.throws(
@@ -745,17 +805,17 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     );
   });
 
-  test('_buildQuery', function(assert) {
+  test('_buildQuery', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        format: 'json'
+        format: 'json',
       },
       '_buildQuery correctly built the query object for the provided request'
     );
@@ -768,16 +828,16 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { grain: 'grain1' },
           type: 'timeDimension',
           operator: 'bet',
-          values: ['2015-01-03', '2015-01-04']
-        }
-      ]
+          values: ['2015-01-03', '2015-01-04'],
+        },
+      ],
     };
     assert.deepEqual(
       Adapter._buildQuery(noFiltersAndNoHavings),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         metrics: 'm1,m2,r(p=123)',
-        format: 'json'
+        format: 'json',
       },
       '_buildQuery correctly built the query object for a request with no metric/dimension filters'
     );
@@ -785,28 +845,28 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { format: 'jsonApi' }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        format: 'jsonApi'
+        format: 'jsonApi',
       },
       '_buildQuery sets non default format if format is set in the options object'
     );
 
     let sortRequest: RequestV2 = {
       ...TestRequest,
-      sorts: [{ type: 'metric', field: 'm1', parameters: {}, direction: 'desc' }]
+      sorts: [{ type: 'metric', field: 'm1', parameters: {}, direction: 'desc' }],
     };
     assert.deepEqual(
       Adapter._buildQuery(sortRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         format: 'json',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        sort: 'm1|desc'
+        sort: 'm1|desc',
       },
       '_buildQuery correctly built the query object for a request with sort'
     );
@@ -814,18 +874,18 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { cache: false }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
-        _cache: false
+        _cache: false,
       },
       '_buildQuery correctly built the query object for a request without caching'
     );
   });
 
-  test('_buildQuery with catchAll Query Params', function(assert) {
+  test('_buildQuery with catchAll Query Params', function (assert) {
     assert.expect(1);
 
     let options = {
@@ -833,37 +893,37 @@ module('Unit | Adapter | facts/bard', function(hooks) {
       perPage: 100,
       queryParams: {
         perPage: 150,
-        topN: 150
-      }
+        topN: 150,
+      },
     };
 
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, options),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
         page: 1,
         perPage: 150,
-        topN: 150
+        topN: 150,
       },
       '_buildQuery correctly built the query object for a request catching all unsupported query params'
     );
   });
 
-  test('_buildQuery with pagination', function(assert) {
+  test('_buildQuery with pagination', function (assert) {
     assert.expect(4);
 
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        format: 'json'
+        format: 'json',
       },
       '_buildQuery correctly builds the query object for the provided request ' +
         'without any pagination options when options passed in are undefined'
@@ -872,11 +932,11 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, {}),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        format: 'json'
+        format: 'json',
       },
       '_buildQuery correctly builds the query object for the provided request ' +
         'without any pagination options when options passed in are empty'
@@ -885,13 +945,13 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { page: 1, perPage: 100 }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
         format: 'json',
         page: 1,
-        perPage: 100
+        perPage: 100,
       },
       '_buildQuery correctly builds query with pagination options when options are defined'
     );
@@ -899,28 +959,28 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { format: 'csv' }),
       {
-        dateTime: '2015-01-03/2015-01-04',
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
         filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
         metrics: 'm1,m2,r(p=123)',
         having: 'm1-gt[0]',
-        format: 'csv'
+        format: 'csv',
       },
       '_buildQuery correctly builds query with provided format setting'
     );
   });
 
-  test('urlForFindQuery', function(assert) {
+  test('urlForFindQuery', function (assert) {
     assert.expect(6);
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForFindQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { format: 'csv' })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForFindQuery correctly built the URL for the provided request with the format option'
     );
 
@@ -932,13 +992,13 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { grain: 'grain1' },
           type: 'timeDimension',
           operator: 'bet',
-          values: ['2015-01-03', '2015-01-04']
-        }
-      ]
+          values: ['2015-01-03', '2015-01-04'],
+        },
+      ],
     };
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(onlyDateFilter)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&format=json`,
       'urlForFindQuery correctly built the URL for a request with no filters'
     );
 
@@ -950,54 +1010,54 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { grain: 'grain1' },
           type: 'timeDimension',
           operator: 'bet',
-          values: ['2015-01-03', '2015-01-04']
-        }
+          values: ['2015-01-03', '2015-01-04'],
+        },
       ],
       sorts: [
         {
           type: 'metric',
           field: 'm1',
           parameters: {},
-          direction: 'desc'
+          direction: 'desc',
         },
         {
           type: 'metric',
           field: 'm2',
           parameters: {},
-          direction: 'desc'
-        }
-      ]
+          direction: 'desc',
+        },
+      ],
     };
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(requestWithSort)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForFindQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { cache: false })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForFindQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'bardTwo' })),
-      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'uriForFindQuery renders alternative host name if option is given'
     );
   });
 
-  test('urlForDownloadQuery', async function(assert) {
+  test('urlForDownloadQuery', async function (assert) {
     assert.expect(6);
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForDownloadQuery correctly built the URL for the provided request with the format option'
     );
 
@@ -1009,13 +1069,13 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { grain: 'grain1' },
           type: 'timeDimension',
           operator: 'bet',
-          values: ['2015-01-03', '2015-01-04']
-        }
-      ]
+          values: ['2015-01-03', '2015-01-04'],
+        },
+      ],
     };
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with only date filter'
     );
 
@@ -1027,46 +1087,46 @@ module('Unit | Adapter | facts/bard', function(hooks) {
           parameters: { grain: 'grain1' },
           type: 'timeDimension',
           operator: 'bet',
-          values: ['2015-01-03', '2015-01-04']
-        }
+          values: ['2015-01-03', '2015-01-04'],
+        },
       ],
       sorts: [
         { type: 'metric', field: 'm1', parameters: {}, direction: 'desc' },
-        { type: 'metric', field: 'm2', parameters: {}, direction: 'desc' }
-      ]
+        { type: 'metric', field: 'm2', parameters: {}, direction: 'desc' },
+      ],
     };
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(requestWithSort)),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
-      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForDownloadQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
       decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
-      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
+      `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery renders alternative host name if option is given'
     );
   });
 
-  test('fetchDataForRequest', function(assert) {
+  test('fetchDataForRequest', function (assert) {
     assert.expect(1);
 
-    return Adapter.fetchDataForRequest(TestRequest).then(function(result) {
+    return Adapter.fetchDataForRequest(TestRequest).then(function (result) {
       return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');
     });
   });
 
-  test('fetchDataForRequest with pagination options', async function(assert) {
+  test('fetchDataForRequest with pagination options', async function (assert) {
     assert.expect(1);
     const result = await Adapter.fetchDataForRequest(TestRequest, {
       page: 1,
-      perPage: 100
+      perPage: 100,
     });
 
     assert.deepEqual(
@@ -1076,20 +1136,20 @@ module('Unit | Adapter | facts/bard', function(hooks) {
         meta: {
           pagination: {
             page: '1',
-            perPage: '100'
+            perPage: '100',
           },
-          test: true
-        }
+          test: true,
+        },
       },
       'Ajax GET returns the response object for TEST Request'
     );
   });
 
-  test('fetchDataForRequest with client id options', async function(assert) {
+  test('fetchDataForRequest with client id options', async function (assert) {
     assert.expect(2);
 
     // Setting up assert for default clientId
-    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, request => {
+    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, (request) => {
       assert.equal(request.requestHeaders.clientid, 'UI', 'Client id defaults to "UI"');
 
       return MockBardResponse;
@@ -1098,20 +1158,20 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     // Sending request for default clientId
     await Adapter.fetchDataForRequest(TestRequest);
     // Setting up assert for provided clientId
-    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, request1 => {
+    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, (request1) => {
       assert.equal(request1.requestHeaders.clientid, 'test id', 'Client id is set to value given in options');
 
       return MockBardResponse;
     });
     await Adapter.fetchDataForRequest(TestRequest, {
-      clientId: 'test id'
+      clientId: 'test id',
     });
   });
 
-  test('fetchDataForRequest with custom headers', async function(assert) {
+  test('fetchDataForRequest with custom headers', async function (assert) {
     assert.expect(2);
 
-    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, request => {
+    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, (request) => {
       assert.equal(request.requestHeaders.foo, 'bar', 'custom header `foo` was sent with the request');
 
       assert.equal(request.requestHeaders.baz, 'qux', 'custom header `baz` was sent with the request');
@@ -1122,15 +1182,15 @@ module('Unit | Adapter | facts/bard', function(hooks) {
     await Adapter.fetchDataForRequest(TestRequest, {
       customHeaders: {
         foo: 'bar',
-        baz: 'qux'
-      }
+        baz: 'qux',
+      },
     });
   });
 
-  test('fetchDataForRequest with alternative datasource', async function(assert) {
+  test('fetchDataForRequest with alternative datasource', async function (assert) {
     assert.expect(1);
 
-    Server.get(`${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, request => {
+    Server.get(`${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, (request) => {
       assert.ok(request.responseURL.startsWith(HOST2), 'Alternative host was accessed');
 
       return MockBardResponse;

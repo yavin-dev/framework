@@ -34,5 +34,5 @@ export default Factory.extend({
 
   expression: null,
 
-  timeZoneId: 'UTC'
+  timeZoneId: 'UTC',
 });

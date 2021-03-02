@@ -1,8 +1,8 @@
 import { formatDateForGranularity } from 'dummy/helpers/format-date-for-granularity';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | format date for granularity', function() {
-  test('quarter', function(assert) {
+module('Unit | Helper | format date for granularity', function () {
+  test('quarter', function (assert) {
     assert.expect(1);
 
     assert.equal(
@@ -12,7 +12,7 @@ module('Unit | Helper | format date for granularity', function() {
     );
   });
 
-  test('week', function(assert) {
+  test('week', function (assert) {
     assert.expect(2);
 
     assert.equal(
@@ -28,7 +28,7 @@ module('Unit | Helper | format date for granularity', function() {
     );
   });
 
-  test('validity', function(assert) {
+  test('validity', function (assert) {
     assert.expect(2);
 
     assert.equal(formatDateForGranularity(null), '--', "helper returns '--' for null");

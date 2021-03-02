@@ -9,20 +9,20 @@ import LineChartVisualization from 'navi-core/models/line-chart';
 
 let LineChart: LineChartVisualization;
 
-module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
+module('Unit | Model | Line Chart Visualization Fragment', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     LineChart = store.createRecord('all-the-fragments').lineChart;
   });
 
-  test('default value', function(assert) {
+  test('default value', function (assert) {
     assert.expect(1);
 
     const metricsAndDims = [
       [{ field: 'm1' }, { field: 'm2' }],
-      [{ field: 'd1' }, { field: 'd2' }]
+      [{ field: 'd1' }, { field: 'd2' }],
     ];
 
     assert.notOk(
@@ -31,12 +31,12 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     );
   });
 
-  test('chart type', function(assert) {
+  test('chart type', function (assert) {
     assert.expect(4);
 
     set(LineChart.metadata.axis.y, 'series', {
       type: 'metric',
-      config: {}
+      config: {},
     });
 
     assert.ok(
@@ -56,10 +56,10 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         dimensions: [
           {
             name: 'Foo',
-            values: { cid_d1: 'foo' }
-          }
-        ]
-      }
+            values: { cid_d1: 'foo' },
+          },
+        ],
+      },
     });
 
     assert.notOk(
@@ -73,12 +73,12 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     );
   });
 
-  test('metric series - metrics', function(assert) {
+  test('metric series - metrics', function (assert) {
     assert.expect(2);
 
     set(LineChart.metadata.axis.y, 'series', {
       type: 'metric',
-      config: {}
+      config: {},
     });
 
     assert.ok(
@@ -92,7 +92,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     );
   });
 
-  test('dimension series - metric', function(assert) {
+  test('dimension series - metric', function (assert) {
     assert.expect(2);
 
     set(LineChart.metadata.axis.y, 'series', {
@@ -102,10 +102,10 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         dimensions: [
           {
             name: 'Foo',
-            values: { cid_d1: 'foo' }
-          }
-        ]
-      }
+            values: { cid_d1: 'foo' },
+          },
+        ],
+      },
     });
 
     assert.notOk(
@@ -121,7 +121,7 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
     );
   });
 
-  test('rebuildConfig - metric', function(assert) {
+  test('rebuildConfig - metric', function (assert) {
     const request = buildTestRequest([{ field: 'm1' }, { field: 'm2' }], []);
     const config = LineChart.rebuildConfig(request, { rows: [], meta: {} }).toJSON();
 
@@ -136,28 +136,28 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
             y: {
               series: {
                 type: 'metric',
-                config: {}
-              }
-            }
-          }
-        }
+                config: {},
+              },
+            },
+          },
+        },
       },
       'metric series config correctly generated'
     );
   });
 
-  test('rebuildConfig - dimension series - less than max series', function(assert) {
+  test('rebuildConfig - dimension series - less than max series', function (assert) {
     let rows = [
       { m1: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' },
       { m1: 2, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' },
-      { m1: 3, 'd1(field=id)': 'foo2', 'd2(field=id)': 'bar2' }
+      { m1: 3, 'd1(field=id)': 'foo2', 'd2(field=id)': 'bar2' },
     ];
 
     const request = buildTestRequest(
       [{ cid: 'cid_m1', field: 'm1' }],
       [
         { cid: 'cid_d1', field: 'd1', parameters: { field: 'id' } },
-        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
+        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } },
       ]
     );
     const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
@@ -177,19 +177,19 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
                   metricCid: 'cid_m1',
                   dimensions: [
                     { name: 'foo2,bar2', values: { cid_d1: 'foo2', cid_d2: 'bar2' } },
-                    { name: 'foo1,bar1', values: { cid_d1: 'foo1', cid_d2: 'bar1' } }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                    { name: 'foo1,bar1', values: { cid_d1: 'foo1', cid_d2: 'bar1' } },
+                  ],
+                },
+              },
+            },
+          },
+        },
       },
       'dimension series config generated with less unique dimension combinations then the max'
     );
   });
 
-  test('rebuildConfig - dimension series - greater than maxSeries', function(assert) {
+  test('rebuildConfig - dimension series - greater than maxSeries', function (assert) {
     let rows = [
       { m1: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' },
       { m1: 2, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' },
@@ -201,14 +201,14 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
       { m1: 8, 'd1(field=id)': 'foo6', 'd2(field=id)': 'bar6' },
       { m1: 9, 'd1(field=id)': 'foo7', 'd2(field=id)': 'bar7' },
       { m1: 10, 'd1(field=id)': 'foo8', 'd2(field=id)': 'bar8' },
-      { m1: 11, 'd1(field=id)': 'foo9', 'd2(field=id)': 'bar9' }
+      { m1: 11, 'd1(field=id)': 'foo9', 'd2(field=id)': 'bar9' },
     ];
 
     const request = buildTestRequest(
       [{ cid: 'cid_m1', field: 'm1' }],
       [
         { cid: 'cid_d1', field: 'd1', parameters: { field: 'id' } },
-        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
+        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } },
       ]
     );
     const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
@@ -236,22 +236,22 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
                     { name: 'foo3,bar3', values: { cid_d1: 'foo3', cid_d2: 'bar3' } },
                     { name: 'foo2,bar3', values: { cid_d1: 'foo2', cid_d2: 'bar3' } },
                     { name: 'foo2,bar2', values: { cid_d1: 'foo2', cid_d2: 'bar2' } },
-                    { name: 'foo1,bar1', values: { cid_d1: 'foo1', cid_d2: 'bar1' } }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                    { name: 'foo1,bar1', values: { cid_d1: 'foo1', cid_d2: 'bar1' } },
+                  ],
+                },
+              },
+            },
+          },
+        },
       },
       'dimension series config generated with up to the max unique dimension combinations and sorted by metric value'
     );
   });
 
-  test('rebuildConfig - dimension series - only metric', function(assert) {
+  test('rebuildConfig - dimension series - only metric', function (assert) {
     let rows = [
       { requestMetric: 1, 'd1(field=id)': 'configValue1', 'd2(field=id)': 'configValue2' },
-      { requestMetric: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' }
+      { requestMetric: 1, 'd1(field=id)': 'foo1', 'd2(field=id)': 'bar1' },
     ];
 
     set(LineChart.metadata.axis.y, 'series', {
@@ -261,17 +261,17 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
         dimensions: [
           {
             name: 'Foo1,Bar1',
-            values: { cid_d1: 'configValue1', cid_d2: 'configValue2' }
-          }
-        ]
-      }
+            values: { cid_d1: 'configValue1', cid_d2: 'configValue2' },
+          },
+        ],
+      },
     });
 
     const request = buildTestRequest(
       [{ cid: 'cid_requestMetric', field: 'requestMetric' }],
       [
         { cid: 'cid_d1', field: 'd1', parameters: { field: 'id' } },
-        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
+        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } },
       ]
     );
     const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
@@ -292,48 +292,48 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
                   dimensions: [
                     {
                       name: 'Foo1,Bar1',
-                      values: { cid_d1: 'configValue1', cid_d2: 'configValue2' }
+                      values: { cid_d1: 'configValue1', cid_d2: 'configValue2' },
                     },
                     {
                       name: 'foo1,bar1',
                       values: {
                         cid_d1: 'foo1',
-                        cid_d2: 'bar1'
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                        cid_d2: 'bar1',
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
       },
       'dimension series config regenerated with metric updated, old valid series kept, new series added to config'
     );
   });
 
-  test('rebuildConfig - dimension series - zero dimension series', function(assert) {
+  test('rebuildConfig - dimension series - zero dimension series', function (assert) {
     let rows = [
       {
         m1: 1,
         'd1(field=id)': 'foo',
-        'd2(field=id)': 'bar'
-      }
+        'd2(field=id)': 'bar',
+      },
     ];
 
     set(LineChart.metadata.axis.y, 'series', {
       type: 'dimension',
       config: {
         metricCid: 'cid_m1',
-        dimensions: []
-      }
+        dimensions: [],
+      },
     });
 
     const request = buildTestRequest(
       [{ cid: 'cid_m1', field: 'm1' }],
       [
         { cid: 'cid_d1', field: 'd1', parameters: { field: 'id' } },
-        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } }
+        { cid: 'cid_d2', field: 'd2', parameters: { field: 'id' } },
       ]
     );
     const config = LineChart.rebuildConfig(request, { rows, meta: {} }).toJSON();
@@ -356,15 +356,15 @@ module('Unit | Model | Line Chart Visualization Fragment', function(hooks) {
                       name: 'foo,bar',
                       values: {
                         cid_d1: 'foo',
-                        cid_d2: 'bar'
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        }
+                        cid_d2: 'bar',
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        },
       },
       'dimension series config regenerated when no dimension series are configured'
     );

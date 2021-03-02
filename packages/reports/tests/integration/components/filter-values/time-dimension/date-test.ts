@@ -18,11 +18,11 @@ const TEMPLATE = hbs`<FilterValues::TimeDimension::Date
   @isCollapsed={{this.isCollapsed}}
 />`;
 
-module('Integration | Component | filter-values/time-dimension/date', function(hooks) {
+module('Integration | Component | filter-values/time-dimension/date', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
@@ -38,7 +38,7 @@ module('Integration | Component | filter-values/time-dimension/date', function(h
     this.isCollapsed = false;
   });
 
-  test('Displayed text', async function(this: TestContext, assert) {
+  test('Displayed text', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     assert.dom('.filter-values--date-input input').hasValue('Jan 01, 2020', 'The selected date is displayed');
@@ -49,7 +49,7 @@ module('Integration | Component | filter-values/time-dimension/date', function(h
       .hasValue('', 'The placeholder text is displayed when no date is selected');
   });
 
-  test('onUpdateFilter', async function(this: TestContext, assert) {
+  test('onUpdateFilter', async function (this: TestContext, assert) {
     assert.expect(1);
 
     await render(TEMPLATE);
@@ -67,7 +67,7 @@ module('Integration | Component | filter-values/time-dimension/date', function(h
     await click(`[data-date="${selectedDate}"]`);
   });
 
-  test('collapsed', async function(this: TestContext, assert) {
+  test('collapsed', async function (this: TestContext, assert) {
     this.isCollapsed = true;
 
     await render(TEMPLATE);

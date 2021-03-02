@@ -5,22 +5,22 @@ import { setupTest } from 'ember-qunit';
 
 let Store, MockAuthor;
 
-module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', function(hooks) {
+module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
     MockAuthor = Store.createRecord('user', { id: 'Gannon' });
 
     this.owner.register(
       'service:user',
       Service.extend({
-        getUser: () => MockAuthor
+        getUser: () => MockAuthor,
       })
     );
   });
 
-  test('model', function(assert) {
+  test('model', function (assert) {
     assert.expect(2);
 
     return run(() => {
@@ -28,19 +28,19 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
           title: 'Twilight Princess',
           author: 'Wolf Link',
           request: {
-            clone: () => null
+            clone: () => null,
           },
           visualization: {
-            type: 'goal-gauge'
+            type: 'goal-gauge',
           },
           toJSON() {
             return Object.assign({}, this);
-          }
+          },
         },
         route = this.owner.factoryFor('route:dashboards/dashboard/widgets/widget/clone-to-report').create({
           modelFor() {
             return widget;
-          }
+          },
         });
 
       let report = route.model();
@@ -54,7 +54,7 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
     });
   });
 
-  test('_cloneToReport', function(assert) {
+  test('_cloneToReport', function (assert) {
     assert.expect(2);
 
     return run(() => {
@@ -63,14 +63,14 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
           title: 'Twilight Princess',
           author: 'Wolf Link',
           request: {
-            clone: () => null
+            clone: () => null,
           },
           visualization: {
-            type: 'goal-gauge'
+            type: 'goal-gauge',
           },
           toJSON() {
             return Object.assign({}, this);
-          }
+          },
         };
 
       let clonedReport = route._cloneToReport(widget);

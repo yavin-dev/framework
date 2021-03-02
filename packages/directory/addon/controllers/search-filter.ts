@@ -23,6 +23,6 @@ export default abstract class SearchFilterController extends Controller {
   @computed('directory.q', 'sortedItems')
   get searchResults() {
     const { q } = this.directory;
-    return this.sortedItems.then(items => (isEmpty(q) ? items : searchRecords(items, q, 'title')));
+    return this.sortedItems.then((items) => (isEmpty(q) ? items : searchRecords(items, q, 'title')));
   }
 }

@@ -80,9 +80,9 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
         label: {
           format: (_: unknown, ratio: number) => {
             return smartFormatNumber([ratio * 100]) + '%';
-          }
-        }
-      }
+          },
+        },
+      },
     };
   }
 
@@ -109,8 +109,8 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
       data: {
         type: 'pie',
         json: seriesData.series,
-        names: seriesData.names
-      }
+        names: seriesData.names,
+      },
     };
   }
 
@@ -120,7 +120,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
   @computed('args.options', 'dataConfig')
   get config() {
     return merge({}, this.pieConfig, this.args.options, this.dataConfig, {
-      tooltip: this.chartTooltip
+      tooltip: this.chartTooltip,
     });
   }
 
@@ -144,14 +144,14 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
         {
           layout: tooltipLayout,
 
-          rowData: computed('x', 'requiredToolTipData', function() {
+          rowData: computed('x', 'requiredToolTipData', function () {
             assert('buildData must be called in the chart-builder before the tooltip can be rendered', byXSeries);
             // Get the full data for this combination of x + series
             const series = this.requiredToolTipData;
             const dataForSeries = byXSeries.getDataForKey(`${this.x} ${series.id}`) || [];
 
             return dataForSeries[0];
-          })
+          }),
         },
         { renderer: owner.lookup('renderer:-dom') }
       );
@@ -180,7 +180,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
           tooltip = tooltipComponent.create({
             x,
             requiredToolTipData: tooltipData[0],
-            metric
+            metric,
           });
 
         run(() => {
@@ -191,7 +191,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
         let innerHTML = tooltip.element.innerHTML;
         tooltip.destroy();
         return innerHTML;
-      }
+      },
     };
   }
 
@@ -240,12 +240,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
     const yTranslate = svgElm.style('height').replace('px', '') / 2; //vertically center the label in the svg
 
     if (metric) {
-      titleElm
-        .insert('tspan')
-        .attr('class', 'pie-metric-label')
-        .attr('y', 0)
-        .attr('x', 0)
-        .text(metric.displayName);
+      titleElm.insert('tspan').attr('class', 'pie-metric-label').attr('y', 0).attr('x', 0).text(metric.displayName);
 
       //rotate the label to be vertical and place it just left of the pie chart
       titleElm.attr('text-anchor', 'middle').attr('transform', `translate(${xTranslate}, ${yTranslate}) rotate(-90)`);

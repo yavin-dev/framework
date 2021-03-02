@@ -16,7 +16,7 @@ export default class MetricSerializer extends EmberObject {
    * @returns {Object[]} - normalized metric objects
    */
   _normalizeMetrics(metrics, source) {
-    return metrics.map(metric => {
+    return metrics.map((metric) => {
       const { type: valueType, longName: name, name: id, description, category, metricFunctionId } = metric;
       const normalizedMetric = {
         id,
@@ -24,7 +24,7 @@ export default class MetricSerializer extends EmberObject {
         description,
         category,
         valueType,
-        source
+        source,
       };
       if (metricFunctionId) {
         normalizedMetric.columnFunctionId = metricFunctionId;

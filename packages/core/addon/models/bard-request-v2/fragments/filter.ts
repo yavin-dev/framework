@@ -10,15 +10,15 @@ import { Filter } from 'navi-data/adapters/facts/interface';
 const Validations = buildValidations({
   operator: validator('presence', {
     presence: true,
-    message: 'The `operator` filter field cannot be empty'
+    message: 'The `operator` filter field cannot be empty',
   }),
   values: validator('collection', {
     collection: true,
     message() {
       const { field } = this.model;
       return `${field} filter must be a collection`;
-    }
-  })
+    },
+  }),
 });
 
 /**

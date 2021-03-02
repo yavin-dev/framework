@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
@@ -7,6 +7,7 @@ import Model, { hasMany } from '@ember-data/model';
 import ReportModel from './report';
 import DeliveryRuleModel from './delivery-rule';
 import DashboardModel from './dashboard';
+import Role from './role';
 
 export default class UserModel extends Model {
   @hasMany('report', { async: true, inverse: 'author' })
@@ -25,7 +26,7 @@ export default class UserModel extends Model {
   favoriteDashboards!: DS.PromiseManyArray<DashboardModel>;
 
   @hasMany('role', { async: true })
-  roles!: DS.PromiseManyArray<TODO>;
+  roles!: DS.PromiseManyArray<Role>;
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.

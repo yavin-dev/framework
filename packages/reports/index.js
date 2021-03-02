@@ -7,10 +7,10 @@ module.exports = {
     return process.env.DEV_NAVI;
   },
 
-  included: function(app, parentAddon) {
+  included: function (app, parentAddon) {
     this._super.included.apply(this, arguments);
 
     const target = parentAddon || app;
     target.import('vendor/loader.css');
-  }
+  },
 };

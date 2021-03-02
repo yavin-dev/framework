@@ -7,10 +7,10 @@ import Service from '@ember/service';
 
 let NotificationCallback;
 
-module('Acceptance | share link', function(hooks) {
+module('Acceptance | share link', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.register(
       'service:navi-notifications',
       class extends Service {
@@ -21,12 +21,12 @@ module('Acceptance | share link', function(hooks) {
     );
   });
 
-  test('dashboard share link', async function(assert) {
+  test('dashboard share link', async function (assert) {
     assert.expect(1);
 
     const baseUrl = document.location.origin;
-    NotificationCallback = ({ context }) => {
-      assert.equal(context, `${baseUrl}/dashboards/1`, 'The share link is built correctly by buildDashboardUrl');
+    NotificationCallback = ({ extra }) => {
+      assert.equal(extra, `${baseUrl}/dashboards/1`, 'The share link is built correctly by buildDashboardUrl');
     };
 
     await visit('/dashboards');

@@ -5,13 +5,13 @@ import DS from 'ember-data';
 import hbs from 'htmlbars-inline-precompile';
 import { run } from '@ember/runloop';
 
-module('helper:serialize', function(hooks) {
+module('helper:serialize', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it returns serialization of model', async function(assert) {
+  test('it returns serialization of model', async function (assert) {
     assert.expect(1);
     const modelClass = DS.Model.extend({
-      something: DS.attr('weird')
+      something: DS.attr('weird'),
     });
 
     const weirdTransform = DS.Transform.extend({
@@ -20,7 +20,7 @@ module('helper:serialize', function(hooks) {
       },
       deserialize(input) {
         return input;
-      }
+      },
     });
 
     this.owner.register('model:weirdo', modelClass);
@@ -34,9 +34,9 @@ module('helper:serialize', function(hooks) {
           id: '1',
           type: 'weirdo',
           attributes: {
-            something: 'hello'
-          }
-        }
+            something: 'hello',
+          },
+        },
       });
 
       let model = store.peekRecord('weirdo', '1');
@@ -49,7 +49,7 @@ module('helper:serialize', function(hooks) {
     });
   });
 
-  test('it returns with undefined or null', async function(assert) {
+  test('it returns with undefined or null', async function (assert) {
     assert.expect(2);
     this.set('model', null);
     await render(hbs`{{serialize model}}`);

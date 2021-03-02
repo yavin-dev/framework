@@ -13,11 +13,11 @@ import Service from '@ember/service';
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
-module('Acceptance | Exploring Widgets', function(hooks) {
+module('Acceptance | Exploring Widgets', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('Widget title', async function(assert) {
+  test('Widget title', async function (assert) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/1');
@@ -25,7 +25,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.dom('.navi-report-widget__title').hasText('Mobile DAU Goal', 'Widget title is displayed as the page title');
   });
 
-  test('Editing widget title', async function(assert) {
+  test('Editing widget title', async function (assert) {
     assert.expect(1);
 
     // Edit title
@@ -38,12 +38,12 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click('.navi-report-widget__save-btn');
     await visit('/dashboards/1');
 
-    const widgetNames = findAll('.navi-widget__title').map(el => el.textContent.trim());
+    const widgetNames = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
     assert.ok(widgetNames.includes('A new title'), 'New widget title is saved and persisted on dashboard');
   });
 
-  test('Breadcrumb', async function(assert) {
+  test('Breadcrumb', async function (assert) {
     assert.expect(4);
     let originalFeatureFlag = config.navi.FEATURES.enableDirectory;
 
@@ -68,7 +68,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     config.navi.FEATURES.enableDirectory = originalFeatureFlag;
   });
 
-  test('Viewing a widget', async function(assert) {
+  test('Viewing a widget', async function (assert) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -80,7 +80,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .exists('The column config exists on the view route');
   });
 
-  test('Exploring a widget', async function(assert) {
+  test('Exploring a widget', async function (assert) {
     assert.expect(1);
 
     await visit('/dashboards/1');
@@ -89,7 +89,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.ok(currentURL().endsWith('/dashboards/1/widgets/2/view'), 'Explore action links to widget view route');
   });
 
-  test('Changing and saving a widget', async function(assert) {
+  test('Changing and saving a widget', async function (assert) {
     assert.expect(4);
 
     // Add a metric to widget 2, save, and return to dashboard route
@@ -109,7 +109,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
 
     await visit('/dashboards/1');
 
-    const legends = findAll('.line-chart-widget .c3-legend-item').map(el => el.textContent.trim());
+    const legends = findAll('.line-chart-widget .c3-legend-item').map((el) => el.textContent.trim());
 
     assert.deepEqual(
       legends,
@@ -118,7 +118,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
   });
 
-  test('Revert changes', async function(assert) {
+  test('Revert changes', async function (assert) {
     assert.expect(4);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -144,7 +144,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .isNotVisible('After clicking "Revert Changes", button is once again hidden');
   });
 
-  test('Export action', async function(assert) {
+  test('Export action', async function (assert) {
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
@@ -185,7 +185,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
-  test('Multi export action', async function(assert) {
+  test('Multi export action', async function (assert) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -195,7 +195,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasAttribute('href', /export\?reportModel=/, 'Export url contains serialized report');
   });
 
-  test('Get API action - enabled/disabled', async function(assert) {
+  test('Get API action - enabled/disabled', async function (assert) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
@@ -213,14 +213,14 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .hasClass('navi-report-widget__action--is-disabled', 'Get API action is disabled when request is not valid');
   });
 
-  test('Share action', async function(assert) {
+  test('Share action', async function (assert) {
     assert.expect(1);
 
     this.owner.register(
       'service:navi-notifications',
       class extends Service {
-        add({ context }) {
-          assert.equal(context, document.location, 'share uses the current location as the default share url');
+        add({ extra }) {
+          assert.equal(extra, document.location, 'share uses the current location as the default share url');
         }
       }
     );
@@ -240,7 +240,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await click($('.navi-report-widget__action:contains(Share) button')[0]);
   });
 
-  test('Delete widget', async function(assert) {
+  test('Delete widget', async function (assert) {
     assert.expect(5);
 
     /* == Not author == */
@@ -254,7 +254,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     await visit('/dashboards/1');
 
     assert.deepEqual(
-      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      findAll('.navi-widget__title').map((el) => el.textContent.trim()),
       ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table'],
       '"DAU Graph" widget is initially present on dashboard'
     );
@@ -269,13 +269,13 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
     assert.deepEqual(
-      findAll('.navi-widget__title').map(el => el.textContent.trim()),
+      findAll('.navi-widget__title').map((el) => el.textContent.trim()),
       ['Mobile DAU Goal', 'Mobile DAU Table'],
       'Deleted widget is removed from dashboard'
     );
   });
 
-  test('Clone a widget', async function(assert) {
+  test('Clone a widget', async function (assert) {
     assert.expect(4);
     let originalWidgetTitle;
 
@@ -298,7 +298,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       .isVisible('Report body has a visualization on the view route');
   });
 
-  test('Error data request', async function(assert) {
+  test('Error data request', async function (assert) {
     assert.expect(1);
 
     server.get(`${config.navi.dataSources[0].uri}/v1/data/*path`, () => {
@@ -314,7 +314,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
       );
   });
 
-  test('Cancel Widget', async function(assert) {
+  test('Cancel Widget', async function (assert) {
     //Slow down mock
     server.timing = 400;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -323,7 +323,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     });
 
     //Load the widget
-    visit('/dashboards/1/widgets/1/view').catch(error => {
+    visit('/dashboards/1/widgets/1/view').catch((error) => {
       //https://github.com/emberjs/ember-test-helpers/issues/332
       const { message } = error;
       if (message !== 'TransitionAborted') {
@@ -336,7 +336,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     assert.equal(currentRouteName(), 'dashboards.dashboard.widgets.widget.loading', 'Widget is loading');
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
+      findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
       ['Cancel'],
       'When widget is loading, the only footer button is `Cancel`'
     );
@@ -350,7 +350,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
+      findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
       ['Run', 'Save Changes', 'Revert'],
       'When not loading a widget, the standard footer buttons are available'
     );
@@ -365,7 +365,7 @@ module('Acceptance | Exploring Widgets', function(hooks) {
     );
 
     assert.deepEqual(
-      findAll('.navi-report-widget__footer button').map(e => e.textContent.trim()),
+      findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
       ['Run', 'Save Changes', 'Revert'],
       'When not loading a widget, the standard footer buttons are available'
     );

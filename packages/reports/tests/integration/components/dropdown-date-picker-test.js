@@ -6,10 +6,10 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import Moment from 'moment';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | dropdown date picker', function(hooks) {
+module('Integration | Component | dropdown date picker', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('dropdown-date-picker', async function(assert) {
+  test('dropdown-date-picker', async function (assert) {
     assert.expect(5);
 
     this.set('savedDate', Moment.utc('2018-12-25'));
@@ -18,7 +18,7 @@ module('Integration | Component | dropdown date picker', function(hooks) {
         const clickedDate = Moment(date).format('YYYY-MM-DD');
         assert.equal(clickedDate, '2018-12-24', 'The current selected date is sent to the onUpdate action');
         this.set('savedDate', Moment.utc(date));
-      }
+      },
     });
 
     await render(hbs`

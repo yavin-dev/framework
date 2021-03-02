@@ -46,7 +46,7 @@ class NaviWidget extends Component {
   get options() {
     const {
       layoutOptions: layout,
-      model: { id }
+      model: { id },
     } = this;
 
     if (layout) {
@@ -75,8 +75,8 @@ class NaviWidget extends Component {
   get filterErrors() {
     const filterErrors = get(this, 'data.firstObject.response.meta.errors') || [];
     const filterErrorMessages = filterErrors
-      .filter(e => e.title === 'Invalid Filter')
-      .map(e => e.detail)
+      .filter((e) => e.title === 'Invalid Filter')
+      .map((e) => e.detail)
       .join('\n');
 
     return filterErrorMessages ? `Unable to apply filter(s):\n${filterErrorMessages}` : null;

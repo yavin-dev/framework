@@ -37,7 +37,7 @@ class MetricSelectorComponent extends Component {
   @computed('request.metricColumns.[]')
   get selectedMetrics() {
     const metrics = this.request.metricColumns;
-    const selectedBaseMetrics = uniqBy(metrics, metric => metric.field);
+    const selectedBaseMetrics = uniqBy(metrics, (metric) => metric.field);
 
     return selectedBaseMetrics;
   }
@@ -85,7 +85,7 @@ class MetricSelectorComponent extends Component {
       let metricSelector = document.querySelector('.report-builder__metric-selector'),
         groupedListItems = Array.from(metricSelector.getElementsByClassName('grouped-list__item'));
 
-      groupedListItems.filter(item => {
+      groupedListItems.filter((item) => {
         if (item.textContent.trim() === name) {
           item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
         }

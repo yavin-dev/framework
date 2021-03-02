@@ -13,33 +13,33 @@ const ROWS = [
   {
     'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
     'age(field=id)': 'dim1',
-    uniqueIdentifier: 172933788
+    uniqueIdentifier: 172933788,
   },
   {
     'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
     'age(field=id)': 'dim2',
-    uniqueIdentifier: 183206656
-  }
+    uniqueIdentifier: 183206656,
+  },
 ];
 
 let MODEL;
 
 const OPTIONS = {
-  columnAttributes: {}
+  columnAttributes: {},
 };
 
-module('Unit | Component | table', function(hooks) {
+module('Unit | Component | table', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const store = this.owner.lookup('service:store');
-    ['navi-table-sort-icon', 'sortable-group', 'sortable-item', 'navi-icon', 'ember-tooltip'].forEach(component => {
+    ['navi-table-sort-icon', 'sortable-group', 'sortable-item', 'navi-icon', 'ember-tooltip'].forEach((component) => {
       this.owner.register(`component:${component}`, Component.extend(), { instantiate: false });
     });
 
     //helpers
-    ['and', 'sub', 'not-eq', 'is-valid-moment', 'format-number'].forEach(helper => {
+    ['and', 'sub', 'not-eq', 'is-valid-moment', 'format-number'].forEach((helper) => {
       this.owner.register(
         `helper:${helper}`,
         buildHelper(() => undefined),
@@ -58,21 +58,21 @@ module('Unit | Component | table', function(hooks) {
               type: 'timeDimension',
               field: 'network.dateTime',
               parameters: { grain: 'day' },
-              source: 'bardOne'
+              source: 'bardOne',
             },
             {
               cid: 'cid_age',
               type: 'dimension',
               field: 'age',
               parameters: { field: 'id' },
-              source: 'bardOne'
+              source: 'bardOne',
             },
             {
               type: 'metric',
               field: 'uniqueIdentifier',
               parameters: {},
-              source: 'bardOne'
-            }
+              source: 'bardOne',
+            },
           ],
           sorts: [
             {
@@ -80,27 +80,27 @@ module('Unit | Component | table', function(hooks) {
               field: 'network.dateTime',
               parameters: { grain: 'day' },
               direction: 'desc',
-              source: 'bardOne'
-            }
+              source: 'bardOne',
+            },
           ],
           filters: [],
           limit: null,
           requestVersion: '2.0',
-          dataSource: 'bardOne'
+          dataSource: 'bardOne',
         }),
         response: {
-          rows: ROWS
-        }
-      }
+          rows: ROWS,
+        },
+      },
     ]);
   });
 
-  test('columns', function(assert) {
+  test('columns', function (assert) {
     assert.expect(2);
 
     let component = createGlimmerComponent('component:navi-visualizations/table', {
         model: MODEL,
-        options: OPTIONS
+        options: OPTIONS,
       }),
       dateTimeColumn = A(component.columns).filterBy('fragment.type', 'timeDimension')[0],
       metricColumn = A(component.columns).filterBy('fragment.type', 'metric')[0];
@@ -114,12 +114,12 @@ module('Unit | Component | table', function(hooks) {
     assert.equal(metricColumn.sortDirection, 'none', 'sort direction is set to none as default for metric column');
   });
 
-  test('datetime _getNextSortDirection', function(assert) {
+  test('datetime _getNextSortDirection', function (assert) {
     assert.expect(2);
 
     let component = createGlimmerComponent('component:navi-visualizations/table', {
       model: MODEL,
-      options: OPTIONS
+      options: OPTIONS,
     });
 
     assert.equal(
@@ -135,12 +135,12 @@ module('Unit | Component | table', function(hooks) {
     );
   });
 
-  test('metric _getNextSortDirection', function(assert) {
+  test('metric _getNextSortDirection', function (assert) {
     assert.expect(3);
 
     let component = createGlimmerComponent('component:navi-visualizations/table', {
       model: MODEL,
-      options: OPTIONS
+      options: OPTIONS,
     });
 
     assert.equal(
@@ -162,12 +162,12 @@ module('Unit | Component | table', function(hooks) {
     );
   });
 
-  test('table data changes with options', function(assert) {
+  test('table data changes with options', function (assert) {
     assert.expect(4);
 
     let component = createGlimmerComponent('component:navi-visualizations/table', {
       model: MODEL,
-      options: OPTIONS
+      options: OPTIONS,
     });
 
     assert.deepEqual(
@@ -184,9 +184,9 @@ module('Unit | Component | table', function(hooks) {
         'network.dateTime(grain=day)': 'Grand Total',
         __meta__: {
           hasPartialData: false,
-          isTotalRow: true
+          isTotalRow: true,
         },
-        uniqueIdentifier: 356140444
+        uniqueIdentifier: 356140444,
       },
       'table data has the total row appended when the flag in the options is set'
     );
@@ -199,31 +199,31 @@ module('Unit | Component | table', function(hooks) {
         {
           'age(field=id)': 'dim1',
           'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim1',
           'network.dateTime(grain=day)': 'Subtotal',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           'age(field=id)': 'dim2',
           'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
-          uniqueIdentifier: 183206656
+          uniqueIdentifier: 183206656,
         },
         {
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim2',
           'network.dateTime(grain=day)': 'Subtotal',
-          uniqueIdentifier: 183206656
-        }
+          uniqueIdentifier: 183206656,
+        },
       ],
       'table data has the subtotal row appended after every group of data'
     );
@@ -236,51 +236,51 @@ module('Unit | Component | table', function(hooks) {
         {
           'age(field=id)': 'dim1',
           'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim1',
           'network.dateTime(grain=day)': 'Subtotal',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           'age(field=id)': 'dim2',
           'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
-          uniqueIdentifier: 183206656
+          uniqueIdentifier: 183206656,
         },
         {
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim2',
           'network.dateTime(grain=day)': 'Subtotal',
-          uniqueIdentifier: 183206656
+          uniqueIdentifier: 183206656,
         },
         {
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'network.dateTime(grain=day)': 'Grand Total',
-          uniqueIdentifier: 356140444
-        }
+          uniqueIdentifier: 356140444,
+        },
       ],
       'table data has the subtotal row appended after every group of data'
     );
   });
 
-  test('computeTotal and computeSubtotals', function(assert) {
+  test('computeTotal and computeSubtotals', function (assert) {
     assert.expect(2);
 
     let options = merge({}, OPTIONS, { showTotals: { subtotal: 'cid_age' } }),
       component = createGlimmerComponent('component:navi-visualizations/table', {
         options,
-        model: MODEL
+        model: MODEL,
       });
 
     assert.deepEqual(
@@ -289,31 +289,31 @@ module('Unit | Component | table', function(hooks) {
         {
           'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
           'age(field=id)': 'dim1',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           'network.dateTime(grain=day)': 'Subtotal',
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim1',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
           'age(field=id)': 'dim2',
-          uniqueIdentifier: 183206656
+          uniqueIdentifier: 183206656,
         },
         {
           'network.dateTime(grain=day)': 'Subtotal',
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim2',
-          uniqueIdentifier: 183206656
-        }
+          uniqueIdentifier: 183206656,
+        },
       ],
       'compute subtotal returns a array of rows grouped and summed based on the specified subtotal dimension in the options'
     );
@@ -324,15 +324,15 @@ module('Unit | Component | table', function(hooks) {
         'network.dateTime(grain=day)': 'Grand Total',
         __meta__: {
           hasPartialData: false,
-          isTotalRow: true
+          isTotalRow: true,
         },
-        uniqueIdentifier: 356140444
+        uniqueIdentifier: 356140444,
       },
       'compute total returns a total row object for the rows passed in'
     );
   });
 
-  test('computeTotal and computeSubtotals with an overriding computeColumnTotal method', function(assert) {
+  test('computeTotal and computeSubtotals with an overriding computeColumnTotal method', function (assert) {
     assert.expect(2);
 
     let options = merge({}, OPTIONS, { showTotals: { subtotal: 'cid_age' } }),
@@ -350,7 +350,7 @@ module('Unit | Component | table', function(hooks) {
         },
         {
           options,
-          model: MODEL
+          model: MODEL,
         }
       );
 
@@ -360,31 +360,31 @@ module('Unit | Component | table', function(hooks) {
         {
           'age(field=id)': 'dim1',
           'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
-          uniqueIdentifier: 172933788
+          uniqueIdentifier: 172933788,
         },
         {
           'network.dateTime(grain=day)': 'Subtotal',
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim1',
-          uniqueIdentifier: 172933788 + 1
+          uniqueIdentifier: 172933788 + 1,
         },
         {
           'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
           'age(field=id)': 'dim2',
-          uniqueIdentifier: 183206656
+          uniqueIdentifier: 183206656,
         },
         {
           'network.dateTime(grain=day)': 'Subtotal',
           __meta__: {
             hasPartialData: false,
-            isTotalRow: true
+            isTotalRow: true,
           },
           'age(field=id)': 'dim2',
-          uniqueIdentifier: 183206656 + 1
-        }
+          uniqueIdentifier: 183206656 + 1,
+        },
       ],
       'compute subtotal returns a array of rows grouped and summed based on the overriding method'
     );
@@ -395,9 +395,9 @@ module('Unit | Component | table', function(hooks) {
         'network.dateTime(grain=day)': 'Grand Total',
         __meta__: {
           hasPartialData: false,
-          isTotalRow: true
+          isTotalRow: true,
         },
-        uniqueIdentifier: 356140444 - 2
+        uniqueIdentifier: 356140444 - 2,
       },
       'compute total returns a total row object for the rows passed in based on the overriding method'
     );

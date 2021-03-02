@@ -11,6 +11,6 @@ export default class BaseSerializer extends JSONSerializer {
    */
   attrs = {
     //don't include source in the payload
-    source: { serialize: false }
+    source: { serialize: false },
   };
 }

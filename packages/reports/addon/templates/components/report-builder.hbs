@@ -15,13 +15,13 @@
           class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
           @request={{this.request}}
           @onAddDimension={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-          @onToggleDimFilter={{queue (update-report-action "TOGGLE_DIMENSION_FILTER") this.onToggleDimFilter}}
+          @onAddDimensionFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") this.onAddFilter}}
         />
         <MetricSelector
           class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
           @request={{this.request}}
           @onAddMetric={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-          @onToggleMetricFilter={{queue (update-report-action "TOGGLE_METRIC_FILTER") this.onToggleMetricFilter}}
+          @onAddMetricFilter={{queue (update-report-action "ADD_METRIC_FILTER") this.onAddFilter}}
         />
       {{/if}}
     </div>

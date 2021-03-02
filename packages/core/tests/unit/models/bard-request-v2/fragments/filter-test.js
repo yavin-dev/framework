@@ -5,11 +5,11 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
+module('Unit | Model | Fragment | BardRequest - Filter', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     mockModel = run(() =>
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
@@ -20,14 +20,14 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
             type: 'metric',
             operator: 'gt',
             values: [3],
-            source: 'bardOne'
-          }
-        ]
+            source: 'bardOne',
+          },
+        ],
       })
     );
   });
 
-  test('Model using the Filter Fragment', async function(assert) {
+  test('Model using the Filter Fragment', async function (assert) {
     assert.expect(10);
 
     assert.ok(mockModel, 'mockModel is fetched from the store');
@@ -59,7 +59,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
     assert.equal(filter.columnMetadata.id, 'tableA.dateTime', 'metadata is loaded correctly');
   });
 
-  test('Validation', async function(assert) {
+  test('Validation', async function (assert) {
     assert.expect(8);
 
     const filter = mockModel.filters.objectAt(0);
@@ -94,7 +94,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
     );
   });
 
-  test('Serialization', async function(assert) {
+  test('Serialization', async function (assert) {
     assert.expect(2);
 
     assert.deepEqual(
@@ -103,12 +103,12 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
         {
           field: 'revenue',
           parameters: {
-            currency: 'USD'
+            currency: 'USD',
           },
           type: 'metric',
           operator: 'gt',
-          values: [3]
-        }
+          values: [3],
+        },
       ],
       'The filters model attribute was serialized correctly'
     );
@@ -123,14 +123,14 @@ module('Unit | Model | Fragment | BardRequest - Filter', function(hooks) {
           parameters: {},
           operator: 'gt',
           type: 'metric',
-          values: [3]
-        }
+          values: [3],
+        },
       ],
       'The filters model attribute was serialized correctly when parameters is an empty object'
     );
   });
 
-  test('Display Name', async function(assert) {
+  test('Display Name', async function (assert) {
     const filter = mockModel.filters.objectAt(0);
 
     assert.equal(filter.displayName, 'Revenue (USD)', 'Display name is as expected with params');

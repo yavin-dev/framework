@@ -33,7 +33,7 @@ export default class NaviAdapterError extends Error {
   }
 
   get details(): string[] {
-    return this.errors.map(e => e.detail).filter(isPresent);
+    return this.errors.map((e) => e.detail).filter(isPresent);
   }
 
   toString() {

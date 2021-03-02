@@ -16,8 +16,8 @@ const NEW_MODEL = {
       sorts: [],
       limit: null,
       requestVersion: '2.0',
-      dataSource: 'bardOne'
-    }
+      dataSource: 'bardOne',
+    },
   ],
   title: 'Untitled Widget',
   updatedOn: null,
@@ -25,32 +25,32 @@ const NEW_MODEL = {
     type: 'table',
     version: 2,
     metadata: {
-      columnAttributes: {}
-    }
+      columnAttributes: {},
+    },
   },
-  dashboard: 'dashboard1'
+  dashboard: 'dashboard1',
 };
 
 let Store, Route;
 
-module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
+module('Unit | Route | dashboards/dashboard/widgets/new', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     Route = this.owner.factoryFor('route:dashboards/dashboard/widgets/new').create({
       modelFor: () =>
         Store.createRecord('dashboard', {
           id: 'dashboard1',
-          author: 'navi_user'
+          author: 'navi_user',
         }),
 
       router: {
         currentRoute: {
-          queryParams: {}
-        }
-      }
+          queryParams: {},
+        },
+      },
     });
 
     set(config, 'navi.defaultDataTable', 'tableA');
@@ -58,15 +58,15 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     set(config, 'navi.defaultDataTable', defaultDataTable);
   });
 
-  test('model', async function(assert) {
+  test('model', async function (assert) {
     assert.expect(2);
 
     return settled().then(() => {
-      return Route.model().then(model => {
+      return Route.model().then((model) => {
         assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
         assert.equal(
@@ -78,11 +78,11 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function(hooks) {
     });
   });
 
-  test('_newModel', function(assert) {
+  test('_newModel', function (assert) {
     assert.expect(2);
 
     return settled().then(() => {
-      return Route._newModel().then(model => {
+      return Route._newModel().then((model) => {
         assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
         assert.equal(

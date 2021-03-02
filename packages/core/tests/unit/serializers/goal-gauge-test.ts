@@ -7,17 +7,17 @@ import GoalGaugeSerializer, { LegacyGoalGaugeConfig, normalizeGoalGaugeV2 } from
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
-module('Unit | Serializer | metric label', function(hooks) {
+module('Unit | Serializer | metric label', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('normalize', function(this: TestContext, assert) {
+  test('normalize', function (this: TestContext, assert) {
     const serializer = this.owner.lookup('serializer:goal-gauge') as GoalGaugeSerializer;
     //@ts-expect-error
     assert.deepEqual(serializer.normalize(), { data: null }, 'null is returned for an undefined response');
   });
 
-  test('normalizeGoalGaugeV2', function(this: TestContext, assert) {
+  test('normalizeGoalGaugeV2', function (this: TestContext, assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', cid: 'cid_rupees', field: 'rupees', parameters: {} }],
@@ -25,7 +25,7 @@ module('Unit | Serializer | metric label', function(hooks) {
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const initialMetaData: LegacyGoalGaugeConfig = {
@@ -34,8 +34,8 @@ module('Unit | Serializer | metric label', function(hooks) {
       metadata: {
         metric: 'rupees',
         baselineValue: 200,
-        goalValue: 1000
-      }
+        goalValue: 1000,
+      },
     };
 
     const initialMetaDataWithObject: LegacyGoalGaugeConfig = {
@@ -44,11 +44,11 @@ module('Unit | Serializer | metric label', function(hooks) {
       metadata: {
         metric: {
           metric: 'rupees',
-          parameters: {}
+          parameters: {},
         },
         baselineValue: '200',
-        goalValue: '1000'
-      }
+        goalValue: '1000',
+      },
     };
     const goalGaugeV2Config: GoalGaugeConfig = {
       version: 2,
@@ -56,8 +56,8 @@ module('Unit | Serializer | metric label', function(hooks) {
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metricCid: 'cid_rupees'
-      }
+        metricCid: 'cid_rupees',
+      },
     };
 
     assert.deepEqual(

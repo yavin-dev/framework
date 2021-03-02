@@ -26,7 +26,7 @@ export default class ReportsReportViewRoute extends Route {
   requestOptions = {
     page: 1,
     perPage: 10000,
-    clientId: 'customReports'
+    clientId: 'customReports',
   };
 
   /**
@@ -46,21 +46,21 @@ export default class ReportsReportViewRoute extends Route {
       serializedRequest = request.serialize(),
       requestOptions = merge({}, get(this, 'requestOptions'), {
         customHeaders: {
-          uiView: `report.spv.${get(report, 'id')}`
+          uiView: `report.spv.${get(report, 'id')}`,
         },
-        dataSourceName: request.dataSource
+        dataSourceName: request.dataSource,
       });
 
     // Wrap the response in a promise object so we can manually handle loading spinners
     return get(this, 'facts')
       .fetch(serializedRequest, requestOptions)
-      .then(response => {
+      .then((response) => {
         this._setValidVisualizationType(request, report);
         this._setValidVisualizationConfig(request, report, response.response);
 
         return response;
       })
-      .catch(response => {
+      .catch((response) => {
         if (isForbiddenError(response)) {
           this.transitionTo('reports.report.unauthorized', get(report, 'id'));
         } else {

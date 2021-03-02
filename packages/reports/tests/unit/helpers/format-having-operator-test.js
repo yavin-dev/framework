@@ -1,14 +1,14 @@
 import { formatHavingOperator } from '../../../helpers/format-having-operator';
 import { module, test } from 'qunit';
 
-module('Unit | Helper | format having operator', function() {
-  test('Helper exists', function(assert) {
+module('Unit | Helper | format having operator', function () {
+  test('Helper exists', function (assert) {
     assert.expect(1);
 
     assert.ok(formatHavingOperator, 'Helper is present');
   });
 
-  test('Returns expected format for operator', function(assert) {
+  test('Returns expected format for operator', function (assert) {
     assert.expect(2);
 
     assert.equal(

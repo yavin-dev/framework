@@ -28,27 +28,27 @@ export default class PieChartController extends Controller {
         dimensions: [
           {
             name: 'All Other',
-            values: { 'cid_age(field=desc)': 'All Other' }
+            values: { 'cid_age(field=desc)': 'All Other' },
           },
           {
             name: 'under 13',
-            values: { 'cid_age(field=desc)': 'under 13' }
+            values: { 'cid_age(field=desc)': 'under 13' },
           },
           {
             name: '13 - 25',
-            values: { 'cid_age(field=desc)': '13 - 25' }
+            values: { 'cid_age(field=desc)': '13 - 25' },
           },
           {
             name: '25 - 35',
-            values: { 'cid_age(field=desc)': '25 - 35' }
+            values: { 'cid_age(field=desc)': '25 - 35' },
           },
           {
             name: '35 - 45',
-            values: { 'cid_age(field=desc)': '35 - 45' }
-          }
-        ]
-      }
-    }
+            values: { 'cid_age(field=desc)': '35 - 45' },
+          },
+        ],
+      },
+    },
   };
 
   @computed('options')
@@ -56,7 +56,7 @@ export default class PieChartController extends Controller {
     return {
       type: 'pie-chart',
       version: 1,
-      metadata: this.options
+      metadata: this.options,
     };
   }
 
@@ -64,8 +64,8 @@ export default class PieChartController extends Controller {
     return A([
       {
         request: this.multiDimensionRequest,
-        response: this.multiDimensionResponse
-      }
+        response: this.multiDimensionResponse,
+      },
     ]);
   }
 
@@ -76,43 +76,43 @@ export default class PieChartController extends Controller {
         field: 'network.dateTime',
         parameters: { grain: 'day' },
         type: 'timeDimension',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         cid: 'cid_uniqueIdentifier',
         field: 'uniqueIdentifier',
         parameters: {},
         type: 'metric',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         cid: 'cid_totalPageViews',
         field: 'totalPageViews',
         parameters: {},
         type: 'metric',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         cid: 'cid_revenue(currency=USD)',
         field: 'revenue',
         parameters: { currency: 'USD' },
         type: 'metric',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         cid: 'cid_age(field=desc)',
         field: 'age',
         parameters: { field: 'desc' },
         type: 'dimension',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         cid: 'cid_browser(field=desc)',
         field: 'browser',
         parameters: { field: 'desc' },
         type: 'dimension',
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ],
     filters: [
       {
@@ -121,13 +121,13 @@ export default class PieChartController extends Controller {
         operator: 'bet',
         type: 'timeDimension',
         values: ['2015-12-14 00:00:00.000', '2015-12-15 00:00:00.000'],
-        source: 'bardOne'
-      }
+        source: 'bardOne',
+      },
     ],
     sorts: [],
     limit: null,
     dataSource: 'bardOne',
-    table: 'table'
+    table: 'table',
   });
 
   multiDimensionResponse = NaviFactResponse.create({
@@ -138,7 +138,7 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Mozilla Firefox',
         uniqueIdentifier: 72620639,
         totalPageViews: 3072620639,
-        'revenue(currency=USD)': 23435193.77284
+        'revenue(currency=USD)': 23435193.77284,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -146,7 +146,7 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Google Chrome',
         uniqueIdentifier: 55191081,
         totalPageViews: 155191081,
-        'revenue(currency=USD)': 12498623.29348
+        'revenue(currency=USD)': 12498623.29348,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -154,7 +154,7 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Microsoft Internet Explorer',
         uniqueIdentifier: 55191081,
         totalPageViews: 3072620639,
-        'revenue(currency=USD)': 77348273.24588
+        'revenue(currency=USD)': 77348273.24588,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -162,7 +162,7 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Mozilla Firefox',
         uniqueIdentifier: 72620639,
         totalPageViews: 72620639,
-        'revenue(currency=USD)': 98350255.98241
+        'revenue(currency=USD)': 98350255.98241,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -170,7 +170,7 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Google Chrome',
         uniqueIdentifier: 72620639,
         totalPageViews: 72620639,
-        'revenue(currency=USD)': 63491243.7692
+        'revenue(currency=USD)': 63491243.7692,
       },
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -178,9 +178,9 @@ export default class PieChartController extends Controller {
         'browser(field=desc)': 'Mozilla Firefox',
         uniqueIdentifier: 72620639,
         totalPageViews: 72620639,
-        'revenue(currency=USD)': 35353239.99923
-      }
-    ]
+        'revenue(currency=USD)': 35353239.99923,
+      },
+    ],
   });
 
   multiDimensionOptions = {
@@ -191,31 +191,31 @@ export default class PieChartController extends Controller {
         dimensions: [
           {
             name: 'All Other,Mozilla Firefox',
-            values: { 'cid_age(field=desc)': 'All Other', 'cid_browser(field=desc)': 'Mozilla Firefox' }
+            values: { 'cid_age(field=desc)': 'All Other', 'cid_browser(field=desc)': 'Mozilla Firefox' },
           },
           {
             name: 'under 13,Google Chrome',
-            values: { 'cid_age(field=desc)': 'under 13', 'cid_browser(field=desc)': 'Google Chrome' }
+            values: { 'cid_age(field=desc)': 'under 13', 'cid_browser(field=desc)': 'Google Chrome' },
           },
           {
             name: '13 - 25,Microsoft Internet Explorer',
-            values: { 'cid_age(field=desc)': '13 - 25', 'cid_browser(field=desc)': 'Microsoft Internet Explorer' }
+            values: { 'cid_age(field=desc)': '13 - 25', 'cid_browser(field=desc)': 'Microsoft Internet Explorer' },
           },
           {
             name: '25 - 35,Mozilla Firefox',
-            values: { 'cid_age(field=desc)': '25 - 35', 'cid_browser(field=desc)': 'Mozilla Firefox' }
+            values: { 'cid_age(field=desc)': '25 - 35', 'cid_browser(field=desc)': 'Mozilla Firefox' },
           },
           {
             name: '35 - 45,Google Chrome',
-            values: { 'cid_age(field=desc)': '35 - 45', 'cid_browser(field=desc)': 'Google Chrome' }
+            values: { 'cid_age(field=desc)': '35 - 45', 'cid_browser(field=desc)': 'Google Chrome' },
           },
           {
             name: '35 - 45,Mozilla Firefox',
-            values: { 'cid_age(field=desc)': '35 - 45', 'cid_browser(field=desc)': 'Mozilla Firefox' }
-          }
-        ]
-      }
-    }
+            values: { 'cid_age(field=desc)': '35 - 45', 'cid_browser(field=desc)': 'Mozilla Firefox' },
+          },
+        ],
+      },
+    },
   };
 
   @computed('multiDimensionOptions')
@@ -223,7 +223,7 @@ export default class PieChartController extends Controller {
     return {
       type: 'pie-chart',
       version: 2,
-      metadata: this.multiDimensionOptions
+      metadata: this.multiDimensionOptions,
     };
   }
 

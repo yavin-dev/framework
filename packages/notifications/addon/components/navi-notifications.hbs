@@ -1,0 +1,8 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-notifications" ...attributes>
+  <div>
+    {{#animated-each this.flashMessages.queue use=this.transition as |flash|}}
+      <NaviNotifications::Alert @flash={{flash}} class="m-b-10" />
+    {{/animated-each}}
+  </div>
+</div>

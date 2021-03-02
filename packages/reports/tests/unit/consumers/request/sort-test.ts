@@ -14,19 +14,19 @@ const timeDimension = {
   type: 'timeDimension',
   field: 'network.dateTime',
   parameters: { grain: 'day' },
-  source: 'bardOne'
+  source: 'bardOne',
 };
 const metric = {
   type: 'metric',
   field: 'adClicks',
   parameters: {},
-  source: 'bardOne'
+  source: 'bardOne',
 };
 const dimension = {
   type: 'dimension',
   field: 'age',
   parameters: { field: 'id' },
-  source: 'bardOne'
+  source: 'bardOne',
 };
 
 let Consumer: SortConsumer;
@@ -34,13 +34,13 @@ let Store: StoreService;
 
 const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) });
 const getSorts = (request: RequestFragment) =>
-  Object.fromEntries(request.sorts.map(s => [s.canonicalName, s.direction]));
+  Object.fromEntries(request.sorts.map((s) => [s.canonicalName, s.direction]));
 
-module('Unit | Consumer | request sort', function(hooks) {
+module('Unit | Consumer | request sort', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     // Isolate test to focus on only this consumer
     const requestActionDispatcher = this.owner.lookup('service:request-action-dispatcher');
     requestActionDispatcher._registeredConsumers = [];
@@ -53,7 +53,7 @@ module('Unit | Consumer | request sort', function(hooks) {
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('UPSERT_SORT', function(assert) {
+  test('UPSERT_SORT', function (assert) {
     const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -61,7 +61,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       requestVersion: '2.0',
       columns: [timeDimension, metric, dimension],
       filters: [],
-      sorts: []
+      sorts: [],
     });
 
     const route = routeFor(request);
@@ -75,7 +75,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       {
         'network.dateTime(grain=day)': 'desc',
         adClicks: 'desc',
-        'age(field=id)': 'desc'
+        'age(field=id)': 'desc',
       },
       'The sorts are added'
     );
@@ -88,7 +88,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       {
         'network.dateTime(grain=day)': 'asc',
         adClicks: 'asc',
-        'age(field=id)': 'desc'
+        'age(field=id)': 'desc',
       },
       'The sorts are added'
     );
@@ -99,13 +99,13 @@ module('Unit | Consumer | request sort', function(hooks) {
       {
         'network.dateTime(grain=day)': 'asc',
         adClicks: 'asc',
-        'age(field=id)': 'asc'
+        'age(field=id)': 'asc',
       },
       'The sorts are updated'
     );
   });
 
-  test('REMOVE_SORT', function(assert) {
+  test('REMOVE_SORT', function (assert) {
     const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -113,7 +113,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       requestVersion: '2.0',
       columns: [timeDimension, metric, dimension],
       filters: [],
-      sorts: [{ ...metric, direction: 'asc' }]
+      sorts: [{ ...metric, direction: 'asc' }],
     });
 
     const route = routeFor(request);
@@ -124,7 +124,7 @@ module('Unit | Consumer | request sort', function(hooks) {
     assert.deepEqual(getSorts(request), {}, 'The adClicks sort is removed');
   });
 
-  test('REMOVE_COLUMN_FRAGMENT', function(assert) {
+  test('REMOVE_COLUMN_FRAGMENT', function (assert) {
     const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -132,7 +132,7 @@ module('Unit | Consumer | request sort', function(hooks) {
       requestVersion: '2.0',
       columns: [timeDimension],
       filters: [],
-      sorts: [{ ...timeDimension, direction: 'desc' }]
+      sorts: [{ ...timeDimension, direction: 'desc' }],
     });
 
     assert.deepEqual(getSorts(request), { 'network.dateTime(grain=day)': 'desc' }, 'The existing sort is correct');

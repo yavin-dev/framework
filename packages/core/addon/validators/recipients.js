@@ -13,10 +13,10 @@ export default BaseValidator.extend({
     if (value.length < 1 || value[0] === '') {
       return options.noRecipientsMsg;
     } else if (
-      !(isArray(value) && value.every(isPresent) && value.every(index => index.match(regularExpressions.email)))
+      !(isArray(value) && value.every(isPresent) && value.every((index) => index.match(regularExpressions.email)))
     ) {
       return options.invalidEmailMsg;
     }
     return true;
-  }
+  },
 });

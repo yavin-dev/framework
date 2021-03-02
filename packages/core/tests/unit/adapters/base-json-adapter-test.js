@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Adapter | Base Json Adapter', function(hooks) {
+module('Unit | Adapter | Base Json Adapter', function (hooks) {
   setupTest(hooks);
 
-  test('ajaxOptions - content', function(assert) {
+  test('ajaxOptions - content', function (assert) {
     const adapter = this.owner.lookup('adapter:base-json-adapter');
     const options = adapter.ajaxOptions('path', 'POST', { data: {}, contentType: 'application/vnd.api+json' });
     assert.deepEqual(
@@ -21,7 +21,7 @@ module('Unit | Adapter | Base Json Adapter', function(hooks) {
     assert.deepEqual(options.xhrFields, { withCredentials: true }, 'xhrFields includes withCredentials');
   });
 
-  test('ajaxOptions - no content', function(assert) {
+  test('ajaxOptions - no content', function (assert) {
     const adapter = this.owner.lookup('adapter:base-json-adapter');
     const options = adapter.ajaxOptions('path', 'DELETE');
     assert.deepEqual(

@@ -12,19 +12,19 @@ const WIDGET = {
   id: 1,
   title: 'Widget 1',
   visualization: {
-    type: 'my-test-visualization'
-  }
+    type: 'my-test-visualization',
+  },
 };
 
-module('Integration | Component | navi widget', function(hooks) {
+module('Integration | Component | navi widget', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.owner.register(
       'helper:route-action',
       buildHelper(() => undefined),
       {
-        instantiate: false
+        instantiate: false,
       }
     );
 
@@ -32,7 +32,7 @@ module('Integration | Component | navi widget', function(hooks) {
     this.owner.register('component:navi-visualizations/my-test-visualization', Component.extend());
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(8);
 
     this.set('widgetModel', WIDGET);
@@ -57,7 +57,7 @@ module('Integration | Component | navi widget', function(hooks) {
 
     this.set('taskInstance', {
       isSuccessful: true,
-      value: []
+      value: [],
     });
 
     assert.dom('.visualization-container').exists('visualization exists when task is finished');
@@ -65,14 +65,14 @@ module('Integration | Component | navi widget', function(hooks) {
     assert.dom('.loader-container').isNotVisible('loader is hidden when task is finished');
 
     this.set('taskInstance', {
-      isError: true
+      isError: true,
     });
 
     assert.dom('.error-container').isVisible('error is shown on rejected promise');
 
     this.set('taskInstance', {
       isError: true,
-      error: new ForbiddenError()
+      error: new ForbiddenError(),
     });
 
     assert
@@ -80,7 +80,7 @@ module('Integration | Component | navi widget', function(hooks) {
       .isVisible('Unauthorized view should be shown when receiving ForbiddenError');
   });
 
-  test('layout', async function(assert) {
+  test('layout', async function (assert) {
     assert.expect(4);
 
     this.set('widgetModel', WIDGET);
@@ -89,7 +89,7 @@ module('Integration | Component | navi widget', function(hooks) {
       column: 2,
       row: 1,
       height: 4,
-      width: 10
+      width: 10,
     });
 
     await render(hbs`
@@ -116,16 +116,16 @@ module('Integration | Component | navi widget', function(hooks) {
       .hasAttribute('data-gs-height', '4', 'given height is correctly translated to gridstack data attribute');
   });
 
-  test('visualization', async function(assert) {
+  test('visualization', async function (assert) {
     assert.expect(4);
 
     const data = arr([1, 2, 3]),
       metadata = {
-        xAxis: 'timeseries'
+        xAxis: 'timeseries',
       },
       taskInstance = {
         isSuccessful: true,
-        value: data
+        value: data,
       };
 
     this.set('widgetModel', {
@@ -134,8 +134,8 @@ module('Integration | Component | navi widget', function(hooks) {
       visualization: {
         type: 'my-test-visualization',
         version: 1,
-        metadata
-      }
+        metadata,
+      },
     });
 
     this.set('taskInstance', taskInstance);
@@ -161,7 +161,7 @@ module('Integration | Component | navi widget', function(hooks) {
           this.containerComponent.element.addEventListener('resizestop', () => {
             assert.ok(true, 'visualization can listen to resize events on containerComponent property');
           });
-        }
+        },
       })
     );
 
@@ -178,7 +178,7 @@ module('Integration | Component | navi widget', function(hooks) {
     triggerEvent(containerComponent.element, 'resizestop');
   });
 
-  test('delete action visibility', async function(assert) {
+  test('delete action visibility', async function (assert) {
     assert.expect(2);
 
     this.set('widgetModel', WIDGET);
@@ -197,7 +197,7 @@ module('Integration | Component | navi widget', function(hooks) {
     assert.dom('.navi-widget__delete-btn').isNotVisible('Delete action is hidden when user can not edit');
   });
 
-  test('filter warning icon', async function(assert) {
+  test('filter warning icon', async function (assert) {
     assert.expect(3);
 
     const data = arr([
@@ -207,23 +207,23 @@ module('Integration | Component | navi widget', function(hooks) {
             errors: [
               {
                 title: 'Invalid Filter',
-                detail: "Dimension A doesn't exist in this widget's logical table"
+                detail: "Dimension A doesn't exist in this widget's logical table",
               },
               {
                 title: 'Invalid Filter',
-                detail: "Dimension B doesn't exist in this widget's logical table"
-              }
-            ]
-          }
-        }
-      }
+                detail: "Dimension B doesn't exist in this widget's logical table",
+              },
+            ],
+          },
+        },
+      },
     ]);
 
     this.set('widgetModel', WIDGET);
 
     this.set('taskInstance', {
       isSuccessful: true,
-      value: data
+      value: data,
     });
 
     await render(hbs`
@@ -242,20 +242,20 @@ module('Integration | Component | navi widget', function(hooks) {
 
     //Tooltip contains all error messages separated by new line characters
     assertTooltipContent(assert, {
-      contentString: `Unable to apply filter(s):\nDimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`
+      contentString: `Unable to apply filter(s):\nDimension A doesn't exist in this widget's logical table\nDimension B doesn't exist in this widget's logical table`,
     });
 
     const newData = arr([
       {
         response: {
-          meta: {}
-        }
-      }
+          meta: {},
+        },
+      },
     ]);
 
     this.set('taskInstance', {
       isSuccessful: true,
-      value: newData
+      value: newData,
     });
 
     assert

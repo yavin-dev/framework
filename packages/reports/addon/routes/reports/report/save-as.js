@@ -37,10 +37,10 @@ export default Route.extend({
    */
   _onSaveAsSuccess() {
     // Show success notification
-    get(this, 'naviNotifications').add({
-      message: 'Save As Success. New Report created and saved!',
-      type: 'success',
-      timeout: 'medium'
+    this.naviNotifications.add({
+      title: 'Report saved',
+      style: 'success',
+      timeout: 'short',
     });
   },
 
@@ -53,10 +53,10 @@ export default Route.extend({
    */
   _onSaveAsFailure() {
     // Show error notification
-    get(this, 'naviNotifications').add({
-      message: 'OOPS! An error occurred while trying to "Save As" the report',
-      type: 'danger',
-      timeout: 'medium'
+    this.naviNotifications.add({
+      title: 'An error occurred while trying to save the report',
+      style: 'danger',
+      timeout: 'medium',
     });
   },
 
@@ -102,8 +102,8 @@ export default Route.extend({
     // Setting the title and author of report
     setProperties(clonedReportModel, {
       title: title.substring(0, 150),
-      author
+      author,
     });
     return clonedReportModel;
-  }
+  },
 });

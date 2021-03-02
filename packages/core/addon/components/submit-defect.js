@@ -10,5 +10,5 @@ import Component from '@ember/component';
 import layout from '../templates/components/submit-defect';
 
 export default Component.extend({
-  layout
+  layout,
 });

@@ -9,5 +9,5 @@ export default ReportViewController.extend({
   /*
    * @property {Controller} reportController
    */
-  reportController: controller('dashboards.dashboard.widgets.widget')
+  reportController: controller('dashboards.dashboard.widgets.widget'),
 });

@@ -1,8 +1,8 @@
 import PaginationUtils from 'navi-data/utils/pagination';
 import { module, test } from 'qunit';
 
-module('Unit - Utils - Pagination Utils', function() {
-  test('getPaginatedRecords', function(assert) {
+module('Unit - Utils - Pagination Utils', function () {
+  test('getPaginatedRecords', function (assert) {
     assert.expect(9);
 
     let records = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -38,7 +38,7 @@ module('Unit - Utils - Pagination Utils', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         PaginationUtils.getPaginatedRecords();
       },
       /allRecords param must be defined/,
@@ -46,7 +46,7 @@ module('Unit - Utils - Pagination Utils', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         PaginationUtils.getPaginatedRecords(records, '2');
       },
       /Limit must be of type number/,
@@ -54,7 +54,7 @@ module('Unit - Utils - Pagination Utils', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         PaginationUtils.getPaginatedRecords(records, 2, '3');
       },
       /Invalid page\/limit specified/,
@@ -62,7 +62,7 @@ module('Unit - Utils - Pagination Utils', function() {
     );
 
     assert.throws(
-      function() {
+      function () {
         PaginationUtils.getPaginatedRecords(records, undefined, 2);
       },
       /Invalid page\/limit specified/,

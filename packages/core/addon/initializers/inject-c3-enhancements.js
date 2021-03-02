@@ -21,7 +21,7 @@ export function initialize() {
    * @method show
    * @override
    */
-  c3fn.show = function(targetIds, options) {
+  c3fn.show = function (targetIds, options) {
     let $$ = this.internal,
       targets;
 
@@ -35,7 +35,7 @@ export function initialize() {
       .transition()
       .style('display', 'initial')
       .style('opacity', 1, 'important')
-      .call($$.endall, function() {
+      .call($$.endall, function () {
         targets.style('opacity', null).style('opacity', 1);
       });
 
@@ -46,7 +46,7 @@ export function initialize() {
     $$.redraw({
       withUpdateOrgXDomain: true,
       withUpdateXDomain: true,
-      withLegend: true
+      withLegend: true,
     });
   };
 
@@ -57,7 +57,7 @@ export function initialize() {
    * @method hide
    * @override
    */
-  c3fn.hide = function(targetIds, options) {
+  c3fn.hide = function (targetIds, options) {
     let $$ = this.internal,
       targets;
 
@@ -70,7 +70,7 @@ export function initialize() {
     targets
       .transition()
       .style('opacity', 0, 'important')
-      .call($$.endall, function() {
+      .call($$.endall, function () {
         targets.style('opacity', null).style('opacity', 0);
         targets.style('display', 'none');
       });
@@ -82,7 +82,7 @@ export function initialize() {
     $$.redraw({
       withUpdateOrgXDomain: true,
       withUpdateXDomain: true,
-      withLegend: true
+      withLegend: true,
     });
   };
 
@@ -97,7 +97,7 @@ export function initialize() {
    * @param {String} id - series id to determine class for
    * @returns {String} classes to be applied to chart elements of a given series
    */
-  c3infn.classTarget = function(id) {
+  c3infn.classTarget = function (id) {
     let additionalClass = this.config.data_classes[id] || '';
     return this.generateClass(c3infn.CLASS.target, id) + ' ' + additionalClass;
   };
@@ -114,7 +114,7 @@ export function initialize() {
    * @returns {Object} data with `name` and `seriesIndex` property filled in
    */
   const addNameSuper = c3infn.addName;
-  c3infn.addName = function(data) {
+  c3infn.addName = function (data) {
     let seriesIds = A(this.data.targets).mapBy('id'),
       seriesIndex = seriesIds.indexOf(data.id);
 
@@ -134,7 +134,7 @@ export function initialize() {
    * @param {String} forced return value
    * @return {String}
    */
-  c3infn.getArc = function(d, withoutUpdate, force) {
+  c3infn.getArc = function (d, withoutUpdate, force) {
     if (this.config === null) {
       return 'M 0 0';
     }
@@ -148,12 +148,12 @@ export function initialize() {
    * @param {Array} json - array of json data, including 'x' key
    * @returns given json
    */
-  c3infn.convertJsonToData = function(json) {
+  c3infn.convertJsonToData = function (json) {
     // Always use `x` property as the x value
     this.config.data_x = 'x';
 
     // Support x categories being nested in the data
-    this.config.axis_x_categories = json.map(function(row) {
+    this.config.axis_x_categories = json.map(function (row) {
       return row.x.displayValue;
     });
 
@@ -166,7 +166,7 @@ export function initialize() {
    * @override
    * @returns false
    */
-  c3infn.isCustomX = function() {
+  c3infn.isCustomX = function () {
     return false;
   };
 
@@ -180,7 +180,7 @@ export function initialize() {
    * @returns {Object} - the top and left offset positions for the tooltip
    *
    */
-  c3infn.tooltipPosition = function(dataToShow, tWidth, tHeight, element) {
+  c3infn.tooltipPosition = function (dataToShow, tWidth, tHeight, element) {
     const { config, d3 } = this;
     const forArc = this.hasArcType();
     const [mouseX, mouseY] = d3.mouse(element);
@@ -225,5 +225,5 @@ export function initialize() {
 
 export default {
   name: 'inject-c3-enhancements',
-  initialize
+  initialize,
 };

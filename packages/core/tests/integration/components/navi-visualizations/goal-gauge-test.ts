@@ -23,11 +23,11 @@ interface TestContext extends Context, ComponentArgs {
   request: RequestFragment;
 }
 
-module('Integration | Component | navi-visualization/goal gauge ', function(hooks) {
+module('Integration | Component | navi-visualization/goal gauge ', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     const MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
@@ -41,24 +41,24 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'pageViews',
           parameters: {},
           alias: 'Page Views',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardTwo',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set(
       'model',
       arr([
-        { request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 3030000000 }], meta: {} }) }
+        { request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 3030000000 }], meta: {} }) },
       ])
     );
   });
 
-  test('goal-gauge renders correctly', async function(this: TestContext, assert) {
+  test('goal-gauge renders correctly', async function (this: TestContext, assert) {
     assert.expect(6);
 
     await render(TEMPLATE);
@@ -76,7 +76,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.goal-title').hasText('310M Goal', 'goal title is correctly displayed');
   });
 
-  test('goal-gauge renders correctly with multi datasource', async function(this: TestContext, assert) {
+  test('goal-gauge renders correctly with multi datasource', async function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
@@ -91,14 +91,14 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'available',
           parameters: {},
           alias: '',
-          source: 'bardTwo'
-        }
+          source: 'bardTwo',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardTwo',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     this.set(
@@ -117,14 +117,14 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'available',
           parameters: {},
           alias: 'Number Available',
-          source: 'bardTwo'
-        }
+          source: 'bardTwo',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     this.set(
@@ -136,7 +136,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.metric-title').hasText('Number Available', 'the aliased metric title is correctly displayed');
   });
 
-  test('goal-gauge renders correctly with unit', async function(this: TestContext, assert) {
+  test('goal-gauge renders correctly with unit', async function (this: TestContext, assert) {
     assert.expect(6);
 
     this.set(
@@ -159,7 +159,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.goal-title').hasText('100% Goal', 'goal title is correctly displayed');
   });
 
-  test('goal-gauge renders correctly with prefix', async function(this: TestContext, assert) {
+  test('goal-gauge renders correctly with prefix', async function (this: TestContext, assert) {
     this.set(
       'model',
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
@@ -180,7 +180,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.goal-title').hasText('$100 Goal', 'goal title is correctly displayed');
   });
 
-  test('goal-gauge title class is based on actualValue vs baselineValue', async function(this: TestContext, assert) {
+  test('goal-gauge title class is based on actualValue vs baselineValue', async function (this: TestContext, assert) {
     assert.expect(3);
 
     const store = this.owner.lookup('service:store') as StoreService;
@@ -193,14 +193,14 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'm1',
           parameters: {},
           alias: '',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 150 }] }) }]));
@@ -217,7 +217,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.ok(!!findAll('.value-title.neg').length, 'neg class is added when actualValue equals baselineValue');
   });
 
-  test('goal-guage with parameterized metric', async function(this: TestContext, assert) {
+  test('goal-guage with parameterized metric', async function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     this.request = store.createFragment('bard-request-v2/request', {
       table: null,
@@ -225,29 +225,29 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
         {
           field: 'revenue',
           parameters: {
-            currency: 'USD'
+            currency: 'USD',
           },
           cid: 'cid_revenue',
           type: 'metric',
           alias: 'Revenue (USD)',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set('options', {
       baselineValue: 200,
       goalValue: 500,
-      metricCid: 'cid_revenue'
+      metricCid: 'cid_revenue',
     });
     this.set(
       'model',
       arr([
-        { request: this.request, response: NaviFactResponse.create({ rows: [{ 'revenue(currency=USD)': '300' }] }) }
+        { request: this.request, response: NaviFactResponse.create({ rows: [{ 'revenue(currency=USD)': '300' }] }) },
       ])
     );
 
@@ -264,7 +264,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.metric-title').hasText('Revenue (USD)', 'parameterized metric title is correctly displayed');
   });
 
-  test('goal-gauge value & min/max precision', async function(this: TestContext, assert) {
+  test('goal-gauge value & min/max precision', async function (this: TestContext, assert) {
     assert.expect(6);
 
     const store = this.owner.lookup('service:store') as StoreService;
@@ -277,19 +277,19 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'm1',
           parameters: {},
           alias: '',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set('options', {
       baselineValue: 1234567,
       goalValue: 1234567,
-      metricCid: 'cid_m1'
+      metricCid: 'cid_m1',
     });
     this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 1234567 }] }) }]));
 
@@ -304,7 +304,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     this.set('options', {
       baselineValue: 9123456789,
       goalValue: 9123456789,
-      metricCid: 'cid_m1'
+      metricCid: 'cid_m1',
     });
     this.set(
       'model',
@@ -319,7 +319,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
     assert.dom('.c3-chart-arcs-gauge-max').hasText('9.123B', 'max gauge label has a precision of 3 when over 1B');
   });
 
-  test('goal-gauge renders custom metric title', async function(this: TestContext, assert) {
+  test('goal-gauge renders custom metric title', async function (this: TestContext, assert) {
     assert.expect(1);
 
     const store = this.owner.lookup('service:store') as StoreService;
@@ -332,27 +332,27 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'm1',
           parameters: {},
           alias: 'A real good metric',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'cid_m1'
+      metricCid: 'cid_m1',
     });
     await render(TEMPLATE);
 
     assert.dom('.metric-title').hasText('A real good metric', 'custom metric title is correctly displayed');
   });
 
-  test('cleanup', async function(this: TestContext, assert) {
+  test('cleanup', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const store = this.owner.lookup('service:store') as StoreService;
@@ -365,20 +365,20 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
           field: 'm1',
           parameters: {},
           alias: 'A real great metric',
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       filters: [],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'cid_m1'
+      metricCid: 'cid_m1',
     });
 
     await render(TEMPLATE);
@@ -392,7 +392,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       .exists({ count: 3 }, 'on rerender render, 3 title tspans are present');
   });
 
-  test('goal-gauge - missing metric', async function(this: TestContext, assert) {
+  test('goal-gauge - missing metric', async function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     this.request = store.createFragment('bard-request-v2/request', {
       table: null,
@@ -401,13 +401,13 @@ module('Integration | Component | navi-visualization/goal gauge ', function(hook
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
     this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 0,
       goalValue: 1,
-      metricCid: undefined
+      metricCid: undefined,
     });
     await render(TEMPLATE);
     assert.dom('.metric-title').hasNoText('metric title is empty when a metric is missing');

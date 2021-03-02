@@ -4,14 +4,14 @@ import {
   PARAM_DATE_FORMAT_STRING,
   getLastDayOfGrain,
   getFirstDayEpochForGrain,
-  getPeriodForGrain
+  getPeriodForGrain,
 } from 'navi-data/utils/date';
 import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';
 
-module('Unit | Utils | DateUtils', function() {
-  test('getFirstDayEpochForGrain - Epoch date as mid of DateTimePeriod', function(assert) {
+module('Unit | Utils | DateUtils', function () {
+  test('getFirstDayEpochForGrain - Epoch date as mid of DateTimePeriod', function (assert) {
     const dateFormat = 'YYYY-MM-DD';
     const originalEpoch = config.navi.dataEpoch;
 
@@ -41,7 +41,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = originalEpoch;
   });
 
-  test('getFirstDayEpochForGrain - Epoc date as start of DateTimePeriod', function(assert) {
+  test('getFirstDayEpochForGrain - Epoc date as start of DateTimePeriod', function (assert) {
     const dateFormat = 'YYYY-MM-DD';
     const originalEpoch = config.navi.dataEpoch;
 
@@ -81,7 +81,7 @@ module('Unit | Utils | DateUtils', function() {
     config.navi.dataEpoch = originalEpoch;
   });
 
-  test('getFirstDayOfGrain - unit tests', function(assert) {
+  test('getFirstDayOfGrain - unit tests', function (assert) {
     const dateFormat = API_DATE_FORMAT_STRING;
 
     let expectedDate1 = moment('2014-10-13').format(dateFormat);
@@ -91,18 +91,14 @@ module('Unit | Utils | DateUtils', function() {
       'getFirstDayOfGrain returned: ' + expectedDate1 + ' as expected'
     );
 
-    let expectedDate2 = moment()
-      .startOf('isoWeek')
-      .format(dateFormat);
+    let expectedDate2 = moment().startOf('isoWeek').format(dateFormat);
     assert.equal(
       getFirstDayOfGrain(moment(), 'isoWeek'),
       expectedDate2,
       'getFirstDayOfGrain returned: ' + expectedDate2 + ' as expected'
     );
 
-    let expectedDate3 = moment()
-      .startOf('month')
-      .format(dateFormat);
+    let expectedDate3 = moment().startOf('month').format(dateFormat);
     assert.equal(
       getFirstDayOfGrain(moment(), 'month'),
       expectedDate3,
@@ -116,9 +112,7 @@ module('Unit | Utils | DateUtils', function() {
       'getFirstDayOfGrain returned: ' + expectedDate4 + ' as expected'
     );
 
-    let expectedDate5 = moment()
-      .startOf('year')
-      .format(dateFormat);
+    let expectedDate5 = moment().startOf('year').format(dateFormat);
     assert.equal(
       getFirstDayOfGrain(moment(), 'year'),
       expectedDate5,
@@ -132,9 +126,7 @@ module('Unit | Utils | DateUtils', function() {
       'getFirstDayOfGrain returned: ' + expectedDate6 + ' as expected'
     );
 
-    let expectedDate7 = moment()
-      .startOf('day')
-      .format(dateFormat);
+    let expectedDate7 = moment().startOf('day').format(dateFormat);
     assert.equal(
       getFirstDayOfGrain(moment(), 'day'),
       expectedDate7,
@@ -149,7 +141,7 @@ module('Unit | Utils | DateUtils', function() {
     );
   });
 
-  test('getLastDayOfGrain - unit tests', function(assert) {
+  test('getLastDayOfGrain - unit tests', function (assert) {
     const dateFormat = API_DATE_FORMAT_STRING;
     const dateFormat1 = PARAM_DATE_FORMAT_STRING;
 
@@ -160,18 +152,14 @@ module('Unit | Utils | DateUtils', function() {
       'getLastDayOfGrain returned: ' + expectedDate1 + ' as expected'
     );
 
-    let expectedDate2 = moment()
-      .endOf('isoWeek')
-      .format(dateFormat);
+    let expectedDate2 = moment().endOf('isoWeek').format(dateFormat);
     assert.equal(
       getLastDayOfGrain(moment(), 'isoWeek'),
       expectedDate2,
       'getLastDayOfGrain returned: ' + expectedDate2 + ' as expected'
     );
 
-    let expectedDate3 = moment()
-      .endOf('month')
-      .format(dateFormat);
+    let expectedDate3 = moment().endOf('month').format(dateFormat);
     assert.equal(
       getLastDayOfGrain(moment(), 'month'),
       expectedDate3,
@@ -185,9 +173,7 @@ module('Unit | Utils | DateUtils', function() {
       'getLastDayOfGrain returned: ' + expectedDate4 + ' as expected'
     );
 
-    let expectedDate5 = moment()
-      .endOf('year')
-      .format(dateFormat);
+    let expectedDate5 = moment().endOf('year').format(dateFormat);
     assert.equal(
       getLastDayOfGrain(moment(), 'year'),
       expectedDate5,
@@ -201,9 +187,7 @@ module('Unit | Utils | DateUtils', function() {
       'getLastDayOfGrain returned: ' + expectedDate6 + ' as expected'
     );
 
-    let expectedDate7 = moment()
-      .endOf('day')
-      .format(dateFormat);
+    let expectedDate7 = moment().endOf('day').format(dateFormat);
     assert.equal(
       getLastDayOfGrain(moment(), 'day'),
       expectedDate7,
@@ -218,7 +202,7 @@ module('Unit | Utils | DateUtils', function() {
     );
   });
 
-  test('getPeriodForGrain', function(assert) {
+  test('getPeriodForGrain', function (assert) {
     assert.equal(getPeriodForGrain('day'), 'day', '`getPeriodForGrain` returns correct period for `day`');
     assert.equal(getPeriodForGrain('week'), 'week', '`getPeriodForGrain` returns correct period for `week`');
     assert.equal(getPeriodForGrain('isoWeek'), 'week', '`getPeriodForGrain` returns correct period for `isoWeek`');

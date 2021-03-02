@@ -16,7 +16,7 @@ export default EmberObject.extend({
   isEqual(other) {
     const idField = this.constructor.identifierField || 'id';
     return this[idField] === other[idField];
-  }
+  },
 }).reopenClass({
   /**
    * @property {String} identifierField - name of the dimension identifier field
@@ -34,5 +34,5 @@ export default EmberObject.extend({
    */
   toString() {
     return `dimension model factory: ${this.dimensionName}`;
-  }
+  },
 });

@@ -4,10 +4,10 @@ import { setupTest } from 'ember-qunit';
 
 let Keg, Record1, Record2, Record3, RawRecord1, RawRecord2, RawRecord3, RecordFactory;
 
-module('Unit | Service | keg', function(hooks) {
+module('Unit | Service | keg', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Keg = this.owner.lookup('service:keg');
 
     this.owner.register('model:record', EmberObject.extend());
@@ -22,7 +22,7 @@ module('Unit | Service | keg', function(hooks) {
     Record3 = RecordFactory.create(RawRecord3);
   });
 
-  test('_getFactoryForType returns factory for a model type', function(assert) {
+  test('_getFactoryForType returns factory for a model type', function (assert) {
     assert.equal(
       Keg._getFactoryForType('record'),
       RecordFactory.class,
@@ -37,7 +37,7 @@ module('Unit | Service | keg', function(hooks) {
     );
   });
 
-  test('_getRecordKegForType returns a keg for a type', function(assert) {
+  test('_getRecordKegForType returns a keg for a type', function (assert) {
     const recordKeg = Keg._getRecordKegForType('record');
     assert.deepEqual(recordKeg.toArray(), [], '_getRecordKegForType returns an empty array when called the first time');
 
@@ -51,7 +51,7 @@ module('Unit | Service | keg', function(hooks) {
     );
   });
 
-  test('_getIdIndexForType returns an id index for a type', function(assert) {
+  test('_getIdIndexForType returns an id index for a type', function (assert) {
     const idIndex = Keg._getIdIndexForType('record');
     assert.deepEqual(idIndex, {}, '_getIdIndexForType returns an empty object when called the first time');
 
@@ -65,7 +65,7 @@ module('Unit | Service | keg', function(hooks) {
     );
   });
 
-  test('reset clears all state of the keg', function(assert) {
+  test('reset clears all state of the keg', function (assert) {
     set(Keg, 'recordKegs', { foo: 'bar' });
     set(Keg, 'idIndexes', { foo: 'bar' });
 
@@ -76,7 +76,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(Keg.idIndexes, {}, 'reset resets idIndexes');
   });
 
-  test('reset by type clears one model type from the keg', function(assert) {
+  test('reset by type clears one model type from the keg', function (assert) {
     set(Keg, 'recordKegs', { foo: 'bar', ham: 'spam' });
     set(Keg, 'idIndexes', { foo: 'bar', ham: 'spam' });
 
@@ -87,7 +87,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(Keg.idIndexes, { foo: {}, ham: 'spam' }, 'resets foo type, but leaves ham alone in idIndexes');
   });
 
-  test('push inserts a record into the keg', function(assert) {
+  test('push inserts a record into the keg', function (assert) {
     const pushedRecord = Keg.push('record', RawRecord1);
     assert.ok(pushedRecord instanceof RecordFactory.class, 'push returns an instance of the given type');
 
@@ -105,7 +105,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(pushedRecord, foundRecord, 'The pushed record is the same as the found record');
   });
 
-  test('insert pushes a record into the keg', function(assert) {
+  test('insert pushes a record into the keg', function (assert) {
     const insertedRecord = Keg.insert('record', Record1);
     assert.equal(Record1, insertedRecord, '`insert` returns the inserted record');
 
@@ -113,7 +113,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(Record1, foundRecord, 'after inserting a record it can be found');
   });
 
-  test('pushing a record with an existing id update the record in the keg', function(assert) {
+  test('pushing a record with an existing id update the record in the keg', function (assert) {
     //Insert initial record
     const pushedRecord = Keg.push('record', RawRecord1);
 
@@ -137,7 +137,7 @@ module('Unit | Service | keg', function(hooks) {
     );
   });
 
-  test('inserting a record with an existing id update the record in the keg', function(assert) {
+  test('inserting a record with an existing id update the record in the keg', function (assert) {
     //Insert initial record
     const insertedRecord = Keg.insert('record', Record1);
 
@@ -156,20 +156,20 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(insertedRecord, fetchedRecord, 'After update fetched record still the same object');
   });
 
-  test('push can take an explicit modelFactory', function(assert) {
+  test('push can take an explicit modelFactory', function (assert) {
     const pushedRecord = Keg.push('notRecord', RawRecord1, {
-      modelFactory: 'record'
+      modelFactory: 'record',
     });
 
     assert.ok(pushedRecord instanceof RecordFactory.class, 'push returns an object instance of the explicit type');
   });
 
-  test('pushMany inserts many records into the keg', function(assert) {
+  test('pushMany inserts many records into the keg', function (assert) {
     const rawRecords = [RawRecord1, RawRecord2];
     const pushedRecords = Keg.pushMany('record', rawRecords);
 
     assert.ok(
-      pushedRecords.every(rec => rec instanceof RecordFactory.class),
+      pushedRecords.every((rec) => rec instanceof RecordFactory.class),
       'pushMany returns an array of instances of the given type'
     );
 
@@ -197,13 +197,13 @@ module('Unit | Service | keg', function(hooks) {
       Keg.idIndexes.record,
       {
         'navi.1': pushedRecords[0],
-        'navi.2': pushedRecords[1]
+        'navi.2': pushedRecords[1],
       },
       'The pushed records are registered in idIndexes'
     );
   });
 
-  test('insertMany pushes many records into the keg', function(assert) {
+  test('insertMany pushes many records into the keg', function (assert) {
     const records = [Record1, Record2];
     const pushedRecords = Keg.insertMany('record', records);
     assert.ok(
@@ -226,19 +226,19 @@ module('Unit | Service | keg', function(hooks) {
       Keg.idIndexes.record,
       {
         'navi.1': records[0],
-        'navi.2': records[1]
+        'navi.2': records[1],
       },
       'The inserted records are registered in idIndexes'
     );
   });
 
-  test('pushMany updates keg records when provided records have the same id', function(assert) {
+  test('pushMany updates keg records when provided records have the same id', function (assert) {
     const firstPush = Keg.pushMany('record', [RawRecord1, RawRecord2]);
 
     const secondPush = Keg.pushMany('record', [
       { id: 1, description: 'updated' },
       RawRecord3,
-      { id: 4, description: 'partially loaded record', partialData: true }
+      { id: 4, description: 'partially loaded record', partialData: true },
     ]);
 
     assert.deepEqual(
@@ -265,8 +265,8 @@ module('Unit | Service | keg', function(hooks) {
     const thirdPush = Keg.pushMany('record', [
       {
         id: 4,
-        description: 'Fully loaded record'
-      }
+        description: 'Fully loaded record',
+      },
     ]);
 
     assert.deepEqual(
@@ -283,13 +283,13 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(secondPush[2], thirdPush[0], 'After update the returned record is the same object');
   });
 
-  test('insertMany updates keg records when provided records have the same id', function(assert) {
+  test('insertMany updates keg records when provided records have the same id', function (assert) {
     const firstPush = Keg.insertMany('record', [Record1, Record2]);
 
     const secondPush = Keg.insertMany('record', [
       RecordFactory.create({ ...RawRecord1, description: 'updated' }),
       Record3,
-      RecordFactory.create({ id: 4, description: 'partially loaded record', partialData: true })
+      RecordFactory.create({ id: 4, description: 'partially loaded record', partialData: true }),
     ]);
 
     assert.deepEqual(
@@ -329,24 +329,24 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(secondPush[2], thirdPush[0], 'After update the returned record is the same object');
   });
 
-  test('pushMany can take an explicit modelFactory', function(assert) {
+  test('pushMany can take an explicit modelFactory', function (assert) {
     const pushedRecords = Keg.pushMany('notRecord', [RawRecord1, RawRecord2], {
-      modelFactory: 'record'
+      modelFactory: 'record',
     });
 
     assert.ok(
-      pushedRecords.every(rec => {
+      pushedRecords.every((rec) => {
         return rec instanceof RecordFactory.class;
       }),
       'pushMany returns an array of instances of the explicit type'
     );
   });
 
-  test('pushMany uses identifierField in factory if available', function(assert) {
+  test('pushMany uses identifierField in factory if available', function (assert) {
     const recordFactory = this.owner.factoryFor('model:record').class;
 
     recordFactory.reopenClass({
-      identifierField: 'description'
+      identifierField: 'description',
     });
 
     const rawRecords = [RawRecord1, RawRecord2];
@@ -356,7 +356,7 @@ module('Unit | Service | keg', function(hooks) {
       Keg.idIndexes.record,
       {
         'navi.foo': pushedRecords[0],
-        'navi.bar': pushedRecords[1]
+        'navi.bar': pushedRecords[1],
       },
       'The pushed records are registered in idIndexes using identifierField defined in factory'
     );
@@ -368,7 +368,7 @@ module('Unit | Service | keg', function(hooks) {
     );
   });
 
-  test('insertMany with identifierField option', function(assert) {
+  test('insertMany with identifierField option', function (assert) {
     const records = [Record1, Record2];
     Keg.insertMany('record', records, { identifierField: 'description' });
 
@@ -376,7 +376,7 @@ module('Unit | Service | keg', function(hooks) {
       Keg.idIndexes.record,
       {
         'navi.foo': records[0],
-        'navi.bar': records[1]
+        'navi.bar': records[1],
       },
       'The inserted records are registered in idIndexes using the `identifierField` option'
     );
@@ -384,7 +384,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(Keg.getById('record', 'foo'), records[0], 'Record1 is fetched using the `identifierField`');
   });
 
-  test('getById can be used to find a record by id', function(assert) {
+  test('getById can be used to find a record by id', function (assert) {
     Keg.push('record', RawRecord1);
 
     const foundRecord = Keg.getById('record', 1);
@@ -401,7 +401,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.equal(missingType, undefined, 'getById returns undefined when given a type that is not present');
   });
 
-  test('getBy can be used to search by fields when an object is passed', function(assert) {
+  test('getBy can be used to search by fields when an object is passed', function (assert) {
     Keg.pushMany('record', [RawRecord1, RawRecord2, RawRecord3]);
 
     const foundRecords1 = Keg.getBy('record', { description: 'foo' });
@@ -412,7 +412,7 @@ module('Unit | Service | keg', function(hooks) {
 
     let foundRecords3 = Keg.getBy('record', {
       description: 'bar',
-      meta: 'keg'
+      meta: 'keg',
     });
     assert.deepEqual(
       foundRecords3.mapBy('id'),
@@ -422,7 +422,7 @@ module('Unit | Service | keg', function(hooks) {
 
     let foundRecords4 = Keg.getBy('record', {
       description: 'bar',
-      meta: 'foo'
+      meta: 'foo',
     });
     assert.deepEqual(foundRecords4.mapBy('id'), [], 'getBy returns an empty array when not all key-value pairs match');
 
@@ -447,15 +447,15 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(missingType, [], 'getBy returns an empty array when given a type that is not present');
   });
 
-  test('getBy can be used to search by fields when a function is passed', function(assert) {
+  test('getBy can be used to search by fields when a function is passed', function (assert) {
     Keg.pushMany('record', [RawRecord1, RawRecord2, RawRecord3]);
 
-    const foundRecords1 = Keg.getBy('record', rec => {
+    const foundRecords1 = Keg.getBy('record', (rec) => {
       return rec.id < 2;
     });
     assert.deepEqual(foundRecords1.mapBy('id'), [1], 'getBy returns an array when a single record was found');
 
-    const foundRecords2 = Keg.getBy('record', rec => {
+    const foundRecords2 = Keg.getBy('record', (rec) => {
       return rec.description === 'bar';
     });
     assert.deepEqual(foundRecords2.mapBy('id'), [2, 3], 'getBy returns an array when a several record was found');
@@ -464,7 +464,7 @@ module('Unit | Service | keg', function(hooks) {
     assert.deepEqual(foundRecords3.mapBy('id'), [], 'getBy returns an empty array when no records were found');
   });
 
-  test('all returns all records for a type', function(assert) {
+  test('all returns all records for a type', function (assert) {
     assert.deepEqual(
       Keg.all('record').toArray(),
       [],
@@ -479,7 +479,7 @@ module('Unit | Service | keg', function(hooks) {
     );
 
     const unregisteredTypeRecords = Keg.pushMany('unregisteredType', [RawRecord1, RawRecord2, RawRecord3], {
-      modelFactory: Object
+      modelFactory: Object,
     });
     assert.deepEqual(
       Keg.all('unregisteredType').toArray(),

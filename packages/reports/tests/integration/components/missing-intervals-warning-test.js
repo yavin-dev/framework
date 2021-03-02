@@ -5,10 +5,10 @@ import { set } from '@ember/object';
 import hbs from 'htmlbars-inline-precompile';
 import { animationsSettled } from 'ember-animated/test-support';
 
-module('Integration | Component | missing intervals warning', function(hooks) {
+module('Integration | Component | missing intervals warning', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('missing intervals present', async function(assert) {
+  test('missing intervals present', async function (assert) {
     assert.expect(6);
 
     let response = {
@@ -16,9 +16,9 @@ module('Integration | Component | missing intervals warning', function(hooks) {
         missingIntervals: [
           '2018-11-10 00:00:00.000/2018-11-13 00:00:00.000',
           '2018-11-14 00:00:00.000/2018-11-16 00:00:00.000',
-          '2018-11-19 00:00:00.000/2018-11-20 00:00:00.000'
-        ]
-      }
+          '2018-11-19 00:00:00.000/2018-11-20 00:00:00.000',
+        ],
+      },
     };
     set(this, 'response', response);
     set(this, 'onDetailsToggle', () => {});
@@ -47,7 +47,7 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       .isVisible('The details section expands when the component is clicked');
 
     assert.deepEqual(
-      findAll('.missing-intervals-warning__date-interval').map(e => e.textContent),
+      findAll('.missing-intervals-warning__date-interval').map((e) => e.textContent),
       ['2018/11/10 - 2018/11/12', '2018/11/14 - 2018/11/15', '2018/11/19'],
       'The missing intervals are displayed correctly'
     );
@@ -67,7 +67,7 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       .isNotVisible('The details section collapses when the component is clicked');
   });
 
-  test('no missing intervals', async function(assert) {
+  test('no missing intervals', async function (assert) {
     assert.expect(1);
 
     let response = { meta: {} };
@@ -82,7 +82,7 @@ module('Integration | Component | missing intervals warning', function(hooks) {
       .isNotVisible('The component is not visible when there are no missing intervals');
   });
 
-  test('onDetailsToggle', async function(assert) {
+  test('onDetailsToggle', async function (assert) {
     assert.expect(1);
 
     let response = {
@@ -90,9 +90,9 @@ module('Integration | Component | missing intervals warning', function(hooks) {
         missingIntervals: [
           '2018-11-10 00:00:00.000/2018-11-13 00:00:00.000',
           '2018-11-14 00:00:00.000/2018-11-16 00:00:00.000',
-          '2018-11-19 00:00:00.000/2018-11-20 00:00:00.000'
-        ]
-      }
+          '2018-11-19 00:00:00.000/2018-11-20 00:00:00.000',
+        ],
+      },
     };
     set(this, 'response', response);
     set(this, 'onDetailsToggle', () =>

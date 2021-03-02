@@ -5,22 +5,22 @@ import { module, test } from 'qunit';
 const TABLE_ITEMS = [
   {
     id: 'eid',
-    name: 'EventId'
+    name: 'EventId',
   },
   {
     id: 'nw',
-    name: 'Network'
-  }
+    name: 'Network',
+  },
 ];
 
 let CollectionSelector;
 
-module('Unit | Mixin | Collection Selector', function(hooks) {
-  hooks.beforeEach(function() {
+module('Unit | Mixin | Collection Selector', function (hooks) {
+  hooks.beforeEach(function () {
     CollectionSelector = EmberObject.extend(CollectionSelectorMixin);
   });
 
-  test('Testing initialization of mixin object', function(assert) {
+  test('Testing initialization of mixin object', function (assert) {
     assert.expect(3);
 
     assert.throws(
@@ -43,7 +43,7 @@ module('Unit | Mixin | Collection Selector', function(hooks) {
       () => {
         CollectionSelector.create({
           items: TABLE_ITEMS.concat(TABLE_ITEMS[1]),
-          selectedItem: { id: 'foo', name: 'Foo Name' }
+          selectedItem: { id: 'foo', name: 'Foo Name' },
         });
       },
       /^Error.*Items array should be unique$/,

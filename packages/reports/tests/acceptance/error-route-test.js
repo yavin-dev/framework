@@ -5,11 +5,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
 import config from 'ember-get-config';
 
-module('Acceptance | Navi Report | Error Route', function(hooks) {
+module('Acceptance | Navi Report | Error Route', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('Error data request', async function(assert) {
+  test('Error data request', async function (assert) {
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
       '/data/*path',
@@ -26,13 +26,13 @@ module('Acceptance | Navi Report | Error Route', function(hooks) {
       );
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__name').map(e => e.textContent),
+      findAll('.navi-column-config-item__name').map((e) => e.textContent),
       ['Date Time (day)', 'Ad Clicks', 'Nav Link Clicks'],
       'The column config is displayed in the error route'
     );
   });
 
-  test('Rate Limited data request', async function(assert) {
+  test('Rate Limited data request', async function (assert) {
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
       '/data/*path',

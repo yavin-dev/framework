@@ -47,7 +47,7 @@ export default class PowerSelectBulkImportTrigger extends Trigger {
     // Get pasted data via clipboard API
     const clipboardData = pasteEvent.clipboardData;
     const pastedData = clipboardData?.getData('Text') || '';
-    const queryIds = pastedData.split(BULK_IMPORT_DELIMITER).map(s => s.trim());
+    const queryIds = pastedData.split(BULK_IMPORT_DELIMITER).map((s) => s.trim());
     const isBulkImportRequest = queryIds.length > 1;
 
     if (isBulkImportRequest) {

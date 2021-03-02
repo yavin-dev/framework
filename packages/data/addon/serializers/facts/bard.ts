@@ -47,7 +47,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
    * @param request - request v2 object
    */
   private processResponse(payload: ResponseV1, request: RequestV2): NaviFactResponse {
-    const filiFields = request.columns.map(column => this.getFiliField(column));
+    const filiFields = request.columns.map((column) => this.getFiliField(column));
     const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
       // TODO rename with generic canonicalizeColumn
       canonicalizeMetric({ metric, parameters })
@@ -78,12 +78,12 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
   protected readonly errorMsgOverrides: Record<string, string> = {
     '^The adapter operation timed out$': 'Data Timeout',
     '^The ajax operation timed out$': 'Data Timeout',
-    '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.'
+    '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.',
   };
 
   private normalizeErrorMessage(message: string) {
     let normalizedMsg = message;
-    Object.keys(this.errorMsgOverrides).forEach(reg => {
+    Object.keys(this.errorMsgOverrides).forEach((reg) => {
       let regex = new RegExp(reg, 'gi');
       if (regex.test(message)) {
         normalizedMsg = this.errorMsgOverrides[reg];

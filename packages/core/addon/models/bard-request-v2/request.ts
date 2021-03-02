@@ -42,31 +42,31 @@ const Validations = buildValidations({
     validator('has-many'),
     validator('collection', {
       collection: true,
-      message: 'Filters must be a collection'
-    })
+      message: 'Filters must be a collection',
+    }),
   ],
   columns: [
     validator('has-many'),
     validator('collection', {
       collection: true,
-      message: 'Columns must be a collection'
+      message: 'Columns must be a collection',
     }),
     validator('length', {
       min: 1,
-      message: 'At least one column should be selected'
-    })
+      message: 'At least one column should be selected',
+    }),
   ],
   tableMetadata: validator('presence', {
     presence: true,
-    message: 'Table is invalid or unavailable'
+    message: 'Table is invalid or unavailable',
   }),
   sorts: [
     validator('has-many'),
     validator('collection', {
       collection: true,
-      message: 'Sorts must be a collection'
-    })
-  ]
+      message: 'Sorts must be a collection',
+    }),
+  ],
 });
 
 export default class RequestFragment extends Fragment.extend(Validations) implements RequestV2 {
@@ -111,42 +111,42 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     const clonedRequest = this.toJSON() as RequestFragment; //POJO form of RequestFragment;
 
     return store.createFragment('bard-request-v2/request', {
-      filters: clonedRequest.filters.map(filter => {
+      filters: clonedRequest.filters.map((filter) => {
         const newFilter = store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,
           operator: filter.operator,
           values: filter.values,
-          source: clonedRequest.dataSource
+          source: clonedRequest.dataSource,
         });
         return newFilter;
       }),
-      columns: clonedRequest.columns.map(column => {
+      columns: clonedRequest.columns.map((column) => {
         const newColumn = store.createFragment('bard-request-v2/fragments/column', {
           cid: column.cid, // Needs to be the same for visualization column references
           field: column.field,
           parameters: column.parameters,
           type: column.type,
           alias: column.alias,
-          source: clonedRequest.dataSource
+          source: clonedRequest.dataSource,
         });
         return newColumn;
       }),
       table: clonedRequest.table,
-      sorts: clonedRequest.sorts.map(sort => {
+      sorts: clonedRequest.sorts.map((sort) => {
         const newSort = store.createFragment('bard-request-v2/fragments/sort', {
           field: sort.field,
           parameters: sort.parameters,
           type: sort.type,
           direction: sort.direction,
-          source: clonedRequest.dataSource
+          source: clonedRequest.dataSource,
         });
         return newSort;
       }),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
-      dataSource: clonedRequest.dataSource
+      dataSource: clonedRequest.dataSource,
     });
   }
 
@@ -160,7 +160,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('columns.[]')
   get metricColumns(): ColumnFragment<'metric'>[] {
-    return this.columns.filter(column => column.type === 'metric') as ColumnFragment<'metric'>[];
+    return this.columns.filter((column) => column.type === 'metric') as ColumnFragment<'metric'>[];
   }
 
   /**
@@ -169,7 +169,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   @computed('columns.[]')
   get dimensionColumns(): ColumnFragment<'dimension' | 'timeDimension'>[] {
     return this.columns.filter(
-      column => column.type === 'timeDimension' || column.type === 'dimension'
+      (column) => column.type === 'timeDimension' || column.type === 'dimension'
     ) as ColumnFragment<'dimension' | 'timeDimension'>[];
   }
 
@@ -178,7 +178,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('filters.[]')
   get metricFilters(): FilterFragment[] {
-    return this.filters.filter(filter => filter.type === 'metric');
+    return this.filters.filter((filter) => filter.type === 'metric');
   }
 
   /**
@@ -186,7 +186,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('filters.[]')
   get dimensionFilters(): FilterFragment[] {
-    return this.filters.filter(filter => filter.type === 'timeDimension' || filter.type === 'dimension');
+    return this.filters.filter((filter) => filter.type === 'timeDimension' || filter.type === 'dimension');
   }
 
   /**
@@ -200,7 +200,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   @computed('columns.[]')
   get nonTimeDimensions(): ColumnFragment[] {
-    return this.columns.filter(c => c.type === 'dimension');
+    return this.columns.filter((c) => c.type === 'dimension');
   }
 
   /**
@@ -216,7 +216,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    */
   @computed('filters.[]')
   get dateTimeFilter(): FilterFragment | undefined {
-    return this.filters.filter(filter => filter.type === 'timeDimension')[0];
+    return this.filters.filter((filter) => filter.type === 'timeDimension')[0];
   }
 
   /**
@@ -271,13 +271,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @param parameters - the parameters to search for to be removed
    */
   removeColumnByMeta(columnMetadataModel: ColumnMetadataModels, parameters: Parameters) {
-    let columnsToRemove = this.columns.filter(column => column.columnMetadata === columnMetadataModel);
+    let columnsToRemove = this.columns.filter((column) => column.columnMetadata === columnMetadataModel);
 
     if (parameters) {
-      columnsToRemove = columnsToRemove.filter(column => isEqual(column.parameters, parameters));
+      columnsToRemove = columnsToRemove.filter((column) => isEqual(column.parameters, parameters));
     }
 
-    columnsToRemove.forEach(column => this.removeColumn(column));
+    columnsToRemove.forEach((column) => this.removeColumn(column));
   }
 
   /**
@@ -307,7 +307,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     field,
     parameters,
     operator,
-    values
+    values,
   }: BaseLiteral & { operator: FilterFragment['operator']; values: FilterFragment['values'] }) {
     this.filters.pushObject(
       this.fragmentFactory.createFilter(type, this.dataSource, field, parameters, operator, values)
@@ -329,7 +329,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   addSort({ type, source, field, parameters, direction }: BaseLiteral & { direction: SortDirection }) {
     const canonicalName = canonicalizeMetric({
       metric: field,
-      parameters
+      parameters,
     });
     const sortExists = this.sorts.findBy('canonicalName', canonicalName);
 
