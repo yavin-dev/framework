@@ -98,9 +98,9 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
     assert.equal(
-      $('.schedule-modal__header--primary').text().trim(),
-      'Schedule "Test Test"',
-      'The primary header makes use of the modelName appropriately'
+      $('.schedule__modal-header').text().trim(),
+      'Schedule report',
+      'The primary header makes use of the category of page appropriately'
     );
 
     assert.deepEqual(

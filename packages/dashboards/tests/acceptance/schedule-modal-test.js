@@ -15,7 +15,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.schedule');
 
-    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
     assert
       .dom('.schedule-modal__delete-btn')
@@ -93,7 +93,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     // Click "Schedule"
     await click('.schedule-action__button');
 
-    assert.dom('.schedule-modal__header--primary').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
     assert
       .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')

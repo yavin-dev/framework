@@ -17,7 +17,7 @@ import config from 'ember-get-config';
 // @ts-ignore
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
-import { get, set, computed, setProperties, action } from '@ember/object';
+import { set, computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -115,7 +115,7 @@ export default class ScheduleActionComponent extends Component<Args> {
       return true;
     }
 
-    return !(this.localDeliveryRule.hasDirtyAttributes && get(this, 'isRuleValid'));
+    return !(this.localDeliveryRule.hasDirtyAttributes && this.isRuleValid);
   }
 
   /**
@@ -138,6 +138,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @action doSave
    */
+  @action
   async doSave() {
     if (this.isRuleValid) {
       // Only add relationships to the new delivery rule if the fields are valid
@@ -162,7 +163,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         this.closeModal();
       } catch (errors) {
         set(this, 'notification', {
-          text: getApiErrMsg(errors[0], 'There was an error updating your delivery settings'),
+          text: getApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings'),
         });
       } finally {
         set(this, 'isSaving', false);
@@ -177,8 +178,9 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @action doDelete
    */
+  @action
   async doDelete() {
-    let deliveryRule = get(this, 'localDeliveryRule'),
+    let deliveryRule = this.localDeliveryRule,
       deletePromise = new RSVP.Promise((resolve, reject) => {
         this.args.onDelete(deliveryRule, { resolve, reject });
       });
@@ -209,9 +211,9 @@ export default class ScheduleActionComponent extends Component<Args> {
     //Kick off a fetch for existing delivery rules
     set(this, 'deliveryRule', this.args.model.deliveryRuleForUser);
 
-    get(this, 'deliveryRule')
+    this.deliveryRule
       .then((rule: DeliveryRuleModel) => {
-        set(this, 'localDeliveryRule', rule ? rule : get(this, 'localDeliveryRule') || this._createNewDeliveryRule());
+        set(this, 'localDeliveryRule', rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule());
       })
       .catch(() => {
         set(this, 'localDeliveryRule', this._createNewDeliveryRule());
@@ -242,7 +244,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   closeModal() {
     // Avoid `calling set on destroyed object` error
-    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!this.isDestroyed && !this.isDestroying) {
       set(this, 'isSaving', false);
       set(this, 'showModal', false);
       set(this, 'attemptedSave', false);
