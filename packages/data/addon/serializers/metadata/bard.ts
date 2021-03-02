@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'ember-get-config';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES, { Cardinality } from '../../utils/enums/cardinality-sizes';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
@@ -182,7 +182,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           tableMetricIds: new Set<string>(),
           tableDimensionIds: new Set<string>(),
           tableTimeDimensionIds: new Set<string>(),
-          tableCardinality: CARDINALITY_SIZES[0] as typeof CARDINALITY_SIZES[number],
+          tableCardinality: CARDINALITY_SIZES[0] as Cardinality,
         }
       );
 
@@ -529,7 +529,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         fields,
       } = dimension;
 
-      let dimCardinality: typeof CARDINALITY_SIZES[number] = CARDINALITY_SIZES[0];
+      let dimCardinality: Cardinality = CARDINALITY_SIZES[0];
       if (cardinality > MAX_LOAD_CARDINALITY) {
         dimCardinality = CARDINALITY_SIZES[2];
       } else if (cardinality > LOAD_CARDINALITY) {

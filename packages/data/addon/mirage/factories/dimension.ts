@@ -24,6 +24,15 @@ export default Factory.extend({
     return `This is dimension ${this.index}`;
   },
 
+  cardinality(i: number) {
+    if (i === 1) {
+      return 'TINY';
+    } else if (i === 2) {
+      return 'SMALL';
+    }
+    return 'UNKNOWN';
+  },
+
   category: 'categoryOne',
 
   valueType: 'TEXT',

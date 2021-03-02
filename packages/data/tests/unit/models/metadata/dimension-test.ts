@@ -234,14 +234,25 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
 
     assert.strictEqual(
       dimension2.cardinality,
-      undefined,
-      'Dimension cardinality returns undefined for non-field type dimension'
+      'MEDIUM',
+      'Dimension successfully gets its cardinality from its table when type of dimension is ref'
+    );
+
+    const dimension3 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+      cardinality: 'MEDIUM',
+      type: 'formula',
+    });
+
+    assert.strictEqual(
+      dimension3.cardinality,
+      'MEDIUM',
+      'Dimension successfully gets its cardinality from its table when type of dimension is formula'
     );
 
     assert.throws(
       () => {
         //@ts-expect-error
-        dimension2.cardinality = 'chicago cubity';
+        dimension3.cardinality = 'chicago cubity';
       },
       /Dimension cardinality should be set to a value included in CARDINALITY_SIZES/,
       'Assert fails when invalid cardinality value is set'

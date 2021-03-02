@@ -31,6 +31,7 @@ const OPERATORS = {
   eq: '==',
   neq: '!=',
   isIn: '=in=',
+  isInInsensitive: '=ini=',
   notIn: '=out=',
   isNull: '=isnull=true',
   notNull: '=isnull=false',
@@ -45,6 +46,14 @@ const FILTER_OPS = {
   [OPERATORS.le]: ([filterVal], vals) => vals.filter((val) => val <= filterVal),
   [OPERATORS.ge]: ([filterVal], vals) => vals.filter((val) => val >= filterVal),
   [OPERATORS.isIn]: (filterVals, vals) => vals.filter((val) => filterVals.includes(val)),
+  [OPERATORS.isInInsensitive]: ([filterVal], vals) =>
+    vals.filter((val) => {
+      const lowerVal = val.toLowerCase();
+      const lowerFilterVal = filterVal.toLowerCase();
+      //If filterVal is wrapped in wildcard operators, match all values that contain the filterVal
+      const match = /\*(.*)\*/.exec(lowerFilterVal);
+      return match ? lowerVal.includes(match[1]) : lowerVal === lowerFilterVal;
+    }),
   [OPERATORS.notIn]: (filterVals, vals) => vals.filter((val) => !filterVals.includes(val)),
   [OPERATORS.isNull]: (_, vals) => vals.filter((val) => !val),
   [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),

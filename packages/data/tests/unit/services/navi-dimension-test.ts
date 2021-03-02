@@ -73,14 +73,14 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
-    const search = await service.search({ columnMetadata }, 'Plastic');
+    const search = await service.search({ columnMetadata }, 'plastic');
     const expectedDimensionModels = ['Licensed Plastic Pants', 'Awesome Plastic Fish'].map((dimVal) =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
     );
     assert.deepEqual(
       search,
       expectedDimensionModels,
-      '`search` gets all the values for a dimension that contain the query'
+      '`search` gets all the values for a dimension that contain the query case insensitively'
     );
 
     const noResultSearch = await service.search({ columnMetadata }, 'fuggedaboutit');

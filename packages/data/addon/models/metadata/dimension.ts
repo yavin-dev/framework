@@ -4,14 +4,13 @@
  */
 import { assert } from '@ember/debug';
 import ColumnMetadataModel, { ColumnInstance, ColumnMetadata, ColumnMetadataPayload, ColumnType } from './column';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES, { Cardinality } from '../../utils/enums/cardinality-sizes';
 
-type Cardinality = typeof CARDINALITY_SIZES[number] | undefined;
 type Field = TODO;
 
 // Shape of public properties on model
 export interface DimensionMetadata extends ColumnMetadata {
-  cardinality: Cardinality;
+  cardinality?: Cardinality;
   getTagsForField(fieldName: string): string[];
   getFieldsForTag(tag: string): Field[];
   primaryKeyFieldName: string;
@@ -60,22 +59,17 @@ export default class DimensionMetadataModel
   private idTag = 'id';
 
   /**
-   * @property {string} _cardinality - cardinality assigned directly to the dimension
+   * @property {Cardinality|undefined} _cardinality - cardinality assigned directly to the dimension
    */
-  private _cardinality: Cardinality;
+  private _cardinality?: Cardinality;
 
   /**
    * @property {Cardinality|undefined} cardinality - the cardinality size of the table the dimension is sourced from
    */
-  get cardinality(): Cardinality {
-    const { type } = this;
-
-    if (type === 'field') return this._cardinality;
-
-    // TODO: get cardinality for ref and formula type dimensions
-    return undefined;
+  get cardinality(): Cardinality | undefined {
+    return this._cardinality;
   }
-  set cardinality(cardinality: Cardinality) {
+  set cardinality(cardinality: Cardinality | undefined) {
     assert(
       'Dimension cardinality should be set to a value included in CARDINALITY_SIZES',
       cardinality && CARDINALITY_SIZES.includes(cardinality)

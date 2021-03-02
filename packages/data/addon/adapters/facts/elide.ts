@@ -67,6 +67,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     eq: (f, v) => `${f}==('${v[0]}')`,
     neq: (f, v) => `${f}!=('${v[0]}')`,
     in: (f, v) => `${f}=in=(${v.map((e) => `'${e}'`).join(',')})`,
+    ini: (f, v) => `${f}=ini=(${v.map((e) => `'${e}'`).join(',')})`,
     notin: (f, v) => `${f}=out=(${v.map((e) => `'${e}'`).join(',')})`,
     contains: (f, v) => `${f}=in=(${v.map((e) => `'*${e}*'`).join(',')})`,
     isnull: (f, v) => `${f}=isnull=${v[0]}`,

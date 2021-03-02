@@ -35,6 +35,7 @@ const fragment = gql`
           name
           friendlyName
           description
+          cardinality
           category
           valueType
           tags

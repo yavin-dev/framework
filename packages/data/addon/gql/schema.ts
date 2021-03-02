@@ -72,12 +72,22 @@ const schema = gql`
     id: DeferredID!
   }
 
+  enum CardinalityType {
+    UNKNOWN
+    TINY
+    SMALL
+    MEDIUM
+    LARGE
+    HUGE
+  }
+
   interface ColumnInterface {
     id: DeferredID!
     name: String
     friendlyName: String
     description: String
     table: Table
+    cardinality: CardinalityType
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     tags: [String!]
@@ -91,6 +101,7 @@ const schema = gql`
     friendlyName: String
     description: String
     table: Table
+    cardinality: CardinalityType
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     tags: [String!]
@@ -112,6 +123,7 @@ const schema = gql`
     friendlyName: String
     description: String
     table: Table
+    cardinality: CardinalityType
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     tags: [String!]
@@ -128,6 +140,7 @@ const schema = gql`
     friendlyName: String
     description: String
     table: Table
+    cardinality: CardinalityType
     category: String
     valueType: com_yahoo_elide_datastores_aggregation_metadata_enums_ValueType
     tags: [String!]
