@@ -4,9 +4,11 @@
  */
 
 @import 'denali/denali';
+@import 'yavin-global';
 /**
  * Setting the theme here makes navi and ember-power-select styles work correctly,
- * but makes the theming static so it can't change just based on class name
+ * but makes the theming static so it can't change just based on class name.
+ * So uncomment this and add a "denali-dark-theme" to the app/index.html body
  */
 // @import 'yavin-dark-theme';
 
