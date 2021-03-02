@@ -22,11 +22,13 @@
   &__actions {
     display: flex;
     flex-wrap: wrap;
+
     @include media-size-between(mobile, tablet) {
       justify-content: flex-start;
     }
     @include media-size-up(small-desktop) {
       justify-content: flex-end;
+      margin-top: 10px;
     }
   }
 }

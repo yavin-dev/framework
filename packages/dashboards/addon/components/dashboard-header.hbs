@@ -1,6 +1,6 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="container-full m-b-4">
-  <div class="row m-t-10">
+  <div class="row">
     <div class="col-1-1">
       {{#if (feature-flag "enableDirectory")}}
         <LinkTo @route="directory.my-data" class="dashboard-header__breadcrumb-link">Directory</LinkTo>
@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="xs-col-10-10 sm-col-10-10 col-3-10 p-x-0 p-t-8">
+    <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
       {{!-- Editable title --}}
       <div class="dashboard-header__page-title">
         {{#if @dashboard.canUserEdit}}
@@ -30,7 +30,7 @@
         />
       </div>
     </div>
-    <div class="xs-col-10-10 sm-col-10-10 col-7-10 m-t-10 p-x-0">
+    <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
         <div class="dashboard-header__actions">
           {{!-- Actions --}}
           {{!-- Clone action enabled at all times --}}
