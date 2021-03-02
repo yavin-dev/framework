@@ -20,36 +20,36 @@ import {
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
-const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
-  DIMENSION_VALUE_MAP: Record<string, DimensionRow[]> = {},
-  MISSING_INTERVALS = [
-    '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
-    '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000',
-  ],
-  HAVING_OPS = {
-    gt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) > parseFloat(values[0]),
-    gte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) >= parseFloat(values[0]),
-    lt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) < parseFloat(values[0]),
-    lte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) <= parseFloat(values[0]),
-    eq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) === parseFloat(values[0]),
-    neq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) !== parseFloat(values[0]),
-    bet: (values: string[], metricValue: number) =>
-      parseFloat(values[0]) < parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) < parseFloat(values[1]),
-    nbet: (values: string[], metricValue: number) => !HAVING_OPS.bet(values, metricValue),
+const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
+const DATA_EPOCH = '2010-01-01';
+const DIMENSION_VALUE_MAP: Record<string, DimensionRow[]> = {};
+const MISSING_INTERVALS = [
+  '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
+  '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000',
+];
+const HAVING_OPS = {
+  gt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) > parseFloat(values[0]),
+  gte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) >= parseFloat(values[0]),
+  lt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) < parseFloat(values[0]),
+  lte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) <= parseFloat(values[0]),
+  eq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) === parseFloat(values[0]),
+  neq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) !== parseFloat(values[0]),
+  bet: (values: string[], metricValue: number) =>
+    parseFloat(values[0]) < parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) < parseFloat(values[1]),
+  nbet: (values: string[], metricValue: number) => !HAVING_OPS.bet(values, metricValue),
+};
+const DIMENSION_OPS = {
+  in: (filterValues: string[], value: DimensionRow, field: string) => {
+    const dimFieldValue = value[field];
+    if (filterValues.length === 1 && filterValues[0] === '""' && dimFieldValue === null) {
+      return true;
+    }
+    return dimFieldValue && filterValues.includes(dimFieldValue);
   },
-  DIMENSION_OPS = {
-    in: (filterValues: string[], value: DimensionRow, field: string) => {
-      const dimFieldValue = value[field];
-      if (filterValues.length === 1 && filterValues[0] === '""' && dimFieldValue === null) {
-        return true;
-      }
-      return dimFieldValue && filterValues.includes(dimFieldValue);
-    },
-    notin: (filterValues: string[], value: DimensionRow, field: string) =>
-      !DIMENSION_OPS.in(filterValues, value, field),
-    contains: (filterValues: string[], value: DimensionRow, field: string) =>
-      filterValues.some((v) => value[field]?.includes(v)),
-  };
+  notin: (filterValues: string[], value: DimensionRow, field: string) => !DIMENSION_OPS.in(filterValues, value, field),
+  contains: (filterValues: string[], value: DimensionRow, field: string) =>
+    filterValues.some((v) => value[field]?.includes(v)),
+};
 
 type ResponseRow = Record<string, unknown>;
 
@@ -69,17 +69,20 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
   const isoGrain = grain === 'week' ? 'isoWeek' : grain; // need to use isoweek, which is what real ws uses
   let endDate;
   const nonAllGrain = isoGrain === 'all' ? 'day' : isoGrain;
+
+  const current = moment().startOf(nonAllGrain);
+  const next = current.clone().add(1, getPeriodForGrain(nonAllGrain));
   if (end === 'current') {
-    endDate = moment().startOf(nonAllGrain);
+    endDate = current;
   } else if (end === 'next') {
-    endDate = moment().startOf(nonAllGrain).add(1, getPeriodForGrain(nonAllGrain));
+    endDate = next;
   } else {
-    endDate = moment(end, API_DATE_FORMAT);
+    endDate = moment.min(moment(end, API_DATE_FORMAT), next);
   }
   let startDate = start.startsWith('P')
       ? endDate.clone().subtract(moment.duration(start))
       : moment(start, API_DATE_FORMAT),
-    currentDate = startDate,
+    currentDate = moment.max(startDate, moment.utc(DATA_EPOCH)),
     dates = [];
 
   // handle "all" time grain

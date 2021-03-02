@@ -1,10 +1,10 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 /* eslint-env node */
 module.exports = function(app) {
-  const { loadEnvironmentSettings, getUser } = require('./utils.js');
+  const { loadEnvironmentSettings } = require('./utils.js');
   const packageJson = require('../package.json');
 
   app.use('/ui/assets/server-generated-config.js', function(req, res /*next*/) {
@@ -14,9 +14,6 @@ module.exports = function(app) {
     res.header('Pragma', 'no-cache');
 
     const settings = loadEnvironmentSettings(req.headers.host, './config/environments.json') || {};
-
-    //override getUser() with your own current user function
-    settings.user = getUser();
 
     const NAVI_APP = {
       FEATURES: {},

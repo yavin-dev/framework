@@ -47,7 +47,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    * @property {Boolean} isOwner - is owner of report
    */
   get isOwner() {
-    const userId = this.user.getUser().id;
+    const userId = this.user.getUser()?.id;
     return this.get('author').get('id') === userId;
   }
 
@@ -56,7 +56,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteReports = user.hasMany('favoriteReports').ids();
+    const favoriteReports = user?.hasMany('favoriteReports').ids();
     return arr(favoriteReports).includes(this.get('id'));
   }
 
