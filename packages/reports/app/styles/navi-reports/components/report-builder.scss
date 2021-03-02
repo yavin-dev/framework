@@ -3,10 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-$container-disabled-bg-color: rgba($color-grey-800, 0.8);
-
 .report-builder {
-  background-color: lighten($body-bg-color, $amount: 5);
+  background-color: $body-inner-bg-color;
   display: flex;
   flex: 1;
   padding: 5px;
@@ -104,16 +102,12 @@ $container-disabled-bg-color: rgba($color-grey-800, 0.8);
     }
 
     &__message {
-      // font-family: @font-family-thin;
-      // font-size: @font-size-mid;
-
       &--icon {
         color: denali-color('grey', '600');
       }
     }
 
     &__title {
-      font-size: $h3-font-size;
       margin: 0;
 
       &-wrapper {

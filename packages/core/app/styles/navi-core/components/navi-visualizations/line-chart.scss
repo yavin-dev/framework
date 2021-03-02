@@ -1,12 +1,22 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-.line-chart-widget {
-  .generate-legend-color(@chart-max-series);
+@mixin generate-legend-color($n, $i: 0) {
+  @for $i from 0 to $n {
+    .c3-legend-item:nth-of-type(#{$i + 1}) .c3-legend-item-tile {
+      fill: #{map-get($graph-stroke-colors, '#{$i}')} !important;
+      stroke: #{map-get($graph-stroke-colors, '#{$i}')} !important;
+    }
+  }
+}
 
-  .flex-1;
+.line-chart-widget {
+  @include generate-legend-color($chart-max-series);
+  @extend .flex-1;
+
+  fill: $body-text-color;
   min-height: 0;
   min-width: 0;
 
@@ -20,7 +30,7 @@
       }
     }
     path {
-      stroke: @denali-gray-400;
+      stroke: denali-color('grey', '400');
     }
   }
 
@@ -29,7 +39,7 @@
   }
 
   .c3-grid line {
-    stroke: @denali-gray-400;
+    stroke: denali-color('grey', '400');
   }
 
   .c3-legend-item text {
@@ -42,8 +52,8 @@
 
   // Series coloring
   .c3-target {
-    .generate-chart-colors-for(fill);
-    .generate-chart-colors-for(stroke);
+    @include generate-chart-colors-for(fill);
+    @include generate-chart-colors-for(stroke);
 
     circle {
       fill: inherit !important;
@@ -62,8 +72,8 @@
 
   // highlighted data point coloring
   circle.c3-selected-circle {
-    fill: @navi-white !important;
-    stroke: @navi-red !important;
+    fill: $color-grey-100 !important;
+    stroke: $color-red !important;
     /* clean-css ignore:start */
     r: 6;
     /* clean-css ignore:end */
@@ -72,16 +82,4 @@
   .c3-ygrid {
     stroke-dasharray: 0;
   }
-}
-
-.generate-legend-color(@n, @i:0) when (@i < @n) {
-  @j: @i+1;
-  @series-color: 'graph-stroke-@{i}';
-
-  .c3-legend-item:nth-of-type(@{j}) .c3-legend-item-tile {
-    fill: @@series-color !important;
-    stroke: @@series-color !important;
-  }
-
-  .generate-legend-color(@n, (@i+1));
 }

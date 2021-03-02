@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-.report-view {
+@mixin report-view-style {
   display: flex;
   flex: 1;
   min-height: 0; // Firefox fix
@@ -22,10 +22,6 @@
     min-width: 0;
   }
 
-  &__info-text {
-    font-size: @font-size-base;
-  }
-
   &__visualization {
     display: flex;
     flex: 1;
@@ -40,8 +36,8 @@
   }
 
   &__visualization-edit {
-    background-color: @denali-grey-100;
-    border-left: 2px solid #e8e8e8;
+    background-color: $body-bg-color;
+    border-left: 2px solid $menu-border-color;
     display: flex;
     flex: 1;
     flex-flow: column;
@@ -56,7 +52,7 @@
   &__visualization-edit-header {
     align-items: center;
     display: flex;
-    font-size: @font-size-base;
+    // font-size: @font-size-base;
     font-weight: bold;
     justify-content: space-between;
     padding: 10px 20px;
@@ -76,7 +72,6 @@
   }
 
   &__title {
-    font-size: @font-size-base;
     margin: 0;
   }
 
@@ -94,7 +89,7 @@
 
   &__visualization-no-results {
     align-items: center;
-    background-color: @navi-modal-gray;
+    background-color: $body-bg-color;
     display: flex;
     flex: 1;
     flex-flow: column;
@@ -118,8 +113,7 @@
 
   &__columns-button {
     align-items: center;
-    background: white;
-    border: 1px solid @denali-gray-300;
+    border: 1px solid $menu-border-color;
     border-left-width: 0;
     border-radius: 0px 45% 45% 0px;
     box-shadow: rgba(60, 64, 67, 0.3) 2px 1px 4px -1px;
@@ -136,13 +130,9 @@
   }
 
   &__columns-icon {
-    font-size: @font-size-base;
-    color: @denali-link;
+    @extend .link;
     left: -1px;
     position: relative;
-    &:hover {
-      color: @denali-link-hover;
-    }
   }
 
   &__columns-toggle {
@@ -151,4 +141,8 @@
     justify-content: flex-end;
     width: 0;
   }
+}
+
+.report-view {
+  @include report-view-style;
 }

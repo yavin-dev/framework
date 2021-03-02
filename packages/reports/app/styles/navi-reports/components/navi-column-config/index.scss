@@ -3,7 +3,5 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'denali/denali-dark-theme.scss';
-
-// Yavin specific overrides
-$body-inner-bg-color: lighten($body-bg-color, $amount: 5);
+@import 'item';
+@import 'base';

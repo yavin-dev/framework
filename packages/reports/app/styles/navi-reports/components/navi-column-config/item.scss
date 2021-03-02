@@ -1,11 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .navi-column-config-item {
-  border-bottom: 1px solid @denali-gray-300;
-  font-size: @font-size-base;
+  border-bottom: 1px solid $menu-border-color;
   margin-left: 15px;
   z-index: 2;
 
@@ -37,14 +36,13 @@
 
     &:hover {
       .navi-column-config-item__dropdown-icon {
-        color: @denali-link-hover;
+        color: $links-text-color;
       }
     }
   }
 
   &__name {
-    font-family: @font-family-sans-serif;
-    font-size: @font-size-base;
+    color: $body-text-color;
     margin: 8px 0;
     overflow: hidden;
     text-align: left;
@@ -56,25 +54,22 @@
       display: -webkit-box;
       overflow: hidden;
       text-overflow: ellipsis;
-      /* autoprefixer: off */
       -webkit-box-orient: vertical;
-      /* autoprefixer: on */
       -webkit-line-clamp: 2;
       white-space: initial;
     }
   }
 
   &__dropdown-icon {
-    .navi-column-config-icon;
+    @include navi-column-config-icon;
     flex-basis: 20px;
     flex-shrink: 0;
-    font-size: @font-size-large;
     transition: transform 100ms;
   }
 
   &__type-icon,
   &__remove-icon {
-    .navi-column-config-icon;
+    @include navi-column-config-icon;
   }
 
   &__type-icon {
@@ -87,14 +82,14 @@
   &--time-dimension,
   &--dimension {
     .navi-column-config-item__type-icon {
-      background-color: @denali-graph-orange;
+      background-color: $color-orange;
       border-radius: 50%;
     }
   }
 
   &--metric {
     .navi-column-config-item__type-icon {
-      background-color: @denali-graph-purple;
+      background-color: $color-purple;
       border-radius: 1px;
     }
   }
@@ -102,7 +97,6 @@
   &__remove-icon {
     display: none;
     flex-shrink: 0;
-    font-size: @font-size-base;
     padding: 0;
     width: 14px;
     text-align: center;
@@ -127,28 +121,13 @@
   }
 
   &__parameter {
-    &-trigger {
-      &,
-      &:focus {
-        border: none;
+    &-dropdown {
+      .ember-power-select-search {
+        width: 100%;
       }
 
-      .ember-power-select-selected-item {
-        margin-left: 0;
-      }
-
-      .ember-power-select-status-icon {
-        display: inline-block;
-      }
-    }
-
-    &-dropdown.ember-power-select-dropdown {
-      border: 1px solid @navi-gray-300;
-      font-family: @font-family-sans-serif;
-      font-size: @font-size-base;
-
-      .ember-power-select-search-input {
-        border: none;
+      .ember-power-select-search-input:focus {
+        box-shadow: none i !important;
       }
 
       .ember-power-select-option {
