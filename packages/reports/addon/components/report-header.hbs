@@ -1,4 +1,4 @@
-  <div class="container-full m-b-4">
+  <div class="container-full m-y-4">
     <div class="row">
       <div class="col-1-1">
         {{#if (feature-flag "enableDirectory")}}
@@ -35,7 +35,7 @@
         </span>
       </div>
       <div class="xs-col-10-10 sm-col-10-10 col-7-10 m-t-10 p-x-0">
-        <div class="navi-report__header">
+        <div class="navi-report__header-action">
           <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
         </div>
       </div>

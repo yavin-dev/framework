@@ -23,7 +23,7 @@
     text-transform: capitalize;
   }
 
-  &__header {
+  &__header-action {
     display: flex;
     @media (min-width: 0px) and (max-width: 899px) {
       justify-content: flex-start;
