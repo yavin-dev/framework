@@ -66,11 +66,9 @@ module('Integration | Component | common actions/get api', function (hooks) {
   test('Modal Bard', async function (assert) {
     this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
-    debugger;
     assert.dom('.get-api__modal').isNotVisible('Copy modal is not visible before clicking the component');
 
     await click('.get-api__action-btn');
-    debugger;
     assert.dom('.get-api__modal').isVisible('Copy modal dialog pops up on clicking the component');
 
     assert
