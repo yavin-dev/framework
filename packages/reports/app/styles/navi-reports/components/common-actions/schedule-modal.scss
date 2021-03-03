@@ -1,0 +1,57 @@
+/**
+* Copyright 2021, Yahoo Holdings Inc.
+* Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+*/
+.modal.is-active {
+  visibility: visible !important;
+}
+.schedule {
+  &__modal {
+    &__input--recipients {
+      &.text-input {
+        padding: 10px;
+      }
+
+      // Override styles included with ember-tag-input
+      .emberTagInput {
+        border: none;
+      }
+
+      .navi-tag-input {
+        &__tag {
+          margin-right: 5px;
+        }
+
+        .emberTagInput-tag,
+        .emberTagInput-input {
+          margin: 2px;
+          padding: 3px;
+        }
+
+        .emberTagInput-new {
+          padding: 0;
+        }
+      }
+    }
+
+    &__input--recipients[disabled] {
+      background-color: $color-grey-100;
+      cursor: not-allowed;
+    }
+
+    &__recipients--invalid {
+      .schedule-modal__input--recipients.text-input {
+        background-color: $color-red;
+        border-bottom: 1px solid $color-status-danger;
+      }
+
+      .schedule-modal__helper-recipients {
+        color: $color-red;
+      }
+    }
+
+    &__helper-recipients {
+      color: $color-grey-300;
+    }
+  }
+}

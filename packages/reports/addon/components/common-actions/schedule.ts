@@ -27,15 +27,21 @@ import StoreService from '@ember-data/store';
 import DeliveryRuleModel from './delivery-rule';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
 import UserService from 'navi-core/services/user';
+import DeliverableItemModel from 'navi-core/addon/models/deliverable-item';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
+type RSVPMethodsObj = {
+  resolve: () => void;
+  reject: () => void;
+};
+
 interface Args {
-  model: any;
-  onDelete: (arg0: any, arg1: any) => {};
-  onSave: (arg0: any, arg1: any) => {};
-  onRevert: (arg0: any, arg1: any) => {};
+  model: DeliverableItemModel;
+  onDelete: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
+  onSave: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
+  onRevert: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
 }
 
 export default class ScheduleActionComponent extends Component<Args> {
@@ -64,7 +70,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
    */
-  localDeliveryRule: DeliveryRuleModel;
+  @tracked localDeliveryRule?: DeliveryRuleModel;
 
   /**
    * @property {object} notification - Object that stores an in modal notification
@@ -104,7 +110,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {Boolean} isRuleValid
    */
-  @reads('localDeliveryRule.validations.isValid') isRuleValid = false;
+  @reads('localDeliveryRule.validations.isValid') isRuleValid!: boolean;
 
   /**
    * @property {Boolean} disableSave
@@ -121,7 +127,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {Boolean} attemptedSave
    */
-  attemptedSave = false;
+  @tracked attemptedSave = false;
 
   /**
    * @method _createNewDeliveryRule
@@ -130,6 +136,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   _createNewDeliveryRule() {
     return this.store.createRecord('delivery-rule', {
+      // @ts-ignore
       deliveryType: this.args.model.constructor.modelName,
       format: { type: this.formats.firstObject },
     });
@@ -162,16 +169,16 @@ export default class ScheduleActionComponent extends Component<Args> {
         });
         this.closeModal();
       } catch (errors) {
-        set(this, 'notification', {
+        this.notification = {
           text: getApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings'),
-        });
+        };
       } finally {
-        set(this, 'isSaving', false);
-        set(this, 'attemptedSave', true);
+        this.isSaving = false;
+        this.attemptedSave = true;
       }
     } else {
-      set(this, 'isSaving', false);
-      set(this, 'attemptedSave', true);
+      this.isSaving = false;
+      this.attemptedSave = true;
     }
   }
 
@@ -188,7 +195,7 @@ export default class ScheduleActionComponent extends Component<Args> {
     try {
       await deletePromise;
       //Make sure there is no more local rule after deletion
-      set(this, 'localDeliveryRule', undefined);
+      this.localDeliveryRule = undefined;
 
       //Add Page notification
       this.naviNotifications.add({
@@ -197,9 +204,9 @@ export default class ScheduleActionComponent extends Component<Args> {
         timeout: 'short',
       });
     } catch (e) {
-      set(this, 'notification', {
+      this.notification = {
         text: `An error occurred while removing the delivery schedule`,
-      });
+      };
     }
   }
 
@@ -245,10 +252,10 @@ export default class ScheduleActionComponent extends Component<Args> {
   closeModal() {
     // Avoid `calling set on destroyed object` error
     if (!this.isDestroyed && !this.isDestroying) {
-      set(this, 'isSaving', false);
-      set(this, 'showModal', false);
-      set(this, 'attemptedSave', false);
-      set(this, 'notification', undefined);
+      this.isSaving = false;
+      this.showModal = false;
+      this.attemptedSave = false;
+      this.notification = undefined;
     }
   }
 
@@ -257,6 +264,6 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   closeNotification() {
-    set(this, 'notification', undefined);
+    this.notification = undefined;
   }
 }

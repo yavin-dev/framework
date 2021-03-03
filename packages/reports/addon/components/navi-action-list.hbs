@@ -73,7 +73,7 @@
             type="button"
             id="navi-report-action-schedule-{{@index}}" 
             disabled={{not @item.request.validations.isTruelyValid}}
-            class="schedule-action__button navi-reports-index__report-control schedule {{unless @item.request.validations.isTruelyValid "navi-report__action--is-disabled"}}"
+            class="schedule-action__button navi-reports-index__report-control schedule"
             {{on "click" onOpen}}
           >
             <NaviIcon @icon="clock-o" />

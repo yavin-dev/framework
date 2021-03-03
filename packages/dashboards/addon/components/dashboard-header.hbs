@@ -70,14 +70,22 @@
             {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
             {{#if (feature-flag "enableScheduleDashboards")}}
               <DashboardActions::Schedule
-                class="dashboard-header__schedule-btn button is-text is-medium"
                 @model={{@dashboard}}
                 @disabled={{not @dashboard.validations.isTruelyValid}}
                 @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
                 @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
                 @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+                as |onOpen|
               >
-                Schedule
+                <button 
+                  type="button"
+                  class="dashboard-header__schedule-btn schedule-action__button button is-text is-medium"
+                  disabled={{not @dashboard.validations.isTruelyValid}}
+                  {{on "click" onOpen}}
+                >
+                  <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
+                  <span>Schedule</span>
+                </button>
               </DashboardActions::Schedule>
             {{/if}}
 

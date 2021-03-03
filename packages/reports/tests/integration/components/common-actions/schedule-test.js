@@ -98,7 +98,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
     assert.equal(
-      $('.schedule__modal-header').text().trim(),
+      $('.schedule__modal__header').text().trim(),
       'Schedule report',
       'The primary header makes use of the category of page appropriately'
     );
@@ -112,25 +112,25 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     );
 
     assert.ok(
-      $('.schedule-modal__input--recipients').is(':visible'),
+      $('.schedule__modal__input--recipients').is(':visible'),
       'Schedule Modal component renders an text area for recipients'
     );
 
     assert.ok(
-      $('.schedule-modal__frequency-trigger').is(':visible'),
+      $('.schedule__modal__frequency-trigger').is(':visible'),
       'Schedule Modal component renders an dropdown for frequencies'
     );
 
     assert.ok(
-      $('.schedule-modal__format-trigger').is(':visible'),
+      $('.schedule__modal__format-trigger').is(':visible'),
       'Schedule Modal component renders an dropdown for formats'
     );
 
-    assert.equal($('.schedule-modal__frequency-trigger').text().trim(), 'Week', 'Week is the default frequency value');
+    assert.equal($('.schedule__modal__frequency-trigger').text().trim(), 'Week', 'Week is the default frequency value');
 
-    assert.equal($('.schedule-modal__format-trigger').text().trim(), 'csv', '`.csv` is the default format value');
+    assert.equal($('.schedule__modal__format-trigger').text().trim(), 'csv', '`.csv` is the default format value');
 
-    assert.notOk($('.schedule-modal__rejected').is(':visible'), 'rejected error does not show');
+    assert.notOk($('.schedule__modal__rejected').is(':visible'), 'rejected error does not show');
   });
 
   test('schedule modal - delivery rule passed in', async function (assert) {
@@ -142,7 +142,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert.deepEqual(
-      $('.schedule-modal__input--recipients .tag')
+      $('.schedule__modal__input--recipients .tag')
         .toArray()
         .map((e) => e.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
@@ -150,7 +150,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     );
 
     assert.equal(
-      $('.schedule-modal__frequency-trigger').text().trim(),
+      $('.schedule__modal__frequency-trigger').text().trim(),
       'Week',
       'The frequency is fetched from the delivery rule'
     );
@@ -167,25 +167,25 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert
-      .dom('.schedule-modal__save-btn')
+      .dom('.schedule__modal__save-btn')
       .hasText('Save', 'The save button says `Save` when model does not have a delivery rule for the current user');
 
-    assert.ok($('.schedule-modal__save-btn').attr('disabled'), 'The save button should be disabled initially');
+    assert.ok($('.schedule__modal__save-btn').attr('disabled'), 'The save button should be disabled initially');
 
-    assert.dom('.schedule-modal__cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
+    assert.dom('.schedule__modal__cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
 
     assert
-      .dom('.schedule-modal__delete-btn')
+      .dom('.schedule__modal__delete-btn')
       .isNotVisible('The delete button is not available when model does not have a delivery rule for the current user');
 
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
 
-    await click('.schedule-modal__frequency-trigger');
+    await click('.schedule__modal__frequency-trigger');
     await nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
 
     assert.notOk(
-      $('.schedule-modal__save-btn').attr('disabled'),
+      $('.schedule__modal__save-btn').attr('disabled'),
       'The save button should be enabled after making valid changes'
     );
 
@@ -206,10 +206,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     });
 
     //Click save after modal is open
-    await click('.schedule-modal__save-btn');
+    await click('.schedule__modal__save-btn');
 
     assert.equal(
-      $('.schedule-modal__cancel-btn').text().trim(),
+      $('.schedule__modal__cancel-btn').text().trim(),
       'Close',
       'Show close button after save a delivery rule'
     );
@@ -230,7 +230,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     });
 
     //Click cancel after modal is open
-    await click('.schedule-modal__cancel-btn');
+    await click('.schedule__modal__cancel-btn');
   });
 
   test('onDelete action', async function (assert) {
@@ -249,12 +249,12 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert.equal(
-      $('.schedule-modal__delete-btn').length,
+      $('.schedule__modal__delete-btn').length,
       1,
       'Delete button is shown when deliveryRule is present for current user'
     );
 
-    await click('.schedule-modal__delete-btn');
+    await click('.schedule__modal__delete-btn');
 
     await click('.delete__delete-btn');
   });
@@ -267,7 +267,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    await click('.schedule-modal__frequency-trigger');
+    await click('.schedule__modal__frequency-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
@@ -286,7 +286,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    await click('.schedule-modal__frequency-trigger');
+    await click('.schedule__modal__frequency-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Day', 'Week', 'Month'],
@@ -306,7 +306,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    await click('.schedule-modal__format-trigger');
+    await click('.schedule__modal__format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['csv', 'test'],
@@ -325,7 +325,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    await click('.schedule-modal__format-trigger');
+    await click('.schedule__modal__format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['csv', 'pdf', 'png'],
@@ -348,10 +348,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert
-      .dom('.schedule-modal__format-trigger')
+      .dom('.schedule__modal__format-trigger')
       .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
     assert
-      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal__format-trigger .ember-power-select-selected-item')
       .includesText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
