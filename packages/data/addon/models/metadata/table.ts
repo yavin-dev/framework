@@ -7,7 +7,7 @@ import { inject as service } from '@ember/service';
 import MetricMetadataModel from './metric';
 import DimensionMetadataModel from './dimension';
 import TimeDimensionMetadataModel from './time-dimension';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import { Cardinality } from '../../utils/enums/cardinality-sizes';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import RequestConstraintMetadataModel from './request-constraint';
 
@@ -17,7 +17,7 @@ export interface TableMetadataPayload {
   name: string;
   category?: string;
   description?: string;
-  cardinality: typeof CARDINALITY_SIZES[number];
+  cardinality?: Cardinality;
   isFact: boolean;
   metricIds: string[];
   dimensionIds: string[];
@@ -32,7 +32,7 @@ export interface TableMetadata {
   name: string;
   category?: string;
   description?: string;
-  cardinality: typeof CARDINALITY_SIZES[number];
+  cardinality?: Cardinality;
   isFact: boolean;
   metrics: MetricMetadataModel[];
   dimensions: DimensionMetadataModel[];
@@ -77,9 +77,9 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   category?: string;
 
   /**
-   * @param {CaridnalitySize} cardinality
+   * @param {Cardinality} cardinality
    */
-  cardinality!: typeof CARDINALITY_SIZES[number];
+  cardinality!: Cardinality;
 
   /**
    * @param {boolean} isFact

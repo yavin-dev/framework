@@ -24,6 +24,7 @@ export type RequestOptions = {
 export type FilterOperator =
   | 'eq'
   | 'neq'
+  | 'ini'
   | 'in'
   | 'notin'
   | 'lt'

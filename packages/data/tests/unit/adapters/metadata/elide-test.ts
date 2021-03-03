@@ -171,6 +171,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
             __typename: 'DimensionEdge',
             node: {
               __typename: 'Dimension',
+              cardinality: 'UNKNOWN',
               category: 'categoryOne',
               columnType: 'field',
               description: 'This is dimension 0',
@@ -189,6 +190,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
             __typename: 'DimensionEdge',
             node: {
               __typename: 'Dimension',
+              cardinality: 'TINY',
               category: 'categoryOne',
               columnType: 'field',
               description: 'This is dimension 1',
@@ -213,6 +215,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
             __typename: 'DimensionEdge',
             node: {
               __typename: 'Dimension',
+              cardinality: 'SMALL',
               category: 'categoryOne',
               columnType: 'field',
               description: 'This is dimension 2',
@@ -365,6 +368,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                       __typename: 'DimensionEdge',
                       node: {
                         __typename: 'Dimension',
+                        cardinality: 'UNKNOWN',
                         category: 'categoryOne',
                         columnType: 'field',
                         description: 'This is dimension 0',
@@ -383,6 +387,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                       __typename: 'DimensionEdge',
                       node: {
                         __typename: 'Dimension',
+                        cardinality: 'TINY',
                         category: 'categoryOne',
                         columnType: 'field',
                         description: 'This is dimension 1',
@@ -407,6 +412,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                       __typename: 'DimensionEdge',
                       node: {
                         __typename: 'Dimension',
+                        cardinality: 'SMALL',
                         category: 'categoryOne',
                         columnType: 'field',
                         description: 'This is dimension 2',

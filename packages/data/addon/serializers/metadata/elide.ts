@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'ember-get-config';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES, { Cardinality } from '../../utils/enums/cardinality-sizes';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import { RawColumnType } from '../../models/metadata/column';
 import { TableMetadataPayload } from '../../models/metadata/table';
@@ -26,6 +26,7 @@ export type Connection<T> = {
   edges: Edge<T>[];
   pageInfo: TODO;
 };
+type ElideCardinality = Uppercase<'unknown' | 'tiny' | 'small' | 'medium' | 'large' | 'huge'>;
 type ColumnNode = {
   id: string;
   name: string;
@@ -40,6 +41,7 @@ type ColumnNode = {
 export type MetricNode = ColumnNode & { defaultFormat: string };
 
 export type DimensionNode = ColumnNode & {
+  cardinality: ElideCardinality;
   valueSourceType: ValueSourceType;
   tableSource: string | null;
   values: string[];
@@ -60,7 +62,7 @@ type TableNode = {
   friendlyName: string;
   description: string;
   category: string;
-  cardinality: typeof CARDINALITY_SIZES[number];
+  cardinality: ElideCardinality;
   isFact: boolean;
   metrics: Connection<MetricNode>;
   dimensions: Connection<DimensionNode>;
@@ -97,7 +99,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         name: table.name,
         category: table.category,
         description: table.description,
-        cardinality: table.cardinality,
+        cardinality: this._normalizeCardinality(table.cardinality),
         isFact: table.isFact,
         metricIds: [],
         dimensionIds: [],
@@ -183,10 +185,13 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   ): DimensionMetadataModel[] {
     return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
+
+      const cardinality = this._normalizeCardinality(node.cardinality);
       const payload: ElideDimensionMetadataPayload = {
         id: node.id,
         name: node.friendlyName,
         description: node.description,
+        ...(cardinality ? { cardinality } : {}),
         category: node.category,
         valueType: node.valueType,
         tableId,
@@ -297,6 +302,22 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         },
       ],
     };
+  }
+
+  /**
+   * Normalizes elide cardinalities to navi sizes
+   * @param cardinality the elide cardinality size
+   */
+  _normalizeCardinality(elideCardinality?: ElideCardinality): Cardinality | undefined {
+    const cardinality = elideCardinality?.toLowerCase() as Lowercase<ElideCardinality> | undefined;
+    if (cardinality === 'tiny' || cardinality === 'small') {
+      return CARDINALITY_SIZES[0];
+    } else if (cardinality === 'medium') {
+      return CARDINALITY_SIZES[1];
+    } else if (cardinality === 'large' || cardinality === 'huge') {
+      return CARDINALITY_SIZES[2];
+    }
+    return undefined;
   }
 
   private supportedTypes = new Set<keyof MetadataModelMap>(['everything']);
