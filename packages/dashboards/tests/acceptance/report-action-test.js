@@ -13,7 +13,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
 
     await visit('/reports/1/view');
     assert.ok(
-      !!$('.navi-report__header:contains("Add to Dashboard")').length,
+      !!$('.navi-report__header-action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is visible when feature flag is on'
     );
   });
@@ -24,7 +24,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      !!$('.navi-report__header:contains("Add to Dashboard")').length,
+      !!$('.navi-report__header-action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is visible by default'
     );
 
