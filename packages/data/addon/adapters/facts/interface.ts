@@ -115,6 +115,10 @@ export type AsyncQueryResponse = {
   };
 };
 
+export class FactAdapterError extends Error {
+  name = 'FactAdapterError';
+}
+
 export interface AsyncQueryResult {
   httpStatus: number;
   contentLength: number;

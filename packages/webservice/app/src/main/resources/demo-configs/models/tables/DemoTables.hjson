@@ -58,6 +58,12 @@
             {
                type: DAY
             }
+            {
+               type: YEAR
+               sql :  '''
+               PARSEDATETIME(YEAR({{}}), 'YYYY')
+               '''
+            }
           ]
         }
         {
