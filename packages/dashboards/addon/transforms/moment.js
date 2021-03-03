@@ -16,7 +16,7 @@ export default DS.Transform.extend({
    * @param {String} serialized - Date string to deserialize
    * @returns {Moment} - Moment object
    */
-  deserialize: function(serialized) {
+  deserialize: function (serialized) {
     if (serialized) {
       let result = moment.utc(serialized, API_DATE_FORMAT_STRING);
       if (moment.isMoment(result) && result.isValid()) {
@@ -35,11 +35,11 @@ export default DS.Transform.extend({
    * @param {Moment} deserialized - Moment object to serialize
    * @returns {String} - Date string
    */
-  serialize: function(deserialized) {
+  serialize: function (deserialized) {
     if (moment.isMoment(deserialized)) {
       return deserialized.format(API_DATE_FORMAT_STRING);
     } else {
       return null;
     }
-  }
+  },
 });

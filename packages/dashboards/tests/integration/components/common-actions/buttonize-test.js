@@ -5,10 +5,10 @@ import hbs from 'htmlbars-inline-precompile';
 
 let Template;
 
-module('Integration | Component | common actions/buttonize', function(hooks) {
+module('Integration | Component | common actions/buttonize', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Template = hbs`
         {{#common-actions/buttonize}}
           Buttonize component
@@ -16,7 +16,7 @@ module('Integration | Component | common actions/buttonize', function(hooks) {
       `;
   });
 
-  test('buttonize component renders', async function(assert) {
+  test('buttonize component renders', async function (assert) {
     assert.expect(1);
 
     await render(Template);

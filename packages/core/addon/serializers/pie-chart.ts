@@ -36,8 +36,8 @@ export function normalizePieChartV2(
     type: 'pie-chart',
     version: 2,
     metadata: {
-      series: newSeries
-    }
+      series: newSeries,
+    },
   };
 }
 

@@ -24,28 +24,28 @@ interface TestContext extends Context {
 
 const HOST = config.navi.dataSources[0].uri;
 
-module('Integration | Component | filter values/dimension select', function(hooks) {
+module('Integration | Component | filter values/dimension select', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', [
       '1',
       '2',
-      '3'
+      '3',
     ]);
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
   });
 
-  test('it renders', async function(this: TestContext, assert) {
+  test('it renders', async function (this: TestContext, assert) {
     await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
 
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
+    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
       el.textContent?.trim()
     );
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
@@ -56,7 +56,7 @@ module('Integration | Component | filter values/dimension select', function(hook
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    let optionText = findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+    let optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       expectedOptionText = AgeValues.map(({ id }) => id);
     /*
      * Since ember-collection is used for rendering the dropdown options,
@@ -76,11 +76,11 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.dom().hasText('1 2 3', 'Selected values are rendered correctly when collapsed');
   });
 
-  test('it works for dimensions from other datasources', async function(this: TestContext, assert) {
+  test('it works for dimensions from other datasources', async function (this: TestContext, assert) {
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardTwo', 'container', { field: 'id' }, 'in', [
       '1',
       '2',
-      '3'
+      '3',
     ]);
 
     await render(hbs`
@@ -93,7 +93,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
+    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
       el.textContent?.trim()
     );
     const expectedValueDimensions = ContainerValues.filter(({ id }) => this.filter.values.includes(id));
@@ -103,7 +103,7 @@ module('Integration | Component | filter values/dimension select', function(hook
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    const optionText = findAll('.ember-power-select-option').map(el => el.textContent?.trim());
+    const optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim());
     const expectedOptionText = ContainerValues.map(({ id }) => id);
 
     /*
@@ -124,7 +124,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.dom().hasText('1 2 3', 'Selected values are rendered correctly when collapsed');
   });
 
-  test('no values', async function(this: TestContext, assert) {
+  test('no values', async function (this: TestContext, assert) {
     this.server.get(`${HOST}/v1/dimensions/age/values`, (_schema: TODO, request: Request) => {
       if (request.queryParams.filters === 'age|id-in[]') {
         assert.notOk(true, 'dimension-select should not request dimension values when the filter has no values');
@@ -142,7 +142,7 @@ module('Integration | Component | filter values/dimension select', function(hook
       .hasAttribute('placeholder', 'Age (id) Values', 'The dimension display name is used as the placeholder text');
   });
 
-  test('changing values', async function(this: TestContext, assert) {
+  test('changing values', async function (this: TestContext, assert) {
     assert.expect(1);
 
     this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
@@ -160,7 +160,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     await selectChoose('.filter-values--dimension-select__trigger', 5);
   });
 
-  test('error state', async function(assert) {
+  test('error state', async function (assert) {
     await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
     assert.dom('.filter-values--dimension-select--error').isNotVisible('The input should not have error state');
 
@@ -171,7 +171,7 @@ module('Integration | Component | filter values/dimension select', function(hook
     assert.dom('.filter-values--selected-error').exists('Error is rendered correctly when collapsed');
   });
 
-  test('filters stay applied while selecting', async function(this: TestContext, assert) {
+  test('filters stay applied while selecting', async function (this: TestContext, assert) {
     assert.expect(2);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardTwo', 'container', { field: 'desc' }, 'in', []);
 
@@ -190,11 +190,11 @@ module('Integration | Component | filter values/dimension select', function(hook
 
     const visibleOptions = () =>
       findAll('.ember-power-select-option')
-        .filter(el => (el as HTMLElement).offsetParent !== null) // only visible elements
-        .map(el => el.textContent?.trim())
+        .filter((el) => (el as HTMLElement).offsetParent !== null) // only visible elements
+        .map((el) => el.textContent?.trim())
         .sort();
 
-    const expectedValueDimensions = ContainerValues.map(({ description }) => description).filter(desc =>
+    const expectedValueDimensions = ContainerValues.map(({ description }) => description).filter((desc) =>
       desc.includes(searchTerm)
     );
 

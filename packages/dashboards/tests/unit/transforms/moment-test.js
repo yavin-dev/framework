@@ -4,10 +4,10 @@ import moment from 'moment';
 
 const API_DATE_FORMAT_STRING = 'YYYY-MM-DD HH:mm:ss.SSS';
 
-module('Unit - Transform - moment', function(hooks) {
+module('Unit - Transform - moment', function (hooks) {
   setupTest(hooks);
 
-  test('deserialize', function(assert) {
+  test('deserialize', function (assert) {
     assert.expect(2);
 
     let transform = this.owner.lookup('transform:moment');
@@ -21,7 +21,7 @@ module('Unit - Transform - moment', function(hooks) {
     assert.equal(transform.deserialize(undefined), null, 'transform deserializes non dates to null');
   });
 
-  test('serialize', function(assert) {
+  test('serialize', function (assert) {
     assert.expect(2);
 
     let transform = this.owner.lookup('transform:moment');

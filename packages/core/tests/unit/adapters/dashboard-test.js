@@ -2,10 +2,10 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 
-module('Unit | Adapter | dashboard', function(hooks) {
+module('Unit | Adapter | dashboard', function (hooks) {
   setupTest(hooks);
 
-  test('default host', function(assert) {
+  test('default host', function (assert) {
     assert.expect(1);
 
     let adapter = this.owner.lookup('adapter:dashboard'),
@@ -18,7 +18,7 @@ module('Unit | Adapter | dashboard', function(hooks) {
     config.navi.appPersistence.uri = originalUri;
   });
 
-  test('host configuration', function(assert) {
+  test('host configuration', function (assert) {
     assert.expect(1);
 
     let adapter = this.owner.lookup('adapter:dashboard'),

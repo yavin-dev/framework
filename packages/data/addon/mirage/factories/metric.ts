@@ -34,5 +34,5 @@ export default Factory.extend({
 
   columnType: 'field',
 
-  expression: null
+  expression: null,
 });

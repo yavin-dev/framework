@@ -17,5 +17,5 @@ export default ParentRoute.extend({
     let parent = this._super();
 
     return `${parent}.${siblingName}`;
-  }
+  },
 });

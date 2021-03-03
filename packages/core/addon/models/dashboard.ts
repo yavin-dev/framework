@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -19,15 +19,17 @@ import UserModel from './user';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { Moment } from 'moment';
 import FilterFragment from './bard-request-v2/fragments/filter';
+import DashboardWidget from './dashboard-widget';
+import PresentationFragment from './fragments/presentation';
 
 const Validations = buildValidations({
   title: [
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The dashboard must have a title'
-    })
-  ]
+      message: 'The dashboard must have a title',
+    }),
+  ],
 });
 
 export default class DashboardModel extends DeliverableItem.extend(Validations) {
@@ -44,16 +46,16 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   updatedOn!: Moment;
 
   @hasMany('dashboard-widget', { async: true })
-  widgets!: DS.PromiseManyArray<TODO>;
+  widgets!: DS.PromiseManyArray<DashboardWidget>;
 
   @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: [] })
   filters!: FragmentArray<FilterFragment>;
 
   @fragment('fragments/presentation', { defaultValue: () => ({}) })
-  presentation!: TODO;
+  presentation!: PresentationFragment;
 
   /**
-   * @property {Boolean} isUserOwner - user is the dashboard owner
+   * user is the dashboard owner
    */
   @computed('author')
   get isUserOwner() {
@@ -61,49 +63,48 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   }
 
   /**
-   * @property {Boolean} isUserEditor - user is in the dashboard editor list
+   * user is in the dashboard editor list
    */
   isUserEditor = false;
 
   /**
-   * @property {Boolean} canUserEdit - user has edit permissions for dashboard
+   * user has edit permissions for dashboard
    */
   @or('isUserOwner', 'isUserEditor')
   canUserEdit!: boolean;
 
   /**
-   * @property {Boolean} isFavorite - is favorite of author
+   * is favorite of author
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteDashboards = user.hasMany('favoriteDashboards').ids();
+    const favoriteDashboards = user?.hasMany('favoriteDashboards').ids();
     return A(favoriteDashboards).includes(this.get('id'));
   }
 
   /**
    * Clones the model
    *
-   * @method clone
-   * @returns Object - cloned Dashboard model
+   * @returns cloned Dashboard model
    */
   clone() {
     const user = this.user.getUser();
     const clonedDashboard = Object.assign(this.toJSON(), {
       author: user,
       widgets: [],
-      filters: this.filters.map(filter => {
+      filters: this.filters.map((filter) => {
         return this.store.createFragment('bard-request-v2/fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,
           operator: filter.operator,
           values: filter.values,
-          source: filter.source
+          source: filter.source,
         });
       }),
       presentation: copy(this.presentation),
       createdOn: null,
-      updatedOn: null
+      updatedOn: null,
     });
 
     return this.store.createRecord('dashboard', clonedDashboard);

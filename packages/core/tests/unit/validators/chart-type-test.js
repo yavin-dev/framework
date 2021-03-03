@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Validator | chart-type', function(hooks) {
+module('Unit | Validator | chart-type', function (hooks) {
   setupTest(hooks);
 
-  test('validate chart-type', function(assert) {
+  test('validate chart-type', function (assert) {
     assert.expect(3);
 
     let Validator = this.owner.lookup('validator:chart-type');

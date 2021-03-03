@@ -1,0 +1,127 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="container-full m-b-4">
+  <div class="row m-t-10">
+    <div class="col-1-1">
+      {{#if (feature-flag "enableDirectory")}}
+        <LinkTo @route="directory.my-data" class="dashboard-header__breadcrumb-link">Directory</LinkTo>
+      {{else}}
+        <LinkTo @route="dashboards" class="dashboard-header__breadcrumb-link">Dashboards</LinkTo>
+      {{/if}}
+    </div>
+  </div>
+  <div class="row">
+    <div class="xs-col-10-10 sm-col-10-10 col-3-10 p-x-0 p-t-8">
+      {{!-- Editable title --}}
+      <div class="dashboard-header__page-title">
+        {{#if @dashboard.canUserEdit}}
+          <EditableLabel
+            class="dashboard-header__edit-title"
+            @value={{@dashboard.title}}
+            @onChange={{route-action "updateTitle"}}
+          />
+        {{else}}
+          <span>{{@dashboard.title}}</span>
+        {{/if}}
+        <FavoriteItem
+          class="dashboard-header__fav-icon"
+          @user={{get-user}}
+          @item={{@dashboard}}
+          @click={{route-action "toggleFavorite" @dashboard}}
+        />
+      </div>
+    </div>
+    <div class="xs-col-10-10 sm-col-10-10 col-7-10 m-t-10 p-x-0">
+        <div class="dashboard-header__actions">
+          {{!-- Actions --}}
+          {{!-- Clone action enabled at all times --}}
+          <LinkTo
+            @route="dashboards.dashboard.clone"
+            @model={{@dashboard.id}}
+            class="dashboard-header__clone-btn button is-text is-medium"
+          >
+            <NaviIcon @icon="copy" class="m-r-6" />
+            Clone
+          </LinkTo>
+
+          {{#if (feature-flag "enableDashboardExport")}}
+            {{!-- Export action enabled if the dashboard is valid --}}
+            <DashboardActions::Export
+              class="dashboard-header__export-btn button is-text is-medium {{unless @dashboard.validations.isTruelyValid "disabled"}}"
+              @dashboard={{@dashboard}}
+              @disabled={{not @dashboard.validations.isTruelyValid}}
+            >
+              <NaviIcon @icon="download" class="m-r-6" />
+              Export
+            </DashboardActions::Export>
+          {{/if}}
+
+          {{!-- Share action enables when dashboard is valid --}}
+          <CommonActions::Share
+            class="dashboard-header__share-btn button is-text is-medium"
+            @pageTitle={{@dashboard.title}}
+            @disabled={{not @dashboard.validations.isTruelyValid}}
+          >
+            <NaviIcon @icon="share" class="m-r-6" />
+            Share
+          </CommonActions::Share>
+
+          {{!-- Delete visible when user owns the Dashboard --}}
+          {{#if @dashboard.isUserOwner}}
+            {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
+            {{#if (feature-flag "enableScheduleDashboards")}}
+              <DashboardActions::Schedule
+                class="dashboard-header__schedule-btn button is-text is-medium"
+                @model={{@dashboard}}
+                @disabled={{not @dashboard.validations.isTruelyValid}}
+                @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+                @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+                @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+              >
+                Schedule
+              </DashboardActions::Schedule>
+            {{/if}}
+
+            <CommonActions::Delete
+              class="dashboard-header__delete-btn button is-text is-medium"
+              @model={{@dashboard}}
+              @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
+              @deleteAction={{@deleteAction}}
+            >
+              <NaviIcon @icon="trash-o" class="m-r-6" />
+              Delete
+            </CommonActions::Delete>
+          {{/if}}
+
+          {{!-- Add Widget visible when user has edit permissions --}}
+          {{#if @dashboard.canUserEdit}}
+            <DashboardActions::AddWidget
+              @reports={{get (get-user) "reports"}}
+              @dashboard={{@dashboard}}
+              @onSelectReport={{@addWidgetToDashboard}}
+              as |toggleModal|
+            >
+              <DenaliButton
+                @size="medium"
+                {{on "click" toggleModal}}
+                class="dashboard-header__add-widget-btn m-x-10"
+              >
+                Add Widget
+              </DenaliButton>
+            </DashboardActions::AddWidget>
+          {{/if}}
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-1-1">
+      {{#if (feature-flag "enableDashboardFilters")}}
+        <DashboardFilters
+          @dashboard={{@dashboard}}
+          @onUpdateFilter={{@onUpdateFilter}}
+          @onRemoveFilter={{@onRemoveFilter}}
+          @onAddFilter={{@onAddFilter}}
+        />
+      {{/if}}
+    </div>
+  </div>
+</div>

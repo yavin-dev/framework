@@ -13,5 +13,5 @@ export default Controller.extend({
   /**
    * @property {String} unsavedWidgetId - uuid of unsaved widget
    */
-  unsavedWidgetId: ''
+  unsavedWidgetId: '',
 });

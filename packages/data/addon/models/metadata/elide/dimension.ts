@@ -12,7 +12,8 @@ export interface ElideDimensionMetadataPayload extends DimensionMetadataPayload 
   values: string[];
 }
 
-export default class ElideDimensionMetadataModel extends DimensionMetadataModel
+export default class ElideDimensionMetadataModel
+  extends DimensionMetadataModel
   implements ElideDimensionMetadataPayload {
   valueSourceType!: ValueSourceType;
   tableSource!: string | null;

@@ -19,7 +19,7 @@ const TEMPLATE = hbs`
   />`;
 
 const data: CellRendererArgs['data'] = {
-  uniqueIdentifier: 172933788
+  uniqueIdentifier: 172933788,
 };
 
 interface TestContext extends Context {
@@ -28,10 +28,10 @@ interface TestContext extends Context {
   request: RequestFragment;
 }
 
-module('Integration | Component | cell renderers/metric', function(hooks) {
+module('Integration | Component | cell renderers/metric', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
 
     this.set('data', data);
@@ -43,7 +43,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
         sorts: [],
         requestVersion: '2.0',
         dataSource: 'bardOne',
-        table: 'network'
+        table: 'network',
       })
     );
 
@@ -51,12 +51,12 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: fragment.cid
+      columnId: fragment.cid,
     };
     this.set('column', column);
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(2);
     await render(TEMPLATE);
 
@@ -64,7 +64,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('172933788', 'The metric cell renders the value with commas correctly');
   });
 
-  test('metric renders zero value correctly', async function(assert) {
+  test('metric renders zero value correctly', async function (assert) {
     assert.expect(1);
 
     this.set('data', { uniqueIdentifier: 0 });
@@ -74,7 +74,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('0', 'The metric cell renders the zero value correctly');
   });
 
-  test('metric renders values > 100 correctly', async function(assert) {
+  test('metric renders values > 100 correctly', async function (assert) {
     assert.expect(1);
 
     this.set('data', { uniqueIdentifier: 12345678 });
@@ -84,7 +84,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('12345678', 'The metric cell renders the decimal value correctly');
   });
 
-  test('metric renders decimal value between 1 and 100 correctly', async function(assert) {
+  test('metric renders decimal value between 1 and 100 correctly', async function (assert) {
     assert.expect(1);
 
     this.set('data', { uniqueIdentifier: 99 });
@@ -96,7 +96,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
       .hasText('99', 'The metric cell renders the decimal value between 1 and 100 correctly');
   });
 
-  test('metric renders decimal value between 0.0001 and 1 correctly', async function(assert) {
+  test('metric renders decimal value between 0.0001 and 1 correctly', async function (assert) {
     assert.expect(1);
     this.set('data', { uniqueIdentifier: 0.001234 });
 
@@ -107,7 +107,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
       .hasText('0.001234', 'The metric cell renders the decimal value between 0.0001 and 1 correctly');
   });
 
-  test('metric renders decimal value less than 0.0001 correctly', async function(assert) {
+  test('metric renders decimal value less than 0.0001 correctly', async function (assert) {
     assert.expect(1);
     this.set('data', { uniqueIdentifier: 0.00001234 });
 
@@ -118,7 +118,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
       .hasText('0.00001234', 'The metric cell renders the decimal value less than 0.0001 correctly');
   });
 
-  test('metric renders null value correctly', async function(assert) {
+  test('metric renders null value correctly', async function (assert) {
     assert.expect(1);
 
     this.set('data', { uniqueIdentifier: null });
@@ -127,7 +127,7 @@ module('Integration | Component | cell renderers/metric', function(hooks) {
     assert.dom('.table-cell-content').hasText('--', 'The metric cell renders the null value with -- correctly');
   });
 
-  test('render value based on column format', async function(this: TestContext, assert) {
+  test('render value based on column format', async function (this: TestContext, assert) {
     assert.expect(1);
 
     this.set('column', merge({}, this.column, { attributes: { format: '$0,0[.]00' } }));

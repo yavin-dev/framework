@@ -1,11 +1,14 @@
 /**
  * Usage:
  * <NaviVisualizationConfig::<%= classifiedModuleName %>
- *   @request=request
- *   @response=response
- *   @options=tableOptions
+ *   @request={{this.request}}
+ *   @response={{this.response}}
+ *   @options={{this.options}}
+ *   @onUpdateConfig={{this.onUpdateConfig}}
  * />
  */
-<%= importComponent %>
-<%= importTemplate('navi-visualization-config') %>
-export default <%= defaultExport %>
+import NaviVisualizationConfigBaseComponent from 'navi-core/components/navi-visualization-config/base';
+
+export default class <%= classifiedModuleName %>Config extends NaviVisualizationConfigBaseComponent {
+
+}

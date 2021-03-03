@@ -6,11 +6,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext } from 'ember-test-helpers';
 import Service from '@ember/service';
 
-module('Acceptance | Mobile test', function(hooks) {
+module('Acceptance | Mobile test', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.owner.register(
       'service:screen',
       class extends Service {
@@ -19,7 +19,7 @@ module('Acceptance | Mobile test', function(hooks) {
     );
   });
 
-  test('verify the different time grains work as expected - bard', async function(assert) {
+  test('verify the different time grains work as expected - bard', async function (assert) {
     await visit('/reports/1/edit');
 
     assert.dom('.navi-column-config__panel').doesNotExist('The column config panel is collapsed on mobile');

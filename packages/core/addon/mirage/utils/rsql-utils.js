@@ -19,7 +19,7 @@ export function getFilterParams(queryFilter) {
     return queryFilter
       .replace(/[()*']/g, '')
       .split(',')
-      .map(el => el.split('=='));
+      .map((el) => el.split('=='));
   }
   return null;
 }
@@ -54,10 +54,10 @@ export function filterModel(model, queryFilter) {
     if (filterParameters == null && author == null) {
       throw new Error('No search parameters');
     }
-    modelObject = model.where(report => {
+    modelObject = model.where((report) => {
       // Author can be optional, ie., not included in the query, but filterparameters are always included.
       const matchesFilterParameterIfExists = filterParameters
-        ? filterParameters.some(filterParameter =>
+        ? filterParameters.some((filterParameter) =>
             JSON.stringify(report[filterParameter[0]]).match(new RegExp(filterParameter[1], 'i'))
           )
         : false;
@@ -69,7 +69,7 @@ export function filterModel(model, queryFilter) {
       400,
       { data: {} },
       {
-        errors: ['InvalidPredicateException: Invalid filter format']
+        errors: ['InvalidPredicateException: Invalid filter format'],
       }
     );
   }

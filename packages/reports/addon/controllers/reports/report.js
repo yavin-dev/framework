@@ -12,7 +12,7 @@ const REPORT_STATE = {
   RUNNING: 'running',
   EDITING: 'editing',
   COMPLETED: 'completed',
-  FAILED: 'failed'
+  FAILED: 'failed',
 };
 
 export default class ReportsReportController extends Controller {

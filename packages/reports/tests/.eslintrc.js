@@ -1,15 +1,15 @@
 module.exports = {
   env: {
-    embertest: true
+    embertest: true,
   },
   globals: {
     $: true,
     server: true,
     wait: true,
     reorder: true,
-    drag: true
+    drag: true,
   },
   rules: {
-    'multiline-comment-style': ['error', 'starred-block']
-  }
+    'multiline-comment-style': ['error', 'starred-block'],
+  },
 };

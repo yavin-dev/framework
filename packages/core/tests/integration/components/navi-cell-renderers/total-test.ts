@@ -19,7 +19,7 @@ const TEMPLATE = hbs`
   />`;
 
 const data: CellRendererArgs['data'] = {
-  'network.dateTime(grain=day)': 'Header'
+  'network.dateTime(grain=day)': 'Header',
 };
 
 interface TestContext extends Context {
@@ -28,10 +28,10 @@ interface TestContext extends Context {
   request: RequestFragment;
 }
 
-module('Integration | Component | cell renderers/total', function(hooks) {
+module('Integration | Component | cell renderers/total', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
 
     this.set('data', data);
@@ -43,14 +43,14 @@ module('Integration | Component | cell renderers/total', function(hooks) {
             type: 'timeDimension',
             field: 'network.dateTime',
             parameters: { grain: 'day' },
-            source: 'bardOne'
-          }
+            source: 'bardOne',
+          },
         ],
         filters: [],
         sorts: [],
         requestVersion: '2.0',
         dataSource: 'bardOne',
-        table: 'network'
+        table: 'network',
       })
     );
 
@@ -58,14 +58,14 @@ module('Integration | Component | cell renderers/total', function(hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
-      columnId: fragment.cid
+      columnId: fragment.cid,
     };
     this.set('column', column);
 
     await render(TEMPLATE);
   });
 
-  test('it renders', function(assert) {
+  test('it renders', function (assert) {
     assert.expect(5);
 
     assert.dom('.table-cell--total').isVisible('the total cell is rendered');
@@ -78,8 +78,8 @@ module('Integration | Component | cell renderers/total', function(hooks) {
       'data',
       merge({}, data, {
         __meta__: {
-          hasPartialData: true
-        }
+          hasPartialData: true,
+        },
       })
     );
 

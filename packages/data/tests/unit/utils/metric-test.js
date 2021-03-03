@@ -6,12 +6,12 @@ import {
   canonicalizeAlias,
   parseMetricName,
   mapColumnAttributes,
-  canonicalizeColumnAttributes
+  canonicalizeColumnAttributes,
 } from 'navi-data/utils/metric';
 import { module, test } from 'qunit';
 
-module('Unit - Utils - Metrics Utils', function() {
-  test('canonicalize metric', function(assert) {
+module('Unit - Utils - Metrics Utils', function () {
+  test('canonicalize metric', function (assert) {
     assert.expect(6);
     assert.equal(canonicalizeMetric({ metric: 'foo' }), 'foo', 'correctly serializes metric with no params');
 
@@ -46,7 +46,7 @@ module('Unit - Utils - Metrics Utils', function() {
     );
   });
 
-  test('has parameters check', function(assert) {
+  test('has parameters check', function (assert) {
     assert.expect(5);
     assert.equal(hasParameters({ metric: 'foo' }), false, 'metric with no params');
 
@@ -59,7 +59,7 @@ module('Unit - Utils - Metrics Utils', function() {
     assert.equal(hasParameters({ metric: 'foo', parameters: { p1: '100', a: '12' } }), true, 'multiple params');
   });
 
-  test('serialize parameters check', function(assert) {
+  test('serialize parameters check', function (assert) {
     assert.expect(3);
     assert.equal(serializeParameters({}), '', 'metric with no params');
 
@@ -68,18 +68,18 @@ module('Unit - Utils - Metrics Utils', function() {
     assert.equal(serializeParameters({ currency: 'USD' }), 'currency=USD', 'metric with single parameters');
   });
 
-  test('alias map generator check', function(assert) {
+  test('alias map generator check', function (assert) {
     assert.expect(3);
     let metrics = [
       { metric: 'foo' },
       { metric: 'bar', parameters: { pos: 1, as: 'm1' } },
-      { metric: 'ham', parameters: { pos: 3, as: 'm2' } }
+      { metric: 'ham', parameters: { pos: 3, as: 'm2' } },
     ];
     assert.deepEqual(
       getAliasedMetrics(metrics),
       {
         m1: 'bar(pos=1)',
-        m2: 'ham(pos=3)'
+        m2: 'ham(pos=3)',
       },
       'generates map correctly'
     );
@@ -93,11 +93,11 @@ module('Unit - Utils - Metrics Utils', function() {
     );
   });
 
-  test('get canonicalized metric from alias', function(assert) {
+  test('get canonicalized metric from alias', function (assert) {
     assert.expect(4);
     let aliasMap = {
       m1: 'bar(pos=1)',
-      m2: 'ham(pos=3)'
+      m2: 'ham(pos=3)',
     };
 
     assert.equal(canonicalizeAlias('m1', aliasMap), 'bar(pos=1)', 'gets canonicalized metric from alias');
@@ -106,7 +106,7 @@ module('Unit - Utils - Metrics Utils', function() {
     assert.equal(canonicalizeAlias('m1', {}), 'm1', 'returns alias with empty alias map');
   });
 
-  test('parse metric name into object', function(assert) {
+  test('parse metric name into object', function (assert) {
     assert.expect(7);
 
     let metricString = 'base(param=paramVal)';
@@ -129,7 +129,7 @@ module('Unit - Utils - Metrics Utils', function() {
       parseMetricName(metricString),
       {
         metric: 'base',
-        parameters: { param1: 'paramVal1', param2: 'paramVal2' }
+        parameters: { param1: 'paramVal1', param2: 'paramVal2' },
       },
       'Parser correctly constructs a metric object with multiple parameters'
     );
@@ -139,7 +139,7 @@ module('Unit - Utils - Metrics Utils', function() {
       parseMetricName(metricString),
       {
         metric: 'base',
-        parameters: { param1: 'paramVal1', param2: 'paramVal2' }
+        parameters: { param1: 'paramVal1', param2: 'paramVal2' },
       },
       'Parser correctly constructs a metric object with multiple parameters even with a space'
     );
@@ -166,7 +166,7 @@ module('Unit - Utils - Metrics Utils', function() {
     );
   });
 
-  test('map column attributes to object', function(assert) {
+  test('map column attributes to object', function (assert) {
     assert.expect(6);
 
     assert.deepEqual(
@@ -191,7 +191,7 @@ module('Unit - Utils - Metrics Utils', function() {
       mapColumnAttributes({ name: 'base', parameters: { param1: 'paramVal1', param2: 'paramVal2' } }),
       {
         metric: 'base',
-        parameters: { param1: 'paramVal1', param2: 'paramVal2' }
+        parameters: { param1: 'paramVal1', param2: 'paramVal2' },
       },
       'Mapper correctly constructs a metric object given multiple parameters'
     );
@@ -209,7 +209,7 @@ module('Unit - Utils - Metrics Utils', function() {
     );
   });
 
-  test('canonicalize column attributes', function(assert) {
+  test('canonicalize column attributes', function (assert) {
     assert.expect(5);
     assert.equal(canonicalizeColumnAttributes({ name: 'foo' }), 'foo', 'correctly serializes metric with no params');
 

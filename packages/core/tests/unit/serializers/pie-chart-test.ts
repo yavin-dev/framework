@@ -19,11 +19,11 @@ function pieChartWithMetric(metric: string | { metric: string; parameters?: {} }
           dimensionOrder: ['age'],
           dimensions: [
             { name: '18-20,US', values: { age: '3', propertyCountry: 'US' } },
-            { name: '21-24,US', values: { age: '4', propertyCountry: 'US' } }
-          ]
-        }
-      }
-    }
+            { name: '21-24,US', values: { age: '4', propertyCountry: 'US' } },
+          ],
+        },
+      },
+    },
   };
 }
 
@@ -38,19 +38,19 @@ function pieChartExpectedWithMetric(metricCid: string): PieChartConfig {
           metricCid,
           dimensions: [
             { name: '18-20,US', values: { cid_age: '3', cid_propertyCountry: 'US' } },
-            { name: '21-24,US', values: { cid_age: '4', cid_propertyCountry: 'US' } }
-          ]
-        }
-      }
-    }
+            { name: '21-24,US', values: { cid_age: '4', cid_propertyCountry: 'US' } },
+          ],
+        },
+      },
+    },
   };
 }
 
-module('Unit | Serializer | pie chart', function(hooks) {
+module('Unit | Serializer | pie chart', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  test('normalizePieChartV2', function(assert) {
+  test('normalizePieChartV2', function (assert) {
     const request: RequestV2 = {
       requestVersion: '2.0',
       table: 'network',
@@ -62,7 +62,7 @@ module('Unit | Serializer | pie chart', function(hooks) {
           type: 'metric',
           field: 'uniqueIdentifier',
           parameters: { param: 'val' },
-          alias: null
+          alias: null,
         },
         { cid: 'cid_age', type: 'dimension', field: 'age', parameters: { field: 'id' }, alias: null },
         {
@@ -70,15 +70,15 @@ module('Unit | Serializer | pie chart', function(hooks) {
           type: 'dimension',
           field: 'propertyCountry',
           parameters: { field: 'id' },
-          alias: null
-        }
+          alias: null,
+        },
       ],
       filters: [
         { type: 'dimension', field: 'propertyCountry', parameters: { field: 'id' }, operator: 'in', values: ['US'] },
-        { type: 'dimension', field: 'age', parameters: { field: 'id' }, operator: 'notin', values: ['-1', '-2', '-3'] }
+        { type: 'dimension', field: 'age', parameters: { field: 'id' }, operator: 'notin', values: ['-1', '-2', '-3'] },
       ],
       sorts: [],
-      limit: null
+      limit: null,
     };
 
     const expected = pieChartExpectedWithMetric('cid_uniqueIdentifier');

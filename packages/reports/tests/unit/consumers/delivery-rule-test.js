@@ -8,16 +8,16 @@ import Response from 'ember-cli-mirage/response';
 
 let Store;
 
-module('Unit | Consumer | delivery-rule', function(hooks) {
+module('Unit | Consumer | delivery-rule', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('delete delivery-rule - success', function(assert) {
+  test('delete delivery-rule - success', function (assert) {
     assert.expect(2);
 
     let Consumer = this.owner.lookup('consumer:delivery-rule'),
@@ -27,7 +27,7 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
         },
         reject() {
           assert.notOk(true, 'Passed in promise is not rejected when delete is successful');
-        }
+        },
       };
 
     return run(() => {
@@ -35,7 +35,7 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
         id: 1,
         deliveryType: 'report',
         deliveredItem: {},
-        owner: 'navi_user'
+        owner: 'navi_user',
       });
       assert.ok(Store.hasRecordForId('delivery-rule', 1), 'Delivery Rule 1 is available in the store');
 
@@ -43,7 +43,7 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
     });
   });
 
-  test('delete delivery-rule - failure', function(assert) {
+  test('delete delivery-rule - failure', function (assert) {
     assert.expect(2);
 
     //Mock Server Endpoint
@@ -58,11 +58,11 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
         },
         reject() {
           assert.ok(Store.hasRecordForId('delivery-rule', 2), 'Delivery Rule is not deleted from the store');
-        }
+        },
       };
 
     return run(() => {
-      return Store.findRecord('delivery-rule', 2).then(rule => {
+      return Store.findRecord('delivery-rule', 2).then((rule) => {
         assert.ok(Store.hasRecordForId('delivery-rule', 2), 'Delivery Rule 1 is available in the store');
 
         Consumer.send('deleteDeliveryRule', rule, promise);
@@ -72,7 +72,7 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
     });
   });
 
-  test('save delivery-rule - success', function(assert) {
+  test('save delivery-rule - success', function (assert) {
     assert.expect(3);
 
     let Consumer = this.owner.lookup('consumer:delivery-rule'),
@@ -82,17 +82,17 @@ module('Unit | Consumer | delivery-rule', function(hooks) {
         },
         reject() {
           assert.notOk(true, 'Passed in promise is not rejected when save succeeds');
-        }
+        },
       };
 
     return run(() => {
-      return Store.findRecord('report', 1).then(report => {
-        return get(report, 'author').then(owner => {
+      return Store.findRecord('report', 1).then((report) => {
+        return get(report, 'author').then((owner) => {
           let newRule = Store.createRecord('delivery-rule', {
             deliveryType: 'report',
             format: { type: 'csv' },
             deliveredItem: report,
-            owner
+            owner,
           });
 
           assert.ok(get(newRule, 'hasDirtyAttributes'), 'Delivery rule is not saved');

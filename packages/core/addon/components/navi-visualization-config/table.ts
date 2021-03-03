@@ -33,7 +33,7 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
   get selectedSubtotal(): ColumnFragment | undefined {
     const { options, request } = this.args;
     const subtotalCid = options?.showTotals?.subtotal;
-    return request.columns.find(column => column.cid === subtotalCid);
+    return request.columns.find((column) => column.cid === subtotalCid);
   }
 
   /**
@@ -57,7 +57,7 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
       const { request } = this.args;
       const firstDim = request.dimensionColumns[0];
       this.args.onUpdateConfig({
-        showTotals: { subtotal: firstDim?.cid }
+        showTotals: { subtotal: firstDim?.cid },
       });
     } else if (this.args.options?.showTotals?.subtotal !== undefined) {
       const newOptions = { ...this.args.options };

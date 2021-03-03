@@ -13,15 +13,15 @@ const TEMPLATE = hbs`<NaviDatePicker
   @onUpdate={{this.onUpdate}}
 />`;
 
-module('Integration | Component | Navi Date Picker', function(hooks) {
+module('Integration | Component | Navi Date Picker', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('dateTimePeriod', 'day');
     this.set('onUpdate', () => undefined);
   });
 
-  test('Select date', async function(assert) {
+  test('Select date', async function (assert) {
     assert.expect(7);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -59,7 +59,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       .exists({ count: 1 }, 'No date, even a future date is out of range');
   });
 
-  test('Change date through calendar, then through attr', async function(assert) {
+  test('Change date through calendar, then through attr', async function (assert) {
     assert.expect(3);
 
     let originalDate = moment.utc('2015-07-14', TEST_FORMAT),
@@ -82,7 +82,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.ok(!isDayActive(clickDate), 'Clicked date is no longer selected');
   });
 
-  test('Change center date - hour', async function(assert) {
+  test('Change center date - hour', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -99,7 +99,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
   });
 
-  test('Change center date - day', async function(assert) {
+  test('Change center date - day', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -116,7 +116,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
   });
 
-  test('Change center date - week', async function(assert) {
+  test('Change center date - week', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -133,7 +133,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.equal(getMonth(), 'August', 'The center date goes one month ahead of original');
   });
 
-  test('Change center date - month', async function(assert) {
+  test('Change center date - month', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-01', TEST_FORMAT));
@@ -156,7 +156,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       .hasText('2016', 'The center date goes one year ahead of original');
   });
 
-  test('Change center date - quarter', async function(assert) {
+  test('Change center date - quarter', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -179,7 +179,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       .hasText('2016', 'The center date goes one year ahead of original');
   });
 
-  test('Change center date - year', async function(assert) {
+  test('Change center date - year', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -204,7 +204,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       .hasText(`2020's`, 'The center date goes one decade ahead of original');
   });
 
-  test('Change center date through select', async function(assert) {
+  test('Change center date through select', async function (assert) {
     assert.expect(4);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -230,14 +230,14 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.equal(getYear(), '2016', 'The center date changes to next year');
   });
 
-  test('Change date action', async function(assert) {
+  test('Change date action', async function (assert) {
     assert.expect(3);
 
     const originalDate = moment.utc('2015-07-14', TEST_FORMAT);
     const newDate = moment.utc('2015-07-18', TEST_FORMAT);
 
     this.set('date', originalDate);
-    this.set('onUpdate', date => {
+    this.set('onUpdate', (date) => {
       assert.ok(date.isSame(newDate), 'onUpdate action was called with new date');
       this.set('date', date);
     });
@@ -262,14 +262,14 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     await click(dayElementSelector(newDate));
   });
 
-  test('Change date action always gives start of time period', async function(assert) {
+  test('Change date action always gives start of time period', async function (assert) {
     assert.expect(1);
 
     let originalDate = moment.utc('2015-07-14', TEST_FORMAT);
 
     this.set('date', originalDate);
     this.set('dateTimePeriod', 'isoWeek');
-    this.set('onUpdate', date =>
+    this.set('onUpdate', (date) =>
       assert.ok(date.isSame(originalDate.startOf('isoweek')), 'onUpdate action was called with start of week')
     );
     await render(TEMPLATE);
@@ -277,7 +277,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     await click(dayElementSelector(originalDate.clone().subtract(1, 'day')));
   });
 
-  test('Selection view changes with time period', async function(assert) {
+  test('Selection view changes with time period', async function (assert) {
     assert.expect(9);
 
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
@@ -299,7 +299,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.dom('.ember-power-calendar-days').doesNotExist('"dateTimePeriod: year" does not use day view');
   });
 
-  test('Selection changes with time period', async function(assert) {
+  test('Selection changes with time period', async function (assert) {
     assert.expect(10);
 
     let startDate = moment.utc('2015-06-14', TEST_FORMAT),
@@ -347,7 +347,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
       .hasText('2015', 'Month to Quarter Selection - Previously selected quarter is converted to its year');
   });
 
-  test('Click same date twice', async function(assert) {
+  test('Click same date twice', async function (assert) {
     assert.expect(2);
 
     let clickDate = moment.utc('2015-07-15', TEST_FORMAT);
@@ -363,7 +363,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     assert.ok(isWeekActive(clickDate), 'Newly clicked week is still selected after clicking twice');
   });
 
-  test('Start date', async function(assert) {
+  test('Start date', async function (assert) {
     assert.expect(4);
 
     let originalEpoch = config.navi.dataEpoch,
@@ -384,11 +384,7 @@ module('Integration | Component | Navi Date Picker', function(hooks) {
     /* == IsoWeek Selection == */
     this.set('dateTimePeriod', 'isoWeek');
 
-    let startOfFirstFullWeek = epochDay
-        .clone()
-        .add(1, 'isoWeek')
-        .subtract(1, 'day')
-        .startOf('isoWeek'),
+    let startOfFirstFullWeek = epochDay.clone().add(1, 'isoWeek').subtract(1, 'day').startOf('isoWeek'),
       dayBeforeFirstWeek = startOfFirstFullWeek.clone().subtract(1, 'day');
 
     assert.ok(

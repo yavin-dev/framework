@@ -1,8 +1,8 @@
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { module, test } from 'qunit';
 
-module('Unit | Helpers | Smart Format Number', function() {
-  test('smartFormatNumber', function(assert) {
+module('Unit | Helpers | Smart Format Number', function () {
+  test('smartFormatNumber', function (assert) {
     assert.expect(17);
 
     assert.equal(smartFormatNumber([100000]), '100,000', 'Numbers > 100 are formatted properly');

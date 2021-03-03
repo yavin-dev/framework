@@ -4,11 +4,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Route, Store, MetadataService, compression;
 
-module('Unit | Route | dashboards/dashboard/view', function(hooks) {
+module('Unit | Route | dashboards/dashboard/view', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Route = this.owner.lookup('route:dashboards/dashboard/view');
     this.owner.lookup('service:user').findUser();
     Store = this.owner.lookup('service:store');
@@ -18,7 +18,7 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
     await MetadataService.loadMetadata();
   });
 
-  test('_addFiltersFromQueryParams', async function(assert) {
+  test('_addFiltersFromQueryParams', async function (assert) {
     assert.expect(7);
 
     let author = await Store.findRecord('user', 'navi_user'),
@@ -26,25 +26,25 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
         type: 'dimension',
         field: 'gender',
         parameters: {
-          field: 'id'
+          field: 'id',
         },
         operator: 'in',
         values: ['Male'],
-        source: 'bardOne'
+        source: 'bardOne',
       }),
       ageFilter = Store.createFragment('bard-request-v2/fragments/filter', {
         type: 'dimension',
         field: 'age',
         parameters: {
-          field: 'desc'
+          field: 'desc',
         },
         operator: 'notin',
         values: ['13-17', '18-20'],
-        source: 'bardOne'
+        source: 'bardOne',
       }),
       dashboard = Store.createRecord('dashboard', {
         title: 'Test Dashboard',
-        author
+        author,
       });
     assert.notOk(Route.get('filters'), 'No filter query params are set');
     assert.equal(dashboard.get('filters.length'), 0, 'Dashboard has no filters');
@@ -56,7 +56,7 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
     await Route._addFiltersFromQueryParams(dashboard, compressedFilters);
 
     assert.deepEqual(
-      dashboard.get('filters').map(fil => fil.serialize()),
+      dashboard.get('filters').map((fil) => fil.serialize()),
       [genderFilter.serialize(), ageFilter.serialize()],
       'Two filters are added from valid filter query params'
     );
@@ -65,7 +65,7 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
 
     assert.equal(dashboard.get('filters.length'), 0, 'Dashboard has no filters');
 
-    await Route._addFiltersFromQueryParams(dashboard, 'SomeInvalidFilterString').catch(e => {
+    await Route._addFiltersFromQueryParams(dashboard, 'SomeInvalidFilterString').catch((e) => {
       assert.equal(
         e.message,
         `Error decompressing filter query params: SomeInvalidFilterString\nRangeError: Invalid array length`,
@@ -74,7 +74,7 @@ module('Unit | Route | dashboards/dashboard/view', function(hooks) {
     });
 
     let singleCompressedFilter = await compression.compress(ageFilter);
-    await Route._addFiltersFromQueryParams(dashboard, singleCompressedFilter).catch(e => {
+    await Route._addFiltersFromQueryParams(dashboard, singleCompressedFilter).catch((e) => {
       assert.equal(
         e.message,
         `Error decompressing filter query params: ${singleCompressedFilter}\nError: Filter query params are not valid filters`,

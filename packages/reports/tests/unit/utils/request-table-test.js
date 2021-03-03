@@ -2,30 +2,30 @@ import { module, test } from 'qunit';
 import { getDefaultTimeGrain } from 'navi-reports/utils/request-table';
 import config from 'ember-get-config';
 
-module('Unit | Utils | request table', function() {
-  test('getDefaultTimeGrain', function(assert) {
+module('Unit | Utils | request table', function () {
+  test('getDefaultTimeGrain', function (assert) {
     const { defaultTimeGrain } = config.navi;
 
     const timeGrains = [
       {
         id: 'hour',
-        name: 'Hour'
+        name: 'Hour',
       },
       {
         id: 'day',
-        name: 'Day'
+        name: 'Day',
       },
       {
         id: 'week',
-        name: 'Week'
-      }
+        name: 'Week',
+      },
     ];
 
     assert.deepEqual(
       getDefaultTimeGrain(timeGrains),
       {
         id: 'day',
-        name: 'Day'
+        name: 'Day',
       },
       'Returns the default time grain from config'
     );
@@ -35,7 +35,7 @@ module('Unit | Utils | request table', function() {
       getDefaultTimeGrain(timeGrains),
       {
         id: 'week',
-        name: 'Week'
+        name: 'Week',
       },
       'Returns the default time grain after config change'
     );
@@ -45,7 +45,7 @@ module('Unit | Utils | request table', function() {
       getDefaultTimeGrain(timeGrains),
       {
         id: 'hour',
-        name: 'Hour'
+        name: 'Hour',
       },
       'Returns the first time grain when default is not found'
     );

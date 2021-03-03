@@ -58,7 +58,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
-      return values.map(value => NaviDimensionModel.create({ value, dimensionColumn }));
+      return values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
     }
     return [];
   }
@@ -69,7 +69,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     this.args.onUpdateFilter({ values });
   }
 
-  @task(function*(this: DimensionSelectComponent, term: string) {
+  @task(function* (this: DimensionSelectComponent, term: string) {
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
 

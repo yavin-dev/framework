@@ -1,18 +1,18 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 
-module('Unit | Component | Report Actions | Base Action', function(hooks) {
+module('Unit | Component | Report Actions | Base Action', function (hooks) {
   setupTest(hooks);
 
-  test('actionDisabled', function(assert) {
+  test('actionDisabled', function (assert) {
     assert.expect(5);
     let component = this.owner.factoryFor('component:report-actions/base-action').create({
       report: {
         constructor: { modelName: 'report' },
         isOwner: true,
-        isNew: false
+        isNew: false,
       },
-      checkPermission: false
+      checkPermission: false,
     });
 
     assert.equal(
@@ -23,7 +23,7 @@ module('Unit | Component | Report Actions | Base Action', function(hooks) {
 
     component.set('report', {
       isOwner: false,
-      isNew: false
+      isNew: false,
     });
 
     assert.equal(
@@ -42,7 +42,7 @@ module('Unit | Component | Report Actions | Base Action', function(hooks) {
 
     component.set('report', {
       isOwner: true,
-      isNew: false
+      isNew: false,
     });
 
     assert.equal(
@@ -53,7 +53,7 @@ module('Unit | Component | Report Actions | Base Action', function(hooks) {
 
     component.set('report', {
       isOwner: true,
-      isNew: true
+      isNew: true,
     });
     assert.equal(
       component.get('actionDisabled'),

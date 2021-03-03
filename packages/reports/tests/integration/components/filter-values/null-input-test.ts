@@ -11,9 +11,9 @@ interface TestContext extends Context, ComponentArgs {
   fragmentFactory: FragmentFactory;
 }
 
-module('Integration | Component | filter values/null input', function(hooks) {
+module('Integration | Component | filter values/null input', function (hooks) {
   setupRenderingTest(hooks);
-  test('onUpdateFilter - non empty values', async function(this: TestContext, assert) {
+  test('onUpdateFilter - non empty values', async function (this: TestContext, assert) {
     assert.expect(0);
 
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;

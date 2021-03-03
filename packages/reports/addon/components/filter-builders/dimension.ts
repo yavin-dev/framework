@@ -11,7 +11,7 @@ export const OPERATORS = <const>{
   notin: 'notin',
   isnulltrue: 'isnulltrue',
   isnullfalse: 'isnullfalse',
-  contains: 'contains'
+  contains: 'contains',
 };
 type InternalOperatorType = typeof OPERATORS[keyof typeof OPERATORS];
 
@@ -26,12 +26,12 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
     let builder;
     if (operator === 'isnull' && values.length === 1) {
       if (values[0] === true) {
-        builder = this.valueBuilders.find(builder => builder.internalId === OPERATORS.isnulltrue);
+        builder = this.valueBuilders.find((builder) => builder.internalId === OPERATORS.isnulltrue);
       } else if (values[0] === false) {
-        builder = this.valueBuilders.find(builder => builder.internalId === OPERATORS.isnullfalse);
+        builder = this.valueBuilders.find((builder) => builder.internalId === OPERATORS.isnullfalse);
       }
     } else {
-      builder = this.valueBuilders.find(builder => builder.internalId === operator);
+      builder = this.valueBuilders.find((builder) => builder.internalId === operator);
     }
     assert(`Filter operator: '${operator}' does not provide a builder in: ${this.constructor.name}`, builder);
     return builder;
@@ -52,21 +52,21 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
         operator: 'isnull' as const,
         name: 'Is Empty',
         component: 'filter-values/null-input',
-        defaultValues: [true]
+        defaultValues: [true],
       },
       {
         internalId: OPERATORS.isnullfalse,
         operator: 'isnull' as const,
         name: 'Is Not Empty',
         component: 'filter-values/null-input',
-        defaultValues: [false]
+        defaultValues: [false],
       },
       {
         internalId: OPERATORS.contains,
         operator: 'contains' as const,
         name: 'Contains',
-        component: 'filter-values/multi-value-input'
-      }
+        component: 'filter-values/multi-value-input',
+      },
     ];
   }
 }

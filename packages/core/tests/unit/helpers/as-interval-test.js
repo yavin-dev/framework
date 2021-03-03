@@ -2,8 +2,8 @@ import { module, test } from 'qunit';
 import Interval from 'navi-data/utils/classes/interval';
 import { asInterval } from 'navi-core/helpers/as-interval';
 
-module('Unit | Helper | as interval', function() {
-  test('interval object returned from interval object or interval string', function(assert) {
+module('Unit | Helper | as interval', function () {
+  test('interval object returned from interval object or interval string', function (assert) {
     assert.expect(5);
     const expectedInterval = Interval.parseFromStrings('2018-10-31', '2018-11-01');
 

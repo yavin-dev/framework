@@ -133,7 +133,7 @@ const schema = gql`
     tags: [String!]
     columnType: ColumnType
     expression: String
-    supportedGrain: TimeDimensionGrainConnection
+    supportedGrains: TimeDimensionGrainConnection
     timeZone: TimeZone
   }
 

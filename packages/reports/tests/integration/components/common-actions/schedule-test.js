@@ -11,15 +11,15 @@ import RSVP from 'rsvp';
 const DeliveryRule = {
   frequency: 'Week',
   format: { type: 'csv' },
-  recipients: ['test@oath.com', 'rule@oath.com']
+  recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {
   title: 'Test Test',
-  deliveryRuleForUser: new RSVP.Promise(resolve => resolve(DeliveryRule))
+  deliveryRuleForUser: new RSVP.Promise((resolve) => resolve(DeliveryRule)),
 };
 const unscheduledModel = {
   title: 'Test Test',
-  deliveryRuleForUser: new RSVP.Promise(resolve => resolve(null))
+  deliveryRuleForUser: new RSVP.Promise((resolve) => resolve(null)),
 };
 
 const TEMPLATE = hbs`
@@ -31,16 +31,16 @@ const TEMPLATE = hbs`
   @disabled={{this.isDisabled}}
 />`;
 
-module('Integration | Component | common actions/schedule', function(hooks) {
+module('Integration | Component | common actions/schedule', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('onSaveAction', () => {});
     this.set('onRevertAction', () => {});
     this.set('onDeleteAction', () => {});
   });
 
-  test('schedule modal - test disabled', async function(assert) {
+  test('schedule modal - test disabled', async function (assert) {
     assert.expect(1);
     this.set('model', TestModel);
 
@@ -54,7 +54,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     );
   });
 
-  test('schedule modal - test enabled', async function(assert) {
+  test('schedule modal - test enabled', async function (assert) {
     assert.expect(1);
     this.set('model', TestModel);
 
@@ -65,7 +65,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.ok($('.schedule-action__button').is(':disabled'), 'Schedule is enabled when the disabled is set to false');
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(3);
 
     await render(TEMPLATE);
@@ -84,7 +84,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       .hasText('Schedule', 'When used in block mode, the text `Schedule` is displayed');
   });
 
-  test('schedule modal', async function(assert) {
+  test('schedule modal', async function (assert) {
     assert.expect(9);
 
     this.set('model', unscheduledModel);
@@ -96,9 +96,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.ok($('.navi-modal').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
     assert.equal(
-      $('.primary-header')
-        .text()
-        .trim(),
+      $('.primary-header').text().trim(),
       'Schedule "Test Test"',
       'The primary header makes use of the modelName appropriately'
     );
@@ -106,11 +104,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.deepEqual(
       $('.schedule-modal__label')
         .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+        .map((el) => $(el).text().trim()),
       ['Recipients', 'Frequency', 'Format', 'Only send if data is present'],
       'Schedule Modal has all the expected sections'
     );
@@ -130,26 +124,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'Schedule Modal component renders an dropdown for formats'
     );
 
-    assert.equal(
-      $('.schedule-modal__frequency-trigger')
-        .text()
-        .trim(),
-      'Week',
-      'Week is the default frequency value'
-    );
+    assert.equal($('.schedule-modal__frequency-trigger').text().trim(), 'Week', 'Week is the default frequency value');
 
-    assert.equal(
-      $('.schedule-modal__format-trigger')
-        .text()
-        .trim(),
-      'csv',
-      '`.csv` is the default format value'
-    );
+    assert.equal($('.schedule-modal__format-trigger').text().trim(), 'csv', '`.csv` is the default format value');
 
     assert.notOk($('.schedule-modal__rejected').is(':visible'), 'rejected error does not show');
   });
 
-  test('schedule modal - delivery rule passed in', async function(assert) {
+  test('schedule modal - delivery rule passed in', async function (assert) {
     assert.expect(2);
     this.set('model', TestModel);
 
@@ -160,21 +142,19 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     assert.deepEqual(
       $('.schedule-modal__input--recipients .tag')
         .toArray()
-        .map(e => e.textContent.trim()),
+        .map((e) => e.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
       'The recipients are fetched from the delivery rule'
     );
 
     assert.equal(
-      $('.schedule-modal__frequency-trigger')
-        .text()
-        .trim(),
+      $('.schedule-modal__frequency-trigger').text().trim(),
       'Week',
       'The frequency is fetched from the delivery rule'
     );
   });
 
-  test('onSave Action', async function(assert) {
+  test('onSave Action', async function (assert) {
     assert.expect(9);
 
     this.set('model', unscheduledModel);
@@ -207,7 +187,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
       'The save button should be enabled after making valid changes'
     );
 
-    this.set('onSaveAction', rule => {
+    this.set('onSaveAction', (rule) => {
       assert.equal(rule.get('frequency'), 'month', 'Selected frequency is updated in the delivery rule');
 
       assert.deepEqual(
@@ -227,15 +207,13 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await click('.schedule-modal__save-btn');
 
     assert.equal(
-      $('.schedule-modal__cancel-btn')
-        .text()
-        .trim(),
+      $('.schedule-modal__cancel-btn').text().trim(),
       'Close',
       'Show close button after save a delivery rule'
     );
   });
 
-  test('onRevert Action', async function(assert) {
+  test('onRevert Action', async function (assert) {
     assert.expect(1);
 
     this.set('model', TestModel);
@@ -253,7 +231,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await click('.schedule-modal__cancel-btn');
   });
 
-  test('onDelete action', async function(assert) {
+  test('onDelete action', async function (assert) {
     assert.expect(2);
 
     this.set('deliveryRule', DeliveryRule);
@@ -279,7 +257,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     await click('.delete__delete-btn');
   });
 
-  test('frequency options - default', async function(assert) {
+  test('frequency options - default', async function (assert) {
     assert.expect(1);
 
     this.set('model', TestModel);
@@ -289,13 +267,13 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-modal__frequency-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Day', 'Week', 'Month', 'Quarter', 'Year'],
       'Schedule frequency should have correct default options'
     );
   });
 
-  test('frequency options - config schedule', async function(assert) {
+  test('frequency options - config schedule', async function (assert) {
     assert.expect(1);
 
     let originalSchedule = config.navi.schedule;
@@ -308,14 +286,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-modal__frequency-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Day', 'Week', 'Month'],
       'Schedule frequency should have correct options'
     );
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - config formats', async function(assert) {
+  test('format options - config formats', async function (assert) {
     assert.expect(1);
 
     let originalSchedule = config.navi.schedule;
@@ -328,14 +306,14 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-modal__format-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['csv', 'test'],
       'Schedule format should have correct options'
     );
     config.navi.schedule = originalSchedule;
   });
 
-  test('format options - fallback to `exportFileTypes`', async function(assert) {
+  test('format options - fallback to `exportFileTypes`', async function (assert) {
     assert.expect(1);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
@@ -347,7 +325,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
 
     await click('.schedule-modal__format-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['csv', 'pdf', 'png'],
       'Schedule format should have correct options'
     );
@@ -355,7 +333,7 @@ module('Integration | Component | common actions/schedule', function(hooks) {
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
-  test('format options - config exportFileTypes is empty', async function(assert) {
+  test('format options - config exportFileTypes is empty', async function (assert) {
     assert.expect(2);
 
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 export function directoryRoutes(router, nestedRoutes = () => null) {
-  router.route('directory', function() {
+  router.route('directory', function () {
     this.route('my-data');
     nestedRoutes.apply(this);
   });

@@ -76,7 +76,7 @@ export default Route.extend({
   _deserializeUrlModel(modelString) {
     return get(this, 'compression')
       .decompressModel(modelString)
-      .then(model => {
+      .then((model) => {
         return this.store.createRecord('report', model.clone());
       })
       .catch(() => reject(new Error('Could not parse model query param')));
@@ -98,9 +98,9 @@ export default Route.extend({
       author,
       request: this.store.createFragment('bard-request-v2/request', {
         table: table.id,
-        dataSource: table.source
+        dataSource: table.source,
       }),
-      visualization: { type: defaultVisualization }
+      visualization: { type: defaultVisualization },
     });
     return report;
   },
@@ -114,11 +114,11 @@ export default Route.extend({
    */
   _getDefaultTable() {
     const { metadataService } = this;
-    const factTables = metadataService.all('table').filter(t => t.isFact === true);
-    let table = factTables.find(t => t.id === config.navi.defaultDataTable);
+    const factTables = metadataService.all('table').filter((t) => t.isFact === true);
+    let table = factTables.find((t) => t.id === config.navi.defaultDataTable);
     if (!table) {
       table = A(factTables).sortBy('name')[0];
     }
     return table;
-  }
+  },
 });

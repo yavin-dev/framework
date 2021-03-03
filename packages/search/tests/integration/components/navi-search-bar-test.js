@@ -6,23 +6,23 @@ import { hbs } from 'ember-cli-htmlbars';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { set } from '@ember/object';
 
-module('Integration | Component | navi-search-bar', function(hooks) {
+module('Integration | Component | navi-search-bar', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     const store = this.owner.lookup('service:store'),
       mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
       'service:user',
       Service.extend({
-        getUser: () => mockAuthor
+        getUser: () => mockAuthor,
       })
     );
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(1);
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.set('myAction', function(val) { ... });
@@ -32,7 +32,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.equal(this.element.textContent.trim(), '');
   });
 
-  test('perform search that returns results', async function(assert) {
+  test('perform search that returns results', async function (assert) {
     assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
@@ -42,7 +42,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.dom('.navi-search-results').hasText('Sample Revenue result Revenue success');
   });
 
-  test('perform search with special characters', async function(assert) {
+  test('perform search with special characters', async function (assert) {
     assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
@@ -52,7 +52,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.dom('.navi-search-results').hasText('No results', 'Search results return "No results"');
   });
 
-  test('perform search with no results', async function(assert) {
+  test('perform search with no results', async function (assert) {
     assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
@@ -62,7 +62,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.dom('.navi-search-results').hasText('No results', 'Search results return "No results"');
   });
 
-  test('perform empty search', async function(assert) {
+  test('perform empty search', async function (assert) {
     assert.expect(1);
     await render(hbs`<NaviSearchBar />`);
 
@@ -72,7 +72,7 @@ module('Integration | Component | navi-search-bar', function(hooks) {
     assert.dom('.navi-search-results').doesNotExist('Nothing happens if you search with empty query');
   });
 
-  test('pass focusOut function', async function(assert) {
+  test('pass focusOut function', async function (assert) {
     assert.expect(1);
     const done = assert.async();
 

@@ -16,26 +16,26 @@ const REPORTS = ArrayProxy.create({
       id: 1,
       title: 'Hyrule News',
       updatedOn: '2015-01-01 00:00:00',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 2,
       title: 'Hyrule Ad&Nav Clicks',
       updatedOn: '2015-01-01 00:00:00',
-      isFavorite: true
+      isFavorite: true,
     },
     {
       title: 'Unsaved report',
       updatedOn: '2015-01-01 00:00:00',
-      isFavorite: false
+      isFavorite: false,
     },
     {
       id: 10,
       title: 'No Data Report',
       updatedOn: '2016-02-10 17:00:44',
-      isFavorite: true
-    }
-  ])
+      isFavorite: true,
+    },
+  ]),
 });
 
 const TEMPLATE = hbs`
@@ -46,15 +46,15 @@ const TEMPLATE = hbs`
         )
     }}`;
 
-module('Integration | Component | navi collection', function(hooks) {
+module('Integration | Component | navi collection', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     // suppress report-actions/export component inside integration tests, since we are not testing it here
     this.owner.register('component:report-actions/export', Component.extend(), { instantiate: false });
   });
 
-  test('Table filtering', async function(assert) {
+  test('Table filtering', async function (assert) {
     assert.expect(2);
 
     this.set('reports', REPORTS);
@@ -64,7 +64,7 @@ module('Integration | Component | navi collection', function(hooks) {
     // Click "Favorites" filter option
     await selectChoose('.navi-collection__filter-trigger', 'All');
 
-    let listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
+    let listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent.trim());
 
     assert.deepEqual(
       listedReports,
@@ -74,7 +74,7 @@ module('Integration | Component | navi collection', function(hooks) {
 
     // Click "Favorites" filter option
     await selectChoose('.navi-collection__filter-trigger', 'Favorites');
-    listedReports = findAll('tbody tr td:first-of-type').map(el => el.textContent.trim());
+    listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent.trim());
 
     assert.deepEqual(
       listedReports,
@@ -83,7 +83,7 @@ module('Integration | Component | navi collection', function(hooks) {
     );
   });
 
-  test('Favorite icon', async function(assert) {
+  test('Favorite icon', async function (assert) {
     this.set('reports', REPORTS);
 
     await render(TEMPLATE);
@@ -100,7 +100,7 @@ module('Integration | Component | navi collection', function(hooks) {
       .hasClass('favorite-item--active', 'Report that is a favorite has favorite icon');
   });
 
-  test('Filterable Table', async function(assert) {
+  test('Filterable Table', async function (assert) {
     assert.expect(2);
 
     this.set('reports', REPORTS);
@@ -129,7 +129,7 @@ module('Integration | Component | navi collection', function(hooks) {
       .isVisible('Filter dropdown is shown when `filterable` flag is set to true in collection config');
   });
 
-  test('Actions in Table', async function(assert) {
+  test('Actions in Table', async function (assert) {
     assert.expect(2);
 
     this.set('reports', REPORTS);
@@ -146,7 +146,7 @@ module('Integration | Component | navi collection', function(hooks) {
     );
 
     this.owner.register('component:mock-actions-component', Component.extend(), {
-      instantiate: false
+      instantiate: false,
     });
 
     await render(hbs`
@@ -164,14 +164,14 @@ module('Integration | Component | navi collection', function(hooks) {
     );
   });
 
-  test('Error Message - default', async function(assert) {
+  test('Error Message - default', async function (assert) {
     assert.expect(2);
 
     this.set(
       'items',
       ArrayProxy.create({
         isSettled: true,
-        content: A()
+        content: A(),
       })
     );
 
@@ -195,14 +195,14 @@ module('Integration | Component | navi collection', function(hooks) {
     );
   });
 
-  test('Error Message - custom', async function(assert) {
+  test('Error Message - custom', async function (assert) {
     assert.expect(1);
 
     this.set(
       'items',
       ArrayProxy.create({
         isSettled: true,
-        content: A()
+        content: A(),
       })
     );
 

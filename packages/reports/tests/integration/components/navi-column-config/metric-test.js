@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, findAll, getContext, triggerEvent } from '@ember/test-helpers';
+import { render, click, findAll, getContext, triggerEvent, triggerKeyEvent, fillIn } from '@ember/test-helpers';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -12,23 +12,23 @@ const TEMPLATE = hbs`
 <NaviColumnConfig::Base
   @column={{this.column}}
   @cloneColumn={{optional this.cloneColumn}}
-  @toggleColumnFilter={{optional this.toggleColumnFilter}}
+  @onAddFilter={{optional this.onAddFilter}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{this.onUpdateColumnParam}}
 />
 `;
-module('Integration | Component | navi-column-config/metric', function(hooks) {
+module('Integration | Component | navi-column-config/metric', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
 
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
         ...this.column.fragment.parameters,
-        [paramId]: paramKey
+        [paramId]: paramKey,
       });
     };
   });
@@ -40,11 +40,11 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     return {
       isFiltered: false,
-      fragment
+      fragment,
     };
   }
 
-  test('Configuring multiple parameters', async function(assert) {
+  test('Configuring multiple parameters', async function (assert) {
     assert.expect(6);
 
     this.column = await getMetricColumn('multipleParamMetric', {
@@ -52,24 +52,24 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       aggregation: 'total',
       age: '6',
       currency: 'USD',
-      currencyButNullDefault: 'CAD'
+      currencyButNullDefault: 'CAD',
     });
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-label').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent.trim()),
       ['Type Type', 'Aggregation Type', 'Age Type', 'Currency Type', 'CurrencyButNullDefault Type'],
       'Multiple parameters config lists are displayed'
     );
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Multiple parameters values are filled in with selected values'
     );
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['Left', 'Right', 'Middle'],
       'Param values with name key show up correctly'
     );
@@ -81,7 +81,7 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Drams');
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
@@ -94,11 +94,11 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
 
     assertTooltipContent(assert, {
       targetSelector: '.ember-tooltip-target',
-      contentString: 'Gives the metric power to have directionality'
+      contentString: 'Gives the metric power to have directionality',
     });
   });
 
-  test('Configuring null parameter', async function(assert) {
+  test('Configuring null parameter', async function (assert) {
     assert.expect(2);
 
     this.column = await getMetricColumn('multipleParamMetric', {
@@ -106,12 +106,12 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
       aggregation: 'total',
       age: '6',
       currency: 'USD',
-      currencyButNullDefault: null
+      currencyButNullDefault: null,
     });
     await render(TEMPLATE);
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['', 'Total', '30-34', 'Dollars (USD)', ''],
       'Null parameters have no selected values in trigger'
     );
@@ -120,41 +120,41 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
     await selectChoose('.navi-column-config-item__parameter:last-child', 'Dollars (CAD)');
 
     assert.deepEqual(
-      findAll('.navi-column-config-item__parameter-trigger').map(el => el.textContent.trim()),
+      findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
       ['Right', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
       'Null value parameters can be changed'
     );
   });
 
-  test('Configuring metric column', async function(assert) {
-    assert.expect(4);
+  test('Configuring metric column', async function (assert) {
+    assert.expect(7);
 
     this.column = await getMetricColumn('revenue', { currency: 'USD' });
-    this.onRenameColumn = (/*newName*/) => {
+    this.onRenameColumn = (newName) => {
       // this must be called with action in the template
-      /**
-       * TODO: Reenable column relabeling, uncomment line below
-       */
-      // assert.equal(newName, 'Money', 'New display name is passed to name update action');
+      assert.equal(newName, 'Money', 'New display name is passed to name update action');
       return undefined;
     };
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
         ...this.column.fragment.parameters,
-        [paramId]: paramKey
+        [paramId]: paramKey,
       });
       assert.equal(`${paramId}=${paramKey}`, 'currency=CAD', 'Parameter is passed to onUpdateColumnParam method');
     };
     await render(TEMPLATE);
 
-    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Display name of column is shown in the column input');
+    const columnNameInput = '.navi-column-config-base__column-name input';
+    assert
+      .dom(columnNameInput)
+      .hasProperty('placeholder', 'Revenue (USD)', 'Display name of column is shown as a placeholder');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       [
         'NULL',
         'UNKNOWN',
@@ -169,19 +169,20 @@ module('Integration | Component | navi-column-config/metric', function(hooks) {
         'Dollars (CAD)',
         'Dollars (USD)',
         'Euro',
-        'Rupees'
+        'Rupees',
       ],
       'The parameter values are loaded into the dropdown'
     );
     await selectChoose('.navi-column-config-item__parameter', 'Dollars (CAD)');
 
-    // assert.dom('.navi-column-config-base__column-name-input').hasValue('Revenue', 'Custom display name is still shown when parameter is changed');
+    assert
+      .dom(columnNameInput)
+      .hasProperty('placeholder', 'Revenue (CAD)', 'Placeholder is updated when parameter is changed');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
       .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
 
-    // await fillIn('.navi-column-config-base__column-name-input', 'Money');
-
-    // await triggerKeyEvent('.navi-column-config-base__column-name-input', 'keyup', 13);
+    await fillIn(columnNameInput, 'Money');
+    await triggerKeyEvent(columnNameInput, 'keyup', 13);
   });
 });

@@ -127,7 +127,7 @@ export default class ColumnConsumer extends ActionConsumer {
       const { request } = route.modelFor(routeName) as ReportModel;
       // Metric filter can't exist without the metric present in the request
 
-      if (request.columns.find(column => column.type === 'metric' && column.columnMetadata === metricMetadataModel)) {
+      if (request.columns.find((column) => column.type === 'metric' && column.columnMetadata === metricMetadataModel)) {
         // When adding a metric filter with the requestPreview, users can add multiple of the same metric
         // So if the metric already exists we assume they don't want to add it again
         return;
@@ -156,11 +156,11 @@ export default class ColumnConsumer extends ActionConsumer {
        * .toArray() is used to clone the array, otherwise removing a column while
        * iterating over `request.columns` causes problems
        */
-      request.columns.toArray().forEach(column => {
+      request.columns.toArray().forEach((column) => {
         if (!validColumns.includes(column.columnMetadata)) {
           this.requestActionDispatcher.dispatch(RequestActions.REMOVE_COLUMN_FRAGMENT, route, column);
         }
       });
-    }
+    },
   };
 }

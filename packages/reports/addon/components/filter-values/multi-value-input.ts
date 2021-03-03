@@ -33,7 +33,7 @@ export default class MultiValueInput extends Component<Args> {
     tags.push(tag);
 
     this.args.onUpdateFilter({
-      values: tags.slice()
+      values: tags.slice(),
     });
   }
 
@@ -47,7 +47,7 @@ export default class MultiValueInput extends Component<Args> {
     tags.splice(index, 1);
 
     this.args.onUpdateFilter({
-      values: tags.slice()
+      values: tags.slice(),
     });
   }
 }

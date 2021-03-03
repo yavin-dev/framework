@@ -7,24 +7,24 @@ import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 
-module('Integration | Component | navi vis c3 chart', function(hooks) {
+module('Integration | Component | navi vis c3 chart', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     injectC3Enhancements();
   });
 
-  test('resize', async function(assert) {
+  test('resize', async function (assert) {
     let testContainer = Component.extend({
       classNames: ['test-container'],
-      layout: hbs`{{yield this}}`
+      layout: hbs`{{yield this}}`,
     });
 
     this.owner.register('component:test-container', testContainer);
 
     // mock data so chart won't complain
     this.set('data', {
-      columns: [['data1', 30, 200, 100, 400, 150, 250]]
+      columns: [['data1', 30, 200, 100, 400, 150, 250]],
     });
 
     //Mock addObserver, that is used by ember-c3
@@ -54,14 +54,14 @@ module('Integration | Component | navi vis c3 chart', function(hooks) {
     });
   });
 
-  test('series classes', async function(assert) {
+  test('series classes', async function (assert) {
     assert.expect(2);
 
     this.set('data', {
       columns: [
         ['series0', 30, 200, 100, 400, 150, 250],
-        ['series1', 30, 200, 100, 400, 150, 250]
-      ]
+        ['series1', 30, 200, 100, 400, 150, 250],
+      ],
     });
 
     await render(hbs`

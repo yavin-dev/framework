@@ -22,14 +22,14 @@ export default class TableController extends Controller {
     return {
       type: 'table',
       version: 1,
-      metadata: this.options
+      metadata: this.options,
     };
   }
 
   //options passed through to the table component
   @tracked options: Args['options'] = {
     columnAttributes: {},
-    showTotals: {}
+    showTotals: {},
   };
 
   @action
@@ -39,8 +39,8 @@ export default class TableController extends Controller {
         type: columnFragment.type,
         field: columnFragment.field,
         parameters: columnFragment.parameters,
-        direction: direction
-      }
+        direction: direction,
+      },
     ]);
   }
 
@@ -68,7 +68,7 @@ export default class TableController extends Controller {
       columnAttributes[index] = columnInfo.attributes;
       return columnAttributes;
     }, {} as Record<number, TableColumnAttributes>);
-    const reorderedColumns = newColumnOrder.map(c => c.fragment);
+    const reorderedColumns = newColumnOrder.map((c) => c.fragment);
 
     this.options = { columnAttributes };
     // TS doesn't like that we set this directly

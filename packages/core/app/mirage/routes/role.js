@@ -2,7 +2,7 @@ import moment from 'moment';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function() {
+export default function () {
   /**
    * roles/:id - GET endpoint to fetch role by id
    */
@@ -11,7 +11,7 @@ export default function() {
   /**
    * roles/ - GET endpoint to fetch many roles
    */
-  this.get('/roles', function({ roles }, request) {
+  this.get('/roles', function ({ roles }, request) {
     let idFilter = request.queryParams['filter[roles.id]'];
 
     // Allow filtering
@@ -28,14 +28,14 @@ export default function() {
   /**
    * roles/ -  POST endpoint to add a new role
    */
-  this.post('/roles', function({ roles, db }) {
+  this.post('/roles', function ({ roles, db }) {
     let attrs = this.normalizedRequestAttrs(),
       role = roles.create(attrs);
 
     // Init properties
     db.roles.update(role.id, {
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
-      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
+      updatedOn: moment.utc().format(TIMESTAMP_FORMAT),
     });
 
     return role;

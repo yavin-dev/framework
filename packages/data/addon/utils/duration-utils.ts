@@ -15,7 +15,7 @@ const YEAR_MAP: Record<string, string | undefined> = {
   day: 'P365D',
   week: 'P52W',
   month: 'P12M',
-  year: 'P1Y'
+  year: 'P1Y',
 };
 
 /**
@@ -84,5 +84,5 @@ export default {
     let comparisonPeriod = YEAR_MAP[dateTimePeriod] || 'P1Y';
 
     return duration.compare(comparisonPeriod) === 1;
-  }
+  },
 };

@@ -38,8 +38,8 @@ export default class AddToDashboardComponent extends Component<Args> {
     return A([
       {
         groupName: 'My Dashboards',
-        options: this.args.dashboards.toArray()
-      }
+        options: this.args.dashboards.toArray(),
+      },
     ]);
   }
 

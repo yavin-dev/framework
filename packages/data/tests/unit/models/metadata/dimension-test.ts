@@ -8,10 +8,10 @@ import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 
 let Payload: DimensionMetadataPayload, Dimension: DimensionMetadataModel;
 
-module('Unit | Metadata Model | Dimension', function(hooks) {
+module('Unit | Metadata Model | Dimension', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Payload = {
       id: 'age',
       name: 'Age',
@@ -24,28 +24,28 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
         {
           name: 'id',
           description: 'description',
-          tags: ['primaryKey', 'display']
+          tags: ['primaryKey', 'display'],
         },
         {
           name: 'desc',
           description: 'description',
-          tags: ['description', 'display']
+          tags: ['description', 'display'],
         },
         { name: 'emptyTags', description: 'description', tags: [] },
-        { name: 'missingTags', description: 'description' }
-      ]
+        { name: 'missingTags', description: 'description' },
+      ],
     };
 
     Dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
-  test('factory has identifierField defined', function(assert) {
+  test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
     assert.equal(DimensionMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
-  test('it properly hydrates properties', function(assert) {
+  test('it properly hydrates properties', function (assert) {
     assert.expect(4);
 
     assert.deepEqual(Dimension.id, Payload.id, 'name property is hydrated properly');
@@ -57,7 +57,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.deepEqual(Dimension.fields, Payload.fields, 'fields property was properly hydrated');
   });
 
-  test('getTagForField', function(assert) {
+  test('getTagForField', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(
@@ -88,7 +88,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.deepEqual(Dimension.getTagsForField(), [], 'getTagsForField returns an empty array when field is undefined');
   });
 
-  test('getFieldsForTag', function(assert) {
+  test('getFieldsForTag', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(
@@ -119,21 +119,21 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     assert.deepEqual(Dimension.getFieldsForTag(), [], 'getFieldsForTag returns an empty array when tag is undefined');
   });
 
-  test('primaryKeyFieldName', function(assert) {
+  test('primaryKeyFieldName', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(Dimension.primaryKeyFieldName, 'id', 'primaryKeyFieldName returned `id` as the primary key field');
 
     let nonId = DimensionMetadataModel.create({
-      fields: [{ name: 'key', tags: ['primaryKey'] }]
+      fields: [{ name: 'key', tags: ['primaryKey'] }],
     });
     assert.deepEqual(nonId.primaryKeyFieldName, 'key', 'primaryKeyFieldName returned `key` as the primary key field');
 
     let twoKeys = DimensionMetadataModel.create({
       fields: [
         { name: 'key1', tags: ['primaryKey'] },
-        { name: 'key2', tags: ['primaryKey'] }
-      ]
+        { name: 'key2', tags: ['primaryKey'] },
+      ],
     });
     assert.deepEqual(
       twoKeys.primaryKeyFieldName,
@@ -156,7 +156,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
   });
 
-  test('descriptionFieldName', function(assert) {
+  test('descriptionFieldName', function (assert) {
     assert.expect(5);
 
     assert.deepEqual(
@@ -166,7 +166,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
 
     let nonDesc = DimensionMetadataModel.create({
-      fields: [{ name: 'name', tags: ['description'] }]
+      fields: [{ name: 'name', tags: ['description'] }],
     });
     assert.deepEqual(
       nonDesc.descriptionFieldName,
@@ -177,8 +177,8 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     let twoKeys = DimensionMetadataModel.create({
       fields: [
         { name: 'name1', tags: ['description'] },
-        { name: 'name2', tags: ['description'] }
-      ]
+        { name: 'name2', tags: ['description'] },
+      ],
     });
     assert.deepEqual(
       twoKeys.descriptionFieldName,
@@ -201,12 +201,12 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
   });
 
-  test('extended property', async function(assert) {
+  test('extended property', async function (assert) {
     const server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       id: 'dimensionOne',
-      source: 'bardOne'
+      source: 'bardOne',
     });
 
     const result = await dimensionOne.extended;
@@ -215,10 +215,10 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     server.shutdown();
   });
 
-  test('cardinality', function(assert) {
+  test('cardinality', function (assert) {
     const dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       cardinality: 'MEDIUM',
-      type: 'field'
+      type: 'field',
     });
 
     assert.equal(
@@ -229,7 +229,7 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
 
     const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       cardinality: 'MEDIUM',
-      type: 'ref'
+      type: 'ref',
     });
 
     assert.strictEqual(
@@ -248,30 +248,30 @@ module('Unit | Metadata Model | Dimension', function(hooks) {
     );
   });
 
-  test('idFieldName', async function(assert) {
+  test('idFieldName', async function (assert) {
     assert.expect(4);
 
     const TestDimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
       fields: [
         {
           name: 'identifier',
-          tags: ['id']
-        }
-      ]
+          tags: ['id'],
+        },
+      ],
     });
 
     assert.deepEqual(TestDimension.idFieldName, 'identifier', 'idFieldName returned `identifier` as the id field');
 
     let noId = DimensionMetadataModel.create({
-      fields: [{ name: 'name', tags: ['something'] }]
+      fields: [{ name: 'name', tags: ['something'] }],
     });
     assert.deepEqual(noId.idFieldName, 'id', 'idFieldName returned `id` as the default id field name');
 
     let twoKeys = DimensionMetadataModel.create({
       fields: [
         { name: 'name1', tags: ['id'] },
-        { name: 'name2', tags: ['id'] }
-      ]
+        { name: 'name2', tags: ['id'] },
+      ],
     });
     assert.deepEqual(twoKeys.idFieldName, 'name1', 'idFieldName returns the first field tagged as `id`');
 

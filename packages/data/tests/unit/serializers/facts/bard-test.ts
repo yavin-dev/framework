@@ -9,14 +9,14 @@ import { AjaxError } from 'ember-ajax/errors';
 
 let Serializer: BardFactSerializer;
 
-module('Unit | Serializer | facts/bard', function(hooks) {
+module('Unit | Serializer | facts/bard', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:facts/bard');
   });
 
-  test('normalize - empty rows', function(assert) {
+  test('normalize - empty rows', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', field: 'metricName', parameters: { param: 'value' } }],
@@ -24,7 +24,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const response: ResponseV1 = {
@@ -34,15 +34,15 @@ module('Unit | Serializer | facts/bard', function(hooks) {
           currentPage: 1,
           rowsPerPage: 0,
           perPage: 10,
-          numberOfResults: 0
-        }
-      }
+          numberOfResults: 0,
+        },
+      },
     };
     const { rows, meta } = Serializer.normalize(response, request) as NaviFactResponse;
     assert.deepEqual({ rows, meta }, response, 'Returns empty rows but preserves meta when there is no request');
   });
 
-  test('normalize by request', function(assert) {
+  test('normalize by request', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [
@@ -50,13 +50,13 @@ module('Unit | Serializer | facts/bard', function(hooks) {
         { type: 'dimension', field: 'age', parameters: { field: 'id' } },
         { type: 'dimension', field: 'age', parameters: { field: 'key' } },
         { type: 'metric', field: 'metricName', parameters: {} },
-        { type: 'metric', field: 'metricName', parameters: { param: 'value' } }
+        { type: 'metric', field: 'metricName', parameters: { param: 'value' } },
       ],
       filters: [],
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
     const rawRows = [
       {
@@ -64,8 +64,8 @@ module('Unit | Serializer | facts/bard', function(hooks) {
         'age|id': 'blah2',
         'age|key': 'blah3',
         metricName: 'blah4',
-        'metricName(param=value)': 'blah5'
-      }
+        'metricName(param=value)': 'blah5',
+      },
     ];
 
     const { rows, meta } = Serializer.normalize({ rows: rawRows, meta: {} }, request) as NaviFactResponse;
@@ -79,16 +79,16 @@ module('Unit | Serializer | facts/bard', function(hooks) {
             'age(field=id)': 'blah2',
             'age(field=key)': 'blah3',
             metricName: 'blah4',
-            'metricName(param=value)': 'blah5'
-          }
+            'metricName(param=value)': 'blah5',
+          },
         ],
-        meta: {}
+        meta: {},
       },
       'The fili fields are mapped to the correct column canonical names'
     );
   });
 
-  test('extractError - object', function(assert) {
+  test('extractError - object', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', field: 'foo', parameters: {} }],
@@ -96,7 +96,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const payload = {
@@ -105,7 +105,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       reason: 'Bad request',
       requestId: '123',
       status: 400,
-      statusName: 'Bad request'
+      statusName: 'Bad request',
     };
     const response = new AjaxError(payload, 'Timeout', 400);
     const error = Serializer.extractError(response, request);
@@ -116,14 +116,14 @@ module('Unit | Serializer | facts/bard', function(hooks) {
         {
           status: '400',
           detail: 'Metric(s) "[foo]" do not exist.',
-          id: '123'
-        }
+          id: '123',
+        },
       ],
       '`extractError` populates error object correctly when given a bard response object'
     );
   });
 
-  test('extractError - timeout', function(assert) {
+  test('extractError - timeout', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', field: 'metricName', parameters: { param: 'value' } }],
@@ -131,7 +131,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const payload = 'The adapter operation timed out';
@@ -145,7 +145,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     );
   });
 
-  test('extractError - rate limit', function(assert) {
+  test('extractError - rate limit', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', field: 'foo', parameters: {} }],
@@ -153,7 +153,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const payload = {
@@ -162,7 +162,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       reason: 'Too many requests',
       requestId: '123',
       status: 429,
-      statusName: 'Too many requests'
+      statusName: 'Too many requests',
     };
     const response = new AjaxError(payload, payload.reason, payload.status);
     const error = Serializer.extractError(response, request);
@@ -174,7 +174,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
     );
   });
 
-  test('extractError - error', function(assert) {
+  test('extractError - error', function (assert) {
     const request: RequestV2 = {
       table: 'tableName',
       columns: [{ type: 'metric', field: 'foo', parameters: {} }],
@@ -182,7 +182,7 @@ module('Unit | Serializer | facts/bard', function(hooks) {
       sorts: [],
       dataSource: 'bardOne',
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     const response = new Error("Uncaught TypeError: Cannot read property 'foo' of null");

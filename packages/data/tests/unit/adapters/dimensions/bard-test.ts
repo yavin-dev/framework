@@ -19,21 +19,21 @@ interface TestContext extends Context {
 
 const HOST = config.navi.dataSources[0].uri;
 
-module('Unit | Adapter | Dimensions | Bard', function(hooks) {
+module('Unit | Adapter | Dimensions | Bard', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.adapter = this.owner.lookup('adapter:dimensions/bard');
     this.naviMetadata = this.owner.lookup('service:navi-metadata');
     await this.naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
     await this.naviMetadata.loadMetadata({ dataSourceName: 'bardTwo' });
   });
 
-  test('_buildUrl', function(this: TestContext, assert) {
+  test('_buildUrl', function (this: TestContext, assert) {
     const ageColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'age', 'bardOne') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
 
     assert.equal(
@@ -49,10 +49,10 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
   });
 
-  test('_buildFilterQuery', function(this: TestContext, assert) {
+  test('_buildFilterQuery', function (this: TestContext, assert) {
     const ageColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'age', 'bardOne') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
 
     assert.deepEqual(
@@ -70,7 +70,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     assert.deepEqual(
       this.adapter._buildFilterQuery(ageColumn, [
         { operator: 'contains', values: [1, 3] },
-        { operator: 'contains', values: [2] }
+        { operator: 'contains', values: [2] },
       ]),
       { filters: 'age|id-contains["1","3"],age|id-contains["2"]' },
       'AND filter is generated given a query with multiple filters and OR filter for multiple values'
@@ -80,8 +80,8 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       this.adapter._buildFilterQuery({ ...ageColumn, parameters: { field: 'desc' } }, [
         {
           operator: 'in',
-          values: ['value1,value2']
-        }
+          values: ['value1,value2'],
+        },
       ]),
       { filters: 'age|desc-in["value1,value2"]' },
       'correctly built the query object when given an array of values'
@@ -91,8 +91,8 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       this.adapter._buildFilterQuery(ageColumn, [
         {
           operator: 'in',
-          values: ['yes, comma', 'no comma']
-        }
+          values: ['yes, comma', 'no comma'],
+        },
       ]),
       { filters: 'age|id-in["yes, comma","no comma"]' },
       'correctly wraps values, even with commas'
@@ -102,8 +102,8 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       this.adapter._buildFilterQuery(ageColumn, [
         {
           operator: 'in',
-          values: ['ok', 'weird "quote" value', 'but why']
-        }
+          values: ['ok', 'weird "quote" value', 'but why'],
+        },
       ]),
       { filters: 'age|id-in["ok","weird ""quote"" value","but why"]' },
       'correctly wraps values, even with quotes'
@@ -111,7 +111,7 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
 
     const recipeColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'recipe', 'bardTwo') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
     assert.deepEqual(
       this.adapter._buildFilterQuery(recipeColumn, [{ operator: 'in', values: ['v4'] }]),
@@ -120,10 +120,10 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
     );
   });
 
-  test('all', async function(this: TestContext, assert) {
+  test('all', async function (this: TestContext, assert) {
     const containerColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
 
     const result = await this.adapter.all(containerColumn);
@@ -134,32 +134,32 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
           { description: 'Bag', id: '1' },
           { description: 'Bank', id: '2' },
           { description: 'Saddle Bag', id: '3' },
-          { description: 'Retainer', id: '4' }
-        ]
+          { description: 'Retainer', id: '4' },
+        ],
       },
       '`all` returns all dimension values'
     );
   });
 
-  test('find', async function(this: TestContext, assert) {
+  test('find', async function (this: TestContext, assert) {
     const containerColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
     const result = await this.adapter.find(containerColumn, [{ operator: 'in', values: ['1'] }]);
     assert.deepEqual(
       result,
       {
-        rows: [{ description: 'Bag', id: '1' }]
+        rows: [{ description: 'Bag', id: '1' }],
       },
       '`find` returns filtered dimension values'
     );
   });
 
-  test('search', async function(this: TestContext, assert) {
+  test('search', async function (this: TestContext, assert) {
     const containerColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
 
     const result = await this.adapter.search(containerColumn, 'ag');
@@ -168,30 +168,30 @@ module('Unit | Adapter | Dimensions | Bard', function(hooks) {
       {
         rows: [
           { description: 'Bag', id: '1' },
-          { description: 'Saddle Bag', id: '3' }
-        ]
+          { description: 'Saddle Bag', id: '3' },
+        ],
       },
       '`search` returns dimension values that match the search term'
     );
   });
 
-  test('findById', async function(this: TestContext, assert) {
+  test('findById', async function (this: TestContext, assert) {
     const result = await this.adapter.findById('container', '1', { dataSourceName: 'bardTwo' });
     assert.deepEqual(
       result,
       {
-        rows: [{ description: 'Bag', id: '1' }]
+        rows: [{ description: 'Bag', id: '1' }],
       },
       '`findById` returns dimension values that match the id field'
     );
   });
 
-  test('find with client id options', async function(this: TestContext, assert) {
+  test('find with client id options', async function (this: TestContext, assert) {
     assert.expect(2);
 
     const ageColumn = {
       columnMetadata: this.naviMetadata.getById('dimension', 'age', 'bardOne') as DimensionMetadataModel,
-      parameters: { field: 'id' }
+      parameters: { field: 'id' },
     };
 
     // Setting up assert for default clientId

@@ -18,5 +18,5 @@ export default Helper.extend({
    */
   compute() {
     return get(this, 'userService').getUser();
-  }
+  },
 });

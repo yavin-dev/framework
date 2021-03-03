@@ -56,7 +56,7 @@ export type DimensionSeriesValues = { name: string; values: Record<string, unkno
 function makeSeriesKey(d: DimensionSeriesValues) {
   return Object.keys(d.values)
     .sort()
-    .map(k => `${k}=${d.values[k]}`)
+    .map((k) => `${k}=${d.values[k]}`)
     .join(',');
 }
 
@@ -87,7 +87,7 @@ export default class ChartVisualization extends Visualization {
     let builders = {
       [METRIC_SERIES]: this.buildMetricSeries,
       [DIMENSION_SERIES]: this.buildDimensionSeries,
-      [DATE_TIME_SERIES]: this.buildDateTimeSeries
+      [DATE_TIME_SERIES]: this.buildDateTimeSeries,
     };
 
     return builders[type];
@@ -96,10 +96,10 @@ export default class ChartVisualization extends Visualization {
   private buildDimensionSeriesValues(request: RequestFragment, rows: ResponseV1['rows']): DimensionSeriesValues[] {
     const series: Record<string, DimensionSeriesValues> = {};
     const dimensions = request.nonTimeDimensions;
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const values: Record<string, string | number | boolean> = {};
       const dimensionLabels: Array<string | number | boolean> = [];
-      dimensions.forEach(dimension => {
+      dimensions.forEach((dimension) => {
         const id = row[dimension.canonicalName];
         values[dimension.cid] = id as string | number | boolean;
         dimensionLabels.push(id as string);
@@ -107,7 +107,7 @@ export default class ChartVisualization extends Visualization {
       //Use object key to dedup dimension value combinations
       series[Object.values(values).join('|')] = {
         name: dimensionLabels.join(','),
-        values
+        values,
       };
     });
     return Object.values(series);
@@ -153,8 +153,8 @@ export default class ChartVisualization extends Visualization {
       type: DIMENSION_SERIES,
       config: {
         metricCid: metric.cid,
-        dimensions
-      }
+        dimensions,
+      },
     };
   }
 
@@ -165,11 +165,11 @@ export default class ChartVisualization extends Visualization {
   ) {
     const builtDimensionSeries = this.buildDimensionSeriesValues(request, responseRows);
 
-    const existingSeries = new Set(currentDimensionSeries.map(d => makeSeriesKey(d)));
-    const validSeries = new Set(builtDimensionSeries.map(d => makeSeriesKey(d)));
+    const existingSeries = new Set(currentDimensionSeries.map((d) => makeSeriesKey(d)));
+    const validSeries = new Set(builtDimensionSeries.map((d) => makeSeriesKey(d)));
 
-    const oldDimensionSeries = currentDimensionSeries.filter(d => validSeries.has(makeSeriesKey(d)));
-    const newDimensionSeries = builtDimensionSeries.filter(d => !existingSeries.has(makeSeriesKey(d)));
+    const oldDimensionSeries = currentDimensionSeries.filter((d) => validSeries.has(makeSeriesKey(d)));
+    const newDimensionSeries = builtDimensionSeries.filter((d) => !existingSeries.has(makeSeriesKey(d)));
     const dimensions = [...oldDimensionSeries, ...newDimensionSeries];
     return dimensions;
   }
@@ -191,7 +191,7 @@ export default class ChartVisualization extends Visualization {
   ): MetricSeries {
     return {
       type: METRIC_SERIES,
-      config: {}
+      config: {},
     };
   }
 
@@ -214,8 +214,8 @@ export default class ChartVisualization extends Visualization {
       type: DATE_TIME_SERIES,
       config: {
         metricCid: request.metricColumns[0].cid,
-        timeGrain: 'year'
-      }
+        timeGrain: 'year',
+      },
     };
   }
 }

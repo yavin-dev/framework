@@ -24,7 +24,7 @@ export function groupDataByDimensions(
   rows: ResponseV1['rows'],
   dimensions: ColumnFragment[]
 ): DataGroup<ResponseV1['rows'][number]> {
-  return new DataGroup(rows, row => dimensions.map(dimension => row[dimension.canonicalName]).join('|'));
+  return new DataGroup(rows, (row) => dimensions.map((dimension) => row[dimension.canonicalName]).join('|'));
 }
 
 /**

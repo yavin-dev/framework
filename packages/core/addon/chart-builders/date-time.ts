@@ -61,9 +61,9 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
         xValueCount: 61,
         getXValue: (dateTime: Moment) => dateTime.second() + 1,
         getXDisplay: (x: number) => 'Second ' + x,
-        getSeries: (dateTime: Moment) => dateTime.format('MMM D HH:mm')
-      }
-    }
+        getSeries: (dateTime: Moment) => dateTime.format('MMM D HH:mm'),
+      },
+    },
   },
   minute: {
     by: {
@@ -71,9 +71,9 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
         xValueCount: 60,
         getXValue: (dateTime: Moment) => dateTime.minute() + 1,
         getXDisplay: (x: number) => 'Minute ' + x,
-        getSeries: (dateTime: Moment) => dateTime.format('MMM D HH:00')
-      }
-    }
+        getSeries: (dateTime: Moment) => dateTime.format('MMM D HH:00'),
+      },
+    },
   },
   hour: {
     by: {
@@ -81,9 +81,9 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
         xValueCount: 24,
         getXValue: (dateTime: Moment) => dateTime.hour() + 1,
         getXDisplay: (x: number) => 'Hour ' + x,
-        getSeries: (dateTime: Moment) => dateTime.format('MMM D')
-      }
-    }
+        getSeries: (dateTime: Moment) => dateTime.format('MMM D'),
+      },
+    },
   },
   day: {
     by: {
@@ -91,44 +91,35 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
         xValueCount: 31,
         getXValue: (dateTime: Moment) => dateTime.date(),
         getXDisplay: (x: number) => 'Day ' + x,
-        getSeries: (dateTime: Moment) => dateTime.format('MMM YYYY')
+        getSeries: (dateTime: Moment) => dateTime.format('MMM YYYY'),
       },
       year: {
         xValueCount: 366,
         getXValue: (dateTime: Moment) => dateTime.dayOfYear(),
-        getXDisplay: (x: number) =>
-          moment()
-            .dayOfYear(x)
-            .format('MMM'),
-        getSeries: (dateTime: Moment) => dateTime.format('YYYY')
-      }
-    }
+        getXDisplay: (x: number) => moment().dayOfYear(x).format('MMM'),
+        getSeries: (dateTime: Moment) => dateTime.format('YYYY'),
+      },
+    },
   },
   week: {
     by: {
       year: {
         xValueCount: 53,
         getXValue: (dateTime: Moment) => dateTime.week(),
-        getXDisplay: (x: number) =>
-          moment(YEAR_WITH_53_ISOWEEKS)
-            .isoWeek(x)
-            .format('MMM'),
-        getSeries: (dateTime: Moment) => dateTime.format('GGGG')
-      }
-    }
+        getXDisplay: (x: number) => moment(YEAR_WITH_53_ISOWEEKS).isoWeek(x).format('MMM'),
+        getSeries: (dateTime: Moment) => dateTime.format('GGGG'),
+      },
+    },
   },
   isoWeek: {
     by: {
       year: {
         xValueCount: 53,
         getXValue: (dateTime: Moment) => dateTime.isoWeek(),
-        getXDisplay: (x: number) =>
-          moment(YEAR_WITH_53_ISOWEEKS)
-            .isoWeek(x)
-            .format('MMM'),
-        getSeries: (dateTime: Moment) => dateTime.format('GGGG')
-      }
-    }
+        getXDisplay: (x: number) => moment(YEAR_WITH_53_ISOWEEKS).isoWeek(x).format('MMM'),
+        getSeries: (dateTime: Moment) => dateTime.format('GGGG'),
+      },
+    },
   },
   month: {
     by: {
@@ -139,10 +130,10 @@ export const GROUP: Record<string, { by: Record<string, Grouper | undefined> } |
           moment()
             .month(x - 1)
             .format('MMM'),
-        getSeries: (dateTime: Moment) => dateTime.format('YYYY')
-      }
-    }
-  }
+        getSeries: (dateTime: Moment) => dateTime.format('YYYY'),
+      },
+    },
+  },
 };
 
 type SeriesMap = Record<string, Record<string, number | undefined> | undefined>;
@@ -185,8 +176,8 @@ function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): { series: C3Row
     let row = ({
       x: {
         rawValue: x,
-        displayValue: grouper.getXDisplay(x)
-      }
+        displayValue: grouper.getXDisplay(x),
+      },
     } as unknown) as C3Row;
 
     // Add each series to the row
@@ -273,7 +264,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     }
 
     // Group data by x axis value + series name in order to lookup metric attributes when building tooltip
-    this.byXSeries = new DataGroup(response.rows, row => {
+    this.byXSeries = new DataGroup(response.rows, (row) => {
       let seriesName = this.getSeriesName(row, config, request),
         x = this.getXValue(row, config, request);
       return x + seriesName;
@@ -281,7 +272,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
 
     const grouper = _getGrouper(request, config);
     let { metricCid } = config;
-    const metric = request.columns.find(c => c.cid === metricCid);
+    const metric = request.columns.find((c) => c.cid === metricCid);
     if (!metric) {
       return EmptyC3Data;
     }
@@ -311,7 +302,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
       /**
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
-      rowData: computed('x', 'tooltipData', function() {
+      rowData: computed('x', 'tooltipData', function () {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.tooltipData.map((series: TooltipData) => {
           // Get the full data for this combination of x + series
@@ -319,7 +310,7 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
 
           return dataForSeries[0];
         });
-      })
+      }),
     });
   }
 }

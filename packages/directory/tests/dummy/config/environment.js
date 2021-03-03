@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'dummy',
     environment,
@@ -13,8 +13,8 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {},
@@ -25,14 +25,14 @@ module.exports = function(environment) {
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',
-        timeout: 90000
+        timeout: 90000,
       },
       FEATURES: {
         exploreWidget: true,
         enableScheduleReports: true,
-        enableScheduleDashboards: true
-      }
-    }
+        enableScheduleDashboards: true,
+      },
+    },
   };
 
   if (environment === 'development') {

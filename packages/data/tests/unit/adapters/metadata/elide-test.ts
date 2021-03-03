@@ -15,20 +15,20 @@ interface MirageTestContext extends TestContext {
   server: TODO;
 }
 
-module('Unit | Adapter | metadata/elide', function(hooks) {
+module('Unit | Adapter | metadata/elide', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
   let Adapter: ElideMetadataAdapter;
 
-  hooks.beforeEach(function(this: MirageTestContext) {
+  hooks.beforeEach(function (this: MirageTestContext) {
     Adapter = this.owner.lookup('adapter:metadata/elide');
   });
 
   /*
    * Test whether the url path is built correctly
    */
-  test('fetchAll - request format', async function(this: MirageTestContext, assert) {
+  test('fetchAll - request format', async function (this: MirageTestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.all).trim(); //GQL Query as string
@@ -49,7 +49,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     await Adapter.fetchAll('table');
   });
 
-  test('fetchById - request format', async function(this: MirageTestContext, assert) {
+  test('fetchById - request format', async function (this: MirageTestContext, assert) {
     assert.expect(3);
 
     const gqlQuery = print(GQLQueries.table.single).trim(); //GQL Query as string
@@ -70,7 +70,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
     await Adapter.fetchById('table', 'foo');
   });
 
-  test('fetchAll - response', async function(this: MirageTestContext, assert) {
+  test('fetchAll - response', async function (this: MirageTestContext, assert) {
     assert.expect(6);
 
     // Seed our mirage database
@@ -87,11 +87,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
       'metrics',
       'dimensions',
       'timeDimensions',
-      '__typename'
+      '__typename',
     ];
 
     const { table: tableConnection } = await Adapter.fetchAll('table', {
-      dataSourceName: 'elideOne'
+      dataSourceName: 'elideOne',
     });
     const tables = tableConnection.edges.map((edge: TODO) => edge.node);
 
@@ -102,7 +102,7 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
       'Both tables in the mirage database are returned with the expected fields for every table'
     );
     assert.ok(
-      tables.every((table: TODO) => Object.keys(table).every(key => !!table[key])),
+      tables.every((table: TODO) => Object.keys(table).every((key) => !!table[key])),
       'No null values returned in table fields'
     );
 
@@ -123,9 +123,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
-              __typename: 'Metric'
+              __typename: 'Metric',
             },
-            __typename: 'MetricEdge'
+            __typename: 'MetricEdge',
           },
           {
             node: {
@@ -138,9 +138,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
-              __typename: 'Metric'
+              __typename: 'Metric',
             },
-            __typename: 'MetricEdge'
+            __typename: 'MetricEdge',
           },
           {
             node: {
@@ -153,11 +153,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
-              __typename: 'Metric'
+              __typename: 'Metric',
             },
-            __typename: 'MetricEdge'
-          }
-        ]
+            __typename: 'MetricEdge',
+          },
+        ],
       },
       'The expected metrics are returned when querying table 0'
     );
@@ -182,8 +182,8 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               valueSourceType: 'NONE',
               valueType: 'TEXT',
-              values: []
-            }
+              values: [],
+            },
           },
           {
             __typename: 'DimensionEdge',
@@ -205,9 +205,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                 'Practical Concrete Chair (enum)',
                 'Awesome Steel Chicken (enum)',
                 'Tasty Fresh Towels (enum)',
-                'Intelligent Steel Pizza (enum)'
-              ]
-            }
+                'Intelligent Steel Pizza (enum)',
+              ],
+            },
           },
           {
             __typename: 'DimensionEdge',
@@ -224,10 +224,10 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               valueSourceType: 'TABLE',
               valueType: 'TEXT',
-              values: []
-            }
-          }
-        ]
+              values: [],
+            },
+          },
+        ],
       },
       'All dimensions and the requested fields are returned for table 0'
     );
@@ -249,9 +249,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
-              __typename: 'Metric'
+              __typename: 'Metric',
             },
-            __typename: 'MetricEdge'
+            __typename: 'MetricEdge',
           },
           {
             node: {
@@ -264,11 +264,11 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
               tags: ['DISPLAY'],
               columnType: 'field',
               expression: null,
-              __typename: 'Metric'
+              __typename: 'Metric',
             },
-            __typename: 'MetricEdge'
-          }
-        ]
+            __typename: 'MetricEdge',
+          },
+        ],
       },
       'Metrics for the second table are included when requested'
     );
@@ -277,20 +277,20 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
       tables[1].dimensions,
       {
         edges: [],
-        __typename: 'DimensionConnection'
+        __typename: 'DimensionConnection',
       },
       'Table with no dimensions returns an empty edges array for dimensions'
     );
   });
 
-  test('fetchById - response', async function(this: MirageTestContext, assert) {
+  test('fetchById - response', async function (this: MirageTestContext, assert) {
     assert.expect(1);
 
     // Seed our mirage database
     scenario(this.server);
 
     const result = await Adapter.fetchById('table', 'table0', {
-      dataSourceName: 'elideOne'
+      dataSourceName: 'elideOne',
     });
 
     assert.deepEqual(
@@ -322,9 +322,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Metric'
+                        __typename: 'Metric',
                       },
-                      __typename: 'MetricEdge'
+                      __typename: 'MetricEdge',
                     },
                     {
                       node: {
@@ -337,9 +337,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Metric'
+                        __typename: 'Metric',
                       },
-                      __typename: 'MetricEdge'
+                      __typename: 'MetricEdge',
                     },
                     {
                       node: {
@@ -352,12 +352,12 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         columnType: 'field',
                         expression: null,
-                        __typename: 'Metric'
+                        __typename: 'Metric',
                       },
-                      __typename: 'MetricEdge'
-                    }
+                      __typename: 'MetricEdge',
+                    },
                   ],
-                  __typename: 'MetricConnection'
+                  __typename: 'MetricConnection',
                 },
                 dimensions: {
                   edges: [
@@ -376,8 +376,8 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         valueSourceType: 'NONE',
                         valueType: 'TEXT',
-                        values: []
-                      }
+                        values: [],
+                      },
                     },
                     {
                       __typename: 'DimensionEdge',
@@ -399,9 +399,9 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                           'Practical Concrete Chair (enum)',
                           'Awesome Steel Chicken (enum)',
                           'Tasty Fresh Towels (enum)',
-                          'Intelligent Steel Pizza (enum)'
-                        ]
-                      }
+                          'Intelligent Steel Pizza (enum)',
+                        ],
+                      },
                     },
                     {
                       __typename: 'DimensionEdge',
@@ -418,32 +418,32 @@ module('Unit | Adapter | metadata/elide', function(hooks) {
                         tags: ['DISPLAY'],
                         valueSourceType: 'TABLE',
                         valueType: 'TEXT',
-                        values: []
-                      }
-                    }
+                        values: [],
+                      },
+                    },
                   ],
-                  __typename: 'DimensionConnection'
+                  __typename: 'DimensionConnection',
                 },
                 timeDimensions: {
                   edges: [],
-                  __typename: 'TimeDimensionConnection'
+                  __typename: 'TimeDimensionConnection',
                 },
-                __typename: 'Table'
-              }
-            }
-          ]
-        }
+                __typename: 'Table',
+              },
+            },
+          ],
+        },
       },
       'The expected table is returned with all requested fields'
     );
   });
 
-  test('fetchEverything - response', async function(this: MirageTestContext, assert) {
+  test('fetchEverything - response', async function (this: MirageTestContext, assert) {
     const allTables = await Adapter.fetchAll('table', {
-      dataSourceName: 'elideOne'
+      dataSourceName: 'elideOne',
     });
     const everything = await Adapter.fetchEverything({
-      dataSourceName: 'elideOne'
+      dataSourceName: 'elideOne',
     });
     assert.deepEqual(everything, allTables, "`fetchEverything` returns the same payload `fetchAll('table')`");
   });

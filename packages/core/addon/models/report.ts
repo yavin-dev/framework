@@ -22,9 +22,9 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       ignoreBlank: true,
-      message: 'The report must have a title'
-    })
-  ]
+      message: 'The report must have a title',
+    }),
+  ],
 });
 
 export default class ReportModel extends DeliverableItem.extend(hasVisualization, Validations) {
@@ -47,7 +47,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    * @property {Boolean} isOwner - is owner of report
    */
   get isOwner() {
-    const userId = this.user.getUser().id;
+    const userId = this.user.getUser()?.id;
     return this.get('author').get('id') === userId;
   }
 
@@ -56,7 +56,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteReports = user.hasMany('favoriteReports').ids();
+    const favoriteReports = user?.hasMany('favoriteReports').ids();
     return arr(favoriteReports).includes(this.get('id'));
   }
 
@@ -71,7 +71,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
     return {
       title: clonedReport.title,
       visualization: this.store.createFragment(clonedReport.visualization.type, clonedReport.visualization),
-      request: this.get('request').clone()
+      request: this.get('request').clone(),
     };
   }
 }

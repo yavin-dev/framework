@@ -5,6 +5,7 @@
 
 .navi-dashboard {
   overflow: hidden;
+
   .display-flex;
   .flex-1;
   flex-flow: column;
@@ -18,13 +19,6 @@
     flex-flow: column;
     overflow-y: hidden;
     padding-bottom: 10px;
-  }
-
-  &__fav-icon {
-    margin: 3px 10px;
-    .fa {
-      font-size: 18px;
-    }
   }
 
   &__widgets {
@@ -43,41 +37,6 @@
     &--spacer {
       position: relative;
       visibility: hidden;
-    }
-  }
-
-  .page-header {
-    .display-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-
-  .page-title {
-    align-items: center;
-    .display-flex;
-    min-width: 0;
-  }
-
-  .dashboard-actions {
-    .btn {
-      cursor: pointer;
-      font-family: @font-family-sans-serif;
-      margin-right: 15px;
-      padding: 0;
-
-      a {
-        color: @navi-gray-800;
-      }
-
-      &.disabled {
-        color: @disabled-gray;
-        cursor: not-allowed;
-      }
-    }
-
-    .navi-icon__download {
-      margin: 3px 5px 0 0;
     }
   }
 }

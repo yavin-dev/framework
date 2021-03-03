@@ -8,7 +8,7 @@ module.exports = {
     const addonName = dasherize(addonRawName);
 
     return {
-      addonName
+      addonName,
     };
-  }
+  },
 };

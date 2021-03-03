@@ -3,8 +3,8 @@ import Ember from 'ember';
 import ReportRouteMixin from 'navi-reports/mixins/report-route';
 import { module, test } from 'qunit';
 
-module('Unit | Mixin | report route', function() {
-  test('didUpdateVisualization', function(assert) {
+module('Unit | Mixin | report route', function () {
+  test('didUpdateVisualization', function (assert) {
     assert.expect(1);
 
     let ReportRouteObject = EmberObject.extend(ReportRouteMixin, Ember.ActionHandler),

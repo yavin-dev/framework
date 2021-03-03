@@ -41,9 +41,9 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
    */
   get model() {
     const items = this.args.items || [];
-    return items.map(item => ({
+    return items.map((item) => ({
       model: item,
-      lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a')
+      lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a'),
     }));
   }
 
@@ -60,7 +60,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         draggable: false,
         classNames: 'dir-table__header-cell dir-table__header-cell--name',
         cellComponent: 'dir-item-name-cell',
-        cellClassNames: 'dir-table__cell dir-table__cell--name'
+        cellClassNames: 'dir-table__cell dir-table__cell--name',
       },
       {
         label: '',
@@ -71,7 +71,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         classNames: 'dir-table__header-cell dir-table__header-cell--actions',
         cellComponent: 'dir-asset-row-actions',
         cellClassNames: 'dir-table__cell dir-table__cell--actions',
-        breakpoints: ['tablet', 'desktop', 'jumbo']
+        breakpoints: ['tablet', 'desktop', 'jumbo'],
       },
       {
         label: 'AUTHOR',
@@ -82,7 +82,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         width: '165px',
         classNames: 'dir-table__header-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--author',
-        breakpoints: ['desktop', 'jumbo']
+        breakpoints: ['desktop', 'jumbo'],
       },
       {
         label: 'LAST UPDATED DATE',
@@ -94,13 +94,13 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         width: '200px',
         classNames: 'dir-table__header-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--lastUpdatedDate',
-        breakpoints: ['desktop', 'jumbo']
-      }
+        breakpoints: ['desktop', 'jumbo'],
+      },
     ];
 
     const { sortBy, sortDir } = this.args;
     if (!isEmpty(sortBy)) {
-      const sortColumn = columns.find(col => col.sortByKey === sortBy) as any;
+      const sortColumn = columns.find((col) => col.sortByKey === sortBy) as any;
 
       if (sortColumn) {
         sortColumn.sorted = true;
@@ -120,8 +120,8 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
       columns,
       rows,
       rowOptions: {
-        classNames: 'dir-table__row'
-      }
+        classNames: 'dir-table__row',
+      },
     });
   }
 
@@ -146,7 +146,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
 
     return {
       sortBy: nextSortBy,
-      sortDir: nextSortDir
+      sortDir: nextSortDir,
     };
   }
 

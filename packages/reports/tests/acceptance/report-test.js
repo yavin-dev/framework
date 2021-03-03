@@ -104,7 +104,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     /* == Add filter == */
     await clickItemFilter('dimension', 'Operating System');
-    await clickItemFilter('dimension', 'Date Time');
 
     /* == Run with errors == */
     await click('.navi-report__run-btn');
@@ -123,9 +122,9 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await clickTrigger('.filter-values--date-range-input__low-value');
 
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(currentURL().endsWith('/view'), 'Running a report with no errors transitions to view route');
@@ -149,7 +148,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //add date-dimension
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
 
     //set the filter interval
     await selectChoose('.filter-builder__operator-trigger', 'Between');
@@ -241,7 +239,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await visit('/reports');
     await visit('/reports/new');
 
-    await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
@@ -302,7 +299,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     //Add a metrics and save the report
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
     await clickItem('metric', 'Additive Page Views');
     await click('.navi-report__save-btn');
@@ -484,7 +480,6 @@ module('Acceptance | Navi Report', function(hooks) {
     // Build a report
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await click('.navi-report__run-btn');
 
     assert.ok(TempIdRegex.test(currentURL()), 'Creating a report brings user to /view route with a temp id');
@@ -841,7 +836,6 @@ module('Acceptance | Navi Report', function(hooks) {
 
     await visit('/reports/1/view');
     await click('.delete__action-btn');
-
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
@@ -892,8 +886,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .hasNoClass('navi-report__header--is-disabled', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
-    await click($('.navi-report__header:contains(Delete)')[0]);
-    debugger;
+    await click('.delete__action-btn');
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
@@ -1113,7 +1106,6 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
 
     await click('.navi-report__run-btn');
@@ -1155,7 +1147,7 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.report-view__visualization-edit').exists('visualization config is opened after clicking edit button');
 
     /* == Close config == */
-    await click('.report-view__visualization-edit-btn');
+    await click('.report-view__visualization-edit-close');
     await animationsSettled();
 
     assert
@@ -1207,7 +1199,7 @@ module('Acceptance | Navi Report', function(hooks) {
       .isVisible('Visualization edit panel is still visible after making changes that do not change the request');
 
     assert
-      .dom('.report-view__visualization-edit-btn')
+      .dom('.report-view__visualization-edit-close')
       .isVisible('Visualization edit button is is still visible after making changes that do not change the request');
 
     assert
@@ -1463,37 +1455,44 @@ module('Acceptance | Navi Report', function(hooks) {
       .isVisible("Dimension select is used when the dimension's storage strategy is not 'none'");
   });
 
-  test('filter - add and remove using filter icon', async function(assert) {
+  test('filter - add using filter icon', async function(assert) {
     assert.expect(4);
 
     await visit('/reports/1');
     //add dimension filter
     await clickItemFilter('dimension', 'Operating System');
 
-    assert.ok(
-      !!$('.filter-builder__subject:contains(Operating System)'.length),
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Operating System)').length,
+      1,
       'The Operating System dimension filter is added'
     );
 
     //remove filter by clicking on filter icon again
     await clickItemFilter('dimension', 'Operating System');
 
-    assert.notOk(
-      !!$('.filter-builder__subject:contains(Operating System)').length,
-      'The Operating System dimension filter is removed when filter icon is clicked again'
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Operating System)').length,
+      2,
+      'The Operating System dimension filter is added a second time'
     );
 
     //add metric filter
     await clickItemFilter('metric', 'Ad Clicks');
 
-    assert.ok(!!$('.filter-builder__subject:contains(Ad Clicks)').length, 'The Ad Clicks metric filter is added');
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Ad Clicks)').length,
+      1,
+      'The Ad Clicks metric filter is added'
+    );
 
     //remove metric filter by clicking on filter icon again
     await clickItemFilter('metric', 'Ad Clicks');
 
-    assert.notOk(
-      !!$('.filter-builder__subject:contains(Ad Clicks)').length,
-      'The Ad Clicks metric filter is removed when filter icon is clicked again'
+    assert.strictEqual(
+      $('.filter-builder__subject:contains(Ad Clicks)').length,
+      2,
+      'The Ad Clicks metric filter is added a second time'
     );
   });
 
@@ -1854,14 +1853,13 @@ module('Acceptance | Navi Report', function(hooks) {
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
 
     await clickTrigger('.filter-values--date-range-input__high-value');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
     // Grab one of the dim names after running a report
@@ -1895,16 +1893,15 @@ module('Acceptance | Navi Report', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', 'no');
     await selectChoose('.filter-values--dimension-select__trigger', 'yes');
 
-    await clickItemFilter('dimension', 'Date Time');
     await clickItem('dimension', 'Date Time');
 
-    await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'Between');
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
 
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     assert.deepEqual(
       findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map(el =>
@@ -2124,7 +2121,7 @@ module('Acceptance | Navi Report', function(hooks) {
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
 
     const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
-    assert.dom(navClicksCell()).hasText('495.05', 'The original metric value has no formatting');
+    assert.dom(navClicksCell()).hasText('880.41', 'The original metric value has no formatting');
     assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
 
     find('.number-format-selector__radio-money input').checked = true; // change format to money
@@ -2133,6 +2130,6 @@ module('Acceptance | Navi Report', function(hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$495.05', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$880.41', 'The metric is re-rendered in the money format');
   });
 });

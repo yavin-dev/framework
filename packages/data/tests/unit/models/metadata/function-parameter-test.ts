@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import FunctionParameterMetadataModel, {
   FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION
+  INTRINSIC_VALUE_EXPRESSION,
 } from 'navi-data/models/metadata/function-parameter';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
@@ -16,10 +16,10 @@ let Payload: FunctionParameterMetadataPayload;
 let server: Server;
 let FunctionParameter: FunctionParameterMetadataModel;
 
-module('Unit | Metadata Model | Function Parameter', function(hooks) {
+module('Unit | Metadata Model | Function Parameter', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
@@ -30,23 +30,23 @@ module('Unit | Metadata Model | Function Parameter', function(hooks) {
       source: 'bardOne',
       expression: 'dimension:dimensionOne',
       _localValues: undefined,
-      defaultValue: 'USD'
+      defaultValue: 'USD',
     };
 
     FunctionParameter = FunctionParameterMetadataModel.create(this.owner.ownerInjection(), Payload);
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     server.shutdown();
   });
 
-  test('factory has identifierField defined', function(assert) {
+  test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
     assert.equal(FunctionParameterMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
-  test('it properly hydrates properties', function(assert) {
+  test('it properly hydrates properties', function (assert) {
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
 
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');
@@ -64,25 +64,25 @@ module('Unit | Metadata Model | Function Parameter', function(hooks) {
     assert.equal(FunctionParameter.defaultValue, Payload.defaultValue, 'defaultValue property was properly hydrated');
   });
 
-  test('values', async function(assert) {
+  test('values', async function (assert) {
     assert.expect(3);
 
     const valuesResponse = {
       rows: [
         { id: 'USD', description: 'US Dollars' },
-        { id: 'EUR', description: 'Euros' }
+        { id: 'EUR', description: 'Euros' },
       ],
-      meta: { test: true }
+      meta: { test: true },
     };
 
     //setup Pretender
-    server.get(`${HOST}/v1/dimensions/dimensionOne/values/`, function() {
+    server.get(`${HOST}/v1/dimensions/dimensionOne/values/`, function () {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify(valuesResponse)];
     });
     const values = await FunctionParameter.values;
 
     assert.deepEqual(
-      values?.map(val => ({ id: val.id, description: val.description })),
+      values?.map((val) => ({ id: val.id, description: val.description })),
       valuesResponse.rows,
       'Values are returned correctly for a dimension type function argument'
     );
@@ -97,15 +97,15 @@ module('Unit | Metadata Model | Function Parameter', function(hooks) {
         {
           id: 'yoy',
           name: 'YoY',
-          description: 'Year Over Year'
+          description: 'Year Over Year',
         },
         {
           id: 'wow',
           name: 'WoW',
-          description: 'Week Over Week'
-        }
+          description: 'Week Over Week',
+        },
       ],
-      defaultValue: 'wow'
+      defaultValue: 'wow',
     };
 
     const TrendFunctionArgument = FunctionParameterMetadataModel.create(this.owner.ownerInjection(), trendArgPayload);
@@ -124,7 +124,7 @@ module('Unit | Metadata Model | Function Parameter', function(hooks) {
       source: 'bardOne',
       expression: undefined,
       _localValues: undefined,
-      defaultValue: '1'
+      defaultValue: '1',
     };
     const NoValuesFunctionArgument = FunctionParameterMetadataModel.create(
       this.owner.ownerInjection(),

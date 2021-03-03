@@ -14,16 +14,16 @@ interface TestContext extends Context {
   server: Server;
 }
 
-module('Unit | Model | navi dimension', function(hooks) {
+module('Unit | Model | navi dimension', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     this.metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     ElideOneScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
   });
 
-  test('it exists', function(this: TestContext, assert) {
+  test('it exists', function (this: TestContext, assert) {
     const columnMetadata = this.metadataService.getById(
       'dimension',
       'table0.dimension0',
@@ -41,7 +41,7 @@ module('Unit | Model | navi dimension', function(hooks) {
     );
   });
 
-  test('isEqual', function(this: TestContext, assert) {
+  test('isEqual', function (this: TestContext, assert) {
     const columnMetadata = this.metadataService.getById(
       'dimension',
       'table0.dimension0',
@@ -74,9 +74,9 @@ module('Unit | Model | navi dimension', function(hooks) {
     const model4 = NaviDimensionModel.create({
       dimensionColumn: {
         columnMetadata: otherColumnMetadata,
-        parameters
+        parameters,
       } as DimensionColumn,
-      value
+      value,
     });
     assert.notOk(
       model1.isEqual(model4),
@@ -86,9 +86,9 @@ module('Unit | Model | navi dimension', function(hooks) {
     const model5 = NaviDimensionModel.create({
       dimensionColumn: {
         columnMetadata: otherColumnMetadata,
-        parameters: { heroOf: 'twilight' }
+        parameters: { heroOf: 'twilight' },
       } as DimensionColumn,
-      value
+      value,
     });
     assert.notOk(
       model1.isEqual(model5),

@@ -3,17 +3,17 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | navi table cell renderer', function(hooks) {
+module('Integration | Component | navi table cell renderer', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders the correct cell renderer', async function(assert) {
+  test('it renders the correct cell renderer', async function (assert) {
     this.set('column', {
       fragment: { type: 'metric', canonicalName: 'foo' },
-      attributes: {}
+      attributes: {},
     });
 
     this.set('data', {
-      foo: 12
+      foo: 12,
     });
 
     this.set('request', {});
@@ -29,11 +29,11 @@ module('Integration | Component | navi table cell renderer', function(hooks) {
 
     this.set('column', {
       fragment: { type: 'dimension', canonicalName: 'foo(field=id)' },
-      attributes: {}
+      attributes: {},
     });
 
     this.set('data', {
-      'foo(field=id)': 'hi'
+      'foo(field=id)': 'hi',
     });
 
     assert.dom('.table-cell-content').hasText('hi', 'renders dimension value');
@@ -41,11 +41,11 @@ module('Integration | Component | navi table cell renderer', function(hooks) {
 
     this.set('column', {
       fragment: { type: 'timeDimension', parameters: { grain: 'day' }, canonicalName: 'tableName.dateTime(grain=day)' },
-      attributes: {}
+      attributes: {},
     });
 
     this.set('data', {
-      'tableName.dateTime(grain=day)': '2012-05-12T00:00:00'
+      'tableName.dateTime(grain=day)': '2012-05-12T00:00:00',
     });
 
     assert.dom('.table-cell-content').hasText('05/12/2012', 'renders time-dimension value');

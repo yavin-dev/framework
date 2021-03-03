@@ -27,7 +27,7 @@ export default class ElideDimensionSerializer extends EmberObject implements Nav
       return response.data[tableId as string].edges.map((edge: ResponseEdge) =>
         NaviDimensionModel.create({
           value: edge.node[getElideField(dimensionName, dimension.parameters)],
-          dimensionColumn: dimension
+          dimensionColumn: dimension,
         })
       );
     }

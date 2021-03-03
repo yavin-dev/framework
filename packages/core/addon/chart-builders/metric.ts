@@ -90,7 +90,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
         buildDateKey(row[timeGrainColumnName] as MomentInput)
       );
       // Make a data point for each date in the request, so c3 can correctly show gaps in the chart
-      const series: C3Row[] = dates.map(date => {
+      const series: C3Row[] = dates.map((date) => {
         const key = buildDateKey(date);
         const rowsForDate = byDate.getDataForKey(key) || [];
         const row = rowsForDate[0] || {}; // Metric series expects only one data row for each date
@@ -116,7 +116,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
 
     // the data for date used in the C3 chart
     const c3row: C3Row = {
-      x: { rawValue: value, displayValue }
+      x: { rawValue: value, displayValue },
     } as C3Row;
 
     return Object.assign(
@@ -124,7 +124,7 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
       ...metricColumns.map((metric, index) => {
         const metricValue = row[metric.canonicalName];
         return {
-          [`series.${index}`]: typeof metricValue === 'number' ? metricValue : null // c3 wants `null` for empty data points
+          [`series.${index}`]: typeof metricValue === 'number' ? metricValue : null, // c3 wants `null` for empty data points
         };
       })
     );
@@ -143,13 +143,13 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
       /**
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
-      rowData: computed('x', 'tooltipData', function() {
+      rowData: computed('x', 'tooltipData', function () {
         return this.tooltipData.map(() => {
           // Get the full data for this combination of x + series
           const dataForSeries = builder.byXSeries?.getDataForKey(this.x) || [];
           return dataForSeries[0];
         });
-      })
+      }),
     });
   }
 }

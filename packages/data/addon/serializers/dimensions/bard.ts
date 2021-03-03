@@ -13,7 +13,7 @@ export default class BardDimensionSerializer extends EmberObject implements Navi
   normalize(dimensionColumn: DimensionColumn, rawPayload: FiliDimensionResponse): NaviDimensionModel[] {
     if (rawPayload?.rows.length) {
       const field = dimensionColumn.parameters?.field || DefaultField;
-      return rawPayload.rows.map(row => {
+      return rawPayload.rows.map((row) => {
         //TODO remove when https://github.com/yahoo/fili/issues/1088 lands
         const value = 'desc' === field ? row.description : row[field];
         return NaviDimensionModel.create({ value, dimensionColumn });

@@ -9,27 +9,27 @@ class MetadataServiceStub extends Service {
   loadedDataSources = new Set(['bardOne', 'bardTwo']);
 }
 
-module('Integration | Component | definition', function(hooks) {
+module('Integration | Component | definition', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.owner.register('service:navi-metadata', MetadataServiceStub);
   });
 
-  test('displays results', async function(assert) {
+  test('displays results', async function (assert) {
     assert.expect(3);
 
     const data = [
       {
         id: 'pageViews',
         name: 'Page Views',
-        description: 'The number of views of a page.'
+        description: 'The number of views of a page.',
       },
       {
         id: 'impressions',
         name: 'Impressions',
-        description: 'Number of times a user saw the ad.'
-      }
+        description: 'Number of times a user saw the ad.',
+      },
     ];
     set(this, 'data', data);
 
@@ -38,18 +38,18 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views', 'Impressions'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.', 'Number of times a user saw the ad.'],
       'definition descriptions are shown correctly'
     );
   });
 
-  test('Fetch extended result and display', async function(assert) {
+  test('Fetch extended result and display', async function (assert) {
     assert.expect(3);
     const data = [
       {
@@ -58,9 +58,9 @@ module('Integration | Component | definition', function(hooks) {
         extended: Promise.resolve({
           id: 'pageViews',
           name: 'Page Views',
-          description: 'The number of views of a page.'
-        })
-      }
+          description: 'The number of views of a page.',
+        }),
+      },
     ];
     set(this, 'data', data);
 
@@ -69,18 +69,18 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').exists({ count: 1 }, 'One result is displayed');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.'],
       'definition descriptions are shown correctly'
     );
   });
 
-  test('Multiple datasources', async function(assert) {
+  test('Multiple datasources', async function (assert) {
     assert.expect(4);
 
     const data = [
@@ -88,14 +88,14 @@ module('Integration | Component | definition', function(hooks) {
         id: 'pageViews',
         name: 'Page Views',
         description: 'The number of views of a page.',
-        source: 'bardOne'
+        source: 'bardOne',
       },
       {
         id: 'impressions',
         name: 'Impressions',
         description: 'Number of times a user saw the ad.',
-        source: 'bardTwo'
-      }
+        source: 'bardTwo',
+      },
     ];
     set(this, 'data', data);
 
@@ -104,30 +104,30 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').exists({ count: 2 }, 'Two results are displayed');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views', 'Impressions'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.', 'Number of times a user saw the ad.'],
       'definition descriptions are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-source').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-source').map((el) => el.textContent.trim()),
       ['Source: bardOne', 'Source: bardTwo'],
       'definitions sources are shown correctly'
     );
   });
 
-  test('result without a description', async function(assert) {
+  test('result without a description', async function (assert) {
     assert.expect(1);
 
     const data = [
       {
         id: 'pageViews',
-        name: 'Page Views'
-      }
+        name: 'Page Views',
+      },
     ];
     set(this, 'data', data);
 
@@ -135,7 +135,7 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').doesNotExist('No results are displayed');
   });
 
-  test('result without a description in extended', async function(assert) {
+  test('result without a description in extended', async function (assert) {
     assert.expect(1);
 
     const data = [
@@ -144,9 +144,9 @@ module('Integration | Component | definition', function(hooks) {
         name: 'Page Views',
         extended: Promise.resolve({
           id: 'pageViews',
-          name: 'Page Views'
-        })
-      }
+          name: 'Page Views',
+        }),
+      },
     ];
     set(this, 'data', data);
 
@@ -154,24 +154,24 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-definition-result').doesNotExist('No results are displayed');
   });
 
-  test('show more results', async function(assert) {
+  test('show more results', async function (assert) {
     assert.expect(12);
     const data = [
       {
         id: 'pageViews',
         name: 'Page Views',
-        description: 'The number of views of a page.'
+        description: 'The number of views of a page.',
       },
       {
         id: 'impressions',
         name: 'Impressions',
-        description: 'Number of times a user saw the ad.'
+        description: 'Number of times a user saw the ad.',
       },
       {
         id: 'revenue',
         name: 'Revenue',
-        description: 'How much money were made.'
-      }
+        description: 'How much money were made.',
+      },
     ];
     set(this, 'data', data);
 
@@ -181,12 +181,12 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-result-options__show-button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views', 'Impressions'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.', 'Number of times a user saw the ad.'],
       'definition descriptions are shown correctly'
     );
@@ -197,12 +197,12 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-result-options__show-button').hasText('Show less', 'Show less button is shown.');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views', 'Impressions', 'Revenue'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.', 'Number of times a user saw the ad.', 'How much money were made.'],
       'definition descriptions are shown correctly'
     );
@@ -213,25 +213,25 @@ module('Integration | Component | definition', function(hooks) {
     assert.dom('.navi-search-result-options__show-button').hasText('Show more', 'Show more button is shown.');
 
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-name').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-name').map((el) => el.textContent.trim()),
       ['Page Views', 'Impressions'],
       'definition titles are shown correctly'
     );
     assert.deepEqual(
-      findAll('.navi-search-definition-result__item-description').map(el => el.textContent.trim()),
+      findAll('.navi-search-definition-result__item-description').map((el) => el.textContent.trim()),
       ['The number of views of a page.', 'Number of times a user saw the ad.'],
       'definition descriptions are shown correctly'
     );
   });
 
-  test('few returned results', async function(assert) {
+  test('few returned results', async function (assert) {
     assert.expect(2);
     const data = [
       {
         id: 'pageViews',
         name: 'Page Views',
-        description: 'The number of views of a page.'
-      }
+        description: 'The number of views of a page.',
+      },
     ];
     set(this, 'data', data);
 

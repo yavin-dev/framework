@@ -6,11 +6,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 
-module('Acceptance | navi-report - metric parameters', function(hooks) {
+module('Acceptance | navi-report - metric parameters', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('auto open metric config', async function(assert) {
+  test('auto open metric config', async function (assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');
@@ -29,7 +29,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
       .isNotVisible('The metric config dropdown container remains closed when the metric is removed');
   });
 
-  test('metric config - filter parameter', async function(assert) {
+  test('metric config - filter parameter', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/1/view');
@@ -41,7 +41,7 @@ module('Acceptance | navi-report - metric parameters', function(hooks) {
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The parameterized metric is added as a filter');
   });
 
-  test('metric filter', async function(assert) {
+  test('metric filter', async function (assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');

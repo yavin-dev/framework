@@ -86,7 +86,7 @@ export default class DirectoryMyDataRoute extends Route {
 
     //returning an object so that the table can handle the promise
     return {
-      items: this._fetchItems(user, directoryParams)
+      items: this._fetchItems(user, directoryParams),
     };
   }
 }

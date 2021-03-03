@@ -11,5 +11,5 @@ export default [
   { id: '7', description: '35-44' },
   { id: '8', description: '45-54' },
   { id: '9', description: '55-64' },
-  { id: '10', description: '65 and over' }
+  { id: '10', description: '65 and over' },
 ];

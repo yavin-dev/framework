@@ -17,10 +17,10 @@ import { assert } from '@ember/debug';
 type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
 
 const enumOperators: Partial<Record<FilterOperator, EnumFilter>> = {
-  in: (values, filterValues) => values.filter(value => filterValues.includes(value)),
-  eq: (values, filterValues) => values.filter(value => filterValues[0] === value),
+  in: (values, filterValues) => values.filter((value) => filterValues.includes(value)),
+  eq: (values, filterValues) => values.filter((value) => filterValues[0] === value),
   contains: (values, filterValues) =>
-    values.filter(value => `${value}`.toLowerCase().includes(`${filterValues[0]}`.toLowerCase()))
+    values.filter((value) => `${value}`.toLowerCase().includes(`${filterValues[0]}`.toLowerCase())),
 };
 
 export default class ElideDimensionAdapter extends EmberObject implements NaviDimensionAdapter {
@@ -32,7 +32,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
     const { id, tableId } = dimension.columnMetadata;
     const field = getElideField(id, dimension.parameters);
-    const nodes = values.map(value => `{"node":{"${field}":"${value}"}}`);
+    const nodes = values.map((value) => `{"node":{"${field}":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
 
     return {
@@ -47,12 +47,12 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
                 responseBody,
                 httpStatus: 200,
                 contentLength: 0,
-                recordCount: values.length
-              }
-            }
-          }
-        ]
-      }
+                recordCount: values.length,
+              },
+            },
+          },
+        ],
+      },
     };
   }
 
@@ -103,17 +103,17 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     const request: RequestV2 = {
       table: tableId || '',
       columns: [{ field: id, parameters, type: 'dimension' }],
-      filters: predicate.map(pred => ({
+      filters: predicate.map((pred) => ({
         field: id,
         parameters,
         type: 'dimension',
         operator: pred.operator,
-        values: pred.values.map(String)
+        values: pred.values.map(String),
       })),
       sorts: [],
       dataSource: source,
       limit: null,
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     };
 
     return this.factAdapter.fetchDataForRequest(request, options);
@@ -129,8 +129,8 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
         ? [
             {
               operator: 'contains',
-              values: [query]
-            }
+              values: [query],
+            },
           ]
         : [];
     } else {
@@ -138,8 +138,8 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
         ? [
             {
               operator: 'eq',
-              values: [`*${query}*`]
-            }
+              values: [`*${query}*`],
+            },
           ]
         : [];
     }

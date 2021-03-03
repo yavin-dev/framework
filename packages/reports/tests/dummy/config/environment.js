@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   let ENV = {
     modulePrefix: 'dummy',
     environment,
@@ -15,8 +15,8 @@ module.exports = function(environment) {
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
-        Date: false
-      }
+        Date: false,
+      },
     },
 
     APP: {
@@ -27,7 +27,7 @@ module.exports = function(environment) {
     },
 
     'ember-cli-mirage': {
-      enabled: true //Set to false to disable api stub
+      enabled: true, //Set to false to disable api stub
     },
 
     navi: {
@@ -38,12 +38,12 @@ module.exports = function(environment) {
         { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
         { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' },
         { name: 'elideOne', uri: 'https://data.naviapp.io/graphql', type: 'elide' },
-        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' }
+        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' },
       ],
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',
-        timeout: 90000
+        timeout: 90000,
       },
       FEATURES: {
         enableScheduleReports: true,
@@ -51,9 +51,9 @@ module.exports = function(environment) {
         enabledNotifyIfData: true,
         enableContains: true,
         enableTableEditing: true,
-        enableTotals: true
-      }
-    }
+        enableTotals: true,
+      },
+    },
   };
 
   if (environment === 'development') {

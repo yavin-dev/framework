@@ -7,7 +7,7 @@ const row: Record<string, number> = {
   hp: 12,
   magic: 14,
   rupees: 3600100,
-  arrows: 9999999999
+  arrows: 9999999999,
 };
 
 export default class MetricLabelRoute extends Route {
@@ -19,16 +19,16 @@ export default class MetricLabelRoute extends Route {
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
 
     return A([
       {
         request,
         response: {
-          rows: [{ [column.field]: row[column.field] }]
-        }
-      }
+          rows: [{ [column.field]: row[column.field] }],
+        },
+      },
     ]);
   }
 
@@ -39,7 +39,7 @@ export default class MetricLabelRoute extends Route {
         field: 'bottles',
         parameters: {},
         alias: "Glass Bottles of the ranch's finest pasteurized whole milk!!!!!!!",
-        source: 'bardOne'
+        source: 'bardOne',
       }),
       hp: this.makeModel({ type: 'metric', field: 'hp', parameters: {}, alias: 'Hit Points (HP)', source: 'bardOne' }),
       magic: this.makeModel({
@@ -47,10 +47,10 @@ export default class MetricLabelRoute extends Route {
         field: 'magic',
         parameters: {},
         alias: 'Magic Points (MP)',
-        source: 'bardOne'
+        source: 'bardOne',
       }),
       rupees: this.makeModel({ type: 'metric', field: 'rupees', parameters: {}, alias: 'Rupees', source: 'bardOne' }),
-      arrows: this.makeModel({ type: 'metric', field: 'arrows', parameters: {}, alias: 'Arrows', source: 'bardOne' })
+      arrows: this.makeModel({ type: 'metric', field: 'arrows', parameters: {}, alias: 'Arrows', source: 'bardOne' }),
     };
   }
 }

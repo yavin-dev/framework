@@ -16,14 +16,14 @@ export default class GoalGaugeRoute extends Route {
         sorts: [],
         limit: null,
         dataSource: 'bardOne',
-        requestVersion: '2.0'
+        requestVersion: '2.0',
       });
 
     return A([
       {
         response: { rows: [{ pageViews: 3060000000 }] },
-        request
-      }
+        request,
+      },
     ]);
   }
 }

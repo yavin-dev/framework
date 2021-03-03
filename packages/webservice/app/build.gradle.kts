@@ -3,6 +3,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 description = "app"
 
+val environment: String by project
+
+val buildEnv = if (!project.hasProperty("environment")) "development" else environment
+
+
+
 plugins {
     id("org.springframework.boot") version "2.3.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
@@ -24,7 +30,7 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr30")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.0-pr31")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
@@ -45,7 +51,9 @@ tasks.withType<Test> {
 }
 
 tasks.withType<ProcessResources> {
-    dependsOn("copyNaviApp")
+    if(!"localElide".equals(System.getenv("APP_ENV"))) {
+        dependsOn("copyNaviApp")
+    }
 }
 
 tasks.withType<KotlinCompile> {
@@ -65,7 +73,7 @@ tasks.register<NpmTask>("installUIDependencies") {
 tasks.register<NpmTask>("buildUI") {
   dependsOn("installUIDependencies")
   setEnvironment(mapOf("DISABLE_MOCKS" to true))
-  setArgs(listOf("run-script", "build-ui"))
+  setArgs(listOf("run-script", "build-ui","--environment=${buildEnv}"))
 }
 
 tasks.register<Copy>("copyNaviApp") {

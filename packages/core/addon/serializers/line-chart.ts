@@ -66,7 +66,7 @@ export function normalizeDimensionSeriesValues(request: RequestV2, series: Legac
         }
         newValues[dimensionColumn.cid] = series.values[key];
         return newValues;
-      }, {})
+      }, {}),
     };
   });
 }
@@ -82,8 +82,8 @@ export function normalizeChartSeriesV2(request: RequestV2, series: LegacyChartSe
       type: 'dateTime',
       config: {
         timeGrain,
-        metricCid
-      }
+        metricCid,
+      },
     };
   } else {
     const dimensions = normalizeDimensionSeriesValues(request, series);
@@ -92,8 +92,8 @@ export function normalizeChartSeriesV2(request: RequestV2, series: LegacyChartSe
       type: 'dimension',
       config: {
         metricCid,
-        dimensions
-      }
+        dimensions,
+      },
     };
   }
   return newSeries;
@@ -117,10 +117,10 @@ export function normalizeLineChartV2(
       ...(style ? { style } : {}),
       axis: {
         y: {
-          series: newSeries
-        }
-      }
-    }
+          series: newSeries,
+        },
+      },
+    },
   };
 }
 

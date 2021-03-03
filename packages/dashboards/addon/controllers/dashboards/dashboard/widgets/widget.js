@@ -14,5 +14,5 @@ export default ReportController.extend({
   /**
    * @param {Object} parentQueryParams - Used to store query parameters from the parent route
    */
-  parentQueryParams: computed.alias('dashboard.queryCache')
+  parentQueryParams: computed.alias('dashboard.queryCache'),
 });

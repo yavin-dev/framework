@@ -24,38 +24,38 @@ const DATA = NaviFactResponse.create({
     {
       'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
       uniqueIdentifier: 172933788,
-      totalPageViews: 3669828357
+      totalPageViews: 3669828357,
     },
     {
       'network.dateTime(grain=day)': '2016-05-31 00:00:00.000',
       uniqueIdentifier: 183206656,
-      totalPageViews: 4088487125
+      totalPageViews: 4088487125,
     },
     {
       'network.dateTime(grain=day)': '2016-06-01 00:00:00.000',
       uniqueIdentifier: 183380921,
-      totalPageViews: 4024700302
+      totalPageViews: 4024700302,
     },
     {
       'network.dateTime(grain=day)': '2016-06-02 00:00:00.000',
       uniqueIdentifier: 180559793,
-      totalPageViews: 3950276031
+      totalPageViews: 3950276031,
     },
     {
       'network.dateTime(grain=day)': '2016-06-03 00:00:00.000',
       uniqueIdentifier: 172724594,
-      totalPageViews: 3697156058
-    }
-  ]
+      totalPageViews: 3697156058,
+    },
+  ],
 });
 let ChartBuilder = MetricChartBuilder.create();
 let Request: RequestFragment;
 
-module('Unit | Chart Builders | Metric', function(hooks) {
+module('Unit | Chart Builders | Metric', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     setOwner(ChartBuilder, this.owner);
     Request = buildTestRequest(
       [{ field: 'uniqueIdentifier' }, { field: 'totalPageViews' }],
@@ -68,7 +68,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
-  test('buildData - no metrics', function(assert) {
+  test('buildData - no metrics', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -84,13 +84,13 @@ module('Unit | Chart Builders | Metric', function(hooks) {
         { x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' } },
         { x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' } },
         { x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' } },
-        { x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' } }
+        { x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' } },
       ],
       'No series are made when no metrics are requested'
     );
   });
 
-  test('groupDataBySeries - many metrics', function(assert) {
+  test('groupDataBySeries - many metrics', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
@@ -100,39 +100,39 @@ module('Unit | Chart Builders | Metric', function(hooks) {
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
             'series.0': 172933788,
-            'series.1': 3669828357
+            'series.1': 3669828357,
           },
           {
             x: { rawValue: '2016-05-31 00:00:00.000', displayValue: 'May 31' },
             'series.0': 183206656,
-            'series.1': 4088487125
+            'series.1': 4088487125,
           },
           {
             x: { rawValue: '2016-06-01 00:00:00.000', displayValue: 'Jun 1' },
             'series.0': 183380921,
-            'series.1': 4024700302
+            'series.1': 4024700302,
           },
           {
             x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
             'series.0': 180559793,
-            'series.1': 3950276031
+            'series.1': 3950276031,
           },
           {
             x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
             'series.0': 172724594,
-            'series.1': 3697156058
-          }
+            'series.1': 3697156058,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'Unique Identifiers',
-          'series.1': 'Total Page Views'
-        }
+          'series.1': 'Total Page Views',
+        },
       },
       'A series is made for each requested metric'
     );
   });
 
-  test('groupDataBySeries - gaps in data', function(assert) {
+  test('groupDataBySeries - gaps in data', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -144,8 +144,8 @@ module('Unit | Chart Builders | Metric', function(hooks) {
     const data = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', totalPageViews: 3669828357 },
-        { 'network.dateTime(grain=day)': '2016-06-05 00:00:00.000', totalPageViews: 3669823211 }
-      ]
+        { 'network.dateTime(grain=day)': '2016-06-05 00:00:00.000', totalPageViews: 3669823211 },
+      ],
     });
 
     assert.deepEqual(
@@ -155,29 +155,29 @@ module('Unit | Chart Builders | Metric', function(hooks) {
           {
             x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
             'series.0': 3669828357,
-            'series.1': null
+            'series.1': null,
           },
           {
             x: { rawValue: '2016-06-04 00:00:00.000', displayValue: 'Jun 4' },
             'series.0': null,
-            'series.1': null
+            'series.1': null,
           },
           {
             x: { rawValue: '2016-06-05 00:00:00.000', displayValue: 'Jun 5' },
             'series.0': 3669823211,
-            'series.1': null
-          }
+            'series.1': null,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'Total Page Views',
-          'series.1': 'Unique Identifiers'
-        }
+          'series.1': 'Unique Identifiers',
+        },
       },
       'Intervals are trimmed and missing data points are filled with null values'
     );
   });
 
-  test('groupDataBySeries - hour granularity series', function(assert) {
+  test('groupDataBySeries - hour granularity series', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -189,8 +189,8 @@ module('Unit | Chart Builders | Metric', function(hooks) {
     const data = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=hour)': '2016-05-31 00:00:00.000', totalPageViews: 3669828357 },
-        { 'network.dateTime(grain=hour)': '2016-05-31 01:00:00.000', totalPageViews: 4088487125 }
-      ]
+        { 'network.dateTime(grain=hour)': '2016-05-31 01:00:00.000', totalPageViews: 4088487125 },
+      ],
     });
 
     assert.deepEqual(
@@ -199,22 +199,22 @@ module('Unit | Chart Builders | Metric', function(hooks) {
         series: ([
           {
             x: { rawValue: '2016-05-31 00:00:00.000', displayValue: '00:00' },
-            'series.0': 3669828357
+            'series.0': 3669828357,
           },
           {
             x: { rawValue: '2016-05-31 01:00:00.000', displayValue: '01:00' },
-            'series.0': 4088487125
-          }
+            'series.0': 4088487125,
+          },
         ] as unknown) as C3Row[],
         names: {
-          'series.0': 'Total Page Views'
-        }
+          'series.0': 'Total Page Views',
+        },
       },
       'A series has the properly formatted displayValue'
     );
   });
 
-  test('groupDataBySeries - month granularity series', function(assert) {
+  test('groupDataBySeries - month granularity series', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -226,8 +226,8 @@ module('Unit | Chart Builders | Metric', function(hooks) {
     const data = NaviFactResponse.create({
       rows: [
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', totalPageViews: 3669828357 },
-        { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', totalPageViews: 4088487125 }
-      ]
+        { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', totalPageViews: 4088487125 },
+      ],
     });
 
     assert.deepEqual(
@@ -236,22 +236,22 @@ module('Unit | Chart Builders | Metric', function(hooks) {
         series: ([
           {
             x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
-            'series.0': 3669828357
+            'series.0': 3669828357,
           },
           {
             x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
-            'series.0': 4088487125
-          }
+            'series.0': 4088487125,
+          },
         ] as unknown) as C3Row[],
         names: {
-          'series.0': 'Total Page Views'
-        }
+          'series.0': 'Total Page Views',
+        },
       },
       'A series has the properly formatted displayValue'
     );
   });
 
-  test('Zero in chart data', function(assert) {
+  test('Zero in chart data', function (assert) {
     assert.expect(1);
 
     const request = buildTestRequest(
@@ -261,7 +261,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       'day'
     );
     const data = NaviFactResponse.create({
-      rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 0 }]
+      rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 0 }],
     });
 
     assert.deepEqual(
@@ -271,33 +271,33 @@ module('Unit | Chart Builders | Metric', function(hooks) {
           {
             x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
             'series.0': 0,
-            'series.1': null
-          }
+            'series.1': null,
+          },
         ] as unknown) as C3Row[],
         names: {
           'series.0': 'Total Page Views',
-          'series.1': 'Unique Identifiers'
-        }
+          'series.1': 'Unique Identifiers',
+        },
       },
       'Zero values are not considered gaps in data'
     );
   });
 
-  test('buildData - no time dimension', function(assert) {
+  test('buildData - no time dimension', function (assert) {
     const request = this.store.createFragment('bard-request-v2/request', {
       columns: [
         { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
-        { type: 'metric', field: 'pageViews', parameters: {}, source: 'bardOne' }
+        { type: 'metric', field: 'pageViews', parameters: {}, source: 'bardOne' },
       ],
       filters: [],
       sorts: [],
       requestVersion: '2.0',
       dataSource: 'bardOne',
-      table: 'network'
+      table: 'network',
     });
 
     const data = NaviFactResponse.create({
-      rows: [{ pageViews: 10, uniqueIdentifier: 22 }]
+      rows: [{ pageViews: 10, uniqueIdentifier: 22 }],
     });
 
     assert.deepEqual(
@@ -305,7 +305,7 @@ module('Unit | Chart Builders | Metric', function(hooks) {
       {
         names: {
           'series.0': 'Unique Identifiers',
-          'series.1': 'Page Views'
+          'series.1': 'Page Views',
         },
         series: ([
           {
@@ -313,16 +313,16 @@ module('Unit | Chart Builders | Metric', function(hooks) {
             'series.1': 10,
             x: {
               displayValue: '',
-              rawValue: ''
-            }
-          }
-        ] as unknown) as C3Row[]
+              rawValue: '',
+            },
+          },
+        ] as unknown) as C3Row[],
       },
       '`buildData` constructs a single c3 row when a time dimension is not requested'
     );
   });
 
-  test('buildTooltip', function(assert) {
+  test('buildTooltip', function (assert) {
     assert.expect(2);
 
     let config = {},
@@ -331,8 +331,8 @@ module('Unit | Chart Builders | Metric', function(hooks) {
         {
           x,
           name: 'Unique Identifiers',
-          value: 180559793
-        }
+          value: 180559793,
+        },
       ];
 
     //Populates the 'byXSeries' property in the builder that buildTooltip uses

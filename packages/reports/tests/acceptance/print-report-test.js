@@ -9,18 +9,18 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 const SERIALIZED_MODEL =
   'EQbwOsAmCGAu0QFzmAS0kiBGCAaCcsATqgEYCusApgM5IoBuqN50ANqgF5yoD2AdvQiwAngAcqmYB35UAtAGMAFtCKw8EBlSI0-g4Iiz5gAWyrwY8IcGgAPZtZHWa21LWuiJUyKjP9dAhrACgIAZqgA5tZmxKgK0eYk8QYEkADCHAoA1nTAxmKq0DHaucgAvmXGPn4B_ADyRJDaSADaEGJEvBJqTsAAulW-VP56pS0o_EWSKcAACp3dogAEOHma7OTuBigdXdqiUlhYACwQFbgTU1Lzez1LAExBDBtbyO0L-72I2AAMfz-rc6XMzXD53ADMTxepR2YIOMyw_x-j2AFT6FQxlWEqFgbGm32AAAkRERyHilgA5KgAd1yxiIVAAjpsaOpthA2LwInF2AAVaCkPEeAVCmayWDU3hELJBWBDADiRGgqH0BJgvSxpkScTGKBiSSk0HSmRyZwuEH1cSkkwYGTiptRAwg1WGtV1zqGI0CM12iw1TuA4TY1B0rQDKiY_CiBhaAZoUrZiHGFu1yQJNrt2TpHoZCjl3oJ0BoyTKAZVIeebHdwFZqkTEHuAIArHIjnIfgBOJZ_RA9v4AOn-QWGGBmjawLbbWAAbN2fr35wOh47jKRVJAAGolPRSBirelMlmwLc6HczPdnTUMtg8AQ0JSoMQwgiUJRS6yWBDs4CefEQcguKGaxoKO6bQEwAD6AHNKi5zCOIf7AAyYgJrkFTAEAA';
 
-module('Acceptance | print report', function(hooks) {
+module('Acceptance | print report', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('print reports index', async function(assert) {
+  test('print reports index', async function (assert) {
     assert.expect(1);
     await visit('/print/reports/1');
 
     assert.equal(currentURL(), '/print/reports/1/view', 'Redirect to view sub route');
   });
 
-  test('print reports view', async function(assert) {
+  test('print reports view', async function (assert) {
     assert.expect(5);
     await visit('/print/reports/1/view');
 
@@ -32,13 +32,13 @@ module('Acceptance | print report', function(hooks) {
 
     assert.dom('.c3-axis-y-label').hasText('Ad Clicks', 'Report chart should have y-axis label');
     assert.deepEqual(
-      [...document.querySelectorAll('.c3-legend-item')].map(el => el.textContent.trim()),
+      [...document.querySelectorAll('.c3-legend-item')].map((el) => el.textContent.trim()),
       ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
       'The legend fills in with widget dimensions'
     );
   });
 
-  test('print reports error', async function(assert) {
+  test('print reports error', async function (assert) {
     assert.expect(1);
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -50,14 +50,12 @@ module('Acceptance | print report', function(hooks) {
     let originalLoggerError = Ember.Logger.error,
       originalException = Ember.Test.adapter.exception;
 
-    Ember.Logger.error = function() {};
-    Ember.Test.adapter.exception = function() {};
+    Ember.Logger.error = function () {};
+    Ember.Test.adapter.exception = function () {};
 
     await visit('/print/reports/5');
     assert.equal(
-      find('.routes-reports-report-error')
-        .innerText.replace(/\s+/g, ' ')
-        .trim(),
+      find('.routes-reports-report-error').innerText.replace(/\s+/g, ' ').trim(),
       'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
       'An error message is displayed for an invalid request'
     );
@@ -66,14 +64,14 @@ module('Acceptance | print report', function(hooks) {
     Ember.Test.adapter.exception = originalException;
   });
 
-  test('print reports invalid', async function(assert) {
+  test('print reports invalid', async function (assert) {
     assert.expect(1);
     await visit('/print/reports/6');
 
     assert.equal(currentURL(), '/print/reports/6/invalid', 'Redirect to invalid sub route');
   });
 
-  test('print url provided report', async function(assert) {
+  test('print url provided report', async function (assert) {
     assert.expect(2);
 
     await visit(`/print/reports/new?model=${SERIALIZED_MODEL}`);

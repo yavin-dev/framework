@@ -41,7 +41,7 @@ export default async function drag(mode, itemElement, offsetFn, callbacks = {}) 
   await triggerEvent(itemElement, start, {
     clientX: itemElement.offsetLeft,
     clientY: itemElement.offsetTop,
-    which
+    which,
   });
 
   if (callbacks.dragstart) {
@@ -52,7 +52,7 @@ export default async function drag(mode, itemElement, offsetFn, callbacks = {}) 
   await triggerEvent(itemElement, move, {
     clientX: itemElement.offsetLeft,
     clientY: itemElement.offsetTop,
-    which
+    which,
   });
 
   if (callbacks.dragmove) {
@@ -63,21 +63,21 @@ export default async function drag(mode, itemElement, offsetFn, callbacks = {}) 
   await triggerEvent(itemElement, move, {
     clientX: halfwayX,
     clientY: halfwayY,
-    which
+    which,
   });
 
   await settled();
   await triggerEvent(itemElement, move, {
     clientX: targetX,
     clientY: targetY,
-    which
+    which,
   });
 
   await settled();
   await triggerEvent(itemElement, end, {
     clientX: targetX,
     clientY: targetY,
-    which
+    which,
   });
 
   if (callbacks.dragend) {

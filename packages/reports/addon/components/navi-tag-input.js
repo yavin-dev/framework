@@ -104,7 +104,7 @@ export default TagInput.extend({
      * @param {Array<String>} tags - The tags to be imported
      */
     addTags(tags) {
-      return tags.forEach(tag => this.addNewTag(tag));
-    }
-  }
+      return tags.forEach((tag) => this.addNewTag(tag));
+    },
+  },
 });

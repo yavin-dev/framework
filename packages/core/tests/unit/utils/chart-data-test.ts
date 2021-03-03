@@ -4,10 +4,10 @@ import { buildTestRequest } from '../../helpers/request';
 import { setupTest } from 'ember-qunit';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
-module('Unit | Utils | Chart Data', function(hooks) {
+module('Unit | Utils | Chart Data', function (hooks) {
   setupTest(hooks);
 
-  test('groupDataByDimensions', function(assert) {
+  test('groupDataByDimensions', function (assert) {
     assert.expect(2);
 
     const rows = [
@@ -15,22 +15,22 @@ module('Unit | Utils | Chart Data', function(hooks) {
         'age(field=id)': '-3',
         dateTime: '2015-12-14 00:00:00.000',
         totalPageViews: 3072620639,
-        uniqueIdentifier: 155191081
+        uniqueIdentifier: 155191081,
       },
       {
         'age(field=id)': '1',
         dateTime: '2015-12-14 00:00:00.000',
         totalPageViews: 2072620639,
-        uniqueIdentifier: 55191081
-      }
+        uniqueIdentifier: 55191081,
+      },
     ];
     const expectedDataGroup = [
       {
         'age(field=id)': '1',
         dateTime: '2015-12-14 00:00:00.000',
         totalPageViews: 2072620639,
-        uniqueIdentifier: 55191081
-      }
+        uniqueIdentifier: 55191081,
+      },
     ];
     const dataGroup = groupDataByDimensions(rows, [{ canonicalName: 'age(field=id)' }] as ColumnFragment[]);
 
@@ -40,7 +40,7 @@ module('Unit | Utils | Chart Data', function(hooks) {
       groupDataByDimensions(
         [
           { 'foo(field=desc)': 'foo', metricName: 123 },
-          { 'foo(field=desc)': 'bar', metricName: 321 }
+          { 'foo(field=desc)': 'bar', metricName: 321 },
         ],
         [{ canonicalName: 'foo(field=desc)' }] as ColumnFragment[]
       ).getDataForKey('bar'),
@@ -49,7 +49,7 @@ module('Unit | Utils | Chart Data', function(hooks) {
     );
   });
 
-  test('chartTypeForRequest', function(assert) {
+  test('chartTypeForRequest', function (assert) {
     assert.expect(3);
 
     let request = buildTestRequest([{ field: 'totalPageViews' }], [{ field: 'age' }, { field: 'gender' }]);

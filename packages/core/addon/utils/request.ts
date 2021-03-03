@@ -5,10 +5,12 @@
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
+import moment from 'moment';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 
 type LogicalTable = {
   table: string;
-  timeGrain: string;
+  timeGrain: Grain;
 };
 
 type Interval = {
@@ -43,7 +45,7 @@ type Sort<T> = {
   direction: SortDirection;
 };
 
-type RequestV1<T> = {
+export type RequestV1<T> = {
   requestVersion: 'v1';
   dataSource?: string;
   logicalTable: LogicalTable;
@@ -77,7 +79,7 @@ export function toggleAlias(
   if (!field) {
     return [];
   }
-  return field.map(obj => {
+  return field.map((obj) => {
     const metricName: string =
       typeof obj.metric === 'object' ? canonicalizeMetric(obj.metric) || obj.metric.metric : obj.metric;
 
@@ -113,17 +115,17 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   const canonToMetric = request.metrics.reduce(
     (obj, metric) =>
       Object.assign({}, obj, {
-        [canonicalizeMetric(metric)]: metric
+        [canonicalizeMetric(metric)]: metric,
       }),
     {
       //add dateTime to cannonicalName -> metric map
-      dateTime: { metric: 'dateTime' }
+      dateTime: { metric: 'dateTime' },
     }
   );
 
   const normalized = Object.assign({}, request, {
     having: toggleAlias(request.having, aliasToCanon, canonToMetric),
-    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric)
+    sort: toggleAlias(request.sort, aliasToCanon, canonToMetric),
   });
 
   if (!normalized.dataSource && namespace) {
@@ -131,7 +133,7 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   }
 
   //remove AS from metric parameters
-  normalized.metrics = request.metrics.map(metric => {
+  normalized.metrics = request.metrics.map((metric) => {
     if (hasParameters(metric)) {
       delete metric.parameters?.as;
     }
@@ -152,8 +154,10 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
   const {
-    logicalTable: { table, timeGrain: grain }
+    logicalTable: { table, timeGrain },
   } = normalized;
+
+  const grain = timeGrain === 'week' ? 'isoWeek' : timeGrain;
 
   const requestV2: RequestV2 = {
     requestVersion: '2.0',
@@ -162,7 +166,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     columns: [],
     filters: [],
     sorts: [],
-    limit: null
+    limit: null,
   };
 
   //normalize dateTime column
@@ -170,7 +174,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     cid: nanoid(10),
     type: 'timeDimension',
     field: `${table}.dateTime`,
-    parameters: { grain }
+    parameters: { grain },
   });
 
   //normalize dimensions
@@ -180,8 +184,8 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: 'dimension',
       field: removeNamespace(dimension, dataSource),
       parameters: {
-        field: 'id'
-      }
+        field: 'id',
+      },
     })
   );
 
@@ -191,22 +195,32 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       cid: nanoid(10),
       type: 'metric',
       field: removeNamespace(metric, dataSource),
-      parameters
+      parameters,
     });
   });
 
   //normalize intervals
-  normalized.intervals.forEach(({ start, end }) =>
+  normalized.intervals.forEach(({ start, end }) => {
+    // if start and end are dates, end.subtract(1, getPeriodForGrain(grain))
+    const startMoment = moment.utc(start);
+    const endMoment = moment.utc(end);
+    if (startMoment.isValid() && endMoment.isValid()) {
+      endMoment.subtract(1, getPeriodForGrain(grain));
+    }
+
+    start = startMoment.isValid() ? startMoment.toISOString() : start;
+    end = endMoment.isValid() ? endMoment.toISOString() : end;
+
     requestV2.filters.push({
       type: 'timeDimension',
       field: `${table}.dateTime`,
       operator: 'bet',
       values: [start, end],
       parameters: {
-        grain
-      }
-    })
-  );
+        grain,
+      },
+    });
+  });
 
   //normalize filters
   normalized.filters.forEach(({ dimension, field, operator, values }) => {
@@ -225,7 +239,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       field: removeNamespace(dimension, dataSource),
       parameters: { field: field || 'id' },
       operator: operator as FilterOperator,
-      values: filterValues
+      values: filterValues,
     });
   });
 
@@ -236,7 +250,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       field: removeNamespace(metric, dataSource),
       parameters,
       operator: operator as FilterOperator,
-      values
+      values,
     });
   });
 
@@ -247,7 +261,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       type: isDateTime ? 'timeDimension' : 'metric',
       field: isDateTime ? `${table}.dateTime` : removeNamespace(metric, dataSource),
       parameters: isDateTime ? { grain } : parameters,
-      direction
+      direction,
     });
   });
 

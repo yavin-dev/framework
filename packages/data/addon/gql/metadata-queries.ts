@@ -8,8 +8,8 @@ import TableQuery from './queries/table';
 export default {
   table: {
     all: TablesQuery,
-    single: TableQuery
-  }
+    single: TableQuery,
+  },
 };
 
 declare module 'navi-data/gql/metadata-queries';

@@ -29,14 +29,14 @@ function _setModel(row: Record<string, unknown>): void {
   const test = getContext() as TestContext;
   set(test.model.firstObject!.response, 'rows', [row]);
 }
-module('Integration | Component | navi-visualization/metric-label', function(hooks) {
+module('Integration | Component | navi-visualization/metric-label', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     this.options = {
       format: undefined,
-      metricCid: 'cid_magic'
+      metricCid: 'cid_magic',
     };
     this.model = A([
       {
@@ -48,21 +48,21 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
               field: 'magic',
               parameters: {},
               alias: 'Magic Points (MP)',
-              source: 'bardOne'
-            }
+              source: 'bardOne',
+            },
           ],
           filters: [],
           sorts: [],
           requestVersion: '2.0',
           dataSource: 'bardOne',
-          table: 'network'
+          table: 'network',
         }),
-        response: NaviFactResponse.create({ rows: [] })
-      }
+        response: NaviFactResponse.create({ rows: [] }),
+      },
     ]);
   });
 
-  test('metric label renders correctly', async function(assert) {
+  test('metric label renders correctly', async function (assert) {
     assert.expect(2);
 
     _setModel({ magic: 30 });
@@ -75,7 +75,7 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
     assert.dom('.metric-label-vis__value').hasText('30', 'metric value is correctly displayed');
   });
 
-  test('metric label renders correctly when model has multiple metrics', async function(assert) {
+  test('metric label renders correctly when model has multiple metrics', async function (assert) {
     assert.expect(2);
 
     _setModel({ magic: 30, hp: 40 });
@@ -88,7 +88,7 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
     assert.dom('.metric-label-vis__value').hasText('30', 'metric value is correctly displayed');
   });
 
-  test('metric label renders formatted string when format not null', async function(this: TestContext, assert) {
+  test('metric label renders formatted string when format not null', async function (this: TestContext, assert) {
     assert.expect(1);
 
     const request = this.model.firstObject?.request as RequestFragment;
@@ -98,12 +98,12 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
       field: 'rupees',
       parameters: {},
       alias: 'Rupees',
-      source: 'bardOne'
+      source: 'bardOne',
     });
 
     this.options = {
       format: '$ 0,0[.]00',
-      metricCid: rupees.cid
+      metricCid: rupees.cid,
     };
 
     _setModel({ rupees: 1000000 });
@@ -111,12 +111,12 @@ module('Integration | Component | navi-visualization/metric-label', function(hoo
     assert.dom('.metric-label-vis__value').hasText('$ 1,000,000', 'metric value is formatted correctly');
   });
 
-  test('metric label - missing metric', async function(this: TestContext, assert) {
+  test('metric label - missing metric', async function (this: TestContext, assert) {
     const request = this.model.firstObject?.request as RequestFragment;
     request.columns.clear();
     this.options = {
       format: '$ 0,0[.]00',
-      metricCid: undefined
+      metricCid: undefined,
     };
 
     _setModel({ rupees: 1000000 });

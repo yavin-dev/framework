@@ -70,13 +70,13 @@ export default class MultipleFormatExport extends Component {
     const newModel = store.createRecord('report', {
       title: clonedModel.title,
       request: model.get('request').clone(),
-      visualization: store.createFragment(clonedModel.visualization.type, clonedModel.visualization)
+      visualization: store.createFragment(clonedModel.visualization.type, clonedModel.visualization),
     });
 
     //Model compression requires an id
     newModel.set('id', newModel.tempId);
 
-    return compression.compressModel(newModel).then(serializedModel => `/export?reportModel=${serializedModel}`);
+    return compression.compressModel(newModel).then((serializedModel) => `/export?reportModel=${serializedModel}`);
   }
 
   /**
@@ -93,7 +93,7 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'CSV',
           href: this.csvHref,
-          icon: 'file-text-o'
+          icon: 'file-text-o',
         });
       }
 
@@ -101,15 +101,15 @@ export default class MultipleFormatExport extends Component {
         exportFormats.push({
           type: 'PDF',
           href: this.exportHref,
-          icon: 'file-pdf-o'
+          icon: 'file-pdf-o',
         });
       }
 
       if (supportedFileTypes.includes('png') || supportedFileTypes.includes('PNG')) {
         exportFormats.push({
           type: 'PNG',
-          href: this.exportHref.then(href => `${href}&fileType=png`),
-          icon: 'file-image-o'
+          href: this.exportHref.then((href) => `${href}&fileType=png`),
+          icon: 'file-image-o',
         });
       }
     }
@@ -142,9 +142,9 @@ export default class MultipleFormatExport extends Component {
   @action
   notify(type) {
     this.naviNotifications.add({
-      message: `${type}? Got it. The download should begin soon.`,
-      type: 'info',
-      timeout: 'medium'
+      title: `The ${type} download should begin shortly`,
+      style: 'info',
+      timeout: 'medium',
     });
   }
 }

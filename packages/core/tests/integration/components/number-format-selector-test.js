@@ -10,18 +10,18 @@ let Template = hbs`
     @onUpdateFormat={{this.onUpdateFormat}}
   />`;
 
-module('Integration | Component | number format selector', function(hooks) {
+module('Integration | Component | number format selector', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('format', '$0,0[.]00');
-    this.set('onUpdateFormat', newFormat => this.set('format', newFormat));
+    this.set('onUpdateFormat', (newFormat) => this.set('format', newFormat));
   });
 
-  test('updateFormat from radio button', async function(assert) {
+  test('updateFormat from radio button', async function (assert) {
     assert.expect(1);
 
-    this.set('onUpdateFormat', result => {
+    this.set('onUpdateFormat', (result) => {
       assert.equal(result, '0,0.00', 'onUpdateFormat action is called by radio button');
     });
 
@@ -30,10 +30,10 @@ module('Integration | Component | number format selector', function(hooks) {
     await click('.number-format-selector__radio-number input');
   });
 
-  test('clearFormat', async function(assert) {
+  test('clearFormat', async function (assert) {
     assert.expect(1);
 
-    this.set('onUpdateFormat', result => {
+    this.set('onUpdateFormat', (result) => {
       assert.equal(result, '', 'onUpdateFormat action is called by custom format radio button');
     });
 
@@ -42,7 +42,7 @@ module('Integration | Component | number format selector', function(hooks) {
     await run(() => click('.number-format-selector__radio-custom input'));
   });
 
-  test('highlight correct format when customFormat is changed', async function(assert) {
+  test('highlight correct format when customFormat is changed', async function (assert) {
     assert.expect(2);
 
     await render(Template);

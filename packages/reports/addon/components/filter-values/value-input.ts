@@ -13,7 +13,7 @@ export default class ValueInputComponent extends Component<Args> {
   @action
   setValue({ target: { value } }: { target: HTMLInputElement }) {
     this.args.onUpdateFilter({
-      values: [value]
+      values: [value],
     });
   }
 }

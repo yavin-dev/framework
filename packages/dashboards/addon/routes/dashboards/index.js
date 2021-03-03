@@ -20,19 +20,16 @@ const _DashboardObject = EmberObject.extend({
   /**
    * @property {DS.PromiseArray} - Returns a combined dashboard list while listening to store changes
    */
-  dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function() {
+  dashboards: computed('userDashboards.[]', 'favoriteDashboards.[]', function () {
     return DS.PromiseArray.create({
       promise: hash({
         userDashboards: get(this, 'userDashboards'),
-        favoriteDashboards: get(this, 'favoriteDashboards')
+        favoriteDashboards: get(this, 'favoriteDashboards'),
       }).then(({ userDashboards, favoriteDashboards }) => {
-        return A()
-          .pushObjects(userDashboards.toArray())
-          .pushObjects(favoriteDashboards.toArray())
-          .uniq();
-      })
+        return A().pushObjects(userDashboards.toArray()).pushObjects(favoriteDashboards.toArray()).uniq();
+      }),
     });
-  })
+  }),
 });
 
 export default Route.extend({
@@ -54,14 +51,14 @@ export default Route.extend({
   model() {
     return get(this, 'user')
       .findOrRegister()
-      .then(userModel => {
+      .then((userModel) => {
         return hash({
           userDashboards: get(userModel, 'dashboards'),
-          favoriteDashboards: get(userModel, 'favoriteDashboards')
+          favoriteDashboards: get(userModel, 'favoriteDashboards'),
         }).then(({ userDashboards, favoriteDashboards }) => {
           return _DashboardObject.create({
             userDashboards,
-            favoriteDashboards
+            favoriteDashboards,
           });
         });
       });
@@ -73,12 +70,12 @@ export default Route.extend({
      * action to handle errors in route
      */
     error() {
-      let message = 'OOPS! An error occurred while retrieving user settings. Some functionality may be limited.';
-      get(this, 'naviNotifications').add({
-        message: message,
-        type: 'danger',
-        timeout: 'short'
+      this.naviNotifications.add({
+        title: 'An error occurred while retrieving user settings',
+        context: 'Some functionality may be limited',
+        style: 'danger',
+        timeout: 'medium',
       });
-    }
-  }
+    },
+  },
 });

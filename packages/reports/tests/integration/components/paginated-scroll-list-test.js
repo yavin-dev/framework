@@ -35,14 +35,14 @@ const COMMON_TEMPLATE = hbs`
     {{/paginated-scroll-list}}
 `;
 
-module('Integration | Component | paginated scroll list', function(hooks) {
+module('Integration | Component | paginated scroll list', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.set('showMoreAction', () => {});
   });
 
-  test('component is rendered in trimmed mode', async function(assert) {
+  test('component is rendered in trimmed mode', async function (assert) {
     assert.expect(4);
 
     this.set('items', _buildItemsArray(10, 'This is Foo Object'));
@@ -65,7 +65,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       .isVisible('Show more link is visible when has items not rendered and does not exceed container max height');
   });
 
-  test('component displays more items on clicking show more link', async function(assert) {
+  test('component displays more items on clicking show more link', async function (assert) {
     assert.expect(5);
 
     this.set('items', _buildItemsArray(10, 'This is Foo Object'));
@@ -102,7 +102,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       .exists({ count: 1 }, 'items container has "show-all" class after clicking show more link');
   });
 
-  test('component is rendered in show all state', async function(assert) {
+  test('component is rendered in show all state', async function (assert) {
     assert.expect(3);
 
     this.set('items', _buildItemsArray(2, 'This is Foo Object'));
@@ -119,7 +119,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
       .isNotVisible('Show more link is not visible when trim flag is false');
   });
 
-  test('show more link is not visible when items are within max height', async function(assert) {
+  test('show more link is not visible when items are within max height', async function (assert) {
     assert.expect(2);
 
     this.set('items', _buildItemsArray(2, 'This is Foo Object'));
@@ -135,7 +135,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     assert.dom('.paginated-scroll-list__show-more').isVisible('Show more link is visible after items change');
   });
 
-  test('scrolling to the bottom loads more elements', async function(assert) {
+  test('scrolling to the bottom loads more elements', async function (assert) {
     assert.expect(2);
 
     this.set('items', _buildItemsArray(50, 'This is Foo Object'));
@@ -154,7 +154,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
     assert.dom('.mock-item').exists({ count: 50 }, '50 items are shown after scrolling');
   });
 
-  test('updating items or perPage will cause _itemsToRender to update', async function(assert) {
+  test('updating items or perPage will cause _itemsToRender to update', async function (assert) {
     assert.expect(4);
 
     this.set('items', _buildItemsArray(5, 'This is Foo Object'));
@@ -189,7 +189,7 @@ module('Integration | Component | paginated scroll list', function(hooks) {
 
     for (let i = 0; i < numberOfItems; i++) {
       items.push({
-        foo: content
+        foo: content,
       });
     }
     return A(items);

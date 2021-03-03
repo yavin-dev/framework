@@ -7,36 +7,32 @@ import Response from 'ember-cli-mirage/response';
 
 let Store, Container;
 
-module('Unit | Consumer | item', function(hooks) {
+module('Unit | Consumer | item', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     Container = this.owner;
     Store = Container.lookup('service:store');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('delete item - success', function(assert) {
+  test('delete item - success', function (assert) {
     assert.expect(3);
 
     let Consumer = this.owner.factoryFor('consumer:item').create({
       naviNotifications: {
-        add({ message }) {
-          assert.equal(
-            message,
-            'Report "Hyrule News" deleted successfully!',
-            'A notification is sent containing the item title'
-          );
-        }
+        add({ title }) {
+          assert.equal(title, 'Report deleted', 'A notification is sent');
+        },
       },
       router: {
-        transitionTo: () => {}
-      }
+        transitionTo: () => {},
+      },
     });
 
     return run(() => {
-      return Store.findRecord('report', 1).then(report => {
+      return Store.findRecord('report', 1).then((report) => {
         assert.ok(Store.hasRecordForId('report', 1), 'Report 1 is available in the store');
 
         Consumer.send('deleteItem', report);
@@ -48,7 +44,7 @@ module('Unit | Consumer | item', function(hooks) {
     });
   });
 
-  test('delete item - failure', function(assert) {
+  test('delete item - failure', function (assert) {
     assert.expect(3);
 
     //Mock Server Endpoint
@@ -57,20 +53,16 @@ module('Unit | Consumer | item', function(hooks) {
     });
 
     return run(() => {
-      return Store.findRecord('report', 1).then(report => {
+      return Store.findRecord('report', 1).then((report) => {
         let Consumer = this.owner.factoryFor('consumer:item').create({
           naviNotifications: {
-            add({ message }) {
-              assert.equal(
-                message,
-                'OOPS! An error occurred while deleting report "Hyrule News"',
-                'A notification is sent containing the widget title'
-              );
-            }
+            add({ title }) {
+              assert.equal(title, 'An error occurred while deleting report', 'A error notification is sent on error');
+            },
           },
           router: {
-            transitionTo: () => {}
-          }
+            transitionTo: () => {},
+          },
         });
 
         assert.ok(Store.hasRecordForId('report', 1), 'Report 1 is available in the store');

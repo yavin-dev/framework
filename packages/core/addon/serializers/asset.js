@@ -13,6 +13,6 @@ export default BaseJsonSerializer.extend({
   attrs: {
     // Prevent sending below attributes in request payload
     createdOn: { serialize: false },
-    updatedOn: { serialize: false }
-  }
+    updatedOn: { serialize: false },
+  },
 });

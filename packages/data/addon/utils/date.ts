@@ -39,27 +39,19 @@ export function getFirstDayEpochForGrain(grain: Grain, dateFormat: string = API_
   const period = getPeriodForGrain(grain);
   const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
 
-  return epochDate
-    .add(1, period)
-    .subtract(1, 'day')
-    .startOf(grain)
-    .format(dateFormat);
+  return epochDate.add(1, period).subtract(1, 'day').startOf(grain).format(dateFormat);
 }
 
 /**
  * Returns last day of grain for a given date
  */
 export function getLastDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
-  return moment(date)
-    .endOf(grain)
-    .format(dateFormat);
+  return moment(date).endOf(grain).format(dateFormat);
 }
 
 /**
  * Returns first day of grain for a given date
  */
 export function getFirstDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
-  return moment(date)
-    .startOf(grain)
-    .format(dateFormat);
+  return moment(date).startOf(grain).format(dateFormat);
 }

@@ -13,6 +13,6 @@ self.deprecationWorkflow.config = {
     { handler: 'silence', matchId: 'application-controller.router-properties' },
     { handler: 'silence', matchId: 'ember-polyfills.deprecate-merge' },
     { handler: 'silence', matchId: 'ember-power-select-test-support-clickTrigger' },
-    { handler: 'silence', matchId: 'ember-power-select-test-support-nativeMouseUp' }
-  ]
+    { handler: 'silence', matchId: 'ember-power-select-test-support-nativeMouseUp' },
+  ],
 };

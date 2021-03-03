@@ -4,11 +4,11 @@ import RESPONSE_CODES from '../enums/response-codes';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function() {
+export default function () {
   /**
    * users/:id - GET endpoint to fetch user by id
    */
-  this.get('/users/:id', function({ users }, request) {
+  this.get('/users/:id', function ({ users }, request) {
     let id = request.params.id,
       user = users.find(id);
 
@@ -22,7 +22,7 @@ export default function() {
   /**
    * users/ - GET endpoint to fetch many users
    */
-  this.get('/users', function({ users }, request) {
+  this.get('/users', function ({ users }, request) {
     let idFilter = request.queryParams['filter[users.id]'];
 
     // Allow filtering
@@ -39,14 +39,14 @@ export default function() {
   /**
    * users/ -  POST endpoint to add a new user
    */
-  this.post('/users', function({ users, db }) {
+  this.post('/users', function ({ users, db }) {
     let attrs = this.normalizedRequestAttrs(),
       user = users.create(attrs);
 
     // Init properties
     db.users.update(user.id, {
       createdOn: moment.utc().format(TIMESTAMP_FORMAT),
-      updatedOn: moment.utc().format(TIMESTAMP_FORMAT)
+      updatedOn: moment.utc().format(TIMESTAMP_FORMAT),
     });
 
     return user;

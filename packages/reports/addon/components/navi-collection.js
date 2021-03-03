@@ -75,13 +75,13 @@ export default class NaviCollection extends Component {
    */
   filterOptions = arr([
     {
-      filterFn: item => item,
-      name: 'All'
+      filterFn: (item) => item,
+      name: 'All',
     },
     {
-      filterFn: items => items.filterBy('isFavorite'),
-      name: 'Favorites'
-    }
+      filterFn: (items) => items.filterBy('isFavorite'),
+      name: 'Favorites',
+    },
   ]);
 
   /**

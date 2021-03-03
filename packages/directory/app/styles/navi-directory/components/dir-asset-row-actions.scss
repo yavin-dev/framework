@@ -16,6 +16,9 @@
     .action {
       margin-right: 15px;
       visibility: hidden;
+      .modal {
+        visibility: visible;
+      }
     }
 
     i {

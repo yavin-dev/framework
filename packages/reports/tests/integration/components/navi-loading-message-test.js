@@ -4,10 +4,10 @@ import { render } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | navi loading message', function(hooks) {
+module('Integration | Component | navi loading message', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.dom('*').hasText('');
 
     // Template block usage:

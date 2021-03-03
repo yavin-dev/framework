@@ -36,6 +36,6 @@ export default class DirAssetRowActionsComponent extends Component<DirAssetRowAc
    */
   assetActionComponents = {
     report: 'navi-action-list',
-    dashboard: 'dashboard-action-list'
+    dashboard: 'dashboard-action-list',
   };
 }

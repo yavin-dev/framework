@@ -1,3 +1,4 @@
+<NaviNotifications class="m-t-20"/>
 <DenaliNavbar @isResponsive={{true}} as |Nav|>
   <Nav.Left as |Left|>
     <Left.LinkTo @route="dashboards">Navi Dashboards</Left.LinkTo>
@@ -8,6 +9,3 @@
   </Nav.Center>
 </DenaliNavbar>
 {{outlet}}
-<div class="navi-notifications">
-  {{this.naviNotifications.options.message}} {{this.naviNotifications.options.type}}
-</div>

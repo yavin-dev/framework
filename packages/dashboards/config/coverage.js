@@ -1,3 +1,3 @@
 module.exports = {
-  reporters: ['lcov', 'html', 'json']
+  reporters: ['lcov', 'html', 'json'],
 };

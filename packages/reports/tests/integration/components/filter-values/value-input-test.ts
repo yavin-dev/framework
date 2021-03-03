@@ -11,11 +11,11 @@ import ValueInput from 'navi-reports/components/filter-values/value-input';
 
 type ComponentArgs = ValueInput['args'];
 interface TestContext extends Context, ComponentArgs {}
-module('Integration | Component | filter values/value input', function(hooks) {
+module('Integration | Component | filter values/value input', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const fragmentFactory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.filter = fragmentFactory.createFilter('metric', 'bardOne', 'adClicks', {}, 'gt', [1000]);
     this.onUpdateFilter = () => null;
@@ -28,7 +28,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
       />`);
   });
 
-  test('it renders', function(this: TestContext, assert) {
+  test('it renders', function (this: TestContext, assert) {
     assert.expect(1);
 
     assert
@@ -39,7 +39,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
       );
   });
 
-  test('collapsed', function(this: TestContext, assert) {
+  test('collapsed', function (this: TestContext, assert) {
     assert.expect(2);
 
     this.set('isCollapsed', true);
@@ -48,7 +48,7 @@ module('Integration | Component | filter values/value input', function(hooks) {
     assert.dom().hasText('1000', 'The value is rendered correctly when collapsed');
   });
 
-  test('changing values', async function(this: TestContext, assert) {
+  test('changing values', async function (this: TestContext, assert) {
     assert.expect(1);
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
@@ -58,11 +58,11 @@ module('Integration | Component | filter values/value input', function(hooks) {
     await fillIn('.filter-values--value-input', 'aaa');
   });
 
-  test('error state', function(this: TestContext, assert) {
+  test('error state', function (this: TestContext, assert) {
     assert.dom('.input').doesNotHaveClass('is-error', 'The input should not have error state');
 
     this.set('filter', {
-      validations: { attrs: { values: { isInvalid: true } } }
+      validations: { attrs: { values: { isInvalid: true } } },
     });
 
     assert.dom('.input').hasClass('is-error', 'The input should have error state');

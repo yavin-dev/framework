@@ -6,8 +6,8 @@ import { isForbidden } from 'dummy/helpers/is-forbidden';
 import { module, test } from 'qunit';
 import { ForbiddenError, BadRequestError, ServerError } from 'ember-ajax/errors';
 
-module('Unit | Helper | is forbidden', function() {
-  test('it returns true with rejected promise with forbidden error', function(assert) {
+module('Unit | Helper | is forbidden', function () {
+  test('it returns true with rejected promise with forbidden error', function (assert) {
     assert.expect(4);
     assert.ok(isForbidden(new ForbiddenError({})), 'returns true if forbidden error');
     assert.notOk(isForbidden({ error: 'Not Found' }), 'returns false for general errors');
@@ -15,7 +15,7 @@ module('Unit | Helper | is forbidden', function() {
     assert.notOk(isForbidden(new ServerError({})), 'returns false for server errors');
   });
 
-  test('it returns false with other data types', function(assert) {
+  test('it returns false with other data types', function (assert) {
     assert.expect(4);
     assert.notOk(isForbidden(null));
     assert.notOk(isForbidden(undefined));

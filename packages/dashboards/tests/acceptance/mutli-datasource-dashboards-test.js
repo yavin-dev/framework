@@ -3,12 +3,12 @@ import { visit, click, findAll, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest, test } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
-import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { clickItem } from 'navi-reports/test-support/report-builder';
 
-module('Acceptance | Multi datasource Dashboard', function(hooks) {
+module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-  test('Load multi-datasource dashboard', async function(assert) {
+  test('Load multi-datasource dashboard', async function (assert) {
     assert.expect(7);
     await visit('/dashboards/6/view');
 
@@ -24,48 +24,47 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await click('.dashboard-filters__toggle');
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map(el => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
       ['Age (id)', 'Container (id)'],
       'Dimensions are properly labeled in filters'
     );
 
     assert.deepEqual(
-      findAll('.filter-builder__operator-trigger').map(el => el.textContent.trim()),
+      findAll('.filter-builder__operator-trigger').map((el) => el.textContent.trim()),
       ['Equals', 'Not Equals'],
       'Dimension filter operators are shown correctly'
     );
 
     assert.deepEqual(
-      findAll('.filter-values--dimension-select__trigger').map(el =>
+      findAll('.filter-values--dimension-select__trigger').map((el) =>
         [
           ...el.querySelectorAll(
             '.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)'
-          )
-        ].map(el => el.textContent.trim())
+          ),
+        ].map((el) => el.textContent.trim())
       ),
       [['1', '2', '3'], ['1']],
       'Dimension value selector showing the right values'
     );
   });
 
-  test('Create new multisource dashboard', async function(assert) {
+  test('Create new multisource dashboard', async function (assert) {
     assert.expect(8);
 
     await visit('/dashboards/new');
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await selectChoose('.add-widget__report-select-trigger', 'Report 12');
     await click('.add-widget__add-btn');
 
     assert.dom('.navi-widget__header').exists({ count: 1 }, 'One widget loaded');
     assert.dom('.c3-chart-component').exists({ count: 1 }, 'One visualization loaded');
 
-    await click('.navi-dashboard__add-widget-btn');
+    await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
     await selectChoose('.navi-table-select__trigger', 'Inventory');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
-    await clickItemFilter('dimension', 'Date Time');
     await selectChoose('.filter-builder__operator-trigger', 'Current');
     await clickItem('dimension', 'Container');
     await clickItem('metric', 'Used Amount');
@@ -84,7 +83,7 @@ module('Acceptance | Multi datasource Dashboard', function(hooks) {
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 
     const widgetsWithFilterWarning = () =>
-      findAll('.navi-widget__filter-errors-icon').map(el => el.closest('.navi-widget__title').textContent.trim());
+      findAll('.navi-widget__filter-errors-icon').map((el) => el.closest('.navi-widget__title').textContent.trim());
 
     assert.deepEqual(
       widgetsWithFilterWarning(),

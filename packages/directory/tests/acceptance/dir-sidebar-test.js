@@ -3,11 +3,11 @@ import { click, currentURL, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Acceptance | dir sidebar', function(hooks) {
+module('Acceptance | dir sidebar', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('transitions for sidebar link-tos', async function(assert) {
+  test('transitions for sidebar link-tos', async function (assert) {
     await visit('/directory');
     assert.equal(currentURL(), '/directory/my-data', 'Directory route redirects to `my-data` child route');
     assert.dom('.dir-sidebar .is-active').hasText('My Data', 'The active sidebar link corresponds to the active route');

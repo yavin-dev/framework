@@ -11,15 +11,15 @@ let Store: StoreService;
 
 const routeFor = (model: Partial<ReportModel>) => ({ modelFor: () => model });
 
-module('Unit | Consumer | report table visualization', function(hooks) {
+module('Unit | Consumer | report table visualization', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     Consumer = this.owner.lookup('consumer:report/table-visualization');
     Store = this.owner.lookup('service:store');
   });
 
-  test('UPDATE_TABLE_COLUMN_ORDER', function(assert) {
+  test('UPDATE_TABLE_COLUMN_ORDER', function (assert) {
     const request = Store.createFragment('bard-request-v2/request', {
       table: 'network',
       limit: null,
@@ -27,7 +27,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
       requestVersion: '2.0',
       columns: [{ cid: 'cid0' }, { cid: 'cid1' }, { cid: 'cid2' }],
       filters: [],
-      sorts: []
+      sorts: [],
     });
 
     const visualization = Store.createRecord('table', {
@@ -36,10 +36,10 @@ module('Unit | Consumer | report table visualization', function(hooks) {
       metadata: {
         columnAttributes: {
           cid2: {
-            format: 'yes'
-          }
-        }
-      }
+            format: 'yes',
+          },
+        },
+      },
     });
 
     const route = routeFor({ request, visualization });
@@ -47,7 +47,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
     Consumer.send(UpdateReportActions.UPDATE_TABLE_COLUMN_ORDER, route, [
       { fragment: request.columns.objectAt(2) },
       { fragment: request.columns.objectAt(0) },
-      { fragment: request.columns.objectAt(1) }
+      { fragment: request.columns.objectAt(1) },
     ]);
 
     assert.deepEqual(
@@ -57,7 +57,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
     );
 
     assert.deepEqual(
-      request.columns.map(c => c.cid),
+      request.columns.map((c) => c.cid),
       ['cid2', 'cid0', 'cid1'],
       'updateColumnOrder updates the columns in the visualization metadata'
     );
@@ -72,7 +72,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
     );
   });
 
-  test('UPDATE_TABLE_COLUMN', function(assert) {
+  test('UPDATE_TABLE_COLUMN', function (assert) {
     assert.expect(1);
 
     const request = Store.createFragment('bard-request-v2/request', {
@@ -82,7 +82,7 @@ module('Unit | Consumer | report table visualization', function(hooks) {
       requestVersion: '2.0',
       columns: [{ cid: 'cid0' }, { cid: 'cid1' }],
       filters: [],
-      sorts: []
+      sorts: [],
     });
 
     const visualization = Store.createRecord('table', {
@@ -91,31 +91,31 @@ module('Unit | Consumer | report table visualization', function(hooks) {
       metadata: {
         columnAttributes: {
           cid0: {
-            canAggregateSubtotal: false
+            canAggregateSubtotal: false,
           },
           cid1: {
-            format: 'foo'
-          }
-        }
-      }
+            format: 'foo',
+          },
+        },
+      },
     });
 
     const route = routeFor({ request, visualization });
 
     Consumer.send(UpdateReportActions.UPDATE_TABLE_COLUMN, route, {
       attributes: { format: 'bar' },
-      fragment: { cid: 'cid1' }
+      fragment: { cid: 'cid1' },
     });
 
     assert.deepEqual(
       visualization.metadata.columnAttributes,
       {
         cid0: {
-          canAggregateSubtotal: false
+          canAggregateSubtotal: false,
         },
         cid1: {
-          format: 'bar'
-        }
+          format: 'bar',
+        },
       },
       'updateColumn updates the column in the visualization metadata'
     );

@@ -11,10 +11,10 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { Grain } from 'navi-data/utils/date';
 
 let Request: RequestFragment;
-module('Unit | Component | filter-builders/time-dimension', function(hooks) {
+module('Unit | Component | filter-builders/time-dimension', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     Request = store.createFragment('bard-request-v2/request', {
       table: 'network',
@@ -24,26 +24,27 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
           type: 'timeDimension',
           field: 'network.dateTime',
           parameters: {
-            grain: 'day'
+            grain: 'day',
           },
           operator: 'bet',
           values: ['P7D', 'current'],
-          source: 'bardOne'
-        }
+          source: 'bardOne',
+        },
       ],
       sorts: [],
       limit: null,
       dataSource: 'bardOne',
-      requestVersion: '2.0'
+      requestVersion: '2.0',
     });
   });
 
-  test('filter property', function(assert) {
+  test('filter property', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
+      isRequired: false,
       filter,
-      onUpdateFilter: () => undefined
+      onUpdateFilter: () => undefined,
     };
 
     let dateBuilder = createGlimmerComponent(
@@ -52,7 +53,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     ) as TimeDimensionFilterBuilder;
 
     assert.deepEqual(
-      dateBuilder.valueBuilders.map(op => op.name),
+      dateBuilder.valueBuilders.map((op) => op.name),
       ['Current Day', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
@@ -60,20 +61,21 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     filter.updateParameters({ grain: 'isoWeek' });
 
     assert.deepEqual(
-      dateBuilder.valueBuilders.map(op => op.name),
+      dateBuilder.valueBuilders.map((op) => op.name),
       ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between'],
       'Filter operator is the first and only supported operator'
     );
   });
 
-  test('Interval operator', function(assert) {
+  test('Interval operator', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     filter.values = ['P1W', 'current'];
     filter.updateParameters({ grain: 'isoWeek' });
     const args: TimeDimensionFilterBuilder['args'] = {
       request: Request,
+      isRequired: false,
       filter,
-      onUpdateFilter: () => undefined
+      onUpdateFilter: () => undefined,
     };
 
     let dateBuilder = createGlimmerComponent(
@@ -113,12 +115,13 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
   });
 
-  test('Switching operator', function(assert) {
+  test('Switching operator', function (assert) {
     const filter = Request.filters.objectAt(0) as TimeDimensionFilterBuilder['args']['filter'];
     filter.updateParameters({ grain: 'isoWeek' });
 
     // 'current' tests
     filter.values = ['P1W', 'current'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'current'),
       ['current', 'next'],
@@ -126,6 +129,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-01-02'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'current'),
       ['current', 'next'],
@@ -133,6 +137,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['P1M', '2019-01-01'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'current'),
       ['current', 'next'],
@@ -140,6 +145,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['P6M', 'current'];
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'current'),
       ['current', 'next'],
@@ -147,6 +153,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2018-01-01', '2019-01-01'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'current'),
       ['current', 'next'],
@@ -154,11 +161,13 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     const intervalFor = (amount: string, grain: Grain): [string, string] => {
-      const { start, end } = Interval.parseFromStrings(amount, 'current').asMomentsForTimePeriod(grain);
-      return [start.utc(true).toISOString(), end.utc(true).toISOString()];
+      const { start, end } = Interval.parseFromStrings(amount, 'current').asMomentsInclusive(grain);
+      // subtract 1 to store filter values as inclusive
+      return [start.toISOString(), end.toISOString()];
     };
     // 'inPast' tests
     filter.values = intervalFor('P4D', 'day');
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'inPast'),
       ['P4D', 'current'],
@@ -166,6 +175,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = intervalFor('P3W', 'isoWeek');
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'inPast'),
       ['P3W', 'current'],
@@ -173,6 +183,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = intervalFor('P6M', 'month');
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'inPast'),
       ['P6M', 'current'],
@@ -180,6 +191,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = intervalFor('P9M', 'quarter');
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'inPast'),
       ['P9M', 'current'],
@@ -187,6 +199,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = intervalFor('P2Y', 'year');
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'inPast'),
       ['P2Y', 'current'],
@@ -194,6 +207,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-01-02'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'inPast'),
       ['P1D', 'current'],
@@ -201,6 +215,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-01-08'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'inPast'),
       ['P1W', 'current'],
@@ -208,6 +223,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-03-03'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'inPast'),
       ['P1M', 'current'],
@@ -215,13 +231,15 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-05-01'];
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'inPast'),
       ['P3M', 'current'],
       'inPast maps invalid interval to P3M/current for day'
     );
 
-    filter.values = ['2019-01-01', '2020-03-02'];
+    filter.values = ['2019-01-01', '2019-03-02'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'inPast'),
       ['P1Y', 'current'],
@@ -229,12 +247,13 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     const currentInterval = (dateTimePeriod: Grain) => {
-      const { start, end } = Interval.parseFromStrings('current', 'next').asMomentsForTimePeriod(dateTimePeriod);
-      return [start.utc(true).toISOString(), end.utc(true).toISOString()];
+      const { start, end } = Interval.parseFromStrings('current', 'next').asMomentsInclusive(dateTimePeriod);
+      return [start.toISOString(), end.toISOString()];
     };
     // 'in' tests
 
     filter.values = ['current', 'next'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
       currentInterval('day'),
@@ -242,6 +261,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['current', 'next'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'in'),
       currentInterval('isoWeek'),
@@ -249,6 +269,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['current', 'next'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'in'),
       currentInterval('month'),
@@ -256,6 +277,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['current', 'next'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'in'),
       currentInterval('year'),
@@ -263,34 +285,39 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['P1D', '2019-01-01'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-31T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
       'in translates P1D lookback to concrete'
     );
 
-    filter.values = ['P1W', '2019-01-01'];
+    filter.values = ['P1W', '2018-12-31'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-25T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2018-12-31T00:00:00.000Z', '2019-01-06T00:00:00.000Z'],
       'in translates P1W lookback to concrete'
     );
 
     filter.values = ['P1M', '2019-01-01'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-12-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-01-31T00:00:00.000Z'],
       'in translates P1M lookback to concrete'
     );
 
     filter.values = ['P1Y', '2019-01-01'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
-      ['2018-01-01T00:00:00.000Z', '2019-01-01T00:00:00.000Z'],
+      ['2019-01-01T00:00:00.000Z', '2019-12-31T00:00:00.000Z'],
       'in translates P1Y lookback to concrete'
     );
 
     filter.values = ['2019-01-01', '2019-01-02'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'in'),
       ['2019-01-01T00:00:00.000Z', '2019-01-02T00:00:00.000Z'],
@@ -298,6 +325,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-01-08'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'in'),
       ['2018-12-31T00:00:00.000Z', '2019-01-07T00:00:00.000Z'],
@@ -305,6 +333,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-03-03'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'in'),
       ['2019-01-01T00:00:00.000Z', '2019-03-01T00:00:00.000Z'],
@@ -312,6 +341,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2019-05-01'];
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'in'),
       ['2019-01-01T00:00:00.000Z', '2019-04-01T00:00:00.000Z'],
@@ -319,6 +349,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2020-03-02'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'in'),
       ['2019-01-01T00:00:00.000Z', '2020-01-01T00:00:00.000Z'],
@@ -328,6 +359,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     // 'since' tests
 
     filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'since'),
       ['2019-01-01T00:00:00.000Z'],
@@ -335,6 +367,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-02', '2020-01-01'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'since'),
       ['2018-12-31T00:00:00.000Z'],
@@ -342,6 +375,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-02', '2020-01-01'];
+    filter.parameters.grain = 'month';
     assert.deepEqual(
       valuesForOperator(filter, 'month', 'since'),
       ['2019-01-01T00:00:00.000Z'],
@@ -349,6 +383,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-05-01', '2020-01-01'];
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'since'),
       ['2019-04-01T00:00:00.000Z'],
@@ -356,6 +391,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-03-01', '2020-01-01'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'since'),
       ['2019-01-01T00:00:00.000Z'],
@@ -363,6 +399,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'day';
     assert.deepEqual(
       valuesForOperator(filter, 'day', 'since'),
       ['2019-01-01T00:00:00.000Z'],
@@ -370,6 +407,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2018-12-31', '2020-01-01'];
+    filter.parameters.grain = 'isoWeek';
     assert.deepEqual(
       valuesForOperator(filter, 'isoWeek', 'since'),
       ['2018-12-31T00:00:00.000Z'],
@@ -377,6 +415,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-03-01', '2020-01-01'];
+    filter.parameters.grain = 'quarter';
     assert.deepEqual(
       valuesForOperator(filter, 'quarter', 'since'),
       ['2019-01-01T00:00:00.000Z'],
@@ -384,6 +423,7 @@ module('Unit | Component | filter-builders/time-dimension', function(hooks) {
     );
 
     filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'year';
     assert.deepEqual(
       valuesForOperator(filter, 'year', 'since'),
       ['2019-01-01T00:00:00.000Z'],

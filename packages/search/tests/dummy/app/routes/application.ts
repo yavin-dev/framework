@@ -14,7 +14,7 @@ export default class ApplicationRoute extends Route {
     return Promise.all([
       this.user.findOrRegister(),
       this.naviMetadata.loadMetadata(),
-      this.naviMetadata.loadMetadata({ dataSourceName: 'bardTwo' })
+      this.naviMetadata.loadMetadata({ dataSourceName: 'bardTwo' }),
     ]);
   }
 }

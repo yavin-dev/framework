@@ -14,8 +14,5 @@ export function fillInSync(selector, text) {
   } else {
     $(selector).trigger('focusin');
   }
-  $(selector)
-    .val(text)
-    .trigger('input')
-    .change();
+  $(selector).val(text).trigger('input').change();
 }

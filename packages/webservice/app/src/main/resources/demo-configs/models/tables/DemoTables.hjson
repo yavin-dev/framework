@@ -54,9 +54,11 @@
           category: Date
           type: TIME
           definition: '{{date_added}}'
-          grain: {
-            type: DAY
-          }
+          grains: [
+            {
+               type: DAY
+            }
+          ]
         }
         {
           name: release_year
@@ -64,9 +66,11 @@
           category: Date
           type: TIME
           definition: '{{release_year}}'
-          grain: {
-            type: YEAR
-          }
+          grains: [
+            {
+               type: YEAR
+            }
+          ]
         }
         {
           name: film_rating

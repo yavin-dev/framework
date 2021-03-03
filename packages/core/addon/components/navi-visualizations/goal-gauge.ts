@@ -24,7 +24,7 @@ const DEFAULT_OPTIONS = {
   prefix: '',
   unit: '',
   thresholdColors: ['#f05050', '#ffc831', '#44b876'],
-  thresholdPercentages: [75, 85, 100]
+  thresholdPercentages: [75, 85, 100],
 };
 export type Args = {
   model: VisualizationModel;
@@ -97,7 +97,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   get data() {
     return {
       columns: [['data', this.actualValue]],
-      type: 'gauge'
+      type: 'gauge',
     };
   }
 
@@ -116,8 +116,8 @@ export default class GoalGaugeVisualization extends Component<Args> {
             prefix = this.config.prefix,
             unit = this.config.unit;
           return `${prefix}${number}${unit}`;
-        }
-      }
+        },
+      },
     };
   }
 
@@ -142,8 +142,8 @@ export default class GoalGaugeVisualization extends Component<Args> {
       threshold: {
         unit: 'value',
         max: this.config.goalValue,
-        values: this.thresholdValues
-      }
+        values: this.thresholdValues,
+      },
     };
   }
 
@@ -207,8 +207,6 @@ export default class GoalGaugeVisualization extends Component<Args> {
    */
   _formatNumber(value: number) {
     const formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
-    return numeral(value)
-      .format(formatStr)
-      .toUpperCase();
+    return numeral(value).format(formatStr).toUpperCase();
   }
 }

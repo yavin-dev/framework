@@ -15,41 +15,41 @@ import {
   parseDimension,
   parseFilters,
   parseHavings,
-  parseMetrics
+  parseMetrics,
 } from './bard-lite-parsers';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
-const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS',
-  DIMENSION_VALUE_MAP: Record<string, DimensionRow[]> = {},
-  MISSING_INTERVALS = [
-    '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
-    '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000'
-  ],
-  HAVING_OPS = {
-    gt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) > parseFloat(values[0]),
-    gte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) >= parseFloat(values[0]),
-    lt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) < parseFloat(values[0]),
-    lte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) <= parseFloat(values[0]),
-    eq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) === parseFloat(values[0]),
-    neq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) !== parseFloat(values[0]),
-    bet: (values: string[], metricValue: number) =>
-      parseFloat(values[0]) < parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) < parseFloat(values[1]),
-    nbet: (values: string[], metricValue: number) => !HAVING_OPS.bet(values, metricValue)
+const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
+const DATA_EPOCH = '2010-01-01';
+const DIMENSION_VALUE_MAP: Record<string, DimensionRow[]> = {};
+const MISSING_INTERVALS = [
+  '2018-11-12 00:00:00.000/2018-11-14 00:00:00.000',
+  '2018-11-15 00:00:00.000/2018-11-16 00:00:00.000',
+];
+const HAVING_OPS = {
+  gt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) > parseFloat(values[0]),
+  gte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) >= parseFloat(values[0]),
+  lt: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) < parseFloat(values[0]),
+  lte: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) <= parseFloat(values[0]),
+  eq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) === parseFloat(values[0]),
+  neq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) !== parseFloat(values[0]),
+  bet: (values: string[], metricValue: number) =>
+    parseFloat(values[0]) < parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) < parseFloat(values[1]),
+  nbet: (values: string[], metricValue: number) => !HAVING_OPS.bet(values, metricValue),
+};
+const DIMENSION_OPS = {
+  in: (filterValues: string[], value: DimensionRow, field: string) => {
+    const dimFieldValue = value[field];
+    if (filterValues.length === 1 && filterValues[0] === '""' && dimFieldValue === null) {
+      return true;
+    }
+    return dimFieldValue && filterValues.includes(dimFieldValue);
   },
-  DIMENSION_OPS = {
-    in: (filterValues: string[], value: DimensionRow, field: string) => {
-      const dimFieldValue = value[field];
-      if (filterValues.length === 1 && filterValues[0] === '""' && dimFieldValue === null) {
-        return true;
-      }
-      return dimFieldValue && filterValues.includes(dimFieldValue);
-    },
-    notin: (filterValues: string[], value: DimensionRow, field: string) =>
-      !DIMENSION_OPS.in(filterValues, value, field),
-    contains: (filterValues: string[], value: DimensionRow, field: string) =>
-      filterValues.some(v => value[field]?.includes(v))
-  };
+  notin: (filterValues: string[], value: DimensionRow, field: string) => !DIMENSION_OPS.in(filterValues, value, field),
+  contains: (filterValues: string[], value: DimensionRow, field: string) =>
+    filterValues.some((v) => value[field]?.includes(v)),
+};
 
 type ResponseRow = Record<string, unknown>;
 
@@ -69,19 +69,20 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
   const isoGrain = grain === 'week' ? 'isoWeek' : grain; // need to use isoweek, which is what real ws uses
   let endDate;
   const nonAllGrain = isoGrain === 'all' ? 'day' : isoGrain;
+
+  const current = moment().startOf(nonAllGrain);
+  const next = current.clone().add(1, getPeriodForGrain(nonAllGrain));
   if (end === 'current') {
-    endDate = moment().startOf(nonAllGrain);
+    endDate = current;
   } else if (end === 'next') {
-    endDate = moment()
-      .startOf(nonAllGrain)
-      .add(1, getPeriodForGrain(nonAllGrain));
+    endDate = next;
   } else {
-    endDate = moment(end, API_DATE_FORMAT);
+    endDate = moment.min(moment(end, API_DATE_FORMAT), next);
   }
   let startDate = start.startsWith('P')
       ? endDate.clone().subtract(moment.duration(start))
       : moment(start, API_DATE_FORMAT),
-    currentDate = startDate,
+    currentDate = moment.max(startDate, moment.utc(DATA_EPOCH)),
     dates = [];
 
   // handle "all" time grain
@@ -131,7 +132,7 @@ function _fakeDimensionValues(dimension: FiliDimension, count: number): Dimensio
     fakeValues.push({
       id: `${i + 1}`,
       description: faker.commerce.productName(),
-      ...(key ? { key } : {})
+      ...(key ? { key } : {}),
     });
   }
 
@@ -156,16 +157,16 @@ function _getDimensionValues(dimension: FiliDimension, filter?: FiliFilter) {
 function _loadPredefinedDimensions(): void {
   const dimensionFixturesRegExp = new RegExp(`mirage/bard-lite/dimensions/(.*)`);
   const fixtureEntries = Object.keys(global.requirejs.entries).filter(
-    key => !key.endsWith('.jshint') && !key.endsWith('.lint-test') && dimensionFixturesRegExp.test(key)
+    (key) => !key.endsWith('.jshint') && !key.endsWith('.lint-test') && dimensionFixturesRegExp.test(key)
   );
 
-  fixtureEntries.forEach(requirejsKey => {
+  fixtureEntries.forEach((requirejsKey) => {
     const [, dimensionKey] = dimensionFixturesRegExp.exec(requirejsKey) || [];
     DIMENSION_VALUE_MAP[dimensionKey] = global.require(requirejsKey).default;
   });
 }
 
-export default function(
+export default function (
   this: Server,
   metricBuilder = (_metric: string, _row: ResponseRow, _dimKey: string): number => {
     return Number(faker.finance.amount());
@@ -173,13 +174,13 @@ export default function(
 ) {
   _loadPredefinedDimensions();
 
-  this.get('/data/*path', function(_db, request) {
+  this.get('/data/*path', function (_db, request) {
     faker.seed(request.url.length);
     let [table, grain, ...dimensionPaths] = request.params.path.split('/') as [string, Grain] & string[];
     const dimensions = dimensionPaths
-      .filter(d => d.length > 0)
+      .filter((d) => d.length > 0)
       .sort()
-      .map(d => parseDimension(d));
+      .map((d) => parseDimension(d));
 
     if (table === 'protected') {
       return new Response(403, {}, { error: 'user not allowed to query this table' });
@@ -187,6 +188,15 @@ export default function(
 
     // Get date range from query params + grain
     const [start, end] = request.queryParams.dateTime.split('/');
+    if (start === end) {
+      return new Response(
+        400,
+        {},
+        {
+          description: `Date time cannot have zero length intervals. ${start}/${end}.`,
+        }
+      );
+    }
     let dates = _getDates(grain, start, end);
     let filters: FiliFilter[] = [];
     if (request.queryParams.filters) {
@@ -194,18 +204,18 @@ export default function(
     }
 
     // Convert each date into a row of data
-    let rows: ResponseRow[] = dates.map(date => ({ dateTime: date.format(API_DATE_FORMAT) }));
+    let rows: ResponseRow[] = dates.map((date) => ({ dateTime: date.format(API_DATE_FORMAT) }));
 
     // Add id and desc for each dimension
-    dimensions.forEach(dimension => {
+    dimensions.forEach((dimension) => {
       rows = rows.reduce((newRows: ResponseRow[], currentRow) => {
-        const dimensionFilter = filters.find(f => f.dimension === dimension.name);
+        const dimensionFilter = filters.find((f) => f.dimension === dimension.name);
         let dimensionValues = _getDimensionValues(dimension, dimensionFilter);
 
         return newRows.concat(
-          dimensionValues.map(value => {
+          dimensionValues.map((value) => {
             let newRow = { ...currentRow };
-            Object.keys(value).forEach(key => {
+            Object.keys(value).forEach((key) => {
               let field = key;
               if (key === 'description') {
                 field = 'desc';
@@ -227,11 +237,11 @@ export default function(
 
     // Add each metric
     rows = rows
-      .map(row => {
+      .map((row) => {
         const dimensionKey = dimensions
-          .map(d => {
+          .map((d) => {
             const fields = d.show.length === 0 ? ['id', 'desc'] : d.show;
-            return fields.map(field => `${d.name}|${field}=${row[`${d.name}|${field}`]}`).join(',');
+            return fields.map((field) => `${d.name}|${field}=${row[`${d.name}|${field}`]}`).join(',');
           })
           .join(';');
         const metrics = parseMetrics(request.queryParams.metrics).reduce((metricsObj: ResponseRow, metric) => {
@@ -243,10 +253,10 @@ export default function(
           return metricsObj;
         }, {});
 
-        Object.keys(metrics).forEach(metric => (row[metric] = metrics[metric]));
+        Object.keys(metrics).forEach((metric) => (row[metric] = metrics[metric]));
         return row;
       })
-      .filter(r => r !== undefined);
+      .filter((r) => r !== undefined);
 
     let missingIntervals = request.queryParams.metrics.includes('uniqueIdentifier') ? MISSING_INTERVALS : undefined;
 
@@ -256,14 +266,14 @@ export default function(
         pagination: {
           currentPage: 1,
           rowsPerPage: 10000,
-          numberOfResults: rows.length
+          numberOfResults: rows.length,
         },
-        missingIntervals
-      }
+        missingIntervals,
+      },
     };
   });
 
-  this.get('/dimensions/:dimension/values', function(_db, request) {
+  this.get('/dimensions/:dimension/values', function (_db, request) {
     faker.seed(request.url.length);
     let dimension = request.params.dimension,
       rows = _getDimensionValues({ name: dimension, show: [] });
@@ -275,17 +285,17 @@ export default function(
 
       rows =
         fieldMatch && fieldMatch.length > 0
-          ? rows.filter(row => {
+          ? rows.filter((row) => {
               const fieldValue = row[fieldMatch[1]];
               return fieldValue && values.includes(fieldValue);
             })
-          : rows.filter(row => values.some(value => row.description?.toLowerCase().includes(value.toLowerCase())));
+          : rows.filter((row) => values.some((value) => row.description?.toLowerCase().includes(value.toLowerCase())));
     }
 
     return { rows };
   });
 
-  this.get('/dimensions/:dimension/search', function(_db, request) {
+  this.get('/dimensions/:dimension/search', function (_db, request) {
     let dimension = request.params.dimension,
       rows = _getDimensionValues({ name: dimension, show: [] }),
       { query } = request.queryParams;
@@ -294,14 +304,12 @@ export default function(
       let values = query
         .toLowerCase()
         .split(/\s+/)
-        .map(v => v.trim())
-        .filter(_ => _);
+        .map((v) => v.trim())
+        .filter((_) => _);
 
-      rows = rows.filter(row => {
-        let rowValue = Object.values(row)
-          .join(' ')
-          .toLowerCase();
-        return values.every(value => rowValue.includes(value));
+      rows = rows.filter((row) => {
+        let rowValue = Object.values(row).join(' ').toLowerCase();
+        return values.every((value) => rowValue.includes(value));
       });
     }
 

@@ -3,35 +3,35 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | visualization toggle', function(hooks) {
+module('Integration | Component | visualization toggle', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('visualization toggle', async function(assert) {
+  test('visualization toggle', async function (assert) {
     assert.expect(3);
 
     this.set('validVisualizations', [
       {
         icon: 'bar-chart',
         name: 'bar-chart',
-        niceName: 'Bar Chart'
+        niceName: 'Bar Chart',
       },
       {
         icon: 'line-chart',
         name: 'line-chart',
-        niceName: 'Line Chart'
+        niceName: 'Line Chart',
       },
       {
         icon: 'table',
         name: 'table',
-        niceName: 'Data Table'
-      }
+        niceName: 'Data Table',
+      },
     ]);
     this.set('report', {
       visualization: {
-        type: 'bar-chart'
-      }
+        type: 'bar-chart',
+      },
     });
-    this.set('onVisualizationTypeUpdate', function(visName) {
+    this.set('onVisualizationTypeUpdate', function (visName) {
       assert.equal(visName, 'line-chart', 'The clicked visualization name is sent to the action');
     });
 
@@ -43,7 +43,7 @@ module('Integration | Component | visualization toggle', function(hooks) {
       }}`);
 
     assert.deepEqual(
-      findAll('.visualization-toggle__option').map(el => el.attributes.title.value),
+      findAll('.visualization-toggle__option').map((el) => el.attributes.title.value),
       ['Bar Chart', 'Line Chart', 'Data Table'],
       'All valid visualizations are shown as options'
     );

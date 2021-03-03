@@ -10,11 +10,11 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 
 let metadataService: NaviMetadataService;
 
-module('Integration | Component | filter-builders/collapsed', function(hooks) {
+module('Integration | Component | filter-builders/collapsed', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function(this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const factory = this.owner.lookup('service:fragment-factory');
     metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await metadataService.loadMetadata();
@@ -24,12 +24,12 @@ module('Integration | Component | filter-builders/collapsed', function(hooks) {
       'component:mock/values-component',
       Component.extend({
         classNames: 'mock-value-component',
-        layout: hbs`<div>Test</div>`
+        layout: hbs`<div>Test</div>`,
       })
     );
   });
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     await render(hbs`<FilterBuilders::Collapsed
       @filter={{this.filter}}
       @field={{this.field}}

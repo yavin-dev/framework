@@ -3,10 +3,10 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-module('Integration | Component | parameter-list-item', function(hooks) {
+module('Integration | Component | parameter-list-item', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it decides whether to show id or not', async function(assert) {
+  test('it decides whether to show id or not', async function (assert) {
     this.set('arg', { name: 'foo', id: 'sid' });
     this.set('allParams', [{ name: 'foo' }, { name: 'foo' }, { name: 'bar' }]);
 
@@ -28,13 +28,13 @@ module('Integration | Component | parameter-list-item', function(hooks) {
     this.set('allParams', [
       { groupName: 'one', options: [{ name: 'foo' }, { name: 'bar' }] },
       { groupName: 'two', options: [{ name: 'baz' }, { name: 'bam' }] },
-      { name: 'foo' }
+      { name: 'foo' },
     ]);
     assert.dom(this.element).hasText('foo (sid)', 'Shows id when there is a duplicate in grouped param list');
 
     this.set('allParams', [
       { groupName: 'one', options: [{ name: 'foo' }, { name: 'bar' }] },
-      { groupName: 'two', options: [{ name: 'baz' }, { name: 'bam' }] }
+      { groupName: 'two', options: [{ name: 'baz' }, { name: 'bam' }] },
     ]);
     assert.dom(this.element).hasText('foo', 'Shows name when there is no duplicate in grouped param list');
   });

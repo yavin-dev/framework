@@ -31,20 +31,18 @@ function getCurrentInfos(router, routerService) {
 
   return {
     currentInfos: routerLib.currentRouteInfos || routerLib.currentHandlerInfos,
-    mapBy: (routerLib.currentRouteInfos && 'route') || 'handler'
+    mapBy: (routerLib.currentRouteInfos && 'route') || 'handler',
   };
 }
 
 function getRoutes(router, routerService) {
   const { currentInfos, mapBy } = getCurrentInfos(router, routerService);
-  return emberArray(currentInfos)
-    .mapBy(mapBy)
-    .reverse();
+  return emberArray(currentInfos).mapBy(mapBy).reverse();
 }
 
 function getRouteWithAction(router, routerService, actionName) {
   let action;
-  let handler = emberArray(getRoutes(router, routerService)).find(route => {
+  let handler = emberArray(getRoutes(router, routerService)).find((route) => {
     let actions = route.actions || route._actions;
     action = actions[actionName];
 
@@ -55,7 +53,7 @@ function getRouteWithAction(router, routerService, actionName) {
 }
 
 export default Helper.extend({
-  router: computed(function() {
+  router: computed(function () {
     return getOwner(this).lookup('router:main');
   }).readOnly(),
 
@@ -70,7 +68,7 @@ export default Helper.extend({
       assert(`[route-action-helper] Unable to find action ${actionName}`, handler);
     });
 
-    let routeAction = function(...invocationArgs) {
+    let routeAction = function (...invocationArgs) {
       let { action, handler } = getRouteWithAction(router, routerService, actionName);
       let args = params.concat(invocationArgs);
       return run.join(handler, action, ...args);
@@ -79,5 +77,5 @@ export default Helper.extend({
     routeAction[ACTION] = true;
 
     return routeAction;
-  }
+  },
 });

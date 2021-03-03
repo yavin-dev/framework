@@ -76,16 +76,16 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @yields {Promise} promise with search query results
    * @returns {Object} Object containing component, title, and data to be displayed
    */
-  @(task(function*(query) {
+  @(task(function* (query) {
     const types = ['report', 'dashboard'];
     const promises = [];
 
-    types.forEach(type => {
+    types.forEach((type) => {
       promises.push(this.store.query(type, this._constructSearchQuery(query, type)));
     });
 
-    const data = yield Promise.all(promises).then(function(values) {
-      return values.flatMap(value => value.toArray());
+    const data = yield Promise.all(promises).then(function (values) {
+      return values.flatMap((value) => value.toArray());
     });
 
     // sort results by best match
@@ -96,7 +96,7 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
         (resultA, resultB) =>
           getPartialMatchWeight(resultA.title.toLowerCase(), query.toLowerCase()) -
           getPartialMatchWeight(resultB.title.toLowerCase(), query.toLowerCase())
-      )
+      ),
     };
   }).restartable())
   search;

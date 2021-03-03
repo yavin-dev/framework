@@ -51,7 +51,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
    * @returns name of series given row belongs to
    */
   getSeriesName(row: ResponseRow, _config: DimensionSeries['config'], request: RequestFragment): string {
-    return request.nonTimeDimensions.map(dim => row[dim.canonicalName]).join(',');
+    return request.nonTimeDimensions.map((dim) => row[dim.canonicalName]).join(',');
   }
 
   /**
@@ -81,7 +81,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     assert('response should be a NaviFactResponse instance', response instanceof NaviFactResponse);
 
     // Group data by x axis value + series name in order to lookup trends when building tooltip
-    this.byXSeries = new DataGroup(response.rows, row => {
+    this.byXSeries = new DataGroup(response.rows, (row) => {
       return `${this.getXValue(row, config, request)} ${this.getSeriesName(row, config, request)}`;
     });
 
@@ -92,7 +92,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     }
 
     const { timeGrain, nonTimeDimensions } = request;
-    const seriesKey = config.dimensions.map(s => nonTimeDimensions.map(d => s.values[d.cid]).join('|')); // Build the series required
+    const seriesKey = config.dimensions.map((s) => nonTimeDimensions.map((d) => s.values[d.cid]).join('|')); // Build the series required
 
     const names = config.dimensions.reduce((names: Record<string, string>, series, index) => {
       names[`series.${index}`] = series.name;
@@ -108,12 +108,12 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
       assert('request should have an interval', interval);
 
       const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
-      const byDate = new DataGroup(response.rows, row => buildDateKey(row[timeGrainColumnName] as string)); // Group by dates for easier lookup
+      const byDate = new DataGroup(response.rows, (row) => buildDateKey(row[timeGrainColumnName] as string)); // Group by dates for easier lookup
       // For each unique date, build the series
       const series = interval
         .makeEndExclusiveFor(timeGrain)
         .getDatesForInterval(timeGrain)
-        .map(date => {
+        .map((date) => {
           const key = buildDateKey(date);
           const rows = byDate.getDataForKey(key) || [];
           const displayValue = moment(date).format(ChartAxisDateTimeFormats[timeGrain]);
@@ -141,7 +141,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
 
     // the data for date used in the C3 chart
     const c3row: C3Row = {
-      x: { rawValue: value, displayValue }
+      x: { rawValue: value, displayValue },
     } as C3Row;
 
     // Adding the series to the keys
@@ -150,7 +150,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
       if (byDim.getDataForKey(s) && byDim.getDataForKey(s).length) {
         // Extending the data for date with the grouped dimension and metric value
         Object.assign(c3row, {
-          [`series.${index}`]: byDim.getDataForKey(s)[0][metric.canonicalName]
+          [`series.${index}`]: byDim.getDataForKey(s)[0][metric.canonicalName],
         });
       } else {
         // Returning null for the chart to show missing data
@@ -186,7 +186,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
       /**
        * @property {Object[]} rowData - maps a response row to each series in a tooltip
        */
-      rowData: computed('x', 'tooltipData', function() {
+      rowData: computed('x', 'tooltipData', function () {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.tooltipData.map((series: TooltipData) => {
           // Get the full data for this combination of x + series
@@ -194,7 +194,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
 
           return dataForSeries[0];
         });
-      })
+      }),
     });
   }
 }

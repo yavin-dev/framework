@@ -93,7 +93,7 @@ export default class Request extends EmberObject {
    * @returns {Array} values mapped into array of objects
    */
   _wrap(key, values) {
-    return values.map(value => ({ [key]: value }));
+    return values.map((value) => ({ [key]: value }));
   }
 
   /**

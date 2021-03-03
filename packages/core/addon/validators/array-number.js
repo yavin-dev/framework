@@ -13,5 +13,5 @@ export default BaseValidator.extend({
       return true;
     }
     return this.createErrorMessage('Not all values in the array are numbers', value, options);
-  }
+  },
 });

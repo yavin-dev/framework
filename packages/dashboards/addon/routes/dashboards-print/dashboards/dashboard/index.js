@@ -13,5 +13,5 @@ export default Route.extend({
   redirect() {
     let { id } = this.modelFor('dashboards-print.dashboards.dashboard');
     this.replaceWith('dashboards-print.dashboards.dashboard.view', id);
-  }
+  },
 });

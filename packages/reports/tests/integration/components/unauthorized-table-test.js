@@ -6,11 +6,11 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let MetadataService, Store;
 
-module('Integration | Component | unauthorized table', function(hooks) {
+module('Integration | Component | unauthorized table', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  test('it renders', async function(assert) {
+  test('it renders', async function (assert) {
     assert.expect(2);
 
     MetadataService = this.owner.lookup('service:navi-metadata');
@@ -18,7 +18,7 @@ module('Integration | Component | unauthorized table', function(hooks) {
 
     await MetadataService.loadMetadata();
     const model = {
-      request: Store.createFragment('bard-request-v2/request', { table: 'protected' })
+      request: Store.createFragment('bard-request-v2/request', { table: 'protected' }),
     };
 
     this.set('model', model);

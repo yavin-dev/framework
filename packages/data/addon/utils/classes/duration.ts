@@ -15,7 +15,7 @@ const DATE_UNITS: Record<string, DateUnit | undefined> = {
   D: 'day',
   W: 'week',
   M: 'month',
-  Y: 'year'
+  Y: 'year',
 };
 
 /**
@@ -26,7 +26,7 @@ type TimeUnit = 'hour' | 'minute' | 'second';
 const TIME_UNITS: Record<string, TimeUnit | undefined> = <const>{
   H: 'hour',
   M: 'minute',
-  S: 'second'
+  S: 'second',
 };
 
 // Regex for parsing iso date duration strings

@@ -16,7 +16,7 @@ const Template = hbs`
 const request = {
   hasGroupBy: true,
   hasMultipleMetrics: true,
-  columns: []
+  columns: [],
 };
 type MockRequest = typeof request;
 
@@ -26,16 +26,16 @@ const chartOptions = {
     y: {
       series: {
         type: 'mock',
-        config: {}
-      }
-    }
-  }
+        config: {},
+      },
+    },
+  },
 };
 
-module('Integration | Component | visualization config/line chart', function(hooks) {
+module('Integration | Component | visualization config/line chart', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function(this: TestContext) {
+  hooks.beforeEach(function (this: TestContext) {
     //mocking visualization manifest
     this.owner.register(
       'navi-visualization-manifest:mock',
@@ -58,7 +58,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
     this.set('onUpdateConfig', () => null);
   });
 
-  test('component renders', async function(assert) {
+  test('component renders', async function (assert) {
     assert.expect(1);
 
     await render(Template);
@@ -66,7 +66,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
     assert.dom('.line-chart-config').exists('The component is rendered');
   });
 
-  test('showStackOption', async function(assert) {
+  test('showStackOption', async function (assert) {
     assert.expect(6);
 
     await render(Template);
@@ -89,7 +89,7 @@ module('Integration | Component | visualization config/line chart', function(hoo
     this.set('request', {
       hasGroupBy: false,
       hasMultipleMetrics: false,
-      columns: []
+      columns: [],
     });
 
     await render(Template);

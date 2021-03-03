@@ -1,19 +1,24 @@
-<button type="button" class="success-btn" {{on "click" this.addSuccess}}>
-  success
-</button>
+{{page-title "Navi Notifications Demo"}}
 
-<button type="button" class="info-btn" {{on "click" this.addInfo}}>
-  info
-</button>
+<body class="p-20">
+  <h1 class="m-b-30">Navi Notifications Demo</h1>
+  <DenaliInputGroup @label="Notifications" class="m-b-30">
+    {{#each this.styleOptions as |style|}}
+      <DenaliButton class="{{style}}-btn m-r-4" @style="ghost" {{on "click" (fn this.add style)}}>{{style}}</DenaliButton>
+    {{/each}}
+    <DenaliButton class="clear-btn"   @style="text"  {{on "click" this.clear}}>clear</DenaliButton>
+  </DenaliInputGroup>
 
-<button type="button" class="danger-btn" {{on "click" this.addDanger}}>
-  danger
-</button>
+  <DenaliInputGroup @label="Timeout">
+    <DenaliToggle
+      @onChange={{fn (mut this.timeout)}}
+      @activeOption={{this.timeout}}
+      @options={{this.timeoutOptions}}
+      as |opt|
+    >
+      <span data-timeout={{opt}}>{{opt}}</span>
+    </DenaliToggle>
+  </DenaliInputGroup>
 
-<button type="button" class="clear-btn" {{on "click" this.clear}}>
-  clear
-</button>
-
-{{#each this.flashMessages.queue as |flash|}}
-  <FlashMessage @flash={{flash}} />
-{{/each}}
+  <NaviNotifications class="m-t-20"/>
+</body>

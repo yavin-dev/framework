@@ -39,5 +39,5 @@ export default Helper.extend({
     itemAction[actionId] = true;
 
     return itemAction;
-  }
+  },
 });

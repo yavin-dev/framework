@@ -39,7 +39,7 @@ export default class MissingIntervalWarning extends Component {
   get missingIntervals() {
     let rawIntervals = get(this, 'response.meta.missingIntervals') || [];
 
-    return rawIntervals.map(interval => {
+    return rawIntervals.map((interval) => {
       //Make both dates in the interval inclusive
       let dates = interval.split('/'),
         start = new moment(dates[0]).format(DATE_FORMAT),
@@ -72,7 +72,7 @@ export default class MissingIntervalWarning extends Component {
   *drawerTransition({ insertedSprites }) {
     const y = document.querySelector('.missing-intervals-warning').getBoundingClientRect().bottom;
     yield Promise.all(
-      insertedSprites.map(sprite => {
+      insertedSprites.map((sprite) => {
         sprite.startAtPixel({ y });
         sprite.applyStyles({ 'z-index': '1' });
         return move(sprite, { easing: easeOut, duration: 1000 });

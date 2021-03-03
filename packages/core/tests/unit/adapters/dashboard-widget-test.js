@@ -3,24 +3,24 @@ import { setupTest } from 'ember-qunit';
 
 let Adapter;
 
-module('Unit | Adapter | dashboard widget', function(hooks) {
+module('Unit | Adapter | dashboard widget', function (hooks) {
   setupTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     Adapter = this.owner.lookup('adapter:dashboard-widget');
   });
 
-  test('it exists', function(assert) {
+  test('it exists', function (assert) {
     assert.ok(Adapter);
   });
 
-  test('urlForCreateRecord', function(assert) {
+  test('urlForCreateRecord', function (assert) {
     assert.expect(1);
 
     let url = Adapter.urlForCreateRecord('dashboards-widget', {
       belongsTo() {
         return { id: 22 };
-      }
+      },
     });
 
     assert.equal(
@@ -30,14 +30,14 @@ module('Unit | Adapter | dashboard widget', function(hooks) {
     );
   });
 
-  test('urlForUpdateRecord', function(assert) {
+  test('urlForUpdateRecord', function (assert) {
     assert.expect(1);
 
     let url = Adapter.urlForUpdateRecord(22, 'dashboards-widget', {
       id: 11,
       belongsTo() {
         return { id: 22 };
-      }
+      },
     });
 
     assert.equal(

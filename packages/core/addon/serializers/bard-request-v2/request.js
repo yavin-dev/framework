@@ -44,8 +44,8 @@ export default class RequestSerializer extends JSONSerializer {
     }
 
     //copy source property from request
-    ['columns', 'filters', 'sorts'].forEach(attr =>
-      normalized[attr].forEach(fragment => (fragment.source = normalized.dataSource))
+    ['columns', 'filters', 'sorts'].forEach((attr) =>
+      normalized[attr].forEach((fragment) => (fragment.source = normalized.dataSource))
     );
 
     return super.normalize(typeClass, normalized);

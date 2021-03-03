@@ -68,7 +68,7 @@ export default Route.extend({
       width: 5,
       height: 4,
       column: 0,
-      row
+      row,
     });
     return layout;
   },
@@ -83,7 +83,7 @@ export default Route.extend({
    */
   _findNextAvailableRow(layout) {
     let nextRow = 0;
-    layout.forEach(widget => {
+    layout.forEach((widget) => {
       let { row, height } = widget;
       if (row + height > nextRow) {
         nextRow = row + height;
@@ -98,12 +98,12 @@ export default Route.extend({
      * action to handle errors in route
      */
     error() {
-      get(this, 'naviNotifications').add({
-        message: 'OOPS! An error occurred while creating a new widget.',
-        type: 'danger',
-        timeout: 'short'
+      this.naviNotifications.add({
+        title: 'An error occurred while creating a new widget',
+        style: 'danger',
+        timeout: 'medium',
       });
       this.replaceWith('dashboards');
-    }
-  }
+    },
+  },
 });

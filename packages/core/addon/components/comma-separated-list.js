@@ -27,7 +27,7 @@ export default Component.extend({
    * @property {Array} commaItems - the subset of items that need a comma added after them
    * @private
    */
-  _commaItems: computed('list.[]', function() {
+  _commaItems: computed('list.[]', function () {
     return get(this, 'list').slice(0, -1);
-  })
+  }),
 });

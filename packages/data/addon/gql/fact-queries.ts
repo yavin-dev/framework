@@ -15,7 +15,7 @@ export default {
   asyncFactsQuery: AsyncFactsQuery,
   tableExportFactsMutation: TableExportFactsMutation,
   tableExportFactsCancel: TableExportFactsCancel,
-  tableExportFactsQuery: TableExportFactsQuery
+  tableExportFactsQuery: TableExportFactsQuery,
 };
 
 declare module 'navi-data/gql/fact-queries';

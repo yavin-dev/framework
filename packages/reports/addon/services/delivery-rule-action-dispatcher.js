@@ -10,7 +10,7 @@ export const DeliveryRuleActions = Object.assign(
   {
     DELETE_DELIVERY_RULE: 'deleteDeliveryRule',
     REVERT_DELIVERY_RULE: 'revertDeliveryRule',
-    SAVE_DELIVERY_RULE: 'saveDeliveryRule'
+    SAVE_DELIVERY_RULE: 'saveDeliveryRule',
   }
 );
 
@@ -18,7 +18,7 @@ export default ActionDispatcher.extend({
   /**
    * @property {Array} consumers
    */
-  consumers: computed(function() {
+  consumers: computed(function () {
     return ['delivery-rule'];
-  })
+  }),
 });

@@ -4,11 +4,11 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 
-module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
+module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('schedule modal save new schedule', async function(assert) {
+  test('schedule modal save new schedule', async function (assert) {
     assert.expect(12);
     await visit('/dashboards');
 
@@ -39,7 +39,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
 
     await click('.schedule-modal__format-trigger');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map(el => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['pdf', 'png'],
       'Schedule format should have correct options'
     );
@@ -82,7 +82,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function(hooks) {
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
   });
 
-  test('schedule modal in dashboard view', async function(assert) {
+  test('schedule modal in dashboard view', async function (assert) {
     assert.expect(4);
     await visit('/dashboards/2/view');
 

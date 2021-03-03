@@ -39,9 +39,9 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       query,
       ...(isPresent(id) && { variables: { ids: [id] } }),
       context: {
-        dataSourceName: options.dataSourceName
+        dataSourceName: options.dataSourceName,
       },
-      ...options
+      ...options,
     };
     return this.apollo.query(queryOptions);
   }

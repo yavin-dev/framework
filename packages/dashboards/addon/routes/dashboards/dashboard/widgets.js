@@ -12,5 +12,5 @@ export default Route.extend({
    */
   model() {
     return this.modelFor('dashboards.dashboard').get('widgets');
-  }
+  },
 });

@@ -4,10 +4,10 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
-module('Integration | Component | routes/reports-report-error', function(hooks) {
+module('Integration | Component | routes/reports-report-error', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('no args', async function(assert) {
+  test('no args', async function (assert) {
     await render(hbs`
       <Routes::ReportsReportError/>
     `);
@@ -21,7 +21,7 @@ module('Integration | Component | routes/reports-report-error', function(hooks) 
       .hasText('Unexpected Error', 'component renders details without args');
   });
 
-  test('error args', async function(assert) {
+  test('error args', async function (assert) {
     this.set('error', new Error('Something bad'));
     await render(hbs`
       <Routes::ReportsReportError
@@ -38,7 +38,7 @@ module('Integration | Component | routes/reports-report-error', function(hooks) 
       .hasText('Unexpected Error', 'component renders details with Error');
   });
 
-  test('adapter error arg', async function(assert) {
+  test('adapter error arg', async function (assert) {
     this.set('error', new NaviAdapterError('Request Error', [{ detail: 'Error Detail' }]));
     await render(hbs`
       <Routes::ReportsReportError

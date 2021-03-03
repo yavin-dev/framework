@@ -36,7 +36,7 @@ export function getPartialMatchWeight(string, query) {
       string = string.replace(searchTokens[i], '');
       // Partial match of a token must start with the search-token
       // (avoid age matching language)
-    } else if (stringTokens.every(token => !token.startsWith(searchTokens[i]))) {
+    } else if (stringTokens.every((token) => !token.startsWith(searchTokens[i]))) {
       allTokensFound = false;
       break;
     }
@@ -110,8 +110,8 @@ export function searchRecords(records, query, searchField) {
 export function getAverageRelevance(record, query, searchFields) {
   return (
     searchFields
-      .flatMap(searchField => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
-      .reduce(function(sum, value) {
+      .flatMap((searchField) => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
+      .reduce(function (sum, value) {
         return sum + (value || 0);
       }, 0) / searchFields.length
   );
@@ -143,7 +143,7 @@ export function searchRecordsByFields(records, query, searchFields, threshold) {
   }
 
   if (threshold) {
-    results = arr(results.filter(result => result.relevance <= threshold));
+    results = arr(results.filter((result) => result.relevance <= threshold));
   }
 
   return arr(results.sortBy('relevance')).mapBy('record');
@@ -183,7 +183,7 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
       // If record matched search query, include it in the filtered results in the desire form
       results.push({
         relevance: relevance,
-        record: record
+        record: record,
       });
     }
   }

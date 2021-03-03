@@ -17,7 +17,7 @@ export function getDataSource(dataSourceName: string) {
   assert('getDataSource should be given a data source name to lookup', dataSourceName);
 
   const {
-    navi: { dataSources }
+    navi: { dataSources },
   } = config;
   const host = dataSources.find(({ name }) => name === dataSourceName);
   if (host) {
@@ -31,7 +31,7 @@ export function getDataSource(dataSourceName: string) {
  */
 export function getDefaultDataSource() {
   const {
-    navi: { defaultDataSource, dataSources }
+    navi: { defaultDataSource, dataSources },
   } = config;
 
   return defaultDataSource ? getDataSource(defaultDataSource) : dataSources[0];

@@ -14,5 +14,5 @@ export default Route.extend({
    */
   model({ collection_id }) {
     return this.store.find('dashboard-collection', collection_id);
-  }
+  },
 });

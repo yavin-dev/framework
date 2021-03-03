@@ -28,7 +28,8 @@ export interface DimensionMetadataPayload extends ColumnMetadataPayload {
 
 export type DimensionColumn = ColumnInstance<DimensionMetadataModel>;
 
-export default class DimensionMetadataModel extends ColumnMetadataModel
+export default class DimensionMetadataModel
+  extends ColumnMetadataModel
   implements DimensionMetadata, DimensionMetadataPayload {
   /**
    * @static
@@ -90,7 +91,7 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
    * @returns {Array} array of tags
    */
   getTagsForField(fieldName: string): string[] {
-    const field = this.fields?.find(f => f.name === fieldName);
+    const field = this.fields?.find((f) => f.name === fieldName);
 
     return field?.tags || [];
   }
@@ -104,7 +105,7 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
    */
   getFieldsForTag(tag: string): Field[] {
     return (
-      this.fields?.filter(field => {
+      this.fields?.filter((field) => {
         return field.tags?.includes(tag);
       }) || []
     );
@@ -144,7 +145,7 @@ export default class DimensionMetadataModel extends ColumnMetadataModel
    */
   get extended(): Promise<DimensionMetadataModel> {
     const { naviMetadata, id, source } = this;
-    return naviMetadata.findById('dimension', id, source).then(d => d || this);
+    return naviMetadata.findById('dimension', id, source).then((d) => d || this);
   }
 }
 

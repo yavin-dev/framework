@@ -5,10 +5,10 @@ import { A as arr } from '@ember/array';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
 import { settled, render } from '@ember/test-helpers';
 
-module('Integration | Component | dashboard dimension selector', function(hooks) {
+module('Integration | Component | dashboard dimension selector', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('it renders with right options', async function(assert) {
+  test('it renders with right options', async function (assert) {
     assert.expect(3);
 
     const dashboard = {
@@ -27,11 +27,11 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
                 id: 'a',
                 dimensions: [
                   { id: 'dim1', name: 'dim1', category: 'cat1', metadataType: 'dimension' },
-                  { id: 'dim2', name: 'dim2', category: 'cat2', metadataType: 'dimension' }
-                ]
-              }
-            }
-          ])
+                  { id: 'dim2', name: 'dim2', category: 'cat2', metadataType: 'dimension' },
+                ],
+              },
+            },
+          ]),
         },
 
         {
@@ -48,18 +48,18 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
                 id: 'b',
                 dimensions: [
                   { id: 'dim3', name: 'dim3', category: 'cat2', metadataType: 'dimension' },
-                  { id: 'dim1', name: 'dim1', category: 'cat1', metadataType: 'dimension' }
-                ]
-              }
-            }
-          ])
-        }
-      ])
+                  { id: 'dim1', name: 'dim1', category: 'cat1', metadataType: 'dimension' },
+                ],
+              },
+            },
+          ]),
+        },
+      ]),
     };
 
     this.set('dashboard', dashboard);
 
-    this.set('changeme', function(selection) {
+    this.set('changeme', function (selection) {
       assert.deepEqual(
         selection,
         { type: 'dimension', field: 'dim1', name: 'dim1', tables: ['a', 'b'], dataSource: 'bardOne' },
@@ -86,7 +86,7 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
     await selectChoose('.ember-power-select-trigger', 'dim1');
   });
 
-  test('it renders multi-datasource widgets with right options', async function(assert) {
+  test('it renders multi-datasource widgets with right options', async function (assert) {
     assert.expect(1);
     const dashboard = {
       widgets: Promise.resolve([
@@ -105,11 +105,11 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
                 timeDimensions: [],
                 dimensions: [
                   { id: 'dim1', name: 'dim1', category: 'cat1' },
-                  { id: 'dim2', name: 'dim2', category: 'cat2' }
-                ]
-              }
-            }
-          ])
+                  { id: 'dim2', name: 'dim2', category: 'cat2' },
+                ],
+              },
+            },
+          ]),
         },
         {
           requests: arr([
@@ -127,13 +127,13 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
                 dimensions: [
                   { id: 'dim3', name: 'dim3', category: 'cat3' },
                   { id: 'dim4', name: 'dim4', category: 'cat1' },
-                  { id: 'dim2', name: 'dim2', category: 'cat4' }
-                ]
-              }
-            }
-          ])
-        }
-      ])
+                  { id: 'dim2', name: 'dim2', category: 'cat4' },
+                ],
+              },
+            },
+          ]),
+        },
+      ]),
     };
 
     this.set('dashboard', dashboard);
@@ -156,9 +156,9 @@ module('Integration | Component | dashboard dimension selector', function(hooks)
   });
 });
 
-const structure = dropdown =>
+const structure = (dropdown) =>
   [...dropdown.querySelectorAll('.ember-power-select-group')].reduce((obj, el) => {
     const key = el.querySelector('.ember-power-select-group-name').textContent.trim();
-    const value = [...el.querySelectorAll('.ember-power-select-option')].map(el => el.textContent.trim());
+    const value = [...el.querySelectorAll('.ember-power-select-option')].map((el) => el.textContent.trim());
     return Object.assign({}, obj, { [key]: value });
   }, {});
