@@ -35,7 +35,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert.notOk(
-      !!$('.navi-report__header:contains("Add to Dashboard")').length,
+      !!$('.navi-report__header-action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is hidden when all metrics is disabled'
     );
 
@@ -44,7 +44,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      !!$('.navi-report__header:contains("Add to Dashboard")').length,
+      !!$('.navi-report__header-action:contains("Add to Dashboard")').length,
       'Add to Dashboard button is once again visible after running the latest request'
     );
   });
