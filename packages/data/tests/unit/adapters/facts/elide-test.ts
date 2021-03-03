@@ -71,7 +71,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.equal(
       getElideField('foo', { bar: 'baz', bang: 'boom' }),
       'foo(bar:"baz", bang:"boom")',
-      'Field with multiple parameters is not supported'
+      'Field with multiple parameters is formatted correctly'
     );
     assert.equal(getElideField('foo'), 'foo', 'Name is returned for field with no parameters');
   });
