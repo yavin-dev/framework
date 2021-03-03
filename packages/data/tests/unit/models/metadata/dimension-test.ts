@@ -248,15 +248,6 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'MEDIUM',
       'Dimension successfully gets its cardinality from its table when type of dimension is formula'
     );
-
-    assert.throws(
-      () => {
-        //@ts-expect-error
-        dimension3.cardinality = 'chicago cubity';
-      },
-      /Dimension cardinality should be set to a value included in CARDINALITY_SIZES/,
-      'Assert fails when invalid cardinality value is set'
-    );
   });
 
   test('idFieldName', async function (assert) {

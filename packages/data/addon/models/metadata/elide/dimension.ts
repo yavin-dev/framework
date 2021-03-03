@@ -1,7 +1,8 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import DimensionMetadataModel, { DimensionMetadataPayload } from '../dimension';
 
 export type ValueSourceType = 'ENUM' | 'TABLE' | 'NONE';
@@ -15,6 +16,12 @@ export interface ElideDimensionMetadataPayload extends DimensionMetadataPayload 
 export default class ElideDimensionMetadataModel
   extends DimensionMetadataModel
   implements ElideDimensionMetadataPayload {
+  init() {
+    if (this.hasEnumValues && this.cardinality === undefined) {
+      this.cardinality = CARDINALITY_SIZES[0];
+    }
+  }
+
   valueSourceType!: ValueSourceType;
   tableSource!: string | null;
   values!: string[];
