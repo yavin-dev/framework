@@ -122,9 +122,9 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await clickTrigger('.filter-values--date-range-input__low-value');
 
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
     await click('.navi-report__run-btn');
 
     assert.ok(currentURL().endsWith('/view'), 'Running a report with no errors transitions to view route');
@@ -1849,10 +1849,10 @@ module('Acceptance | Navi Report', function (hooks) {
     await selectChoose('.filter-builder__operator-trigger', 'Between');
 
     await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
 
     await clickTrigger('.filter-values--date-range-input__high-value');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
     await click($('.navi-report__footer button:Contains(Run)')[0]);
 
     // Grab one of the dim names after running a report
@@ -1892,9 +1892,9 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await clickTrigger('.filter-values--date-range-input__low-value');
 
-    await click($('button.ember-power-calendar-day--current-month:contains(4)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
-    await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
+    await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     assert.deepEqual(
       findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map((el) =>
