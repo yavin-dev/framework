@@ -3,6 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@import 'navi-core/utils/index';
-@import 'navi-core/components/index';
-@import 'navi-core/variables/index';
+// Denali Overrides
+$navbar-bg-color: #190000;
+$navbar-responsive-bg-color: #190000;
+
+@include navbar-theme;

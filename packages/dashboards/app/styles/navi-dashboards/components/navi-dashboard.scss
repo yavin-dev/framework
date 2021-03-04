@@ -13,7 +13,7 @@
     @extend .flex;
     @extend .flex-1;
 
-    background-color: $body-inner-bg-color;
+    background-color: $box-bg-color;
     border-bottom: 2px solid $menu-border-color;
     flex-flow: column;
     overflow-y: hidden;
