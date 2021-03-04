@@ -4,19 +4,11 @@
  */
 
 .dashboard-header {
-
   &__page-title {
     display: flex;
     font-size: 30px;
     min-width: 0;
     text-transform: capitalize;
-  }
-
-  &__fav-icon {
-    margin: 3px 10px;
-    .fa {
-      font-size: 18px;
-    }
   }
 
   &__actions {
@@ -28,7 +20,6 @@
     }
     @include media-size-up(small-desktop) {
       justify-content: flex-end;
-      margin-top: 10px;
     }
   }
 }

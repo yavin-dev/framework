@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="container-full m-b-4">
+<div class="container-full" ...attributes>
   <div class="row">
     <div class="col-1-1">
       {{#if (feature-flag "enableDirectory")}}
@@ -9,7 +9,7 @@
       {{/if}}
     </div>
   </div>
-  <div class="row">
+  <div class="row align-items-center">
     <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
       {{!-- Editable title --}}
       <div class="dashboard-header__page-title">
@@ -23,10 +23,10 @@
           <span>{{@dashboard.title}}</span>
         {{/if}}
         <FavoriteItem
-          class="dashboard-header__fav-icon"
           @user={{get-user}}
           @item={{@dashboard}}
-          @click={{route-action "toggleFavorite" @dashboard}}
+          @onToggle={{route-action "toggleFavorite" @dashboard}}
+          class="dashboard-header__fav-icon m-l-4"
         />
       </div>
     </div>
