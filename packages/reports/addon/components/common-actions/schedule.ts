@@ -17,7 +17,7 @@ import config from 'ember-get-config';
 // @ts-ignore
 import { getApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
-import { set, computed, setProperties, action } from '@ember/object';
+import { computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -65,7 +65,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  deliveryRule: DeliveryRuleModel;
+  @tracked deliveryRule: DeliveryRuleModel;
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
@@ -75,7 +75,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {object} notification - Object that stores an in modal notification
    */
-  @tracked notification: { text: string } | undefined;
+  @tracked notification?: string;
 
   @tracked isSaving = false;
 
@@ -92,7 +92,6 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {Array} formats
    */
-  @computed('config.navi.schedule.formats')
   get formats() {
     let formats = config.navi.schedule.formats;
 
@@ -115,7 +114,6 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {Boolean} disableSave
    */
-  @computed('localDeliveryRule.hasDirtyAttributes', 'isRuleValid', 'isSaving')
   get disableSave() {
     if (this.isSaving) {
       return true;
@@ -154,7 +152,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         owner: this.user.getUser(),
       });
 
-      set(this, 'attemptedSave', false);
+      this.attemptedSave = false;
       let savePromise = new RSVP.Promise((resolve, reject) => {
         this.args.onSave(this.localDeliveryRule, { resolve, reject });
       });
@@ -169,9 +167,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         });
         this.closeModal();
       } catch (errors) {
-        this.notification = {
-          text: getApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings'),
-        };
+        this.notification = getApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings');
       } finally {
         this.isSaving = false;
         this.attemptedSave = true;
@@ -204,9 +200,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         timeout: 'short',
       });
     } catch (e) {
-      this.notification = {
-        text: `An error occurred while removing the delivery schedule`,
-      };
+      this.notification = `An error occurred while removing the delivery schedule`;
     }
   }
 
@@ -216,14 +210,14 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   onOpen() {
     //Kick off a fetch for existing delivery rules
-    set(this, 'deliveryRule', this.args.model.deliveryRuleForUser);
+    this.deliveryRule = this.args.model.deliveryRuleForUser;
 
     this.deliveryRule
       .then((rule: DeliveryRuleModel) => {
-        set(this, 'localDeliveryRule', rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule());
+        this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
       })
       .catch(() => {
-        set(this, 'localDeliveryRule', this._createNewDeliveryRule());
+        this.localDeliveryRule = this._createNewDeliveryRule();
       });
   }
 
@@ -233,7 +227,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   updateRecipients(recipients: string[]) {
-    set(this.localDeliveryRule, 'recipients', recipients);
+    this.localDeliveryRule.recipients = recipients;
   }
 
   /**
@@ -242,7 +236,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   updateFormat(type: string) {
-    set(this.localDeliveryRule, 'format', { type });
+    this.localDeliveryRule.format = { type };
   }
 
   /**
