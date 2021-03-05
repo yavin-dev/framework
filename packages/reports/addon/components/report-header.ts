@@ -8,8 +8,8 @@ import ReportModel from 'navi-core/models/report';
 
 interface ReportHeaderArgs {
   model: ReportModel;
-  addToDashboard: (reportId: string, reportName: string) => void;
-  addToNewDashboard: (dashboardTitle: string, reportName: string) => void;
+  addToDashboard?: (reportId: string, reportName: string) => void;
+  addToNewDashboard?: (dashboardTitle: string, reportName: string) => void;
 }
 
 export default class ReportHeader extends Component<ReportHeaderArgs> {}
