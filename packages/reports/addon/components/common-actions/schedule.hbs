@@ -9,13 +9,21 @@
   <Modal.Content>
     <h3 class="schedule__modal-header m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
     {{#if (is-rejected this.deliveryRule)}}
-        <DenaliAlert @style="danger" class="m-b-30" as |Alert|>
+        <DenaliAlert 
+          @style="danger" 
+          class="m-b-30" 
+          as |Alert|
+        >
           <Alert.Title>Error</Alert.Title>
           <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
         </DenaliAlert>
     {{else}}
         {{#if this.notification}}	
-          <DenaliAlert @style="danger" class="m-b-30" as |Alert|>
+          <DenaliAlert 
+            @style="danger" 
+            class="m-b-30" 
+            as |Alert|
+          >
             <Alert.Title>Error</Alert.Title>
             <Alert.Context>{{this.notification}}</Alert.Context>
           </DenaliAlert>
