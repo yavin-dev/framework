@@ -47,6 +47,22 @@ To run yavin demo using docker container:
 ```
 docker run -p 9999:8080 verizonmedia/yavin_demo:latest
 ```
+### Add custom hjson to docker container for exploring additional data sources
+Assuming you already have the container running from the previous step, first you need to figure out the path where docker container is storin
+```
+$ bash get_hjson_path.sh
+[{"Type":"volume","Name":"d4d0ae3ca09f752454b3a22c7fa3d551b9366aa6618995356b89048b12e3c436","Source":"/var/lib/docker/volumes/d4d0ae3ca09f7524
+
+
+Look for "Source" key in above json and use its value to find hjson location
+```
+In the above example the path can be found from
+```
+"Source":"/var/lib/docker/volumes/d4d0ae3ca09f752454b3a22c7fa3d551b9366aa6618995356b89048b12e3c436/_data"
+```
+
+The path is managed by docker so it will need sudo or admin access to modify/add files to it.
+
 
 ## Launch in Dokcer using PWD
 

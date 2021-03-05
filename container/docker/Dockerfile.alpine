@@ -17,6 +17,11 @@ WORKDIR /usr/src/yavin/packages/webservice
 RUN ./gradlew bootJar -x installUIDependencies
 RUN cp -r ./../app/dist app/build/resources/main/META-INF/resources/ui
 
+RUN sed -i 's|path: demo-configs|path: /hjson-configs|' app/src/main/resources/application.yaml
+RUN mkdir /hjson-configs
+RUN mv app/src/main/resources/demo-configs/* /hjson-configs/
+VOLUME /hjson-configs
+
 WORKDIR /
 RUN cp /usr/src/yavin/packages/webservice/app/build/libs/app-*.jar /usr/local/lib/
 RUN rm -rf /usr/src/yavin
