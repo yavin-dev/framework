@@ -108,7 +108,7 @@
         );
         </sql>
     </changeSet>
-    <changeSet author="admin" id="3">
+    <changeSet author="admin" id="2">
         <sql>
           CREATE TABLE TableExport (
              id varchar(36) not null,
