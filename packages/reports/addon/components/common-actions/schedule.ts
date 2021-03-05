@@ -39,9 +39,9 @@ type RSVPMethodsObj = {
 
 interface Args {
   model: DeliverableItemModel;
-  onDelete: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
-  onSave: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
-  onRevert: (DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj) => void;
+  onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
+  onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
+  onRevert(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
 }
 
 export default class ScheduleActionComponent extends Component<Args> {
@@ -208,11 +208,11 @@ export default class ScheduleActionComponent extends Component<Args> {
    * @action onOpen
    */
   @action
-  onOpen() {
+  async onOpen() {
     //Kick off a fetch for existing delivery rules
     this.deliveryRule = this.args.model.deliveryRuleForUser;
 
-    this.deliveryRule
+    await this.deliveryRule
       .then((rule: DeliveryRuleModel) => {
         this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
       })

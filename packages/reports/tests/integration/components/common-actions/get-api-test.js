@@ -119,7 +119,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
     // Click component
     await click('.get-api__action-btn');
 
-    assert.dom('.get-api__modal').isVisible('Copy modal dialog pops up on clicking the component');
+    assert.dom('.get-api__modal').exists('Copy modal dialog pops up on clicking the component');
 
     // Click Cancel
     await click('.get-api__cancel-btn');

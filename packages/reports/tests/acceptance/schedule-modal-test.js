@@ -142,7 +142,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.alert ')
       .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
 
-    assert.dom('.schedule__modal').isNotVisible('Modal closes after successful save');
+    assert.dom('.schedule__modal').doesNotExist('Modal closes after successful save');
 
     // Reopen the modal
     await triggerEvent('.navi-collection__row2', 'mouseenter');

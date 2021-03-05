@@ -153,7 +153,7 @@ module('Acceptance | Dashboards', function (hooks) {
     );
 
     await click('.dashboard-header__add-widget-btn');
-    assert.dom('.add-widget__modal').isVisible('Add Widget Dialog box is visible when `add a widget` text is clicked');
+    assert.dom('.add-widget__modal').exists('Add Widget Dialog box is visible when `add a widget` text is clicked');
   });
 
   test('index route', async function (assert) {

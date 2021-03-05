@@ -158,7 +158,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await click('.get-api__action-btn');
 
-    assert.dom('.get-api__modal').isVisible('Copy modal is open after fixing error clicking button');
+    assert.dom('.get-api__modal').exists('Copy modal is open after fixing error clicking button');
 
     /* == Add some more metrics and check that copy modal updates == */
     await click('.d-close');
