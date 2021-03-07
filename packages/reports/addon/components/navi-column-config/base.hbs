@@ -33,7 +33,7 @@
       <DenaliInput
         @size="medium"
         type="text"
-        @wrapperClass="navi-column-config-base__denali"
+        @wrapperClass="w-full"
         value={{@column.fragment.alias}}
         placeholder={{@column.fragment.displayName}}
         {{on "input" (pipe (pick "target.value") (fn @onRenameColumn))}}

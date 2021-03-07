@@ -124,10 +124,12 @@
     &-dropdown {
       .ember-power-select-search {
         width: 100%;
-      }
 
-      .ember-power-select-search-input:focus {
-        box-shadow: none i !important;
+        // TODO: Remove when the following style applies for themes
+        // https://github.com/denali-design/denali-ember/blob/b261bfbb5b9779070c6ae3e7c45f91e9715a2830/app/styles/denali/ember-power-select.scss#L155
+        &-input:focus {
+          box-shadow: unset !important;
+        }
       }
 
       .ember-power-select-option {

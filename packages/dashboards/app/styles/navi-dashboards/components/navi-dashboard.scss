@@ -4,14 +4,14 @@
  */
 
 .navi-dashboard {
-  @extend .flex;
-  @extend .flex-1;
-  @extend .flex-column;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   overflow: hidden;
 
   &__body {
-    @extend .flex;
-    @extend .flex-1;
+    display: flex;
+    flex: 1;
 
     background-color: $box-bg-color;
     border-bottom: 2px solid $menu-border-color;

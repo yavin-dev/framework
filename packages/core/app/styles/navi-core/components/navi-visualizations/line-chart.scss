@@ -14,7 +14,7 @@
 
 .line-chart-widget {
   @include generate-legend-color($chart-max-series);
-  @extend .flex-1;
+  flex: 1;
 
   fill: $body-text-color;
   min-height: 0;

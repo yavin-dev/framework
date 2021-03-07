@@ -18,7 +18,7 @@
 }
 
 .pie-chart-widget {
-  @extend .flex-1;
+  flex: 1;
   fill: $body-text-color;
   min-height: 0;
   min-width: 0;
