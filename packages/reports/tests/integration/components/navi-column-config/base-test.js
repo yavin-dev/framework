@@ -9,6 +9,8 @@ const TEMPLATE = hbs`
   @column={{this.column}}
   @cloneColumn={{optional this.cloneColumn}}
   @onAddFilter={{optional this.onAddFilter}}
+  @onUpsertSort={{optional this.onUpsertSort}}
+  @onRemoveSort={{optional this.onRemoveSort}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
 />`;
@@ -64,25 +66,38 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
   });
 
   test('it supports action', async function (assert) {
-    assert.expect(4);
+    assert.expect(8);
     this.column = {
-      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
+      fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'revenue'),
+      sort: null,
     };
-    this.cloneColumn = () => assert.ok(true, 'cloneColumn is called when clone is clicked');
-    this.onAddFilter = () => assert.ok(true, 'onAddFilter is called when filter is clicked');
-    this.onRenameColumn = (newName) =>
-      assert.equal(newName, 'Some other value', 'onRenameColumn action is called with new column name');
 
+    this.onRenameColumn = (newName) => {
+      assert.step('onRenameColumn');
+      assert.equal(newName, 'Some other value', 'onRenameColumn action is called with new column name');
+    };
+    this.cloneColumn = () => assert.step('cloneColumn');
+    this.onAddFilter = () => assert.step('onAddFilter');
+    this.onUpsertSort = () => assert.step('onUpsertSort');
+    this.onRemoveSort = () => assert.step('onRemoveSort');
     await render(TEMPLATE);
 
     const columnNameInput = '.navi-column-config-base__column-name input';
     assert
       .dom(columnNameInput)
-      .hasProperty('placeholder', 'Property', "Column Name field has placeholder of column's display name");
+      .hasProperty('placeholder', 'Revenue', "Column Name field has placeholder of column's display name");
     await fillIn(columnNameInput, 'Some other value');
     await triggerKeyEvent(columnNameInput, 'keyup', 13);
 
     await click('.navi-column-config-base__clone-icon');
     await click('.navi-column-config-base__filter-icon');
+    await click('.navi-column-config-base__sort-icon');
+    this.set('column.sort', true);
+    await click('.navi-column-config-base__sort-icon');
+
+    assert.verifySteps(
+      ['onRenameColumn', 'cloneColumn', 'onAddFilter', 'onUpsertSort', 'onRemoveSort'],
+      'actions are performed in the order they are called'
+    );
   });
 });

@@ -10,11 +10,12 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { inject as service } from '@ember/service';
 import ReportModel from 'navi-core/models/report';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import { Parameters } from 'navi-data/adapters/facts/interface';
+import { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
 import { tracked } from '@glimmer/tracking';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 import RequestConstrainer from 'navi-reports/services/request-constrainer';
+import SortFragment from 'navi-core/models/bard-request-v2/fragments/sort';
 
 interface NaviColumnConfigArgs {
   isOpen: boolean;
@@ -23,14 +24,17 @@ interface NaviColumnConfigArgs {
   onAddColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
   onRemoveColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
   onAddFilter(column: ColumnFragment): void;
+  onUpsertSort(column: ColumnFragment, direction: SortDirection): void;
+  onRemoveSort(column: ColumnFragment): void;
   onRenameColumn(column: ColumnFragment, alias: string): void;
   onReorderColumn(column: ColumnFragment, index: number): void;
   openFilters(): void;
   drawerDidChange(): void;
 }
 
-type ConfigColumn = {
+export type ConfigColumn = {
   isFiltered: boolean;
+  sort: SortFragment | null;
   isRequired: boolean;
   fragment: ColumnFragment;
 };
@@ -41,18 +45,20 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   /**
    * Dimension and metric columns from the request
    */
-  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[]}')
+  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[]}')
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();
     if (request.table !== undefined) {
-      const { columns, filters } = request;
+      const { columns, filters, sorts } = request;
 
       const filteredColumns = filters.map(({ canonicalName }) => canonicalName);
 
       return columns.map((column) => {
+        const sort = sorts.find(({ canonicalName }) => canonicalName === column.canonicalName);
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
+          sort: sort || null,
           isRequired: requiredColumns.has(column),
           fragment: column,
         };
@@ -85,8 +91,8 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
    * @param index - the new name for the column
    */
   @action
-  reorderColumn(column: ColumnFragment, index: number) {
-    this.args.onReorderColumn(column, index);
+  reorderColumns(newColumns: ConfigColumn[], draggedColumn: ConfigColumn) {
+    this.args.onReorderColumn(draggedColumn.fragment, newColumns.indexOf(draggedColumn));
   }
 
   /**
@@ -99,8 +105,8 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   }
 
   /**
-   * Toggles a filter
-   * @param column - The column to open
+   * Adds a filter for the column
+   * @param column - The column to filter
    */
   @action
   onAddFilter(column: ColumnFragment) {

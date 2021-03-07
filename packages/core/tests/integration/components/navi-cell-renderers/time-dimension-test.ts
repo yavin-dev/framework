@@ -64,6 +64,7 @@ module('Integration | Component | cell renderers/time-dimension', function (hook
     const column: TableColumn = {
       fragment,
       attributes: {},
+      sortDirection: 'none',
       columnId: fragment.cid,
     };
     this.set('column', column);

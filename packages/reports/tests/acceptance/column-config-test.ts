@@ -1,10 +1,27 @@
 import { module, test, skip } from 'qunit';
 import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+//@ts-ignore
 import { clickItem } from 'navi-reports/test-support/report-builder';
+//@ts-ignore
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+//@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
+//@ts-ignore
+import { reorder } from 'ember-sortable/test-support/helpers';
+
+function getColumns() {
+  return findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim());
+}
+
+async function getRequestURL() {
+  await click('.get-api__action-btn');
+  const url = (find('.get-api__api-input input') as HTMLInputElement).value;
+  await click('.get-api__cancel-btn');
+  return new URL(url);
+}
 
 module('Acceptance | Navi Report | Column Config', function (hooks) {
   setupApplicationTest(hooks);
@@ -360,6 +377,98 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     assert
       .dom('.navi-column-config-item--last-added')
       .doesNotExist('No column is highlighted after removing the parameterized metric');
+  });
+
+  test('adding, removing and changing a sort', async function (assert) {
+    assert.expect(6);
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Time Grain Type'],
+      'The sort direction is not listed'
+    );
+
+    await click('.navi-column-config-base__sort-icon');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Sort Direction', 'Time Grain Type'],
+      'A sort direction is applied and becomes the first parameter'
+    );
+
+    assert
+      .dom('.navi-column-config-item__parameter-trigger')
+      .hasText('Descending', 'The sort is descending by default');
+
+    await click('.navi-column-config-item__parameter-trigger');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['Remove Sort', 'Descending', 'Ascending'],
+      'The sort options are listed'
+    );
+
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Ascending');
+    assert.dom('.navi-column-config-item__parameter-trigger').hasText('Ascending', 'The sort is updated to ascending');
+
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'Remove Sort');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Time Grain Type'],
+      'The sort direction is not listed'
+    );
+  });
+
+  test('toggling a sort', async function (assert) {
+    assert.expect(3);
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Time Grain Type'],
+      'The sort direction is not listed'
+    );
+
+    await click('.navi-column-config-base__sort-icon');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Sort Direction', 'Time Grain Type'],
+      'A sort direction is applied and becomes the first parameter'
+    );
+
+    await click('.navi-column-config-base__sort-icon');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Time Grain Type'],
+      'The sort direction is toggled off when clicking the icon again'
+    );
+  });
+
+  test('reordering columns', async function (assert) {
+    assert.expect(1);
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    await clickItem('dimension', 'Age');
+    await clickItem('metric', 'Revenue');
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+
+    await reorder(
+      'mouse',
+      '.navi-column-config-item',
+      '.navi-column-config-item[data-name="browser(field=id)"]',
+      '.navi-column-config-item[data-name="age(field=id)"]',
+      '.navi-column-config-item[data-name="revenue(currency=USD)"]',
+      '.navi-column-config-item[data-name="network.dateTime(grain=day)"]'
+    );
+
+    assert.deepEqual(
+      getColumns(),
+      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (day)'],
+      'The columns are reordered'
+    );
   });
 
   test('clicking filter button always adds a new filter', async function (assert) {
@@ -932,7 +1041,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Age'],
       'Dimension filter is added'
     );
@@ -960,7 +1069,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       [],
       'Dimension filter is removed when clicked on duplicate dimension'
     );
@@ -996,7 +1105,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)', 'Ad Clicks'],
       'Metric filter is added'
     );
@@ -1024,7 +1133,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)'],
       'Metric filter is removed when clicked on duplicate metric'
     );
@@ -1060,7 +1169,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)', 'Platform Revenue (USD)'],
       'Metric filter is added'
     );
@@ -1093,7 +1202,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)'],
       'Metric filter is removed when clicked on duplicate metric'
     );
@@ -1112,7 +1221,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await click('.navi-column-config-base__filter-icon');
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)', 'Platform Revenue (USD)'],
       'Metric filter is added'
     );
@@ -1157,7 +1266,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
       ['Date Time (Day)', 'Platform Revenue (CAD)', 'Platform Revenue (USD)'],
       'Second metric filter is added'
     );
@@ -1266,13 +1375,13 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     await click('.navi-column-config-item__parameter-trigger');
     assert.strictEqual(
-      findAll('.ember-power-select-option').map((el) => el.textContent.trim()).length,
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()).length,
       14,
       'All options are shown initially'
     );
     await fillIn('.ember-power-select-search-input', 'Dollars');
     assert.deepEqual(
-      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['Dollars (AUD)', 'Dollars (CAD)', 'Dollars (USD)'],
       'After searching only the filtered metric is shown'
     );
@@ -1284,7 +1393,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'Clicking the filtered option changes the metrics parameter'
     );
 
-    await click(findAll('.grouped-list__group-header').filter((el) => el.textContent.includes('Revenue'))[0]);
+    await click(findAll('.grouped-list__group-header').filter((el) => el.textContent?.includes('Revenue'))[0]);
   });
 
   skip('Sort gets removed when metric is removed', async function (assert) {
@@ -1329,15 +1438,4 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     apiURL = await getRequestURL();
     assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric params changed');
   });
-
-  function getColumns() {
-    return findAll('.navi-column-config-item__name').map((el) => el.textContent.trim());
-  }
-
-  async function getRequestURL() {
-    await click('.get-api__action-btn');
-    const url = find('.get-api__api-input input').value;
-    await click('.get-api__cancel-btn');
-    return new URL(url);
-  }
 });

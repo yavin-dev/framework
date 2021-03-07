@@ -1,45 +1,41 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class={{this.tableHeadersClass}}>
   {{#unless @isEditingMode}}
-    <SortableGroup
-      class="table-header-row-vc table-header-row-vc--view"
-      @direction="x"
-      @model={{readonly @columns}}
-      @onChange={{@updateColumnOrder}}
-      as |group|
-    >
-      {{#each group.model as |column|}}
-        <group.item
-          class="table-header-cell {{column.fragment.type}}"
-          @model={{readonly column}}
-          @click={{fn @headerClicked column}}
-          @onDragStart={{set this "isDragged" true}}
-          @onDragStop={{set this "isDragged" false}}
-          @isDraggingDisabled={{@isDraggingDisabled}}
-        >
-          <span
-            class="table-header-cell__title {{if column.fragment.alias "table-header-cell__title--custom-name"}}"
-            title="Drag column header to reorder"
+    {{#let "table-renderer-vc" as |groupName|}}
+      <ol class="table-header-row-vc table-header-row-vc--view" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}}>
+        {{#each @columns as |column|}}
+          <li
+            class="table-header-cell {{column.fragment.type}}"
+            data-name={{column.fragment.canonicalName}}
+            role="button"
+            {{sortable-handle}}
+            {{on "click" (fn @headerClicked column)}}
+            {{sortable-item groupName=groupName model=column isDraggingDisabled=@isDraggingDisabled onDragStart=(set this "isDragged" true) onDragStop=(set this "isDragged" false)}}
           >
-            {{column.fragment.displayName}}
-          </span>
-          {{#if column.sortDirection}}
-            <NaviTableSortIcon
-              class="table-header-cell__icon"
-              @direction={{readonly column.sortDirection}}
-            />
-          {{else}}
-            <EmberTooltip
-              @text={{"Column cannot be sorted."}}
-              @showOn={{"click"}}
-              @hideOn={{"mousedown mouseleave"}}
-              @duration={{2000}}
-              @enableLazyRendering={{true}}
-            />
-          {{/if}}
-        </group.item>
-      {{/each}}
-    </SortableGroup>
+            <span
+              class="table-header-cell__title {{if column.fragment.alias "table-header-cell__title--custom-name"}}"
+              title="Drag column header to reorder"
+            >
+              {{column.fragment.displayName}}
+            </span>
+            {{#if column.sortDirection}}
+              <NaviTableSortIcon
+                class="table-header-cell__icon"
+                @direction={{readonly column.sortDirection}}
+              />
+            {{else}}
+              <EmberTooltip
+                @text={{"Column cannot be sorted."}}
+                @showOn={{"click"}}
+                @hideOn={{"mousedown mouseleave"}}
+                @duration={{2000}}
+                @enableLazyRendering={{true}}
+              />
+            {{/if}}
+          </li>
+        {{/each}}
+      </ol>
+    {{/let}}
   {{/unless}}
 </div>
 <div class="{{this.tableWrapperClass}}">

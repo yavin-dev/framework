@@ -18,6 +18,7 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       category: 'Audience',
       source: 'bardOne',
       valueType: 'text',
+      isSortable: false,
       type: 'field',
       storageStrategy: null,
       fields: [

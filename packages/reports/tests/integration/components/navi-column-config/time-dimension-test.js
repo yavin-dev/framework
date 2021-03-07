@@ -10,6 +10,8 @@ const TEMPLATE = hbs`
     @column={{this.column}}
     @cloneColumn={{optional this.cloneColumn}}
     @onAddFilter={{optional this.onAddFilter}}
+    @onUpsertSort={{optional this.onUpsertSort}}
+    @onRemoveSort={{optional this.onRemoveSort}}
     @onRenameColumn={{optional this.onRenameColumn}}
     @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
   />

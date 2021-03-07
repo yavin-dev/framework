@@ -309,6 +309,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       id,
       name: 'Date Time',
       source: dataSourceName,
+      isSortable: true,
       type: 'field',
       valueType: 'date',
       supportedGrains: timeGrainInfo.timeGrains.map(({ name }) => ({
@@ -496,6 +497,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         supportedGrains: [{ id: 'day', expression: '', grain: 'Day' }],
         timeZone: 'utc',
         ...d,
+        isSortable: true,
       }));
     return payloads.map((payload) => this.timeDimensionFactory.create(payload));
   }
@@ -541,6 +543,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         category,
         description,
         valueType,
+        isSortable: false,
         type: 'field',
         fields,
         cardinality: dimCardinality,
@@ -562,6 +565,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         id: name,
         name: longName,
         description,
+        isSortable: true,
         type: 'field',
         valueType,
         source: dataSourceName,

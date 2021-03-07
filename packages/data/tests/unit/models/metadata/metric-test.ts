@@ -26,6 +26,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       name: 'Page Views (Daily Avg)',
       category: 'Page Views',
       valueType: 'number',
+      isSortable: true,
       source: 'bardOne',
     };
 
@@ -36,6 +37,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       columnFunctionId: 'moneyMetric',
       source: 'bardOne',
       valueType: 'number',
+      isSortable: true,
       type: 'field',
     };
     MoneyMetric = MetricMetadataModel.create(this.owner.ownerInjection(), moneyMetricPayload);
@@ -45,6 +47,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       columnFunctionId: 'aggregationTrend',
       source: 'bardOne',
       valueType: 'number',
+      isSortable: true,
       type: 'field',
     };
     ClicksMetric = MetricMetadataModel.create(this.owner.ownerInjection(), clicksMetric);
@@ -81,6 +84,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       columnFunctionId: 'moneyMetric',
       source: 'bardOne',
       valueType: 'number',
+      isSortable: true,
       type: 'field',
     };
     const metricOne = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
@@ -114,6 +118,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         name: 'Page Views (Daily Avg)',
         category: 'Page Views',
         valueType: 'number',
+        isSortable: true,
         source: 'bardOne',
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);
@@ -144,6 +149,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         type: 'field',
         category: 'Page Views',
         valueType: 'number',
+        isSortable: true,
         source: 'bardOne',
       },
       metric = MetricMetadataModel.create(this.owner.ownerInjection(), payload);

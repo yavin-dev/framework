@@ -18,16 +18,30 @@ import { guidFor } from '@ember/object/internals';
 import FunctionParameterMetadataModel, {
   ColumnFunctionParametersValues,
 } from 'navi-data/models/metadata/function-parameter';
+import { ConfigColumn } from '../navi-column-config';
+import { SortDirection } from 'navi-data/adapters/facts/interface';
 
 interface NaviColumnConfigBaseArgs {
-  column: TODO;
-  metadata: TODO;
-  onUpdateColumnName: (newColumnName: string) => void;
-  onUpdateColumnParam: (param: string, paramValue: string) => void;
+  column: ConfigColumn;
+  cloneColumn(): void;
+  onAddFilter(): void;
+  onUpsertSort(direction: SortDirection): void;
+  onRemoveSort(): void;
+  onRenameColumn(newColumnName?: string): void;
+  onUpdateColumnParam(param: string, paramValue: string): void;
 }
+
+type AllDirectionSort = SortDirection | 'none';
+type FakeSortParam = { name: string; id: AllDirectionSort };
 
 export default class NaviColumnConfigBase extends Component<NaviColumnConfigBaseArgs> {
   classId = guidFor(this);
+
+  sortDirections: FakeSortParam[] = [
+    { name: 'Remove Sort', id: 'none' },
+    { name: 'Descending', id: 'desc' },
+    { name: 'Ascending', id: 'asc' },
+  ];
 
   get apiColumnName(): string {
     return this.args.column.fragment.columnMetadata.id;
@@ -36,5 +50,14 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   @action
   setParameter(param: FunctionParameterMetadataModel, paramValue: ColumnFunctionParametersValues[number]) {
     this.args.onUpdateColumnParam(param.id, paramValue.id);
+  }
+
+  @action
+  updateSort(direction: AllDirectionSort) {
+    if (direction === 'none') {
+      this.args.onRemoveSort();
+    } else {
+      this.args.onUpsertSort(direction);
+    }
   }
 }

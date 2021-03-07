@@ -13,6 +13,8 @@ const TEMPLATE = hbs`
   @column={{this.column}}
   @cloneColumn={{optional this.cloneColumn}}
   @onAddFilter={{optional this.onAddFilter}}
+  @onUpsertSort={{optional this.onUpsertSort}}
+  @onRemoveSort={{optional this.onRemoveSort}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{this.onUpdateColumnParam}}
 />
@@ -40,6 +42,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     return {
       isFiltered: false,
+      sort: null,
       fragment,
     };
   }
@@ -117,7 +120,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     );
 
     await selectChoose('.navi-column-config-item__parameter', 'Right');
-    await selectChoose('.navi-column-config-item__parameter:last-child', 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Dollars (CAD)');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),

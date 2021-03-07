@@ -37,6 +37,7 @@
 
   &__clone-icon,
   &__filter-icon,
+  &__sort-icon,
   &__star-icon {
     @include navi-column-config-icon;
     margin: 0 4px;

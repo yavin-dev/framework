@@ -60,6 +60,10 @@
     }
   }
 
+  &__handle {
+    cursor: move;
+  }
+
   &__dropdown-icon {
     @include navi-column-config-icon;
     flex-basis: 20px;
