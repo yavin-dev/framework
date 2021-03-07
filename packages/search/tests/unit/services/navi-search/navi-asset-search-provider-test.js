@@ -61,18 +61,23 @@ module('Unit | Service | navi-asset-search-provider', function (hooks) {
   });
 
   test('search by user search returns reports and dashboards', async function (assert) {
-    assert.expect(5);
+    assert.expect(9);
 
     const results = await service.search.perform('Revenue');
     assert.equal(results.component, 'navi-search-result/asset', 'Result contains correct display component name');
     assert.equal(results.title, 'Reports & Dashboards', 'Result contains correct title for the search result section');
+    assert.deepEqual(
+      results.data.map((r) => r.title),
+      ['Revenue report 1', 'Revenue Dashboard'],
+      'The correct reports and dashboards are found'
+    );
     results.data.forEach(async function (result) {
       let author = await result.author;
       // Only Report objects have a request property.
       let hasRequest = !!result?.request;
       assert.ok(result.title.includes('Revenue'), 'The service returns a report that includes the requested title.');
       assert.ok(
-        hasRequest ? result.request.includes('Revenue') : true,
+        hasRequest ? JSON.stringify(result.request.serialize()).includes('revenue') : true,
         'The service returns reports that include the search query in the request'
       );
       assert.ok(author.id.includes('ciela'), 'The service returns a report from the requested user.');
