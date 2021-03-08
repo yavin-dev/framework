@@ -1,45 +1,42 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Description: A model that holds the response from a Bard query.
+ * Description: A model that holds the response from a Fact query.
  */
 
 import EmberObject from '@ember/object';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import NaviFactResponse from './navi-fact-response';
+import type NaviFactsService from 'navi-data/services/navi-facts';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type NaviFactResponse from './navi-fact-response';
 
 export default class NaviFacts extends EmberObject {
   /**
-   * @property {RequestV1} request - the request object
+   * the request object
    */
-  request?: RequestV2;
+  declare request: RequestV2;
 
   /**
-   * @property {ResponseV1} response - response for request
+   * response for request
    */
-  response?: NaviFactResponse;
+  declare response: NaviFactResponse;
 
   /**
-   * @property {Service} _factsService - instance of the facts service passed in on create
+   * instance of the facts service passed in on create
    */
-  _factService: TODO;
+  declare _factService: NaviFactsService;
 
   /**
-   * @method next
-   * @returns {Promise|null} - Promise with the response model object for next page
-   *                      or null when trying to go past last page
+   * @returns Promise with the response model object for next page or null when trying to go past last page
    */
-  next() {
+  next(): Promise<NaviFacts> | null {
     return this._factService.fetchNext(this.response, this.request);
   }
 
   /**
-   * @method previous
-   * @returns {Promise|null} - Promise with the response model object for previous page
-   *                      or null when trying to access pages less than the first page
+   * @returns Promise with the response model object for previous page or null when trying to access pages less than the first page
    */
-  previous() {
+  previous(): Promise<NaviFacts> | null {
     return this._factService.fetchPrevious(this.response, this.request);
   }
 }

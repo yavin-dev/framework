@@ -5,7 +5,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
-import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
+import NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 
 interface Args {
   buildUrl?: () => string;

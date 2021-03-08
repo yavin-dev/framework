@@ -4,8 +4,8 @@
  */
 
 import Component from '@glimmer/component';
-import FilterFragment from 'navi-core/addon/models/bard-request-v2/fragments/filter';
-import DashboardModel from 'navi-core/addon/models/dashboard';
+import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import DashboardModel from 'navi-core/models/dashboard';
 
 interface Args {
   dashboard: DashboardModel;

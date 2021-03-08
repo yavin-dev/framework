@@ -1,27 +1,36 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get, set, action } from '@ember/object';
+import { set, action } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
 import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
+import type NaviFactsService from 'navi-data/services/navi-facts';
+import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
+import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
+import type ReportsReportRoute from 'navi-reports/routes/reports/report';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type ReportModel from 'navi-core/models/report';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
 
 export default class ReportsReportViewRoute extends Route {
   /**
-   * @property {Service} facts - instance of navi facts service
+   * instance of navi facts service
    */
-  @service('navi-facts') facts;
+  @service('navi-facts') declare facts: NaviFactsService;
 
   /**
-   * @property {Service} naviVisualizations - instance of navi visualizations service
+   * instance of navi visualizations service
    */
-  @service naviVisualizations;
+  @service declare naviVisualizations: NaviVisualizationsService;
 
   /**
-   * @property {Object} requestOptions - options for bard request
+   * options for request
    */
   requestOptions = {
     page: 1,
@@ -30,29 +39,28 @@ export default class ReportsReportViewRoute extends Route {
   };
 
   /**
-   * @property {Object} parentModel - object containing request to view
+   * object containing request to view
    */
   get parentModel() {
-    return this.modelFor('reports.report');
+    return this.modelFor('reports.report') as ModelFrom<ReportsReportRoute>;
   }
 
   /**
-   * @method model
-   * @returns {Promise} response from fact service
+   * @returns response from fact service
    */
   model() {
-    let report = get(this, 'parentModel'),
-      request = get(report, 'request'),
-      serializedRequest = request.serialize(),
-      requestOptions = merge({}, get(this, 'requestOptions'), {
-        customHeaders: {
-          uiView: `report.spv.${get(report, 'id')}`,
-        },
-        dataSourceName: request.dataSource,
-      });
+    const report = this.parentModel;
+    const request = report.request;
+    const serializedRequest = request.serialize() as RequestV2;
+    const requestOptions = merge({}, this.requestOptions, {
+      customHeaders: {
+        uiView: `report.spv.${report.id}`,
+      },
+      dataSourceName: request.dataSource,
+    });
 
     // Wrap the response in a promise object so we can manually handle loading spinners
-    return get(this, 'facts')
+    return this.facts
       .fetch(serializedRequest, requestOptions)
       .then((response) => {
         this._setValidVisualizationType(request, report);
@@ -62,68 +70,66 @@ export default class ReportsReportViewRoute extends Route {
       })
       .catch((response) => {
         if (isForbiddenError(response)) {
-          this.transitionTo('reports.report.unauthorized', get(report, 'id'));
+          this.transitionTo('reports.report.unauthorized', report.id);
         } else {
           return reject(response);
         }
+        return undefined;
       });
   }
 
   /**
    * Makes sure the visualization type is valid for the request
    * If it is not currently valid, a default will be provided
-   * @method _setValidVisualizationType
    * @private
-   * @param {Object} request
-   * @param {Object} report
+   * @param request
+   * @param report
    */
-  _setValidVisualizationType(request, report) {
-    let visualizationModel = get(report, 'visualization'),
-      visualizationService = get(this, 'naviVisualizations'),
-      visualizationManifest = visualizationService.getManifest(get(visualizationModel, 'type'));
+  _setValidVisualizationType(request: RequestFragment, report: ReportModel) {
+    const { naviVisualizations } = this;
+    let { visualization } = report;
+    const visualizationManifest = naviVisualizations.getManifest(visualization.type);
 
     // If the current type is already valid, don't bother setting a new type
     if (!visualizationManifest.typeIsValid(request)) {
-      visualizationModel = this.store.createFragment(visualizationService.defaultVisualization());
-      set(report, 'visualization', visualizationModel);
+      visualization = this.store.createFragment(naviVisualizations.defaultVisualization(), {});
+      set(report, 'visualization', visualization);
     }
   }
 
   /**
    * Makes sure the visualization config is valid for the request
    * If it is not currently valid, a default will be provided
-   * @method _setValidVisualizationConfig
    * @private
-   * @param {Object} request
-   * @param {Object} report
-   * @param {Object} response
+   * @param request
+   * @param report
+   * @param response
    */
-  _setValidVisualizationConfig(request, report, response) {
-    let visualizationModel = get(report, 'visualization');
+  _setValidVisualizationConfig(request: RequestFragment, report: ReportModel, response: NaviFactResponse) {
+    const { visualization } = report;
 
-    if (!visualizationModel.isValidForRequest(request)) {
-      visualizationModel.rebuildConfig(request, response);
+    if (!visualization.isValidForRequest(request)) {
+      visualization.rebuildConfig(request, response);
     }
   }
 
   /**
    * Returns whether the current request has already run
-   * @method _hasRequestRun
    * @private
-   * @returns {Boolean}
+   * @returns true if data is stored for the request
    */
-  _hasRequestRun() {
-    return this.controllerFor(this.routeName).get('hasRequestRun');
+  _hasRequestRun(): boolean {
+    const controller = this.controllerFor(this.routeName) as ReportsReportViewController;
+    return controller.hasRequestRun;
   }
 
   /**
    * Runs report if it has changed
    *
-   * @action runReport
-   * @returns {Transition|Void} - the model refresh transition
+   * @returns the model refresh transition
    */
   @action
-  runReport() {
+  runReport(): Transition | void {
     // Run the report only if there are request changes
     if (!this._hasRequestRun()) {
       return this.refresh();
@@ -135,8 +141,7 @@ export default class ReportsReportViewRoute extends Route {
   /**
    * Forces the report to be rerun, used when user explicitly pushes run button.
    *
-   * @action forceRun
-   * @returns {Transition} - refreshes model transition
+   * @returns refreshes model transition
    */
   @action
   forceRun() {
@@ -145,25 +150,20 @@ export default class ReportsReportViewRoute extends Route {
 
   /**
    * Code to run before validating the request
-   *
-   * @action beforeValidate
-   * @returns {Void}
    */
   @action
   beforeValidate() {
     // noop
   }
 
-  /**
-   * @action loading
-   */
   @action
-  loading(transition) {
+  loading(transition: Transition) {
     /**
      * false is sent as the first argument due to a change in router_js
      * TODO: Remove false if this is ever removed
      * https://github.com/emberjs/ember.js/issues/17545
      */
+    //@ts-ignore
     transition.send(false, 'setReportState', 'running');
     return true; // allows the loading template to be shown
   }
@@ -172,12 +172,13 @@ export default class ReportsReportViewRoute extends Route {
    * @action error
    */
   @action
-  error(error, transition) {
+  error(_error: unknown, transition: Transition) {
     /**
      * false is sent as the first argument due to a change in router_js
      * TODO: Remove false if this is ever removed
      * https://github.com/emberjs/ember.js/issues/17545
      */
+    //@ts-ignore
     transition.send(false, 'setReportState', 'failed');
     return true; // allows the error template to be shown
   }
