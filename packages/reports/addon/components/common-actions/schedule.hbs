@@ -11,6 +11,7 @@
     {{#if (is-rejected this.deliveryRule)}}
         <DenaliAlert 
           @style="danger" 
+          @isBlock={{true}}
           class="m-b-30" 
           as |Alert|
         >
@@ -21,6 +22,7 @@
         {{#if this.notification}}	
           <DenaliAlert 
             @style="danger" 
+            @isBlock={{true}}
             class="m-b-30" 
             as |Alert|
           >

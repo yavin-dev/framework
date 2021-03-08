@@ -4,6 +4,10 @@
 */
 .schedule {
   &__modal {
+    & div.modal-container {
+      width: 525px;
+    }
+
     &__input--recipients {
       &.text-input {
         padding: 10px;
