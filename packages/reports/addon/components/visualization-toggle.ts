@@ -11,13 +11,13 @@
  */
 import Component from '@glimmer/component';
 import { computed } from '@ember/object';
-import ReportModel from 'navi-core/addon/models/report';
-import NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
+import type ReportModel from 'navi-core/addon/models/report';
+import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 
 interface Args {
   report: ReportModel;
   validVisualizations: NaviVisualizationBaseManifest[];
-  onVisualizationTypeUpdate: () => void;
+  onVisualizationTypeUpdate: (name: string) => void;
 }
 
 export default class VisualizationToggle extends Component<Args> {
