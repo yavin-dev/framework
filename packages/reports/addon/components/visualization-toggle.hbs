@@ -1,0 +1,18 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="visualization-toggle" ...attributes>
+  <DenaliToggle
+    @options={{@validVisualizations}}
+    @activeOption={{this.activeVisualization}}
+    @onChange={{fn @onVisualizationTypeUpdate this.clickedVisualization}}
+    @isSmall={{true}}
+    as |visualization|
+  >
+    <DenaliIcon 
+      @icon={{visualization.icon}} 
+      @size="small"
+      class="visualization-toggle__option-icon {{if (eq @report.visualization.type visualization.name) "visualization-toggle__option--is-active"}}" 
+      title={{visualization.niceName}}
+      {{on "click" (fn (mut this.clickedVisualization) visualization.name)}}
+    />
+  </DenaliToggle>
+</div>

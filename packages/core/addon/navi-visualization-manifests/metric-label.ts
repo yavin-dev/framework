@@ -12,7 +12,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 export default class MetricLabelManifest extends NaviVisualizationBaseManifest {
   name = 'metric-label';
   niceName = 'Metric Label';
-  icon = 'list-alt';
+  icon = 'chart-big-number';
 
   typeIsValid(request: RequestFragment) {
     return (
