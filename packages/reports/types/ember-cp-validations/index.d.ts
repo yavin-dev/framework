@@ -1,5 +1,5 @@
 declare module 'ember-cp-validations' {
-  type EmberCPValidationsMixin = {
+  export type EmberCPValidationsMixin = {
     validations: TODO;
     validate(): Promise<Pick<EmberCPValidationsMixin, 'validations'>>;
   };

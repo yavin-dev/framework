@@ -11,7 +11,6 @@ import fade from 'ember-animated/transitions/fade';
 import { tracked } from '@glimmer/tracking';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ScreenService from 'navi-core/services/screen';
-import type ReportBuilderComponent from 'navi-reports/components/report-builder';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const REPORT_STATE = <const>{
@@ -109,7 +108,8 @@ export default class ReportsReportController extends Controller {
    * @param reportBuilder - The report builder component containing the visualization
    */
   @action
-  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: ReportBuilderComponent) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: any) {
     const { isColumnDrawerOpen } = this;
     this.isColumnDrawerOpen = isOpen;
 
@@ -143,7 +143,8 @@ export default class ReportsReportController extends Controller {
    * @param {Object} fragment - the added request fragment
    */
   @action
-  onBeforeAddItem(reportBuilder: ReportBuilderComponent, fragment: ColumnFragment) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onBeforeAddItem(reportBuilder: any, fragment: ColumnFragment) {
     this.updateColumnDrawerOpen(true, reportBuilder);
     this.setLastAddedColumn(fragment);
   }
