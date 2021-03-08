@@ -19,7 +19,7 @@ interface Args {
 
 export default class DashboardFiltersComponent extends Component<Args> {
   @service
-  store!: Store;
+  declare store: Store;
 
   @tracked
   isCollapsed = true;
