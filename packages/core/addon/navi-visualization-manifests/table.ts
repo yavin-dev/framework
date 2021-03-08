@@ -12,7 +12,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 export default class TableManifest extends NaviVisualizationBaseManifest {
   name = 'table';
   niceName = 'Data Table';
-  icon = 'layout-three';
+  icon = 'table';
 
   typeIsValid(_request: RequestFragment) {
     return true;
