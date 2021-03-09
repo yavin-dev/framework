@@ -1,0 +1,174 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.grouped-list {
+  color: $body-text-color;
+  width: 230px;
+
+  &__group-header {
+    align-items: flex-start;
+    cursor: pointer;
+    display: flex;
+    margin: 3px 0;
+
+    &-content {
+      text-transform: capitalize;
+      display: inline-block;
+    }
+
+    &-icon {
+      flex-shrink: 0;
+      margin-top: 2px;
+
+      &--closed {
+        flex-basis: 10px;
+        margin-left: 4px;
+      }
+
+      &--open {
+        flex-basis: 12px;
+        margin-left: 2px;
+      }
+    }
+  }
+
+  &__item {
+    display: flex;
+    margin-left: 15px;
+
+    &-label {
+      color: $body-text-color;
+      display: block;
+      font: inherit;
+      padding: 0;
+
+      &:hover {
+        .grouped-list__add-icon {
+          color: $links-hover-text-color;
+          opacity: unset;
+        }
+      }
+
+      &::-moz-focus-inner {
+        border: 0; // prevents dotted outline when button is focused
+      }
+    }
+
+    &-container {
+      align-items: center;
+      display: flex;
+      flex: 1;
+      transition: background-color 0.2s ease-out;
+
+      &--selected {
+        background-color: rgba($color-brand-100, 0.2);
+
+        &:focus-within {
+          animation: navi-pulse-once 0.75s;
+        }
+      }
+    }
+
+    &-checkbox {
+      opacity: 0; // Hide it
+      position: absolute; // Take it out of the document flow
+
+      &-container {
+        position: relative;
+      }
+    }
+
+    &-checkbox + &-label {
+      &:before {
+        border-radius: 1px;
+        box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+        content: '';
+        display: inline-block;
+        height: 8px;
+        margin: 0 5px;
+        transition: all 0.2s;
+        width: 8px;
+      }
+    }
+
+    &-checkbox:hover + &-label:before {
+      box-shadow: 0 0 0 2px $links-text-color;
+    }
+
+    &-checkbox:focus + &-label:before {
+      box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
+    }
+
+    &-checkbox:checked + &-label:before {
+      box-shadow: 0 0 0 2px $links-text-color;
+      background: $links-text-color;
+    }
+
+    &-checkbox:checked + &-label:after {
+      border: solid #fff;
+      border-width: 0 2px 2px 0; // creates the inverted "L" shape
+      box-sizing: border-box;
+      content: ' ';
+      display: block;
+      height: 8px;
+      left: 6px;
+      position: absolute;
+      top: 4px;
+      transform: rotate(45deg);
+      width: 5px;
+    }
+
+    button#{&}-label {
+      align-items: unset;
+      cursor: pointer;
+      margin: 0 3px;
+      text-align: left;
+    }
+
+    &-info {
+      align-self: center;
+      color: $color-grey-700;
+      cursor: help;
+      margin-left: 2px;
+      visibility: hidden;
+    }
+
+    &:hover &-info {
+      visibility: visible;
+    }
+  }
+
+  &__add-icon {
+    color: $links-text-color;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 2px;
+
+    &--deselected:not(:hover) {
+      opacity: 0.5;
+    }
+  }
+
+  &__icon-set {
+    align-items: center;
+    display: flex;
+    margin: 0 5px 0 auto;
+  }
+
+  &__filter {
+    color: $links-text-color;
+    cursor: pointer;
+    margin: 0 5px;
+    opacity: 0.5;
+
+    &:hover {
+      color: $links-hover-text-color;
+      opacity: unset;
+    }
+
+    &--active {
+      opacity: unset;
+    }
+  }
+}

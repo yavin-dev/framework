@@ -1,0 +1,140 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.navi-column-config-item {
+  border-bottom: 1px solid $menu-border-color;
+  margin-left: 15px;
+  z-index: 2;
+
+  &__header {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+
+    &:hover {
+      .navi-column-config-item__remove-icon {
+        display: inline-block;
+      }
+
+      .navi-column-config-item__type-icon {
+        display: none;
+      }
+    }
+  }
+
+  &__trigger {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    min-width: 0;
+    padding-left: 5px;
+
+    &:hover {
+      .navi-column-config-item__dropdown-icon {
+        color: $links-text-color;
+      }
+    }
+  }
+
+  &__name {
+    color: $body-text-color;
+    margin: 8px 0;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    // Multi line ellipsis for supported browsers
+    @supports (-webkit-line-clamp: 2) {
+      display: -webkit-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      white-space: initial;
+    }
+  }
+
+  &__dropdown-icon {
+    @include navi-column-config-icon;
+    flex-basis: 20px;
+    flex-shrink: 0;
+    transition: transform 100ms;
+  }
+
+  &__type-icon,
+  &__remove-icon {
+    @include navi-column-config-icon;
+  }
+
+  &__type-icon {
+    flex-shrink: 0;
+    height: 8px;
+    margin: 0 3px;
+    width: 8px;
+  }
+
+  &--time-dimension,
+  &--dimension {
+    .navi-column-config-item__type-icon {
+      background-color: $color-orange;
+      border-radius: 50%;
+    }
+  }
+
+  &--metric {
+    .navi-column-config-item__type-icon {
+      background-color: $color-purple;
+      border-radius: 1px;
+    }
+  }
+
+  &__remove-icon {
+    display: none;
+    flex-shrink: 0;
+    padding: 0;
+    width: 14px;
+    text-align: center;
+  }
+
+  &--open {
+    .navi-column-config-item__name {
+      font-weight: bold;
+    }
+
+    .navi-column-config-item__header {
+      border-bottom: none;
+    }
+
+    .navi-column-config-item__dropdown-icon {
+      transform: rotate(90deg);
+    }
+  }
+
+  &--last-added {
+    animation: navi-pulse-once 0.75s;
+  }
+
+  &__parameter {
+    &-dropdown {
+      .ember-power-select-search {
+        width: 100%;
+
+        // TODO: Remove when the following style applies for themes
+        // https://github.com/denali-design/denali-ember/blob/b261bfbb5b9779070c6ae3e7c45f91e9715a2830/app/styles/denali/ember-power-select.scss#L155
+        &-input:focus {
+          box-shadow: unset !important;
+        }
+      }
+
+      .ember-power-select-option {
+        padding-left: 15px;
+      }
+    }
+  }
+}

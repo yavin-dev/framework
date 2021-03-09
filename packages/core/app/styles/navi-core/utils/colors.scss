@@ -1,0 +1,44 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ *
+ * Colors a css property to match chart series colors.
+ * Color is based on the `chart-series-x` class applied to the element.
+ *
+ * Usage:
+ *    div {
+ *       .generate-chart-colors-for(background-color);
+ *    }
+ *
+ *   <div class='chart-series-0'> This has an orange background! </div>
+ *   <div class='chart-series-1'> This has a blue background! </div>
+ *
+ */
+
+//Graph Stroke Colors
+$graph-stroke-colors: (
+  '0': denali-color('graph', 'lime'),
+  '1': denali-color('graph', 'yellow'),
+  '2': denali-color('graph', 'sky'),
+  '3': denali-color('graph', 'violet'),
+  '4': denali-color('graph', 'pink'),
+  '5': denali-color('graph', 'blue'),
+  '6': denali-color('graph', 'orange'),
+  '7': denali-color('graph', 'purple'),
+  '8': denali-color('graph', 'green'),
+  '9': denali-color('graph', 'red'),
+);
+
+$chart-max-series: 10;
+
+@mixin generate-chart-colors-for($property) {
+  @include chart-color-loop($property);
+}
+
+@mixin chart-color-loop($property, $n: $chart-max-series, $i: 0) {
+  @for $i from 0 to $n {
+    &.chart-series-#{$i} {
+      #{$property}: #{map-get($graph-stroke-colors, '#{$i}')};
+    }
+  }
+}
