@@ -1,14 +1,14 @@
 {
   "name": "navi",
   "version": "0.2.0",
-  "description": "Navi Project",
-  "author": "team-navi@googlegroups.com",
-  "license": "MIT",
   "private": true,
+  "description": "Navi Project",
   "repository": {
     "type": "git",
     "url": "https://github.com/yahoo/yavin"
   },
+  "license": "MIT",
+  "author": "team-navi@googlegroups.com",
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",
     "start": "cd packages/webservice && ./gradlew bootRun",

@@ -1315,7 +1315,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     listedReports = findAll('tbody tr td:first-of-type').map((el) => el.innerText.trim());
 
-    assert.deepEqual(listedReports, ['Hyrule Ad&Nav Clicks', 'Hyrule News'], 'Two reports are in favorites now');
+    assert.deepEqual(listedReports, ['Hyrule News', 'Hyrule Ad&Nav Clicks'], 'Two reports are in favorites now');
 
     // Unfavorite report 2
     await click($('tbody tr td a:contains(Hyrule Ad&Nav Clicks)')[0]);
