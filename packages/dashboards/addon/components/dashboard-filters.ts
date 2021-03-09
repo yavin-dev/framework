@@ -6,9 +6,9 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
-import DashboardModel from 'navi-core/models/dashboard';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import Store from '@ember-data/store';
+import type DashboardModel from 'navi-core/models/dashboard';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type Store from '@ember-data/store';
 
 interface Args {
   dashboard: DashboardModel;

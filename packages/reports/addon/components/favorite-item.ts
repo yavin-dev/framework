@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
-import DeliverableItemModel from 'navi-core/models/deliverable-item';
-import UserModel from 'navi-core/models/user';
+import type DeliverableItemModel from 'navi-core/models/deliverable-item';
+import type UserModel from 'navi-core/models/user';
 
 interface Args {
   user: UserModel;
