@@ -1,4 +1,4 @@
-  <div class="container-full m-y-4">
+  <div class="container-full" ...attributes>
     <div class="row">
       <div class="col-1-1">
         {{#if (feature-flag "enableDirectory")}}
@@ -8,7 +8,7 @@
         {{/if}}
       </div>
     </div>
-    <div class="row">
+    <div class="row align-items-center">
       <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
         <span class="navi-report__title">
         {{#if @model.isOwner}}
@@ -25,17 +25,17 @@
         {{#unless @model.isNew}}
           {{#let (get-user) as |user|}}
             <FavoriteItem
-              class="navi-report__fav-icon"
+              class="navi-report__fav-icon m-l-4"
               @user={{user}}
               @item={{@model}}
-              @click={{route-action "toggleFavorite" @model}}
+              @onToggle={{route-action "toggleFavorite" @model}}
             />
           {{/let}}
         {{/unless}}
         </span>
       </div>
       <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
-        <div class="navi-report__header-action">
+        <div class="row navi-report__header-action">
           <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
         </div>
       </div>

@@ -43,7 +43,7 @@ module('Integration | Component | visualization toggle', function (hooks) {
       }}`);
 
     assert.deepEqual(
-      findAll('.visualization-toggle__option').map((el) => el.attributes.title.value),
+      findAll('.visualization-toggle__option-icon').map((el) => el.attributes.title.value),
       ['Bar Chart', 'Line Chart', 'Data Table'],
       'All valid visualizations are shown as options'
     );
@@ -52,6 +52,6 @@ module('Integration | Component | visualization toggle', function (hooks) {
       .dom('.visualization-toggle__option--is-active')
       .hasAttribute('title', 'Bar Chart', 'The visualization type of the report is selected/active');
 
-    await click('.visualization-toggle__option[title="Line Chart"]');
+    await click('.visualization-toggle__option-icon[title="Line Chart"]');
   });
 });

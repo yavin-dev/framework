@@ -137,7 +137,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       predicate = query.length
         ? [
             {
-              operator: 'eq',
+              operator: 'ini',
               values: [`*${query}*`],
             },
           ]

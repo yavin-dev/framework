@@ -1,13 +1,13 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .favorite-item {
-  color: @navi-dark-gray;
-
+  color: $links-secondary-text-color;
+  opacity: 0.5; //same as `is-sub`
   &:hover,
   &--active {
-    color: @favorite-gold;
+    @extend .is-yellow-700;
   }
 }

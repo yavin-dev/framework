@@ -11,14 +11,14 @@ const Payload: AsyncQueryResponse = {
       {
         node: {
           id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-          query: '"{ "query": "{ tableA { edges { node { datestamp user_count } } } } " }',
+          query: '"{ "query": "{ tableA { edges { node { col0:datestamp col1:user_count } } } } " }',
           status: QueryStatus.COMPLETE,
           result: {
             contentLength: 129,
             httpStatus: 200,
             recordCount: 2,
             responseBody:
-              '{"data":{"tableA":{"edges":[{"node":{"datestamp":"202003", "userCount":10}},{"node":{"datestamp":"202004", "userCount":20}}]}}}',
+              '{"data":{"tableA":{"edges":[{"node":{"col0":"202003", "col1":10}},{"node":{"col0":"202004", "col1":20}}]}}}',
           },
         },
       },

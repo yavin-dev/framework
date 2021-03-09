@@ -25,6 +25,12 @@ $filter-builder-padding: 4px;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    &-dropdown {
+      .ember-power-select-options {
+        max-height: unset;
+      }
+    }
   }
 
   &__values {

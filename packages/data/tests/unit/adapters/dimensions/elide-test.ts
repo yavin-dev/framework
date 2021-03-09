@@ -293,7 +293,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           field: 'table0.dimension0',
           parameters: { bang: 'boom' },
           type: 'dimension',
-          operator: 'eq',
+          operator: 'ini',
           values: ['*something*'],
         },
       ],
@@ -338,12 +338,12 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    const query = 'act';
+    const query = 'ACT';
     const response = await adapter.search(TestDimensionColumn, query);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, response),
       ['Practical Frozen Fish (enum)', 'Practical Concrete Chair (enum)'],
-      '`search` returns filtered enum values for dimensions that provide them'
+      '`search` returns case insensitive filtered enum values for dimensions that provide them'
     );
   });
 });

@@ -16,6 +16,7 @@
     <div class="filter-builder__operator xs-col-1-2 sm-col-1-2 col-1-5">
       <PowerSelect
         @triggerClass="filter-builder__operator-trigger is-medium"
+        @dropdownClass="filter-builder__operator-dropdown"
         @options={{this.valueBuilders}}
         @selected={{this.selectedValueBuilder}}
         @searchEnabled={{false}}

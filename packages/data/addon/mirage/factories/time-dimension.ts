@@ -24,6 +24,8 @@ export default Factory.extend({
     return `This is time dimension ${this.index}`;
   },
 
+  cardinality: 'UNKNOWN',
+
   category: 'categoryOne',
 
   valueType: 'TIME',

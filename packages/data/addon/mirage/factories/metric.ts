@@ -24,6 +24,8 @@ export default Factory.extend({
     return `This is metric ${this.index}`;
   },
 
+  cardinality: 'UNKNOWN',
+
   category: 'categoryOne',
 
   valueType: 'NUMBER',

@@ -9,6 +9,7 @@
         {
           name: title_id
           friendlyName: Title Id
+          cardinality: medium
           category: Attributes
           type: TEXT
           definition: '{{title_id}}'
@@ -16,13 +17,17 @@
         {
           name: show_type
           friendlyName: Show Type
+          // Not necessary if values are provided
+          // cardinality: tiny
           category: Attributes
           type: TEXT
           definition: '{{type}}'
+          values: ['TV Show', 'Movie']
         }
         {
           name: title
           friendlyName: Title
+          cardinality: medium
           category: Attributes
           type: TEXT
           definition: '{{title}}'
@@ -30,6 +35,7 @@
         {
           name: director
           friendlyName: Director
+          cardinality: small
           category: Attributes
           type: TEXT
           definition: '{{director}}'
@@ -37,6 +43,7 @@
         {
           name: cast
           friendlyName: Cast List
+          cardinality: large
           category: Attributes
           type: TEXT
           definition: '{{cast_list}}'
@@ -44,6 +51,7 @@
         {
           name: country
           friendlyName: Countries
+          cardinality: small
           category: Attributes
           type: TEXT
           definition: '{{country}}'
@@ -57,6 +65,12 @@
           grains: [
             {
                type: DAY
+            }
+            {
+               type: YEAR
+               sql :  '''
+               PARSEDATETIME(YEAR({{}}), 'YYYY')
+               '''
             }
           ]
         }
@@ -75,6 +89,7 @@
         {
           name: film_rating
           friendlyName: Film Rating
+          cardinality: tiny
           category: Attributes
           type: TEXT
           definition: '{{rating}}'
@@ -82,6 +97,7 @@
         {
           name: genres
           friendlyName: Genre
+          cardinality: small
           category: Attributes
           type: TEXT
           definition: '{{listed_in}}'
@@ -89,6 +105,7 @@
         {
           name: description
           friendlyName: Description
+          cardinality: large
           category: Attributes
           type: TEXT
           definition: '{{description}}'

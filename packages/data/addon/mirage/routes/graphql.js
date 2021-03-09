@@ -8,7 +8,7 @@ import gql from 'graphql-tag';
 import faker from 'faker';
 import moment from 'moment';
 import { capitalize } from '@ember/string';
-import { orderBy } from 'lodash-es';
+import { orderBy, invert } from 'lodash-es';
 import { parse } from '@rsql/parser';
 
 const ASYNC_RESPONSE_DELAY = 2000; // ms before async api response result is populated
@@ -31,6 +31,7 @@ const OPERATORS = {
   eq: '==',
   neq: '!=',
   isIn: '=in=',
+  isInInsensitive: '=ini=',
   notIn: '=out=',
   isNull: '=isnull=true',
   notNull: '=isnull=false',
@@ -45,6 +46,14 @@ const FILTER_OPS = {
   [OPERATORS.le]: ([filterVal], vals) => vals.filter((val) => val <= filterVal),
   [OPERATORS.ge]: ([filterVal], vals) => vals.filter((val) => val >= filterVal),
   [OPERATORS.isIn]: (filterVals, vals) => vals.filter((val) => filterVals.includes(val)),
+  [OPERATORS.isInInsensitive]: ([filterVal], vals) =>
+    vals.filter((val) => {
+      const lowerVal = val.toLowerCase();
+      const lowerFilterVal = filterVal.toLowerCase();
+      //If filterVal is wrapped in wildcard operators, match all values that contain the filterVal
+      const match = /\*(.*)\*/.exec(lowerFilterVal);
+      return match ? lowerVal.includes(match[1]) : lowerVal === lowerFilterVal;
+    }),
   [OPERATORS.notIn]: (filterVals, vals) => vals.filter((val) => !filterVals.includes(val)),
   [OPERATORS.isNull]: (_, vals) => vals.filter((val) => !val),
   [OPERATORS.notNull]: (_, vals) => vals.filter(Boolean),
@@ -164,9 +173,10 @@ function _datesForInterval(interval, grain) {
 /**
  * @param {Object[]} filters - filters from the request
  * @param {Object[]} requestedColumns - time dimension columns from mirage db in the columns of the request
+ * @param {Object} fieldToAlias - map of field names to aliases if they exist
  * @returns rows with values for each requested time dimension
  */
-function _getDates(filters, requestedColumns) {
+function _getDates(filters, requestedColumns, fieldToAlias) {
   // Columns with buckets keyed by their field without grain where buckets are sorted by grain in ascending order
   const columns = requestedColumns.reduce((acc, col) => {
     const [, fieldWithoutGrain, grain] = TIME_DIMENSION_REGEX.exec(col.id);
@@ -208,7 +218,9 @@ function _getDates(filters, requestedColumns) {
     if (!rows.length) {
       rows = datesForField.map((date) =>
         columnsForField.reduce((row, column) => {
-          row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+          const field = REMOVE_TABLE_REGEX.exec(column.id)[1];
+          const aliasedField = fieldToAlias[field] || field;
+          row[aliasedField] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
           return row;
         }, {})
       );
@@ -219,7 +231,9 @@ function _getDates(filters, requestedColumns) {
           ...datesForField.map((date) => ({
             ...currentRow,
             ...columnsForField.reduce((row, column) => {
-              row[REMOVE_TABLE_REGEX.exec(column.id)[1]] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
+              const field = REMOVE_TABLE_REGEX.exec(column.id)[1];
+              const aliasedField = fieldToAlias[field] || field;
+              row[aliasedField] = date.format(DATE_FORMATS[column.grain.toLowerCase()]);
               return row;
             }, {}),
           })),
@@ -258,24 +272,32 @@ function _parseGQLQuery(queryStr) {
   // Parse requested table, columns, and filters from graphql query
   const selection = queryAST.definitions[0]?.selectionSet.selections[0];
   const table = selection?.name.value;
+
+  const columnSelection = selection?.selectionSet.selections[0].selectionSet.selections[0].selectionSet.selections;
   return {
     table,
     args: selection?.arguments.reduce((argsObj, arg) => {
       argsObj[arg.name.value] = arg.value.value;
       return argsObj;
     }, {}),
-    fields: selection?.selectionSet.selections[0].selectionSet.selections[0].selectionSet.selections.map(
-      (field) => `${table}.${field.name.value}`
-    ),
+    fields: columnSelection.map((field) => `${table}.${field.name.value}`),
+    aliases: columnSelection.reduce((aliases, field) => {
+      const alias = field.alias.value;
+      if (alias) {
+        aliases[alias] = field.name.value;
+      }
+      return aliases;
+    }, {}),
   };
 }
 
 /**
  * @param {Object} args - query argument strings
  * @param {String} table - table name
+ * @param {Object} aliases - alias to field name
  * @returns {Object} objects for each argument type
  */
-function _parseArgs(args, table) {
+function _parseArgs(args, table, aliases) {
   const parsers = {
     filter: (filter) =>
       filter
@@ -283,8 +305,9 @@ function _parseArgs(args, table) {
         .filter(Boolean)
         .map((f) => {
           const [, field, parameters, operator, values] = f.match(FILTER_REGEX);
+          const unaliasedField = aliases[field] || field;
           return {
-            field: `${table}.${field}`,
+            field: `${table}.${unaliasedField}`,
             parameters: parameters && Object.fromEntries(parameters.split(',').map((p) => p.split(': '))),
             operator,
             values: values.split(',').map((v) => v.match(/'(.*)'/)[1]),
@@ -296,6 +319,7 @@ function _parseArgs(args, table) {
         .split(',')
         .filter(Boolean)
         .map((s) => {
+          // Keep sorts aliased because they are applied to row data which uses aliases
           let field = s;
           let direction = 'asc';
           if (s.startsWith('-')) {
@@ -329,8 +353,9 @@ function _getResponseBody(db, asyncQueryRecord) {
 
   // Only respond if query was created over 5 seconds ago
   if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
-    const { table, args, fields } = _parseGQLQuery(JSON.parse(query).query || '');
-    const { filter = [], sort = [], first } = _parseArgs(args, table);
+    const { table, args, fields, aliases } = _parseGQLQuery(JSON.parse(query).query || '');
+    const fieldToAlias = invert(aliases);
+    const { filter = [], sort = [], first } = _parseArgs(args, table, aliases);
     const seed = _getSeedForRequest(table, args, fields);
     faker.seed(seed);
 
@@ -353,7 +378,8 @@ function _getResponseBody(db, asyncQueryRecord) {
         columns.timeDimensions.length > 0
           ? _getDates(
               filter.filter((fil) => columns.timeDimensions.includes(fil.field)),
-              db.timeDimensions.find(columns.timeDimensions)
+              db.timeDimensions.find(columns.timeDimensions),
+              fieldToAlias
             )
           : [{}];
 
@@ -363,11 +389,13 @@ function _getResponseBody(db, asyncQueryRecord) {
         const dimensionValues = _dimensionValues(filterForDim);
 
         rows = rows.reduce((newRows, currentRow) => {
+          const field = REMOVE_TABLE_REGEX.exec(dimension)[1];
+          const aliasedField = fieldToAlias[field] || field;
           return [
             ...newRows,
             ...dimensionValues.map((value) => ({
               ...currentRow,
-              [REMOVE_TABLE_REGEX.exec(dimension)[1]]: value,
+              [aliasedField]: value,
             })),
           ];
         }, []);
@@ -375,13 +403,14 @@ function _getResponseBody(db, asyncQueryRecord) {
 
       // Add each metric
       rows = rows.map((currRow) =>
-        columns.metrics.reduce(
-          (row, metric) => ({
+        columns.metrics.reduce((row, metric) => {
+          const field = REMOVE_TABLE_REGEX.exec(metric)[1];
+          const aliasedField = fieldToAlias[field] || field;
+          return {
             ...row,
-            [REMOVE_TABLE_REGEX.exec(metric)[1]]: faker.finance.amount(),
-          }),
-          currRow
-        )
+            [aliasedField]: faker.finance.amount(),
+          };
+        }, currRow)
       );
 
       // handle limit in request

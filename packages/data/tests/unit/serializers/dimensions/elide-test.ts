@@ -35,14 +35,14 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
           {
             node: {
               id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-              query: '"{ "query": "{ tableA { edges { node { dimension1 } } } } " }',
+              query: '"{ "query": "{ tableA { edges { node { col0:dimension1 } } } } " }',
               status: QueryStatus.COMPLETE,
               result: {
                 contentLength: 129,
                 httpStatus: 200,
                 recordCount: 3,
                 responseBody:
-                  '{"data":{"table0":{"edges":[{"node":{"dimension1":"foo"}},{"node":{"dimension1":"bar"}},{"node":{"dimension1":"baz"}}]}}}',
+                  '{"data":{"table0":{"edges":[{"node":{"col0":"foo"}},{"node":{"col0":"bar"}},{"node":{"col0":"baz"}}]}}}',
               },
             },
           },
@@ -76,13 +76,13 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
           {
             node: {
               id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-              query: `"{ "query": "{ ${lookupTable} { edges { node { ${lookupField} } } } } " }`,
+              query: `"{ "query": "{ ${lookupTable} { edges { node { col0:${lookupField} } } } } " }`,
               status: QueryStatus.COMPLETE,
               result: {
                 contentLength: 129,
                 httpStatus: 200,
                 recordCount: 3,
-                responseBody: `{"data":{"${lookupTable}":{"edges":[{"node":{"${lookupField}":"foo"}},{"node":{"${lookupField}":"bar"}},{"node":{"${lookupField}":"baz"}}]}}}`,
+                responseBody: `{"data":{"${lookupTable}":{"edges":[{"node":{"col0":"foo"}},{"node":{"col0":"bar"}},{"node":{"col0":"baz"}}]}}}`,
               },
             },
           },

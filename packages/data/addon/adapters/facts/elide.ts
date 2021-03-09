@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
@@ -13,8 +13,12 @@ import NaviFactAdapter, {
   RequestV2,
   FilterOperator,
   Filter,
+  FactAdapterError,
+  Column,
+  Sort,
 } from './interface';
 import { assert } from '@ember/debug';
+import { inject as service } from '@ember/service';
 import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
 import { DocumentNode } from 'graphql';
@@ -23,16 +27,27 @@ import { task, timeout } from 'ember-concurrency';
 import { v1 } from 'ember-uuid';
 import moment, { Moment } from 'moment';
 import { Grain } from 'navi-data/utils/date';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { omitBy } from 'lodash-es';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
 /**
  * Formats elide request field
  */
-export function getElideField(fieldName: string, _parameters: Parameters = {}) {
-  //TODO add parameter support when added to Elide
+export function getElideField(fieldName: string, parameters: Parameters = {}, alias?: string) {
+  const aliasStr = alias ? `${alias}:` : '';
+
   const parts = fieldName.split('.');
-  return parts[parts.length - 1];
+  const field = parts[parts.length - 1];
+
+  const paramsInner = Object.entries(parameters)
+    .map(([param, val]) => `${param}:"${val}"`)
+    .join(', ');
+  const paramsStr = paramsInner.length > 0 ? `(${paramsInner})` : '';
+
+  return `${aliasStr}${field}${paramsStr}`;
 }
 
 export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {
@@ -42,10 +57,26 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   @queryManager({ service: 'navi-elide-apollo' })
   apollo: TODO;
 
+  @service naviMetadata!: NaviMetadataService;
+
   /**
    * @property {Number} _pollingInterval - number of ms between fetch requests during async request polling
    */
   _pollingInterval = 3000;
+
+  assertAllDefaultParams(base: Column | Filter | Sort, dataSourceName: string) {
+    const meta = this.naviMetadata.getById(base.type, base.field, dataSourceName);
+    if (meta) {
+      const defaultParams = meta.getDefaultParameters() || {};
+      const nonDefaultParams = omitBy(base.parameters, (v, k) => defaultParams[k] === v);
+      if (Object.keys(nonDefaultParams).length !== 0) {
+        const canonicalName = canonicalizeMetric({ metric: base.field, parameters: base.parameters });
+        throw new FactAdapterError(
+          `Parameters are not supported in elide unles ${canonicalName} is added as a column.`
+        );
+      }
+    }
+  }
 
   private readonly grainFormats: Partial<Record<Grain, string>> = {
     second: 'yyy-MM-DDTHH:mm:ss',
@@ -67,6 +98,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     eq: (f, v) => `${f}==('${v[0]}')`,
     neq: (f, v) => `${f}!=('${v[0]}')`,
     in: (f, v) => `${f}=in=(${v.map((e) => `'${e}'`).join(',')})`,
+    ini: (f, v) => `${f}=ini=(${v.map((e) => `'${e}'`).join(',')})`,
     notin: (f, v) => `${f}=out=(${v.map((e) => `'${e}'`).join(',')})`,
     contains: (f, v) => `${f}=in=(${v.map((e) => `'*${e}*'`).join(',')})`,
     isnull: (f, v) => `${f}=isnull=${v[0]}`,
@@ -78,7 +110,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
   };
 
-  private buildFilterStr(filters: Filter[]): string {
+  private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>, dataSourceName: string): string {
     const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
 
@@ -87,7 +119,15 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
         return null;
       }
 
-      const fieldStr = getElideField(field, parameters);
+      let fieldStr;
+      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      if (canonicalToAlias[canonicalName]) {
+        fieldStr = canonicalToAlias[canonicalName];
+      } else {
+        this.assertAllDefaultParams(filter, dataSourceName);
+        // TODO: Non default Parameters cannot be specified in filters yet
+        fieldStr = getElideField(field, {});
+      }
       let filterVals = values.map((v) => escape(`${v}`));
 
       if (type === 'timeDimension' && operator !== 'isnull') {
@@ -116,14 +156,42 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   private dataQueryFromRequest(request: RequestV2): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
-    const columnsStr = columns.map((col) => getElideField(col.field, col.parameters)).join(' ');
+    const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
+      const canonicalName = canonicalizeMetric({ metric: column.field, parameters: column.parameters });
+      // Use 'colX' as alias so that filters/sorts can reference the alias
+      canonicalToAlias[canonicalName] = `col${idx}`;
+      return canonicalToAlias;
+    }, {});
+    const columnsStr = columns
+      .map(({ type, field, parameters }) => {
+        const alias = columnCanonicalToAlias[canonicalizeMetric({ metric: field, parameters })];
+        if (type === 'timeDimension') {
+          // The elide time grain is uppercase (but we serialize to lowercase to use as Grain internally)
+          const grain = parameters.grain?.toUpperCase();
+          parameters = {
+            ...parameters,
+            ...(grain ? { grain } : {}),
+          };
+        }
+        return getElideField(field, parameters, alias);
+      })
+      .join(' ');
 
-    const filterString = this.buildFilterStr(filters);
+    const filterString = this.buildFilterStr(filters, columnCanonicalToAlias, request.dataSource);
     filterString.length && args.push(`filter: "${filterString}"`);
 
     const sortStrings = sorts.map((sort) => {
       const { field, parameters, direction } = sort;
-      const column = getElideField(field, parameters);
+
+      let column;
+      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      if (columnCanonicalToAlias[canonicalName]) {
+        column = columnCanonicalToAlias[canonicalName];
+      } else {
+        this.assertAllDefaultParams(sort, request.dataSource);
+        // TODO: Non default Parameters cannot be specified in filters yet
+        column = getElideField(field, {});
+      }
       return `${direction === 'desc' ? '-' : ''}${column}`;
     });
     sortStrings.length && args.push(`sort: "${sortStrings.join(',')}"`);

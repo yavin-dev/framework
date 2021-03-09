@@ -19,6 +19,7 @@ import NaviFactAdapter, {
   AsyncQueryResponse,
   Column,
   Sort,
+  FactAdapterError,
 } from './interface';
 import { omit } from 'lodash-es';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -29,9 +30,6 @@ import moment from 'moment';
 import config from 'ember-get-config';
 
 export type Query = RequestOptions & Dict<string | number | boolean>;
-export class FactAdapterError extends Error {
-  name = 'FactAdapterError';
-}
 
 /**
  * @param column - dimension column

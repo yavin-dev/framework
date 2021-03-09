@@ -4,7 +4,6 @@
  */
 
 .dashboard-header {
-
   &__page-title {
     display: flex;
     font-size: 30px;
@@ -12,16 +11,10 @@
     text-transform: capitalize;
   }
 
-  &__fav-icon {
-    margin: 3px 10px;
-    .fa {
-      font-size: 18px;
-    }
-  }
-
   &__actions {
     display: flex;
     flex-wrap: wrap;
+
     @include media-size-between(mobile, tablet) {
       justify-content: flex-start;
     }

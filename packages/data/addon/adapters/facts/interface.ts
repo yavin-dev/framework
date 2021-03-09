@@ -24,6 +24,7 @@ export type RequestOptions = {
 export type FilterOperator =
   | 'eq'
   | 'neq'
+  | 'ini'
   | 'in'
   | 'notin'
   | 'lt'
@@ -114,6 +115,10 @@ export type AsyncQueryResponse = {
     ];
   };
 };
+
+export class FactAdapterError extends Error {
+  name = 'FactAdapterError';
+}
 
 export interface AsyncQueryResult {
   httpStatus: number;

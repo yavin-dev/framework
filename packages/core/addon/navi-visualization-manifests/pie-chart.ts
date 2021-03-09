@@ -12,7 +12,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 export default class PieChartManifest extends NaviVisualizationBaseManifest {
   name = 'pie-chart';
   niceName = 'Pie Chart';
-  icon = 'pie-chart';
+  icon = 'chart-pie';
 
   typeIsValid(request: RequestFragment) {
     return (
