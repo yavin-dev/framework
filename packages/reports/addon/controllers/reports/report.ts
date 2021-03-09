@@ -25,12 +25,15 @@ type ReportState = typeof REPORT_STATE[keyof typeof REPORT_STATE];
 export default class ReportsReportController extends Controller {
   @service declare screen: ScreenService;
 
-  @tracked declare isFiltersCollapsed: boolean;
+  /**
+   * Display filter collection in minimal state
+   */
+  @tracked isFiltersCollapsed = false;
 
   /**
    * Display column config or not
    */
-  @tracked declare isColumnDrawerOpen: boolean;
+  @tracked isColumnDrawerOpen = true;
 
   /**
    * the serialized request after calling `onUpdateReport`
