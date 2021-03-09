@@ -13,7 +13,7 @@ export default class GoalGaugeManifest extends NaviVisualizationBaseManifest {
 
   niceName = 'Goal Gauge';
 
-  icon = 'tachometer';
+  icon = 'dashboard';
 
   typeIsValid(request: RequestFragment) {
     return (

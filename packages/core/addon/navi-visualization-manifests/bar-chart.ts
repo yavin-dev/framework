@@ -12,7 +12,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 export default class BarChartManifest extends NaviVisualizationBaseManifest {
   name = 'bar-chart';
   niceName = 'Bar Chart';
-  icon = 'bar-chart';
+  icon = 'ascending-bars';
 
   typeIsValid(request: RequestFragment) {
     return (
