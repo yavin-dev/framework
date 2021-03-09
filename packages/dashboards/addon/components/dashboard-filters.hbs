@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="m-b-4">
+<div class="dashboard-filters {{if this.isCollapsed "dashboard-filters--collapsed" "dashboard-filters--expanded"}}">
   <div class={{if this.isCollapsed "flex"}}>
     <span class="dashboard-filters__expand-button m-r-4" role="button" {{on "click" (toggle "isCollapsed" this)}}>
       <NaviIcon @icon="sliders" /> Filters<NaviIcon @icon="angle-down" class="dashboard-filters__toggle" />
@@ -12,7 +12,6 @@
       @request={{this.request}}
       @onUpdateFilter={{@onUpdateFilter}}
       @onRemoveFilter={{@onRemoveFilter}}
-      @onAddFilter={{@onAddFilter}}
     />
 
     {{#unless this.isCollapsed}}
