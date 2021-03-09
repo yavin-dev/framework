@@ -1,13 +1,6 @@
 /**
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * <CommonActions::Schedule
- *    @model={{this.model}}
- *    @onSave={{this.onSave}}
- *    @onRevert={{this.onRevert}}
- *    @onDelete={{this.onDelete}}
- * />
  */
 
 import { reads } from '@ember/object/computed';
@@ -212,13 +205,12 @@ export default class ScheduleActionComponent extends Component<Args> {
     //Kick off a fetch for existing delivery rules
     this.deliveryRule = this.args.model.deliveryRuleForUser;
 
-    await this.deliveryRule
-      .then((rule: DeliveryRuleModel) => {
-        this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
-      })
-      .catch(() => {
-        this.localDeliveryRule = this._createNewDeliveryRule();
-      });
+    try {
+      const rule = await this.deliveryRule;
+      this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
+    } catch (error) {
+      this.localDeliveryRule = this._createNewDeliveryRule();
+    }
   }
 
   /**
