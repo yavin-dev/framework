@@ -1,0 +1,40 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.metric-label-vis {
+  display: flex;
+  flex-direction: column;
+  height: 110px;
+  margin: auto;
+  overflow: hidden;
+  padding: 5px 25px;
+  text-align: center;
+
+  &__description {
+    color: $body-text-color;
+    font-size: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 14px;
+  }
+
+  &__value {
+    color: $body-text-color;
+    margin: auto;
+    white-space: nowrap;
+  }
+
+  &__font {
+    &--small {
+      font-size: 36px;
+    }
+    &--medium {
+      font-size: 41px;
+    }
+    &--large {
+      font-size: 56px;
+    }
+  }
+}

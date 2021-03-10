@@ -8,5 +8,9 @@
     border: 1px solid #f1f1f1;
     border-bottom-color: rgba(0, 0, 0, 0.2);
     margin: 4px;
+
+    &[aria-disabled='true'] {
+      background-color: $container-disabled-bg-color;
+    }
   }
 }
