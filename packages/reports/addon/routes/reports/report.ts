@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { merge } from 'lodash-es';
-import { get, set, computed, action } from '@ember/object';
+import { get, set, action } from '@ember/object';
 import { assert } from '@ember/debug';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
@@ -35,7 +35,6 @@ export default class ReportsReportRoute extends Route {
   /**
    * visualization type if not specified in report
    */
-  @computed()
   get defaultVisualizationType() {
     return this.naviVisualizations.defaultVisualization();
   }
