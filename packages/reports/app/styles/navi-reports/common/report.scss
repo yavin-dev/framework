@@ -20,7 +20,6 @@
   }
 
   &__title {
-    color: $color-grey-800;
     display: flex;
     font-size: $h1-font-size;
     text-transform: capitalize;
@@ -33,7 +32,6 @@
 
   &__header {
     align-items: center;
-    background-color: $color-grey-100;
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
@@ -106,11 +104,6 @@
         margin: 5px 0;
       }
     }
-  }
-
-  &__fav-icon {
-    font-size: 18px;
-    margin: 12px 10px 0 10px;
   }
 
   &__report-action {

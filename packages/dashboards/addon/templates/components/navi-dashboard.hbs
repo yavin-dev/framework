@@ -6,6 +6,7 @@
   @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
   @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
   @onAddFilter={{fn @onAddFilter @dashboard}}
+  class="p-y-10"
 />
 <div class="navi-dashboard__body">
   {{#if @dashboard.widgets.length}}
@@ -43,7 +44,7 @@
               @onSelectReport={{@addWidgetToDashboard}}
               as |toggleModal|
             >
-              <span role="button" {{on "click" toggleModal}}>add a widget</span>
+              <span class="link" role="button" {{on "click" toggleModal}}>add a widget</span>
             </DashboardActions::AddWidget>
             now?
           {{/if}}

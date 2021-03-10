@@ -85,7 +85,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     assert.dom('.table-row-vc').exists({ count: 2 }, 'Table has rows');
 
-    await click('.visualization-toggle__option[title="Bar Chart"]');
+    await click('.visualization-toggle__option-icon[title="Bar Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Bar Chart y axis label is correct');
     assert.dom('.c3-legend-item').containsText('1', 'Bar chart legend has the right value');
 
@@ -94,7 +94,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await click('.navi-report__run-btn');
 
-    await click('.visualization-toggle__option[title="Pie Chart"]');
+    await click('.visualization-toggle__option-icon[title="Pie Chart"]');
     assert.dom('.pie-metric-label').hasText('Used Amount', 'Pie chart has the right label');
     assert.dom('.c3-legend-item').containsText('1', 'Pie chart legend has the right value');
 
@@ -143,11 +143,11 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     );
     assert.dom('.table-widget__table .table-row-vc').exists('Table rows exist');
 
-    await click('.visualization-toggle__option[title="Bar Chart"]');
+    await click('.visualization-toggle__option-icon[title="Bar Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Bar chart has right Y axis label');
     assert.dom('.c3-legend-item').containsText('2,ANG', 'Bar chart legend has right value');
 
-    await click('.visualization-toggle__option[title="Line Chart"]');
+    await click('.visualization-toggle__option-icon[title="Line Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Line chart has right Y Axis label');
     assert.dom('.c3-legend-item').containsText('2,ANG', 'Line chart has right legend value');
 

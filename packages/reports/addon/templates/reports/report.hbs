@@ -24,10 +24,10 @@
       {{#unless this.model.isNew}}
         {{#let (get-user) as |user|}}
           <FavoriteItem
-            class="navi-report__fav-icon"
+            class="navi-report__fav-icon m-l-4"
             @user={{user}}
             @item={{this.model}}
-            @click={{route-action "toggleFavorite" this.model}}
+            @onToggle={{route-action "toggleFavorite" this.model}}
           />
         {{/let}}
       {{/unless}}

@@ -12,7 +12,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 export default class LineChartManifest extends NaviVisualizationBaseManifest {
   name = 'line-chart';
   niceName = 'Line Chart';
-  icon = 'line-chart';
+  icon = 'chart-line';
 
   typeIsValid(request: RequestFragment) {
     return this.hasMetric(request) && this.hasPotentialMultipleTimeBuckets(request);

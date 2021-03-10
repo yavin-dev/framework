@@ -1,0 +1,85 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+@mixin generate-legend-color($n, $i: 0) {
+  @for $i from 0 to $n {
+    .c3-legend-item:nth-of-type(#{$i + 1}) .c3-legend-item-tile {
+      fill: #{map-get($graph-stroke-colors, '#{$i}')} !important;
+      stroke: #{map-get($graph-stroke-colors, '#{$i}')} !important;
+    }
+  }
+}
+
+.line-chart-widget {
+  @include generate-legend-color($chart-max-series);
+  flex: 1;
+
+  fill: $body-text-color;
+  min-height: 0;
+  min-width: 0;
+
+  .c3-axis {
+    .tick {
+      line {
+        display: none;
+      }
+      text tspan {
+        text-transform: uppercase;
+      }
+    }
+    path {
+      stroke: denali-color('grey', '400');
+    }
+  }
+
+  .c3-axis-y-label {
+    text-transform: capitalize;
+  }
+
+  .c3-grid line {
+    stroke: denali-color('grey', '400');
+  }
+
+  .c3-legend-item text {
+    text-transform: capitalize;
+  }
+
+  .c3-line {
+    stroke-width: 3px;
+  }
+
+  // Series coloring
+  .c3-target {
+    @include generate-chart-colors-for(fill);
+    @include generate-chart-colors-for(stroke);
+
+    circle {
+      fill: inherit !important;
+      stroke: inherit !important;
+    }
+
+    path {
+      stroke: inherit !important;
+    }
+
+    //allowing the series color will override the inline color c3 sets for area
+    .c3-area {
+      fill: inherit !important;
+    }
+  }
+
+  // highlighted data point coloring
+  circle.c3-selected-circle {
+    fill: $color-grey-100 !important;
+    stroke: $color-red !important;
+    /* clean-css ignore:start */
+    r: 6;
+    /* clean-css ignore:end */
+  }
+  .c3-xgrid,
+  .c3-ygrid {
+    stroke-dasharray: 0;
+  }
+}
