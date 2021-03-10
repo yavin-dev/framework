@@ -112,7 +112,7 @@ export default class ScheduleActionComponent extends Component<Args> {
       return true;
     }
 
-    return !(this.localDeliveryRule.hasDirtyAttributes && this.isRuleValid);
+    return !(this.localDeliveryRule?.hasDirtyAttributes && this.isRuleValid);
   }
 
   /**
@@ -176,10 +176,10 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async doDelete() {
-    let deliveryRule = this.localDeliveryRule,
-      deletePromise = new RSVP.Promise((resolve, reject) => {
-        this.args.onDelete(deliveryRule, { resolve, reject });
-      });
+    const deliveryRule = this.localDeliveryRule;
+    const deletePromise = new RSVP.Promise((resolve, reject) => {
+      this.args.onDelete(deliveryRule, { resolve, reject });
+    });
 
     try {
       await deletePromise;
@@ -208,7 +208,7 @@ export default class ScheduleActionComponent extends Component<Args> {
     try {
       const rule = await this.deliveryRule;
       this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
-    } catch (error) {
+    } catch (e) {
       this.localDeliveryRule = this._createNewDeliveryRule();
     }
   }
