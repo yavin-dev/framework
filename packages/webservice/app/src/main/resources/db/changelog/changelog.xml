@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-    <changeSet author="admin" id="3">
+    <changeSet author="admin" id="1">
         <sql>
+          CREATE TABLE AsyncQuery (
+              id varchar(36) NOT NULL,
+              asyncAfterSeconds int,
+              requestId varchar(36),
+              principalName varchar(255),
+              query varchar(20480) NOT NULL,
+              queryType int NOT NULL,
+              status varchar(20) NOT NULL,
+              createdOn timestamp NOT NULL,
+              updatedOn timestamp NOT NULL,
+              completedOn timestamp,
+              contentLength integer,
+              responseBody MEDIUMTEXT,
+              resultType varchar(15),
+              httpStatus integer,
+              resultFormatType varchar(15),
+              recordCount integer,
+              PRIMARY KEY (id)
+          );
+
           CREATE TABLE User (
               id varchar(255) not null,
               createdOn timestamp default current_timestamp,
@@ -57,56 +77,41 @@
           );
 
           CREATE TABLE map_user_to_fav_dashboards (
-              user_id varchar(255) not null,
-              dashboard_id integer not null,
-              PRIMARY KEY (user_id, dashboard_id),
-              FOREIGN KEY (dashboard_id) references Dashboard(id),
-              FOREIGN KEY (user_id) references User(id)
-          );
+             user_id varchar(255) not null,
+             dashboard_id integer not null,
+             PRIMARY KEY (user_id, dashboard_id),
+             FOREIGN KEY (dashboard_id) references Dashboard(id),
+             FOREIGN KEY (user_id) references User(id)
+         );
 
           CREATE TABLE map_user_to_fav_reports (
-              user_id varchar(255) not null,
-              report_id integer not null,
-              PRIMARY KEY (user_id, report_id),
-              FOREIGN KEY (report_id) references custom_reports(id),
-              FOREIGN KEY (user_id) references User(id)
+             user_id varchar(255) not null,
+             report_id integer not null,
+             PRIMARY KEY (user_id, report_id),
+             FOREIGN KEY (report_id) references custom_reports(id),
+             FOREIGN KEY (user_id) references User(id)
           );
 
           CREATE TABLE Role (
-              id varchar(255) not null,
-              createdOn timestamp default current_timestamp,
-              updatedOn timestamp default current_timestamp,
-              PRIMARY KEY (id)
+             id varchar(255) not null,
+             createdOn timestamp default current_timestamp,
+             updatedOn timestamp default current_timestamp,
+             PRIMARY KEY (id)
           );
 
           CREATE TABLE User_Roles (
              user_id varchar(255) not null,
-            roles_id varchar(255) not null,
-            PRIMARY KEY (user_id, roles_id),
-            FOREIGN KEY (roles_id) references Role(id),
-            FOREIGN KEY (user_id) references User(id)
+             roles_id varchar(255) not null,
+             PRIMARY KEY (user_id, roles_id),
+             FOREIGN KEY (roles_id) references Role(id),
+             FOREIGN KEY (user_id) references User(id)
           );
-
-          CREATE TABLE AsyncQuery (
-              id varchar(36) NOT NULL,
-              asyncAfterSeconds int,
-              requestId varchar(36),
-              principalName varchar(255),
-              query varchar(20480) NOT NULL,
-              queryType int NOT NULL,
-              status varchar(20) NOT NULL,
-              createdOn timestamp NOT NULL,
-              updatedOn timestamp NOT NULL,
-              completedOn timestamp,
-              contentLength integer,
-              responseBody MEDIUMTEXT,
-              resultType varchar(15),
-              httpStatus integer,
-              resultFormatType varchar(15),
-              recordCount integer,
-              PRIMARY KEY (id),
-              FOREIGN KEY (principalName) references User(id)
-          );
+        </sql>
+    </changeSet>
+    <changeSet author="admin" id="2">
+        <sql>
+          ALTER TABLE AsyncQuery
+          ADD FOREIGN KEY (principalName) references User(id);
 
           CREATE TABLE TableExport (
             id varchar(36) not null,
