@@ -15,12 +15,12 @@ import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { tracked } from '@glimmer/tracking';
-import StoreService from '@ember-data/store';
-// @ts-ignore
-import DeliveryRuleModel from './delivery-rule';
+import type StoreService from '@ember-data/store';
+import type DeliveryRuleModel from 'navi-core/models/delivery-rule';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
-import UserService from 'navi-core/services/user';
-import DeliverableItemModel from 'navi-core/addon/models/deliverable-item';
+import type UserService from 'navi-core/services/user';
+import type DeliverableItemModel from 'navi-core/models/deliverable-item';
+import { assert } from '@ember/debug';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
@@ -58,7 +58,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  @tracked deliveryRule: DeliveryRuleModel;
+  @tracked deliveryRule!: Promise<DeliveryRuleModel | undefined>;
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
@@ -66,7 +66,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked localDeliveryRule?: DeliveryRuleModel;
 
   /**
-   * @property {object} notification - Object that stores an in modal notification
+   * @property {string} notification - In modal notification text
    */
   @tracked notification?: string;
 
@@ -86,7 +86,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    * @property {Array} formats
    */
   get formats() {
-    let formats = config.navi.schedule.formats;
+    let formats = config.navi.schedule?.formats;
 
     if (!formats) {
       formats = defaultFormats.slice();
@@ -147,12 +147,13 @@ export default class ScheduleActionComponent extends Component<Args> {
 
       this.attemptedSave = false;
       let savePromise = new RSVP.Promise((resolve, reject) => {
+        assert('The localDeliveryRule is defined', this.localDeliveryRule);
         this.args.onSave(this.localDeliveryRule, { resolve, reject });
       });
 
       try {
         await savePromise;
-
+        assert('The localDeliveryRule is defined', this.localDeliveryRule);
         this.naviNotifications.add({
           title: `${capitalize(this.localDeliveryRule.deliveryType)} delivery schedule successfully saved!`,
           style: 'success',
@@ -177,6 +178,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   async doDelete() {
     const deliveryRule = this.localDeliveryRule;
+    assert('The localDeliveryRule is defined', deliveryRule);
     const deletePromise = new RSVP.Promise((resolve, reject) => {
       this.args.onDelete(deliveryRule, { resolve, reject });
     });
@@ -219,6 +221,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   updateRecipients(recipients: string[]) {
+    assert('The localDeliveryRule is defined', this.localDeliveryRule);
     this.localDeliveryRule.recipients = recipients;
   }
 
@@ -228,7 +231,8 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   updateFormat(type: string) {
-    this.localDeliveryRule.format = { type };
+    assert('The localDeliveryRule is defined', this.localDeliveryRule);
+    this.localDeliveryRule.format = type;
   }
 
   /**

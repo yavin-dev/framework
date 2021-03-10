@@ -20,7 +20,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.schedule');
 
-    assert.dom('.schedule').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal').isVisible('Schedule modal pops up when action is clicked');
 
     // Default View
     assert
@@ -333,7 +333,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.dom('.schedule-action__button').isVisible('Button shows up on saved, owned form');
 
     await click('.schedule-action__button');
-    assert.dom('.schedule').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal').isVisible('Schedule modal pops up when action is clicked');
 
     await visit('/reports/new');
     assert.dom('.schedule-action__button').isNotVisible("Button shouldn't show up on new reports");

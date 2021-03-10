@@ -13,7 +13,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.schedule');
+    await click('.schedule-action__button');
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
@@ -63,7 +63,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
 
     //Reopen the modal because it closed when saved
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.schedule');
+    await click('.schedule-action__button');
 
     // Check that all fields match the delivery rule we just saved
     assert

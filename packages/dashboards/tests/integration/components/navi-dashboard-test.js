@@ -171,6 +171,6 @@ module('Integration | Component | navi dashboard', function (hooks) {
       @onRemoveFilter={{this.onRemoveFilter}}
       @onAddFilter={{this.onAddFilter}}
     />`);
-    assert.dom('.schedule').isNotVisible('Dashboard schedule button should not be visible');
+    assert.dom('.schedule__modal').isNotVisible('Dashboard schedule button should not be visible');
   });
 });

@@ -4,7 +4,8 @@
   @isOpen={{this.showModal}}
   @onClose={{queue this.closeModal (fn @onRevert this.localDeliveryRule)}}
   class="schedule__modal"
-  ...attributes as |Modal|
+  ...attributes 
+  as |Modal|
 >
   <Modal.Content>
     <h3 class="schedule__modal-header m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
