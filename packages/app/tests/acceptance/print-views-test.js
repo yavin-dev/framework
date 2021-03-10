@@ -12,7 +12,7 @@ module('Acceptance | print views', function (hooks) {
 
     await visit('/print/reports/1/view');
 
-    assert.dom('.navi-report__title').hasText('Kart Wins By Character', 'The report title shows up');
+    assert.dom('.report-header__title').hasText('Kart Wins By Character', 'The report title shows up');
     assert.deepEqual(
       findAll('.line-chart-widget .c3-legend-item').map((el) => el.textContent),
       ['Dry Bowser', 'Daisy', 'Wario', '0', '1', '2', '3', '5', '6', '9'],

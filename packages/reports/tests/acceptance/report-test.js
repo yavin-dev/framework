@@ -75,7 +75,11 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.dom('.report-view').exists('The route transistions to report view');
 
-    assert.equal(find('.navi-report__title').innerText.trim(), 'Copy Of Hyrule News', 'Cloned report is being viewed');
+    assert.equal(
+      find('.report-header__title').innerText.trim(),
+      'Copy Of Hyrule News',
+      'Cloned report is being viewed'
+    );
   });
 
   test('Clone invalid report', async function (assert) {
@@ -383,7 +387,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('(New Copy) RequestV2 testing report', 'New Saved Report is being viewed');
 
     await visit('/reports/13');
@@ -391,7 +395,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
   });
 
@@ -426,14 +430,14 @@ module('Acceptance | Navi Report', function (hooks) {
       'Report has a valid visualization type after running then reverting.'
     );
 
-    assert.dom('.navi-report__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
+    assert.dom('.report-header__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
 
     await visit('/reports/13');
 
     assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
   });
 
@@ -462,7 +466,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Old Report
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
 
     // Dirty state of old
@@ -504,7 +508,7 @@ module('Acceptance | Navi Report', function (hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
+    assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('Clone action - enabled/disabled', async function (assert) {
@@ -532,7 +536,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/1/view');
     assert.deepEqual(
-      findAll('.navi-report__header-action > *')
+      findAll('.report-header__header-action > *')
         .map((e) => e.textContent.trim())
         .filter((e) => e),
       ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
@@ -550,7 +554,7 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     await visit('/reports/1/view');
     assert.deepEqual(
-      findAll('.navi-report__header-action > *')
+      findAll('.report-header__header-action > *')
         .map((e) => e.textContent.trim())
         .filter((e) => e),
       ['API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
@@ -797,22 +801,22 @@ module('Acceptance | Navi Report', function (hooks) {
   test('Share report', async function (assert) {
     /* == Saved report == */
     await visit('/reports/1/view');
-    await click($('.navi-report__header-action:contains(Share) button')[0]);
+    await click($('.report-header__header-action:contains(Share) button')[0]);
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom($('.navi-report__header-action:contains(Share)')[0])
-      .hasNoClass('navi-report__header-action--is-disabled', 'Share action is disabled for invalid report');
+      .dom($('.report-header__header-action:contains(Share)')[0])
+      .hasNoClass('.report-header__header-action--is-disabled', 'Share action is disabled for invalid report');
 
     // Share is disabled on new
     await visit('/reports/new');
 
     assert
-      .dom($('.navi-report__header-action:contains(Share)')[0])
-      .hasNoClass('navi-report__header-action--is-disabled', 'Share action is disabled for new report');
+      .dom($('.report-header__header-action:contains(Share)')[0])
+      .hasNoClass('report-header__header-action--is-disabled', 'Share action is disabled for new report');
   });
 
   test('Delete report on success', async function (assert) {
@@ -860,15 +864,15 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/new');
 
     assert
-      .dom($('.navi-report__header-action:contains(Delete)')[0])
-      .hasNoClass('navi-report__header-action--is-disabled', 'Delete action is enabled for a valid report');
+      .dom($('.report-header__header-action:contains(Delete)')[0])
+      .hasNoClass('.report-header__header-action--is-disabled', 'Delete action is enabled for a valid report');
 
     // Delete is not Disabled on valid
     await visit('/reports/1/view');
 
     assert
-      .dom($('.navi-report__header-action:contains(Delete)')[0])
-      .hasNoClass('navi-report__header-action--is-disabled', 'Delete action is enabled for a valid report');
+      .dom($('.report-header__header-action:contains(Delete)')[0])
+      .hasNoClass('report-header__header-action--is-disabled', 'Delete action is enabled for a valid report');
 
     /*
      * Remove all metrics to create an invalid report
@@ -878,8 +882,8 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom($('.navi-report__header-action:contains(Delete)')[0])
-      .hasNoClass('navi-report__header-action--is-disabled', 'Delete action is enabled when report is not valid');
+      .dom($('.report-header__header-action:contains(Delete)')[0])
+      .hasNoClass('report-header__header-action--is-disabled', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
     await click('.delete__action-btn');
@@ -982,7 +986,7 @@ module('Acceptance | Navi Report', function (hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
+    assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('reports route actions -- delete', async function (assert) {
@@ -1012,7 +1016,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     //Click "Reports"
-    await click('.navi-report__breadcrumb-link');
+    await click('.report-header__breadcrumb-link');
 
     assert.ok(
       currentURL().endsWith('/reports'),
@@ -1034,7 +1038,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     //Navigate out of report
-    await click('.navi-report__breadcrumb-link');
+    await click('.report-header__breadcrumb-link');
 
     //Navigate back to `Report 12`
     await visit('/reports/13/view');
