@@ -13,31 +13,31 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .schedule .schedule-action__button');
+    await click('.schedule-action__button');
 
-    assert.dom('.schedule-modal__header .primary-header').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
     assert
-      .dom('.schedule-modal__delete-btn')
+      .dom('.schedule__modal-delete-btn')
       .isNotVisible('The delete button is not present when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__save-btn')
+      .dom('.schedule__modal-save-btn')
       .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
       .hasText('Week', 'Frequency field is set to the default value when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__input--recipients input')
+      .dom('.schedule__modal-input--recipients input')
       .hasNoValue('Recipients field is empty when creating a new schedule');
 
     assert
-      .dom('.schedule-modal__format-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal-format-trigger .ember-power-select-selected-item')
       .hasText('pdf', 'Format field is set to the default value when creating a new schedule');
 
-    await click('.schedule-modal__format-trigger');
+    await click('.schedule__modal-format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       ['pdf', 'png'],
@@ -48,37 +48,41 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await blur('.js-ember-tag-input-new');
 
     // Set frequency to Day
-    await click('.schedule-modal__frequency-trigger');
+    await click('.schedule__modal-frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     //Save the schedule
-    await click('.schedule-modal__save-btn');
+    await click('.schedule__modal-save-btn');
 
     assert
-      .dom('.success .notification-text')
+      .dom('.alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'
       );
 
+    //Reopen the modal because it closed when saved
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    await click('.schedule-action__button');
+
     // Check that all fields match the delivery rule we just saved
     assert
-      .dom('.schedule-modal__delete-btn')
+      .dom('.schedule__modal-delete-btn')
       .isVisible('The delete button is present after a delivery rule has been saved');
 
     assert
-      .dom('.schedule-modal__save-btn')
+      .dom('.schedule__modal-save-btn')
       .hasText(
         'Save Changes',
         'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
       );
 
     assert
-      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
       .hasText('Day', 'Frequency field is set by the saved delivery rule');
 
     assert
-      .dom('.schedule-modal__input--recipients .tag')
+      .dom('.schedule__modal-input--recipients .tag')
       .hasText('navi_user@navi.io', 'Recipients field is set by the saved delivery rule');
   });
 
@@ -89,34 +93,31 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     // Click "Schedule"
     await click('.schedule-action__button');
 
-    assert.dom('.schedule-modal__header').isVisible('Schedule modal pops up when action is clicked');
+    assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
     assert
-      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
       .hasText('Week', 'Frequency field is set to Week');
 
     // Set frequency to Day
-    await click('.schedule-modal__frequency-trigger');
+    await click('.schedule__modal-frequency-trigger');
     await click($('.ember-power-select-option:contains(Day)')[0]);
 
     //Save the schedule
-    await click('.schedule-modal__save-btn');
+    await click('.schedule__modal-save-btn');
 
     assert
-      .dom('.success .notification-text')
+      .dom('.alert')
       .hasText(
         'Dashboard delivery schedule successfully saved!',
         'Successful notification is shown after clicking save'
       );
 
-    // Close the modal
-    await click('.schedule-modal__cancel-btn');
-
     // Reopen the modal
     await click('.schedule-action__button');
 
     assert
-      .dom('.schedule-modal__frequency-trigger .ember-power-select-selected-item')
+      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
       .hasText('Day', 'Changes are saved');
   });
 });

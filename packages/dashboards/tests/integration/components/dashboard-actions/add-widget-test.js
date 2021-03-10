@@ -42,7 +42,7 @@ module('Integration | Component | dashboard actions/add widget', function (hooks
 
   test('it renders', async function (assert) {
     assert.dom('.add-widget__action-btn').hasText('Add Widget', 'Template component is yielded');
-    assert.dom('.add-widget__modal').isNotVisible('The add widget modal is not visible in the beginning');
+    assert.dom('.add-widget__modal').doesNotExist('The add widget modal is not visible in the beginning');
   });
 
   test('report selector', async function (assert) {
