@@ -10,25 +10,27 @@
   max-width: 100%;
   min-height: 0;
 
-  &__breadcrumb {
-    &-link {
-      color: $color-brand-300;
+  .report-header {
+    &__breadcrumb {
+      &-link {
+        color: $color-brand-300;
+      }
     }
-  }
 
-  &__title {
-    display: flex;
-    font-size: $h1-font-size;
-    text-transform: capitalize;
-  }
-
-  &__header-action {
-    display: flex;
-    @media (min-width: 0px) and (max-width: 899px) {
-      justify-content: flex-start;
+    &__title {
+      display: flex;
+      font-size: $h1-font-size;
+      text-transform: capitalize;
     }
-    @media (min-width: 900px) {
-      justify-content: flex-end;
+
+    &__header-action {
+      display: flex;
+      @media (min-width: 0px) and (max-width: 899px) {
+        justify-content: flex-start;
+      }
+      @media (min-width: 900px) {
+        justify-content: flex-end;
+      }
     }
   }
 

@@ -1,43 +1,44 @@
-  <div class="container-full" ...attributes>
-    <div class="row">
-      <div class="col-1-1">
-        {{#if (feature-flag "enableDirectory")}}
-          <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
-        {{else}}
-          <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
-        {{/if}}
-      </div>
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="container-full" ...attributes>
+  <div class="row">
+    <div class="col-1-1">
+      {{#if (feature-flag "enableDirectory")}}
+        <LinkTo @route="directory.my-data" class="report-header__breadcrumb-link">Directory</LinkTo>
+      {{else}}
+        <LinkTo @route="reports" class="report-header__breadcrumb-link">Reports</LinkTo>
+      {{/if}}
     </div>
-    <div class="row align-items-center">
-      <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
-        <span class="navi-report__title">
-        {{#if @model.isOwner}}
-          <EditableLabel
-            class="navi-report__edit-title"
-            @value={{@model.title}}
-            @onChange={{route-action "updateTitle"}}
-          />
-        {{else}}
-          <span>{{@model.title}}</span>
-        {{/if}}
+  </div>
+  <div class="row align-items-center">
+    <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
+      <span class="report-header__title">
+      {{#if @model.isOwner}}
+        <EditableLabel
+          class="report-header__edit-title"
+          @value={{@model.title}}
+          @onChange={{route-action "updateTitle"}}
+        />
+      {{else}}
+        <span>{{@model.title}}</span>
+      {{/if}}
 
-        {{!-- Favorite icon is visible if a report has been saved --}}
-        {{#unless @model.isNew}}
-          {{#let (get-user) as |user|}}
-            <FavoriteItem
-              class="navi-report__fav-icon m-l-4"
-              @user={{user}}
-              @item={{@model}}
-              @onToggle={{route-action "toggleFavorite" @model}}
-            />
-          {{/let}}
-        {{/unless}}
-        </span>
-      </div>
-      <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
-        <div class="row navi-report__header-action">
-          <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
-        </div>
+      {{!-- Favorite icon is visible if a report has been saved --}}
+      {{#unless @model.isNew}}
+        {{#let (get-user) as |user|}}
+          <FavoriteItem
+            class="report-header__fav-icon m-l-4"
+            @user={{user}}
+            @item={{@model}}
+            @onToggle={{route-action "toggleFavorite" @model}}
+          />
+        {{/let}}
+      {{/unless}}
+      </span>
+    </div>
+    <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
+      <div class="row report-header__header-action">
+        <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
       </div>
     </div>
   </div>
+</div>
