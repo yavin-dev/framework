@@ -1,64 +1,80 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { action, set, computed } from '@ember/object';
+import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
+//@ts-ignore
 import fade from 'ember-animated/transitions/fade';
+import { tracked } from '@glimmer/tracking';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type ScreenService from 'navi-core/services/screen';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
-const REPORT_STATE = {
+const REPORT_STATE = <const>{
   RUNNING: 'running',
   EDITING: 'editing',
   COMPLETED: 'completed',
   FAILED: 'failed',
 };
 
+type ReportState = typeof REPORT_STATE[keyof typeof REPORT_STATE];
+
 export default class ReportsReportController extends Controller {
-  @service screen;
-  /**
-   * @property {Boolean} isFiltersCollapsed
-   */
-  isFiltersCollapsed;
+  @service declare screen: ScreenService;
 
   /**
-   * @property {Boolean} isColumnDrawerOpen - Display column config or not
+   * Display filter collection in minimal state
    */
-  isColumnDrawerOpen;
+  @tracked isFiltersCollapsed = false;
 
   /**
-   * @property {Object} modifiedRequest - the serialized request after calling `onUpdateReport`
+   * Display column config or not
    */
-  modifiedRequest = null;
+  @tracked isColumnDrawerOpen = true;
 
   /**
-   * @property {Object} lastAddedColumn - the column that has been added last
+   * the serialized request after calling `onUpdateReport`
    */
-  lastAddedColumn = null;
+  @tracked modifiedRequest: RequestV2 | null = null;
+
+  /**
+   * the column that has been added last
+   */
+  @tracked lastAddedColumn: ColumnFragment | null = null;
+
+  /**
+   * The current state of the report
+   */
+  @tracked _reportState!: ReportState;
+
+  onFadeEnd: (() => void) | null = null;
 
   init() {
+    //@ts-ignore
     super.init(...arguments);
     const { isMobile } = this.screen;
-    set(this, 'isColumnDrawerOpen', !isMobile);
-    set(this, 'isFiltersCollapsed', isMobile);
+    this.isColumnDrawerOpen = !isMobile;
+    this.isFiltersCollapsed = isMobile;
   }
 
   /**
-   * @property {String} reportState - state of the the report
+   * state of the the report
    */
-  get reportState() {
+  get reportState(): ReportState {
     return this._reportState;
   }
 
-  set reportState(value) {
+  set reportState(value: ReportState) {
     const states = Object.values(REPORT_STATE);
     assert(`Invalid reportState: \`${value}\`. Must be one of the following: ${states}`, states.includes(value));
     this._reportState = value;
   }
 
   /**
-   * @property {Boolean} isEditingReport - is the report being edited
+   * is the report being edited
    */
   @computed('reportState')
   get isEditingReport() {
@@ -66,7 +82,7 @@ export default class ReportsReportController extends Controller {
   }
 
   /**
-   * @property {Boolean} isRunningReport - is the report running
+   * is the report running
    */
   @computed('reportState')
   get isRunningReport() {
@@ -74,7 +90,7 @@ export default class ReportsReportController extends Controller {
   }
 
   /**
-   * @property {Boolean} didReportComplete - did the report complete successfully
+   * did the report complete successfully
    */
   @computed('reportState')
   get didReportComplete() {
@@ -91,16 +107,17 @@ export default class ReportsReportController extends Controller {
 
   /**
    * Opens or closes the column config as well as configures a listener to resize the visualization
-   * @param {Boolean} isOpen
-   * @param {ReportBuilderComponent} reportBuilder - The report builder component containing the visualization
+   * @param isOpen
+   * @param reportBuilder - The report builder component containing the visualization
    */
   @action
-  updateColumnDrawerOpen(isOpen, reportBuilder) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: any) {
     const { isColumnDrawerOpen } = this;
-    set(this, 'isColumnDrawerOpen', isOpen);
+    this.isColumnDrawerOpen = isOpen;
 
     if (!isOpen) {
-      set(this, 'lastAddedColumn', null);
+      this.lastAddedColumn = null;
     }
 
     if (isOpen !== isColumnDrawerOpen) {
@@ -116,21 +133,21 @@ export default class ReportsReportController extends Controller {
 
   /**
    * Updates the last added column (mostly here for documentation)
-   * @param {Object} column - the last added request column fragment
+   * @param column - the last added request column fragment
    */
   @action
-  setLastAddedColumn(column) {
-    set(this, 'lastAddedColumn', column);
+  setLastAddedColumn(column: ColumnFragment) {
+    this.lastAddedColumn = column;
   }
 
   /**
    * Opens the column config drawer and updates the last added column
    * @param {ReportBuilderComponent} reportBuilder - The report builder component
-   * @param {String} columnType - the added column type
    * @param {Object} fragment - the added request fragment
    */
   @action
-  onBeforeAddItem(reportBuilder, fragment) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onBeforeAddItem(reportBuilder: any, fragment: ColumnFragment) {
     this.updateColumnDrawerOpen(true, reportBuilder);
     this.setLastAddedColumn(fragment);
   }
@@ -142,5 +159,12 @@ export default class ReportsReportController extends Controller {
   *fadeTransition() {
     yield* fade(...arguments);
     this.onFadeEnd?.();
+  }
+}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your controllers.
+declare module '@ember/controller' {
+  interface Registry {
+    'reports.report': ReportsReportController;
   }
 }
