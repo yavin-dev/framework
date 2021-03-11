@@ -6,7 +6,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-let route;
+let route: Route;
 
 module('Integration | Helper | model for', function (hooks) {
   setupRenderingTest(hooks);
@@ -20,11 +20,11 @@ module('Integration | Helper | model for', function (hooks) {
   test('modelFor', async function (assert) {
     assert.expect(2);
 
-    set(route, 'controller.model', 'foo');
+    set(route.controller, 'model', 'foo');
     await render(hbs`<span>{{model-for 'mock-route'}}</span>`);
     assert.dom('span').hasText('foo', "model-for helper returned the route's model");
 
-    run(() => set(route, 'controller.model', 'bar'));
+    run(() => set(route.controller, 'model', 'bar'));
     assert.dom('span').hasText('bar', "model-for helper recomputes when the route's model changes");
   });
 

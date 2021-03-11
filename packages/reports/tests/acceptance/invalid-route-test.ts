@@ -1,5 +1,6 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { visit, currentURL, click } from '@ember/test-helpers';
 

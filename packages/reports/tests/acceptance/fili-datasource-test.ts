@@ -9,7 +9,6 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
-//@ts-ignore
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { capitalize } from '@ember/string';
 
@@ -91,7 +90,7 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists on a new report');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
-    await clickItem('dimension', 'Date Time');
+    await clickItem('timeDimension', 'Date Time');
     assert.dom('.navi-column-config-item__name').hasText('Date Time (day)', 'The date time column was added');
     assert
       .dom('.navi-column-config-item__remove-icon')

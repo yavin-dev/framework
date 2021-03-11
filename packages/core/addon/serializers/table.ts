@@ -1,12 +1,11 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-//@ts-ignore
 import VisualizationSerializer from './visualization';
 import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
-import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import { assert } from '@ember/debug';
+import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 
 interface FieldTypes {
   metric: 'metric';
@@ -208,4 +207,11 @@ export function normalizeTableV2(
 
 export default class TableVisualizationSerializer extends VisualizationSerializer {
   // TODO: Implement serialize method to strip out unneeded fields
+}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/serializer' {
+  export default interface SerializerRegistry {
+    table: TableVisualizationSerializer;
+  }
 }

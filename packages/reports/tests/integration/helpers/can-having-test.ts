@@ -10,8 +10,8 @@ module('Integration | Helper | can-having', function (hooks) {
   test('it renders', async function (assert) {
     this.set('inputValue', { metric: 'm1' });
 
-    await render(hbs`{{can-having inputValue}}`);
+    await render(hbs`{{can-having this.inputValue}}`);
 
-    assert.equal(this.element.textContent.trim(), 'true');
+    assert.equal(this.element.textContent?.trim(), 'true');
   });
 });

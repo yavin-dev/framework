@@ -1,10 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
-import { MetricLabelConfig } from 'navi-core/models/metric-label';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { MetricLabelConfig } from 'navi-core/models/metric-label';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 export type LegacyMetricLabelConfig = {
   type: 'metric-label';
@@ -41,3 +41,10 @@ export function normalizeMetricLabelV2(
 }
 
 export default class MetricLabelSerializer extends VisualizationSerializer {}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/serializer' {
+  export default interface SerializerRegistry {
+    'metric-label': MetricLabelSerializer;
+  }
+}
