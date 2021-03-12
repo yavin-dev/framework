@@ -43,20 +43,20 @@ You can install the individual packages via npm
 
 Assuming you have git, node (>=10), and [ember-cli](https://cli.emberjs.com/release/)
 
-- `git clone https://github.com/yahoo/yavin.git`
+- `git clone https://github.com/yavin-dev/framework.git`
 - `cd yavin`
 - `npm install`
 - `cd packages/reports` (or whichever package)
 - `ember s` to run a local server
 - Then `npm test` to test your changes
 
-See [CONTRIBUTING.md](https://github.com/yahoo/yavin/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/yavin-dev/framework/blob/master/CONTRIBUTING.md)
 
 ## Resources
 
 - Documentation on [yavin.dev](https://yavin.dev)
 - Chat on [spectrum.chat](https://spectrum.chat/yavin)
-- Feature Roadmap [projects](https://github.com/yahoo/yavin/projects)
+- Feature Roadmap [projects](https://github.com/yavin-dev/framework/projects)
 - For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
 - For more information on using lerna, visit [https://lerna.js.org](https://lerna.js.org)
 
