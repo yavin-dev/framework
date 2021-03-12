@@ -124,11 +124,10 @@
             status varchar(255),
             updatedOn timestamp,
             contentLength integer,
-            responseBody text,
             completedOn timestamp,
             httpStatus integer,
             recordCount integer,
-            message text,
+            message MEDIUMTEXT,
             url varchar(255),
             primary key (id),
             FOREIGN KEY (principalName) references User(id)
