@@ -123,7 +123,6 @@
             resultType varchar(255),
             status varchar(255),
             updatedOn timestamp,
-            contentLength integer,
             completedOn timestamp,
             httpStatus integer,
             recordCount integer,
