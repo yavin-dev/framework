@@ -6,16 +6,18 @@
 <h1 align="center">Yavin</h1>
 <p align="center">Rapidly build production quality analytics applications</p>
 <p align="center">
-    <a href="https://yavin.dev">Docs</a> - <a href="https://yahoo.github.io/yavin">Demo</a> - <a href="https://github.com/yahoo/yavin/discussions">Community</a>
+    <a href="https://yavin.dev">Docs</a> - <a href="https://yavin-dev.github.io/framework">Demo</a> - <a href="https://github.com/yahoo/yavin/discussions">Community</a>
 </p>
 
 ## Yavin Framework [![Pipeline Status][status-image]][status-url]
+
+> **Note:** This repository contains the core code of the Yavin framework. If you want to build an application using Yavin, visit the [Yavin App Repository](https://github.com/yavin-dev/app).
 
 Yavin is a framework for rapidly building custom data applications that offers both a UI and an API.
 Yavin can also be deployed as a standalone business intelligence tool in a few simple steps.
 Build reports, assemble dashboards, and explore data with ad-hoc queries.
 
-Jump right in with the [demo app](https://yahoo.github.io/yavin) or run it yourself by following our [quick start guide](https://yavin.dev/pages/guide/02-start.html).
+Jump right in with the [demo app](https://yavin-dev.github.io/framework) or run it yourself by following our [quick start guide](https://yavin.dev/pages/guide/02-start.html).
 
 ![yavin demo app landing page](assets/yavin-demo-app.png)
 
