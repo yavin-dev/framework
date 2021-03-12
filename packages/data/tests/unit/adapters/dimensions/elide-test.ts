@@ -10,7 +10,6 @@ import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';
-import { getElideField } from 'navi-data/adapters/facts/elide';
 import { ResponseEdge } from 'navi-data/serializers/dimensions/elide';
 
 interface TestContext extends Context {
