@@ -36,8 +36,8 @@ function assertRequest(context: TestContext, callback: (request: RequestV2, opti
 function extractDimValues(dimension: DimensionColumn, rawResponse: AsyncQueryResponse): string[] {
   const responseStr = rawResponse?.asyncQuery.edges[0].node.result?.responseBody || '';
   const response = JSON.parse(responseStr);
-  const { id: dimensionName, tableId } = dimension.columnMetadata;
-  return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node[getElideField(dimensionName)]);
+  const { tableId } = dimension.columnMetadata;
+  return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node.col0);
 }
 
 module('Unit | Adapter | Dimensions | Elide', function (hooks) {

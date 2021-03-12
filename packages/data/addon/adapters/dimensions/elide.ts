@@ -1,18 +1,19 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the Elide dimension model.
  */
-import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
-import NaviDimensionAdapter, { DimensionFilter } from './interface';
-import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import { AsyncQueryResponse, FilterOperator, QueryStatus, RequestV2 } from '../facts/interface';
-import ElideFactsAdapter, { getElideField } from '../facts/elide';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
+import { AsyncQueryResponse, FilterOperator, QueryStatus, RequestV2 } from '../facts/interface';
+import type NaviDimensionAdapter from './interface';
+import type { DimensionFilter } from './interface';
+import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type ElideFactsAdapter from '../facts/elide';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 
 type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
 
@@ -30,8 +31,8 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   private factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
   private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
-    const { id, tableId } = dimension.columnMetadata;
-    const field = getElideField(id, dimension.parameters);
+    const { tableId } = dimension.columnMetadata;
+    const field = 'col0';
     const nodes = values.map((value) => `{"node":{"${field}":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
 
