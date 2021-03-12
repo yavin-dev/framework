@@ -16,6 +16,7 @@ interface StringCompressor {
   compress(string: string): Promise<string>;
   decompress(string: string): Promise<string>;
 }
+type EmberJSONAPIModelLike = object & { data?: { id?: unknown } };
 
 export default class CompressionService extends Service {
   @service declare store: StoreService;
@@ -47,11 +48,10 @@ export default class CompressionService extends Service {
    * @return promise that resolves to a string representation of model safe for URL use
    */
   compressModel(model: Model): Promise<string> {
-    type MaybeId = { data?: { id?: unknown } };
-    const serializedModel = model.serialize({ includeId: true }) as object & MaybeId;
+    const serializedModel = model.serialize({ includeId: true }) as EmberJSONAPIModelLike;
 
     // Ember Data requires an id to push to the store
-    assert('A model given to `compress` must have an id.', serializedModel.data?.id);
+    assert('A model given to `compress` must have an id.', serializedModel.data && serializedModel.data.id);
     return this.compress(serializedModel);
   }
 
