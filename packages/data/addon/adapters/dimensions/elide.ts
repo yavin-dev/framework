@@ -32,8 +32,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
 
   private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
     const { tableId } = dimension.columnMetadata;
-    const field = 'col0';
-    const nodes = values.map((value) => `{"node":{"${field}":"${value}"}}`);
+    const nodes = values.map((value) => `{"node":{"col0":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
 
     return {
