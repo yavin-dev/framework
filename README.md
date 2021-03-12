@@ -3,8 +3,8 @@
     <img alt="yavin-logo" src="assets/yavin-logo-transparent.svg" height="150px"/>
   </a>
 </p>
-<h1 align="center">Yavin</h1>
-<p align="center">Rapidly build production quality analytics applications</p>
+<h1 align="center">Yavin Framework</h1>
+<p align="center">A framework for rapidly building production quality analytics applications</p>
 <p align="center">
     <a href="https://yavin.dev">Docs</a> - <a href="https://yavin-dev.github.io/framework">Demo</a> - <a href="https://github.com/yavin-dev/framework/discussions">Community</a>
 </p>
