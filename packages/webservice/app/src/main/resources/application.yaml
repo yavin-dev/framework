@@ -16,6 +16,9 @@ elide:
     cleanupEnabled: true
     queryCleanupDays: 7
     defaultAsyncQueryDAO: true
+    export:
+      enabled: true
+      path: /export
   aggregation-store:
     enabled: true
     default-dialect: H2
