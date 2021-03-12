@@ -3,11 +3,12 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { Filter, QueryStatus, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
+import { exportFactsQueryStr } from 'navi-data/gql/queries/export-facts';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
 
 const HOST = config.navi.dataSources[2].uri;
@@ -443,6 +444,48 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
+  test('fetchTableExport - success', async function (assert) {
+    assert.expect(2);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(
+        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+        exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+        'fetchTableExport sent the correct query to fetch a tableExport'
+      );
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.ids[0],
+                query: 'foo',
+                queryType: 'GRAPHQL_V1_0',
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: '200',
+                  url: 'downloadURL',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    console.log('again testing');
+    const result = await adapter.fetchTableExport('request1', 'elideOne');
+    assert.deepEqual(result, response, 'fetchTableExport returns the correct response payload');
+  });
+
   test('fetchDataForRequest - success', async function (assert) {
     assert.expect(10);
 
@@ -584,6 +627,125 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\"quote\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
+  });
+
+  test('urlForDownloadQuery - success', async function (assert) {
+    assert.expect(3);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const downloadURL = 'downloadURL';
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+      assert.deepEqual(
+        Object.keys(requestObj.variables),
+        ['id', 'query'],
+        'urlForDownloadQuery sends id, query request variables'
+      );
+
+      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.COMPLETE,
+                result: {
+                  httpStatus: 200,
+                  url: downloadURL,
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    const asyncQueryResponse: string = await adapter.urlForDownloadQuery(TestRequest, {});
+    assert.deepEqual(asyncQueryResponse, downloadURL, 'urlForDownloadQuery returns the correct response payload');
+  });
+
+  test('urlForDownloadQuery - Internal server error', async function (assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.FAILURE,
+                result: {
+                  httpStatus: 500,
+                  url: '',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [500, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch (e) {
+      assert.deepEqual(
+        e.errors[0].response.statusText,
+        'Internal Server Error',
+        'urlForDownloadQuery returns appropriate error message on server error'
+      );
+    }
+  });
+
+  test('urlForDownloadQuery - Bad request error', async function (assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: QueryStatus.FAILURE,
+                result: {
+                  httpStatus: 200,
+                  url: '',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    try {
+      await adapter.urlForDownloadQuery(TestRequest, {});
+    } catch (e) {
+      assert.deepEqual(
+        e.message,
+        'Table Export Query did not complete successfully',
+        'urlForDownloadQuery returns appropriate error message on bad request'
+      );
+    }
   });
 
   test('buildFilterStr - alias', async function (assert) {

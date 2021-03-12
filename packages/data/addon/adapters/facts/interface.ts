@@ -116,6 +116,33 @@ export type AsyncQueryResponse = {
   };
 };
 
+export interface TableExport {
+  requestId: string;
+  request: RequestV1 | RequestV2;
+  status: QueryStatus;
+  resultType: TableExportResultType;
+  result: TableExportResult | null;
+  createdOn: Date;
+  updatedOn: Date;
+  then: () => NaviFactsModel;
+  cancel: () => void;
+}
+
+export type TableExportResponse = {
+  tableExport: {
+    edges: [
+      {
+        node: {
+          id: string;
+          query: string;
+          status: QueryStatus;
+          result: TableExportResult | null;
+        };
+      }
+    ];
+  };
+};
+
 export class FactAdapterError extends Error {
   name = 'FactAdapterError';
 }
@@ -125,6 +152,12 @@ export interface AsyncQueryResult {
   contentLength: number;
   responseBody: string;
   recordCount: number;
+}
+
+export interface TableExportResult {
+  httpStatus: number;
+  url: URL;
+  message: string;
 }
 
 export default interface NaviFactAdapter {

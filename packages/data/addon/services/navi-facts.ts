@@ -87,13 +87,15 @@ export default class NaviFactsService extends Service {
    * @returns {Promise} - Promise with the bard response model object
    */
   async fetch(request: RequestV2, options: RequestOptions = {}): Promise<NaviFactsModel> {
+    console.log('fetch');
     const dataSourceName = options?.dataSourceName;
     const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
     const adapter = this._adapterFor(type);
     const serializer = this._serializerFor(type);
 
     try {
-      const payload = await adapter.fetchDataForRequest(request, options);
+      const payload = await adapter.urlForDownloadQuery(request, options);
+      debugger;
       const response = serializer.normalize(payload, request);
       return NaviFactsModel.create({ request, response, _factService: this });
     } catch (e) {

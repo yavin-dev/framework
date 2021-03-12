@@ -131,6 +131,7 @@ export default class ReportsReportRoute extends Route {
    */
   @action
   forceRun(report: ReportModel) {
+    console.log('run report');
     this.send('runReport', report);
   }
 
