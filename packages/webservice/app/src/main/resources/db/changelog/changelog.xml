@@ -127,7 +127,7 @@
             completedOn timestamp,
             httpStatus integer,
             recordCount integer,
-            message MEDIUMTEXT,
+            message TEXT,
             url varchar(255),
             primary key (id),
             FOREIGN KEY (principalName) references User(id)
