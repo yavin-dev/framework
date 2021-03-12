@@ -11,7 +11,7 @@
   </div>
   <div class="row align-items-center">
     <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
-      <span class="report-header__title">
+      <div class="report-header__title">
       {{#if @model.isOwner}}
         <EditableLabel
           class="report-header__edit-title"
@@ -33,10 +33,10 @@
           />
         {{/let}}
       {{/unless}}
-      </span>
+      </div>
     </div>
     <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
-      <div class="row report-header__header-action">
+      <div class="report-header__header-action">
         <ReportActions @model={{@model}} @addToDashboard={{@addToDashboard}} @addToNewDashboard={{@addToNewDashboard}} />
       </div>
     </div>
