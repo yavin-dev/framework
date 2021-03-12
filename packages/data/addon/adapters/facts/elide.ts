@@ -255,11 +255,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     console.log('create table export');
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
     const query = this.dataQueryFromRequest(request);
+    console.log('query', query);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
     console.log(dataSourceName);
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    console.log('queryOptions ', queryOptions);
     return this.apollo.mutate(queryOptions);
   }
 

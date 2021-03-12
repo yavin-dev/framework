@@ -156,6 +156,7 @@ export interface AsyncQueryResult {
 
 export interface TableExportResult {
   httpStatus: number;
+  recordCount: number;
   url: URL;
   message: string;
 }
