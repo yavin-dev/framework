@@ -2,13 +2,13 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
 import { readOnly } from '@ember/object/computed';
-import VisualizationBase from './visualization';
+import VisualizationFragment from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
-import RequestFragment from './bard-request-v2/request';
 import { attr } from '@ember-data/model';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type RequestFragment from './bard-request-v2/request';
+import type { TypedVisualizationFragment } from './visualization';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object
@@ -38,7 +38,9 @@ export type GoalGaugeConfig = {
   };
 };
 
-export default class GoalGaugeModel extends VisualizationBase.extend(Validations) implements GoalGaugeConfig {
+export default class GoalGaugeModel
+  extends VisualizationFragment.extend(Validations)
+  implements GoalGaugeConfig, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'goal-gauge' })
   type!: GoalGaugeConfig['type'];
 

@@ -2,12 +2,12 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
 import { set } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
-import RequestFragment from './bard-request-v2/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type RequestFragment from './bard-request-v2/request';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { VisualizationType } from './registry';
 
 //TODO Try to make this an abstract class
 export default class VisualizationFragment extends Fragment {
@@ -57,4 +57,9 @@ export default class VisualizationFragment extends Fragment {
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);
      */
   }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TypedVisualizationFragment extends VisualizationFragment {
+  type: VisualizationType;
 }

@@ -4,7 +4,7 @@
  */
 import ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
 import { inject as controller } from '@ember/controller';
-import type DashboardsDashboardWidgetsWidgetController from 'dummy/controllers/dashboards/dashboard/widgets/widget';
+import type DashboardsDashboardWidgetsWidgetController from 'navi-dashboards/controllers/dashboards/dashboard/widgets/widget';
 
 export default class DashboardsDashboardWidgetsWidgetViewController extends ReportsReportViewController {
   @controller('dashboards.dashboard.widgets.widget')

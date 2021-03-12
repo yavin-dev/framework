@@ -11,6 +11,7 @@ import type NaviNotificationsService from 'navi-core/services/interfaces/navi-no
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
+import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export default class ReportsReportSaveAsRoute extends Route {
   @service declare user: UserService;
@@ -85,7 +86,7 @@ export default class ReportsReportSaveAsRoute extends Route {
    * @param report - The report to save As
    * @returns copy of report
    */
-  _saveAsReport(report: ReportModel, title: string) {
+  _saveAsReport(report: ReportLike, title: string) {
     const author = this.user.getUser();
     const clonedReportModel = report.clone();
 

@@ -178,26 +178,23 @@ export default class ReportsReportRoute extends Route {
    * @param report - object to save
    */
   @action
-  saveReport(report: ReportLike) {
-    report
-      .save()
-      .then(() => {
-        this.naviNotifications.add({
-          title: 'Report saved',
-          style: 'success',
-          timeout: 'short',
-        });
-
-        // Switch from temp id to permanent id
-        this.replaceWith('reports.report.view', get(report, 'id'));
-      })
-      .catch(() => {
-        this.naviNotifications.add({
-          title: 'An error occurred while saving the report',
-          style: 'danger',
-          timeout: 'medium',
-        });
+  async saveReport(report: ReportLike) {
+    try {
+      await report.save();
+      this.naviNotifications.add({
+        title: 'Report saved',
+        style: 'success',
+        timeout: 'short',
       });
+      // Switch from temp id to permanent id
+      this.replaceWith('reports.report.view', report.id);
+    } catch (e) {
+      this.naviNotifications.add({
+        title: 'An error occurred while saving the report',
+        style: 'danger',
+        timeout: 'medium',
+      });
+    }
   }
 
   /**

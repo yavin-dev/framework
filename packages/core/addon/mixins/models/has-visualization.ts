@@ -8,14 +8,13 @@ import Mixin from '@ember/object/mixin';
 import { get, set } from '@ember/object';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
-import VisualizationFragment from 'navi-core/models/visualization';
-import { VisualizationType } from 'navi-core/models/registry';
+import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
+import type { FragmentRegistry, VisualizationType } from 'navi-core/models/registry';
 
-type TypedVisualizationFragment = VisualizationFragment & { type: VisualizationType };
 type PersistedVisualization = TypedVisualizationFragment | undefined;
 
 export default Mixin.create({
-  visualization: fragment('visualization', { polymorphic: true }) as TypedVisualizationFragment,
+  visualization: fragment('visualization', { polymorphic: true }) as FragmentRegistry[VisualizationType],
   _persistedVisualization: undefined as PersistedVisualization,
 
   /**

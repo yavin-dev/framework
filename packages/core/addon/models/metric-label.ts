@@ -2,14 +2,15 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { set } from '@ember/object';
-import VisualizationBase from './visualization';
-import NumberFormats from 'navi-core/utils/enums/number-formats';
+import VisualizationFragment from './visualization';
 import { attr } from '@ember-data/model';
-import RequestFragment from './bard-request-v2/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import { buildValidations, validator } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
+import { set } from '@ember/object';
+import NumberFormats from 'navi-core/utils/enums/number-formats';
+import type { TypedVisualizationFragment } from './visualization';
+import type RequestFragment from './bard-request-v2/request';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object
@@ -35,7 +36,9 @@ export type MetricLabelConfig = {
   };
 };
 
-export default class MetricLabelModel extends VisualizationBase.extend(Validations) implements MetricLabelConfig {
+export default class MetricLabelModel
+  extends VisualizationFragment.extend(Validations)
+  implements MetricLabelConfig, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'metric-label' })
   type!: MetricLabelConfig['type'];
 

@@ -2,14 +2,15 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import VisualizationFragment from './visualization';
 import { attr } from '@ember-data/model';
-import VisualizationBase from './visualization';
-import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
-import RequestFragment from './bard-request-v2/request';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type RequestFragment from './bard-request-v2/request';
+import type { TypedVisualizationFragment } from './visualization';
 
 function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
   const requestCids = new Set(request.columns.map((column) => column.cid));
@@ -38,8 +39,8 @@ const Validations = buildValidations(
 );
 
 export default class TableVisualization
-  extends VisualizationBase.extend(Validations)
-  implements TableVisualizationMetadata {
+  extends VisualizationFragment.extend(Validations)
+  implements TableVisualizationMetadata, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'table' })
   type!: TableVisualizationMetadata['type'];
 

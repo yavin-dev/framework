@@ -9,8 +9,9 @@ import { attr } from '@ember-data/model';
 import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
-import RequestFragment from './bard-request-v2/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type RequestFragment from './bard-request-v2/request';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type { TypedVisualizationFragment } from './visualization';
 
 const SERIES_PATH = 'metadata.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -49,7 +50,7 @@ export type PieChartConfig = {
   };
 };
 
-export default class PieChart extends ChartVisualization.extend(Validations) {
+export default class PieChart extends ChartVisualization.extend(Validations) implements TypedVisualizationFragment {
   @attr('string', { defaultValue: 'pie-chart' })
   type!: PieChartConfig['type'];
 
