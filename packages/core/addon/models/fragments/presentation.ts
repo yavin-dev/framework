@@ -31,3 +31,9 @@ export default class PresentationFragment extends Fragment {
     });
   }
 }
+
+declare module '../registry' {
+  export interface FragmentRegistry {
+    'fragments/presentation': PresentationFragment;
+  }
+}

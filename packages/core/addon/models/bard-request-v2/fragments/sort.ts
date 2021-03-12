@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import attr from 'ember-data/attr';
@@ -20,4 +20,10 @@ const Validations = buildValidations({
 export default class SortFragment extends BaseFragment.extend(Validations) implements Sort {
   @attr('string', { defaultValue: 'desc' })
   direction!: SortDirection;
+}
+
+declare module '../../registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/fragments/sort': SortFragment;
+  }
 }

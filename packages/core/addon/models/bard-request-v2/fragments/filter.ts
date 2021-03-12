@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import attr from 'ember-data/attr';
@@ -30,4 +30,10 @@ export default class FilterFragment extends BaseFragment.extend(Validations) imp
 
   @attr({ defaultValue: () => [] })
   values!: Filter['values'];
+}
+
+declare module '../../registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/fragments/filter': FilterFragment;
+  }
 }

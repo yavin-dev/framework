@@ -42,7 +42,7 @@ module('Unit | Route | dashboards/new', function (hooks) {
     assert.expect(1);
 
     await run(async () => {
-      const modelPromise = Route.model();
+      const modelPromise = Route.model({}, { to: { queryParams: {} } });
 
       const routeModel = await modelPromise;
 
@@ -59,7 +59,7 @@ module('Unit | Route | dashboards/new', function (hooks) {
     assert.expect(1);
 
     await run(async () => {
-      const routeModel = await Route.model(null, { queryParams: { title: 'Dashing Dashboard' } });
+      const routeModel = await Route.model({}, { to: { queryParams: { title: 'Dashing Dashboard' } } });
       //We don't need to match on the createdOn and updatedOn timestamps so just set them to null
       assert.deepEqual(
         Object.assign({}, routeModel.toJSON(), { createdOn: null, updatedOn: null }),
@@ -82,7 +82,7 @@ module('Unit | Route | dashboards/new', function (hooks) {
         'Route redirects to dashboard/:id route when unsavedWidgetId is not given'
       );
     };
-    Route.afterModel(dashboard);
+    Route.afterModel(dashboard, { to: { queryParams: {} } });
 
     /* == With unsavedWidgetId == */
     Route.replaceWith = (destinationRoute) => {
@@ -92,6 +92,6 @@ module('Unit | Route | dashboards/new', function (hooks) {
         'Route redirects to dashboard/:id/widgets/new route when unsavedWidgetId is given'
       );
     };
-    Route.afterModel(dashboard, { queryParams: { unsavedWidgetId: 10 } });
+    Route.afterModel(dashboard, { to: { queryParams: { unsavedWidgetId: 10 } } });
   });
 });

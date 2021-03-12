@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Route from '@ember/routing/route';
-import { all } from 'rsvp';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
+import { assert } from '@ember/debug';
 import type UserService from 'navi-core/services/user';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
@@ -49,15 +49,18 @@ export default class DashboardsDashboardCloneRoute extends Route {
   async _cloneDashboard(dashboardModel: DashboardModel) {
     const cloneDashboard = dashboardModel.clone();
     cloneDashboard.title = `Copy of ${cloneDashboard.title}`.substring(0, 150);
-    cloneDashboard.save();
+    await cloneDashboard.save();
 
     const clonedWidgets = await this._cloneWidgets(dashboardModel, cloneDashboard);
-    let layout = cloneDashboard.presentation.layout;
+
+    const layout = cloneDashboard.presentation.layout;
+    clonedWidgets.forEach((widget, idx) => {
+      const layoutItem = layout.objectAt(idx);
+      assert('Layout item exists', layoutItem);
+      layoutItem.widgetId = Number(widget.id);
+    });
 
     //Replace original widget IDs with newly cloned widget IDs
-    clonedWidgets.forEach((widget, idx) => {
-      layout[idx].widgetId = Number(widget.id);
-    });
     return cloneDashboard.save();
   }
 
@@ -71,19 +74,21 @@ export default class DashboardsDashboardCloneRoute extends Route {
    */
   async _cloneWidgets(dashboardModel: DashboardModel, cloneDashboardModel: DashboardModel) {
     const widgets = await dashboardModel.widgets;
-    let widgetsById = widgets.reduce((widgetsById: Record<string, DashboardWidget>, widget) => {
+    const widgetsById = widgets.reduce((widgetsById: Record<string, DashboardWidget>, widget) => {
       widgetsById[widget.id] = widget;
       return widgetsById;
     }, {});
 
-    return all(
-      cloneDashboardModel.presentation.layout.map(async (item) => {
-        const cloneWidget = widgetsById[item.widgetId].clone();
+    const clonedWidgets = [];
+    const layoutItems = cloneDashboardModel.presentation.layout.toArray();
+    for (const item of layoutItems) {
+      const cloneWidget = widgetsById[item.widgetId].clone();
 
-        cloneWidget.set('dashboard', cloneDashboardModel);
-        return cloneWidget.save();
-      })
-    );
+      cloneWidget.set('dashboard', cloneDashboardModel);
+      await cloneWidget.save();
+      clonedWidgets.push(cloneWidget);
+    }
+    return clonedWidgets;
   }
 
   /**

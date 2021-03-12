@@ -18,6 +18,12 @@ import type NaviVisualizationsService from 'navi-reports/services/navi-visualiza
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
+import type DashboardWidget from 'navi-core/models/dashboard-widget';
+
+type ModelParams = { report_id: string } | { widget_id: string };
+type ReportModelParams = { report_id: string };
+export type WidgetModelParams = { widget_id: string };
+export type ReportLike = ReportModel | DashboardWidget;
 
 export default class ReportsReportRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
@@ -44,7 +50,8 @@ export default class ReportsReportRoute extends Route {
    * @param params.reportId - persisted id or temp id of report to fetch
    * @returns model for requested report
    */
-  model({ report_id }: { report_id: string | number }) {
+  model(params: ModelParams): Promise<ReportLike> {
+    const { report_id } = params as ReportModelParams;
     return this.user
       .findOrRegister()
       .then(() => this._findByTempId(report_id) || this.store.findRecord('report', report_id))
@@ -98,7 +105,7 @@ export default class ReportsReportRoute extends Route {
    * @returns report with update visualization if required
    *
    */
-  _defaultVisualization(report: ReportModel): ReportModel {
+  _defaultVisualization(report: ReportLike): ReportLike {
     if (!report.visualization?.type) {
       set(report, 'visualization', this.store.createFragment(this.defaultVisualizationType, {}));
     }
@@ -121,7 +128,7 @@ export default class ReportsReportRoute extends Route {
    * transition to view subroute if runReport is not handled in subroutes
    */
   @action
-  runReport(report: ReportModel) {
+  runReport(report: ReportLike) {
     return this.transitionTo(`${this.routeName}.view`, report.tempId || report.id);
   }
 
@@ -130,7 +137,7 @@ export default class ReportsReportRoute extends Route {
    * @see routes.reports.report.view.actions.forceRun
    */
   @action
-  forceRun(report: ReportModel) {
+  forceRun(report: ReportLike) {
     this.send('runReport', report);
   }
 
@@ -138,7 +145,7 @@ export default class ReportsReportRoute extends Route {
    * transition to edit subroute
    */
   @action
-  cancelReport(report: ReportModel) {
+  cancelReport(report: ReportLike) {
     this.transitionTo(`${this.routeName}.edit`, report.tempId || report.id);
   }
 
@@ -147,7 +154,7 @@ export default class ReportsReportRoute extends Route {
    * @returns promise that resolves or rejects based on validation status
    */
   @action
-  validate(report: ReportModel) {
+  validate(report: ReportLike) {
     return report.request.validate().then(({ validations }) => {
       if (get(validations, 'isInvalid')) {
         // Transition to invalid route to show user validation errors
@@ -162,7 +169,7 @@ export default class ReportsReportRoute extends Route {
    * @param report - object to rollback
    */
   @action
-  revertChanges(report: ReportModel) {
+  revertChanges(report: ReportLike) {
     report.rollbackAttributes();
     this.send('setModifiedRequest', report.request.serialize());
   }
@@ -171,7 +178,7 @@ export default class ReportsReportRoute extends Route {
    * @param report - object to save
    */
   @action
-  saveReport(report: ReportModel) {
+  saveReport(report: ReportLike) {
     report
       .save()
       .then(() => {
@@ -228,7 +235,7 @@ export default class ReportsReportRoute extends Route {
    * @param metadataUpdates
    */
   @action
-  onUpdateVisualizationConfig(metadataUpdates: Partial<ReportModel['visualization']['metadata']>) {
+  onUpdateVisualizationConfig(metadataUpdates: Partial<ReportLike['visualization']['metadata']>) {
     const report = this.modelFor(this.routeName) as ModelFrom<this>;
     const metadata = report.visualization?.metadata;
 

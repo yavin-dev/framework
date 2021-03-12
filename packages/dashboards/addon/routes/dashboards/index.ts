@@ -25,8 +25,8 @@ class DashboardObject extends EmberObject {
   /**
    * Returns a combined report list while listening to store changes
    */
-  @computed('userReports.[]', 'favoriteReports.[]')
-  get reports(): DS.PromiseArray<DashboardModel> {
+  @computed('userDashboards.[]', 'favoriteDashboards.[]')
+  get dashboards(): DS.PromiseArray<DashboardModel> {
     const dashboardsPromise = hash({
       userDashboards: this.userDashboards,
       favoriteDashboards: this.favoriteDashboards,

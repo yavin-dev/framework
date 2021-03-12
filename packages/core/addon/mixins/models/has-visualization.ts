@@ -1,6 +1,6 @@
 /* eslint-disable ember/no-new-mixins */
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -9,11 +9,13 @@ import { get, set } from '@ember/object';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
 import VisualizationFragment from 'navi-core/models/visualization';
+import { VisualizationType } from 'navi-core/models/registry';
 
-type PersistedVisualization = VisualizationFragment | undefined;
+type TypedVisualizationFragment = VisualizationFragment & { type: VisualizationType };
+type PersistedVisualization = TypedVisualizationFragment | undefined;
 
 export default Mixin.create({
-  visualization: fragment('visualization', { polymorphic: true }) as VisualizationFragment,
+  visualization: fragment('visualization', { polymorphic: true }) as TypedVisualizationFragment,
   _persistedVisualization: undefined as PersistedVisualization,
 
   /**

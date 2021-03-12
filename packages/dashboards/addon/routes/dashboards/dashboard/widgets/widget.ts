@@ -4,7 +4,7 @@
  */
 import { action } from '@ember/object';
 import { getOwner } from '@ember/application';
-import ReportsReportRoute from 'navi-reports/routes/reports/report';
+import ReportsReportRoute, { WidgetModelParams } from 'navi-reports/routes/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 import type DashboardsDashboardWidgetsRoute from 'navi-dashboards/routes/dashboards/dashboard/widgets';
 import type { ModelFrom } from 'navi-core/utils/type-utils';
@@ -14,14 +14,12 @@ export default class DashboardsDashboardWidgetsWidgetRoute extends ReportsReport
    * @param params - persisted id or temp id of widget to fetch
    * @returns model for requested widget
    */
-  // TODO: Overriding route model
-  //@ts-ignore
-  model({ widget_id }: { widget_id: string }): DashboardWidget | never {
+  model({ widget_id }: WidgetModelParams): Promise<DashboardWidget> | never {
     const widgets = this.modelFor('dashboards.dashboard.widgets') as ModelFrom<DashboardsDashboardWidgetsRoute>;
     const widgetModel = widgets.findBy('id', widget_id) || this._findTempWidget(widget_id);
 
     if (widgetModel) {
-      return widgetModel;
+      return Promise.resolve(widgetModel);
     }
 
     throw new Error(`Widget ${widget_id} could not be found`);

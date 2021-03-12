@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
@@ -105,9 +105,8 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
   }
 }
 
-// DO NOT DELETE: this is how TypeScript knows how to look up your models.
-declare module 'ember-data/types/registries/model' {
-  export default interface ModelRegistry {
+declare module './registry' {
+  export interface FragmentRegistry {
     'line-chart': LineChartVisualization;
   }
 }

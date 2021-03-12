@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed, set } from '@ember/object';
@@ -357,5 +357,11 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     }
     this.columns.removeFragment(column);
     this.columns.insertAt(index, column);
+  }
+}
+
+declare module '../registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/request': RequestFragment;
   }
 }

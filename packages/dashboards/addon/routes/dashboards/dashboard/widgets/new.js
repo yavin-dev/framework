@@ -21,8 +21,8 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
    * @private
    * @returns route model
    */
-  _newModel() {
-    const author = this.user.getUser();
+  async _newModel() {
+    const author = await this.user.findOrRegister();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
     const table = this._getDefaultTable();
     const dashboard = this.modelFor('dashboards.dashboard');

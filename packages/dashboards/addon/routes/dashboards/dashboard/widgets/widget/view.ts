@@ -10,7 +10,6 @@ export default class DashboardsDashboardWidgetsWidgetViewRoute extends ReportsRe
   /**
    * object containing request to view
    */
-  //@ts-ignore
   get parentModel() {
     return this.modelFor('dashboards.dashboard.widgets.widget') as ModelFrom<DashboardsDashboardWidgetsWidgetRoute>;
   }

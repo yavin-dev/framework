@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import LineChart from './line-chart';
@@ -13,9 +13,8 @@ export default class BarChart extends LineChart<'bar-chart'> implements BarChart
   type!: 'bar-chart';
 }
 
-// DO NOT DELETE: this is how TypeScript knows how to look up your models.
-declare module 'ember-data/types/registries/model' {
-  export default interface ModelRegistry {
+declare module './registry' {
+  export interface FragmentRegistry {
     'bar-chart': BarChart;
   }
 }

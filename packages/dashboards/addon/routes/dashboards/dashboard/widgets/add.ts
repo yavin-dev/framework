@@ -10,6 +10,7 @@ import type NaviNotificationsService from 'navi-core/services/interfaces/navi-no
 import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 import type LayoutFragment from 'navi-core/models/fragments/layout';
+import FragmentArrayBase from 'ember-data-model-fragments/FragmentArray';
 
 export default class DashboardsDashboardWidgetsAddRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
@@ -55,17 +56,16 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
    * @param widgetId - id of widget to add
    * @returns layout with new widget
    */
-  _addToLayout(layout: LayoutFragment[], widgetId: number) {
+  _addToLayout(layout: FragmentArrayBase<LayoutFragment>, widgetId: number) {
     const row = this._findNextAvailableRow(layout);
-    // TODO: Fragment Model registry
-    //@ts-ignore
-    layout.createFragment({
+    const nextItemLayout = this.store.createFragment('fragments/layout', {
       widgetId,
       width: 5,
       height: 4,
       column: 0,
       row,
     });
+    layout.pushObject(nextItemLayout);
     return layout;
   }
 
