@@ -42,7 +42,6 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     return {
       isFiltered: false,
-      sort: null,
       fragment,
     };
   }

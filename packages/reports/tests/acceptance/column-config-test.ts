@@ -404,14 +404,14 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await click('.navi-column-config-item__parameter-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['Remove Sort', 'Descending', 'Ascending'],
+      ['None', 'Descending', 'Ascending'],
       'The sort options are listed'
     );
 
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Ascending');
     assert.dom('.navi-column-config-item__parameter-trigger').hasText('Ascending', 'The sort is updated to ascending');
 
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Remove Sort');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'None');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
       ['Time Grain Type'],
