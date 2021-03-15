@@ -1,25 +1,16 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Navi Request Column Config Base Component
- *
- * Usage:
- *  <NaviColumnConfig::Base
- *    @column={{this.column}}
- *    @onAddFilter={{this.onAddFilter}}
- *    @onRenameColumn={{this.onRenameColumn}}
- *    @onUpdateColumnParam={{this.onUpdateColumnParam}}
- *  />
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import FunctionParameterMetadataModel, {
-  ColumnFunctionParametersValues,
-} from 'navi-data/models/metadata/function-parameter';
-import { ConfigColumn } from '../navi-column-config';
-import { SortDirection } from 'navi-data/adapters/facts/interface';
+import type FunctionParameterMetadataModel from 'navi-data/models/metadata/function-parameter';
+import type { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
+import type { ConfigColumn } from '../navi-column-config';
+import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 interface NaviColumnConfigBaseArgs {
   column: ConfigColumn;
@@ -38,7 +29,7 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   classId = guidFor(this);
 
   sortDirections: FakeSortParam[] = [
-    { name: 'Remove Sort', id: 'none' },
+    { name: 'None', id: 'none' },
     { name: 'Descending', id: 'desc' },
     { name: 'Ascending', id: 'asc' },
   ];

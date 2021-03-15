@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
@@ -8,14 +8,13 @@ import { action, computed } from '@ember/object';
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { inject as service } from '@ember/service';
-import ReportModel from 'navi-core/models/report';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
 import { tracked } from '@glimmer/tracking';
-import ColumnMetadataModel from 'navi-data/models/metadata/column';
-import NaviFormatterService from 'navi-data/services/navi-formatter';
-import RequestConstrainer from 'navi-reports/services/request-constrainer';
-import SortFragment from 'navi-core/models/bard-request-v2/fragments/sort';
+import type ReportModel from 'navi-core/models/report';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
+import type ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type NaviFormatterService from 'navi-data/services/navi-formatter';
+import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface NaviColumnConfigArgs {
   isOpen: boolean;
@@ -34,7 +33,6 @@ interface NaviColumnConfigArgs {
 
 export type ConfigColumn = {
   isFiltered: boolean;
-  sort: SortFragment | null;
   isRequired: boolean;
   fragment: ColumnFragment;
 };
@@ -50,15 +48,13 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
     const { request } = this.args.report;
     const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();
     if (request.table !== undefined) {
-      const { columns, filters, sorts } = request;
+      const { columns, filters } = request;
 
       const filteredColumns = filters.map(({ canonicalName }) => canonicalName);
 
       return columns.map((column) => {
-        const sort = sorts.find(({ canonicalName }) => canonicalName === column.canonicalName);
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
-          sort: sort || null,
           isRequired: requiredColumns.has(column),
           fragment: column,
         };

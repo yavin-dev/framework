@@ -2,29 +2,16 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * Description: Navi Request Column Config Base Component
- *
- * Usage:
- *  <NaviColumnConfig::Item
- *    @column={{this.column}}
- *    @isLastAdded={{eq column.fragment @lastAddedColumn}}
- *    @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
- *    @onOpenColumn={{this.openColumn}}
- *    @onRemoveColumn={{fn @onRemoveColumn column.fragment}}
- *    @cloneColumn={{fn this.cloneColumn column}}
- *    @onAddFilter={{fn @onAddFilter column}}
- *    @onAddSort={{fn @onAddSort column}}
- *    @onRenameColumn={{fn @onRenameColumn column.fragment}}
- *    @onUpdateColumnParam={{fn @onUpdateColumnParam column.fragment}}
- *  />
+ * Description: Request Column Config Item Component
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { next } from '@ember/runloop';
 import { assert } from '@ember/debug';
-import { ConfigColumn } from '../navi-column-config';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type { ConfigColumn } from '../navi-column-config';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 interface Args {
   column: ConfigColumn;
@@ -34,7 +21,8 @@ interface Args {
   onRemoveColumn(): void;
   cloneColumn(): void;
   onAddFilter(): void;
-  onAddSort(): void;
+  onUpsertSort(direction: SortDirection): void;
+  onRemoveSort(): void;
   onRenameColumn(alias?: string): void;
   onUpdateColumnParam(paramId: string, paramValue: ColumnFragment['parameters'][string]): void;
 }

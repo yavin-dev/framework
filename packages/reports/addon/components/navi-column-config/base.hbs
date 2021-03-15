@@ -23,11 +23,11 @@
           />
           <DenaliIcon
             class="navi-column-config-base__sort-icon {{unless @column.fragment.columnMetadata.isSortable "navi-column-config-base__sort-icon--disabled"}}"
-            @icon={{if @column.sort "swap-vertical-circle-solid" "swap-vertical-circle"}}
+            @icon={{if @column.fragment.sortedDirection "swap-vertical-circle-solid" "swap-vertical-circle"}}
             @size="small"
             disabled={{not @column.fragment.columnMetadata.isSortable}}
-            title={{if @column.fragment.columnMetadata.isSortable (if @column.sort "Remove Sort" "Add Sort") "This column cannot be sorted"}}
-            {{on "click" (fn this.updateSort (if @column.sort 'none' 'desc'))}}
+            title={{if @column.fragment.columnMetadata.isSortable (if @column.fragment.sortedDirection "Remove Sort" "Add Sort") "This column cannot be sorted"}}
+            {{on "click" (fn this.updateSort (if @column.fragment.sortedDirection 'none' 'desc'))}}
           />
           <DenaliIcon
             class="navi-column-config-base__filter-icon"
@@ -53,15 +53,14 @@
     </div>
 
 
-    {{#if @column.sort}}
+    {{#if @column.fragment.sortedDirection}}
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
         <label for="{{this.classId}}_custom-param-sort" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">Sort Direction</label>
         <PowerSelect
-          @searchEnabled={{true}}
           @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
           @triggerId="{{this.classId}}_custom-param-sort"
           @dropdownClass="navi-column-config-item__parameter-dropdown"
-          @selected={{find-by "id" @column.sort.direction this.sortDirections}}
+          @selected={{find-by "id" @column.fragment.sortedDirection this.sortDirections}}
           @options={{this.sortDirections}}
           @onChange={{pipe (pick "id") this.updateSort}}
           as | arg |

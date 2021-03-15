@@ -130,4 +130,24 @@ module('Unit | Model | Fragment | BardRequest - Column', function (hooks) {
     column.set('parameters', {});
     assert.equal(column.displayName, 'Date Time', 'Display name is as expected without params or an alias');
   });
+
+  test('sortedDirection', async function (assert) {
+    const column = mockModel.columns.objectAt(0);
+
+    assert.strictEqual(column.sortedDirection, null, 'sortDirection is null by default');
+
+    mockModel.sorts.addFragment({
+      field: 'network.dateTime',
+      parameters: { grain: 'day' },
+      type: 'timeDimension',
+      direction: 'asc',
+      source: 'bardOne',
+    });
+    const sort = mockModel.sorts.objectAt(0);
+
+    assert.strictEqual(column.sortedDirection, 'asc', 'sortDirection is updated when a sort is added');
+
+    sort.set('direction', 'desc');
+    assert.strictEqual(column.sortedDirection, 'desc', 'sortDirection is updated when a sort is updated');
+  });
 });
