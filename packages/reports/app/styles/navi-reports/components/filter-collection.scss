@@ -15,7 +15,7 @@
   &--collapsed {
     cursor: pointer;
 
-    &-item:not(:last-child):after {
+    &-item:not(:last-child)::after {
       content: ',';
       margin: 0 4px 0 -2px;
     }

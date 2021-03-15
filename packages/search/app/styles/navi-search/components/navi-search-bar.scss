@@ -12,7 +12,7 @@
   &__input {
     appearance: none;
     background: $color-grey-100;
-    border: none;
+    border: 0;
     border-color: $color-grey-500;
     border-radius: 4px;
     border-style: solid;
@@ -22,7 +22,7 @@
     height: 36px;
     margin: 0;
     outline: none;
-    padding: 0px 12px;
+    padding: 0 12px;
     width: inherit;
   }
 
@@ -71,10 +71,10 @@
 
   &--box {
     background: $color-grey-100;
-    border-radius: 4px;
     border-color: $color-grey-500;
-    border-width: 1px;
+    border-radius: 4px;
     border-style: solid;
+    border-width: 1px;
     padding: 20px;
   }
 
@@ -83,13 +83,13 @@
 
     &--striped {
       &--cell {
-        border: none;
+        border: 0;
       }
     }
 
     &--icon {
-      width: 1%;
       white-space: nowrap;
+      width: 1%;
     }
 
     &--cell {
@@ -111,9 +111,10 @@
     opacity: 0;
     transform: translateY(-20px);
   }
+
   100% {
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 @keyframes drop-fade-above {
@@ -121,23 +122,28 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   100% {
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 }
 
 .slide-fade {
   will-change: transform, opacity;
+
   &.ember-basic-dropdown-content--below.ember-basic-dropdown--transitioning-in {
     animation: drop-fade-below 0.15s;
   }
+
   &.ember-basic-dropdown-content--below.ember-basic-dropdown--transitioning-out {
     animation: drop-fade-below 0.15s reverse;
   }
+
   &.ember-basic-dropdown-content--above.ember-basic-dropdown--transitioning-in {
     animation: drop-fade-above 0.15s;
   }
+
   &.ember-basic-dropdown-content--above.ember-basic-dropdown--transitioning-out {
     animation: drop-fade-above 0.15s reverse;
   }

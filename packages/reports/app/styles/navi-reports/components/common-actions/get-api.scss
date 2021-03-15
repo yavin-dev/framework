@@ -4,6 +4,7 @@
  */
 
 .get-api {
+  /* stylelint-disable selector-no-qualifying-type */
   &__modal div.modal-container {
     width: 525px;
   }

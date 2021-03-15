@@ -4,8 +4,8 @@
  */
 .c3-tooltip-container {
   background-color: $menu-bg-color;
-  font-size: $p-font-size;
   border-bottom: 1px solid $menu-border-color;
+  font-size: $p-font-size;
   min-width: 150px;
   padding: 10px;
 
@@ -30,6 +30,7 @@
 
     &__table {
       width: 100%;
+
       td {
         max-width: 200px;
         overflow: hidden;

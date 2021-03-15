@@ -11,6 +11,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
+
   .table-widget {
     margin-left: 20px;
   }
@@ -18,8 +19,8 @@
   &__container--visualization {
     display: flex;
     min-width: 0;
-    padding: 0;
     min-width: 0;
+    padding: 0;
   }
 
   &__visualization {
@@ -31,7 +32,7 @@
   }
 
   &__navi-visualization-config {
-    border: none;
+    border: 0;
     padding-top: 0;
   }
 
@@ -80,10 +81,10 @@
 
   &__visualization-main {
     display: flex;
-    flex-flow: column;
     flex: 1;
-    min-width: 0;
+    flex-flow: column;
     min-height: 100px; // fyi, vertical collection needs > 0 height
+    min-width: 0;
   }
 
   &__visualization-no-results {
@@ -114,15 +115,15 @@
     align-items: center;
     border: 1px solid $menu-border-color;
     border-left-width: 0;
-    border-radius: 0px 45% 45% 0px;
+    border-radius: 0 45% 45% 0;
     box-shadow: rgba(60, 64, 67, 0.3) 2px 1px 4px -1px;
     cursor: pointer;
     display: flex;
     height: 40px;
     justify-content: center;
     left: -2px;
-    margin-right: 2px;
     margin-bottom: 15px;
+    margin-right: 2px;
     position: relative;
     width: 40px;
     z-index: 10;

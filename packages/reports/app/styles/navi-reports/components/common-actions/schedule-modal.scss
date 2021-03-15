@@ -4,7 +4,8 @@
 */
 .schedule {
   &__modal {
-    & div.modal-container {
+    /* stylelint-disable selector-no-qualifying-type */
+    div.modal-container {
       width: 525px;
     }
 

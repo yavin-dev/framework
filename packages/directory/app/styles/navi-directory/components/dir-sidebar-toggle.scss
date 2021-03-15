@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+/* stylelint-disable selector-max-id */
 #dir-sidebar-toggle {
   // Hover doesn't work well on mobile devices so disable it
   @media (hover: none) {

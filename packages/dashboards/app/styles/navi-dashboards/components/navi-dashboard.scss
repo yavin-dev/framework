@@ -10,11 +10,10 @@
   overflow: hidden;
 
   &__body {
-    display: flex;
-    flex: 1;
-
     background-color: $box-bg-color;
     border-bottom: 2px solid $menu-border-color;
+    display: flex;
+    flex: 1;
     flex-flow: column;
     overflow-y: hidden;
     padding-bottom: 10px;
@@ -26,8 +25,8 @@
   }
 
   &__save-dialogue {
-    bottom: 0px;
-    box-shadow: 0px -2px 2px 0px #a0a0a0;
+    bottom: 0;
+    box-shadow: 0 -2px 2px 0 #a0a0a0;
     padding: 12px 20px;
     position: sticky;
     z-index: 100;
