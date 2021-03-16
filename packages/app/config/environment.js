@@ -24,6 +24,12 @@ module.exports = function (environment) {
        * Here you can pass flags/options to your application instance
        * when it is created
        */
+      FEATURES: {
+        enableDashboardExport: true,
+        exportFileTypes: ['csv', 'pdf', 'png'],
+        enableScheduleDashboards: true,
+        enableDashboardFilters: true,
+      },
     },
 
     navi: {

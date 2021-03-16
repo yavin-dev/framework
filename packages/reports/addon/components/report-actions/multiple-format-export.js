@@ -54,6 +54,7 @@ export default class MultipleFormatExport extends Component {
    */
   @computed('report.{request,validations.isTruelyValid}')
   get csvHref() {
+    console.log('csvHref');
     let request = this.report.request.serialize();
     return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
   }
@@ -63,6 +64,7 @@ export default class MultipleFormatExport extends Component {
    */
   @computed('report.{request,visualization,validations.isTruelyValid}')
   get exportHref() {
+    console.log('exportHref');
     const { report: model, compression, store } = this;
     const clonedModel = model.toJSON();
 
@@ -84,6 +86,7 @@ export default class MultipleFormatExport extends Component {
    */
   @computed('csvHref', 'exportHref', 'supportedFileTypes')
   get exportFormats() {
+    console.log('exportFormats');
     const { supportedFileTypes } = this;
 
     const exportFormats = [];
@@ -123,6 +126,7 @@ export default class MultipleFormatExport extends Component {
    */
   @action
   open() {
+    console.log('export open');
     return true;
   }
 
@@ -131,6 +135,7 @@ export default class MultipleFormatExport extends Component {
    */
   @action
   close(dropdown) {
+    console.log('export close');
     dropdown.actions.close();
   }
 

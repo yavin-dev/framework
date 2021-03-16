@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -22,6 +23,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   @computed('dashboard.title')
   get filename() {
+    console.log(' export exportHref');
     return `${this.dashboard.title}-dashboard`;
   }
 
@@ -37,6 +39,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   @computed('dashboard.id')
   get exportHref() {
+    console.log(' export exportHref');
     return Promise.resolve(`/export?dashboard=${this.dashboard.id}`);
   }
 
@@ -46,6 +49,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   @computed('exportHref')
   get exportFormats() {
+    console.log(' export exportFormats');
     return super.exportFormats.filter((format) => format.type !== 'CSV');
   }
 }
