@@ -7,26 +7,26 @@ export default [
   {
     category: 'Counts',
     name: 'coins',
-    longName: 'Coins'
+    longName: 'Coins For My Life Long Name For Your',
   },
   {
     category: 'Scoring',
     name: 'timeSpent',
-    longName: 'Time Spent'
+    longName: 'TimeSpentttttttttttttttttttttttttttttttttttttttttttttt',
   },
   {
     category: 'Scoring',
     name: 'points',
-    longName: 'Points'
+    longName: 'Points',
   },
   {
     category: 'Counts',
     name: 'stars',
-    longName: 'Stars'
+    longName: 'Stars',
   },
   {
     category: 'Scoring',
     name: 'wins',
-    longName: 'Wins'
-  }
+    longName: 'Wins',
+  },
 ];

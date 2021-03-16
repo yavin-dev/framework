@@ -1,0 +1,71 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="column-selector w-full"...attributes>
+  <h3 class="column-selector__title" title="{{@title}}">{{@title}}</h3>
+  <DenaliInput
+    @size="small"
+    @iconBack="search"
+    @iconBackClass="is-brand-300"
+    @wrapperClass="w-full m-y-6"
+    value={{this.query}}
+    type="text"
+    placeholder="Search {{capitalize @title}}"
+    class="column-selector__search-input"
+    {{on "input" (pipe (pick "target.value") (fn (mut this.query) ) )}}
+  />
+    {{#if (eq this.filteredColumns.length 0)}}
+      <span class="flex justify-content-center">No Match Found</span>
+    {{else}}
+      <GroupedList
+        @items={{this.filteredColumns}}
+        @shouldOpenAllGroups={{this.query.length}}
+        @groupByField="category"
+        @sortByField={{unless this.query.length "name"}}
+        as | column idx |
+      >
+        <div class="column-selector__column {{if (get-shallow this.selectedColumns column.id) "column-selector__column--added"}} flex space-between m-b-4">
+          <div class="flex">
+            <span
+              role="button"
+              class="column-selector__add-column-btn flex flex-1"
+              {{on "click" (fn @onAddColumn column undefined)}}
+            >
+              <DenaliIcon
+                @icon="add-circle"
+                class="column-selector__add-icon link m-r-4"
+              />
+              <span>{{column.name}}</span>
+            </span>
+
+            {{#let (concat this.guid "-" idx) as | helpId |}}
+              <DenaliIcon
+                id={{helpId}}
+                @icon="help-circle"
+                class="column-selector__column-info link is-secondary is-sub m-x-4"
+              />
+              <EmberTooltip
+                @side="right"
+                @popperContainer="body"
+                @effect="none"
+                @targetId={{helpId}}
+              >
+                {{#if (is-pending column.extended)}}
+                  <NaviLoadingMessage />
+                {{else}}
+                  {{#let (await column.extended) as |extended|}}
+                    {{or extended.description "No description available"}}
+                  {{/let}}
+                {{/if}}
+              </EmberTooltip>
+            {{/let}}
+          </div>
+
+          <DenaliIcon
+            @icon="filter-add"
+            role="button"
+            class="column-selector__add-filter-btn link is-sub m-r-4"
+            {{on "click" (fn @onAddFilter column undefined)}}
+          />
+        </div>
+      </GroupedList>
+    {{/if}}
+</div>
