@@ -94,8 +94,9 @@ export default class NaviFactsService extends Service {
     const serializer = this._serializerFor(type);
 
     try {
-      const payload = await adapter.urlForDownloadQuery(request, options);
-      debugger;
+      //const payload = await adapter.urlForDownloadQuery(request, options);
+      const payload = await adapter.fetchDataForRequest(request, options);
+      console.log('payload in navifacts fetch ', payload);
       const response = serializer.normalize(payload, request);
       return NaviFactsModel.create({ request, response, _factService: this });
     } catch (e) {

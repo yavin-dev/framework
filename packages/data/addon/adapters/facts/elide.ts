@@ -214,13 +214,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
-    console.log('ccreateAsyncQuery');
+    console.log('createAsyncQuery');
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
-    console.log(query);
+    console.log('query ', query);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
-    console.log(dataSourceName);
+    console.log('dataSourceName', dataSourceName);
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
@@ -258,7 +258,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     console.log('query', query);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
-    console.log(dataSourceName);
+    console.log('dataSourceName ', dataSourceName);
     // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
     console.log('queryOptions ', queryOptions);
@@ -283,9 +283,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   fetchTableExport(id: string, dataSourceName?: string) {
     console.log('fetch table export');
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
-    console.log(query);
+    console.log('query ', query);
     dataSourceName = dataSourceName || getDefaultDataSource().name;
-    console.log(dataSourceName);
+    console.log('dataSourceName ', dataSourceName);
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
   /**
@@ -302,7 +302,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   async urlForDownloadQuery(request: RequestV1, options: RequestOptions = {}): Promise<string> {
+    console.log('urlForDownloadQuery');
     const response = await this.fetchDataForExportTask.perform(request, options);
+    console.log('response ', response);
     const status: QueryStatus = response.tableExport.edges[0]?.node.status;
     if (status !== QueryStatus.COMPLETE) {
       throw new Error('Table Export Query did not complete successfully');

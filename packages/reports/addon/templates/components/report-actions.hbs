@@ -10,8 +10,8 @@
       @onAddToNewDashboard={{fn @addToNewDashboard @model}}
       as |onClick|
     >
-      <button 
-        type="button" 
+      <button
+        type="button"
         class="button is-text is-medium"
         {{on "click" onClick}}
       >
@@ -39,9 +39,9 @@
 
 {{!-- Clone only enabled on a Saved report --}}
 <li class="navi-report__action">
-  <LinkTo 
-    @route="reports.report.clone" 
-    @model={{@model.id}} 
+  <LinkTo
+    @route="reports.report.clone"
+    @model={{@model.id}}
     class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
     <NaviIcon @icon="copy" class="navi-report__action-icon" />
     Clone
@@ -52,7 +52,6 @@
 </li>
 
 {{!-- Export only enabled on a valid report --}}
-{{#if (feature-flag "exportFileTypes")}}
   <li class="navi-report__action">
     {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
       {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
@@ -70,7 +69,6 @@
       {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
     </EmberTooltip>
   </li>
-{{/if}}
 
 {{!-- Share only enabled on a Valid saved report --}}
 <li class="navi-report__action">
@@ -100,7 +98,7 @@
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
         as |onOpen|
       >
-        <button 
+        <button
           type="button"
           class="schedule-action__button button is-text is-medium"
           disabled={{not @model.request.validations.isTruelyValid}}
