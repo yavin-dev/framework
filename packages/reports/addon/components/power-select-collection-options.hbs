@@ -11,28 +11,28 @@
   {{/if}}
   <div class="ember-collection-options" style={{html-safe (concat "position:relative;width:100%;height:" this._height "px")}}>
     <EmberCollection
-      @buffer={{10}}
+      @buffer={{20}}
       @items={{this.items}}
       @cell-layout={{percentage-columns-layout this.items.length this.columns this.itemHeight}}
-      as |opt|
+      as |indexedOpt|
     >  
-      {{#if opt.groupName}}
+      {{#if indexedOpt.option.groupName}}
         <li class="ember-power-select-group" aria-disabled={{if @group.disabled "true"}} role="option">
           <div class="item-row">
             <div class="item-row-content">
-              <span class="ember-power-select-group-name">{{opt.groupName}} ({{opt.groupSize}})</span>
+              <span class="ember-power-select-group-name">{{indexedOpt.option.groupName}} ({{indexedOpt.option.groupSize}})</span>
             </div>
           </div>
         </li>
       {{else}}
         <li class="ember-power-select-option"
-          aria-selected="{{ember-power-select-is-selected opt @select.selected}}"
-          aria-disabled={{if opt.disabled "true"}}
-          aria-current="{{eq opt @select.highlighted}}"
-          data-option-index={{opt.idx}}
-          role={{if (eq opt @select.highlighted) "alert" "option"}}
+          aria-selected="{{ember-power-select-is-selected indexedOpt.option @select.selected}}"
+          aria-disabled={{if indexedOpt.option.disabled "true"}}
+          aria-current="{{eq indexedOpt.option @select.highlighted}}"
+          data-option-index={{indexedOpt.idx}}
+          role={{if (eq indexedOpt.option @select.highlighted) "alert" "option"}}
         >
-          {{yield opt @select}}
+          {{yield indexedOpt.option @select}}
         </li>
       {{/if}}
     </EmberCollection>
