@@ -7,11 +7,13 @@
   display: flex;
   flex: 1;
   flex-flow: column;
+  margin-top: 10px;
   max-width: 100%;
   min-height: 0;
 
   .report-header {
     &__breadcrumb {
+      margin: 5px 0 0;
       &-link {
         color: $color-brand-300;
       }
@@ -33,10 +35,10 @@
       }
       @include media-size-between(mobile, tablet) {
         justify-content: flex-start;
+        flex-wrap: wrap;
       }
       @include media-size-up(small-desktop) {
         justify-content: flex-end;
-        flex-wrap: nowrap;
       }
     }
   }
@@ -79,13 +81,9 @@
   }
 
   &__footer {
-    padding: 0 15px 0px 20px;
     margin: 10px 0;
     min-height: min-content;
-
-    button {
-      margin: 0 5px;
-    }
+    padding: 0 15px 0 20px;
 
     @include media-size-only(mobile) {
       flex-flow: wrap-reverse;
@@ -94,6 +92,10 @@
       button {
         margin: 5px 0;
       }
+    }
+
+    button {
+      margin: 0 5px;
     }
   }
 

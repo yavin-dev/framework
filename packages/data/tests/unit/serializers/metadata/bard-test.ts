@@ -422,6 +422,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     source: 'bardOne',
     type: 'field',
     valueType: 'text',
+    isSortable: false,
     storageStrategy: null,
     partialData: true,
     fields: [
@@ -443,6 +444,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     id: 'dimensionTwo',
     name: 'Dimension Two',
     source: 'bardOne',
+    isSortable: false,
     type: 'field',
     valueType: 'text',
     fields: [
@@ -472,6 +474,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
         description: 'Dimension ID',
       },
     ],
+    isSortable: true,
     valueType: 'date',
     storageStrategy: null,
     partialData: true,
@@ -506,6 +509,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     ],
     timeZone: 'UTC',
     type: 'field',
+    isSortable: true,
     valueType: 'date',
   },
   {
@@ -530,6 +534,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     ],
     timeZone: 'UTC',
     type: 'field',
+    isSortable: true,
     valueType: 'date',
   },
 ];
@@ -544,6 +549,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
+    isSortable: true,
     valueType: 'number',
   },
   {
@@ -555,6 +561,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
+    isSortable: true,
     valueType: 'money',
   },
   {
@@ -566,6 +573,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
+    isSortable: true,
     valueType: 'money',
   },
   {
@@ -577,6 +585,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
+    isSortable: true,
     valueType: 'number',
   },
   {
@@ -588,6 +597,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     partialData: true,
     source: 'bardOne',
     type: 'field',
+    isSortable: true,
     valueType: 'number',
   },
 ];
@@ -903,6 +913,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         source: 'bardOne',
         columnFunctionId: undefined,
         type: 'field',
+        isSortable: true,
         partialData: true,
       },
       {
@@ -914,6 +925,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         source: 'bardOne',
         columnFunctionId: 'moneyMetric',
         type: 'field',
+        isSortable: true,
         partialData: true,
       },
     ];
@@ -1006,6 +1018,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       valueType: rawDimension.datatype,
       cardinality: 'SMALL',
       type: 'field',
+      isSortable: false,
       storageStrategy: null,
       fields: rawDimension.fields,
       source,
@@ -1039,6 +1052,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       source,
       columnFunctionId: rawMetric.metricFunctionId,
       type: 'field',
+      isSortable: true,
       partialData: true,
     };
 

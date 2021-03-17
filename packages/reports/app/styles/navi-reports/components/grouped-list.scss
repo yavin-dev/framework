@@ -13,8 +13,8 @@
     margin: 3px 0;
 
     &-content {
-      text-transform: capitalize;
       display: inline-block;
+      text-transform: capitalize;
     }
 
     &-icon {
@@ -80,7 +80,7 @@
     }
 
     &-checkbox + &-label {
-      &:before {
+      &::before {
         border-radius: 1px;
         box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
         content: '';
@@ -92,20 +92,20 @@
       }
     }
 
-    &-checkbox:hover + &-label:before {
+    &-checkbox:hover + &-label::before {
       box-shadow: 0 0 0 2px $links-text-color;
     }
 
-    &-checkbox:focus + &-label:before {
+    &-checkbox:focus + &-label::before {
       box-shadow: 0 0 0 2px rgba(54, 151, 242, 0.5);
     }
 
-    &-checkbox:checked + &-label:before {
-      box-shadow: 0 0 0 2px $links-text-color;
+    &-checkbox:checked + &-label::before {
       background: $links-text-color;
+      box-shadow: 0 0 0 2px $links-text-color;
     }
 
-    &-checkbox:checked + &-label:after {
+    &-checkbox:checked + &-label::after {
       border: solid #fff;
       border-width: 0 2px 2px 0; // creates the inverted "L" shape
       box-sizing: border-box;

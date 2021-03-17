@@ -11,10 +11,9 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext as Context } from 'ember-test-helpers';
 import $ from 'jquery';
 import { getTranslation } from 'navi-core/utils/chart';
-import { cloneDeep } from 'lodash-es';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Args as ComponentArgs } from 'navi-core/components/navi-visualizations/pie-chart';
-import { VisualizationModel, VisualizationModelEntry } from 'navi-core/components/navi-visualizations/table';
+import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
@@ -347,10 +346,7 @@ module('Integration | Component | pie chart', function (hooks) {
   });
 
   test('parameterized metric renders correctly for dimension series', async function (assert) {
-    const clonedModel = (cloneDeep(Model.firstObject) as unknown) as {
-      request: RequestFragment;
-      response: NaviFactResponse;
-    };
+    const clonedModel = { request: Request, response: Response };
     const newColumns = [
       ...RequestJSON.columns,
       {
@@ -490,7 +486,7 @@ module('Integration | Component | pie chart', function (hooks) {
 
   test('parameterized metric renders correctly for metric series', async function (assert) {
     assert.expect(4);
-    const clonedModel = cloneDeep(Model.firstObject) as VisualizationModelEntry;
+    const clonedModel = { request: Request, response: Response };
     const newColumns = [
       {
         field: 'network.dateTime',

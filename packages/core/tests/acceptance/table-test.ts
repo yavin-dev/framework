@@ -26,23 +26,38 @@ module('Acceptance | table', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent?.trim()),
-      ['Date', 'Operating System', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+      [
+        'Date Time (week)',
+        'Operating System (id)',
+        'Operating System (desc)',
+        'Unique Identifiers',
+        'Total Page Views',
+        'Total Page Views WoW',
+      ],
       'The headers for the table are as specified'
     );
 
     await reorder(
       'mouse',
-      '.table-header-cell',
-      '.table-header-cell:nth-child(2)', // move second column to first column position
-      '.table-header-cell', // move new second column to second column position
-      '.table-header-cell:nth-child(3)',
-      '.table-header-cell:nth-child(4)',
-      '.table-header-cell:nth-child(5)'
+      '.table-header-row-vc--view .table-header-cell',
+      '.table-header-cell[data-name="os(field=desc)"] .table-header-cell__title',
+      '.table-header-cell[data-name="os(field=id)"] .table-header-cell__title', // move second column to first column position
+      '.table-header-cell[data-name="network.dateTime(grain=week)"] .table-header-cell__title', // move new second column to second column position
+      '.table-header-cell[data-name="uniqueIdentifier"] .table-header-cell__title',
+      '.table-header-cell[data-name="totalPageViews"] .table-header-cell__title',
+      '.table-header-cell[data-name="totalPageViewsWoW"] .table-header-cell__title'
     );
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent?.trim()),
-      ['Operating System', 'Date', 'Unique Identifiers', 'Total Page Views', 'Total Page Views WoW'],
+      [
+        'Operating System (desc)',
+        'Operating System (id)',
+        'Date Time (week)',
+        'Unique Identifiers',
+        'Total Page Views',
+        'Total Page Views WoW',
+      ],
       'The headers are reordered as specified by the reorder'
     );
   });

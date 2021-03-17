@@ -13,7 +13,7 @@ import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import moment from 'moment';
 import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
-import reorder from '../helpers/reorder';
+import { reorder } from 'ember-sortable/test-support/helpers';
 import { setupAnimationTest } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -1932,10 +1932,10 @@ module('Acceptance | Navi Report', function (hooks) {
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
-      '.table-header-row-vc--view .dimension:contains(Property)',
-      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .timeDimension'
+      '.table-header-cell[data-name="navClicks"]',
+      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="adClicks"]',
+      '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(
@@ -1958,10 +1958,10 @@ module('Acceptance | Navi Report', function (hooks) {
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
-      '.table-header-row-vc--view .dimension:contains(Property)',
-      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .timeDimension'
+      '.table-header-cell[data-name="navClicks"]',
+      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="adClicks"]',
+      '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(

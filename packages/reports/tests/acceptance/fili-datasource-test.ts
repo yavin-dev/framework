@@ -147,4 +147,25 @@ module('Acceptance | fili datasource', function (hooks) {
     await click('.navi-report__run-btn');
     assert.dom('.table-row').hasText('2015', 'Results are fetched for Since operator');
   });
+
+  test('Fili Dimension sorting disabled', async function (assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .doesNotHaveAttribute('disabled', 'A timeDimension column can be sorted');
+
+    await clickItem('dimension', 'Age');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasAttribute('disabled', '', 'A dimension column cannot be sorted');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasAttribute('title', 'This column cannot be sorted', 'A dimension column cannot be sorted');
+
+    await clickItem('metric', 'Revenue');
+    assert.dom('.navi-column-config-base__sort-icon').doesNotHaveAttribute('disabled', 'A metric column can be sorted');
+  });
 });

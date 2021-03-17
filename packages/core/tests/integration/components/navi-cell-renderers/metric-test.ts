@@ -51,6 +51,7 @@ module('Integration | Component | cell renderers/metric', function (hooks) {
     const column: TableColumn = {
       fragment,
       attributes: {},
+      sortDirection: 'none',
       columnId: fragment.cid,
     };
     this.set('column', column);

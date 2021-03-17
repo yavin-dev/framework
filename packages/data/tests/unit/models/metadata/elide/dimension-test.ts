@@ -13,6 +13,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
       name: 'Dimension',
       source: 'elideOne',
       valueType: 'text',
+      isSortable: false,
       type: 'formula',
       tableSource: null,
       valueSourceType: 'ENUM',

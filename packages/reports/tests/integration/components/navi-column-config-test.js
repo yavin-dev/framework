@@ -1,11 +1,12 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click } from '@ember/test-helpers';
+import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { getContext } from '@ember/test-helpers';
+import { drag } from 'ember-sortable/test-support/helpers';
 
 let Store, Metadata;
 
@@ -23,6 +24,8 @@ const TEMPLATE = hbs`
   @onAddColumn={{optional this.onAddColumn}}
   @onRemoveColumn={{optional this.onRemoveColumn}}
   @onAddFilter={{optional this.onAddFilter}}
+  @onUpsertSort={{optional this.onUpsertSort}}
+  @onRemoveSort={{optional this.onRemoveSort}}
   @openFilters={{optional this.openFilters}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onReorderColumn={{optional this.onReorderColumn}}
@@ -330,11 +333,23 @@ module('Integration | Component | navi-column-config', function (hooks) {
   });
 
   test('Header config buttons - date dimension', async function (assert) {
-    assert.expect(6);
+    assert.expect(10);
 
-    this.onAddColumn = () => assert.ok(true, 'onAddColumn was called for time dimension column');
-    this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called for time dimension column');
-    this.onAddFilter = () => assert.ok(true, 'onAddFilter was called for time dimension column');
+    this.onAddColumn = () => assert.step('onAddColumn');
+    this.onAddFilter = () => assert.step('onAddFilter');
+    this.onUpsertSort = () => {
+      assert.step('onUpsertSort');
+
+      this.report.request.addSort({
+        type: 'timeDimension',
+        source: 'bardOne',
+        field: 'tableA.dateTime',
+        parameters: { grain: 'day' },
+        direction: 'desc',
+      });
+    };
+    this.onRemoveSort = () => assert.step('onRemoveSort');
+    this.onRemoveColumn = () => assert.step('onRemoveColumn');
 
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
     await render(TEMPLATE);
@@ -350,16 +365,37 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await click('.navi-column-config-base__clone-icon');
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Time dimension config has filter icon');
     await click('.navi-column-config-base__filter-icon');
+    assert.dom('.navi-column-config-base__sort-icon').exists({ count: 1 }, 'Time dimension config has sort icon');
+    await click('.navi-column-config-base__sort-icon');
+    // sort is added
+    await click('.navi-column-config-base__sort-icon');
+
     await click('.navi-column-config-item__remove-icon');
-    await animationsSettled();
+
+    assert.verifySteps(
+      ['onAddColumn', 'onAddFilter', 'onUpsertSort', 'onRemoveSort', 'onRemoveColumn'],
+      'actions are performed in the order they are called'
+    );
   });
 
   test('Header config buttons - metric', async function (assert) {
-    assert.expect(5);
+    assert.expect(10);
 
-    this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onAddFilter = () => assert.ok(true, 'Filter was called');
-    this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
+    this.onAddColumn = () => assert.step('onAddColumn');
+    this.onAddFilter = () => assert.step('onAddFilter');
+    this.onUpsertSort = () => {
+      assert.step('onUpsertSort');
+
+      this.report.request.addSort({
+        type: 'metric',
+        source: 'bardOne',
+        field: 'navClicks',
+        parameters: {},
+        direction: 'desc',
+      });
+    };
+    this.onRemoveSort = () => assert.step('onRemoveSort');
+    this.onRemoveColumn = () => assert.step('onRemoveColumn');
     addItem('metric', 'navClicks', 'bardOne');
     await render(TEMPLATE);
 
@@ -372,18 +408,42 @@ module('Integration | Component | navi-column-config', function (hooks) {
     );
 
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Metric config has clone icon');
-
     await click('.navi-column-config-base__clone-icon');
+
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Metric config has filter icon');
     await click('.navi-column-config-base__filter-icon');
+
+    assert.dom('.navi-column-config-base__sort-icon').exists({ count: 1 }, 'Time dimension config has sort icon');
+    await click('.navi-column-config-base__sort-icon');
+    // sort is added
+    await click('.navi-column-config-base__sort-icon');
+
+    await click('.navi-column-config-item__remove-icon');
+
+    assert.verifySteps(
+      ['onAddColumn', 'onAddFilter', 'onUpsertSort', 'onRemoveSort', 'onRemoveColumn'],
+      'actions are performed in the order they are called'
+    );
   });
 
   test('Header config buttons - dimension', async function (assert) {
-    assert.expect(5);
+    assert.expect(10);
 
-    this.onAddColumn = () => assert.ok(true, 'Clone was called');
-    this.onAddFilter = () => assert.ok(true, 'Filter was called');
-    this.onRemoveColumn = () => assert.ok(true, 'onRemoveColumn was called');
+    this.onAddColumn = () => assert.step('onAddColumn');
+    this.onAddFilter = () => assert.step('onAddFilter');
+    this.onUpsertSort = () => {
+      assert.step('onUpsertSort');
+
+      this.report.request.addSort({
+        type: 'dimension',
+        source: 'bardOne',
+        field: 'browser',
+        parameters: { field: 'id' },
+        direction: 'desc',
+      });
+    };
+    this.onRemoveSort = () => assert.step('onRemoveSort');
+    this.onRemoveColumn = () => assert.step('onRemoveColumn');
     addItem('dimension', 'browser', 'bardOne');
 
     await render(TEMPLATE);
@@ -398,8 +458,21 @@ module('Integration | Component | navi-column-config', function (hooks) {
 
     assert.dom('.navi-column-config-base__clone-icon').exists({ count: 1 }, 'Dimension config has clone icon');
     await click('.navi-column-config-base__clone-icon');
+
     assert.dom('.navi-column-config-base__filter-icon').exists({ count: 1 }, 'Dimension config has filter icon');
     await click('.navi-column-config-base__filter-icon');
+
+    assert.dom('.navi-column-config-base__sort-icon').exists({ count: 1 }, 'Time dimension config has sort icon');
+    await click('.navi-column-config-base__sort-icon');
+    // sort is added
+    await click('.navi-column-config-base__sort-icon');
+
+    await click('.navi-column-config-item__remove-icon');
+
+    assert.verifySteps(
+      ['onAddColumn', 'onAddFilter', 'onUpsertSort', 'onRemoveSort', 'onRemoveColumn'],
+      'actions are performed in the order they are called'
+    );
   });
 
   test('last added column', async function (assert) {
@@ -497,5 +570,25 @@ module('Integration | Component | navi-column-config', function (hooks) {
       ['Date Time (Day)', 'Ad Clicks', 'Browser (id)'],
       'The expected columns are in the column config'
     );
+  });
+
+  test('reordering a column', async function (assert) {
+    assert.expect(2);
+
+    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
+    const browserColumn = addItem('dimension', 'browser', 'bardOne');
+    addItem('metric', 'adClicks', 'bardOne');
+
+    this.onReorderColumn = (column, index) => {
+      assert.deepEqual(column, browserColumn, 'The browser column is moved');
+      assert.strictEqual(index, 2, 'The column is moved to the end of the list');
+    };
+    await render(TEMPLATE);
+
+    const dimensionColumn = '.navi-column-config-item[data-name="browser(field=id)"]';
+    await triggerEvent(dimensionColumn, 'mouseenter');
+    await drag('mouse', `${dimensionColumn} .navi-column-config-item__handle`, () => {
+      return { dy: 200, dx: undefined };
+    });
   });
 });

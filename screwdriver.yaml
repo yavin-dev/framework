@@ -19,8 +19,9 @@ jobs:
       - install-chrome: ./build-scripts/setup-chrome.sh
       - install: npm ci --unsafe-perm
       # TODO add lint meta https://docs.screwdriver.cd/user-guide/metadata#additional-pull-request-checks
-      - pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
-      - lint: npx lerna run lint --stream;
+      - lint-pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
+      - lint-styles: npx stylelint "**/*.scss";
+      - lint-addons: npx lerna run lint --stream;
       - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
