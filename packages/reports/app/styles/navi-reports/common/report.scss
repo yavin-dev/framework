@@ -25,6 +25,9 @@
 
     &__header-action {
       display: flex;
+      button {
+        white-space: nowrap;
+      }
       @include media-size-between(mobile, tablet) {
         justify-content: flex-start;
       }
