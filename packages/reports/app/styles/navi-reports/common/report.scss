@@ -12,8 +12,10 @@
   min-height: 0;
 
   .report-header {
+
     &__breadcrumb {
       margin: 5px 0 0;
+
       &-link {
         color: $color-brand-300;
       }
@@ -27,19 +29,24 @@
 
     &__header-action {
       display: flex;
+
       button {
         white-space: nowrap;
       }
-      .navi-report__action-link {
-        display: flex;
-      }
+
       @include media-size-between(mobile, tablet) {
-        justify-content: flex-start;
         flex-wrap: wrap;
+        justify-content: flex-start;
       }
+
       @include media-size-up(small-desktop) {
         justify-content: flex-end;
       }
+
+      .navi-report__action-link {
+        display: flex;
+      }
+
     }
   }
 
