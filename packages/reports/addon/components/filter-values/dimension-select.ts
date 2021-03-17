@@ -1,22 +1,25 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
+import { inject as service } from '@ember/service';
 import { computed, action } from '@ember/object';
-import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
-import NaviDimensionService from 'navi-data/services/navi-dimension';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { tracked } from '@glimmer/tracking';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 //@ts-ignore
 import { task, timeout } from 'ember-concurrency';
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type NaviDimensionService from 'navi-data/services/navi-dimension';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { IndexedOptions } from '../power-select-collection-options';
+import { sortBy } from 'lodash-es';
 
-const SEARCH_DEBOUNCE_TIME = 200;
+const SEARCH_DEBOUNCE_TIME = 250;
 
 interface DimensionSelectComponentArgs {
   filter: FilterFragment;
@@ -24,16 +27,23 @@ interface DimensionSelectComponentArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
-  @service
-  naviDimension!: NaviDimensionService;
+function isNumeric(num: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
+  return !isNaN(num as any);
+}
+function isNumericDimensionArray(arr: IndexedOptions<NaviDimensionModel>[]): boolean {
+  return arr.every((d) => isNumeric(d.option.value as string));
+}
 
-  @service
-  naviMetadata!: NaviMetadataService;
+export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
+  @service declare naviDimension: NaviDimensionService;
+
+  @service declare naviMetadata: NaviMetadataService;
 
   @tracked
   searchTerm?: string;
 
+  @computed('args.filter.{columnMetadata,parameters}')
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
     const columnMetadata = filter.columnMetadata as DimensionMetadataModel;
@@ -41,6 +51,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return { columnMetadata, parameters };
   }
 
+  @computed('searchTerm', 'dimensionColumn.{id,columnMetadata.cardinality}')
   get dimensionOptions() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
@@ -53,7 +64,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return undefined;
   }
 
-  @computed('args.filter.values')
+  @computed('args.filter.values', 'dimensionColumn')
   get selectedDimensions(): NaviDimensionModel[] {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
@@ -69,7 +80,15 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     this.args.onUpdateFilter({ values });
   }
 
-  @task(function* (this: DimensionSelectComponent, term: string) {
+  @action
+  sortValues(dimensions: IndexedOptions<NaviDimensionModel>[]) {
+    if (isNumericDimensionArray(dimensions)) {
+      return sortBy(dimensions, [(d) => Number(d.option.value)]);
+    }
+    return sortBy(dimensions, ['option.value']);
+  }
+
+  @(task(function* (this: DimensionSelectComponent, term: string) {
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
 
@@ -78,6 +97,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       return this.naviDimension.search(this.dimensionColumn, searchTerm);
     }
     return undefined;
-  })
+  }).restartable())
   searchDimensionValues!: typeof task;
 }
