@@ -107,11 +107,12 @@
   }
 
   &__remove-icon {
+    position: relative;
+
     bottom: 2px;
     display: none;
     flex-shrink: 0;
     padding: 0;
-    position: relative;
     text-align: center;
     width: 14px;
   }
