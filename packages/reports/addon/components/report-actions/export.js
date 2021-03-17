@@ -47,10 +47,13 @@ export default Component.extend({
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
   download: computed('disabled', function () {
+    console.log('export download ', this);
     // No Download for disabled action
     if (get(this, 'disabled')) {
+      console.log('download null');
       return null;
     } else {
+      console.log('download true');
       return true;
     }
   }),
@@ -59,10 +62,13 @@ export default Component.extend({
    * @property {Boolean} download - Boolean to check if request is valid and set target
    */
   target: computed('disabled', function () {
+    console.log('export target ', this);
     // No target for disabled action
     if (get(this, 'disabled')) {
+      console.log('target null');
       return null;
     } else {
+      console.log('target _blank');
       return '_blank';
     }
   }),
@@ -75,11 +81,19 @@ export default Component.extend({
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled
      */
+    console.log('export href ', this);
     if (get(this, 'disabled')) {
+      console.log('href void');
       return 'javascript:void(0);';
     }
 
     let request = get(this, 'report.request').serialize();
-    return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
+    console.log(
+      ' getDownloadURL ',
+      this.facts.getDownloadURL(request, { format: 'csv', dataSourceName: request.dataSource })
+    );
+    console.log(' getURL ', this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource }));
+    // eslint-disable-next-line prettier/prettier
+    return  this.facts.getDownloadURL(request, { format: 'csv', dataSourceName: request.dataSource });
   }),
 });
