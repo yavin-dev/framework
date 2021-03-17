@@ -28,8 +28,8 @@ interface DimensionSelectComponentArgs {
 }
 
 function isNumeric(num: string) {
-  //@ts-ignore
-  return !isNaN(num);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
+  return !isNaN(num as any);
 }
 function isNumericDimensionArray(arr: IndexedOptions<NaviDimensionModel>[]): boolean {
   return arr.every((d) => isNumeric(d.option.value as string));
