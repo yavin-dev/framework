@@ -12,7 +12,6 @@
   min-height: 0;
 
   .report-header {
-
     &__breadcrumb {
       margin: 5px 0 0;
 
@@ -30,10 +29,6 @@
     &__header-action {
       display: flex;
 
-      button {
-        white-space: nowrap;
-      }
-
       @include media-size-between(mobile, tablet) {
         flex-wrap: wrap;
         justify-content: flex-start;
@@ -41,6 +36,10 @@
 
       @include media-size-up(small-desktop) {
         justify-content: flex-end;
+      }
+
+      button {
+        white-space: nowrap;
       }
 
       .navi-report__action-link {
