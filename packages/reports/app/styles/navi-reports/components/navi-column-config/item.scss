@@ -4,9 +4,15 @@
  */
 
 .navi-column-config-item {
+  background-color: rgba($body-bg-color, 95);
   border-bottom: 1px solid $menu-border-color;
   margin-left: 15px;
   z-index: 2;
+
+  &.is-dragging {
+    opacity: 0.9;
+    position: relative;
+  }
 
   &__header {
     align-items: center;
@@ -99,10 +105,11 @@
   }
 
   &__remove-icon {
+    position: relative;
+    bottom: 2px;
     display: none;
     flex-shrink: 0;
     padding: 0;
-    width: 14px;
     text-align: center;
   }
 

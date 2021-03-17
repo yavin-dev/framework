@@ -4,13 +4,15 @@
     <div class="navi-column-config-base__option navi-column-config-base-type">
       <div class="navi-column-config-base__header">
         <DenaliChip
-        class="navi-column-config-base__api-column-name"
-        title="API Column: {{this.apiColumnName}}"
-        @backgroundColor="grey"
-        @backgroundShade="400"
-      >
-        {{this.apiColumnName}}
-      </DenaliChip>
+          class="navi-column-config-base__api-column-name"
+          title="API Column: {{this.apiColumnName}}"
+          @backgroundColor="grey"
+          @backgroundShade="400"
+          @textColor="grey"
+          @textShade="800"
+        >
+          {{this.apiColumnName}}
+        </DenaliChip>
         <span class="navi-column-config-base__header-icons">
           {{!-- TODO: Favorites are not supported yet --}}
           {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
