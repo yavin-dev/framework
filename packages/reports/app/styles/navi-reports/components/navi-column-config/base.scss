@@ -8,9 +8,6 @@
   margin-top: -10px;
 
   &__api-column-name {
-    background: $color-grey-300;
-    border-radius: 4px;
-    color: $color-grey-800;
     overflow: hidden;
     padding: 4px 6px;
     text-overflow: ellipsis;
@@ -37,6 +34,7 @@
 
   &__clone-icon,
   &__filter-icon,
+  &__sort-icon,
   &__star-icon {
     @include navi-column-config-icon;
     margin: 0 4px;

@@ -51,7 +51,7 @@ export type Args = {
 export type TableColumn = {
   fragment: ColumnFragment;
   attributes: TableColumnAttributes;
-  sortDirection?: TableSortDirection;
+  sortDirection: TableSortDirection | null;
   columnId: string;
 };
 
@@ -201,11 +201,17 @@ export default class Table extends Component<Args> {
   get columns(): TableColumn[] {
     const { columnAttributes } = this.args.options;
     return this.request.columns.map((column) => {
-      const sort = this.request.sorts.find((sort) => sort.canonicalName === column.canonicalName);
+      let sortDirection: TableColumn['sortDirection'];
+      if (column.columnMetadata.isSortable) {
+        const sort = this.request.sorts.find((sort) => sort.canonicalName === column.canonicalName);
+        sortDirection = sort?.direction || <const>'none';
+      } else {
+        sortDirection = null;
+      }
       return {
         fragment: column,
         attributes: columnAttributes[column.cid] || {},
-        sortDirection: sort?.direction || 'none',
+        sortDirection,
         columnId: column.cid,
       };
     });
@@ -263,7 +269,10 @@ export default class Table extends Component<Args> {
    */
   @action
   headerClicked(column: TableColumn): void {
-    // TODO: Validate that the column clicked supports sorting
+    if (!column.fragment.columnMetadata.isSortable) {
+      return;
+    }
+
     const { type } = column.fragment;
     const sort = this.request.sorts.find((sort) => sort.canonicalName === column.fragment.canonicalName);
     const sortDirection = (sort?.direction || 'none') as TableSortDirection;
