@@ -86,15 +86,25 @@
   {{!-- Schedule only visible for an owned and not is new report --}}
   {{#if (and (feature-flag "enableScheduleReports") (not @model.isNew))}}
     <CommonActions::Schedule
+      class="schedule"
       @model={{@model}}
       @disabled={{not @model.request.validations.isTruelyValid}}
       @request={{@model.request}}
       @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
       @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
       @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
-      id="report-action__schedule"
+      as |onOpen|
     >
-      Schedule
+      <button
+        type="button"
+        class="schedule-action__button button is-text is-medium"
+        id="report-action__schedule"
+        disabled={{not @model.request.validations.isTruelyValid}}
+        {{on "click" onOpen}}
+      >
+        <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
+        <span>Schedule</span>
+      </button>
     </CommonActions::Schedule>
     <EmberTooltip @text="Schedule a report run" @targetId="report-action__schedule"/>
   {{/if}}

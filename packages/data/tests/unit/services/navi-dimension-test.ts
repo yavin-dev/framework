@@ -44,6 +44,29 @@ module('Unit | Service | navi-dimension', function (hooks) {
     assert.deepEqual(all, expectedDimensionModels, '`all` gets all the unfiltered values for a dimension');
   });
 
+  test('all - enum', async function (this: TestContext, assert) {
+    const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
+    const columnMetadata = this.metadataService.getById(
+      'dimension',
+      'table0.dimension1',
+      'elideOne'
+    ) as DimensionMetadataModel;
+    const expectedDimensionModels = [
+      'Practical Frozen Fish (enum)',
+      'Practical Concrete Chair (enum)',
+      'Awesome Steel Chicken (enum)',
+      'Tasty Fresh Towels (enum)',
+      'Intelligent Steel Pizza (enum)',
+    ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
+    const all = await service.all({ columnMetadata });
+
+    assert.deepEqual(
+      all,
+      expectedDimensionModels,
+      '`all` gets all the unfiltered values for a dimension with enum values'
+    );
+  });
+
   test('find', async function (this: TestContext, assert) {
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = this.metadataService.getById(

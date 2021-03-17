@@ -27,6 +27,9 @@ class ElideConfig {
             .withSubqueryFilterDialect(RSQLFilterDialect(dictionary))
             .withAuditLogger(com.yahoo.elide.core.audit.Slf4jLogger())
             .withISO8601Dates("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
+            .withJsonApiPath(settings.jsonApi.path)
+            .withGraphQLApiPath(settings.graphql.path)
+            .withExportApiPath(settings.async.export.path)
         return Elide(builder.build())
     }
 }

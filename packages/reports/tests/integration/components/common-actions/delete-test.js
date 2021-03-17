@@ -32,11 +32,11 @@ module('Integration | Component | common actions/delete', function (hooks) {
   test('confirm modal', async function (assert) {
     await render(Template);
 
-    assert.dom('.delete__modal').isNotVisible('Modal is not visible at the start');
+    assert.dom('.delete__modal').doesNotExist('Modal is not visible at the start');
 
     await click('.delete__action-btn');
 
-    assert.dom('.delete__modal').isVisible('Modal is visible after clicking the delete action');
+    assert.dom('.delete__modal').exists('Modal is visible after clicking the delete action');
 
     assert
       .dom('.delete__modal-details')
@@ -47,7 +47,7 @@ module('Integration | Component | common actions/delete', function (hooks) {
 
     await click('.delete__cancel-btn');
 
-    assert.dom('.delete__modal').isNotVisible('Modal is closed after clicking cancel button');
+    assert.dom('.delete__modal').doesNotExist('Modal is closed after clicking cancel button');
   });
 
   test('delete action', async function (assert) {
