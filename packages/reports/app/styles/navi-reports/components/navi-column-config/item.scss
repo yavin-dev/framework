@@ -56,12 +56,14 @@
     white-space: nowrap;
 
     // Multi line ellipsis for supported browsers
-    @supports (-webkit-line-clamp: 2) {
+    @supports (-webkit-line-clamp: 2) and (-webkit-box-orient: vertical) {
+      /* stylelint-disable property-no-vendor-prefix */
+      /* stylelint-disable value-no-vendor-prefix */
+      -webkit-box-orient: vertical;
       display: -webkit-box;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
       white-space: initial;
     }
   }
@@ -105,12 +107,13 @@
   }
 
   &__remove-icon {
-    position: relative;
     bottom: 2px;
     display: none;
     flex-shrink: 0;
     padding: 0;
+    position: relative;
     text-align: center;
+    width: 14px;
   }
 
   &--open {
@@ -119,7 +122,7 @@
     }
 
     .navi-column-config-item__header {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     .navi-column-config-item__dropdown-icon {

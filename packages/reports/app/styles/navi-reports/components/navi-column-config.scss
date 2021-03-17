@@ -23,10 +23,10 @@
   display: flex;
 
   &__title {
-    padding: 10px;
-    margin: 0;
     color: $body-text-color;
     font-size: 14px;
+    margin: 0;
+    padding: 10px;
   }
 
   &__panel {
@@ -34,8 +34,8 @@
     display: flex;
     flex: 1;
     flex-flow: column;
-    width: 250px;
     max-width: 250px;
+    width: 250px;
   }
 
   &__columns {

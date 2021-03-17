@@ -5,16 +5,17 @@
 
 .dashboard-filters {
   &--collapsed {
-    font-size: 16px;
     flex-direction: row;
+    font-size: 16px;
+
     .dashboard-filters__toggle {
       transform: rotate(-90deg);
     }
   }
 
   &__expand-button {
-    font-size: 16px;
     cursor: pointer;
+    font-size: 16px;
     white-space: nowrap;
   }
 
