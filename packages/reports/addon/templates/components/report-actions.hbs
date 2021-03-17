@@ -12,13 +12,14 @@
       <button
         type="button"
         class="button is-text is-medium"
+        id="report-action__addToDashboard"
         {{on "click" onClick}}
       >
         <NaviIcon @icon="th-large" class="m-r-6" />
         <span>Add to Dashboard</span>
       </button>
     </ReportActions::AddToDashboard>
-    <EmberTooltip @text="Add visualization to Dashboard" />
+    <EmberTooltip @text="Add visualization to Dashboard" @targetId="report-action__addToDashboard"/>
 {{/if}}
 
 {{!-- API Query Enabled only for a valid report --}}
@@ -26,10 +27,11 @@
     @request={{@model.request}}
     @disabled={{not @model.request.validations.isTruelyValid}}
     class="navi-report__copy-api-btn button is-text is-medium"
+    id="report-action__apiQuery"
   >
     <NaviIcon @icon="code" class="m-r-6" />API Query
   </CommonActions::GetApi>
-  <EmberTooltip>
+  <EmberTooltip @targetId="report-action__apiQuery">
     {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
   </EmberTooltip>
 
@@ -37,11 +39,13 @@
   <LinkTo
     @route="reports.report.clone"
     @model={{@model.id}}
-    class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
+    class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}"
+    id="report-action__clone"
+  >
     <NaviIcon @icon="copy" class="m-r-6" />
     Clone
   </LinkTo>
-  <EmberTooltip>
+  <EmberTooltip @targetId="report-action__clone">
     {{if @model.isNew "Save report to enable clone" "Clone the report"}}
   </EmberTooltip>
 
@@ -51,6 +55,7 @@
       {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
         <ExportAction
           class="navi-report__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
+          id="report-action__export"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
         >
@@ -59,8 +64,8 @@
         </ExportAction>
       {{/let}}
     {{/let}}
-    <EmberTooltip>
-      {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+    <EmberTooltip @targetId="report-action__export">
+      {{if @model.isNew "Save report to enable clone" "Clone the report"}}
     </EmberTooltip>
 {{/if}}
 
@@ -68,28 +73,30 @@
   <CommonActions::Share
     @disabled={{@model.isNew}}
     class="button is-text is-medium {{if @model.isNew "is-disabled"}}"
+    id="report-action__share"
   >
     <NaviIcon @icon="share" class="m-r-6" />
     Share
   </CommonActions::Share>
-  <EmberTooltip>
+  <EmberTooltip @targetId="report-action__share">
     {{if @model.isNew "Save report to enable share" "Share the report"}}
   </EmberTooltip>
 
 {{#if @model.isOwner}}
   {{!-- Schedule only visible for an owned and not is new report --}}
   {{#if (and (feature-flag "enableScheduleReports") (not @model.isNew))}}
-      <CommonActions::Schedule
-        @model={{@model}}
-        @disabled={{not @model.request.validations.isTruelyValid}}
-        @request={{@model.request}}
-        @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
-        @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
-        @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
-      >
-        Schedule
-      </CommonActions::Schedule>
-      <EmberTooltip @text="Schedule a report run" />
+    <CommonActions::Schedule
+      @model={{@model}}
+      @disabled={{not @model.request.validations.isTruelyValid}}
+      @request={{@model.request}}
+      @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+      @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+      @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+      id="report-action__schedule"
+    >
+      Schedule
+    </CommonActions::Schedule>
+    <EmberTooltip @text="Schedule a report run" @targetId="report-action__schedule"/>
   {{/if}}
 
   {{!-- Delete enabled on an owned report --}}
@@ -97,9 +104,10 @@
       @model={{@model}}
       @deleteAction={{item-action "DELETE_ITEM" @model}}
       class="button is-text is-medium"
+      id="report-action__delete"
     >
       <NaviIcon @icon="trash-o" class="m-r-6" />
       Delete
     </CommonActions::Delete>
-    <EmberTooltip @text="Delete the report"/>
+    <EmberTooltip @text="Delete the report" @targetId="report-action__delete"/>
 {{/if}}
