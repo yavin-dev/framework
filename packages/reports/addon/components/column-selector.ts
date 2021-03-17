@@ -2,6 +2,7 @@ import Component from '@glimmer/component';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import { guidFor } from '@ember/object/internals';
+//@ts-ignore
 import { searchRecords } from 'navi-core/utils/search';
 import { tracked } from '@glimmer/tracking';
 

@@ -1,6 +1,7 @@
-import { click, fillIn, find, findAll, triggerEvent } from '@ember/test-helpers';
+import { click, getContext, fillIn, find, findAll, triggerEvent } from '@ember/test-helpers';
 import { assert } from '@ember/debug';
 import { set } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
 import findByContains from 'navi-core/test-support/contains-helpers';
 import { getVerticalCollection, renderAllItems } from './vertical-collection';
 
@@ -106,8 +107,10 @@ export async function clickItemFilter(type, query, itemText) {
  */
 async function _renderAndOpenAllFiltered(type) {
   const verticalCollection = getVerticalCollection(getSelector(type));
+  const guid = find(getSelector(type)).querySelector('.grouped-list')?.id;
+  const viewRegistry = getContext().owner.lookup('-view-registry:main');
+  const groupedList = Object.values(viewRegistry).find((c) => c.guid === guid);
 
-  const { parentView: groupedList } = verticalCollection;
   const { groupConfigs, groupedItems } = groupedList;
   const _groupConfigs = Object.assign({}, groupConfigs);
 

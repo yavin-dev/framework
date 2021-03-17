@@ -32,7 +32,7 @@
   }
 
   &__add-column-btn {
-    word-break: break-all;
+    word-break: break-word;
     text-align: left;
     span {
       line-height: $icon-font-size;
