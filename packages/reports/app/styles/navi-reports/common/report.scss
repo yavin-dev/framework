@@ -28,11 +28,15 @@
       button {
         white-space: nowrap;
       }
+      .navi-report__action-link {
+        display: flex;
+      }
       @include media-size-between(mobile, tablet) {
         justify-content: flex-start;
       }
       @include media-size-up(small-desktop) {
         justify-content: flex-end;
+        flex-wrap: nowrap;
       }
     }
   }

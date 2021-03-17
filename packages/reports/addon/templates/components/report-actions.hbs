@@ -65,7 +65,7 @@
       {{/let}}
     {{/let}}
     <EmberTooltip @targetId="report-action__export">
-      {{if @model.isNew "Save report to enable clone" "Clone the report"}}
+      {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
     </EmberTooltip>
 {{/if}}
 
