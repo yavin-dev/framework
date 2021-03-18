@@ -110,7 +110,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
   };
 
-  private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>, dataSourceName: string): string {
+  private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>): string {
     const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
 
@@ -124,9 +124,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       if (canonicalToAlias[canonicalName]) {
         fieldStr = canonicalToAlias[canonicalName];
       } else {
-        this.assertAllDefaultParams(filter, dataSourceName);
-        // TODO: Non default Parameters cannot be specified in filters yet
-        fieldStr = getElideField(field, {});
+        fieldStr = getElideField(field, parameters);
       }
       let filterVals = values.map((v) => escape(`${v}`));
 
@@ -177,7 +175,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       })
       .join(' ');
 
-    const filterString = this.buildFilterStr(filters, columnCanonicalToAlias, request.dataSource);
+    const filterString = this.buildFilterStr(filters, columnCanonicalToAlias);
     filterString.length && args.push(`filter: "${filterString}"`);
 
     const sortStrings = sorts.map((sort) => {
