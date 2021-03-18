@@ -9,7 +9,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
   test('Load multi-datasource dashboard', async function (assert) {
-    assert.expect(7);
+    assert.expect(8);
     await visit('/dashboards/6/view');
 
     assert.dom('.navi-widget__header').exists({ count: 3 }, 'Three widgets loaded');
@@ -24,8 +24,14 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     await click('.dashboard-filters__toggle');
 
     assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Age (id)', 'Container (id)'],
+      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
+      ['Age', 'Container'],
+      'Dimensions are properly labeled in filters'
+    );
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
+      ['id', 'id'],
       'Dimensions are properly labeled in filters'
     );
 

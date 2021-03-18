@@ -489,11 +489,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     assert.expect(7);
     await visit('reports/1/edit');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)', 'Time grain is initially day');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'Time grain is initially day');
 
     await click('.navi-column-config-item__remove-icon'); // Remove Date Time (day)
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'Deselecting day changes time grain to hour');
+    assert.dom('.filter-builder__subject').hasText('Date Time hour', 'Deselecting day changes time grain to hour');
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'], 'Date Time is removed');
 
@@ -502,7 +502,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (hour)', 'Date time matches existing filter grain on the report');
+      .hasText('Date Time hour', 'Date time matches existing filter grain on the report');
     assert.deepEqual(
       getColumns(),
       ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (hour)'],
@@ -512,7 +512,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (isoWeek)', 'Choosing week changes timegrain from day to week');
+      .hasText('Date Time isoWeek', 'Choosing week changes timegrain from day to week');
     assert.deepEqual(
       getColumns(),
       ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (isoWeek)'],
@@ -1106,7 +1106,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Ad Clicks'],
+      ['Date Time Day', 'Ad Clicks'],
       'Metric filter is added'
     );
 
@@ -1134,7 +1134,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)'],
+      ['Date Time Day'],
       'Metric filter is removed when clicked on duplicate metric'
     );
   });
@@ -1170,7 +1170,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (USD)'],
+      ['Date Time Day', 'Platform Revenue USD'],
       'Metric filter is added'
     );
 
@@ -1203,7 +1203,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)'],
+      ['Date Time Day'],
       'Metric filter is removed when clicked on duplicate metric'
     );
   });
@@ -1222,7 +1222,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (USD)'],
+      ['Date Time Day', 'Platform Revenue USD'],
       'Metric filter is added'
     );
 
@@ -1267,7 +1267,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (CAD)', 'Platform Revenue (USD)'],
+      ['Date Time Day', 'Platform Revenue CAD', 'Platform Revenue USD'],
       'Second metric filter is added'
     );
   });
