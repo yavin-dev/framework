@@ -352,6 +352,9 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @param index - the index to move the selected column
    */
   reorderColumn(column: ColumnFragment, index: number) {
+    if (this.columns.objectAt(index) === column) {
+      return;
+    }
     this.columns.removeFragment(column);
     this.columns.insertAt(index, column);
   }

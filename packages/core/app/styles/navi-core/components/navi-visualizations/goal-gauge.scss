@@ -3,24 +3,25 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+/* stylelint-disable selector-no-qualifying-type -- Ignore C3 selectors */
 .goal-gauge-widget {
   //allows the gauge to expand and shrink in navi
   height: 100%;
-  width: 100%;
   overflow: hidden;
+  width: 100%;
 
   .goal-title {
     font-size: 21px;
   }
 
   .metric-title {
-    font-size: 20px;
     fill: $body-text-color;
+    font-size: 20px;
   }
 
   .value-title {
-    font-size: 36px;
     fill: $body-text-color;
+    font-size: 36px;
   }
 
   .value-title.neg {

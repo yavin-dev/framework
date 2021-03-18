@@ -26,6 +26,7 @@ export interface ColumnMetadataPayload {
   source: string;
   valueType: TODO<string>;
   type: RawColumnType;
+  isSortable: boolean;
   expression?: string;
   columnFunctionId?: string;
   tags?: string[];
@@ -48,6 +49,7 @@ export interface ColumnMetadata {
   source: string;
   valueType: TODO<string>;
   type: RawColumnType;
+  isSortable: boolean;
   expression?: string;
   columnFunction: ColumnFunction | undefined;
   hasParameters: boolean;
@@ -103,6 +105,11 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @property type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
   type!: RawColumnType;
+
+  /**
+   * whether or not this column can be sorted
+   */
+  isSortable!: boolean;
 
   /**
    * @property expression - e.g. tableA.name if type is ref

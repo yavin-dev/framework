@@ -18,8 +18,9 @@ $filter-builder-padding: 4px;
   }
 
   &__operator {
-    padding: $filter-builder-padding;
     min-width: 0;
+    padding: $filter-builder-padding;
+
     .ember-power-select-selected-item {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -35,6 +36,7 @@ $filter-builder-padding: 4px;
 
   &__values {
     padding: $filter-builder-padding;
+
     .input {
       width: 100%;
     }

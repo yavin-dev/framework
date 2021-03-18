@@ -50,6 +50,7 @@
     &.disabled {
       cursor: not-allowed;
 
+      /* stylelint-disable selector-no-qualifying-type */
       &:hover {
         color: $color-grey-600;
       }

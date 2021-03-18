@@ -12,11 +12,13 @@
   }
 }
 
+/* stylelint-disable selector-no-qualifying-type -- Ignore C3 selectors */
+/* stylelint-disable selector-max-compound-selectors -- Ignore C3 selectors */
 .line-chart-widget {
   @include generate-legend-color($chart-max-series);
-  flex: 1;
 
   fill: $body-text-color;
+  flex: 1;
   min-height: 0;
   min-width: 0;
 
@@ -25,10 +27,12 @@
       line {
         display: none;
       }
+
       text tspan {
         text-transform: uppercase;
       }
     }
+
     path {
       stroke: denali-color('grey', '400');
     }
@@ -73,11 +77,10 @@
   // highlighted data point coloring
   circle.c3-selected-circle {
     fill: $color-grey-100 !important;
-    stroke: $color-red !important;
-    /* clean-css ignore:start */
     r: 6;
-    /* clean-css ignore:end */
+    stroke: $color-red !important;
   }
+
   .c3-xgrid,
   .c3-ygrid {
     stroke-dasharray: 0;

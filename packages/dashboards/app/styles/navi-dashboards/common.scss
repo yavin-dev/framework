@@ -7,12 +7,12 @@
 .navi-dashboard-container {
   .error-container,
   .loader-container {
-    display: flex;
-    text-align: center;
-    height: 500px;
-    border-radius: 2px;
     align-items: center;
+    border-radius: 2px;
+    display: flex;
+    height: 500px;
     justify-content: center;
+    text-align: center;
   }
 
   .loader-container,

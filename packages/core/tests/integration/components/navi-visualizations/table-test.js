@@ -270,18 +270,10 @@ module('Integration | Component | table', function (hooks) {
   });
 
   test('onUpdateReport', async function (assert) {
-    assert.expect(12);
+    assert.expect(9);
 
-    this.set('onUpdateReport', (actionType, columnFragment, direction) => {
-      assert.equal(actionType, 'upsertSort', 'the action type is `upsertSort`');
-
-      assert.deepEqual(
-        columnFragment.canonicalName,
-        'os(field=id)',
-        'The os fragment is passed along when the os header is clicked'
-      );
-
-      assert.equal(direction, 'desc', 'The desc direction is passed along when the dateTime header is clicked');
+    this.set('onUpdateReport', () => {
+      assert.ok(false, 'Clicking a dimension header does not update the sort');
     });
 
     const totalPageViewWoW = this.model.firstObject.request.addColumn({

@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
-import { cloneDeep, merge } from 'lodash-es';
+import { merge } from 'lodash-es';
 import { resolve } from 'rsvp';
 import config from 'ember-get-config';
 
@@ -73,10 +73,10 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     const makeRequest = (data, filters = []) => ({
       clone() {
-        return cloneDeep(this);
+        return this;
       },
       serialize() {
-        return cloneDeep(this);
+        return this;
       },
       addFilter(filter) {
         this.filters.push(filter);
@@ -98,9 +98,9 @@ module('Unit | Service | dashboard data', function (hooks) {
     };
 
     let widgets = [
-        { id: 1, dashboard: cloneDeep(dashboard), requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
-        { id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] },
-        { id: 3, dashboard: cloneDeep(dashboard), requests: [] },
+        { id: 1, dashboard: { ...dashboard }, requests: [makeRequest(1), makeRequest(2), makeRequest(3)] },
+        { id: 2, dashboard: { ...dashboard }, requests: [makeRequest(4)] },
+        { id: 3, dashboard: { ...dashboard }, requests: [] },
       ],
       layout = [
         { widgetId: 1, row: 4, column: 0 },
@@ -158,7 +158,7 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     service.fetchDataForWidgets(
       1,
-      [{ id: 2, dashboard: cloneDeep(dashboard), requests: [makeRequest(4)] }],
+      [{ id: 2, dashboard: { ...dashboard }, requests: [makeRequest(4)] }],
       [{ widgetId: 2 }],
       [],
       optionsObject
@@ -274,10 +274,10 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     const makeRequest = (data, filters) => ({
       clone() {
-        return cloneDeep(this);
+        return this;
       },
       serialize() {
-        return cloneDeep(this);
+        return this;
       },
       addFilter(filter) {
         this.filters.push(filter);

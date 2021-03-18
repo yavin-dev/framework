@@ -5,7 +5,7 @@
 .editable-label {
   &__input {
     background-color: $fields-default-bg;
-    border: none;
+    border: 0;
     color: $body-text-color;
     font-size: 30px;
     padding-left: 5px;

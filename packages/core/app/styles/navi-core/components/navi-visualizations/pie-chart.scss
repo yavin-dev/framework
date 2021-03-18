@@ -6,8 +6,8 @@
 @mixin generate-chart-series-color($n, $i: 0) {
   @for $i from 0 to $n {
     .c3-chart-arc.c3-target:nth-of-type(#{$i + 1}) path.c3-arc {
-      stroke: #{map-get($graph-stroke-colors, '#{$i}')} !important;
       fill: #{map-get($graph-stroke-colors, '#{$i}')} !important;
+      stroke: #{map-get($graph-stroke-colors, '#{$i}')} !important;
     }
 
     .c3-legend-item:nth-of-type(#{$i + 1}) .c3-legend-item-tile {
@@ -18,13 +18,12 @@
 }
 
 .pie-chart-widget {
-  flex: 1;
-  fill: $body-text-color;
-  min-height: 0;
-  min-width: 0;
-
   // C3 charts
   @include generate-chart-series-color($chart-max-series);
+  fill: $body-text-color;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
 
   .c3-legend-item text {
     text-transform: capitalize;

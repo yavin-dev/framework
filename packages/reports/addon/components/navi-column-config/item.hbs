@@ -1,10 +1,12 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <li
   class="navi-column-config-item navi-column-config-item--{{dasherize @column.fragment.type}} {{if @isOpen "navi-column-config-item--open"}}"
   data-name={{@column.fragment.canonicalName}}
   ...attributes
   {{did-insert this.setupElement}}
-  {{did-update this.onUpdateLastAdded @isLastAdded}}
+  {{on "mouseenter" (fn (mut this.canDrag) true)}}
+  {{on "mouseleave" (fn (mut this.canDrag) false)}}
+  {{sortable-item groupName="navi-column-config" model=@column}}
 >
   <div class="navi-column-config-item__header">
     <button
@@ -14,7 +16,7 @@
       disabled={{@column.isRequired}}
       {{on "click" @onRemoveColumn}}
     >
-      <NaviIcon @icon="minus-circle" />
+      <DenaliIcon @icon="minus-circle" />
     </button>
 
     <span class="navi-column-config-item__type-icon"></span>
@@ -25,10 +27,17 @@
       {{on "click" this.openColumn}}
     >
       <span title="{{@column.fragment.displayName}}" class="navi-column-config-item__name">{{@column.fragment.displayName}}</span>
-      <NaviIcon
-        class="navi-column-config-item__dropdown-icon"
-        @icon="angle-right"
-      />
+      {{#if this.canDrag}}
+        <span class="navi-column-config-item__handle p-x-2 link is-secondary" {{sortable-handle}}>
+          <DenaliIcon @icon="drag" @size="small" />
+        </span>
+      {{else}}
+        <DenaliIcon
+          class="navi-column-config-item__dropdown-icon"
+          @icon="arrowhead-right"
+          @size="small"
+        />
+      {{/if}}
     </button>
   </div>
 
@@ -37,6 +46,8 @@
       @column={{@column}}
       @cloneColumn={{@cloneColumn}}
       @onAddFilter={{@onAddFilter}}
+      @onUpsertSort={{@onUpsertSort}}
+      @onRemoveSort={{@onRemoveSort}}
       @onRenameColumn={{@onRenameColumn}}
       @onUpdateColumnParam={{@onUpdateColumnParam}}
     />

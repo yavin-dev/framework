@@ -164,6 +164,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         source,
         tags: node.tags,
         defaultFormat: node.defaultFormat,
+        isSortable: true,
         type: node.columnType,
         expression: node.expression,
       };
@@ -197,6 +198,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         tableId,
         source,
         tags: node.tags,
+        isSortable: true,
         type: node.columnType,
         expression: node.expression,
         valueSourceType: node.valueSourceType,
@@ -238,6 +240,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           .map(({ expression, grain }) => ({ id: this.normalizeTimeGrain(grain), expression, grain })),
 
         timeZone: node.timeZone,
+        isSortable: true,
         type: node.columnType,
         expression: node.expression,
       };
