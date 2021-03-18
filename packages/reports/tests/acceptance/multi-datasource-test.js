@@ -20,7 +20,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource report', async function (assert) {
-    assert.expect(15);
+    assert.expect(16);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -55,9 +55,15 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
+      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
+      ['Date Time', 'Container', 'Used Amount'],
       'Filter titles rendered correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
+      ['day', 'id'],
+      'Filter parameters rendered correctly'
     );
 
     assert
@@ -114,7 +120,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource saved report', async function (assert) {
-    assert.expect(14);
+    assert.expect(15);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
@@ -125,9 +131,15 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
+      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
+      ['Date Time', 'Container', 'Used Amount'],
       'Filter titles rendered correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
+      ['day', 'id'],
+      'Filter parameters rendered correctly'
     );
 
     await click('.report-builder__container-header__filters-toggle');

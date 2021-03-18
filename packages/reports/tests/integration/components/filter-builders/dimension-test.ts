@@ -37,7 +37,7 @@ module('Integration | Component | filter-builders/dimension', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(this.filter.displayName, "Subject's name is display in filter builder");
+      .hasText(`${this.filter.filterBuilderDisplayName} id`, "Subject's name is display in filter builder");
 
     assert
       .dom('.filter-builder__operator-trigger .ember-power-select-selected-item')

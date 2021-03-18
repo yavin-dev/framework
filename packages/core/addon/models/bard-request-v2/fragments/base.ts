@@ -15,6 +15,7 @@ import { Parameters } from 'navi-data/adapters/facts/interface';
 import { ColumnType } from 'navi-data/models/metadata/column';
 import MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
+import { omit } from 'lodash-es';
 
 const Validations = buildValidations({
   field: validator('presence', {
@@ -84,5 +85,18 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   get displayName() {
     const { parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, null);
+  }
+
+  @computed('columnMetadata')
+  get filterBuilderDisplayName() {
+    const { columnMetadata } = this;
+    return this.naviFormatter.formatColumnName(columnMetadata, {}, null);
+  }
+
+  @computed('parameters')
+  get paramValues() {
+    const params = omit(this.parameters || {}, 'as');
+    const paramValues = Object.values(params);
+    return paramValues;
   }
 }

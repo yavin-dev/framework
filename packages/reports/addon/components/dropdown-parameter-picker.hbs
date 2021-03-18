@@ -1,0 +1,19 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<BasicDropdown as |dd|>
+  <dd.Trigger class="dropdown-parameter-picker__trigger">
+    {{yield}}
+  </dd.Trigger>
+
+  <dd.Content class="dropdown-parameter-picker__dropdown">
+    <ul role="listbox" class="dropdown-parameter-picker__dropdown-option ember-power-select-dropdown">
+        <p>Field name: {{@field}}</p>
+        {{debugger}}
+        {{#each @paramOptions as |paramOption|}}
+        {{debugger}}
+        <li>
+            {{paramOption.id}}
+        </li>
+        {{/each}}
+    </ul>
+  </dd.Content>
+</BasicDropdown>
