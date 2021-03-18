@@ -1,5 +1,5 @@
 cache:
-  pipeline: [~/.npm]
+  pipeline: [~/.npm, ~/.gradle, /usr/bin/chrome]
 
 shared:
   image: maven:3.6.3-jdk-8
@@ -21,7 +21,7 @@ shared:
           - *install-node
           - *npm-ci
           - *install-chrome
-          - npx lerna run test --scope $PACKAGE --stream;
+          - test-package: npx lerna run test --scope $PACKAGE --stream;
         requires:
           - ~pr
           - ~commit
@@ -84,6 +84,26 @@ jobs:
     requires:
       - ~pr
       - ~commit
+  main:
+    annotations:
+      screwdriver.cd/ram: MICRO
+      screwdriver.cd/cpu: MICRO
+    steps:
+      - echo "success"
+    requires:
+      [
+        lint,
+        main-admin,
+        main-app,
+        main-core,
+        main-dashboards,
+        main-data,
+        main-directory,
+        main-notifications,
+        main-reports,
+        main-search,
+        main-webservice,
+      ]
 
   alpha-main:
     steps:
