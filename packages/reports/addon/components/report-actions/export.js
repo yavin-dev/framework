@@ -29,11 +29,6 @@ export default Component.extend({
   classNames: ['report-control', 'export-action'],
 
   /**
-   * @property {String} tagName - component DOM tag
-   */
-  tagName: 'a',
-
-  /**
    * @property {Array} attributeBindings - component attribute binding
    */
   attributeBindings: ['target', 'href', 'download'],
@@ -59,7 +54,7 @@ export default Component.extend({
   }),
 
   /**
-   * @property {Boolean} download - Boolean to check if request is valid and set target
+   * @property {Boolean} target - Boolean to check if request is valid and set target
    */
   target: computed('disabled', function () {
     console.log('export target ', this);
