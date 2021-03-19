@@ -12,7 +12,7 @@
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",
     "start": "cd packages/webservice && ./gradlew bootRun",
-    "postinstall": "lerna bootstrap --concurrency 2 --ci",
+    "postinstall": "lerna bootstrap --concurrency 2",
     "test": "lerna run test --stream",
     "lint": "lerna run lint --stream",
     "lint:ws:fix": "cd packages/webservice && ./gradlew formatKotlin -d && true",

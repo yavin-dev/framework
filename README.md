@@ -45,7 +45,7 @@ Assuming you have git, node (>=10), and [ember-cli](https://cli.emberjs.com/rele
 
 - `git clone https://github.com/yavin-dev/framework.git`
 - `cd yavin`
-- `npm install`
+- `CI=true npm install` (`CI=true` makes use of each package's `package-lock.json` file)
 - `cd packages/reports` (or whichever package)
 - `ember s` to run a local server
 - Then `npm test` to test your changes
