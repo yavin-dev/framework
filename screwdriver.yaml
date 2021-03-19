@@ -79,7 +79,6 @@ jobs:
     steps:
       - *install-node
       - *npm-ci
-      - *install-chrome
       - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
     requires:
       - ~pr
