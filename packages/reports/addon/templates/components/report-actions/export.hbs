@@ -1,2 +1,29 @@
-{{!-- Copyright 2017, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{yield}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file
+for terms. --}}
+<button
+  type="button"
+  disabled={{@disabled}}
+  {{on "click" (toggle "showModal" this)}}
+  class="export__action-btn"
+  ...attributes
+>
+  {{yield}}
+</button>
+
+<DenaliModal
+  class="export__modal"
+  @isOpen={{this.showModal}}
+  @onClose={{queue (toggle "showModal" this)}}
+  as | modal |
+>
+  <modal.Content>
+    <h3 class="m-b-30">Export url</h3>
+    <DenaliInput
+      @wrapperClass="w-full"
+      class="export__api-input m-b-30"
+      value={{await this.href}}
+      readonly={{true}}
+    />
+    <a class="get-api__run-btn button is-ghost m-r-10" href={{await this.href}} target={{this.target}} download={{this.download}}>Download</a>
+  </modal.Content>
+</DenaliModal>
