@@ -5,12 +5,12 @@
  * Base class for filter builders.
  */
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
+import { action, computed } from '@ember/object';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';
-import { isEqual } from 'lodash-es';
+import { isEqual, omit } from 'lodash-es';
 
 interface BaseFilterBuilderArgs {
   isRequired: boolean;
@@ -73,5 +73,18 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
     this.args.onUpdateFilter({
       parameters: { ...this.args.filter.parameters, [key]: value },
     });
+  }
+
+  @computed('args.filter')
+  get filterBuilderDisplayName() {
+    const { columnMetadata } = this.args.filter;
+    return columnMetadata.parameters[0].name;
+  }
+
+  @computed('args.filter.parameters')
+  get paramValues() {
+    const params = omit(this.args.filter.parameters || {}, 'as');
+    const paramValues = Object.values(params);
+    return paramValues;
   }
 }

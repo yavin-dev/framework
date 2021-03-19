@@ -23,17 +23,13 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
 
     await click('.dashboard-filters__toggle');
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
-      ['Age', 'Container'],
-      'Dimensions are properly labeled in filters'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()))
+      .equal(['Age', 'Container'], 'Dimensions are properly labeled in filters');
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
-      ['id', 'id'],
-      'Dimensions are properly labeled in filters'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()))
+      .equal(['id', 'id'], 'Dimensions are properly labeled in filters');
 
     assert.deepEqual(
       findAll('.filter-builder__operator-trigger').map((el) => el.textContent.trim()),

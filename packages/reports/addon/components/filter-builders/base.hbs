@@ -12,8 +12,8 @@
   <div class="filter-builder" ...attributes>
     <div class="filter-builder__subject xs-col-1-2 sm-col-1-2 col-1-5">
       <div class="filter-builder__subject-name">
-        <span class="name m-r-4" >{{@filter.filterBuilderDisplayName}}</span>
-        {{#each @filter.paramValues as |parameter|}}
+        <span class="name m-r-4" >{{this.filterBuilderDisplayName}}</span>
+        {{#each this.paramValues as |parameter|}}
           <DenaliChip class="m-r-4" @size="small">{{parameter}}</DenaliChip>
         {{/each}}
       </div>
