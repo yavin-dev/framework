@@ -9,7 +9,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
   test('Load multi-datasource dashboard', async function (assert) {
-    assert.expect(8);
+    assert.expect(10);
     await visit('/dashboards/6/view');
 
     assert.dom('.navi-widget__header').exists({ count: 3 }, 'Three widgets loaded');
@@ -24,12 +24,20 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     await click('.dashboard-filters__toggle');
 
     assert
-      .dom(findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()))
-      .equal(['Age', 'Container'], 'Dimensions are properly labeled in filters');
+      .dom(findAll('.filter-builder__subject .name')[0])
+      .hasText('Age', 'Dimension 1 is properly labeled in filters');
 
     assert
-      .dom(findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()))
-      .equal(['id', 'id'], 'Dimensions are properly labeled in filters');
+      .dom(findAll('.filter-builder__subject .name')[1])
+      .hasText('Container', 'Dimension 2 is properly labeled in filters');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[0])
+      .hasText('id', 'Dimension 1 parameter is properly labeled in filters');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[1])
+      .hasText('id', 'Dimension 2 parameter is properly labeled in filters');
 
     assert.deepEqual(
       findAll('.filter-builder__operator-trigger').map((el) => el.textContent.trim()),

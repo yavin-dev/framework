@@ -78,7 +78,7 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
   @computed('args.filter')
   get filterBuilderDisplayName() {
     const { columnMetadata } = this.args.filter;
-    return columnMetadata.parameters[0].name;
+    return columnMetadata.name;
   }
 
   @computed('args.filter.parameters')
