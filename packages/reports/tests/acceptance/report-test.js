@@ -828,13 +828,13 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     await visit('/reports/1/view');
-    await click('.delete__action-btn');
+    await click('.delete-button');
 
     assert
-      .dom('.delete__modal-details')
+      .dom('.delete-modal__details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    await click('.delete__delete-btn');
+    await click('.delete-modal__delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -883,7 +883,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('.navi-report__action:contains(Delete) button')[0]);
 
     assert
-      .dom('.delete__modal-details')
+      .dom('.delete-modal__details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
   });
 
@@ -892,8 +892,8 @@ module('Acceptance | Navi Report', function (hooks) {
     server.delete('/reports/:id', () => new Response(500));
 
     await visit('/reports/2/view');
-    await click('.delete__action-btn');
-    await click('.delete__delete-btn');
+    await click('.delete-button');
+    await click('.delete-modal__delete-btn');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
   });
@@ -990,13 +990,13 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .delete__action-btn');
+    await click('.navi-collection__row0 .delete');
 
     assert
-      .dom('.delete__modal-details')
+      .dom('.delete-modal__details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    await click('.delete__delete-btn');
+    await click('.delete-modal__delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 

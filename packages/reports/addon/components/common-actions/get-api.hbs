@@ -1,14 +1,15 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file
 for terms. --}}
-<button 
-  type="button" 
+<DenaliButton
+  @style="text"
+  @size="medium"
   disabled={{@disabled}} 
   {{on "click" (toggle "showModal" this)}}
   class="get-api__action-btn" 
   ...attributes
 >
   {{yield}}
-</button>
+</DenaliButton>
 
 <DenaliModal 
   class="get-api__modal" 

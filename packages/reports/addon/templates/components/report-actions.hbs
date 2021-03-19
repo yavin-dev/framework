@@ -10,14 +10,16 @@
       @onAddToNewDashboard={{fn @addToNewDashboard @model}}
       as |onClick|
     >
-      <button 
-        type="button" 
-        class="button is-text is-medium"
+      <DenaliButton
+        type="button"
+        @style="text"
+        @size="medium"
+        id="report-action__addToDashboard"
         {{on "click" onClick}}
       >
-        <NaviIcon @icon="th-large" class="navi-report__action-icon" />
+        <DenaliIcon @icon="dashboard-tile-add" />
         <span>Add to Dashboard</span>
-      </button>
+      </DenaliButton>
     </ReportActions::AddToDashboard>
     <EmberTooltip @text="Add visualization to Dashboard" />
   </li>
@@ -28,9 +30,10 @@
   <CommonActions::GetApi
     @request={{@model.request}}
     @disabled={{not @model.request.validations.isTruelyValid}}
-    class="navi-report__copy-api-btn button is-text is-medium"
+    class="navi-report__copy-api-btn"
+    id="report-action__apiQuery"
   >
-    <NaviIcon @icon="code" class="navi-report__action-icon" />API Query
+    <DenaliIcon @icon="code" />API Query
   </CommonActions::GetApi>
   <EmberTooltip>
     {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
@@ -38,12 +41,13 @@
 </li>
 
 {{!-- Clone only enabled on a Saved report --}}
-<li class="navi-report__action">
-  <LinkTo 
-    @route="reports.report.clone" 
-    @model={{@model.id}} 
-    class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}">
-    <NaviIcon @icon="copy" class="navi-report__action-icon" />
+  <LinkTo
+    @route="reports.report.clone"
+    @model={{@model.id}}
+    class="navi-report__action-link button is-text is-medium {{if @model.isNew "is-disabled"}}"
+    id="report-action__clone"
+  >
+    <DenaliIcon @icon="copy-file" />
     Clone
   </LinkTo>
   <EmberTooltip>
@@ -61,7 +65,7 @@
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
         >
-          <NaviIcon @icon="download" class="navi-report__action-icon" />
+          <DenaliIcon @icon="download" />
           Export
         </ExportAction>
       {{/let}}
@@ -78,7 +82,7 @@
     @disabled={{@model.isNew}}
     class="button is-text is-medium {{if @model.isNew "is-disabled"}}"
   >
-    <NaviIcon @icon="share" class="navi-report__action-icon" />
+    <DenaliIcon @icon="share-arrow" />
     Share
   </CommonActions::Share>
   <EmberTooltip>
@@ -89,29 +93,29 @@
 {{#if @model.isOwner}}
   {{!-- Schedule only visible for an owned and not is new report --}}
   {{#if (and (feature-flag "enableScheduleReports") (not @model.isNew))}}
-    <li class="navi-report__action">
-      <CommonActions::Schedule
-        class="schedule"
-        @model={{@model}}
-        @disabled={{not @model.request.validations.isTruelyValid}}
-        @request={{@model.request}}
-        @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
-        @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
-        @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
-        as |onOpen|
+    <CommonActions::Schedule
+      class="schedule"
+      @model={{@model}}
+      @disabled={{not @model.request.validations.isTruelyValid}}
+      @request={{@model.request}}
+      @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
+      @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
+      @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
+      as |onOpen|
+    >
+      <DenaliButton
+        class="schedule-action__button"
+        id="report-action__schedule"
+        @style="text"
+        @size="medium"
+        disabled={{not @model.request.validations.isTruelyValid}}
+        {{on "click" onOpen}}
       >
-        <button 
-          type="button"
-          class="schedule-action__button button is-text is-medium"
-          disabled={{not @model.request.validations.isTruelyValid}}
-          {{on "click" onOpen}}
-        >
-          <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
-          <span>Schedule</span>
-        </button>
-      </CommonActions::Schedule>
-      <EmberTooltip @text="Schedule a report run" />
-    </li>
+        <NaviIcon @icon="clock" class="navi-report__action-icon" />
+        <span>Schedule</span>
+      </DenaliButton>
+    </CommonActions::Schedule>
+    <EmberTooltip @text="Schedule a report run" @targetId="report-action__schedule"/>
   {{/if}}
 
   {{!-- Delete enabled on an owned report --}}
@@ -119,10 +123,18 @@
     <CommonActions::Delete
       @model={{@model}}
       @deleteAction={{item-action "DELETE_ITEM" @model}}
-      class="button is-text is-medium"
+      as |DELETE|
     >
-      <NaviIcon @icon="trash-o" class="navi-report__action-icon" />
-      Delete
+      <DenaliButton
+        @style="text"
+        @size="medium"
+        id="report-action__delete"
+        class="delete-button"
+        {{on "click" DELETE}}
+      >
+        <DenaliIcon @icon="trash" />
+        Delete
+      </DenaliButton>
     </CommonActions::Delete>
     <EmberTooltip @text="Delete the report"/>
   </li>

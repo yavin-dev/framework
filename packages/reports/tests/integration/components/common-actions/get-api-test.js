@@ -80,7 +80,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.button').map((el) => el.textContent.trim()),
+      findAll('.get-api__modal .button').map((el) => el.textContent.trim()),
       ['Copy Link', 'Run API Query', 'Cancel'],
       'Copy, New Tab, and Cancel buttons are rendered'
     );
@@ -104,7 +104,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
       );
 
     assert.deepEqual(
-      findAll('.button').map((el) => el.textContent.trim()),
+      findAll('.get-api__modal .button').map((el) => el.textContent.trim()),
       ['Copy Link', 'Cancel'],
       'Copy, New Tab, and Cancel buttons are rendered'
     );

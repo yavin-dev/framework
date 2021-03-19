@@ -32,11 +32,11 @@
       </LinkTo>
       {{#if @canEdit}}
         <CommonActions::Delete
-          class="navi-widget__delete-btn link"
+          class="link"
           @model={{@model}}
           @deleteAction={{route-action "deleteWidget"}}
         >
-          <NaviIcon @icon="trash-o" class="navi-icon__delete" />
+          <DenaliIcon @icon="trash" class="navi-icon__delete navi-widget__delete-btn" />
           <EmberTooltip @popperContainer="body" @text="Delete" />
         </CommonActions::Delete>
       {{/if}}

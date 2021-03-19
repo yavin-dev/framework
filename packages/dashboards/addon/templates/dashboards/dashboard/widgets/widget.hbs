@@ -39,11 +39,11 @@
       <li class="navi-report-widget__action">
         {{!-- Get API action is only enabled when request is valid --}}
         <CommonActions::GetApi
-          class="button is-text is-medium {{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}"
+          class="{{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}"
           @request={{@model.request}}
           @disabled={{not @model.request.validations.isTruelyValid}}
         >
-          <NaviIcon @icon="code" class="navi-report-widget__icon" />
+          <DenaliIcon @icon="code" class="navi-report-widget__icon" />
             API Query
           <EmberTooltip>
             {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
@@ -60,8 +60,10 @@
               @disabled={{not @model.validations.isTruelyValid}}
               class="navi-report-widget__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
             >
-              <NaviIcon @icon="download" class="navi-report-widget__icon" />
-              Export
+              <DenaliButton @style="text" @size="medium">
+                <DenaliIcon @icon="download" class="navi-report__action-icon" />
+                Export
+              </DenaliButton>
               <EmberTooltip>
                 {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
               </EmberTooltip>
@@ -75,7 +77,7 @@
           @route="dashboards.dashboard.widgets.widget.clone-to-report" 
           class="navi-report-widget__action-link button is-text is-medium"
         >
-          <NaviIcon @icon="copy" class="navi-report-widget__icon" />
+          <DenaliIcon @icon="copy-file" class="navi-report-widget__icon" />
           Clone As Report
         </LinkTo>
       </li>
@@ -87,7 +89,7 @@
             @disabled={{not @model.request.validations.isTruelyValid}}
             class="button is-text is-medium"
           >
-            <NaviIcon @icon="share" class="navi-report-widget__icon" />
+            <DenaliIcon @icon="share-arrow" class="navi-report-widget__icon" />
             Share
             <EmberTooltip>
               {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
@@ -100,10 +102,16 @@
           <CommonActions::Delete
             @model={{@model}}
             @deleteAction={{route-action "deleteWidget"}}
-            class="button is-text is-medium"
+            as |DELETE|
           >
-            <NaviIcon @icon="trash-o" class="navi-report-widget__icon" />
-            Delete
+            <DenaliButton
+              @style="text"
+              @size="medium"
+              class="delete-button"
+              {{on "click" DELETE}}>
+              <DenaliIcon @icon="trash" class="navi-report-widget__icon" />
+              Delete
+            </DenaliButton>
           </CommonActions::Delete>
         </li>
       {{/if}}

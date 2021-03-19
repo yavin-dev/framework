@@ -129,12 +129,19 @@
       {{/if}}
       {{#unless this.localDeliveryRule.isNew}}
         <CommonActions::Delete
-          class="schedule__modal-delete-btn button is-danger"
           @disabled={{this.isSaving}}
           @model={{this.localDeliveryRule}}
           @deleteAction={{queue this.doDelete this.closeModal}}
+          as |DELETE|
         >
-          Delete
+          <DenaliButton
+            @style="text"
+            @size="medium"
+            class="schedule__modal-delete-btn"
+            {{on "click" DELETE}}
+          >
+            Delete
+          </DenaliButton>
         </CommonActions::Delete>
       {{/unless}}
     {{/if}}
