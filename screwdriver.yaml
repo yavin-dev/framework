@@ -1,5 +1,5 @@
 cache:
-  pipeline: [~/.npm, ~/.gradle, /usr/bin/chrome]
+  pipeline: [~/.npm, ~/.gradle]
 
 shared:
   image: maven:3.6.3-jdk-8
