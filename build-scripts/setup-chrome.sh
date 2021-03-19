@@ -2,7 +2,7 @@
 
 CHROME_DESTINATION=/usr/bin/chrome
 
-if [ -f "$CHROME_DESTINATION" ]; then
+if [ -e "$CHROME_DESTINATION" ]; then
   echo "$CHROME_DESTINATION exists. Skipping download."
 else 
   echo "$CHROME_DESTINATION does not exist. Starting download."
