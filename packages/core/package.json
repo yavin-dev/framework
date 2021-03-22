@@ -14,7 +14,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.19",
+    "@denali-design/ember": "^1.0.0-alpha.20",
     "@ember-decorators/component": "^6.1.1",
     "@ember/jquery": "^0.6.1",
     "@ember/render-modifiers": "^1.0.2",
@@ -49,6 +49,7 @@
     "nanoid": "^3.1.12",
     "navi-data": "0.2.0",
     "numeral": "^2.0.6",
+    "package.json": "^2.0.1",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {

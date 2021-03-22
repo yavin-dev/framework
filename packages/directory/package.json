@@ -27,7 +27,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.19",
+    "@denali-design/ember": "^1.0.0-alpha.20",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.0",
     "ember-auto-import": "^1.5.3",
@@ -45,7 +45,8 @@
     "navi-core": "0.2.0",
     "navi-dashboards": "0.2.0",
     "navi-data": "0.2.0",
-    "navi-reports": "0.2.0"
+    "navi-reports": "0.2.0",
+    "package.json": "^2.0.1"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.8.3",
