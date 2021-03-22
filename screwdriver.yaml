@@ -11,8 +11,6 @@ shared:
           install-node: |
             sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
             export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
-      - .: &npm-cache-verify
-          npm-cache-verify: npm cache verify
       - .: &npm-ci
           npm-ci: npm ci --unsafe-perm
       - .: &install-chrome
@@ -21,7 +19,6 @@ shared:
       main-npm-test-job: &main-npm-test-job
         steps:
           - *install-node
-          - *npm-cache-verify
           - *npm-ci
           - *install-chrome
           - test-package: npx lerna run test --scope $PACKAGE --stream;
