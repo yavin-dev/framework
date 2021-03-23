@@ -10,7 +10,9 @@ import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';
-import { isEqual, omit } from 'lodash-es';
+import { isEqual } from 'lodash-es';
+import NaviFormatterService from 'navi-data/services/navi-formatter';
+import { inject as service } from '@ember/service';
 
 interface BaseFilterBuilderArgs {
   isRequired: boolean;
@@ -27,6 +29,8 @@ export interface FilterValueBuilder {
 }
 
 export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFilterBuilderArgs> extends Component<T> {
+  @service naviFormatter!: NaviFormatterService;
+
   get valueBuilders(): Array<FilterValueBuilder> {
     return [];
   }
@@ -75,14 +79,13 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
     });
   }
 
-  @computed('args.filter.columnMetadata.name')
+  @computed('args.filter.columnMetadata')
   get columnName() {
-    return this.args.filter.columnMetadata.name;
+    return this.naviFormatter.formatColumnName(this.args.filter.columnMetadata, {}, null);
   }
 
   @computed('args.filter.parameters')
   get paramValues() {
-    const params = omit(this.args.filter.parameters || {}, 'as');
-    return Object.values(params);
+    return Object.values(this.args.filter.parameters);
   }
 }

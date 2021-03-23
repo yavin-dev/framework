@@ -28,12 +28,12 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
       .hasText('Age', 'Dimension 1 is properly labeled in filters');
 
     assert
-      .dom(findAll('.filter-builder__subject .name')[1])
-      .hasText('Container', 'Dimension 2 is properly labeled in filters');
-
-    assert
       .dom(findAll('.filter-builder__subject .chips')[0])
       .hasText('id', 'Dimension 1 parameter is properly labeled in filters');
+
+    assert
+      .dom(findAll('.filter-builder__subject .name')[1])
+      .hasText('Container', 'Dimension 2 is properly labeled in filters');
 
     assert
       .dom(findAll('.filter-builder__subject .chips')[1])
