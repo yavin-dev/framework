@@ -81,7 +81,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
     );
 
@@ -300,7 +300,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       const expectedColumns = TestRequest.columns
         .map((c, idx) => getElideField(c.field, c.parameters, `col${idx}`))
         .join(' ');
-      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10000")`;
+      const expectedArgs = `(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10000")`;
 
       assert.equal(
         requestObj.variables.query.replace(/[ \t\r\n]+/g, ' '),
@@ -581,7 +581,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     //test all of the escaped functionalities and verify them in the below assert
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d6=in=('with, comma','no comma');d7=in=('with \\"quote\\"','but why');d8=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
+      `{"query":"{ table1(filter: \\"d6[field:id]=in=('with, comma','no comma');d7[field:id]=in=('with \\"quote\\"','but why');d8[field:id]=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } } }"}`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
@@ -605,7 +605,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](filters, { 'table1.dim1(p=q)': 'col1' }, 'elideData'),
+      adapter['buildFilterStr'](filters, { 'table1.dim1(p=q)': 'col1' }),
       "col1=in=('*v1*');dim1=in=('*v2*')",
       '`buildFilterStr` builds correct filter string for an aliased column'
     );
@@ -623,7 +623,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](filters, {}, 'elideData'),
+      adapter['buildFilterStr'](filters, {}),
       "dim1=in=('*v1*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter'
     );
@@ -638,7 +638,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](escapedFilter, {}, 'elideData'),
+      adapter['buildFilterStr'](escapedFilter, {}),
       "dim1=in=('*\\\\'*')",
       '`buildFilterStr` builds correct filter string for a `contains` filter and escaped value'
     );
@@ -656,7 +656,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](noValues, {}, 'elideData'),
+      adapter['buildFilterStr'](noValues, {}),
       '',
       '`buildFilterStr` returns an empty string if no filters have values'
     );
@@ -678,7 +678,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       },
     ];
     assert.equal(
-      adapter['buildFilterStr'](someValues, {}, 'elideData'),
+      adapter['buildFilterStr'](someValues, {}),
       "dim2==('1')",
       '`buildFilterStr` filters out filters with empty values'
     );
@@ -702,31 +702,23 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         values: ['test'],
       },
     ];
-    assert.throws(
-      () => adapter['buildFilterStr'](noValues, {}, 'elideData'),
-      /FactAdapterError: Parameters are not supported in elide unles table1.dim1\(param=val\) is added as a column./,
-      '`buildFilterStr` throws an error when there is no alias if non-default params are used'
+    assert.deepEqual(
+      adapter['buildFilterStr'](noValues, {}),
+      "dim1[param:val]=in=('*test*')",
+      '`buildFilterStr` returns a filter when there is no alias if params are used'
     );
 
     DefaultParams = { param: 'notval' };
-    assert.throws(
-      () => adapter['buildFilterStr'](noValues, {}, 'elideData'),
-      /FactAdapterError: Parameters are not supported in elide unles table1.dim1\(param=val\) is added as a column./,
-      '`buildFilterStr` throws an error when there is no alias if non-default params are used'
+    assert.deepEqual(
+      adapter['buildFilterStr'](noValues, {}),
+      "dim1[param:val]=in=('*test*')",
+      '`buildFilterStr` returns a filter when there is no alias if non-default params are used'
     );
 
     assert.deepEqual(
-      adapter['buildFilterStr'](noValues, { 'table1.dim1(param=val)': 'col1' }, 'elideData'),
+      adapter['buildFilterStr'](noValues, { 'table1.dim1(param=val)': 'col1' }),
       `col1=in=('*test*')`,
-      '`buildFilterStr` returns alias if available when there are non-default params'
-    );
-
-    DefaultParams = { param: 'val' };
-
-    assert.deepEqual(
-      adapter['buildFilterStr'](noValues, {}, 'elideData'),
-      `dim1=in=('*test*')`,
-      '`buildFilterStr` returns a filter with no parameters when all are default'
+      '`buildFilterStr` returns alias if available'
     );
   });
 
@@ -735,7 +727,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     assert.equal(
       decodeURIComponent(adapter.urlForFindQuery(TestRequest, {})),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time=ge=('2015-01-03');time=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
       'urlForFindQuery correctly built the query for the provided request'
     );
   });
