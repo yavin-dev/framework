@@ -75,16 +75,14 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
     });
   }
 
-  @computed('args.filter')
-  get filterBuilderDisplayName() {
-    const { columnMetadata } = this.args.filter;
-    return columnMetadata.name;
+  @computed('args.filter.columnMetadata.name')
+  get columnName() {
+    return this.args.filter.columnMetadata.name;
   }
 
   @computed('args.filter.parameters')
   get paramValues() {
     const params = omit(this.args.filter.parameters || {}, 'as');
-    const paramValues = Object.values(params);
-    return paramValues;
+    return Object.values(params);
   }
 }

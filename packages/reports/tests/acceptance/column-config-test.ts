@@ -1200,7 +1200,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - filters - parameterized metrics - different parameters make different filters', async function (assert) {
     //TODO update when filter updates are complete
-    assert.expect(8);
+    assert.expect(10);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1255,9 +1255,17 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'The filter of the first parameterized metric is still active'
       );
 
-    assert.dom('.filter-builder__subject').exists({ count: 3 }, 'There are 3 filters');
+    assert
+      .dom(findAll('.filter-builder__subject')[0])
+      .hasText('Date Time Day', 'Date Time dimension is rendered correctly');
 
-    assert.dom(findAll('.filter-builder__subject')[1]).hasText('Platform Revenue CAD', 'Second metric filter is added');
+    assert
+      .dom(findAll('.filter-builder__subject')[1])
+      .hasText('Platform Revenue CAD', 'First metric is rendered correct');
+
+    assert
+      .dom(findAll('.filter-builder__subject')[2])
+      .hasText('Platform Revenue USD', 'Second metric is rendered correctly');
   });
 
   skip('config - filters - metrics - stay collapsed on remove', async function (assert) {
