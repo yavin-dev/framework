@@ -152,7 +152,7 @@ export default class DashboardDataService extends Service {
    * @returns {Promise} response from request
    */
   _fetch(request, options) {
-    return this.naviFacts.fetch(request, options);
+    return this.naviFacts.fetch.perform(request, options);
   }
 
   /**

@@ -110,7 +110,11 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     data = service.fetchDataForWidgets(1, widgets, layout);
 
-    assert.equal(service._fetchRequestsForWidget.concurrency, 2, 'fetch task concurrency is correctly set by config');
+    assert.equal(
+      service._fetchRequest.scheduler.schedulerPolicy.maxConcurrency,
+      2,
+      'fetch task concurrency is correctly set by config'
+    );
     assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
     assert.ok(get(data, '1.isRunning'), 'data returns a task instance per widget');
