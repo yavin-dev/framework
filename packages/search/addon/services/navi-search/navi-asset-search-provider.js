@@ -1,10 +1,9 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * This service is used to search for reports and dashboards stored in the persistence layer.
  */
-
 import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
 import { task } from 'ember-concurrency';
@@ -76,7 +75,8 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
    * @yields {Promise} promise with search query results
    * @returns {Object} Object containing component, title, and data to be displayed
    */
-  @(task(function* (query) {
+  @task({ restartable: true })
+  *search(query) {
     const types = ['report', 'dashboard'];
     const promises = [];
 
@@ -98,6 +98,5 @@ export default class NaviAssetSearchProviderService extends NaviBaseSearchProvid
           getPartialMatchWeight(resultB.title.toLowerCase(), query.toLowerCase())
       ),
     };
-  }).restartable())
-  search;
+  }
 }

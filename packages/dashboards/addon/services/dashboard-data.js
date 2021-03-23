@@ -100,7 +100,7 @@ export default class DashboardDataService extends Service {
    * @param {String} uuid - v1 UUID
    * @yields {TaskInstance}
    */
-  @task(function* (dashboardId, widget, decorators, options, uuid) {
+  @task *_fetchRequestsForWidget(dashboardId, widget, decorators, options, uuid) {
     const { dashboard, requests, id: widgetId } = widget;
     const fetchTasks = [];
 
@@ -121,8 +121,7 @@ export default class DashboardDataService extends Service {
     });
 
     return yield fetchTasks.length ? all(fetchTasks) : [];
-  })
-  _fetchRequestsForWidget;
+  }
 
   /**
    * @property {Task} _fetchRequest
@@ -132,7 +131,8 @@ export default class DashboardDataService extends Service {
    * @param {Array} filterErrors - invalid Filter error objects
    * @yields {TaskInstance}
    */
-  @(task(function* (requestFragment, decorators, options, filterErrors) {
+  @task({ enqueue: true, maxConcurrency: FETCH_MAX_CONCURRENCY })
+  *_fetchRequest(requestFragment, decorators, options, filterErrors) {
     const request = this._decorate(decorators, requestFragment.serialize());
     return yield this._fetch(request, options, filterErrors).then((result) => {
       const serverErrors = getWithDefault(result, 'response.meta.errors', []);
@@ -142,10 +142,7 @@ export default class DashboardDataService extends Service {
         response: { meta: { errors: [...serverErrors, ...filterErrors] } },
       });
     });
-  })
-    .enqueue()
-    .maxConcurrency(FETCH_MAX_CONCURRENCY))
-  _fetchRequest;
+  }
 
   /**
    * @method _fetch
