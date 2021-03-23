@@ -1,17 +1,17 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * This service is used to search for definitions stored in the metadata.
  */
-
-import { inject as service } from '@ember/service';
 import NaviBaseSearchProviderService from '../navi-base-search-provider';
-//@ts-ignore
+import { inject as service } from '@ember/service';
 import { task } from 'ember-concurrency';
 //@ts-ignore
 import { searchRecordsByFields } from 'navi-core/utils/search';
-import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
+import type { TaskGenerator } from 'ember-concurrency';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
 export default class NaviDefinitionSearchProviderService extends NaviBaseSearchProviderService {
   @service
@@ -28,8 +28,8 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
    * @param {String} query
    * @returns {Object} Object containing, component, title and data
    */
-  // eslint-disable-next-line require-yield
-  @(task(function* (this: NaviDefinitionSearchProviderService, query: TODO) {
+  @task({ restartable: true })
+  *search(query: string): TaskGenerator<TODO> {
     const types: MetadataModelTypes[] = ['table', 'dimension', 'metric', 'timeDimension'];
     const kegData: TODO = [];
     let data = [];
@@ -39,11 +39,10 @@ export default class NaviDefinitionSearchProviderService extends NaviBaseSearchP
       data = searchRecordsByFields(kegData, query, ['id', 'name', 'description']);
     }
 
-    return {
+    return yield {
       component: this.displayComponentName,
       title: 'Definition',
       data: data.slice(0, this.resultThreshold),
     };
-  }).restartable())
-  search: TODO;
+  }
 }
