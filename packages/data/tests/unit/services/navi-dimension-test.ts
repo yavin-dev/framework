@@ -10,6 +10,7 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
 import { Server } from 'miragejs';
+import { taskFor } from 'ember-concurrency-ts';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -39,7 +40,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Awesome Concrete Table',
       'Handcrafted Concrete Mouse',
     ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
-    const all = await service.all({ columnMetadata });
+    const all = await taskFor(service.all).perform({ columnMetadata });
 
     assert.deepEqual(all, expectedDimensionModels, '`all` gets all the unfiltered values for a dimension');
   });
@@ -58,7 +59,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Tasty Fresh Towels (enum)',
       'Intelligent Steel Pizza (enum)',
     ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
-    const all = await service.all({ columnMetadata });
+    const all = await taskFor(service.all).perform({ columnMetadata });
 
     assert.deepEqual(
       all,
@@ -79,7 +80,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     const expectedDimensionModels = findValues.map((dimVal) =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
     );
-    const find = await service.find({ columnMetadata }, filters);
+    const find = await taskFor(service.find).perform({ columnMetadata }, filters);
     assert.deepEqual(
       find,
       expectedDimensionModels,
@@ -96,7 +97,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
-    const search = await service.search({ columnMetadata }, 'plastic');
+    const search = await taskFor(service.search).perform({ columnMetadata }, 'plastic');
     const expectedDimensionModels = ['Licensed Plastic Pants', 'Awesome Plastic Fish'].map((dimVal) =>
       NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
     );
@@ -106,7 +107,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       '`search` gets all the values for a dimension that contain the query case insensitively'
     );
 
-    const noResultSearch = await service.search({ columnMetadata }, 'fuggedaboutit');
+    const noResultSearch = await taskFor(service.search).perform({ columnMetadata }, 'fuggedaboutit');
     assert.deepEqual(noResultSearch, [], 'Empty array is returned when no values are found');
   });
 });

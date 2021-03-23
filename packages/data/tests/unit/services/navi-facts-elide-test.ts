@@ -10,6 +10,7 @@ import NaviFactsService from 'navi-data/services/navi-facts';
 import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { taskFor } from 'ember-concurrency-ts';
 
 interface TestContext extends Context {
   service: NaviFactsService;
@@ -95,7 +96,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch', async function (this: TestContext, assert) {
-    const model = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
+    const model = await taskFor(this.service.fetch).perform(TestRequest, { dataSourceName: TestRequest.dataSource });
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -244,7 +245,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - only metrics', async function (this: TestContext, assert) {
-    const model = await this.service.fetch(
+    const model = await taskFor(this.service.fetch).perform(
       {
         table: 'table1',
         columns: [
@@ -300,7 +301,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
       },
     ];
 
-    const model = await this.service.fetch(
+    const model = await taskFor(this.service.fetch).perform(
       {
         table: 'table1',
         columns: [
@@ -327,7 +328,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const noTimeDimResponse = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [{ field: 'table1.metric1', parameters: {}, type: 'metric' }],
@@ -355,7 +356,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - incomplete date filters', async function (this: TestContext, assert) {
-    const model = await this.service.fetch(
+    const model = await taskFor(this.service.fetch).perform(
       {
         table: 'table1',
         columns: [
@@ -393,7 +394,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const noStartDateResponse = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [
@@ -434,7 +435,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
 
     const DAY_FORMAT = 'YYYY-MM-DD';
     const dateToCurrentResponse = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [{ field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }],
@@ -480,7 +481,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - sorts', async function (this: TestContext, assert) {
-    const model = await this.service.fetch(
+    const model = await taskFor(this.service.fetch).perform(
       {
         table: 'table1',
         columns: [
@@ -535,7 +536,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const multiSortResponse = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [
@@ -632,7 +633,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
 
   test('fetch - limit', async function (this: TestContext, assert) {
     const limit = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [
@@ -690,7 +691,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const limitless = (
-      await this.service.fetch(
+      await taskFor(this.service.fetch).perform(
         {
           table: 'table1',
           columns: [
@@ -776,8 +777,8 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     assert.expect(2);
 
     // Return an error
-    await this.service
-      .fetch(
+    await taskFor(this.service.fetch)
+      .perform(
         {
           table: 'badTable',
           columns: [{ field: 'badTable.badMetric', parameters: {}, type: 'metric' }],

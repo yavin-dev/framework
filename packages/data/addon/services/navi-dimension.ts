@@ -1,14 +1,18 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
-import NaviDimensionAdapter, { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
+import { task } from 'ember-concurrency';
 import { getOwner } from '@ember/application';
 import { getDataSource } from 'navi-data/utils/adapter';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import { taskFor } from 'ember-concurrency-ts';
+import type { TaskGenerator } from 'ember-concurrency';
+import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
+import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
+import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
+import type NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export type ServiceOptions = {
   timeout?: number;
@@ -39,9 +43,10 @@ export default class NaviDimensionService extends Service {
    * @param dimension - requested dimension
    * @param options - method options
    */
-  async all(dimension: DimensionColumn, options?: ServiceOptions): Promise<NaviDimensionModel[]> {
+  @task *all(dimension: DimensionColumn, options?: ServiceOptions): TaskGenerator<NaviDimensionModel[]> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
-    const payload = await this.adapterFor(dataSourceType).all(dimension, options);
+    const adapter = this.adapterFor(dataSourceType);
+    const payload: unknown = yield taskFor(adapter.all).perform(dimension, options);
     return this.serializerFor(dataSourceType).normalize(dimension, payload);
   }
 
@@ -51,13 +56,14 @@ export default class NaviDimensionService extends Service {
    * @param predicate - filter criteria
    * @param options - method options
    */
-  async find(
+  @task *find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
     options?: ServiceOptions
-  ): Promise<NaviDimensionModel[]> {
+  ): TaskGenerator<NaviDimensionModel[]> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
-    const payload = await this.adapterFor(dataSourceType).find(dimension, predicate, options);
+    const adapter = this.adapterFor(dataSourceType);
+    const payload: unknown = yield taskFor(adapter.find).perform(dimension, predicate, options);
     return this.serializerFor(dataSourceType).normalize(dimension, payload);
   }
 
@@ -67,9 +73,14 @@ export default class NaviDimensionService extends Service {
    * @param query - query string
    * @param options - method options
    */
-  async search(dimension: DimensionColumn, query: string, options?: ServiceOptions): Promise<NaviDimensionModel[]> {
+  @task *search(
+    dimension: DimensionColumn,
+    query: string,
+    options?: ServiceOptions
+  ): TaskGenerator<NaviDimensionModel[]> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
-    const payload = await this.adapterFor(dataSourceType).search(dimension, query, options);
+    const adapter = this.adapterFor(dataSourceType);
+    const payload: unknown = yield taskFor(adapter.search).perform(dimension, query, options);
     return this.serializerFor(dataSourceType).normalize(dimension, payload);
   }
 }

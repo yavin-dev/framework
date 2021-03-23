@@ -21,6 +21,7 @@ import BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
 import { FiliDimensionResponse } from 'navi-data/adapters/dimensions/bard';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { FilterOperator } from 'navi-data/adapters/facts/interface';
+import { taskFor } from 'ember-concurrency-ts';
 
 const SEARCH_OPERATOR_PRIORITY = ['contains', 'in'];
 
@@ -109,18 +110,20 @@ export default class BardDimensionService extends Service {
       dimension,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return bardAdapter.all({ columnMetadata }, options).then((recordsFromBard: TODO) => {
-      const serialized = recordsFromBard?.rows;
-      const dimensions = kegAdapter.pushMany(dimension, serialized, options);
+    return taskFor(bardAdapter.all)
+      .perform({ columnMetadata }, options)
+      .then((recordsFromBard: TODO) => {
+        const serialized = recordsFromBard?.rows;
+        const dimensions = kegAdapter.pushMany(dimension, serialized, options);
 
-      // Fili provides pagination metadata only when data is partially fetched
-      const isPartiallyLoaded = recordsFromBard.meta?.pagination;
-      if (!isPartiallyLoaded) {
-        this._setLoadedStatus(dimension);
-      }
+        // Fili provides pagination metadata only when data is partially fetched
+        const isPartiallyLoaded = recordsFromBard.meta?.pagination;
+        if (!isPartiallyLoaded) {
+          this._setLoadedStatus(dimension);
+        }
 
-      return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
-    });
+        return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
+      });
   }
 
   /**
@@ -170,11 +173,13 @@ export default class BardDimensionService extends Service {
       dimension,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return bardAdapter.find({ columnMetadata }, andQueries, options).then((recordsFromBard: TODO) => {
-      const serialized = recordsFromBard?.rows;
-      const dimensions = kegAdapter.pushMany(dimension, serialized, options);
-      return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
-    });
+    return taskFor(bardAdapter.find)
+      .perform({ columnMetadata }, andQueries, options)
+      .then((recordsFromBard: TODO) => {
+        const serialized = recordsFromBard?.rows;
+        const dimensions = kegAdapter.pushMany(dimension, serialized, options);
+        return this._createBardDimensionsArray(recordsFromBard, dimensions, dimension);
+      });
   }
 
   /**
@@ -203,10 +208,12 @@ export default class BardDimensionService extends Service {
       if (!isEmpty(recordFromKeg)) {
         return recordFromKeg;
       } else {
-        return bardAdapter.findById(dimension, value, options).then((recordsFromBard: TODO) => {
-          const serialized = recordsFromBard?.rows;
-          return kegAdapter.pushMany(dimension, serialized, options).firstObject;
-        });
+        return taskFor(bardAdapter.findById)
+          .perform(dimension, value, options)
+          .then((recordsFromBard: TODO) => {
+            const serialized = recordsFromBard?.rows;
+            return kegAdapter.pushMany(dimension, serialized, options).firstObject;
+          });
       }
     });
   }
@@ -283,7 +290,7 @@ export default class BardDimensionService extends Service {
       dimension,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return bardAdapter.find({ columnMetadata, parameters: { field } }, andFilters, options);
+    return taskFor(bardAdapter.find).perform({ columnMetadata, parameters: { field } }, andFilters, options);
   }
 
   /**
@@ -301,7 +308,7 @@ export default class BardDimensionService extends Service {
       dimension,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return this._bardAdapter.search({ columnMetadata }, query, options);
+    return taskFor(this._bardAdapter.search).perform({ columnMetadata }, query, options);
   }
 
   /**

@@ -3,12 +3,13 @@ import { setupTest } from 'ember-qunit';
 import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
 import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
 import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
-import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import { taskFor } from 'ember-concurrency-ts';
 
 const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -523,7 +524,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const result = await adapter.fetchDataForRequest(TestRequest);
+    const result = await taskFor(adapter.fetchDataForRequest).perform(TestRequest);
     assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
   });
 
@@ -535,7 +536,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
     try {
-      await adapter.fetchDataForRequest(TestRequest);
+      await taskFor(adapter.fetchDataForRequest).perform(TestRequest);
     } catch ({ errors }) {
       const responseText = await errors[0].statusText;
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');

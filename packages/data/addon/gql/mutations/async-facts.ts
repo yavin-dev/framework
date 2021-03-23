@@ -1,12 +1,12 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import gql from 'graphql-tag';
 
 export const asyncFactsMutationStr = `
   mutation($id: ID, $query: String) {
-    asyncQuery(op: UPSERT, data: { id: $id, query: $query, queryType: GRAPHQL_V1_0, status: QUEUED }) {
+    asyncQuery(op: UPSERT, data: { id: $id, query: $query, queryType: GRAPHQL_V1_0, status: QUEUED, asyncAfterSeconds: 0 }) {
       edges {
         node {
           id

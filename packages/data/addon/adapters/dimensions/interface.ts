@@ -1,11 +1,12 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { FilterOperator } from '../facts/interface';
 import EmberObject from '@ember/object';
-import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { FilterOperator } from '../facts/interface';
+import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 export type DimensionFilter = {
   operator: FilterOperator;
@@ -18,7 +19,7 @@ export default interface NaviDimensionAdapter extends EmberObject {
    * @param dimension - requested dimension
    * @param options - adapter options
    */
-  all(dimension: DimensionColumn, options?: ServiceOptions): Promise<unknown>;
+  all(dimension: DimensionColumn, options?: ServiceOptions): TaskGenerator<unknown>;
 
   /**
    * Get dimension value for a filter predicate
@@ -26,7 +27,7 @@ export default interface NaviDimensionAdapter extends EmberObject {
    * @param predicate - filter criteria
    * @param options - adapter options
    */
-  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: ServiceOptions): Promise<unknown>;
+  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: ServiceOptions): TaskGenerator<unknown>;
 
   /**
    * Get dimension values for a search string
@@ -34,5 +35,5 @@ export default interface NaviDimensionAdapter extends EmberObject {
    * @param query - query string
    * @param options - adapter options
    */
-  search(dimension: DimensionColumn, query: string, options?: ServiceOptions): Promise<unknown>;
+  search(dimension: DimensionColumn, query: string, options?: ServiceOptions): TaskGenerator<unknown>;
 }
