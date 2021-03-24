@@ -22,9 +22,11 @@
       .column-selector__add-column-btn {
         font-weight: bold;
       }
+
       .column-selector__add-icon {
         color: $links-hover-text-color;
       }
+
       .column-selector__column-info {
         visibility: visible;
       }
@@ -32,8 +34,9 @@
   }
 
   &__add-column-btn {
-    word-break: break-word;
     text-align: left;
+    word-break: break-word;
+
     span {
       line-height: $icon-font-size;
     }
