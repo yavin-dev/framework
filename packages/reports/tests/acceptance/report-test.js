@@ -12,7 +12,7 @@ import config from 'ember-get-config';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import moment from 'moment';
-import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { reorder } from 'ember-sortable/test-support/helpers';
 import { setupAnimationTest } from 'ember-animated/test-support';
 
@@ -1546,99 +1546,6 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.filter-collection')
       .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
-  });
-
-  test('Dimension selector', async function (assert) {
-    assert.expect(7);
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Property', 'Date Time'],
-      'Selected dimensions initially include "Date Time" and "Property"'
-    );
-
-    // Click Date Time again
-    await clickItem('timeGrain', 'Date Time');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Property', 'Date Time'],
-      'Clicking date time again does not change selected dimensions'
-    );
-
-    let dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
-
-    // Add Dimension
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Operating System', 'Property', 'Date Time'],
-      'Adding a dimension changes selected dimensions'
-    );
-
-    dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Added dimension row still has a plus icon');
-
-    // Click dimension again
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Operating System', 'Property', 'Date Time'],
-      'Clicking a selected dimension does not change selected dimensions'
-    );
-
-    dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Dimension row still has a plus icon');
-  });
-
-  test('Metric selector', async function (assert) {
-    assert.expect(6);
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks'],
-      'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
-    );
-
-    let metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'An unselected metric row has a plus icon');
-
-    // Add Metric
-    await clickItem('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Adding a metric changes selected metrics'
-    );
-
-    metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Added metric row still has a plus icon');
-
-    // Click metric again
-    await clickItem('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Clicking a selected metric does not change selected metrics'
-    );
-
-    metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Metric row still has a plus icon');
   });
 
   test('Test filter "Is Empty" is accepted', async function (assert) {

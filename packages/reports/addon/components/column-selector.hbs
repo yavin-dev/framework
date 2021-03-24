@@ -13,7 +13,7 @@
     {{on "input" (pipe (pick "target.value") (fn (mut this.query) ) )}}
   />
     {{#if (eq this.filteredColumns.length 0)}}
-      <span class="flex justify-content-center">No Match Found</span>
+      <span class="column-selector__no-match flex justify-content-center">No Match Found</span>
     {{else}}
       <GroupedList
         @items={{this.filteredColumns}}

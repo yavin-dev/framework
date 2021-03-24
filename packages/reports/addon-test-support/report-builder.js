@@ -119,6 +119,7 @@ async function _renderAndOpenAllFiltered(type) {
   const verticalCollection = getVerticalCollection(getSelector(type));
   const guid = find(getSelector(type)).querySelector('.grouped-list')?.id;
   //const viewRegistry = getContext().owner.lookup('-view-registry:main');
+  // eslint-disable-next-line no-undef
   const tree = Ember._captureRenderTree(getContext().owner);
   //const groupedList = Object.values(viewRegistry).find((c) => c.guid === guid);
   const groupedList = findNode(tree[0], guid).instance;
@@ -168,7 +169,7 @@ export async function renderAll(type, query = '') {
 export async function getAllSelected(type, query) {
   assert('getAllSelected must be passed an accepted type', isAcceptedType(type));
   const resetRenderAll = await renderAll(type, query);
-  const selected = findAll(`${getSelector(type)} ${addedColumns}`);
+  const selected = findAll(`${getSelector(type)} ${addedColumns}`).map((e) => e.textContent.trim());
   await resetRenderAll();
   return selected;
 }

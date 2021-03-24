@@ -1,26 +1,106 @@
-import { module, test } from 'qunit';
+import { click, fillIn, findAll, render } from '@ember/test-helpers';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { TestContext as Context } from 'ember-test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import FragmentFactory from 'navi-core/services/fragment-factory';
+import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import NaviMetadataService from 'navi-data/services/navi-metadata';
+import { module, test } from 'qunit';
 
+interface TestContext extends Context {
+  metadataService: NaviMetadataService;
+  factoryService: FragmentFactory;
+  onUpdateFilter(): void;
+  onRemoveFilter(): void;
+}
+
+const Template = hbs`
+  <ColumnSelector
+    @title={{this.title}}
+    @allColumns={{this.allColumns}}
+    @selectedColumns={{this.selectedColumns}}
+    @onAddColumn={{this.onAddColumn}}
+    @onAddFilter={{this.onAddFilter}}
+  />
+`;
 module('Integration | Component | column-selector', function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
+  hooks.beforeEach(async function (this: TestContext) {
+    this.factoryService = this.owner.lookup('service:fragment-factory');
+    this.metadataService = this.owner.lookup('service:navi-metadata');
+    await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
 
-  test('it renders', async function (assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
+    const dimensions = this.metadataService.all('dimension', 'bardOne').toArray();
+    const selectedColumns = [this.factoryService.createColumnFromMeta(dimensions[0])];
+    this.set('allColumns', dimensions);
+    this.set('selectedColumns', selectedColumns);
+    this.set('title', 'My Awesome Columns');
+    this.set('onAddColumn', () => null);
+    this.set('onAddFilter', () => null);
+  });
 
-    await render(hbs`{{column-selector}}`);
+  test('it renders', async function (this: TestContext, assert) {
+    await render(Template);
 
-    assert.equal(this.element.textContent.trim(), '');
+    assert.dom('.column-selector__title').hasText('My Awesome Columns', '`column-selector renders a title correctly');
+    const groups = findAll('.grouped-list__group-header').map((e) => e?.textContent?.trim());
+    assert.deepEqual(groups, ['test (26)', 'Asset (4)'], '`column-selector` renders column groups correctly');
 
-    // Template block usage:
-    await render(hbs`
-      {{#column-selector}}
-        template block text
-      {{/column-selector}}
-    `);
+    await click(findAll('.grouped-list__group-header')[1]);
+    const groupColumns = findAll('.column-selector__column').map((e) => e?.textContent?.trim());
+    assert.deepEqual(
+      groupColumns,
+      ['EventId', 'Parent Event Id', 'Product Family', 'Property'],
+      '`column-selector` expands a column group correctly'
+    );
+  });
 
-    assert.equal(this.element.textContent.trim(), 'template block text');
+  test('search', async function (this: TestContext, assert) {
+    await render(Template);
+
+    assert.dom('.column-selector__column').doesNotExist('All column groups are collapsed');
+    await fillIn('.column-selector__search-input', 'age');
+
+    const groups = findAll('.grouped-list__group-header').map((e) => e?.textContent?.trim());
+    assert.deepEqual(groups, ['test (1)'], '`column-selector` renders search column groups correctly');
+
+    const groupColumns = findAll('.column-selector__column').map((e) => e?.textContent?.trim());
+    assert.deepEqual(groupColumns, ['Age'], '`column-selector` expands search column group correctly');
+
+    await fillIn('.column-selector__search-input', 'not a column');
+    assert
+      .dom('.grouped-list__group-header')
+      .doesNotExist('`column-selector` does not show column groups when no search column is found');
+    assert
+      .dom('.column-selector__column')
+      .doesNotExist('`column-selector` does not show columns when no search column is found');
+    assert.dom('.column-selector__no-match').exists('`column-selector` shows a message when no search column is found');
+  });
+
+  test('onAddColumn', async function (this: TestContext, assert) {
+    assert.expect(1);
+
+    this.set('onAddColumn', (column: ColumnMetadataModel) => {
+      assert.equal(column.name, 'Age', '`column-selector` calls `onAddColumn` when column is clicked');
+    });
+
+    await render(Template);
+    await fillIn('.column-selector__search-input', 'age');
+    await click('.column-selector__add-column-btn');
+  });
+
+  test('onAddFilter', async function (this: TestContext, assert) {
+    assert.expect(1);
+
+    this.set('onAddFilter', (column: ColumnMetadataModel) => {
+      assert.equal(column.name, 'Age', '`column-selector` calls `onAddFilter` when filter is clicked');
+    });
+
+    await render(Template);
+    await fillIn('.column-selector__search-input', 'age');
+    await click('.column-selector__add-filter-btn');
   });
 });

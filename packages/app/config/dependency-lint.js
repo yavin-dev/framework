@@ -8,5 +8,7 @@ module.exports = {
     'ember-concurrency': '1.3.0 || 2.0.3',
     'ember-element-helper': '0.2.0 || 0.3.2',
     'ember-basic-dropdown': '3.0.11 || 3.0.16',
+    '@html-next/vertical-collection': '1.0.0 || 2.0.0',
+    'ember-raf-scheduler': '0.1.0 || 0.2.0',
   },
 };
