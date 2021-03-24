@@ -1,0 +1,29 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<ul id={{this.guid}} class="grouped-list" ...attributes>
+  <VerticalCollection
+    @items={{this.flatItems}}
+    @estimateHeight={{20}}
+    @staticHeight={{false}}
+    @bufferSize={{10}}
+    @containerSelector="#{{this.guid}}"
+    as |item idx|>
+    {{#if item.isGroup}}
+      <li
+        class="grouped-list__group-header"
+        role="button"
+        {{on "click" (fn this.toggleOpen item.name)}}
+        >
+        <DenaliIcon
+          class="grouped-list__group-header-icon grouped-list__group-header-icon--{{if item.isOpen "open" "closed"}}"
+          @icon="arrowhead-{{if item.isOpen "down" "right"}}"
+        />
+        <span class="grouped-list__group-header-content">{{item.name}} ({{item.length}})</span>
+      </li>
+    {{else}}
+      <li class="grouped-list__item m-l-18 m-t-2">
+        {{yield item idx}}
+      </li>
+    {{/if}}
+  </VerticalCollection>
+</ul>
+

@@ -34,6 +34,7 @@
     "@ember/jquery": "^0.6.1",
     "@ember/optional-features": "^1.1.0",
     "@glimmer/component": "^1.0.3",
+    "@html-next/vertical-collection": "^2.0.0",
     "babel-eslint": "^10.0.3",
     "broccoli-asset-rev": "^3.0.0",
     "cross-env": "^7.0.3",

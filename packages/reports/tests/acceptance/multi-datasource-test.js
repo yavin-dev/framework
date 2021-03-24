@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { clickItem, clickItemFilter, getAllSelected } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -30,7 +30,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map((el) => el.textContent.trim()),
-      ['Personal (4)', 'World (2)', 'Asset (2)', 'Date (1)', 'World (3)', 'Personal (3)'],
+      ['Personal (4)', 'World (2)', 'Asset (2)', 'Date (1)', 'Personal (3)', 'World (3)'],
       'Metric and dimension categories switched to metrics/dimensions of new datasource'
     );
 
@@ -114,8 +114,6 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource saved report', async function (assert) {
-    assert.expect(14);
-
     let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -179,9 +177,6 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     assert
       .dom('.report-builder__container--filters--collapsed')
       .includesText('Date Time (day)', 'The request is constrained and adds back the required filters');
-
-    assert.deepEqual(await getAllSelected('dimension'), [], 'All dimensions are removed when table is changed');
-    assert.deepEqual(await getAllSelected('metric'), [], 'All metrics are removed when table is changed');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });

@@ -11,18 +11,24 @@
     {{/if}}
     <div class="report-builder__container--builder {{unless this.hasValidLogicalTable "report-builder__container--builder-skel"}}">
       {{#if this.hasValidLogicalTable}}
-        <DimensionSelector
-          class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}"
-          @request={{this.request}}
-          @onAddDimension={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-          @onAddDimensionFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") this.onAddFilter}}
-        />
-        <MetricSelector
-          class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}"
-          @request={{this.request}}
-          @onAddMetric={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-          @onAddMetricFilter={{queue (update-report-action "ADD_METRIC_FILTER") this.onAddFilter}}
-        />
+        <div class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}">
+          <ColumnSelector
+            @title="Dimensions"
+            @allColumns={{append this.request.tableMetadata.dimensions this.request.tableMetadata.timeDimensions}}
+            @selectedColumns={{this.request.dimensionColumns}}
+            @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+            @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") this.onAddFilter}}
+          />
+       </div>
+       <div class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}" >
+         <ColumnSelector
+           @title="Metrics"
+           @allColumns={{this.request.tableMetadata.metrics}}
+           @selectedColumns={{this.request.metricColumns}}
+           @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+           @onAddFilter={{queue (update-report-action "ADD_METRIC_FILTER") this.onAddFilter}}
+         />
+       </div>
       {{/if}}
     </div>
   </div>
