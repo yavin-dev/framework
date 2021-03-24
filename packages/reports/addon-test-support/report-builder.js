@@ -1,7 +1,7 @@
-import { click, getContext, fillIn, find, findAll, triggerEvent } from '@ember/test-helpers';
 import { assert } from '@ember/debug';
 import { set } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
+import { click, fillIn, find, findAll, getContext, triggerEvent } from '@ember/test-helpers';
 import findByContains from 'navi-core/test-support/contains-helpers';
 import { getVerticalCollection, renderAllItems } from './vertical-collection';
 
@@ -100,6 +100,16 @@ export async function clickItemFilter(type, query, itemText) {
   await reset();
 }
 
+function findNode(node, guid) {
+  console.log('findNode: ' + node.id);
+  if (guidFor(node.instance) === guid) {
+    return node;
+  }
+
+  const { children = [] } = node;
+  return children.map((c) => findNode(c, guid)).find((c) => c);
+}
+
 /**
  * Forces the given grouped list to open all of its groups and render all of its contents
  * @param {String} type - a valid selector for grouped lists
@@ -108,8 +118,10 @@ export async function clickItemFilter(type, query, itemText) {
 async function _renderAndOpenAllFiltered(type) {
   const verticalCollection = getVerticalCollection(getSelector(type));
   const guid = find(getSelector(type)).querySelector('.grouped-list')?.id;
-  const viewRegistry = getContext().owner.lookup('-view-registry:main');
-  const groupedList = Object.values(viewRegistry).find((c) => c.guid === guid);
+  //const viewRegistry = getContext().owner.lookup('-view-registry:main');
+  const tree = Ember._captureRenderTree(getContext().owner);
+  //const groupedList = Object.values(viewRegistry).find((c) => c.guid === guid);
+  const groupedList = findNode(tree[0], guid).instance;
 
   const { groupConfigs, groupedItems } = groupedList;
   const _groupConfigs = Object.assign({}, groupConfigs);
