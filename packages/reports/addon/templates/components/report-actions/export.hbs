@@ -28,7 +28,7 @@ for terms. --}}
     />
     <a class="get-api__run-btn button is-ghost m-r-10" href={{await this.href}} target={{this.target}} download={{this.download}}>Download</a>
 {{else}}
-  <DenaliLoader/>
+  <DenaliLoader/>{{await this.href}}
 {{/if}}
   </modal.Content>
 </DenaliModal>
