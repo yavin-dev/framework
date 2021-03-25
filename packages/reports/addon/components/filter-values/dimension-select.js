@@ -14,7 +14,7 @@ import { resolve } from 'rsvp';
 import { inject as service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 import Component from '@ember/component';
-import { get, computed, action } from '@ember/object';
+import { get, set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import layout from '../../templates/components/filter-values/dimension-select';
@@ -24,7 +24,6 @@ import { sortBy } from 'lodash-es';
 const SEARCH_DEBOUNCE_TIME = 200;
 
 function isNumeric(num) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num);
 }
 function isNumericDimensionArray(arr) {
@@ -153,7 +152,7 @@ export default class DimensionSelectComponent extends Component {
    */
   @(task(function*(this, term) {
     const searchTerm = term.trim();
-    this.searchTerm = searchTerm;
+    set(this, 'searchTerm', searchTerm);
     const dataSourceName = this.filter.subject.source;
 
     if (searchTerm) {
