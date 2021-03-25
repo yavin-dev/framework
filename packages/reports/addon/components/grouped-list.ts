@@ -4,7 +4,6 @@
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { isBlank } from '@ember/utils';
 import { groupBy, sortBy } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { guidFor } from '@ember/object/internals';
@@ -24,11 +23,11 @@ export default class GroupedListComponent extends Component<Args> {
   guid = guidFor(this);
 
   get groupedItems() {
-    const { items, groupByField, sortByField } = this.args;
+    const { items, groupByField, sortByField = '' } = this.args;
 
     const grouped = groupBy(items, (row) => row[groupByField]?.split(',')[0] || `Uncategorized`);
 
-    if (!isBlank(sortByField)) {
+    if (sortByField.trim() !== '') {
       Object.entries(grouped).forEach(([key, value]) => {
         grouped[key] = sortBy(value, [sortByField]);
       });
