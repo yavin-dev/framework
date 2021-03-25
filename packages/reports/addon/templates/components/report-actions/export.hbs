@@ -1,25 +1,27 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file
 for terms. --}}
-<button
-  type="button"
-  disabled={{@disabled}}
-  {{on "click" (toggle "showModal" this)}}
+<DenaliButton
   class="export__action-btn"
+  type="button"
   ...attributes
+  {{on "click" (queue
+        (fn this.onSuccess)
+        (toggle "showModal" this)
+      )}}
+  disabled={{@disabled}}
 >
   {{yield}}
-</button>
-
+</DenaliButton>
 
 <DenaliModal
   class="export__modal"
   @isOpen={{this.showModal}}
   @onClose={{queue (toggle "showModal" this)}}
   as | modal |
->
-<modal.Content>
-  <h3 class="m-b-30">Export url</h3>
-{{#if (await this.href)}}
+  >
+  <modal.Content>
+  <h3 class="m-b-30">Exporting url</h3>
+  {{#if (await this.href)}}
     <DenaliInput
       @wrapperClass="w-full"
       class="export__api-input m-b-30"
@@ -27,8 +29,14 @@ for terms. --}}
       readonly={{true}}
     />
     <a class="get-api__run-btn button is-ghost m-r-10" href={{await this.href}} target={{this.target}} download={{this.download}}>Download</a>
-{{else}}
-  <DenaliLoader/>
-{{/if}}
+  {{else}}
+  <DenaliProgress
+    @size="default"
+    @isLoading={{is-pending this.href}}
+    @color="default"
+    @shade="500"
+    @value={{100}}
+  />
+  {{/if}}
   </modal.Content>
 </DenaliModal>

@@ -12,36 +12,33 @@
 
 import { inject as service } from '@ember/service';
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { get, computed, action } from '@ember/object';
 import layout from '../../templates/components/report-actions/export';
-
-export default Component.extend({
-  layout,
-
+import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { serializeParameters } from 'navi-data/addon/utils/metric';
+@templateLayout(layout)
+@tagName('')
+class Export extends Component {
   /**
    * @property {DS.Model} report
    */
-  report: undefined,
+  report = undefined;
 
   /**
    * @property {Array} classNames
    */
-  classNames: ['report-control', 'export-action'],
-
-  /**
-   * @property {Array} attributeBindings - component attribute binding
-   */
-  attributeBindings: ['target', 'href', 'download'],
+  classNames = ['report-control', 'export-action'];
 
   /**
    * @property {Service} facts - instance of navi facts service
    */
-  facts: service('navi-facts'),
-
+  @service('navi-facts') facts;
+  @service('naviNotifications') naviNotifications;
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
-  download: computed('disabled', function () {
+  @computed('disabled')
+  get download() {
     console.log('export download ', this);
     // No Download for disabled action
     if (get(this, 'disabled')) {
@@ -51,12 +48,13 @@ export default Component.extend({
       console.log('download true');
       return true;
     }
-  }),
+  }
 
   /**
    * @property {Boolean} target - Boolean to check if request is valid and set target
    */
-  target: computed('disabled', function () {
+  @computed('disabled')
+  get target() {
     console.log('export target ', this);
     // No target for disabled action
     if (get(this, 'disabled')) {
@@ -66,12 +64,13 @@ export default Component.extend({
       console.log('target _blank');
       return '_blank';
     }
-  }),
+  }
 
   /**
    * @property {String} href - API link for the report
    */
-  href: computed('report.{request,request.validations.isTruelyValid}', 'disabled', function () {
+  @computed('disabled', 'facts', 'report.request.validations.isTruelyValid')
+  get href() {
     /*
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled
@@ -86,5 +85,14 @@ export default Component.extend({
     const url = this.facts.getDownloadURL(request, { format: 'csv', dataSourceName: request.dataSource });
     console.log(' getDownloadURL ', url);
     return url;
-  }),
-});
+  }
+
+  @action
+  onSuccess() {
+    this.naviNotifications.add({
+      title: 'Exporting',
+      style: 'info',
+    });
+  }
+}
+export default Export;
