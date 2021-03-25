@@ -127,8 +127,6 @@ module('Integration | Component | visualization config/table', function(hooks) {
     //click the subtotal toggle
     await click('.table-config__total-toggle-button--subtotal .x-toggle-btn');
 
-    //await new Promise(r => setTimeout(r, 400000));
-
     assert
       .dom('.table-config__subtotal-dimension-select')
       .isVisible('The dimension dropdown is visible when subtotal is toggled on'),
