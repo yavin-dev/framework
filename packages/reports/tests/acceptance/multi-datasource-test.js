@@ -20,7 +20,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource report', async function (assert) {
-    assert.expect(15);
+    assert.expect(19);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -54,11 +54,19 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.navi-report__run-btn');
 
     //Check if filters meta data is displaying properly
-    assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
-      'Filter titles rendered correctly'
-    );
+    assert.dom(findAll('.filter-builder__subject .name')[0]).hasText('Date Time', 'Date time filter renders correctly');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[0])
+      .hasText('day', 'Date time filter parameter renders correctly');
+
+    assert.dom(findAll('.filter-builder__subject .name')[1]).hasText('Container', 'Second filter rendered correctly');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[1])
+      .hasText('id', 'Second filter parameter rendered correctly');
+
+    assert.dom(findAll('.filter-builder__subject .name')[2]).hasText('Used Amount', 'Third filter rendered correctly');
 
     assert
       .dom('.filter-values--dimension-select__trigger')
@@ -123,9 +131,15 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
+      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
+      ['Date Time', 'Container', 'Used Amount'],
       'Filter titles rendered correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
+      ['day', 'id'],
+      'Filter parameters rendered correctly'
     );
 
     await click('.report-builder__container-header__filters-toggle');

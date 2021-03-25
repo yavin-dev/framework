@@ -36,7 +36,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
       assert
         .dom('.filter-builder__subject')
-        .hasText(`Date Time (${grainId})`, `The filter is updated to the ${grainId} grain`);
+        .hasText(`Date Time ${grainId}`, `The filter is updated to the ${grainId} grain`);
 
       await selectChoose('.filter-builder__operator-trigger', 'Between');
       assert
@@ -88,7 +88,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await selectChoose('.navi-table-select__trigger', 'Network');
     assert.dom('.navi-table-select-item').hasText('Network', 'A fili table is selected');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)', 'A date time filter exists on a new report');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists on a new report');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
     await clickItem('dimension', 'Date Time');
@@ -104,9 +104,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await selectChoose('.navi-table-select__trigger', 'Table A');
 
-    assert
-      .dom('.filter-builder__subject')
-      .hasText('Date Time (day)', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
   });
 
@@ -116,9 +114,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await selectChoose('.navi-table-select__trigger', 'Table C');
 
-    assert
-      .dom('.filter-builder__subject')
-      .hasText('Date Time (day)', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
     assert

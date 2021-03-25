@@ -183,7 +183,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // visit report 1
     await visit('/reports/1/view');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)');
+    assert.dom('.filter-builder__subject').hasText('Date Time day');
 
     // remove the dateTime column
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
@@ -195,7 +195,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.navi-report__revert-btn').isNotVisible('After clicking "Revert Changes", button is once again hidden');
 
     assert.dom('.navi-column-config-item[data-name="dateTime"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)');
+    assert.dom('.filter-builder__subject').hasText('Date Time day');
   });
 
   test('Revert changes - existing report', async function (assert) {
@@ -1677,7 +1677,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Remove date time group by
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (month)"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'The filter grain is set to the lowest grain');
+    assert.dom('.filter-builder__subject').hasText('Date Time hour', 'The filter grain is set to the lowest grain');
     // TODO: Better support for hour grain
 
     assert

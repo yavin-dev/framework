@@ -489,11 +489,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     assert.expect(7);
     await visit('reports/1/edit');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)', 'Time grain is initially day');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'Time grain is initially day');
 
     await click('.navi-column-config-item__remove-icon'); // Remove Date Time (day)
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'Deselecting day changes time grain to hour');
+    assert.dom('.filter-builder__subject').hasText('Date Time hour', 'Deselecting day changes time grain to hour');
     await animationsSettled();
     assert.deepEqual(getColumns(), ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'], 'Date Time is removed');
 
@@ -502,7 +502,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (hour)', 'Date time matches existing filter grain on the report');
+      .hasText('Date Time hour', 'Date time matches existing filter grain on the report');
     assert.deepEqual(
       getColumns(),
       ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (hour)'],
@@ -512,7 +512,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (isoWeek)', 'Choosing week changes timegrain from day to week');
+      .hasText('Date Time isoWeek', 'Choosing week changes timegrain from day to week');
     assert.deepEqual(
       getColumns(),
       ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (isoWeek)'],
@@ -1040,11 +1040,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'Filters are opened after adding a metric filter'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Age'],
-      'Dimension filter is added'
-    );
+    assert.dom(findAll('.filter-builder__subject')[0]).hasText('Age', 'Dimension filter is added');
 
     await clickItem('dimension', 'Age');
     await animationsSettled();
@@ -1068,11 +1064,9 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'The filter icon of the first dimension is not active'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      [],
-      'Dimension filter is removed when clicked on duplicate dimension'
-    );
+    assert
+      .dom('.filter-builder__subject .name')
+      .doesNotExist('Dimension filter is removed when clicked on duplicate dimension');
   });
 
   skip('config - filters - metrics - expand on add', async function (assert) {
@@ -1104,11 +1098,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'Filters are opened after adding a metric filter'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Ad Clicks'],
-      'Metric filter is added'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject')[0])
+      .hasText('Date Time Day', 'Date Dimension is properly labeled in filters');
+
+    assert.dom(findAll('.filter-builder__subject')[1]).hasText('Ad Clicks', 'Metric filter is added');
 
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
@@ -1132,16 +1126,14 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'The filter icon of the first metric is not active'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)'],
-      'Metric filter is removed when clicked on duplicate metric'
-    );
+    assert
+      .dom('.filter-builder__subject')
+      .exists({ count: 1 }, 'Metric filter is removed when clicked on duplicate metric');
   });
 
   skip('config - filters - parameterized metrics - expand on add', async function (assert) {
     //TODO update when filter updates are complete
-    assert.expect(9);
+    assert.expect(10);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1168,11 +1160,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'Filters are opened after adding a metric filter'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (USD)'],
-      'Metric filter is added'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject')[0])
+      .hasText('Date Time Day', 'Date Dimension is properly labeled in filters');
+
+    assert.dom(findAll('.filter-builder__subject')[1]).hasText('Platform Revenue USD', 'Metric filter is added');
 
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
@@ -1201,16 +1193,14 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'The filter of the first parameterized metric is not active'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)'],
-      'Metric filter is removed when clicked on duplicate metric'
-    );
+    assert
+      .dom('.filter-builder__subject')
+      .exists({ count: 1 }, 'Metric filter is removed when clicked on duplicate metric');
   });
 
   skip('config - filters - parameterized metrics - different parameters make different filters', async function (assert) {
     //TODO update when filter updates are complete
-    assert.expect(7);
+    assert.expect(10);
     await visit('/reports/new');
 
     await clickItem('metric', 'Platform Revenue');
@@ -1220,11 +1210,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]'); // open first parameterized metric
     await click('.navi-column-config-base__filter-icon');
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (USD)'],
-      'Metric filter is added'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject')[0])
+      .hasText('Date Time Day', 'Date Time dimension rendered correctly');
+
+    assert.dom(findAll('.filter-builder__subject')[1]).hasText('Platform Revenue USD', 'Metric filter is added');
 
     assert
       .dom('.navi-column-config-base__filter-icon')
@@ -1265,11 +1255,17 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'The filter of the first parameterized metric is still active'
       );
 
-    assert.deepEqual(
-      findAll('.filter-builder__subject').map((el) => el.textContent?.trim()),
-      ['Date Time (Day)', 'Platform Revenue (CAD)', 'Platform Revenue (USD)'],
-      'Second metric filter is added'
-    );
+    assert
+      .dom(findAll('.filter-builder__subject')[0])
+      .hasText('Date Time Day', 'Date Time dimension is rendered correctly');
+
+    assert
+      .dom(findAll('.filter-builder__subject')[1])
+      .hasText('Platform Revenue CAD', 'First metric is rendered correct');
+
+    assert
+      .dom(findAll('.filter-builder__subject')[2])
+      .hasText('Platform Revenue USD', 'Second metric is rendered correctly');
   });
 
   skip('config - filters - metrics - stay collapsed on remove', async function (assert) {

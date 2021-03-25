@@ -137,7 +137,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time (day)', 'After clicking "Revert Changes", the changed time grain is returned');
+      .hasText('Date Time day', 'After clicking "Revert Changes", the changed time grain is returned');
 
     assert
       .dom('.navi-report-widget__revert-btn')
