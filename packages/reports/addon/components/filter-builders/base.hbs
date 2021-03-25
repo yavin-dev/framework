@@ -13,8 +13,14 @@
     <div class="filter-builder__subject xs-col-1-2 sm-col-1-2 col-1-5">
       <div class="filter-builder__subject-name">
         <span class="name m-r-4">{{this.columnName}}</span>
-        {{#each this.paramValues as |parameter|}}
-          <DenaliChip class="m-r-4" @size="small">{{parameter}}</DenaliChip>
+        {{#each this.paramValues as |parameter index|}}
+          <DropdownParameterPicker 
+            @filter={{@filter}} 
+            @parameterIndex={{index}}
+            @updateParameters={{this.updateParameters}}
+            @parameterKeys={{this.paramKeys}}
+          >
+          </DropdownParameterPicker>
         {{/each}}
       </div>
     </div>

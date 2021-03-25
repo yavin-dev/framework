@@ -88,4 +88,9 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
   get paramValues() {
     return Object.values(this.args.filter.parameters);
   }
+
+  @computed('args.filter.parameters')
+  get paramKeys() {
+    return Object.keys(this.args.filter.parameters);
+  }
 }
