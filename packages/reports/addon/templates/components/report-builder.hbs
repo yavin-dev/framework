@@ -16,7 +16,7 @@
             <ColumnSelector
               @title="Dimensions"
               @allColumns={{append this.request.tableMetadata.dimensions this.request.tableMetadata.timeDimensions}}
-              @selectedColumns={{this.request.dimensionColumns}}
+              @request={{this.request}}
               @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
               @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") this.onAddFilter}}
             />
@@ -25,7 +25,7 @@
           <ColumnSelector
             @title="Metrics"
             @allColumns={{this.request.tableMetadata.metrics}}
-            @selectedColumns={{this.request.metricColumns}}
+            @request={{this.request}}
             @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
             @onAddFilter={{queue (update-report-action "ADD_METRIC_FILTER") this.onAddFilter}}
           />

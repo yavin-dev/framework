@@ -14,7 +14,7 @@ interface Args {
   shouldOpenAllGroups: boolean;
   containerSelector: string;
   groupByField: string;
-  sortByField: string;
+  sortByField?: string;
 }
 
 export default class GroupedListComponent extends Component<Args> {
@@ -51,7 +51,7 @@ export default class GroupedListComponent extends Component<Args> {
     > = [];
     return Object.keys(groupedItems).reduce((items, name) => {
       const groupItems = groupedItems[name];
-      const isOpen = groupConfigs[name] || false || shouldOpenAllGroups;
+      const isOpen = groupConfigs[name] || shouldOpenAllGroups;
 
       items.push({ name, length: groupItems.length, isOpen, isGroup: true });
       if (isOpen) {

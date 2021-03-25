@@ -3,18 +3,18 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import Component from '@glimmer/component';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import { guidFor } from '@ember/object/internals';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import RequestFragment from 'navi-core/models/bard-request-v2/request';
 //@ts-ignore
 import { searchRecords } from 'navi-core/utils/search';
-import { tracked } from '@glimmer/tracking';
+import ColumnMetadataModel from 'navi-data/models/metadata/column';
 
 interface ColumnSelectorArgs {
   title: string;
   allColumns: Array<ColumnMetadataModel>;
-  selectedColumns: Array<ColumnFragment>;
+  request: RequestFragment;
   onAddColumn(column: ColumnMetadataModel): void;
   onAddFilter(column: ColumnMetadataModel): void;
 }

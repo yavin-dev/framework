@@ -12,13 +12,13 @@ import { module, test } from 'qunit';
 import config from 'ember-get-config';
 //@ts-ignore
 import { assertTooltipRendered, assertTooltipNotRendered, assertTooltipContent } from 'ember-tooltips/test-support';
+import ColumnSelector from 'navi-reports/components/column-selector';
 
-interface TestContext extends Context {
+type ComponentArgs = ColumnSelector['args'];
+interface TestContext extends Context, ComponentArgs {
   server: Server;
   metadataService: NaviMetadataService;
   factoryService: FragmentFactory;
-  onUpdateFilter(): void;
-  onRemoveFilter(): void;
 }
 
 const TEMPLATE = hbs`
