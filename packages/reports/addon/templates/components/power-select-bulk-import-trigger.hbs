@@ -1,12 +1,18 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{!-- Same as stock power select multiple trigger except for onPaste event --}}
-{{!-- Remove template-lint-disable once we upgrade power select --}}
-{{!-- template-lint-disable no-action no-implicit-this no-curly-component-invocation --}}
-<ul id="ember-power-select-multiple-options-{{select.uniqueId}}" class="ember-power-select-multiple-options">
-  {{#each select.selected as |opt idx|}}
-    <li class="ember-power-select-multiple-option {{if opt.disabled "ember-power-select-multiple-option--disabled" }}">
-      {{#unless select.disabled }}
+
+<ul
+  id="ember-power-select-multiple-options-{{@select.uniqueId}}"
+  class="ember-power-select-multiple-options"
+  {{did-update this.openChanged @select.isOpen}}
+  {{on "touchstart" this.chooseOption}}
+  {{!-- template-lint-disable no-invalid-interactive no-positive-tabindex --}}
+  {{on "mousedown" this.chooseOption}}
+  ...attributes>
+  {{#each @select.selected as |opt idx|}}
+    <li class="ember-power-select-multiple-option {{if opt.disabled "ember-power-select-multiple-option--disabled"}}">
+      {{#unless @select.disabled}}
         <span role="button"
           aria-label="remove element"
           class="ember-power-select-multiple-remove-btn"
@@ -14,33 +20,40 @@
           &times;
         </span>
       {{/unless}}
-      {{#if selectedItemComponent}}
-        {{component selectedItemComponent option=(readonly opt) select=(readonly select)}}
+      {{#if @selectedItemComponent}}
+        {{component @selectedItemComponent extra=@extra option=opt select=@select}}
       {{else}}
-        {{yield opt select}}
+        {{yield opt @select}}
       {{/if}}
     </li>
   {{else}}
-    {{#if (and placeholder (not searchEnabled))}}
-      <span class="ember-power-select-placeholder">{{placeholder}}</span>
+    {{#if (and @placeholder (not @searchEnabled))}}
+      <span class="ember-power-select-placeholder">{{@placeholder}}</span>
     {{/if}}
   {{/each}}
-  {{#if searchEnabled}}
+  {{#if @searchEnabled}}
     {{!-- template-lint-disable no-positive-tabindex --}}
-    <input type="search" class="ember-power-select-trigger-multiple-input"
-      autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
-      id="ember-power-select-trigger-multiple-input-{{select.uniqueId}}"
-      value={{select.searchText}}
-      aria-controls={{listboxId}}
-      style={{triggerMultipleInputStyle}}
-      placeholder={{maybePlaceholder}}
-      disabled={{select.disabled}}
-      oninput={{action "onInput"}}
-      onPaste={{action "onPaste"}}
-      onFocus={{onFocus}}
-      onBlur={{onBlur}}
-      tabindex={{tabindex}}
-      onkeydown={{action "onKeydown"}}>
+    <input
+      type="search"
+      class="ember-power-select-trigger-multiple-input"
+      autocomplete="new-password"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck={{false}}
+      id="ember-power-select-trigger-multiple-input-{{@select.uniqueId}}"
+      value={{@select.searchText}}
+      aria-controls={{@listboxId}}
+      style={{this.triggerMultipleInputStyle}}
+      placeholder={{this.maybePlaceholder}}
+      disabled={{@select.disabled}}
+      tabindex={{@tabindex}}
+      {{!-- TODO Paste has been disabled since bulk import is not working --}}
+      {{!-- onPaste={{action "onPaste"}} --}}
+      {{on "focus" @onFocus}}
+      {{on "blur" @onBlur}}
+      {{on "input" this.handleInput}}
+      {{on "keydown" this.handleKeydown}}
+      {{did-insert this.storeInputStyles}}>
   {{/if}}
 </ul>
 <span class="ember-power-select-status-icon"></span>
@@ -51,7 +64,7 @@
     @dimension={{@extra.filter.subject}}
     @queryIds={{this._bulkImportQueryIds}}
     @rawQuery={{this._bulkImportRawValue}}
-    @onSelectValues={{queue (action "importValues") (set this._showBulkImport false)}}
+    @onSelectValues={{queue this.importValues (set this._showBulkImport false)}}
     @onCancel={{set this._showBulkImport false}}
   />
 </NaviModal>

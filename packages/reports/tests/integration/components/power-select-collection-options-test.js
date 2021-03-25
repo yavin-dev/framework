@@ -1,8 +1,17 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
+
+const TEMPLATE = hbs`
+<PowerSelectCollectionOptions
+  @extra={{hash allowClear=this.allowClear sortFn=this.sortFn sortKey=this.sortKey}}
+  @options={{this.options}}
+  @select={{this.select}}
+  as |item|>
+  {{item.name}}
+</PowerSelectCollectionOptions>
+`;
 
 module('Integration | Component | Power Select Collection Options', function(hooks) {
   setupRenderingTest(hooks);
@@ -25,24 +34,11 @@ module('Integration | Component | Power Select Collection Options', function(hoo
   test('it renders - with clear selection', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`
-          {{#power-select-collection-options
-              extra=(hash allowClear=true)
-              options=options
-              select=select
-          as |item| }}
-              {{item.name}}
-          {{/power-select-collection-options}}
-      `);
+    this.allowClear = true;
+    await render(TEMPLATE);
 
     assert.deepEqual(
-      $('.ember-power-select-option')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
+      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
       ['Clear Selection', ...this.get('options').map(o => o.name)],
       'it renders a list of options with clear selection'
     );
@@ -51,24 +47,11 @@ module('Integration | Component | Power Select Collection Options', function(hoo
   test('it renders - without clear selection', async function(assert) {
     assert.expect(1);
 
-    await render(hbs`
-          {{#power-select-collection-options
-              options=options
-              select=select
-          as |item| }}
-              {{item.name}}
-          {{/power-select-collection-options}}
-      `);
+    await render(TEMPLATE);
 
     assert.deepEqual(
-      $('.ember-power-select-option')
-        .toArray()
-        .map(el =>
-          $(el)
-            .text()
-            .trim()
-        ),
-      this.get('options').map(o => o.name),
+      findAll('.ember-power-select-option').map(el => el.textContent?.trim()),
+      this.options.map(o => o.name),
       'it renders a list of options without clear selection'
     );
   });

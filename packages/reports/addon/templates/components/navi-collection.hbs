@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-collection" ...attributes>
   {{#if @config.filterable}}
     <div class="navi-collection__filter-selector">
@@ -7,7 +7,7 @@
         @dropdownClass="navi-collection__filter-dropdown"
         @options={{this.filterOptions}}
         @selected={{this.filter}}
-        @onchange={{fn (mut this.filter)}}
+        @onChange={{fn (mut this.filter)}}
         @searchEnabled={{false}}
         as |filter|
       >

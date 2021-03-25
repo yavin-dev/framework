@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -93,7 +93,7 @@ class MetricSelectorComponent extends Component {
 
       groupedListItems.filter(item => {
         if (item.textContent.trim() === name) {
-          item.querySelector('.metric-config__trigger-icon').dispatchEvent(mouseEvent);
+          item.querySelector('.metric-config__dropdown-trigger').dispatchEvent(mouseEvent);
         }
       });
     });

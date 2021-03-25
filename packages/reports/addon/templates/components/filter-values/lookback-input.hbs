@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.lookback}}
     {{this.lookback}} {{this.dateDescription}}
@@ -8,7 +8,7 @@
 {{else}}
   <div class="filter-values--lookback-input" ...attributes>
     <BasicDropdown @matchTriggerWidth={{true}} as |dd|>
-      <dd.trigger>
+      <dd.Trigger>
         <input
           class="filter-values--lookback-input__value
             {{if @filter.validations.attrs.values.isInvalid "filter-values--lookback-input--error"}}"
@@ -18,8 +18,8 @@
           min="1"
           {{on "input" this.setLookback}}
         >
-      </dd.trigger>
-      <dd.content @class="navi-basic-dropdown-content">
+      </dd.Trigger>
+      <dd.Content class="navi-basic-dropdown-content">
         <ul>
           {{#each this.ranges as |range|}}
             <li
@@ -32,7 +32,7 @@
             </li>
           {{/each}}
         </ul>
-      </dd.content>
+      </dd.Content>
     </BasicDropdown>
     <span class="filter-values--lookback-input__label">{{this.dateDescription}}</span>
   </div>

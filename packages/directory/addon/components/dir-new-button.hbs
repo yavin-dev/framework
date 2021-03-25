@@ -1,8 +1,8 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="dir-new-button" ...attributes>
   <BasicDropdown as |dd|>
-    <dd.trigger @class="dir-new-button__trigger btn btn-primary">New</dd.trigger>
-    <dd.content @class="dir-new-button__content dropdown-arrow">
+    <dd.Trigger class="dir-new-button__trigger btn btn-primary">New</dd.Trigger>
+    <dd.Content class="dir-new-button__content dropdown-arrow">
       {{#each this.fileTypeNames as |typeName|}}
         {{#with (get this.fileTypes typeName) as |typeObject|}}
           <LinkTo @route={{typeObject.linkRoute}} class="dir-new-button__dropdown-option">
@@ -11,6 +11,6 @@
           </LinkTo>
         {{/with}}
       {{/each}}
-    </dd.content>
+    </dd.Content>
   </BasicDropdown>
 </div>

@@ -432,9 +432,7 @@ module('Acceptance | Navi Report Schedule Modal', function(hooks) {
       );
 
     assert.ok(
-      find('.schedule-modal__dropdown--frequency>.ember-basic-dropdown>.ember-power-select-trigger').getAttribute(
-        'aria-disabled'
-      ),
+      find('.schedule-modal__dropdown--frequency>.ember-power-select-trigger').getAttribute('aria-disabled'),
       'The frequency field is disabled when there is an error fetching the schedule'
     );
 

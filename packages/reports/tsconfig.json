@@ -29,6 +29,7 @@
       "navi-reports/*": ["addon/*"],
       "navi-reports/test-support": ["addon-test-support"],
       "navi-reports/test-support/*": ["addon-test-support/*"],
+      "ember-power-select/*": ["node_modules/ember-power-select/addon/*"],
       "*": ["types/*"]
     }
   },

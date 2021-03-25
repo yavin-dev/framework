@@ -41,19 +41,21 @@ module('Integration | Component | filter values/dimension select', function(hook
     // Open value selector
     await clickTrigger();
 
-    let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
-        el.textContent.trim()
-      ),
+    let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)')
+        .map(el => el.textContent.trim())
+        .sort(),
       expectedValueDimensions = AgeValues.filter(age => MockFilter.values.includes(age.id));
 
     assert.deepEqual(
       selectedValueText,
-      expectedValueDimensions.map(age => `${age.description} (${age.id})`),
+      expectedValueDimensions.map(age => `${age.description} (${age.id})`).sort(),
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    let optionText = findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      expectedOptionText = AgeValues.map(age => `${age.description} (${age.id})`);
+    let optionText = findAll('.ember-power-select-option')
+        .map(el => el.textContent.trim())
+        .sort(),
+      expectedOptionText = AgeValues.map(age => `${age.description} (${age.id})`).sort();
 
     /*
      * Since ember-collection is used for rendering the dropdown options,
@@ -95,19 +97,21 @@ module('Integration | Component | filter values/dimension select', function(hook
     // Open value selector
     await clickTrigger();
 
-    let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map(el =>
-        el.textContent.trim()
-      ),
+    let selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)')
+        .map(el => el.textContent.trim())
+        .sort(),
       expectedValueDimensions = ContainerValues.filter(container => MockFilter.values.includes(container.id));
 
     assert.deepEqual(
       selectedValueText,
-      expectedValueDimensions.map(container => `${container.description} (${container.id})`),
+      expectedValueDimensions.map(container => `${container.description} (${container.id})`).sort(),
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    let optionText = findAll('.ember-power-select-option').map(el => el.textContent.trim()),
-      expectedOptionText = ContainerValues.map(container => `${container.description} (${container.id})`);
+    let optionText = findAll('.ember-power-select-option')
+        .map(el => el.textContent.trim())
+        .sort(),
+      expectedOptionText = ContainerValues.map(container => `${container.description} (${container.id})`).sort();
 
     /*
      * Since ember-collection is used for rendering the dropdown options,
@@ -231,7 +235,8 @@ module('Integration | Component | filter values/dimension select', function(hook
     let visibleOptions = () =>
       findAll('.ember-power-select-option')
         .filter(el => el.offsetParent !== null) // only visible elements
-        .map(el => el.textContent.trim());
+        .map(el => el.textContent.trim())
+        .sort();
 
     const expectedValueDimensions = AgeValues.map(age => `${age.description} (${age.id})`).filter(str =>
       str.includes(searchTerm)
