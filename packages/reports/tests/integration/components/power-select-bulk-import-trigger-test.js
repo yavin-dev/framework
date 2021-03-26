@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, click, findAll, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
@@ -26,6 +26,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
 
     await render(
       hbs`<PowerSelectMultiple
+        @searchEnabled={{true}}
         @options={{this.options}}
         @selected={{this.selected}}
         @extra={{this.extra}}
@@ -45,7 +46,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
     assert.dom('.ember-power-select-multiple-options').exists('The component renders');
   });
 
-  skip('paste to trigger bulk import', async function(assert) {
+  test('paste to trigger bulk import', async function(assert) {
     assert.expect(6);
 
     /* == Typing text == */
@@ -81,7 +82,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
     );
   });
 
-  skip('importing dimensions', async function(assert) {
+  test('importing dimensions', async function(assert) {
     assert.expect(3);
 
     const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
@@ -111,7 +112,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
     );
   });
 
-  skip('trying to import invalid values', async function(assert) {
+  test('trying to import invalid values', async function(assert) {
     assert.expect(1);
 
     const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
@@ -122,7 +123,7 @@ module('Integration | Component | power select bulk import trigger', function(ho
     assert.deepEqual(selectedValues(), [], 'No ids are imported when none are valid');
   });
 
-  skip('import valid raw input', async function(assert) {
+  test('import valid raw input', async function(assert) {
     assert.expect(3);
 
     const selectedValues = () => findAll('.selected-dim-id').map(el => el.textContent.trim());
