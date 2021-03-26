@@ -29,30 +29,4 @@
       margin-left: 10px;
     }
   }
-
-  .clone,
-  .export,
-  .share,
-  .delete,
-  .schedule,
-  button {
-    color: $color-grey-600;
-    cursor: pointer;
-    font-size: 14px;
-    padding: 0;
-    vertical-align: bottom;
-
-    &:hover {
-      color: unset;
-    }
-
-    &:disabled,
-    &.disabled {
-      cursor: not-allowed;
-
-      &:hover {
-        color: $color-grey-600;
-      }
-    }
-  }
 }

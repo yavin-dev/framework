@@ -35,29 +35,22 @@
     }
   }
 
-  .actions {
-    display: flex;
-
-    button,
-    .btn,
-    a {
-      padding: 0;
-
-      i {
-        color: @navi-gray;
-        font-size: @font-size-base;
-
-        &:hover {
-          color: @navi-dark-gray;
-        }
-      }
-    }
-
+  .dashboard-action-list {
     .action {
-      margin-right: 10px;
-
       .modal.is-active {
         visibility: visible;
+      }
+    }
+  }
+
+  &__row{
+    .d-icon {
+      visibility: hidden;
+    }
+
+    &:hover {
+      .d-icon {
+        visibility: visible !important;
       }
     }
   }
