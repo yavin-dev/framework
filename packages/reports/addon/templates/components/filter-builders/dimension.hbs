@@ -14,18 +14,19 @@
       {{this.displayName}}
     </span>
     <div class="filter-builder-dimension__operator">
-      <PowerSelect
-        @dropdownClass="filter-builder-dimension__operator-dropdown"
-        @options={{this.supportedOperators}}
-        @selected={{this.filter.operator}}
-        @searchEnabled={{false}}
-        @tagName="span"
-        @triggerClass="filter-builder-dimension__select-trigger"
-        @onChange={{this.setOperator}}
-        as | operator |
-      >
-        {{operator.name}}
-      </PowerSelect>
+      <span>
+        <PowerSelect
+          @dropdownClass="filter-builder-dimension__operator-dropdown"
+          @options={{this.supportedOperators}}
+          @selected={{this.filter.operator}}
+          @searchEnabled={{false}}
+          @triggerClass="filter-builder-dimension__select-trigger"
+          @onChange={{this.setOperator}}
+          as | operator |
+        >
+          {{operator.name}}
+        </PowerSelect>
+      </span>
     </div>
     {{#if this.showFields}}
       <span class="filter-builder-dimension__field">
