@@ -17,7 +17,7 @@
     "lint": "lerna run lint --stream",
     "lint:ws:fix": "cd packages/webservice && ./gradlew formatKotlin -d && true",
     "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes",
-    "lerna-ci-publish-beta": "lerna publish --canary --preid beta --dist-tag beta --exact preminor --force-publish=* --yes"
+    "lerna-ci-publish-beta": "lerna publish --canary --preid beta --dist-tag beta --exact preminor --force-publish=* --yes -- --unsafe-perm"
   },
   "devDependencies": {
     "husky": "^4.2.5",
