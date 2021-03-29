@@ -13,7 +13,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "ember build --environment=production",
+    "build": "cmd=\"ember build --environment=$npm_config_environment\" && echo $cmd && eval $cmd ",
     "lint:fix": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*:fix",
     "lint:hbs": "ember-template-lint .",
     "lint:hbs:fix": "ember-template-lint . --fix",
