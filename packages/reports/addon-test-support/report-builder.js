@@ -1,24 +1,20 @@
-import { click, fillIn, find, findAll, triggerEvent } from '@ember/test-helpers';
 import { assert } from '@ember/debug';
 import { set } from '@ember/object';
+import { guidFor } from '@ember/object/internals';
+import { click, fillIn, find, findAll, getContext, triggerEvent } from '@ember/test-helpers';
 import findByContains from 'navi-core/test-support/contains-helpers';
 import { getVerticalCollection, renderAllItems } from './vertical-collection';
+/* global Ember */
 
-const groupedList = '.grouped-list';
-const groupedListItemFilter = `${groupedList}__filter`; // dimension/metric row filter button
-const groupedListItem = `${groupedList}__item`; // dimension/metric row
-const groupedListItemSelected = `${groupedListItem}-container--selected`; // selected dimension/metric row (feature flagged)
-const groupedListItemLabel = `${groupedListItem}-label`; // add button
-const groupedListItemCheckbox = `${groupedListItem}-checkbox`; // add button
-const naviListSelector = '.navi-list-selector';
-const searchBar = `${naviListSelector}__search-input`;
-const showLink = `${naviListSelector}__show-link`;
+const addFilterButton = `.column-selector__add-filter-btn `;
+const groupedListItem = '.column-selector__column';
+const addColumnButton = '.column-selector__add-column-btn';
+const columnSearchBar = '.column-selector__search-input';
 
 const selector = {
-  timeGrain: '.checkbox-selector--dimension',
-  dimension: '.checkbox-selector--dimension',
-  metric: '.checkbox-selector--metric',
-  metricConfig: '.metric-config__dropdown-container',
+  timeGrain: '.report-builder__dimension-selector',
+  dimension: '.report-builder__dimension-selector',
+  metric: '.report-builder__metric-selector',
 };
 
 /**
@@ -41,29 +37,6 @@ function getSelector(type) {
 }
 
 /**
- * Clicks the show selected button if it is not already showing selected
- * @param {String} type - a valid selector for grouped lists
- * @returns {Function} - resets the show selected to it's original state
- */
-export async function clickShowSelected(type) {
-  assert('clickShowSelected must be passed an accepted type', isAcceptedType(type));
-  const typeSelector = getSelector(type);
-
-  const showSelectedButton = find(`${typeSelector} ${showLink}`);
-  const originalText = showSelectedButton.textContent;
-  if (showSelectedButton.textContent.includes('Show Selected')) {
-    await click(showSelectedButton);
-  }
-
-  return async () => {
-    const button = find(`${typeSelector} ${showLink}`);
-    if (!button.textContent.includes(originalText)) {
-      await click(button);
-    }
-  };
-}
-
-/**
  * Searches for the given query in the grouped list
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
@@ -73,7 +46,7 @@ export async function searchFor(type, query) {
   assert('searchFor must be passed an accepted type', isAcceptedType(type));
   const typeSelector = getSelector(type);
 
-  const searchBarInputSelector = `${typeSelector} ${searchBar}`;
+  const searchBarInputSelector = `${typeSelector} ${columnSearchBar}`;
   const searchBarInput = find(searchBarInputSelector);
   const previousSearch = searchBarInput.textContent;
   await fillIn(searchBarInput, query);
@@ -110,7 +83,7 @@ export async function getItem(type, query, itemText) {
 export async function clickItem(type, query, itemText) {
   assert('clickItem must be passed an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(type, query, itemText);
-  await click(item.querySelector(groupedListItemLabel));
+  await click(item.querySelector(addColumnButton));
   await reset();
 }
 
@@ -123,8 +96,17 @@ export async function clickItem(type, query, itemText) {
 export async function clickItemFilter(type, query, itemText) {
   assert('clickItemFilter must be passed an accepted type', isAcceptedType(type));
   const { item, reset } = await getItem(type, query, itemText);
-  await click(item.querySelector(groupedListItemFilter));
+  await click(item.querySelector(addFilterButton));
   await reset();
+}
+
+function findComponentInstance(node, guid) {
+  if (guidFor(node.instance) === guid) {
+    return node.instance;
+  }
+
+  const { children = [] } = node;
+  return children.map((c) => findComponentInstance(c, guid)).find((c) => c);
 }
 
 /**
@@ -134,8 +116,10 @@ export async function clickItemFilter(type, query, itemText) {
  */
 async function _renderAndOpenAllFiltered(type) {
   const verticalCollection = getVerticalCollection(getSelector(type));
+  const guid = find(getSelector(type)).querySelector('.grouped-list')?.id;
+  const renderTree = Ember._captureRenderTree(getContext().owner);
+  const groupedList = findComponentInstance(renderTree[0], guid);
 
-  const { parentView: groupedList } = verticalCollection;
   const { groupConfigs, groupedItems } = groupedList;
   const _groupConfigs = Object.assign({}, groupConfigs);
 
@@ -173,29 +157,6 @@ export async function renderAll(type, query = '') {
 }
 
 /**
- * Renders all items that match the given query, then returns the names of all selected items
- * @param {String} type - a valid selector for grouped lists
- * @param {String} query - The query to type in the search bar
- * @returns {Array<String>} - the names of all the selected items
- */
-export async function getAllSelected(type, query) {
-  assert('getAllSelected must be passed an accepted type', isAcceptedType(type));
-  const resetRenderAll = await renderAll(type, query);
-
-  const selected = findAll(`${getSelector(type)} ${groupedListItem}`)
-    .filter(
-      (el) =>
-        el.querySelector('.fa-minus-circle') ||
-        el.querySelector(groupedListItemSelected) ||
-        el.querySelector('input:checked')
-    )
-    .map((el) => el.textContent.trim());
-
-  await resetRenderAll();
-  return selected;
-}
-
-/**
  * Renders all items that match the given query, then returns the names of all items
  * @param {String} type - a valid selector for grouped lists
  * @param {String} query - The query to type in the search bar
@@ -209,15 +170,4 @@ export async function getAll(type, query) {
 
   await resetRenderAll();
   return all;
-}
-
-/**
- * Searches for the given timegrain, returns the checkbox and function to reset search
- * @param {String} timeGrain - the name of the timegrain
- * @returns {Function} - resets the search for the given timegrain
- */
-export async function getTimeGrainCheckbox(timeGrain) {
-  const { item, reset } = await getItem('timeGrain', timeGrain);
-  const result = item.querySelector(groupedListItemCheckbox);
-  return { item: result, reset };
 }

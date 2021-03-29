@@ -83,7 +83,7 @@
     display: flex;
     flex: 1;
     flex-flow: column;
-    min-height: min-content;
+    min-height: 0;
   }
 
   &__footer {
