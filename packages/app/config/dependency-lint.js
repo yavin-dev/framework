@@ -10,5 +10,6 @@ module.exports = {
     'ember-basic-dropdown': '3.0.11 || 3.0.16',
     '@html-next/vertical-collection': '1.0.0 || 2.0.0',
     'ember-raf-scheduler': '0.1.0 || 0.2.0',
+    '@ember/optional-features': '1.3.0 || 2.0.0',
   },
 };

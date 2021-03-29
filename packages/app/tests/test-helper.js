@@ -8,9 +8,7 @@ import { start } from 'ember-qunit';
 
 //App Settings for Testing in CI mode
 window.NAVI_APP = {
-  dataSources: [
-    { name: 'default', uri: 'https://fact.naviapp.io', type: 'bard' },
-  ],
+  dataSources: [{ name: 'default', uri: 'https://fact.naviapp.io', type: 'bard' }],
   appPersistence: {
     uri: 'https://persistence.naviapp.io',
     type: 'elide',
