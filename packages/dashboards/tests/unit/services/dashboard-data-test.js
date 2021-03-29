@@ -262,10 +262,10 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const makeRequest = (data, filters) => ({
       clone() {
-        return cloneDeep(this);
+        return this;
       },
       serialize() {
-        return cloneDeep(this);
+        return this;
       },
       addRawFilter(filter) {
         this.filters.push(filter);
@@ -281,17 +281,17 @@ module('Unit | Service | dashboard data', function(hooks) {
 
     const widgets = [
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard: dashboard,
         id: 1,
         requests: [makeRequest(0), makeRequest(1, []), makeRequest(2)]
       },
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard: dashboard,
         id: 2,
         requests: [makeRequest(3)]
       },
       {
-        dashboard: cloneDeep(dashboard),
+        dashboard: dashboard,
         id: 3,
         requests: []
       }

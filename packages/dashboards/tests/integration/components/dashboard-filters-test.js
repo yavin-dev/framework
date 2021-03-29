@@ -197,7 +197,7 @@ module('Integration | Component | dashboard filters', function(hooks) {
     });
 
     await click('.dashboard-filters__expand-button');
-    await clickTrigger(`#${$('.filter-builder-dimension__operator:eq(0)').attr('id')}`);
+    await clickTrigger('.filter-builder-dimension__operator');
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 

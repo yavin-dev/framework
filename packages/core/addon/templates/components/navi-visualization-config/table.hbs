@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="table-config" ...attributes>
   {{#if (feature-flag "enableTotals")}}
     <span class="table-config__header">
@@ -33,19 +33,19 @@
 
         {{!-- Dimension dropdown for subtotal --}}
         {{#if this._showSubtotalDropdown}}
-          <PowerSelect
-            class="table-config__subtotal-dimension-select"
-            @tagName="div"
-            @triggerComponent="subtotal-dimension-select-trigger"
-            @dropdownClass="subtotal-dimension-select__options"
-            @onchange={{this.updateSubtotal}}
-            @options={{this.subtotalDimensions}}
-            @searchEnabled={{false}}
-            @selected={{this.selectedSubtotal}}
-            as |dimension|
-          >
-            {{dimension.name}}
-          </PowerSelect>
+          <div class="table-config__subtotal-dimension-select">
+            <PowerSelect
+              @triggerComponent="subtotal-dimension-select-trigger"
+              @dropdownClass="subtotal-dimension-select__options"
+              @onChange={{this.updateSubtotal}}
+              @options={{this.subtotalDimensions}}
+              @searchEnabled={{false}}
+              @selected={{this.selectedSubtotal}}
+              as |dimension|
+            >
+              {{dimension.name}}
+            </PowerSelect>
+          </div>
         {{/if}}
       {{/if}}
     </div>

@@ -1,78 +1,67 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * An ember-power-select trigger component that can import a list of comma separated values on paste
  */
 import { A } from '@ember/array';
-import { setProperties, set, get } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import Trigger from 'ember-power-select/components/power-select-multiple/trigger';
-import layout from '../templates/components/power-select-bulk-import-trigger';
+import { action } from '@ember/object';
 
-const BULK_IMPORT_DELIMETER = ',';
+const BULK_IMPORT_DELIMITER = ',';
 
-export default Trigger.extend({
-  layout,
-
+export default class PowerSelectBulkImportTrigger extends Trigger {
   /**
    * @param {Boolean} _showBulkImport
    * @private
    */
-  _showBulkImport: false,
+  @tracked
+  _showBulkImport = false;
 
   /**
    * @param {Array} _bulkImportQueryIds - list of ids that were pasted into search input
    * @private
    */
-  _bulkImportQueryIds: undefined,
+  @tracked
+  _bulkImportQueryIds = [];
 
   /**
    * @param {String} _bulkImportRawValue - String that was pasted into search input
    * @private
    */
-  _bulkImportRawValue: undefined,
+  @tracked
+  _bulkImportRawValue = undefined;
 
   /**
-   * @method init
-   * @override
+   * @action importValues
+   * @param {Array} values - list of power select options to select
    */
-  init() {
-    this._super(...arguments);
-    set(this, '_bulkImportQueryIds', []);
-  },
+  @action
+  importValues(values) {
+    const oldSelection = this.args.select.selected;
+    const newSelection = A([...oldSelection, ...values]).uniq();
+    this.args.select.actions.select(newSelection);
+  }
 
-  actions: {
-    /**
-     * @action importValues
-     * @param {Array} values - list of power select options to select
-     */
-    importValues(values) {
-      let oldSelection = get(this, 'select.selected'),
-        newSelection = A([...oldSelection, ...values]).uniq();
+  /**
+   * Grabs text pasted into search input and opens the bulk import modal if delimeter is present
+   *
+   * @action onPaste
+   * @param {ClipboardEvent} pasteEvent
+   */
+  @action
+  onPaste(pasteEvent) {
+    // Get pasted data via clipboard API
+    const clipboardData = pasteEvent.clipboardData;
+    const pastedData = clipboardData?.getData('Text') || '';
+    const queryIds = pastedData.split(BULK_IMPORT_DELIMITER).map(s => s.trim());
+    const isBulkImportRequest = queryIds.length > 1;
 
-      get(this, 'select.actions').select(newSelection);
-    },
-
-    /**
-     * Grabs text pasted into search input and opens the bulk import modal if delimeter is present
-     *
-     * @action onPaste
-     * @param {ClipboardEvent} pasteEvent
-     */
-    onPaste(pasteEvent) {
-      // Get pasted data via clipboard API
-      let clipboardData = pasteEvent.clipboardData || window.clipboardData,
-        pastedData = clipboardData.getData('Text'),
-        queryIds = pastedData.split(BULK_IMPORT_DELIMETER).map(s => s.trim()),
-        isBulkImportRequest = queryIds.length > 1;
-
-      if (isBulkImportRequest) {
-        setProperties(this, {
-          _showBulkImport: true,
-          _bulkImportQueryIds: queryIds,
-          _bulkImportRawValue: pastedData
-        });
-      }
+    if (isBulkImportRequest) {
+      this._showBulkImport = true;
+      this._bulkImportQueryIds = queryIds;
+      this._bulkImportRawValue = pastedData;
     }
   }
-});
+}

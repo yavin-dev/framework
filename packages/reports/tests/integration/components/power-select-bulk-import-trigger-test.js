@@ -26,11 +26,12 @@ module('Integration | Component | power select bulk import trigger', function(ho
 
     await render(
       hbs`<PowerSelectMultiple
+        @searchEnabled={{true}}
         @options={{this.options}}
         @selected={{this.selected}}
         @extra={{this.extra}}
         @triggerComponent='power-select-bulk-import-trigger'
-        @onchange={{action this.onChange}}
+        @onChange={{fn this.onChange}}
         @searchField="id"
         as |item|>
         <span class='selected-dim-id'>{{item.id}}</span>

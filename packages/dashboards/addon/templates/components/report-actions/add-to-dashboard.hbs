@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield}}
 <NaviModal @isShown={{this.showModal}}>
   <div class="add-to-dashboard-modal">
@@ -29,7 +29,7 @@
         @selected={{this.selectedDashboard}}
         @searchField="title"
         @searchPlaceholder="Search for a dashboard..."
-        @onchange={{fn (mut this.selectedDashboard)}}
+        @onChange={{fn (mut this.selectedDashboard)}}
         @tagName="div"
         @renderInPlace={{true}}
         as |dashboard|

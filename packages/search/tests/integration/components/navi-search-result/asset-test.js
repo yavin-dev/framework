@@ -15,14 +15,16 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
         title: 'Revenue report 1',
         modelId: 7,
         constructor: {
-          modelName: 'report'
+          modelName: 'report',
+          name: 'report'
         }
       },
       {
         title: 'Revenue Dashboard',
         modelId: 4,
         constructor: {
-          modelName: 'dashboard'
+          modelName: 'dashboard',
+          name: 'dashboard'
         }
       }
     ];
@@ -50,42 +52,48 @@ module('Integration | Component | navi-search-result-asset', function(hooks) {
         title: 'Revenue report 1',
         modelId: 7,
         constructor: {
-          modelName: 'report'
+          modelName: 'report',
+          name: 'report'
         }
       },
       {
         title: 'Revenue Dashboard 1',
         modelId: 4,
         constructor: {
-          modelName: 'dashboard'
+          modelName: 'dashboard',
+          name: 'report'
         }
       },
       {
         title: 'Revenue report 2',
         modelId: 7,
         constructor: {
-          modelName: 'report'
+          modelName: 'report',
+          name: 'report'
         }
       },
       {
         title: 'Revenue Dashboard 2',
         modelId: 4,
         constructor: {
-          modelName: 'dashboard'
+          modelName: 'dashboard',
+          name: 'report'
         }
       },
       {
         title: 'Revenue report 3',
         modelId: 7,
         constructor: {
-          modelName: 'report'
+          modelName: 'report',
+          name: 'report'
         }
       },
       {
         title: 'Revenue Dashboard 3',
         modelId: 4,
         constructor: {
-          modelName: 'dashboard'
+          modelName: 'dashboard',
+          name: 'dashboard'
         }
       }
     ];

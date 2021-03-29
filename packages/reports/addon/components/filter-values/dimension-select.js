@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -9,18 +9,26 @@
  *   />
  */
 import { featureFlag } from 'navi-core/helpers/feature-flag';
-import { debounce } from '@ember/runloop';
 import { A } from '@ember/array';
-import { resolve, Promise } from 'rsvp';
+import { resolve } from 'rsvp';
 import { inject as service } from '@ember/service';
+import { task, timeout } from 'ember-concurrency';
 import Component from '@ember/component';
 import { get, set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import layout from '../../templates/components/filter-values/dimension-select';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { sortBy } from 'lodash-es';
 
 const SEARCH_DEBOUNCE_TIME = 200;
+
+function isNumeric(num) {
+  return !isNaN(num);
+}
+function isNumericDimensionArray(arr) {
+  return arr.every(d => isNumeric(d.option.value));
+}
 
 @templateLayout(layout)
 @tagName('')
@@ -110,33 +118,20 @@ export default class DimensionSelectComponent extends Component {
     return meta ? meta.idFieldName : this.filter.field;
   }
 
+  @action
+  sortValues(dimensions) {
+    if (isNumericDimensionArray(dimensions)) {
+      return sortBy(dimensions, [d => Number(d.option.value)]);
+    }
+    return sortBy(dimensions, ['option.description']);
+  }
+
   /**
    * @property {Boolean} useNewSearchAPI - whether to use /search endpoint instead of /values
    */
   @computed
   get useNewSearchAPI() {
     return featureFlag('newDimensionsSearchAPI');
-  }
-
-  /**
-   * Executes a dimension search for a given term and executes the
-   * provided callbacks
-   *
-   * @method _performSearch
-   * @private
-   * @param {String} term - search term
-   * @param {Function} resolve - resolve callback function
-   * @param {Function} reject - reject callback function
-   * @returns {Void}
-   */
-  _performSearch(term, resolve, reject) {
-    let dimension = get(this, 'dimensionName'),
-      useNewSearchAPI = get(this, 'useNewSearchAPI'),
-      dataSourceName = get(this, 'filter.subject.source');
-
-    get(this, '_dimensionService')
-      .search(dimension, { term, useNewSearchAPI, dataSourceName })
-      .then(resolve, reject);
   }
 
   /**
@@ -153,18 +148,22 @@ export default class DimensionSelectComponent extends Component {
   /**
    * Searches dimension service for the given query
    *
-   * @action searchDimensionValues
    * @param {String} searchTerm - Search query
    */
-  @action
-  searchDimensionValues(searchTerm) {
-    let term = searchTerm.trim();
-    set(this, 'searchTerm', term);
+  @(task(function*(this, term) {
+    const searchTerm = term.trim();
+    set(this, 'searchTerm', searchTerm);
+    const dataSourceName = this.filter.subject.source;
 
-    if (term) {
-      return new Promise((resolve, reject) => {
-        return debounce(this, this._performSearch, term, resolve, reject, SEARCH_DEBOUNCE_TIME);
+    if (searchTerm) {
+      yield timeout(SEARCH_DEBOUNCE_TIME);
+      return this._dimensionService.search(this.dimensionName, {
+        term: searchTerm,
+        useNewSearchAPI: this.useNewSearchAPI,
+        dataSourceName
       });
     }
-  }
+    return undefined;
+  }).restartable())
+  searchDimensionValues;
 }

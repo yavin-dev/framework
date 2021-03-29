@@ -39,7 +39,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     await fillIn('.filter-builder-dimension__values input', '1');
-    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+    await selectChoose('.filter-builder-dimension__values', '.ember-power-select-option', 0);
 
     assert.ok(
       dataRequests.every(request => request.queryParams.filters == 'property|id-in["1"]'),
@@ -49,7 +49,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     dataRequests = [];
 
     await fillIn('.filter-builder-dimension__values input', '2');
-    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+    await selectChoose('.filter-builder-dimension__values', '.ember-power-select-option', 0);
 
     assert.ok(
       dataRequests.every(request => request.queryParams.filters == 'property|id-in["1","2"]'),
@@ -125,7 +125,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
     await selectChoose('.dashboard-dimension-selector', 'Multi System Id');
 
     await fillIn('.filter-builder-dimension__values input', '1');
-    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+    await selectChoose('.filter-builder-dimension__values', '.ember-power-select-option', 0);
 
     assert.ok(
       dataRequests.every(request => request.queryParams.filters == 'multiSystemId|key-in["k1"]'),
@@ -342,7 +342,7 @@ module('Acceptance | Dashboard Filters', function(hooks) {
 
     //Add a value to the filter
     await fillIn('.filter-builder-dimension__values input', '1');
-    await selectChoose('.filter-builder-dimension__values', '.item-row', 0);
+    await selectChoose('.filter-builder-dimension__values', '.ember-power-select-option', 0);
 
     decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
     assert.deepEqual(

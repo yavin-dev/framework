@@ -100,34 +100,36 @@ module('Integration | Component | report actions - multiple-format-export', func
         icon: 'file-text-o'
       }
     ]);
-    await render(hbs`
-      {{#report-actions/multiple-format-export
-          report=report
-          disabled=disabled
-          naviNotifications=mockNotifications
-          exportFormats=exportFormats
-      }}
-          Export
-      {{/report-actions/multiple-format-export}}
-    `);
+    await render(hbs`<ReportActions::MultipleFormatExport
+        @report={{this.report}}
+        @title={{this.title}}
+        @disabled={{this.disabled}}
+        @exportFormats={{this.exportFormats}}
+        @naviNotifications={{this.mockNotifications}}
+      >
+        Export
+      </ReportActions::MultipleFormatExport>`);
 
     // Default state
-    assert.notOk(
+    assert.equal(
       find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
+      'false',
       'The dropdown is closed by default'
     );
 
     // Click trigger
     await clickTrigger();
-    assert.ok(
+    assert.equal(
       find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
+      'true',
       'The dropdown is open when the trigger is clicked'
     );
 
     // Click export option
     await click($('.multiple-format-export__dropdown a:contains("CSV")')[0]);
-    assert.notOk(
+    assert.equal(
       find('.ember-basic-dropdown-trigger').getAttribute('aria-expanded'),
+      'false',
       'The dropdown is closed when an export option is clicked'
     );
   });

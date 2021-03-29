@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="series-chart-config" ...attributes>
   {{#if this.showMetricSelect}}
     <div class="metric-select">
@@ -10,7 +10,7 @@
           @options={{this.metrics}}
           @selected={{this.selectedMetric}}
           @searchEnabled={{false}}
-          @onchange={{this.onUpdateChartMetric}}
+          @onChange={{this.onUpdateChartMetric}}
           @dropdownClass="metric-select__select__dropdown"
           @triggerClass="metric-select__select__trigger"
           @renderInPlace={{true}}

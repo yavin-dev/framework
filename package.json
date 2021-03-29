@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "lerna exec --scope navi-app npm start",
-    "postinstall": "lerna bootstrap --concurrency 2 --ci",
+    "postinstall": "lerna bootstrap --concurrency 2",
     "test": "lerna run test --stream",
     "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes"
   },

@@ -103,7 +103,7 @@ module('Integration | Component | filter collection', function(hooks) {
         'Operator update is requested'
       );
     });
-    await clickTrigger(`#${$('.filter-builder-dimension__operator').attr('id')}`);
+    await clickTrigger('.filter-builder-dimension__operator');
     await nativeMouseUp($('.ember-power-select-option:contains(Is Empty)')[0]);
   });
 
