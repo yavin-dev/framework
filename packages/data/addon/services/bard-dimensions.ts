@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Bard dimensions service that fetches dimension values
@@ -112,7 +112,7 @@ export default class BardDimensionService extends Service {
     ) as DimensionMetadataModel;
     return taskFor(bardAdapter.all)
       .perform({ columnMetadata }, options)
-      .then((recordsFromBard: TODO) => {
+      .then((recordsFromBard: FiliDimensionResponse) => {
         const serialized = recordsFromBard?.rows;
         const dimensions = kegAdapter.pushMany(dimension, serialized, options);
 

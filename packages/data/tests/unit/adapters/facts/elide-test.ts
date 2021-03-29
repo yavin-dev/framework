@@ -291,8 +291,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.deepEqual(
         Object.keys(requestObj.variables),
-        ['id', 'query'],
-        'createAsyncQuery sends id and query request variables'
+        ['id', 'query', 'asyncAfterSeconds'],
+        'createAsyncQuery sends id, query, and asyncAfterSeconds request variables'
       );
 
       assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');

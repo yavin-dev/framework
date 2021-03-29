@@ -378,6 +378,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       customHeaders = options.customHeaders;
     }
 
+    // TODO: Drop bard request on cancel https://github.com/yavin-dev/framework/issues/1340
     return yield this.ajax.request(url, {
       xhrFields: {
         withCredentials: true,
