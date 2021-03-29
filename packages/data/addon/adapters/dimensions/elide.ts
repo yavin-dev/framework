@@ -7,7 +7,11 @@
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
-import { AsyncQueryResponse, FilterOperator, QueryStatus, RequestV2 } from '../facts/interface';
+import { QueryStatus } from '../facts/interface';
+import { task } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { AsyncQueryResponse, FilterOperator, RequestV2 } from '../facts/interface';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
@@ -30,12 +34,15 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
    */
   private factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
-  private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
+  @task private *formatEnumResponse(
+    dimension: DimensionColumn,
+    values: (string | number)[]
+  ): TaskGenerator<AsyncQueryResponse> {
     const { tableId } = dimension.columnMetadata;
     const nodes = values.map((value) => `{"node":{"col0":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
 
-    return {
+    return yield {
       asyncQuery: {
         edges: [
           {
@@ -56,27 +63,27 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     };
   }
 
-  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
-    return this.find(dimension, [], options);
+  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<AsyncQueryResponse> {
+    return yield taskFor(this.find).perform(dimension, [], options);
   }
 
-  async find(
+  @task *find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: ServiceOptions = {}
-  ): Promise<AsyncQueryResponse> {
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     return columnMetadata.hasEnumValues
-      ? this.findEnum(dimension, predicate, options)
-      : this.findRequest(dimension, predicate, options);
+      ? yield taskFor(this.findEnum).perform(dimension, predicate, options)
+      : yield taskFor(this.findRequest).perform(dimension, predicate, options);
   }
 
-  private findEnum(
+  @task private *findEnum(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
     _options: ServiceOptions
-  ): AsyncQueryResponse {
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { values } = columnMetadata;
 
@@ -87,14 +94,14 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       return filterFn(values, filterValues);
     }, values);
 
-    return this.formatEnumResponse(dimension, filteredValues);
+    return yield taskFor(this.formatEnumResponse).perform(dimension, filteredValues);
   }
 
-  private findRequest(
+  @task private *findRequest(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: ServiceOptions = {}
-  ): Promise<AsyncQueryResponse> {
+  ): TaskGenerator<AsyncQueryResponse> {
     const { columnMetadata, parameters = {} } = dimension;
     const lookupMetadata = (columnMetadata as ElideDimensionMetadataModel).lookupColumn;
     const { id, source, tableId } = lookupMetadata;
@@ -116,10 +123,14 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       requestVersion: '2.0',
     };
 
-    return this.factAdapter.fetchDataForRequest(request, options);
+    return yield taskFor(this.factAdapter.fetchDataForRequest).perform(request, options);
   }
 
-  async search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
+  @task *search(
+    dimension: DimensionColumn,
+    query: string,
+    options: ServiceOptions = {}
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     let predicate: DimensionFilter[];
@@ -145,7 +156,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     }
 
     return columnMetadata.hasEnumValues
-      ? this.findEnum(dimension, predicate, options)
-      : this.findRequest(dimension, predicate, options);
+      ? yield taskFor(this.findEnum).perform(dimension, predicate, options)
+      : yield taskFor(this.findRequest).perform(dimension, predicate, options);
   }
 }

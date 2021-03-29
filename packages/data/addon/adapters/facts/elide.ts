@@ -4,34 +4,38 @@
  */
 import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
-import NaviFactAdapter, {
-  RequestV1,
-  RequestOptions,
-  AsyncQueryResponse,
-  Parameters,
-  QueryStatus,
-  RequestV2,
-  FilterOperator,
-  Filter,
-  FactAdapterError,
-  Column,
-  Sort,
-} from './interface';
+import NaviFactAdapter, { QueryStatus, FactAdapterError } from './interface';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
-import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 import { v1 } from 'ember-uuid';
-import moment, { Moment } from 'moment';
-import { Grain } from 'navi-data/utils/date';
+import moment from 'moment';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { omitBy } from 'lodash-es';
+import type {
+  RequestV1,
+  RequestOptions,
+  AsyncQueryResponse,
+  Parameters,
+  RequestV2,
+  FilterOperator,
+  Filter,
+  Column,
+  Sort,
+} from './interface';
+import type { DocumentNode } from 'graphql';
+import type { Moment } from 'moment';
+import type { Grain } from 'navi-data/utils/date';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { TaskGenerator } from 'ember-concurrency';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
+
+const DEFAULT_ASYNC_AFTER_SECONDS = 2;
 
 /**
  * Formats elide request field as `col(param1:"val1", param2:"val2")`
@@ -226,11 +230,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
+    const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    const queryOptions = { mutation, variables: { id, query, asyncAfterSeconds }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
   }
 
@@ -266,40 +271,49 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    return 'TODO';
+  @task *urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): TaskGenerator<string> {
+    return yield 'TODO';
   }
   /**
    * @param request
    * @param options
    */
-  @task(function* (this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
+  @task *fetchDataForRequestTask(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions
+  ): TaskGenerator<AsyncQueryResponse> {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
-    const { id } = asyncQuery;
+    let id = asyncQuery.id;
     let status: QueryStatus = asyncQuery.status;
 
-    while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-      yield timeout(this._pollingInterval);
-      asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
-      status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
+    try {
+      while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield timeout(this._pollingInterval);
+        asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
+        status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
+      }
+      return asyncQueryPayload;
+    } finally {
+      if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield this.cancelAsyncQuery(id, request.dataSource);
+      }
     }
-    return asyncQueryPayload;
-  })
-  fetchDataForRequestTask!: TODO;
+  }
 
   /**
    * @param this
    * @param request
    * @param options
    */
-  async fetchDataForRequest(
+  @task *fetchDataForRequest(
     this: ElideFactsAdapter,
     request: RequestV2,
     options: RequestOptions = {}
-  ): Promise<AsyncQueryResponse> {
-    const payload = await this.fetchDataForRequestTask.perform(request, options);
-    const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
+  ): TaskGenerator<AsyncQueryResponse> {
+    const payload: AsyncQueryResponse = yield taskFor(this.fetchDataForRequestTask).perform(request, options);
+    const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody || '{}';
     const responseBody = JSON.parse(responseStr);
     if (responseBody.errors) {
       throw payload;
