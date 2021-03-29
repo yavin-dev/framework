@@ -9,9 +9,11 @@ import { merge } from 'lodash-es';
 import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
 import { taskFor } from 'ember-concurrency-ts';
+import { assert } from '@ember/debug';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
+import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type RequestFragment from 'navi-core/models/bard-request-v2/request';
@@ -51,6 +53,7 @@ export default class ReportsReportViewRoute extends Route {
   model() {
     const report = this.parentModel;
     const request = report.request;
+    assert('Request is defined for report', request);
     const serializedRequest = request.serialize() as RequestV2;
     const requestOptions = merge({}, this.requestOptions, {
       customHeaders: {
