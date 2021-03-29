@@ -1,11 +1,6 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<NaviVisC3Chart
-  @classNames={{this.widgetClassNames}}
-  @data={{this.config.data}}
-  @legend={{this.config.legend}}
-  @tooltip={{this.config.tooltip}}
-  @pie={{this.config.pie}}
-  @containerComponent={{@containerComponent}}
-  @onrendered={{this.redrawMetricLabel}}
-  {{did-update this.redrawMetricLabel this.metric.displayName}}
-/>
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if this.isApexEnabled}}
+  <NaviVisualizations::Apex::PieChart @model={{@model}} @options={{@options}} />
+{{else}}
+  <NaviVisualizations::C3::PieChart @model={{@model}} @options={{@options}} />
+{{/if}}

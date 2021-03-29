@@ -2,7 +2,9 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-.c3-tooltip-container {
+
+.c3-tooltip-container,
+.apexcharts-tooltip {
   background-color: $menu-bg-color;
   border-bottom: 1px solid $menu-border-color;
   font-size: $p-font-size;
@@ -52,4 +54,9 @@
       }
     }
   }
+}
+
+.apexcharts-tooltip {
+  // overrides apex border radius
+  border-radius: 0 !important;
 }
