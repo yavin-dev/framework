@@ -62,9 +62,15 @@ export default class PowerSelectCollectionOptions extends Options {
   /**
    * @property {Array} indexedOptions - array of options that retain original order
    */
-  @computed('args.options')
+  @computed('args.{options,select.loading}')
   get indexedOptions(): IndexedOptions[] {
-    const { options } = this.args;
+    const {
+      options,
+      select: { loading },
+    } = this.args;
+    if (loading) {
+      return [];
+    }
     return options.map((option: {}, idx: number) => ({ option, idx }));
   }
 

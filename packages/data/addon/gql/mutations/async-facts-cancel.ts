@@ -1,19 +1,21 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import gql from 'graphql-tag';
 
-export const asyncFactsCancelMutationStr = `mutation($id: String) {
-  asyncQuery(op: UPDATE, ids: [$id], data: { status: CANCELLED }) {
-    edges {
-      node {
-        id
-        status
+export const asyncFactsCancelMutationStr = `
+  mutation($id: ID) {
+    asyncQuery(op: UPDATE, data: { id: $id, status: CANCELLED }) {
+      edges {
+        node {
+          id
+          status
+        }
       }
     }
   }
-}`;
+`;
 
 const mutation = gql`
   ${asyncFactsCancelMutationStr}

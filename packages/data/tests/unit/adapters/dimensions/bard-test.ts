@@ -1,13 +1,15 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
-import { TestContext as Context } from 'ember-test-helpers';
-import BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import { Response } from 'miragejs';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { Server, Response } from 'miragejs';
+import type { TestContext as Context } from 'ember-test-helpers';
+import type BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { Server } from 'miragejs';
+import { taskFor } from 'ember-concurrency-ts';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -126,7 +128,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       parameters: { field: 'id' },
     };
 
-    const result = await this.adapter.all(containerColumn);
+    const result = await taskFor(this.adapter.all).perform(containerColumn);
     assert.deepEqual(
       result,
       {
@@ -146,7 +148,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
       parameters: { field: 'id' },
     };
-    const result = await this.adapter.find(containerColumn, [{ operator: 'in', values: ['1'] }]);
+    const result = await taskFor(this.adapter.find).perform(containerColumn, [{ operator: 'in', values: ['1'] }]);
     assert.deepEqual(
       result,
       {
@@ -162,7 +164,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       parameters: { field: 'id' },
     };
 
-    const result = await this.adapter.search(containerColumn, 'ag');
+    const result = await taskFor(this.adapter.search).perform(containerColumn, 'ag');
     assert.deepEqual(
       result,
       {
@@ -176,7 +178,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
   });
 
   test('findById', async function (this: TestContext, assert) {
-    const result = await this.adapter.findById('container', '1', { dataSourceName: 'bardTwo' });
+    const result = await taskFor(this.adapter.findById).perform('container', '1', { dataSourceName: 'bardTwo' });
     assert.deepEqual(
       result,
       {
@@ -201,7 +203,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
     });
 
     // Sending request for default clientId
-    await this.adapter.find(ageColumn, [{ operator: 'in', values: ['1'] }]);
+    await taskFor(this.adapter.find).perform(ageColumn, [{ operator: 'in', values: ['1'] }]);
 
     // Setting up assert for provided clientId
     this.server.get(`${HOST}/v1/dimensions/age/values/`, (_schema, request) => {
@@ -210,6 +212,6 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
     });
 
     // Sending request for provided clientId
-    await this.adapter.find(ageColumn, [{ operator: 'in', values: ['1'] }], { clientId: 'test id' });
+    await taskFor(this.adapter.find).perform(ageColumn, [{ operator: 'in', values: ['1'] }], { clientId: 'test id' });
   });
 });

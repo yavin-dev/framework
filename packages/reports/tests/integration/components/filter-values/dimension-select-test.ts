@@ -12,6 +12,7 @@ import config from 'ember-get-config';
 import $ from 'jquery';
 import Service from '@ember/service';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import { task, TaskGenerator } from 'ember-concurrency';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
@@ -211,23 +212,18 @@ module('Integration | Component | filter values/dimension select', function (hoo
     );
   });
 
-  test('sort is applied numerically or lexicographically', async function (this: TestContext, assert) {
-    assert.expect(2);
+  test('sort is applied numerically', async function (this: TestContext, assert) {
+    assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
 
-    let LastValue: string | undefined = undefined;
-    this.owner.register(
-      'service:navi-dimension',
-      class extends Service {
-        all(dimensionColumn: DimensionColumn) {
-          const values = ['1', '3', '2', '11', '111'];
-          if (LastValue) {
-            values.push(LastValue);
-          }
-          return values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
-        }
+    class MockDimensions extends Service {
+      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const values = ['1', '3', '2', '11', '111'];
+        return yield values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
       }
-    );
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
     await render(TEMPLATE);
 
     // Open value selector
@@ -235,16 +231,30 @@ module('Integration | Component | filter values/dimension select', function (hoo
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['1', '2', '3', '11', '111'],
-      'Sort is applied as number for string number dimensions'
+      'Sort is applied numerically for string number dimensions'
     );
+  });
 
-    LastValue = 'stringvalue';
-    await clickTrigger(); // close
-    await clickTrigger(); // open again
+  test('sort is applied lexicographically', async function (this: TestContext, assert) {
+    assert.expect(1);
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+
+    class MockDimensions extends Service {
+      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const values = ['1', '3', '2', '11', '111', 'stringvalue'];
+        return yield values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+      }
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
+    await render(TEMPLATE);
+
+    // Open value selector
+    await clickTrigger();
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['1', '11', '111', '2', '3', LastValue],
-      'Sort is applied as number for string number dimensions'
+      ['1', '11', '111', '2', '3', 'stringvalue'],
+      'Sort is applied lexicographically if not all string values are numbers'
     );
   });
 
@@ -252,15 +262,14 @@ module('Integration | Component | filter values/dimension select', function (hoo
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
 
-    this.owner.register(
-      'service:navi-dimension',
-      class extends Service {
-        search(dimensionColumn: DimensionColumn) {
-          const values = ['1', '3', '2', '11', '111'];
-          return values.map((value) => NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn }));
-        }
+    class MockDimensions extends Service {
+      @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const values = ['1', '3', '2', '11', '111'];
+        return yield values.map((value) => NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn }));
       }
-    );
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
     await render(TEMPLATE);
 
     await clickTrigger(); // open

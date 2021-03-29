@@ -1,10 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
 import NaviFactsModel from 'navi-data/models/navi-facts';
-import { ColumnType } from 'navi-data/models/metadata/column';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { ColumnType } from 'navi-data/models/metadata/column';
 
 export type RequestV1 = TODO;
 
@@ -128,7 +128,7 @@ export interface AsyncQueryResult {
 }
 
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
+  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<unknown>;
   urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
-  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): Promise<string>;
+  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<string>;
 }

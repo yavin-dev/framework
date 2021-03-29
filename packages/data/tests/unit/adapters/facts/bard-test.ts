@@ -2,10 +2,11 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
 import config from 'ember-get-config';
-import { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
-import BardFactsAdapter from 'navi-data/adapters/facts/bard';
-import { TestContext } from 'ember-test-helpers';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import { taskFor } from 'ember-concurrency-ts';
+import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
+import type { TestContext } from 'ember-test-helpers';
+import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 
 const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;
@@ -1050,13 +1051,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   test('urlForDownloadQuery', async function (assert) {
     assert.expect(6);
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest)),
+      decodeURIComponent(await taskFor(Adapter.urlForDownloadQuery).perform(TestRequest)),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery correctly built the URL for the provided request'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { format: 'csv' })),
+      decodeURIComponent(await taskFor(Adapter.urlForDownloadQuery).perform(TestRequest, { format: 'csv' })),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=csv`,
       'urlForDownloadQuery correctly built the URL for the provided request with the format option'
     );
@@ -1074,7 +1075,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       ],
     };
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(onlyDateFilter)),
+      decodeURIComponent(await taskFor(Adapter.urlForDownloadQuery).perform(onlyDateFilter)),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with only date filter'
     );
@@ -1096,19 +1097,21 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       ],
     };
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(requestWithSort)),
+      decodeURIComponent(await taskFor(Adapter.urlForDownloadQuery).perform(requestWithSort)),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&sort=m1|desc,m2|desc&format=json`,
       'urlForDownloadQuery correctly built the URL for a request with sort'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { cache: false })),
+      decodeURIComponent(await taskFor(Adapter.urlForDownloadQuery).perform(TestRequest, { cache: false })),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json&_cache=false`,
       'urlForDownloadQuery correctly built the URL for the provided request with the cache option'
     );
 
     assert.equal(
-      decodeURIComponent(await Adapter.urlForDownloadQuery(TestRequest, { dataSourceName: 'bardTwo' })),
+      decodeURIComponent(
+        await taskFor(Adapter.urlForDownloadQuery).perform(TestRequest, { dataSourceName: 'bardTwo' })
+      ),
       `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'urlForDownloadQuery renders alternative host name if option is given'
     );
@@ -1117,14 +1120,16 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   test('fetchDataForRequest', function (assert) {
     assert.expect(1);
 
-    return Adapter.fetchDataForRequest(TestRequest).then(function (result) {
-      return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');
-    });
+    return taskFor(Adapter.fetchDataForRequest)
+      .perform(TestRequest)
+      .then(function (result) {
+        return assert.deepEqual(result, Response, 'Ajax GET returns the response object for TEST Request');
+      });
   });
 
   test('fetchDataForRequest with pagination options', async function (assert) {
     assert.expect(1);
-    const result = await Adapter.fetchDataForRequest(TestRequest, {
+    const result = await taskFor(Adapter.fetchDataForRequest).perform(TestRequest, {
       page: 1,
       perPage: 100,
     });
@@ -1156,14 +1161,14 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     });
 
     // Sending request for default clientId
-    await Adapter.fetchDataForRequest(TestRequest);
+    await taskFor(Adapter.fetchDataForRequest).perform(TestRequest);
     // Setting up assert for provided clientId
     Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`, (request1) => {
       assert.equal(request1.requestHeaders.clientid, 'test id', 'Client id is set to value given in options');
 
       return MockBardResponse;
     });
-    await Adapter.fetchDataForRequest(TestRequest, {
+    await taskFor(Adapter.fetchDataForRequest).perform(TestRequest, {
       clientId: 'test id',
     });
   });
@@ -1179,7 +1184,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       return MockBardResponse;
     });
 
-    await Adapter.fetchDataForRequest(TestRequest, {
+    await taskFor(Adapter.fetchDataForRequest).perform(TestRequest, {
       customHeaders: {
         foo: 'bar',
         baz: 'qux',
@@ -1196,6 +1201,6 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       return MockBardResponse;
     });
 
-    await Adapter.fetchDataForRequest(TestRequest, { dataSourceName: 'bardTwo' });
+    await taskFor(Adapter.fetchDataForRequest).perform(TestRequest, { dataSourceName: 'bardTwo' });
   });
 });

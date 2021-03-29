@@ -7,7 +7,7 @@ import { inject as service } from '@ember/service';
 import { computed, action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
-import { task, timeout } from 'ember-concurrency';
+import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
@@ -18,8 +18,10 @@ import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type { IndexedOptions } from '../power-select-collection-options';
 import { sortBy } from 'lodash-es';
+import { taskFor } from 'ember-concurrency-ts';
 
-const SEARCH_DEBOUNCE_TIME = 250;
+const SEARCH_DEBOUNCE_MS = 250;
+const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
 
 interface DimensionSelectComponentArgs {
   filter: FilterFragment;
@@ -43,6 +45,9 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   @tracked
   searchTerm?: string;
 
+  @tracked
+  dimensionValues?: Promise<NaviDimensionModel[]>;
+
   @computed('args.filter.{columnMetadata,parameters}')
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
@@ -51,17 +56,13 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return { columnMetadata, parameters };
   }
 
-  @computed('searchTerm', 'dimensionColumn.{id,columnMetadata.cardinality}')
-  get dimensionOptions() {
+  @computed('searchTerm', 'dimensionValues')
+  get options() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
     }
 
-    const { dimensionColumn } = this;
-    if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
-      return this.naviDimension.all(dimensionColumn);
-    }
-    return undefined;
+    return this.dimensionValues;
   }
 
   @computed('args.filter.values', 'dimensionColumn')
@@ -88,15 +89,38 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return sortBy(dimensions, ['option.value']);
   }
 
-  @(task(function* (this: DimensionSelectComponent, term: string) {
+  /**
+   * Fetches dimension options once when the dropdown is opened
+   */
+  @action
+  fetchDimensionOptions(): void {
+    if (this.dimensionValues === undefined) {
+      const { dimensionColumn } = this;
+      if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+        this.dimensionValues = taskFor(this.naviDimension.all).perform(dimensionColumn).then();
+      }
+    }
+  }
+
+  /**
+   * Searches for dimensions containing search term (locally if all results are available)
+   * @param term Search term to filter by
+   * @returns list of matching dimension models
+   */
+  @task({ restartable: true })
+  *searchDimensionValues(term: string): TaskGenerator<NaviDimensionModel[] | undefined> {
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
-
-    if (searchTerm) {
-      yield timeout(SEARCH_DEBOUNCE_TIME);
-      return this.naviDimension.search(this.dimensionColumn, searchTerm);
+    if (!searchTerm) {
+      return undefined;
     }
-    return undefined;
-  }).restartable())
-  searchDimensionValues!: typeof task;
+    if (this.dimensionValues === undefined) {
+      yield timeout(SEARCH_DEBOUNCE_MS);
+      return yield taskFor(this.naviDimension.search).perform(this.dimensionColumn, searchTerm);
+    } else {
+      yield timeout(SEARCH_DEBOUNCE_OFFLINE_MS);
+      const rawValues: NaviDimensionModel[] = yield this.dimensionValues;
+      return rawValues.filter((v) => v.displayValue.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+  }
 }
