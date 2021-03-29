@@ -2,5 +2,5 @@
 
 module.exports = {
   extends: 'octane',
-  ignore: ['./node_modules/**', 'addon/**']
+  ignore: ['./node_modules/**', 'addon/**'],
 };
