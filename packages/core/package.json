@@ -28,6 +28,7 @@
     "@html-next/vertical-collection": "^2.0.0",
     "@types/numeral": "0.0.28",
     "ember-ajax": "^5.0.0",
+    "ember-apexchartsjs": "git://github.com/balajimanoharan/ember-apexchartsjs.git#60c69e42433ed28f97cceb29685c86f65f6a7366",
     "ember-auto-import": "^1.10.1",
     "ember-c3": "^2.0.0",
     "ember-cli-babel": "^7.23.1",

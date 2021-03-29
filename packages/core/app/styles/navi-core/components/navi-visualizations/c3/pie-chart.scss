@@ -17,7 +17,7 @@
   }
 }
 
-.pie-chart-widget {
+.pie-chart-widget--c3 {
   // C3 charts
   @include generate-chart-series-color($chart-max-series);
   fill: $body-text-color;

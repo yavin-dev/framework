@@ -2,15 +2,11 @@
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, find, settled } from '@ember/test-helpers';
+import { render, findAll, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-//@ts-ignore
-import { initialize as injectC3Enhancements } from 'navi-core/initializers/inject-c3-enhancements';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext as Context } from 'ember-test-helpers';
-import $ from 'jquery';
-import { getTranslation } from 'navi-core/utils/chart';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Args as ComponentArgs } from 'navi-core/components/navi-visualizations/pie-chart';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
@@ -19,10 +15,13 @@ import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 
 const TEMPLATE = hbs`
-  <NaviVisualizations::PieChart
+<div style="width:400px; height:400px;">
+  <NaviVisualizations::Apex::PieChart
     @model={{this.model}}
     @options={{this.options}}
-  />`;
+  />
+</div>
+`;
 
 interface TestContext extends Context, ComponentArgs {}
 
@@ -76,12 +75,11 @@ const RequestJSON = {
 
 let MetadataService: NaviMetadataService;
 
-module('Integration | Component | pie chart', function (hooks) {
+module('Integration | Component | Apex | pie chart', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function (this: TestContext) {
-    injectC3Enhancements();
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
     Request = this.owner.lookup('service:store').createFragment('bard-request-v2/request', RequestJSON);
@@ -165,17 +163,14 @@ module('Integration | Component | pie chart', function (hooks) {
     });
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.ember-apex-chart').isVisible('The pie chart widget component is visible');
 
-    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
+    assert.dom('.apexcharts-pie-area').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
-    assert
-      .dom('.chart-series-0 text')
-      .hasText('13.02%', 'Percentage label shown on slice is formatted properly for `All Other`');
+    const [label1, label2] = findAll('.apexcharts-pie-label');
+    assert.dom(label1).hasText('13.02%', 'Percentage label shown on slice is formatted properly for `All Other`');
 
-    assert
-      .dom('.chart-series-1 text')
-      .hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
+    assert.dom(label2).hasText('86.98%', 'Percentage label shown on slice is formatted properly for `Under 13`');
   });
 
   test('it renders for a metric series', async function (assert) {
@@ -189,21 +184,22 @@ module('Integration | Component | pie chart', function (hooks) {
     });
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.ember-apex-chart').isVisible('The pie chart widget component is visible');
 
-    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
+    assert.dom('.apexcharts-pie-area').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
+    const [label1, label2] = findAll('.apexcharts-pie-label');
     assert
-      .dom('.chart-series-0 text')
+      .dom(label1)
       .hasText('66.67%', 'Percentage label shown on slice is formatted properly for `Total Page Views`');
 
     assert
-      .dom('.chart-series-1 text')
+      .dom(label2)
       .hasText('33.33%', 'Percentage label shown on slice is formatted properly for `Unique Identifier`');
   });
 
   test('metric label', async function (assert) {
-    assert.expect(7);
+    assert.expect(3);
 
     this.set('options', {
       series: {
@@ -214,7 +210,7 @@ module('Integration | Component | pie chart', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.c3-title').hasText('', 'The metric label is not visible for a series of type metric');
+    assert.dom('.apexcharts-title-text').doesNotExist('Metric series of does not show a title');
 
     this.set('options', {
       series: {
@@ -237,33 +233,9 @@ module('Integration | Component | pie chart', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
-
-    //Calulate where the metric label should be relative to the pie chart
-    let chartElm = find('.c3-chart-arcs');
-    let xTranslate =
-      getTranslation(chartElm?.getAttribute('transform') as string).x -
-      (chartElm?.getBoundingClientRect()?.width || 0) / 2 -
-      50;
-    let yTranslate: number = ((find('svg')?.getAttribute('height') || 0) as number) / 2;
-
-    assert.equal(
-      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).x),
-      Math.round(xTranslate),
-      'The metric name is in the correct X position on initial render'
-    );
-
-    assert.equal(
-      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).y),
-      Math.round(yTranslate),
-      'The metric name is in the correct Y position on initial render'
-    );
-
-    /*
-     * Resize the parent element of the SVG that the pie chart is drawn in
-     * This effectively moves the pie chart to the left
-     */
-    (find('.pie-chart-widget') as HTMLElement).style.maxWidth = '1000px';
+    assert
+      .dom('.apexcharts-title-text')
+      .hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
 
     //Rerender with a new metric and new chart position
     this.set('options', {
@@ -285,27 +257,9 @@ module('Integration | Component | pie chart', function (hooks) {
       },
     });
 
-    //Recalculate these after the chart is rerendered
-    chartElm = find('.c3-chart-arcs');
-    xTranslate =
-      getTranslation(chartElm?.getAttribute('transform') as string).x -
-      (chartElm?.getBoundingClientRect().width as number) / 2 -
-      50;
-    yTranslate = (($('svg').css('height').replace('px', '') as unknown) as number) / 2;
-
-    assert.dom('.c3-title').hasText('Unique Identifiers', 'The metric label is updated after the metric is changed');
-
-    assert.equal(
-      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).x),
-      Math.round(xTranslate),
-      'The metric name is in the correct X position after the pie chart moves'
-    );
-
-    assert.equal(
-      Math.round(getTranslation(find('.c3-title')?.getAttribute('transform') as string).y),
-      Math.round(yTranslate),
-      'The metric name is in the correct Y position after the pie chart moves'
-    );
+    assert
+      .dom('.apexcharts-title-text')
+      .hasText('Unique Identifiers', 'The metric label is updated after the metric is changed');
   });
 
   test('metric label - column alias', async function (this: TestContext, assert) {
@@ -329,7 +283,9 @@ module('Integration | Component | pie chart', function (hooks) {
     });
 
     await render(TEMPLATE);
-    assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
+    assert
+      .dom('.apexcharts-title-text')
+      .hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
 
     const metricColumn = this.model.firstObject?.request.columns.firstObject as ColumnFragment;
 
@@ -337,64 +293,12 @@ module('Integration | Component | pie chart', function (hooks) {
     const alias = 'Metric Alias';
     metricColumn.set('alias', alias);
     await settled();
-    assert.dom('.c3-title').hasText(alias, 'The metric alias is rendered on update');
+    assert.dom('.apexcharts-title-text').hasText(alias, 'The metric alias is rendered on update');
 
     // unset alias
     metricColumn.set('alias', undefined);
     await settled();
-    assert.dom('.c3-title').hasText('Total Page Views', 'The original metric name is restored on update');
-  });
-
-  test('parameterized metric renders correctly for dimension series', async function (assert) {
-    const clonedModel = { request: Request, response: Response };
-    const newColumns = [
-      ...RequestJSON.columns,
-      {
-        field: 'revenue',
-        parameters: { currency: 'USD' },
-        type: 'metric',
-        cid: 'cid_revenue(currency=USD)',
-        source: 'bardOne',
-      },
-    ];
-    clonedModel.request = this.owner
-      .lookup('service:store')
-      .createFragment('bard-request-v2/request', { ...RequestJSON, columns: newColumns });
-    this.set('model', A([clonedModel]));
-    this.set('options', {
-      series: {
-        type: 'dimension',
-        config: {
-          metricCid: 'cid_revenue(currency=USD)',
-          dimensions: [
-            {
-              name: 'All Other',
-              values: { 'cid_age(field=desc)': 'All Other' },
-            },
-            {
-              name: 'Under 13',
-              values: { 'cid_age(field=desc)': 'Under 13' },
-            },
-          ],
-        },
-      },
-    });
-
-    await render(TEMPLATE);
-
-    assert.dom('.c3-title').hasText('Revenue (USD)', 'The metric name is displayed in the metric label correctly');
-
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
-
-    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
-
-    assert
-      .dom('.chart-series-0 text')
-      .hasText('40%', 'Percentage label shown on slice is formatted properly for `All Other`');
-
-    assert
-      .dom('.chart-series-1 text')
-      .hasText('60%', 'Percentage label shown on slice is formatted properly for `Under 13`');
+    assert.dom('.apexcharts-title-text').hasText('Total Page Views', 'The original metric name is restored on update');
   });
 
   test('renders correctly with multi datasource', async function (assert) {
@@ -480,38 +384,12 @@ module('Integration | Component | pie chart', function (hooks) {
     await render(TEMPLATE);
 
     assert
-      .dom('.c3-title')
+      .dom('.apexcharts-title-text')
       .hasText('How many have sold worldwide', 'The metric name is displayed in the metric label correctly');
   });
 
-  test('parameterized metric renders correctly for metric series', async function (assert) {
-    assert.expect(4);
-    const clonedModel = { request: Request, response: Response };
-    const newColumns = [
-      {
-        field: 'network.dateTime',
-        parameters: { grain: 'day' },
-        type: 'timeDimension',
-        cid: 'cid_network.dateTime(grain=day)',
-      },
-      {
-        field: 'revenue',
-        parameters: { currency: 'USD' },
-        type: 'metric',
-        cid: 'cid_revenue(currency=USD)',
-      },
-      {
-        field: 'revenue',
-        parameters: { currency: 'CAD' },
-        type: 'metric',
-        cid: 'cid_revenue(currency=CAD)',
-      },
-    ];
-    clonedModel.request = this.owner
-      .lookup('service:store')
-      .createFragment('bard-request-v2/request', { ...RequestJSON, columns: newColumns });
-    clonedModel.request.columns.forEach((c) => (c.source = Request.dataSource));
-    this.set('model', A([clonedModel]));
+  test('apex chart renders correct legent', async function (assert) {
+    assert.expect(3);
 
     this.set('options', {
       series: {
@@ -519,20 +397,39 @@ module('Integration | Component | pie chart', function (hooks) {
         config: {},
       },
     });
-
     await render(TEMPLATE);
+    assert.dom('.apexcharts-legend-series').exists({ count: 2 }, 'all slice data renders in legend');
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.apexcharts-legend-text').hasAttribute('data:default-text');
+    assert.deepEqual(
+      findAll('.apexcharts-legend-text').map((el) => el.textContent?.trim()),
+      ['Total Page Views', 'Unique Identifiers'],
+      'legend renders with correct labels for all slices'
+    );
+  });
 
-    assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
+  test('apex chart renders correct series values', async function (assert) {
+    assert.expect(3);
 
-    assert
-      .dom('.c3-chart-arc.chart-series-0 text')
-      .hasText('40%', 'Percentage label shown on slice is formatted properly for `Revenue (USD)`');
+    this.set('options', {
+      series: {
+        type: 'metric',
+        config: {},
+      },
+    });
+    await render(TEMPLATE);
+    assert.dom('.apexcharts-pie-series').exists({ count: 2 }, 'all slices of pie chart render');
 
-    assert
-      .dom('.c3-chart-arc.chart-series-1 text')
-      .hasText('60%', 'Percentage label shown on slice is formatted properly for `Revenue (CAD)`');
+    assert.deepEqual(
+      findAll('.apexcharts-datalabels').map((el) => el.textContent?.trim()),
+      ['66.67%', '33.33%'],
+      'percents are rendered correctly'
+    );
+    assert.deepEqual(
+      findAll('.apexcharts-pie-area').map((el) => el.getAttribute('data:value')),
+      ['310382162', '155191081'],
+      'percents are rendered correctly'
+    );
   });
 
   test('cleanup tooltip', async function (assert) {
@@ -540,7 +437,7 @@ module('Integration | Component | pie chart', function (hooks) {
 
     const template = hbs`
     {{#if this.shouldRender}}
-      <NaviVisualizations::PieChart
+      <NaviVisualizations::Apex::PieChart
         @model={{this.model}}
         @options={{this.options}}
       />

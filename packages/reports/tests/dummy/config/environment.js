@@ -81,6 +81,7 @@ module.exports = function (environment) {
         enableContains: true,
         enableTableEditing: true,
         enableTotals: true,
+        enableApexCharts: false,
       },
     },
   };
