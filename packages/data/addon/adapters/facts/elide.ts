@@ -20,6 +20,7 @@ import type {
   RequestV1,
   RequestOptions,
   AsyncQueryResponse,
+  TableExportResponse,
   Parameters,
   RequestV2,
   FilterOperator,
@@ -265,12 +266,35 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   }
 
   /**
-   * @param _request
-   * @param _options
+   * @param request
+   * @param options
+   * @returns Promise that resolves to the result of the TableExport creation mutation
    */
-  @task *urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): TaskGenerator<string> {
-    return yield 'TODO';
+  createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+    console.log('create table export');
+    const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
+    const query = this.dataQueryFromRequest(request);
+    console.log('query', query);
+    const id: string = options.requestId || v1();
+    const dataSourceName = request.dataSource || options.dataSourceName;
+    console.log('dataSourceName ', dataSourceName);
+    // TODO: Add other options based on RequestOptions
+    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    console.log('queryOptions ', queryOptions);
+    return this.apollo.mutate(queryOptions);
   }
+
+  /**
+   * @param id
+   * @returns Promise with the updated tableExport's id and status
+   */
+  cancelTableExport(id: string, dataSourceName?: string) {
+    console.log('cancel table export');
+    const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
+    dataSourceName = dataSourceName || getDefaultDataSource().name;
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
+  }
+
   /**
    * @param request
    * @param options
@@ -318,5 +342,60 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     } else {
       return payload;
     }
+  }
+
+  /**
+   * @param _request
+   * @param _options
+   */
+  @task *urlForDownloadQuery(request: RequestV1, options: RequestOptions): TaskGenerator<string> {
+    console.log('urlForDownloadQuery');
+    const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
+    console.log('response ', response);
+    const status: QueryStatus = response.tableExport.edges[0]?.node.status;
+    if (status !== QueryStatus.COMPLETE) {
+      throw new Error('Table Export Query did not complete successfully');
+    }
+    const url = response.tableExport.edges[0]?.node.result?.url;
+    if (!url) {
+      throw new Error('Unable to retrieve download URL');
+    }
+    return url.toString();
+  }
+
+  /**
+   * @param request
+   * @param options
+   */
+  @task *fetchDataForExportTask(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions = {}
+  ): TaskGenerator<TableExportResponse> {
+    console.log('fetchDataForExportTask');
+    let tableExportPayload = yield this.createTableExport(request, options);
+    const tableExport = tableExportPayload?.tableExport.edges[0]?.node;
+    const { id } = tableExport;
+    let status: QueryStatus = tableExport.status;
+
+    while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+      yield timeout(this._pollingInterval);
+      tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
+      status = tableExportPayload?.tableExport.edges[0]?.node.status;
+    }
+    return tableExportPayload;
+  }
+
+  /**
+   * @param id
+   * @returns Promise that resolves to the result of the TableExport fetch query
+   */
+  fetchTableExport(id: string, dataSourceName?: string) {
+    console.log('fetch table export');
+    const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
+    console.log('query ', query);
+    dataSourceName = dataSourceName || getDefaultDataSource().name;
+    console.log('dataSourceName ', dataSourceName);
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
 }

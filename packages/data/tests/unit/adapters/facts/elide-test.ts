@@ -8,6 +8,7 @@ import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import { exportFactsQueryStr } from 'navi-data/gql/queries/export-facts';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import { taskFor } from 'ember-concurrency-ts';
 
@@ -444,6 +445,47 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
+  test('fetchTableExport - success', async function (assert) {
+    assert.expect(2);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(
+        requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
+        exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+        'fetchTableExport sent the correct query to fetch a tableExport'
+      );
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.ids[0],
+                query: 'foo',
+                queryType: 'GRAPHQL_V1_0',
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: '200',
+                  url: 'downloadURL',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    const result = await adapter.fetchTableExport('request1', 'elideOne');
+    assert.deepEqual(result, response, 'fetchTableExport returns the correct response payload');
+  });
+
   test('fetchDataForRequest - success', async function (assert) {
     assert.expect(10);
 
@@ -540,6 +582,127 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     } catch ({ errors }) {
       const responseText = await errors[0].statusText;
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
+    }
+  });
+
+  test('urlForDownloadQuery - success', async function (assert) {
+    assert.expect(3);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const downloadURL = 'downloadURL';
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+      assert.deepEqual(
+        Object.keys(requestObj.variables),
+        ['id', 'query'],
+        'urlForDownloadQuery sends id, query request variables'
+      );
+
+      assert.ok(uuidRegex.exec(requestObj.variables.id), 'A uuid is generated for the request id');
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: 200,
+                  url: downloadURL,
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    const tableExportUrl: string = await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+    assert.deepEqual(tableExportUrl, downloadURL, 'urlForDownloadQuery returns the correct response payload');
+  });
+
+  test('urlForDownloadQuery - Internal server error', async function (assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: 'FAILURE',
+                result: {
+                  httpStatus: 500,
+                  url: '',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [500, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    try {
+      await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+    } catch (e) {
+      console.log('Internal server error', e.errors[0].response.statusText);
+      assert.deepEqual(
+        e.errors[0].response.statusText,
+        'Internal Server Error',
+        'urlForDownloadQuery returns appropriate error message on server error'
+      );
+    }
+  });
+
+  test('urlForDownloadQuery - Bad request error', async function (assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    let response;
+    Server.post(HOST, function ({ requestBody }) {
+      const requestObj = JSON.parse(requestBody);
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                status: 'FAILURE',
+                result: {
+                  httpStatus: 200,
+                  url: '',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    try {
+      await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+    } catch (e) {
+      console.log('urlForDownloadQuery - Bad request error', e.message);
+      assert.deepEqual(
+        e.message,
+        'Table Export Query did not complete successfully',
+        'urlForDownloadQuery returns appropriate error message on bad request'
+      );
     }
   });
 
