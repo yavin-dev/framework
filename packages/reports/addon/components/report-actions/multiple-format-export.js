@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -16,6 +16,7 @@ import layout from '../../templates/components/report-actions/multiple-format-ex
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { htmlSafe } from '@ember/template';
+import { later, cancel } from '@ember/runloop';
 
 @templateLayout(layout)
 @tagName('')
@@ -145,8 +146,13 @@ export default class MultipleFormatExport extends Component {
    * A hack to make the trigger responding to click
    */
   @action
-  open() {
-    return true;
+  open(dropdown) {
+    if (this.closeTimer) {
+      cancel(this.closeTimer);
+      this.closeTimer = null;
+    } else {
+      dropdown.actions.open();
+    }
   }
 
   /**
@@ -154,7 +160,10 @@ export default class MultipleFormatExport extends Component {
    */
   @action
   close(dropdown) {
-    dropdown.actions.close();
+    this.closeTimer = later(() => {
+      this.closeTimer = null;
+      dropdown.actions.close();
+    }, 300);
   }
 
   /**
