@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -7,17 +7,15 @@ import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { getSelectedMetricsOfBase, getUnfilteredMetricsOfBase } from 'navi-reports/utils/request-metric';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import ReportModel from 'navi-core/models/report';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import { Parameters } from 'navi-data/adapters/facts/interface';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import TableMetadataModel from 'navi-data/models/metadata/table';
 import { OPERATORS, valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
-import { Grain } from 'navi-data/utils/date';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ReportModel from 'navi-core/models/report';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type { Grain } from 'navi-data/utils/date';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
   operator: 'gt',
@@ -26,29 +24,7 @@ const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: Fil
 
 export default class FilterConsumer extends ActionConsumer {
   @service
-  requestActionDispatcher!: RequestActionDispatcher;
-
-  /**
-   * @method _getNextParameterForMetric
-   *
-   *
-   * @private
-   * @param metricMetadataModel - metadata object of metric
-   * @param request - request fragment
-   * @returns {Object|undefined} next parameters object
-   */
-  _getNextParameterForMetric(metricMetadataModel: MetricMetadataModel, request: RequestFragment) {
-    if (!metricMetadataModel.hasParameters) {
-      return;
-    }
-
-    if (!getSelectedMetricsOfBase(metricMetadataModel, request).length) {
-      return metricMetadataModel.getDefaultParameters();
-    }
-
-    const nextUnfilteredMetric = getUnfilteredMetricsOfBase(metricMetadataModel, request)[0];
-    return nextUnfilteredMetric?.parameters;
-  }
+  declare requestActionDispatcher: RequestActionDispatcher;
 
   actions = {
     [RequestActions.ADD_FILTER](this: FilterConsumer, route: Route, column: ColumnFragment) {

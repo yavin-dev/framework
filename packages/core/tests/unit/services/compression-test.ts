@@ -1,8 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import type CompressionService from 'navi-core/services/compression';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type StoreService from '@ember-data/store';
+import type ReportModel from 'navi-core/models/report';
 
-let Service;
+let Service: CompressionService;
+let Store: StoreService;
 
 module('Unit | Service | compression', function (hooks) {
   setupTest(hooks);
@@ -10,7 +16,9 @@ module('Unit | Service | compression', function (hooks) {
 
   hooks.beforeEach(async function () {
     Service = this.owner.lookup('service:compression');
-    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    Store = this.owner.lookup('service:store');
+    const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
+    await naviMetadata.loadMetadata();
   });
 
   test('compress and decompress', async function (assert) {
@@ -38,10 +46,9 @@ module('Unit | Service | compression', function (hooks) {
   test('compressModel and decompressModel', async function (assert) {
     assert.expect(5);
 
-    const store = Service.get('store');
-    const user = store.createRecord('user', { id: 'midna' });
-    const request = store.createFragment('bard-request-v2/request');
-    const report = store.createRecord('report', {
+    const user = Store.createRecord('user', { id: 'midna' });
+    const request = Store.createFragment('bard-request-v2/request', {});
+    const report = Store.createRecord('report', {
       id: '1234',
       title: 'Hello World',
       author: user,
@@ -60,7 +67,7 @@ module('Unit | Service | compression', function (hooks) {
       'The model compresses to a string significantly shorter than the URL limit'
     );
 
-    const decompressedModel = await Service.decompressModel(compressedString);
+    const decompressedModel = (await Service.decompressModel(compressedString)) as ReportModel;
     assert.deepEqual(
       decompressedModel.getProperties('id', 'title'),
       { id: '1234', title: 'Hello World' },
@@ -83,23 +90,5 @@ module('Unit | Service | compression', function (hooks) {
       /A model given to `compress` must have an id/,
       'An error is thrown if the model does not have an id set'
     );
-  });
-
-  test('_pushPayload', function (assert) {
-    assert.expect(3);
-
-    const service = this.owner.lookup('service:compression');
-    const store = service.get('store');
-    const report = store.createRecord('report', { title: 'Hello World' });
-    const jsonPayload = report.serialize();
-
-    jsonPayload.data.id = 1234;
-
-    assert.equal(store.peekRecord('report', 1234), null, 'Model from payload is not initally in the store');
-
-    const model = service._pushPayload(jsonPayload);
-    assert.equal(model.get('title'), 'Hello World', '_pushPayload returns a model with attributes from payload');
-
-    assert.ok(store.peekRecord('report', 1234), 'Model from payload exists in store after _pushPayload');
   });
 });

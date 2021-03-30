@@ -66,7 +66,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function (hooks) {
     assert.expect(2);
 
     return settled().then(() => {
-      return Route.model().then((model) => {
+      return Route.model({}, { to: { queryParams: {} } }).then((model) => {
         assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
 
         assert.equal(

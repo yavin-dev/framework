@@ -1,7 +1,6 @@
 import { click, currentURL, visit } from '@ember/test-helpers';
 import Ember from 'ember';
 import { module, test } from 'qunit';
-import { teardownModal } from '../helpers/teardown-modal';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -10,10 +9,6 @@ let OriginalLoggerError, OriginalTestAdapterException;
 module('Acceptance | Report Collections', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-
-  hooks.afterEach(function () {
-    teardownModal();
-  });
 
   test('report-collection success', async function (assert) {
     assert.expect(2);

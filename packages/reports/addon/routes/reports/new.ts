@@ -1,86 +1,69 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
 import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import { get } from '@ember/object';
 import config from 'ember-get-config';
 import { A } from '@ember/array';
+import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
+import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
+import type CompressionService from 'navi-core/services/compression';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type UserService from 'navi-core/services/user';
+import type { Transition } from 'navi-core/utils/type-utils';
+import type ReportModel from 'navi-core/models/report';
 
-export default Route.extend({
-  /**
-   * @property {Service} naviNotifications
-   */
-  naviNotifications: service(),
+export default class ReportsNewRoute extends Route {
+  @service declare naviNotifications: NaviNotificationsService;
 
-  /**
-   * @property {Service} naviVisualizations
-   */
-  naviVisualizations: service(),
+  @service declare naviVisualizations: NaviVisualizationsService;
 
-  /**
-   * @property {Service} compression
-   */
-  compression: service(),
+  @service declare compression: CompressionService;
 
-  /**
-   * @property {Service} metadataService - Navi Metadata Service
-   */
-  metadataService: service('navi-metadata'),
+  @service('navi-metadata') declare metadataService: NaviMetadataService;
+
+  @service declare user: UserService;
 
   /**
-   * @property {Service} user
-   */
-  user: service(),
-
-  /**
-   * @method model
    * @override
-   * @returns {Promise} route model
+   * @returns route model
    */
-  model(_, transition) {
-    const queryParams =
-      (transition &&
-        (transition.queryParams || //Ember2.x support
-          (transition.to && transition.to.queryParams))) ||
-      {};
+  model(_params: {}, transition: Transition) {
+    const modelQueryParam = transition.to?.queryParams?.model;
 
     // Allow for a report to be passed through the URL
-    if (queryParams.model) {
-      return this._deserializeUrlModel(queryParams.model);
+    if (modelQueryParam) {
+      return this._deserializeUrlModel(modelQueryParam);
     }
 
     return this._newModel();
-  },
+  }
 
   /**
    * Transitions to newly created report
    *
-   * @method afterModel
-   * @param {DS.Model} report - resolved report model
+   * @param report - resolved report model
    * @override
    */
-  afterModel(report) {
-    return this.replaceWith('reports.report.edit', get(report, 'tempId'));
-  },
+  afterModel(report: ReportModel) {
+    return this.replaceWith('reports.report.edit', report.tempId);
+  }
 
   /**
-   * @method _deserializeUrlModel
    * @private
-   * @param {String} modelString - compressed model
-   * @returns {Promise} promise that resolves to new model
+   * @param modelString - compressed model
+   * @returns promise that resolves to new model
    */
-  _deserializeUrlModel(modelString) {
-    return get(this, 'compression')
+  _deserializeUrlModel(modelString: string) {
+    return this.compression
       .decompressModel(modelString)
-      .then((model) => {
+      .then((model: ReportModel) => {
         return this.store.createRecord('report', model.clone());
       })
       .catch(() => reject(new Error('Could not parse model query param')));
-  },
+  }
 
   /**
    * Returns a new model for this route
@@ -103,7 +86,7 @@ export default Route.extend({
       visualization: { type: defaultVisualization },
     });
     return report;
-  },
+  }
 
   /**
    * Returns a default table model for new report
@@ -120,5 +103,5 @@ export default Route.extend({
       table = A(factTables).sortBy('name')[0];
     }
     return table;
-  },
-});
+  }
+}
