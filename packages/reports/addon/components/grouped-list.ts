@@ -13,7 +13,7 @@ interface Args {
   shouldOpenAllGroups: boolean;
   containerSelector: string;
   groupByField: string;
-  sortByField?: string;
+  sortByField?: string | null;
 }
 
 export default class GroupedListComponent extends Component<Args> {
@@ -23,7 +23,8 @@ export default class GroupedListComponent extends Component<Args> {
   guid = guidFor(this);
 
   get groupedItems() {
-    const { items, groupByField, sortByField = '' } = this.args;
+    const { items, groupByField } = this.args;
+    const sortByField = this.args.sortByField || '';
 
     const grouped = groupBy(items, (row) => row[groupByField]?.split(',')[0] || `Uncategorized`);
 
