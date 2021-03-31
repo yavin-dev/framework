@@ -206,11 +206,11 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     await click('.schedule__modal-delete-btn');
     assert
-      .dom('.delete-modal__details')
+      .dom('.delete__modal__details')
       .hasText('This action cannot be undone. This will permanently delete the delivery rule.');
 
     // Click confirm deletion
-    await click('.delete-modal__delete-btn');
+    await click('.delete__modal__delete-btn');
 
     assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
 

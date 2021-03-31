@@ -40,41 +40,19 @@
     }
   }
 
-  &__actions {
-    width: 175px;
+  .modal.is-active {
+    visibility: visible;
+  }
 
-    button,
-    .btn,
-    a {
-      padding: 0;
 
-      i {
-        color: @navi-gray;
-        font-size: @font-size-base;
+  .navi-collection__row & > ul {
+    color: @gray-6;
+    visibility: hidden;
+  }
 
-        &:hover {
-          color: @navi-dark-gray;
-        }
-      }
-    }
-
-    .action {
-      margin-right: 10px;
-
-      .modal.is-active {
-        visibility: visible;
-      }
-    }
-
-    .navi-collection__row & > ul {
-      color: @gray-6;
-      visibility: hidden;
-    }
-
-    .navi-collection__row:hover & > ul {
-      color: inherit;
-      visibility: inherit;
-    }
+  .navi-collection__row:hover & > ul {
+    color: inherit;
+    visibility: inherit;
   }
 
   &__filter-selector {
@@ -93,6 +71,8 @@
   }
 
   &__row{
+    height: 42px;
+    
     .d-icon {
       visibility: hidden;
     }
@@ -102,5 +82,9 @@
         visibility: visible !important;
       }
     }
+  }
+
+  &__actions {
+    width: 296px;
   }
 }

@@ -272,7 +272,7 @@ module('Acceptance | Dashboards', function (hooks) {
     await visit('/dashboards/2');
 
     await click('.delete-button');
-    await click('.delete-modal__delete-btn');
+    await click('.delete__modal__delete-btn');
     assert.equal(currentURL(), '/dashboards', 'Deleting a dashboard transitions to index route');
 
     const newTitles = findAll('.navi-collection .table tr td:first-of-type').map((el) => el.textContent.trim());

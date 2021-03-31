@@ -2,20 +2,31 @@
 <div class="dashboard-action-list flex-1" ...attributes>
   {{#with @item as | dashboard |}}
     {{!-- Clone action enabled at all times --}}
-    <LinkTo class="clone" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
-      <DenaliIcon @size="small" @icon="copy-file" class="navi-icon__copy p-r-5 link" />
-      <EmberTooltip @text="Clone the dashboard"/>
+    <LinkTo class="clone link" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
+      <DenaliIcon 
+        id="navi-dashboard-action-export-{{@index}}"
+        @size="small" 
+        @icon="copy-file" 
+        class="navi-icon__copy p-4 link" 
+      />
+      <EmberTooltip @text="Clone the dashboard" @targetId="navi-dashboard-action-export-{{@index}}"/>
     </LinkTo>
 
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
-      <EmberTooltip @text="Export the dashboard"/>
       <DashboardActions::Export
         class="export {{unless dashboard.validations.isTruelyValid "disabled"}}"
         @dashboard={{dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
       >
-        <DenaliIcon @size="small" @icon="download" class="navi-icon__download p-r-5 link" />
+        <DenaliIcon 
+          id="navi-dashboard-action-export-{{@index}}"
+          disabled={{not dashboard.validations.isTrulyValid}}
+          @size="small" 
+          @icon="download" 
+          class="navi-icon__download p-4 link" 
+        />
+        <EmberTooltip @text="Export the dashboard" @targetId="navi-dashboard-action-export-{{@index}}" />
       </DashboardActions::Export>
     {{/if}}
 
@@ -23,10 +34,15 @@
     <CommonActions::Share
       @buildUrl={{fn this.buildUrl dashboard}}
       @disabled={{not dashboard.validations.isTruelyValid}}
-      {{!-- TODO: Fix action by removing mixin --}}
     >
-      <DenaliIcon @size="small" @icon="share-arrow" class="navi-icon__share p-r-5 link" />
-      <EmberTooltip @text="Share the dashboard"/>
+      <DenaliIcon 
+        id="navi-dashboard-action-share-{{@index}}"
+        disabled={{not dashboard.validations.isTruelyValid}} 
+        @size="small" 
+        @icon="share-arrow" 
+        class="p-4 link" 
+      />
+      <EmberTooltip @text="Share the dashboard" @targetId="navi-dashboard-action-share-{{@index}}"/>
     </CommonActions::Share>
 
     {{!-- Delete action visible when user owns the Dashboard --}}
@@ -44,9 +60,10 @@
         >
           <DenaliIcon 
             id="navi-dashboard-action-schedule-{{@index}}"
+            disabled={{not dashboard.validations.isTruelyValid}}
             @icon="time"
             @size="small"
-            class="navi-icon__schedule schedule-action__button p-r-5 link"
+            class="navi-icon__schedule schedule-action__button p-4 link"
             {{on "click" onOpen}}
           />
           <EmberTooltip @targetId="navi-dashboard-action-schedule-{{@index}}">
@@ -58,14 +75,14 @@
         @model={{dashboard}}
         @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
         @deleteAction={{item-action "DELETE_ITEM" dashboard}}
-        as |DELETE|
+        as |onDelete|
       >
         <DenaliIcon 
           id="navi-dashboard-action-delete-{{@index}}"
           @size="small" 
           @icon="trash" 
-          class="navi-icon__delete delete p-r-5 link" 
-          {{on "click" DELETE}}
+          class="navi-icon__delete delete p-4 link" 
+          {{on "click" onDelete}}
         />
         <EmberTooltip @targetId="navi-dashboard-action-delete-{{@index}}" @text="Delete the dashboard"/>
       </CommonActions::Delete>

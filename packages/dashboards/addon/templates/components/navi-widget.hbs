@@ -27,8 +27,8 @@
         @models={{array @model.dashboard.id @model.id}}
         class="navi-widget__explore-btn"
       >
-        <NaviIcon @icon="pencil" class="navi-icon__edit" />
-        <EmberTooltip @popperContainer="body" @text="Explore" />
+        <NaviIcon @size="small" @icon="pencil" class="navi-icon__edit" id="widget-edit-{{@index}}" />
+        <EmberTooltip @targetId="widget-edit-{{@index}}" @popperContainer="body" @text="Explore" />
       </LinkTo>
       {{#if @canEdit}}
         <CommonActions::Delete
@@ -36,8 +36,13 @@
           @model={{@model}}
           @deleteAction={{route-action "deleteWidget"}}
         >
-          <DenaliIcon @icon="trash" class="navi-icon__delete navi-widget__delete-btn" />
-          <EmberTooltip @popperContainer="body" @text="Delete" />
+          <DenaliIcon 
+            id="widget-delete-{{@index}}" 
+            @size="small" 
+            @icon="trash" 
+            class="navi-icon__delete navi-widget__delete-btn link" 
+          />
+          <EmberTooltip @popperContainer="body" @text="Delete" @targetId="widget-delete-{{@index}}" />
         </CommonActions::Delete>
       {{/if}}
     </div>

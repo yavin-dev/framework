@@ -6,27 +6,4 @@
   display: flex;
   justify-content: flex-end;
   padding-right: 20px;
-
-  .actions {
-    display: flex;
-    flex-direction: row;
-    margin-right: 10px;
-    text-align: left;
-
-    .action {
-      margin-right: 15px;
-      visibility: hidden;
-    }
-
-    i {
-      font-size: 14px;
-      position: relative;
-      top: -1px;
-    }
-
-    &.primary {
-      // Primary action needs extra space since it's a full button
-      margin-left: 10px;
-    }
-  }
 }

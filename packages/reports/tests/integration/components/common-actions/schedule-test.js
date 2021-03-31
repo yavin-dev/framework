@@ -256,7 +256,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule__modal-delete-btn');
 
-    await click('.delete-modal__delete-btn');
+    await click('.delete__modal__delete-btn');
   });
 
   test('frequency options - default', async function (assert) {

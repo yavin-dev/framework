@@ -11,13 +11,12 @@
       as |onClick|
     >
       <DenaliButton
-        type="button"
         @style="text"
         @size="medium"
+        @icon="dashboard-tile-add"
         id="report-action__addToDashboard"
         {{on "click" onClick}}
       >
-        <DenaliIcon @icon="dashboard-tile-add" />
         <span>Add to Dashboard</span>
       </DenaliButton>
     </ReportActions::AddToDashboard>
@@ -108,10 +107,10 @@
         id="report-action__schedule"
         @style="text"
         @size="medium"
+        @icon="clock"
         disabled={{not @model.request.validations.isTruelyValid}}
         {{on "click" onOpen}}
       >
-        <NaviIcon @icon="clock" class="navi-report__action-icon" />
         <span>Schedule</span>
       </DenaliButton>
     </CommonActions::Schedule>
@@ -128,11 +127,11 @@
       <DenaliButton
         @style="text"
         @size="medium"
+        @icon="trash"
         id="report-action__delete"
         class="delete-button"
         {{on "click" DELETE}}
       >
-        <DenaliIcon @icon="trash" />
         Delete
       </DenaliButton>
     </CommonActions::Delete>

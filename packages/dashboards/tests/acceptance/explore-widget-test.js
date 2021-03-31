@@ -262,10 +262,10 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await visit('/dashboards/1/widgets/2/view');
     await click($('.navi-report-widget__action:contains(Delete) button')[0]);
     assert
-      .dom('.delete-modal__details')
+      .dom('.delete__modal__details')
       .hasText('This action cannot be undone. This will permanently delete the Mobile DAU Graph dashboard widget.');
 
-    await click('.delete-modal__delete-btn');
+    await click('.delete__modal__delete-btn');
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
     assert.deepEqual(

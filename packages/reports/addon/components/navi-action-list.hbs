@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-action-list actions flex-1" ...attributes>
+<div class="navi-action-list flex-1" ...attributes>
 
   {{!-- Clone only enabled on a saved report --}}
   {{#if @item.isNew}}
@@ -9,12 +9,12 @@
       @route="reports.report.clone"
       @model={{@item.id}}
     >
-      <DenaliIcon @size="small" @icon="copy-file p-r-5 link" />
+      <DenaliIcon disabled="true" @size="small" @icon="copy-file p-4 link" />
       <EmberTooltip @popperContainer="body" @text="Save report to enable clone" />
     </LinkTo>
   {{else}}
     <LinkTo @route="reports.report.clone" @model={{@item.id}} class="navi-reports-index__report-control clone">
-      <DenaliIcon class="clone p-r-5 link" @size="small" @icon="copy-file" />
+      <DenaliIcon class="clone p-4 link" @size="small" @icon="copy-file" />
       <EmberTooltip @popperContainer="body" @text="Clone the report" />
     </LinkTo>
   {{/if}}
@@ -30,7 +30,8 @@
       >
         <DenaliIcon 
           id={{concat "navi-report-action-export-" @index}}
-          class="p-r-5 link"
+          class="p-4 link"
+          disabled={{not @item.request.validations.isTruelyValid}}
           @size="small" 
           @icon="download"
         />
@@ -49,7 +50,12 @@
     @buildUrl={{this.buildUrl}}
     @disabled={{@item.isNew}}
   >
-    <DenaliIcon class="p-r-5 link" @size="small" @icon="share-arrow" />
+    <DenaliIcon 
+      disabled={{@item.isNew}}
+      class="p-4 link" 
+      @size="small" 
+      @icon="share-arrow" 
+    />
     <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-share-" @index}}>
       {{if @item.isNew "Save report to enable share" "Share the report"}}
     </EmberTooltip>
@@ -71,7 +77,7 @@
           id="navi-report-action-schedule-{{@index}}"
           @icon="time"
           @size="small"
-          class="schedule-action__button p-r-5 link"
+          class="schedule-action__button p-4 link"
           {{on "click" onOpen}}
         />
         <EmberTooltip @popperContainer="body" @targetId="navi-report-action-schedule-{{@index}}">
@@ -87,14 +93,14 @@
               "Are you sure you want to delete this report and the associated schedule?"
               "Are you sure you want to delete this report?"}}
         @deleteAction={{item-action "DELETE_ITEM" @item}}
-        as |DELETE|
+        as |onDelete|
       >
         <DenaliIcon 
           @size="small" 
           @icon="trash" 
-          class="delete p-r-5 link"
+          class="delete p-4 link"
           id="navi-report-action-delete-{{@index}}"
-          {{on "click" DELETE}}
+          {{on "click" onDelete}}
         />
       </CommonActions::Delete>
       <EmberTooltip @targetId="navi-report-action-delete-{{@index}}" @popperContainer="body" @text="Delete the report" />

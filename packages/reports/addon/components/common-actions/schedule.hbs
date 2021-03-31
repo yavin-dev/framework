@@ -132,13 +132,13 @@
           @disabled={{this.isSaving}}
           @model={{this.localDeliveryRule}}
           @deleteAction={{queue this.doDelete this.closeModal}}
-          as |DELETE|
+          as |onDelete|
         >
           <DenaliButton
             @style="text"
             @size="medium"
             class="schedule__modal-delete-btn"
-            {{on "click" DELETE}}
+            {{on "click" onDelete}}
           >
             Delete
           </DenaliButton>

@@ -102,14 +102,13 @@
           <CommonActions::Delete
             @model={{@model}}
             @deleteAction={{route-action "deleteWidget"}}
-            as |DELETE|
+            as |onDelete|
           >
             <DenaliButton
               @style="text"
-              @size="medium"
               class="delete-button"
-              {{on "click" DELETE}}>
-              <DenaliIcon @icon="trash" class="navi-report-widget__icon" />
+              {{on "click" onDelete}}>
+              <DenaliIcon @size="small" @icon="trash" class="navi-report-widget__icon" />
               Delete
             </DenaliButton>
           </CommonActions::Delete>
