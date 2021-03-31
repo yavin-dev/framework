@@ -6,8 +6,8 @@ for terms. --}}
   ...attributes
   {{on "click" (queue
         (fn this.onSuccess)
-        (perform this.getURL)
         (toggle "showModal" this)
+        (perform this.href)
       )}}
   disabled={{@disabled}}
 >
@@ -22,16 +22,15 @@ for terms. --}}
   >
   <modal.Content>
   <h3 class="m-b-30">Exporting url</h3>
-  {{#if this.getURL.isRunning}}
+  {{#if this.href.isRunning}}
     <DenaliProgress
       @size="default"
-      @isLoading={{this.getURL.isRunning}}
+      @isLoading={{this.href.isRunning}}
       @color="default"
       @shade="500"
       @value={{100}}
     />
-  {{/if}}
-  {{#if this.downloadURL}}
+  {{else}}
     <DenaliInput
         @wrapperClass="w-full"
         class="export__api-input m-b-30"

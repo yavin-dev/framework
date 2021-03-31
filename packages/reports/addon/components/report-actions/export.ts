@@ -11,20 +11,26 @@
  */
 
 import { inject as service } from '@ember/service';
-import Component from '@ember/component';
-import { get, computed, action } from '@ember/object';
-import layout from '../../templates/components/report-actions/export';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import { task } from 'ember-concurrency';
-@templateLayout(layout)
-@tagName('')
-class Export extends Component {
-  /**
-   * @property {DS.Model} report
-   */
-  report = undefined;
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+import { task, TaskGenerator } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+import type NaviFactsService from 'navi-data/services/navi-facts';
+import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
+import ReportModel from 'navi-core/addon/models/report';
+import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
 
-  downloadURL = null;
+interface Args {
+  disabled: boolean;
+  report: ReportModel;
+}
+
+export default class ReportActionExport extends Component<Args> {
+  /**
+   * @property {string} downloadURL
+   */
+  @tracked downloadURL?: string;
   /**
    * @property {Array} classNames
    */
@@ -33,16 +39,15 @@ class Export extends Component {
   /**
    * @property {Service} facts - instance of navi facts service
    */
-  @service('navi-facts') facts;
-  @service('naviNotifications') naviNotifications;
+  @service('navi-facts') declare facts: NaviFactsService;
+  @service naviNotifications!: NaviNotificationsService;
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
-  @computed('disabled')
   get download() {
     console.log('export download ', this);
     // No Download for disabled action
-    if (get(this, 'disabled')) {
+    if (this.args.disabled) {
       console.log('download null');
       return null;
     } else {
@@ -54,11 +59,10 @@ class Export extends Component {
   /**
    * @property {Boolean} target - Boolean to check if request is valid and set target
    */
-  @computed('disabled')
   get target() {
     console.log('export target ', this);
     // No target for disabled action
-    if (get(this, 'disabled')) {
+    if (this.args.disabled) {
       console.log('target null');
       return null;
     } else {
@@ -70,28 +74,31 @@ class Export extends Component {
   /**
    * @property {String} href - API link for the report
    */
-  @computed('disabled', 'facts', 'report.request.validations.isTruelyValid')
-  get href() {
+  @task *href(): TaskGenerator<string> {
     /*
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled
      */
     console.log('export href ', this);
-    if (get(this, 'disabled')) {
+    if (this.args.disabled) {
       console.log('href void');
       return 'javascript:void(0);';
     }
-
-    let request = get(this, 'report.request').serialize();
-    return this.facts.getURL(request, { format: 'csv', dataSourceName: request.dataSource });
-  }
-
-  @task({ drop: true })
-  *getURL() {
-    let request = get(this, 'report.request').serialize();
-    let downloadURL = yield this.facts.getDownloadURL(request, { format: 'csv', dataSourceName: request.dataSource });
-    //console.log(downloadURL);
-    this.set('downloadURL', downloadURL);
+    const req = this.args.report.request;
+    const serializedRequest = req.serialize() as RequestV2;
+    //const request = this.args.report.request.serialize() as RequestV2;
+    const result = yield taskFor(this.facts.getDownloadURL)
+      .perform(serializedRequest, {
+        format: 'csv',
+        dataSourceName: serializedRequest.dataSource,
+      })
+      .then((value) => {
+        this.downloadURL = value;
+        return value;
+      });
+    console.log('result', result);
+    //this.set('downloadURL', result);
+    return result;
   }
 
   @action
@@ -102,4 +109,3 @@ class Export extends Component {
     });
   }
 }
-export default Export;
