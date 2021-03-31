@@ -84,11 +84,6 @@ export enum QueryStatus {
   TIMEDOUT = 'TIMEDOUT',
   FAILURE = 'FAILURE',
 }
-
-export enum TableExportResultType {
-  CSV = 'CSV',
-}
-
 export interface AsyncQuery {
   requestId: string;
   request: RequestV1 | RequestV2;
@@ -119,7 +114,6 @@ export interface TableExport {
   requestId: string;
   request: RequestV1 | RequestV2;
   status: QueryStatus;
-  resultType: TableExportResultType;
   result: TableExportResult | null;
   createdOn: Date;
   updatedOn: Date;
