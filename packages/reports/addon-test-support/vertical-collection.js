@@ -21,23 +21,11 @@ function isVerticalCollection(component) {
 export function getVerticalCollection(selector = 'body') {
   const viewRegistry = getContext().owner.lookup('-view-registry:main');
   const allVCs = Object.values(viewRegistry).filter(isVerticalCollection);
-
   let verticalCollection;
   const byId = allVCs.find((vc) => `#${vc.elementId}` === selector);
-  if (byId) {
-    verticalCollection = byId;
-  } else {
-    const visibleVCs = allVCs.filter((verticalCollection) => {
-      const { elementId } = verticalCollection;
-      return !!document.querySelector(`${selector} #${elementId}`);
-    });
-
-    assert(
-      `Selector '${selector}' for vertical collections returned ${visibleVCs.length} instead of just 1`,
-      visibleVCs.length === 1
-    );
-    verticalCollection = visibleVCs[0];
-  }
+  verticalCollection = byId
+    ? byId
+    : allVCs.find((vc) => document.querySelector(vc.containerSelector).closest(selector));
 
   assert(`A vertical collection was not found for selector '${selector}'`, verticalCollection);
 

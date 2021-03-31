@@ -1,11 +1,11 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 //@ts-ignore
 import AssetSerializer from './asset';
-import Model from '@ember-data/model';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type Model from '@ember-data/model';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { normalizeTableV2 } from './table';
 import { normalizeMetricLabelV2 } from './metric-label';
 import { normalizeLineChartV2 } from './line-chart';
@@ -42,5 +42,12 @@ export default class ReportSerializer extends AssetSerializer {
     normalized.data.attributes.visualization = normalizeVisualization(request, visualization);
 
     return normalized;
+  }
+}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/serializer' {
+  export default interface SerializerRegistry {
+    report: ReportSerializer;
   }
 }

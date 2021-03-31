@@ -36,6 +36,8 @@ import type { TaskGenerator } from 'ember-concurrency';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
+const DEFAULT_ASYNC_AFTER_SECONDS = 2;
+
 /**
  * Formats elide request field as `col(param1:"val1", param2:"val2")`
  */
@@ -229,11 +231,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     const query = this.dataQueryFromRequest(request);
+    const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    const queryOptions = { mutation, variables: { id, query, asyncAfterSeconds }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
   }
 
@@ -294,7 +297,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
   }
-
   /**
    * @param request
    * @param options
@@ -318,7 +320,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       return asyncQueryPayload;
     } finally {
       if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-        console.error(`cancelled query ${id}`, asyncQueryPayload);
         yield this.cancelAsyncQuery(id, request.dataSource);
       }
     }

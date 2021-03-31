@@ -36,6 +36,7 @@ type LegacyAdapterOptions = {
 
 export type FiliDimensionResponse = {
   rows: Record<string, string>[];
+  meta?: Record<string, unknown>;
 };
 
 export const DefaultField = 'id';
