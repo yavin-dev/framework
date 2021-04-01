@@ -11,6 +11,7 @@ import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
 import type RequestFragment from 'navi-core/models/bard-request-v2/request';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
+import { VisualizationType } from 'navi-core/models/registry';
 
 const global = window as typeof window & { requirejs: { entries: Record<string, unknown> } };
 
@@ -19,7 +20,7 @@ export default class NaviVisualizationsService extends Service {
    * @param request
    * @returns visualization shown by default
    */
-  defaultVisualization(/*request*/): 'table' {
+  defaultVisualization(/*request*/): VisualizationType {
     // TODO: add logic that decides the default visualization based on the request
     return 'table';
   }

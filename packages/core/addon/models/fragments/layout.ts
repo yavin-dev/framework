@@ -12,3 +12,9 @@ export default class LayoutFragment extends Fragment {
   @attr('number') height!: number;
   @attr('number') widgetId!: number;
 }
+
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
+    'fragments/layout': LayoutFragment;
+  }
+}

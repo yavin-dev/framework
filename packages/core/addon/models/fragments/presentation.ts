@@ -31,3 +31,9 @@ export default class PresentationFragment extends Fragment {
     });
   }
 }
+
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
+    'fragments/presentation': PresentationFragment;
+  }
+}

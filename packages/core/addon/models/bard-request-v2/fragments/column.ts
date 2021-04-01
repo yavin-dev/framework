@@ -42,3 +42,9 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
     return sort?.direction || null;
   }
 }
+
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/fragments/column': ColumnFragment;
+  }
+}
