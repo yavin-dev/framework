@@ -23,7 +23,7 @@ module('Integration | Component | navi-button', function (hooks) {
   test('type', async function (assert) {
     await render(hbs`
       <NaviButton
-        @type={{type}}
+        @type={{this.type}}
       >
         Click Me
       </NaviButton>
@@ -43,8 +43,8 @@ module('Integration | Component | navi-button', function (hooks) {
 
     await render(hbs`
       <NaviButton
-        @type={{type}}
-        @disabled={{disabled}}
+        @type={{this.type}}
+        @disabled={{this.disabled}}
       >
         Click Me
       </NaviButton>
@@ -65,16 +65,12 @@ module('Integration | Component | navi-button', function (hooks) {
     await render(hbs`
       <NaviButton
         @type="primary"
-        @disabled={{disabled}}
-        @onClick={{action onClick}}
+        @disabled={{this.disabled}}
+        @onClick={{this.onClick}}
       >
         Click Me
       </NaviButton>
     `);
-    await click('.navi-button');
-
-    this.set('disabled', true);
-    this.set('onClick', () => assert.notOk('onClick should not fire when disabled'));
     await click('.navi-button');
   });
 });
