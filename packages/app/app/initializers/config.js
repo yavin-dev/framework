@@ -14,5 +14,5 @@ export function initialize() {
 
 export default {
   name: 'config',
-  initialize
+  initialize,
 };

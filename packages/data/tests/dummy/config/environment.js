@@ -32,9 +32,9 @@ module.exports = function (environment) {
         { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' },
       ],
       defaultDataSource: 'bardOne',
-      searchThresholds: {
-        contains: 600,
-        in: 50000,
+      cardinalities: {
+        small: 600,
+        medium: 50000,
       },
     },
   };

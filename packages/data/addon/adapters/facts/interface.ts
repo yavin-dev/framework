@@ -89,6 +89,12 @@ export enum TableExportResultType {
   JSON = 'JSON',
 }
 
+export type PageInfo = {
+  startCursor: `${number}`;
+  endCursor: `${number}`;
+  totalRecords: number;
+};
+
 export type AsyncQueryResponse = {
   asyncQuery: {
     edges: [

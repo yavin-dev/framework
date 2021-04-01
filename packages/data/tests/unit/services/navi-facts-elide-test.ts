@@ -32,14 +32,14 @@ const TestRequest: RequestV2 = {
     {
       field: 'table1.dimension2',
       operator: 'eq',
-      values: ['Incredible Metal Towels'],
+      values: ['Intelligent Soft Keyboard'],
       parameters: {},
       type: 'dimension',
     },
     {
       field: 'table1.dimension3',
       operator: 'notin',
-      values: ['Unbranded Soft Sausage', 'Ergonomic Plastic Tuna'],
+      values: ['Gorgeous Plastic Mouse', 'Unbranded Wooden Chair'],
       parameters: {},
       type: 'dimension',
     },
@@ -101,146 +101,190 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     assert.deepEqual(
       { rows, meta },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 12,
+            rowsPerPage: 12,
+          },
+        },
         rows: [
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '231.96',
-            'table1.metric2': '969.93',
+            'table1.metric1': '968.62',
+            'table1.metric2': '550.28',
             'table1.orderTimeDay': '2014-01-05',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-01-29',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '236.73',
-            'table1.metric2': '730.45',
+            'table1.metric1': '890.81',
+            'table1.metric2': '182.06',
             'table1.orderTimeDay': '2014-01-06',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '385.95',
-            'table1.metric2': '463.94',
-            'table1.orderTimeDay': '2014-01-05',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-29',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '998.39',
-            'table1.metric2': '433.80',
-            'table1.orderTimeDay': '2014-01-06',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '389.34',
-            'table1.metric2': '661.33',
+            'table1.metric1': '362.00',
+            'table1.metric2': '2.19',
             'table1.orderTimeDay': '2014-01-05',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-01-30',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '451.75',
-            'table1.metric2': '355.84',
+            'table1.metric1': '272.86',
+            'table1.metric2': '169.29',
             'table1.orderTimeDay': '2014-01-06',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-30',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-01-31',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '723.84',
-            'table1.metric2': '196.83',
+            'table1.metric1': '774.54',
+            'table1.metric2': '146.85',
             'table1.orderTimeDay': '2014-01-05',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-30',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-01-31',
             'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '476.87',
-            'table1.metric2': '676.99',
+            'table1.metric1': '317.51',
+            'table1.metric2': '943.86',
             'table1.orderTimeDay': '2014-01-06',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
-            'table1.eventTimeDay': '2015-01-31',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '545.26',
-            'table1.metric2': '114.62',
-            'table1.orderTimeDay': '2014-01-05',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
-            'table1.eventTimeDay': '2015-01-31',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '589.71',
-            'table1.metric2': '496.48',
-            'table1.orderTimeDay': '2014-01-06',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-31',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '432.79',
-            'table1.metric2': '246.23',
-            'table1.orderTimeDay': '2014-01-05',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-01-31',
-            'table1.eventTimeMonth': '2015 Jan',
-            'table1.metric1': '104.97',
-            'table1.metric2': '682.74',
-            'table1.orderTimeDay': '2014-01-06',
-          },
-          {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-02-01',
             'table1.eventTimeMonth': '2015 Feb',
-            'table1.metric1': '861.11',
-            'table1.metric2': '824.58',
+            'table1.metric1': '987.85',
+            'table1.metric2': '583.42',
             'table1.orderTimeDay': '2014-01-05',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Unbranded Soft Sausages',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
             'table1.eventTimeDay': '2015-02-01',
             'table1.eventTimeMonth': '2015 Feb',
-            'table1.metric1': '486.71',
-            'table1.metric2': '482.62',
+            'table1.metric1': '708.99',
+            'table1.metric2': '417.93',
             'table1.orderTimeDay': '2014-01-06',
           },
           {
-            'table1.dimension2': 'Incredible Metal Towels',
-            'table1.dimension3': 'Ergonomic Steel Sausages',
-            'table1.eventTimeDay': '2015-02-01',
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-02-02',
             'table1.eventTimeMonth': '2015 Feb',
-            'table1.metric1': '308.03',
-            'table1.metric2': '227.94',
+            'table1.metric1': '498.34',
+            'table1.metric2': '971.55',
             'table1.orderTimeDay': '2014-01-05',
+          },
+          {
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-02-02',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '145.24',
+            'table1.metric2': '335.43',
+            'table1.orderTimeDay': '2014-01-06',
+          },
+          {
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-02-03',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '508.71',
+            'table1.metric2': '510.03',
+            'table1.orderTimeDay': '2014-01-05',
+          },
+          {
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-02-03',
+            'table1.eventTimeMonth': '2015 Feb',
+            'table1.metric1': '316.59',
+            'table1.metric2': '437.07',
+            'table1.orderTimeDay': '2014-01-06',
           },
         ],
       },
       'Request V2 query is properly sent with all necessary arguments supplied'
+    );
+  });
+
+  test('fetch - pagination', async function (this: TestContext, assert) {
+    const limitless = { ...TestRequest, limit: null };
+    const model = await taskFor(this.service.fetch).perform(limitless, {
+      dataSourceName: limitless.dataSource,
+      page: 1,
+      perPage: 1,
+    });
+    const { rows, meta } = model.response as NaviFactResponse;
+    assert.deepEqual(
+      { rows, meta },
+      {
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 12,
+            rowsPerPage: 1,
+          },
+        },
+        rows: [
+          {
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-01-29',
+            'table1.eventTimeMonth': '2015 Jan',
+            'table1.metric1': '968.62',
+            'table1.metric2': '550.28',
+            'table1.orderTimeDay': '2014-01-05',
+          },
+        ],
+      },
+      'The pagination options limit the response to 1 row and gets the first page'
+    );
+
+    const modelPage2 = await taskFor(this.service.fetch).perform(limitless, {
+      dataSourceName: limitless.dataSource,
+      page: 2,
+      perPage: 1,
+    });
+    const { rows: rows2, meta: meta2 } = modelPage2.response as NaviFactResponse;
+    assert.deepEqual(
+      { rows: rows2, meta: meta2 },
+      {
+        meta: {
+          pagination: {
+            currentPage: 2,
+            numberOfResults: 12,
+            rowsPerPage: 1,
+          },
+        },
+        rows: [
+          {
+            'table1.dimension2': 'Intelligent Soft Keyboard',
+            'table1.dimension3': 'Ergonomic Plastic Shirt',
+            'table1.eventTimeDay': '2015-01-29',
+            'table1.eventTimeMonth': '2015 Jan',
+            'table1.metric1': '890.81',
+            'table1.metric2': '182.06',
+            'table1.orderTimeDay': '2014-01-06',
+          },
+        ],
+      },
+      'The pagination options limit the response to 1 row and gets the second page'
     );
   });
 
@@ -264,7 +308,16 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
-      { rows: [{ 'table1.metric1': '823.11', 'table1.metric2': '823.38' }], meta: {} },
+      {
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 1,
+            rowsPerPage: 1,
+          },
+        },
+        rows: [{ 'table1.metric1': '250.92', 'table1.metric2': '680.57' }],
+      },
       'Request with only metrics is formatted correctly'
     );
   });
@@ -321,8 +374,14 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     assert.deepEqual(
       { rows, meta },
       {
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 0,
+            rowsPerPage: 0,
+          },
+        },
         rows: [],
-        meta: {},
       },
       'An invalid filter on a requested field returns an empty response'
     );
@@ -347,9 +406,16 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
         rows: noTimeDimResponse?.rows,
         meta: noTimeDimResponse?.meta,
       },
+
       {
         rows: [{ 'table1.metric1': '307.93' }],
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 1,
+            rowsPerPage: 1,
+          },
+        },
       },
       'An invalid filter on a non-requested field does not affect the response'
     );
@@ -388,7 +454,13 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
           { 'table1.eventTimeMonth': '2015 Jan', 'table1.metric1': '17.49' },
           { 'table1.eventTimeMonth': '2015 Feb', 'table1.metric1': '426.48' },
         ],
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 2,
+            rowsPerPage: 2,
+          },
+        },
       },
       'A date filter with no end date defaults to a one month date interval'
     );
@@ -428,7 +500,13 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
           { 'table1.eventTimeMonth': '2014 Nov', 'table1.metric1': '17.49' },
           { 'table1.eventTimeMonth': '2014 Dec', 'table1.metric1': '426.48' },
         ],
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 2,
+            rowsPerPage: 2,
+          },
+        },
       },
       'A date filter with no end date defaults to a one month date interval'
     );
@@ -474,7 +552,13 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
             'table1.eventTimeDay': moment().utc().format(DAY_FORMAT),
           },
         ],
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 3,
+            rowsPerPage: 3,
+          },
+        },
       },
       'A date filter with no end date ends at current if start is not more than a month before current'
     );
@@ -516,19 +600,25 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     assert.deepEqual(
       { rows, meta },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 3,
+            rowsPerPage: 3,
+          },
+        },
         rows: [
           {
-            'table1.eventTimeDay': '2015-01-03',
-            'table1.metric1': '44.71',
+            'table1.eventTimeDay': '2015-01-02',
+            'table1.metric1': '258.04',
           },
           {
-            'table1.eventTimeDay': '2015-01-02',
-            'table1.metric1': '327.11',
+            'table1.eventTimeDay': '2015-01-03',
+            'table1.metric1': '634.84',
           },
           {
             'table1.eventTimeDay': '2015-01-01',
-            'table1.metric1': '675.73',
+            'table1.metric1': '783.84',
           },
         ],
       },
@@ -546,8 +636,8 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
           ],
           filters: [],
           sorts: [
-            { field: 'table1.dimension2', parameters: {}, type: 'metric', direction: 'asc' },
-            { field: 'table1.dimension3', parameters: {}, type: 'metric', direction: 'asc' },
+            { type: 'dimension', field: 'table1.dimension2', parameters: {}, direction: 'asc' },
+            { type: 'dimension', field: 'table1.dimension3', parameters: {}, direction: 'asc' },
           ],
           limit: null,
           requestVersion: '2.0',
@@ -563,67 +653,138 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
         meta: multiSortResponse?.meta,
       },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 25,
+            rowsPerPage: 25,
+          },
+        },
         rows: [
           {
-            'table1.dimension2': 'Handmade Rubber Fish',
-            'table1.dimension3': 'Awesome Cotton Sausages',
-            'table1.metric1': '913.34',
+            'table1.dimension2': 'Ergonomic Plastic Bacon',
+            'table1.dimension3': 'Awesome Cotton Bacon',
+            'table1.metric1': '849.74',
           },
           {
-            'table1.dimension2': 'Handmade Rubber Fish',
-            'table1.dimension3': 'Handcrafted Concrete Pizza',
-            'table1.metric1': '220.58',
+            'table1.dimension2': 'Ergonomic Plastic Bacon',
+            'table1.dimension3': 'Ergonomic Steel Tuna',
+            'table1.metric1': '651.12',
           },
           {
-            'table1.dimension2': 'Handmade Rubber Fish',
-            'table1.dimension3': 'Small Metal Mouse',
-            'table1.metric1': '286.62',
+            'table1.dimension2': 'Ergonomic Plastic Bacon',
+            'table1.dimension3': 'Handcrafted Rubber Pizza',
+            'table1.metric1': '440.87',
           },
           {
-            'table1.dimension2': 'Handmade Rubber Fish',
-            'table1.dimension3': 'Unbranded Wooden Pizza',
-            'table1.metric1': '188.92',
+            'table1.dimension2': 'Ergonomic Plastic Bacon',
+            'table1.dimension3': 'Incredible Metal Computer',
+            'table1.metric1': '922.05',
           },
           {
-            'table1.dimension2': 'Incredible Rubber Tuna',
-            'table1.dimension3': 'Awesome Cotton Sausages',
-            'table1.metric1': '403.35',
+            'table1.dimension2': 'Ergonomic Plastic Bacon',
+            'table1.dimension3': 'Small Fresh Car',
+            'table1.metric1': '265.31',
           },
           {
-            'table1.dimension2': 'Incredible Rubber Tuna',
-            'table1.dimension3': 'Handcrafted Concrete Pizza',
-            'table1.metric1': '500.33',
+            'table1.dimension2': 'Generic Plastic Mouse',
+            'table1.dimension3': 'Awesome Cotton Bacon',
+            'table1.metric1': '712.64',
           },
           {
-            'table1.dimension2': 'Incredible Rubber Tuna',
-            'table1.dimension3': 'Small Metal Mouse',
-            'table1.metric1': '131.54',
+            'table1.dimension2': 'Generic Plastic Mouse',
+            'table1.dimension3': 'Ergonomic Steel Tuna',
+            'table1.metric1': '624.14',
           },
           {
-            'table1.dimension2': 'Incredible Rubber Tuna',
-            'table1.dimension3': 'Unbranded Wooden Pizza',
-            'table1.metric1': '441.55',
+            'table1.dimension2': 'Generic Plastic Mouse',
+            'table1.dimension3': 'Handcrafted Rubber Pizza',
+            'table1.metric1': '19.73',
           },
           {
-            'table1.dimension2': 'Licensed Concrete Fish',
-            'table1.dimension3': 'Awesome Cotton Sausages',
-            'table1.metric1': '528.84',
+            'table1.dimension2': 'Generic Plastic Mouse',
+            'table1.dimension3': 'Incredible Metal Computer',
+            'table1.metric1': '701.89',
           },
           {
-            'table1.dimension2': 'Licensed Concrete Fish',
-            'table1.dimension3': 'Handcrafted Concrete Pizza',
-            'table1.metric1': '992.46',
+            'table1.dimension2': 'Generic Plastic Mouse',
+            'table1.dimension3': 'Small Fresh Car',
+            'table1.metric1': '35.67',
           },
           {
-            'table1.dimension2': 'Licensed Concrete Fish',
-            'table1.dimension3': 'Small Metal Mouse',
-            'table1.metric1': '337.40',
+            'table1.dimension2': 'Handcrafted Cotton Mouse',
+            'table1.dimension3': 'Awesome Cotton Bacon',
+            'table1.metric1': '391.73',
           },
           {
-            'table1.dimension2': 'Licensed Concrete Fish',
-            'table1.dimension3': 'Unbranded Wooden Pizza',
-            'table1.metric1': '974.83',
+            'table1.dimension2': 'Handcrafted Cotton Mouse',
+            'table1.dimension3': 'Ergonomic Steel Tuna',
+            'table1.metric1': '736.36',
+          },
+          {
+            'table1.dimension2': 'Handcrafted Cotton Mouse',
+            'table1.dimension3': 'Handcrafted Rubber Pizza',
+            'table1.metric1': '154.11',
+          },
+          {
+            'table1.dimension2': 'Handcrafted Cotton Mouse',
+            'table1.dimension3': 'Incredible Metal Computer',
+            'table1.metric1': '880.89',
+          },
+          {
+            'table1.dimension2': 'Handcrafted Cotton Mouse',
+            'table1.dimension3': 'Small Fresh Car',
+            'table1.metric1': '666.88',
+          },
+          {
+            'table1.dimension2': 'Licensed Concrete Bike',
+            'table1.dimension3': 'Awesome Cotton Bacon',
+            'table1.metric1': '719.31',
+          },
+          {
+            'table1.dimension2': 'Licensed Concrete Bike',
+            'table1.dimension3': 'Ergonomic Steel Tuna',
+            'table1.metric1': '563.02',
+          },
+          {
+            'table1.dimension2': 'Licensed Concrete Bike',
+            'table1.dimension3': 'Handcrafted Rubber Pizza',
+            'table1.metric1': '356.45',
+          },
+          {
+            'table1.dimension2': 'Licensed Concrete Bike',
+            'table1.dimension3': 'Incredible Metal Computer',
+            'table1.metric1': '327.80',
+          },
+          {
+            'table1.dimension2': 'Licensed Concrete Bike',
+            'table1.dimension3': 'Small Fresh Car',
+            'table1.metric1': '303.88',
+          },
+          {
+            'table1.dimension2': 'Tasty Granite Computer',
+            'table1.dimension3': 'Awesome Cotton Bacon',
+            'table1.metric1': '745.72',
+          },
+          {
+            'table1.dimension2': 'Tasty Granite Computer',
+            'table1.dimension3': 'Ergonomic Steel Tuna',
+            'table1.metric1': '324.94',
+          },
+          {
+            'table1.dimension2': 'Tasty Granite Computer',
+            'table1.dimension3': 'Handcrafted Rubber Pizza',
+            'table1.metric1': '990.20',
+          },
+          {
+            'table1.dimension2': 'Tasty Granite Computer',
+            'table1.dimension3': 'Incredible Metal Computer',
+            'table1.metric1': '796.04',
+          },
+          {
+            'table1.dimension2': 'Tasty Granite Computer',
+            'table1.dimension3': 'Small Fresh Car',
+            'table1.metric1': '729.57',
           },
         ],
       },
@@ -671,19 +832,25 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
         meta: limit?.meta,
       },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 9,
+            rowsPerPage: 3,
+          },
+        },
         rows: [
           {
             'table1.eventTimeDay': '2015-01-01',
-            'table1.metric1': '823.11',
+            'table1.metric1': '783.84',
           },
           {
             'table1.eventTimeDay': '2015-01-02',
-            'table1.metric1': '823.38',
+            'table1.metric1': '258.04',
           },
           {
             'table1.eventTimeDay': '2015-01-03',
-            'table1.metric1': '26.11',
+            'table1.metric1': '634.84',
           },
         ],
       },
@@ -729,7 +896,13 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
         meta: limitless?.meta,
       },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 9,
+            rowsPerPage: 9,
+          },
+        },
         rows: [
           {
             'table1.eventTimeDay': '2015-01-01',

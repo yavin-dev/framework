@@ -4,9 +4,9 @@ module.exports = function (/* environment, appConfig */) {
   return {
     navi: {
       dataEpoch: '2013-01-01',
-      searchThresholds: {
-        contains: 600,
-        in: 50000,
+      cardinalities: {
+        small: 600,
+        medium: 50000,
       },
     },
   };
