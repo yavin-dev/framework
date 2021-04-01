@@ -5,8 +5,8 @@
 import gql from 'graphql-tag';
 
 export const exportFactsMutationStr = `
-  mutation($id: ID, $query: String) {
-    tableExport(op: UPSERT, data: { id: $id, query: $query, queryType: GRAPHQL_V1_0, status: QUEUED }) {
+mutation($id: ID, $query: String) {
+  tableExport(op: UPSERT, data: { id: $id, query: $query, queryType: GRAPHQL_V1_0, resultType: CSV, status: QUEUED }) {
       edges {
         node {
           id

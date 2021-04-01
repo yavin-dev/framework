@@ -221,6 +221,7 @@ const schema = gql`
     createdOn: Date
     query: String
     queryType: QueryType
+    resultType: TableExportResultType
     status: QueryStatus
     updatedOn: Date
     result(op: RelationshipOp = FETCH, data: TableExportResultInput): TableExportResult
@@ -317,6 +318,10 @@ const schema = gql`
     FAILURE
   }
 
+  enum TableExportResultType {
+    CSV
+  }
+
   input AsyncQueryInput {
     id: ID
     asyncAfterSeconds: Int
@@ -345,6 +350,7 @@ const schema = gql`
     createdOn: Date
     query: String
     queryType: QueryType
+    resultType: TableExportResultType
     status: QueryStatus
     updatedOn: Date
     result: TableExportResultInput
