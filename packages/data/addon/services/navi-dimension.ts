@@ -52,7 +52,6 @@ export default class NaviDimensionService extends Service {
     let paginationOptions: Pick<ServiceOptions, 'page' | 'perPage'> = {};
     let values: NaviDimensionModel[] = [];
     while (moreResults) {
-      debugger;
       const mergedOptions = { ...options, ...paginationOptions };
       const payload: unknown = yield taskFor(adapter.all).perform(dimension, mergedOptions);
       const normalized = serializer.normalize(dimension, payload, mergedOptions);
