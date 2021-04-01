@@ -10,7 +10,7 @@ export default class SchedulingRuleFragment extends Fragment {
   mustHaveData!: boolean;
 }
 
-declare module '../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'fragments/scheduling-rules': SchedulingRuleFragment;
   }

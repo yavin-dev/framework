@@ -13,7 +13,7 @@ export default class LayoutFragment extends Fragment {
   @attr('number') widgetId!: number;
 }
 
-declare module '../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'fragments/layout': LayoutFragment;
   }

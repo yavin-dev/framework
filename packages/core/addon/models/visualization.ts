@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { set } from '@ember/object';
@@ -7,7 +7,7 @@ import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import type RequestFragment from './bard-request-v2/request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import type { VisualizationType } from './registry';
+import type { VisualizationType } from 'navi-core/models/registry';
 
 //TODO Try to make this an abstract class
 export default class VisualizationFragment extends Fragment {

@@ -41,7 +41,7 @@ export default class DashboardsDashboardWidgetsWidgetCloneToReportRoute extends 
    * @returns report model from widget
    */
   _cloneToReport(widget: DashboardWidget) {
-    // TODO not quite
+    // TODO This isn't really a DashboardWidget object
     const clonedWidget = widget.toJSON() as DashboardWidget;
 
     return this.store.createRecord('report', {

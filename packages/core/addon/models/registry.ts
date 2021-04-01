@@ -13,16 +13,16 @@ type FilteredKeys<Registry, BaseClass> = {
 export type VisualizationType = FilteredKeys<FragmentRegistry, VisualizationFragment>;
 
 // Forces global fragments to be augmented (e.g. for other addons) into the registry
-import './bard-request-v2/fragments/column';
-import './bard-request-v2/fragments/filter';
-import './bard-request-v2/fragments/sort';
-import './bard-request-v2/request';
-import './fragments/layout';
-import './fragments/presentation';
-import './fragments/scheduling-rules';
-import './bar-chart';
-import './goal-gauge';
-import './line-chart';
-import './metric-label';
-import './pie-chart';
-import './table';
+import 'navi-core/models/bard-request-v2/fragments/column';
+import 'navi-core/models/bard-request-v2/fragments/filter';
+import 'navi-core/models/bard-request-v2/fragments/sort';
+import 'navi-core/models/bard-request-v2/request';
+import 'navi-core/models/fragments/layout';
+import 'navi-core/models/fragments/presentation';
+import 'navi-core/models/fragments/scheduling-rules';
+import 'navi-core/models/bar-chart';
+import 'navi-core/models/goal-gauge';
+import 'navi-core/models/line-chart';
+import 'navi-core/models/metric-label';
+import 'navi-core/models/pie-chart';
+import 'navi-core/models/table';

@@ -32,7 +32,7 @@ export default class FilterFragment extends BaseFragment.extend(Validations) imp
   values!: Filter['values'];
 }
 
-declare module '../../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'bard-request-v2/fragments/filter': FilterFragment;
   }

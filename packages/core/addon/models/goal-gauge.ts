@@ -86,7 +86,7 @@ export default class GoalGaugeModel
   }
 }
 
-declare module './registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'goal-gauge': GoalGaugeModel;
   }

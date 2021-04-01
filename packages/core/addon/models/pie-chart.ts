@@ -93,7 +93,7 @@ export default class PieChart
   }
 }
 
-declare module './registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'pie-chart': PieChart;
   }

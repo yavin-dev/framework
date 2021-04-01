@@ -63,7 +63,7 @@ export default class MetricLabelModel
   }
 }
 
-declare module './registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'metric-label': MetricLabelModel;
   }

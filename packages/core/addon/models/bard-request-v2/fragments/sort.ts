@@ -22,7 +22,7 @@ export default class SortFragment extends BaseFragment.extend(Validations) imple
   direction!: SortDirection;
 }
 
-declare module '../../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'bard-request-v2/fragments/sort': SortFragment;
   }

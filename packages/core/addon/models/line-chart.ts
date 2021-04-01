@@ -106,7 +106,7 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
   }
 }
 
-declare module './registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'line-chart': LineChartVisualization;
   }

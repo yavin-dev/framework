@@ -32,7 +32,7 @@ export default class PresentationFragment extends Fragment {
   }
 }
 
-declare module '../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'fragments/presentation': PresentationFragment;
   }

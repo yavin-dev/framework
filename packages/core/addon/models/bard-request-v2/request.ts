@@ -360,7 +360,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 }
 
-declare module '../registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'bard-request-v2/request': RequestFragment;
   }

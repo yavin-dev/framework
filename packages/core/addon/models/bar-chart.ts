@@ -14,7 +14,7 @@ export default class BarChart extends LineChart<'bar-chart'> implements BarChart
   type!: 'bar-chart';
 }
 
-declare module './registry' {
+declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
     'bar-chart': BarChart;
   }
