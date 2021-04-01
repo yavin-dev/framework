@@ -1,9 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import DimensionMetadataModel, { DimensionMetadata, DimensionMetadataPayload } from './dimension';
-import { ColumnInstance, ColumnType } from './column';
+import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { DimensionMetadata, DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import type { ColumnInstance, ColumnType } from 'navi-data/models/metadata/column';
 import { Grain } from 'navi-data/utils/date';
 
 interface TimeDimensionGrain {
@@ -38,7 +39,8 @@ export default class TimeDimensionMetadataModel
    */
   timeZone!: string;
 }
-declare module './registry' {
+
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     timeDimension: TimeDimensionMetadataModel;
   }

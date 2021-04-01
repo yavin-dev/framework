@@ -8,7 +8,7 @@
 import EmberObject from '@ember/object';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
-import type NaviFactResponse from './navi-fact-response';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { taskFor } from 'ember-concurrency-ts';
 
 export default class NaviFacts extends EmberObject {

@@ -11,7 +11,7 @@
  */
 import Component from '@glimmer/component';
 import { computed } from '@ember/object';
-import type ReportModel from 'navi-core/addon/models/report';
+import type ReportModel from 'navi-core/models/report';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 
 interface Args {
