@@ -166,7 +166,7 @@ module('Unit | Component | pie chart', function (hooks) {
   test('pieConfig', function (assert) {
     assert.expect(1);
 
-    let component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+    let component = createGlimmerComponent('component:navi-visualizations/c3/pie-chart', {
       model: A([{ Request, response: RESPONSE }]),
     }) as C3PieChart;
 
@@ -175,7 +175,7 @@ module('Unit | Component | pie chart', function (hooks) {
 
   test('dataConfig', function (assert) {
     const model = A([{ request: Request, response: RESPONSE }]);
-    const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+    const component = createGlimmerComponent('component:navi-visualizations/c3/pie-chart', {
       model,
       options: DIMENSION_SERIES_OPTIONS,
     }) as C3PieChart;
@@ -306,7 +306,7 @@ module('Unit | Component | pie chart', function (hooks) {
     assert.expect(1);
 
     const model = A([{ request: Request, response: RESPONSE }]);
-    const component = createGlimmerComponent('component:navi-visualizations/pie-chart', {
+    const component = createGlimmerComponent('component:navi-visualizations/c3/pie-chart', {
       model,
       options: DIMENSION_SERIES_OPTIONS,
     }) as C3PieChart;
