@@ -6,7 +6,8 @@
  */
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
-import FunctionParameter, { FunctionParameterMetadataPayload } from './function-parameter';
+import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
+import FunctionParameter from 'navi-data/models/metadata/function-parameter';
 
 export interface ColumnFunctionMetadataPayload {
   id: string;
@@ -72,7 +73,7 @@ export default class ColumnFunctionMetadataModel
    */
   parameters!: FunctionParameter[];
 }
-declare module './registry' {
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     columnFunction: ColumnFunctionMetadataModel;
   }

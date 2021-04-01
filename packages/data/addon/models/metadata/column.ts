@@ -7,11 +7,12 @@ import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
 import TableMetadataModel from './table';
-import ColumnFunction from './column-function';
-import FunctionParameter from './function-parameter';
-import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
+import type ColumnFunction from './column-function';
+import type FunctionParameter from './function-parameter';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
 
 export type RawColumnType = 'ref' | 'formula' | 'field';
 export type ColumnType = Extract<MetadataModelTypes, 'metric' | 'dimension' | 'timeDimension'>;

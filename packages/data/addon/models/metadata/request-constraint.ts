@@ -42,7 +42,7 @@ export default class RequestConstraintMetadataModel
   }
 }
 
-declare module './registry' {
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     requestConstraint: RequestConstraintMetadataModel;
   }

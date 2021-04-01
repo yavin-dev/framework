@@ -2,7 +2,13 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ColumnMetadataModel, { ColumnInstance, ColumnMetadata, ColumnMetadataPayload, ColumnType } from './column';
+import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type {
+  ColumnInstance,
+  ColumnMetadata,
+  ColumnMetadataPayload,
+  ColumnType,
+} from 'navi-data/models/metadata/column';
 import { Cardinality } from '../../utils/enums/cardinality-sizes';
 
 type Field = TODO;
@@ -128,7 +134,7 @@ export default class DimensionMetadataModel
   }
 }
 
-declare module './registry' {
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     dimension: DimensionMetadataModel;
   }
