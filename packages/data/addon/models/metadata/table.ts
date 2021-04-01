@@ -5,7 +5,7 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { Cardinality } from '../../utils/enums/cardinality-sizes';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type MetricMetadataModel from 'navi-data/models/metadata/metric';
 import type RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
@@ -54,7 +54,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   static identifierField = 'id';
 
   @service
-  private naviMetadata!: NaviMetadataService;
+  declare naviMetadata: NaviMetadataService;
 
   /**
    * @param {string} id
