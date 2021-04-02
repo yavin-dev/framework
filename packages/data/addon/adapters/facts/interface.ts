@@ -11,13 +11,13 @@ export type RequestV1 = TODO;
 export type RequestOptions = {
   clientId?: string;
   requestId?: string;
-  customHeaders?: Dict<string>;
+  customHeaders?: Record<string, string>;
   timeout?: number;
   page?: number;
   perPage?: number;
   format?: string;
   cache?: boolean;
-  queryParams?: Dict<string | number>;
+  queryParams?: Record<string, string | number>;
   dataSourceName?: string;
 };
 

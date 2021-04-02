@@ -19,7 +19,7 @@ export default class DirectoryMyDataRoute extends Route {
   /**
    * @property {Object} _cache - local cache
    */
-  _cache: Dict<TODO> = {};
+  _cache: Record<string, TODO> = {};
 
   /**
    * @method _fetchFromUser

@@ -5,5 +5,4 @@ declare module 'navi-search/templates/*' {
   export default tmpl;
 }
 
-type Dict<T = string> = { [key: string]: T };
 type TODO<T = any> = T;
