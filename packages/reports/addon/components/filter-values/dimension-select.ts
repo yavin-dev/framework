@@ -4,7 +4,7 @@
  */
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
-import { computed, action } from '@ember/object';
+import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
@@ -48,7 +48,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   @tracked
   dimensionValues?: Promise<NaviDimensionModel[]>;
 
-  @computed('args.filter.{columnMetadata,parameters}')
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
     const columnMetadata = filter.columnMetadata as DimensionMetadataModel;
@@ -56,7 +55,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return { columnMetadata, parameters };
   }
 
-  @computed('searchTerm', 'dimensionValues')
   get options() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
@@ -65,7 +63,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return this.dimensionValues;
   }
 
-  @computed('args.filter.values', 'dimensionColumn')
   get selectedDimensions(): NaviDimensionModel[] {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;

@@ -16,9 +16,9 @@ import ShelfFirst from 'layout-bin-packer/shelf-first';
 const MOCK_WIDTH = 100;
 
 class MixedHeightLayout {
-  constructor(dimensions) {
-    this.dimensions = dimensions;
-    this.bin = new ShelfFirst(dimensions, MOCK_WIDTH);
+  constructor(items) {
+    this.items = items;
+    this.bin = new ShelfFirst(items, MOCK_WIDTH);
   }
 
   contentSize(clientWidth /*, clientHeight*/) {
@@ -66,6 +66,6 @@ export function formatItemDimension(height) {
   };
 }
 
-export default buildHelper(function (params /*, hash */) {
-  return new MixedHeightLayout(params[0]);
+export default buildHelper(function ([items]) {
+  return new MixedHeightLayout(items);
 });
