@@ -154,7 +154,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
         source: 'bardOne',
       });
 
-      this.get('dashboard.filters').pushObject(filter);
+      this.dashboard.filters.pushObject(filter);
     });
 
     assert

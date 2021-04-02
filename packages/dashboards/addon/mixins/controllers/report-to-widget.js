@@ -1,9 +1,8 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Mixin from '@ember/object/mixin';
-import { get } from '@ember/object';
 
 export default Mixin.create({
   /**
@@ -14,11 +13,11 @@ export default Mixin.create({
    * @returns {DS.Model} unsaved widget model
    */
   _createWidget(report, title) {
-    let visualization = get(report, 'visualization').serialize();
+    let visualization = report.visualization.serialize();
 
-    return get(this, 'store').createRecord('dashboard-widget', {
+    return this.store.createRecord('dashboard-widget', {
       title,
-      requests: [get(report, 'request').clone()],
+      requests: [report.request.clone()],
       visualization,
     });
   },
@@ -39,7 +38,7 @@ export default Mixin.create({
       // Transition to widgets/new route
       this.transitionToRoute('dashboards.dashboard.widgets.add', id, {
         queryParams: {
-          unsavedWidgetId: get(widget, 'tempId'),
+          unsavedWidgetId: widget.tempId,
         },
       });
     },
@@ -59,7 +58,7 @@ export default Mixin.create({
       this.transitionToRoute('dashboards.new', {
         queryParams: {
           title: dashboardTitle,
-          unsavedWidgetId: get(widget, 'tempId'),
+          unsavedWidgetId: widget.tempId,
         },
       });
     },
