@@ -31,7 +31,7 @@ import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
 
-export type Query = RequestOptions & Dict<string | number | boolean>;
+export type Query = RequestOptions & Record<string, string | number | boolean>;
 
 /**
  * @param column - dimension column
@@ -360,7 +360,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const url = this._buildURLPath(decoratedRequest, options);
     const query = this._buildQuery(decoratedRequest, options);
     let clientId = 'UI';
-    let customHeaders: Dict<string> = {};
+    let customHeaders: Record<string, string> = {};
     let timeout = 600000;
 
     // Support custom clientid header

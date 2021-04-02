@@ -56,7 +56,7 @@ export interface ColumnMetadata {
   hasParameters: boolean;
   parameters: FunctionParameter[];
   getParameter(id: string): FunctionParameter | undefined;
-  getDefaultParameters(): Dict<string> | undefined;
+  getDefaultParameters(): Record<string, string> | undefined;
 }
 
 export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata, ColumnMetadataPayload {
@@ -181,7 +181,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
       return undefined;
     }
 
-    return this.parameters.reduce((acc: Dict<string>, param) => {
+    return this.parameters.reduce((acc: Record<string, string>, param) => {
       if (param.defaultValue) {
         acc[param.id] = param.defaultValue;
       }

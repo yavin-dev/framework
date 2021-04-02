@@ -83,7 +83,7 @@ export function canonicalizeColumnAttributes(attributes: ColumnAttributes): stri
  * @param metrics - list of metric objects from a request
  * @returns list of canonicalized metric names keyed by alias
  */
-export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
+export function getAliasedMetrics(metrics: MetricObject[] = []): Record<string, string> {
   return metrics.reduce((obj, metric) => {
     const { parameters = {} } = metric;
     if (hasParameters(metric) && 'as' in parameters) {
@@ -103,7 +103,7 @@ export function getAliasedMetrics(metrics: MetricObject[] = []): Dict<string> {
  * @param aliasMap - key value of alias -> canonicalizedName
  * @returns  canonicalised metric, or alias if not found
  */
-export function canonicalizeAlias(alias: string, aliasMap: Dict<string> = {}): string {
+export function canonicalizeAlias(alias: string, aliasMap: Record<string, string> = {}): string {
   return aliasMap[alias] || alias;
 }
 

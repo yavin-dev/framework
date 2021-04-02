@@ -73,8 +73,8 @@ export type RequestV1<T> = {
  */
 export function toggleAlias(
   field: Array<{ metric: Metric | string }>,
-  aliasMap: Dict<string> = {},
-  canonMap: Dict<Metric> = {}
+  aliasMap: Record<string, string> = {},
+  canonMap: Record<string, Metric> = {}
 ): TODO[] {
   if (!field) {
     return [];
