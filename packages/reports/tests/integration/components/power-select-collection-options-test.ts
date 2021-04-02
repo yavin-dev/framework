@@ -37,7 +37,7 @@ module('Integration | Component | Power Select Collection Options', function (ho
         highlighted: () => null,
         scrollTo: () => null,
       },
-      uniqueId: 'very-unique-id'
+      uniqueId: 'very-unique-id',
     });
   });
 
