@@ -1,5 +1,4 @@
 import { run } from '@ember/runloop';
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -29,12 +28,12 @@ module('Unit | Model | dashboard widget', function (hooks) {
         dashboard,
       });
 
-      assert.ok(!!get(widget, 'tempId'), '`tempId` exists when `id` does not');
+      assert.ok(!!widget.tempId, '`tempId` exists when `id` does not');
 
-      assert.equal(get(widget, 'tempId'), get(widget, 'tempId'), '`tempId` is always the same value');
+      assert.equal(widget.tempId, widget.tempId, '`tempId` is always the same value');
 
       await widget.save().then(() => {
-        assert.notOk(!!get(widget, 'tempId'), '`tempId` is null when `id` exists');
+        assert.notOk(!!widget.tempId, '`tempId` is null when `id` exists');
       });
     });
   });

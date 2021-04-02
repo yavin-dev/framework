@@ -3,11 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
-import VisualizationFragment from './visualization';
+import VisualizationFragment, { TypedVisualizationFragment } from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
 import { attr } from '@ember-data/model';
 import type RequestFragment from './bard-request-v2/request';
-import type { TypedVisualizationFragment } from './visualization';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 /**

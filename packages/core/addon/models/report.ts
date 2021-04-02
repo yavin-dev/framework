@@ -1,9 +1,3 @@
-/**
- * Copyright 2020, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-
-import DS from 'ember-data';
 import { A as arr } from '@ember/array';
 import { attr, belongsTo } from '@ember-data/model';
 //@ts-ignore
@@ -14,6 +8,8 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import RequestFragment from './bard-request-v2/request';
 import UserModel from './user';
 import { Moment } from 'moment';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
+import DS from 'ember-data';
 
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
@@ -48,7 +44,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   get isOwner() {
     const userId = this.user.getUser()?.id;
-    return this.get('author').get('id') === userId;
+    return this.author.get('id') === userId;
   }
 
   /**
@@ -57,7 +53,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
   get isFavorite() {
     const user = this.user.getUser();
     const favoriteReports = user?.hasMany('favoriteReports').ids();
-    return arr(favoriteReports).includes(this.get('id'));
+    return arr(favoriteReports).includes(this.id);
   }
 
   /**
@@ -71,7 +67,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
     return {
       title: clonedReport.title,
       visualization: this.store.createFragment(clonedReport.visualization.type, clonedReport.visualization),
-      request: this.get('request').clone(),
+      request: this.request.clone(),
     };
   }
 }

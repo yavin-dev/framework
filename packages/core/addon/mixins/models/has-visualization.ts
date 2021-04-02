@@ -1,11 +1,10 @@
-/* eslint-disable ember/no-new-mixins */
 /**
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 import Mixin from '@ember/object/mixin';
-import { get, set } from '@ember/object';
+import { set } from '@ember/object';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
 import type { FragmentRegistry, VisualizationType } from 'navi-core/models/registry';
@@ -23,7 +22,7 @@ export default Mixin.create({
    * @private
    */
   _cachePersistedVisualization() {
-    set(this, '_persistedVisualization', get(this, 'visualization'));
+    set(this, '_persistedVisualization', this.visualization);
   },
 
   /**
@@ -37,7 +36,7 @@ export default Mixin.create({
      *Note: Due to issues with rolling back polymorphic fragments,
      *set the persisted visualization, then rollback
      */
-    let persistedVisualization = get(this, '_persistedVisualization');
+    let persistedVisualization = this._persistedVisualization;
     if (persistedVisualization) {
       set(this, 'visualization', persistedVisualization);
     }
@@ -58,6 +57,7 @@ export default Mixin.create({
    * @override
    */
   didUpdate() {
+    this._super(...arguments);
     this._cachePersistedVisualization();
   },
 

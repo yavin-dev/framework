@@ -1,6 +1,5 @@
 import { all } from 'rsvp';
 import { run } from '@ember/runloop';
-import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -249,12 +248,12 @@ module('Unit | Model | report', function (hooks) {
         request: null,
       });
 
-      assert.ok(!!get(report, 'tempId'), '`tempId` exists when `id` does not');
+      assert.ok(!!report.tempId, '`tempId` exists when `id` does not');
 
-      assert.equal(get(report, 'tempId'), get(report, 'tempId'), '`tempId` is always the same value');
+      assert.equal(report.tempId, report.tempId, '`tempId` is always the same value');
 
       await report.save();
-      assert.notOk(!!get(report, 'tempId'), '`tempId` is null when `id` exists');
+      assert.notOk(!!report.tempId, '`tempId` is null when `id` exists');
     });
   });
 

@@ -1,9 +1,3 @@
-/**
- * Copyright 2020, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-
-import DS from 'ember-data';
 import Model, { hasMany } from '@ember-data/model';
 import { A as arr } from '@ember/array';
 import { computed } from '@ember/object';
@@ -13,6 +7,8 @@ import { inject as service } from '@ember/service';
 import { v1 } from 'ember-uuid';
 import DeliveryRuleModel from './delivery-rule';
 import Store from '@ember-data/store';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
+import DS from 'ember-data';
 
 export default class DeliverableItemModel extends Model {
   @hasMany('delivery-rule', { async: true, inverse: 'deliveredItem' })
@@ -25,7 +21,7 @@ export default class DeliverableItemModel extends Model {
    * @property {String} modelId - id or tempId of model
    */
   get modelId(): string {
-    return this.get('id') || this.get('tempId');
+    return this.id || this.tempId;
   }
 
   /**
@@ -33,7 +29,7 @@ export default class DeliverableItemModel extends Model {
    */
   @computed('id')
   get tempId() {
-    return this.get('id') ? null : v1();
+    return this.id ? null : v1();
   }
 
   /**
@@ -48,7 +44,7 @@ export default class DeliverableItemModel extends Model {
   get deliveryRuleForUser() {
     const userId = this.user.getUser()?.id;
 
-    return this.get('deliveryRules').then((rules) =>
+    return this.deliveryRules.then((rules) =>
       arr(rules.filter((rule) => rule.get('owner').get('id') === userId)).get('firstObject')
     );
   }

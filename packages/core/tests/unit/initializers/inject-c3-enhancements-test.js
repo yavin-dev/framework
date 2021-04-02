@@ -6,7 +6,8 @@ import c3 from 'c3';
 
 module('Unit | Initializer | inject c3 enhancements', function (hooks) {
   hooks.beforeEach(function () {
-    this.TestApplication = Application.extend();
+    class MockApplication extends Application {}
+    this.TestApplication = MockApplication;
     this.TestApplication.initializer({
       name: c3Enhancements.name,
       initialize: c3Enhancements.initialize,

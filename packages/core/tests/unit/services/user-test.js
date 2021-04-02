@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
 import Mirage from 'ember-cli-mirage';
-import DS from 'ember-data';
+import Model, { attr } from '@ember-data/model';
 import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
 let Store, NaviUser;
@@ -15,13 +15,12 @@ module('Unit | Service | user', function (hooks) {
 
   hooks.beforeEach(function () {
     NaviUser = config.navi.user;
+
+    class MockUser extends Model {
+      @attr reports;
+    }
     // Mock fact service
-    this.owner.register(
-      'model:user',
-      DS.Model.extend({
-        reports: DS.attr(),
-      })
-    );
+    this.owner.register('model:user', MockUser);
     this.owner.register('adapter:user', UserAdapter);
     Store = this.owner.lookup('service:store');
   });

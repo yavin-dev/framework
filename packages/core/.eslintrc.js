@@ -17,8 +17,20 @@ module.exports = {
   },
   rules: {
     'ember/no-jquery': 'warn',
+
+    // TODO: These need to be resolved
+    'ember/no-mixins': 'warn',
     'ember/no-new-mixins': 'warn',
     'ember/no-observers': 'warn',
+    'ember/no-private-routing-service': 'warn',
+    'ember/require-tagless-components': 'warn',
+    'ember/no-get': 'warn',
+    'ember/no-classic-components': 'warn',
+    'ember/no-classic-classes': 'warn',
+    'ember/avoid-leaking-state-in-ember-objects': 'warn',
+    'ember/no-component-lifecycle-hooks': 'warn',
+    'ember/no-computed-properties-in-native-classes': 'warn',
+    'ember/use-ember-data-rfc-395-imports': 'warn', // Some of these don't seem possible to fix yet
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
@@ -30,7 +42,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
 
     // better handled by prettier:
     '@typescript-eslint/indent': 'off',
@@ -75,12 +87,18 @@ module.exports = {
       },
     },
     {
-      files: ['tests/**/*.{j,t}s', 'addon-test-support/**/*.{j,t}s'],
+      files: ['tests/**', 'addon-test-support/**'],
       rules: {
         'ember/no-jquery': 'off',
         '@typescript-eslint/no-use-before-define': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+      },
+    },
+    {
+      files: ['app/mirage/routes/**'],
+      rules: {
+        'ember/no-get': 'off',
       },
     },
   ],

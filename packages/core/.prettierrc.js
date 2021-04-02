@@ -1,7 +1,6 @@
 'use strict';
 
-const topLevel = require('./../../prettier.config');
-
 module.exports = {
-  ...topLevel,
+  // eslint-disable-next-line node/no-unpublished-require
+  ...require('./../../prettier.config'),
 };

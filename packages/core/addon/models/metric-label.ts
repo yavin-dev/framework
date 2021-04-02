@@ -2,13 +2,12 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import VisualizationFragment from './visualization';
+import VisualizationFragment, { TypedVisualizationFragment } from './visualization';
 import { attr } from '@ember-data/model';
 import { buildValidations, validator } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
-import type { TypedVisualizationFragment } from './visualization';
 import type RequestFragment from './bard-request-v2/request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 

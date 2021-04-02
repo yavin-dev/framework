@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Code adapted from https://github.com/DockYard/ember-route-action-helper and modified to work with Ember 3.10 and over
@@ -11,7 +11,7 @@ import { get, computed } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { run } from '@ember/runloop';
 import { runInDebug, assert } from '@ember/debug';
-import { inject } from '@ember/service';
+import { inject as service } from '@ember/service';
 
 let ClosureActionModule;
 if ('ember-glimmer/helpers/action' in Ember.__loader.registry) {
@@ -52,16 +52,18 @@ function getRouteWithAction(router, routerService, actionName) {
   return { action, handler };
 }
 
-export default Helper.extend({
-  router: computed(function () {
+export default class RouteActionHelper extends Helper {
+  @computed
+  get router() {
+    // TODO: Update to using routerService only
     return getOwner(this).lookup('router:main');
-  }).readOnly(),
+  }
 
-  routerService: inject('router'),
+  @service('router') routerService;
 
   compute([actionName, ...params]) {
-    let router = get(this, 'router'),
-      routerService = get(this, 'routerService');
+    let router = this.router,
+      routerService = this.routerService;
 
     runInDebug(() => {
       let { handler } = getRouteWithAction(router, routerService, actionName);
@@ -77,5 +79,5 @@ export default Helper.extend({
     routeAction[ACTION] = true;
 
     return routeAction;
-  },
-});
+  }
+}

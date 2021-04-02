@@ -20,6 +20,7 @@
       <span class="valid-id-count">{{this._validDimValues.length}}</span> valid <span class="text-capitalize dimension">{{pluralize this._validDimValues.length this.dimension.name without-count=true}}</span>
       <PaginatedScrollList @items={{this._validDimValues}} @trim={{false}} as |dimVal|>
         <span role="button" class="remove-pill" {{on "click" (fn this.removeRecord dimVal)}}>×</span>
+        {{!-- TODO: format-dimension is removed --}}
         {{format-dimension dimVal}}
       </PaginatedScrollList>
     </div>

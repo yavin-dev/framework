@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import attr from 'ember-data/attr';
+import { attr } from '@ember-data/model';
 import BaseFragment from './base';
 import { Column, SortDirection } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';

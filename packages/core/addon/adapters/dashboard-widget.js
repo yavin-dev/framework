@@ -4,7 +4,6 @@
  */
 
 import BaseAdapter from 'navi-core/adapters/base-json-adapter';
-import { get } from '@ember/object';
 
 export default BaseAdapter.extend({
   /**
@@ -52,10 +51,10 @@ export default BaseAdapter.extend({
    * @return {String} url
    */
   _urlWithDashboardId(modelName, snapshot) {
-    let host = get(this, 'host'),
-      prefix = this.urlPrefix(),
-      dashboardId = snapshot.belongsTo('dashboard').id,
-      widgetId = get(snapshot, 'id') || '';
+    const host = this.host;
+    const prefix = this.urlPrefix();
+    const dashboardId = snapshot.belongsTo('dashboard').id;
+    const widgetId = snapshot.id || '';
 
     let url = `${prefix}/dashboards/${dashboardId}/widgets/${widgetId}`;
 
