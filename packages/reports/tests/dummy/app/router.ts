@@ -8,7 +8,7 @@ export default class Router extends EmberRouter {
 }
 
 Router.map(function () {
-  //mock directoy route
+  //mock directory route
   this.route('directory', function () {
     this.route('my-data');
   });
