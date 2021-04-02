@@ -1,8 +1,11 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-export function reportRoutes(router) {
+
+import type RouterDSL from '@ember/routing/-private/router-dsl';
+
+export function reportRoutes(router: RouterDSL) {
   router.route('reports', function () {
     this.route('new');
     this.route('report', { path: '/:report_id' }, function () {
@@ -16,13 +19,13 @@ export function reportRoutes(router) {
   });
 }
 
-export function reportCollectionRoutes(router) {
+export function reportCollectionRoutes(router: RouterDSL) {
   router.route('report-collections', function () {
     this.route('collection', { path: '/:collection_id' });
   });
 }
 
-export function reportPrintRoutes(router) {
+export function reportPrintRoutes(router: RouterDSL) {
   router.route('reports-print.reports', { path: '/print/reports' }, function () {
     this.route('new');
     this.route('report', { path: '/:report_id' }, function () {
