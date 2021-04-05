@@ -47,7 +47,7 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
   &__row:hover {
     .dir-table__cell--actions {
       .d-icon {
-        visibility: visible !important;
+        visibility: visible;
       }
     }
   }

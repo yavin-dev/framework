@@ -457,7 +457,7 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     // hover css events are hard
     find('.navi-widget__actions').style.visibility = 'visible';
-    await click('.navi-widget__explore-btn');
+    await click('.navi-widget__edit-btn');
 
     assert.equal(currentURL(), '/dashboards/1/widgets/1/view', 'Successfully followed exploring widget link');
 

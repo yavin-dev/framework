@@ -56,6 +56,6 @@ module('Integration | Component | dir-asset-row-actions', function (hooks) {
     `);
     await triggerEvent('.row', 'mouseenter');
 
-    assert.dom('.dashboard-action-list').exists('The correct component is rendered for a dashboard');
+    assert.dom('.dashboard-actions').exists('The correct component is rendered for a dashboard');
   });
 });

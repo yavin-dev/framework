@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-action-list flex-1" ...attributes>
+<div class="navi-actions flex-1" ...attributes>
 
   {{!-- Clone only enabled on a saved report --}}
   {{#if @item.isNew}}
@@ -9,7 +9,7 @@
       @route="reports.report.clone"
       @model={{@item.id}}
     >
-      <DenaliIcon disabled="true" @size="small" @icon="copy-file p-4 link" />
+      <DenaliIcon disabled="true" @size="small" @icon="copy-file" class="p-4 link" />
       <EmberTooltip @popperContainer="body" @text="Save report to enable clone" />
     </LinkTo>
   {{else}}
@@ -66,7 +66,6 @@
     {{!-- Schedule only enabled for an owned report and if it valid--}}
     {{#if (feature-flag "enableScheduleReports")}}
       <CommonActions::Schedule
-        class="schedule"
         @model={{@item}}
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
@@ -75,9 +74,10 @@
       > 
         <DenaliIcon 
           id="navi-report-action-schedule-{{@index}}"
+          disabled={{not @item.request.validations.isTruelyValid}}
           @icon="time"
           @size="small"
-          class="schedule-action__button p-4 link"
+          class="navi-actions__schedule-btn p-4 link"
           {{on "click" onOpen}}
         />
         <EmberTooltip @popperContainer="body" @targetId="navi-report-action-schedule-{{@index}}">
@@ -98,7 +98,7 @@
         <DenaliIcon 
           @size="small" 
           @icon="trash" 
-          class="delete p-4 link"
+          class="navi-actions__delete-btn p-4 link"
           id="navi-report-action-delete-{{@index}}"
           {{on "click" onDelete}}
         />

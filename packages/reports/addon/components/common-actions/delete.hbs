@@ -7,15 +7,15 @@
   as | modal |
 >
   <modal.Content>
-    <h3 class="delete__modal__header m-b-10">Are You Sure?</h3>
-    <p class="delete__modal__details m-b-20">This action cannot be undone. This will permanently delete the <span class="is-bold">{{@model.title}}</span> {{this.modelName}}.</p>
+    <h3 class="delete__modal-header m-b-10">Are You Sure?</h3>
+    <p class="delete__modal-details m-b-20">This action cannot be undone. This will permanently delete the <span class="is-bold">{{@model.title}}</span> {{this.modelName}}.</p>
     {{#if this.isDeleting}}
       <NaviLoadingMessage>
         Deleting {{classify this.modelName}}
       </NaviLoadingMessage>
     {{/if}}
     <DenaliButton
-      class="delete__modal__delete-btn m-r-5"
+      class="delete__modal-delete-btn m-r-5"
       @style="danger"
       disabled={{this.isDeleting}}
       {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) (toggle "isDeleting" this))}}
@@ -23,7 +23,7 @@
       Delete
     </DenaliButton>
     <DenaliButton
-      class="delete__modal__cancel-btn m-r-5"
+      class="delete__modal-cancel-btn m-r-5"
       @style="ghost"
       disabled={{this.isDeleting}}
       {{on "click" (toggle "showModal" this)}}

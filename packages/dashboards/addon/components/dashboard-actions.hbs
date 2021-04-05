@@ -1,21 +1,21 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dashboard-action-list flex-1" ...attributes>
+<div class="dashboard-actions flex-1" ...attributes>
   {{#with @item as | dashboard |}}
     {{!-- Clone action enabled at all times --}}
-    <LinkTo class="clone link" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
+    <LinkTo class="dashboard-actions__clone-btn link" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
       <DenaliIcon 
-        id="navi-dashboard-action-export-{{@index}}"
+        id="navi-dashboard-action-clone-{{@index}}"
         @size="small" 
         @icon="copy-file" 
         class="navi-icon__copy p-4 link" 
       />
-      <EmberTooltip @text="Clone the dashboard" @targetId="navi-dashboard-action-export-{{@index}}"/>
+      <EmberTooltip @text="Clone the dashboard" @targetId="navi-dashboard-action-clone-{{@index}}"/>
     </LinkTo>
 
     {{#if (feature-flag "enableDashboardExport")}}
       {{!-- Export action enabled if the dashboard is valid --}}
       <DashboardActions::Export
-        class="export {{unless dashboard.validations.isTruelyValid "disabled"}}"
+        class="dashboard-actions__export-btn {{unless dashboard.validations.isTruelyValid "disabled"}}"
         @dashboard={{dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
       >
@@ -34,6 +34,7 @@
     <CommonActions::Share
       @buildUrl={{fn this.buildUrl dashboard}}
       @disabled={{not dashboard.validations.isTruelyValid}}
+      class="dashboard-actions__share-btn"
     >
       <DenaliIcon 
         id="navi-dashboard-action-share-{{@index}}"
@@ -50,9 +51,7 @@
       {{!-- Schedule only enabled for an owned dashboard and if it valid--}}
       {{#if (feature-flag "enableScheduleDashboards")}}
         <DashboardActions::Schedule
-          class="schedule"
           @model={{dashboard}}
-          @disabled={{not dashboard.validations.isTruelyValid}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
           @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
           @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
@@ -63,7 +62,7 @@
             disabled={{not dashboard.validations.isTruelyValid}}
             @icon="time"
             @size="small"
-            class="navi-icon__schedule schedule-action__button p-4 link"
+            class="dashboard-actions__schedule-btn p-4 link"
             {{on "click" onOpen}}
           />
           <EmberTooltip @targetId="navi-dashboard-action-schedule-{{@index}}">
@@ -81,7 +80,7 @@
           id="navi-dashboard-action-delete-{{@index}}"
           @size="small" 
           @icon="trash" 
-          class="navi-icon__delete delete p-4 link" 
+          class="dashboard-actions__schedule-btn p-4 link" 
           {{on "click" onDelete}}
         />
         <EmberTooltip @targetId="navi-dashboard-action-delete-{{@index}}" @text="Delete the dashboard"/>

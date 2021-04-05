@@ -86,7 +86,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
-    await click($('.navi-report__action-link:contains(Clone)')[0]);
+    await click('.report-actions__clone-btn');
 
     assert.ok(
       currentURL().endsWith('/edit'),
@@ -497,7 +497,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click($('.navi-report__action-link:contains(Clone)')[0]);
+    await click('.report-actions__clone-btn');
 
     assert.ok(
       TempIdRegex.test(currentURL()),
@@ -513,7 +513,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     assert
-      .dom($('.navi-report__action-link:contains(Clone)')[0])
+      .dom('.report-actions__clone-btn')
       .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled for a valid report');
 
     // Remove all metrics to create , but do not save
@@ -521,7 +521,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom($('.navi-report__action-link:contains(Clone)')[0])
+      .dom('.report-actions__clone-btn')
       .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled from a valid save report');
   });
 
@@ -567,7 +567,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     assert
-      .dom($('.navi-report__action-link:contains(Export)')[0])
+      .dom('.report-actions__export-btn')
       .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
 
     // Remove dimension to make it out of sync with the visualization
@@ -575,21 +575,19 @@ module('Acceptance | Navi Report', function (hooks) {
 
     //currently failing as it should
     assert
-      .dom($('.navi-report__action-link:contains(Export)')[0])
+      .dom('.report-actions__export-btn')
       .hasClass('is-disabled', 'Export action is disabled when report is not valid');
 
     // Revert changes to make it in sync with the visualization
     await click('.navi-report__revert-btn');
 
-    assert
-      .dom($('.navi-report__action-link:contains(Export)')[0])
-      .hasNoClass('is-disabled', 'Export action is enabled for a valid report');
+    assert.dom('.report-actions__export-btn').hasNoClass('is-disabled', 'Export action is enabled for a valid report');
 
     // Remove visualization metric to create an invalid report
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
-      .dom($('.navi-report__action-link:contains(Export)')[0])
+      .dom('.report-actions__export-btn')
       .hasClass('is-disabled', 'Export action is disabled when report is not valid');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
@@ -605,7 +603,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)').attr('href').includes('/network/day/property;show=id/?dateTime='),
+      $('.report-actions__export-btn').attr('href').includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
 
@@ -614,14 +612,14 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      $('.navi-report__action-link:contains(Export)')
+      $('.report-actions__export-btn')
         .attr('href')
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
 
     assert.notOk(
-      $('.navi-report__action-link:contains(Export)').attr('href').includes('filter'),
+      $('.report-actions__export-btn').attr('href').includes('filter'),
       'No filters are initially present in export url'
     );
 
@@ -634,9 +632,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      decodeURIComponent($('.navi-report__action-link:contains(Export)').attr('href')).includes(
-        'productFamily|id-in["1"]'
-      ),
+      decodeURIComponent($('.report-actions__export-btn').attr('href')).includes('productFamily|id-in["1"]'),
       'Filter updates are automatically included in export url'
     );
 
@@ -828,13 +824,13 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     await visit('/reports/1/view');
-    await click('.delete-button');
+    await click('.report-actions__delete-btn');
 
     assert
-      .dom('.delete__modal__details')
+      .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    await click('.delete__modal__delete-btn');
+    await click('.delete__modal-delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 
@@ -880,10 +876,9 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasNoClass('navi-report__action--is-disabled', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
-    await click($('.navi-report__action:contains(Delete) button')[0]);
-
+    await click('.report-actions__delete-btn');
     assert
-      .dom('.delete__modal__details')
+      .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
   });
 
@@ -892,8 +887,8 @@ module('Acceptance | Navi Report', function (hooks) {
     server.delete('/reports/:id', () => new Response(500));
 
     await visit('/reports/2/view');
-    await click('.delete-button');
-    await click('.delete__modal__delete-btn');
+    await click('.report-actions__delete-btn');
+    await click('.delete__modal-delete-btn');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
   });
@@ -990,13 +985,13 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .delete');
+    await click('.navi-collection__row0 .navi-actions__delete-btn');
 
     assert
-      .dom('.delete__modal__details')
+      .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
 
-    await click('.delete__modal__delete-btn');
+    await click('.delete__modal-delete-btn');
 
     assert.ok(currentURL().endsWith('/reports'), 'After deleting, user is brought to report list view');
 

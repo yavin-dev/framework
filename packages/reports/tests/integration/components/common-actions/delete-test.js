@@ -46,13 +46,13 @@ module('Integration | Component | common actions/delete', function (hooks) {
     assert.dom('.delete__modal').exists('Modal is visible after clicking the delete action');
 
     assert
-      .dom('.delete__modal__details')
+      .dom('.delete__modal-details')
       .hasText(
         'This action cannot be undone. This will permanently delete the The Wind Waker test widget.',
         'The Widget title is included in modal header'
       );
 
-    await click('.delete__modal__cancel-btn');
+    await click('.delete__modal-cancel-btn');
 
     assert.dom('.delete__modal').doesNotExist('Modal is closed after clicking cancel button');
   });
@@ -66,6 +66,6 @@ module('Integration | Component | common actions/delete', function (hooks) {
 
     await render(Template);
     await click('.delete-button');
-    await click('.delete__modal__delete-btn');
+    await click('.delete__modal-delete-btn');
   });
 });

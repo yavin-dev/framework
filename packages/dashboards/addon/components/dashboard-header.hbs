@@ -77,7 +77,6 @@
             {{#if (feature-flag "enableScheduleDashboards")}}
               <DashboardActions::Schedule
                 @model={{@dashboard}}
-                @disabled={{not @dashboard.validations.isTruelyValid}}
                 @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
                 @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
                 @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
@@ -87,7 +86,7 @@
                   @style="text"
                   @size="medium"
                   @icon="time"
-                  class="dashboard-header__schedule-btn schedule-action__button"
+                  class="dashboard-header__schedule-btn"
                   disabled={{not @dashboard.validations.isTruelyValid}}
                   {{on "click" onOpen}}
                 >
@@ -106,8 +105,9 @@
                 @style="text"
                 @size="medium"
                 @icon="trash"
-                class="delete-button dashboard-header__delete-btn"
-                {{on "click" onDelete}}>
+                class="dashboard-header__delete-btn"
+                {{on "click" onDelete}}
+              >
                 Delete
               </DenaliButton>
             </CommonActions::Delete>
