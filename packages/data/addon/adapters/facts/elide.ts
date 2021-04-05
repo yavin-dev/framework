@@ -324,12 +324,18 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const { id } = tableExport;
     let status: QueryStatus = tableExport.status;
 
-    while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-      yield timeout(this._pollingInterval);
-      tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
-      status = tableExportPayload?.tableExport.edges[0]?.node.status;
+    try {
+      while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield timeout(this._pollingInterval);
+        tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
+        status = tableExportPayload?.tableExport.edges[0]?.node.status;
+      }
+      return tableExportPayload;
+    } finally {
+      if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield this.cancelTableExport(id, request.dataSource);
+      }
     }
-    return tableExportPayload;
   }
 
   /**

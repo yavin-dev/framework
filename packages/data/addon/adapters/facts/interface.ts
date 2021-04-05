@@ -2,7 +2,6 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import NaviFactsModel from 'navi-data/models/navi-facts';
 import type { TaskGenerator } from 'ember-concurrency';
 import type { ColumnType } from 'navi-data/models/metadata/column';
 
@@ -90,17 +89,6 @@ export enum TableExportResultType {
   JSON = 'JSON',
 }
 
-export interface AsyncQuery {
-  requestId: string;
-  request: RequestV1 | RequestV2;
-  status: QueryStatus;
-  result: AsyncQueryResult | null;
-  createdOn: Date;
-  updatedOn: Date;
-  then: () => NaviFactsModel;
-  cancel: () => void;
-}
-
 export type AsyncQueryResponse = {
   asyncQuery: {
     edges: [
@@ -115,17 +103,6 @@ export type AsyncQueryResponse = {
     ];
   };
 };
-
-export interface TableExport {
-  requestId: string;
-  request: RequestV1 | RequestV2;
-  status: QueryStatus;
-  result: TableExportResult | null;
-  createdOn: Date;
-  updatedOn: Date;
-  then: () => NaviFactsModel;
-  cancel: () => void;
-}
 
 export type TableExportResponse = {
   tableExport: {

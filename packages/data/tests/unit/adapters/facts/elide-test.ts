@@ -588,7 +588,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
   test('urlForDownloadQuery - success', async function (assert) {
     assert.expect(3);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
-    const downloadURL = 'downloadURL';
+    const downloadURL = 'https://yavin.dev/export/123';
     let response;
     Server.post(HOST, function ({ requestBody }) {
       const requestObj = JSON.parse(requestBody);
@@ -657,7 +657,6 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     try {
       await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
     } catch (e) {
-      console.log('Internal server error', e.errors[0].response.statusText);
       assert.deepEqual(
         e.errors[0].response.statusText,
         'Internal Server Error',
