@@ -8,7 +8,6 @@ import { A } from '@ember/array';
 import { action } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';
 import { groupBy } from 'lodash-es';
-import { guidFor } from '@ember/object/internals';
 
 type ItemOptions = Options['args']['options'];
 type Args = Options['args'] & {
@@ -24,8 +23,6 @@ export type IndexedOptions<Option = ItemOptions[number]> = { option: Option; idx
 
 export default class PowerSelectCollectionOptions extends Options {
   declare args: Args;
-
-  guid = guidFor(this);
 
   /**
    * estimated height in px of a single item
