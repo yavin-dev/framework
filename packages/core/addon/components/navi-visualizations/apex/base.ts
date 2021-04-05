@@ -10,6 +10,8 @@ import type RequestFragment from 'navi-core/models/bard-request-v2/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 export default class ApexChartComponent extends Component<Args> {
+  extraClassNames?: string;
+
   @readOnly('args.model.firstObject.request') declare request: RequestFragment;
   @readOnly('args.model.firstObject.response') declare response: NaviFactResponse;
 
