@@ -1,8 +1,7 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get } from '@ember/object';
 import { capitalize, last } from 'lodash-es';
 
 /**
@@ -12,7 +11,7 @@ import { capitalize, last } from 'lodash-es';
  * @returns {String} formatted error message
  */
 export function getApiErrMsg(error = {}, defaultMsg) {
-  let detail = get(error, 'detail');
+  const { detail } = error;
 
   if (detail) {
     return capitalize(last(detail[0].split(':')).trim());

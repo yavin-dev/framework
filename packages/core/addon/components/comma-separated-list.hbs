@@ -10,7 +10,7 @@
 
 {{!-- Everything else is `,` separated with `and` before the last item --}}
 {{#if (gt @list.length 2)}}
-  {{#each this._commaItems as |item| ~}}
+  {{#each this.commaItems as |item| ~}}
     <span>{{yield item}}, </span>
   {{~/each~}} and {{yield @list.lastObject}}
 {{/if}}

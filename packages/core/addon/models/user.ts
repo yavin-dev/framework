@@ -2,12 +2,13 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import DS from 'ember-data';
 import Model, { hasMany } from '@ember-data/model';
 import ReportModel from './report';
 import DeliveryRuleModel from './delivery-rule';
 import DashboardModel from './dashboard';
 import Role from './role';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
+import DS from 'ember-data';
 
 export default class UserModel extends Model {
   @hasMany('report', { async: true, inverse: 'author' })

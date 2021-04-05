@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
-import Store from 'ember-data/store';
+import Store from '@ember-data/store';
 import { ColumnMetadata, ColumnType } from 'navi-data/models/metadata/column';
 //@ts-ignore
 import ColumnFragment from '../models/bard-request-v2/fragments/column';

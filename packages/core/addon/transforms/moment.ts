@@ -3,11 +3,11 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import DS from 'ember-data';
+import Transform from '@ember-data/serializer/transform';
 import moment, { Moment } from 'moment';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 
-export default class MomentTransform extends DS.Transform {
+export default class MomentTransform extends Transform {
   /**
    * Deserializes date string into a moment object
    *

@@ -475,10 +475,7 @@ module('Unit | Component | line chart', function (hooks) {
       let element = document.createElement('div');
       tooltip.appendTo(element);
     });
-    assert.ok(
-      tooltip.rowData.firstObject.hasOwnProperty('uniqueIdentifier'),
-      'Initial tooltip render has the right rowData'
-    );
+    assert.ok('uniqueIdentifier' in tooltip.rowData[0], 'Initial tooltip render has the right rowData');
 
     //new data
     let response2 = NaviFactResponse.create({
@@ -514,10 +511,7 @@ module('Unit | Component | line chart', function (hooks) {
       let element = document.createElement('div');
       tooltip.appendTo(element);
     });
-    assert.ok(
-      tooltip.rowData.firstObject.hasOwnProperty('navClicks'),
-      'New response has tooltip render has the right rowData'
-    );
+    assert.ok('navClicks' in tooltip.rowData[0], 'New response has tooltip render has the right rowData');
   });
 
   test('line chart styles', function (assert) {

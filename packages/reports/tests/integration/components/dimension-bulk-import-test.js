@@ -1,4 +1,4 @@
-import { module, test } from 'qunit';
+import { module, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, settled, findAll, waitFor, click } from '@ember/test-helpers';
 import $ from 'jquery';
@@ -94,7 +94,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
   });
 
-  test('bulk import Component renders', async function (assert) {
+  skip('bulk import Component renders', async function (assert) {
     assert.expect(3);
 
     const rawQuery = this.queryIds.join(',');
@@ -113,7 +113,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     assert.dom('.pasted-input').hasText(rawQuery, 'pasted text is visible');
   });
 
-  test('search dimension IDs', async function (assert) {
+  skip('search dimension IDs', async function (assert) {
     assert.expect(6);
 
     render(COMMON_TEMPLATE);
@@ -162,7 +162,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     );
   });
 
-  test('onSelectValues action is triggered', async function (assert) {
+  skip('onSelectValues action is triggered', async function (assert) {
     assert.expect(2);
 
     this.set('onSelectValues', (validDimVals) => {
@@ -181,7 +181,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     await click($('.btn-container button:contains(Include Valid IDs)')[0]);
   });
 
-  test('onCancel action is triggered', async function (assert) {
+  skip('onCancel action is triggered', async function (assert) {
     assert.expect(1);
 
     this.set('onCancel', () => {
@@ -195,7 +195,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     await click($('.btn-container button:contains(Cancel)')[0]);
   });
 
-  test('remove valid IDs', async function (assert) {
+  skip('remove valid IDs', async function (assert) {
     assert.expect(6);
 
     await render(COMMON_TEMPLATE);
@@ -254,7 +254,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     );
   });
 
-  test('behavior of headers', async function (assert) {
+  skip('behavior of headers', async function (assert) {
     assert.expect(3);
 
     render(COMMON_TEMPLATE);
@@ -279,7 +279,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
       .hasText('Search Results for', 'Secondary header has expected result text after searching');
   });
 
-  test('Search dimension with smart key', async function (assert) {
+  skip('Search dimension with smart key', async function (assert) {
     assert.expect(1);
     this.setProperties({
       dimension: { id: 'multiSystemId', name: 'Multi System Id', source: 'bardOne' },
@@ -304,7 +304,7 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     });
   });
 
-  test('Raw input is searched', async function (assert) {
+  skip('Raw input is searched', async function (assert) {
     assert.expect(1);
     const rawQuery = 'yes, comma';
     this.setProperties({

@@ -1,9 +1,3 @@
-/**
- * Copyright 2021, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-
-import DS from 'ember-data';
 import { attr, belongsTo, hasMany } from '@ember-data/model';
 import { or } from '@ember/object/computed';
 import { A } from '@ember/array';
@@ -21,6 +15,8 @@ import { Moment } from 'moment';
 import FilterFragment from './bard-request-v2/fragments/filter';
 import DashboardWidget from './dashboard-widget';
 import PresentationFragment from './fragments/presentation';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
+import DS from 'ember-data';
 
 const Validations = buildValidations({
   title: [
@@ -59,7 +55,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
    */
   @computed('author')
   get isUserOwner() {
-    return this.get('author').get('id') === config.navi.user;
+    return this.author.get('id') === config.navi.user;
   }
 
   /**
@@ -79,7 +75,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   get isFavorite() {
     const user = this.user.getUser();
     const favoriteDashboards = user?.hasMany('favoriteDashboards').ids();
-    return A(favoriteDashboards).includes(this.get('id'));
+    return A(favoriteDashboards).includes(this.id);
   }
 
   /**

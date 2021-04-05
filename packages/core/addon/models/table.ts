@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import VisualizationFragment from './visualization';
+import VisualizationFragment, { TypedVisualizationFragment } from './visualization';
 import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
@@ -10,7 +10,6 @@ import { set } from '@ember/object';
 import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type RequestFragment from './bard-request-v2/request';
-import type { TypedVisualizationFragment } from './visualization';
 
 function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
   const requestCids = new Set(request.columns.map((column) => column.cid));

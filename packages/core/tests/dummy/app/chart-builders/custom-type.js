@@ -1,6 +1,6 @@
 import EmberObject from '@ember/object';
 
-export default EmberObject.extend({
+export default class CustomTypeBuilder extends EmberObject {
   buildData() {
     return {
       series: [
@@ -16,9 +16,9 @@ export default EmberObject.extend({
       ],
       names: undefined,
     };
-  },
+  }
 
   buildTooltip() {
     return {};
-  },
-});
+  }
+}

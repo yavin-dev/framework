@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import attr from 'ember-data/attr';
+import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { inject as service } from '@ember/service';

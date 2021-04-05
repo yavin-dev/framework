@@ -4,7 +4,7 @@
  */
 
 import { readOnly } from '@ember/object/computed';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import { attr } from '@ember-data/model';
 import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
@@ -35,7 +35,7 @@ const Validations = buildValidations(
   {
     //Global Validation Options
     chartType: computed('model._request.{dimensionColumns.[],metricColumns.[],interval}', function () {
-      const request = get(this, 'request');
+      const { request } = this;
       return request && chartTypeForRequest(request);
     }),
     request: readOnly('model._request'),

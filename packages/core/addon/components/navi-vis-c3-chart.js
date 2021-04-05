@@ -1,3 +1,5 @@
+/* eslint-disable ember/no-get */
+/* eslint-disable ember/require-computed-property-dependencies */
 /**
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -81,7 +83,7 @@ export default C3Chart.extend({
 
       ['oninit', 'onrendered', 'onmouseover', 'onmouseout', 'onresize', 'onresized'].forEach((eventname) => {
         c[eventname] = () => {
-          if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+          if (!this.isDestroyed && !this.isDestroying) {
             const eventAction = this.get(eventname);
             if (eventAction) {
               eventAction(this);
@@ -106,18 +108,18 @@ export default C3Chart.extend({
     let { data, dataClasses } = getProperties(this, 'data', 'dataClasses'),
       dataWithClasses = assign({}, { classes: dataClasses }, data);
 
-    get(this, 'chart').load(dataWithClasses);
+    this.chart.load(dataWithClasses);
 
     /*
      * select data points (if any)
      * chart.select() triggers resize internally
      */
-    let dataSelection = get(this, 'dataSelection');
+    let dataSelection = this.dataSelection;
     if (dataSelection) {
       dataSelection.then((insightsData) => {
         const series = Object.keys(this.data.json[0]).filter((series) => series !== 'x');
         const dataSelectionIndices = insightsData.mapBy('index');
-        get(this, 'chart').select(series, dataSelectionIndices);
+        this.chart.select(series, dataSelectionIndices);
       });
     } else {
       /*
@@ -134,20 +136,20 @@ export default C3Chart.extend({
    * @property {Object} chart - c3 object reference
    */
   chart: computed('_config', 'c3chart', function () {
-    if (!get(this, 'c3chart')) {
-      let config = get(this, '_config');
+    if (!this.c3chart) {
+      let config = this._config;
 
       // eslint-disable-next-line ember/no-side-effects
       set(this, 'c3chart', c3.generate(config));
     }
-    return get(this, 'c3chart');
+    return this.c3chart;
   }),
 
   /**
    * @property {Object} map of series id to series class name
    */
   dataClasses: computed('data', function () {
-    let seriesIds = A(get(this, 'chart').data()).mapBy('id');
+    let seriesIds = A(this.chart.data()).mapBy('id');
 
     // Give each series a unique class
     return seriesIds.reduce((seriesToClassMap, seriesId, seriesIndex) => {
@@ -189,15 +191,17 @@ export default C3Chart.extend({
    */
   _resizeFunc() {
     // Fill the parent container
-    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!this.isDestroyed && !this.isDestroying) {
       $(this.element).css('max-height', '100%');
       $(this.element).css('min-height', '100%');
 
-      get(this, 'chart').resize();
+      this.chart.resize();
     }
   },
 
   didInsertElement() {
+    this._super(...arguments);
+
     //load data
     this.dataDidChange();
 

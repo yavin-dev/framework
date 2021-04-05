@@ -20,7 +20,7 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/table-renderer-vertical-collection';
-import { computed, get, set } from '@ember/object';
+import { computed, set } from '@ember/object';
 import { scheduleOnce } from '@ember/runloop';
 import ResizeObserver from 'resize-observer-polyfill';
 import { layout as templateLayout, classNames } from '@ember-decorators/component';
@@ -71,9 +71,9 @@ class TableRendererVerticalCollectionComponent extends Component {
   /**
    * @property {Object} tableWrapperDomElement - table wrapper div DOM element
    */
-  @computed
+  @computed('element', 'tableWrapperClass')
   get tableWrapperDomElement() {
-    return this.element.querySelector(`.${get(this, 'tableWrapperClass')}`);
+    return this.element.querySelector(`.${this.tableWrapperClass}`);
   }
 
   /**
@@ -84,9 +84,9 @@ class TableRendererVerticalCollectionComponent extends Component {
   /**
    * @property {Object} tableHeadersDomElement - outer div of visible table headers DOM element
    */
-  @computed
+  @computed('element', 'tableHeadersClass')
   get tableHeadersDomElement() {
-    return this.element.querySelector(`.${get(this, 'tableHeadersClass')}`);
+    return this.element.querySelector(`.${this.tableHeadersClass}`);
   }
 
   /**
@@ -107,11 +107,11 @@ class TableRendererVerticalCollectionComponent extends Component {
    * @returns {void}
    */
   _registerTableScroll() {
-    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach((elm) =>
+    [this.tableWrapperDomElement, this.tableHeadersDomElement].forEach((elm) =>
       elm.addEventListener(SCROLL_EVENT, () => this._syncScroll(), supportsPassive ? { passive: true } : false)
     );
 
-    get(this, 'tableHeadersDomElement').addEventListener(
+    this.tableHeadersDomElement.addEventListener(
       WHEEL_EVENT,
       (e) => this._headerWheelSync(e),
       supportsPassive ? { passive: true } : false
@@ -150,16 +150,16 @@ class TableRendererVerticalCollectionComponent extends Component {
    * @returns {void}
    */
   _syncScroll() {
-    let scrollableWrapper = get(this, 'tableWrapperDomElement'),
-      tableHeaderRow = get(this, 'tableHeadersDomElement'),
+    let scrollableWrapper = this.tableWrapperDomElement,
+      tableHeaderRow = this.tableHeadersDomElement,
       scrollLeft,
       elementToScroll;
 
-    if (get(this, 'isEditingMode')) {
+    if (this.isEditingMode) {
       return;
     }
 
-    if (get(this, 'isDragged')) {
+    if (this.isDragged) {
       //when re-ordering columns - set horizontal scroll position of table to that of the headers
       scrollLeft = tableHeaderRow.scrollLeft;
       elementToScroll = scrollableWrapper;
@@ -181,7 +181,7 @@ class TableRendererVerticalCollectionComponent extends Component {
    */
   _syncHeadersWidth() {
     //in editing mode the real table headers are visible, no need to sync
-    if (get(this, 'isEditingMode')) {
+    if (this.isEditingMode) {
       return;
     }
 
@@ -189,7 +189,7 @@ class TableRendererVerticalCollectionComponent extends Component {
       (elm) => elm.getBoundingClientRect().width
     );
 
-    let prevWidths = get(this, 'columnsWidth'),
+    let prevWidths = this.columnsWidth,
       widthChanged = widths.length !== prevWidths.length; //if number of columns has changed, set to true to re-set width
 
     this.element.querySelectorAll('.table-header-row-vc--view .table-header-cell').forEach((headerElm, i) => {
@@ -219,7 +219,7 @@ class TableRendererVerticalCollectionComponent extends Component {
    * @returns {void}
    */
   _headerWheelSync(event) {
-    let table = get(this, 'tableWrapperDomElement');
+    let table = this.tableWrapperDomElement;
 
     table.scrollLeft += event.deltaX;
     event.preventDefault(); // Prevents the page navigation gesture in Mac OSX
@@ -244,7 +244,7 @@ class TableRendererVerticalCollectionComponent extends Component {
   didRender() {
     super.didRender(...arguments);
 
-    if (!get(this, 'isDestroyed') && !get(this, 'isDestroying')) {
+    if (!this.isDestroyed && !this.isDestroying) {
       this._syncScroll();
     }
   }
@@ -257,11 +257,11 @@ class TableRendererVerticalCollectionComponent extends Component {
    */
   willDestroyElement() {
     //turn off scroll listener
-    [get(this, 'tableWrapperDomElement'), get(this, 'tableHeadersDomElement')].forEach((elm) =>
+    [this.tableWrapperDomElement, this.tableHeadersDomElement].forEach((elm) =>
       elm.removeEventListener(SCROLL_EVENT, () => this._syncScroll())
     );
 
-    get(this, 'tableHeadersDomElement').removeEventListener(WHEEL_EVENT, (e) => this._headerWheelSync(e));
+    this.tableHeadersDomElement.removeEventListener(WHEEL_EVENT, (e) => this._headerWheelSync(e));
 
     //turn off resize Observer
     this.resizeObserver.disconnect();

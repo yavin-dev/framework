@@ -1,14 +1,13 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import { camelize } from '@ember/string';
 import DS from 'ember-data';
+import ModelRegistry from 'ember-data/types/registries/model';
+import { camelize } from '@ember/string';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
-import ModelRegistry from 'ember-data/types/registries/model';
-import Store from 'ember-data/store';
+import Store from '@ember-data/store';
 import RSVP from 'rsvp';
 
 type ErrorResponse = {

@@ -12,7 +12,7 @@
 /.env*
 /.pnp*
 /.sass-cache
-/.travis.yml
+/.eslintcache
 /connect.lock
 /coverage/
 /libpeerconnection.log

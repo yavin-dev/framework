@@ -12,13 +12,11 @@
  */
 import Component from '@glimmer/component';
 import { CellRendererArgs } from '../navi-table-cell-renderer';
-import { computed } from '@ember/object';
 
 export default class BaseCellRenderer extends Component<CellRendererArgs> {
   /**
    * value of the column
    */
-  @computed('args.{column.fragment.canonicalName,data.[]}')
   get columnValue() {
     const { column, data } = this.args;
     const { canonicalName } = column.fragment;

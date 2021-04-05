@@ -2,7 +2,7 @@
  * Copyright 2018, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Store from 'ember-data/store';
+import Store from '@ember-data/store';
 import Service, { inject as service } from '@ember/service';
 //@ts-ignore
 import config from 'ember-get-config';

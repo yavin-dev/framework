@@ -179,7 +179,6 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
-    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 
