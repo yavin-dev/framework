@@ -1,5 +1,5 @@
 import EmberRouter from '@ember/routing/router';
-import config from './config/environment';
+import config from 'dummy/config/environment';
 import { adminRoutes } from 'navi-admin/router';
 
 export default class Router extends EmberRouter {
