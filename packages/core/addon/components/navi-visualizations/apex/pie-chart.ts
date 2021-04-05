@@ -85,6 +85,8 @@ export function normalize(request: RequestFragment, response: NaviFactResponse, 
 }
 
 export default class ApexPieChartComponent extends ApexChartComponent {
+  extraClassNames = 'pie-chart-widget pie-chart-widget--apex';
+
   @readOnly('args.options.series') declare seriesConfig: PieChartConfig['metadata']['series'];
 
   @computed('baseOptions', 'pieChartOptions', 'dataOptions')
