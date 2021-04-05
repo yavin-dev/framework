@@ -43,7 +43,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
 
     // better handled by prettier:
     '@typescript-eslint/indent': 'off',
