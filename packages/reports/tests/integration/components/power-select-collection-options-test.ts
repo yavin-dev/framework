@@ -7,6 +7,7 @@ import type PowerSelectCollectionOptions from 'navi-reports/components/power-sel
 
 const TEMPLATE = hbs`
 <PowerSelectCollectionOptions
+  id="ember-power-select-options-{{this.select.uniqueId}}"
   @extra={{hash allowClear=this.allowClear sortFn=this.sortFn sortKey=this.sortKey}}
   @options={{this.options}}
   @select={{this.select}}
@@ -36,6 +37,7 @@ module('Integration | Component | Power Select Collection Options', function (ho
         highlighted: () => null,
         scrollTo: () => null,
       },
+      uniqueId: 'very-unique-id',
     });
   });
 
@@ -83,7 +85,7 @@ module('Integration | Component | Power Select Collection Options', function (ho
     const option = 'Sort Returned';
     this.sortFn = () => {
       assert.step('sortFn');
-      return [{ option: { name: 'Sort Returned' }, idx: 0 }];
+      return [{ option: { name: option }, idx: 0 }];
     };
 
     await render(TEMPLATE);

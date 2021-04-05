@@ -5,7 +5,7 @@
  * An ember-power-select options component that uses ember-collection
  */
 import { A } from '@ember/array';
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';
 import { groupBy } from 'lodash-es';
 
@@ -25,36 +25,13 @@ export default class PowerSelectCollectionOptions extends Options {
   declare args: Args;
 
   /**
-   * @property {Number} maxDisplayedItems - max number of item to show at once
-   */
-  maxDisplayedItems = 6;
-
-  /**
-   * @property {Number} itemHeight - height in px of a single item
+   * estimated height in px of a single item
    */
   itemHeight = 36;
 
   /**
-   * @property {Number} _height - height of selector
-   */
-  @computed('args.select.resultsCount', 'itemHeight', 'maxDisplayedItems')
-  get _height() {
-    const length = this.args.select.resultsCount;
-    const { itemHeight, maxDisplayedItems } = this;
-    const height = length * itemHeight;
-    const maxHeight = maxDisplayedItems * itemHeight;
-    return Math.min(maxHeight, height);
-  }
-
-  /**
-   * @property {Array} colums - columns sized using percentage widths
-   */
-  columns = [100];
-
-  /**
    * @property {Array} items - array of options to be used by hbs
    */
-  @computed('args.extra.groupKey', 'grouped', 'ungrouped')
   get items() {
     return this.args.extra?.groupKey ? this.grouped : this.ungrouped;
   }
@@ -62,7 +39,6 @@ export default class PowerSelectCollectionOptions extends Options {
   /**
    * @property {Array} indexedOptions - array of options that retain original order
    */
-  @computed('args.{options,select.loading}')
   get indexedOptions(): IndexedOptions[] {
     const {
       options,
@@ -77,7 +53,6 @@ export default class PowerSelectCollectionOptions extends Options {
   /**
    * @property {Array} ungrouped - array of ungrouped options
    */
-  @computed('indexedOptions', 'args.extra.{sortKey,sortFn}')
   get ungrouped() {
     return this._sortOptions(this.indexedOptions);
   }
@@ -86,7 +61,6 @@ export default class PowerSelectCollectionOptions extends Options {
    * @property {Array} grouped - array of grouped options
    */
 
-  @computed('indexedOptions', 'args.extra.{sortKey,sortFn,groupKey}')
   get grouped() {
     const { indexedOptions: options } = this;
     const { groupKey } = this.args.extra || {};
