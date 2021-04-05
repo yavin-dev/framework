@@ -190,7 +190,6 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
 
     await render(COMMON_TEMPLATE);
 
-    await settled();
     //Click Cancel Button
     await click($('.btn-container button:contains(Cancel)')[0]);
   });
@@ -199,8 +198,6 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
     assert.expect(6);
 
     await render(COMMON_TEMPLATE);
-
-    await settled();
 
     assert.equal($('.valid-id-count').text().trim(), '4', 'Valid ID count is 4 before removing any pills');
 
@@ -317,7 +314,6 @@ module('Integration | Component | Dimension Bulk Import', function (hooks) {
 
     await render(COMMON_TEMPLATE);
 
-    await settled();
     assert.deepEqual(
       findAll('.btn-container button').map((el) => el.textContent.trim()),
       ['Include Valid IDs', 'Include Raw Input', 'Cancel'],

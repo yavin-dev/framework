@@ -33,7 +33,7 @@
  */
 import { A } from '@ember/array';
 import Component from '@ember/component';
-import { set, get, computed } from '@ember/object';
+import { set, computed } from '@ember/object';
 import { run } from '@ember/runloop';
 import layout from '../templates/components/paginated-scroll-list';
 
@@ -109,7 +109,7 @@ export default Component.extend({
    * @property {Array} _itemsToRender - items to render
    */
   _itemsToRender: computed('items.[]', '_perPage', function () {
-    return A(get(this, 'items').slice(0, get(this, '_perPage')));
+    return A(this.items.slice(0, this._perPage));
   }),
 
   /**
@@ -117,7 +117,7 @@ export default Component.extend({
    * @property {Boolean} _isTrimmed - true of items collection is trimmed else false
    */
   _isTrimmed: computed('trim', '_itemsExceedMaxHt', '_hasMoreItems', function () {
-    return get(this, 'trim') && (get(this, '_itemsExceedMaxHt') || get(this, '_hasMoreItems'));
+    return this.trim && (this._itemsExceedMaxHt || this._hasMoreItems);
   }),
 
   /**
@@ -125,10 +125,10 @@ export default Component.extend({
    * @property {Number} _perPage - number of items loaded per page based on trim flag
    */
   _perPage: computed('trim', 'perPage', 'initialItemsToRender', function () {
-    if (get(this, 'trim')) {
-      return get(this, 'initialItemsToRender');
+    if (this.trim) {
+      return this.initialItemsToRender;
     }
-    return get(this, 'perPage');
+    return this.perPage;
   }),
 
   /**
@@ -146,7 +146,7 @@ export default Component.extend({
    * @property {Boolean} _hasMoreItems - true if infinite scroll has more items to render else false
    */
   _hasMoreItems: computed('items.[]', '_itemsToRender.[]', function () {
-    return get(this, 'items.length') > get(this, '_itemsToRender.length');
+    return this.items.length > this._itemsToRender.length;
   }),
 
   /**
@@ -157,8 +157,8 @@ export default Component.extend({
    * @returns {Void}
    */
   _setItemsExceedMaxHt() {
-    let containerSelector = `.${get(this, '_containerClass')}`,
-      itemsCollectionSelector = `.${get(this, '_collectionClass')}`,
+    let containerSelector = `.${this._containerClass}`,
+      itemsCollectionSelector = `.${this._collectionClass}`,
       itemsExceedMaxHt = this.$(itemsCollectionSelector).outerHeight() > this.$(containerSelector).innerHeight();
 
     set(this, '_itemsExceedMaxHt', itemsExceedMaxHt);
@@ -168,7 +168,8 @@ export default Component.extend({
    * @event didInsertElement
    */
   didInsertElement() {
-    let containerSelector = `.${get(this, '_containerClass')}`;
+    this._super(...arguments);
+    let containerSelector = `.${this._containerClass}`;
     // Bind scroll event
     this.$(containerSelector).on('scroll.paginated-scroll', () => {
       run.debounce(this, this.onScroll, 50);
@@ -178,8 +179,9 @@ export default Component.extend({
   /**
    * @event willDestroyElement
    */
-  willDestroyElement: function () {
-    let containerSelector = `.${get(this, '_containerClass')}`;
+  willDestroyElement() {
+    this._super(...arguments);
+    let containerSelector = `.${this._containerClass}`;
     // Unbind scroll event
     this.$(containerSelector).off('scroll.paginated-scroll');
   },
@@ -188,13 +190,13 @@ export default Component.extend({
    * @event onScroll - event to trigger on scroll
    */
   onScroll() {
-    let containerSelector = `.${get(this, '_containerClass')}`,
+    let containerSelector = `.${this._containerClass}`,
       // detect scroll to bottom
       scrolledToBottom =
         this.$(containerSelector).scrollTop() + this.$(containerSelector).innerHeight() >=
-        this.$(containerSelector)[0].scrollHeight - this.get('scrollPadding');
+        this.$(containerSelector)[0].scrollHeight - this.scrollPadding;
 
-    if (scrolledToBottom && get(this, '_hasMoreItems')) {
+    if (scrolledToBottom && this._hasMoreItems) {
       this._appendPaginatedResults();
     }
   },
@@ -209,12 +211,12 @@ export default Component.extend({
   _appendPaginatedResults() {
     this.incrementProperty('_page');
 
-    let perPage = get(this, 'perPage'),
-      startIndex = get(this, '_page') * perPage,
+    let perPage = this.perPage,
+      startIndex = this._page * perPage,
       endIndex = startIndex + perPage,
-      recordsToAppend = get(this, 'items').slice(startIndex, endIndex);
+      recordsToAppend = this.items.slice(startIndex, endIndex);
 
-    A(get(this, '_itemsToRender')).pushObjects(recordsToAppend);
+    A(this._itemsToRender).pushObjects(recordsToAppend);
   },
 
   actions: {
@@ -223,7 +225,7 @@ export default Component.extend({
      */
     onShowMore() {
       set(this, 'trim', false);
-      get(this, 'attrs.showMore')();
+      this.showMore();
     },
   },
 });

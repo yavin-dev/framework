@@ -133,7 +133,7 @@ class ReportView extends Component {
    */
   @action
   toggleEditVisualization() {
-    this.toggleProperty('isEditingVisualization');
+    set(this, 'isEditingVisualization', !this.isEditingVisualization);
   }
 
   /**

@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, settled, triggerEvent, click } from '@ember/test-helpers';
+import { render, triggerEvent, click } from '@ember/test-helpers';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 
@@ -149,7 +149,6 @@ module('Integration | Component | paginated scroll list', function (hooks) {
     $('.items-container').scrollTop($('.items-list').height());
     //test can be flaky at times, make sure scroll event happens
     await triggerEvent('.items-container', 'scroll');
-    await settled();
 
     assert.dom('.mock-item').exists({ count: 50 }, '50 items are shown after scrolling');
   });
