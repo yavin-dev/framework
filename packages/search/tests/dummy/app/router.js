@@ -1,5 +1,5 @@
 import EmberRouter from '@ember/routing/router';
-import config from './config/environment';
+import config from 'dummy/config/environment';
 import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-reports/router';
 import { dashboardRoutes } from 'navi-dashboards/router';
 
