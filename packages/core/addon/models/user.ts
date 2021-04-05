@@ -1,3 +1,7 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Model, { hasMany } from '@ember-data/model';
 import ReportModel from './report';
 import DeliveryRuleModel from './delivery-rule';

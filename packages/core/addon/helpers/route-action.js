@@ -62,8 +62,7 @@ export default class RouteActionHelper extends Helper {
   @service('router') routerService;
 
   compute([actionName, ...params]) {
-    let router = this.router,
-      routerService = this.routerService;
+    const { router, routerService } = this;
 
     runInDebug(() => {
       let { handler } = getRouteWithAction(router, routerService, actionName);

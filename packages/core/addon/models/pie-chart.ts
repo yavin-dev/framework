@@ -35,7 +35,7 @@ const Validations = buildValidations(
   {
     //Global Validation Options
     chartType: computed('model._request.{dimensionColumns.[],metricColumns.[],interval}', function () {
-      const request = this.request;
+      const { request } = this;
       return request && chartTypeForRequest(request);
     }),
     request: readOnly('model._request'),
