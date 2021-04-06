@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   globals: {
     server: true,
@@ -18,8 +20,17 @@ module.exports = {
   },
   rules: {
     'ember/no-jquery': 'warn',
+
+    // TODO: These need to be cleaned up
+    'ember/no-get': 'warn',
+    'ember/no-mixins': 'warn',
     'ember/no-new-mixins': 'warn',
     'ember/no-observers': 'warn',
+    'ember/no-classic-classes': 'warn',
+    'ember/no-classic-components': 'warn',
+    'ember/no-computed-properties-in-native-classes': 'warn',
+    'ember/no-controller-access-in-routes': 'warn',
+    'ember/no-actions-hash': 'warn',
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
@@ -32,7 +43,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
 
     // better handled by prettier:
     '@typescript-eslint/indent': 'off',
@@ -42,6 +53,7 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.prettierrc.js',
         '.template-lintrc.js',
         'ember-cli-build.js',
         'index.js',
@@ -59,11 +71,11 @@ module.exports = {
         node: true,
       },
       plugins: ['node'],
-      rules: Object.assign({}, require('eslint-plugin-node').configs.recommended.rules, {
-        // add your custom rules and overrides for node files here
+      extends: ['plugin:node/recommended'],
+      rules: {
         '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/no-var-requires': 'off',
-      }),
+      },
     },
     {
       files: ['tests/**/*.js'],

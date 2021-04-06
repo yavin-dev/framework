@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { get } from '@ember/object';
 import { merge } from 'lodash-es';
 import { resolve } from 'rsvp';
 import config from 'ember-get-config';
@@ -117,26 +116,26 @@ module('Unit | Service | dashboard data', function (hooks) {
     );
     assert.deepEqual(Object.keys(data), ['1', '2', '3'], 'data is keyed by widget id');
 
-    assert.ok(get(data, '1.isRunning'), 'data returns a task instance per widget');
+    assert.ok(data['1'].isRunning, 'data returns a task instance per widget');
 
-    const widgetData = await get(data, '1');
+    const widgetData = await data['1'];
     assert.deepEqual(
-      widgetData.map((res) => get(res, 'response.data')),
+      widgetData.map((res) => res.response.data),
       [1, 2, 3],
       'data for widget is an array of request responses'
     );
 
-    await get(data, '2');
-    await get(data, '3');
+    await data['2'];
+    await data['3'];
 
     assert.deepEqual(fetchCalls, [4, 1, 2, 3], 'requests are enqueued by layout order');
 
     /* == Decorators == */
     data = service.fetchDataForWidgets(1, widgets, layout, [(obj) => merge({}, obj, { data: obj.data + 1 })]);
 
-    const decoratorWidgetData = await get(data, '1');
+    const decoratorWidgetData = await data['1'];
     assert.deepEqual(
-      decoratorWidgetData.map((obj) => get(obj, 'response.data')),
+      decoratorWidgetData.map((obj) => obj.response.data),
       [2, 3, 4],
       'each response is modified by the decorators'
     );
@@ -323,30 +322,30 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     const data = service.fetchDataForWidgets(1, widgets, layout);
 
-    const widget1 = await get(data, '1');
-    const widget2 = await get(data, '2');
-    const widget3 = await get(data, '3');
+    const widget1 = await data['1'];
+    const widget2 = await data['2'];
+    const widget3 = await data['3'];
 
     assert.deepEqual(
-      widget1.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
+      widget1.map((result) => result.request.filters.map((filter) => filter.field)),
       [['property', 'os'], ['os'], ['userCountry', 'os']],
       'Applicable global filters are applied to widget 1 requests'
     );
 
     assert.deepEqual(
-      widget2.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
+      widget2.map((result) => result.request.filters.map((filter) => filter.field)),
       [['screenType', 'os']],
       'Applicable global filters are applied to widget 2 requests'
     );
 
     assert.deepEqual(
-      widget3.map((result) => get(result, 'request.filters').map((filter) => get(filter, 'field'))),
+      widget3.map((result) => result.request.filters.map((filter) => filter.field)),
       [],
       'Applicable global filters are applied to widget 3 requests'
     );
 
     assert.deepEqual(
-      widget1.map((result) => get(result, 'response.meta.errors')),
+      widget1.map((result) => result.response.meta.errors),
       [
         [
           {

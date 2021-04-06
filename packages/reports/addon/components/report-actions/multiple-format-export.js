@@ -15,6 +15,7 @@ import { readOnly } from '@ember/object/computed';
 import layout from '../../templates/components/report-actions/multiple-format-export';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
+import { later, cancel } from '@ember/runloop';
 
 @templateLayout(layout)
 @tagName('')
@@ -122,8 +123,13 @@ export default class MultipleFormatExport extends Component {
    * A hack to make the trigger responding to click
    */
   @action
-  open() {
-    return true;
+  open(dropdown) {
+    if (this.closeTimer) {
+      cancel(this.closeTimer);
+      this.closeTimer = null;
+    } else {
+      dropdown.actions.open();
+    }
   }
 
   /**
@@ -131,7 +137,10 @@ export default class MultipleFormatExport extends Component {
    */
   @action
   close(dropdown) {
-    dropdown.actions.close();
+    this.closeTimer = later(() => {
+      this.closeTimer = null;
+      dropdown.actions.close();
+    }, 300);
   }
 
   /**

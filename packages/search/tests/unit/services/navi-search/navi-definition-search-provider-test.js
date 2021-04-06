@@ -1,10 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Pretender from 'pretender';
-import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 
-let Service, Server;
+let Service;
 
 module('Unit | Service | navi-definition-search-provider', function (hooks) {
   setupTest(hooks);
@@ -12,17 +10,11 @@ module('Unit | Service | navi-definition-search-provider', function (hooks) {
 
   hooks.beforeEach(async function () {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
-    Server = new Pretender(metadataRoutes);
     Service = this.owner.lookup('service:navi-search/navi-definition-search-provider');
-  });
-
-  hooks.afterEach(async function () {
-    Server.shutdown();
   });
 
   test('search definition of a dimension', async function (assert) {
     assert.expect(3);
-    metadataRoutes.bind(Server);
     const results = await Service.search.perform('age');
 
     const expectedResults = [
@@ -43,7 +35,6 @@ module('Unit | Service | navi-definition-search-provider', function (hooks) {
 
   test('search definition of a metric', async function (assert) {
     assert.expect(3);
-    metadataRoutes.bind(Server);
     const results = await Service.search.perform('time');
 
     const makeDateTime = (table) => ({ id: `${table}.dateTime`, name: 'Date Time' });
