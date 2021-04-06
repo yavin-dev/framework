@@ -175,7 +175,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @returns graphql query string for a v2 request
    */
-  private dataQueryFromRequest(request: RequestV2, pagination?: PaginationOptions): string {
+  private dataQueryFromRequest(request: RequestV2, pagination?: PaginationOptions | null): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
@@ -228,8 +228,15 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
     const argsString = args.length ? `(${args.join(',')})` : '';
 
+    let pageInfoString: string;
+    if (pagination === null) {
+      pageInfoString = '';
+    } else {
+      pageInfoString = ' pageInfo { startCursor endCursor totalRecords }';
+    }
+
     return JSON.stringify({
-      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } } pageInfo { startCursor endCursor totalRecords } } }`,
+      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } }${pageInfoString} } }`,
     });
   }
 
@@ -288,7 +295,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   urlForFindQuery(request: RequestV2, _options: RequestOptions): string {
-    return this.dataQueryFromRequest(request);
+    return this.dataQueryFromRequest(request, null);
   }
 
   /**
