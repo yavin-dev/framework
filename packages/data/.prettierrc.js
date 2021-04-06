@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = {
-  singleQuote: true,
+  // eslint-disable-next-line node/no-unpublished-require
+  ...require('./../../prettier.config'),
 };
