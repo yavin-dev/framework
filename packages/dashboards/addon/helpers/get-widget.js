@@ -14,6 +14,6 @@ export default Helper.extend({
    * @returns {DS.Model} widget model
    */
   compute([id]) {
-    return this.get('store').peekRecord('dashboard-widget', id);
+    return this.store.peekRecord('dashboard-widget', id);
   },
 });

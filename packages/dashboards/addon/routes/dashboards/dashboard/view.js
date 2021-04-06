@@ -60,7 +60,7 @@ export default Route.extend({
   async model(_, transition) {
     const dashboard = this.modelFor('dashboards.dashboard');
     const filterQueryParams = transition.to.queryParams.filters;
-    const cachedWidgetData = this.get('_widgetDataCache');
+    const cachedWidgetData = this._widgetDataCache;
 
     //Record filters before and after setting from query params
     const originalFilters = dashboard.get('filters').serialize();
@@ -139,9 +139,9 @@ export default Route.extend({
     }
 
     try {
-      const decompressedFilters = await this.get('compression').decompress(filterQueryParams);
+      const decompressedFilters = await this.compression.decompress(filterQueryParams);
 
-      if (!decompressedFilters.hasOwnProperty('filters') || !Array.isArray(decompressedFilters.filters)) {
+      if (!('filters' in decompressedFilters) || !Array.isArray(decompressedFilters.filters)) {
         throw Error('Filter query params are not valid filters');
       }
 

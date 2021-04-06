@@ -93,7 +93,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
         return newFil;
       })
       .filter((fil) => !isEqual(fil, removedFilter));
-    const filterQueryParams = await get(this, 'compression').compress({ filters: newFilters });
+    const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
   }

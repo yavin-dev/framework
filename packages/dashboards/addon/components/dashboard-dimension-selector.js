@@ -9,7 +9,7 @@
  *   />
  */
 import Component from '@ember/component';
-import { computed, get } from '@ember/object';
+import { computed } from '@ember/object';
 import layout from '../templates/components/dashboard-dimension-selector';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
@@ -21,9 +21,9 @@ export default class DashboardDimensionSelectorComponent extends Component {
   /**
    * @property {Promise} -- creates powerselect options of all dimensions that can be pick based on widgets on the dashboard
    */
-  @computed('dashboard', 'dashboard.widgets')
+  @computed('dashboard.widgets', 'mergeWidgetDimensions')
   get groupedDimensions() {
-    const widgetPromises = get(this, 'dashboard.widgets');
+    const widgetPromises = this.dashboard.widgets;
     /*
      * get a list of dimensions per table/timeGrain involved
      * do this so each table/timegrain combination is unique and we don't have to flatten more than we have to.

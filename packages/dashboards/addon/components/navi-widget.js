@@ -12,7 +12,7 @@
  */
 import { A as arr } from '@ember/array';
 import Component from '@ember/component';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 import layout from '../templates/components/navi-widget';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
@@ -71,9 +71,9 @@ class NaviWidget extends Component {
   /**
    * @property {String} filterErrors - Error messaging for filters that couldn't be applied to the widget
    */
-  @computed('data')
+  @computed('data.firstObject.response.meta.errors')
   get filterErrors() {
-    const filterErrors = get(this, 'data.firstObject.response.meta.errors') || [];
+    const filterErrors = this.data?.firstObject?.response?.meta?.errors ?? [];
     const filterErrorMessages = filterErrors
       .filter((e) => e.title === 'Invalid Filter')
       .map((e) => e.detail)
