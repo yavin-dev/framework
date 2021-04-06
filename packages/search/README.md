@@ -13,7 +13,7 @@ Search for navi
 
 ## Requirements
 
-- node >= 4
+- node >= 10
 
 ## Running
 

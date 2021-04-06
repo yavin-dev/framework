@@ -17,9 +17,11 @@ module('Unit | Service | navi-asset-search-provider', function (hooks) {
       mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
       'service:user',
-      Service.extend({
-        getUser: () => mockAuthor,
-      })
+      class extends Service {
+        getUser() {
+          return mockAuthor;
+        }
+      }
     );
   });
 
