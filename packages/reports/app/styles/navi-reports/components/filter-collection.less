@@ -5,6 +5,7 @@
 
 @filter-collection-column-margin: 3px;
 @filter-collection-row-height: 30px;
+@filter-collection-max-row-height: 90px;
 @filter-collection-font-size: @font-size-base;
 
 .filter-collection {
@@ -18,6 +19,7 @@
   .ember-power-select-trigger {
     border-radius: 0;
     min-height: @filter-collection-row-height;
+    max-height: @filter-collection-max-row-height;
   }
 
   .ember-power-select-trigger-multiple-input {
