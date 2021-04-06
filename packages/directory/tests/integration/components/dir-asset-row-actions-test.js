@@ -9,6 +9,7 @@ module('Integration | Component | dir-asset-row-actions', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
   hooks.beforeEach(function () {
+    // eslint-disable-next-line ember/no-private-routing-service -- TODO fix private router service
     const router = this.owner.lookup('router:main');
     router.startRouting(true);
   });
