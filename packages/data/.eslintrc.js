@@ -17,7 +17,7 @@ module.exports = {
   },
   rules: {
     'ember/no-jquery': 'error',
-
+    'ember/no-classic-classes': 'warn',
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
     'prefer-rest-params': 'off', // useful for super(...arguments) calls
@@ -28,7 +28,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
 
     // better handled by prettier:
     '@typescript-eslint/indent': 'off',
@@ -38,6 +38,7 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.prettierrc.js',
         '.template-lintrc.js',
         'ember-cli-build.js',
         'index.js',
