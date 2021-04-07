@@ -343,7 +343,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param dataSourceName
    * @returns Promise that resolves to the result of the TableExport fetch query
    */
-  fetchTableExport(id: string, dataSourceName?: string) {
+  fetchTableExport(id: string, dataSourceName: string) {
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
