@@ -54,7 +54,7 @@ class NaviDatePicker extends Component {
     assert(isValidCalendarDateMessage, isValidCalendarDate(center, dateTimePeriod));
 
     // convert utc date to local for ember-power-calendar
-    this.centerDate = center.clone().local(true);
+    set(this, 'centerDate', center.clone().local(true));
   }
 
   /**
