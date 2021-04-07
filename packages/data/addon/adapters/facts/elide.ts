@@ -20,6 +20,7 @@ import type {
   RequestV1,
   RequestOptions,
   AsyncQueryResponse,
+  TableExportResponse,
   Parameters,
   RequestV2,
   FilterOperator,
@@ -268,12 +269,85 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   }
 
   /**
+   * @param request
+   * @param options
+   * @returns Promise that resolves to the result of the TableExport creation mutation
+   */
+  createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+    const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
+    const query = this.dataQueryFromRequest(request);
+    const id: string = options.requestId || v1();
+    const dataSourceName = request.dataSource || options.dataSourceName;
+    // TODO: Add other options based on RequestOptions
+    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    return this.apollo.mutate(queryOptions);
+  }
+
+  /**
+   * @param id
+   * @param dataSourceName
+   * @returns Promise with the updated tableExport's id and status
+   */
+  cancelTableExport(id: string, dataSourceName: string) {
+    const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
+  }
+
+  /**
    * @param _request
    * @param _options
    */
-  @task *urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): TaskGenerator<string> {
-    return yield 'TODO';
+  @task *urlForDownloadQuery(request: RequestV1, options: RequestOptions): TaskGenerator<string> {
+    const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
+    const status: QueryStatus = response.tableExport.edges[0]?.node.status;
+    if (status !== QueryStatus.COMPLETE) {
+      throw new Error('Table Export Query did not complete successfully');
+    }
+    const url = response.tableExport.edges[0]?.node.result?.url;
+    if (!url) {
+      throw new Error('Unable to retrieve download URL');
+    }
+    return url.toString();
   }
+
+  /**
+   * @param request
+   * @param options
+   */
+  @task *fetchDataForExportTask(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions = {}
+  ): TaskGenerator<TableExportResponse> {
+    let tableExportPayload = yield this.createTableExport(request, options);
+    const tableExport = tableExportPayload?.tableExport.edges[0]?.node;
+    const { id } = tableExport;
+    let status: QueryStatus = tableExport.status;
+
+    try {
+      while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield timeout(this._pollingInterval);
+        tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
+        status = tableExportPayload?.tableExport.edges[0]?.node.status;
+      }
+      return tableExportPayload;
+    } finally {
+      if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield this.cancelTableExport(id, request.dataSource);
+      }
+    }
+  }
+
+  /**
+   * @param id
+   * @param dataSourceName
+   * @returns Promise that resolves to the result of the TableExport fetch query
+   */
+  fetchTableExport(id: string, dataSourceName: string) {
+    const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
+  }
+
   /**
    * @param request
    * @param options
