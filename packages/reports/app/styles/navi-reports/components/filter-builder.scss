@@ -19,6 +19,19 @@ $filter-builder-padding: 4px;
       display: flex;
       line-height: 1;
       min-height: $fields-sizes-md-height;
+
+      .ember-power-select-trigger {
+        background: none !important;
+        border-radius: 0 !important;
+        box-shadow: none;
+        min-height: 0;
+        outline: none;
+        padding: 0 !important;
+
+        &::before {
+          content: none;
+        }
+      }
     }
   }
 
@@ -45,5 +58,11 @@ $filter-builder-padding: 4px;
     .input {
       width: 100%;
     }
+  }
+}
+
+.dropdown-parameter-picker {
+  &__dropdown {
+    min-width: 200px !important;
   }
 }
