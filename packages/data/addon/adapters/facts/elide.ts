@@ -285,11 +285,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
   /**
    * @param id
+   * @param dataSourceName
    * @returns Promise with the updated tableExport's id and status
    */
-  cancelTableExport(id: string, dataSourceName?: string) {
+  cancelTableExport(id: string, dataSourceName: string) {
     const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
-    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
   }
 
@@ -340,11 +340,11 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
 
   /**
    * @param id
+   * @param dataSourceName
    * @returns Promise that resolves to the result of the TableExport fetch query
    */
-  fetchTableExport(id: string, dataSourceName?: string) {
+  fetchTableExport(id: string, dataSourceName: string) {
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
-    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
   }
 

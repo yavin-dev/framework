@@ -16,13 +16,21 @@ module.exports = {
     browser: true,
   },
   rules: {
+    // TODO: These need to be cleaned up
     'ember/no-observers': 'warn',
     'ember/no-side-effects': 'warn',
     'ember/no-jquery': 'warn',
     'ember/no-new-mixins': 'warn',
-    'ember/no-mixins': 'warn', // get rid of mixins
-    'ember/no-get': 'off', // come back and do this
-    'ember/use-ember-data-rfc-395-imports': 'off', // after updating ember-data
+    'ember/no-mixins': 'warn',
+    'ember/no-get': 'warn',
+    'ember/use-ember-data-rfc-395-imports': 'warn',
+    'ember/no-classic-components': 'warn',
+    'ember/no-computed-properties-in-native-classes': 'warn',
+    'ember/require-tagless-components': 'warn',
+    'ember/no-component-lifecycle-hooks': 'warn',
+    'ember/classic-decorator-hooks': 'warn',
+    'ember/no-classic-classes': 'warn',
+    'ember/no-actions-hash': 'warn',
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
@@ -35,7 +43,7 @@ module.exports = {
     '@typescript-eslint/ban-ts-ignore': 'off',
 
     // prettier
-    'prettier/prettier': 'error',
+    'prettier/prettier': ['error', {}, { usePrettierrc: true }],
 
     // better handled by prettier:
     '@typescript-eslint/indent': 'off',
@@ -45,6 +53,7 @@ module.exports = {
     {
       files: [
         '.eslintrc.js',
+        '.prettierrc.js',
         '.template-lintrc.js',
         'ember-cli-build.js',
         'index.js',
