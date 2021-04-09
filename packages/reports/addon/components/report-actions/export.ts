@@ -1,13 +1,6 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Usage:
- *   {{#report-actions/export
- *      report=report
- *   }}
- *      Inner template
- *   {{/report-actions/export}}
  */
 
 import { inject as service } from '@ember/service';
@@ -28,9 +21,9 @@ interface Args {
 
 export default class ReportActionExport extends Component<Args> {
   /**
-   * @property {string} downloadURL
+   * @property {string} exportURL
    */
-  @tracked downloadURL?: string;
+  @tracked exportURL!: string;
   /**
    * @property {Array} classNames
    */
@@ -40,18 +33,20 @@ export default class ReportActionExport extends Component<Args> {
    * @property {Service} facts - instance of navi facts service
    */
   @service('navi-facts') declare facts: NaviFactsService;
+
+  /**
+   * @property {Service} naviNotifications - instance of navi notifications service
+   */
   @service naviNotifications!: NaviNotificationsService;
+
   /**
    * @property {Boolean} download - Boolean to check if request is valid and set download
    */
   get download() {
-    console.log('export download ', this);
     // No Download for disabled action
     if (this.args.disabled) {
-      console.log('download null');
-      return null;
+      return false;
     } else {
-      console.log('download true');
       return true;
     }
   }
@@ -60,52 +55,53 @@ export default class ReportActionExport extends Component<Args> {
    * @property {Boolean} target - Boolean to check if request is valid and set target
    */
   get target() {
-    console.log('export target ', this);
     // No target for disabled action
     if (this.args.disabled) {
-      console.log('target null');
       return null;
     } else {
-      console.log('target _blank');
       return '_blank';
     }
   }
 
   /**
-   * @property {String} href - API link for the report
+   * Gets the table export url from facts service
    */
-  @task *href(): TaskGenerator<string> {
+  @task *getDownloadURLTask(): TaskGenerator<string> {
     /*
      * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
      * Void the href on a should disabled
      */
-    console.log('export href ', this);
     if (this.args.disabled) {
-      console.log('href void');
       return 'javascript:void(0);';
     }
-    const req = this.args.report.request;
-    const serializedRequest = req.serialize() as RequestV2;
-    //const request = this.args.report.request.serialize() as RequestV2;
-    const result = yield taskFor(this.facts.getDownloadURL)
+    const serializedRequest = this.args.report.request.serialize() as RequestV2;
+    const taskResultURL = yield taskFor(this.facts.getDownloadURL)
       .perform(serializedRequest, {
         format: 'csv',
         dataSourceName: serializedRequest.dataSource,
       })
       .then((value) => {
-        this.downloadURL = value;
-        return value;
+        this.exportURL = value;
       });
-    console.log('result', result);
-    //this.set('downloadURL', result);
-    return result;
+    return taskResultURL;
   }
 
   @action
-  onSuccess() {
+  showExportNotification() {
     this.naviNotifications.add({
       title: 'Exporting',
       style: 'info',
     });
+  }
+
+  @action
+  downloadURLLink() {
+    let anchorElement = document.createElement('a');
+    anchorElement.setAttribute('href', this.exportURL);
+    anchorElement.setAttribute('download', this.download.toString());
+    anchorElement.setAttribute('target', this.target !== null ? this.target : '');
+    document.body.appendChild(anchorElement);
+    anchorElement.click();
+    document.body.removeChild(anchorElement);
   }
 }
