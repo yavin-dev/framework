@@ -18,7 +18,7 @@ plugins {
 }
 
 node {
-    version = "12.16.0"
+    version = "14.16.1"
     distBaseUrl = "https://nodejs.org/dist"
     download = true
 }
