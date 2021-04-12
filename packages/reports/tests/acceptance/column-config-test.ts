@@ -9,8 +9,7 @@ import { clickItem } from 'navi-reports/test-support/report-builder';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
-//@ts-ignore
-import { reorder } from 'ember-sortable/test-support/helpers';
+import { reorderColumns } from 'navi-reports/test-support/column-config';
 
 function getColumns() {
   return findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim());
@@ -446,7 +445,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('reordering columns', async function (assert) {
-    assert.expect(1);
+    assert.expect(2);
     await visit('/reports/new');
 
     await clickItem('dimension', 'Date Time');
@@ -455,18 +454,17 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await clickItem('dimension', 'Browser');
     await animationsSettled();
 
-    await reorder(
-      'mouse',
-      '.navi-column-config-item',
-      '.navi-column-config-item[data-name="browser(field=id)"]',
-      '.navi-column-config-item[data-name="age(field=id)"]',
-      '.navi-column-config-item[data-name="revenue(currency=USD)"]',
-      '.navi-column-config-item[data-name="network.dateTime(grain=day)"]'
+    assert.deepEqual(
+      getColumns(),
+      ['Date Time (day)', 'Age (id)', 'Revenue (USD)', 'Browser (id)'],
+      'The columns are ordered as inserted'
     );
+
+    await reorderColumns('browser(field=id)', 'revenue(currency=USD)', 'age(field=id)', 'network.dateTime(grain=day)');
 
     assert.deepEqual(
       getColumns(),
-      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (day)'],
+      ['Browser (id)', 'Revenue (USD)', 'Age (id)', 'Date Time (day)'],
       'The columns are reordered'
     );
   });

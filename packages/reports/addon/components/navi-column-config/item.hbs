@@ -6,7 +6,7 @@
   {{did-insert this.setupElement}}
   {{on "mouseenter" (fn (mut this.canDrag) true)}}
   {{on "mouseleave" (fn (mut this.canDrag) false)}}
-  {{sortable-item groupName="navi-column-config" model=@column}}
+  {{sortable-item groupName="navi-column-config" model=@column isDraggingDisabled=(not this.canDrag)}}
 >
   <div class="navi-column-config-item__header">
     <button
