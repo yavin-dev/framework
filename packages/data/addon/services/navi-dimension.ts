@@ -11,8 +11,9 @@ import type { TaskGenerator } from 'ember-concurrency';
 import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
 import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
 import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
-import type NaviDimensionModel from 'navi-data/models/navi-dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import NaviDimensionModel from 'navi-data/models/navi-dimension';
 
 export type ServiceOptions = {
   timeout?: number;
@@ -39,15 +40,39 @@ export default class NaviDimensionService extends Service {
   }
 
   /**
-   * Get all values for a dimension column
+   * Get all values for a dimension column, paginating through results as needed.
    * @param dimension - requested dimension
    * @param options - method options
    */
-  @task *all(dimension: DimensionColumn, options?: ServiceOptions): TaskGenerator<NaviDimensionModel[]> {
+  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
-    const payload: unknown = yield taskFor(adapter.all).perform(dimension, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload);
+    const serializer = this.serializerFor(dataSourceType);
+    let moreResults = true;
+    let paginationOptions: Pick<ServiceOptions, 'page' | 'perPage'> = {};
+    let values: NaviDimensionModel[] = [];
+    while (moreResults) {
+      const mergedOptions = { ...options, ...paginationOptions };
+      const payload: unknown = yield taskFor(adapter.all).perform(dimension, mergedOptions);
+      const normalized = serializer.normalize(dimension, payload, mergedOptions);
+
+      values.push(...normalized.values);
+
+      if (normalized.meta?.pagination) {
+        // Pagination data found, check if more results are available
+        const { currentPage, numberOfResults, rowsPerPage } = normalized.meta.pagination;
+        const currentCount = currentPage * rowsPerPage;
+        moreResults = currentCount < numberOfResults;
+        paginationOptions = {
+          page: currentPage + 1,
+          perPage: rowsPerPage,
+        };
+      } else {
+        // No pagination data, assume all values were fetched
+        moreResults = false;
+      }
+    }
+    return NaviDimensionResponse.create({ values });
   }
 
   /**
@@ -59,12 +84,12 @@ export default class NaviDimensionService extends Service {
   @task *find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
-    options?: ServiceOptions
-  ): TaskGenerator<NaviDimensionModel[]> {
+    options: ServiceOptions = {}
+  ): TaskGenerator<NaviDimensionResponse> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield taskFor(adapter.find).perform(dimension, predicate, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload);
+    return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
   }
 
   /**
@@ -76,12 +101,12 @@ export default class NaviDimensionService extends Service {
   @task *search(
     dimension: DimensionColumn,
     query: string,
-    options?: ServiceOptions
-  ): TaskGenerator<NaviDimensionModel[]> {
+    options: ServiceOptions = {}
+  ): TaskGenerator<NaviDimensionResponse> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield taskFor(adapter.search).perform(dimension, query, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload);
+    return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
   }
 }
 

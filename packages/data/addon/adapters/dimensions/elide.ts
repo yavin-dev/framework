@@ -117,7 +117,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
         operator: pred.operator,
         values: pred.values.map(String),
       })),
-      sorts: [],
+      sorts: [{ type: 'dimension', field: id, parameters, direction: 'asc' }],
       dataSource: source,
       limit: null,
       requestVersion: '2.0',

@@ -84,7 +84,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['v1', 'v2'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: { foo: 'bar' },
+          direction: 'asc',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
@@ -194,7 +201,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['v1', 'v2'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: {},
+          direction: 'asc',
+        },
+      ],
       table: lookupDimColumn.split('.')[0],
       limit: null,
       dataSource: 'elideTwo',
@@ -225,7 +239,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     const expectedRequest: RequestV2 = {
       columns: [{ field: 'table0.dimension0', parameters: { foo: 'baz' }, type: 'dimension' }],
       filters: [],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: { foo: 'baz' },
+          direction: 'asc',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
@@ -304,7 +325,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['*something*'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          direction: 'asc',
+          field: 'table0.dimension0',
+          parameters: { bang: 'boom' },
+          type: 'dimension',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideOne',

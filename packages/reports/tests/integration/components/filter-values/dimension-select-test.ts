@@ -12,6 +12,7 @@ import config from 'ember-get-config';
 import $ from 'jquery';
 import Service from '@ember/service';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
@@ -218,8 +219,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
-        const values = ['1', '3', '2', '11', '111'];
-        return yield values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        const rawValues = ['1', '3', '2', '11', '111'];
+        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        return yield NaviDimensionResponse.create({ values });
       }
     }
 
@@ -241,8 +243,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
-        const values = ['1', '3', '2', '11', '111', 'stringvalue'];
-        return yield values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        const rawValues = ['1', '3', '2', '11', '111', 'stringvalue'];
+        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        return yield NaviDimensionResponse.create({ values });
       }
     }
 
@@ -264,8 +267,11 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     class MockDimensions extends Service {
       @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
-        const values = ['1', '3', '2', '11', '111'];
-        return yield values.map((value) => NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn }));
+        const rawValues = ['1', '3', '2', '11', '111'];
+        const values = rawValues.map((value) =>
+          NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn })
+        );
+        return yield NaviDimensionResponse.create({ values });
       }
     }
 

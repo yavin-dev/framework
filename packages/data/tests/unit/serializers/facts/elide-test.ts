@@ -4,6 +4,7 @@ import NaviFactSerializer from 'navi-data/serializers/facts/interface';
 import { AsyncQueryResponse, QueryStatus, RequestV2 } from 'navi-data/adapters/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { ExecutionResult, GraphQLError } from 'graphql';
+import { getPaginationFromPageInfo } from 'navi-data/serializers/facts/elide';
 
 const Payload: AsyncQueryResponse = {
   asyncQuery: {
@@ -17,8 +18,18 @@ const Payload: AsyncQueryResponse = {
             contentLength: 129,
             httpStatus: 200,
             recordCount: 2,
-            responseBody:
-              '{"data":{"tableA":{"edges":[{"node":{"col0":"202003", "col1":10}},{"node":{"col0":"202004", "col1":20}}]}}}',
+            responseBody: JSON.stringify({
+              data: {
+                tableA: {
+                  edges: [{ node: { col0: '202003', col1: 10 } }, { node: { col0: '202004', col1: 20 } }],
+                  pageInfo: {
+                    startCursor: '0',
+                    endCursor: '2',
+                    totalRecords: 2,
+                  },
+                },
+              },
+            }),
           },
         },
       },
@@ -53,7 +64,13 @@ module('Unit | Serializer | facts/elide', function (hooks) {
     assert.deepEqual(
       { rows, meta },
       {
-        meta: {},
+        meta: {
+          pagination: {
+            currentPage: 1,
+            numberOfResults: 2,
+            rowsPerPage: 2,
+          },
+        },
         rows: [
           {
             datestamp: '202003',
@@ -126,6 +143,45 @@ module('Unit | Serializer | facts/elide', function (hooks) {
       error.errors,
       [{ detail: 'bad request' }],
       '`extractError` populates error object correctly when given an elide error'
+    );
+  });
+
+  test('getPaginationFromPageInfo', async function (assert) {
+    const page = (
+      startCursor: `${number}`,
+      endCursor: `${number}`,
+      totalRecords: number,
+      options?: Parameters<typeof getPaginationFromPageInfo>[1]
+    ) => getPaginationFromPageInfo({ startCursor, endCursor, totalRecords }, options);
+
+    assert.deepEqual(
+      page('0', '100', 100),
+      {
+        currentPage: 1,
+        rowsPerPage: 100,
+        numberOfResults: 100,
+      },
+      'A page with no offset works correctly'
+    );
+
+    assert.deepEqual(
+      page('100', '200', 1000),
+      {
+        currentPage: 2,
+        rowsPerPage: 100,
+        numberOfResults: 1000,
+      },
+      'A page with 1 offset works correctly'
+    );
+
+    assert.deepEqual(
+      page('900', '902', 902, { perPage: 100 }),
+      {
+        currentPage: 10,
+        rowsPerPage: 100,
+        numberOfResults: 902,
+      },
+      'Getting the last page, but passing in the perPage property shows the correct rowsPerPage'
     );
   });
 });
