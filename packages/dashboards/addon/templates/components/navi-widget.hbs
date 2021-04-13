@@ -14,11 +14,14 @@
     <div class="navi-widget__title">
       {{@model.title}}
       {{#if this.filterErrors}}
-        <DenaliIcon @icon="warning" class="navi-widget__filter-errors-icon">
-          <EmberTooltip @popperContainer="body">
-            {{this.filterErrors}}
-          </EmberTooltip>
-        </DenaliIcon>
+        <DenaliIcon 
+          id="navi-widget__filter-errors-{{@index}}" 
+          @icon="warning" 
+          class="navi-widget__filter-errors-icon" 
+        />
+        <EmberTooltip @targetId="navi-widget__filter-errors-{{@index}}" @popperContainer="body">
+          {{this.filterErrors}}
+        </EmberTooltip>
       {{/if}}
     </div>
     <div class="navi-widget__actions">

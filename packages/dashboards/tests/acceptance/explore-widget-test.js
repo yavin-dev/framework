@@ -237,7 +237,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');
-    await click($('.navi-report-widget__action:contains(Share) button')[0]);
+    await click('.navi-report-widget__share-btn');
   });
 
   test('Delete widget', async function (assert) {
@@ -260,7 +260,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     );
 
     await visit('/dashboards/1/widgets/2/view');
-    await click($('.navi-report-widget__action:contains(Delete) button')[0]);
+    await click('.navi-report-widget__delete-btn');
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Mobile DAU Graph dashboard widget.');

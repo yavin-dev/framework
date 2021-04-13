@@ -34,13 +34,8 @@
   >
     <DenaliIcon @icon="code" />API Query
   </CommonActions::GetApi>
-  <EmberTooltip @targetId="report-actions__copy-api-btn">
     {{if @model.request.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
   </EmberTooltip>
-</li>
-
-{{!-- Clone only enabled on a Saved report --}}
-  <LinkTo
     @route="reports.report.clone"
     @model={{@model.id}}
     class="report-actions__clone-btn button is-text is-medium {{if @model.isNew "is-disabled"}}"

@@ -15,7 +15,7 @@ module('Acceptance | delete transition', function (hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click('.delete-button');
+    await click('.report-actions__delete-btn');
     await click('.delete__modal-delete-btn');
 
     assert.equal(
@@ -33,7 +33,7 @@ module('Acceptance | delete transition', function (hooks) {
 
     assert.equal(currentURL(), '/reports/1/view', 'Start off viewing report 1');
 
-    await click('.delete-button');
+    await click('.report-actions__delete-btn');
     await click('.delete__modal-delete-btn');
 
     assert.equal(

@@ -11,8 +11,15 @@
   min-height: 0;
   margin-top: 10px;
 
-  &__breadcrumb {
-    margin: 5px 0 0 0;
+  .report-header,
+  .navi-report-widget {
+    &__breadcrumb {
+      margin: 5px 0 0;
+
+      &-link {
+        color: $color-brand-300;
+      }
+    }
 
     &-link {
       color: $color-brand-300;
