@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import attr from 'ember-data/attr';
+import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { inject as service } from '@ember/service';
@@ -13,7 +13,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Parameters } from 'navi-data/adapters/facts/interface';
 import { ColumnType } from 'navi-data/models/metadata/column';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 const Validations = buildValidations({

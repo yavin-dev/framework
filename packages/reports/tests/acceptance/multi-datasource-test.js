@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { visit, findAll, click, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import { clickItem, clickItemFilter, getAllSelected } from 'navi-reports/test-support/report-builder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -20,7 +20,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource report', async function (assert) {
-    assert.expect(15);
+    assert.expect(19);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -30,7 +30,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map((el) => el.textContent.trim()),
-      ['Personal (4)', 'World (2)', 'Asset (2)', 'Date (1)', 'World (3)', 'Personal (3)'],
+      ['Personal (4)', 'World (2)', 'Asset (2)', 'Date (1)', 'Personal (3)', 'World (3)'],
       'Metric and dimension categories switched to metrics/dimensions of new datasource'
     );
 
@@ -54,11 +54,19 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.navi-report__run-btn');
 
     //Check if filters meta data is displaying properly
-    assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
-      'Filter titles rendered correctly'
-    );
+    assert.dom(findAll('.filter-builder__subject .name')[0]).hasText('Date Time', 'Date time filter renders correctly');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[0])
+      .hasText('day', 'Date time filter parameter renders correctly');
+
+    assert.dom(findAll('.filter-builder__subject .name')[1]).hasText('Container', 'Second filter rendered correctly');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[1])
+      .hasText('id', 'Second filter parameter rendered correctly');
+
+    assert.dom(findAll('.filter-builder__subject .name')[2]).hasText('Used Amount', 'Third filter rendered correctly');
 
     assert
       .dom('.filter-values--dimension-select__trigger')
@@ -114,8 +122,6 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource saved report', async function (assert) {
-    assert.expect(14);
-
     let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
@@ -125,9 +131,15 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
-      findAll('.filter-builder__subject, .filter-builder__subject').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
+      findAll('.filter-builder__subject .name').map((el) => el.textContent.trim()),
+      ['Date Time', 'Container', 'Used Amount'],
       'Filter titles rendered correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
+      ['day', 'id'],
+      'Filter parameters rendered correctly'
     );
 
     await click('.report-builder__container-header__filters-toggle');
@@ -179,9 +191,6 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     assert
       .dom('.report-builder__container--filters--collapsed')
       .includesText('Date Time (day)', 'The request is constrained and adds back the required filters');
-
-    assert.deepEqual(await getAllSelected('dimension'), [], 'All dimensions are removed when table is changed');
-    assert.deepEqual(await getAllSelected('metric'), [], 'All metrics are removed when table is changed');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });

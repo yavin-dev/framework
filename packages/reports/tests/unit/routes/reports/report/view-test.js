@@ -3,6 +3,7 @@ import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { task } from 'ember-concurrency';
 
 module('Unit | Route | reports/report/view', function (hooks) {
   setupTest(hooks);
@@ -36,29 +37,32 @@ module('Unit | Route | reports/report/view', function (hooks) {
         },
       };
 
+    class MockFacts extends EmberObject {
+      @task *fetch(request, options) {
+        assert.deepEqual(request, serializedRequest, "Report's serialized request is given to fact service");
+
+        assert.deepEqual(
+          options,
+          {
+            page: 1,
+            perPage: 10000,
+            clientId: 'customReports',
+            customHeaders: {
+              uiView: 'report.spv.1',
+            },
+            dataSourceName: undefined,
+          },
+          'Options from route are passed to fact service'
+        );
+
+        return yield resolve({ request: serializedRequest, response: factServiceResponse });
+      }
+    }
+
+    const facts = MockFacts.create();
     let route = this.owner.factoryFor('route:reports/report/view').create({
       modelFor: () => reportModel,
-      facts: {
-        fetch(request, options) {
-          assert.deepEqual(request, serializedRequest, "Report's serialized request is given to fact service");
-
-          assert.deepEqual(
-            options,
-            {
-              page: 1,
-              perPage: 10000,
-              clientId: 'customReports',
-              customHeaders: {
-                uiView: 'report.spv.1',
-              },
-              dataSourceName: undefined,
-            },
-            'Options from route are passed to fact service'
-          );
-
-          return resolve({ request: serializedRequest, response: factServiceResponse });
-        },
-      },
+      facts,
     });
 
     let model = await route.model();

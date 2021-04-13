@@ -1,8 +1,14 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ColumnMetadataModel, { ColumnInstance, ColumnMetadata, ColumnMetadataPayload, ColumnType } from './column';
+import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type {
+  ColumnInstance,
+  ColumnMetadata,
+  ColumnMetadataPayload,
+  ColumnType,
+} from 'navi-data/models/metadata/column';
 
 // Shape of public properties on model
 export interface MetricMetadata extends ColumnMetadata {
@@ -39,7 +45,7 @@ export default class MetricMetadataModel extends ColumnMetadataModel implements 
   }
 }
 
-declare module './registry' {
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     metric: MetricMetadataModel;
   }

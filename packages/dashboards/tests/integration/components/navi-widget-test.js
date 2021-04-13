@@ -29,7 +29,7 @@ module('Integration | Component | navi widget', function (hooks) {
     );
 
     // Mock a visualization component
-    this.owner.register('component:navi-visualizations/my-test-visualization', Component.extend());
+    this.owner.register('component:navi-visualizations/my-test-visualization', class extends Component {});
   });
 
   test('it renders', async function (assert) {
@@ -145,11 +145,11 @@ module('Integration | Component | navi widget', function (hooks) {
 
     this.owner.register(
       'component:navi-visualizations/my-test-visualization',
-      Component.extend({
-        classNames: ['test-visualization'],
+      class extends Component {
+        classNames = ['test-visualization'];
 
         didInsertElement() {
-          this._super(...arguments);
+          super.didInsertElement(...arguments);
 
           containerComponent = this.containerComponent;
 
@@ -161,8 +161,8 @@ module('Integration | Component | navi widget', function (hooks) {
           this.containerComponent.element.addEventListener('resizestop', () => {
             assert.ok(true, 'visualization can listen to resize events on containerComponent property');
           });
-        },
-      })
+        }
+      }
     );
 
     await render(hbs`

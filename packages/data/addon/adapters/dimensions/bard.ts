@@ -1,20 +1,24 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the Bard dimension model.
  */
-
-import { inject as service } from '@ember/service';
 import EmberObject from '@ember/object';
+import { inject as service } from '@ember/service';
 import { configHost } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
-import { Filter } from '../facts/interface';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import NaviDimensionAdapter, { DimensionFilter } from './interface';
-import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
+import { task } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { Filter } from '../facts/interface';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type NaviDimensionAdapter from './interface';
+import type { DimensionFilter } from './interface';
+import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -32,6 +36,7 @@ type LegacyAdapterOptions = {
 
 export type FiliDimensionResponse = {
   rows: Record<string, string>[];
+  meta?: Record<string, unknown>;
 };
 
 export const DefaultField = 'id';
@@ -117,32 +122,40 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     });
   }
 
-  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<FiliDimensionResponse> {
-    return this.find(dimension, [], options);
+  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<FiliDimensionResponse> {
+    return yield taskFor(this.find).perform(dimension, [], options);
   }
 
-  findById(dimensionName: string, value: string, options: LegacyAdapterOptions) {
+  @task *findById(
+    dimensionName: string,
+    value: string,
+    options: LegacyAdapterOptions
+  ): TaskGenerator<FiliDimensionResponse> {
     const columnMetadata = this.naviMetadata.getById(
       'dimension',
       dimensionName,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return this.find({ columnMetadata }, [{ operator: 'in', values: [value] }], options);
+    return yield taskFor(this.find).perform({ columnMetadata }, [{ operator: 'in', values: [value] }], options);
   }
 
-  find(
+  @task *find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: ServiceOptions = {}
-  ): Promise<FiliDimensionResponse> {
+  ): TaskGenerator<FiliDimensionResponse> {
     const url = this._buildUrl(dimension, undefined);
     const data = predicate ? this._buildFilterQuery(dimension, predicate) : {};
-    return this._find(url, data, options);
+    return yield this._find(url, data, options);
   }
 
-  search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<FiliDimensionResponse> {
+  @task *search(
+    dimension: DimensionColumn,
+    query: string,
+    options: ServiceOptions = {}
+  ): TaskGenerator<FiliDimensionResponse> {
     const url = this._buildUrl(dimension, 'search');
     const data: Record<string, string> = query ? { query } : {};
-    return this._find(url, data, options);
+    return yield this._find(url, data, options);
   }
 }

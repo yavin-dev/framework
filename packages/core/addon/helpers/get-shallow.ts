@@ -13,7 +13,7 @@
 import { helper } from '@ember/component/helper';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getShallow([obj, key]: [Dict<any>, string]) {
+export function getShallow([obj, key]: [Record<string, any>, string]) {
   return obj[key];
 }
 

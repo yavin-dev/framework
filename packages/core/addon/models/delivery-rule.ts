@@ -1,9 +1,3 @@
-/**
- * Copyright 2020, Yahoo Holdings Inc.
- * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- */
-
-import DS from 'ember-data';
 import Model, { attr, belongsTo } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
@@ -12,6 +6,8 @@ import SchedulingRuleFragment from './fragments/scheduling-rules';
 import UserModel from './user';
 import DeliverableItemModel from './deliverable-item';
 import { Moment } from 'moment';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
+import DS from 'ember-data';
 
 const Validations = buildValidations({
   frequency: [

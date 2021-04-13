@@ -1,9 +1,9 @@
-import { module, test } from 'ember-qunit';
+import { module, test } from 'qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupRenderingTest } from 'ember-qunit';
 import { A as arr } from '@ember/array';
 import { clickTrigger, selectChoose } from 'ember-power-select/test-support/helpers';
-import { settled, render } from '@ember/test-helpers';
+import { render } from '@ember/test-helpers';
 
 module('Integration | Component | dashboard dimension selector', function (hooks) {
   setupRenderingTest(hooks);
@@ -68,8 +68,6 @@ module('Integration | Component | dashboard dimension selector', function (hooks
     });
 
     await render(hbs`<DashboardDimensionSelector @dashboard={{this.dashboard}} @onChange={{this.changeme}} />`);
-
-    await settled();
 
     await clickTrigger();
 
@@ -141,8 +139,6 @@ module('Integration | Component | dashboard dimension selector', function (hooks
     this.set('changeme', () => undefined);
 
     await render(hbs`<DashboardDimensionSelector @dashboard={{this.dashboard}} @onChange={{this.changeme}} />`);
-
-    await settled();
 
     await clickTrigger();
 

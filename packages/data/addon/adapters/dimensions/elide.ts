@@ -1,18 +1,23 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The adapter for the Elide dimension model.
  */
-import { getOwner } from '@ember/application';
 import EmberObject from '@ember/object';
-import NaviDimensionAdapter, { DimensionFilter } from './interface';
-import { ServiceOptions } from 'navi-data/services/navi-dimension';
-import { AsyncQueryResponse, FilterOperator, QueryStatus, RequestV2 } from '../facts/interface';
-import ElideFactsAdapter, { getElideField } from '../facts/elide';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
+import { QueryStatus } from '../facts/interface';
+import { task } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { AsyncQueryResponse, FilterOperator, RequestV2 } from '../facts/interface';
+import type NaviDimensionAdapter from './interface';
+import type { DimensionFilter } from './interface';
+import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type ElideFactsAdapter from '../facts/elide';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 
 type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
 
@@ -29,13 +34,15 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
    */
   private factAdapter: ElideFactsAdapter = getOwner(this).lookup('adapter:facts/elide');
 
-  private formatEnumResponse(dimension: DimensionColumn, values: (string | number)[]): AsyncQueryResponse {
-    const { id, tableId } = dimension.columnMetadata;
-    const field = getElideField(id, dimension.parameters);
-    const nodes = values.map((value) => `{"node":{"${field}":"${value}"}}`);
+  @task private *formatEnumResponse(
+    dimension: DimensionColumn,
+    values: (string | number)[]
+  ): TaskGenerator<AsyncQueryResponse> {
+    const { tableId } = dimension.columnMetadata;
+    const nodes = values.map((value) => `{"node":{"col0":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
 
-    return {
+    return yield {
       asyncQuery: {
         edges: [
           {
@@ -56,27 +63,27 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     };
   }
 
-  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
-    return this.find(dimension, [], options);
+  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<AsyncQueryResponse> {
+    return yield taskFor(this.find).perform(dimension, [], options);
   }
 
-  async find(
+  @task *find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: ServiceOptions = {}
-  ): Promise<AsyncQueryResponse> {
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     return columnMetadata.hasEnumValues
-      ? this.findEnum(dimension, predicate, options)
-      : this.findRequest(dimension, predicate, options);
+      ? yield taskFor(this.findEnum).perform(dimension, predicate, options)
+      : yield taskFor(this.findRequest).perform(dimension, predicate, options);
   }
 
-  private findEnum(
+  @task private *findEnum(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
     _options: ServiceOptions
-  ): AsyncQueryResponse {
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { values } = columnMetadata;
 
@@ -87,14 +94,14 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       return filterFn(values, filterValues);
     }, values);
 
-    return this.formatEnumResponse(dimension, filteredValues);
+    return yield taskFor(this.formatEnumResponse).perform(dimension, filteredValues);
   }
 
-  private findRequest(
+  @task private *findRequest(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: ServiceOptions = {}
-  ): Promise<AsyncQueryResponse> {
+  ): TaskGenerator<AsyncQueryResponse> {
     const { columnMetadata, parameters = {} } = dimension;
     const lookupMetadata = (columnMetadata as ElideDimensionMetadataModel).lookupColumn;
     const { id, source, tableId } = lookupMetadata;
@@ -110,16 +117,20 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
         operator: pred.operator,
         values: pred.values.map(String),
       })),
-      sorts: [],
+      sorts: [{ type: 'dimension', field: id, parameters, direction: 'asc' }],
       dataSource: source,
       limit: null,
       requestVersion: '2.0',
     };
 
-    return this.factAdapter.fetchDataForRequest(request, options);
+    return yield taskFor(this.factAdapter.fetchDataForRequest).perform(request, options);
   }
 
-  async search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<AsyncQueryResponse> {
+  @task *search(
+    dimension: DimensionColumn,
+    query: string,
+    options: ServiceOptions = {}
+  ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     let predicate: DimensionFilter[];
@@ -145,7 +156,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     }
 
     return columnMetadata.hasEnumValues
-      ? this.findEnum(dimension, predicate, options)
-      : this.findRequest(dimension, predicate, options);
+      ? yield taskFor(this.findEnum).perform(dimension, predicate, options)
+      : yield taskFor(this.findRequest).perform(dimension, predicate, options);
   }
 }

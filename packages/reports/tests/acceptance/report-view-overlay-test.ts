@@ -7,7 +7,6 @@ import { setupApplicationTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 //@ts-ignore
 import { setupAnimationTest } from 'ember-animated/test-support';
-//@ts-ignore
 import { clickItem } from 'navi-reports/test-support/report-builder';
 
 const overlaySelector = '.report-view-overlay--visible';

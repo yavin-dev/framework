@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
-import Store from 'ember-data/store';
+import Store from '@ember-data/store';
 import { ColumnMetadata, ColumnType } from 'navi-data/models/metadata/column';
 //@ts-ignore
 import ColumnFragment from '../models/bard-request-v2/fragments/column';
@@ -22,7 +22,11 @@ export default class FragmentFactory extends Service {
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param alias - optional alias for this column
    */
-  createColumnFromMeta(columnMetadata: ColumnMetadata, parameters: Dict<string> = {}, alias?: string): ColumnFragment {
+  createColumnFromMeta(
+    columnMetadata: ColumnMetadata,
+    parameters: Record<string, string> = {},
+    alias?: string
+  ): ColumnFragment {
     const { id: field, metadataType: type, source } = columnMetadata;
     return this.createColumn(type, source, field, parameters, alias);
   }
@@ -39,7 +43,7 @@ export default class FragmentFactory extends Service {
     type: ColumnType,
     dataSource: string,
     field: string,
-    parameters: Dict<string> = {},
+    parameters: Record<string, string> = {},
     alias?: string
   ): ColumnFragment {
     return this.store.createFragment('bard-request-v2/fragments/column', {
@@ -103,7 +107,7 @@ export default class FragmentFactory extends Service {
    */
   createSortFromMeta(
     columnMetadata: ColumnMetadata,
-    parameters: Dict<string> = {},
+    parameters: Record<string, string> = {},
     direction: 'asc' | 'desc'
   ): SortFragment {
     const { id: field, metadataType: type, source } = columnMetadata;
@@ -122,7 +126,7 @@ export default class FragmentFactory extends Service {
     type: ColumnType,
     dataSource: string,
     field: string,
-    parameters: Dict<string> = {},
+    parameters: Record<string, string> = {},
     direction: SortDirection
   ): SortFragment {
     return this.store.createFragment('bard-request-v2/fragments/sort', {

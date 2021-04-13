@@ -22,14 +22,16 @@ import NaviFactAdapter, {
   FactAdapterError,
 } from './interface';
 import { omit } from 'lodash-es';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
-import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import moment from 'moment';
 import config from 'ember-get-config';
+import { task } from 'ember-concurrency';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import type { TaskGenerator } from 'ember-concurrency';
 
-export type Query = RequestOptions & Dict<string | number | boolean>;
+export type Query = RequestOptions & Record<string, string | number | boolean>;
 
 /**
  * @param column - dimension column
@@ -332,8 +334,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Returns URL String for a request
    */
-  async urlForDownloadQuery(request: RequestV2, options?: RequestOptions): Promise<string> {
-    return this.urlForFindQuery(request, options);
+  @task *urlForDownloadQuery(request: RequestV2, options?: RequestOptions): TaskGenerator<string> {
+    return yield this.urlForFindQuery(request, options);
   }
   /**
    * @property requestDecorator
@@ -350,7 +352,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Uses the url generated using the adapter to make an ajax request
    */
-  fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
+  @task *fetchDataForRequest(request: RequestV2, options?: RequestOptions): TaskGenerator<unknown> {
     assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
@@ -358,7 +360,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const url = this._buildURLPath(decoratedRequest, options);
     const query = this._buildQuery(decoratedRequest, options);
     let clientId = 'UI';
-    let customHeaders: Dict<string> = {};
+    let customHeaders: Record<string, string> = {};
     let timeout = 600000;
 
     // Support custom clientid header
@@ -376,7 +378,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       customHeaders = options.customHeaders;
     }
 
-    return this.ajax.request(url, {
+    // TODO: Drop bard request on cancel https://github.com/yavin-dev/framework/issues/1340
+    return yield this.ajax.request(url, {
       xhrFields: {
         withCredentials: true,
       },

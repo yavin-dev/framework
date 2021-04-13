@@ -4,37 +4,42 @@
  */
 import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
-import NaviFactAdapter, {
-  RequestV1,
-  RequestOptions,
-  AsyncQueryResponse,
-  Parameters,
-  QueryStatus,
-  RequestV2,
-  FilterOperator,
-  Filter,
-  FactAdapterError,
-  Column,
-  Sort,
-} from './interface';
+import NaviFactAdapter, { QueryStatus, FactAdapterError } from './interface';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Interval from '../../utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
-import { DocumentNode } from 'graphql';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 import { v1 } from 'ember-uuid';
-import moment, { Moment } from 'moment';
-import { Grain } from 'navi-data/utils/date';
+import moment from 'moment';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { omitBy } from 'lodash-es';
+import type {
+  RequestV1,
+  RequestOptions,
+  AsyncQueryResponse,
+  TableExportResponse,
+  Parameters,
+  RequestV2,
+  FilterOperator,
+  Filter,
+  Column,
+  Sort,
+} from './interface';
+import type { DocumentNode } from 'graphql';
+import type { Moment } from 'moment';
+import type { Grain } from 'navi-data/utils/date';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { TaskGenerator } from 'ember-concurrency';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
+const DEFAULT_ASYNC_AFTER_SECONDS = 2;
+
 /**
- * Formats elide request field
+ * Formats elide request field as `col(param1:"val1", param2:"val2")`
  */
 export function getElideField(fieldName: string, parameters: Parameters = {}, alias?: string) {
   const aliasStr = alias ? `${alias}:` : '';
@@ -49,6 +54,25 @@ export function getElideField(fieldName: string, parameters: Parameters = {}, al
 
   return `${aliasStr}${field}${paramsStr}`;
 }
+
+/**
+ * Formats elide filter field as `col[param1:val1][param2:val2]`
+ */
+export function getElideFilterField(fieldName: string, parameters: Parameters = {}) {
+  const parts = fieldName.split('.');
+  const field = parts[parts.length - 1];
+
+  const paramsStr = Object.entries(parameters)
+    .map(([param, val]) => `[${param}:${val}]`)
+    .join('');
+
+  return `${field}${paramsStr}`;
+}
+
+type PaginationOptions = {
+  first: number;
+  after: number;
+};
 
 export default class ElideFactsAdapter extends EmberObject implements NaviFactAdapter {
   /**
@@ -72,7 +96,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       if (Object.keys(nonDefaultParams).length !== 0) {
         const canonicalName = canonicalizeMetric({ metric: base.field, parameters: base.parameters });
         throw new FactAdapterError(
-          `Parameters are not supported in elide unles ${canonicalName} is added as a column.`
+          `Parameters are not supported in elide unless ${canonicalName} is added as a column.`
         );
       }
     }
@@ -110,7 +134,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
   };
 
-  private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>, dataSourceName: string): string {
+  private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>): string {
     const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
 
@@ -124,9 +148,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       if (canonicalToAlias[canonicalName]) {
         fieldStr = canonicalToAlias[canonicalName];
       } else {
-        this.assertAllDefaultParams(filter, dataSourceName);
-        // TODO: Non default Parameters cannot be specified in filters yet
-        fieldStr = getElideField(field, {});
+        fieldStr = getElideFilterField(field, parameters);
       }
       let filterVals = values.map((v) => escape(`${v}`));
 
@@ -153,7 +175,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @returns graphql query string for a v2 request
    */
-  private dataQueryFromRequest(request: RequestV2): string {
+  private dataQueryFromRequest(request: RequestV2, pagination?: PaginationOptions | null): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
@@ -177,7 +199,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       })
       .join(' ');
 
-    const filterString = this.buildFilterStr(filters, columnCanonicalToAlias, request.dataSource);
+    const filterString = this.buildFilterStr(filters, columnCanonicalToAlias);
     filterString.length && args.push(`filter: "${filterString}"`);
 
     const sortStrings = sorts.map((sort) => {
@@ -199,10 +221,22 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const limitStr = limit ? `first: "${limit}"` : null;
     limitStr && args.push(limitStr);
 
+    if (pagination) {
+      pagination.first && args.push(`first: "${pagination.first}"`);
+      pagination.after && args.push(`after: "${pagination.after}"`);
+    }
+
     const argsString = args.length ? `(${args.join(',')})` : '';
 
+    let pageInfoString: string;
+    if (pagination === null) {
+      pageInfoString = '';
+    } else {
+      pageInfoString = ' pageInfo { startCursor endCursor totalRecords }';
+    }
+
     return JSON.stringify({
-      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } } } }`,
+      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } }${pageInfoString} } }`,
     });
   }
 
@@ -213,12 +247,26 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
-    const query = this.dataQueryFromRequest(request);
+    let pagination: PaginationOptions | undefined;
+    if (options.perPage) {
+      const page = options.page ?? 1;
+      if (request.limit && !(page === 1 && request.limit === options.perPage)) {
+        throw new FactAdapterError(
+          `The request specified a limit of ${request.limit} which conflicts with page=${page} and perPage=${options.perPage}`
+        );
+      }
+      pagination = {
+        after: (page - 1) * options.perPage,
+        first: options.perPage,
+      };
+    }
+    const query = this.dataQueryFromRequest(request, pagination);
+    const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    const queryOptions = { mutation, variables: { id, query, asyncAfterSeconds }, context: { dataSourceName } };
     return this.apollo.mutate(queryOptions);
   }
 
@@ -247,47 +295,129 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _options
    */
   urlForFindQuery(request: RequestV2, _options: RequestOptions): string {
-    return this.dataQueryFromRequest(request);
+    return this.dataQueryFromRequest(request, null);
+  }
+
+  /**
+   * @param request
+   * @param options
+   * @returns Promise that resolves to the result of the TableExport creation mutation
+   */
+  createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+    const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
+    const query = this.dataQueryFromRequest(request);
+    const id: string = options.requestId || v1();
+    const dataSourceName = request.dataSource || options.dataSourceName;
+    // TODO: Add other options based on RequestOptions
+    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    return this.apollo.mutate(queryOptions);
+  }
+
+  /**
+   * @param id
+   * @param dataSourceName
+   * @returns Promise with the updated tableExport's id and status
+   */
+  cancelTableExport(id: string, dataSourceName: string) {
+    const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
   }
 
   /**
    * @param _request
    * @param _options
    */
-  async urlForDownloadQuery(_request: RequestV1, _options: RequestOptions): Promise<string> {
-    return 'TODO';
+  @task *urlForDownloadQuery(request: RequestV1, options: RequestOptions): TaskGenerator<string> {
+    const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
+    const status: QueryStatus = response.tableExport.edges[0]?.node.status;
+    if (status !== QueryStatus.COMPLETE) {
+      throw new Error('Table Export Query did not complete successfully');
+    }
+    const url = response.tableExport.edges[0]?.node.result?.url;
+    if (!url) {
+      throw new Error('Unable to retrieve download URL');
+    }
+    return url.toString();
   }
+
   /**
    * @param request
    * @param options
    */
-  @task(function* (this: ElideFactsAdapter, request: RequestV2, options: RequestOptions) {
+  @task *fetchDataForExportTask(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions = {}
+  ): TaskGenerator<TableExportResponse> {
+    let tableExportPayload = yield this.createTableExport(request, options);
+    const tableExport = tableExportPayload?.tableExport.edges[0]?.node;
+    const { id } = tableExport;
+    let status: QueryStatus = tableExport.status;
+
+    try {
+      while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield timeout(this._pollingInterval);
+        tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
+        status = tableExportPayload?.tableExport.edges[0]?.node.status;
+      }
+      return tableExportPayload;
+    } finally {
+      if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield this.cancelTableExport(id, request.dataSource);
+      }
+    }
+  }
+
+  /**
+   * @param id
+   * @param dataSourceName
+   * @returns Promise that resolves to the result of the TableExport fetch query
+   */
+  fetchTableExport(id: string, dataSourceName: string) {
+    const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
+  }
+
+  /**
+   * @param request
+   * @param options
+   */
+  @task *fetchDataForRequestTask(
+    this: ElideFactsAdapter,
+    request: RequestV2,
+    options: RequestOptions
+  ): TaskGenerator<AsyncQueryResponse> {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
     const asyncQuery = asyncQueryPayload?.asyncQuery.edges[0]?.node;
-    const { id } = asyncQuery;
+    let id = asyncQuery.id;
     let status: QueryStatus = asyncQuery.status;
 
-    while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-      yield timeout(this._pollingInterval);
-      asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
-      status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
+    try {
+      while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield timeout(this._pollingInterval);
+        asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
+        status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
+      }
+      return asyncQueryPayload;
+    } finally {
+      if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
+        yield this.cancelAsyncQuery(id, request.dataSource);
+      }
     }
-    return asyncQueryPayload;
-  })
-  fetchDataForRequestTask!: TODO;
+  }
 
   /**
    * @param this
    * @param request
    * @param options
    */
-  async fetchDataForRequest(
+  @task *fetchDataForRequest(
     this: ElideFactsAdapter,
     request: RequestV2,
     options: RequestOptions = {}
-  ): Promise<AsyncQueryResponse> {
-    const payload = await this.fetchDataForRequestTask.perform(request, options);
-    const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
+  ): TaskGenerator<AsyncQueryResponse> {
+    const payload: AsyncQueryResponse = yield taskFor(this.fetchDataForRequestTask).perform(request, options);
+    const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody || '{}';
     const responseBody = JSON.parse(responseStr);
     if (responseBody.errors) {
       throw payload;

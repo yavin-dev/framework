@@ -17,9 +17,9 @@ module('Unit | Service | navi-search-provider', function (hooks) {
       mockAuthor = store.createRecord('user', { id: 'ciela' });
     this.owner.register(
       'service:user',
-      Service.extend({
-        getUser: () => mockAuthor,
-      })
+      class extends Service {
+        getUser = () => mockAuthor;
+      }
     );
   });
 
@@ -45,7 +45,7 @@ module('Unit | Service | navi-search-provider', function (hooks) {
     let results = service.search('sample');
 
     assert.deepEqual(
-      results.map((result) => result.context.constructor.name),
+      results.map((result) => result.task.context.constructor.name),
       ['NaviAssetSearchProviderService', 'NaviDefinitionSearchProviderService', 'NaviSampleSearchProviderService'],
       'Search returns a task instance of every available search provider'
     );

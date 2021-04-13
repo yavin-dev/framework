@@ -12,22 +12,37 @@
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",
     "start": "cd packages/webservice && ./gradlew bootRun",
-    "postinstall": "lerna bootstrap --concurrency 2 --ci",
+    "postinstall": "lerna bootstrap --concurrency 2",
     "test": "lerna run test --stream",
+    "lint": "lerna run lint --stream",
+    "lint:ws:fix": "cd packages/webservice && ./gradlew formatKotlin -d && true",
     "lerna-ci-publish": "lerna publish --canary --exact preminor --force-publish=* --yes",
     "lerna-ci-publish-beta": "lerna publish --canary --preid beta --dist-tag beta --exact preminor --force-publish=* --yes"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && pushd packages/webservice && ./gradlew lintKotlin && popd",
-      "commit-msg": "validate-commit-msg -p eslint"
-    }
   },
   "devDependencies": {
     "husky": "^4.2.5",
     "lerna": "^3.22.1",
+    "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
-    "pretty-quick": "^2.0.1",
+    "stylelint": "^13.12.0",
+    "stylelint-config-sass-guidelines": "^8.0.0",
     "validate-commit": "^3.4.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "validate-commit-msg -p eslint"
+    }
+  },
+  "lint-staged": {
+    "*.{yaml,md,json,js,ts}": [
+      "prettier --write"
+    ],
+    "*.scss": [
+      "stylelint --fix"
+    ],
+    "packages/webservice/**/*": [
+      "npm run lint:ws:fix"
+    ]
   }
 }

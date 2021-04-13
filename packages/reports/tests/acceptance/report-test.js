@@ -12,8 +12,8 @@ import config from 'ember-get-config';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import moment from 'moment';
-import { clickItem, clickItemFilter, getAllSelected, getItem } from 'navi-reports/test-support/report-builder';
-import reorder from '../helpers/reorder';
+import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { reorder } from 'ember-sortable/test-support/helpers';
 import { setupAnimationTest } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -75,7 +75,11 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.dom('.report-view').exists('The route transistions to report view');
 
-    assert.equal(find('.navi-report__title').innerText.trim(), 'Copy Of Hyrule News', 'Cloned report is being viewed');
+    assert.equal(
+      find('.report-header__title').innerText.trim(),
+      'Copy Of Hyrule News',
+      'Cloned report is being viewed'
+    );
   });
 
   test('Clone invalid report', async function (assert) {
@@ -179,7 +183,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // visit report 1
     await visit('/reports/1/view');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)');
+    assert.dom('.filter-builder__subject').hasText('Date Time day');
 
     // remove the dateTime column
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
@@ -191,7 +195,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.navi-report__revert-btn').isNotVisible('After clicking "Revert Changes", button is once again hidden');
 
     assert.dom('.navi-column-config-item[data-name="dateTime"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)');
+    assert.dom('.filter-builder__subject').hasText('Date Time day');
   });
 
   test('Revert changes - existing report', async function (assert) {
@@ -383,7 +387,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('(New Copy) RequestV2 testing report', 'New Saved Report is being viewed');
 
     await visit('/reports/13');
@@ -391,7 +395,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
   });
 
@@ -426,14 +430,14 @@ module('Acceptance | Navi Report', function (hooks) {
       'Report has a valid visualization type after running then reverting.'
     );
 
-    assert.dom('.navi-report__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
+    assert.dom('.report-header__title').hasText('Title of Hyrule', 'New Saved Report is being viewed');
 
     await visit('/reports/13');
 
     assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
 
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
   });
 
@@ -462,7 +466,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Old Report
     assert
-      .dom('.navi-report__title')
+      .dom('.report-header__title')
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
 
     // Dirty state of old
@@ -504,7 +508,7 @@ module('Acceptance | Navi Report', function (hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
+    assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('Clone action - enabled/disabled', async function (assert) {
@@ -531,7 +535,6 @@ module('Acceptance | Navi Report', function (hooks) {
     let originalFlag = config.navi.FEATURES.exportFileTypes;
 
     await visit('/reports/1/view');
-
     assert.deepEqual(
       findAll('.navi-report__actions .button').map((e) => e.textContent.trim()),
       ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
@@ -548,7 +551,6 @@ module('Acceptance | Navi Report', function (hooks) {
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     await visit('/reports/1/view');
-
     assert.deepEqual(
       findAll('.navi-report__actions .button').map((e) => e.textContent.trim()),
       ['API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
@@ -875,6 +877,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Check Delete modal appear
     await click('.report-actions__delete-btn');
+
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Hyrule News report.');
@@ -974,7 +977,7 @@ module('Acceptance | Navi Report', function (hooks) {
       'After cloning, user is brought to view route for a new report with a temp id'
     );
 
-    assert.dom('.navi-report__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
+    assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
   test('reports route actions -- delete', async function (assert) {
@@ -1004,7 +1007,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     //Click "Reports"
-    await click('.navi-report__breadcrumb-link');
+    await click('.report-header__breadcrumb-link');
 
     assert.ok(
       currentURL().endsWith('/reports'),
@@ -1026,7 +1029,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await selectChoose('.navi-column-config-item__parameter', 'Week');
 
     //Navigate out of report
-    await click('.navi-report__breadcrumb-link');
+    await click('.report-header__breadcrumb-link');
 
     //Navigate back to `Report 12`
     await visit('/reports/13/view');
@@ -1536,99 +1539,6 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
   });
 
-  test('Dimension selector', async function (assert) {
-    assert.expect(7);
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Property', 'Date Time'],
-      'Selected dimensions initially include "Date Time" and "Property"'
-    );
-
-    // Click Date Time again
-    await clickItem('timeGrain', 'Date Time');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Property', 'Date Time'],
-      'Clicking date time again does not change selected dimensions'
-    );
-
-    let dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'An unselected dimension row has a plus icon');
-
-    // Add Dimension
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Operating System', 'Property', 'Date Time'],
-      'Adding a dimension changes selected dimensions'
-    );
-
-    dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Added dimension row still has a plus icon');
-
-    // Click dimension again
-    await clickItem('dimension', 'Operating System');
-
-    assert.deepEqual(
-      await getAllSelected('dimension'),
-      ['Operating System', 'Property', 'Date Time'],
-      'Clicking a selected dimension does not change selected dimensions'
-    );
-
-    dimensionItem = await getItem('dimension', 'Operating System');
-
-    assert.ok(dimensionItem.item.querySelector('.fa-plus-circle'), 'Dimension row still has a plus icon');
-  });
-
-  test('Metric selector', async function (assert) {
-    assert.expect(6);
-
-    await visit('/reports/1');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks'],
-      'Selected metrics initally include "Ad Clicks" and "Nav Link Clicks"'
-    );
-
-    let metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'An unselected metric row has a plus icon');
-
-    // Add Metric
-    await clickItem('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Adding a metric changes selected metrics'
-    );
-
-    metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Added metric row still has a plus icon');
-
-    // Click metric again
-    await clickItem('metric', 'Total Clicks');
-
-    assert.deepEqual(
-      await getAllSelected('metric'),
-      ['Ad Clicks', 'Nav Link Clicks', 'Total Clicks'],
-      'Clicking a selected metric does not change selected metrics'
-    );
-
-    metricItem = await getItem('metric', 'Total Clicks');
-
-    assert.ok(metricItem.item.querySelector('.fa-plus-circle'), 'Metric row still has a plus icon');
-  });
-
   test('Test filter "Is Empty" is accepted', async function (assert) {
     assert.expect(2);
     await visit('/reports/1');
@@ -1758,7 +1668,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Remove date time group by
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (month)"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time (hour)', 'The filter grain is set to the lowest grain');
+    assert.dom('.filter-builder__subject').hasText('Date Time hour', 'The filter grain is set to the lowest grain');
     // TODO: Better support for hour grain
 
     assert
@@ -1920,10 +1830,10 @@ module('Acceptance | Navi Report', function (hooks) {
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
-      '.table-header-row-vc--view .dimension:contains(Property)',
-      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .timeDimension'
+      '.table-header-cell[data-name="navClicks"]',
+      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="adClicks"]',
+      '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(
@@ -1946,10 +1856,10 @@ module('Acceptance | Navi Report', function (hooks) {
     await reorder(
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
-      '.table-header-row-vc--view .metric:contains(Nav Link Clicks)',
-      '.table-header-row-vc--view .dimension:contains(Property)',
-      '.table-header-row-vc--view .metric:contains(Ad Clicks)',
-      '.table-header-row-vc--view .timeDimension'
+      '.table-header-cell[data-name="navClicks"]',
+      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="adClicks"]',
+      '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(

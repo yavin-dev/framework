@@ -39,7 +39,11 @@ module.exports = function (environment) {
   };
 
   if (environment === 'development') {
-    ENV['ember-cli-mirage'] = { enabled: !(process.env.DISABLE_MOCKS || process.env.APP_ENV === 'localElide') };
+    ENV['ember-cli-mirage'] = {
+      enabled: !(
+        process.env.DISABLE_MOCKS || process.env.APP_ENV === 'localElide'
+      ),
+    };
     /*
      * ENV.APP.LOG_RESOLVER = true;
      * ENV.APP.LOG_ACTIVE_GENERATION = true;
@@ -63,7 +67,7 @@ module.exports = function (environment) {
 
   if (environment === 'production') {
     if (process.env.BUILD_NAVI_DEMO === 'true') {
-      ENV['rootURL'] = '/yavin/';
+      ENV['rootURL'] = '/framework/';
       ENV['locationType'] = 'hash';
       ENV['ember-cli-mirage'] = { enabled: true };
     }

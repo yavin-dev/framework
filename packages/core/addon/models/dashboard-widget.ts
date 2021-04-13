@@ -3,7 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Model, { attr, belongsTo } from '@ember-data/model';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
+import { assert } from '@ember/debug';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 //@ts-ignore
 import { fragmentArray } from 'ember-data-model-fragments/attributes';
@@ -12,8 +13,8 @@ import { v1 } from 'ember-uuid';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import DashboardModel from './dashboard';
-import { Moment } from 'moment';
-import RequestFragment from './bard-request-v2/request';
+import type { Moment } from 'moment';
+import type RequestFragment from './bard-request-v2/request';
 
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
@@ -38,7 +39,7 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
   /**
    * Author retrived from dashboard
    */
-  @computed('dashboard')
+  @computed('dashboard.author')
   get author() {
     return this.dashboard.author;
   }
@@ -46,9 +47,11 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
   /**
    * first request object
    */
-  @computed('requests')
-  get request() {
-    return this.requests.firstObject;
+  @computed('requests.firstObject')
+  get request(): RequestFragment {
+    const request = this.requests.firstObject;
+    assert('A request is defined for the widget', request);
+    return request;
   }
 
   /**
@@ -74,7 +77,7 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
     return this.store.createRecord('dashboard-widget', {
       title: clonedWidget.title,
       visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization),
-      requests: get(this, 'requests').map((request) => request.clone()),
+      requests: this.requests.map((request) => request.clone()),
     });
   }
 }

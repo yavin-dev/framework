@@ -8,6 +8,7 @@ import type UserService from 'navi-core/services/user';
 import type ReportModel from 'navi-core/models/report';
 import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
+import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export default class ReportsReportCloneRoute extends Route {
   @service declare user: UserService;
@@ -35,7 +36,7 @@ export default class ReportsReportCloneRoute extends Route {
    * @param report - The report to clone
    * @returns copy of report
    */
-  private cloneReport(report: ReportModel) {
+  private cloneReport(report: ReportLike) {
     const author = this.user.getUser();
     const clonedReportModel = report.clone();
 

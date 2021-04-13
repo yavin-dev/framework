@@ -6,7 +6,7 @@
 import EmberObject from '@ember/object';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import moment, { Moment, MomentInput } from 'moment';
-import { TimeDimensionColumn } from './metadata/time-dimension';
+import type { TimeDimensionColumn } from 'navi-data/models/metadata/time-dimension';
 import Interval from 'navi-data/utils/classes/interval';
 
 function notNull<T>(t: T | null): t is T {

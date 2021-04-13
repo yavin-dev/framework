@@ -30,7 +30,7 @@ class TableRendererComponent extends Component {
   /**
    * @property {Array} rowDimensions - indicates the dimensions for each row of data
    */
-  @computed('tableData')
+  @computed('estimateHeight', 'tableData.length')
   get rowDimensions() {
     const rowDimension = formatItemDimension(this.estimateHeight);
     //Create a set of row dimensions for each row of data

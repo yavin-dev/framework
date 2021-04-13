@@ -9,7 +9,7 @@ Library of common logic, components, and styles for navi
 
 ## Requirements
 
-- Ember.js v3.12 or above
+- Ember.js v3.16 or above
 - Ember CLI v2.13 or above
 - Node.js v10 or above
 

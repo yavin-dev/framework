@@ -1,0 +1,6 @@
+# Add some custom overrides for language detection
+
+# app exported files must be js and are merged in a consuming application
+packages/*/app/**/*.js -linguist-detectable
+# js bundled with the webservice
+packages/webservice/**/*.{js,css,html} -linguist-vendored

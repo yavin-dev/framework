@@ -25,8 +25,8 @@ import { Grain } from 'navi-data/utils/date';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
 
-const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
-const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
+const SMALL_CARDINALITY = config.navi.cardinalities.small;
+const MEDIUM_CARDINALITY = config.navi.cardinalities.medium;
 
 export type RawEverythingPayload = {
   tables: RawTablePayload[];
@@ -309,6 +309,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       id,
       name: 'Date Time',
       source: dataSourceName,
+      isSortable: true,
       type: 'field',
       valueType: 'date',
       supportedGrains: timeGrainInfo.timeGrains.map(({ name }) => ({
@@ -496,6 +497,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         supportedGrains: [{ id: 'day', expression: '', grain: 'Day' }],
         timeZone: 'utc',
         ...d,
+        isSortable: true,
       }));
     return payloads.map((payload) => this.timeDimensionFactory.create(payload));
   }
@@ -529,11 +531,13 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         fields,
       } = dimension;
 
-      let dimCardinality: Cardinality = CARDINALITY_SIZES[0];
-      if (cardinality > MAX_LOAD_CARDINALITY) {
+      let dimCardinality: Cardinality;
+      if (cardinality > MEDIUM_CARDINALITY) {
         dimCardinality = CARDINALITY_SIZES[2];
-      } else if (cardinality > LOAD_CARDINALITY) {
+      } else if (cardinality > SMALL_CARDINALITY) {
         dimCardinality = CARDINALITY_SIZES[1];
+      } else {
+        dimCardinality = CARDINALITY_SIZES[0];
       }
       return {
         id: name,
@@ -541,6 +545,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         category,
         description,
         valueType,
+        isSortable: false,
         type: 'field',
         fields,
         cardinality: dimCardinality,
@@ -562,6 +567,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         id: name,
         name: longName,
         description,
+        isSortable: true,
         type: 'field',
         valueType,
         source: dataSourceName,

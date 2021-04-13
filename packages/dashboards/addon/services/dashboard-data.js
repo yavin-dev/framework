@@ -1,14 +1,13 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
-import { get, getWithDefault } from '@ember/object';
 import Service, { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { merge, flow } from 'lodash-es';
 import { task, all, didCancel } from 'ember-concurrency';
-import { computed } from '@ember/object';
+import { computed, get } from '@ember/object';
 import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
@@ -100,7 +99,7 @@ export default class DashboardDataService extends Service {
    * @param {String} uuid - v1 UUID
    * @yields {TaskInstance}
    */
-  @task(function* (dashboardId, widget, decorators, options, uuid) {
+  @task *_fetchRequestsForWidget(dashboardId, widget, decorators, options, uuid) {
     const { dashboard, requests, id: widgetId } = widget;
     const fetchTasks = [];
 
@@ -121,8 +120,7 @@ export default class DashboardDataService extends Service {
     });
 
     return yield fetchTasks.length ? all(fetchTasks) : [];
-  })
-  _fetchRequestsForWidget;
+  }
 
   /**
    * @property {Task} _fetchRequest
@@ -132,20 +130,18 @@ export default class DashboardDataService extends Service {
    * @param {Array} filterErrors - invalid Filter error objects
    * @yields {TaskInstance}
    */
-  @(task(function* (requestFragment, decorators, options, filterErrors) {
+  @task({ enqueue: true, maxConcurrency: FETCH_MAX_CONCURRENCY })
+  *_fetchRequest(requestFragment, decorators, options, filterErrors) {
     const request = this._decorate(decorators, requestFragment.serialize());
     return yield this._fetch(request, options, filterErrors).then((result) => {
-      const serverErrors = getWithDefault(result, 'response.meta.errors', []);
+      const serverErrors = result.response?.meta?.errors ?? [];
 
       return merge({}, result, {
         request: requestFragment,
         response: { meta: { errors: [...serverErrors, ...filterErrors] } },
       });
     });
-  })
-    .enqueue()
-    .maxConcurrency(FETCH_MAX_CONCURRENCY))
-  _fetchRequest;
+  }
 
   /**
    * @method _fetch
@@ -155,7 +151,7 @@ export default class DashboardDataService extends Service {
    * @returns {Promise} response from request
    */
   _fetch(request, options) {
-    return this.naviFacts.fetch(request, options);
+    return this.naviFacts.fetch.perform(request, options);
   }
 
   /**
@@ -181,7 +177,7 @@ export default class DashboardDataService extends Service {
   _applyFilters(dashboard, request) {
     const requestClone = request.clone();
     this._getValidGlobalFilters(dashboard, request)
-      .filter((filter) => get(filter, 'values').length > 0)
+      .filter((filter) => filter.values.length > 0)
       .forEach((filter) => requestClone.addFilter(filter));
 
     return requestClone;

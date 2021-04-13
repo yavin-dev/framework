@@ -295,7 +295,6 @@ export default class TimeChartBuilder extends EmberObject implements BaseChartBu
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let builder = this;
 
-    // eslint-disable-next-line ember/no-new-mixins
     return Mixin.create({
       layout: tooltipLayout,
 

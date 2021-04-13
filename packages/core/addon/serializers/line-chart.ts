@@ -1,13 +1,13 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import { LineChartConfig } from 'navi-core/models/line-chart';
 import { canonicalizeMetric, parseMetricName } from 'navi-data/utils/metric';
-import { ChartSeries, DimensionSeriesValues } from 'navi-core/models/chart-visualization';
 import { assert } from '@ember/debug';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { LineChartConfig } from 'navi-core/models/line-chart';
+import type { ChartSeries, DimensionSeriesValues } from 'navi-core/models/chart-visualization';
 
 type LegacyMetric = string | { metric: string; parameters?: {} };
 type LegacyMetricSeries = { type: 'metric'; config: { metrics: LegacyMetric[] } };
@@ -125,3 +125,10 @@ export function normalizeLineChartV2(
 }
 
 export default class LineChartSerializer extends VisualizationSerializer {}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/serializer' {
+  export default interface SerializerRegistry {
+    'line-chart': LineChartSerializer;
+  }
+}

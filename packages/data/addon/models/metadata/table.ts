@@ -4,12 +4,12 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import MetricMetadataModel from './metric';
-import DimensionMetadataModel from './dimension';
-import TimeDimensionMetadataModel from './time-dimension';
 import { Cardinality } from '../../utils/enums/cardinality-sizes';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import RequestConstraintMetadataModel from './request-constraint';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
+import type TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 
 // Shape passed to model constructor
 export interface TableMetadataPayload {
@@ -54,7 +54,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   static identifierField = 'id';
 
   @service
-  private naviMetadata!: NaviMetadataService;
+  declare naviMetadata: NaviMetadataService;
 
   /**
    * @param {string} id
@@ -146,7 +146,7 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
   source!: string;
 }
 
-declare module './registry' {
+declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {
     table: TableMetadataModel;
   }

@@ -1,0 +1,55 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<li
+  class="navi-column-config-item navi-column-config-item--{{dasherize @column.fragment.type}} {{if @isOpen "navi-column-config-item--open"}}"
+  data-name={{@column.fragment.canonicalName}}
+  ...attributes
+  {{did-insert this.setupElement}}
+  {{on "mouseenter" (fn (mut this.canDrag) true)}}
+  {{on "mouseleave" (fn (mut this.canDrag) false)}}
+  {{sortable-item groupName="navi-column-config" model=@column isDraggingDisabled=(not this.canDrag)}}
+>
+  <div class="navi-column-config-item__header">
+    <button
+      type="button"
+      aria-label="delete {{dasherize @column.fragment.type}} {{@column.fragment.displayName}}"
+      class="navi-column-config-item__remove-icon link"
+      disabled={{@column.isRequired}}
+      {{on "click" @onRemoveColumn}}
+    >
+      <DenaliIcon @icon="minus-circle" />
+    </button>
+
+    <span class="navi-column-config-item__type-icon"></span>
+
+    <button
+      class="navi-column-config-item__trigger"
+      type="button"
+      {{on "click" this.openColumn}}
+    >
+      <span title="{{@column.fragment.displayName}}" class="navi-column-config-item__name">{{@column.fragment.displayName}}</span>
+      {{#if this.canDrag}}
+        <span class="navi-column-config-item__handle p-x-2 link is-secondary" {{sortable-handle}}>
+          <DenaliIcon @icon="drag" @size="small" />
+        </span>
+      {{else}}
+        <DenaliIcon
+          class="navi-column-config-item__dropdown-icon"
+          @icon="arrowhead-right"
+          @size="small"
+        />
+      {{/if}}
+    </button>
+  </div>
+
+  {{#if @isOpen}}
+    <NaviColumnConfig::Base
+      @column={{@column}}
+      @cloneColumn={{@cloneColumn}}
+      @onAddFilter={{@onAddFilter}}
+      @onUpsertSort={{@onUpsertSort}}
+      @onRemoveSort={{@onRemoveSort}}
+      @onRenameColumn={{@onRenameColumn}}
+      @onUpdateColumnParam={{@onUpdateColumnParam}}
+    />
+  {{/if}}
+</li>

@@ -9,7 +9,6 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
-//@ts-ignore
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { capitalize } from '@ember/string';
 
@@ -36,7 +35,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
       assert
         .dom('.filter-builder__subject')
-        .hasText(`Date Time (${grainId})`, `The filter is updated to the ${grainId} grain`);
+        .hasText(`Date Time ${grainId}`, `The filter is updated to the ${grainId} grain`);
 
       await selectChoose('.filter-builder__operator-trigger', 'Between');
       assert
@@ -88,10 +87,10 @@ module('Acceptance | fili datasource', function (hooks) {
     await selectChoose('.navi-table-select__trigger', 'Network');
     assert.dom('.navi-table-select-item').hasText('Network', 'A fili table is selected');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time (day)', 'A date time filter exists on a new report');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists on a new report');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
-    await clickItem('dimension', 'Date Time');
+    await clickItem('timeDimension', 'Date Time');
     assert.dom('.navi-column-config-item__name').hasText('Date Time (day)', 'The date time column was added');
     assert
       .dom('.navi-column-config-item__remove-icon')
@@ -104,9 +103,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await selectChoose('.navi-table-select__trigger', 'Table A');
 
-    assert
-      .dom('.filter-builder__subject')
-      .hasText('Date Time (day)', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
   });
 
@@ -116,9 +113,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await selectChoose('.navi-table-select__trigger', 'Table C');
 
-    assert
-      .dom('.filter-builder__subject')
-      .hasText('Date Time (day)', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
     assert
@@ -146,5 +141,26 @@ module('Acceptance | fili datasource', function (hooks) {
 
     await click('.navi-report__run-btn');
     assert.dom('.table-row').hasText('2015', 'Results are fetched for Since operator');
+  });
+
+  test('Fili Dimension sorting disabled', async function (assert) {
+    assert.expect(4);
+    await visit('/reports/new');
+
+    await clickItem('dimension', 'Date Time');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .doesNotHaveAttribute('disabled', 'A timeDimension column can be sorted');
+
+    await clickItem('dimension', 'Age');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasAttribute('disabled', '', 'A dimension column cannot be sorted');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasAttribute('title', 'This column cannot be sorted', 'A dimension column cannot be sorted');
+
+    await clickItem('metric', 'Revenue');
+    assert.dom('.navi-column-config-base__sort-icon').doesNotHaveAttribute('disabled', 'A metric column can be sorted');
   });
 });

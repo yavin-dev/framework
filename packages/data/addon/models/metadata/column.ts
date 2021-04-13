@@ -7,11 +7,12 @@ import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
 import TableMetadataModel from './table';
-import ColumnFunction from './column-function';
-import FunctionParameter from './function-parameter';
-import NaviMetadataService, { MetadataModelTypes } from 'navi-data/services/navi-metadata';
+import type ColumnFunction from './column-function';
+import type FunctionParameter from './function-parameter';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
 
 export type RawColumnType = 'ref' | 'formula' | 'field';
 export type ColumnType = Extract<MetadataModelTypes, 'metric' | 'dimension' | 'timeDimension'>;
@@ -26,6 +27,7 @@ export interface ColumnMetadataPayload {
   source: string;
   valueType: TODO<string>;
   type: RawColumnType;
+  isSortable: boolean;
   expression?: string;
   columnFunctionId?: string;
   tags?: string[];
@@ -48,12 +50,13 @@ export interface ColumnMetadata {
   source: string;
   valueType: TODO<string>;
   type: RawColumnType;
+  isSortable: boolean;
   expression?: string;
   columnFunction: ColumnFunction | undefined;
   hasParameters: boolean;
   parameters: FunctionParameter[];
   getParameter(id: string): FunctionParameter | undefined;
-  getDefaultParameters(): Dict<string> | undefined;
+  getDefaultParameters(): Record<string, string> | undefined;
 }
 
 export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata, ColumnMetadataPayload {
@@ -103,6 +106,11 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
    * @property type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
   type!: RawColumnType;
+
+  /**
+   * whether or not this column can be sorted
+   */
+  isSortable!: boolean;
 
   /**
    * @property expression - e.g. tableA.name if type is ref
@@ -173,7 +181,7 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
       return undefined;
     }
 
-    return this.parameters.reduce((acc: Dict<string>, param) => {
+    return this.parameters.reduce((acc: Record<string, string>, param) => {
       if (param.defaultValue) {
         acc[param.id] = param.defaultValue;
       }

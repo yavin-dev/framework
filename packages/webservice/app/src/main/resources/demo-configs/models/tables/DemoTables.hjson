@@ -65,11 +65,32 @@
           grains: [
             {
                type: DAY
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{}}, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+               '''
+            }
+            {
+               type: WEEK
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{}}, 'YYYY-ww'), 'YYYY-ww')
+               '''
+            }
+            {
+               type: ISOWEEK
+               sql :  '''
+               DATEADD('DAY', 1, PARSEDATETIME(FORMATDATETIME({{}}, 'YYYY-ww'), 'YYYY-ww'))
+               '''
+            }
+            {
+               type: MONTH
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{}}, 'yyyy-MM'), 'yyyy-MM')
+               '''
             }
             {
                type: YEAR
                sql :  '''
-               PARSEDATETIME(YEAR({{}}), 'YYYY')
+               PARSEDATETIME(YEAR({{}}), 'yyyy')
                '''
             }
           ]

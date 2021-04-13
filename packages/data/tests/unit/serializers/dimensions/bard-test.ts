@@ -39,12 +39,12 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
 
     const normalized = this.serializer.normalize(dimColumn, payload);
     assert.deepEqual(
-      normalized.map(({ value }) => value),
+      normalized.values.map(({ value }) => value),
       ContainerDimValues.map(({ id }) => id),
       '`normalize` hydrated NaviDimensionModel objects with the correct field value'
     );
     assert.deepEqual(
-      normalized.map(({ displayValue }) => displayValue),
+      normalized.values.map(({ displayValue }) => displayValue),
       ContainerDimValues.map(({ id }) => id),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
@@ -65,13 +65,13 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     const normalized = this.serializer.normalize(dimColumn, payload);
 
     assert.deepEqual(
-      normalized.map(({ value }) => value),
+      normalized.values.map(({ value }) => value),
       ContainerDimValues.map(({ description }) => description),
       '`normalize` uses the `description` property when `desc` field is requested'
     );
 
     assert.deepEqual(
-      normalized.map(({ displayValue }) => displayValue),
+      normalized.values.map(({ displayValue }) => displayValue),
       ContainerDimValues.map(({ description }) => description),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
@@ -86,6 +86,10 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
         field: 'description',
       },
     };
-    assert.deepEqual(this.serializer.normalize(dimColumn, payload), [], '`normalize` can handle an empty payload');
+    assert.deepEqual(
+      this.serializer.normalize(dimColumn, payload).values,
+      [],
+      '`normalize` can handle an empty payload'
+    );
   });
 });

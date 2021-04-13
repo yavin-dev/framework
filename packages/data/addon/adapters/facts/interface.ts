@@ -1,23 +1,22 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import NaviFactsModel from 'navi-data/models/navi-facts';
-import { ColumnType } from 'navi-data/models/metadata/column';
+import type { TaskGenerator } from 'ember-concurrency';
+import type { ColumnType } from 'navi-data/models/metadata/column';
 
 export type RequestV1 = TODO;
 
 export type RequestOptions = {
   clientId?: string;
   requestId?: string;
-  customHeaders?: Dict<string>;
+  customHeaders?: Record<string, string>;
   timeout?: number;
   page?: number;
   perPage?: number;
   format?: string;
   cache?: boolean;
-  queryParams?: Dict<string | number>;
+  queryParams?: Record<string, string | number>;
   dataSourceName?: string;
 };
 
@@ -90,16 +89,11 @@ export enum TableExportResultType {
   JSON = 'JSON',
 }
 
-export interface AsyncQuery {
-  requestId: string;
-  request: RequestV1 | RequestV2;
-  status: QueryStatus;
-  result: AsyncQueryResult | null;
-  createdOn: Date;
-  updatedOn: Date;
-  then: () => NaviFactsModel;
-  cancel: () => void;
-}
+export type PageInfo = {
+  startCursor: `${number}`;
+  endCursor: `${number}`;
+  totalRecords: number;
+};
 
 export type AsyncQueryResponse = {
   asyncQuery: {
@@ -116,19 +110,37 @@ export type AsyncQueryResponse = {
   };
 };
 
+export type TableExportResponse = {
+  tableExport: {
+    edges: [
+      {
+        node: {
+          id: string;
+          query: string;
+          status: QueryStatus;
+          result: TableExportResult | null;
+        };
+      }
+    ];
+  };
+};
 export class FactAdapterError extends Error {
   name = 'FactAdapterError';
 }
-
 export interface AsyncQueryResult {
   httpStatus: number;
   contentLength: number;
   responseBody: string;
   recordCount: number;
 }
-
+export interface TableExportResult {
+  httpStatus: number;
+  recordCount: number;
+  url: URL;
+  message: string;
+}
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): Promise<TODO>;
+  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<unknown>;
   urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
-  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): Promise<string>;
+  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<string>;
 }

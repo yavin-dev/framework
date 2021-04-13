@@ -3,9 +3,17 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberRouter from '@ember/routing/router';
-import config from './config/environment';
-import { reportRoutes, reportCollectionRoutes, reportPrintRoutes } from 'navi-reports/router';
-import { dashboardRoutes, dashboardCollectionRoutes, dashboardPrintRoutes } from 'navi-dashboards/router';
+import config from 'navi-app/config/environment';
+import {
+  reportRoutes,
+  reportCollectionRoutes,
+  reportPrintRoutes,
+} from 'navi-reports/router';
+import {
+  dashboardRoutes,
+  dashboardCollectionRoutes,
+  dashboardPrintRoutes,
+} from 'navi-dashboards/router';
 import { directoryRoutes } from 'navi-directory/router';
 
 export default class Router extends EmberRouter {
@@ -13,7 +21,7 @@ export default class Router extends EmberRouter {
   rootURL = config.rootURL;
 }
 
-Router.map(function() {
+Router.map(function () {
   directoryRoutes(this);
   reportRoutes(this);
   reportCollectionRoutes(this);

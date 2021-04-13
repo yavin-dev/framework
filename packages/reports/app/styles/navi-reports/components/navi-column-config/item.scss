@@ -4,9 +4,15 @@
  */
 
 .navi-column-config-item {
+  background-color: rgba($body-bg-color, 95);
   border-bottom: 1px solid $menu-border-color;
   margin-left: 15px;
   z-index: 2;
+
+  &.is-dragging {
+    opacity: 0.9;
+    position: relative;
+  }
 
   &__header {
     align-items: center;
@@ -50,14 +56,20 @@
     white-space: nowrap;
 
     // Multi line ellipsis for supported browsers
-    @supports (-webkit-line-clamp: 2) {
+    @supports (-webkit-line-clamp: 2) and (-webkit-box-orient: vertical) {
+      /* stylelint-disable property-no-vendor-prefix */
+      /* stylelint-disable value-no-vendor-prefix */
+      -webkit-box-orient: vertical;
       display: -webkit-box;
+      -webkit-line-clamp: 2;
       overflow: hidden;
       text-overflow: ellipsis;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
       white-space: initial;
     }
+  }
+
+  &__handle {
+    cursor: move;
   }
 
   &__dropdown-icon {
@@ -95,11 +107,13 @@
   }
 
   &__remove-icon {
+    bottom: 2px;
     display: none;
     flex-shrink: 0;
     padding: 0;
-    width: 14px;
+    position: relative;
     text-align: center;
+    width: 14px;
   }
 
   &--open {
@@ -108,7 +122,7 @@
     }
 
     .navi-column-config-item__header {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     .navi-column-config-item__dropdown-icon {

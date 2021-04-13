@@ -9,9 +9,9 @@
 .navi-tag-input {
   align-items: center;
   background: $fields-default-bg;
+  border: 0;
   border-radius: $fields-corner-radius;
   box-shadow: $fields-default-border;
-  border: none;
   display: flex;
   flex-wrap: wrap;
   min-height: $fields-sizes-md-height;

@@ -8,7 +8,7 @@ import { RequestConstraintMetadata } from 'navi-data/models/metadata/request-con
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import Route from '@ember/routing/route';
 import { mapValues } from 'lodash-es';
 import { MessageOptions } from 'navi-core/services/interfaces/navi-notifications';

@@ -54,7 +54,7 @@ module('Unit | Model | Bard Dimension Array', function (hooks) {
     assert.equal(Response.dimension, 'd1', '`dimension` property was properly hydrated');
   });
 
-  test('pagination methods', function (assert) {
+  test('pagination methods', async function (assert) {
     assert.expect(6);
 
     assert.deepEqual(
@@ -71,7 +71,7 @@ module('Unit | Model | Bard Dimension Array', function (hooks) {
 
     Payload.meta.pagination.currentPage = 4;
 
-    assert.deepEqual(Response.next(), null, 'Next method returns null when total pages is exceeded');
+    assert.deepEqual(await Response.next(), null, 'Next method returns null when total pages is exceeded');
 
     Payload.meta.pagination.currentPage = 2;
 
@@ -89,7 +89,7 @@ module('Unit | Model | Bard Dimension Array', function (hooks) {
 
     Payload.response.meta.pagination.currentPage = 1;
 
-    assert.deepEqual(Response.previous(), null, 'Previous method returns null trying previous from first page');
+    assert.deepEqual(await Response.previous(), null, 'Previous method returns null trying previous from first page');
 
     delete Payload.response.meta.pagination;
 
@@ -99,6 +99,10 @@ module('Unit | Model | Bard Dimension Array', function (hooks) {
       'Previous method returns null when there is no pagination options'
     );
 
-    assert.deepEqual(BardDimensionArray.next(), null, 'Next method returns null when there is no pagination options');
+    assert.deepEqual(
+      await BardDimensionArray.next(),
+      null,
+      'Next method returns null when there is no pagination options'
+    );
   });
 });

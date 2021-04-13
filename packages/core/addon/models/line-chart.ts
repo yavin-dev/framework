@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { readOnly } from '@ember/object/computed';
@@ -8,8 +8,9 @@ import { attr } from '@ember-data/model';
 import ChartVisualization, { ChartConfig, ChartVisualizationType } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest, ChartType } from 'navi-core/utils/chart-data';
-import RequestFragment from './bard-request-v2/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type RequestFragment from './bard-request-v2/request';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { TypedVisualizationFragment } from './visualization';
 
 const SERIES_PATH = 'metadata.axis.y.series';
 const CONFIG_PATH = `${SERIES_PATH}.config`;
@@ -64,7 +65,7 @@ export type LineChartConfig = ChartConfig<'line-chart'>;
 
 export default class LineChartVisualization<T extends ChartVisualizationType = 'line-chart'>
   extends ChartVisualization.extend(Validations)
-  implements ChartConfig<T> {
+  implements ChartConfig<T>, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'line-chart' })
   type!: T;
   @attr('number', { defaultValue: 2 })
@@ -105,9 +106,8 @@ export default class LineChartVisualization<T extends ChartVisualizationType = '
   }
 }
 
-// DO NOT DELETE: this is how TypeScript knows how to look up your models.
-declare module 'ember-data/types/registries/model' {
-  export default interface ModelRegistry {
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
     'line-chart': LineChartVisualization;
   }
 }

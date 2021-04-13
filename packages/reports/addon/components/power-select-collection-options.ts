@@ -4,76 +4,55 @@
  *
  * An ember-power-select options component that uses ember-collection
  */
-import { alias } from '@ember/object/computed';
 import { A } from '@ember/array';
-import { action, setProperties, computed } from '@ember/object';
+import { action } from '@ember/object';
 import Options from 'ember-power-select/components/power-select/options';
 import { groupBy } from 'lodash-es';
 
+type ItemOptions = Options['args']['options'];
+type Args = Options['args'] & {
+  extra?: {
+    allowClear?: boolean;
+    groupKey?: string;
+    sortKey?: string;
+    sortFn?: (options: ItemOptions) => ItemOptions;
+  };
+};
+
+export type IndexedOptions<Option = ItemOptions[number]> = { option: Option; idx: number };
+
 export default class PowerSelectCollectionOptions extends Options {
-  /**
-   * @property {Number} maxDisplayedItems - max number of item to show at once
-   */
-  maxDisplayedItems = 6;
+  declare args: Args;
 
   /**
-   * @property {Number} itemHeight - height in px of a single item
+   * estimated height in px of a single item
    */
   itemHeight = 36;
 
   /**
-   * @property {Number} _height - height of selector
-   */
-  @computed('args.select.resultsCount', 'itemHeight', 'items.length', 'maxDisplayedItems')
-  get _height() {
-    const length = this.args.select.resultsCount;
-    const { itemHeight, maxDisplayedItems } = this;
-    const height = length * itemHeight;
-    const maxHeight = maxDisplayedItems * itemHeight;
-    return Math.min(maxHeight, height);
-  }
-
-  /**
-   * @property {Array} colums - columns sized using percentage widths
-   */
-  columns = [100];
-
-  /**
-   * @property {String} groupKey - option property to group by
-   */
-  @alias('args.extra.groupKey')
-  groupKey!: string;
-
-  /**
-   * @property {String} sortKey - option property to sort by
-   */
-  @alias('args.extra.sortKey')
-  sortKey!: string;
-
-  /**
    * @property {Array} items - array of options to be used by hbs
    */
-  @computed('args.options', 'groupKey', 'grouped', 'ungrouped')
   get items() {
-    return this.groupKey ? this.grouped : this.ungrouped;
+    return this.args.extra?.groupKey ? this.grouped : this.ungrouped;
   }
 
   /**
    * @property {Array} indexedOptions - array of options that retain original order
    */
-  @computed('args.options')
-  get indexedOptions() {
-    const { options } = this.args;
-    options.forEach((opt: {}, idx: number) => {
-      setProperties(opt, { idx });
-    });
-    return options;
+  get indexedOptions(): IndexedOptions[] {
+    const {
+      options,
+      select: { loading },
+    } = this.args;
+    if (loading) {
+      return [];
+    }
+    return options.map((option: {}, idx: number) => ({ option, idx }));
   }
 
   /**
    * @property {Array} ungrouped - array of ungrouped options
    */
-  @computed('indexedOptions', 'sortKey')
   get ungrouped() {
     return this._sortOptions(this.indexedOptions);
   }
@@ -82,9 +61,9 @@ export default class PowerSelectCollectionOptions extends Options {
    * @property {Array} grouped - array of grouped options
    */
 
-  @computed('indexedOptions', 'groupKey')
   get grouped() {
-    const { indexedOptions: options, groupKey } = this;
+    const { indexedOptions: options } = this;
+    const { groupKey } = this.args.extra || {};
     const grouped = groupBy(options, groupKey);
 
     return Object.keys(grouped)
@@ -99,14 +78,18 @@ export default class PowerSelectCollectionOptions extends Options {
   }
 
   /**
-   * @method _sortOptions
    * @private
-   * @param {Array} options - array of options
-   * @returns {Arrray} array of sorted options if sortKey provided
+   * @param options - array of options
+   * @returns array of sorted options if sortKey provided
    */
-  _sortOptions(options: {}[]) {
-    const { sortKey } = this;
-    return sortKey ? A(options).sortBy(sortKey) : options;
+  _sortOptions(options: IndexedOptions[]) {
+    const { sortKey, sortFn } = this.args.extra || {};
+    if (sortFn) {
+      return sortFn(options);
+    } else if (sortKey) {
+      return A(options).sortBy(`option.${sortKey}`);
+    }
+    return options;
   }
 
   @action

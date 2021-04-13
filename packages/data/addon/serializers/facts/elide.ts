@@ -6,8 +6,14 @@
  */
 
 import EmberObject from '@ember/object';
-import NaviFactSerializer from './interface';
-import { AsyncQueryResponse, FactAdapterError, RequestV2 } from 'navi-data/adapters/facts/interface';
+import NaviFactSerializer, { ResponseV1 } from './interface';
+import {
+  AsyncQueryResponse,
+  FactAdapterError,
+  PageInfo,
+  RequestOptions,
+  RequestV2,
+} from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviFactError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
@@ -23,12 +29,37 @@ function isElideResponse(response?: AsyncQueryResponse | ExecutionResult | Error
 function isApolloError(response?: AsyncQueryResponse | ExecutionResult | Error): response is ExecutionResult {
   return (response as ExecutionResult)?.errors !== undefined;
 }
+
+interface PaginationOptions {
+  perPage?: number;
+}
+export function getPaginationFromPageInfo(
+  pageInfo?: PageInfo,
+  options?: PaginationOptions
+): ResponseV1['meta']['pagination'] {
+  if (!pageInfo) {
+    return undefined;
+  }
+  const startCursor = Number(pageInfo.startCursor);
+  const endCursor = Number(pageInfo.endCursor);
+  // Use the perPage property if available (e.g. Getting the last page but there's only 2 results left)
+  const rowsPerPage = options?.perPage ?? endCursor - startCursor;
+
+  // Integer division of start position and page size (indexing starting with 1)
+  const currentPage = rowsPerPage !== 0 ? Math.floor(startCursor / rowsPerPage) + 1 : 1;
+  return {
+    rowsPerPage,
+    currentPage,
+    numberOfResults: pageInfo.totalRecords,
+  };
+}
+
 export default class ElideFactsSerializer extends EmberObject implements NaviFactSerializer {
   /**
    * @param payload - raw payload string
    * @param request - request object
    */
-  private processResponse(payload: string, request: RequestV2): NaviFactResponse {
+  private processResponse(payload: string, request: RequestV2, options: RequestOptions): NaviFactResponse {
     const response = JSON.parse(payload) as ExecutionResult;
     const { table } = request;
     const elideFields = request.columns.map((_c, idx) => `col${idx}`);
@@ -39,6 +70,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
 
     const { data } = response;
     assert('`data` should be present in successful in a response', data);
+    const pageInfo = data[table].pageInfo;
     const rawRows = data[table].edges;
     const totalRows = rawRows.length;
     const totalFields = normalizedFields.length;
@@ -54,15 +86,28 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
       }
     }
 
-    return NaviFactResponse.create({ rows, meta: {} });
+    return NaviFactResponse.create({
+      rows,
+      meta: {
+        pagination: getPaginationFromPageInfo(pageInfo, options),
+      },
+    });
   }
 
-  normalize(payload: AsyncQueryResponse, request: RequestV2): NaviFactResponse | undefined {
+  normalize(
+    payload: AsyncQueryResponse,
+    request: RequestV2,
+    options: RequestOptions = {}
+  ): NaviFactResponse | undefined {
     const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody;
-    return responseStr ? this.processResponse(responseStr, request) : undefined;
+    return responseStr ? this.processResponse(responseStr, request, options) : undefined;
   }
 
-  extractError(payload: ExecutionResult | AsyncQueryResponse | Error, _request: RequestV2): NaviFactError {
+  extractError(
+    payload: ExecutionResult | AsyncQueryResponse | Error,
+    _request: RequestV2,
+    _options: RequestOptions
+  ): NaviFactError {
     let errors: NaviErrorDetails[] = [];
     if (isElideResponse(payload)) {
       const responseStr = payload.asyncQuery.edges[0].node.result?.responseBody;

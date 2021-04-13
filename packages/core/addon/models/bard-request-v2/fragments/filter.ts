@@ -1,8 +1,8 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import attr from 'ember-data/attr';
+import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from './base';
 import { Filter } from 'navi-data/adapters/facts/interface';
@@ -30,4 +30,10 @@ export default class FilterFragment extends BaseFragment.extend(Validations) imp
 
   @attr({ defaultValue: () => [] })
   values!: Filter['values'];
+}
+
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/fragments/filter': FilterFragment;
+  }
 }

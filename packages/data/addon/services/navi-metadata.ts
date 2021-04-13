@@ -12,7 +12,7 @@ import NaviMetadataSerializer, {
   MetadataModelMap,
 } from 'navi-data/serializers/metadata/base';
 import KegService from './keg';
-import MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviMetadataAdapter from '../adapters/metadata/interface';
 
 type RequestOptions = {

@@ -42,12 +42,12 @@ export default class KegService extends Service {
   /**
    * @property {Object} recordKeg - Object of record arrays
    */
-  recordKegs: Dict<MutableArray<KegRecord>> = {};
+  recordKegs: Record<string, MutableArray<KegRecord>> = {};
 
   /**
    * @property {Object} idIndexes - Object of record indexes
    */
-  idIndexes: Dict<Dict<KegRecord>> = {};
+  idIndexes: Record<string, Record<string, KegRecord>> = {};
 
   /**
    * @property {String} defaultNamespace
@@ -195,10 +195,10 @@ export default class KegService extends Service {
    *
    * @method getBy
    * @param {String} type - type name of the model type
-   * @param {Dict<unknown|Array<unknown>>|FilterFn} clause
+   * @param {Record<string, unknown|Array<unknown>>|FilterFn} clause
    * @returns {EmberArray<KegRecord>} array of found records
    */
-  getBy(type: string, clause: Dict<unknown | Array<unknown>> | FilterFn): EmberArray<KegRecord> {
+  getBy(type: string, clause: Record<string, unknown | Array<unknown>> | FilterFn): EmberArray<KegRecord> {
     const recordKeg = this._getRecordKegForType(type);
     let foundRecords: EmberArray<KegRecord> = A();
 
@@ -276,9 +276,9 @@ export default class KegService extends Service {
    * @private
    * @method _getIdIndexForType
    * @param {string} type - type name of the model type
-   * @returns {Dict<KegRecord>} - record id index
+   * @returns {Record<string, KegRecord>} - record id index
    */
-  _getIdIndexForType(type: string): Dict<KegRecord> {
+  _getIdIndexForType(type: string): Record<string, KegRecord> {
     const { idIndexes } = this;
 
     idIndexes[type] = idIndexes[type] || {};

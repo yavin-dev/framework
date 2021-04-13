@@ -17,7 +17,7 @@
  */
 import Component from '@ember/component';
 import layout from '../templates/components/table-iterator';
-import { get, computed } from '@ember/object';
+import { computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -33,6 +33,6 @@ export default Component.extend({
    * @property {String} collectionRenderer - chooses which collection renderer to use
    */
   collectionRenderer: computed('useVerticalCollection', function () {
-    return get(this, 'useVerticalCollection') ? 'vertical-collection' : 'ember-collection';
+    return this.useVerticalCollection ? 'vertical-collection' : 'ember-collection';
   }),
 });

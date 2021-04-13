@@ -154,7 +154,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
         source: 'bardOne',
       });
 
-      this.get('dashboard.filters').pushObject(filter);
+      this.dashboard.filters.pushObject(filter);
     });
 
     assert
@@ -189,7 +189,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
 
     assert.dom('.dashboard-filters--expanded-add-row').isNotVisible('add row vanishes again');
 
-    assert.dom('.filter-builder__subject').hasText('Product Family (id)');
+    assert.dom('.filter-builder__subject').hasText('Product Family id');
   });
 
   test('updating a filter', async function (assert) {

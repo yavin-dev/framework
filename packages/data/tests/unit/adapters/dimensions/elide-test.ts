@@ -10,8 +10,9 @@ import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';
-import { getElideField } from 'navi-data/adapters/facts/elide';
 import { ResponseEdge } from 'navi-data/serializers/dimensions/elide';
+import { task, TaskGenerator } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -24,9 +25,9 @@ function assertRequest(context: TestContext, callback: (request: RequestV2, opti
   };
   const originalFactAdapter = context.owner.factoryFor('adapter:facts/elide').class;
   class TestAdapter extends originalFactAdapter {
-    fetchDataForRequest(request: RequestV2, options?: RequestOptions) {
+    @task *fetchDataForRequest(request: RequestV2, options?: RequestOptions): TaskGenerator<AsyncQueryResponse> {
       callback(request, options);
-      return Promise.resolve(fakeResponse);
+      return yield Promise.resolve(fakeResponse);
     }
   }
   context.owner.unregister('adapter:facts/elide');
@@ -36,8 +37,8 @@ function assertRequest(context: TestContext, callback: (request: RequestV2, opti
 function extractDimValues(dimension: DimensionColumn, rawResponse: AsyncQueryResponse): string[] {
   const responseStr = rawResponse?.asyncQuery.edges[0].node.result?.responseBody || '';
   const response = JSON.parse(responseStr);
-  const { id: dimensionName, tableId } = dimension.columnMetadata;
-  return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node[getElideField(dimensionName)]);
+  const { tableId } = dimension.columnMetadata;
+  return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node.col0);
 }
 
 module('Unit | Adapter | Dimensions | Elide', function (hooks) {
@@ -83,7 +84,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['v1', 'v2'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: { foo: 'bar' },
+          direction: 'asc',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
@@ -101,7 +109,11 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }], expectedOptions);
+    await taskFor(adapter.find).perform(
+      TestDimensionColumn,
+      [{ operator: 'in', values: ['v1', 'v2'] }],
+      expectedOptions
+    );
   });
 
   test('find - enum', async function (this: TestContext, assert) {
@@ -121,7 +133,9 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
 
-    const emptyInResponse = await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
+    const emptyInResponse = await taskFor(adapter.find).perform(TestDimensionColumn, [
+      { operator: 'in', values: ['v1', 'v2'] },
+    ]);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, emptyInResponse),
       [],
@@ -129,7 +143,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     );
 
     const inValues = ['Practical Frozen Fish (enum)', 'Practical Concrete Chair (enum)'];
-    const inResponse = await adapter.find(TestDimensionColumn, [{ operator: 'in', values: inValues }]);
+    const inResponse = await taskFor(adapter.find).perform(TestDimensionColumn, [{ operator: 'in', values: inValues }]);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, inResponse),
       inValues,
@@ -137,14 +151,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     );
 
     const eqValues = ['Practical Frozen Fish (enum)'];
-    const eqResponse = await adapter.find(TestDimensionColumn, [{ operator: 'eq', values: eqValues }]);
+    const eqResponse = await taskFor(adapter.find).perform(TestDimensionColumn, [{ operator: 'eq', values: eqValues }]);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, eqResponse),
       eqValues,
       '`find` with `eq` operator returns filtered enum value for dimensions that provide them'
     );
 
-    const filtersResponse = await adapter.find(TestDimensionColumn, [
+    const filtersResponse = await taskFor(adapter.find).perform(TestDimensionColumn, [
       { operator: 'in', values: inValues },
       { operator: 'eq', values: eqValues },
     ]);
@@ -155,15 +169,15 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
       '`find` supports multiple predicates when filtering enum values'
     );
 
-    try {
-      await adapter.find(TestDimensionColumn, [{ operator: 'gt', values: eqValues }]);
-    } catch (e) {
-      assert.equal(
-        e.message,
-        'Assertion Failed: Dimension enum filter operator is not supported: gt',
-        '`find` throws an error for when requesting unsupported enum filter operators'
-      );
-    }
+    await taskFor(adapter.find)
+      .perform(TestDimensionColumn, [{ operator: 'gt', values: eqValues }])
+      .catch((e) => {
+        assert.equal(
+          e.message,
+          'Assertion Failed: Dimension enum filter operator is not supported: gt',
+          '`find` throws an error for when requesting unsupported enum filter operators'
+        );
+      });
   });
 
   test('find - tableSource', async function (this: TestContext, assert) {
@@ -187,7 +201,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['v1', 'v2'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: {},
+          direction: 'asc',
+        },
+      ],
       table: lookupDimColumn.split('.')[0],
       limit: null,
       dataSource: 'elideTwo',
@@ -199,7 +220,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    await adapter.find(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
+    await taskFor(adapter.find).perform(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
   });
 
   test('all', async function (this: TestContext, assert) {
@@ -218,7 +239,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     const expectedRequest: RequestV2 = {
       columns: [{ field: 'table0.dimension0', parameters: { foo: 'baz' }, type: 'dimension' }],
       filters: [],
-      sorts: [],
+      sorts: [
+        {
+          type: 'dimension',
+          field: 'table0.dimension0',
+          parameters: { foo: 'baz' },
+          direction: 'asc',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideTwo',
@@ -238,7 +266,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    await adapter.all(TestDimensionColumn, expectedOptions);
+    await taskFor(adapter.all).perform(TestDimensionColumn, expectedOptions);
   });
 
   test('all - enum', async function (this: TestContext, assert) {
@@ -257,7 +285,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    const response = await adapter.all(TestDimensionColumn);
+    const response = await taskFor(adapter.all).perform(TestDimensionColumn);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, response),
       [
@@ -297,7 +325,14 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
           values: ['*something*'],
         },
       ],
-      sorts: [],
+      sorts: [
+        {
+          direction: 'asc',
+          field: 'table0.dimension0',
+          parameters: { bang: 'boom' },
+          type: 'dimension',
+        },
+      ],
       table: 'table0',
       limit: null,
       dataSource: 'elideOne',
@@ -319,7 +354,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
-    await adapter.search(TestDimensionColumn, query, expectedOptions);
+    await taskFor(adapter.search).perform(TestDimensionColumn, query, expectedOptions);
   });
 
   test('search - enum', async function (this: TestContext, assert) {
@@ -339,7 +374,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
     const query = 'ACT';
-    const response = await adapter.search(TestDimensionColumn, query);
+    const response = await taskFor(adapter.search).perform(TestDimensionColumn, query);
     assert.deepEqual(
       extractDimValues(TestDimensionColumn, response),
       ['Practical Frozen Fish (enum)', 'Practical Concrete Chair (enum)'],

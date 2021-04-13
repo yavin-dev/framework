@@ -1,10 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 //@ts-ignore
 import AssetSerializer from './asset';
-import Model from '@ember-data/model';
+import type Model from '@ember-data/model';
 import { normalizeVisualization } from './report';
 
 export default class DashboardWidgetSerializer extends AssetSerializer {
@@ -21,5 +21,12 @@ export default class DashboardWidgetSerializer extends AssetSerializer {
     normalized.data.attributes.visualization = normalizeVisualization(requests[0], visualization);
 
     return normalized;
+  }
+}
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your models.
+declare module 'ember-data/types/registries/serializer' {
+  export default interface SerializerRegistry {
+    'dashboard-widget': DashboardWidgetSerializer;
   }
 }

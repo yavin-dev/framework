@@ -9,7 +9,7 @@ import { setupTest } from 'ember-qunit';
 module('Unit | Route | dashboards/dashboard/widgets/widget', function (hooks) {
   setupTest(hooks);
 
-  test('model hook', function (assert) {
+  test('model hook', async function (assert) {
     assert.expect(3);
 
     let route = this.owner.factoryFor('route:dashboards/dashboard/widgets/widget').create({
@@ -24,11 +24,11 @@ module('Unit | Route | dashboards/dashboard/widgets/widget', function (hooks) {
     });
 
     /* == Persisted id == */
-    let model = route.model({ widget_id: 1 });
+    let model = await route.model({ widget_id: 1 });
     assert.equal(model.id, 1, 'Route model looks up widget based on id');
 
     /* == Temp id == */
-    model = route.model({ widget_id: '123-456' });
+    model = await route.model({ widget_id: '123-456' });
     assert.equal(model.tempId, '123-456', 'Route can find widgets based on temp id');
 
     /* == Error widget not found == */

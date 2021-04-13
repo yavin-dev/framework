@@ -6,9 +6,10 @@
  */
 
 import EmberObject from '@ember/object';
+import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
-import type NaviFactResponse from './navi-fact-response';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 export default class NaviFacts extends EmberObject {
   /**
@@ -27,16 +28,16 @@ export default class NaviFacts extends EmberObject {
   declare _factService: NaviFactsService;
 
   /**
-   * @returns Promise with the response model object for next page or null when trying to go past last page
+   * @returns Promise with the response model object for previous page or null when trying to access pages less than the first page
    */
-  next(): Promise<NaviFacts> | null {
-    return this._factService.fetchNext(this.response, this.request);
+  previous(): Promise<NaviFacts | null> {
+    return taskFor(this._factService.fetchPrevious).perform(this.response, this.request);
   }
 
   /**
-   * @returns Promise with the response model object for previous page or null when trying to access pages less than the first page
+   * @returns Promise with the response model object for next page or null when trying to go past last page
    */
-  previous(): Promise<NaviFacts> | null {
-    return this._factService.fetchPrevious(this.response, this.request);
+  next(): Promise<NaviFacts | null> {
+    return taskFor(this._factService.fetchNext).perform(this.response, this.request);
   }
 }

@@ -1,49 +1,19 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report">
-  <div class="navi-report__breadcrumb">
-    {{#if (feature-flag "enableDirectory")}}
-      <LinkTo @route="directory.my-data" class="navi-report__breadcrumb-link">Directory</LinkTo>
-    {{else}}
-      <LinkTo @route="reports" class="navi-report__breadcrumb-link">Reports</LinkTo>
-    {{/if}}
-    <NaviIcon @icon="angle-right" />
-  </div>
-  <header class="navi-report__header row">
-    <span class="navi-report__title">
-      {{#if this.model.isOwner}}
-        <EditableLabel
-          class="navi-report__edit-title"
-          @value={{this.model.title}}
-          @onChange={{route-action "updateTitle"}}
-        />
-      {{else}}
-        <span>{{this.model.title}}</span>
-      {{/if}}
-
-      {{!-- Favorite icon is visible if a report has been saved --}}
-      {{#unless this.model.isNew}}
-        {{#let (get-user) as |user|}}
-          <FavoriteItem
-            class="navi-report__fav-icon m-l-4"
-            @user={{user}}
-            @item={{this.model}}
-            @onToggle={{route-action "toggleFavorite" this.model}}
-          />
-        {{/let}}
-      {{/unless}}
-
-    </span>
-    <ul class="navi-report__actions">
-      {{#if (feature-flag "dashboards")}}
-        {{!-- Disabling to allow calling report-to-widget mixin actions --}}
-        {{!-- template-lint-disable no-action --}}
-        <ReportActions @model={{this.model}} @addToDashboard={{action "addToDashboard"}} @addToNewDashboard={{action "addToNewDashboard"}} />
-      {{else}}
-        <ReportActions @model={{this.model}} />
-      {{/if}}
-    </ul>
-  </header>
-
+  {{!-- template-lint-disable no-action --}}
+  {{#if (feature-flag "dashboards")}}
+    <ReportHeader
+      @model={{this.model}}
+      @addToDashboard={{action "addToDashboard"}}
+      @addToNewDashboard={{action "addToNewDashboard"}}
+      class="p-y-10"
+    />
+  {{else}}
+    <ReportHeader
+      @model={{this.model}}
+      class="p-y-10"
+    />
+  {{/if}}
   <div class="navi-report__body">
     <ReportBuilder
       @report={{this.model}}
@@ -62,6 +32,8 @@
         @onAddColumn={{update-report-action "ADD_COLUMN_WITH_PARAMS"}}
         @onRemoveColumn={{update-report-action "REMOVE_COLUMN_FRAGMENT"}}
         @onAddFilter={{update-report-action "ADD_FILTER"}}
+        @onUpsertSort={{update-report-action "UPSERT_SORT"}}
+        @onRemoveSort={{update-report-action "REMOVE_SORT"}}
         @onRenameColumn={{update-report-action "RENAME_COLUMN_FRAGMENT"}}
         @onReorderColumn={{update-report-action "REORDER_COLUMN_FRAGMENT"}}
         @onUpdateColumnParam={{update-report-action "UPDATE_COLUMN_FRAGMENT_WITH_PARAMS"}}

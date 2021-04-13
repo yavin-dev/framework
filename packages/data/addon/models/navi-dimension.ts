@@ -1,9 +1,9 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import { DimensionColumn } from './metadata/dimension';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { isEqual } from 'lodash-es';
 
 export default class NaviDimensionModel extends EmberObject {

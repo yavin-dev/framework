@@ -1,9 +1,7 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import { get, getWithDefault } from '@ember/object';
 import { w as words } from '@ember/string';
 import { A as arr } from '@ember/array';
 import { getPaginatedRecords } from 'navi-core/utils/pagination';
@@ -88,7 +86,7 @@ export function searchRecords(records, query, searchField) {
 
   for (let i = 0; i < records.length; i++) {
     let record = records.objectAt(i),
-      relevance = getPartialMatchWeight(get(record, searchField).toLowerCase(), query);
+      relevance = getPartialMatchWeight(record[searchField].toLowerCase(), query);
 
     if (relevance) {
       results.push({ relevance, record });
@@ -102,15 +100,15 @@ export function searchRecords(records, query, searchField) {
  * Computes average relevance of query among given search fields
  *
  * @method getAverageRelevance
- * @param {String} record - Record to search
- * @param {String} query - search query used to filter and rank assets
- * @param {Array} searchFields - Fields in record to compare
+ * @param {object} record - Record to search
+ * @param {string} query - search query used to filter and rank assets
+ * @param {string[]} searchFields - Fields in record to compare
  * @returns {Number} Average relevance of record based on the query
  */
 export function getAverageRelevance(record, query, searchFields) {
   return (
     searchFields
-      .flatMap((searchField) => getPartialMatchWeight(getWithDefault(record, searchField, '').toLowerCase(), query))
+      .flatMap((searchField) => getPartialMatchWeight((record[searchField] || '').toLowerCase(), query))
       .reduce(function (sum, value) {
         return sum + (value || 0);
       }, 0) / searchFields.length
@@ -166,12 +164,12 @@ export function searchDimensionRecords(records, query, resultLimit, page) {
   records = arr(records);
 
   // Filter, map, and sort records based on how close each record is to the search query
-  for (let i = 0; i < get(records, 'length'); i++) {
+  for (let i = 0; i < records.length; i++) {
     let record = records.objectAt(i);
 
     // Determine relevance based on string match weight
-    let descriptionMatchWeight = getPartialMatchWeight(get(record, 'description').toLowerCase(), query.toLowerCase()),
-      idMatchWeight = getExactMatchWeight(get(record, 'id').toLowerCase(), query.toLowerCase()),
+    let descriptionMatchWeight = getPartialMatchWeight(record.description.toLowerCase(), query.toLowerCase()),
+      idMatchWeight = getExactMatchWeight(record.id.toLowerCase(), query.toLowerCase()),
       relevance = descriptionMatchWeight || idMatchWeight;
 
     // If both id and description match the query, take the most relevant

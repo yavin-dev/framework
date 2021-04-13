@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed, set } from '@ember/object';
@@ -16,14 +16,13 @@ import { isEqual } from 'lodash-es';
 import Interval from 'navi-data/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { RequestV2, SortDirection } from 'navi-data/adapters/facts/interface';
+import { RequestV2, SortDirection, Parameters } from 'navi-data/adapters/facts/interface';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import Store from '@ember-data/store';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { ColumnMetadataModels } from './fragments/base';
-import { Parameters } from 'navi-data/adapters/facts/interface';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import SortFragment from './fragments/sort';
 import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/table';
@@ -352,7 +351,16 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @param index - the index to move the selected column
    */
   reorderColumn(column: ColumnFragment, index: number) {
+    if (this.columns.objectAt(index) === column) {
+      return;
+    }
     this.columns.removeFragment(column);
     this.columns.insertAt(index, column);
+  }
+}
+
+declare module 'navi-core/models/registry' {
+  export interface FragmentRegistry {
+    'bard-request-v2/request': RequestFragment;
   }
 }

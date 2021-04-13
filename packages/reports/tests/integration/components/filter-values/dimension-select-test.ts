@@ -9,11 +9,16 @@ import { clickTrigger, selectChoose, selectSearch, nativeMouseUp } from 'ember-p
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
-import { TestContext as Context } from 'ember-test-helpers';
 import $ from 'jquery';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import FragmentFactory from 'navi-core/services/fragment-factory';
-import { Server, Request } from 'miragejs';
+import Service from '@ember/service';
+import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import { task, TaskGenerator } from 'ember-concurrency';
+import type { TestContext as Context } from 'ember-test-helpers';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type FragmentFactory from 'navi-core/services/fragment-factory';
+import type { Server, Request } from 'miragejs';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 interface TestContext extends Context {
   server: Server;
@@ -23,6 +28,14 @@ interface TestContext extends Context {
 }
 
 const HOST = config.navi.dataSources[0].uri;
+
+const TEMPLATE = hbs`
+<FilterValues::DimensionSelect 
+  @filter={{this.filter}} 
+  @isCollapsed={{this.isCollapsed}}
+  @onUpdateFilter={{this.onUpdateFilter}}
+/>
+`;
 
 module('Integration | Component | filter values/dimension select', function (hooks) {
   setupRenderingTest(hooks);
@@ -40,7 +53,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
   });
 
   test('it renders', async function (this: TestContext, assert) {
-    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
+    await render(TEMPLATE);
 
     // Open value selector
     await clickTrigger();
@@ -83,12 +96,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
       '3',
     ]);
 
-    await render(hbs`
-      <FilterValues::DimensionSelect 
-        @filter={{this.filter}} 
-        @isCollapsed={{this.isCollapsed}} 
-      />
-    `);
+    await render(TEMPLATE);
 
     // Open value selector
     await clickTrigger();
@@ -135,7 +143,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
 
-    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} />`);
+    await render(TEMPLATE);
 
     assert
       .dom('input')
@@ -153,15 +161,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
       );
     };
 
-    await render(
-      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{this.onUpdateFilter}} />`
-    );
+    await render(TEMPLATE);
 
     await selectChoose('.filter-values--dimension-select__trigger', 5);
   });
 
   test('error state', async function (assert) {
-    await render(hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @isCollapsed={{this.isCollapsed}} />`);
+    await render(TEMPLATE);
     assert.dom('.filter-values--dimension-select--error').isNotVisible('The input should not have error state');
 
     this.set('filter.values', undefined);
@@ -181,9 +187,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
       this.set('filter.values', changeSet.values);
     };
 
-    await render(
-      hbs`<FilterValues::DimensionSelect @filter={{this.filter}} @onUpdateFilter={{this.onUpdateFilter}} />`
-    );
+    await render(TEMPLATE);
 
     await clickTrigger();
     await selectSearch('.filter-values--dimension-select__trigger', searchTerm);
@@ -206,6 +210,80 @@ module('Integration | Component | filter values/dimension select', function (hoo
       visibleOptions(),
       expectedValueDimensions,
       `Only values containing ${searchTerm} are displayed, even after changing selection`
+    );
+  });
+
+  test('sort is applied numerically', async function (this: TestContext, assert) {
+    assert.expect(1);
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+
+    class MockDimensions extends Service {
+      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const rawValues = ['1', '3', '2', '11', '111'];
+        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        return yield NaviDimensionResponse.create({ values });
+      }
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
+    await render(TEMPLATE);
+
+    // Open value selector
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['1', '2', '3', '11', '111'],
+      'Sort is applied numerically for string number dimensions'
+    );
+  });
+
+  test('sort is applied lexicographically', async function (this: TestContext, assert) {
+    assert.expect(1);
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+
+    class MockDimensions extends Service {
+      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const rawValues = ['1', '3', '2', '11', '111', 'stringvalue'];
+        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        return yield NaviDimensionResponse.create({ values });
+      }
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
+    await render(TEMPLATE);
+
+    // Open value selector
+    await clickTrigger();
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['1', '11', '111', '2', '3', 'stringvalue'],
+      'Sort is applied lexicographically if not all string values are numbers'
+    );
+  });
+
+  test('sort is applied to search', async function (this: TestContext, assert) {
+    assert.expect(1);
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
+
+    class MockDimensions extends Service {
+      @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+        const rawValues = ['1', '3', '2', '11', '111'];
+        const values = rawValues.map((value) =>
+          NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn })
+        );
+        return yield NaviDimensionResponse.create({ values });
+      }
+    }
+
+    this.owner.register('service:navi-dimension', MockDimensions);
+    await render(TEMPLATE);
+
+    await clickTrigger(); // open
+    await selectSearch('.filter-values--dimension-select__trigger', 'Property');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3'],
+      'Sort is applied as number for string number dimensions'
     );
   });
 });

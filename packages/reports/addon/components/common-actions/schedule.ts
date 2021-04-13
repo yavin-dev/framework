@@ -15,20 +15,16 @@ import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { tracked } from '@glimmer/tracking';
+import { assert } from '@ember/debug';
 import type StoreService from '@ember-data/store';
 import type DeliveryRuleModel from 'navi-core/models/delivery-rule';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
 import type UserService from 'navi-core/services/user';
 import type DeliverableItemModel from 'navi-core/models/deliverable-item';
-import { assert } from '@ember/debug';
+import type { RSVPMethodsObj } from 'navi-reports/consumers/delivery-rule';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
-
-type RSVPMethodsObj = {
-  resolve: () => void;
-  reject: () => void;
-};
 
 interface Args {
   model: DeliverableItemModel;

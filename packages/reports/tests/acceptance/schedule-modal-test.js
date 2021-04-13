@@ -343,7 +343,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal validations', async function (assert) {
-    assert.expect(10);
+    assert.expect(11);
 
     await visit('/reports');
 
@@ -359,7 +359,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .isVisible('Recipients field is not highlighted red when creating a new schedule before attempting to save');
 
     //Attempt to save the schedule while recipients is empty
-    await click('.schedule__modal-save-btn');
+    assert.dom('.schedule__modal-save-btn').isDisabled('Save schedule button is disabled');
 
     assert
       .dom('.schedule__modal-recipients--invalid>.schedule__modal-helper-recipients')

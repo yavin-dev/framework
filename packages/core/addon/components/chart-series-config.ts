@@ -19,7 +19,7 @@ export default class ChartSeriesConfigComponent extends Component<Args> {
    * array of series data in the form:
    * [{ metric: "adClicks", parameters: {} }, { ... }] for metrics or [{ name: "Dimension 1" }, { ... }] for dimensions
    */
-  @computed('args.{seriesConfig,seriesType,request.metricColumns.[]}')
+  @computed('args.{seriesConfig.dimensions,seriesType,request.metricColumns.[]}')
   get seriesData(): DimensionSeriesValues[] | ColumnFragment[] {
     if (this.args.seriesType === 'dimension') {
       return this.args.seriesConfig.dimensions;

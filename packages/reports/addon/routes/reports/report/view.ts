@@ -8,13 +8,15 @@ import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
 import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
+import { taskFor } from 'ember-concurrency-ts';
+import { assert } from '@ember/debug';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
+import type { ReportLike } from 'navi-reports/routes/reports/report';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type RequestFragment from 'navi-core/models/bard-request-v2/request';
-import type ReportModel from 'navi-core/models/report';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
 
@@ -51,6 +53,7 @@ export default class ReportsReportViewRoute extends Route {
   model() {
     const report = this.parentModel;
     const request = report.request;
+    assert('Request is defined for report', request);
     const serializedRequest = request.serialize() as RequestV2;
     const requestOptions = merge({}, this.requestOptions, {
       customHeaders: {
@@ -60,8 +63,8 @@ export default class ReportsReportViewRoute extends Route {
     });
 
     // Wrap the response in a promise object so we can manually handle loading spinners
-    return this.facts
-      .fetch(serializedRequest, requestOptions)
+    return taskFor(this.facts.fetch)
+      .perform(serializedRequest, requestOptions)
       .then((response) => {
         this._setValidVisualizationType(request, report);
         this._setValidVisualizationConfig(request, report, response.response);
@@ -85,7 +88,7 @@ export default class ReportsReportViewRoute extends Route {
    * @param request
    * @param report
    */
-  _setValidVisualizationType(request: RequestFragment, report: ReportModel) {
+  _setValidVisualizationType(request: RequestFragment, report: ReportLike) {
     const { naviVisualizations } = this;
     let { visualization } = report;
     const visualizationManifest = naviVisualizations.getManifest(visualization.type);
@@ -105,7 +108,7 @@ export default class ReportsReportViewRoute extends Route {
    * @param report
    * @param response
    */
-  _setValidVisualizationConfig(request: RequestFragment, report: ReportModel, response: NaviFactResponse) {
+  _setValidVisualizationConfig(request: RequestFragment, report: ReportLike, response: NaviFactResponse) {
     const { visualization } = report;
 
     if (!visualization.isValidForRequest(request)) {

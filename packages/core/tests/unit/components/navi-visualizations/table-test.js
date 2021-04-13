@@ -35,7 +35,7 @@ module('Unit | Component | table', function (hooks) {
   hooks.beforeEach(async function () {
     const store = this.owner.lookup('service:store');
     ['navi-table-sort-icon', 'sortable-group', 'sortable-item', 'navi-icon', 'ember-tooltip'].forEach((component) => {
-      this.owner.register(`component:${component}`, Component.extend(), { instantiate: false });
+      this.owner.register(`component:${component}`, class extends Component {}, { instantiate: false });
     });
 
     //helpers
