@@ -24,7 +24,6 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await visit('/reports/1/view');
     assert.ok(!!$('.report-actions__addToDashboard').length, 'Add to Dashboard button is visible by default');
 
-
     // Remove all columns to make invalid
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
