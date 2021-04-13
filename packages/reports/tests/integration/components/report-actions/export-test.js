@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 
 const TEMPLATE = hbs`
-  <ReportActions::Export 
+  <ReportActions::Export
     @report={{this.report}}
   >
     Export
@@ -23,27 +23,10 @@ module('Integration | Component | report actions - export', function (hooks) {
   });
 
   test('Component Renders', async function (assert) {
-    assert.expect(4);
-
-    const factService = this.owner.lookup('service:navi-facts');
-    this.owner.lookup('service:navi-metadata').loadMetadata();
-    const report = await Store.findRecord('report', 1);
-
-    this.set('report', report);
+    this.set('TestRequest', this.TestRequestBard);
     await render(TEMPLATE);
 
-    const component = $('a.report-control').get(0);
-
-    assert.equal(component.text.trim(), 'Export', 'Component yields content as expected');
-
-    assert.equal(component.getAttribute('target'), '_blank', 'Component has target attribute as _blank');
-
-    assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
-
-    const expectedHref = factService.getURL(report.get('request').serialize(), {
-      format: 'csv',
-    });
-    assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
+    assert.dom('.export__action-btn').hasText('Export', 'Component yields given text');
   });
 
   test('Component is not disabled for unsaved reports', async function (assert) {

@@ -602,50 +602,19 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Export action - href', async function (assert) {
-    assert.expect(4);
+    assert.expect(1);
 
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
     config.navi.FEATURES.exportFileTypes = ['csv'];
     await visit('/reports/1/view');
-
-    assert.ok(
-      $('.navi-report__action-link:contains(Export)').attr('href').includes('/network/day/property;show=id/?dateTime='),
-      'Export url contains dimension path param'
-    );
-
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
 
-    assert.ok(
-      $('.navi-report__action-link:contains(Export)')
-        .attr('href')
-        .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
-      'Groupby changes are automatically included in export url'
-    );
-
-    assert.notOk(
-      $('.navi-report__action-link:contains(Export)').attr('href').includes('filter'),
-      'No filters are initially present in export url'
-    );
-
-    /* == Add filter == */
-    await click('.navi-report__run-btn');
-    await clickItemFilter('dimension', 'Product Family');
-
-    /* == Update filter value == */
-    await selectChoose('.filter-values--dimension-select__trigger', '1');
-    await click('.navi-report__run-btn');
-
-    assert.ok(
-      decodeURIComponent($('.navi-report__action-link:contains(Export)').attr('href')).includes(
-        'productFamily|id-in["1"]'
-      ),
-      'Filter updates are automatically included in export url'
-    );
-
+    await click($('.navi-report__action-link:contains(Export)')[0]);
+    assert.dom('.alert.is-info').hasText('Exporting');
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
