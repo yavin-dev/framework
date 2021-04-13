@@ -159,10 +159,6 @@ module('Acceptance | Exploring Widgets', function (hooks) {
         'Export action is enabled for a valid request'
       );
 
-    assert
-      .dom($('.navi-report-widget__action-link:contains(Export)')[0])
-      .hasAttribute('href', /metrics=adClicks%2CnavClicks/, 'Have correct metric in export url');
-
     // Remove all columns to create an invalid request
     assert
       .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]')
