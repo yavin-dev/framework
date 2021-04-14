@@ -110,7 +110,7 @@
   <CommonActions::Delete
     @model={{@model}}
     @deleteAction={{item-action "DELETE_ITEM" @model}}
-    as |DELETE|
+    as |onDelete|
   >
     <DenaliButton
       @style="text"
@@ -118,7 +118,7 @@
       @icon="trash"
       id="report-actions__delete-btn"
       class="report-actions__delete-btn"
-      {{on "click" DELETE}}
+      {{on "click" onDelete}}
     >
       Delete
     </DenaliButton>
