@@ -4,7 +4,7 @@ for terms. --}}
   type="button"
   class="export__action-btn"
   ...attributes
-  {{on "click" (queue
+  {{on "click" (pipe
     (fn this.showExportNotification)
     (perform this.getDownloadURLTask)
     (fn this.downloadURLLink)
