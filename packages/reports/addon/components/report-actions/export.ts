@@ -20,10 +20,6 @@ interface Args {
 
 export default class ReportActionExport extends Component<Args> {
   /**
-   * @property {string} exportURL
-   */
-  exportURL!: string;
-  /**
    * @property {Service} facts - instance of navi facts service
    */
   @service('navi-facts') declare facts: NaviFactsService;
@@ -36,27 +32,20 @@ export default class ReportActionExport extends Component<Args> {
   /**
    * Gets the table export url from facts service
    */
-  @task *getDownloadURLTask(): TaskGenerator<string> {
-    /*
-     * Observe 'report.request.validations.isTruelyValid' to recompute with any request change
-     * Void the href on a should disabled
-     */
+  @task *getDownloadURLTask(): TaskGenerator<string | undefined> {
     const serializedRequest = this.args.report.request.serialize() as RequestV2;
+    this.showExportNotification();
     try {
-      return yield taskFor(this.facts.getDownloadURL)
-        .perform(serializedRequest, {})
-        .then((value) => {
-          this.exportURL = value;
-        });
+      return yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
     } catch (error) {
       this.naviNotifications.clear();
       this.showErrorNotification(error.message);
-      return 'javascript:void(0);';
+      return undefined;
     }
   }
 
   @action
-  showExportNotification() {
+  showExportNotification(): void {
     this.naviNotifications.add({
       title: `The CSV download should begin shortly`,
       style: 'info',
@@ -64,7 +53,7 @@ export default class ReportActionExport extends Component<Args> {
   }
 
   @action
-  showErrorNotification(error: string) {
+  showErrorNotification(error: string): void {
     this.naviNotifications.add({
       title: error,
       style: 'danger',
@@ -72,13 +61,15 @@ export default class ReportActionExport extends Component<Args> {
   }
 
   @action
-  downloadURLLink() {
-    let anchorElement = document.createElement('a');
-    anchorElement.setAttribute('href', this.exportURL);
-    anchorElement.setAttribute('download', this.args.report.title);
-    anchorElement.setAttribute('target', '_blank');
-    document.body.appendChild(anchorElement);
-    anchorElement.click();
-    document.body.removeChild(anchorElement);
+  downloadURLLink(url?: string | undefined): void {
+    if (url !== undefined) {
+      const anchorElement = document.createElement('a');
+      anchorElement.setAttribute('href', url);
+      anchorElement.setAttribute('download', this.args.report.title);
+      anchorElement.setAttribute('target', '_blank');
+      document.body.appendChild(anchorElement);
+      anchorElement.click();
+      document.body.removeChild(anchorElement);
+    }
   }
 }

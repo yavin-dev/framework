@@ -5,7 +5,6 @@ for terms. --}}
   class="export__action-btn"
   ...attributes
   {{on "click" (pipe
-    (fn this.showExportNotification)
     (perform this.getDownloadURLTask)
     (fn this.downloadURLLink)
   )}}
