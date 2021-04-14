@@ -54,7 +54,7 @@ module('Integration | Component | filter-builders/dimension', function (hooks) {
       'The filter values are rendered correctly'
     );
 
-    await clickTrigger();
+    await clickTrigger('.filter-builder__operator');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['Equals', 'Not Equals', 'Is Empty', 'Is Not Empty', 'Contains'],
