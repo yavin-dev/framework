@@ -6,7 +6,7 @@
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { task, TaskGenerator } from 'ember-concurrency';
+import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
@@ -32,15 +32,15 @@ export default class ReportActionExport extends Component<Args> {
   /**
    * Gets the table export url from facts service
    */
-  @task *getDownloadURLTask(): TaskGenerator<string | undefined> {
+  @task *getDownloadURLTask() {
     const serializedRequest = this.args.report.request.serialize() as RequestV2;
     this.showExportNotification();
     try {
-      return yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
+      const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
+      this.downloadURLLink(url);
     } catch (error) {
       this.naviNotifications.clear();
       this.showErrorNotification(error.message);
-      return undefined;
     }
   }
 
@@ -61,7 +61,7 @@ export default class ReportActionExport extends Component<Args> {
   }
 
   @action
-  downloadURLLink(url?: string | undefined): void {
+  downloadURLLink(url?: string): void {
     if (url !== undefined) {
       const anchorElement = document.createElement('a');
       anchorElement.setAttribute('href', url);
