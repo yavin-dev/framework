@@ -16,23 +16,23 @@
     }
 
     &__input--recipients[disabled] {
-      background-color: $color-grey-100;
+      background-color: map-get($denali-grey-colors, '100');
       cursor: not-allowed;
     }
 
     &__recipients--invalid {
       .schedule-modal__input--recipients.text-input {
-        background-color: $color-red;
-        border-bottom: 1px solid $color-status-danger;
+        background-color: map-get($denali-colors, 'red', '500');
+        border-bottom: 1px solid map-get($denali-status-colors, 'danger');
       }
 
       .schedule-modal__helper-recipients {
-        color: $color-red;
+        color: map-get($denali-colors, 'red', '500');
       }
     }
 
     &__helper-recipients {
-      color: $color-grey-300;
+      color: map-get($denali-grey-colors, '300');
     }
   }
 }

@@ -94,14 +94,14 @@
   &--time-dimension,
   &--dimension {
     .navi-column-config-item__type-icon {
-      background-color: $color-orange;
+      background-color: map-get($denali-colors, 'orange', '500');
       border-radius: 50%;
     }
   }
 
   &--metric {
     .navi-column-config-item__type-icon {
-      background-color: $color-purple;
+      background-color: map-get($denali-colors, 'purple', '500');
       border-radius: 1px;
     }
   }

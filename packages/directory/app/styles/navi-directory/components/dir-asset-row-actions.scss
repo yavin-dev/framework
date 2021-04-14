@@ -36,7 +36,7 @@
   .delete,
   .schedule,
   button {
-    color: $color-grey-600;
+    color: map-get($denali-grey-colors, '600');
     cursor: pointer;
     font-size: 14px;
     padding: 0;
@@ -52,7 +52,7 @@
 
       /* stylelint-disable selector-no-qualifying-type */
       &:hover {
-        color: $color-grey-600;
+        color: map-get($denali-grey-colors, '600');
       }
     }
   }
