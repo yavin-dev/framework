@@ -611,10 +611,11 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
+
     await click('.navi-report__run-btn');
 
     await click($('.navi-report__action-link:contains(Export)')[0]);
-    assert.dom('.alert.is-info').hasText('Exporting');
+    assert.dom('.alert.is-info').hasText('The CSV download should begin shortly');
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 

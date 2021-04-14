@@ -76,6 +76,7 @@ export default class ReportActionExport extends Component<Args> {
     let anchorElement = document.createElement('a');
     anchorElement.setAttribute('href', this.exportURL);
     anchorElement.setAttribute('download', this.args.report.title);
+    anchorElement.setAttribute('target', '_blank');
     document.body.appendChild(anchorElement);
     anchorElement.click();
     document.body.removeChild(anchorElement);
