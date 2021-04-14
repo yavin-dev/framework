@@ -97,7 +97,7 @@
     }
 
     &--row:nth-child(even) {
-      background: rgba(map-get($denali-brand-colors, '500') 0.05);
+      background: rgba(map-get($denali-brand-colors, '500'), 0.05);
     }
   }
 
