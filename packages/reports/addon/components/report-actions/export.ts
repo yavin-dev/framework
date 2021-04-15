@@ -50,7 +50,7 @@ export default class ReportActionExport extends Component<Args> {
 
   showErrorNotification(): void {
     this.naviNotifications.add({
-      title: 'An error occurred while updating exporting',
+      title: 'An error occurred while exporting',
       style: 'danger',
     });
   }
