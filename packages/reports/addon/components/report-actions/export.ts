@@ -13,7 +13,6 @@ import ReportModel from 'navi-core/addon/models/report';
 import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
 
 interface Args {
-  disabled: boolean;
   report: ReportModel;
 }
 
@@ -38,8 +37,7 @@ export default class ReportActionExport extends Component<Args> {
       const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
       this.downloadURLLink(url);
     } catch (error) {
-      this.naviNotifications.clear();
-      this.showErrorNotification(error.message);
+      this.showErrorNotification();
     }
   }
 
@@ -50,9 +48,9 @@ export default class ReportActionExport extends Component<Args> {
     });
   }
 
-  showErrorNotification(error: string): void {
+  showErrorNotification(): void {
     this.naviNotifications.add({
-      title: error,
+      title: 'An error occurred while updating exporting',
       style: 'danger',
     });
   }

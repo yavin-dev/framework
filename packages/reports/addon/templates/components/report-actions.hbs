@@ -57,14 +57,14 @@
           class="export"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
-          as |getDownloadURLTask|
+          as |onClick|
         >
           <button
             type="button"
             class="export-action__button button is-text is-medium"
             id="report-action__export"
             disabled={{not @model.validations.isTruelyValid}}
-            {{on "click" getDownloadURLTask}}
+            {{on "click" onClick}}
           >
             <NaviIcon @icon="download" class="m-r-6" />
             Export
