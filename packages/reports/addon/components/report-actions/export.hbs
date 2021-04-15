@@ -1,12 +1,4 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file
 for terms. --}}
-<button
-  type="button"
-  class="export__action-btn"
-  ...attributes
-  {{on "click" (perform this.getDownloadURLTask
-  )}}
-  disabled={{@disabled}}
->
-{{yield}}
-</button>
+{{yield (perform this.getDownloadURLTask)}}
+

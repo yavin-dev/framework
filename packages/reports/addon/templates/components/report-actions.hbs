@@ -54,13 +54,21 @@
     {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
       {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
         <ExportAction
-          class="navi-report__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
-          id="report-action__export"
+          class="export"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
+          as |getDownloadURLTask|
         >
-          <NaviIcon @icon="download" class="m-r-6" />
-          Export
+          <button
+            type="button"
+            class="export-action__button button is-text is-medium"
+            id="report-action__export"
+            disabled={{not @model.validations.isTruelyValid}}
+            {{on "click" getDownloadURLTask}}
+          >
+            <NaviIcon @icon="download" class="m-r-6" />
+            Export
+          </button>
         </ExportAction>
       {{/let}}
     {{/let}}

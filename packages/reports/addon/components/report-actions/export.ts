@@ -5,7 +5,6 @@
 
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
-import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
@@ -44,7 +43,6 @@ export default class ReportActionExport extends Component<Args> {
     }
   }
 
-  @action
   showExportNotification(): void {
     this.naviNotifications.add({
       title: `The CSV download should begin shortly`,
@@ -52,7 +50,6 @@ export default class ReportActionExport extends Component<Args> {
     });
   }
 
-  @action
   showErrorNotification(error: string): void {
     this.naviNotifications.add({
       title: error,
@@ -60,8 +57,7 @@ export default class ReportActionExport extends Component<Args> {
     });
   }
 
-  @action
-  downloadURLLink(url?: string): void {
+  downloadURLLink(url?: string | undefined): void {
     if (url !== undefined) {
       const anchorElement = document.createElement('a');
       anchorElement.setAttribute('href', url);
