@@ -34,7 +34,7 @@
     }
 
     path {
-      stroke: denali-color('grey', '400');
+      stroke: map-get($denali-grey-colors, '400');
     }
   }
 
@@ -43,7 +43,7 @@
   }
 
   .c3-grid line {
-    stroke: denali-color('grey', '400');
+    stroke: map-get($denali-grey-colors, '400');
   }
 
   .c3-legend-item text {
@@ -76,9 +76,9 @@
 
   // highlighted data point coloring
   circle.c3-selected-circle {
-    fill: $color-grey-100 !important;
+    fill: map-get($denali-grey-colors, '100') !important;
     r: 6;
-    stroke: $color-red !important;
+    stroke: map-get($denali-colors, 'red', '500');
   }
 
   .c3-xgrid,

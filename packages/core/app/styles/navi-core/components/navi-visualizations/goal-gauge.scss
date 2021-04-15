@@ -25,7 +25,7 @@
   }
 
   .value-title.neg {
-    fill: $color-red;
+    fill: map-get($denali-colors, 'red', '500');
   }
 
   text.c3-chart-arcs-gauge-max,

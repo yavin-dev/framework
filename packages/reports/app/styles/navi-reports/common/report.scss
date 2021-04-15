@@ -17,7 +17,7 @@
       margin: 5px 0 0;
 
       &-link {
-        color: $color-brand-300;
+        color: map-get($denali-brand-colors, '300');
       }
     }
 
@@ -51,7 +51,7 @@
   }
 
   &-invalid__highlight-text {
-    color: $color-status-danger;
+    color: map-get($denali-status-colors, 'danger');
   }
 
   &-invalid__info-message,
@@ -65,14 +65,14 @@
 
   &__action-link--is-disabled,
   &__action--is-disabled button {
-    color: $color-grey-600;
+    color: map-get($denali-grey-colors, '600');
     cursor: not-allowed;
   }
 
   // TODO :: Investigate why this style could not be consolidated with
   // &__action-link--is-disabled
   &__action-link--force-disabled {
-    color: $color-grey-600 !important;
+    color: map-get($denali-grey-colors, '600') !important;
     cursor: not-allowed !important;
   }
 
