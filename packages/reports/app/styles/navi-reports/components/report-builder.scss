@@ -48,7 +48,7 @@
 
     &-skel {
       background-color: $body-bg-color;
-      border: 1px solid denali-color('grey', '500');
+      border: 1px solid map-get($denali-grey-colors, '500');
       margin: 5px;
     }
   }
@@ -90,7 +90,7 @@
       display: flex;
 
       &-icon {
-        color: denali-color('brand', '300');
+        color: map-get($denali-brand-colors, '300');
         font-size: $h2-font-size;
         height: 17px;
         text-align: center;
@@ -101,7 +101,7 @@
 
     &__message {
       &--icon {
-        color: denali-color('grey', '600');
+        color: map-get($denali-grey-colors, '600');
       }
     }
 
@@ -126,7 +126,7 @@
     margin-bottom: 10px;
 
     .column-selector__title::after {
-      background-color: $color-orange;
+      background-color: map-get($denali-colors, 'orange', '500');
       border-radius: 50%;
       content: '';
       display: inline-block;
@@ -141,7 +141,7 @@
     margin-top: 0;
 
     .column-selector__title::after {
-      background-color: $color-purple;
+      background-color: map-get($denali-colors, 'purple', '500');
       border-radius: 1px;
       content: '';
       display: inline-block;

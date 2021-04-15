@@ -26,7 +26,7 @@
   }
 
   &__filter-errors-icon {
-    color: $color-status-warning;
+    color: map-get($denali-status-colors, 'warning');
     font-size: $h6-font-size;
   }
 

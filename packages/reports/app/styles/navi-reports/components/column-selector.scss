@@ -20,7 +20,7 @@
 
     &:hover {
       .column-selector__add-column-btn {
-        color: $color-grey-700;
+        color: map-get($denali-grey-colors, '700');
       }
 
       .column-selector__add-icon {
