@@ -11,7 +11,10 @@ declare module 'navi-config' {
     dataEpoch: string;
     dataSources: NaviDataSource[];
     defaultDataSource?: string;
-    searchThresholds: TODO;
+    cardinalities: {
+      small: number;
+      medium: number;
+    };
     defaultTimeGrain?: Grain;
   }
 }

@@ -29,7 +29,7 @@ shared:
           - ~pr
           - ~commit
   environment:
-    NODE_VERSION: 12.16.0
+    NODE_VERSION: 14.16.1
     JOBS: 4
 
 jobs:

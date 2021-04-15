@@ -10,6 +10,8 @@ import { tracked } from '@glimmer/tracking';
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import { sortBy } from 'lodash-es';
+import { taskFor } from 'ember-concurrency-ts';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type RequestFragment from 'navi-core/models/bard-request-v2/request';
@@ -17,8 +19,7 @@ import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filt
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type { IndexedOptions } from '../power-select-collection-options';
-import { sortBy } from 'lodash-es';
-import { taskFor } from 'ember-concurrency-ts';
+import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 const SEARCH_DEBOUNCE_MS = 250;
 const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
@@ -94,7 +95,9 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.dimensionValues === undefined) {
       const { dimensionColumn } = this;
       if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
-        this.dimensionValues = taskFor(this.naviDimension.all).perform(dimensionColumn).then();
+        this.dimensionValues = taskFor(this.naviDimension.all)
+          .perform(dimensionColumn)
+          .then((r) => r.values);
       }
     }
   }
@@ -113,7 +116,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     }
     if (this.dimensionValues === undefined) {
       yield timeout(SEARCH_DEBOUNCE_MS);
-      return yield taskFor(this.naviDimension.search).perform(this.dimensionColumn, searchTerm);
+      const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
+        this.dimensionColumn,
+        searchTerm
+      );
+      return dimensionResponse.values;
     } else {
       yield timeout(SEARCH_DEBOUNCE_OFFLINE_MS);
       const rawValues: NaviDimensionModel[] = yield this.dimensionValues;

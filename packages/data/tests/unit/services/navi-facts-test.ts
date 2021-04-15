@@ -293,22 +293,20 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response: ResponseV1 = {
+    const response = NaviFactResponse.create({
       rows: [],
       meta: {
-        //@ts-expect-error
         pagination: {
           currentPage: 2,
-          perPage: 10,
+          rowsPerPage: 10,
           numberOfResults: 30,
         },
       },
-    };
+    });
     const request = {} as RequestV2;
 
     await taskFor(service.fetchNext).perform(response, request);
 
-    //@ts-expect-error
     response.meta.pagination.currentPage = 3;
     assert.equal(
       await taskFor(service.fetchNext).perform(response, request),
@@ -325,22 +323,20 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response: ResponseV1 = {
+    const response = NaviFactResponse.create({
       rows: [],
       meta: {
-        //@ts-expect-error
         pagination: {
           currentPage: 2,
-          perPage: 10,
+          rowsPerPage: 10,
           numberOfResults: 30,
         },
       },
-    };
+    });
     const request = {} as RequestV2;
 
     await taskFor(service.fetchPrevious).perform(response, request);
 
-    //@ts-expect-error
     response.meta.pagination.currentPage = 1;
     assert.equal(
       await taskFor(service.fetchPrevious).perform(response, request),

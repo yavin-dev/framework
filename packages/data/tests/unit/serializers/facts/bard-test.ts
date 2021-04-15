@@ -33,7 +33,6 @@ module('Unit | Serializer | facts/bard', function (hooks) {
         pagination: {
           currentPage: 1,
           rowsPerPage: 0,
-          perPage: 10,
           numberOfResults: 0,
         },
       },

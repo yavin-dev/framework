@@ -16,7 +16,7 @@ import type { TaskGenerator } from 'ember-concurrency';
 import type NaviFactAdapter from 'navi-data/adapters/facts/interface';
 import type { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import type NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 export default class NaviFactsService extends Service {
   /**
@@ -90,10 +90,10 @@ export default class NaviFactsService extends Service {
 
     try {
       const payload: unknown = yield taskFor(adapter.fetchDataForRequest).perform(request, options);
-      const response = serializer.normalize(payload, request);
+      const response = serializer.normalize(payload, request, options);
       return NaviFactsModel.create({ request, response, _factService: this });
     } catch (e) {
-      const errorModel: Error = serializer.extractError(e, request);
+      const errorModel: Error = serializer.extractError(e, request, options);
       throw errorModel;
     }
   }
@@ -103,15 +103,15 @@ export default class NaviFactsService extends Service {
    * @param request
    * @return returns the promise with the next set of results or null
    */
-  @task *fetchNext(response: ResponseV1, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
+  @task *fetchNext(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
     if (response.meta.pagination) {
-      const { perPage, numberOfResults, currentPage } = response.meta.pagination;
-      const totalPages = numberOfResults / perPage;
+      const { rowsPerPage, numberOfResults, currentPage } = response.meta.pagination;
+      const totalPages = numberOfResults / rowsPerPage;
 
       if (currentPage < totalPages) {
         return yield taskFor(this.fetch).perform(request, {
           page: currentPage + 1,
-          perPage: perPage,
+          perPage: rowsPerPage,
         });
       }
     }
@@ -123,7 +123,7 @@ export default class NaviFactsService extends Service {
    * @param request
    * @return returns the promise with the previous set of results or null
    */
-  @task *fetchPrevious(response: ResponseV1, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
+  @task *fetchPrevious(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
     if (response.meta.pagination) {
       const { rowsPerPage, currentPage } = response.meta.pagination;
       if (currentPage > 1) {

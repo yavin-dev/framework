@@ -41,8 +41,18 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
                 contentLength: 129,
                 httpStatus: 200,
                 recordCount: 3,
-                responseBody:
-                  '{"data":{"table0":{"edges":[{"node":{"col0":"foo"}},{"node":{"col0":"bar"}},{"node":{"col0":"baz"}}]}}}',
+                responseBody: JSON.stringify({
+                  data: {
+                    table0: {
+                      edges: [{ node: { col0: 'foo' } }, { node: { col0: 'bar' } }, { node: { col0: 'baz' } }],
+                      pageInfo: {
+                        startCursor: '0',
+                        endCursor: '3',
+                        totalRecords: 6,
+                      },
+                    },
+                  },
+                }),
               },
             },
           },
@@ -56,11 +66,30 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
         'elideOne'
       ) as DimensionMetadataModel,
     };
-    assert.deepEqual(serializer.normalize(dimensionColumn), [], 'Empty array is returned for an undefined payload');
+    assert.deepEqual(
+      serializer.normalize(dimensionColumn).values,
+      [],
+      'Empty array is returned for an undefined payload'
+    );
 
     const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
-    const actualModels = serializer.normalize(dimensionColumn, payload);
-    assert.deepEqual(actualModels, expectedModels, 'normalize returns the `rows` prop of the raw payload');
+    const dimensionResponse = serializer.normalize(dimensionColumn, payload);
+    assert.deepEqual(
+      dimensionResponse.values,
+      expectedModels,
+      'normalize returns the dimension values of the raw payload'
+    );
+    assert.deepEqual(
+      dimensionResponse.meta,
+      {
+        pagination: {
+          currentPage: 1,
+          numberOfResults: 6,
+          rowsPerPage: 3,
+        },
+      },
+      'normalize creates a `meta` prop for pagination'
+    );
   });
 
   test('normalize - tableSource', function (this: TestContext, assert) {
@@ -82,7 +111,18 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
                 contentLength: 129,
                 httpStatus: 200,
                 recordCount: 3,
-                responseBody: `{"data":{"${lookupTable}":{"edges":[{"node":{"col0":"foo"}},{"node":{"col0":"bar"}},{"node":{"col0":"baz"}}]}}}`,
+                responseBody: JSON.stringify({
+                  data: {
+                    [lookupTable]: {
+                      edges: [{ node: { col0: 'foo' } }, { node: { col0: 'bar' } }, { node: { col0: 'baz' } }],
+                      pageInfo: {
+                        startCursor: '0',
+                        endCursor: '3',
+                        totalRecords: 6,
+                      },
+                    },
+                  },
+                }),
               },
             },
           },
@@ -97,11 +137,22 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
       ) as DimensionMetadataModel,
     };
     const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
-    const actualModels = serializer.normalize(dimensionColumn, payload);
+    const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(
-      actualModels,
+      dimensionResponse.values,
       expectedModels,
       '`tableSource`, when available, is used to normalize dimension value responses'
+    );
+    assert.deepEqual(
+      dimensionResponse.meta,
+      {
+        pagination: {
+          currentPage: 1,
+          numberOfResults: 6,
+          rowsPerPage: 3,
+        },
+      },
+      'normalize creates a `meta` prop for pagination'
     );
   });
 });

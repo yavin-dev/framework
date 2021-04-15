@@ -90,7 +90,10 @@ const DATE_FILTER_OPS = {
  */
 function _getSeedForRequest(table, args, fields) {
   const tableLength = table.length;
-  const argsLength = Object.keys(args).join(' ').length;
+  const skippedArgs = ['first', 'after', 'sort'];
+  const argsLength = Object.keys(args)
+    .filter((key) => !skippedArgs.includes(key))
+    .join(' ').length;
   const fieldsLength = fields.join(' ').length;
   return tableLength + argsLength + fieldsLength;
 }
@@ -330,6 +333,7 @@ function _parseArgs(args, table, aliases) {
           return { field, direction };
         }),
     first: (limit) => limit,
+    after: (after) => after,
   };
 
   const parsed = {};
@@ -355,7 +359,7 @@ function _getResponseBody(db, asyncQueryRecord) {
   if (responseTime - createdOn >= ASYNC_RESPONSE_DELAY) {
     const { table, args, fields, aliases } = _parseGQLQuery(JSON.parse(query).query || '');
     const fieldToAlias = invert(aliases);
-    const { filter = [], sort = [], first } = _parseArgs(args, table, aliases);
+    const { filter = [], sort = [], first, after } = _parseArgs(args, table, aliases);
     const seed = _getSeedForRequest(table, args, fields);
     faker.seed(seed);
 
@@ -413,11 +417,6 @@ function _getResponseBody(db, asyncQueryRecord) {
         }, currRow)
       );
 
-      // handle limit in request
-      if (first && first < rows.length) {
-        rows = rows.slice(0, first);
-      }
-
       // sort rows
       if (sort.length) {
         rows = orderBy(
@@ -427,10 +426,25 @@ function _getResponseBody(db, asyncQueryRecord) {
         );
       }
 
+      // handle limit in request
+      const totalRecords = rows.length;
+      if (after && after < rows.length) {
+        rows = rows.slice(after);
+      }
+      if (first && first < rows.length) {
+        rows = rows.slice(0, first);
+      }
+
+      const startNumber = after ?? 0;
       return JSON.stringify({
         data: {
           [table]: {
             edges: rows.map((node) => ({ node })),
+            pageInfo: {
+              startCursor: `${startNumber}`,
+              endCursor: `${startNumber + rows.length}`,
+              totalRecords,
+            },
           },
         },
       });

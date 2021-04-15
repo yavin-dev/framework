@@ -25,8 +25,8 @@ import { Grain } from 'navi-data/utils/date';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
 
-const LOAD_CARDINALITY = config.navi.searchThresholds.contains;
-const MAX_LOAD_CARDINALITY = config.navi.searchThresholds.in;
+const SMALL_CARDINALITY = config.navi.cardinalities.small;
+const MEDIUM_CARDINALITY = config.navi.cardinalities.medium;
 
 export type RawEverythingPayload = {
   tables: RawTablePayload[];
@@ -531,11 +531,13 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         fields,
       } = dimension;
 
-      let dimCardinality: Cardinality = CARDINALITY_SIZES[0];
-      if (cardinality > MAX_LOAD_CARDINALITY) {
+      let dimCardinality: Cardinality;
+      if (cardinality > MEDIUM_CARDINALITY) {
         dimCardinality = CARDINALITY_SIZES[2];
-      } else if (cardinality > LOAD_CARDINALITY) {
+      } else if (cardinality > SMALL_CARDINALITY) {
         dimCardinality = CARDINALITY_SIZES[1];
+      } else {
+        dimCardinality = CARDINALITY_SIZES[0];
       }
       return {
         id: name,

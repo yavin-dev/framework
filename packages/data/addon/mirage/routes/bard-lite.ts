@@ -275,13 +275,14 @@ export default function (
 
   this.get('/dimensions/:dimension/values', function (_db, request) {
     faker.seed(request.url.length);
-    let dimension = request.params.dimension,
-      rows = _getDimensionValues({ name: dimension, show: [] });
-
+    const dimension = request.params.dimension;
+    const { filters, page, perPage } = request.queryParams;
+    let rows = _getDimensionValues({ name: dimension, show: [] });
+    let meta;
     // Handle value filters
-    if ('filters' in request.queryParams) {
-      const { values } = parseFilters(request.queryParams.filters)[0],
-        fieldMatch = request.queryParams.filters.match(/\|(id|key)/);
+    if (filters) {
+      const { values } = parseFilters(request.queryParams.filters)[0];
+      const fieldMatch = request.queryParams.filters.match(/\|(id|key)/);
 
       rows =
         fieldMatch && fieldMatch.length > 0
@@ -291,8 +292,26 @@ export default function (
             })
           : rows.filter((row) => values.some((value) => row.description?.toLowerCase().includes(value.toLowerCase())));
     }
+    if (page && perPage) {
+      const pageNum = Number(page);
+      const perPageNum = Number(perPage);
+      const skipped = (pageNum - 1) * perPageNum;
+      const totalResults = rows.length;
+      rows = rows.slice(skipped);
+      rows = rows.slice(0, perPageNum);
+      meta = {
+        pagination: {
+          currentPage: pageNum,
+          rowsPerPage: perPageNum,
+          numberOfResults: totalResults,
+        },
+      };
+    }
 
-    return { rows };
+    return {
+      rows,
+      ...(meta ? { meta } : {}),
+    };
   });
 
   this.get('/dimensions/:dimension/search', function (_db, request) {
