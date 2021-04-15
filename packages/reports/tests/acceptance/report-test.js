@@ -537,7 +537,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/1/view');
 
     assert.deepEqual(
-      findAll('.report-header__header-action .button').map((e) => e.textContent.trim()),
+      findAll('.report-header__header-actions .button').map((e) => e.textContent.trim()),
       ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
       'Export is disabled by default'
     );
@@ -553,7 +553,7 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
     await visit('/reports/1/view');
     assert.deepEqual(
-      findAll('.report-header__header-action .button').map((e) => e.textContent.trim()),
+      findAll('.report-header__header-actions .button').map((e) => e.textContent.trim()),
       ['API Query', 'Clone', 'Export', 'Share', 'Schedule', 'Delete'],
       'Export is enabled with the feature flag on'
     );

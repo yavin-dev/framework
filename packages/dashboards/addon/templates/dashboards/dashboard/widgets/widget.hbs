@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-report-widget">
+<div class="navi-report navi-report-widget">
   <div class="container-full p-y-10">
     {{!-- Breadcrumb --}}
     <div class="row">
@@ -44,73 +44,79 @@
           </span>
         </div>
         <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
-          {{!-- Get API action is only enabled when request is valid --}}
-          <CommonActions::GetApi
-            @request={{@model.request}}
-            disabled={{not @model.request.validations.isTruelyValid}}
-          >
-            <DenaliIcon @icon="code" />
-              API Query
-            <EmberTooltip>
-              {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
-            </EmberTooltip>
-          </CommonActions::GetApi>
-
-          {{!-- Export action is only enabled when request is valid --}}
-          {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
-            {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
-              <ExportAction
-                @report={{@model}}
-                @disabled={{not @model.validations.isTruelyValid}}
-                class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
-              >
-                <DenaliButton @style="text" @size="medium">
-                  <DenaliIcon @icon="download" />
-                  Export
-                </DenaliButton>
-                <EmberTooltip>
-                  {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-                </EmberTooltip>
-              </ExportAction>
-            {{/let}}
-          {{/let}}
-
-          <LinkTo 
-            @route="dashboards.dashboard.widgets.widget.clone-to-report" 
-            class="navi-report-widget__action-link button is-text is-medium"
-          >
-            <DenaliIcon @icon="copy-file" />
-            Clone As Report
-          </LinkTo>
-
-          {{#unless @model.isNew}}
-            {{!-- Share only enabled on a Valid widget --}}
-            <CommonActions::Share
-              @disabled={{not @model.request.validations.isTruelyValid}}
-              class="button is-text is-medium navi-report-widget__share-btn"
+          <div class="navi-report-widget__header-actions">
+            {{!-- Get API action is only enabled when request is valid --}}
+            <CommonActions::GetApi
+              @request={{@model.request}}
+              disabled={{not @model.request.validations.isTruelyValid}}
             >
-              <DenaliIcon @icon="share-arrow" />
-              Share
+              <DenaliIcon @icon="code" />
+                API Query
               <EmberTooltip>
-                {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
+                {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
               </EmberTooltip>
-            </CommonActions::Share>
-          {{/unless}}
-          {{#if @model.dashboard.isUserOwner}}
-            <CommonActions::Delete
-              @model={{@model}}
-              @deleteAction={{route-action "deleteWidget"}}
-              as |onDelete|
+            </CommonActions::GetApi>
+
+            {{!-- Export action is only enabled when request is valid --}}
+            {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+              {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
+                <ExportAction
+                  @report={{@model}}
+                  @disabled={{not @model.validations.isTruelyValid}}
+                  class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
+                >
+                  <DenaliButton
+                    @style="text"
+                    @size="medium"
+                    @icon="download"
+                  >
+                    Export
+                  </DenaliButton>
+                  <EmberTooltip>
+                    {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+                  </EmberTooltip>
+                </ExportAction>
+              {{/let}}
+            {{/let}}
+
+            <LinkTo
+              @route="dashboards.dashboard.widgets.widget.clone-to-report"
+              class="navi-report-widget__action-link button is-text is-medium"
             >
-              <DenaliButton
-                @style="text"
-                class="navi-report-widget__delete-btn"
-                {{on "click" onDelete}}>
-                <DenaliIcon @size="small" @icon="trash" />
-                Delete
-              </DenaliButton>
-            </CommonActions::Delete>
-          {{/if}}
+              <DenaliIcon @icon="copy-file" />
+              Clone As Report
+            </LinkTo>
+
+            {{#unless @model.isNew}}
+              {{!-- Share only enabled on a Valid widget --}}
+              <CommonActions::Share
+                @disabled={{not @model.request.validations.isTruelyValid}}
+                class="button is-text is-medium navi-report-widget__share-btn"
+              >
+                <DenaliIcon @icon="share-arrow" />
+                Share
+                <EmberTooltip>
+                  {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
+                </EmberTooltip>
+              </CommonActions::Share>
+            {{/unless}}
+            {{#if @model.dashboard.isUserOwner}}
+              <CommonActions::Delete
+                @model={{@model}}
+                @deleteAction={{route-action "deleteWidget"}}
+                as |onDelete|
+              >
+                <DenaliButton
+                  @style="text"
+                  @size="medium"
+                  @icon="trash"
+                  class="navi-report-widget__delete-btn"
+                  {{on "click" onDelete}}>
+                  Delete
+                </DenaliButton>
+              </CommonActions::Delete>
+            {{/if}}
+          </div>
         </div>
       </div>
     </div>
