@@ -84,7 +84,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     assert.expect(1);
 
     await visit('/dashboards/1');
-    await click(findAll('.navi-widget__explore-btn')[1]);
+    await click(findAll('.navi-widget__edit-btn')[1]);
 
     assert.ok(currentURL().endsWith('/dashboards/1/widgets/2/view'), 'Explore action links to widget view route');
   });
@@ -201,7 +201,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await visit('/dashboards/1/widgets/2/view');
     assert
       .dom('.get-api__action-btn')
-      .doesNotHaveClass('.navi-report-widget__action--is-disabled', 'Get API action is enabled for a valid request');
+      .doesNotHaveAttribute('disabled', 'Get API action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
@@ -210,7 +210,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert
       .dom('.get-api__action-btn')
-      .hasClass('navi-report-widget__action--is-disabled', 'Get API action is disabled when request is not valid');
+      .hasAttribute('disabled', '', 'Get API action is disabled when request is not valid');
   });
 
   test('Share action', async function (assert) {
@@ -237,7 +237,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');
-    await click($('.navi-report-widget__action:contains(Share) button')[0]);
+    await click('.navi-report-widget__share-btn');
   });
 
   test('Delete widget', async function (assert) {
@@ -260,12 +260,12 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     );
 
     await visit('/dashboards/1/widgets/2/view');
-    await click($('.navi-report-widget__action:contains(Delete) button')[0]);
+    await click('.navi-report-widget__delete-btn');
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Mobile DAU Graph dashboard widget.');
 
-    await click('.delete__delete-btn');
+    await click('.delete__modal-delete-btn');
     assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After deleting, user is brought to dashboard view');
 
     assert.deepEqual(

@@ -11,7 +11,8 @@
   max-width: 100%;
   min-height: 0;
 
-  .report-header {
+  .report-header,
+  .navi-report-widget {
     &__breadcrumb {
       margin: 5px 0 0;
 
@@ -26,7 +27,7 @@
       text-transform: capitalize;
     }
 
-    &__header-action {
+    &__header-actions {
       display: flex;
 
       @include media-size-between(mobile, tablet) {
@@ -38,7 +39,7 @@
         justify-content: flex-end;
       }
 
-      button {
+      .button {
         white-space: nowrap;
       }
 

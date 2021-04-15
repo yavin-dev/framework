@@ -39,19 +39,25 @@
             @model={{@dashboard.id}}
             class="dashboard-header__clone-btn button is-text is-medium"
           >
-            <NaviIcon @icon="copy" class="m-r-6" />
+            <DenaliIcon @icon="copy-file" />
             Clone
           </LinkTo>
 
           {{#if (feature-flag "enableDashboardExport")}}
             {{!-- Export action enabled if the dashboard is valid --}}
             <DashboardActions::Export
-              class="dashboard-header__export-btn button is-text is-medium {{unless @dashboard.validations.isTruelyValid "disabled"}}"
+              class="dashboard-header__export-btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
               @dashboard={{@dashboard}}
               @disabled={{not @dashboard.validations.isTruelyValid}}
             >
-              <NaviIcon @icon="download" class="m-r-6" />
-              Export
+              <DenaliButton 
+                disabled={{not @dashboard.validations.isTruelyValid}} 
+                @icon="download" 
+                @style="text" 
+                @size="medium"
+              >
+                Export
+              </DenaliButton>
             </DashboardActions::Export>
           {{/if}}
 
@@ -61,7 +67,7 @@
             @pageTitle={{@dashboard.title}}
             @disabled={{not @dashboard.validations.isTruelyValid}}
           >
-            <NaviIcon @icon="share" class="m-r-6" />
+            <DenaliIcon @icon="share-arrow" />
             Share
           </CommonActions::Share>
 
@@ -71,32 +77,39 @@
             {{#if (feature-flag "enableScheduleDashboards")}}
               <DashboardActions::Schedule
                 @model={{@dashboard}}
-                @disabled={{not @dashboard.validations.isTruelyValid}}
                 @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
                 @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
                 @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
                 as |onOpen|
               >
-                <button 
-                  type="button"
-                  class="dashboard-header__schedule-btn schedule-action__button button is-text is-medium"
+                <DenaliButton
+                  @style="text"
+                  @size="medium"
+                  @icon="time"
+                  class="dashboard-header__schedule-btn"
                   disabled={{not @dashboard.validations.isTruelyValid}}
                   {{on "click" onOpen}}
                 >
-                  <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
-                  <span>Schedule</span>
-                </button>
+                  Schedule
+                </DenaliButton>
               </DashboardActions::Schedule>
             {{/if}}
 
             <CommonActions::Delete
-              class="dashboard-header__delete-btn button is-text is-medium"
               @model={{@dashboard}}
               @warnMsg="Are you sure you want to delete this dashboard and all of its widgets?"
               @deleteAction={{@deleteAction}}
+              as |onDelete|
             >
-              <NaviIcon @icon="trash-o" class="m-r-6" />
-              Delete
+              <DenaliButton
+                @style="text"
+                @size="medium"
+                @icon="trash"
+                class="dashboard-header__delete-btn"
+                {{on "click" onDelete}}
+              >
+                Delete
+              </DenaliButton>
             </CommonActions::Delete>
           {{/if}}
 

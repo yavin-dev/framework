@@ -46,7 +46,7 @@ module('Integration | Component | dir-asset-row-actions', function (hooks) {
     `);
     await triggerEvent('.row', 'mouseenter');
 
-    assert.dom('.navi-action-list').exists('The correct component is rendered for a report');
+    assert.dom('.navi-actions').exists('The correct component is rendered for a report');
 
     set(this, 'item', dashboard);
 
@@ -57,6 +57,6 @@ module('Integration | Component | dir-asset-row-actions', function (hooks) {
     `);
     await triggerEvent('.row', 'mouseenter');
 
-    assert.dom('.dashboard-action-list').exists('The correct component is rendered for a dashboard');
+    assert.dom('.dashboard-actions').exists('The correct component is rendered for a dashboard');
   });
 });

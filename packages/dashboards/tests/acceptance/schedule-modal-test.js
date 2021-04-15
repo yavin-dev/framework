@@ -13,7 +13,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.schedule-action__button');
+    await click('.dashboard-actions__schedule-btn');
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
@@ -63,7 +63,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
 
     //Reopen the modal because it closed when saved
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.schedule-action__button');
+    await click('.dashboard-actions__schedule-btn');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -91,7 +91,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards/2/view');
 
     // Click "Schedule"
-    await click('.schedule-action__button');
+    await click('.dashboard-header__schedule-btn');
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
@@ -114,7 +114,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
       );
 
     // Reopen the modal
-    await click('.schedule-action__button');
+    await click('.dashboard-header__schedule-btn');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')

@@ -9,7 +9,6 @@ import Model from '@ember-data/model';
 
 interface Args {
   model: Model;
-  disabled: boolean;
   deleteAction: () => void;
 }
 
