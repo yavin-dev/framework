@@ -1,0 +1,18 @@
+.dropdown-parameter-picker {
+  &__dropdown {
+    min-width: 200px !important;
+  }
+
+  .ember-power-select-trigger {
+    background: none !important;
+    border-radius: 0 !important;
+    box-shadow: none;
+    min-height: 0;
+    outline: none;
+    padding: 0 !important;
+
+    &::before {
+      content: none;
+    }
+  }
+}
