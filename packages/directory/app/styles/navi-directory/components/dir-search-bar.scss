@@ -4,7 +4,6 @@
  */
 
 .dir-search-bar {
-  display: table; // Fix for safari rendering issue with search icon
   margin-left: 15px;
 
   @include media-size-down(tablet) {
