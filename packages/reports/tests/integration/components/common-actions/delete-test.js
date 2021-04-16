@@ -15,13 +15,14 @@ module('Integration | Component | common actions/delete', function (hooks) {
         class="delete"
         @model={{this.widget}}
         @deleteAction={{this.deleteWidget}}
-        as |DELETE|
+        as |onDelete|
       >
         <DenaliButton
           @style="text"
           @size="medium"
           class="delete-button"
-          {{on "click" DELETE}}>
+          {{on "click" onDelete}}
+        >
           Delete
         </DenaliButton>
       </CommonActions::Delete>
