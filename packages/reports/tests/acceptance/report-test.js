@@ -15,7 +15,6 @@ import moment from 'moment';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { reorder } from 'ember-sortable/test-support/helpers';
 import { setupAnimationTest } from 'ember-animated/test-support';
-import { waitUntil } from '@ember/test-helpers';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
