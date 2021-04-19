@@ -1,13 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<button
-  type="button"
-  disabled={{@disabled}}
-  {{on "click" (toggle "showModal" this)}}
-  class="delete__action-btn"
-  ...attributes
->
-  {{yield}}
-</button>
+{{yield (fn (toggle "showModal" this))}}
 <DenaliModal
   class="delete__modal"
   @isOpen={{this.showModal}}
@@ -23,7 +15,7 @@
       </NaviLoadingMessage>
     {{/if}}
     <DenaliButton
-      class="delete__delete-btn m-r-5"
+      class="delete__modal-delete-btn m-r-5"
       @style="danger"
       disabled={{this.isDeleting}}
       {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) (toggle "isDeleting" this))}}
@@ -31,7 +23,7 @@
       Delete
     </DenaliButton>
     <DenaliButton
-      class="delete__cancel-btn m-r-5"
+      class="delete__modal-cancel-btn m-r-5"
       @style="ghost"
       disabled={{this.isDeleting}}
       {{on "click" (toggle "showModal" this)}}

@@ -15,8 +15,16 @@ module('Integration | Component | common actions/delete', function (hooks) {
         class="delete"
         @model={{this.widget}}
         @deleteAction={{this.deleteWidget}}
+        as |onDelete|
       >
-        Delete
+        <DenaliButton
+          @style="text"
+          @size="medium"
+          class="delete-button"
+          {{on "click" onDelete}}
+        >
+          Delete
+        </DenaliButton>
       </CommonActions::Delete>
     `;
 
@@ -34,7 +42,7 @@ module('Integration | Component | common actions/delete', function (hooks) {
 
     assert.dom('.delete__modal').doesNotExist('Modal is not visible at the start');
 
-    await click('.delete__action-btn');
+    await click('.delete-button');
 
     assert.dom('.delete__modal').exists('Modal is visible after clicking the delete action');
 
@@ -45,7 +53,7 @@ module('Integration | Component | common actions/delete', function (hooks) {
         'The Widget title is included in modal header'
       );
 
-    await click('.delete__cancel-btn');
+    await click('.delete__modal-cancel-btn');
 
     assert.dom('.delete__modal').doesNotExist('Modal is closed after clicking cancel button');
   });
@@ -58,7 +66,7 @@ module('Integration | Component | common actions/delete', function (hooks) {
     });
 
     await render(Template);
-    await click('.delete__action-btn');
-    await click('.delete__delete-btn');
+    await click('.delete-button');
+    await click('.delete__modal-delete-btn');
   });
 });

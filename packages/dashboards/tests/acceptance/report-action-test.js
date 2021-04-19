@@ -13,7 +13,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
 
     await visit('/reports/1/view');
     assert.ok(
-      !!$('.report-header__header-action:contains("Add to Dashboard")').length,
+      !!$('.report-actions__addToDashboard').length,
       'Add to Dashboard button is visible when feature flag is on'
     );
   });
@@ -22,11 +22,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     assert.expect(3);
 
     await visit('/reports/1/view');
-
-    assert.ok(
-      !!$('.report-header__header-action:contains("Add to Dashboard")').length,
-      'Add to Dashboard button is visible by default'
-    );
+    assert.ok(!!$('.report-actions__addToDashboard').length, 'Add to Dashboard button is visible by default');
 
     // Remove all columns to make invalid
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
@@ -35,7 +31,8 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert.notOk(
-      !!$('.report-header__header-action:contains("Add to Dashboard")').length,
+      !!$('.report-actions__addToDashboard').length,
+
       'Add to Dashboard button is hidden when all metrics is disabled'
     );
 
@@ -44,7 +41,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await click('.navi-report__run-btn');
 
     assert.ok(
-      !!$('.report-header__header-action:contains("Add to Dashboard")').length,
+      !!$('.report-actions__addToDashboard').length,
       'Add to Dashboard button is once again visible after running the latest request'
     );
   });

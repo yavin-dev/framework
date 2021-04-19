@@ -1,114 +1,126 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-report-widget">
-  {{!-- Breadcrumb --}}
-  <div class="navi-report-widget__breadcrumb">
-    {{#if (feature-flag "enableDirectory")}}
-      <LinkTo @route="directory.my-data" class="navi-report-widget__breadcrumb-link">Directory</LinkTo>
-    {{else}}
-      <LinkTo @route="dashboards" class="navi-report-widget__breadcrumb-link">Dashboards</LinkTo>
-    {{/if}}
-    <NaviIcon @icon="angle-right" />
-    {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
-      {{#if this.parentQueryParams}}
-        <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} @query={{hash filters=this.parentQueryParams.filters}} class="navi-report-widget__breadcrumb-link">
-          {{parentDashboard.title}}
-        </LinkTo>
-      {{else}}
-        <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} class="navi-report-widget__breadcrumb-link">
-          {{parentDashboard.title}}
-        </LinkTo>
-      {{/if}}
-    {{/with}}
-    <NaviIcon @icon="angle-right" />
-  </div>
+<div class="navi-report navi-report-widget">
+  <div class="container-full p-y-10">
+    {{!-- Breadcrumb --}}
+    <div class="row">
+      <div class="col-1-1">
+        <div class="navi-report-widget__breadcrumb">
+          {{#if (feature-flag "enableDirectory")}}
+            <LinkTo @route="directory.my-data" class="navi-report-widget__breadcrumb-link">Directory</LinkTo>
+          {{else}}
+            <LinkTo @route="dashboards" class="navi-report-widget__breadcrumb-link">Dashboards</LinkTo>
+          {{/if}}
+          <NaviIcon @icon="angle-right" />
+          {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
+            {{#if this.parentQueryParams}}
+              <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} @query={{hash filters=this.parentQueryParams.filters}} class="navi-report-widget__breadcrumb-link">
+                {{parentDashboard.title}}
+              </LinkTo>
+            {{else}}
+              <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} class="navi-report-widget__breadcrumb-link">
+                {{parentDashboard.title}}
+              </LinkTo>
+            {{/if}}
+          {{/with}}
+          <NaviIcon @icon="angle-right" />
+        </div>
+      </div>
+    </div>
 
-  {{!-- Header --}}
-  <header class="navi-report-widget__header row">
-    <span class="navi-report-widget__title">
-      {{#if @model.dashboard.canUserEdit}}
-        <EditableLabel
-          class="navi-report-widget__edit-title"
-          @value={{@model.title}}
-          @onChange={{route-action "updateTitle"}}
-        />
-      {{else}}
-        <span>{{@model.title}}</span>
-      {{/if}}
-    </span>
-    <ul class="navi-report-widget__actions">
-      <li class="navi-report-widget__action">
-        {{!-- Get API action is only enabled when request is valid --}}
-        <CommonActions::GetApi
-          class="button is-text is-medium {{unless @model.request.validations.isTruelyValid "navi-report-widget__action--is-disabled"}}"
-          @request={{@model.request}}
-          @disabled={{not @model.request.validations.isTruelyValid}}
-        >
-          <NaviIcon @icon="code" class="navi-report-widget__icon" />
-            API Query
-          <EmberTooltip>
-            {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
-          </EmberTooltip>
-        </CommonActions::GetApi>
-      </li>
-
-      <li class="navi-report-widget__action">
-        {{!-- Export action is only enabled when request is valid --}}
-        {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
-          {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
-            <ExportAction
-              @report={{@model}}
-              @disabled={{not @model.validations.isTruelyValid}}
-              class="navi-report-widget__action-link button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
+    {{!-- Header --}}
+    <div class="navi-report-widget__header">
+      <div class="row align-items-center">
+        <div class="xs-col-10-10 sm-col-10-10 col-4-10 p-x-0">
+          <span class="navi-report-widget__title">
+            {{#if @model.dashboard.canUserEdit}}
+              <EditableLabel
+                class="navi-report-widget__edit-title"
+                @value={{@model.title}}
+                @onChange={{route-action "updateTitle"}}
+              />
+            {{else}}
+              <span>{{@model.title}}</span>
+            {{/if}}
+          </span>
+        </div>
+        <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
+          <div class="navi-report-widget__header-actions">
+            {{!-- Get API action is only enabled when request is valid --}}
+            <CommonActions::GetApi
+              @request={{@model.request}}
+              disabled={{not @model.request.validations.isTruelyValid}}
             >
-              <NaviIcon @icon="download" class="navi-report-widget__icon" />
-              Export
+              <DenaliIcon @icon="code" />
+                API Query
               <EmberTooltip>
-                {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+                {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
               </EmberTooltip>
-            </ExportAction>
-          {{/let}}
-        {{/let}}
-      </li>
+            </CommonActions::GetApi>
 
-      <li class="navi-report-widget__action">
-        <LinkTo 
-          @route="dashboards.dashboard.widgets.widget.clone-to-report" 
-          class="navi-report-widget__action-link button is-text is-medium"
-        >
-          <NaviIcon @icon="copy" class="navi-report-widget__icon" />
-          Clone As Report
-        </LinkTo>
-      </li>
+            {{!-- Export action is only enabled when request is valid --}}
+            {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+              {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
+                <ExportAction
+                  @report={{@model}}
+                  @disabled={{not @model.validations.isTruelyValid}}
+                  class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
+                >
+                  <DenaliButton
+                    @style="text"
+                    @size="medium"
+                    @icon="download"
+                  >
+                    Export
+                  </DenaliButton>
+                  <EmberTooltip>
+                    {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+                  </EmberTooltip>
+                </ExportAction>
+              {{/let}}
+            {{/let}}
 
-      {{#unless @model.isNew}}
-        {{!-- Share only enabled on a Valid widget --}}
-        <li class="navi-report-widget__action">
-          <CommonActions::Share
-            @disabled={{not @model.request.validations.isTruelyValid}}
-            class="button is-text is-medium"
-          >
-            <NaviIcon @icon="share" class="navi-report-widget__icon" />
-            Share
-            <EmberTooltip>
-              {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
-            </EmberTooltip>
-          </CommonActions::Share>
-        </li>
-      {{/unless}}
-      {{#if @model.dashboard.isUserOwner}}
-        <li class="navi-report-widget__action">
-          <CommonActions::Delete
-            @model={{@model}}
-            @deleteAction={{route-action "deleteWidget"}}
-            class="button is-text is-medium"
-          >
-            <NaviIcon @icon="trash-o" class="navi-report-widget__icon" />
-            Delete
-          </CommonActions::Delete>
-        </li>
-      {{/if}}
-    </ul>
-  </header>
+            <LinkTo
+              @route="dashboards.dashboard.widgets.widget.clone-to-report"
+              class="navi-report-widget__action-link button is-text is-medium"
+            >
+              <DenaliIcon @icon="copy-file" />
+              Clone As Report
+            </LinkTo>
+
+            {{#unless @model.isNew}}
+              {{!-- Share only enabled on a Valid widget --}}
+              <CommonActions::Share
+                @disabled={{not @model.request.validations.isTruelyValid}}
+                class="button is-text is-medium navi-report-widget__share-btn"
+              >
+                <DenaliIcon @icon="share-arrow" />
+                Share
+                <EmberTooltip>
+                  {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
+                </EmberTooltip>
+              </CommonActions::Share>
+            {{/unless}}
+            {{#if @model.dashboard.isUserOwner}}
+              <CommonActions::Delete
+                @model={{@model}}
+                @deleteAction={{route-action "deleteWidget"}}
+                as |onDelete|
+              >
+                <DenaliButton
+                  @style="text"
+                  @size="medium"
+                  @icon="trash"
+                  class="navi-report-widget__delete-btn"
+                  {{on "click" onDelete}}>
+                  Delete
+                </DenaliButton>
+              </CommonActions::Delete>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   {{!-- Body --}}
   <div class="navi-report-widget__body">

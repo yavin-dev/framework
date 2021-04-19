@@ -6,6 +6,6 @@
 .navi-search,
 .navi-search-results,
 .navi-search-results__item {
-  color: $color-grey-800;
+  color: map-get($denali-grey-colors, '800');
   width: 100%;
 }

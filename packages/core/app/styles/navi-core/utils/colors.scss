@@ -17,16 +17,16 @@
 
 //Graph Stroke Colors
 $graph-stroke-colors: (
-  '0': denali-color('graph', 'lime'),
-  '1': denali-color('graph', 'yellow'),
-  '2': denali-color('graph', 'sky'),
-  '3': denali-color('graph', 'violet'),
-  '4': denali-color('graph', 'pink'),
-  '5': denali-color('graph', 'blue'),
-  '6': denali-color('graph', 'orange'),
-  '7': denali-color('graph', 'purple'),
-  '8': denali-color('graph', 'green'),
-  '9': denali-color('graph', 'red'),
+  '0': map-get($denali-graph-colors, 'lime'),
+  '1': map-get($denali-graph-colors, 'yellow'),
+  '2': map-get($denali-graph-colors, 'sky'),
+  '3': map-get($denali-graph-colors, 'violet'),
+  '4': map-get($denali-graph-colors, 'pink'),
+  '5': map-get($denali-graph-colors, 'blue'),
+  '6': map-get($denali-graph-colors, 'orange'),
+  '7': map-get($denali-graph-colors, 'purple'),
+  '8': map-get($denali-graph-colors, 'green'),
+  '9': map-get($denali-graph-colors, 'red'),
 );
 
 $chart-max-series: 10;

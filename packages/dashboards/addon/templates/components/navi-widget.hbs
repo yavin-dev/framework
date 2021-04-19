@@ -14,30 +14,37 @@
     <div class="navi-widget__title">
       {{@model.title}}
       {{#if this.filterErrors}}
-        <NaviIcon @icon="exclamation-triangle" class="navi-widget__filter-errors-icon">
-          <EmberTooltip @popperContainer="body">
-            {{this.filterErrors}}
-          </EmberTooltip>
-        </NaviIcon>
+        <DenaliIcon 
+          id="navi-widget__filter-errors-{{@index}}" 
+          @icon="warning" 
+          class="navi-widget__filter-errors-icon" 
+        />
+        <EmberTooltip @targetId="navi-widget__filter-errors-{{@index}}" @popperContainer="body">
+          {{this.filterErrors}}
+        </EmberTooltip>
       {{/if}}
     </div>
     <div class="navi-widget__actions">
       <LinkTo
         @route="dashboards.dashboard.widgets.widget.view"
         @models={{array @model.dashboard.id @model.id}}
-        class="navi-widget__explore-btn"
       >
-        <NaviIcon @icon="pencil" class="navi-icon__edit" />
-        <EmberTooltip @popperContainer="body" @text="Explore" />
+        <DenaliIcon @size="small" @icon="pencil" class="navi-widget__edit-btn" id="navi-widget__edit-btn-{{@index}}" />
+        <EmberTooltip @targetId="navi-widget__edit-btn-{{@index}}" @popperContainer="body" @text="Explore" />
       </LinkTo>
       {{#if @canEdit}}
         <CommonActions::Delete
-          class="navi-widget__delete-btn link"
+          class="link"
           @model={{@model}}
           @deleteAction={{route-action "deleteWidget"}}
         >
-          <NaviIcon @icon="trash-o" class="navi-icon__delete" />
-          <EmberTooltip @popperContainer="body" @text="Delete" />
+          <DenaliIcon 
+            id="navi-widget__delete-btn-{{@index}}" 
+            @size="small" 
+            @icon="trash" 
+            class="navi-widget__delete-btn link" 
+          />
+          <EmberTooltip @popperContainer="body" @text="Delete" @targetId="navi-widget__delete-btn-{{@index}}" />
         </CommonActions::Delete>
       {{/if}}
     </div>
