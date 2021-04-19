@@ -1,6 +1,16 @@
 .dropdown-parameter-picker {
+  .chips:hover {
+    color: $links-hover-text-color;
+  }
+
   &__dropdown {
     min-width: 200px !important;
+  }
+
+  .ember-power-select-trigger[aria-expanded='true'] {
+    .chips {
+      color: $links-hover-text-color;
+    }
   }
 
   .ember-power-select-trigger {
