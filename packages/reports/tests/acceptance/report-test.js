@@ -604,7 +604,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Turn flag off
     config.navi.FEATURES.exportFileTypes = ['csv'];
     await visit('/reports/1/view');
-    await click($('.navi-report__action-link:contains(Export)')[0]);
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.dom('.alert.is-info').hasText('The CSV download should begin shortly');
     assert.ok(
       $('.export__downloadUrl-link').attr('href').includes('/network/day/property;show=id/?dateTime='),
@@ -613,7 +613,7 @@ module('Acceptance | Navi Report', function (hooks) {
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
-    await click($('.navi-report__action-link:contains(Export)')[0]);
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
 
     assert.ok(
       $('.export__downloadUrl-link')
@@ -632,7 +632,7 @@ module('Acceptance | Navi Report', function (hooks) {
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '1');
     await click('.navi-report__run-btn');
-    await click($('.navi-report__action-link:contains(Export)')[0]);
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.ok(
       decodeURIComponent($('.export__downloadUrl-link').attr('href')).includes('productFamily|id-in["1"]'),
       'Filter updates are automatically included in export url'
