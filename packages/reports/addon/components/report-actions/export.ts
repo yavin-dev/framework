@@ -11,7 +11,6 @@ import type NaviFactsService from 'navi-data/services/navi-facts';
 import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
 import ReportModel from 'navi-core/addon/models/report';
 import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
-
 interface Args {
   report: ReportModel;
 }
@@ -37,6 +36,7 @@ export default class ReportActionExport extends Component<Args> {
       const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
       this.downloadURLLink(url);
     } catch (error) {
+      console.log(error.message);
       this.showErrorNotification();
     }
   }
@@ -55,15 +55,24 @@ export default class ReportActionExport extends Component<Args> {
     });
   }
 
-  downloadURLLink(url?: string | undefined): void {
+  async downloadURLLink(url?: string | undefined) {
     if (url !== undefined) {
       const anchorElement = document.createElement('a');
+      anchorElement.setAttribute('id', 'export__downloadUrl-link');
+      anchorElement.setAttribute('class', 'export__downloadUrl-link');
       anchorElement.setAttribute('href', url);
       anchorElement.setAttribute('download', this.args.report.title);
       anchorElement.setAttribute('target', '_blank');
-      document.body.appendChild(anchorElement);
+      //anchorElement.innerHTML = url;
+      document.getElementById('export__downloadUrl')?.appendChild(anchorElement);
       anchorElement.click();
-      document.body.removeChild(anchorElement);
+      await this.delay(5000);
+      console.log(document.getElementById('export__downloadUrl'));
+      document.getElementById('export__downloadUrl')?.removeChild(anchorElement);
     }
+  }
+
+  delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
