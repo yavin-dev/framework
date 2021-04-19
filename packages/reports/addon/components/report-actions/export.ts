@@ -11,6 +11,8 @@ import type NaviFactsService from 'navi-data/services/navi-facts';
 import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
 import ReportModel from 'navi-core/addon/models/report';
 import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
+import Ember from 'ember';
+
 interface Args {
   report: ReportModel;
 }
@@ -36,7 +38,6 @@ export default class ReportActionExport extends Component<Args> {
       const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
       this.downloadURLLink(url);
     } catch (error) {
-      console.log(error.message);
       this.showErrorNotification();
     }
   }
@@ -66,8 +67,9 @@ export default class ReportActionExport extends Component<Args> {
       //anchorElement.innerHTML = url;
       document.getElementById('export__downloadUrl')?.appendChild(anchorElement);
       anchorElement.click();
-      await this.delay(5000);
-      console.log(document.getElementById('export__downloadUrl'));
+      if (Ember.testing) {
+        await this.delay(5000);
+      }
       document.getElementById('export__downloadUrl')?.removeChild(anchorElement);
     }
   }
