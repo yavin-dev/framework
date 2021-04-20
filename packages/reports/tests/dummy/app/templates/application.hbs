@@ -1,13 +1,11 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{page-title "Reports"}}
 <NaviNotifications class="m-t-20"/>
-<header class="navi__top-bar top-bar">
-  <div class="top-bar__logo">
-    <LinkTo @route="reports">
-      <span class="top-bar__logo-title">navi reports</span>
-    </LinkTo>
-  </div>
-</header>
-<div class="navi__container">
+<DenaliNavbar @isResponsive={{true}} as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.LinkTo @route="reports">Navi Reports</Left.LinkTo>
+  </Nav.Left>
+</DenaliNavbar>
+<div class="flex h-minus-nav">
   {{outlet}}
 </div>

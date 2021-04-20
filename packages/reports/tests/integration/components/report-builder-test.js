@@ -1,10 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click, findAll } from '@ember/test-helpers';
 import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import TableMetadataModel from 'navi-data/models/metadata/table';
+import config from 'ember-get-config';
 
 let MetadataService, Store;
 
@@ -37,8 +38,20 @@ module('Integration | Component | report builder', function (hooks) {
     );
   });
 
-  test("Single table in meta shouldn't show table selector", async function (assert) {
-    assert.expect(2);
+  test('Single table in meta still shows datasource selector', async function (assert) {
+    assert.expect(5);
+
+    const originalDataSources = config.navi.dataSources;
+    config.navi.dataSources = [
+      {
+        name: 'bardOne',
+        displayName: 'Bard One',
+        description: 'Interesting User Insights',
+        uri: 'https://data.naviapp.io',
+        type: 'bard',
+      },
+    ];
+
     //reset meta data and load only one table
     MetadataService.keg.resetByType('metadata/table');
     MetadataService.loadMetadataForType(
@@ -48,6 +61,7 @@ module('Integration | Component | report builder', function (hooks) {
           id: 'tableA',
           name: 'Table A',
           description: 'Table A',
+          source: 'bardOne',
           metricIds: [],
           dimensionIds: [],
           timeDimensionIds: [],
@@ -60,14 +74,22 @@ module('Integration | Component | report builder', function (hooks) {
     await render(TEMPLATE);
 
     assert.dom('.report-builder__main').isVisible('Report builder renders');
-    assert.dom('.navi-table-select').isNotVisible('Table selector does not render with only one table');
-  });
+    assert.dom('.report-builder-sidebar__back').exists('The back button exists even with only one table');
 
-  test('Multiple tables in meta should show table selector', async function (assert) {
-    assert.expect(1);
+    await click('.report-builder-sidebar__back');
+    assert.deepEqual(
+      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      ['Table A'],
+      'The only table is shown'
+    );
 
-    await render(TEMPLATE);
-
-    assert.dom('.navi-table-select__trigger').isVisible('Table renders when there are multiple tables');
+    assert.dom('.report-builder-sidebar__back').exists('The back button exists even with only one datasource');
+    await click('.report-builder-sidebar__back');
+    assert.deepEqual(
+      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      ['Bard One'],
+      'The only data source is shown'
+    );
+    config.navi.dataSources = originalDataSources;
   });
 });

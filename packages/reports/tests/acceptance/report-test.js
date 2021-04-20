@@ -1695,7 +1695,8 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
 
-    await selectChoose('.navi-table-select__trigger', 'Table A');
+    await click('.report-builder-sidebar__back');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
@@ -1880,9 +1881,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.report-builder__metric-selector.report-builder__container--disabled')
       .isVisible('Metric selector is disabled during run');
-    assert
-      .dom('.navi-table-select__trigger')
-      .hasAttribute('aria-disabled', 'true', 'Table selector is disabled during run');
+    assert.dom('.report-builder-sidebar__back').isDisabled('Table selector is disabled during run');
     assert
       .dom('.report-builder__container--filters.report-builder__container--disabled')
       .isVisible('Filter collection is disabled during run');
@@ -1914,9 +1913,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.report-builder__metric-selector')
       .doesNotHaveClass('report-builder__container--disabled', 'Metric selector is enabled after run');
-    assert
-      .dom('.navi-table-select__trigger')
-      .doesNotHaveAttribute('aria-disabled', 'true', 'Table selector is enabled after run');
+    assert.dom('.report-builder-sidebar__back').isNotDisabled('Table selector is disabled during run');
     assert
       .dom('.report-builder__container--filters')
       .doesNotHaveClass('report-builder__container--disabled', 'Filter collection is enabled after run');

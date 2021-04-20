@@ -57,3 +57,10 @@ export default class NaviVisualizationsService extends Service {
     return visualizationArray.filter((visualization) => visualization.name);
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
+declare module '@ember/service' {
+  interface Registry {
+    'navi-visualizations': NaviVisualizationsService;
+  }
+}

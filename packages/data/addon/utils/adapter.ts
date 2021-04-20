@@ -1,9 +1,10 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import config from 'ember-get-config';
 import { assert } from '@ember/debug';
+import { NaviDataSource } from 'navi-config';
 
 export type SourceAdapterOptions = {
   dataSourceName?: string;
@@ -13,7 +14,7 @@ export type SourceAdapterOptions = {
  * Returns data source object for a data source name
  * @param dataSourceName
  */
-export function getDataSource(dataSourceName: string) {
+export function getDataSource(dataSourceName: string): NaviDataSource {
   assert('getDataSource should be given a data source name to lookup', dataSourceName);
 
   const {
@@ -29,7 +30,7 @@ export function getDataSource(dataSourceName: string) {
 /**
  * @returns default data source if one is configured otherwise the first data source
  */
-export function getDefaultDataSource() {
+export function getDefaultDataSource(): NaviDataSource {
   const {
     navi: { defaultDataSource, dataSources },
   } = config;

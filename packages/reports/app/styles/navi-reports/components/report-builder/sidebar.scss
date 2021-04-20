@@ -1,0 +1,35 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+.report-builder-sidebar {
+
+  @mixin grey-500-border {
+    border-color: map-get($denali-grey-colors, '500');
+    border-style: solid;
+  }
+
+  background-color: $body-bg-color;
+  border-color: $menu-border-color;
+  border-style: solid;
+  border-width: 1px 1px 1px 0;
+  display: flex;
+  flex-flow: column;
+  min-width: 260px;
+
+  &__content {
+    @include grey-500-border;
+    border-width: 1px 0 0;
+    overflow: auto;
+  }
+
+  &__columns {
+    @include grey-500-border;
+    border-width: 0 1px 0 0;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    min-width: 260px;
+    width: 260px;
+  }
+}

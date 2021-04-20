@@ -26,10 +26,34 @@ module.exports = function (environment) {
 
     navi: {
       dataSources: [
-        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'bardTwo', uri: 'https://data2.naviapp.com', type: 'bard' },
-        { name: 'elideOne', uri: 'https://data.naviapp.io/graphql', type: 'elide' },
-        { name: 'elideTwo', uri: 'https://data2.naviapp.com/graphql', type: 'elide' },
+        {
+          name: 'bardOne',
+          displayName: 'Bard One',
+          description: 'Interesting User Insights',
+          uri: 'https://data.naviapp.io',
+          type: 'bard',
+        },
+        {
+          name: 'bardTwo',
+          displayName: 'Bard Two',
+          description: 'Awesome Revenue Analytics',
+          uri: 'https://data2.naviapp.io',
+          type: 'bard',
+        },
+        {
+          name: 'elideOne',
+          displayName: 'Elide One',
+          description: 'Elide One Description',
+          uri: 'https://data.naviapp.io/graphql',
+          type: 'elide',
+        },
+        {
+          name: 'elideTwo',
+          displayName: 'Elide Two',
+          description: 'Elide Two Description',
+          uri: 'https://data2.naviapp.com/graphql',
+          type: 'elide',
+        },
       ],
       defaultDataSource: 'bardOne',
       cardinalities: {

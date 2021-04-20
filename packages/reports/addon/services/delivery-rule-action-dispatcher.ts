@@ -15,3 +15,10 @@ export default class DeliveryRuleActionDispatcher extends ActionDispatcher {
     return ['delivery-rule'];
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
+declare module '@ember/service' {
+  interface Registry {
+    'delivery-rule-action-dispatcher': DeliveryRuleActionDispatcher;
+  }
+}

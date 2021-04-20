@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
-import { action, computed } from '@ember/object';
+import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 //@ts-ignore
@@ -12,6 +12,7 @@ import { tracked } from '@glimmer/tracking';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ScreenService from 'navi-core/services/screen';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ReportBuilderComponent from 'navi-reports/components/report-builder';
 
 const REPORT_STATE = <const>{
   RUNNING: 'running',
@@ -52,9 +53,8 @@ export default class ReportsReportController extends Controller {
 
   onFadeEnd: (() => void) | null = null;
 
-  init() {
-    //@ts-ignore
-    super.init(...arguments);
+  constructor() {
+    super(...arguments);
     const { isMobile } = this.screen;
     this.isColumnDrawerOpen = !isMobile;
     this.isFiltersCollapsed = isMobile;
@@ -76,7 +76,6 @@ export default class ReportsReportController extends Controller {
   /**
    * is the report being edited
    */
-  @computed('reportState')
   get isEditingReport() {
     return this.reportState === REPORT_STATE.EDITING;
   }
@@ -84,7 +83,6 @@ export default class ReportsReportController extends Controller {
   /**
    * is the report running
    */
-  @computed('reportState')
   get isRunningReport() {
     return this.reportState === REPORT_STATE.RUNNING;
   }
@@ -92,7 +90,6 @@ export default class ReportsReportController extends Controller {
   /**
    * did the report complete successfully
    */
-  @computed('reportState')
   get didReportComplete() {
     return this.reportState === REPORT_STATE.COMPLETED;
   }
@@ -100,7 +97,6 @@ export default class ReportsReportController extends Controller {
   /**
    * @property {Boolean} didReportFail - did the report fail when running
    */
-  @computed('reportState')
   get didReportFail() {
     return this.reportState === REPORT_STATE.FAILED;
   }
@@ -111,8 +107,7 @@ export default class ReportsReportController extends Controller {
    * @param reportBuilder - The report builder component containing the visualization
    */
   @action
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: any) {
+  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: ReportBuilderComponent) {
     const { isColumnDrawerOpen } = this;
     this.isColumnDrawerOpen = isOpen;
 
@@ -142,12 +137,11 @@ export default class ReportsReportController extends Controller {
 
   /**
    * Opens the column config drawer and updates the last added column
-   * @param {ReportBuilderComponent} reportBuilder - The report builder component
-   * @param {Object} fragment - the added request fragment
+   * @param reportBuilder - The report builder component
+   * @param fragment - the added request fragment
    */
   @action
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onBeforeAddItem(reportBuilder: any, fragment: ColumnFragment) {
+  onBeforeAddItem(reportBuilder: ReportBuilderComponent, fragment: ColumnFragment) {
     this.updateColumnDrawerOpen(true, reportBuilder);
     this.setLastAddedColumn(fragment);
   }

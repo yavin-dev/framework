@@ -2,14 +2,14 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-.grouped-list {
-  flex: 1;
-  margin-right: -10px;
-  min-height: 0;
-  overflow-y: auto;
-  padding-right: 10px;
 
-  &__group-header {
+.report-builder-source-selector {
+  li:hover button {
+    color: map-get($denali-grey-colors, '700');
     cursor: pointer;
+  }
+
+  &__source-name {
+    text-align: left;
   }
 }

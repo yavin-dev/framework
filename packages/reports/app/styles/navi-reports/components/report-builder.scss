@@ -8,7 +8,6 @@
   display: flex;
   flex: 1;
   min-height: 0;
-  padding: 5px;
 
   .ember-power-select-status-icon {
     display: inline-block;
@@ -156,12 +155,5 @@
     flex: 1;
     flex-flow: column;
     min-width: 0;
-  }
-
-  &__side {
-    display: flex;
-    flex-flow: column;
-    min-width: 260px;
-    width: 260px;
   }
 }
