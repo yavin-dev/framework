@@ -1,25 +1,29 @@
 .dropdown-parameter-picker {
-  .chips:hover {
-    color: $links-hover-text-color;
+  .chips {
+    cursor: pointer;
+    line-height: 12px;
+
+    &:hover,
+    .is-active {
+      background-color: $tags-active-bg-color;
+    }
   }
 
   &__dropdown {
     min-width: 200px !important;
-  }
-
-  .ember-power-select-trigger[aria-expanded='true'] {
-    .chips {
-      color: $links-hover-text-color;
+    
+    > .ember-power-select-options {
+      max-height: none;
     }
   }
 
   .ember-power-select-trigger {
-    background: none !important;
-    border-radius: 0 !important;
+    background: none;
+    border-radius: 0;
     box-shadow: none;
     min-height: 0;
     outline: none;
-    padding: 0 !important;
+    padding: 0;
 
     &::before {
       content: none;

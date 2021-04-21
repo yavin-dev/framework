@@ -9,10 +9,6 @@ $filter-builder-padding: 4px;
   &__subject {
     padding: $filter-builder-padding;
     padding-bottom: 0; //when on column mode on small screen
-
-    .chips {
-      line-height: 12px;
-    }
     
     &-name {
       align-items: center;

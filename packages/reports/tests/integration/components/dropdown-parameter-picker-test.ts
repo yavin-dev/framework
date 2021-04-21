@@ -23,7 +23,8 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
     const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
     this.set('parameterIndex', 0);
     this.set('parameterKeys', ['grain']);
-    this.updateParameters = () => null;
+    this.set('selectedParameter', 'day');
+    this.updateParameters = () => this.set('selectedParameter', 'month');
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     this.set(
       'filter',
@@ -38,7 +39,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
       @parameterIndex={{this.parameterIndex}}
       @parameterKeys={{this.parameterKeys}}
       @updateParameters={{this.updateParameters}}
-      @selectedParameters={{this.filter.parameters}}
+      @selectedParameter={{this.selectedParameter}}
     >
       </DropdownParameterPicker>`);
 

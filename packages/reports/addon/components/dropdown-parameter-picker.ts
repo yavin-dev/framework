@@ -13,13 +13,10 @@ interface Args {
   parameterIndex: number;
   updateParameters: (key: string, value: string) => void;
   parameterKeys: string[];
-  selectedParameters: { key: string };
+  selectedParameter: string;
 }
 
 export default class ParameterPickerComponent extends Component<Args> {
-  @tracked
-  selectedParameter = Object.values(this.args.selectedParameters)[this.args.parameterIndex];
-
   @tracked
   options: { groupName: string; options: string[] | undefined }[] = [];
 
@@ -44,7 +41,6 @@ export default class ParameterPickerComponent extends Component<Args> {
 
   @action
   updateSelected(id: string) {
-    this.selectedParameter = id;
-    this.args.updateParameters(this.parameterKey, this.selectedParameter);
+    this.args.updateParameters(this.parameterKey, id);
   }
 }
