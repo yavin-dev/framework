@@ -59,24 +59,42 @@
 
             {{!-- Export action is only enabled when request is valid --}}
             {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
-              {{#let (component (concat "report-actions/" (if (gt exportFileTypes.length 1) "multiple-format-export" "export"))) as |ExportAction|}}
-                <ExportAction
-                  @report={{@model}}
-                  @disabled={{not @model.validations.isTruelyValid}}
-                  class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
-                >
-                  <DenaliButton
-                    @style="text"
-                    @size="medium"
-                    @icon="download"
+              {{#if (gt exportFileTypes.length 1)}}
+                {{#let (component "report-actions/multiple-format-export") as |ExportAction|}}
+                  <ExportAction
+                    class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
+                    @report={{@model}}
+                    @disabled={{not @model.validations.isTruelyValid}}
                   >
+                    <DenaliIcon @icon="download" />
                     Export
-                  </DenaliButton>
-                  <EmberTooltip>
-                    {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-                  </EmberTooltip>
-                </ExportAction>
-              {{/let}}
+                  </ExportAction>
+                {{/let}}
+              {{else}}
+                {{#let (component "report-actions/export") as |ExportAction|}}
+                  <ExportAction
+                    class="report-actions__export is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
+                    id="report-actions__export"
+                    @report={{@model}}
+                    @disabled={{not @model.validations.isTruelyValid}}
+                    as |onClick|
+                  >
+                    <DenaliButton
+                      @style="text"
+                      @size="medium"
+                      @icon="download"
+                      id="report-actions__export-btn"
+                      class="report-actions__export-btn"
+                      {{on "click" onClick}}
+                    >
+                      Export
+                    </DenaliButton>
+                    <EmberTooltip>
+                      {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+                    </EmberTooltip>
+                  </ExportAction>
+                {{/let}}
+              {{/if}}
             {{/let}}
 
             <LinkTo

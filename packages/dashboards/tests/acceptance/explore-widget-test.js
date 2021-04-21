@@ -152,10 +152,11 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     await visit('/dashboards/1/widgets/2/view');
 
+    debugger;
     assert
-      .dom($('.navi-report-widget__action-link:contains(Export)')[0])
+      .dom($('.report-actions__export-btn:contains(Export)')[0])
       .doesNotHaveClass(
-        '.navi-report-widget__action-link--is-disabled',
+        '.report-actions__export-btn--is-disabled',
         'Export action is enabled for a valid request'
       );
 
@@ -168,9 +169,9 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
-      .dom($('.navi-report-widget__action-link:contains(Export)')[0])
+      .dom($('.report-actions__export-btn:contains(Export)')[0])
       .doesNotHaveClass(
-        '.navi-report-widget__action-link--is-disabled',
+        '.report-actions__export-btn--is-disabled',
         'Export action is disabled when request is not valid'
       );
 
