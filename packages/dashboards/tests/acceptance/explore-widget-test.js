@@ -152,13 +152,13 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     await visit('/dashboards/1/widgets/2/view');
 
-    debugger;
     assert
       .dom($('.report-actions__export-btn:contains(Export)')[0])
       .doesNotHaveClass(
         '.report-actions__export-btn--is-disabled',
         'Export action is enabled for a valid request'
       );
+
 
     // Remove all columns to create an invalid request
     assert
