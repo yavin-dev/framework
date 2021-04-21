@@ -154,11 +154,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert
       .dom($('.report-actions__export-btn:contains(Export)')[0])
-      .doesNotHaveClass(
-        '.report-actions__export-btn--is-disabled',
-        'Export action is enabled for a valid request'
-      );
-
+      .doesNotHaveClass('.report-actions__export-btn--is-disabled', 'Export action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
     assert
