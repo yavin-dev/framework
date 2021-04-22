@@ -6,10 +6,10 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
-import { ColumnMetadata } from 'navi-data/models/metadata/column';
+import FunctionParameter from 'navi-data/models/metadata/function-parameter';
 
 interface Args {
-  columnMetadata: ColumnMetadata;
+  parameters: FunctionParameter[];
   parameterIndex: number;
   updateParameters: (key: string, value: string) => void;
   parameterKeys: string[];
@@ -22,7 +22,7 @@ export default class ParameterPickerComponent extends Component<Args> {
 
   @action
   async fetchParameterOptions() {
-    const valuesPromise = this.args.columnMetadata.parameters[this.args.parameterIndex].values;
+    const valuesPromise = this.args.parameters[this.args.parameterIndex].values;
     this.options = [
       {
         groupName: this.parameterName,
@@ -32,7 +32,7 @@ export default class ParameterPickerComponent extends Component<Args> {
   }
 
   get parameterName() {
-    return capitalize(this.args.columnMetadata.parameters[this.args.parameterIndex].name);
+    return capitalize(this.args.parameters[this.args.parameterIndex].name);
   }
 
   get parameterKey() {

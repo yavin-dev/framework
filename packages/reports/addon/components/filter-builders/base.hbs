@@ -15,7 +15,7 @@
         <span class="name m-r-4">{{this.columnName}}</span>
         {{#each this.paramValues as |parameter index|}}
           <DropdownParameterPicker 
-            @columnMetadata={{@filter.columnMetadata}} 
+            @parameters={{@filter.columnMetadata.parameters}} 
             @parameterIndex={{index}}
             @updateParameters={{this.updateParameters}}
             @parameterKeys={{this.paramKeys}}

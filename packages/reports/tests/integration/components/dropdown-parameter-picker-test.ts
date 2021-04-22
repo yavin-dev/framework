@@ -35,7 +35,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
   test('dropdown-parameter-picker', async function (this: TestContext, assert) {
     assert.expect(4);
     await render(hbs`<DropdownParameterPicker
-      @columnMetadata={{this.filter.columnMetadata}}
+      @parameters={{this.filter.columnMetadata.parameters}}
       @parameterIndex={{this.parameterIndex}}
       @parameterKeys={{this.parameterKeys}}
       @updateParameters={{this.updateParameters}}
