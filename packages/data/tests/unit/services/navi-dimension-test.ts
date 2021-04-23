@@ -60,7 +60,9 @@ module('Unit | Service | navi-dimension', function (hooks) {
     let originalDataSources = config.navi.dataSources;
     const dataSourceType = 'mock';
     const dataSourceName = 'test-example';
-    config.navi.dataSources = [{ type: dataSourceType, uri: 'fake', name: dataSourceName }];
+    config.navi.dataSources = [
+      { type: dataSourceType, uri: 'fake', name: dataSourceName, displayName: dataSourceName },
+    ];
 
     let call = 0;
     let adapterCallback = (_call: number, _options: ServiceOptions): void => undefined;

@@ -1379,7 +1379,8 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(5);
     await visit('/reports/new');
 
-    await selectChoose('.navi-table-select__trigger', 'Protected Table');
+    await click('.report-builder-sidebar__back');
+    await click('.report-builder-source-selector__source-button[data-source-name="Protected Table"]');
 
     await click('.navi-report__run-btn');
 
@@ -1388,7 +1389,9 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!findAll('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
 
     await click('.navi-report__cancel-btn');
-    await selectChoose('.navi-table-select__trigger', 'Network');
+
+    await click('.report-builder-sidebar__back');
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await click('.navi-report__run-btn');
     await click('.visualization-toggle__option-icon[title="Data Table"]');
 

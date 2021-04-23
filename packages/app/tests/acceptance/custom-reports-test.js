@@ -46,6 +46,9 @@ module('Acceptance | custom reports', function (hooks) {
   test('Run report with a filter', async function (assert) {
     await visit('/reports/new');
 
+    await click('.report-builder-source-selector__source-button[data-source-name="Default"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Mario"]');
+
     // Add filter
     await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', '1');

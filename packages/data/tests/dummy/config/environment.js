@@ -37,7 +37,7 @@ module.exports = function (environment) {
           name: 'bardTwo',
           displayName: 'Bard Two',
           description: 'Awesome Revenue Analytics',
-          uri: 'https://data2.naviapp.io',
+          uri: 'https://data2.naviapp.com',
           type: 'bard',
         },
         {
