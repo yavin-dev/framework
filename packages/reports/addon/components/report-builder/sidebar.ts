@@ -105,7 +105,8 @@ export default class ReportBuilderSidebar extends Component<Args> {
   get dataSourceTables(): SourceItem<TableMetadataModel>[] {
     const [dataSource] = this.sourcePath;
     if (dataSource) {
-      return sortBy(this.metadataService.all('table', dataSource.source.name).toArray(), ['name']).map((table) => ({
+      const factTables = this.metadataService.all('table', dataSource.source.name).filter((t) => t.isFact === true);
+      return sortBy(factTables, ['name']).map((table) => ({
         name: table.name,
         description: table.description,
         source: table,

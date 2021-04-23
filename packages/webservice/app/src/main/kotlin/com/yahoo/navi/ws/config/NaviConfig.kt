@@ -17,9 +17,17 @@ import org.springframework.context.annotation.Configuration
 class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
     var user = ""
 
-    var dataSources: List<DataSource> = listOf(DataSource("default", "Default", "Elide", elideSettings.graphql.path, DataSourceTypes.elide))
+    var dataSources: List<DataSource> = listOf(
+        DataSource(
+            "default",
+            "Default",
+            null,
+            elideSettings.graphql.path,
+            DataSourceTypes.elide,
+        )
+    )
 
-    var appPersistence = DataSource("persistence", elideSettings.jsonApi.path, DataSourceTypes.elide)
+    var appPersistence = DataSource("persistence", "Persistence", null, elideSettings.jsonApi.path, DataSourceTypes.elide)
 
     @JsonProperty("FEATURES")
     var features = NaviFeatureSettings()

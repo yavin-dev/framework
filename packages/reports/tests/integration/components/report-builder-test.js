@@ -39,7 +39,7 @@ module('Integration | Component | report builder', function (hooks) {
   });
 
   test('Single table in meta still shows datasource selector', async function (assert) {
-    assert.expect(5);
+    assert.expect(6);
 
     const originalDataSources = config.navi.dataSources;
     config.navi.dataSources = [
@@ -66,9 +66,33 @@ module('Integration | Component | report builder', function (hooks) {
           dimensionIds: [],
           timeDimensionIds: [],
           requestConstraintIds: [],
+          isFact: true,
         }),
       ],
       'bardOne'
+    );
+    MetadataService.loadMetadataForType(
+      'table',
+      [
+        TableMetadataModel.create({
+          id: 'notFactTable',
+          name: 'Not a fact table',
+          description: 'No facts here',
+          source: 'bardOne',
+          metricIds: [],
+          dimensionIds: [],
+          timeDimensionIds: [],
+          requestConstraintIds: [],
+          isFact: false,
+        }),
+      ],
+      'bardOne'
+    );
+
+    assert.deepEqual(
+      MetadataService.all('table', 'bardOne').map((t) => t.id),
+      ['tableA', 'notFactTable'],
+      'The tables are loaded correctly into the metadata'
     );
 
     await render(TEMPLATE);
@@ -80,7 +104,7 @@ module('Integration | Component | report builder', function (hooks) {
     assert.deepEqual(
       findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
       ['Table A'],
-      'The only table is shown'
+      'The only fact table is shown'
     );
 
     assert.dom('.report-builder-sidebar__back').exists('The back button exists even with only one datasource');
