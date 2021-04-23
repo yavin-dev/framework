@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.test.integration
@@ -22,7 +22,7 @@ class ServerGeneratedConfigTest : IntegrationTest() {
     @Test
     fun server_generated_config() {
         val expected: String? =
-            """var NAVI_APP = {"user":"testuser","dataSources":[{"name":"default","displayName": "Default","description":"Elide","uri":"/graphql/api/v1","type":"elide","timeout":900000}],"appPersistence":{"name":"persistence","uri":"/api/v1","type":"elide","timeout":900000},"FEATURES":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true}};"""
+            """var NAVI_APP = {"user":"testuser","dataSources":[{"name":"default","displayName":"Default","description":null,"uri":"/graphql/api/v1","type":"elide","timeout":900000}],"appPersistence":{"name":"persistence","displayName":"Persistence","description":null,"uri":"/api/v1","type":"elide","timeout":900000},"FEATURES":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true}};"""
 
         val actual: String = given()
             .header("User", "testuser")
