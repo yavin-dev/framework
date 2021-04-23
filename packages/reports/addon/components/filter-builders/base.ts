@@ -83,14 +83,4 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
   get columnName() {
     return this.naviFormatter.formatColumnName(this.args.filter.columnMetadata, {}, null);
   }
-
-  @computed('args.filter.parameters')
-  get paramValues() {
-    return Object.values(this.args.filter.parameters);
-  }
-
-  @computed('args.filter.parameters')
-  get paramKeys() {
-    return Object.keys(this.args.filter.parameters);
-  }
 }

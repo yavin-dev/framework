@@ -9,11 +9,9 @@ import { tracked } from '@glimmer/tracking';
 import FunctionParameter from 'navi-data/models/metadata/function-parameter';
 
 interface Args {
-  parameters: FunctionParameter[];
-  parameterIndex: number;
-  updateParameters: (key: string, value: string) => void;
-  parameterKeys: string[];
-  selectedParameter: string;
+  parameterMetadata: FunctionParameter;
+  parameterValue: unknown;
+  onUpdate: (key: string, value: unknown) => void;
 }
 
 export default class ParameterPickerComponent extends Component<Args> {
@@ -22,25 +20,17 @@ export default class ParameterPickerComponent extends Component<Args> {
 
   @action
   async fetchParameterOptions() {
-    const valuesPromise = this.args.parameters[this.args.parameterIndex].values;
+    const valuesPromise = this.args.parameterMetadata.values;
     this.options = [
       {
-        groupName: this.parameterName,
+        groupName: capitalize(this.args.parameterMetadata.name),
         options: (await valuesPromise)?.map((el) => el.id),
       },
     ];
   }
 
-  get parameterName() {
-    return capitalize(this.args.parameters[this.args.parameterIndex].name);
-  }
-
-  get parameterKey() {
-    return this.args.parameterKeys[this.args.parameterIndex];
-  }
-
   @action
-  updateSelected(id: string) {
-    this.args.updateParameters(this.parameterKey, id);
+  onUpdate(id: unknown) {
+    this.args.onUpdate(this.args.parameterMetadata.id, id);
   }
 }
