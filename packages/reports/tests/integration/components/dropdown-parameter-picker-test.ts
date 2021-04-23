@@ -24,7 +24,8 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
     this.set('parameterIndex', 0);
     this.set('parameterKeys', ['grain']);
     this.set('selectedParameter', 'day');
-    this.updateParameters = () => this.set('selectedParameter', 'month');
+    //@ts-expect-error
+    this.updateParameters = (id: string, value: string) => this.set('selectedParameter', value);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     this.set(
       'filter',
@@ -33,15 +34,16 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
   });
 
   test('dropdown-parameter-picker', async function (this: TestContext, assert) {
-    assert.expect(4);
-    await render(hbs`<DropdownParameterPicker
-      @parameters={{this.filter.columnMetadata.parameters}}
-      @parameterIndex={{this.parameterIndex}}
-      @parameterKeys={{this.parameterKeys}}
-      @updateParameters={{this.updateParameters}}
-      @selectedParameter={{this.selectedParameter}}
-    >
-      </DropdownParameterPicker>`);
+    assert.expect(5);
+
+    await render(hbs`        
+    {{#each-in this.filter.parameters as |paramName paramValue|}}
+      <DropdownParameterPicker
+        @parameterMetadata={{find-by "id" paramName this.filter.columnMetadata.parameters}}
+        @parameterValue={{this.selectedParameter}}
+        @onUpdate={{this.updateParameters}}
+      />
+    {{/each-in}}`);
 
     assert.dom('.dropdown-parameter-picker__trigger').exists('Parameter picker is rendered properly');
 
@@ -52,9 +54,18 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
     await click('.dropdown-parameter-picker__trigger');
     assert.dom('.dropdown-parameter-picker__dropdown').isVisible('Dropdown is visible after clicking');
 
-    await click('.dropdown-parameter-picker__dropdown .ember-power-select-option[data-option-index="0.3"]');
+    await click('.ember-power-select-option[data-option-index="0.3"]');
     assert
       .dom('.dropdown-parameter-picker__trigger.chips')
       .hasText('month', 'Parameter chip value is changed after clicking a dropdown option');
+
+    //@ts-expect-error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.set('updateParameters', (id: string, value: string) =>
+      assert.equal(id, 'grain', 'onUpdate action was called with grain id')
+    );
+
+    await click('.dropdown-parameter-picker__trigger');
+    await click('.ember-power-select-option[data-option-index="0.0"]');
   });
 });

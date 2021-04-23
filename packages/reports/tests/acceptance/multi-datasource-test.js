@@ -20,7 +20,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('multi datasource report', async function (assert) {
-    assert.expect(23);
+    assert.expect(19);
 
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
