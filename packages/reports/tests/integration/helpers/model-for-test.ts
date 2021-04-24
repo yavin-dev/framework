@@ -1,5 +1,6 @@
 import { run } from '@ember/runloop';
 import Route from '@ember/routing/route';
+import Controller from '@ember/controller';
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
@@ -12,8 +13,12 @@ module('Integration | Helper | model for', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
-    let controller = {};
-    this.owner.register('route:mock-route', Route.extend({ controller }));
+    const MockController = class extends Controller {};
+    const MockRoute = class extends Route {
+      controller = MockController.create();
+    };
+    this.owner.register('route:mock-route', MockRoute);
+    this.owner.register('controller:mock-controller', MockController);
     route = this.owner.lookup('route:mock-route');
   });
 

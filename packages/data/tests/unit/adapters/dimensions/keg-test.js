@@ -36,8 +36,14 @@ module('Unit | Adapters | Dimensions | Keg', function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function () {
-    this.owner.register('model:dimension/bardOne.dimensionOne', EmberObject.extend({ name: 'dimensionOne' }));
-    this.owner.register('model:dimension/bardTwo.dimensionFour', EmberObject.extend({ name: 'dimensionFour' }));
+    const BardOneDimensionOne = class extends EmberObject {
+      name = 'dimensionOne';
+    };
+    const BardTwoDimensionFour = class extends EmberObject {
+      name = 'dimensionFour';
+    };
+    this.owner.register('model:dimension/bardOne.dimensionOne', BardOneDimensionOne);
+    this.owner.register('model:dimension/bardTwo.dimensionFour', BardTwoDimensionFour);
 
     Adapter = this.owner.lookup('adapter:dimensions/keg');
 

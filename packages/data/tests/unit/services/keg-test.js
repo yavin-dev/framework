@@ -10,7 +10,8 @@ module('Unit | Service | keg', function (hooks) {
   hooks.beforeEach(function () {
     Keg = this.owner.lookup('service:keg');
 
-    this.owner.register('model:record', EmberObject.extend());
+    const Record = class extends EmberObject {};
+    this.owner.register('model:record', Record);
     RecordFactory = this.owner.factoryFor('model:record');
 
     RawRecord1 = { id: 1, description: 'foo', meta: 'ember' };
