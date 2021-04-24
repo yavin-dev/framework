@@ -21,6 +21,12 @@ module('Integration | Component | navi dashboard', function (hooks) {
       { instantiate: false }
     );
 
+    const MockFragmentArray = class extends Array {
+      get(key) {
+        return get(this, key);
+      }
+    };
+
     const dashboardModel = {
       title: 'Test Dashboard',
       isUserOwner: true,
@@ -33,7 +39,11 @@ module('Integration | Component | navi dashboard', function (hooks) {
           { column: 0, row: 5, height: 1, width: 1, widgetId: 123456 }, // Test a widget that doesn't exist
         ],
         columns: 20,
+        get(key) {
+          return get(this, key);
+        },
       },
+      filters: new MockFragmentArray(),
       constructor: { modelName: 'dashboard' },
       get(key) {
         return get(this, key);

@@ -5,4 +5,6 @@ declare module 'navi-dashboards/templates/*' {
   export default tmpl;
 }
 
+declare module 'ember-uuid';
+
 type TODO<T = any> = T;

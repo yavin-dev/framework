@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -55,7 +55,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
    */
   buildPowerSelectOptions(dimObject) {
     return Object.entries(dimObject).reduce((selectOptions, [category, dimensions]) => {
-      dimensions = groupBy(Object.values(dimensions), 'dataSource');
+      dimensions = groupBy(Object.values(dimensions), 'source');
       const needsDatasourceSpecifier = Object.keys(dimensions).length > 1;
       Object.entries(dimensions).forEach(([dataSource, dims]) => {
         dims.sort((a, b) => a.name.localeCompare(b.name));
@@ -93,7 +93,7 @@ export default class DashboardDimensionSelectorComponent extends Component {
             field: dimension.id,
             name: dimension.name,
             tables: [table],
-            dataSource,
+            source: dataSource,
           };
         } else {
           results[dimension.category][`${dataSource}.${dimension.id}`].tables.push(table);

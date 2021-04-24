@@ -133,7 +133,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgxAOaJ6EAsWTEAtoiRpMuGIJFcqWgL594ATyKih0JdVTQ8tYH1R5WyAMZTtwAEZyhAeWpvdbl1gIA',
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmPAngA6KYQAm0AtogHarQD2NEANBDIrGacAIYDmJYG2CFeyXtSRpMuDlx7RuwAL4iGxCfAbJFzYRABuvWAFdE6YNgC6I1A1PIAxkIwQARuLIB5GkJXWKsBAAA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -160,7 +160,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
       );
     };
 
-    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'age', dataSource: 'bardOne' });
+    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'age', source: 'bardOne' });
   });
 
   test('Add filter from other datasource', async function (assert) {
@@ -178,7 +178,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgAYzzV4xGinoQCxZMQC2iJGky4YgkVyp6Avn3gBPIqKHQ11VNEnzgqPK2RjEogEZKhAFQDueBCG3IbAQAA',
+              'EQbwOsBmCWA2AuBTATgZwgLgNrmPAngA6KYQAm0AtogHarQD2NEANBDIrGacAMZPwAhtBopWEQoOSDqSNJlwcuPaN2ABfNsAbFp8BshXNgWgG6DYAV0Tpg2ALpbUDS8l4k7EAEZSyAFQB3Bgh1e3VgIA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -205,7 +205,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
       );
     };
 
-    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'container', dataSource: 'bardTwo' });
+    await controller.send('addFilter', dashboard, { type: 'dimension', field: 'container', source: 'bardTwo' });
   });
 
   test('Updating multidatasource filter', async function (assert) {

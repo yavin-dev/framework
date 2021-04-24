@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -18,7 +18,7 @@ import { layout as templateLayout, tagName } from '@ember-decorators/component';
 
 @templateLayout(layout)
 @tagName('')
-class NaviWidget extends Component {
+export default class NaviWidget extends Component {
   /**
    * @property {String} visualizationPrefix - prefix for all visualizations types
    */
@@ -92,5 +92,3 @@ class NaviWidget extends Component {
     return isSuccessful ? arr(value) : null;
   }
 }
-
-export default NaviWidget;
