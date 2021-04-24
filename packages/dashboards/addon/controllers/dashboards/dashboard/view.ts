@@ -10,7 +10,6 @@ import { action } from '@ember/object';
 import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget';
 import type CompressionService from 'navi-core/services/compression';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type StoreService from '@ember-data/store';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import type { Filter } from 'navi-data/adapters/facts/interface';
@@ -35,9 +34,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
 
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
-
-  @service
-  declare store: StoreService;
 
   queryParams = ['filters'];
 
