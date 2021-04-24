@@ -2,27 +2,37 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { set } from '@ember/object';
+import { TestContext as Context } from 'ember-test-helpers';
+
+interface TestContext extends Context {
+  isUserModalOpen: boolean;
+  toggleModal(): void;
+  addUser(): void;
+}
+
+const TEMPLATE = hbs`
+<NaviNewUserModal
+  @isUserModalOpen={{this.isUserModalOpen}}
+  @toggleModal={{this.toggleModal}}
+  @addUser={{this.addUser}}
+/>`;
 
 module('Integration | Component | navi-new-user-modal', function (hooks) {
   setupRenderingTest(hooks);
 
-  test('modal is open', async function (assert) {
+  hooks.beforeEach(function (this: TestContext) {
+    this.toggleModal = () => {
+      this.isUserModalOpen = !this.isUserModalOpen;
+    };
+    this.addUser = () => undefined;
+  });
+
+  test('modal is open', async function (this: TestContext, assert) {
     assert.expect(1);
 
-    // @ts-ignore
-    set(this, 'isUserModalOpen', true);
-    // @ts-ignore
-    set(this, 'toggleModal', () => {
-      // @ts-ignore
-      this.isUserModalOpen = !this.isUserModalOpen;
-    });
-    // @ts-ignore
-    set(this, 'addUser', () => {});
+    this.isUserModalOpen = true;
 
-    await render(
-      hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}} @addUser={{this.addUser}} />`
-    );
+    await render(TEMPLATE);
 
     assert.dom('.navi-new-user-modal__header-title').hasText('Create User', 'User modal is shown');
   });
@@ -30,19 +40,9 @@ module('Integration | Component | navi-new-user-modal', function (hooks) {
   test('modal is closed', async function (assert) {
     assert.expect(1);
 
-    // @ts-ignore
-    set(this, 'isUserModalOpen', false);
-    // @ts-ignore
-    set(this, 'toggleModal', () => {
-      // @ts-ignore
-      this.isUserModalOpen = !this.isUserModalOpen;
-    });
-    // @ts-ignore
-    set(this, 'addUser', () => {});
+    this.isUserModalOpen = false;
 
-    await render(
-      hbs`<NaviNewUserModal @isUserModalOpen={{this.isUserModalOpen}} @toggleModal={{this.toggleModal}} @addUser={{this.addUser}} />`
-    );
+    await render(TEMPLATE);
 
     assert.dom('.navi-new-user-modal__header-title').doesNotExist('User modal is not shown');
   });

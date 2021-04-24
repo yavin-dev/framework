@@ -28,6 +28,8 @@
       "navi-admin/*": ["addon/*"],
       "navi-admin/test-support": ["addon-test-support"],
       "navi-admin/test-support/*": ["addon-test-support/*"],
+      "navi-core": ["node_modules/navi-core/addon"],
+      "navi-core/*": ["node_modules/navi-core/addon/*"],
       "*": ["types/*"]
     }
   },

@@ -19,6 +19,7 @@ module.exports = {
     'prefer-rest-params': 'off', // useful for super(...arguments) calls
 
     // typescript
+    '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/camelcase': ['error', { allow: ['_id$'] }],
     '@typescript-eslint/explicit-function-return-type': 'off',
