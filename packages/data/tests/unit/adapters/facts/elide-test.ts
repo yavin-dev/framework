@@ -743,7 +743,6 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     try {
       await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
     } catch (e) {
-      console.log('urlForDownloadQuery - Bad request error', e.message);
       assert.deepEqual(
         e.message,
         'Table Export Query did not complete successfully',

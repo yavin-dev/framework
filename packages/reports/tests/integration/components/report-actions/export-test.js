@@ -3,13 +3,20 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
-import $ from 'jquery';
 
 const TEMPLATE = hbs`
-  <ReportActions::Export 
+  <ReportActions::Export
     @report={{this.report}}
   >
+  <DenaliButton
+    @style="text"
+    @size="medium"
+    @icon="download"
+    class="report-actions__export-btn"
+    {{on "click" (perform this.getDownloadURLTask)}}
+  >
     Export
+  </DenaliButton>
   </ReportActions::Export>`;
 
 let Store;
@@ -23,27 +30,12 @@ module('Integration | Component | report actions - export', function (hooks) {
   });
 
   test('Component Renders', async function (assert) {
-    assert.expect(4);
-
-    const factService = this.owner.lookup('service:navi-facts');
     this.owner.lookup('service:navi-metadata').loadMetadata();
     const report = await Store.findRecord('report', 1);
 
     this.set('report', report);
     await render(TEMPLATE);
-
-    const component = $('a.report-control').get(0);
-
-    assert.equal(component.text.trim(), 'Export', 'Component yields content as expected');
-
-    assert.equal(component.getAttribute('target'), '_blank', 'Component has target attribute as _blank');
-
-    assert.equal(component.getAttribute('download'), 'true', 'Component has download attribute as true');
-
-    const expectedHref = factService.getURL(report.get('request').serialize(), {
-      format: 'csv',
-    });
-    assert.equal(component.getAttribute('href'), expectedHref, 'Component has appropriate link to API');
+    assert.dom('.report-actions__export-btn').hasText('Export', 'Component yields given text');
   });
 
   test('Component is not disabled for unsaved reports', async function (assert) {
@@ -70,7 +62,6 @@ module('Integration | Component | report actions - export', function (hooks) {
     this.set('report', Store.createRecord('report', { title: 'New Report', request }));
 
     await render(TEMPLATE);
-
-    assert.notOk(!!$('a.report-control.disabled').length, 'Component is not disabled for unsaved reports');
+    assert.dom('.report-actions__export-btn').isNotDisabled('Component is not disabled for unsaved reports');
   });
 });

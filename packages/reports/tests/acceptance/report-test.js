@@ -597,48 +597,45 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Export action - href', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
 
     // Turn flag off
     config.navi.FEATURES.exportFileTypes = ['csv'];
     await visit('/reports/1/view');
-
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
+    assert.dom('.alert.is-info').hasText('The CSV download should begin shortly');
     assert.ok(
-      $('.report-actions__export-btn').attr('href').includes('/network/day/property;show=id/?dateTime='),
+      $('.export__download-link').attr('href').includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
-
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
-
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.ok(
-      $('.report-actions__export-btn')
+      $('.export__download-link')
         .attr('href')
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
-
     assert.notOk(
-      $('.report-actions__export-btn').attr('href').includes('filter'),
+      $('.export__download-link').attr('href').includes('filter'),
       'No filters are initially present in export url'
     );
 
-    /* == Add filter == */
     await click('.navi-report__run-btn');
     await clickItemFilter('dimension', 'Product Family');
 
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '1');
     await click('.navi-report__run-btn');
-
+    await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.ok(
-      decodeURIComponent($('.report-actions__export-btn').attr('href')).includes('productFamily|id-in["1"]'),
+      decodeURIComponent($('.export__download-link').attr('href')).includes('productFamily|id-in["1"]'),
       'Filter updates are automatically included in export url'
     );
-
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
