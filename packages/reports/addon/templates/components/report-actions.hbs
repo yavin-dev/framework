@@ -66,7 +66,6 @@
       {{#let (component "report-actions/export") as |ExportAction|}}
         <ExportAction
           class="report-actions__export is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
-          id="report-actions__export"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
           as |onClick|
@@ -75,7 +74,6 @@
             @style="text"
             @size="medium"
             @icon="download"
-            id="report-actions__export-btn"
             class="report-actions__export-btn"
             disabled={{unless @model.validations.isTruelyValid "is-disabled"}}
             {{on "click" onClick}}
@@ -86,7 +84,7 @@
       {{/let}}
     {{/if}}
   {{/let}}
-  <EmberTooltip @targetId="report-actions__export-btn">
+  <EmberTooltip class="report-actions__export-btn">
     {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
   </EmberTooltip>
 {{/if}}

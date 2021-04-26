@@ -13,7 +13,6 @@ const TEMPLATE = hbs`
     @style="text"
     @size="medium"
     @icon="download"
-    id="report-actions__export-btn"
     class="report-actions__export-btn"
     {{on "click" (perform this.getDownloadURLTask)}}
   >
@@ -37,7 +36,7 @@ module('Integration | Component | report actions - export', function (hooks) {
 
     this.set('report', report);
     await render(TEMPLATE);
-    assert.dom('#report-actions__export-btn').hasText('Export', 'Component yields given text');
+    assert.dom('.report-actions__export-btn').hasText('Export', 'Component yields given text');
   });
 
   test('Component is not disabled for unsaved reports', async function (assert) {
@@ -64,6 +63,6 @@ module('Integration | Component | report actions - export', function (hooks) {
     this.set('report', Store.createRecord('report', { title: 'New Report', request }));
 
     await render(TEMPLATE);
-    assert.notOk(!!$('#report-actions__export-btn.disabled').length, 'Component is not disabled for unsaved reports');
+    assert.dom('.report-actions__export-btn').isNotDisabled('Component is not disabled for unsaved reports');
   });
 });
