@@ -1,12 +1,14 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, render } from '@ember/test-helpers';
+import { click, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+//@ts-ignore
+import { selectChoose } from 'ember-power-select/test-support';
 
 interface TestContext extends Context {
   filter: FilterFragment;
@@ -24,8 +26,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
     this.set('parameterIndex', 0);
     this.set('parameterKeys', ['grain']);
     this.set('selectedParameter', 'day');
-    //@ts-expect-error
-    this.updateParameters = (id: string, value: string) => this.set('selectedParameter', value);
+    this.updateParameters = (_id: string, value: string) => this.set('selectedParameter', value);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
     this.set(
       'filter',
@@ -34,7 +35,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
   });
 
   test('dropdown-parameter-picker', async function (this: TestContext, assert) {
-    assert.expect(5);
+    assert.expect(8);
 
     await render(hbs`        
     {{#each-in this.filter.parameters as |paramName paramValue|}}
@@ -54,18 +55,30 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
     await click('.dropdown-parameter-picker__trigger');
     assert.dom('.dropdown-parameter-picker__dropdown').isVisible('Dropdown is visible after clicking');
 
-    await click('.ember-power-select-option[data-option-index="0.3"]');
+    assert.deepEqual(
+      findAll('.dropdown-parameter-picker__dropdown .ember-power-select-group-name').map((el) =>
+        el.textContent?.trim()
+      ),
+      ['Time grain'],
+      'The option groups are all represented properly'
+    );
+
+    assert.deepEqual(
+      findAll('.dropdown-parameter-picker__dropdown .ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['hour', 'day', 'isoWeek', 'month', 'quarter', 'year'],
+      'The options are all represented properly'
+    );
+
+    await selectChoose('.dropdown-parameter-picker', 'month');
     assert
       .dom('.dropdown-parameter-picker__trigger.chips')
       .hasText('month', 'Parameter chip value is changed after clicking a dropdown option');
 
-    //@ts-expect-error
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    this.set('updateParameters', (id: string, value: string) =>
-      assert.equal(id, 'grain', 'onUpdate action was called with grain id')
-    );
+    this.set('updateParameters', (id: string, value: string) => {
+      assert.equal(id, 'grain', 'onUpdate action was called with the correct parameter id');
+      assert.equal(value, 'hour', 'onUpdate action was called with the correct parameter value');
+    });
 
-    await click('.dropdown-parameter-picker__trigger');
-    await click('.ember-power-select-option[data-option-index="0.0"]');
+    await selectChoose('.dropdown-parameter-picker', 'hour');
   });
 });
