@@ -12,9 +12,7 @@ import { selectChoose } from 'ember-power-select/test-support';
 
 interface TestContext extends Context {
   filter: FilterFragment;
-  parameterIndex: number;
   updateParameters: (key: string, value: string) => void;
-  parameterKeys: string[];
 }
 
 module('Integration | Component | dropdown parameter picker', function (hooks) {
@@ -23,8 +21,6 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
 
   hooks.beforeEach(async function (this: TestContext) {
     const factory: FragmentFactory = this.owner.lookup('service:fragment-factory');
-    this.set('parameterIndex', 0);
-    this.set('parameterKeys', ['grain']);
     this.set('selectedParameter', 'day');
     this.updateParameters = (_id: string, value: string) => this.set('selectedParameter', value);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
