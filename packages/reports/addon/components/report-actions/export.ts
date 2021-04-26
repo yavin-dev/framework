@@ -59,17 +59,16 @@ export default class ReportActionExport extends Component<Args> {
   async downloadURLLink(url?: string | undefined) {
     if (url !== undefined) {
       const anchorElement = document.createElement('a');
-      anchorElement.setAttribute('id', 'export__downloadUrl-link');
-      anchorElement.setAttribute('class', 'export__downloadUrl-link');
+      anchorElement.setAttribute('class', 'export__download-link');
       anchorElement.setAttribute('href', url);
       anchorElement.setAttribute('download', this.args.report.title);
       anchorElement.setAttribute('target', '_blank');
-      document.getElementById('export__downloadUrl')?.appendChild(anchorElement);
+      document.querySelector('#export__download-url')?.appendChild(anchorElement);
       anchorElement.click();
       if (Ember.testing) {
         await this.delay(5000);
       }
-      document.getElementById('export__downloadUrl')?.removeChild(anchorElement);
+      document.querySelector('#export__download-url')?.removeChild(anchorElement);
     }
   }
 

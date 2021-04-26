@@ -607,22 +607,21 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.dom('.alert.is-info').hasText('The CSV download should begin shortly');
     assert.ok(
-      $('.export__downloadUrl-link').attr('href').includes('/network/day/property;show=id/?dateTime='),
+      $('.export__download-link').attr('href').includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
     await click($('.report-actions__export-btn:contains(Export)')[0]);
-
     assert.ok(
-      $('.export__downloadUrl-link')
+      $('.export__download-link')
         .attr('href')
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
     assert.notOk(
-      $('.export__downloadUrl-link').attr('href').includes('filter'),
+      $('.export__download-link').attr('href').includes('filter'),
       'No filters are initially present in export url'
     );
 
@@ -634,7 +633,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
     await click($('.report-actions__export-btn:contains(Export)')[0]);
     assert.ok(
-      decodeURIComponent($('.export__downloadUrl-link').attr('href')).includes('productFamily|id-in["1"]'),
+      decodeURIComponent($('.export__download-link').attr('href')).includes('productFamily|id-in["1"]'),
       'Filter updates are automatically included in export url'
     );
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
