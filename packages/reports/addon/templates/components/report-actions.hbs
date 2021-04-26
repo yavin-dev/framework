@@ -75,7 +75,7 @@
             @size="medium"
             @icon="download"
             class="report-actions__export-btn"
-            disabled={{unless @model.validations.isTruelyValid "is-disabled"}}
+            disabled={{not @model.validations.isTruelyValid}}
             {{on "click" onClick}}
           >
             Export
