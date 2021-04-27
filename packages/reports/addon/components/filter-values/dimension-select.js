@@ -134,7 +134,6 @@ export default class DimensionSelectComponent extends Component {
     if (isNumericDimensionArray(dimensions)) {
       return sortBy(dimensions, [d => Number(d.option.value)]);
     }
-    console.log('odering by description');
     return sortBy(dimensions, ['option.description']);
   }
 
