@@ -72,7 +72,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     let optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       expectedOptionText = AgeValues.map(({ id }) => id);
     /*
-     * Since ember-collection is used for rendering the dropdown options,
+     * Since vertical-collection is used for rendering the dropdown options,
      * some later options may be cropped from the DOM, so just check the first 10
      */
     optionText.length = 10;
@@ -115,7 +115,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     const expectedOptionText = ContainerValues.map(({ id }) => id);
 
     /*
-     * Since ember-collection is used for rendering the dropdown options,
+     * Since vertical-collection is used for rendering the dropdown options,
      * some later options may be cropped from the DOM, so just check the first 10
      */
     optionText.length = 10;

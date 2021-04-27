@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
- * An ember-power-select options component that uses ember-collection
+ * An ember-power-select options component that uses vertical-collection
  */
 import { A } from '@ember/array';
 import { action } from '@ember/object';

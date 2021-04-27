@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Coerces the input into an interval
@@ -7,7 +7,7 @@
 import { helper } from '@ember/component/helper';
 import Interval from 'navi-data/utils/classes/interval';
 
-export function asInterval([interval]) {
+export function asInterval([interval]: [string]) {
   if (typeof interval === 'string' && interval.length > 0) {
     //Expects format of Date/Date e.g. '2018-10-31/2018-11-05' for an interval between October 31 and November 5
     let intervalStrs = interval.split('/');
