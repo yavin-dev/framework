@@ -54,11 +54,10 @@
       {{#let (component "report-actions/multiple-format-export") as |ExportAction|}}
         <ExportAction
           class="report-actions__export-btn button is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
-          id="report-actions__export-btn"
           @report={{@model}}
           @disabled={{not @model.validations.isTruelyValid}}
         >
-          <DenaliIcon @icon="download" />
+          <DenaliIcon id="report-actions__export-btn" @icon="download" />
           Export
         </ExportAction>
       {{/let}}
@@ -71,6 +70,7 @@
           as |onClick|
         >
           <DenaliButton
+            id="report-actions__export-btn"
             @style="text"
             @size="medium"
             @icon="download"
@@ -84,7 +84,7 @@
       {{/let}}
     {{/if}}
   {{/let}}
-  <EmberTooltip class="report-actions__export-btn">
+  <EmberTooltip @targetId="report-actions__export-btn" class="report-actions__export-btn">
     {{if @model.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
   </EmberTooltip>
 {{/if}}
