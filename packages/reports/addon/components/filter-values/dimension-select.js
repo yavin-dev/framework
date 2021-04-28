@@ -58,7 +58,7 @@ export default class DimensionSelectComponent extends Component {
   /**
    * @property {BardDimensionArray} dimensionOptions - list of all dimension values
    */
-  @computed('dimensionName', 'searchTerm', 'filter.subject.source')
+  @computed('dimensionName', 'searchTerm', 'filter.subject.source', 'isSmallCardinality')
   get dimensionOptions() {
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
@@ -66,15 +66,22 @@ export default class DimensionSelectComponent extends Component {
 
     const dimensionName = get(this, 'dimensionName'),
       dimensionService = get(this, '_dimensionService'),
-      metadataService = get(this, '_metadataService'),
-      source = get(this, 'filter.subject.source'),
-      loadedDimension = metadataService.getById('dimension', dimensionName, source);
+      source = get(this, 'filter.subject.source');
 
-    if (dimensionName && loadedDimension?.cardinality === CARDINALITY_SIZES[0]) {
+    if (this.isSmallCardinality) {
       return dimensionService.all(dimensionName, { dataSourceName: source });
     }
 
     return undefined;
+  }
+
+  @computed('dimensionName', 'filter.subject.source')
+  get isSmallCardinality() {
+    const dimensionName = get(this, 'dimensionName'),
+      metadataService = get(this, '_metadataService'),
+      source = get(this, 'filter.subject.source'),
+      loadedDimension = metadataService.getById('dimension', dimensionName, source);
+    return dimensionName && loadedDimension?.cardinality === CARDINALITY_SIZES[0];
   }
 
   /**
@@ -120,6 +127,10 @@ export default class DimensionSelectComponent extends Component {
 
   @action
   sortValues(dimensions) {
+    //don't sort if searching on server
+    if (!this.isSmallCardinality) {
+      return dimensions;
+    }
     if (isNumericDimensionArray(dimensions)) {
       return sortBy(dimensions, [d => Number(d.option.value)]);
     }
