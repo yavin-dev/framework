@@ -17,7 +17,7 @@ import {
   parseHavings,
   parseMetrics,
 } from './bard-lite-parsers';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain } from 'navi-data/utils/date';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
@@ -176,7 +176,7 @@ export default function (
 
   this.get('/data/*path', function (_db, request) {
     faker.seed(request.url.length);
-    let [table, grain, ...dimensionPaths] = request.params.path.split('/') as [string, Grain] & string[];
+    let [table, grain, ...dimensionPaths] = request.params.path.split('/') as [string, GrainWithAll] & string[];
     const dimensions = dimensionPaths
       .filter((d) => d.length > 0)
       .sort()
@@ -194,6 +194,14 @@ export default function (
         {},
         {
           description: `Date time cannot have zero length intervals. ${start}/${end}.`,
+        }
+      );
+    } else if (grain === 'all' && !(moment(start).isValid() && moment(end).isValid())) {
+      return new Response(
+        400,
+        {},
+        {
+          description: `Invalid interval for 'all' grain.`,
         }
       );
     }

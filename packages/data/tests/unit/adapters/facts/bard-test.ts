@@ -3,10 +3,12 @@ import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
 import config from 'ember-get-config';
 import { taskFor } from 'ember-concurrency-ts';
+import moment from 'moment';
 import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import { Grain } from 'navi-data/utils/date';
 
 const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;
@@ -237,13 +239,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
           type: 'timeDimension',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['start', 'end'],
+          values: ['2021-02-13', '2021-04-12'],
         },
       ],
     };
     assert.equal(
       Adapter._buildDateTimeParam(singleInterval),
-      'start/end',
+      '2021-02-13T00:00:00.000/2021-04-13T00:00:00.000',
       '_buildDateTimeParam built the correct string for a single interval'
     );
 
@@ -253,18 +255,14 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         {
           type: 'timeDimension',
           field: '.dateTime',
-          parameters: {
-            grain: 'day',
-          },
+          parameters: { grain: 'day' },
         },
       ],
       filters: [
         {
           type: 'timeDimension',
           field: '.dateTime',
-          parameters: {
-            grain: 'week',
-          },
+          parameters: { grain: 'week' },
           operator: 'bet',
           values: [],
         },
@@ -322,9 +320,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         {
           field: 'tableName.dateTime',
           type: 'timeDimension',
-          parameters: {
-            grain: 'isoWeek',
-          },
+          parameters: { grain: 'isoWeek' },
           operator: operator,
           values: [date],
         },
@@ -372,6 +368,45 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       '_buildDateTimeParam throws error if end date is not a valid datetime'
     );
     config.navi.dataEpoch = originalDataEpoch;
+  });
+
+  test('_buildDateTimeParam all grain with macros', function (assert) {
+    assert.expect(3);
+
+    const allWithFilterGrain = (grain: Grain, values: string[]): RequestV2 => ({
+      ...EmptyRequest,
+      filters: [
+        {
+          type: 'timeDimension',
+          field: '.dateTime',
+          parameters: { grain },
+          operator: 'bet',
+          values,
+        },
+      ],
+    });
+
+    const request1 = allWithFilterGrain('day', ['P1D', 'current']);
+    assert.strictEqual(
+      Adapter._buildDateTimeParam(request1),
+      `P1D/${moment.utc().startOf('day').toISOString().replace('Z', '')}`,
+      '_buildDateTimeParam forces the "current" macro to a real date if the all grain is used'
+    );
+
+    const request2 = allWithFilterGrain('isoWeek', ['2020-04-20', 'next']);
+    assert.strictEqual(
+      Adapter._buildDateTimeParam(request2),
+      '2020-04-20T00:00:00.000/2021-05-03T00:00:00.000',
+      '_buildDateTimeParam forces the "next" macro to a real date if the all grain is used'
+    );
+
+    const request3 = allWithFilterGrain('month', ['current', 'next']);
+    const currentMonth = moment.utc().startOf('month');
+    assert.strictEqual(
+      Adapter._buildDateTimeParam(request3),
+      `${currentMonth.toISOString().replace('Z', '')}/${currentMonth.add(1, 'month').toISOString().replace('Z', '')}`,
+      '_buildDateTimeParam forces the "current" and "next" macro to a real date if the all grain is used'
+    );
   });
 
   test('_buildMetricsParam', function (assert) {
