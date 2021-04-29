@@ -1,26 +1,28 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { inject as service } from '@ember/service';
-import { assert } from '@ember/debug';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import Route from '@ember/routing/route';
-import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import ReportModel from 'navi-core/models/report';
+import { inject as service } from '@ember/service';
+import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { getDataSource } from 'navi-data/utils/adapter';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import { Parameters } from 'navi-data/adapters/facts/interface';
 import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
-import { BardTableMetadata, GrainOrdering } from 'navi-data/models/metadata/bard/table';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import { getPeriodForGrain } from 'navi-data/utils/date';
+import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
 import moment from 'moment';
 import Interval from 'navi-data/utils/classes/interval';
+import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ReportModel from 'navi-core/models/report';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { Filter, Parameters } from 'navi-data/adapters/facts/interface';
+import type Route from '@ember/routing/route';
+import type { Grain } from 'navi-data/utils/date';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 
 export default class FiliConsumer extends ActionConsumer {
-  @service requestActionDispatcher!: RequestActionDispatcher;
+  @service
+  declare requestActionDispatcher: RequestActionDispatcher;
 
   /**
    * Filters actions to only those updating fili requests
@@ -72,7 +74,7 @@ export default class FiliConsumer extends ActionConsumer {
       this: FiliConsumer,
       route: Route,
       filterFragment: FilterFragment,
-      changeset: Partial<FilterFragment>
+      changeset: Pick<Filter, keyof Filter>
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
@@ -84,6 +86,19 @@ export default class FiliConsumer extends ActionConsumer {
         const values = valuesForOperator(dateTimeFilter, newGrain as Grain);
         const changeset = { values };
         this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+      }
+
+      const { timeGrainColumn } = request;
+      if (newGrain && timeGrainColumn && timeGrainColumn.parameters.grain !== newGrain) {
+        // update filterFragment before dispatch to prevent infinite loop
+        filterFragment.setProperties(changeset);
+        this.requestActionDispatcher.dispatch(
+          RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS,
+          route,
+          timeGrainColumn,
+          'grain',
+          newGrain
+        );
       }
     },
 
@@ -175,32 +190,6 @@ export default class FiliConsumer extends ActionConsumer {
           'grain',
           existingGrain
         );
-      }
-    },
-
-    /**
-     * @action REMOVE_COLUMN_FRAGMENT
-     * @param route - route that has a model that contains a request property
-     * @param columnFragment - data model fragment of the column
-     */
-    [RequestActions.REMOVE_COLUMN_FRAGMENT](this: FiliConsumer, route: Route, column: ColumnFragment) {
-      const { routeName } = route;
-      const { request } = route.modelFor(routeName) as ReportModel;
-
-      const { dateTimeFilter, tableMetadata } = request;
-      // if there are no date time columns, one was just removed, and there is a date time filter then move filter to lowest grain
-      if (
-        request.columns.filter((c) => c.type === 'timeDimension').length === 0 &&
-        column.type === 'timeDimension' &&
-        dateTimeFilter
-      ) {
-        assert('request has tableMetadata available', request.tableMetadata);
-        const bardTableMetadata = (tableMetadata as unknown) as BardTableMetadata;
-        const grain = bardTableMetadata.timeGrains[0].id;
-
-        if (dateTimeFilter.parameters.grain !== grain) {
-          this.expandFilterInterval(route, dateTimeFilter, grain);
-        }
       }
     },
   };

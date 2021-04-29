@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The fact adapter for the bard request v2 model.
@@ -27,9 +27,11 @@ import moment from 'moment';
 import config from 'ember-get-config';
 import { task } from 'ember-concurrency';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type RequestDecoratorService from 'navi-data/services/request-decorator';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
+import Interval from 'navi-data/utils/classes/interval';
 
 export type Query = RequestOptions & Record<string, string | number | boolean>;
 
@@ -103,7 +105,11 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   @service ajax: TODO;
 
-  @service naviMetadata!: NaviMetadataService;
+  @service
+  declare naviMetadata: NaviMetadataService;
+
+  @service
+  declare requestDecorator: RequestDecoratorService;
 
   /**
    * Builds the dimensions path for a request
@@ -145,8 +151,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const filterGrain = timeFilter?.parameters?.grain as Grain;
 
     const timeColumn = request.columns.filter(isDateTime)[0];
-    const columnGrain = timeColumn?.parameters?.grain;
-    if (timeColumn && columnGrain !== filterGrain) {
+    const columnGrain: GrainWithAll = (timeColumn?.parameters?.grain as Grain | undefined) ?? 'all';
+    if (timeColumn && columnGrain !== 'all' && columnGrain !== filterGrain) {
       throw new FactAdapterError(
         `The requested filter timeGrain '${filterGrain}', must match the column timeGrain '${columnGrain}'`
       );
@@ -155,10 +161,19 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     let start: string, end: string;
     if (timeFilter.operator === 'bet') {
       [start, end] = timeFilter.values as string[];
-      // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
-      const endMoment = end ? moment.utc(end) : undefined;
-      if (endMoment?.isValid()) {
-        end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+      if (columnGrain === 'all') {
+        const interval = Interval.parseInclusive(start, end, filterGrain).asMomentsForTimePeriod(filterGrain);
+        // Don't overwrite durations
+        if (!start.startsWith('P')) {
+          start = interval.start.toISOString();
+        }
+        end = interval.end.toISOString();
+      } else {
+        // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
+        const endMoment = end ? moment.utc(end) : undefined;
+        if (endMoment?.isValid()) {
+          end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+        }
       }
     } else if (timeFilter.operator === 'gte') {
       [start] = timeFilter.values as string[];
@@ -244,7 +259,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       return having
         .map((having) => {
           const { field, operator, values = [] } = having;
-
           return `${field}-${operator}[${values.join(',')}]`;
         })
         .join(',');
@@ -337,10 +351,6 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   @task *urlForDownloadQuery(request: RequestV2, options?: RequestOptions): TaskGenerator<string> {
     return yield this.urlForFindQuery(request, options);
   }
-  /**
-   * @property requestDecorator
-   */
-  @service requestDecorator: TODO;
 
   /**
    * Decorates a requestV2 object

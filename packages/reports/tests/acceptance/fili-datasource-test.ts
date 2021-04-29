@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, visit } from '@ember/test-helpers';
+import { click, visit, findAll } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 //@ts-ignore
 import { setupAnimationTest } from 'ember-animated/test-support';
@@ -162,5 +162,77 @@ module('Acceptance | fili datasource', function (hooks) {
 
     await clickItem('metric', 'Revenue');
     assert.dom('.navi-column-config-base__sort-icon').doesNotHaveAttribute('disabled', 'A metric column can be sorted');
+  });
+
+  test('Fili Remove time column (all grain)', async function (assert) {
+    assert.expect(4);
+
+    await visit('/reports/1/edit');
+
+    // select month grain
+    await click('.navi-column-config-item__trigger');
+    await selectChoose('.navi-column-config-item__parameter', 'Month');
+
+    await clickTrigger('.filter-values--date-range-input__low-value');
+    await click('.ember-power-calendar-selector-month[data-date="2015-01"]');
+
+    await clickTrigger('.filter-values--date-range-input__high-value');
+    await click('.ember-power-calendar-selector-month[data-date="2015-05"]');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 2015', 'The start date is month Jan 2015');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('May 2015', 'The end date is month May 2015');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Jan 2015', 'The start date is not changed');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('May 2015', 'The end date is not changed');
+  });
+
+  test('Fili filter grain updates column grain', async function (assert) {
+    assert.expect(6);
+    await visit('reports/1/edit');
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'All columns exist as expected'
+    );
+
+    await selectChoose('.dropdown-parameter-picker', 'year');
+    assert
+      .dom('.filter-builder__subject')
+      .hasText('Date Time year', 'Date time matches existing filter grain on the report');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Date Time (year)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'Date Time column is updated to match filter grain of year'
+    );
+
+    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (day)
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'Date Time is removed'
+    );
+
+    await selectChoose('.dropdown-parameter-picker', 'isoWeek');
+
+    assert
+      .dom('.filter-builder__subject')
+      .hasText('Date Time isoWeek', 'Date time matches existing filter grain on the report');
+
+    await clickItem('dimension', 'Date Time');
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (isoWeek)'],
+      'A Date Time column is added matching the existing filter grain'
+    );
   });
 });

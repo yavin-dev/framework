@@ -1,26 +1,26 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Route from '@ember/routing/route';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import FiliConsumer from 'navi-reports/consumers/request/fili';
-import StoreService from 'ember-data/store';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
 import config from 'ember-get-config';
-import { NaviDataSource } from 'navi-config';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type { TestContext as Context } from 'ember-test-helpers';
+import type Route from '@ember/routing/route';
+import type FiliConsumer from 'navi-reports/consumers/request/fili';
+import type StoreService from '@ember-data/store';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { NaviDataSource } from 'navi-config';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
 
 let consumer: FiliConsumer;
 const dispatchedActions: string[] = [];
-const dispatchedActionArgs: unknown[] = [];
+const dispatchedActionArgs: Array<unknown[]> = [];
 let originalDataSources: NaviDataSource[];
 
 const MockDispatcher = {
   dispatch(action: string, _route: Route, ...args: unknown[]) {
     dispatchedActions.push(action);
-    dispatchedActionArgs.push(...args);
+    dispatchedActionArgs.push(args);
   },
 };
 
@@ -83,7 +83,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     const newValues = ['2020-12-28T00:00:00.000Z', '2021-02-22T00:00:00.000Z'];
     request.dateTimeFilter!.values = newValues;
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [request.dateTimeFilter, { values: newValues }],
       'UPDATE_FILTER is dispatched with the updated values for the filter'
     );
@@ -104,9 +104,63 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
 
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [request.dateTimeFilter, { values: ['P1W', 'current'] }],
       'UPDATE_FILTER is dispatched with the updated values for the filter'
+    );
+  });
+
+  test('UPDATE_FILTER - update column grain', function (assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'month' },
+          operator: 'bet',
+          values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
+          source: 'bardOne',
+        },
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'month' },
+          source: 'bardOne',
+        },
+      ],
+    });
+
+    const modelFor = () => ({ request });
+
+    consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, request.dateTimeFilter, {
+      parameters: { grain: 'isoWeek' },
+    });
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER, RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS],
+      'When the filter grain is updated, another request to update the filter values is fired off'
+    );
+
+    const newValues = ['2020-12-28T00:00:00.000Z', '2021-02-22T00:00:00.000Z'];
+    request.dateTimeFilter!.values = newValues;
+    assert.deepEqual(
+      dispatchedActionArgs[0],
+      [request.dateTimeFilter, { values: newValues }],
+      'UPDATE_FILTER is dispatched with the updated values for the filter'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[1],
+      [request.timeGrainColumn, 'grain', 'isoWeek'],
+      'UPDATE_COLUMN_FRAGMENT_WITH_PARAMS is dispatched with the updated grain for the column'
     );
   });
 
@@ -152,7 +206,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
 
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [requestExistingFilter.timeGrainColumn, 'grain', 'month'],
       'UPDATE_COLUMN_FRAGMENT_WITH_PARAMS is dispatched with the grain from the existing filter'
     );
@@ -195,7 +249,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
 
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [requestExistingColumn.columns.objectAt(1), 'grain', 'year'],
       'UPDATE_COLUMN_FRAGMENT_WITH_PARAMS is dispatched with the new column to match the grain of the existing one'
     );
@@ -287,7 +341,7 @@ module('Unit | Consumer | request fili', function (hooks) {
       'UPDATE_FILTER is dispatched when the timeDimension column and filter exists and the grain param is updated'
     );
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [request.dateTimeFilter, { parameters: { grain: 'week' } }],
       'UPDATE_FILTER is dispatched with the updated grain parameter'
     );
@@ -362,54 +416,9 @@ module('Unit | Consumer | request fili', function (hooks) {
       'When adding a timeDimension with an existing column, the filter is updated'
     );
     assert.deepEqual(
-      dispatchedActionArgs,
+      dispatchedActionArgs[0],
       [request.filters.objectAt(0), { parameters: { grain: 'existingColumnGrain' } }],
       'The filter is updated to match the existingColumnGrain grain'
-    );
-  });
-
-  test('REMOVE_COLUMN_FRAGMENT', function (assert) {
-    const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
-      table: 'network',
-      filters: [
-        {
-          type: 'timeDimension',
-          field: 'network.dateTime',
-          parameters: { grain: 'month' },
-          operator: 'bet',
-          values: ['2021-01-01T00:00:00.000Z', '2021-02-01T00:00:00.000Z'],
-          source: 'bardOne',
-        },
-      ],
-      sorts: [],
-      limit: null,
-      dataSource: 'bardOne',
-      requestVersion: '2.0',
-      columns: [],
-    });
-
-    const modelFor = () => ({ request });
-
-    consumer.send(
-      RequestActions.REMOVE_COLUMN_FRAGMENT,
-      { modelFor },
-      //@ts-ignore
-      { type: 'timeDimension', parameters: {} }
-    );
-    assert.deepEqual(
-      dispatchedActions,
-      [RequestActions.UPDATE_FILTER],
-      'When the last date time column is removed, the existing date time filter is updated to the lowest grain of the table'
-    );
-
-    assert.deepEqual(
-      dispatchedActionArgs,
-      [
-        request.dateTimeFilter,
-        { parameters: { grain: 'hour' }, values: ['2021-01-01T00:00:00.000Z', '2021-02-28T23:00:00.000Z'] },
-      ],
-      'UPDATE_FILTER is dispatched with the lowest grain for the date time'
     );
   });
 });

@@ -1642,54 +1642,6 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.filter-builder__values').hasText(`The current day. (${today})`, 'The current day');
   });
 
-  test('Fili Datasource: Remove time column (all grain)', async function (assert) {
-    assert.expect(7);
-
-    await visit('/reports/1');
-
-    // select month grain
-    await click('.navi-column-config-item__trigger');
-    await selectChoose('.navi-column-config-item__parameter', 'Month');
-
-    await clickTrigger('.filter-values--date-range-input__low-value');
-    await click($('.ember-power-calendar-selector-month:contains(Jan)')[0]);
-
-    await clickTrigger('.filter-values--date-range-input__high-value');
-    await click($('.ember-power-calendar-selector-month:contains(May)')[0]);
-
-    assert
-      .dom('.filter-values--date-range-input__low-value input')
-      .hasValue('Jan 2015', 'The start date is month Jan 2015');
-    assert
-      .dom('.filter-values--date-range-input__high-value input')
-      .hasValue('May 2015', 'The end date is month May 2015');
-
-    // Remove date time group by
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (month)"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time hour', 'The filter grain is set to the lowest grain');
-    // TODO: Better support for hour grain
-
-    assert
-      .dom('.filter-values--date-range-input__low-value input')
-      .hasValue('Jan 01, 2015', 'The start date is beginning of Jan, 2015');
-    assert
-      .dom('.filter-values--date-range-input__high-value input')
-      .hasValue('May 31, 2015', 'The end date is end of May, 2015');
-
-    await clickTrigger('.filter-values--date-range-input__high-value');
-    await click('.ember-power-calendar-day[data-date="2015-05-30"]');
-    assert
-      .dom('.filter-values--date-range-input__high-value input')
-      .hasValue('May 30, 2015', 'Calendar defaults "all" grain  to show the lowest grain which is day');
-
-    await click('.navi-report__run-btn');
-    assert.deepEqual(
-      findAll('li.table-header-cell').map((el) => el.textContent.trim()),
-      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
-      'The table is successfully queried with no Date Time group by because it supports the all grain'
-    );
-  });
-
   skip("Date picker advanced doesn't modify interval", async function (assert) {
     //TODO advanced date picker has been disabled
     assert.expect(6);
