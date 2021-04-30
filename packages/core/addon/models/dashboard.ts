@@ -1,7 +1,5 @@
-import { attr, belongsTo, hasMany } from '@ember-data/model';
-import { or } from '@ember/object/computed';
+import { attr, belongsTo, hasMany, AsyncBelongsTo, AsyncHasMany } from '@ember-data/model';
 import { A } from '@ember/array';
-import { computed } from '@ember/object';
 //@ts-ignore
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
@@ -15,8 +13,6 @@ import { Moment } from 'moment';
 import FilterFragment from './bard-request-v2/fragments/filter';
 import DashboardWidget from './dashboard-widget';
 import PresentationFragment from './fragments/presentation';
-// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
-import DS from 'ember-data';
 
 const Validations = buildValidations({
   title: [
@@ -30,7 +26,7 @@ const Validations = buildValidations({
 
 export default class DashboardModel extends DeliverableItem.extend(Validations) {
   @belongsTo('user', { async: true })
-  author!: DS.PromiseObject<UserModel>;
+  author!: AsyncBelongsTo<UserModel>;
 
   @attr('string')
   title!: string;
@@ -42,7 +38,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   updatedOn!: Moment;
 
   @hasMany('dashboard-widget', { async: true })
-  widgets!: DS.PromiseManyArray<DashboardWidget>;
+  widgets!: AsyncHasMany<DashboardWidget>;
 
   @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: [] })
   filters!: FragmentArray<FilterFragment>;
@@ -53,7 +49,6 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   /**
    * user is the dashboard owner
    */
-  @computed('author')
   get isUserOwner() {
     return this.author.get('id') === config.navi.user;
   }
@@ -66,8 +61,9 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   /**
    * user has edit permissions for dashboard
    */
-  @or('isUserOwner', 'isUserEditor')
-  canUserEdit!: boolean;
+  get canUserEdit(): boolean {
+    return this.isUserOwner || this.isUserEditor;
+  }
 
   /**
    * is favorite of author

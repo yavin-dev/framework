@@ -33,10 +33,8 @@ export default class NaviDashboard extends Component<Args> {
 
     return (
       dashboard.get('hasDirtyAttributes') ||
-      //@ts-ignore -- TODO: investigate not using get
-      dashboard.get('filters.hasDirtyAttributes') ||
-      //@ts-ignore -- TODO: investigate not using get
-      dashboard.get('presentation.hasDirtyAttributes')
+      dashboard.filters.get('hasDirtyAttributes') ||
+      dashboard.presentation.get('hasDirtyAttributes')
     );
   }
 }

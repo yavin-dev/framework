@@ -43,8 +43,8 @@ export default class DashboardsDashboardRoute extends Route {
    * @returns Promise that resolves to a dashboard model
    *
    */
-  model({ dashboard_id }: { dashboard_id: string }) {
-    return this.store.findRecord('dashboard', dashboard_id);
+  async model({ dashboard_id }: { dashboard_id: string }): Promise<DashboardModel> {
+    return await this.store.findRecord('dashboard', dashboard_id);
   }
 
   /**
@@ -87,8 +87,7 @@ export default class DashboardsDashboardRoute extends Route {
    * @method deactivate - reset query params on exit of route
    */
   deactivate() {
-    //@ts-ignore
-    super.deactivate(...arguments);
+    super.deactivate();
     const dashboard = this.modelFor(this.routeName) as ModelFrom<this>;
     // don't rollback attributes if dashboard was unloaded.
     if (dashboard.get('isEmpty') !== true) {
@@ -230,14 +229,12 @@ export default class DashboardsDashboardRoute extends Route {
 
     const isDirty =
       currentDashboard.get('hasDirtyAttributes') ||
-      //@ts-ignore
-      currentDashboard.get('filters.hasDirtyAttributes') ||
-      //@ts-ignore
-      currentDashboard.get('presentation.hasDirtyAttributes');
+      currentDashboard.filters.get('hasDirtyAttributes') ||
+      currentDashboard.presentation.get('hasDirtyAttributes');
 
     if (
       isDirty &&
-      currentDashboard.get('canUserEdit') &&
+      currentDashboard.canUserEdit &&
       !confirm('You have unsaved changes, are you sure you want to exit?')
     ) {
       transition.abort();
