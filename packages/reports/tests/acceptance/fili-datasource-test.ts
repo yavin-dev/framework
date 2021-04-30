@@ -100,7 +100,7 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.expect(2);
 
     await visit('/reports/new');
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
@@ -111,7 +111,7 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.expect(4);
 
     await visit('/reports/new');
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table C"]');
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');

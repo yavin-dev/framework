@@ -25,7 +25,12 @@ module('Acceptance | custom reports', function (hooks) {
       `On clicking the "${reportTitle}" link, user is brought to the appropriate report view`
     );
 
-    assert.dom('.report-header__title').hasText(reportTitle, `Report title contains text "${reportTitle}" as expected`);
+    assert
+      .dom('.report-header__title')
+      .hasText(
+        reportTitle,
+        `Report title contains text "${reportTitle}" as expected`
+      );
   });
 
   test('Accessing Report Builder', async function (assert) {
@@ -46,12 +51,11 @@ module('Acceptance | custom reports', function (hooks) {
   test('Run report with a filter', async function (assert) {
     await visit('/reports/new');
 
-    await click('.report-builder-source-selector__source-button[data-source-name="Default"]');
-    await click('.report-builder-source-selector__source-button[data-source-name="Mario"]');
-
     // Add filter
     await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', '1');
-    assert.dom('.filter-values--dimension-select__trigger').containsText('1', 'A filter value can be selected');
+    assert
+      .dom('.filter-values--dimension-select__trigger')
+      .containsText('1', 'A filter value can be selected');
   });
 });

@@ -82,7 +82,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       assert.deepEqual(table, networkTable, 'The network table is selected');
       this.report.request.setTableByMetadata(table);
     };
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
 
     assert.deepEqual(
       findAll('.report-builder-source-selector__source-name').map((el) => el.textContent?.trim()),
@@ -105,8 +105,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       assert.deepEqual(table, inventoryTable, 'The inventory table is selected');
       this.report.request.setTableByMetadata(table);
     };
-    await click('.report-builder-sidebar__back');
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
 
     assert.deepEqual(
       findAll('.report-builder-source-selector__source-name').map((el) => el.textContent?.trim()),
@@ -133,7 +132,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
   test('it shows descriptions', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
 
     await triggerEvent('.report-builder-source-selector__source-description', 'mouseenter');
 
@@ -141,7 +140,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       contentString: 'Network, Product, and Property level data',
     });
 
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
 
     await triggerEvent('.report-builder-source-selector__source-description', 'mouseenter');
 

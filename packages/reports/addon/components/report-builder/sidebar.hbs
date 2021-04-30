@@ -1,29 +1,19 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder-sidebar column">
-  <div class="report-builder-sidebar__header row p-y-7 align-items-center">
-    {{#if (gt this.sourcePath.length 0)}}
-      <DenaliButton
-        class="report-builder-sidebar__back m-l-5"
-        disabled={{@disabled}}
-        @iconOnly={{true}}
-        @style="text"
-        {{on "click" this.goBack}}
-      >
-        <DenaliIcon class="is-brand-300" @icon="arrowhead-left" />
-      </DenaliButton>
-    {{/if}}
+  <div class="report-builder-sidebar__header row p-l-18 p-y-7 align-items-center">
     <div>
       <DenaliBreadcrumb class="report-builder-sidebar__breadcrumb flex-1 font-12" @items={{this.breadcrumb}} as |item|>
         <button 
           type="button" 
-          class="upper link is-sub" 
+          class="report-builder-sidebar__breadcrumb-item upper link is-sub" 
           disabled={{@disabled}} 
+          data-level={{item.path.length}}
           {{on "click" (fn (mut this.sourcePath) item.path)}}
         >
           {{item.name}}
         </button>
       </DenaliBreadcrumb>
-      <h4 class="report-builder-sidebar__source flex-1 {{if (eq this.sourcePath.length 0) "p-l-20" "p-l-6"}}" data-selecting={{this.selecting}}>{{this.title}}</h4>
+      <h4 class="report-builder-sidebar__source flex-1 p-l-6" data-selecting={{this.selecting}}>{{this.title}}</h4>
     </div>
   </div>
   {{#if (eq this.selecting "dataSource")}}
@@ -42,26 +32,25 @@
     />
   {{else}}
     <div class="report-builder-sidebar__content flex-1 row">
-      <div class="report-builder-sidebar__columns flex-1">
-        <div class="report-builder__container--builder">
-          <div class="report-builder__container report-builder__dimension-selector {{if @disabled "report-builder__container--disabled"}}">
-            <ColumnSelector
-              @title="Dimensions"
-              @allColumns={{append this.request.tableMetadata.dimensions this.request.tableMetadata.timeDimensions}}
-              @request={{this.request}}
-              @onAddColumn={{queue (optional @onBeforeAddItem) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-              @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") @openFilters}}
-            />
-          </div>
-          <div class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}" >
-            <ColumnSelector
-              @title="Metrics"
-              @allColumns={{this.request.tableMetadata.metrics}}
-              @request={{this.request}}
-              @onAddColumn={{queue (optional @onBeforeAddItem) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-              @onAddFilter={{queue (update-report-action "ADD_METRIC_FILTER") @openFilters}}
-            />
-          </div>
+      <div class="report-builder-sidebar__columns">
+        <div class="report-builder__dimension-selector {{if @disabled "report-builder__container--disabled"}}">
+          <ColumnSelector
+            @title="Dimensions"
+            @allColumns={{compact (append this.request.tableMetadata.dimensions this.request.tableMetadata.timeDimensions)}}
+            @request={{this.request}}
+            @onAddColumn={{queue (optional @onBeforeAddItem) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+            @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") @openFilters}}
+          />
+        </div>
+        <hr />
+        <div class="report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}" >
+          <ColumnSelector
+            @title="Metrics"
+            @allColumns={{or this.request.tableMetadata.metrics (array)}}
+            @request={{this.request}}
+            @onAddColumn={{queue (optional @onBeforeAddItem) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
+            @onAddFilter={{queue (update-report-action "ADD_METRIC_FILTER") @openFilters}}
+          />
         </div>
       </div>
 

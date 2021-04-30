@@ -50,7 +50,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
   @service('request-action-dispatcher')
   declare requestActionDispatcher: RequestActionDispatcher;
 
-  @tracked sourcePath: SourcePath;
+  @tracked sourcePath: SourcePath = [];
 
   constructor(owner: unknown, args: Args) {
     super(owner, args);
@@ -61,11 +61,24 @@ export default class ReportBuilderSidebar extends Component<Args> {
     } else if (dataSource) {
       this.sourcePath = [mapDataSource(getDataSource(dataSource))];
     } else {
-      this.sourcePath = [];
+      this.setupDefaultPath();
     }
   }
 
-  get request() {
+  protected setupDefaultPath(): void {
+    const { dataSources } = this;
+    if (dataSources.length === 1) {
+      const dataSource = dataSources[0];
+      const tables = this.getTablesForDataSource(dataSource);
+      if (tables.length === 1) {
+        this.setSelectedTable(tables[0].source);
+      } else {
+        this.setSelectedDataSource(dataSource.source);
+      }
+    }
+  }
+
+  private get request() {
     return this.args.report.request;
   }
 
@@ -105,14 +118,18 @@ export default class ReportBuilderSidebar extends Component<Args> {
   get dataSourceTables(): SourceItem<TableMetadataModel>[] {
     const [dataSource] = this.sourcePath;
     if (dataSource) {
-      const factTables = this.metadataService.all('table', dataSource.source.name).filter((t) => t.isFact === true);
-      return sortBy(factTables, ['name']).map((table) => ({
-        name: table.name,
-        description: table.description,
-        source: table,
-      }));
+      return this.getTablesForDataSource(dataSource);
     }
     return [];
+  }
+
+  private getTablesForDataSource(dataSource: SourceItem<NaviDataSource>) {
+    const factTables = this.metadataService.all('table', dataSource.source.name).filter((t) => t.isFact === true);
+    return sortBy(factTables, ['name']).map((table) => ({
+      name: table.name,
+      description: table.description,
+      source: table,
+    }));
   }
 
   protected get path() {
@@ -130,12 +147,6 @@ export default class ReportBuilderSidebar extends Component<Args> {
 
   get title() {
     return this.path[this.path.length - 1];
-  }
-
-  @action
-  goBack() {
-    this.sourcePath.pop();
-    this.sourcePath = [...this.sourcePath];
   }
 
   @action

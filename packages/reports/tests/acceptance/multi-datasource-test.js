@@ -26,8 +26,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     await visit('/reports/new');
 
-    await click('.report-builder-sidebar__back');
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
 
@@ -188,8 +187,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.d-close');
 
     //switch tables from a different datasource
-    await click('.report-builder-sidebar__back');
-    await click('.report-builder-sidebar__back');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
 
