@@ -42,12 +42,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
    */
   @tracked filters: string | null = null;
 
-  /**
-   * @action updateFilter
-   * @param {Object} dashboard
-   * @param {Object} originalFilter
-   * @param {Object} changeSet
-   */
   @action
   async updateFilter(dashboard: DashboardModel, originalFilter: FilterFragment, changeSet: Partial<Filter>) {
     const origFilter = urlFilter(originalFilter);
@@ -67,11 +61,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
   }
 
-  /**
-   * @action removeFilter
-   * @param {Object} dashboard
-   * @param {Object} filter
-   */
   @action
   async removeFilter(dashboard: DashboardModel, filter: FilterFragment) {
     const removedFilter = urlFilter(filter);
@@ -81,11 +70,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
     this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
   }
 
-  /**
-   * @action addFilter
-   * @param {Object} dashboard
-   * @param {Object} filter
-   */
   @action
   async addFilter(dashboard: DashboardModel, filter: InitialFilter) {
     const filters = dashboardURLFilters(dashboard);
