@@ -207,13 +207,15 @@ module('Acceptance | Exploring Widgets', function (hooks) {
   });
 
   test('Share action', async function (assert) {
-    assert.expect(1);
+    const done = assert.async();
+    assert.expect(2);
 
     this.owner.register(
       'service:navi-notifications',
       class extends Service {
         add({ extra }) {
           assert.equal(extra, document.location, 'share uses the current location as the default share url');
+          done();
         }
       }
     );

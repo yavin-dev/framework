@@ -48,7 +48,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgFliBjAPIBlehADqNACZ4A7pwC6DKNESwplfJ2UFiyYgFtESNJlww1GrlSsBfZfACeRTVOhHqqaHlrBlqPFZkfkRNACM9KUFqUOBbBVtgIAAA',
+              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiALL4DGA8gMrUQAdQoATLAHcUAXRqQ4UUaSwoaOfAnwBbOPGRpQ8xaQhKAvjRgBPPKVEQd5JBCyUaSLIwRc4pAEYaojzkvmbSZkA',
           },
         },
         'Updating the filter sets the filters query param to the expected compressed string'
@@ -106,7 +106,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         transition,
         {
           queryParams: {
-            filters: 'EQbwOsBmCWA2AuBTATgZwgLgNoF0C-wQAAA',
+            filters: 'N4IgZglgNgLgpgJwM4gFwG0C6BfIA',
           },
         },
         'Removing the filter sets the filters query param to the expected compressed string'
@@ -133,7 +133,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmPAngA6KYQAm0AtogHarQD2NEANBDIrGacAIYDmJYG2CFeyXtSRpMuDlx7RuwAL4iGxCfAbJFzYRABuvWAFdE6YNgC6I1A1PIAxkIwQARuLIB5GkJXWKsBAAA',
+              'N4IgZglgNgLgpgJwM4gFwG1QwJ4Ac5ogAmEAtnAHZIQD2FIANOBHFEYQIYDmBTuHCDuXjI0oSK3aoQEdgF8mNfIJg0EhCPSYA3DlACucFBgC6TJDX0IAxgWkAjAUQDyFAnJNygA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -178,7 +178,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmPAngA6KYQAm0AtogHarQD2NEANBDIrGacAMZPwAhtBopWEQoOSDqSNJlwcuPaN2ABfNsAbFp8BshXNgWgG6DYAV0Tpg2ALpbUDS8l4k7EAEZSyAFQB3Bgh1e3VgIA',
+              'N4IgZglgNgLgpgJwM4gFwG1QwJ4Ac5ogAmEAtnAHZIQD2FIANOBHFEYQMZ0wCGEFiRiFw8EPcvGRpQkVu1QgI7AL5Ma+MTBoJC-IQDceUAK5wUGALpMkNYwg4EFAI1FEAKgHcaIZReVA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -235,7 +235,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgEYIBdBlGiJYAE0rAAxnmrxiNFPQgFiyYgFtESNJlwxRErlSMBfIfACeRSWOhbqqaLOXBUeVsimJJAIzViACoA7ngQpvymwEAAA',
+              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiAIwgC6NkcUAE1IBjLORj4KiaiBz4E+ALZx4yNKD6DSEIQF8aMAJ55SAiMvJIIYmUiyMEwuKQBG8gQBUA7lhC6uukA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'

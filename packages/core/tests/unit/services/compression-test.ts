@@ -85,10 +85,14 @@ module('Unit | Service | compression', function (hooks) {
     const store = Service.get('store');
     const report = store.createRecord('report', { title: 'Hello World' });
 
-    assert.throws(
-      () => Service.compressModel(report),
-      /A model given to `compress` must have an id/,
-      'An error is thrown if the model does not have an id set'
-    );
+    Service.compressModel(report).catch((e) => {
+      assert.throws(
+        () => {
+          throw e; // re throw
+        },
+        /A model given to `compress` must have an id/,
+        'An error is thrown if the model does not have an id set'
+      );
+    });
   });
 });

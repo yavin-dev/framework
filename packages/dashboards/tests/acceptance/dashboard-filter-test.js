@@ -234,7 +234,7 @@ module('Acceptance | Dashboard Filters', function (hooks) {
     assert.expect(7);
 
     const dirtyURL =
-      '/dashboards/2/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwgCZ6IAzBAC6DKNESwAJpWAFkhFPACe_OcWTEAtoiRpMuGJJlcqJgL5iVRWVOg7qqaHlrAxqPK2QBjRLIBGGlIA8tR-wObC5sBAA';
+      '/dashboards/2/view?filters=N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu%2BUArnChiAEzUgDMIAujUhwoAE1I4EuRDACeXHPgT4AtnHjI0oIaNIQxAXxqy8pERFXkkELJRpIsjBAGM4pAEaKRAeXKv9ffSA';
     const filters = [
       {
         dimension: 'Property (id)',
@@ -410,7 +410,7 @@ module('Acceptance | Dashboard Filters', function (hooks) {
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
 
     await visit(
-      '/dashboards/1/view?filters=EQbwOsBmCWA2AuBTATgZwgLgNrmAewAcUBDePZTCaAOwgBoIA3Y2AV0XWGwF0GppEsACaVgBZIRTwAnvQgFiyYgFtESNJlwxBIrlV0BfPjKKih0VdVTQ8tYH1R5WyAMaJRAI0VCA8tXfARriSSmQUesA0csDMbByYWBAAtADMELwQ2sKixADmAXwKSqrqnBhaAtkR0IbG0qYR5pbWttGOzm6e3n4BBtwGwEAAA'
+      '/dashboards/1/view?filters=N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu%2BUArnChgLo2RxQAmpOCXIhgBPaiBz4E%2BALZx4yNKC69SEPgF8aovKR4Q55JBCyUaSLIwQBjOKQBGUngHlydrdjzSiJVGTN0DMys6CAAtADMIBzgENx8fvgA5nY0ktJyCqzKcap%2B6iBaIDp2fvqGxqbiFla2Dk6u7mwaQA'
     );
     assert.equal(
       dataRequests.length,

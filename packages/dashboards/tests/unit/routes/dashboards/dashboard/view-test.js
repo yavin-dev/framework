@@ -68,7 +68,7 @@ module('Unit | Route | dashboards/dashboard/view', function (hooks) {
     await Route._addFiltersFromQueryParams(dashboard, 'SomeInvalidFilterString').catch((e) => {
       assert.equal(
         e.message,
-        `Error decompressing filter query params: SomeInvalidFilterString\nRangeError: Invalid array length`,
+        `Error decompressing filter query params: SomeInvalidFilterString\nSyntaxError: Unexpected end of JSON input`,
         "query params that don't decompress properly throw a decompression error"
       );
     });
