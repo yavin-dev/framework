@@ -396,7 +396,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     const request2 = allWithFilterGrain('isoWeek', ['2020-04-20', 'next']);
     assert.strictEqual(
       Adapter._buildDateTimeParam(request2),
-      '2020-04-20T00:00:00.000/2021-05-03T00:00:00.000',
+      `2020-04-20T00:00:00.000/${moment.utc().startOf('isoWeek').add(1, 'week').toISOString().replace('Z', '')}`,
       '_buildDateTimeParam forces the "next" macro to a real date if the all grain is used'
     );
 
