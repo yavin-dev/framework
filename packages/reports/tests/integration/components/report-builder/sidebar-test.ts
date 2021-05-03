@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, click, triggerEvent } from '@ember/test-helpers';
+import { render, find, findAll, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { assertTooltipContent } from 'ember-tooltips/test-support';
@@ -54,6 +54,24 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     this.setTable = () => undefined;
   });
 
+  test('header height does not change', async function (this: TestContext, assert) {
+    await render(TEMPLATE);
+
+    assert.deepEqual(
+      getBreadcrumbs(),
+      ['Data Sources', 'Bard One'],
+      'The breadcrumb shows the current selected data source'
+    );
+    const level2Height = (find('.report-builder-sidebar__header') as HTMLElement).offsetHeight;
+
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    const level1Height = (find('.report-builder-sidebar__header') as HTMLElement).offsetHeight;
+
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    const level0Height = (find('.report-builder-sidebar__header') as HTMLElement).offsetHeight;
+    assert.deepEqual([level0Height, level1Height, level2Height], [57, 57, 57], 'The header height does not change');
+  });
+
   test('breadcrumb links', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
@@ -64,12 +82,12 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     );
     assert.dom('.report-builder-sidebar__source').hasText('Table A', 'The selected table is shown');
 
-    await click(findAll('.report-builder-sidebar__breadcrumb li button')[1]);
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
 
     assert.deepEqual(getBreadcrumbs(), ['Data Sources'], 'The breadcrumb shows data sources');
     assert.dom('.report-builder-sidebar__source').hasText('Bard One', 'The selected table is shown');
 
-    await click('.report-builder-sidebar__breadcrumb li button');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     assert.deepEqual(getBreadcrumbs(), [], 'No breadcrumbs are shown when picking data sources');
     assert.dom('.report-builder-sidebar__source').hasText('Data Sources', 'The selected table is shown');
   });

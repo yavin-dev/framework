@@ -42,7 +42,7 @@
             @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") @openFilters}}
           />
         </div>
-        <hr />
+        <hr class="report-builder-sidebar__separator" />
         <div class="report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}" >
           <ColumnSelector
             @title="Metrics"
