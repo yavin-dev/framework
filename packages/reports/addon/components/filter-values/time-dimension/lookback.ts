@@ -48,7 +48,8 @@ export default class LookbackInput extends BaseIntervalComponent {
       amount = amount * MONTHS_IN_QUARTER;
     }
     const period = intervalPeriodForGrain(dateTimePeriod);
-    return `P${amount}${period[0].toUpperCase()}`;
+    const isTime = ['second', 'minute', 'hour'].includes(dateTimePeriod);
+    return `P${isTime ? 'T' : ''}${amount}${period[0].toUpperCase()}`;
   }
 
   /**

@@ -39,6 +39,7 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
   @computed('grain')
   get calendarTriggerFormat() {
     const dateMap: Partial<Record<Grain, string>> = {
+      second: undefined,
       hour: 'MMM DD, YYYY',
       day: 'MMM DD, YYYY',
       month: 'MMM YYYY',

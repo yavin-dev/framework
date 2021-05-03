@@ -30,6 +30,11 @@
           }
         ],
         "suggestedDataTables": ["NetflixTitles"]
+      },
+      {
+        "name": "prometheus",
+        "uri": "http://localhost:9090",
+        "type": "prometheus"
       }
     ],
     "appPersistence": {

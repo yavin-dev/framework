@@ -85,7 +85,10 @@ export default class MetricChartBuilder extends EmberObject implements BaseChart
        * Get all date buckets spanned by the data,
        * and group data by date for easier lookup
        */
-      const dates = interval.makeEndExclusiveFor(timeGrain).getDatesForInterval(timeGrain);
+      const dates =
+        timeGrain === 'second'
+          ? response.rows.map((row) => moment(row[timeGrainColumnName] as string))
+          : interval.makeEndExclusiveFor(timeGrain).getDatesForInterval(timeGrain);
       const byDate = new DataGroup(response.rows, (row: ResponseRow) =>
         buildDateKey(row[timeGrainColumnName] as MomentInput)
       );

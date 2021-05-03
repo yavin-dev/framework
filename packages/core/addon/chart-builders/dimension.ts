@@ -109,16 +109,18 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
 
       const buildDateKey = (dateTime: MomentInput) => moment(dateTime).format(API_DATE_FORMAT_STRING);
       const byDate = new DataGroup(response.rows, (row) => buildDateKey(row[timeGrainColumnName] as string)); // Group by dates for easier lookup
+
+      const dates =
+        timeGrain === 'second'
+          ? response.rows.map((row) => moment(row[timeGrainColumnName] as string))
+          : interval.makeEndExclusiveFor(timeGrain).getDatesForInterval(timeGrain);
       // For each unique date, build the series
-      const series = interval
-        .makeEndExclusiveFor(timeGrain)
-        .getDatesForInterval(timeGrain)
-        .map((date) => {
-          const key = buildDateKey(date);
-          const rows = byDate.getDataForKey(key) || [];
-          const displayValue = moment(date).format(ChartAxisDateTimeFormats[timeGrain]);
-          return this.buildC3Row(key, displayValue, rows, seriesKey, metric, nonTimeDimensions);
-        });
+      const series = dates.map((date) => {
+        const key = buildDateKey(date);
+        const rows = byDate.getDataForKey(key) || [];
+        const displayValue = moment(date).format(ChartAxisDateTimeFormats[timeGrain]);
+        return this.buildC3Row(key, displayValue, rows, seriesKey, metric, nonTimeDimensions);
+      });
       return { series, names };
     }
     const series = [this.buildC3Row(BLANK_X_VALUE, BLANK_X_VALUE, response.rows, seriesKey, metric, nonTimeDimensions)];

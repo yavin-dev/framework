@@ -10,6 +10,10 @@ export default class ApplicationRoute extends Route {
   @service user;
 
   async model() {
-    await this.user.findOrRegister();
+    await Promise.all([
+      this.user.findOrRegister(),
+      this.naviMetadata.loadMetadata(),
+      this.naviMetadata.loadMetadata({ dataSourceName: 'prometheus' }),
+    ]);
   }
 }

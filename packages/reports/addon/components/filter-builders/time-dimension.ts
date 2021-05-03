@@ -9,7 +9,7 @@ import { capitalize } from '@ember/string';
 import moment from 'moment';
 import FilterFragment from 'navi-core/models/request/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
-import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
 import { isEmpty } from '@ember/utils';
@@ -39,16 +39,12 @@ type TimeDimensionFilterArgs = BaseFilterBuilderComponent['args'] & {
  * Converts a grain into a period usable for the interval class
  * @param grain - the grain to turn into a period
  */
-type DateGrain = Exclude<DateTimePeriod, 'second' | 'minute' | 'hour'>;
-export function intervalPeriodForGrain(grain: Grain): DateGrain {
+export function intervalPeriodForGrain(grain: Grain): Grain {
   if (grain === 'quarter') {
     return 'month';
   }
 
   let period = getPeriodForGrain(grain);
-  if (period === 'hour' || period === 'minute' || period === 'second') {
-    period = 'day';
-  }
 
   return period;
 }
@@ -123,7 +119,8 @@ export function valuesForOperator(
     }
 
     const grainLabel = intervalPeriodForGrain(grain)[0].toUpperCase();
-    return [`P${intervalValue}${grainLabel}`, 'current'];
+    const isTime = ['second', 'minute', 'hour'].includes(grain);
+    return [`P${isTime ? 'T' : ''}${intervalValue}${grainLabel}`, 'current'];
   } else if (newOperator === OPERATORS.since) {
     const { start } = interval.asMomentsInclusive(grain);
     return [start.toISOString()];
@@ -169,12 +166,7 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
   let internalId: InternalOperatorType;
   if (start === 'current' && end === 'next') {
     internalId = OPERATORS.current;
-  } else if (
-    lookbackDuration &&
-    lookbackGrain &&
-    ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
-    end === 'current'
-  ) {
+  } else if (lookbackDuration && lookbackGrain && end === 'current') {
     internalId = OPERATORS.lookback;
   } else if (moment.isMoment(interval['_start']) && moment.isMoment(interval['_end'])) {
     internalId = OPERATORS.dateRange;

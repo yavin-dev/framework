@@ -1,0 +1,9 @@
+Things that should be addressed while integrating prometheus
+- line/bar chart rendering has severe performance issues
+  - The `buildData` function needs to be optimized to make a single pass of the data
+  - Line/bar chart will likely need a flag to toggle between between filling in all possible dates (to show gaps), and just rendering the raw data
+  - Need to look at integrating a separate charting library such as https://github.com/leeoniya/uPlot to better handle large datasets
+- Metrics lack metadata of which dimensions can be passed into them as filters
+  - We could possibly add a prometheus consumer that when a column is added to a report/on load would run a small fact query to show possible dimensions as parameters for queried metrics (e.g. querying for both the maximum and used amount of cpu resources)
+- Complex calculations such as dividing two metrics are not feasible with our interface, we could add client side computed columns to make up for this
+  - This could also be used for percentages/converting units/etc
