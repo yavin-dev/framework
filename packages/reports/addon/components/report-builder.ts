@@ -6,6 +6,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
 import { sortBy } from 'lodash-es';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type ReportModel from 'navi-core/models/report';
@@ -59,6 +60,20 @@ export default class ReportBuilderComponent extends Component<Args> {
   @action
   setupElement(element: HTMLElement) {
     this.componentElement = element;
+  }
+
+  @action
+  doResizeVisualization() {
+    const visualizationElement = this.componentElement.querySelector('.report-view');
+    if (visualizationElement) {
+      const visualizationResizeEvent = new Event('resizestop');
+      visualizationElement.dispatchEvent(visualizationResizeEvent);
+    }
+  }
+
+  @action
+  resizeVisualization() {
+    scheduleOnce('afterRender', this, 'doResizeVisualization');
   }
 
   /**

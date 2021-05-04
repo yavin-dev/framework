@@ -17,12 +17,12 @@ import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { SourceItem } from './source-selector';
-import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
 
 interface Args {
   report: ReportModel;
   disabled: boolean;
   onBeforeAddItem?: (column: ColumnMetadataModel) => void;
+  onResize?: () => void;
   lastAddedColumn?: ColumnFragment;
   setTable(table: TableMetadataModel): void;
 }
@@ -46,9 +46,6 @@ const mapTable = (table: TableMetadataModel): SourceItem<TableMetadataModel> => 
 export default class ReportBuilderSidebar extends Component<Args> {
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
-
-  @service('request-action-dispatcher')
-  declare requestActionDispatcher: RequestActionDispatcher;
 
   @tracked sourcePath: SourcePath = [];
 
@@ -149,26 +146,45 @@ export default class ReportBuilderSidebar extends Component<Args> {
     return this.path[this.path.length - 1];
   }
 
-  @action
-  setSelectedDataSource(dataSource?: NaviDataSource) {
-    if (dataSource) {
-      this.sourcePath = [mapDataSource(dataSource)];
-    } else {
-      this.sourcePath = [];
+  checkDidResize(oldSelecting: SelectingState, newSelecting: SelectingState) {
+    if (oldSelecting !== newSelecting && (oldSelecting === 'columns' || newSelecting === 'columns')) {
+      // Navigated to new state and it closed/opened the column config
+      this.args.onResize?.();
     }
   }
 
   @action
-  setSelectedTable(table?: TableMetadataModel) {
-    if (table) {
-      const dataSource = getDataSource(table.source);
-      this.sourcePath = [mapDataSource(dataSource), mapTable(table)];
-      this.args.setTable(table);
-    } else {
-      // Remove table
-      if (this.sourcePath.length === 2) {
-        this.sourcePath = [this.sourcePath[0]];
+  changePath(action: () => void) {
+    const { selecting: oldSelecting } = this;
+    action();
+    const { selecting: newSelecting } = this;
+    this.checkDidResize(oldSelecting, newSelecting);
+  }
+
+  @action
+  setSelectedDataSource(dataSource?: NaviDataSource) {
+    this.changePath(() => {
+      if (dataSource) {
+        this.sourcePath = [mapDataSource(dataSource)];
+      } else {
+        this.sourcePath = [];
       }
-    }
+    });
+  }
+
+  @action
+  setSelectedTable(table?: TableMetadataModel) {
+    this.changePath(() => {
+      if (table) {
+        const dataSource = getDataSource(table.source);
+        this.sourcePath = [mapDataSource(dataSource), mapTable(table)];
+        this.args.setTable(table);
+      } else {
+        // Remove table
+        if (this.sourcePath.length === 2) {
+          this.sourcePath = [this.sourcePath[0]];
+        }
+      }
+    });
   }
 }

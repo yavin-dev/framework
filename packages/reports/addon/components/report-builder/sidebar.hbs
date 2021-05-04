@@ -8,7 +8,7 @@
           class="report-builder-sidebar__breadcrumb-item upper link is-sub" 
           disabled={{@disabled}} 
           data-level={{item.path.length}}
-          {{on "click" (fn (mut this.sourcePath) item.path)}}
+          {{on "click" (fn this.changePath (fn (mut this.sourcePath) item.path))}}
         >
           {{item.name}}
         </button>
