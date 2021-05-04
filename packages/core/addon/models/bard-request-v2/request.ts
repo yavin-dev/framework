@@ -76,7 +76,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   columns!: FragmentArray<ColumnFragment>;
 
   @attr('string')
-  table!: string; // TODO this can be undefined
+  table!: string; // TODO this can be undefined when only `dataSource` is set
 
   @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
   sorts!: FragmentArray<SortFragment>;
