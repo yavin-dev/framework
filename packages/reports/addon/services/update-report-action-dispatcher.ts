@@ -18,3 +18,10 @@ export default class UpdateReportActionDispatcher extends RequestActionDispatche
     return [...super.consumers, 'report/table-visualization'];
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
+declare module '@ember/service' {
+  interface Registry {
+    'update-report-action-dispatcher': UpdateReportActionDispatcher;
+  }
+}

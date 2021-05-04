@@ -84,8 +84,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     await visit('/reports/new');
 
-    await selectChoose('.navi-table-select__trigger', 'Network');
-    assert.dom('.navi-table-select-item').hasText('Network', 'A fili table is selected');
+    assert.dom('.report-builder-sidebar__source').hasText('Network', 'A fili table is selected');
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists on a new report');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
@@ -101,7 +100,8 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.expect(2);
 
     await visit('/reports/new');
-    await selectChoose('.navi-table-select__trigger', 'Table A');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
@@ -111,7 +111,8 @@ module('Acceptance | fili datasource', function (hooks) {
     assert.expect(4);
 
     await visit('/reports/new');
-    await selectChoose('.navi-table-select__trigger', 'Table C');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table C"]');
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');

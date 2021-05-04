@@ -38,3 +38,10 @@ export default class RequestActionDispatcher extends ActionDispatcher {
     ];
   }
 }
+
+// DO NOT DELETE: this is how TypeScript knows how to look up your services.
+declare module '@ember/service' {
+  interface Registry {
+    'request-action-dispatcher': RequestActionDispatcher;
+  }
+}

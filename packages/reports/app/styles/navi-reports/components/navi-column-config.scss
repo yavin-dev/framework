@@ -21,6 +21,8 @@
 
 .navi-column-config {
   display: flex;
+  height: 100%;
+  overflow: hidden;
 
   &__title {
     color: $body-text-color;
@@ -30,7 +32,6 @@
   }
 
   &__panel {
-    border-right: 2px solid $menu-border-color;
     display: flex;
     flex: 1;
     flex-flow: column;

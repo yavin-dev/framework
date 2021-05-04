@@ -36,7 +36,7 @@
   },
   "lint-staged": {
     "*.{yaml,md,json,js,ts}": [
-      "prettier --write"
+      "prettier -w --config prettier.config.js"
     ],
     "*.scss": [
       "stylelint --fix"

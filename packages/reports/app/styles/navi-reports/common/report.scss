@@ -87,10 +87,18 @@
     min-height: 0;
   }
 
+  &__header {
+    border-color: $menu-border-color;
+    border-style: solid;
+    border-width: 0 0 1px;
+  }
+
   &__footer {
-    margin: 10px 0;
+    border-color: $menu-border-color;
+    border-style: solid;
+    border-width: 1px 0;
     min-height: min-content;
-    padding: 0 15px 0 20px;
+    padding: 10px 15px 10px 20px;
 
     @include media-size-only(mobile) {
       flex-flow: wrap-reverse;

@@ -3,6 +3,8 @@ import { Grain } from 'navi-data/utils/date';
 declare module 'navi-config' {
   type NaviDataSource = {
     name: string;
+    displayName: string;
+    description?: string;
     uri: string;
     type: string;
   };

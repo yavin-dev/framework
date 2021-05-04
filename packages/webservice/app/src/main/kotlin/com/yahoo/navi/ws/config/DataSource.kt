@@ -10,7 +10,9 @@ enum class DataSourceTypes {
 
 data class DataSource(
     var name: String,
+    var displayName: String,
+    var description: String? = null,
     var uri: String,
     var type: DataSourceTypes,
-    var timeout: Int = 900000
+    var timeout: Int = 900000,
 )

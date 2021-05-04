@@ -25,8 +25,20 @@ module.exports = function (environment) {
     navi: {
       user: 'navi_user',
       dataSources: [
-        { name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' },
-        { name: 'bardTwo', uri: 'https://data2.naviapp.io', type: 'bard' },
+        {
+          name: 'bardOne',
+          displayName: 'Bard One',
+          description: 'Interesting User Insights',
+          uri: 'https://data.naviapp.io',
+          type: 'bard',
+        },
+        {
+          name: 'bardTwo',
+          displayName: 'Bard Two',
+          description: 'Awesome Revenue Analytics',
+          uri: 'https://data2.naviapp.io',
+          type: 'bard',
+        },
       ],
       appPersistence: {
         type: 'webservice',

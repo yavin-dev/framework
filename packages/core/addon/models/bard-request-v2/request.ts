@@ -76,7 +76,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   columns!: FragmentArray<ColumnFragment>;
 
   @attr('string')
-  table!: string;
+  table!: string; // TODO this can be undefined when only `dataSource` is set
 
   @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
   sorts!: FragmentArray<SortFragment>;
@@ -151,6 +151,10 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
   @computed('table', 'dataSource')
   get tableMetadata(): TableMetadataModel | undefined {
+    const { dataSource, table } = this;
+    if (!dataSource || !table) {
+      return undefined;
+    }
     return this.naviMetadata.getById('table', this.table, this.dataSource);
   }
 
@@ -235,8 +239,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * Sets the table of the request
    */
   setTableByMetadata(table: TableMetadata) {
-    this.set('table', table.id);
-    this.set('dataSource', table.source);
+    set(this, 'table', table.id);
+    set(this, 'dataSource', table.source);
   }
 
   /**

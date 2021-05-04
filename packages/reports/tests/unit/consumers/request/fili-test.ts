@@ -351,7 +351,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
     config.navi.dataSources = [
       ...config.navi.dataSources,
-      { name: 'Other Data Source', uri: 'data://stuff', type: 'elide' },
+      { name: 'Other Data Source', displayName: 'Other', uri: 'data://stuff', type: 'elide' },
     ];
     request.dataSource = 'Other Data Source';
 

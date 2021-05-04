@@ -72,7 +72,9 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
 
-    await selectChoose('.navi-table-select__trigger', 'Inventory');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await selectChoose('.filter-builder__operator-trigger', 'Current');

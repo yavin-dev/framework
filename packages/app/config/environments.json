@@ -1,6 +1,13 @@
 {
   "default": {
-    "dataSources": [{ "name": "default", "uri": "https://{filiHostname}", "type": "bard" }],
+    "dataSources": [
+      {
+        "name": "default",
+        "displayName": "Default",
+        "uri": "https://{filiHostname}",
+        "type": "bard"
+      }
+    ],
     "appPersistence": {
       "type": "elide",
       "uri": "https://{naviwsHostname}",
@@ -8,7 +15,14 @@
     }
   },
   "localElide": {
-    "dataSources": [{ "name": "default", "uri": "http://localhost:8080/graphql/api/v1", "type": "elide" }],
+    "dataSources": [
+      {
+        "name": "default",
+        "displayName": "Default",
+        "uri": "http://localhost:8080/graphql/api/v1",
+        "type": "elide"
+      }
+    ],
     "appPersistence": {
       "type": "elide",
       "uri": "http://localhost:8080/api/v1",

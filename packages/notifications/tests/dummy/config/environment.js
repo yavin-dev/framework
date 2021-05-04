@@ -28,7 +28,15 @@ module.exports = function (environment) {
     navi: {
       user: 'navi_user',
       dataEpoch: '2013-01-01',
-      dataSources: [{ name: 'bardOne', uri: 'https://data.naviapp.io', type: 'bard' }],
+      dataSources: [
+        {
+          name: 'bardOne',
+          displayName: 'Bard One',
+          description: 'Interesting User Insights',
+          uri: 'https://data.naviapp.io',
+          type: 'bard',
+        },
+      ],
       appPersistence: {
         type: 'webservice',
         uri: 'https://persistence.naviapp.io',

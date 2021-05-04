@@ -1,38 +1,15 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
   {{#unless (is-mobile)}}
-    <div class="report-builder__side report-builder__side">
-      {{#if (or (gt this.allTables.length 1) (not this.hasValidLogicalTable))}}
-        <NaviTableSelect
-          @options={{this.allTables}}
-          @selected={{this.request.tableMetadata}}
-          @onChange={{update-report-action "UPDATE_TABLE"}}
-          @disabled={{@disabled}}
-        />
-      {{/if}}
-      <div class="report-builder__container--builder {{unless this.hasValidLogicalTable "report-builder__container--builder-skel"}}">
-        {{#if this.hasValidLogicalTable}}
-          <div class="report-builder__container report-builder__dimension-selector{{if @disabled " report-builder__container--disabled"}}">
-            <ColumnSelector
-              @title="Dimensions"
-              @allColumns={{append this.request.tableMetadata.dimensions this.request.tableMetadata.timeDimensions}}
-              @request={{this.request}}
-              @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-              @onAddFilter={{queue (update-report-action "ADD_DIMENSION_FILTER") this.onAddFilter}}
-            />
-        </div>
-        <div class="report-builder__container report-builder__metric-selector{{if @disabled " report-builder__container--disabled"}}" >
-          <ColumnSelector
-            @title="Metrics"
-            @allColumns={{this.request.tableMetadata.metrics}}
-            @request={{this.request}}
-            @onAddColumn={{queue (fn (optional @onBeforeAddItem) this) (update-report-action "ADD_COLUMN_WITH_PARAMS")}}
-            @onAddFilter={{queue (update-report-action "ADD_METRIC_FILTER") this.onAddFilter}}
-          />
-        </div>
-        {{/if}}
-      </div>
-    </div>
+    <ReportBuilder::Sidebar 
+      @disabled={{@disabled}}
+      @report={{@report}}
+      @lastAddedColumn={{@lastAddedColumn}}
+      @onResize={{this.resizeVisualization}}
+      @onBeforeAddItem={{fn (optional @onBeforeAddItem) this}}
+      @openFilters={{this.openFilters}}
+      @setTable={{update-report-action "UPDATE_TABLE"}}
+    />
   {{/unless}}
   <div class="report-builder__main">
     {{#if this.hasValidLogicalTable}}

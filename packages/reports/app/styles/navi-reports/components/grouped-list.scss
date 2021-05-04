@@ -4,8 +4,11 @@
  */
 .grouped-list {
   flex: 1;
+  // Negative margin + padding to better fit scroll bar and not cover any items
+  margin-right: -10px;
   min-height: 0;
   overflow-y: auto;
+  padding-right: 10px;
 
   &__group-header {
     cursor: pointer;

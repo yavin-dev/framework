@@ -26,7 +26,9 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     await visit('/reports/new');
 
-    await selectChoose('.navi-table-select__trigger', 'Inventory');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map((el) => el.textContent.trim()),
@@ -127,7 +129,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     await visit('/reports/12/view');
 
-    assert.dom('.navi-table-select-item').hasText('Inventory', 'Table selector shows correct table');
+    assert.dom('.report-builder-sidebar__source').hasText('Inventory', 'Table selector shows correct table');
 
     //Check if filters meta data is displaying properly
     assert.deepEqual(
@@ -185,7 +187,9 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.d-close');
 
     //switch tables from a different datasource
-    await selectChoose('.navi-table-select__trigger', 'Table A');
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
 
     //assert filters, metrics and dimensions are reset
     assert

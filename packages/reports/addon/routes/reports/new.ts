@@ -6,7 +6,6 @@ import { reject } from 'rsvp';
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import config from 'ember-get-config';
-import { A } from '@ember/array';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type CompressionService from 'navi-core/services/compression';
@@ -14,6 +13,7 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
+import type TableMetadataModel from 'navi-data/models/metadata/table';
 
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
@@ -52,11 +52,10 @@ export default class ReportsNewRoute extends Route {
   }
 
   /**
-   * @private
    * @param modelString - compressed model
    * @returns promise that resolves to new model
    */
-  _deserializeUrlModel(modelString: string) {
+  _deserializeUrlModel(modelString: string): Promise<ReportModel> {
     return this.compression
       .decompressModel(modelString)
       .then((model: ReportModel) => {
@@ -67,12 +66,9 @@ export default class ReportsNewRoute extends Route {
 
   /**
    * Returns a new model for this route
-   *
-   * @method _newModel
-   * @private
-   * @returns {Promise} route model
+   * @returns route model
    */
-  _newModel() {
+  _newModel(): ReportModel {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
     const table = this._getDefaultTable();
@@ -80,8 +76,8 @@ export default class ReportsNewRoute extends Route {
     const report = this.store.createRecord('report', {
       author,
       request: this.store.createFragment('bard-request-v2/request', {
-        table: table.id,
-        dataSource: table.source,
+        table: table?.id,
+        dataSource: table?.source,
       }),
       visualization: { type: defaultVisualization },
     });
@@ -90,18 +86,11 @@ export default class ReportsNewRoute extends Route {
 
   /**
    * Returns a default table model for new report
-   *
-   * @method _getDefaultTable
-   * @private
-   * @returns {Object} table model
+   * @returns table model
    */
-  _getDefaultTable() {
+  _getDefaultTable(): TableMetadataModel | undefined {
     const { metadataService } = this;
     const factTables = metadataService.all('table').filter((t) => t.isFact === true);
-    let table = factTables.find((t) => t.id === config.navi.defaultDataTable);
-    if (!table) {
-      table = A(factTables).sortBy('name')[0];
-    }
-    return table;
+    return factTables.find((t) => t.id === config.navi.defaultDataTable);
   }
 }
