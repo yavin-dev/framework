@@ -8,6 +8,7 @@ import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
+import { triggerCopySuccess } from 'ember-cli-clipboard/test-support';
 import Service from '@ember/service';
 
 // Regex to check that a string ends with "{uuid}/view"
@@ -232,7 +233,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');
-    await click('.navi-report-widget__share-btn');
+    await triggerCopySuccess('.navi-report-widget__share-btn');
   });
 
   test('Delete widget', async function (assert) {
