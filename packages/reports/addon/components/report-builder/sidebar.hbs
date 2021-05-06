@@ -3,10 +3,10 @@
   <div class="report-builder-sidebar__header row p-l-18 p-y-7 align-items-center">
     <div>
       <DenaliBreadcrumb class="report-builder-sidebar__breadcrumb flex-1 font-12" @items={{this.breadcrumb}} as |item|>
-        <button 
-          type="button" 
-          class="report-builder-sidebar__breadcrumb-item upper link is-sub" 
-          disabled={{@disabled}} 
+        <button
+          type="button"
+          class="report-builder-sidebar__breadcrumb-item upper link"
+          disabled={{@disabled}}
           data-level={{item.path.length}}
           {{on "click" (fn this.changePath (fn (mut this.sourcePath) item.path))}}
         >
