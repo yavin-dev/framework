@@ -5,8 +5,8 @@
 
 export default [
   {
-    name: 'mario',
-    longName: 'Mario',
-    description: 'Plumber level data'
-  }
+    name: 'gameStats',
+    longName: 'Game Stats',
+    description: 'Event level game statistics',
+  },
 ];

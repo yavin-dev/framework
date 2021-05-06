@@ -23,27 +23,27 @@ export default [
                 dimensions: [
                   {
                     name: 'Dry Bowser',
-                    values: { character: '7' }
+                    values: { character: '7' },
                   },
                   {
                     name: 'Daisy',
-                    values: { character: '4' }
+                    values: { character: '4' },
                   },
                   {
                     name: 'Wario',
-                    values: { character: '8' }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+                    values: { character: '8' },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
-        table: 'mario',
-        timeGrain: 'day'
+        table: 'gameStats',
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
       dimensions: [{ dimension: 'character' }],
@@ -51,18 +51,18 @@ export default [
       sort: [
         {
           metric: 'wins',
-          direction: 'asc'
-        }
+          direction: 'asc',
+        },
       ],
       intervals: [
         {
           end: 'current',
-          start: 'P7D'
-        }
+          start: 'P7D',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 2,
@@ -84,39 +84,39 @@ export default [
                 dimensions: [
                   {
                     name: 'Galaxy 2',
-                    values: { game: 'galaxy_2' }
+                    values: { game: 'galaxy_2' },
                   },
                   {
                     name: 'Sunshine',
-                    values: { game: 'sunshine' }
+                    values: { game: 'sunshine' },
                   },
                   {
                     name: '3D Land',
-                    values: { game: '3d_land' }
+                    values: { game: '3d_land' },
                   },
                   {
                     name: 'Galaxy',
-                    values: { game: 'galaxy' }
+                    values: { game: 'galaxy' },
                   },
                   {
                     name: 'Oddysey',
-                    values: { game: 'oddysey' }
+                    values: { game: 'oddysey' },
                   },
                   {
                     name: 'Kart',
-                    values: { game: 'kart' }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+                    values: { game: 'kart' },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
-        table: 'mario',
-        timeGrain: 'day'
+        table: 'gameStats',
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'timeSpent' }],
       dimensions: [{ dimension: 'game' }],
@@ -124,12 +124,12 @@ export default [
       intervals: [
         {
           end: 'current',
-          start: 'P7D'
-        }
+          start: 'P7D',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
+      requestVersion: 'v1',
+    },
   },
   {
     id: 4,
@@ -151,55 +151,55 @@ export default [
                 dimensions: [
                   {
                     name: 'Switch,Galaxy 2',
-                    values: { platform: 'switch', game: 'galaxy_2' }
+                    values: { platform: 'switch', game: 'galaxy_2' },
                   },
                   {
                     name: 'Entertainment System,3D Land',
-                    values: { platform: 'nes', game: '3d_land' }
+                    values: { platform: 'nes', game: '3d_land' },
                   },
                   {
                     name: 'Entertainment System,Sunshine',
-                    values: { platform: 'nes', game: 'sunshine' }
+                    values: { platform: 'nes', game: 'sunshine' },
                   },
                   {
                     name: 'Switch,Kart',
-                    values: { platform: 'switch', game: 'kart' }
+                    values: { platform: 'switch', game: 'kart' },
                   },
                   {
                     name: 'Entertainment System,Kart',
-                    values: { platform: 'nes', game: 'kart' }
+                    values: { platform: 'nes', game: 'kart' },
                   },
                   {
                     name: 'Entertainment System,Oddysey',
-                    values: { platform: 'nes', game: 'oddysey' }
+                    values: { platform: 'nes', game: 'oddysey' },
                   },
                   {
                     name: '64,Oddysey',
-                    values: { platform: '64', game: 'oddysey' }
+                    values: { platform: '64', game: 'oddysey' },
                   },
                   {
                     name: '64,3D Land',
-                    values: { platform: '64', game: '3d_land' }
+                    values: { platform: '64', game: '3d_land' },
                   },
                   {
                     name: '64,Galaxy',
-                    values: { platform: '64', game: 'galaxy' }
+                    values: { platform: '64', game: 'galaxy' },
                   },
                   {
                     name: '64,Sunshine',
-                    values: { platform: '64', game: 'sunshine' }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+                    values: { platform: '64', game: 'sunshine' },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     request: {
       logicalTable: {
-        table: 'mario',
-        timeGrain: 'day'
+        table: 'gameStats',
+        timeGrain: 'day',
       },
       metrics: [{ metric: 'coins' }],
       dimensions: [{ dimension: 'platform' }, { dimension: 'game' }],
@@ -207,11 +207,11 @@ export default [
       intervals: [
         {
           end: 'current',
-          start: 'P30D'
-        }
+          start: 'P30D',
+        },
       ],
       bardVersion: 'v1',
-      requestVersion: 'v1'
-    }
-  }
+      requestVersion: 'v1',
+    },
+  },
 ];

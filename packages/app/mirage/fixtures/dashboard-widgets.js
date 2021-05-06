@@ -21,28 +21,28 @@ export default [
                 dimensions: [
                   {
                     name: 'Dry Bowser',
-                    values: { character: '7' }
+                    values: { character: '7' },
                   },
                   {
                     name: 'Daisy',
-                    values: { character: '4' }
+                    values: { character: '4' },
                   },
                   {
                     name: 'Wario',
-                    values: { character: '8' }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
+                    values: { character: '8' },
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
     },
     requests: [
       {
         logicalTable: {
-          table: 'mario',
-          timeGrain: 'day'
+          table: 'gameStats',
+          timeGrain: 'day',
         },
         metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
         dimensions: [{ dimension: 'character' }],
@@ -50,8 +50,8 @@ export default [
         sort: [{ metric: 'wins', direction: 'asc' }],
         intervals: [{ end: 'current', start: 'P7D' }],
         bardVersion: 'v1',
-        requestVersion: 'v1'
-      }
-    ]
-  }
+        requestVersion: 'v1',
+      },
+    ],
+  },
 ];
