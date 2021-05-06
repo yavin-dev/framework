@@ -14,10 +14,8 @@ import NaviMetadataSerializer, {
 import KegService from './keg';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviMetadataAdapter from '../adapters/metadata/interface';
-
-type RequestOptions = {
-  dataSourceName?: string;
-};
+import { NaviDataSource } from 'navi-config';
+import { RequestOptions } from 'navi-data/adapters/facts/interface';
 
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
@@ -29,6 +27,8 @@ export default class NaviMetadataService extends Service {
    * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
    */
   loadedDataSources: Set<string> = new Set();
+
+  private loadMetadataPromises: Record<string, Promise<void>> = {};
 
   /**
    * @param dataSourceType
@@ -46,7 +46,7 @@ export default class NaviMetadataService extends Service {
     return getOwner(this).lookup(`serializer:metadata/${dataSourceType}`);
   }
 
-  private dataSourceFor(dataSourceName?: string) {
+  private dataSourceFor(dataSourceName?: string): NaviDataSource {
     return dataSourceName ? getDataSource(dataSourceName) : getDefaultDataSource();
   }
 
@@ -79,17 +79,23 @@ export default class NaviMetadataService extends Service {
     }) as EmberArray<MetadataModelRegistry[K]>;
   }
 
-  async loadMetadata(options: RequestOptions = {}) {
-    const { type: dataSourceType, name: dataSourceName } = this.dataSourceFor(options.dataSourceName);
-    if (!this.loadedDataSources.has(dataSourceName)) {
-      const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
-
-      const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);
-      if (normalized) {
-        this.loadEverythingMetadataIntoKeg(normalized, dataSourceName);
-      }
+  private async loadAndProcessMetadata(dataSource: NaviDataSource, options: RequestOptions): Promise<void> {
+    const { type: dataSourceType, name: dataSourceName } = dataSource;
+    const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
+    const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);
+    if (normalized) {
+      this.loadEverythingMetadataIntoKeg(normalized, dataSourceName);
     }
-    //TODO store promises, so two requests for the same metadata use the same promise
+  }
+
+  loadMetadata(options: RequestOptions = {}): Promise<void> {
+    const dataSource = this.dataSourceFor(options.dataSourceName);
+    let promise = this.loadMetadataPromises[dataSource.name];
+    if (!promise) {
+      promise = this.loadAndProcessMetadata(dataSource, options);
+      this.loadMetadataPromises[dataSource.name] = promise;
+    }
+    return promise;
   }
 
   /**

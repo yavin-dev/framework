@@ -181,21 +181,68 @@ module('Unit | Service | navi-metadata', function (hooks) {
     assert.ok(this.service.loadedDataSources.has('bardOne'), 'default data source is loaded');
   });
 
-  test('loadMetadata - multiple calls', async function (this: Context, assert) {
-    assert.expect(1);
+  test('loadMetadata - multiple calls to default datasource', async function (this: Context, assert) {
+    assert.expect(2);
 
     this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     this.server.get('/tables', function () {
       assert.ok(true, 'initial metadata load executes a request');
       return { tables: [] };
     });
-    await this.service.loadMetadata();
+    const promise1 = this.service.loadMetadata();
+    await promise1;
 
     this.server.get('/tables', function () {
       assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
       return { tables: [] };
     });
-    await this.service.loadMetadata();
+    const promise2 = this.service.loadMetadata();
+    await promise2;
+
+    assert.equal(promise1, promise2, 'loadMetadata returns the same promise for the same datasource');
+  });
+
+  test('loadMetadata - multiple calls to different datasource', async function (this: Context, assert) {
+    assert.expect(4);
+
+    this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.ok(true, 'initial metadata load executes a request');
+      return { tables: [] };
+    });
+    const defaultPromise = this.service.loadMetadata();
+    await defaultPromise;
+
+    this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
+      return { tables: [] };
+    });
+
+    this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.ok(true, 'initial metadata load executes a request');
+      return { tables: [] };
+    });
+
+    const bardTwoPromise1 = this.service.loadMetadata({ dataSourceName: 'bardTwo' });
+    await bardTwoPromise1;
+
+    this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
+      return { tables: [] };
+    });
+
+    const bardTwoPromise2 = this.service.loadMetadata({ dataSourceName: 'bardTwo' });
+    await bardTwoPromise2;
+
+    assert.notEqual(
+      defaultPromise,
+      bardTwoPromise1,
+      'loadMetadata returns different promises for different datasource'
+    );
+    assert.equal(bardTwoPromise1, bardTwoPromise2, 'loadMetadata returns the same promise for the same datasource');
   });
 
   test('all', async function (this: Context, assert) {
