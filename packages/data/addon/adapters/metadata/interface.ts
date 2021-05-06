@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -15,14 +15,14 @@ export default interface NaviMetadataAdapter {
    * Bulk fetch of all metadata for a datasource
    * @param options
    */
-  fetchEverything(options?: TODO): Promise<TODO>;
+  fetchEverything(options?: MetadataOptions): Promise<unknown>;
 
   /**
    * Fetch collection of metadata object
    * @param type - metadata type
    * @param options
    */
-  fetchAll(type: string, options?: TODO): Promise<TODO>;
+  fetchAll(type: string, options?: MetadataOptions): Promise<unknown>;
 
   /**
    * Fetch metadata object by id
@@ -30,5 +30,5 @@ export default interface NaviMetadataAdapter {
    * @param id - metadata identifier
    * @param options
    */
-  fetchById(type: string, id: string, options?: MetadataOptions): Promise<TODO>;
+  fetchById(type: string, id: string, options?: MetadataOptions): Promise<unknown>;
 }
