@@ -12,6 +12,7 @@ import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
 import { Server } from 'miragejs';
+import Mirage from 'ember-cli-mirage';
 
 interface Context extends TestContext {
   server: Server;
@@ -243,6 +244,42 @@ module('Unit | Service | navi-metadata', function (hooks) {
       'loadMetadata returns different promises for different datasource'
     );
     assert.equal(bardTwoPromise1, bardTwoPromise2, 'loadMetadata returns the same promise for the same datasource');
+  });
+
+  test('loadMetadata - failure', async function (this: Context, assert) {
+    assert.expect(6);
+    const dataSourceName = 'bardTwo';
+
+    this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.ok(true, 'loadMetadata executes a request on unloaded metadata');
+      return new Mirage.Response(500);
+    });
+
+    const promise1 = this.service.loadMetadata({ dataSourceName });
+    try {
+      await promise1;
+    } catch (e) {
+      assert.ok('loadMetadata rejects on failure');
+    }
+    assert.notOk(this.service.loadedDataSources.has(dataSourceName), 'failed datasources are not marked as loaded');
+
+    this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.ok(true, 'loadMetadata executes a request on unloaded metadata');
+      return { tables: [] };
+    });
+
+    const promise2 = this.service.loadMetadata({ dataSourceName });
+    try {
+      await promise2;
+    } catch (e) {
+      assert.notOk('loadMetadata should not reject');
+    }
+
+    assert.ok(this.service.loadedDataSources.has(dataSourceName), 'successful datasources are marked as loaded');
+
+    assert.notEqual(promise1, promise2, 'loadMetadata does not cache rejected promises');
   });
 
   test('all', async function (this: Context, assert) {
