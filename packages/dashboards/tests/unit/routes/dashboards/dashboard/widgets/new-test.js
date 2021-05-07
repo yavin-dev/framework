@@ -78,19 +78,14 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function (hooks) {
     });
   });
 
-  test('_newModel', function (assert) {
-    assert.expect(2);
-
-    return settled().then(() => {
-      return Route._newModel().then((model) => {
-        assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
-
-        assert.equal(
-          model.get('author.id'),
-          'navi_user',
-          'the author of the widget is set using the author from the dashboard'
-        );
-      });
-    });
+  test('newModel', async function (assert) {
+    await settled();
+    const model = await Route.newModel();
+    assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
+    assert.equal(
+      model.get('author.id'),
+      'navi_user',
+      'the author of the widget is set using the author from the dashboard'
+    );
   });
 });

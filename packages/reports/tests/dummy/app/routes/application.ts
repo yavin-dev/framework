@@ -11,11 +11,9 @@ export default class ApplicationRoute extends Route {
   @service
   private naviMetadata!: NaviMetadataService;
 
-  model(): Promise<[UserModel, void, void]> {
-    return Promise.all([
-      this.user.findOrRegister(),
-      this.naviMetadata.loadMetadata(),
-      this.naviMetadata.loadMetadata({ dataSourceName: 'bardTwo' }),
-    ]);
+  model(): Promise<UserModel> {
+    this.naviMetadata.loadMetadata();
+    this.naviMetadata.loadMetadata({ dataSourceName: 'bardTwo' });
+    return this.user.findOrRegister();
   }
 }

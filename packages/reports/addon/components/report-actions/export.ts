@@ -8,9 +8,9 @@ import Component from '@glimmer/component';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
-import NaviNotificationsService from 'navi-core/addon/services/interfaces/navi-notifications';
-import ReportModel from 'navi-core/addon/models/report';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
+import NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
+import ReportModel from 'navi-core/models/report';
+import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Ember from 'ember';
 
 interface Args {

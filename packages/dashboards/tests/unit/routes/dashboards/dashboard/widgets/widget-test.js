@@ -43,10 +43,8 @@ module('Unit | Route | dashboards/dashboard/widgets/widget', function (hooks) {
     }
   });
 
-  test('_findByTempId', function (assert) {
-    assert.expect(2);
-
-    let route = this.owner.factoryFor('route:dashboards/dashboard/widgets/widget').create({
+  test('findByTempId', function (assert) {
+    const route = this.owner.factoryFor('route:dashboards/dashboard/widgets/widget').create({
       store: {
         peekAll() {
           return [{ tempId: 1 }, { tempId: 2 }, { tempId: 3 }];
@@ -54,9 +52,9 @@ module('Unit | Route | dashboards/dashboard/widgets/widget', function (hooks) {
       },
     });
 
-    assert.equal(route._findByTempId(2).tempId, 2, 'Widgets can be found by temp id');
+    assert.equal(route.findByTempId(2).tempId, 2, 'Widgets can be found by temp id');
 
-    assert.equal(route._findByTempId(50), undefined, 'Undefined is returned when no widget has the given temp id');
+    assert.equal(route.findByTempId(50), undefined, 'Undefined is returned when no widget has the given temp id');
   });
 
   test('saveWidget action', function (assert) {

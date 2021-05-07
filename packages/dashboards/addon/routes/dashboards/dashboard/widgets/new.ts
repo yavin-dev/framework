@@ -4,6 +4,7 @@
  */
 import { A } from '@ember/array';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
+import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute {
   /**
@@ -11,20 +12,17 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
    * @param widget - resolved widget model
    * @override
    */
-  afterModel(widget) {
+  afterModel(widget: ReportLike) {
     return this.replaceWith('dashboards.dashboard.widgets.widget.edit', widget.tempId);
   }
 
   /**
    * Returns a new model for this route
-   *
-   * @private
-   * @returns route model
    */
-  async _newModel() {
+  protected async newModel() {
     const author = await this.user.findOrRegister();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    const table = this._getDefaultTable();
+    const table = await this.getDefaultTable();
     const dashboard = this.modelFor('dashboards.dashboard');
 
     const widget = this.store.createRecord('dashboard-widget', {
@@ -32,8 +30,8 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
       dashboard,
       requests: A([
         this.store.createFragment('bard-request-v2/request', {
-          table: table.id,
-          dataSource: table.source,
+          table: table?.id,
+          dataSource: table?.source,
         }),
       ]),
       visualization: { type: defaultVisualization },

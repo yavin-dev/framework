@@ -19,6 +19,7 @@ import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 type ModelParams = { report_id: string } | { widget_id: string };
 type ReportModelParams = { report_id: string };
@@ -27,6 +28,8 @@ export type ReportLike = ReportModel | DashboardWidget;
 
 export default class ReportsReportRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
+
+  @service declare naviMetadata: NaviMetadataService;
 
   @service declare user: UserService;
 
@@ -50,12 +53,13 @@ export default class ReportsReportRoute extends Route {
    * @param params.reportId - persisted id or temp id of report to fetch
    * @returns model for requested report
    */
-  model(params: ModelParams): Promise<ReportLike> {
+  async model(params: ModelParams): Promise<ReportLike> {
     const { report_id } = params as ReportModelParams;
-    return this.user
-      .findOrRegister()
-      .then(() => this._findByTempId(report_id) || this.store.findRecord('report', report_id))
-      .then(this._defaultVisualization.bind(this));
+    await this.user.findOrRegister();
+    const report = this.findByTempId(report_id) || (await this.store.findRecord('report', report_id));
+    const { dataSource: dataSourceName } = report?.request || {};
+    await this.naviMetadata.loadMetadata({ dataSourceName });
+    return this.setDefaultVisualization(report);
   }
 
   /**
@@ -88,24 +92,22 @@ export default class ReportsReportRoute extends Route {
   }
 
   /**
-   * @private
    * @param id - temp id of local report
    * @returns report with matching temp id
    *
    */
-  _findByTempId(id: string | number) {
+  private findByTempId(id: string | number) {
     return this.store.peekAll('report').find((r) => r.tempId === id);
   }
 
   /**
    * Sets default visualization if required
    *
-   * @private
    * @param report - report model
    * @returns report with update visualization if required
    *
    */
-  _defaultVisualization(report: ReportLike): ReportLike {
+  private setDefaultVisualization(report: ReportLike): ReportLike {
     if (!report.visualization?.type) {
       set(report, 'visualization', this.store.createFragment(this.defaultVisualizationType, {}));
     }
