@@ -3,13 +3,17 @@ import { resolve, reject } from 'rsvp';
 import { A } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Unit | Route | reports/report', function (hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
-  test('model hook', function (assert) {
-    assert.expect(2);
+  hooks.beforeEach(async function () {
+    await this.owner.lookup('service:navi-metadata').loadMetadata();
+  });
 
+  test('model hook', async function (assert) {
     const localReports = [
         {
           id: undefined,
@@ -30,22 +34,18 @@ module('Unit | Route | reports/report', function (hooks) {
       user: {
         findOrRegister: () => resolve(),
       },
-      _defaultVisualization: (report) => report,
+      setDefaultVisualization: (report) => report,
     });
 
-    return route.model({ report_id: 1 }).then((model) => {
-      assert.equal(model.id, 1, 'Route model looks up report based on id');
+    const model1 = await route.model({ report_id: 1 });
+    assert.equal(model1.id, 1, 'Route model looks up report based on id');
 
-      return route.model({ report_id: '123-456' }).then((model) => {
-        assert.equal(model.tempId, '123-456', 'Route can find reports based on temp id');
-      });
-    });
+    const model2 = await route.model({ report_id: '123-456' });
+    assert.equal(model2.tempId, '123-456', 'Route can find reports based on temp id');
   });
 
-  test('_findByTempId', function (assert) {
-    assert.expect(2);
-
-    let route = this.owner.factoryFor('route:reports/report').create({
+  test('findByTempId', function (assert) {
+    const route = this.owner.factoryFor('route:reports/report').create({
       store: {
         peekAll() {
           return [{ tempId: 1 }, { tempId: 2 }, { tempId: 3 }];
@@ -53,15 +53,13 @@ module('Unit | Route | reports/report', function (hooks) {
       },
     });
 
-    assert.equal(route._findByTempId(2).tempId, 2, 'Reports can be found by temp id');
+    assert.equal(route.findByTempId(2).tempId, 2, 'Reports can be found by temp id');
 
-    assert.equal(route._findByTempId(50), undefined, 'Undefined is returned when no report has the given temp id');
+    assert.equal(route.findByTempId(50), undefined, 'Undefined is returned when no report has the given temp id');
   });
 
-  test('_defaultVisualization', function (assert) {
-    assert.expect(2);
-
-    let mockReport = {
+  test('setDefaultVisualization', function (assert) {
+    const mockReport = {
         visualization: null,
       },
       route = this.owner.factoryFor('route:reports/report').create({
@@ -73,18 +71,18 @@ module('Unit | Route | reports/report', function (hooks) {
       });
 
     assert.deepEqual(
-      route._defaultVisualization(mockReport).visualization,
+      route.setDefaultVisualization(mockReport).visualization,
       { type: 'table' },
       'Default visualization is set for null value in visualization'
     );
 
-    let visualization = {
+    const visualization = {
       type: 'line-chart',
     };
     mockReport.visualization = visualization;
 
     assert.deepEqual(
-      route._defaultVisualization(mockReport).visualization,
+      route.setDefaultVisualization(mockReport).visualization,
       visualization,
       'Default visualization is not set for types already present in visualization'
     );
