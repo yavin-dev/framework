@@ -90,12 +90,21 @@ export default class NaviMetadataService extends Service {
 
   loadMetadata(options: RequestOptions = {}): Promise<void> {
     const dataSource = this.dataSourceFor(options.dataSourceName);
-    let promise = this.loadMetadataPromises[dataSource.name];
-    if (!promise) {
-      promise = this.loadAndProcessMetadata(dataSource, options);
-      this.loadMetadataPromises[dataSource.name] = promise;
+    const existingPromise = this.loadMetadataPromises[dataSource.name];
+
+    if (existingPromise) {
+      return existingPromise;
     }
-    return promise;
+
+    const newPromise = this.loadAndProcessMetadata(dataSource, options);
+
+    //cache promise so we don't execute multiple load fetches
+    this.loadMetadataPromises[dataSource.name] = newPromise;
+
+    //if load fails remove from cache so we can retry
+    newPromise.catch(() => delete this.loadMetadataPromises[dataSource.name]);
+
+    return newPromise;
   }
 
   /**
