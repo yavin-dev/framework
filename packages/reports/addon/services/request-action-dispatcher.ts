@@ -15,6 +15,7 @@ export const RequestActions = <const>{
   ADD_FILTER: 'addFilter',
   ADD_DIMENSION_FILTER: 'addDimensionFilter',
   ADD_METRIC_FILTER: 'addMetricFilter',
+  DID_ADD_FILTER: 'didAddFilter',
   UPDATE_FILTER: 'updateFilter',
   REMOVE_FILTER: 'removeFilter',
 

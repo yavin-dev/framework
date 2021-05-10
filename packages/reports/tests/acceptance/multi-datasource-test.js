@@ -6,11 +6,14 @@ import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-bui
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
 
 module('Acceptance | multi-datasource report builder', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
+
   hooks.beforeEach(function () {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = true;
   });
@@ -29,6 +32,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+    await animationsSettled();
 
     assert.deepEqual(
       findAll('.grouped-list__group-header-content').map((el) => el.textContent.trim()),
@@ -190,11 +194,13 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
+    await animationsSettled();
 
     //assert filters, metrics and dimensions are reset
     assert
-      .dom('.report-builder__container--filters--collapsed')
-      .includesText('Date Time (day)', 'The request is constrained and adds back the required filters');
+      .dom('.filter-builder__subject')
+      .includesText('Date Time day', 'The request is constrained and adds back the required filters');
+    assert.dom('.report-builder__container--filters--collapsed').doesNotExist('The filters are reopened');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });

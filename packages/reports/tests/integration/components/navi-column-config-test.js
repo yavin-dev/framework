@@ -18,7 +18,6 @@ function addItem(type, item, dataSource, parameters = {}) {
 
 const TEMPLATE = hbs`
 <NaviColumnConfig
-  @isOpen={{true}}
   @lastAddedColumn={{this.lastAddedColumn}}
   @report={{this.report}}
   @onAddColumn={{optional this.onAddColumn}}
@@ -26,7 +25,6 @@ const TEMPLATE = hbs`
   @onAddFilter={{optional this.onAddFilter}}
   @onUpsertSort={{optional this.onUpsertSort}}
   @onRemoveSort={{optional this.onRemoveSort}}
-  @openFilters={{optional this.openFilters}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onReorderColumn={{optional this.onReorderColumn}}
   @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
@@ -76,43 +74,6 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await render(hbs`<NaviColumnConfig @report={{this.report}} />`);
     await animationsSettled();
     assert.dom('.navi-column-config').exists('NaviColumnConfig renders');
-  });
-
-  test('it opens and closes', async function (assert) {
-    await render(hbs`<NaviColumnConfig @report={{this.report}} @isOpen={{this.isOpen}} />`);
-
-    await animationsSettled();
-    assert.dom('.navi-column-config__panel').doesNotExist('Drawer is closed when `isOpen` is false');
-
-    this.set('isOpen', true);
-    await animationsSettled();
-    assert.dom('.navi-column-config__panel').exists('Drawer is open when `isOpen` is true');
-
-    this.set('isOpen', false);
-    await animationsSettled();
-    assert.dom('.navi-column-config__panel').doesNotExist('Drawer is closed when `isOpen` is false');
-  });
-
-  test('it fires drawerDidChange action', async function (assert) {
-    assert.expect(3);
-
-    this.set('drawerDidChange', () => assert.ok('drawerDidChange fires'));
-
-    await render(hbs`<NaviColumnConfig
-      @report={{this.report}}
-      @isOpen={{this.isOpen}}
-      @drawerDidChange={{this.drawerDidChange}}
-    />`);
-    await animationsSettled();
-
-    this.set('isOpen', true);
-    await animationsSettled();
-
-    this.set('isOpen', false);
-    await animationsSettled();
-
-    this.set('isOpen', true);
-    await animationsSettled();
   });
 
   test('time grain - switching and removing', async function (assert) {

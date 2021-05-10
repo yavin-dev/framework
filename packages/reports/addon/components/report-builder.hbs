@@ -1,16 +1,21 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
-  {{#unless (is-mobile)}}
-    <ReportBuilder::Sidebar 
-      @disabled={{@disabled}}
-      @report={{@report}}
-      @lastAddedColumn={{@lastAddedColumn}}
-      @onResize={{this.resizeVisualization}}
-      @onBeforeAddItem={{fn (optional @onBeforeAddItem) this}}
-      @openFilters={{this.openFilters}}
-      @setTable={{update-report-action "UPDATE_TABLE"}}
-    />
-  {{/unless}}
+  <ReportBuilder::Sidebar 
+    @isOpen={{this.isSidebarOpen}}
+    @disabled={{@disabled}}
+    @report={{@report}}
+    @lastAddedColumn={{@lastAddedColumn}}
+    @closeSidebar={{toggle "isSidebarOpen" this}}
+    @onResize={{this.resizeVisualization}}
+    @setTable={{update-report-action "UPDATE_TABLE"}}
+  />
+  <div class="report-builder__sidebar-toggle {{unless this.isSidebarOpen "report-builder__sidebar-toggle--closed"}}">
+    <AnimatedIf @predicate={{not this.isSidebarOpen}} @use={{this.fadeTransition}} @duration={{100}}>
+      <button type="button" class="report-builder__sidebar-open" {{on "click" (toggle "isSidebarOpen" this)}}>
+        <DenaliIcon @icon="file-edit" class="report-builder__sidebar-icon" />
+      </button>
+    </AnimatedIf>
+  </div>
   <div class="report-builder__main">
     {{#if this.hasValidLogicalTable}}
       <div class={{

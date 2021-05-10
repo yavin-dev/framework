@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<ol class="report-builder-source-selector p-y-10 p-l-20 p-r-10 flex-1" ...attributes>
+<ol class="report-builder-source-selector p-y-10 p-l-20 p-r-10" ...attributes>
   {{#each @sources as |item idx|}} 
     <li class="report-builder-source-selector__source flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
       <button 

@@ -2,10 +2,12 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, findAll, triggerEvent, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import type ReportBuilderSourceSelector from 'navi-reports/components/report-builder/source-selector';
-import type { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { assertTooltipContent } from 'ember-tooltips/test-support';
+//@ts-ignore
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import type ReportBuilderSourceSelector from 'navi-reports/components/report-builder/source-selector';
+import type { TestContext as Context } from 'ember-test-helpers';
 
 type ComponentArgs = ReportBuilderSourceSelector['args'];
 interface TestContext extends Context, ComponentArgs {}
@@ -18,6 +20,7 @@ const TEMPLATE = hbs`
 />`;
 module('Integration | Component | report-builder/source-selector', function (hooks) {
   setupRenderingTest(hooks);
+  setupAnimationTest(hooks);
 
   hooks.beforeEach(function (this: TestContext) {
     this.sources = [
@@ -57,6 +60,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     });
 
     await click('.report-builder-source-selector__source-button[data-source-name="Source B"]');
+    await animationsSettled();
   });
 
   test('it handles selecting a source', async function (this: TestContext, assert) {
@@ -70,6 +74,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     assert.dom('.report-builder-source-selector__source--selected').doesNotExist('No source is selected');
 
     await click('.report-builder-source-selector__source-button[data-source-name="Source B"]');
+    await animationsSettled();
 
     assert
       .dom('.report-builder-source-selector__source--selected')

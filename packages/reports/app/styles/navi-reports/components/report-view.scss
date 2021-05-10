@@ -110,37 +110,6 @@
     min-width: 0;
     padding: 10px;
   }
-
-  &__columns-button {
-    align-items: center;
-    border: 1px solid $menu-border-color;
-    border-left-width: 0;
-    border-radius: 0 45% 45% 0;
-    box-shadow: rgba(60, 64, 67, 0.3) 2px 1px 4px -1px;
-    cursor: pointer;
-    display: flex;
-    height: 40px;
-    justify-content: center;
-    left: -2px;
-    margin-bottom: 15px;
-    margin-right: 2px;
-    position: relative;
-    width: 40px;
-    z-index: 10;
-  }
-
-  &__columns-icon {
-    @extend .link;
-    left: -1px;
-    position: relative;
-  }
-
-  &__columns-toggle {
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-end;
-    width: 0;
-  }
 }
 
 .report-view {
