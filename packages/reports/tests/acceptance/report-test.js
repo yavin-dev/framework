@@ -1851,7 +1851,6 @@ module('Acceptance | Navi Report', function (hooks) {
   test('Cancel Report', async function (assert) {
     assert.expect(14);
 
-    debugger;
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get(
       'data/*path',

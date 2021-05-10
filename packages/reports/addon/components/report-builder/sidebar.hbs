@@ -29,11 +29,9 @@
         <h4 class="report-builder-sidebar__source flex-1 p-l-6" title={{this.title}} data-selecting={{this.selecting}}>{{this.title}}</h4>
       </div>
       <div class="p-r-10">
-        <DenaliButton
-          class="report-builder-sidebar__close p-x-5"
-          @size="medium"
-          @style="text"
-          @iconOnly={{true}}
+        <DenaliIcon
+          class="report-builder-sidebar__close link is-secondary is-sub p-5"
+          role="button"
           @icon="close"
           {{on "click" @closeSidebar}}
         />
