@@ -6,7 +6,6 @@
  */
 import Service, { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-//@ts-ignore
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import type StoreService from '@ember-data/store';
 import type Model from '@ember-data/model';
@@ -32,6 +31,7 @@ export default class CompressionService extends Service {
    */
   async decompress(string: string): Promise<object> {
     const jsonStr = decompressFromEncodedURIComponent(decodeURIComponent(string));
+    assert('The decompressed string is not null', jsonStr);
     return JSON.parse(jsonStr);
   }
 
