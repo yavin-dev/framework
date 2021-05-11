@@ -24,7 +24,7 @@ const TEMPLATE = hbs`
     @isOpen={{this.isOpen}}
     @report={{this.report}}
     @disabled={{this.disabled}}
-    @closeSidebar={{this.closeSidebar}}
+    @onCloseSidebar={{this.onCloseSidebar}}
     @lastAddedColumn={{this.lastAddedColumn}}
     @setTable={{this.setTable}}
   />
@@ -56,7 +56,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       visualization: {},
     });
     this.isOpen = true;
-    this.closeSidebar = () => undefined;
+    this.onCloseSidebar = () => undefined;
     this.disabled = false;
     this.lastAddedColumn = undefined;
     this.setTable = () => undefined;

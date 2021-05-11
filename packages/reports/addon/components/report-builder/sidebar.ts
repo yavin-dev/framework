@@ -30,7 +30,7 @@ interface Args {
   isOpen: boolean;
   disabled: boolean;
   onResize?: () => void;
-  closeSidebar(): void;
+  onCloseSidebar(): void;
   lastAddedColumn?: ColumnFragment;
   setTable(table: TableMetadataModel): void;
 }
@@ -223,7 +223,6 @@ export default class ReportBuilderSidebar extends Component<Args> {
       ...removedSprites.map((sprite) => {
         const { left, width } = sprite.element.getBoundingClientRect();
         const x = left - 1.5 * width;
-        // sprite.applyStyles({ 'z-index': '1' });
         sprite.endAtPixel({ x });
         return move(sprite, { easing: easeIn });
       }),
@@ -231,7 +230,6 @@ export default class ReportBuilderSidebar extends Component<Args> {
         const { left, width } = sprite.element.getBoundingClientRect();
         const x = left - 1.5 * width;
         sprite.startAtPixel({ x });
-        // sprite.applyStyles({ 'z-index': '1' });
         return move(sprite, { easing: easeOut });
       }),
     ]);

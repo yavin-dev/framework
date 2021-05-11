@@ -5,13 +5,18 @@
     @disabled={{@disabled}}
     @report={{@report}}
     @lastAddedColumn={{@lastAddedColumn}}
-    @closeSidebar={{toggle "isSidebarOpen" this}}
+    @onCloseSidebar={{toggle "isSidebarOpen" this}}
     @onResize={{this.resizeVisualization}}
     @setTable={{update-report-action "UPDATE_TABLE"}}
   />
   <div class="report-builder__sidebar-toggle {{unless this.isSidebarOpen "report-builder__sidebar-toggle--closed"}}">
     <AnimatedIf @predicate={{not this.isSidebarOpen}} @use={{this.fadeTransition}} @duration={{100}}>
-      <button type="button" class="report-builder__sidebar-open" {{on "click" (toggle "isSidebarOpen" this)}}>
+      <button
+        type="button"
+        class="report-builder__sidebar-open"
+        title="Edit Request"
+        {{on "click" (toggle "isSidebarOpen" this)}}
+      >
         <DenaliIcon @icon="file-edit" class="report-builder__sidebar-icon" />
       </button>
     </AnimatedIf>
