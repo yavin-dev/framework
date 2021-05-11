@@ -9,34 +9,21 @@ export default function () {
    * deliveryrules/:id - GET endpoint to fetch deliveryrules by id
    */
   this.get('/deliveryRules/:id', function ({ deliveryRules }, request) {
-    let id = request.params.id,
-      deliveryRule = deliveryRules.find(id);
-
-    return deliveryRule;
+    const { id } = request.params;
+    return deliveryRules.find(id);
   });
 
   /**
    * deliveryrules/ - GET endpoint to fetch many deliveryrules
    */
-  this.get('/deliveryRules', function ({ deliveryRules }, request) {
-    let idFilter = request.queryParams['filter[delivery-rules.id]'],
-      rules = deliveryRules;
-
-    // Allow filtering
-    if (idFilter) {
-      let ids = idFilter.split(',');
-      rules = deliveryRules.find(ids);
-    }
-
-    return rules;
-  });
+  this.get('/deliveryRules', { coalesce: true });
 
   /**
    * deliveryrules/ - POST endpoint to add a new deliveryrule
    */
   this.post('/deliveryRules', function ({ deliveryRules, db }) {
-    let attrs = this.normalizedRequestAttrs(),
-      deliveryRule = deliveryRules.create(attrs);
+    const attrs = this.normalizedRequestAttrs();
+    const deliveryRule = deliveryRules.create(attrs);
 
     // Init properties
     db.deliveryRules.update(deliveryRule.id, {
@@ -56,12 +43,12 @@ export default function () {
    * deliveryrules/ - DELETE endpoint to delete a deliveryrule by id
    */
   this.del('/deliveryRules/:id', function ({ deliveryRules, users, reports, dashboards }, request) {
-    let id = request.params.id,
-      deliveryRule = deliveryRules.find(id),
-      deliveredItemType = deliveryRule.deliveryType,
-      deliveredItems = { reports, dashboards },
-      deliveredItem = deliveredItems[`${deliveredItemType}s`].find(deliveryRule.deliveredItemId.id),
-      user = users.find(deliveryRule.ownerId);
+    const { id } = request.params;
+    const deliveryRule = deliveryRules.find(id);
+    const deliveredItemType = deliveryRule.deliveryType;
+    const deliveredItems = { reports, dashboards };
+    const deliveredItem = deliveredItems[`${deliveredItemType}s`].find(deliveryRule.deliveredItemId.id);
+    const user = users.find(deliveryRule.ownerId);
 
     if (!deliveryRule) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });

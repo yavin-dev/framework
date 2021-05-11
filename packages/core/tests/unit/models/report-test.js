@@ -152,8 +152,8 @@ module('Unit | Model | report', function (hooks) {
     this.server.urlPrefix = `${config.navi.appPersistence.uri}`;
     this.server.get('/reports', (schema, request) => {
       assert.equal(
-        request.queryParams['filter[reports.id]'],
-        '1,2,4',
+        request.queryParams.filter,
+        'id=in=(1,2,4)',
         'Multiple find requests are grouped using filter query param'
       );
 

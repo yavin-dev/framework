@@ -2,13 +2,14 @@ import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 import { filterModel } from 'navi-core/mirage/utils/rsql-utils';
+import type { Server } from 'miragejs';
 
 const TIMESTAMP_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 
-export default function () {
+export default function (this: Server) {
   this.get('dashboards/:id', ({ dashboards }, request) => {
-    let id = request.params.id,
-      dashboard = dashboards.find(id);
+    const { id } = request.params;
+    const dashboard = dashboards.find(id);
 
     if (!dashboard) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
@@ -18,17 +19,17 @@ export default function () {
   });
 
   this.patch('dashboards/:id', function ({ dashboards }, request) {
-    let { id } = request.params,
-      attrs = this.normalizedRequestAttrs();
+    const { id } = request.params;
+    const attrs = this.normalizedRequestAttrs();
 
     dashboards.find(id).update(attrs);
     return new Response(RESPONSE_CODES.NO_CONTENT);
   });
 
   this.del('/dashboards/:id', ({ dashboards, users }, request) => {
-    let { id } = request.params,
-      dashboard = dashboards.find(id),
-      user = users.find(dashboard.authorId);
+    const { id } = request.params;
+    const dashboard = dashboards.find(id);
+    const user = users.find(dashboard.authorId);
 
     if (!dashboard) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
@@ -62,9 +63,9 @@ export default function () {
   });
 
   this.post('/dashboards', function ({ dashboards, users }) {
-    let attrs = this.normalizedRequestAttrs(),
-      dashboard = dashboards.create(attrs),
-      author = users.find(dashboard.authorId);
+    const attrs = this.normalizedRequestAttrs();
+    const dashboard = dashboards.create(attrs);
+    const author = users.find(dashboard.authorId);
 
     // Update user with new dashboard
     author.update(dashboards, author.dashboards.add(dashboard));

@@ -11,26 +11,14 @@ export default function () {
   /**
    * roles/ - GET endpoint to fetch many roles
    */
-  this.get('/roles', function ({ roles }, request) {
-    let idFilter = request.queryParams['filter[roles.id]'];
-
-    // Allow filtering
-    if (idFilter) {
-      let ids = idFilter.split(',');
-      roles = roles.find(ids);
-    } else {
-      roles = roles.all();
-    }
-
-    return roles;
-  });
+  this.get('/roles', { coalesce: true });
 
   /**
    * roles/ -  POST endpoint to add a new role
    */
   this.post('/roles', function ({ roles, db }) {
-    let attrs = this.normalizedRequestAttrs(),
-      role = roles.create(attrs);
+    const attrs = this.normalizedRequestAttrs();
+    const role = roles.create(attrs);
 
     // Init properties
     db.roles.update(role.id, {
