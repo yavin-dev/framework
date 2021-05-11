@@ -4,17 +4,20 @@
  */
 import { inject as service } from '@ember/service';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import Route from '@ember/routing/route';
-import { ColumnMetadataModels } from 'navi-core/models/bard-request-v2/fragments/base';
-import { Parameters } from 'navi-data/adapters/facts/interface';
-import ReportModel from 'navi-core/models/report';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import TableMetadataModel from 'navi-data/models/metadata/table';
+import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
+import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
+import type Route from '@ember/routing/route';
+import type { ColumnMetadataModels } from 'navi-core/models/bard-request-v2/fragments/base';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type ReportModel from 'navi-core/models/report';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type ReportsReportController from 'navi-reports/controllers/reports/report';
 
 export default class ColumnConsumer extends ActionConsumer {
-  @service() requestActionDispatcher!: RequestActionDispatcher;
+  @service
+  declare requestActionDispatcher: RequestActionDispatcher;
 
   actions = {
     /**
@@ -43,10 +46,8 @@ export default class ColumnConsumer extends ActionConsumer {
      * @param column - column fragment
      */
     [RequestActions.DID_ADD_COLUMN](this: ColumnConsumer, route: Route, column: ColumnFragment) {
-      const controller = route.controllerFor(route.routeName);
-      // TODO: add types to controller
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (controller as any).setLastAddedColumn(column);
+      const controller = route.controllerFor(route.routeName) as ReportsReportController;
+      controller.setLastAddedColumn(column);
     },
 
     /**

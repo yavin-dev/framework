@@ -16,6 +16,7 @@ import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type { Grain } from 'navi-data/utils/date';
+import type ReportsReportController from 'navi-reports/controllers/reports/report';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
   operator: 'gt',
@@ -43,6 +44,7 @@ export default class FilterConsumer extends ActionConsumer {
      * @param dimension - dimension to filter
      */
     [RequestActions.ADD_DIMENSION_FILTER](
+      this: FilterConsumer,
       route: Route,
       dimensionMetadataModel: DimensionMetadataModel,
       parameters: Parameters
@@ -77,10 +79,11 @@ export default class FilterConsumer extends ActionConsumer {
         values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
       }
 
-      request.addFilter({
+      const newFilter = request.addFilter({
         ...filter,
         ...(values ? { values } : {}),
       });
+      this.requestActionDispatcher.dispatch(RequestActions.DID_ADD_FILTER, route, newFilter);
     },
 
     /**
@@ -89,18 +92,34 @@ export default class FilterConsumer extends ActionConsumer {
      * @param metric - metric to filter
      * @param parameters - metric parameters to filter [optional]
      */
-    [RequestActions.ADD_METRIC_FILTER](route: Route, metricMetadataModel: MetricMetadataModel, parameters: Parameters) {
+    [RequestActions.ADD_METRIC_FILTER](
+      this: FilterConsumer,
+      route: Route,
+      metricMetadataModel: MetricMetadataModel,
+      parameters: Parameters
+    ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
 
       const defaultParams = metricMetadataModel.getDefaultParameters() || {};
-      request.addFilter({
+      const newFilter = request.addFilter({
+        ...DEFAULT_METRIC_FILTER,
         type: metricMetadataModel.metadataType,
-        source: request.dataSource,
+        source: metricMetadataModel.source,
         field: metricMetadataModel.id,
         parameters: { ...defaultParams, ...parameters },
-        ...DEFAULT_METRIC_FILTER,
       });
+      this.requestActionDispatcher.dispatch(RequestActions.DID_ADD_FILTER, route, newFilter);
+    },
+
+    /**
+     * @action DID_ADD_FILTER
+     * @param route - route that has a model that contains a request property
+     * @param filter - filter fragment
+     */
+    [RequestActions.DID_ADD_FILTER](this: FilterConsumer, route: Route, _filter: FilterFragment) {
+      const controller = route.controllerFor(route.routeName) as ReportsReportController;
+      controller.isFiltersCollapsed = false;
     },
 
     [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {

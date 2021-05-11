@@ -11,7 +11,8 @@ module('Unit | Component | Report Builder', function (hooks) {
   test('allTables', function (assert) {
     assert.expect(1);
 
-    const component = createGlimmerComponent('component:report-builder') as ReportBuilderComponent;
+    const mockArgs = { report: { isNew: false } };
+    const component = createGlimmerComponent('component:report-builder', mockArgs) as ReportBuilderComponent;
     component.metadataService = {
       all: () =>
         //@ts-expect-error

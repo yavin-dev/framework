@@ -289,9 +289,4 @@ export default class ReportsReportRoute extends Route {
       });
     });
   }
-
-  @action
-  openFilters() {
-    set(this.controller, 'isFiltersCollapsed', false);
-  }
 }

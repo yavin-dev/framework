@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { click, visit, findAll } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 //@ts-ignore
-import { setupAnimationTest } from 'ember-animated/test-support';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 //@ts-ignore
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 //@ts-ignore
@@ -14,8 +14,8 @@ import { capitalize } from '@ember/string';
 
 module('Acceptance | fili datasource', function (hooks) {
   setupApplicationTest(hooks);
-  setupMirage(hooks);
   setupAnimationTest(hooks);
+  setupMirage(hooks);
 
   test('verify the different time grains work as expected - fili', async function (assert) {
     assert.expect(78);
@@ -102,6 +102,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
+    await animationsSettled();
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
@@ -113,6 +114,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await visit('/reports/new');
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table C"]');
+    await animationsSettled();
 
     assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');

@@ -3,11 +3,16 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, findAll } from '@ember/test-helpers';
 import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import TableMetadataModel from 'navi-data/models/metadata/table';
 import config from 'ember-get-config';
+//@ts-ignore
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type StoreService from '@ember-data/store';
 
-let MetadataService, Store;
+let MetadataService: NaviMetadataService, Store: StoreService;
 
 const mockDataSourceA = {
   name: 'bardOne',
@@ -27,13 +32,17 @@ const mockDataSourceB = {
 const TEMPLATE = hbs`<ReportBuilder @report={{this.report}} />`;
 module('Integration | Component | report builder', function (hooks) {
   setupRenderingTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
 
-    this.owner.__container__.registry.registrations['helper:update-report-action'] = helper(() => () => {});
+    this.owner.register(
+      'helper:update-report-action',
+      helper(() => () => undefined)
+    );
 
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceA.name });
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceB.name });
@@ -61,8 +70,8 @@ module('Integration | Component | report builder', function (hooks) {
     config.navi.dataSources = [mockDataSourceA];
 
     //reset meta data and load only one table
-    MetadataService.keg.resetByType('metadata/table');
-    MetadataService.loadMetadataForType(
+    MetadataService['keg'].resetByType('metadata/table');
+    MetadataService['loadMetadataForType'](
       'table',
       [
         TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
@@ -90,14 +99,18 @@ module('Integration | Component | report builder', function (hooks) {
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      findAll('.report-builder-source-selector--tables .report-builder-source-selector__source-name').map((el) =>
+        el.textContent?.trim()
+      ),
       ['Table A'],
       'The only fact table is shown'
     );
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      findAll('.report-builder-source-selector--datasources .report-builder-source-selector__source-name').map((el) =>
+        el.textContent?.trim()
+      ),
       ['Source A'],
       'The only data source is shown'
     );
@@ -111,8 +124,8 @@ module('Integration | Component | report builder', function (hooks) {
     config.navi.dataSources = [mockDataSourceB];
 
     //reset meta data and load only one table
-    MetadataService.keg.resetByType('metadata/table');
-    MetadataService.loadMetadataForType(
+    MetadataService['keg'].resetByType('metadata/table');
+    MetadataService['loadMetadataForType'](
       'table',
       [
         TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
@@ -140,14 +153,18 @@ module('Integration | Component | report builder', function (hooks) {
     assert.dom('.report-builder-sidebar__source').hasText('Source B', 'Source B is selected');
 
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      findAll('.report-builder-source-selector--tables .report-builder-source-selector__source-name').map((el) =>
+        el.textContent?.trim()
+      ),
       ['Table A', 'Table B'],
       'Both fact tables are shown'
     );
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      findAll('.report-builder-source-selector--datasources .report-builder-source-selector__source-name').map((el) =>
+        el.textContent?.trim()
+      ),
       ['Source B'],
       'The only data source is shown'
     );
@@ -161,8 +178,8 @@ module('Integration | Component | report builder', function (hooks) {
     config.navi.dataSources = [mockDataSourceA, mockDataSourceB];
 
     //reset meta data and load only one table
-    MetadataService.keg.resetByType('metadata/table');
-    MetadataService.loadMetadataForType(
+    MetadataService['keg'].resetByType('metadata/table');
+    MetadataService['loadMetadataForType'](
       'table',
       [
         TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
@@ -170,7 +187,7 @@ module('Integration | Component | report builder', function (hooks) {
       ],
       mockDataSourceA.name
     );
-    MetadataService.loadMetadataForType(
+    MetadataService['loadMetadataForType'](
       'table',
       [
         TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
@@ -185,16 +202,34 @@ module('Integration | Component | report builder', function (hooks) {
 
     assert.deepEqual(
       findAll('.report-builder-sidebar__breadcrumb-item').map((el) => el.textContent?.trim()),
-      [],
+      ['Select A Datasource'],
       'The breadcrumb links back to data sources'
     );
     assert.dom('.report-builder-sidebar__source').hasText('Data Sources', 'The DataSources are listed');
 
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent.trim()),
+      findAll('.report-builder-source-selector__source-name').map((el) => el.textContent?.trim()),
       ['Source A', 'Source B'],
       'Both fact tables are shown'
     );
     config.navi.dataSources = originalDataSources;
+  });
+
+  test('Open and close sidebar', async function (assert) {
+    await render(TEMPLATE);
+
+    const openToggle = '.report-builder__sidebar-open';
+    assert.dom(openToggle).doesNotExist('The open toggle is not visible');
+    assert.dom('.report-builder-sidebar__header').exists('The sidebar is visible');
+
+    await click('.report-builder-sidebar__close');
+    await animationsSettled();
+
+    assert.dom('.report-builder-sidebar__header').doesNotExist('The sidebar is closed');
+    assert.dom(openToggle).exists('The open toggle is visible when sidebar is closed');
+
+    await click(openToggle);
+    await animationsSettled();
+    assert.dom('.report-builder-sidebar__header').exists('The sidebar is open again');
   });
 });

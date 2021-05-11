@@ -4,20 +4,15 @@
  */
 import Component from '@glimmer/component';
 import { action, computed } from '@ember/object';
-//@ts-expect-error
-import move from 'ember-animated/motions/move';
-import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import type { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
-import type NaviFormatterService from 'navi-data/services/navi-formatter';
 import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface NaviColumnConfigArgs {
-  isOpen: boolean;
   report: ReportModel;
   lastAddedColumn: ColumnFragment;
   onAddColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
@@ -27,8 +22,6 @@ interface NaviColumnConfigArgs {
   onRemoveSort(column: ColumnFragment): void;
   onRenameColumn(column: ColumnFragment, alias: string): void;
   onReorderColumn(column: ColumnFragment, index: number): void;
-  openFilters(): void;
-  drawerDidChange(): void;
 }
 
 export type ConfigColumn = {
@@ -38,7 +31,11 @@ export type ConfigColumn = {
 };
 
 export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
-  @service requestConstrainer!: RequestConstrainer;
+  @service
+  declare requestConstrainer: RequestConstrainer;
+
+  @tracked
+  currentlyOpenColumn?: ConfigColumn;
 
   /**
    * Dimension and metric columns from the request
@@ -62,15 +59,6 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
     }
     return [];
   }
-
-  @service
-  naviFormatter!: NaviFormatterService;
-
-  @tracked
-  currentlyOpenColumn?: ConfigColumn;
-
-  @tracked
-  componentElement!: Element;
 
   /**
    * Adds a copy of the given column to the request including its parameters
@@ -98,50 +86,5 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   @action
   openColumn(column: ConfigColumn) {
     this.currentlyOpenColumn = column;
-  }
-
-  /**
-   * Adds a filter for the column
-   * @param column - The column to filter
-   */
-  @action
-  onAddFilter(column: ColumnFragment) {
-    this.args.onAddFilter(column);
-
-    // TODO: should be done a level higher
-    this.args.openFilters();
-  }
-
-  /**
-   * Stores element reference and opens the default column after render
-   * @param element - element inserted
-   */
-  @action
-  setupElement(element: Element) {
-    this.componentElement = element;
-  }
-
-  /**
-   * Drawer transition
-   * @param context - animation context
-   */
-  @action
-  *drawerTransition(context: TODO) {
-    const { insertedSprites, removedSprites } = context;
-    const offset = 500; // 2x the size of the drawer
-    const x = this.componentElement.getBoundingClientRect().left - offset;
-    yield Promise.all([
-      ...removedSprites.map((sprite: TODO) => {
-        sprite.applyStyles({ 'z-index': '1' });
-        sprite.endAtPixel({ x });
-        return move(sprite, { easing: easeIn });
-      }),
-      ...insertedSprites.map((sprite: TODO) => {
-        sprite.startAtPixel({ x });
-        sprite.applyStyles({ 'z-index': '1' });
-        return move(sprite, { easing: easeOut });
-      }),
-    ]);
-    this.args.drawerDidChange?.();
   }
 }

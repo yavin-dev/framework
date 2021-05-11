@@ -6,6 +6,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { assertTooltipContent } from 'ember-tooltips/test-support';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+//@ts-ignore
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import type ReportBuilderSidebar from 'navi-reports/components/report-builder/sidebar';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type DataStore from '@ember-data/store';
@@ -17,18 +19,23 @@ interface TestContext extends Context, ComponentArgs {}
 let MetadataService: NaviMetadataService, Store: DataStore;
 
 const TEMPLATE = hbs`
-<ReportBuilder::Sidebar
-  @report={{this.report}}
-  @disabled={{this.disabled}}
-  @onBeforeAddItem={{this.onBeforeAddItem}}
-  @lastAddedColumn={{this.lastAddedColumn}}
-  @setTable={{this.setTable}}
-/>`;
+<div style="position: relative; display: flex; flex: 1;">
+  <ReportBuilder::Sidebar
+    @isOpen={{this.isOpen}}
+    @report={{this.report}}
+    @disabled={{this.disabled}}
+    @onCloseSidebar={{this.onCloseSidebar}}
+    @lastAddedColumn={{this.lastAddedColumn}}
+    @setTable={{this.setTable}}
+  />
+</div>
+`;
 
 const getBreadcrumbs = () => findAll('.report-builder-sidebar__breadcrumb li').map((el) => el.textContent?.trim());
 
 module('Integration | Component | report-builder/sidebar', function (hooks) {
   setupRenderingTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(async function (this: TestContext) {
@@ -48,10 +55,21 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       }),
       visualization: {},
     });
+    this.isOpen = true;
+    this.onCloseSidebar = () => undefined;
     this.disabled = false;
-    this.onBeforeAddItem = () => undefined;
     this.lastAddedColumn = undefined;
     this.setTable = () => undefined;
+  });
+
+  test('it opens and closes', async function (this: TestContext, assert) {
+    this.set('isOpen', false);
+    await render(TEMPLATE);
+    assert.dom('.report-builder-sidebar__header').doesNotExist('The sidebar is hidden');
+
+    this.set('isOpen', true);
+    await animationsSettled();
+    assert.dom('.report-builder-sidebar__header').exists('The sidebar is rendered');
   });
 
   test('header height does not change', async function (this: TestContext, assert) {
@@ -88,7 +106,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     assert.dom('.report-builder-sidebar__source').hasText('Bard One', 'The selected table is shown');
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
-    assert.deepEqual(getBreadcrumbs(), [], 'No breadcrumbs are shown when picking data sources');
+    assert.deepEqual(getBreadcrumbs(), ['Select A Datasource'], 'Select datasource hint is shown');
     assert.dom('.report-builder-sidebar__source').hasText('Data Sources', 'The selected table is shown');
   });
 
@@ -108,6 +126,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       'The available tables are listed'
     );
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
 
     assert.deepEqual(getBreadcrumbs(), ['Data Sources', 'Bard One'], 'The breadcrumb shows the correct data source');
 
@@ -131,6 +150,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       'The available dataSources are listed'
     );
     await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await animationsSettled();
 
     assert.deepEqual(getBreadcrumbs(), ['Data Sources'], 'The breadcrumb shows data sources');
     assert.dom('.report-builder-sidebar__source').hasText('Bard Two', 'The selected datasource is shown');
@@ -142,6 +162,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     );
 
     await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+    await animationsSettled();
 
     assert.deepEqual(getBreadcrumbs(), ['Data Sources', 'Bard Two'], 'The breadcrumb show the selected data source');
     assert.dom('.report-builder-sidebar__source').hasText('Inventory', 'The table is updated');
@@ -151,6 +172,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     await render(TEMPLATE);
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    await animationsSettled();
 
     await triggerEvent('.report-builder-source-selector__source-description', 'mouseenter');
 
@@ -159,6 +181,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     });
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await animationsSettled();
 
     await triggerEvent('.report-builder-source-selector__source-description', 'mouseenter');
 

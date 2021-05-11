@@ -1,13 +1,16 @@
 import { module, test } from 'qunit';
 import { visit, click, findAll, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 
 module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
+
   test('Load multi-datasource dashboard', async function (assert) {
     assert.expect(10);
     await visit('/dashboards/6/view');
@@ -75,6 +78,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+    await animationsSettled();
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await selectChoose('.filter-builder__operator-trigger', 'Current');

@@ -17,6 +17,7 @@
   display: flex;
   flex: 1;
   min-height: 0;
+  position: relative;
 
   .ember-power-select-status-icon {
     display: inline-block;
@@ -152,5 +153,35 @@
     flex-flow: column;
     min-width: 0;
     padding: 10px;
+  }
+
+  &__sidebar {
+    &-open {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      height: 40px;
+      justify-content: center;
+      position: relative;
+      top: 18px;
+      width: 40px;
+    }
+
+    &-icon {
+      @extend .link;
+      left: -1px;
+      position: relative;
+    }
+
+    &-toggle {
+      display: flex;
+      flex-flow: column;
+      justify-content: flex-start;
+      width: 0;
+  
+      &--closed {
+        margin-right: 20px;
+      }
+    }
   }
 }

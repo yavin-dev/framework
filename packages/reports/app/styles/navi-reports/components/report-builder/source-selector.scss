@@ -4,6 +4,8 @@
  */
 
 .report-builder-source-selector {
+  width: 260px;
+
   li:hover button {
     color: map-get($denali-grey-colors, '700');
     cursor: pointer;

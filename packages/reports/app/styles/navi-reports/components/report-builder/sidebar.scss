@@ -13,10 +13,34 @@
   border-width: 0 1px 0 0;
   display: flex;
   flex-flow: column;
-  min-width: 260px;
+  height: 100%;
+  z-index: 2;
+
+  // TODO: Could be tablet down
+  &--float {
+    position: absolute;
+  }
 
   &__breadcrumb {
     height: 19px;
+
+    &-item {
+      max-width: 310px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &--placeholder {
+        pointer-events: none;
+      }
+    }
+  }
+
+  &__source {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__separator {
@@ -26,6 +50,7 @@
   &__content {
     @include grey-border;
     border-width: 1px 0 0;
+    min-width: 260px;
     overflow: hidden;
   }
 
@@ -33,11 +58,11 @@
     @include grey-border;
     border-width: 0 1px 0 0;
     display: flex;
-    flex: 1;
     flex-flow: column;
     height: 100%;
     min-height: 0;
     min-width: 260px;
     width: 260px;
+    z-index: 2;
   }
 }

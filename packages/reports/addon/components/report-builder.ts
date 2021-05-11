@@ -8,15 +8,16 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { scheduleOnce } from '@ember/runloop';
 import { sortBy } from 'lodash-es';
+//@ts-ignore
+import fade from 'ember-animated/transitions/fade';
+import type ScreenService from 'navi-core/services/screen';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type ReportModel from 'navi-core/models/report';
 import type RequestFragment from 'navi-core/models/bard-request-v2/request';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 
 interface Args {
   report: ReportModel;
   disabled: boolean;
-  onBeforeAddItem?: (reportBuilder: ReportBuilderComponent, column: ColumnMetadataModel) => void;
   isFiltersCollapsed: boolean;
   onUpdateFiltersCollapsed?: (isFiltersCollapsed: boolean) => void;
 }
@@ -25,7 +26,20 @@ export default class ReportBuilderComponent extends Component<Args> {
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
 
+  @service
+  declare screen: ScreenService;
+
   @tracked componentElement!: HTMLElement;
+
+  @tracked isSidebarOpen = true;
+
+  constructor(owner: unknown, args: Args) {
+    super(owner, args);
+    // If existing report on mobile, hide sidebar
+    if (!args.report.isNew && this.screen.isMobile) {
+      this.isSidebarOpen = false;
+    }
+  }
 
   get request(): RequestFragment {
     return this.args.report.request;
@@ -44,17 +58,6 @@ export default class ReportBuilderComponent extends Component<Args> {
   get allTables() {
     const factTables = this.metadataService.all('table').filter((t) => t.isFact === true);
     return sortBy(factTables, [(table) => table.name.toLowerCase()]);
-  }
-
-  /**
-   * @param shouldExpand - a function to determine whether the filters should expand
-   */
-  protected expandFilters(shouldExpand: () => boolean) {
-    const { isFiltersCollapsed, onUpdateFiltersCollapsed } = this.args;
-
-    if (isFiltersCollapsed && onUpdateFiltersCollapsed && shouldExpand()) {
-      onUpdateFiltersCollapsed(false);
-    }
   }
 
   @action
@@ -76,11 +79,5 @@ export default class ReportBuilderComponent extends Component<Args> {
     scheduleOnce('afterRender', this, 'doResizeVisualization');
   }
 
-  /**
-   * Expands filters when a new one is added
-   */
-  @action
-  openFilters() {
-    this.expandFilters(() => true);
-  }
+  fadeTransition = fade;
 }

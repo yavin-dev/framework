@@ -12,7 +12,6 @@ import { tracked } from '@glimmer/tracking';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ScreenService from 'navi-core/services/screen';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import type ReportBuilderComponent from 'navi-reports/components/report-builder';
 
 const REPORT_STATE = <const>{
   RUNNING: 'running',
@@ -32,11 +31,6 @@ export default class ReportsReportController extends Controller {
   @tracked isFiltersCollapsed = false;
 
   /**
-   * Display column config or not
-   */
-  @tracked isColumnDrawerOpen = true;
-
-  /**
    * the serialized request after calling `onUpdateReport`
    */
   @tracked modifiedRequest: RequestV2 | null = null;
@@ -51,12 +45,9 @@ export default class ReportsReportController extends Controller {
    */
   @tracked _reportState!: ReportState;
 
-  onFadeEnd: (() => void) | null = null;
-
   constructor() {
     super(...arguments);
     const { isMobile } = this.screen;
-    this.isColumnDrawerOpen = !isMobile;
     this.isFiltersCollapsed = isMobile;
   }
 
@@ -102,57 +93,12 @@ export default class ReportsReportController extends Controller {
   }
 
   /**
-   * Opens or closes the column config as well as configures a listener to resize the visualization
-   * @param isOpen
-   * @param reportBuilder - The report builder component containing the visualization
-   */
-  @action
-  updateColumnDrawerOpen(isOpen: boolean, reportBuilder: ReportBuilderComponent) {
-    const { isColumnDrawerOpen } = this;
-    this.isColumnDrawerOpen = isOpen;
-
-    if (!isOpen) {
-      this.lastAddedColumn = null;
-    }
-
-    if (isOpen !== isColumnDrawerOpen) {
-      const visualizationElement = reportBuilder.componentElement.querySelector('.report-view');
-      if (visualizationElement) {
-        const visualizationResizeEvent = new Event('resizestop');
-        this.onFadeEnd = () => visualizationElement.dispatchEvent(visualizationResizeEvent);
-      } else {
-        this.onFadeEnd = null;
-      }
-    }
-  }
-
-  /**
    * Updates the last added column (mostly here for documentation)
    * @param column - the last added request column fragment
    */
   @action
   setLastAddedColumn(column: ColumnFragment) {
     this.lastAddedColumn = column;
-  }
-
-  /**
-   * Opens the column config drawer and updates the last added column
-   * @param reportBuilder - The report builder component
-   * @param fragment - the added request fragment
-   */
-  @action
-  onBeforeAddItem(reportBuilder: ReportBuilderComponent, fragment: ColumnFragment) {
-    this.updateColumnDrawerOpen(true, reportBuilder);
-    this.setLastAddedColumn(fragment);
-  }
-
-  /**
-   * A fade transition that will resize the visualization
-   */
-  @action
-  *fadeTransition() {
-    yield* fade(...arguments);
-    this.onFadeEnd?.();
   }
 }
 

@@ -1,20 +1,19 @@
-import Component from '@ember/component';
-import { get } from '@ember/object';
-import { blur, click, currentURL, fillIn, find, findAll, triggerEvent, visit, waitFor } from '@ember/test-helpers';
-import Ember from 'ember';
-import { animationsSettled } from 'ember-animated/test-support';
 import { module, test, skip } from 'qunit';
-import $ from 'jquery';
-import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
-import { Response } from 'ember-cli-mirage';
-import { setupMirage } from 'ember-cli-mirage/test-support';
-import config from 'ember-get-config';
-import { selectChoose, selectSearch } from 'ember-power-select/test-support';
+import { blur, click, currentURL, fillIn, find, findAll, triggerEvent, visit, waitFor } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
-import moment from 'moment';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import { Response } from 'ember-cli-mirage';
+import { selectChoose, selectSearch } from 'ember-power-select/test-support';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
 import { reorder } from 'ember-sortable/test-support/helpers';
-import { setupAnimationTest } from 'ember-animated/test-support';
+import Component from '@ember/component';
+import { get } from '@ember/object';
+import Ember from 'ember';
+import $ from 'jquery';
+import config from 'ember-get-config';
+import moment from 'moment';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -1381,6 +1380,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Protected Table"]');
+    await animationsSettled();
 
     await click('.navi-report__run-btn');
 
@@ -1392,6 +1392,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
     await click('.navi-report__run-btn');
     await click('.visualization-toggle__option-icon[title="Data Table"]');
 
@@ -1699,6 +1700,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
+    await animationsSettled();
     await clickItem('dimension', 'EventId');
     await clickItem('metric', 'Network Sessions');
     await clickItem('dimension', 'Date Time');
@@ -1855,7 +1857,7 @@ module('Acceptance | Navi Report', function (hooks) {
       () => {
         return { rows: [] };
       },
-      { timing: 400 } //Slow down mock
+      { timing: 10000 } //Slow down mock
     );
 
     // Load the report without waiting for it to finish loading

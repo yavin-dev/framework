@@ -10,19 +10,27 @@ import { inject as service } from '@ember/service';
 import { sortBy } from 'lodash-es';
 import config from 'ember-get-config';
 import { getDataSource } from 'navi-data/utils/adapter';
+import { easeOut, easeIn } from 'ember-animated/easings/cosine';
+//@ts-ignore
+import { toLeft, toRight } from 'navi-reports/transitions/custom-move-over';
+//@ts-ignore
+import move from 'ember-animated/motions/move';
 import type { NaviDataSource } from 'navi-config';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { SourceItem } from './source-selector';
+import type { OrphanObserver } from 'ember-animated/services/motion';
+
+export type TransitionContext = Parameters<Parameters<OrphanObserver>[1]>[0];
 
 interface Args {
   report: ReportModel;
+  isOpen: boolean;
   disabled: boolean;
-  onBeforeAddItem?: (column: ColumnMetadataModel) => void;
   onResize?: () => void;
+  onCloseSidebar(): void;
   lastAddedColumn?: ColumnFragment;
   setTable(table: TableMetadataModel): void;
 }
@@ -49,6 +57,8 @@ export default class ReportBuilderSidebar extends Component<Args> {
 
   @tracked sourcePath: SourcePath = [];
 
+  @tracked latestDataSourceTables: SourceItem<TableMetadataModel>[] = [];
+
   constructor(owner: unknown, args: Args) {
     super(owner, args);
     const { tableMetadata, dataSource } = this.request;
@@ -59,6 +69,10 @@ export default class ReportBuilderSidebar extends Component<Args> {
       this.sourcePath = [mapDataSource(getDataSource(dataSource))];
     } else {
       this.setupDefaultPath();
+    }
+    const [dataSourceItem] = this.sourcePath;
+    if (dataSourceItem) {
+      this.latestDataSourceTables = this.getTablesForDataSource(dataSourceItem);
     }
   }
 
@@ -115,7 +129,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
   get dataSourceTables(): SourceItem<TableMetadataModel>[] {
     const [dataSource] = this.sourcePath;
     if (dataSource) {
-      return this.getTablesForDataSource(dataSource);
+      return this.latestDataSourceTables;
     }
     return [];
   }
@@ -170,6 +184,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
         this.sourcePath = [];
       }
     });
+    this.updateDataSourceTables();
   }
 
   @action
@@ -186,5 +201,67 @@ export default class ReportBuilderSidebar extends Component<Args> {
         }
       }
     });
+    this.updateDataSourceTables();
+  }
+
+  @action
+  updateDataSourceTables() {
+    const dataSourceItem = this.sourcePath[0];
+    if (dataSourceItem) {
+      this.latestDataSourceTables = this.getTablesForDataSource(dataSourceItem);
+    }
+  }
+
+  /**
+   * Drawer transition
+   * @param context - animation context
+   */
+  @action
+  *drawerTransition(context: TransitionContext) {
+    const { insertedSprites, removedSprites } = context;
+    yield Promise.all([
+      ...removedSprites.map((sprite) => {
+        const { left, width } = sprite.element.getBoundingClientRect();
+        const x = left - 1.5 * width;
+        sprite.endAtPixel({ x });
+        return move(sprite, { easing: easeIn });
+      }),
+      ...insertedSprites.map((sprite) => {
+        const { left, width } = sprite.element.getBoundingClientRect();
+        const x = left - 1.5 * width;
+        sprite.startAtPixel({ x });
+        return move(sprite, { easing: easeOut });
+      }),
+    ]);
+    this.args.onResize?.();
+  }
+
+  @action
+  contentAnimationRules({
+    oldItems,
+    newItems,
+  }: {
+    oldItems: [SourcePath | undefined];
+    newItems: [SourcePath | undefined];
+  }) {
+    const oldSourceLength = oldItems[0]?.length ?? 0;
+    const newSourceLength = newItems[0]?.length ?? 0;
+    if (newSourceLength < oldSourceLength) {
+      return this.toRight;
+    } else {
+      return this.toLeft;
+    }
+  }
+
+  @action
+  *toRight() {
+    yield* toRight(...arguments);
+    this.args.onResize?.();
+  }
+
+  @action
+  *toLeft() {
+    yield* toLeft(...arguments);
+    this.args.onResize?.();
   }
 }
