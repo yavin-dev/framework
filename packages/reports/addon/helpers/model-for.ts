@@ -4,11 +4,10 @@
  */
 import Helper from '@ember/component/helper';
 import { getOwner } from '@ember/application';
-import { tracked } from '@glimmer/tracking';
 import type Route from '@ember/routing/route';
 
 export default class ModelForHelper extends Helper {
-  @tracked route?: Route;
+  route?: Route;
   /**
    * Returns the resolved model of a parent (or any ancestor) route
    * in a route hierarchy. If the ancestor route's model was a promise,
