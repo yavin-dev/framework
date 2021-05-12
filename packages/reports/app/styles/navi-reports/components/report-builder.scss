@@ -7,7 +7,7 @@
   background: $body-bg-color;
   display: flex;
   flex: 1;
-  margin: 5px;
+  margin: 0 5px;
   overflow-y: auto;
   padding: 10px;
 }
@@ -118,7 +118,6 @@
 
   &__dimension-selector {
     @include report-builder-column-selector();
-    margin-bottom: 10px;
 
     .column-selector__title::after {
       background-color: map-get($denali-colors, 'orange', '500');
@@ -133,8 +132,6 @@
 
   &__metric-selector {
     @include report-builder-column-selector();
-    margin-bottom: 0;
-    margin-top: 0;
 
     .column-selector__title::after {
       background-color: map-get($denali-colors, 'purple', '500');
@@ -178,7 +175,7 @@
       flex-flow: column;
       justify-content: flex-start;
       width: 0;
-  
+
       &--closed {
         margin-right: 20px;
       }
