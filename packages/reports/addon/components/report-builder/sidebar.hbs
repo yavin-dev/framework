@@ -39,8 +39,8 @@
       </div>
     </div>
 
-    <div class="flex-1 row">
-      <AnimatedContainer class="report-builder-sidebar__content flex-1 row">
+    <div class="flex-1 row min-h-0">
+      <AnimatedContainer class="report-builder-sidebar__content flex-1 row h-full">
         <AnimatedValue @value={{this.sourcePath}} @rules={{this.contentAnimationRules}} @duration={{250}} as |path|>
           {{#if (eq path.length 0)}}
             <ReportBuilder::SourceSelector
@@ -58,7 +58,7 @@
               @setSource={{this.setSelectedTable}}
             />
           {{else}}
-            <div class="flex">
+            <div class="flex h-full">
               <div class="report-builder-sidebar__columns">
                 <div class="report-builder__dimension-selector {{if @disabled "report-builder__container--disabled"}}">
                   <ColumnSelector
