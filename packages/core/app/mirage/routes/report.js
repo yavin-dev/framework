@@ -9,21 +9,18 @@ export default function () {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function ({ reports }, request) {
-    let reportObject;
-    let idFilter = request.queryParams.filter;
+    const { filter } = request.queryParams;
     let queryFilter = request.queryParams['filter[reports]'];
 
     // Allow filtering
-    if (idFilter) {
-      let ids = idFilter.split(',');
-      reportObject = reports.find(ids);
+    if (filter) {
+      const ids = filter.split('id=in=')[1].replace('(', '').replace(')', '').split(',');
+      return reports.find(ids);
     } else if (queryFilter) {
-      reportObject = filterModel(reports, queryFilter);
+      return filterModel(reports, queryFilter);
     } else {
-      reportObject = reports.all();
+      return reports.all();
     }
-
-    return reportObject;
   });
 
   /**

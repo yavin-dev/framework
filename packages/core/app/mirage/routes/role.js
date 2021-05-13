@@ -11,7 +11,7 @@ export default function () {
   /**
    * roles/ - GET endpoint to fetch many roles
    */
-  this.get('/roles', { coalesce: true });
+  this.get('/roles');
 
   /**
    * roles/ -  POST endpoint to add a new role
