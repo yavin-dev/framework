@@ -14,8 +14,8 @@ module('Unit | Adapter | base json adapter', function (hooks) {
     this.server.urlPrefix = config.navi.appPersistence.uri;
     this.server.get('/mocks', (schema, request) => {
       assert.equal(
-        request.queryParams['filter[mocks.id]'],
-        '1,2,4',
+        request.queryParams.filter,
+        'id=in=(1,2,4)',
         'Multiple find requests are grouped using filter query param'
       );
 

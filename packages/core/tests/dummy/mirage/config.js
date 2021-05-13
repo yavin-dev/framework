@@ -24,6 +24,7 @@ export default function () {
   BardLite.call(this);
 
   /* == Mock Persistence == */
+  this.coalesceFindRequests = true;
   this.urlPrefix = config.navi.appPersistence.uri;
   dashboard.call(this);
   dashboardCollection.call(this);

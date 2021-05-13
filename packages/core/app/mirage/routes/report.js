@@ -9,21 +9,18 @@ export default function () {
    * reports/ - GET endpoint to fetch many reports
    */
   this.get('/reports', function ({ reports }, request) {
-    let reportObject;
-    let idFilter = request.queryParams['filter[reports.id]'];
+    const { filter } = request.queryParams;
     let queryFilter = request.queryParams['filter[reports]'];
 
     // Allow filtering
-    if (idFilter) {
-      let ids = idFilter.split(',');
-      reportObject = reports.find(ids);
+    if (filter) {
+      const ids = filter.split('id=in=')[1].replace('(', '').replace(')', '').split(',');
+      return reports.find(ids);
     } else if (queryFilter) {
-      reportObject = filterModel(reports, queryFilter);
+      return filterModel(reports, queryFilter);
     } else {
-      reportObject = reports.all();
+      return reports.all();
     }
-
-    return reportObject;
   });
 
   /**
@@ -35,8 +32,8 @@ export default function () {
    * reports/ -  POST endpoint to add a new report
    */
   this.post('/reports', function ({ reports, db }) {
-    let attrs = this.normalizedRequestAttrs(),
-      report = reports.create(attrs);
+    const attrs = this.normalizedRequestAttrs();
+    const report = reports.create(attrs);
 
     // Init properties
     db.reports.update(report.id, {
@@ -56,9 +53,9 @@ export default function () {
    * reports/:id -  DELETE endpoint to delete a report by id
    */
   this.del('/reports/:id', function ({ reports, users }, request) {
-    let { id } = request.params,
-      report = reports.find(id),
-      user = users.find(report.authorId);
+    const { id } = request.params;
+    const report = reports.find(id);
+    const user = users.find(report.authorId);
 
     if (!report) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });

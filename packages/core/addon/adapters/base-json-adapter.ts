@@ -2,13 +2,14 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import DS from 'ember-data';
-import ModelRegistry from 'ember-data/types/registries/model';
+import JSONAPIAdapter from '@ember-data/adapter/json-api';
 import { camelize } from '@ember/string';
 import config from 'ember-get-config';
 import { pluralize } from 'ember-inflector';
-import Store from '@ember-data/store';
-import RSVP from 'rsvp';
+import type Store from '@ember-data/store';
+import type RSVP from 'rsvp';
+import type ModelRegistry from 'ember-data/types/registries/model';
+import type DS from 'ember-data';
 
 type ErrorResponse = {
   status: string;
@@ -16,8 +17,7 @@ type ErrorResponse = {
   detail: string;
 };
 
-export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
-  //@ts-ignore
+export default abstract class BaseJsonAdapter extends JSONAPIAdapter {
   get host() {
     return config.navi.appPersistence.uri || '';
   }
@@ -55,11 +55,10 @@ export default abstract class BaseJsonAdapter extends DS.JSONAPIAdapter {
     // Match our API's format for filters since it differs from Ember Data default
     const { modelName } = (type as unknown) as typeof DS.Model;
     const url = this.buildURL(`${modelName}`, ids, snapshots, 'findMany');
-    const filterRoot = pluralize(`${modelName}`);
-    const filterId = `${filterRoot}.id`;
+    const filter = `id=in=(${ids.join(',')})`;
 
     return this.ajax(url, 'GET', {
-      data: { filter: { [filterId]: ids.join(',') } },
+      data: { filter },
     });
   }
 

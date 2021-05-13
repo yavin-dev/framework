@@ -9,8 +9,8 @@ export default function () {
    * users/:id - GET endpoint to fetch user by id
    */
   this.get('/users/:id', function ({ users }, request) {
-    let id = request.params.id,
-      user = users.find(id);
+    const { id } = request.params;
+    const user = users.find(id);
 
     if (!user) {
       return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
@@ -22,26 +22,14 @@ export default function () {
   /**
    * users/ - GET endpoint to fetch many users
    */
-  this.get('/users', function ({ users }, request) {
-    let idFilter = request.queryParams['filter[users.id]'];
-
-    // Allow filtering
-    if (idFilter) {
-      let ids = idFilter.split(',');
-      users = users.find(ids);
-    } else {
-      users = users.all();
-    }
-
-    return users;
-  });
+  this.get('/users', { coalesce: true });
 
   /**
    * users/ -  POST endpoint to add a new user
    */
   this.post('/users', function ({ users, db }) {
-    let attrs = this.normalizedRequestAttrs(),
-      user = users.create(attrs);
+    const attrs = this.normalizedRequestAttrs();
+    const user = users.create(attrs);
 
     // Init properties
     db.users.update(user.id, {
