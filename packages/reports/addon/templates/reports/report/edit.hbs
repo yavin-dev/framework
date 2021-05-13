@@ -2,9 +2,9 @@
 {{#let (model-for (parent-route)) as | report |}}
   <NaviInfoMessage class="navi-report-new__info-message">
     <span class="navi-report-new__report-icons">
-      <NaviIcon @icon="line-chart" />
-      <NaviIcon @icon="bar-chart" />
-      <NaviIcon @icon="table" />
+      <DenaliIcon @icon="chart-line" />
+      <DenaliIcon @icon="chart-bar-vertical" />
+      <DenaliIcon @icon="table" />
     </span>
       <span>Select some dimensions and metrics, then click
         <button class="navi-link clickable" type="button"
