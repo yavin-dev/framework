@@ -397,7 +397,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.deepEqual(requestHeaders.Authentication, 'Bearer: abc-123', 'createAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -420,8 +420,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
     const asyncQuery = await adapter.createAsyncQuery(TestRequest, {
       customHeaders: {
-        Authentication: 'Bearer: abc-123',
-      }
+        Authentication: 'Bearer abc-123',
+      },
     });
 
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
