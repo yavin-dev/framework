@@ -1,12 +1,25 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="number-format-dropdown" ...attributes>
-  <BasicDropdown @horizontalPosition="right" @onClose={{this.updateColumnNumberFormat}} @renderInPlace={{true}} as |dd|>
+<div class="number-format-dropdown menu is-right {{if this.isActive "is-active"}} flex align-items-center" ...attributes>
+  <BasicDropdown
+    @horizontalPosition="right"
+    @renderInPlace={{true}}
+    @onClose={{queue this.updateColumnNumberFormat this.toggleIsActive}}
+    @onOpen={{this.toggleIsActive}}
+    as |dd|
+  >
     <dd.Trigger class="number-format-dropdown__trigger">
-      <NaviIcon @icon="ellipsis-v" />
+      <DenaliIcon
+        @icon="more-horizontal-circle{{if this.isActive "-solid"}}"
+        @size="small"
+        class="link {{if this.isActive "is-active"}} p-x-8 p-y-4"
+      />
     </dd.Trigger>
 
-    <dd.Content class="number-format-dropdown__container">
-      <NumberFormatSelector @format={{this.format}} @onUpdateFormat={{this.setFormat}} />
+    <dd.Content class="number-format-dropdown__container menu-content w-38 p-15 m-t-4">
+      <NumberFormatSelector
+        @format={{this.format}}
+        @onUpdateFormat={{this.setFormat}}
+      />
     </dd.Content>
   </BasicDropdown>
 </div>

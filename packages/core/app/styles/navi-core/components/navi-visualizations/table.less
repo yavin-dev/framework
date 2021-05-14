@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -13,8 +13,6 @@
   .display-flex;
   .flex-1;
 
-  // background-color: @navi-white;
-  // color: @navi-black;
   flex-flow: column;
   height: 100%;
   line-height: 1.5;
@@ -312,7 +310,17 @@
   }
 
   .metric {
-    .align-right;
+    .table-header-cell__title {
+      .align-right;
+    }
+  }
+
+  &__edit-header-msg {
+    .d-icon {
+      margin-right: 4px;
+      font-size: 1.4rem;
+      vertical-align: sub;
+    }
   }
 }
 

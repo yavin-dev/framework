@@ -11,49 +11,49 @@
       as |Radio|
     >
       {{#each this.predefinedFormats as |predefinedFormat|}}
-        <div class="number-format-selector__radio-{{dasherize predefinedFormat.name}} m-b-5">
-          <Radio.Option
-            @name="format"
-            @value={{predefinedFormat.format}}
-            @checked={{eq @format predefinedFormat.format}}
-          >
-            {{predefinedFormat.name}}
-          </Radio.Option>
-        </div>
-      {{/each}}
-      <div class="number-format-selector__radio-custom">
         <Radio.Option
           @name="format"
-          @value=""
-          @checked={{this.isCustomFormat}}
+          @value={{predefinedFormat.format}}
+          @checked={{eq @format predefinedFormat.format}}
+          class="number-format-selector__radio-{{dasherize predefinedFormat.name}} m-b-5"
         >
-          Custom
+          {{predefinedFormat.name}}
         </Radio.Option>
-      </div>
+      {{/each}}
+      <Radio.Option
+        @name="format"
+        @value=""
+        @checked={{this.isCustomFormat}}
+        class="number-format-selector__radio-custom"
+      >
+        Custom
+      </Radio.Option>
    </DenaliRadio>
   </DenaliInputGroup>
 
   <DenaliInputGroup
     @label="Format"
     @isStacked={{true}}
+    class="m-b-5"
   >
     <DenaliInput
       @size="medium"
+      @wrapperClass="w-full"
       type="text"
       value={{@format}}
-      placeholder="Raw Format"
+      placeholder="Custom Format"
       class="number-format-selector__format-input"
       {{on "input" (pipe (pick "target.value") (fn @onUpdateFormat ) )}}
     />
   </DenaliInputGroup>
-  <div class="flex align-items-flex-end flex-column m-b-20 ">
-    <a class="number-format-selector__doc-link"
-      href="http://numeraljs.com/#format"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <NaviIcon @icon="life-ring" class="number-format-selector__icon-documentation" />
-      Format Documentation
-    </a>
-  </div>
+  <DenaliLink
+    @iconFront="help-circle"
+    @size="small"
+    href="http://numeraljs.com/#format"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="number-format-selector__doc-link link"
+  >
+    Format Documentation
+  </DenaliLink>
 </div>
