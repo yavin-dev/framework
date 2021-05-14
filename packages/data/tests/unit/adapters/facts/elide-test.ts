@@ -390,7 +390,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
   });
 
   test('createAsyncQuery - header', async function (assert) {
-    assert.expect(2);
+    assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
     let response;
@@ -418,13 +418,11 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const asyncQuery = await adapter.createAsyncQuery(TestRequest, {
+    await adapter.createAsyncQuery(TestRequest, {
       customHeaders: {
         Authentication: 'Bearer abc-123',
       },
     });
-
-    assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
 
   test('createAsyncQuery - error', async function (assert) {
