@@ -33,6 +33,9 @@ module.exports = function (environment) {
           description: 'Interesting User Insights',
           uri: 'https://data.naviapp.io',
           type: 'bard',
+          options: {
+            enableDimensionSearch: true,
+          },
         },
         {
           name: 'bardTwo',
@@ -40,6 +43,9 @@ module.exports = function (environment) {
           description: 'Awesome Revenue Analytics',
           uri: 'https://data2.naviapp.io',
           type: 'bard',
+          options: {
+            enableDimensionSearch: true,
+          },
         },
       ],
       appPersistence: {

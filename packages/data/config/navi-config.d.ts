@@ -7,8 +7,14 @@ declare module 'navi-config' {
     description?: string;
     uri: string;
     type: string;
+    options?: FiliConfigOptions | ElideConfigOptions;
   };
-
+  export interface FiliConfigOptions {
+    enableDimensionSearch?: boolean;
+  }
+  export interface ElideConfigOptions {
+    // elide options here
+  }
   export default interface NaviConfig {
     dataEpoch: string;
     dataSources: NaviDataSource[];
