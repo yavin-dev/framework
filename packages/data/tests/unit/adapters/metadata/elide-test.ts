@@ -70,6 +70,23 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     await Adapter.fetchById('table', 'foo');
   });
 
+  test('fetchById - request headers', async function (this: MirageTestContext, assert) {
+    assert.expect(1);
+
+    this.server.post(
+      'https://data.naviapp.io',
+      (_schema: TODO, { requestHeaders }: { requestHeaders: Record<string, string> }) => {
+        assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchById sends custom headers');
+        return [];
+      }
+    );
+    await Adapter.fetchById('table', 'foo', {
+      customHeaders: {
+        Authentication: 'Bearer abc-123',
+      },
+    });
+  });
+
   test('fetchAll - response', async function (this: MirageTestContext, assert) {
     assert.expect(6);
 

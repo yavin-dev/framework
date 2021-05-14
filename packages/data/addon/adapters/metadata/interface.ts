@@ -8,6 +8,7 @@ export type MetadataOptions = {
   clientId?: string;
   timeout?: number;
   dataSourceName?: string;
+  customHeaders?: Record<string, string>;
 };
 
 export default interface NaviMetadataAdapter {

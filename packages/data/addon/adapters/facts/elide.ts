@@ -264,9 +264,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
+    const headers = options.customHeaders || {};
 
     // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query, asyncAfterSeconds }, context: { dataSourceName } };
+    const queryOptions = {
+      mutation,
+      variables: { id, query, asyncAfterSeconds },
+      context: { dataSourceName, headers },
+    };
     return this.apollo.mutate(queryOptions);
   }
 

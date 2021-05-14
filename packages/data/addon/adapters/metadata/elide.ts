@@ -40,6 +40,7 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       ...(isPresent(id) && { variables: { ids: [id] } }),
       context: {
         dataSourceName: options.dataSourceName,
+        headers: options.customHeaders,
       },
       ...options,
     };
