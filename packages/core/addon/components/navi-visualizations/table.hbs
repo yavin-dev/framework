@@ -9,9 +9,10 @@
       rows
     </div>
     {{#if this.isEditingMode}}
-      <div class="table-widget__edit-col-msg">
-        <NaviIcon @icon="pencil"/> <span>Enter custom column names</span>
-      </div>
+      <span class="table-widget__edit-header-msg is-grey-700">
+        <DenaliIcon @icon="pencil"/>
+        Enter custom column names
+      </span>
     {{/if}}
   </div>
   {{#let (component this.tableRenderer) as |TableRenderer|}}

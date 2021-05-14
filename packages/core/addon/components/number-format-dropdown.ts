@@ -23,6 +23,8 @@ interface Args {
 export default class NumberFormatDropdownComponent extends Component<Args> {
   @tracked format?: string;
 
+  @tracked isActive = false;
+
   constructor() {
     //@ts-ignore
     super(...arguments);
@@ -45,5 +47,10 @@ export default class NumberFormatDropdownComponent extends Component<Args> {
   @action
   setFormat(format?: string) {
     this.format = format;
+  }
+
+  @action
+  toggleIsActive() {
+    this.isActive = !this.isActive;
   }
 }
