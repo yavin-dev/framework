@@ -389,6 +389,44 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
   });
 
+  test('createAsyncQuery - header', async function (assert) {
+    assert.expect(2);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody, requestHeaders }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.deepEqual(requestHeaders.Authentication, 'Bearer: abc-123', 'createAsyncQuery sends custom headers');
+
+      response = {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                query: requestObj.variables.query,
+                queryType: 'GRAPHQL_V1_0',
+                status: 'QUEUED',
+                result: null,
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    const asyncQuery = await adapter.createAsyncQuery(TestRequest, {
+      customHeaders: {
+        Authentication: 'Bearer: abc-123',
+      }
+    });
+
+    assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
+  });
+
   test('createAsyncQuery - error', async function (assert) {
     assert.expect(1);
 
