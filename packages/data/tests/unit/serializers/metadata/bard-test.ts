@@ -435,6 +435,12 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
         description: 'Dimension Description',
       },
     ],
+    tableSource: {
+      suggestionColumns: [
+        { id: 'dimensionOne', parameters: { field: 'id' } },
+        { id: 'dimensionOne', parameters: { field: 'desc' } },
+      ],
+    },
   },
   {
     cardinality: 'SMALL',
@@ -453,6 +459,9 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
         description: 'bar',
       },
     ],
+    tableSource: {
+      suggestionColumns: [{ id: 'dimensionTwo', parameters: { field: 'foo' } }],
+    },
     storageStrategy: null,
     partialData: true,
   },
@@ -474,6 +483,9 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
         description: 'Dimension ID',
       },
     ],
+    tableSource: {
+      suggestionColumns: [{ id: 'dimensionThree', parameters: { field: 'id' } }],
+    },
     isSortable: true,
     valueType: 'date',
     storageStrategy: null,
@@ -492,6 +504,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     columnFunctionId: 'normalizer-generated:timeGrain(table=tableName;grains=day,month)',
     description: undefined,
     fields: undefined,
+    tableSource: undefined,
     id: 'tableName.dateTime',
     name: 'Date Time',
     source: 'bardOne',
@@ -517,6 +530,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     columnFunctionId: 'normalizer-generated:timeGrain(table=secondTable;grains=day,isoWeek)',
     description: undefined,
     fields: undefined,
+    tableSource: undefined,
     id: 'secondTable.dateTime',
     name: 'Date Time',
     source: 'bardOne',
@@ -601,7 +615,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     valueType: 'number',
   },
 ];
-
+QUnit.dump.maxDepth = 100;
 const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
   {
     _parametersPayload: [
@@ -818,17 +832,15 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
   hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
-    Tables = TablePayloads.map((p) => BardTableMetadataModel.create(this.owner.ownerInjection(), p));
-    Dimensions = DimensionsPayloads.map((p) => DimensionMetadataModel.create(this.owner.ownerInjection(), p));
-    TimeDimensions = TimeDimensionPayloads.map((p) =>
-      TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p)
-    );
-    Metrics = MetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p));
+    Tables = TablePayloads.map((p) => this.owner.factoryFor('model:metadata/bard/table').create(p));
+    Dimensions = DimensionsPayloads.map((p) => this.owner.factoryFor('model:metadata/dimension').create(p));
+    TimeDimensions = TimeDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/time-dimension').create(p));
+    Metrics = MetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p));
     ColumnFunctions = ColumnFunctionPayloads.map((p) =>
-      ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
+      this.owner.factoryFor('model:metadata/column-function').create(p)
     );
     RequestConstraints = RequestConstraintPayloads.map((p) =>
-      RequestConstraintMetadataModel.create(this.owner.ownerInjection(), p)
+      this.owner.factoryFor('model:metadata/request-constraint').create(p)
     );
   });
 
@@ -932,7 +944,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
     assert.deepEqual(
       metrics,
-      expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
       'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
@@ -985,7 +997,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
     ];
     assert.deepEqual(
       columnFunctions,
-      expectedColumnFunctionPayloads.map((p) => ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedColumnFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p)),
       'Raw column functions are normalized correctly'
     );
   });
@@ -1021,13 +1033,16 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       isSortable: false,
       storageStrategy: null,
       fields: rawDimension.fields,
+      tableSource: {
+        suggestionColumns: rawDimension.fields.map((f) => ({ id: rawDimension.name, parameters: { field: f.name } })),
+      },
       source,
       partialData: true,
     };
 
     assert.deepEqual(
       Serializer['normalizeDimensions']([rawDimension], source),
-      [DimensionMetadataModel.create(this.owner.ownerInjection(), expectedDimensionPayload)],
+      [this.owner.factoryFor('model:metadata/dimension').create(expectedDimensionPayload)],
       'New dimension is constructed correctly normalized'
     );
   });
@@ -1058,7 +1073,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
     assert.deepEqual(
       Serializer['normalizeMetrics']([rawMetric], source),
-      [MetricMetadataModel.create(this.owner.ownerInjection(), expectedMetricPayload)],
+      [this.owner.factoryFor('model:metadata/metric').create(expectedMetricPayload)],
       'Metric is constructed correctly with no new column function id or parameter'
     );
   });

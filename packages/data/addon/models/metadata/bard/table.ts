@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { Grain, Grains } from 'navi-data/utils/date';
-import TableMetadataModel, { TableMetadata, TableMetadataPayload } from '../table';
+import TableMetadataModel, { TableMetadataPayload } from '../table';
 import { upperFirst, sortBy } from 'lodash-es';
 
 export type TimeGrain = {
@@ -16,34 +16,28 @@ export interface BardTableMetadataPayload extends TableMetadataPayload {
   hasAllGrain: boolean;
 }
 
-export interface BardTableMetadata extends TableMetadata {
-  timeGrains: TimeGrain[];
-  hasAllGrain: boolean;
-}
-
 export const GrainOrdering = Object.fromEntries(Grains.map((g, i) => [g, i])) as Record<Grain, number>;
 
-export default class BardTableMetadataModel extends TableMetadataModel implements BardTableMetadataModel {
-  init() {
-    //@ts-ignore
-    super.init(...arguments);
+export default class BardTableMetadataModel extends TableMetadataModel {
+  constructor(owner: unknown, args: BardTableMetadataPayload) {
+    super(owner, args);
     this.timeGrainIds = sortBy(this.timeGrainIds, (g) => GrainOrdering[g]);
   }
 
   /**
-   * @property timeGrainIds - supported timegrains for the table
+   * supported timegrains for the table
    */
-  timeGrainIds: Grain[] = [];
+  protected declare timeGrainIds: Grain[];
 
   /**
-   * @property timeGrains - timeGrain objects with id and display name
+   * timeGrain objects with id and display name
    */
   get timeGrains(): TimeGrain[] {
     return this.timeGrainIds.map((grain) => ({ id: grain, name: upperFirst(grain) }));
   }
 
   /**
-   * @property hasAllGrain - whether or not this table supports 'all' grain
+   * whether or not this table supports 'all' grain
    */
-  hasAllGrain!: boolean;
+  declare hasAllGrain: boolean;
 }

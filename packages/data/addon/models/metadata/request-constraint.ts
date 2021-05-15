@@ -4,7 +4,7 @@
  *
  * A collection of function parameters that has a one to many relationship to columns
  */
-import EmberObject from '@ember/object';
+import NativeWithCreate from 'navi-data/models/native-with-create';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { matches } from 'lodash-es';
 
@@ -24,17 +24,17 @@ export interface RequestConstraintMetadataPayload {
   constraint: ExistenceConstraint;
   source: string;
 }
-export type RequestConstraintMetadata = RequestConstraintMetadataPayload;
 
-export default class RequestConstraintMetadataModel
-  extends EmberObject
-  implements RequestConstraintMetadataPayload, RequestConstraintMetadata {
-  id!: string;
-  name!: string;
-  description?: string | undefined;
-  type!: 'existence';
-  constraint!: ExistenceConstraint;
-  source!: string;
+export default class RequestConstraintMetadataModel extends NativeWithCreate {
+  constructor(owner: unknown, args: RequestConstraintMetadataPayload) {
+    super(owner, args);
+  }
+  declare id: string;
+  declare name: string;
+  declare description?: string;
+  declare type: 'existence';
+  declare constraint: ExistenceConstraint;
+  declare source: string;
 
   isSatisfied(request: RequestV2): boolean {
     const { property, matches: partialProperties } = this.constraint;

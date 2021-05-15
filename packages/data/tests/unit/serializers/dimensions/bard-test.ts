@@ -45,7 +45,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     );
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ id }) => id),
+      ContainerDimValues.map(({ id, description }) => `${id} (${description})`),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });
@@ -72,7 +72,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
 
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ description }) => description),
+      ContainerDimValues.map(({ id, description }) => `${description} (${id})`),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });

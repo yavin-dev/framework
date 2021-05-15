@@ -19,11 +19,12 @@ import {
   INTRINSIC_VALUE_EXPRESSION,
   ColumnFunctionParametersValues,
 } from 'navi-data/models/metadata/function-parameter';
-import { BardTableMetadataPayload, GrainOrdering } from 'navi-data/models/metadata/bard/table';
+import BardTableMetadataModel, { BardTableMetadataPayload, GrainOrdering } from 'navi-data/models/metadata/bard/table';
 import { capitalize } from '@ember/string';
 import { Grain } from 'navi-data/utils/date';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 const SMALL_CARDINALITY = config.navi.cardinalities.small;
 const MEDIUM_CARDINALITY = config.navi.cardinalities.medium;
@@ -105,7 +106,9 @@ type TableTimeGrainInfo = {
 
 export default class BardMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
-  protected tableFactory = getOwner(this).factoryFor('model:metadata/bard/table');
+  protected tableFactory = getOwner(this).factoryFor('model:metadata/bard/table') as Factory<
+    typeof BardTableMetadataModel
+  >;
 
   /**
    * Transform the bard metadata into a shape that our internal data models can use
@@ -306,6 +309,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       category: 'Date',
       description: undefined,
       fields: undefined,
+      tableSource: undefined,
       id,
       name: 'Date Time',
       source: dataSourceName,
@@ -548,6 +552,9 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         isSortable: false,
         type: 'field',
         fields,
+        tableSource: {
+          suggestionColumns: fields?.map((field) => ({ id: name, parameters: { field: field.name } })),
+        },
         cardinality: dimCardinality,
         storageStrategy: storageStrategy || null,
         source: dataSourceName,

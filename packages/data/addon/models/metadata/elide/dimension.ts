@@ -9,27 +9,25 @@ export type ValueSourceType = 'ENUM' | 'TABLE' | 'NONE';
 
 export interface ElideDimensionMetadataPayload extends DimensionMetadataPayload {
   valueSourceType: ValueSourceType;
-  tableSource: string | null;
   values: string[];
 }
 
-export default class ElideDimensionMetadataModel
-  extends DimensionMetadataModel
-  implements ElideDimensionMetadataPayload {
-  init() {
+export default class ElideDimensionMetadataModel extends DimensionMetadataModel {
+  constructor(owner: unknown, args: ElideDimensionMetadataPayload) {
+    super(owner, args);
     if (this.hasEnumValues && this.cardinality === undefined) {
       this.cardinality = CARDINALITY_SIZES[0];
     }
   }
 
-  valueSourceType!: ValueSourceType;
-  tableSource!: string | null;
-  values!: string[];
+  declare valueSourceType: ValueSourceType;
+  declare values: string[];
 
-  get lookupColumn(): ElideDimensionMetadataModel {
+  get valueSource(): ElideDimensionMetadataModel {
     if ('TABLE' === this.valueSourceType) {
-      const lookupColumn = this.tableSource || '';
-      return (this.naviMetadata.getById('dimension', lookupColumn, this.source) || this) as ElideDimensionMetadataModel;
+      const id = this.tableSource?.valueSource || '';
+      const column = this.naviMetadata.getById('dimension', id, this.source) as ElideDimensionMetadataModel | undefined;
+      return column || this;
     }
     return this;
   }

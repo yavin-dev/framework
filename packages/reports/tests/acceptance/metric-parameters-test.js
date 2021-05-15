@@ -46,9 +46,9 @@ module('Acceptance | navi-report - metric parameters', function (hooks) {
 
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Dollars (USD)');
+    await selectChoose('.navi-column-config-item__parameter', 'USD (Dollars)');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter', 'CAD (Dollars)');
     await clickItem('metric', 'Platform Revenue');
     await selectChoose('.navi-column-config-item__parameter', 'Euro');
 

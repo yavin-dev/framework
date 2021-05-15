@@ -65,7 +65,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     );
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Left', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
+      ['Left', 'Total', '6 (30-34)', 'USD (Dollars)', 'CAD (Dollars)'],
       'Multiple parameters values are filled in with selected values'
     );
 
@@ -84,7 +84,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Right', 'Daily Average', '13-17', 'Euro', 'Drams'],
+      ['Right', 'Daily Average', '2 (13-17)', 'EUR (Euro)', 'AMD (Drams)'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
 
@@ -114,16 +114,16 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['', 'Total', '30-34', 'Dollars (USD)', ''],
+      ['', 'Total', '6 (30-34)', 'USD (Dollars)', ''],
       'Null parameters have no selected values in trigger'
     );
 
     await selectChoose('.navi-column-config-item__parameter', 'Right');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Dollars (CAD)');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'CAD (Dollars)');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Right', 'Total', '30-34', 'Dollars (USD)', 'Dollars (CAD)'],
+      ['Right', 'Total', '6 (30-34)', 'USD (Dollars)', 'CAD (Dollars)'],
       'Null value parameters can be changed'
     );
   });
@@ -152,37 +152,37 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
       .hasProperty('placeholder', 'Revenue (USD)', 'Display name of column is shown as a placeholder');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
-      .hasText('Dollars (USD)', 'Current parameter is displayed in the dropdown input');
+      .hasText('USD (Dollars)', 'Current parameter is displayed in the dropdown input');
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
       [
-        'NULL',
-        'UNKNOWN',
-        'Dirhams',
-        'Afghanis',
-        'Leke',
-        'Drams',
-        'Guilders',
-        'Kwanza',
-        'Pesos',
-        'Dollars (AUD)',
-        'Dollars (CAD)',
-        'Dollars (USD)',
-        'Euro',
-        'Rupees',
+        '-1 (NULL)',
+        '-2 (UNKNOWN)',
+        'AED (Dirhams)',
+        'AFA (Afghanis)',
+        'ALL (Leke)',
+        'AMD (Drams)',
+        'ANG (Guilders)',
+        'AOA (Kwanza)',
+        'ARS (Pesos)',
+        'AUD (Dollars)',
+        'CAD (Dollars)',
+        'USD (Dollars)',
+        'EUR (Euro)',
+        'INR (Rupees)',
       ],
       'The parameter values are loaded into the dropdown'
     );
-    await selectChoose('.navi-column-config-item__parameter', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter', 'CAD (Dollars)');
 
     assert
       .dom(columnNameInput)
       .hasProperty('placeholder', 'Revenue (CAD)', 'Placeholder is updated when parameter is changed');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
-      .hasText('Dollars (CAD)', 'Parameter selector shows new parameter value');
+      .hasText('CAD (Dollars)', 'Parameter selector shows new parameter value');
 
     await fillIn(columnNameInput, 'Money');
     await triggerKeyEvent(columnNameInput, 'keyup', 13);

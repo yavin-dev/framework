@@ -7,10 +7,12 @@ import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 let server: Server;
 let Payload: RequestConstraintMetadataPayload;
+let RequestConstraintFactory: Factory<typeof RequestConstraintMetadataModel>;
 let RequestConstraint: RequestConstraintMetadataModel;
 
 module('Unit | Model | metadata/request constraint', function (hooks) {
@@ -29,7 +31,8 @@ module('Unit | Model | metadata/request constraint', function (hooks) {
       source: 'bardOne',
     };
 
-    RequestConstraint = RequestConstraintMetadataModel.create(this.owner.ownerInjection(), Payload);
+    RequestConstraintFactory = this.owner.factoryFor('model:metadata/request-constraint');
+    RequestConstraint = RequestConstraintFactory.create(Payload);
   });
 
   hooks.afterEach(function () {

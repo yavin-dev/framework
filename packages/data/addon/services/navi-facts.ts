@@ -6,6 +6,7 @@
  */
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
+import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviFactsModel from 'navi-data/models/navi-facts';
 //@ts-ignore
@@ -91,6 +92,7 @@ export default class NaviFactsService extends Service {
     try {
       const payload: unknown = yield taskFor(adapter.fetchDataForRequest).perform(request, options);
       const response = serializer.normalize(payload, request, options);
+      assert('The response is defined', response);
       return NaviFactsModel.create({ request, response, _factService: this });
     } catch (e) {
       const errorModel: Error = serializer.extractError(e, request, options);

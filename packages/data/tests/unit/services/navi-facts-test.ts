@@ -307,6 +307,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
     await taskFor(service.fetchNext).perform(response, request);
 
+    //@ts-ignore
     response.meta.pagination.currentPage = 3;
     assert.equal(
       await taskFor(service.fetchNext).perform(response, request),
@@ -337,6 +338,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
     await taskFor(service.fetchPrevious).perform(response, request);
 
+    //@ts-ignore
     response.meta.pagination.currentPage = 1;
     assert.equal(
       await taskFor(service.fetchPrevious).perform(response, request),

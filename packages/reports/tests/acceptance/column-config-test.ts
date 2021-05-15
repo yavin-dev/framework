@@ -262,7 +262,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     //change parameter
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
@@ -672,7 +672,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]'); // open first Platform Revenue (USD) config
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
 
     assert.deepEqual(
       getColumns(),
@@ -695,7 +695,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'The initial parameterized metrics were added'
     );
 
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'Dollars (CAD)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
 
     assert.deepEqual(
       getColumns(),
@@ -1243,7 +1243,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await fillIn('.ember-power-select-search-input', 'Dollars');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['Dollars (AUD)', 'Dollars (CAD)', 'Dollars (USD)'],
+      ['AUD (Dollars)', 'CAD (Dollars)', 'USD (Dollars)'],
       'After searching only the filtered metric is shown'
     );
     await click(findAll('.ember-power-select-option')[1]);

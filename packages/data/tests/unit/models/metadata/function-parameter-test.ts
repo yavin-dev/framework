@@ -6,14 +6,16 @@ import FunctionParameterMetadataModel, {
 import { setupTest } from 'ember-qunit';
 import config from 'ember-get-config';
 import Pretender, { Server } from 'pretender';
-import { TestContext } from 'ember-test-helpers';
 // @ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
+import type { TestContext } from 'ember-test-helpers';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 const HOST = config.navi.dataSources[0].uri;
 
 let Payload: FunctionParameterMetadataPayload;
 let server: Server;
+let FunctionParameterFactory: Factory<typeof FunctionParameterMetadataModel>;
 let FunctionParameter: FunctionParameterMetadataModel;
 
 module('Unit | Metadata Model | Function Parameter', function (hooks) {
@@ -33,7 +35,8 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
       defaultValue: 'USD',
     };
 
-    FunctionParameter = FunctionParameterMetadataModel.create(this.owner.ownerInjection(), Payload);
+    FunctionParameterFactory = this.owner.factoryFor('model:metadata/function-parameter');
+    FunctionParameter = FunctionParameterFactory.create(Payload);
   });
 
   hooks.afterEach(function () {
@@ -67,7 +70,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   test('values', async function (assert) {
     assert.expect(3);
 
-    const valuesResponse = {
+    const valuesResponse = <const>{
       rows: [
         { id: 'USD', description: 'US Dollars' },
         { id: 'EUR', description: 'Euros' },
@@ -83,7 +86,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
 
     assert.deepEqual(
       values?.map((val) => ({ id: val.id, description: val.description })),
-      valuesResponse.rows,
+      valuesResponse.rows.map(({ id, description }) => ({ id, description: `${id} (${description})` })),
       'Values are returned correctly for a dimension type function argument'
     );
 
@@ -108,7 +111,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
       defaultValue: 'wow',
     };
 
-    const TrendFunctionArgument = FunctionParameterMetadataModel.create(this.owner.ownerInjection(), trendArgPayload);
+    const TrendFunctionArgument = FunctionParameterFactory.create(trendArgPayload);
     const trendValues = await TrendFunctionArgument.values;
 
     assert.deepEqual(
@@ -126,10 +129,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
       _localValues: undefined,
       defaultValue: '1',
     };
-    const NoValuesFunctionArgument = FunctionParameterMetadataModel.create(
-      this.owner.ownerInjection(),
-      noValuesPayload
-    );
+    const NoValuesFunctionArgument = FunctionParameterFactory.create(noValuesPayload);
     const noValues = await NoValuesFunctionArgument.values;
 
     assert.strictEqual(noValues, undefined, 'function argument values returns undefined for primitive arguments');

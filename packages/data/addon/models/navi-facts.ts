@@ -4,22 +4,25 @@
  *
  * Description: A model that holds the response from a Fact query.
  */
-
-import EmberObject from '@ember/object';
+import NativeWithCreate from 'navi-data/models/native-with-create';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 
-export default class NaviFacts extends EmberObject {
-  /**
-   * the request object
-   */
+interface NaviFactsPayload {
+  request: RequestV2;
+  response: NaviFactResponse;
+  _factService: NaviFactsService;
+}
+
+export default class NaviFacts extends NativeWithCreate {
+  constructor(owner: unknown, args: NaviFactsPayload) {
+    super(owner, args);
+  }
+
   declare request: RequestV2;
 
-  /**
-   * response for request
-   */
   declare response: NaviFactResponse;
 
   /**

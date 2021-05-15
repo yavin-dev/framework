@@ -2,26 +2,45 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import EmberObject from '@ember/object';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { isEqual } from 'lodash-es';
+import NativeWithCreate from 'navi-data/models/native-with-create';
 
-export default class NaviDimensionModel extends EmberObject {
+interface NaviDimensionModelPayload {
+  dimensionColumn: DimensionColumn;
+  value: Readonly<unknown>;
+  suggestions?: Readonly<unknown[]>;
+}
+
+export default class NaviDimensionModel extends NativeWithCreate {
+  constructor(owner: unknown, args: NaviDimensionModelPayload) {
+    super(owner, args);
+  }
+
   /**
    * Dimension column definition
    */
-  dimensionColumn!: DimensionColumn;
+  declare dimensionColumn: DimensionColumn;
 
   /**
    * Dimension value
    */
-  value!: Readonly<unknown>;
+  declare value: Readonly<unknown>;
+
+  /**
+   * Dimension value
+   */
+  declare suggestions?: Readonly<unknown[]>;
 
   /**
    * Dimension value for display purposes
    */
   get displayValue() {
-    return `${this.value}`;
+    const { value, suggestions } = this;
+    if (suggestions?.length) {
+      return `${value} (${suggestions.join(', ')})`;
+    }
+    return `${value}`;
   }
 
   isEqual(other: NaviDimensionModel) {

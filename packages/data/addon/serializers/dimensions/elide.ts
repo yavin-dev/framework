@@ -4,6 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import { assert } from '@ember/debug';
+import { getOwner } from '@ember/application';
 import NaviDimensionModel from '../../models/navi-dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { getPaginationFromPageInfo } from '../facts/elide';
@@ -18,31 +19,36 @@ export type ResponseEdge = {
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
+  dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+  responseFactory = getOwner(this).factoryFor('model:navi-dimension-response');
+
   normalize(
     dimension: DimensionColumn,
     rawPayload?: AsyncQueryResponse,
     options: ServiceOptions = {}
   ): NaviDimensionResponse {
     const responseStr = rawPayload?.asyncQuery.edges[0].node.result?.responseBody;
-    const { tableId } = (dimension.columnMetadata as ElideDimensionMetadataModel).lookupColumn;
+    const { valueSource, suggestionColumns } = dimension.columnMetadata as ElideDimensionMetadataModel;
+    const { tableId } = valueSource;
     assert('The tableId is defined', tableId);
 
     if (responseStr) {
       const response = JSON.parse(responseStr);
       const { edges, pageInfo } = response.data[tableId];
       const values = edges.map((edge: ResponseEdge) =>
-        NaviDimensionModel.create({
+        this.dimensionModelFactory.create({
           value: edge.node.col0,
+          suggestions: suggestionColumns.map((_, idx) => edge.node[`col${idx + 1}`]),
           dimensionColumn: dimension,
         })
       );
-      return NaviDimensionResponse.create({
+      return this.responseFactory.create({
         values,
         meta: {
           pagination: getPaginationFromPageInfo(pageInfo, options),
         },
       });
     }
-    return NaviDimensionResponse.create();
+    return this.responseFactory.create();
   }
 }

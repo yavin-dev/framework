@@ -202,7 +202,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         type: node.columnType,
         expression: node.expression,
         valueSourceType: node.valueSourceType,
-        tableSource: node.tableSource,
+        tableSource: node.tableSource ? { valueSource: node.tableSource } : undefined,
         values: node.values,
       };
       return this.dimensionFactory.create(payload);

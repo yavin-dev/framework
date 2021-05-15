@@ -1,19 +1,21 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { QueryStatus, AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import { TestContext as Context } from 'ember-test-helpers';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { Server } from 'miragejs';
-import ElideDimensionSerializer from 'navi-data/serializers/dimensions/elide';
+import { QueryStatus, AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type { TestContext as Context } from 'ember-test-helpers';
+import type { Server } from 'miragejs';
+import type ElideDimensionSerializer from 'navi-data/serializers/dimensions/elide';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
+  dimensionModelFactory: Factory<typeof NaviDimensionModel>;
   server: Server;
 }
 
@@ -25,6 +27,7 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     GraphQLScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
+    this.dimensionModelFactory = this.owner.factoryFor('model:navi-dimension');
   });
 
   test('normalize', function (this: TestContext, assert) {
@@ -72,7 +75,9 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
       'Empty array is returned for an undefined payload'
     );
 
-    const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+    const expectedModels = ['foo', 'bar', 'baz'].map((value) =>
+      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [] })
+    );
     const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(
       dimensionResponse.values,
@@ -136,7 +141,9 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
         'elideOne'
       ) as DimensionMetadataModel,
     };
-    const expectedModels = ['foo', 'bar', 'baz'].map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+    const expectedModels = ['foo', 'bar', 'baz'].map((value) =>
+      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [] })
+    );
     const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(
       dimensionResponse.values,

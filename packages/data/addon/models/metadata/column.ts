@@ -2,16 +2,15 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
 import TableMetadataModel from './table';
+import NativeWithCreate from 'navi-data/models/native-with-create';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 import type ColumnFunction from './column-function';
 import type FunctionParameter from './function-parameter';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { MetadataModelTypes } from 'navi-data/services/navi-metadata';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 
 export type RawColumnType = 'ref' | 'formula' | 'field';
@@ -39,54 +38,32 @@ export interface ColumnInstance<T extends ColumnMetadataModel> {
   parameters?: Parameters;
 }
 
-// Shape of public properties on model
-export interface ColumnMetadata {
-  id: string;
-  name: string;
-  metadataType: ColumnType;
-  category?: string;
-  description?: string;
-  table: TableMetadataModel | undefined;
-  source: string;
-  valueType: TODO<string>;
-  type: RawColumnType;
-  isSortable: boolean;
-  expression?: string;
-  columnFunction: ColumnFunction | undefined;
-  hasParameters: boolean;
-  parameters: FunctionParameter[];
-  getParameter(id: string): FunctionParameter | undefined;
-  getDefaultParameters(): Record<string, string> | undefined;
-}
+export default class ColumnMetadataModel extends NativeWithCreate {
+  constructor(owner: unknown, args: ColumnMetadataPayload) {
+    super(owner, args);
+  }
 
-export default class ColumnMetadataModel extends EmberObject implements ColumnMetadata, ColumnMetadataPayload {
   @service
-  protected naviMetadata!: NaviMetadataService;
+  protected declare naviMetadata: NaviMetadataService;
 
   /**
-   * @property id - unique column id
+   * unique column id
    */
-  id!: string;
+  declare id: string;
 
   /**
-   * @property name - Display name of column
+   * Display name of column
    */
-  name!: string;
+  declare name: string;
+
+  declare metadataType: ColumnType;
 
   /**
-   * @property metadataType - metadata type
+   * an extended attribute that can be fetched
    */
-  metadataType!: ColumnType;
+  declare description: string;
 
-  /**
-   * @property description - an extended attribute that can be fetched
-   */
-  description?: string;
-
-  /**
-   * @property tableId
-   */
-  tableId?: string;
+  declare tableId: string;
 
   /**
    * @property table - the table metadata for this column
@@ -100,47 +77,38 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   /**
    * @property source - name of the data source this column is from.
    */
-  source!: string;
+  declare source: string;
 
   /**
    * @property type - will be "ref", "formula", or "field" depending on where its values are sourced from
    */
-  type!: RawColumnType;
+  declare type: RawColumnType;
 
   /**
    * whether or not this column can be sorted
    */
-  isSortable!: boolean;
+  declare isSortable: boolean;
 
   /**
-   * @property expression - e.g. tableA.name if type is ref
+   * e.g. tableA.name if type is ref
    */
-  expression?: string;
+  declare expression: string;
+
+  declare category: string;
 
   /**
-   * @property category
+   * enum value describing what type the values of this column hold
    */
-  category?: string;
+  declare valueType: TODO<string>;
+
+  declare tags: string[];
+
+  declare partialData: boolean;
+
+  declare columnFunctionId: string;
 
   /**
-   * @property valueType - enum value describing what type the values of this column hold
-   */
-  valueType!: TODO<string>;
-
-  /**
-   * @property tags
-   */
-  tags?: string[];
-
-  partialData?: boolean;
-
-  /**
-   * @property columnFunctionId
-   */
-  columnFunctionId!: string;
-
-  /**
-   * @property columnFunction - allows parameters to be applied to this column
+   * allows parameters to be applied to this column
    */
   get columnFunction(): ColumnFunction | undefined {
     const { columnFunctionId, source, naviMetadata } = this;
@@ -152,14 +120,14 @@ export default class ColumnMetadataModel extends EmberObject implements ColumnMe
   }
 
   /**
-   * @property hasParameters - can this column have parameters
+   * can this column have parameters
    */
   get hasParameters(): boolean {
     return !!this.parameters?.length;
   }
 
   /**
-   * @property parameters - parameters for the column
+   * parameters for the column
    */
   get parameters(): FunctionParameter[] {
     return this.columnFunction?.parameters || [];

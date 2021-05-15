@@ -5,9 +5,13 @@
  * Column function parameters are named and have rules for what values are valid
  * The values control configuration for an parameters on a base metric
  */
-import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import BardDimensionService from 'navi-data/services/bard-dimensions';
+import { assert } from '@ember/debug';
+import { taskFor } from 'ember-concurrency-ts';
+import NativeWithCreate from 'navi-data/models/native-with-create';
+import type NaviDimensionService from 'navi-data/services/navi-dimension';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { DimensionColumn } from './dimension';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
@@ -43,57 +47,41 @@ export interface FunctionParameterMetadataPayload {
   _localValues?: ColumnFunctionParametersValues;
 }
 
-export default class FunctionParameterMetadataModel extends EmberObject implements FunctionParameterMetadataPayload {
-  /**
-   * @static
-   * @property {string} identifierField
-   */
+type Expresion = typeof INTRINSIC_VALUE_EXPRESSION | `dimension:${string}`;
+
+export default class FunctionParameterMetadataModel extends NativeWithCreate {
   static identifierField = 'id';
+  constructor(owner: unknown, args: FunctionParameterMetadataPayload) {
+    super(owner, args);
+  }
+
+  @service('navi-dimension')
+  declare dimensionService: NaviDimensionService;
+
+  @service('navi-metadata')
+  declare metadataService: NaviMetadataService;
+
+  declare id: string;
+
+  declare name: string;
+
+  declare description?: string;
 
   /**
-   * @property {Service} dimensionService
+   * name of the data source this parameter is from.
    */
-  @service('bard-dimensions')
-  dimensionService!: BardDimensionService;
+  declare source: string;
+
+  declare type: FunctionParameterType;
+
+  declare expression?: Expresion;
+
+  declare defaultValue?: string | null;
 
   /**
-   * @property {string} id
+   * enum values for the parameter
    */
-  id!: string;
-
-  /**
-   * @property {string} name
-   */
-  name!: string;
-
-  /**
-   * @property {string} description
-   */
-  description?: string;
-
-  /**
-   * @property {string} source - name of the data source this parameter is from.
-   */
-  source!: string;
-
-  /**
-   * @property {string} type - either "ref" or "primitive"
-   */
-  type!: FunctionParameterType;
-
-  /**
-   * @property {string|undefined} expression - used if type is ref to get the valid values
-   * Expected format is e.g. "dimension:dimensionOne" or "self" if the values come from an enum
-   */
-  expression?: string;
-
-  /**
-   * @private
-   * @property {ColumnFunctionParametersValues[]|undefined} _localValues
-   * if column function ids are not supplied by the metadata endpoint,
-   * then enum values provided in the parameter will be placed here
-   */
-  _localValues?: ColumnFunctionParametersValues;
+  declare _localValues?: ColumnFunctionParametersValues;
 
   /**
    * @property {Promise} values - array of values used for function parameters with an enum type
@@ -105,13 +93,15 @@ export default class FunctionParameterMetadataModel extends EmberObject implemen
 
     const [lookup, dimensionId] = this.expression?.split(':') || [];
     if (this.type === 'ref' && lookup === 'dimension' && dimensionId) {
-      return this.dimensionService.all(dimensionId, this.source).then((results: TODO) => results.toArray());
+      return this.metadataService
+        .findById('dimension', dimensionId, this.source)
+        .then((columnMetadata) => {
+          assert(`The dimension metadata for ${dimensionId} should exist`, columnMetadata);
+          const dimension: DimensionColumn = { columnMetadata, parameters: {} };
+          return taskFor(this.dimensionService.all).perform(dimension);
+        })
+        .then((v) => v.values.map((d) => ({ id: `${d.value}`, description: d.displayValue })));
     }
     return undefined;
   }
-
-  /**
-   * @property {string} defaultValue
-   */
-  defaultValue?: string | null;
 }

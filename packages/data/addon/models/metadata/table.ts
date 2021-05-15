@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import EmberObject from '@ember/object';
+import NativeWithCreate from 'navi-data/models/native-with-create';
 import { inject as service } from '@ember/service';
 import { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -26,103 +26,56 @@ export interface TableMetadataPayload {
   source: string;
   tags?: string[];
 }
-// Shape of public properties on model
-export interface TableMetadata {
-  id: string;
-  name: string;
-  category?: string;
-  description?: string;
-  cardinality?: Cardinality;
-  isFact: boolean;
-  metrics: MetricMetadataModel[];
-  dimensions: DimensionMetadataModel[];
-  timeDimensions: TimeDimensionMetadataModel[];
-  requestConstraints: RequestConstraintMetadataModel[];
-  source: string;
-  tags: string[];
-}
 
 function isPresent<T>(t: T | undefined | null | void): t is T {
   return t !== undefined && t !== null;
 }
 
-export default class TableMetadataModel extends EmberObject implements TableMetadata, TableMetadataPayload {
-  /**
-   * @static
-   * @property {string} identifierField
-   */
+export default class TableMetadataModel extends NativeWithCreate {
+  constructor(owner: unknown, args: TableMetadataPayload) {
+    super(owner, args);
+    this.isFact = this.isFact ?? true;
+  }
   static identifierField = 'id';
 
   @service
   declare naviMetadata: NaviMetadataService;
 
-  /**
-   * @param {string} id
-   */
-  id!: string;
+  declare id: string;
+
+  declare name: string;
+
+  declare description?: string;
+
+  declare category?: string;
+
+  declare cardinality: Cardinality;
+
+  declare isFact: boolean;
+
+  declare metricIds: string[];
+
+  declare dimensionIds: string[];
+
+  declare timeDimensionIds: string[];
+
+  declare requestConstraintIds: string[];
+
+  declare tags: string[];
 
   /**
-   * @param {string} name
+   * the datasource this metadata is from.
    */
-  name!: string;
+  declare source: string;
 
-  /**
-   * @param {string} description
-   */
-  description?: string;
-
-  /**
-   * @param {string} category
-   */
-  category?: string;
-
-  /**
-   * @param {Cardinality} cardinality
-   */
-  cardinality!: Cardinality;
-
-  /**
-   * @param {boolean} isFact
-   */
-  isFact = true;
-
-  /**
-   * @property {string[]} metricIds - array of metric ids
-   */
-  metricIds!: string[];
-
-  /**
-   * @property {string[]} dimensionIds - array of dimension ids
-   */
-  dimensionIds!: string[];
-
-  /**
-   * @property {string[]} timeDimensionIds - array of time dimension ids
-   */
-  timeDimensionIds!: string[];
-
-  /**
-   * @property {string[]} requestConstraintIds - array of request constraint ids
-   */
-  requestConstraintIds!: string[];
-
-  /**
-   * @param {Metric[]} metrics
-   */
   get metrics(): MetricMetadataModel[] {
     return this.metricIds.map((id) => this.naviMetadata.getById('metric', id, this.source)).filter(isPresent);
   }
 
-  /**
-   * @param {Dimension[]} dimensions
-   */
   get dimensions(): DimensionMetadataModel[] {
     return this.dimensionIds.map((id) => this.naviMetadata.getById('dimension', id, this.source)).filter(isPresent);
   }
 
-  /**
-   * @param {TimeDimension[]} timeDimensions
-   */
   get timeDimensions(): TimeDimensionMetadataModel[] {
     return this.timeDimensionIds
       .map((id) => this.naviMetadata.getById('timeDimension', id, this.source))
@@ -134,16 +87,6 @@ export default class TableMetadataModel extends EmberObject implements TableMeta
       .map((id) => this.naviMetadata.getById('requestConstraint', id, this.source))
       .filter(isPresent);
   }
-
-  /**
-   * @param {string[]} tags
-   */
-  tags: string[] = [];
-
-  /**
-   * @property {string} source - the datasource this metadata is from.
-   */
-  source!: string;
 }
 
 declare module 'navi-data/models/metadata/registry' {
