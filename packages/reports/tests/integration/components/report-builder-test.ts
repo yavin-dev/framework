@@ -19,14 +19,14 @@ const mockDataSourceA = {
   displayName: 'Source A',
   description: 'Awesome Source A',
   uri: 'https://data.naviapp.io',
-  type: 'bard',
+  type: 'bard' as const,
 };
 const mockDataSourceB = {
   name: 'bardTwo',
   displayName: 'Source B',
   description: 'Beautiful Source B',
   uri: 'https://data2.naviapp.io',
-  type: 'bard',
+  type: 'bard' as const,
 };
 
 const TEMPLATE = hbs`<ReportBuilder @report={{this.report}} />`;

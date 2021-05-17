@@ -19,7 +19,6 @@ import type { DimensionFilter } from './interface';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type { FiliConfigOptions } from 'navi-config';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -155,7 +154,8 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     query: string,
     options: ServiceOptions = {}
   ): TaskGenerator<FiliDimensionResponse> {
-    const filiOptions = getDataSource(dimension.columnMetadata.source).options as FiliConfigOptions;
+    const { source } = dimension.columnMetadata;
+    const filiOptions = getDataSource<'bard'>(source).options;
     if (filiOptions?.enableDimensionSearch) {
       const url = this._buildUrl(dimension, 'search');
       const data: Record<string, string> = query ? { query } : {};

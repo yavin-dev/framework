@@ -27,6 +27,13 @@ interface TestContext extends Context {
   server: Server;
 }
 
+//Mock data source
+declare module 'navi-config' {
+  export interface DataSourceRegistry {
+    mock: BaseDataSource<'mock'>;
+  }
+}
+
 module('Unit | Service | navi-dimension', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
@@ -60,6 +67,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     let originalDataSources = config.navi.dataSources;
     const dataSourceType = 'mock';
     const dataSourceName = 'test-example';
+
     config.navi.dataSources = [
       { type: dataSourceType, uri: 'fake', name: dataSourceName, displayName: dataSourceName },
     ];
