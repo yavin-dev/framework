@@ -6,7 +6,7 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import { configHost } from '../../utils/adapter';
+import { configHost, getDataSource } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { task } from 'ember-concurrency';
@@ -154,8 +154,23 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     query: string,
     options: ServiceOptions = {}
   ): TaskGenerator<FiliDimensionResponse> {
-    const url = this._buildUrl(dimension, 'search');
-    const data: Record<string, string> = query ? { query } : {};
-    return yield this._find(url, data, options);
+    const { source } = dimension.columnMetadata;
+    const filiOptions = getDataSource<'bard'>(source).options;
+    if (filiOptions?.enableDimensionSearch) {
+      const url = this._buildUrl(dimension, 'search');
+      const data: Record<string, string> = query ? { query } : {};
+      return yield this._find(url, data, options);
+    } else {
+      return yield taskFor(this.find).perform(
+        dimension,
+        [
+          {
+            operator: 'contains',
+            values: [query],
+          },
+        ],
+        options
+      );
+    }
   }
 }

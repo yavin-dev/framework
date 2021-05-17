@@ -454,7 +454,7 @@ module('Unit | Service | Dimensions', function (hooks) {
     });
   });
 
-  test('searchValue', async function (assert) {
+  test('searchValue - search enabled', async function (assert) {
     assert.expect(2);
 
     let response3 = {
@@ -491,43 +491,19 @@ module('Unit | Service | Dimensions', function (hooks) {
     A(res.rows).mapBy('id'), ['value1', 'value2'], 'searchValue returns dimensions when comma separated spaced value';
   });
 
-  test('searchValue alternate datasource', async function (assert) {
-    assert.expect(2);
+  test('searchValue - search not enabled', async function (assert) {
+    assert.expect(1);
 
-    const options = { dataSourceName: 'bardTwo' };
-
-    let response3 = {
-      rows: [
-        { id: 'v4', desc: 'value4' },
-        { id: 'v5', desc: 'value5' },
-      ],
-      meta: { test: true },
-    };
-
-    Server.get(`${HOST2}/v1/dimensions/dimensionFive/search/`, (req) => {
-      let { query } = req.queryParams,
-        rows = response3.rows.filter((row) => `${row.id} ${row.description}`.includes(query));
-
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
+    Server.get(`${HOST2}/v1/dimensions/dimensionFive/values/`, (req) => {
+      const { filters } = req.queryParams;
+      assert.equal(
+        filters,
+        'dimensionFive|id-contains["v5"]',
+        'a contains request is triggered when `enableDimensionSearch` is not true'
+      );
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows: [] })];
     });
-
-    await settled();
-
-    let res = await Service.searchValue('dimensionFive', 'v5', options);
-
-    assert.deepEqual(
-      A(res.rows).mapBy('desc'),
-      ['value5'],
-      'searchValue returns expected dimension values when searched for "v5"'
-    );
-
-    /* == no results == */
-    res = await Service.searchValue('dimensionFive', 'foo', options);
-
-    assert.deepEqual(A(res.rows), [], 'searchValue returns no dimension values as expected when searched for "foo"');
-
-    res = await Service.searchValue('dimensionFive', 'value4, value5', options);
-    A(res.rows).mapBy('id'), ['value4', 'value5'], 'searchValue returns dimensions when comma separated spaced value';
+    await Service.searchValue('dimensionFive', 'v5', { dataSourceName: 'bardTwo' });
   });
 
   test('searchValueField: contains search', async function (assert) {
@@ -926,50 +902,6 @@ module('Unit | Service | Dimensions', function (hooks) {
         /* == no results == */
         options = { term: 'foo', useNewSearchAPI: true };
         return Service.search('dimensionTwo', options).then((res) => {
-          assert.deepEqual(A(res), [], 'search returns no dimension values as expected when searched for "foo"');
-        });
-      });
-    });
-  });
-
-  test('search: high dimension cardinality with useNewSearchAPI=true and different datasource', function (assert) {
-    assert.expect(2);
-
-    let response3 = {
-      rows: [
-        {
-          id: 'v1',
-          description: 'value1',
-        },
-        {
-          id: 'v4',
-          description: 'value4',
-        },
-      ],
-      meta: {
-        test: true,
-      },
-    };
-
-    Server.get(`${HOST2}/v1/dimensions/dimensionFive/search/`, (req) => {
-      let { query } = req.queryParams,
-        rows = response3.rows.filter((row) => `${row.id} ${row.description}`.includes(query));
-
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ rows })];
-    });
-
-    return settled().then(() => {
-      let options = { term: 'v4', useNewSearchAPI: true, dataSourceName: 'bardTwo' };
-      return Service.search('dimensionFive', options).then((res) => {
-        assert.deepEqual(
-          A(res).mapBy('id'),
-          ['v4'],
-          'search returns expected dimension values when searched for "EMEA Region"'
-        );
-
-        /* == no results == */
-        options = { term: 'foo', useNewSearchAPI: true, dataSourceName: 'bardTwo' };
-        return Service.search('dimensionFive', options).then((res) => {
           assert.deepEqual(A(res), [], 'search returns no dimension values as expected when searched for "foo"');
         });
       });

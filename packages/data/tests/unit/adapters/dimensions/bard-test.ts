@@ -160,17 +160,27 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
 
   test('search', async function (this: TestContext, assert) {
     const containerColumn = {
-      columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
+      columnMetadata: this.naviMetadata.getById('dimension', 'age', 'bardOne') as DimensionMetadataModel,
       parameters: { field: 'id' },
     };
 
-    const result = await taskFor(this.adapter.search).perform(containerColumn, 'ag');
+    const result = await taskFor(this.adapter.search).perform(containerColumn, 'a');
     assert.deepEqual(
       result,
       {
         rows: [
-          { description: 'Bag', id: '1' },
-          { description: 'Saddle Bag', id: '3' },
+          {
+            description: 'All Other',
+            id: '-3',
+          },
+          {
+            description: 'Not Available',
+            id: '-2',
+          },
+          {
+            description: '65 and over',
+            id: '10',
+          },
         ],
       },
       '`search` returns dimension values that match the search term'

@@ -4,7 +4,7 @@
  */
 import config from 'ember-get-config';
 import { assert } from '@ember/debug';
-import { NaviDataSource } from 'navi-config';
+import { DataSourceRegistry, NaviDataSource } from 'navi-config';
 
 export type SourceAdapterOptions = {
   dataSourceName?: string;
@@ -14,15 +14,15 @@ export type SourceAdapterOptions = {
  * Returns data source object for a data source name
  * @param dataSourceName
  */
-export function getDataSource(dataSourceName: string): NaviDataSource {
+export function getDataSource<T extends keyof DataSourceRegistry>(dataSourceName: string): DataSourceRegistry[T] {
   assert('getDataSource should be given a data source name to lookup', dataSourceName);
 
   const {
     navi: { dataSources },
   } = config;
-  const host = dataSources.find(({ name }) => name === dataSourceName);
-  if (host) {
-    return host;
+  const dataSource = dataSources.find(({ name }) => name === dataSourceName);
+  if (dataSource) {
+    return dataSource as DataSourceRegistry[T];
   }
   assert(`Datasource ${dataSourceName} should be configured in the navi environment`);
 }
