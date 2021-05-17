@@ -5,22 +5,23 @@
 import EmberObject from '@ember/object';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
-import NaviDimensionModel from '../../models/navi-dimension';
-import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { getPaginationFromPageInfo } from '../facts/elide';
+import type NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import type NaviDimensionSerializer from './interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 export type ResponseEdge = {
   node: Record<string, string>;
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-  responseFactory = getOwner(this).factoryFor('model:navi-dimension-response');
+  dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension') as Factory<typeof NaviDimensionModel>;
+  responseFactory = getOwner(this).factoryFor('model:navi-dimension-response') as Factory<typeof NaviDimensionResponse>;
 
   normalize(
     dimension: DimensionColumn,

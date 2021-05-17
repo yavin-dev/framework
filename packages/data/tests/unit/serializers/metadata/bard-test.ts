@@ -615,7 +615,7 @@ const MetricPayloads: MetricMetadataPayload[] = [
     valueType: 'number',
   },
 ];
-QUnit.dump.maxDepth = 100;
+
 const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
   {
     _parametersPayload: [
@@ -1095,15 +1095,15 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
     config.navi.defaultTimeGrain = 'isoWeek';
     const tableGrainInfo = Serializer['parseTableGrains'](table);
     let columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
-    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'isoWeek', 'Picks default from config');
+    assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'isoWeek', 'Picks default from config');
 
     config.navi.defaultTimeGrain = 'year';
     columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
-    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'hour', 'Falls back to first defined grain');
+    assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'hour', 'Falls back to first defined grain');
 
     config.navi.defaultTimeGrain = 'hour';
     columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
-    assert.equal(columnFunction._parametersPayload?.[0].defaultValue, 'hour', 'Picks default from config');
+    assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'hour', 'Picks default from config');
 
     config.navi.defaultTimeGrain = originalDefaultTimeGrain;
   });

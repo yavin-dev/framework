@@ -1,9 +1,11 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+import { capitalize } from '@ember/string';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { QueryStatus, AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
+import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
@@ -119,7 +121,11 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
                 responseBody: JSON.stringify({
                   data: {
                     [lookupTable]: {
-                      edges: [{ node: { col0: 'foo' } }, { node: { col0: 'bar' } }, { node: { col0: 'baz' } }],
+                      edges: [
+                        { node: { col0: 'foo', col1: 'Foo' } },
+                        { node: { col0: 'bar', col1: 'Bar' } },
+                        { node: { col0: 'baz', col1: 'Baz' } },
+                      ],
                       pageInfo: {
                         startCursor: '0',
                         endCursor: '3',
@@ -134,15 +140,22 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
         ],
       },
     };
+    const baseDim = this.metadataService.getById(
+      'dimension',
+      `${factTable}.${factField}`,
+      'elideOne'
+    ) as ElideDimensionMetadataModel;
     const dimensionColumn: DimensionColumn = {
-      columnMetadata: this.metadataService.getById(
-        'dimension',
-        `${factTable}.${factField}`,
-        'elideOne'
-      ) as DimensionMetadataModel,
+      columnMetadata: new ElideDimensionMetadataModel(this.owner, {
+        ...baseDim,
+        tableSource: {
+          valueSource: baseDim.tableSource?.valueSource,
+          suggestionColumns: [{ id: 'dimension3' }],
+        },
+      }),
     };
     const expectedModels = ['foo', 'bar', 'baz'].map((value) =>
-      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [] })
+      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [capitalize(value)] })
     );
     const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(

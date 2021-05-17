@@ -19,6 +19,7 @@ interface TestContext extends Context {
 module('Unit | Model | navi dimension', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
+
   hooks.beforeEach(async function (this: TestContext) {
     this.metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     ElideOneScenario(this.server);
@@ -44,6 +45,43 @@ module('Unit | Model | navi dimension', function (hooks) {
     );
   });
 
+  test('it shows suggestions', function (this: TestContext, assert) {
+    const columnMetadata = this.metadataService.getById(
+      'dimension',
+      'table0.dimension0',
+      'elideOne'
+    ) as DimensionMetadataModel;
+    const dimensionColumn: DimensionColumn = { columnMetadata };
+    const value = 'link';
+    const model = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: [] });
+
+    assert.equal(
+      model.displayValue,
+      `${value}`,
+      '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
+    );
+
+    const withSuggestion = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: ['Link'] });
+
+    assert.equal(
+      withSuggestion.displayValue,
+      `${value} (Link)`,
+      '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
+    );
+
+    const withSuggestions = this.dimensionModelFactory.create({
+      dimensionColumn,
+      value,
+      suggestions: ['Link', 'anchor'],
+    });
+
+    assert.equal(
+      withSuggestions.displayValue,
+      `${value} (Link, anchor)`,
+      '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
+    );
+  });
+
   test('isEqual', function (this: TestContext, assert) {
     const columnMetadata = this.metadataService.getById(
       'dimension',
@@ -61,6 +99,16 @@ module('Unit | Model | navi dimension', function (hooks) {
     assert.ok(
       model1.isEqual(model2),
       '`isEqual` returns true for models that have the same DimensionColumn values and dimension value'
+    );
+
+    const model2WithSuggestions = this.dimensionModelFactory.create({
+      dimensionColumn: { columnMetadata, parameters },
+      value,
+      suggestions: ['Ignore me'],
+    });
+    assert.ok(
+      model2.isEqual(model2WithSuggestions),
+      '`isEqual` returns true for models that have the same DimensionColumn values and dimension value but different suggestions'
     );
 
     const model3 = this.dimensionModelFactory.create({ dimensionColumn, value: 'zelda' });

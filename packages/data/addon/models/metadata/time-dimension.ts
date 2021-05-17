@@ -16,7 +16,7 @@ interface TimeDimensionGrain {
 // Shape passed to model constructor
 export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
   supportedGrains: TimeDimensionGrain[];
-  timeZone: TODO;
+  timeZone: string;
 }
 
 export type TimeDimensionColumn = ColumnInstance<TimeDimensionMetadataModel>;

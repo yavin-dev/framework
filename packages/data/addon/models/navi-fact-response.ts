@@ -16,7 +16,7 @@ export type ResponseRow = ResponseV1['rows'][number];
 
 interface NaviFactResponsePayload {
   rows: ResponseV1['rows'];
-  meta: ResponseV1['meta'];
+  meta?: ResponseV1['meta'];
 }
 
 export default class NaviFactResponse extends NativeWithCreate implements ResponseV1 {

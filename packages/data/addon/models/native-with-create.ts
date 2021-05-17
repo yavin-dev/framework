@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { getOwner } from '@ember/application';
-import { omit } from 'lodash-es';
 
 type PayloadType<T> = T extends new (...args: infer U) => unknown ? U[1] : never;
 
@@ -18,10 +17,7 @@ export default class NativeWithCreate {
 
   static create<T extends typeof NativeWithCreate>(this: T, args: PayloadType<T>): InstanceType<T> {
     const owner = getOwner(args);
-    const ignoreKey = Object.keys(args).find((k) => k.startsWith('__LEGACY_OWNER__')) ?? '';
-    const rest = omit(args, ignoreKey);
-    // TODO: is this needed?
-    return new this(owner, rest) as InstanceType<T>;
+    return new this(owner, args) as InstanceType<T>;
   }
 }
 

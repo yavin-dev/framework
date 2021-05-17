@@ -2,13 +2,11 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
 import EmberObject from '@ember/object';
-import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
-import NaviDimensionSerializer from './interface';
 import { FiliDimensionResponse, DefaultField } from 'navi-data/adapters/dimensions/bard';
-import { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type NaviDimensionSerializer from './interface';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type NaviDimensionModel from '../../models/navi-dimension';
 import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import type { Factory } from 'navi-data/models/native-with-create';
@@ -27,13 +25,11 @@ export default class BardDimensionSerializer extends EmberObject implements Navi
 
   normalize(dimensionColumn: DimensionColumn, rawPayload: FiliDimensionResponse): NaviDimensionResponse {
     const { suggestionColumns } = dimensionColumn.columnMetadata;
-    assert(
-      'Only different fields of the same dimension may be used as suggestions',
-      suggestionColumns.every((suggestion) => {
-        const { id, parameters } = suggestion;
-        return (!id || id === dimensionColumn.columnMetadata.id) && parameters?.field;
-      })
-    );
+    if (
+      !suggestionColumns.every(({ id, parameters }) => id === dimensionColumn.columnMetadata.id && parameters?.field)
+    ) {
+      throw new Error('Only different fields of the same dimension may be used as suggestions');
+    }
     const suggestionFields = suggestionColumns.map((c) => this.mapField(c.parameters?.field || ''));
 
     if (rawPayload?.rows.length) {
