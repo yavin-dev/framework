@@ -22,6 +22,7 @@ import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { Factory } from 'navi-data/models/native-with-create';
+import type { BaseDataSource } from 'navi-config';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -32,6 +33,7 @@ interface TestContext extends Context {
 
 //Mock data source
 declare module 'navi-config' {
+  // eslint-disable-next-line ember/no-test-import-export
   export interface DataSourceRegistry {
     mock: BaseDataSource<'mock'>;
   }

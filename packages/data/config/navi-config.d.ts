@@ -14,9 +14,11 @@ declare module 'navi-config' {
   }
   export type FiliDataSource = BaseDataSource<'bard', FiliConfigOptions>;
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface ElideConfigOptions {
     // elide options here
   }
+
   export type ElideDataSource = BaseDataSource<'elide', ElideConfigOptions>;
 
   interface DataSourceRegistry {
