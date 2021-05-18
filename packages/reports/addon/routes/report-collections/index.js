@@ -10,6 +10,6 @@ export default Route.extend({
    * @returns {*|Promise}
    */
   model() {
-    return this.get('store').findAll('reportCollection');
+    return this.store.findAll('reportCollection');
   },
 });

@@ -6,6 +6,7 @@
  */
 import EmberObject from '@ember/object';
 
+// eslint-disable-next-line ember/no-classic-classes
 export default EmberObject.extend({
   /**
    * Test to see if the dimension is considered the same as the other
