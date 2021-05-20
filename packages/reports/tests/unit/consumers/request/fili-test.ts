@@ -164,6 +164,47 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
   });
 
+  test('UPDATE_FILTER - update dimension field', function (assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('bard-request-v2/request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'dimension',
+          field: 'age',
+          parameters: { field: 'id' },
+          operator: 'in',
+          values: ['1', '2', '3'],
+          source: 'bardOne',
+        },
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [],
+    });
+
+    const modelFor = () => ({ request });
+
+    const filter = request.filters.objectAt(0);
+    consumer.send(RequestActions.UPDATE_FILTER, { modelFor }, filter, {
+      parameters: { field: 'desc' },
+    });
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.UPDATE_FILTER],
+      'When the filter grain is updated, another request to update the filter values is fired off'
+    );
+
+    filter!.parameters.field = 'desc';
+    assert.deepEqual(
+      dispatchedActionArgs[0],
+      [filter, { values: [] }],
+      'UPDATE_FILTER is dispatched with the updated values for the filter'
+    );
+  });
+
   test('DID_ADD_COLUMN', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const requestExistingFilter = store.createFragment('bard-request-v2/request', {

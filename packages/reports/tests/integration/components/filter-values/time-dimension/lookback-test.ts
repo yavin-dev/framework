@@ -149,4 +149,15 @@ module('Integration | Component | filter-values/time-dimension/lookback', functi
       .doesNotExist('There is no selected option because 22 is not a preset');
     await click('.filter-values--lookback-input');
   });
+
+  test('Value is reset on focusout', async function (this: TestContext, assert) {
+    await render(TEMPLATE);
+
+    const value = '4';
+    assert.dom('.filter-values--lookback-input__value').hasValue(value, 'Value is set');
+    await fillIn('.filter-values--lookback-input__value', '');
+    assert.dom('.filter-values--lookback-input__value').hasValue('', 'Value is cleared');
+    await triggerEvent('.filter-values--lookback-input__value', 'focusout');
+    assert.dom('.filter-values--lookback-input__value').hasValue(value, 'Value is reset on focusout');
+  });
 });
