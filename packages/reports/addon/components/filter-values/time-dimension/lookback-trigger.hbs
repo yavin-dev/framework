@@ -3,5 +3,6 @@
   class="filter-values--lookback-input__value w-20"
   placeholder={{@extra.placeholder}}
   value={{@extra.value}} 
-  {{on "input" @extra.onUpdate}} 
+  {{on "input" @extra.onUpdate}}
+  {{on "focusout" this.focusOut}}
 />

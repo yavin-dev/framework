@@ -100,6 +100,10 @@ export default class FiliConsumer extends ActionConsumer {
           newGrain
         );
       }
+
+      if (filterFragment.type === 'dimension' && changeset.parameters && !changeset.values) {
+        this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, filterFragment, { values: [] });
+      }
     },
 
     /**

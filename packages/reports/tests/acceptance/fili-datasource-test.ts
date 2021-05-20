@@ -238,4 +238,15 @@ module('Acceptance | fili datasource', function (hooks) {
       'A Date Time column is added matching the existing filter grain'
     );
   });
+
+  test('Fili filter parameter updates', async function (assert) {
+    assert.expect(2);
+    await visit('/reports/2/edit');
+
+    assert.dom(findAll('.filter-builder__values')[1]).hasText('× 114 × 100001', 'The values are populated');
+    await selectChoose('[data-filter-subject="Property (id)"][data-filter-param="field"]', 'desc');
+    assert
+      .dom(findAll('.filter-builder__values')[1])
+      .hasText('', 'The values are cleared after switching dimension fields');
+  });
 });

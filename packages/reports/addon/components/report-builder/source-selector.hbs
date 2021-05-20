@@ -12,7 +12,7 @@
           <span class={{if (eq @currentSource.source item.source) "link is-active"}}>{{item.name}}</span>
           {{#if item.description}}
             <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-grey-500" @icon="information-circle" @size="small" />
-            <EmberTooltip @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
+            <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
           {{/if}}
         </span>
         <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
