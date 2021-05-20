@@ -20,15 +20,19 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { Server } from 'miragejs';
 import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
+  dimensionModelFactory: Factory<typeof NaviDimensionModel>;
+  responseFactory: Factory<typeof NaviDimensionResponse>;
   server: Server;
 }
 
 //Mock data source
 declare module 'navi-config' {
+  // eslint-disable-next-line ember/no-test-import-export
   export interface DataSourceRegistry {
     mock: BaseDataSource<'mock'>;
   }
@@ -42,6 +46,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     GraphQLScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
+    this.responseFactory = this.owner.factoryFor('model:navi-dimension-response');
+    this.dimensionModelFactory = this.owner.factoryFor('model:navi-dimension');
   });
 
   test('all', async function (this: TestContext, assert) {
@@ -56,7 +62,9 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Handcrafted Concrete Mouse',
       'Handcrafted Frozen Mouse',
       'Licensed Soft Ball',
-    ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
+    ].map((dimVal) =>
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+    );
     const all = await taskFor(service.all).perform({ columnMetadata });
 
     assert.deepEqual(all.values, expectedDimensionModels, '`all` gets all the unfiltered values for a dimension');
@@ -83,10 +91,12 @@ module('Unit | Service | navi-dimension', function (hooks) {
     this.owner.register(`adapter:dimensions/${dataSourceType}`, MockAdapter);
 
     let serializerCallback = (_call: number, _options: ServiceOptions): ResponseV1['meta'] => ({});
+    const { responseFactory } = this;
     class MockSerializer extends EmberObject implements NaviDimensionSerializer {
       normalize(_dimension: DimensionColumn, _rawPayload: unknown, options: ServiceOptions): NaviDimensionResponse {
         const meta = serializerCallback(call++, options);
-        return NaviDimensionResponse.create({ meta: meta });
+        //@ts-expect-error
+        return responseFactory.create({ meta: meta });
       }
     }
     this.owner.register(`serializer:dimensions/${dataSourceType}`, MockSerializer);
@@ -248,7 +258,9 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Awesome Steel Chicken (enum)',
       'Tasty Fresh Towels (enum)',
       'Intelligent Steel Pizza (enum)',
-    ].map((dimVal) => NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } }));
+    ].map((dimVal) =>
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+    );
     const all = await taskFor(service.all).perform({ columnMetadata });
 
     assert.deepEqual(
@@ -268,7 +280,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     const findValues = ['Awesome Plastic Fish', 'Refined Fresh Bacon'];
     const filters: DimensionFilter[] = [{ operator: 'in', values: findValues }];
     const expectedDimensionModels = findValues.map((dimVal) =>
-      NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
     );
     const find = await taskFor(service.find).perform({ columnMetadata }, filters);
     assert.deepEqual(
@@ -289,7 +301,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     ) as DimensionMetadataModel;
     const search = await taskFor(service.search).perform({ columnMetadata }, 'plastic');
     const expectedDimensionModels = ['Awesome Plastic Fish', 'Licensed Plastic Pants'].map((dimVal) =>
-      NaviDimensionModel.create({ value: dimVal, dimensionColumn: { columnMetadata } })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
     );
     assert.deepEqual(
       search.values,

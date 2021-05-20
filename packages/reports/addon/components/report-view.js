@@ -60,7 +60,7 @@ class ReportView extends Component {
    */
   @computed('response.rows', 'report.request')
   get validVisualizations() {
-    return get(this, 'naviVisualizations').validVisualizations(get(this, 'report.request'));
+    return this.naviVisualizations.validVisualizations(get(this, 'report.request'));
   }
 
   /**

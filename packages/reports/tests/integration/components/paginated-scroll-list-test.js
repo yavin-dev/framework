@@ -170,7 +170,7 @@ module('Integration | Component | paginated scroll list', function (hooks) {
       .exists({ count: 10 }, 'updating with new items array causes _itemsToRender to be updated correctly');
 
     run(() => {
-      this.get('items').popObject();
+      this.items.popObject();
     });
 
     assert

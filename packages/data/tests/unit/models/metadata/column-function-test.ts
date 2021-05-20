@@ -5,8 +5,11 @@ import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi
 import FunctionParameterMetadataModel, {
   FunctionParameterMetadataPayload,
 } from 'navi-data/models/metadata/function-parameter';
+import type { Factory } from 'navi-data/models/native-with-create';
 
-let Payload: ColumnFunctionMetadataPayload, ColumnFunction: ColumnFunctionMetadataModel;
+let Payload: ColumnFunctionMetadataPayload,
+  ColumnFunction: ColumnFunctionMetadataModel,
+  ColumnFunctionFactory: Factory<typeof ColumnFunctionMetadataModel>;
 
 module('Unit | Metadata Model | Column Function', function (hooks) {
   setupTest(hooks);
@@ -30,7 +33,8 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       _parametersPayload: [paramPayload],
     };
 
-    ColumnFunction = ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), Payload);
+    ColumnFunctionFactory = this.owner.factoryFor('model:metadata/column-function');
+    ColumnFunction = ColumnFunctionFactory.create(Payload);
   });
 
   test('factory has identifierField defined', function (assert) {

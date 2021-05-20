@@ -6,8 +6,8 @@
  */
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
-import { assert } from '@ember/debug';
-import { QueryStatus } from '../facts/interface';
+import { assert, warn } from '@ember/debug';
+import { Column, QueryStatus } from '../facts/interface';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
@@ -38,9 +38,16 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     values: (string | number)[]
   ): TaskGenerator<AsyncQueryResponse> {
-    const { tableId } = dimension.columnMetadata;
+    const { columnMetadata } = dimension;
+    const { tableId } = columnMetadata;
     const nodes = values.map((value) => `{"node":{"col0":"${value}"}}`);
     const responseBody = `{"data":{"${tableId}":{"edges":[${nodes.join(',')}]}}}`;
+
+    if (columnMetadata.suggestionColumns.length > 0) {
+      warn(`The dimension ${columnMetadata.name} has suggestion columns which are ignored because it has enum values`, {
+        id: 'navi-dimensions-elide-ignored-suggestion-columns',
+      });
+    }
 
     return yield {
       asyncQuery: {
@@ -103,13 +110,20 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     options: ServiceOptions = {}
   ): TaskGenerator<AsyncQueryResponse> {
     const { columnMetadata, parameters = {} } = dimension;
-    const lookupMetadata = (columnMetadata as ElideDimensionMetadataModel).lookupColumn;
-    const { id, source, tableId } = lookupMetadata;
+    const { valueSource, suggestionColumns } = columnMetadata as ElideDimensionMetadataModel;
+    const { id, source, tableId } = valueSource;
 
     // Create a request with only one dimension and its appropriate filters
     const request: RequestV2 = {
       table: tableId || '',
-      columns: [{ field: id, parameters, type: 'dimension' }],
+      columns: [
+        { field: id, parameters, type: 'dimension' },
+        ...suggestionColumns.map<Column>(({ id, parameters = {} }) => ({
+          field: `${tableId}.${id}`,
+          parameters,
+          type: 'dimension',
+        })),
+      ],
       filters: predicate.map((pred) => ({
         field: id,
         parameters,

@@ -5,8 +5,11 @@ import Pretender from 'pretender';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
+import { Factory } from 'navi-data/models/native-with-create';
 
-let Payload: DimensionMetadataPayload, Dimension: DimensionMetadataModel;
+let Payload: DimensionMetadataPayload,
+  Dimension: DimensionMetadataModel,
+  DimensionFactory: Factory<typeof DimensionMetadataModel>;
 
 module('Unit | Metadata Model | Dimension', function (hooks) {
   setupTest(hooks);
@@ -37,7 +40,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       ],
     };
 
-    Dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), Payload);
+    DimensionFactory = this.owner.factoryFor('model:metadata/dimension');
+    Dimension = DimensionFactory.create(Payload);
   });
 
   test('factory has identifierField defined', function (assert) {
@@ -125,12 +129,14 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
 
     assert.deepEqual(Dimension.primaryKeyFieldName, 'id', 'primaryKeyFieldName returned `id` as the primary key field');
 
-    let nonId = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let nonId = DimensionFactory.create({
       fields: [{ name: 'key', tags: ['primaryKey'] }],
     });
     assert.deepEqual(nonId.primaryKeyFieldName, 'key', 'primaryKeyFieldName returned `key` as the primary key field');
 
-    let twoKeys = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let twoKeys = DimensionFactory.create({
       fields: [
         { name: 'key1', tags: ['primaryKey'] },
         { name: 'key2', tags: ['primaryKey'] },
@@ -142,14 +148,16 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'primaryKeyFieldName returns the first field tagged as `primaryKey`'
     );
 
-    let noFields = DimensionMetadataModel.create({});
+    //@ts-expect-error
+    let noFields = DimensionFactory.create({});
     assert.deepEqual(
       noFields.primaryKeyFieldName,
       'id',
       'primaryKeyFieldName returns `id` when there is no `fields` metadata prop'
     );
 
-    let noPriKey = DimensionMetadataModel.create({});
+    //@ts-expect-error
+    let noPriKey = DimensionFactory.create({});
     assert.deepEqual(
       noPriKey.primaryKeyFieldName,
       'id',
@@ -166,7 +174,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'descriptionFieldName returned `desc` as the description field'
     );
 
-    let nonDesc = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let nonDesc = DimensionFactory.create({
       fields: [{ name: 'name', tags: ['description'] }],
     });
     assert.deepEqual(
@@ -175,7 +184,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'descriptionFieldName returned `name` as the description field'
     );
 
-    let twoKeys = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let twoKeys = DimensionFactory.create({
       fields: [
         { name: 'name1', tags: ['description'] },
         { name: 'name2', tags: ['description'] },
@@ -187,14 +197,16 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'descriptionFieldName returns the first field tagged as `description`'
     );
 
-    let noFields = DimensionMetadataModel.create({});
+    //@ts-expect-error
+    let noFields = DimensionFactory.create({});
     assert.deepEqual(
       noFields.descriptionFieldName,
       'desc',
       'descriptionFieldName returns `desc` when there is no `fields` metadata prop'
     );
 
-    let noDesc = DimensionMetadataModel.create({});
+    //@ts-expect-error
+    let noDesc = DimensionFactory.create({});
     assert.deepEqual(
       noDesc.descriptionFieldName,
       'desc',
@@ -205,7 +217,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
   test('extended property', async function (assert) {
     const server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
-    const dimensionOne = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+    //@ts-expect-error
+    const dimensionOne = DimensionFactory.create({
       id: 'dimensionOne',
       source: 'bardOne',
     });
@@ -217,7 +230,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
   });
 
   test('cardinality', function (assert) {
-    const dimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+    //@ts-expect-error
+    const dimension = DimensionFactory.create({
       cardinality: 'MEDIUM',
       type: 'field',
     });
@@ -228,7 +242,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'Dimension successfully gets its cardinality from its table when type of dimension is field'
     );
 
-    const dimension2 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+    //@ts-expect-error
+    const dimension2 = DimensionFactory.create({
       cardinality: 'MEDIUM',
       type: 'ref',
     });
@@ -239,7 +254,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       'Dimension successfully gets its cardinality from its table when type of dimension is ref'
     );
 
-    const dimension3 = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+    //@ts-expect-error
+    const dimension3 = DimensionFactory.create({
       cardinality: 'MEDIUM',
       type: 'formula',
     });
@@ -254,7 +270,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
   test('idFieldName', async function (assert) {
     assert.expect(4);
 
-    const TestDimension = DimensionMetadataModel.create(this.owner.ownerInjection(), {
+    //@ts-expect-error
+    const TestDimension = DimensionFactory.create({
       fields: [
         {
           name: 'identifier',
@@ -265,12 +282,14 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
 
     assert.deepEqual(TestDimension.idFieldName, 'identifier', 'idFieldName returned `identifier` as the id field');
 
-    let noId = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let noId = DimensionFactory.create({
       fields: [{ name: 'name', tags: ['something'] }],
     });
     assert.deepEqual(noId.idFieldName, 'id', 'idFieldName returned `id` as the default id field name');
 
-    let twoKeys = DimensionMetadataModel.create({
+    //@ts-expect-error
+    let twoKeys = DimensionFactory.create({
       fields: [
         { name: 'name1', tags: ['id'] },
         { name: 'name2', tags: ['id'] },
@@ -278,7 +297,8 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
     });
     assert.deepEqual(twoKeys.idFieldName, 'name1', 'idFieldName returns the first field tagged as `id`');
 
-    let noFields = DimensionMetadataModel.create({});
+    //@ts-expect-error
+    let noFields = DimensionFactory.create({});
     assert.deepEqual(noFields.idFieldName, 'id', 'idFieldName returns `id` when there is no `fields` metadata prop');
   });
 });

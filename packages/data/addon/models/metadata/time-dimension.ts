@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import type { DimensionMetadata, DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import type { ColumnInstance, ColumnType } from 'navi-data/models/metadata/column';
 import { Grain } from 'navi-data/utils/date';
 
@@ -12,32 +12,24 @@ interface TimeDimensionGrain {
   expression: string;
   grain: string;
 }
-// Shape of public properties on model
-export interface TimeDimensionMetadata extends DimensionMetadata {
-  supportedGrains: TimeDimensionGrain[];
-  timeZone: TODO;
-}
+
 // Shape passed to model constructor
 export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
   supportedGrains: TimeDimensionGrain[];
-  timeZone: TODO;
+  timeZone: string;
 }
 
 export type TimeDimensionColumn = ColumnInstance<TimeDimensionMetadataModel>;
 
-export default class TimeDimensionMetadataModel
-  extends DimensionMetadataModel
-  implements TimeDimensionMetadata, TimeDimensionMetadataPayload {
+export default class TimeDimensionMetadataModel extends DimensionMetadataModel {
+  constructor(owner: unknown, args: TimeDimensionMetadataPayload) {
+    super(owner, args);
+  }
   metadataType: ColumnType = 'timeDimension';
-  /**
-   * @property {TimeDimensionGrain[]} supportedGrains
-   */
-  supportedGrains!: TimeDimensionGrain[];
 
-  /**
-   * @property {string} timeZone
-   */
-  timeZone!: string;
+  declare supportedGrains: TimeDimensionGrain[];
+
+  declare timeZone: string;
 }
 
 declare module 'navi-data/models/metadata/registry' {

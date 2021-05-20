@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -13,7 +13,7 @@
  */
 import { not } from '@ember/object/computed';
 import Component from '@ember/component';
-import { get, set, computed, action } from '@ember/object';
+import { set, computed, action } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { isEmpty } from '@ember/utils';
 import { inject as service } from '@ember/service';
@@ -35,7 +35,7 @@ class DimensionBulkImportComponent extends Component {
    */
   @computed('queryIds')
   get _trimmedQueryIds() {
-    const queryIds = get(this, 'queryIds') || [];
+    const queryIds = this.queryIds || [];
 
     //Remove preceding and trailing white spaces, empty strings and duplicates
     return arr(queryIds.map((key) => key.trim()).filter(Boolean)).uniq();
@@ -65,11 +65,9 @@ class DimensionBulkImportComponent extends Component {
    */
   @computed('_trimmedQueryIds', '_validDimValues')
   get _invalidDimValueIds() {
-    const validDimVals = get(this, '_validDimValues');
+    const validDimVals = this._validDimValues;
     return arr(
-      get(this, '_trimmedQueryIds').reject((queryId) =>
-        validDimVals.any((validDimVal) => get(validDimVal, 'id') === queryId)
-      )
+      this._trimmedQueryIds.reject((queryId) => validDimVals.any((validDimVal) => validDimVal.id === queryId))
     );
   }
 
@@ -108,18 +106,18 @@ class DimensionBulkImportComponent extends Component {
    */
   _search() {
     // Nothing to search for
-    if (isEmpty(get(this, '_trimmedQueryIds'))) {
+    if (isEmpty(this._trimmedQueryIds)) {
       this.onCancel();
       return;
     }
 
-    const splitValuesPromise = get(this, '_dimensionService')
+    const splitValuesPromise = this._dimensionService
       .find(
         this.dimension?.id,
         [
           {
-            values: get(this, '_trimmedQueryIds'),
-            field: get(this, 'searchableIdField'),
+            values: this._trimmedQueryIds,
+            field: this.searchableIdField,
           },
         ],
         { dataSourceName: this.dimension?.source }
@@ -129,12 +127,12 @@ class DimensionBulkImportComponent extends Component {
       });
 
     set(this, '_validRawInputDimValue', undefined);
-    const rawInputPromise = get(this, '_dimensionService')
+    const rawInputPromise = this._dimensionService
       .find(
         this.dimension?.id,
         [
           {
-            field: get(this, 'searchableIdField'),
+            field: this.searchableIdField,
             values: [this.rawQuery],
           },
         ],
@@ -158,7 +156,7 @@ class DimensionBulkImportComponent extends Component {
   @computed('dimension.{id,source}')
   get searchableIdField() {
     const meta = this.naviMetadata.getById('dimension', this.dimension?.id, this.dimension?.source);
-    return get(meta, 'idFieldName');
+    return meta.idFieldName;
   }
 
   /**

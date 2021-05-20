@@ -3,6 +3,7 @@ import { setupTest } from 'ember-qunit';
 import ElideDimensionAdapter from 'navi-data/adapters/dimensions/elide';
 import { RequestV2, AsyncQueryResponse, QueryStatus, RequestOptions } from 'navi-data/adapters/facts/interface';
 import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { TestContext as Context } from 'ember-test-helpers';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
@@ -217,6 +218,37 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
 
     assertRequest(this, (request, _options) => {
       assert.deepEqual(request, expectedRequest, '`tableSource`, when available, is used to lookup dimension values');
+    });
+
+    const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');
+    await taskFor(adapter.find).perform(TestDimensionColumn, [{ operator: 'in', values: ['v1', 'v2'] }]);
+  });
+
+  test('find - tableSource with suggestions', async function (this: TestContext, assert) {
+    assert.expect(1);
+
+    const factDimColumn = 'table1.dimension2';
+    const lookupDimColumn = 'table0.dimension0';
+    const suggestionColumn = 'dimension1';
+
+    const factDim = this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as ElideDimensionMetadataModel;
+    const suggestionsDim = new ElideDimensionMetadataModel(this.owner, {
+      ...factDim,
+      tableSource: {
+        valueSource: lookupDimColumn,
+        suggestionColumns: [{ id: suggestionColumn }],
+      },
+    });
+
+    const TestDimensionColumn: DimensionColumn = { columnMetadata: suggestionsDim };
+
+    const expectedColumns: RequestV2['columns'] = [
+      { field: lookupDimColumn, parameters: {}, type: 'dimension' },
+      { field: `table0.${suggestionColumn}`, parameters: {}, type: 'dimension' },
+    ];
+
+    assertRequest(this, (request, _options) => {
+      assert.deepEqual(request.columns, expectedColumns, 'The value source and suggestion columns are requested');
     });
 
     const adapter: ElideDimensionAdapter = this.owner.lookup('adapter:dimensions/elide');

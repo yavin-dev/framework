@@ -47,11 +47,7 @@ module('Integration | Component | Editable Label', function (hooks) {
 
     await blur('.editable-label__input');
 
-    assert.equal(
-      this.get('value'),
-      'Default Value',
-      'Editing the label does not mutate the provided `value` attribute'
-    );
+    assert.equal(this.value, 'Default Value', 'Editing the label does not mutate the provided `value` attribute');
   });
 
   test('_inputSize', async function (assert) {

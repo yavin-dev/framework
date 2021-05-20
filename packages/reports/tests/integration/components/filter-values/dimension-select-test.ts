@@ -11,20 +11,22 @@ import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
 import $ from 'jquery';
 import Service from '@ember/service';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
+import type NaviDimensionModel from 'navi-data/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type { Server, Request } from 'miragejs';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 interface TestContext extends Context {
   server: Server;
   fragmentFactory: FragmentFactory;
   filter: FilterFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
+  dimensionModelFactory: Factory<typeof NaviDimensionModel>;
 }
 
 const HOST = config.navi.dataSources[0].uri;
@@ -50,6 +52,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     ]);
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
+    this.dimensionModelFactory = this.owner.factoryFor('model:navi-dimension');
   });
 
   test('it renders', async function (this: TestContext, assert) {
@@ -70,7 +73,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     );
 
     let optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      expectedOptionText = AgeValues.map(({ id }) => id);
+      expectedOptionText = AgeValues.map(({ id, description }) => `${id} (${description})`);
     /*
      * Since vertical-collection is used for rendering the dropdown options,
      * some later options may be cropped from the DOM, so just check the first 10
@@ -112,7 +115,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     );
 
     const optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim());
-    const expectedOptionText = ContainerValues.map(({ id }) => id);
+    const expectedOptionText = ContainerValues.map(({ id, description }) => `${id} (${description})`);
 
     /*
      * Since vertical-collection is used for rendering the dropdown options,
@@ -198,8 +201,8 @@ module('Integration | Component | filter values/dimension select', function (hoo
         .map((el) => el.textContent?.trim())
         .sort();
 
-    const expectedValueDimensions = ContainerValues.map(({ description }) => description).filter((desc) =>
-      desc.includes(searchTerm)
+    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
+      ({ id, description }) => `${description} (${id})`
     );
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
@@ -216,11 +219,12 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied numerically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    const factory = this.dimensionModelFactory;
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111'];
-        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        const values = rawValues.map((value) => factory.create({ value, dimensionColumn }));
         return yield NaviDimensionResponse.create({ values });
       }
     }
@@ -240,11 +244,12 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied lexicographically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    const factory = this.dimensionModelFactory;
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111', 'stringvalue'];
-        const values = rawValues.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+        const values = rawValues.map((value) => factory.create({ value, dimensionColumn }));
         return yield NaviDimensionResponse.create({ values });
       }
     }
@@ -264,13 +269,12 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied to search', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
+    const factory = this.dimensionModelFactory;
 
     class MockDimensions extends Service {
       @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111'];
-        const values = rawValues.map((value) =>
-          NaviDimensionModel.create({ value: `Property ${value}`, dimensionColumn })
-        );
+        const values = rawValues.map((value) => factory.create({ value: `Property ${value}`, dimensionColumn }));
         return yield NaviDimensionResponse.create({ values });
       }
     }

@@ -174,7 +174,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
     assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
 
     assert.deepEqual(
-      model._factService,
+      model['factService'],
       service,
       'Fetch returns a navi response model object with the service instance'
     );
@@ -307,6 +307,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
     await taskFor(service.fetchNext).perform(response, request);
 
+    //@ts-ignore
     response.meta.pagination.currentPage = 3;
     assert.equal(
       await taskFor(service.fetchNext).perform(response, request),
@@ -337,6 +338,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
     await taskFor(service.fetchPrevious).perform(response, request);
 
+    //@ts-ignore
     response.meta.pagination.currentPage = 1;
     assert.equal(
       await taskFor(service.fetchPrevious).perform(response, request),

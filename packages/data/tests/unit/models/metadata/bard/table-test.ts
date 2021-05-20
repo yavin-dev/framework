@@ -1,9 +1,12 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
-import { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import type { Factory } from 'navi-data/models/native-with-create';
 
-let Payload: BardTableMetadataPayload, Model: BardTableMetadataModel;
+let Payload: BardTableMetadataPayload,
+  Table: BardTableMetadataModel,
+  TableFactory: Factory<typeof BardTableMetadataModel>;
 
 module('Unit | Model | metadata/bard/table', function (hooks) {
   setupTest(hooks);
@@ -26,20 +29,21 @@ module('Unit | Model | metadata/bard/table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    Model = BardTableMetadataModel.create(Payload);
+    TableFactory = this.owner.factoryFor('model:metadata/bard/table');
+    Table = TableFactory.create(Payload);
   });
 
   test('it properly hydrates properties', function (assert) {
     assert.expect(1);
 
-    assert.deepEqual(Model.timeGrainIds, ['day', 'week', 'month'], 'timeGrainIds property is hydrated properly');
+    assert.deepEqual(Table['timeGrainIds'], ['day', 'week', 'month'], 'timeGrainIds property is hydrated properly');
   });
 
   test('it returns timegrains', function (assert) {
     assert.expect(1);
 
     assert.deepEqual(
-      Model.timeGrains,
+      Table.timeGrains,
       [
         {
           id: 'day',

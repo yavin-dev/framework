@@ -4,7 +4,7 @@ import RequestConstrainerService, { TemplateDispatcherAction } from 'navi-report
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { RequestConstraintMetadata } from 'navi-data/models/metadata/request-constraint';
+import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -15,7 +15,7 @@ import { MessageOptions } from 'navi-core/services/interfaces/navi-notifications
 
 let RequestConstrainer: RequestConstrainerService;
 
-type Constraint = RequestConstraintMetadata['constraint'];
+type Constraint = RequestConstraintMetadataModel['constraint'];
 function makeConstraint(property: Constraint['property'], matches: Constraint['matches'], isSatisfied: boolean) {
   return {
     type: 'existence',

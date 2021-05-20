@@ -1,20 +1,19 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
-import Store from '@ember-data/store';
-import { ColumnMetadata, ColumnType } from 'navi-data/models/metadata/column';
-//@ts-ignore
-import ColumnFragment from '../models/bard-request-v2/fragments/column';
-//@ts-ignore
-import FilterFragment from '../models/bard-request-v2/fragments/filter';
-//@ts-ignore
-import SortFragment from '../models/bard-request-v2/fragments/sort';
-import { SortDirection } from 'navi-data/adapters/facts/interface';
+import type ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type { ColumnType } from 'navi-data/models/metadata/column';
+import type Store from '@ember-data/store';
+import type ColumnFragment from '../models/bard-request-v2/fragments/column';
+import type FilterFragment from '../models/bard-request-v2/fragments/filter';
+import type SortFragment from '../models/bard-request-v2/fragments/sort';
+import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 export default class FragmentFactory extends Service {
-  @service store!: Store;
+  @service
+  declare store: Store;
 
   /**
    * Builds a request v2 column fragment given meta data object.
@@ -23,7 +22,7 @@ export default class FragmentFactory extends Service {
    * @param alias - optional alias for this column
    */
   createColumnFromMeta(
-    columnMetadata: ColumnMetadata,
+    columnMetadata: ColumnMetadataModel,
     parameters: Record<string, string> = {},
     alias?: string
   ): ColumnFragment {
@@ -63,7 +62,7 @@ export default class FragmentFactory extends Service {
    * @param values - array of values to filter by
    */
   createFilterFromMeta(
-    columnMetadata: ColumnMetadata,
+    columnMetadata: ColumnMetadataModel,
     parameters: FilterFragment['parameters'],
     operator: FilterFragment['operator'],
     values: FilterFragment['values']
@@ -106,7 +105,7 @@ export default class FragmentFactory extends Service {
    * @param direction  - `desc` or `asc`
    */
   createSortFromMeta(
-    columnMetadata: ColumnMetadata,
+    columnMetadata: ColumnMetadataModel,
     parameters: Record<string, string> = {},
     direction: 'asc' | 'desc'
   ): SortFragment {

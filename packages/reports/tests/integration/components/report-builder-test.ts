@@ -11,8 +11,9 @@ import config from 'ember-get-config';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
+import { Factory } from 'navi-data/addon/models/native-with-create';
 
-let MetadataService: NaviMetadataService, Store: StoreService;
+let MetadataService: NaviMetadataService, Store: StoreService, TableFactory: Factory<typeof TableMetadataModel>;
 
 const mockDataSourceA = {
   name: 'bardOne',
@@ -44,6 +45,8 @@ module('Integration | Component | report builder', function (hooks) {
       helper(() => () => undefined)
     );
 
+    TableFactory = this.owner.factoryFor('model:metadata/table');
+
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceA.name });
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceB.name });
     this.set(
@@ -74,8 +77,10 @@ module('Integration | Component | report builder', function (hooks) {
     MetadataService['loadMetadataForType'](
       'table',
       [
-        TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
-        TableMetadataModel.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
       ],
       mockDataSourceA.name
     );
@@ -128,9 +133,12 @@ module('Integration | Component | report builder', function (hooks) {
     MetadataService['loadMetadataForType'](
       'table',
       [
-        TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
-        TableMetadataModel.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
-        TableMetadataModel.create({ id: 'notFactTable', source: mockDataSourceB.name, isFact: false }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'notFactTable', source: mockDataSourceB.name, isFact: false }),
       ],
       mockDataSourceB.name
     );
@@ -182,16 +190,20 @@ module('Integration | Component | report builder', function (hooks) {
     MetadataService['loadMetadataForType'](
       'table',
       [
-        TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
-        TableMetadataModel.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
       ],
       mockDataSourceA.name
     );
     MetadataService['loadMetadataForType'](
       'table',
       [
-        TableMetadataModel.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
-        TableMetadataModel.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
+        //@ts-expect-error
+        TableFactory.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
       ],
       mockDataSourceB.name
     );

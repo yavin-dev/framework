@@ -1,22 +1,32 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import EmberObject from '@ember/object';
+import NativeWithCreate from 'navi-data/models/native-with-create';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import moment, { Moment, MomentInput } from 'moment';
-import type { TimeDimensionColumn } from 'navi-data/models/metadata/time-dimension';
 import Interval from 'navi-data/utils/classes/interval';
+import type { TimeDimensionColumn } from 'navi-data/models/metadata/time-dimension';
 
 function notNull<T>(t: T | null): t is T {
   return t !== null;
 }
 
 export type ResponseRow = ResponseV1['rows'][number];
-export default class NaviFactResponse extends EmberObject implements ResponseV1 {
-  readonly rows: ResponseV1['rows'] = [];
-  readonly meta: ResponseV1['meta'] = {};
+
+interface NaviFactResponsePayload {
+  rows: ResponseV1['rows'];
+  meta?: ResponseV1['meta'];
+}
+
+export default class NaviFactResponse extends NativeWithCreate implements ResponseV1 {
+  constructor(owner: unknown, args: NaviFactResponsePayload) {
+    super(owner, args);
+    this.rows = this.rows ?? [];
+    this.meta = this.meta ?? {};
+  }
+  declare readonly rows: ResponseV1['rows'];
+  declare readonly meta: ResponseV1['meta'];
 
   private momentsCache: Record<string, Moment[]> = {};
 

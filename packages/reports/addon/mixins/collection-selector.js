@@ -32,14 +32,14 @@ export default Mixin.create({
   validate: on(
     'init',
     observer('selectedItem', 'items.[]', function () {
-      let selectedItem = get(this, 'selectedItem.0') || get(this, 'selectedItem'),
-        items = get(this, 'items');
+      let selectedItem = get(this, 'selectedItem.0') || this.selectedItem,
+        items = this.items;
 
       // Checks if items array is defined and not empty
       assert('Items array should not be empty', !isEmpty(items));
 
       // Check if items array is unique
-      assert('Items array should be unique', get(A(items).uniq(), 'length') === get(items, 'length'));
+      assert('Items array should be unique', A(items).uniq().length === items.length);
 
       //Check if selectedItem is present in items array
       if (selectedItem && !A(items).includes(selectedItem)) {

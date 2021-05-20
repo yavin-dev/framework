@@ -211,7 +211,7 @@ module('Unit | Component | line chart', function (hooks) {
       model: A([
         {
           request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews' }]),
-          response: NaviFactResponse.create(),
+          response: new NaviFactResponse(this.owner, { rows: [] }),
         },
       ]),
     }) as TestLineChart;

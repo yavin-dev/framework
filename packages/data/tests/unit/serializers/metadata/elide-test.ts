@@ -12,11 +12,11 @@ import {
 } from 'navi-data/serializers/metadata/elide';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
-import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import ElideDimensionMetadataModel, { ElideDimensionMetadataPayload } from 'navi-data/models/metadata/elide/dimension';
+import { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import { ElideDimensionMetadataPayload } from 'navi-data/models/metadata/elide/dimension';
 
 let Serializer: ElideMetadataSerializer;
 
@@ -321,7 +321,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         source: 'bardOne',
         tableId: 'tableA',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
       {
@@ -338,7 +338,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         source: 'bardOne',
         tableId: 'tableA',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
       {
@@ -355,7 +355,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         source: 'bardOne',
         tableId: 'tableB',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
       {
@@ -372,7 +372,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         source: 'bardOne',
         tableId: 'tableB',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
     ];
@@ -434,16 +434,16 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     assert.deepEqual(
       Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
       {
-        tables: expectedTablePayloads.map((p) => TableMetadataModel.create(this.owner.ownerInjection(), p)),
-        metrics: expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+        tables: expectedTablePayloads.map((p) => this.owner.factoryFor('model:metadata/table').create(p)),
+        metrics: expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
         dimensions: expectedDimensionPayloads.map((p) =>
-          ElideDimensionMetadataModel.create(this.owner.ownerInjection(), p)
+          this.owner.factoryFor('model:metadata/elide/dimension').create(p)
         ),
         timeDimensions: expectedTimeDimensionPayloads.map((p) =>
-          TimeDimensionMetadataModel.create(this.owner.ownerInjection(), p)
+          this.owner.factoryFor('model:metadata/time-dimension').create(p)
         ),
         columnFunctions: expectedColumnFunctionsPayloads.map((p) =>
-          ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), p)
+          this.owner.factoryFor('model:metadata/column-function').create(p)
         ),
         requestConstraints: [],
       },
@@ -522,7 +522,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     ];
     assert.deepEqual(
       Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source),
-      expectedMetricPayloads.map((p) => MetricMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
       'Metric connection payload is normalized properly for a table'
     );
 
@@ -592,7 +592,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         isSortable: true,
         expression: '',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
       {
@@ -609,14 +609,14 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         isSortable: true,
         expression: '',
         valueSourceType: 'NONE',
-        tableSource: null,
+        tableSource: undefined,
         values: [],
       },
     ];
 
     assert.deepEqual(
       Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source),
-      expectedDimensionPayloads.map((p) => ElideDimensionMetadataModel.create(this.owner.ownerInjection(), p)),
+      expectedDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/elide/dimension').create(p)),
       'Dimension connection payload is normalized properly for a table'
     );
 
@@ -793,8 +793,8 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     assert.deepEqual(
       Serializer._normalizeTableTimeDimensions(timeDimensionPayload, tableId, source),
       expected.map(({ timeDimension, columnFunction }) => ({
-        timeDimension: TimeDimensionMetadataModel.create(this.owner.ownerInjection(), timeDimension),
-        columnFunction: ColumnFunctionMetadataModel.create(this.owner.ownerInjection(), columnFunction),
+        timeDimension: this.owner.factoryFor('model:metadata/time-dimension').create(timeDimension),
+        columnFunction: this.owner.factoryFor('model:metadata/column-function').create(columnFunction),
       })),
       'Time Dimension connection payload is normalized properly for a table'
     );

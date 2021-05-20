@@ -5,6 +5,7 @@
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
+import { getOwner } from '@ember/application';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
@@ -68,7 +69,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
-      return values.map((value) => NaviDimensionModel.create({ value, dimensionColumn }));
+      const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+      return values.map((value) => dimensionModelFactory.create({ value, dimensionColumn }));
     }
     return [];
   }

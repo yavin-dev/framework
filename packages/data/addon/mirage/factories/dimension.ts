@@ -53,7 +53,7 @@ export default Factory.extend({
   },
 
   tableSource() {
-    return this.valueSourceType === 'TABLE' ? `table0.dimension0` : null;
+    return this.valueSourceType === 'TABLE' ? 'table0.dimension0' : null;
   },
 
   values() {

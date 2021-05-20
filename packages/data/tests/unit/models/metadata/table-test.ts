@@ -1,10 +1,13 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import KegService from 'navi-data/services/keg';
+import type KegService from 'navi-data/services/keg';
+import type { Factory } from 'navi-data/models/native-with-create';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegService, TableFactory: any;
+let Payload: TableMetadataPayload,
+  Model: TableMetadataModel,
+  Keg: KegService,
+  TableFactory: Factory<typeof TableMetadataModel>;
 
 module('Unit | Metadata Model | Table', function (hooks) {
   setupTest(hooks);
@@ -25,7 +28,8 @@ module('Unit | Metadata Model | Table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    Model = this.owner.factoryFor('model:metadata/table').create(Payload);
+    TableFactory = this.owner.factoryFor('model:metadata/table');
+    Model = TableFactory.create(Payload);
 
     //Looking up and injecting keg into the model
     Keg = this.owner.lookup('service:keg');
@@ -75,14 +79,12 @@ module('Unit | Metadata Model | Table', function (hooks) {
       },
       { namespace: 'bardOne' }
     );
-
-    TableFactory = this.owner.factoryFor('model:metadata/table').class;
   });
 
   test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
-    assert.equal(TableFactory.identifierField, 'id', 'identifierField property is set to `id`');
+    assert.equal(TableFactory.class.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function (assert) {

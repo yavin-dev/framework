@@ -45,7 +45,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     );
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ id }) => id),
+      ContainerDimValues.map(({ id, description }) => `${id} (${description})`),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });
@@ -72,7 +72,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
 
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ description }) => description),
+      ContainerDimValues.map(({ id, description }) => `${description} (${id})`),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });
@@ -90,6 +90,90 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
       this.serializer.normalize(dimColumn, payload).values,
       [],
       '`normalize` can handle an empty payload'
+    );
+  });
+
+  test('normalize suggestions - only uses non selected fields as suggestions', function (this: TestContext, assert) {
+    const payload: FiliDimensionResponse = {
+      rows: cloneDeep(ContainerDimValues).map((r: Record<string, string>, idx) => {
+        r.key = `key${idx}`;
+        return r;
+      }),
+    };
+
+    const container = this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel;
+    const noSuggestions = new DimensionMetadataModel(this.owner, {
+      ...container,
+      tableSource: { suggestionColumns: [] },
+    });
+    const noSuggestionsColumn: DimensionColumn = { columnMetadata: noSuggestions, parameters: { field: 'desc' } };
+    assert.deepEqual(
+      this.serializer.normalize(noSuggestionsColumn, payload).values.map((v) => v.suggestions),
+      [[], [], [], []],
+      '`normalize` dimension with no suggestion columns gives empty array'
+    );
+
+    const withSuggestions = new DimensionMetadataModel(this.owner, {
+      ...container,
+      tableSource: {
+        suggestionColumns: [
+          { id: 'container', parameters: { field: 'id' } },
+          { id: 'container', parameters: { field: 'desc' } },
+        ],
+      },
+    });
+
+    const descColumn: DimensionColumn = { columnMetadata: withSuggestions, parameters: { field: 'key' } };
+    assert.deepEqual(
+      this.serializer.normalize(descColumn, payload).values.map((v) => v.suggestions),
+      [
+        ['1', 'Bag'],
+        ['2', 'Bank'],
+        ['3', 'Saddle Bag'],
+        ['4', 'Retainer'],
+      ],
+      '`normalize` uses the suggestion columns that were not selected as suggestions'
+    );
+
+    const idColumn: DimensionColumn = { columnMetadata: withSuggestions, parameters: { field: 'id' } };
+    assert.deepEqual(
+      this.serializer.normalize(idColumn, payload).values.map((v) => v.suggestions),
+      [['Bag'], ['Bank'], ['Saddle Bag'], ['Retainer']],
+      '`normalize` uses the suggestion columns that were not selected as suggestions'
+    );
+  });
+
+  test('normalize suggestions - only same dimension with different fields', function (this: TestContext, assert) {
+    const payload: FiliDimensionResponse = { rows: cloneDeep(ContainerDimValues) };
+
+    const container = this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel;
+    const columnMetadata = new DimensionMetadataModel(this.owner, {
+      ...container,
+      tableSource: {
+        suggestionColumns: [
+          { id: 'container', parameters: { field: 'id' } },
+          { id: 'container', parameters: { field: 'desc' } },
+        ],
+      },
+    });
+    const dimColumn: DimensionColumn = { columnMetadata, parameters: { field: 'desc' } };
+
+    columnMetadata.tableSource!.suggestionColumns = [{ id: 'otherDim', parameters: { field: 'id' } }];
+    assert.throws(
+      () => {
+        this.serializer.normalize(dimColumn, payload);
+      },
+      /Error: Only different fields of the same dimension may be used as suggestions/,
+      '`normalize` throws an error if a different dimension is used as a suggestion'
+    );
+
+    columnMetadata.tableSource!.suggestionColumns = [{ id: 'container', parameters: { notField: 'id' } }];
+    assert.throws(
+      () => {
+        this.serializer.normalize(dimColumn, payload);
+      },
+      /Error: Only different fields of the same dimension may be used as suggestions/,
+      '`normalize` throws an error if no field is specified for the suggestion'
     );
   });
 });

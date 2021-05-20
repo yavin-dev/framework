@@ -40,7 +40,7 @@ module('Unit | Model | navi facts', function (hooks) {
     Response = NaviFactsModel.create(Payload);
 
     //Mocking facts service
-    Response.set('_factService', {
+    Response.set('factService', {
       fetch: (request, options) => ({
         request,
         options,
@@ -60,7 +60,7 @@ module('Unit | Model | navi facts', function (hooks) {
     assert.expect(2);
 
     //Mocking facts service
-    Response.set('_factService', {
+    Response.set('factService', {
       fetchNext: () => {
         assert.ok('The service`s fetch Next method is invoked with the response and request');
       },
@@ -69,7 +69,7 @@ module('Unit | Model | navi facts', function (hooks) {
     Response.next();
 
     //Mocking facts service
-    Response.set('_factService', {
+    Response.set('factService', {
       fetchPrevious: () => {
         assert.ok('The service`s fetch Previous method is invoked with the response and request');
       },

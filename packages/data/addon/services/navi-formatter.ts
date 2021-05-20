@@ -4,11 +4,11 @@
  */
 import Service from '@ember/service';
 import { omit } from 'lodash-es';
-import { ColumnMetadata } from 'navi-data/models/metadata/column';
-import { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 
 export default class NaviFormatterService extends Service {
-  formatColumnName(columnMetadata?: ColumnMetadata, parameters?: Parameters, alias?: string | null): string {
+  formatColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
     if (alias) {
       return alias;
     }

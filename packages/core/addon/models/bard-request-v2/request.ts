@@ -16,18 +16,18 @@ import { isEqual } from 'lodash-es';
 import Interval from 'navi-data/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import { RequestV2, SortDirection, Parameters } from 'navi-data/adapters/facts/interface';
-import FragmentFactory from 'navi-core/services/fragment-factory';
-import NaviMetadataService from 'navi-data/services/navi-metadata';
-import Store from '@ember-data/store';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import FragmentArray from 'ember-data-model-fragments/FragmentArray';
-import { ColumnMetadataModels } from './fragments/base';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import SortFragment from './fragments/sort';
-import TableMetadataModel, { TableMetadata } from 'navi-data/models/metadata/table';
-import { ColumnType } from 'navi-data/models/metadata/column';
-import { Grain } from 'navi-data/utils/date';
+import type { RequestV2, SortDirection, Parameters } from 'navi-data/adapters/facts/interface';
+import type FragmentFactory from 'navi-core/services/fragment-factory';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type Store from '@ember-data/store';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
+import type { ColumnMetadataModels } from './fragments/base';
+import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type SortFragment from './fragments/sort';
+import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type { ColumnType } from 'navi-data/models/metadata/column';
+import type { Grain } from 'navi-data/utils/date';
 
 type BaseLiteral = {
   type: ColumnType;
@@ -238,7 +238,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   /**
    * Sets the table of the request
    */
-  setTableByMetadata(table: TableMetadata) {
+  setTableByMetadata(table: TableMetadataModel) {
     set(this, 'table', table.id);
     set(this, 'dataSource', table.source);
   }

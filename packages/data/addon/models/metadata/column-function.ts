@@ -4,10 +4,9 @@
  *
  * A collection of function parameters that has a one to many relationship to columns
  */
-import EmberObject from '@ember/object';
-import { getOwner } from '@ember/application';
+import NativeWithCreate, { Factory } from 'navi-data/models/native-with-create';
+import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
 import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
-import FunctionParameter from 'navi-data/models/metadata/function-parameter';
 
 export interface ColumnFunctionMetadataPayload {
   id: string;
@@ -16,62 +15,35 @@ export interface ColumnFunctionMetadataPayload {
   source: string;
   _parametersPayload?: FunctionParameterMetadataPayload[];
 }
-export interface ColumnFunctionMetadata {
-  id: string;
-  name: string;
-  description?: string;
-  source: string;
-  parameters: FunctionParameter[];
-}
 
-export default class ColumnFunctionMetadataModel
-  extends EmberObject
-  implements ColumnFunctionMetadataPayload, ColumnFunctionMetadata {
-  init() {
-    //@ts-ignore
-    super.init(...arguments);
-    const owner = getOwner(this);
-    const parameters = (this._parametersPayload || []).map((param) =>
-      FunctionParameter.create(owner.ownerInjection(), param)
-    );
+export default class ColumnFunctionMetadataModel extends NativeWithCreate {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  constructor(owner: any, args: ColumnFunctionMetadataPayload) {
+    super(owner, args);
+    const parameterFactory = owner.factoryFor('model:metadata/function-parameter') as Factory<typeof FunctionParameter>;
+    const parameters = (this._parametersPayload || []).map((param) => parameterFactory.create(param));
     this.parameters = parameters;
   }
 
-  /**
-   * @static
-   * @property {string} identifierField
-   */
   static identifierField = 'id';
 
-  /**
-   * @property {string} id
-   */
-  id!: string;
+  declare id: string;
+
+  declare name: string;
+
+  declare description: string;
+
+  declare source: string;
 
   /**
-   * @property {string} name
+   * Initializer payload property for actual parameters
    */
-  name!: string;
+  protected declare _parametersPayload: FunctionParameterMetadataPayload[];
 
   /**
-   * @property {string} description
+   * Function parameter instances related to this column function
    */
-  description?: string;
-
-  /**
-   * @property {string} source
-   */
-  source!: string;
-
-  /**
-   * @property {FunctionParameterMetadataPayload[]} _parametersPayload - Initializer payload property for actual parameters
-   */
-  _parametersPayload?: FunctionParameterMetadataPayload[];
-
-  /**
-   * @property {FunctionParameter[]} - Function parameter instances related to this column function
-   */
-  parameters!: FunctionParameter[];
+  declare parameters: FunctionParameter[];
 }
 declare module 'navi-data/models/metadata/registry' {
   export default interface MetadataModelRegistry {

@@ -117,6 +117,12 @@ const schema = gql`
     NONE
   }
 
+  type TableSourceType {
+    id: DeferredID
+    valueSource: Dimension
+    suggestionSources: [Dimension]
+  }
+
   type Dimension implements Node & ColumnInterface {
     id: DeferredID!
     name: String!

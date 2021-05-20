@@ -3,7 +3,6 @@ import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { run } from '@ember/runloop';
-import { get } from '@ember/object';
 import Response from 'ember-cli-mirage/response';
 
 let Store;
@@ -87,7 +86,7 @@ module('Unit | Consumer | delivery-rule', function (hooks) {
 
     return run(() => {
       return Store.findRecord('report', 1).then((report) => {
-        return get(report, 'author').then((owner) => {
+        return report.author.then((owner) => {
           let newRule = Store.createRecord('delivery-rule', {
             deliveryType: 'report',
             format: { type: 'csv' },
@@ -95,12 +94,12 @@ module('Unit | Consumer | delivery-rule', function (hooks) {
             owner,
           });
 
-          assert.ok(get(newRule, 'hasDirtyAttributes'), 'Delivery rule is not saved');
+          assert.ok(newRule.hasDirtyAttributes, 'Delivery rule is not saved');
 
           Consumer.send('saveDeliveryRule', newRule, promise);
 
           return settled().then(() => {
-            assert.notOk(get(newRule, 'hasDirtyAttributes'), 'saveDeliveryRule action saves the dirty delivery rule');
+            assert.notOk(newRule.hasDirtyAttributes, 'saveDeliveryRule action saves the dirty delivery rule');
           });
         });
       });
