@@ -15,6 +15,9 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { toLeft, toRight } from 'navi-reports/transitions/custom-move-over';
 //@ts-ignore
 import move from 'ember-animated/motions/move';
+import { task } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
+import type { TaskInstance, TaskGenerator } from 'ember-concurrency';
 import type { NaviDataSource } from 'navi-config';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
@@ -57,35 +60,18 @@ export default class ReportBuilderSidebar extends Component<Args> {
 
   @tracked sourcePath: SourcePath = [];
 
-  @tracked latestDataSourceTables: SourceItem<TableMetadataModel>[] = [];
+  @tracked dataSources: TaskInstance<SourceItem<NaviDataSource>[]>;
+  @tracked tables?: TaskInstance<SourceItem<TableMetadataModel>[]>;
 
   constructor(owner: unknown, args: Args) {
     super(owner, args);
     const { tableMetadata, dataSource } = this.request;
+    this.dataSources = taskFor(this.fetchDataSources).perform();
 
     if (tableMetadata) {
-      this.sourcePath = [mapDataSource(getDataSource(tableMetadata.source)), mapTable(tableMetadata)];
+      this.setSourcePath([mapDataSource(getDataSource(tableMetadata.source)), mapTable(tableMetadata)]);
     } else if (dataSource) {
-      this.sourcePath = [mapDataSource(getDataSource(dataSource))];
-    } else {
-      this.setupDefaultPath();
-    }
-    const [dataSourceItem] = this.sourcePath;
-    if (dataSourceItem) {
-      this.latestDataSourceTables = this.getTablesForDataSource(dataSourceItem);
-    }
-  }
-
-  protected setupDefaultPath(): void {
-    const { dataSources } = this;
-    if (dataSources.length === 1) {
-      const dataSource = dataSources[0];
-      const tables = this.getTablesForDataSource(dataSource);
-      if (tables.length === 1) {
-        this.setSelectedTable(tables[0].source);
-      } else {
-        this.setSelectedDataSource(dataSource.source);
-      }
+      this.setSourcePath([mapDataSource(getDataSource(dataSource))]);
     }
   }
 
@@ -94,13 +80,12 @@ export default class ReportBuilderSidebar extends Component<Args> {
   }
 
   get requestDataSource(): SourceItem<NaviDataSource> | undefined {
-    const { dataSources, request } = this;
-    return dataSources.find((d) => d.source.name === request.dataSource);
+    return mapDataSource(getDataSource(this.request.dataSource));
   }
 
   get requestTableMetadata(): SourceItem<TableMetadataModel> | undefined {
-    const { dataSourceTables, request } = this;
-    return dataSourceTables.find((d) => d.source.id === request.table);
+    const { tableMetadata } = this.request;
+    return tableMetadata ? mapTable(tableMetadata) : undefined;
   }
 
   get selecting(): SelectingState {
@@ -114,33 +99,28 @@ export default class ReportBuilderSidebar extends Component<Args> {
     assert('sourcePath length not supported');
   }
 
-  get table() {
-    return this.request.table;
+  @task *fetchDataSources(): TaskGenerator<SourceItem<NaviDataSource>[]> {
+    const sources: SourceItem<NaviDataSource>[] = sortBy(config.navi.dataSources, ['displayName']).map(
+      (dataSource) => ({
+        name: dataSource.displayName,
+        description: dataSource.description,
+        source: dataSource,
+      })
+    );
+    return yield sources;
   }
 
-  get dataSources(): SourceItem<NaviDataSource>[] {
-    return sortBy(config.navi.dataSources, ['displayName']).map((dataSource) => ({
-      name: dataSource.displayName,
-      description: dataSource.description,
-      source: dataSource,
-    }));
-  }
-
-  get dataSourceTables(): SourceItem<TableMetadataModel>[] {
-    const [dataSource] = this.sourcePath;
-    if (dataSource) {
-      return this.latestDataSourceTables;
-    }
-    return [];
-  }
-
-  private getTablesForDataSource(dataSource: SourceItem<NaviDataSource>) {
-    const factTables = this.metadataService.all('table', dataSource.source.name).filter((t) => t.isFact === true);
-    return sortBy(factTables, ['name']).map((table) => ({
+  @task({ restartable: true }) *getTablesForDataSource(
+    dataSource: NaviDataSource
+  ): TaskGenerator<SourceItem<TableMetadataModel>[]> {
+    yield this.metadataService.loadMetadata({ dataSourceName: dataSource.name });
+    const factTables = this.metadataService.all('table', dataSource.name).filter((t) => t.isFact === true);
+    const sources = sortBy(factTables, ['name']).map((table) => ({
       name: table.name,
       description: table.description,
       source: table,
     }));
+    return sources;
   }
 
   protected get path() {
@@ -156,8 +136,24 @@ export default class ReportBuilderSidebar extends Component<Args> {
     }));
   }
 
-  get title() {
+  get title(): string {
     return this.path[this.path.length - 1];
+  }
+
+  @action
+  protected setSourcePath(path: SourcePath): void {
+    const { selecting: oldSelecting } = this;
+    const [originalDataSource] = this.sourcePath;
+
+    this.sourcePath = path;
+
+    const [newDataSource] = this.sourcePath;
+    if (newDataSource?.source && originalDataSource?.source !== newDataSource.source) {
+      this.tables = taskFor(this.getTablesForDataSource).perform(newDataSource.source);
+    }
+
+    const { selecting: newSelecting } = this;
+    this.checkDidResize(oldSelecting, newSelecting);
   }
 
   checkDidResize(oldSelecting: SelectingState, newSelecting: SelectingState) {
@@ -168,47 +164,25 @@ export default class ReportBuilderSidebar extends Component<Args> {
   }
 
   @action
-  changePath(action: () => void) {
-    const { selecting: oldSelecting } = this;
-    action();
-    const { selecting: newSelecting } = this;
-    this.checkDidResize(oldSelecting, newSelecting);
-  }
-
-  @action
   setSelectedDataSource(dataSource?: NaviDataSource) {
-    this.changePath(() => {
-      if (dataSource) {
-        this.sourcePath = [mapDataSource(dataSource)];
-      } else {
-        this.sourcePath = [];
-      }
-    });
-    this.updateDataSourceTables();
+    if (dataSource) {
+      this.setSourcePath([mapDataSource(dataSource)]);
+    } else {
+      this.setSourcePath([]);
+    }
   }
 
   @action
   setSelectedTable(table?: TableMetadataModel) {
-    this.changePath(() => {
-      if (table) {
-        const dataSource = getDataSource(table.source);
-        this.sourcePath = [mapDataSource(dataSource), mapTable(table)];
-        this.args.setTable(table);
-      } else {
-        // Remove table
-        if (this.sourcePath.length === 2) {
-          this.sourcePath = [this.sourcePath[0]];
-        }
+    if (table) {
+      const dataSource = getDataSource(table.source);
+      this.setSourcePath([mapDataSource(dataSource), mapTable(table)]);
+      this.args.setTable(table);
+    } else {
+      // Remove table
+      if (this.sourcePath.length === 2) {
+        this.setSourcePath([this.sourcePath[0]]);
       }
-    });
-    this.updateDataSourceTables();
-  }
-
-  @action
-  updateDataSourceTables() {
-    const dataSourceItem = this.sourcePath[0];
-    if (dataSourceItem) {
-      this.latestDataSourceTables = this.getTablesForDataSource(dataSourceItem);
     }
   }
 

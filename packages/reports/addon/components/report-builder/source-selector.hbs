@@ -1,22 +1,51 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<ol class="report-builder-source-selector p-y-10 p-l-20 p-r-10" ...attributes>
-  {{#each @sources as |item idx|}} 
-    <li class="report-builder-source-selector__source flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
-      <button 
-        type="button"
-        class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
-        {{on "click" (fn @setSource item.source)}}
-        data-source-name={{item.name}}
-      >
-        <span class="report-builder-source-selector__source-name flex-1">
-          <span class={{if (eq @currentSource.source item.source) "link is-active"}}>{{item.name}}</span>
-          {{#if item.description}}
-            <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-grey-500" @icon="information-circle" @size="small" />
-            <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
-          {{/if}}
-        </span>
-        <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
-      </button>
-    </li>
-  {{/each}}
-</ol>
+<div class="report-builder-source-selector p-y-10" ...attributes>
+  {{#if @sourcesTask.isSuccessful}}
+    {{#if (gt @sourcesTask.value.length 0)}}
+      <ol class="report-builder-source-selector__list p-l-20 p-r-10">
+        {{#each @sourcesTask.value as |item idx|}} 
+          <li class="report-builder-source-selector__source flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
+            <button 
+              type="button"
+              class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
+              {{on "click" (fn @setSource item.source)}}
+              data-source-name={{item.name}}
+            >
+              <span class="report-builder-source-selector__source-name flex-1">
+                <span class={{if (eq @currentSource.source item.source) "link is-active"}}>{{item.name}}</span>
+                {{#if item.description}}
+                  <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-grey-500" @icon="information-circle" @size="small" />
+                  <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
+                {{/if}}
+              </span>
+              <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
+            </button>
+          </li>
+        {{/each}}
+      </ol>
+    {{else}}
+      <NaviInfoMessage class="report-builder-source-selector-error">
+        <NaviIcon @icon="warning" class="report-builder-source-selector-error__icon--warn"/>
+        <span class="report-builder-source-selector-error__message">There Are No Sources</span>
+        <SubmitDefect />
+      </NaviInfoMessage>
+    {{/if}}
+  {{else if @sourcesTask.isRunning}}
+    <div class="flex w-full justify-content-center p-t-30">
+      <DenaliLoader />
+    </div>
+  {{else}}
+    <NaviInfoMessage class="report-builder-source-selector-error">
+      <NaviIcon @icon="warning" class="report-builder-source-selector-error__icon"/>
+      <span class="report-builder-source-selector-error__message">Sources Failed To Load</span>
+      <ul class="report-builder-source-selector-error__error-list is-mono">
+        {{#if @sourcesTask.error}}
+          <li>{{@sourcesTask.error}}</li>
+        {{else}}
+          <li>Unexpected Error</li>
+        {{/if}}
+      </ul>
+      <SubmitDefect />
+    </NaviInfoMessage>
+  {{/if}}
+</div>

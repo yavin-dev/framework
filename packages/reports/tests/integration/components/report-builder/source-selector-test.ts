@@ -14,25 +14,42 @@ interface TestContext extends Context, ComponentArgs {}
 
 const TEMPLATE = hbs`
 <ReportBuilder::SourceSelector 
-  @sources={{this.sources}}
+  @sourcesTask={{this.sourcesTask}}
   @currentSource={{this.currentSource}}
   @setSource={{this.setSource}}
 />`;
+
 module('Integration | Component | report-builder/source-selector', function (hooks) {
   setupRenderingTest(hooks);
   setupAnimationTest(hooks);
 
   hooks.beforeEach(function (this: TestContext) {
-    this.sources = [
-      { name: 'Source B', source: { stuff: 'b' } },
-      { name: 'Source A', description: 'Source A Description', source: { stuff: 'a' } },
-    ];
+    //@ts-ignore
+    this.sourcesTask = {
+      isRunning: false,
+      isSuccessful: true,
+      value: [
+        { name: 'Source B', source: { stuff: 'b' } },
+        { name: 'Source A', description: 'Source A Description', source: { stuff: 'a' } },
+      ],
+      error: new Error('Broken Source'),
+    };
     this.setSource = () => undefined;
   });
 
-  test('it shows sources', async function (this: TestContext, assert) {
-    assert.expect(2);
+  test('it shows loading state', async function (this: TestContext, assert) {
+    //@ts-ignore
+    this.sourcesTask.isSuccessful = false;
+    //@ts-ignore
+    this.sourcesTask.isRunning = true;
+    await render(TEMPLATE);
 
+    assert.dom('.report-builder-source-selector__source').doesNotExist('There are no sources shown');
+
+    assert.dom('.loader').exists('There is a loading indicator while sources are not ready');
+  });
+
+  test('it shows sources', async function (this: TestContext, assert) {
     await render(TEMPLATE);
 
     assert.dom('.report-builder-source-selector__source').exists({ count: 2 }, 'There are two sources');
@@ -45,8 +62,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows descriptions if available', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     await render(TEMPLATE);
 
     assert
@@ -67,7 +82,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     assert.expect(4);
     this.setSource = (source) => {
       assert.deepEqual(source, { stuff: 'b' }, 'Source B was clicked');
-      this.set('currentSource', this.sources[0]);
+      this.set('currentSource', (this.sourcesTask.value ?? [])[0]);
     };
     await render(TEMPLATE);
 
@@ -80,5 +95,31 @@ module('Integration | Component | report-builder/source-selector', function (hoo
       .dom('.report-builder-source-selector__source--selected')
       .exists({ count: 1 }, 'A source is selected')
       .hasText('Source B', 'And it is source B');
+  });
+
+  test('it shows empty state', async function (this: TestContext, assert) {
+    //@ts-ignore
+    this.sourcesTask.value = [];
+    await render(TEMPLATE);
+
+    assert.dom('.report-builder-source-selector-error').exists('An error notification is shown');
+    assert
+      .dom('.report-builder-source-selector-error__message')
+      .hasText('There Are No Sources', 'A failure message is displayed');
+  });
+
+  test('it shows error state', async function (this: TestContext, assert) {
+    //@ts-ignore
+    this.sourcesTask.isSuccessful = false;
+    await render(TEMPLATE);
+
+    assert.dom('.report-builder-source-selector-error').exists('An error notification is shown');
+    assert
+      .dom('.report-builder-source-selector-error__message')
+      .hasText('Sources Failed To Load', 'A failure message is displayed');
+
+    assert
+      .dom('.report-builder-source-selector-error__error-list')
+      .hasText('Error: Broken Source', 'The error is shown');
   });
 });

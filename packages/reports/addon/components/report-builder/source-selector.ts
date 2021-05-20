@@ -4,6 +4,7 @@
  */
 import Component from '@glimmer/component';
 import { guidFor } from '@ember/object/internals';
+import type { TaskInstance } from 'ember-concurrency';
 
 export interface SourceItem<Source = unknown> {
   name: string;
@@ -13,7 +14,7 @@ export interface SourceItem<Source = unknown> {
 
 interface Args {
   currentSource?: SourceItem;
-  sources: SourceItem[];
+  sourcesTask: TaskInstance<SourceItem[]>;
   setSource(source: SourceItem['source']): void;
 }
 
