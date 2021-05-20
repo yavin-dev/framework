@@ -81,10 +81,10 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
   /**
    * enum values for the parameter
    */
-  declare _localValues?: ColumnFunctionParametersValues;
+  declare protected _localValues?: ColumnFunctionParametersValues;
 
   /**
-   * @property {Promise} values - array of values used for function parameters with an enum type
+   * promise that resolves to an array of values used for function parameters with an enum type
    */
   get values(): Promise<ColumnFunctionParametersValues> | undefined {
     if (isLocalFunction(this)) {

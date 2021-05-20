@@ -15,11 +15,11 @@ export default class BardDimensionSerializer extends EmberObject implements Navi
   dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension') as Factory<typeof NaviDimensionModel>;
   responseFactory = getOwner(this).factoryFor('model:navi-dimension-response') as Factory<typeof NaviDimensionResponse>;
   //TODO remove when https://github.com/yahoo/fili/issues/1088 lands
-  fieldMap: Record<string, string | undefined> = {
+  private fieldMap: Record<string, string | undefined> = {
     desc: 'description',
   };
 
-  mapField(field: string) {
+  private mapField(field: string) {
     return this.fieldMap[field] || field;
   }
 

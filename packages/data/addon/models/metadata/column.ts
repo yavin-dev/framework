@@ -66,7 +66,7 @@ export default class ColumnMetadataModel extends NativeWithCreate {
   declare tableId: string;
 
   /**
-   * @property table - the table metadata for this column
+   * the table metadata for this column
    */
   get table(): TableMetadataModel | undefined {
     const { tableId, naviMetadata, source } = this;
@@ -75,12 +75,12 @@ export default class ColumnMetadataModel extends NativeWithCreate {
   }
 
   /**
-   * @property source - name of the data source this column is from.
+   * name of the data source this column is from.
    */
   declare source: string;
 
   /**
-   * @property type - will be "ref", "formula", or "field" depending on where its values are sourced from
+   * will be "ref", "formula", or "field" depending on where its values are sourced from
    */
   declare type: RawColumnType;
 
