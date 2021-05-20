@@ -34,7 +34,6 @@ function isPresent<T>(t: T | undefined | null | void): t is T {
 export default class TableMetadataModel extends NativeWithCreate {
   constructor(owner: unknown, args: TableMetadataPayload) {
     super(owner, args);
-    this.isFact = this.isFact ?? true;
   }
   static identifierField = 'id';
 

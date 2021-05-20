@@ -59,7 +59,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     assert.equal(FunctionParameter.expression, Payload.expression, 'expression property was properly hydrated');
 
     assert.strictEqual(
-      FunctionParameter._localValues,
+      FunctionParameter['_localValues'],
       Payload._localValues,
       '_localValues property was properly hydrated'
     );

@@ -174,7 +174,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
     assert.deepEqual(model.request, TestRequest, 'Fetch returns a navi response model object with the TestRequest');
 
     assert.deepEqual(
-      model._factService,
+      model['factService'],
       service,
       'Fetch returns a navi response model object with the service instance'
     );

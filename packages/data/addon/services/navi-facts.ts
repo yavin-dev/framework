@@ -8,7 +8,7 @@ import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
-import NaviFactsModel from 'navi-data/models/navi-facts';
+import type NaviFactsModel from 'navi-data/models/navi-facts';
 //@ts-ignore
 import RequestBuilder from 'navi-data/builder/request';
 import { task } from 'ember-concurrency';
@@ -18,8 +18,11 @@ import type NaviFactAdapter from 'navi-data/adapters/facts/interface';
 import type { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
 import type NaviFactSerializer from 'navi-data/serializers/facts/interface';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type { Factory } from 'navi-data/models/native-with-create';
 
 export default class NaviFactsService extends Service {
+  factResponseFactory = getOwner(this).factoryFor('model:navi-facts') as Factory<typeof NaviFactsModel>;
+
   /**
    * @param type
    * @returns adapter instance for type
@@ -93,7 +96,7 @@ export default class NaviFactsService extends Service {
       const payload: unknown = yield taskFor(adapter.fetchDataForRequest).perform(request, options);
       const response = serializer.normalize(payload, request, options);
       assert('The response is defined', response);
-      return NaviFactsModel.create({ request, response, _factService: this });
+      return this.factResponseFactory.create({ request, response });
     } catch (e) {
       const errorModel: Error = serializer.extractError(e, request, options);
       throw errorModel;
@@ -138,6 +141,7 @@ export default class NaviFactsService extends Service {
     return null;
   }
 }
+
 declare module '@ember/service' {
   interface Registry {
     'navi-facts': NaviFactsService;

@@ -100,7 +100,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         category: table.category,
         description: table.description,
         cardinality: this._normalizeCardinality(table.cardinality),
-        isFact: table.isFact,
+        isFact: table.isFact ?? true,
         metricIds: [],
         dimensionIds: [],
         timeDimensionIds: [],
