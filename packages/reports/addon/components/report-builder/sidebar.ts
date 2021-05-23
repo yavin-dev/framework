@@ -80,7 +80,8 @@ export default class ReportBuilderSidebar extends Component<Args> {
   }
 
   get requestDataSource(): SourceItem<NaviDataSource> | undefined {
-    return mapDataSource(getDataSource(this.request.dataSource));
+    const { dataSource } = this.request;
+    return dataSource ? mapDataSource(getDataSource(dataSource)) : undefined;
   }
 
   get requestTableMetadata(): SourceItem<TableMetadataModel> | undefined {
