@@ -72,6 +72,23 @@ export default class ReportBuilderSidebar extends Component<Args> {
       this.setSourcePath([mapDataSource(getDataSource(tableMetadata.source)), mapTable(tableMetadata)]);
     } else if (dataSource) {
       this.setSourcePath([mapDataSource(getDataSource(dataSource))]);
+    } else {
+      this.setupDefaultPath();
+    }
+  }
+
+  protected async setupDefaultPath() {
+    const allDataSources = await this.dataSources;
+
+    if(allDataSources.length === 1) {
+      const dataSource = allDataSources[0];
+      this.setSourcePath([dataSource]);
+      const { tables } = this;
+      assert('Tables are being fetched', tables)
+      const allDatasourceTables = await tables;
+      if(allDatasourceTables.length === 1) {
+        this.setSourcePath([dataSource, allDatasourceTables[0]])
+      }
     }
   }
 
