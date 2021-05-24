@@ -6,6 +6,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
+import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { sortBy } from 'lodash-es';
 import config from 'ember-get-config';
@@ -80,14 +81,15 @@ export default class ReportBuilderSidebar extends Component<Args> {
   protected async setupDefaultPath() {
     const allDataSources = await this.dataSources;
 
-    if(allDataSources.length === 1) {
+    if (allDataSources.length === 1) {
       const dataSource = allDataSources[0];
-      this.setSourcePath([dataSource]);
-      const { tables } = this;
-      assert('Tables are being fetched', tables)
-      const allDatasourceTables = await tables;
-      if(allDatasourceTables.length === 1) {
-        this.setSourcePath([dataSource, allDatasourceTables[0]])
+      const allDatasourceTables = await taskFor(this.getTablesForDataSource).perform(dataSource.source);
+      if (allDatasourceTables.length === 1) {
+        // ember-animated doesn't render this correctly unless we use next
+        next(() => this.setSelectedTable(allDatasourceTables[0].source));
+      } else {
+        // ember-animted fix^
+        next(() => this.setSelectedDataSource(dataSource.source));
       }
     }
   }
