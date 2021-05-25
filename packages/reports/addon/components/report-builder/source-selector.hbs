@@ -25,8 +25,9 @@
       </ol>
     {{else}}
       <NaviInfoMessage class="report-builder-source-selector-error">
-        <NaviIcon @icon="warning" class="report-builder-source-selector-error__icon--warn"/>
-        <span class="report-builder-source-selector-error__message">There Are No Sources</span>
+        <DenaliIcon @icon="data-source" @size="medium" />
+        <span class="report-builder-source-selector-error__message">Nothing Here Yet</span>
+        <span class="report-builder-source-selector-error__description">{{@emptyMsg}}</span>
         <SubmitDefect />
       </NaviInfoMessage>
     {{/if}}

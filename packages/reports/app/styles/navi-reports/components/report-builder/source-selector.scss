@@ -21,9 +21,16 @@
     margin: 10px;
   
     &__message {
-      font-size: $h4-font-size;
+      font-size: $h3-font-size;
       font-weight: 600;
       padding: 10px;
+      text-align: center;
+    }
+
+    &__description {
+      font-size: $h4-font-size;
+      padding: 10px;
+      text-align: center;
     }
   
     &__icon {

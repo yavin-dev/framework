@@ -105,7 +105,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     assert.dom('.report-builder-source-selector-error').exists('An error notification is shown');
     assert
       .dom('.report-builder-source-selector-error__message')
-      .hasText('There Are No Sources', 'A failure message is displayed');
+      .hasText('Nothing Here Yet', 'A failure message is displayed');
   });
 
   test('it shows error state', async function (this: TestContext, assert) {
