@@ -51,8 +51,8 @@
   &__content {
     @include grey-border;
     border-width: 1px 0 0;
-    min-width: 260px;
-    overflow: hidden;
+    min-width: 300px;
+    overflow: auto;
   }
 
   &__columns {

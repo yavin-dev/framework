@@ -112,6 +112,7 @@ module('Integration | Component | report builder', function (hooks) {
     );
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await animationsSettled();
     assert.deepEqual(
       findAll('.report-builder-source-selector--datasources .report-builder-source-selector__source-name').map((el) =>
         el.textContent?.trim()
@@ -169,6 +170,7 @@ module('Integration | Component | report builder', function (hooks) {
     );
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await animationsSettled();
     assert.deepEqual(
       findAll('.report-builder-source-selector--datasources .report-builder-source-selector__source-name').map((el) =>
         el.textContent?.trim()

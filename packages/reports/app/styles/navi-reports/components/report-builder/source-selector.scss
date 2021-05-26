@@ -4,7 +4,7 @@
  */
 
 .report-builder-source-selector {
-  width: 260px;
+  width: 300px;
 
   li:hover button {
     color: map-get($denali-grey-colors, '700');
@@ -14,5 +14,44 @@
   &__source-name {
     font-size: $h4-font-size;
     text-align: left;
+  }
+
+  &-error {
+    background-color: $body-bg-color;
+    margin: 10px;
+  
+    &__message {
+      font-size: $h3-font-size;
+      font-weight: 600;
+      padding: 10px;
+      text-align: center;
+    }
+
+    &__description {
+      font-size: $h4-font-size;
+      padding: 10px;
+      text-align: center;
+    }
+  
+    &__icon {
+      color: map-get($denali-status-colors, 'danger');
+      font-size: 36px;
+    }
+
+    &__icon--warn {
+      color: map-get($denali-status-colors, 'warning');
+      font-size: 36px;
+    }
+  
+    &__error-list {
+      background-color: map-get($denali-grey-colors, '800');
+      border-radius: 6px;
+      color: map-get($denali-grey-colors, '100');
+      font-size: 14px;
+      max-height: 300px;
+      overflow: auto;
+      padding: 10px;
+      width: 100%;
+    }
   }
 }

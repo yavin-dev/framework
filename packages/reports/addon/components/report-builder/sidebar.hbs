@@ -20,7 +20,7 @@
               class="report-builder-sidebar__breadcrumb-item upper link"
               disabled={{@disabled}}
               data-level={{item.path.length}}
-              {{on "click" (fn this.changePath (fn (mut this.sourcePath) item.path))}}
+              {{on "click" (fn this.setSourcePath item.path)}}
             >
               {{item.name}}
             </button>
@@ -45,16 +45,17 @@
           {{#if (eq path.length 0)}}
             <ReportBuilder::SourceSelector
               class="report-builder-source-selector--datasources"
-              @beacon="test-beacon"
               @currentSource={{this.requestDataSource}}
-              @sources={{this.dataSources}}
+              @emptyMsg="No datasources were configured."
+              @sourcesTask={{this.dataSources}}
               @setSource={{this.setSelectedDataSource}}
             />
           {{else if (eq path.length 1)}}
             <ReportBuilder::SourceSelector
               class="report-builder-source-selector--tables"
+              @emptyMsg="There are no tables for this datasource."
               @currentSource={{this.requestTableMetadata}}
-              @sources={{this.latestDataSourceTables}}
+              @sourcesTask={{this.tables}}
               @setSource={{this.setSelectedTable}}
             />
           {{else}}

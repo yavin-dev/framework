@@ -12,6 +12,7 @@ import type ReportBuilderSidebar from 'navi-reports/components/report-builder/si
 import type { TestContext as Context } from 'ember-test-helpers';
 import type DataStore from '@ember-data/store';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import { RequestOptions } from 'navi-data/addon/adapters/facts/interface';
 
 type ComponentArgs = ReportBuilderSidebar['args'];
 interface TestContext extends Context, ComponentArgs {}
@@ -134,8 +135,17 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
   });
 
   test('it selects dataSources', async function (this: TestContext, assert) {
+    assert.expect(9);
     await render(TEMPLATE);
-    await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
+    const originalLoadMetadata = MetadataService.loadMetadata;
+    MetadataService.loadMetadata = function loadMetadata({ dataSourceName }: RequestOptions) {
+      assert.strictEqual(dataSourceName, 'bardTwo', 'The sidebar loads metadata for selected dataSource');
+      assert.notOk(
+        MetadataService['loadedDataSources'].has(dataSourceName!),
+        'The metadata service did not have the selected dataSource preloaded'
+      );
+      return originalLoadMetadata.call(MetadataService, ...arguments);
+    };
 
     this.setTable = (table) => {
       const inventoryTable = MetadataService.getById('table', 'inventory', 'bardTwo');
