@@ -22,18 +22,12 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
   protected async newModel() {
     const author = await this.user.findOrRegister();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    const table = await this.getDefaultTable();
     const dashboard = this.modelFor('dashboards.dashboard');
 
     const widget = this.store.createRecord('dashboard-widget', {
       author,
       dashboard,
-      requests: A([
-        this.store.createFragment('bard-request-v2/request', {
-          table: table?.id,
-          dataSource: table?.source,
-        }),
-      ]),
+      requests: A([this.store.createFragment('bard-request-v2/request', {})]),
       visualization: { type: defaultVisualization },
     });
 

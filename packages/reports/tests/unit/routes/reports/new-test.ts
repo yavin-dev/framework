@@ -1,7 +1,6 @@
 import Service from '@ember/service';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import config from 'ember-get-config';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -18,7 +17,7 @@ const NEW_MODEL = {
     limit: null,
     requestVersion: '2.0',
     sorts: [],
-    table: 'network',
+    table: null,
   },
   title: 'Untitled Report',
   updatedOn: null,
@@ -82,19 +81,5 @@ module('Unit | Route | reports/new', function (hooks) {
           'When modelString fails to deserialize, a rejected promise is returned'
         )
       );
-  });
-
-  test('getDefaultTable', async function (assert) {
-    const route = this.owner.lookup('route:reports/new');
-    let table = await route.getDefaultTable();
-    assert.deepEqual(table.id, 'network', 'Return table based on alphabetical order if default config not specified');
-
-    const defaultDataTable = config.navi.defaultDataTable;
-
-    config.navi.defaultDataTable = 'tableA';
-    table = await route.getDefaultTable();
-    assert.equal(table.id, 'tableA', 'Return default table');
-
-    config.navi.defaultDataTable = defaultDataTable;
   });
 });

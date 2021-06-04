@@ -5,9 +5,11 @@ import { click, currentURL, find, visit } from '@ember/test-helpers';
 import { linkContains } from 'navi-core/test-support/contains-helpers';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItemFilter } from 'navi-reports/test-support/report-builder';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 
 module('Acceptance | custom reports', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   test('Viewing saved reports', async function (assert) {
@@ -45,6 +47,8 @@ module('Acceptance | custom reports', function (hooks) {
 
   test('Run report with a filter', async function (assert) {
     await visit('/reports/new');
+    await click('.report-builder-source-selector__source-button[data-source-name="Game Stats"]');
+    await animationsSettled();
 
     // Add filter
     await clickItemFilter('dimension', 'Character');

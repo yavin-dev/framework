@@ -33,7 +33,6 @@ module.exports = function (environment) {
     navi: {
       user: 'navi_user',
       defaultTimeGrain: 'day',
-      defaultDataTable: 'network',
       dataSources: [
         {
           name: 'bardOne',

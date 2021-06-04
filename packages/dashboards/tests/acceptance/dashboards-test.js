@@ -8,11 +8,13 @@ import { Response } from 'ember-cli-mirage';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 
 let confirm;
 
 module('Acceptance | Dashboards', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   hooks.beforeEach(() => {
@@ -386,6 +388,8 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
 
     // Fill out request
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
@@ -419,6 +423,8 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create another new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
 
     // Fill out request
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
@@ -506,6 +512,9 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Create widget
     await visit('/dashboards/1/widgets/new');
+    await animationsSettled();
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
 
     // Build Request
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
@@ -692,6 +701,8 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
 
     // Fill out request
     await selectChoose('.filter-builder__operator-trigger', 'In The Past');
