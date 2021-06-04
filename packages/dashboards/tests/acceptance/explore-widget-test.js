@@ -10,12 +10,14 @@ import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
 import { triggerCopySuccess } from 'ember-cli-clipboard/test-support';
 import Service from '@ember/service';
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
 module('Acceptance | Exploring Widgets', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   test('Widget title', async function (assert) {
@@ -223,6 +225,9 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
+    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+    await animationsSettled();
+
     await clickItem('metric', 'Ad Clicks');
     await click('.navi-report-widget__run-btn');
 

@@ -25,7 +25,6 @@ module.exports = function (environment) {
     navi: {
       user: 'navi_user',
       widgetsRequestsMaxConcurrency: 2,
-      defaultDataTable: 'network',
       dataSources: [
         {
           name: 'bardOne',

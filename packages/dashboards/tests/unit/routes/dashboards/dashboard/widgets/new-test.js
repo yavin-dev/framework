@@ -1,16 +1,13 @@
-import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
-import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-const defaultDataTable = config.navi.defaultDataTable;
 const NEW_MODEL = {
   createdOn: null,
   requests: [
     {
-      table: 'tableA',
+      table: null,
       filters: [],
       columns: [],
       sorts: [],
@@ -53,13 +50,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function (hooks) {
       },
     });
 
-    set(config, 'navi.defaultDataTable', 'tableA');
-
     await this.owner.lookup('service:navi-metadata').loadMetadata();
-  });
-
-  hooks.afterEach(function () {
-    set(config, 'navi.defaultDataTable', defaultDataTable);
   });
 
   test('model', async function (assert) {

@@ -22,6 +22,12 @@ async function getRequestURL() {
   return new URL(url);
 }
 
+async function newReport() {
+  await visit('/reports/new');
+  await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+  await animationsSettled();
+}
+
 module('Acceptance | Navi Report | Column Config', function (hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
@@ -41,7 +47,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('Creating new report shows column config', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     assert.ok(currentURL().endsWith('/edit'), 'We are on the edit report route');
 
@@ -55,7 +61,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('accordion behavior and highlighting last added item', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
     assert.deepEqual(getColumns(), [], 'Initially no columns are present');
 
     //add Date Time
@@ -282,7 +288,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('adding, removing and changing a sort', async function (assert) {
     assert.expect(6);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
@@ -322,7 +328,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('toggling a sort', async function (assert) {
     assert.expect(3);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
@@ -348,7 +354,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('reordering columns', async function (assert) {
     assert.expect(2);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     await clickItem('dimension', 'Age');
@@ -373,7 +379,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('clicking filter button always adds a new filter', async function (assert) {
     assert.expect(3);
-    await visit('/reports/new');
+    await newReport();
 
     assert.dom('.filter-builder__subject').exists({ count: 1 }, 'There is 1 filter to start');
     await clickItem('dimension', 'Age');
@@ -386,7 +392,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('adding - metrics', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     assert.deepEqual(getColumns(), [], 'Initially there are no columns');
     await clickItem('metric', 'Ad Clicks');
@@ -403,7 +409,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('removing - metrics from start and end', async function (assert) {
     assert.expect(3);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -439,7 +445,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('adding - dimensions', async function (assert) {
     assert.expect(3);
-    await visit('/reports/new');
+    await newReport();
 
     assert.deepEqual(getColumns(), [], 'Initially no columns are visible');
     await clickItem('dimension', 'Age');
@@ -456,7 +462,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('removing - dimensions from start and end', async function (assert) {
     assert.expect(3);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -488,7 +494,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   test('adding - metrics and dimensions', async function (assert) {
     assert.expect(2);
-    await visit('/reports/new');
+    await newReport();
 
     assert.deepEqual(getColumns(), [], 'Initially no columns are visible');
     await clickItem('dimension', 'Date Time');
@@ -508,7 +514,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - renaming - date time', async function (assert) {
     assert.expect(4);
-    await visit('/reports/new');
+    await newReport();
 
     assert.deepEqual(getColumns(), ['Date Time (Day)'], 'Initially only the date time is visible');
 
@@ -526,7 +532,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - renaming - metrics', async function (assert) {
     assert.expect(7);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -573,7 +579,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - renaming - parameterized metrics', async function (assert) {
     assert.expect(7);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -620,7 +626,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - renaming - dimensions', async function (assert) {
     assert.expect(7);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -658,7 +664,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - parameters - metrics change first instance parameter', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -682,7 +688,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - parameters - metrics change last instance parameter', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'button click count');
@@ -705,7 +711,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - clone - dimension', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -741,7 +747,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - clone - metric', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -781,7 +787,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - clone - parameterized metric', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Nav Link Clicks');
@@ -828,7 +834,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - duplicate columns - can configure multiple of the same base metrics', async function (assert) {
     assert.expect(2);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
@@ -855,7 +861,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
   skip('config - duplicate columns - can configure multiple of the same base dimension', async function (assert) {
     assert.expect(2);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await clickItem('dimension', 'Browser');
@@ -879,7 +885,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - dimensions - expand on add', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(9);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await animationsSettled();
@@ -937,7 +943,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - metrics - expand on add', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(9);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
@@ -999,7 +1005,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - parameterized metrics - expand on add', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(10);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
@@ -1066,7 +1072,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - parameterized metrics - different parameters make different filters', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(10);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Platform Revenue');
@@ -1136,7 +1142,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - metrics - stay collapsed on remove', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(4);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Ad Clicks');
     await animationsSettled();
@@ -1167,7 +1173,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - parameterized metrics - stay collapsed on remove', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(4);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
     await animationsSettled();
@@ -1198,7 +1204,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('config - filters - dimensions - stay collapsed on remove', async function (assert) {
     //TODO update when filter updates are complete
     assert.expect(4);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Age');
     await animationsSettled();
@@ -1227,7 +1233,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('config - parameterized metric - search parameters', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
 
@@ -1260,7 +1266,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   skip('Sort gets removed when metric is removed', async function (assert) {
     //TODO update when table updates are complete
     assert.expect(6);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
 
@@ -1280,7 +1286,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric is removed');
 
     //test param changing
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('metric', 'Platform Revenue');
 

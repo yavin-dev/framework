@@ -12,6 +12,12 @@ import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { capitalize } from '@ember/string';
 
+async function newReport() {
+  await visit('/reports/new');
+  await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+  await animationsSettled();
+}
+
 module('Acceptance | fili datasource', function (hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
@@ -82,7 +88,7 @@ module('Acceptance | fili datasource', function (hooks) {
   test('Fili Required filters on new report', async function (assert) {
     assert.expect(5);
 
-    await visit('/reports/new');
+    await newReport();
 
     assert.dom('.report-builder-sidebar__source').hasText('Network', 'A fili table is selected');
 
@@ -99,7 +105,7 @@ module('Acceptance | fili datasource', function (hooks) {
   test('Fili Required filters when changing table', async function (assert) {
     assert.expect(2);
 
-    await visit('/reports/new');
+    await newReport();
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
     await animationsSettled();
@@ -111,7 +117,7 @@ module('Acceptance | fili datasource', function (hooks) {
   test('Fili Required filters when changing table without all grain', async function (assert) {
     assert.expect(4);
 
-    await visit('/reports/new');
+    await newReport();
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table C"]');
     await animationsSettled();
@@ -128,7 +134,7 @@ module('Acceptance | fili datasource', function (hooks) {
   test('Fili supports since and before operators', async function (assert) {
     assert.expect(2);
 
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter', 'Year');
@@ -148,7 +154,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
   test('Fili Dimension sorting disabled', async function (assert) {
     assert.expect(4);
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     assert

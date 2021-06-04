@@ -23,6 +23,12 @@ const PersistedIdRegex = /\/\d+\/view$/;
 
 let CompressionService;
 
+async function newReport() {
+  await visit('/reports/new');
+  await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
+  await animationsSettled();
+}
+
 module('Acceptance | Navi Report', function (hooks) {
   setupApplicationTest(hooks);
   setupAnimationTest(hooks);
@@ -103,7 +109,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
     let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'png'];
-    await visit('/reports/new');
+    await newReport();
 
     /* == Add filter == */
     await clickItemFilter('dimension', 'Operating System');
@@ -146,7 +152,7 @@ module('Acceptance | Navi Report', function (hooks) {
   test('New report - copy api', async function (assert) {
     assert.expect(3);
 
-    await visit('/reports/new');
+    await newReport();
     await clickItem('metric', 'Ad Clicks');
 
     //add date-dimension
@@ -225,7 +231,7 @@ module('Acceptance | Navi Report', function (hooks) {
   test('Revert changes - new report', async function (assert) {
     assert.expect(2);
 
-    await visit('/reports/new');
+    await newReport();
 
     assert.dom('.navi-report__revert-btn').isNotVisible('Revert changes button is not initially visible');
 
@@ -240,7 +246,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
 
     await visit('/reports');
-    await visit('/reports/new');
+    await newReport();
 
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
@@ -298,7 +304,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(6);
 
     await visit('/reports');
-    await visit('/reports/new');
+    await newReport();
 
     //Add a metrics and save the report
     await clickItem('dimension', 'Date Time');
@@ -476,7 +482,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
 
     await visit('/reports');
-    await visit('/reports/new');
+    await newReport();
 
     assert.dom('.navi-report__save-btn').isVisible('Save button is visible in the new route');
 
@@ -848,7 +854,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
 
     // Delete is not Disabled on new
-    await visit('/reports/new');
+    await newReport();
 
     assert
       .dom('.report-actions__delete-btn')
@@ -1090,7 +1096,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     /* == Create report == */
     await visit('/reports');
-    await visit('/reports/new');
+    await newReport();
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
@@ -1376,7 +1382,7 @@ module('Acceptance | Navi Report', function (hooks) {
   skip('Running a report against unauthorized table shows unauthorized route', async function (assert) {
     //build-data issues
     assert.expect(5);
-    await visit('/reports/new');
+    await newReport();
 
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Protected Table"]');
@@ -1695,7 +1701,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(2);
     let option;
     const dropdownSelector = '.filter-values--dimension-select__trigger';
-    await visit('/reports/new');
+    await newReport();
 
     // Load table A as it has the large cardinality dimensions, and choose a large cardinality dimension
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
@@ -1738,7 +1744,7 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('dimension select filter works with dimension ids containing commas', async function (assert) {
-    await visit('/reports/new');
+    await newReport();
     await clickItemFilter('dimension', 'Dimension with comma');
 
     await selectChoose('.filter-values--dimension-select__trigger', 'no');
