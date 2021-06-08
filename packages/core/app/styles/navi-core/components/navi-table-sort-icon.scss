@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
 */
 
@@ -9,14 +9,14 @@
   margin-left: 5px;
 
   &__caret {
+    color: map-get($denali-grey-colors, '400');
+    font-size: 14px;
     height: 0;
-    color: @navi-lighter-gray;
-    font-size: @font-size-base;
   }
 
   &--asc .sort-icon__caret-up,
   &--desc .sort-icon__caret-down {
-    color: @navi-gray;
+    color: map-get($denali-grey-colors, '600');
   }
 
   &--none {

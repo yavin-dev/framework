@@ -1,12 +1,10 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@navi-toggle-bgcolor: #86d993;
-
 .table-config {
   &__info-icon {
-    color: @navi-lighter-gray;
+    color: map-get($denali-grey-colors, '300');
   }
 }

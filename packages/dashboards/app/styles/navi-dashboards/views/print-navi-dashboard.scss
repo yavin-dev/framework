@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -12,14 +12,14 @@
 
   .navi-widget {
     flex: unset;
+    height: 8in - (2 * $print-margin);
     max-width: none;
-    width: 10.75in - (2 * @print-margin);
-    height: 8in - (2 * @print-margin);
     page-break-after: always;
+    width: 10.75in - (2 * $print-margin);
   }
 
   .grid-stack-item-content {
-    border: none;
+    border-width: 0;
     height: 100%;
   }
 
