@@ -976,7 +976,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
   });
 
-  test('reports route actions -- clone', async function (assert) {
+  test('reports route actions - clone', async function (assert) {
     assert.expect(2);
 
     await visit('/reports');

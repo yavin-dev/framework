@@ -10,10 +10,13 @@ import type NaviNotificationsService from 'navi-core/services/interfaces/navi-no
 import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 import type LayoutFragment from 'navi-core/models/fragments/layout';
-import FragmentArrayBase from 'ember-data-model-fragments/FragmentArray';
+import type FragmentArrayBase from 'ember-data-model-fragments/FragmentArray';
+import type NaviMetadataService from 'navi-data/addon/services/navi-metadata';
 
 export default class DashboardsDashboardWidgetsAddRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
+
+  @service declare naviMetadata: NaviMetadataService;
 
   /**
    * Saves new widget to dashboard
@@ -27,6 +30,7 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
       const widget = this.store.peekAll('dashboard-widget').findBy('tempId', id);
 
       if (widget) {
+        await widget.request?.loadMetadata();
         widget.set('dashboard', dashboard);
         await widget.save();
         const { layout } = dashboard.presentation;

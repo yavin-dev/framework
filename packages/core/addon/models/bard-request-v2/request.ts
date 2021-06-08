@@ -149,6 +149,11 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     });
   }
 
+  async loadMetadata(): Promise<void> {
+    const { dataSource: dataSourceName } = this;
+    await this.naviMetadata.loadMetadata({ dataSourceName });
+  }
+
   @computed('table', 'dataSource')
   get tableMetadata(): TableMetadataModel | undefined {
     const { dataSource, table } = this;
