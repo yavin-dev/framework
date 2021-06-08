@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <GridStackItem
   class="navi-widget"
   @options={{hash
@@ -61,7 +61,7 @@
   {{#if @taskInstance.isError}}
     {{!-- TODO: Use Routes::ReportsReportError --}}
     {{#if (is-forbidden @taskInstance.error)}}
-      <UnauthorizedTable @report={{@model}} />
+      <UnauthorizedTable />
     {{else}}
       <div class="navi-widget__content error-container">
         There was an error with your request.

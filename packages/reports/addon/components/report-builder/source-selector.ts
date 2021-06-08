@@ -16,6 +16,7 @@ interface Args {
   currentSource?: SourceItem;
   sourcesTask: TaskInstance<SourceItem[]>;
   setSource(source: SourceItem['source']): void;
+  reset: () => void;
 }
 
 export default class ReportBuilderSourceSelector extends Component<Args> {

@@ -17,6 +17,7 @@ const TEMPLATE = hbs`
   @sourcesTask={{this.sourcesTask}}
   @currentSource={{this.currentSource}}
   @setSource={{this.setSource}}
+  @reset={{this.reset}}
 />`;
 
 module('Integration | Component | report-builder/source-selector', function (hooks) {
@@ -35,6 +36,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
       error: new Error('Broken Source'),
     };
     this.setSource = () => undefined;
+    this.reset = () => undefined;
   });
 
   test('it shows loading state', async function (this: TestContext, assert) {
@@ -102,9 +104,8 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     this.sourcesTask.value = [];
     await render(TEMPLATE);
 
-    assert.dom('.report-builder-source-selector-error').exists('An error notification is shown');
     assert
-      .dom('.report-builder-source-selector-error__message')
+      .dom('.report-builder-source-selector-error .navi-info-message__title')
       .hasText('Nothing Here Yet', 'A failure message is displayed');
   });
 
@@ -113,10 +114,9 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     this.sourcesTask.isSuccessful = false;
     await render(TEMPLATE);
 
-    assert.dom('.report-builder-source-selector-error').exists('An error notification is shown');
     assert
-      .dom('.report-builder-source-selector-error__message')
-      .hasText('Sources Failed To Load', 'A failure message is displayed');
+      .dom('.report-builder-source-selector-error .navi-info-message__title')
+      .hasText('Error Loading Tables', 'A failure message is displayed');
 
     assert
       .dom('.report-builder-source-selector-error__error-list')

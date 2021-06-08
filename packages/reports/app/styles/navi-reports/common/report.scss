@@ -49,15 +49,6 @@
     }
   }
 
-  &-invalid__highlight-text {
-    color: map-get($denali-status-colors, 'danger');
-  }
-
-  &-invalid__info-message,
-  &-new__info-message {
-    margin: 10px;
-  }
-
   &-invalid__unauthorized-body {
     text-align: center;
   }

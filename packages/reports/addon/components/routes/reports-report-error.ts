@@ -10,7 +10,7 @@ interface NaviReportErrorRouteArgs {
 }
 
 export default class NaviReportErrorRoute extends Component<NaviReportErrorRouteArgs> {
-  message = 'Oops! There was an error with your request.';
+  message = 'There was an error with your request.';
   get details(): string[] {
     const { error } = this.args;
     return error instanceof NaviAdapterError ? error.details : [];

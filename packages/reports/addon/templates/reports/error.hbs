@@ -1,14 +1,12 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<NaviInfoMessage>
-  <div class="report-not-found">
-    <div>Oops! Something went wrong with this report.</div>
-    <div class="report-not-found__message">
-      Try going
-      <a href="javascript:history.back()">back</a>
-      to where you were last or to the
-      <LinkTo @route="reports">reports</LinkTo> page.
-      {{!-- The App will handle the look and feel of this component --}}
-      <SubmitDefect />
-    </div>
+{{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<NaviInfoMessage
+  @icon="warning"
+  @iconClass="is-status-warning"
+  @title="An error occurred while retrieving your report."
+  class="routes-reports-report-error"
+>
+  <div class="flex">
+    <LinkTo @route="index" class="button is-outline m-r-10">Home</LinkTo>
+    <a class="button is-outline" href="javascript:location.reload()">Reload Page</a>
   </div>
 </NaviInfoMessage>

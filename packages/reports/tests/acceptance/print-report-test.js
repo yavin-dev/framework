@@ -56,7 +56,7 @@ module('Acceptance | print report', function (hooks) {
     await visit('/print/reports/5');
     assert.equal(
       find('.routes-reports-report-error').innerText.replace(/\s+/g, ' ').trim(),
-      'Oops! There was an error with your request. Cannot merge mismatched time grains month and day',
+      'There was an error with your request. Cannot merge mismatched time grains month and day',
       'An error message is displayed for an invalid request'
     );
 

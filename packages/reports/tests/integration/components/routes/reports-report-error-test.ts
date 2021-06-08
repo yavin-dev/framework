@@ -13,8 +13,8 @@ module('Integration | Component | routes/reports-report-error', function (hooks)
     `);
 
     assert
-      .dom('.routes-reports-report-error__message')
-      .hasText('Oops! There was an error with your request.', 'component renders message without args');
+      .dom('.navi-info-message__title')
+      .hasText('There was an error with your request.', 'component renders message without args');
 
     assert
       .dom('.routes-reports-report-error__error-list')
@@ -30,8 +30,8 @@ module('Integration | Component | routes/reports-report-error', function (hooks)
     `);
 
     assert
-      .dom('.routes-reports-report-error__message')
-      .hasText('Oops! There was an error with your request.', 'component renders message with Error');
+      .dom('.navi-info-message__title')
+      .hasText('There was an error with your request.', 'component renders message with Error');
 
     assert
       .dom('.routes-reports-report-error__error-list')
@@ -47,8 +47,8 @@ module('Integration | Component | routes/reports-report-error', function (hooks)
     `);
 
     assert
-      .dom('.routes-reports-report-error__message')
-      .hasText('Oops! There was an error with your request.', 'component renders message with NaviAdapterError');
+      .dom('.navi-info-message__title')
+      .hasText('There was an error with your request.', 'component renders message with NaviAdapterError');
 
     assert
       .dom('.routes-reports-report-error__error-list')

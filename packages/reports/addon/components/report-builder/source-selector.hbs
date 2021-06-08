@@ -3,9 +3,9 @@
   {{#if @sourcesTask.isSuccessful}}
     {{#if (gt @sourcesTask.value.length 0)}}
       <ol class="report-builder-source-selector__list p-l-20 p-r-10">
-        {{#each @sourcesTask.value as |item idx|}} 
+        {{#each @sourcesTask.value as |item idx|}}
           <li class="report-builder-source-selector__source flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
-            <button 
+            <button
               type="button"
               class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
               {{on "click" (fn @setSource item.source)}}
@@ -24,11 +24,12 @@
         {{/each}}
       </ol>
     {{else}}
-      <NaviInfoMessage class="report-builder-source-selector-error">
-        <DenaliIcon @icon="data-source" @size="medium" />
-        <span class="report-builder-source-selector-error__message">Nothing Here Yet</span>
+      <NaviInfoMessage
+        @icon="warning"
+        @title="Nothing Here Yet"
+        class="report-builder-source-selector-error"
+      >
         <span class="report-builder-source-selector-error__description">{{@emptyMsg}}</span>
-        <SubmitDefect />
       </NaviInfoMessage>
     {{/if}}
   {{else if @sourcesTask.isRunning}}
@@ -36,17 +37,32 @@
       <DenaliLoader />
     </div>
   {{else}}
-    <NaviInfoMessage class="report-builder-source-selector-error">
-      <NaviIcon @icon="warning" class="report-builder-source-selector-error__icon"/>
-      <span class="report-builder-source-selector-error__message">Sources Failed To Load</span>
-      <ul class="report-builder-source-selector-error__error-list is-mono">
-        {{#if @sourcesTask.error}}
-          <li>{{@sourcesTask.error}}</li>
-        {{else}}
-          <li>Unexpected Error</li>
-        {{/if}}
-      </ul>
-      <SubmitDefect />
+    <NaviInfoMessage
+      @icon="warning"
+      @title="Error Loading Tables"
+      @hideTechDetails={{true}}
+      class="report-builder-source-selector-error"
+    >
+      <:tech-details>
+        <ul class="report-builder-source-selector-error__error-list">
+          {{#if @sourcesTask.error}}
+            <li>{{@sourcesTask.error}}</li>
+          {{else}}
+            <li>Unexpected Error</li>
+          {{/if}}
+        </ul>
+      </:tech-details>
+      <:default>
+        <DenaliButton
+          @style="text"
+          @size="medium"
+          @icon="arrow-left"
+          {{on "click" @reset}}
+          class="m-t-10"
+        >
+          Select Another Data Source
+        </DenaliButton>
+      </:default>
     </NaviInfoMessage>
   {{/if}}
 </div>
