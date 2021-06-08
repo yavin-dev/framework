@@ -10,7 +10,6 @@ module('Acceptance | Navi Report | Unauthorized Route', function (hooks) {
 
   test('Error data request', async function (assert) {
     await visit('/reports/15/view');
-    debugger;
     assert.ok(currentURL().endsWith('/unauthorized'), 'Unauthorized request transition to the unauthorized route');
   });
 });
