@@ -76,8 +76,8 @@ module('Integration | Component | navi widget', function (hooks) {
     });
 
     assert
-      .dom('.navi-report-invalid__info-message .fa-lock')
-      .isVisible('Unauthorized view should be shown when receiving ForbiddenError');
+      .dom('.navi-report-invalid__info-message')
+      .exists('Unauthorized view should be shown when receiving ForbiddenError');
   });
 
   test('layout', async function (assert) {

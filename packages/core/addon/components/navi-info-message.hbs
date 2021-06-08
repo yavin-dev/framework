@@ -1,4 +1,19 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-info-message" ...attributes>
+  {{#if @icon}}
+    <DenaliIcon @icon={{@icon}} @size="medium" class="navi-info-message__icon {{@iconClass}}"/>
+  {{/if}}
+  <h3 class="navi-info-message__title m-b-10">{{@title}}</h3>
   {{yield}}
+  {{#if (has-block 'tech-details')}}
+    <div class="navi-info-message__tech-details w-full">
+      <hr>
+        <details open={{unless @hideTechDetails true}}>
+          <summary class="navi-info-message__tech-details-toggle {{unless @hideTechDetails "hide"}} m-b-4"><span class="link">Show Details</span></summary>
+          <div class="navi-info-message__tech-details-content is-mono has-bg-grey-400 br-6 w-full p-20 overflow-y-auto overflow-x-auto">
+            {{yield to="tech-details"}}
+          </div>
+        </details>
+    </div>
+  {{/if}}
 </div>

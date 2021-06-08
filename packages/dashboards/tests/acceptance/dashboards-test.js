@@ -43,7 +43,7 @@ module('Acceptance | Dashboards', function (hooks) {
     server.get('/dashboards/:id', () => new Response(500));
 
     await visit('/dashboards/1');
-    assert.dom('.error').exists('Error message not present when route is successfully loaded');
+    assert.dom('.dashboards-dashboard-error').exists('Error message is present when route is not successfully loaded');
 
     assert.dom('.navi-dashboard').doesNotExist('Navi dashboard collection component is not rendered');
   });
@@ -150,8 +150,9 @@ module('Acceptance | Dashboards', function (hooks) {
     await visit('/dashboards/5');
 
     assert.equal(
-      find('.error-container .error').textContent.replace(/\s\s+/g, ' ').trim(),
-      'Looks like this dashboard has no widgets. Go ahead and add a widget now?'
+      find('.navi-info-message').textContent.replace(/\s\s+/g, ' ').trim(),
+      'Nothing Here Yet This dashboard does not have any widgets configured. Add Widget',
+      'empty dashboard message is displayed'
     );
 
     await click('.dashboard-header__add-widget-btn');
@@ -573,7 +574,6 @@ module('Acceptance | Dashboards', function (hooks) {
     server.get('/data/network/day/os;show=id', function () {
       return new Response(403);
     });
-
     await visit('/dashboards/2/view');
 
     assert
@@ -582,10 +582,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     assert
       .dom('[data-gs-id="5"]')
-      .includesText(
-        'You do not have access to run queries against Network',
-        'Unauthorized widget loaded unauthorized component'
-      );
+      .includesText('You do not have access to run this query.', 'Unauthorized widget loaded unauthorized component');
   });
 
   test('dashboard save/revert', async function (assert) {

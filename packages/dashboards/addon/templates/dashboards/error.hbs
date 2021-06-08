@@ -1,11 +1,12 @@
 {{!-- Copyright 2018, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<NaviInfoMessage>
-  <div class="page-header">
-    <div class="page-title">Dashboard</div>
+<NaviInfoMessage
+  @icon="warning"
+  @iconClass="is-status-warning"
+  @title="An error occurred while retrieving your dashboard."
+  class="dashboards-dashboard-error"
+>
+  <div class="flex">
+    <LinkTo @route="index" class="button is-outline m-r-10">Home</LinkTo>
+    <a class="button is-outline" href="javascript:location.reload()">Reload Page</a>
   </div>
-  <div class="error-container">
-    <span class="error">Oops! There was an error when retrieving your dashboard. You can try <a href="javascript:location.reload()">reloading</a> the page.</span>
-  </div>
-  {{!-- The App will handle the look and feel of this component --}}
-  <SubmitDefect />
 </NaviInfoMessage>

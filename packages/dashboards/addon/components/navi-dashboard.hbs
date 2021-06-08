@@ -31,26 +31,31 @@
         </GridStack>
       </div>
     {{else}}
-      <div class="error-container">
-        <div class="error">
-          <p>
-            Looks like this dashboard has no widgets.
-            {{#if @dashboard.canUserEdit}}
-              Go ahead and
-              <DashboardActions::AddWidget
-                class="navi-dashboard-container__add-widget-text"
-                @reports={{get (get-user) "reports"}}
-                @dashboard={{@dashboard}}
-                @onSelectReport={{@addWidgetToDashboard}}
-                as |toggleModal|
-              >
-                <span class="link" role="button" {{on "click" toggleModal}}>add a widget</span>
-              </DashboardActions::AddWidget>
-              now?
-            {{/if}}
-          </p>
-        </div>
-      </div>
+      <NaviInfoMessage
+        @icon="dashboard-tile"
+        @title="Nothing Here Yet"
+        class="has-bg-grey-100 m-20"
+      >
+        <p>This dashboard does not have any widgets configured.</p>
+        {{#if @dashboard.canUserEdit}}
+          <DashboardActions::AddWidget
+            class="navi-dashboard-container__add-widget-text"
+            @reports={{get (get-user) "reports"}}
+            @dashboard={{@dashboard}}
+            @onSelectReport={{@addWidgetToDashboard}}
+            as |toggleModal|
+          >
+            <DenaliButton
+              @style="outline"
+              @size="medium"
+              class="m-t-10"
+              {{on "click" toggleModal}}
+            >
+              Add Widget
+            </DenaliButton>
+          </DashboardActions::AddWidget>
+        {{/if}}
+      </NaviInfoMessage>
     {{/if}}
   </div>
 

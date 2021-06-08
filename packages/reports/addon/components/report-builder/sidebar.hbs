@@ -46,7 +46,7 @@
             <ReportBuilder::SourceSelector
               class="report-builder-source-selector--datasources"
               @currentSource={{this.requestDataSource}}
-              @emptyMsg="No datasources were configured."
+              @emptyMsg="No data sources were configured."
               @sourcesTask={{this.dataSources}}
               @setSource={{this.setSelectedDataSource}}
             />
@@ -57,6 +57,7 @@
               @currentSource={{this.requestTableMetadata}}
               @sourcesTask={{this.tables}}
               @setSource={{this.setSelectedTable}}
+              @reset={{fn this.setSourcePath (array)}}
             />
           {{else}}
             <div class="flex h-full">

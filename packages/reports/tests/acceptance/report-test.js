@@ -1,5 +1,16 @@
 import { module, test, skip } from 'qunit';
-import { blur, click, currentURL, fillIn, find, findAll, triggerEvent, visit, waitFor } from '@ember/test-helpers';
+import {
+  blur,
+  click,
+  currentURL,
+  fillIn,
+  find,
+  findAll,
+  triggerEvent,
+  visit,
+  waitFor,
+  setupOnerror,
+} from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -10,7 +21,6 @@ import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-bui
 import { reorder } from 'ember-sortable/test-support/helpers';
 import Component from '@ember/component';
 import { get } from '@ember/object';
-import Ember from 'ember';
 import $ from 'jquery';
 import config from 'ember-get-config';
 import moment from 'moment';
@@ -1246,25 +1256,12 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Error route', async function (assert) {
-    assert.expect(1);
-
-    //suppress errors and exceptions for this test
-    let originalLoggerError = Ember.Logger.error,
-      originalException = Ember.Test.adapter.exception;
-
-    Ember.Logger.error = function () {};
-    Ember.Test.adapter.exception = function () {};
-
+    setupOnerror(() => null);
     await visit('/reports/invalidRoute');
 
-    assert.equal(
-      find('.report-not-found').innerText.replace(/\s+/g, ' ').trim(),
-      'Oops! Something went wrong with this report. Try going back to where you were last or to the reports page.',
-      'An error message is displayed for an invalid route'
-    );
-
-    Ember.Logger.error = originalLoggerError;
-    Ember.Test.adapter.exception = originalException;
+    assert
+      .dom('.navi-info-message__title')
+      .hasText('An error occurred while retrieving your report.', 'An error message is displayed for an invalid route');
   });
 
   test('Updating chart series', async function (assert) {
