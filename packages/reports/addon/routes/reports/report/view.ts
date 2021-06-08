@@ -72,7 +72,7 @@ export default class ReportsReportViewRoute extends Route {
         return response;
       })
       .catch((response) => {
-        if (isForbiddenError(response)) {
+        if (isForbiddenError(response.rootCause)) {
           this.transitionTo('reports.report.unauthorized', report.id);
         } else {
           return reject(response);

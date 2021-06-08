@@ -761,4 +761,49 @@ export default [
       sorts: [],
     },
   },
+  {
+    id: 15,
+    title: 'Unauthorized',
+    createdOn: '2015-04-01 00:00:00',
+    updatedOn: '2015-04-01 00:00:00',
+    authorId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'table',
+      version: 2,
+      metadata: {
+        columnAttributes: {
+          c1: { canAggregateSubtotal: false },
+        },
+        showTotals: {},
+      },
+    },
+    request: {
+      table: 'protected',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          dataSource: 'bardOne',
+          field: 'protected.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+        },
+      ],
+      columns: [
+        {
+          cid: 'c1',
+          field: 'protected.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+      ],
+      sorts: [],
+    },
+  },
 ];
