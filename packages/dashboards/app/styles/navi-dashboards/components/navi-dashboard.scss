@@ -10,7 +10,7 @@
   overflow: hidden;
 
   &__body {
-    background-color: $box-bg-color;
+    background-color: map-get($denali-grey-colors, '300');
     border-bottom: 2px solid $menu-border-color;
     display: flex;
     flex: 1;
@@ -21,7 +21,7 @@
 
   &__widgets {
     overflow-y: auto;
-    padding: 20px 0;
+    padding: 20px 10px;
   }
 
   &__save-dialogue {
