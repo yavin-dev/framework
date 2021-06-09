@@ -121,7 +121,7 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
         }
 
         &.sortable-item.is-dragging {
-          background-color: map-get($denali-grey-colors, '100');
+          background-color: $body-bg-color;
           border: 1px solid map-get($denali-grey-colors, '400');
           box-shadow: 0 5px 10px 3px;
           cursor: grabbing;
@@ -172,7 +172,7 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
         }
 
         .table-header-cell {
-          background-color: map-get($denali-grey-colors, '100');
+          background-color: $body-bg-color;
           border-bottom: 2px map-get($denali-grey-colors, '400') solid;
 
           &__input {
