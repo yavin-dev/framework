@@ -1,12 +1,12 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .navi-report.navi-report--print {
   flex: unset;
+  max-height: 8in - (2 * $print-margin);
   max-width: none;
-  max-height: 8in - (2 * @print-margin);
-  min-height: 8in - (2 * @print-margin);
-  width: 11in - (2 * @print-margin);
+  min-height: 8in - (2 * $print-margin);
+  width: 11in - (2 * $print-margin);
 }

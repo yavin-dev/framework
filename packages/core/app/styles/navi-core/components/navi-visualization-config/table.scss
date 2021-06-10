@@ -2,4 +2,9 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-@import 'table';
+
+.table-config {
+  &__info-icon {
+    color: map-get($denali-grey-colors, '300');
+  }
+}

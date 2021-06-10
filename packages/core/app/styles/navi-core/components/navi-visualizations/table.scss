@@ -3,34 +3,34 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-@navi-table-max-wrap: 3;
-@navi-header-line-height: 1.3em;
+$navi-table-max-wrap: 3;
+$navi-header-line-height: 1.3em;
+$font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
 
 .table-widget {
-  @row-margin: 0 13px;
-  @cell-padding: 7px;
+  $row-margin: 0 13px;
+  $cell-padding: 7px;
 
-  .display-flex;
-  .flex-1;
-
+  display: flex;
+  flex: 1;
   flex-flow: column;
   height: 100%;
   line-height: 1.5;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
 
   &--print {
     height: unset;
   }
 
   &__info-header {
-    .display-flex;
-    flex: 0 1 auto;
     align-items: center;
-    font-size: @font-size-mid;
+    display: flex;
+    flex: 0 1 auto;
     flex-flow: row-reverse;
+    font-size: 12px;
     justify-content: space-between;
-    margin: @row-margin;
+    margin: $row-margin;
     padding: 6px 0 0;
   }
 
@@ -40,31 +40,31 @@
   }
 
   .table-widget-container {
-    .display-flex;
-    .flex-1;
-    .flex-flow-column;
+    display: flex;
+    flex: 1;
     flex-basis: 0;
-
+    flex-flow: column;
+    
     &--vc {
       overflow-y: auto;
     }
   }
 
   .table-widget__horizontal-scroll-container {
-    .display-flex;
+    display: flex;
+    flex: 1;
     flex-flow: row;
-    .flex-1;
     overflow-x: auto;
   }
 
   &__table-headers {
-    margin: @row-margin;
+    margin: $row-margin;
     overflow-x: hidden;
   }
 
   &__table-wrapper {
-    .flex-1;
-    margin: @row-margin;
+    flex: 1;
+    margin: $row-margin;
     min-height: 0;
     overflow-x: auto;
     overflow-y: scroll;
@@ -79,25 +79,26 @@
     min-width: 100%;
   }
 
-  .table-header-row {
-    .display-flex;
-    margin: @row-margin;
+  .table-header-row {    
+    display: flex;
+    margin: $row-margin;
     /** Break long column titles to prevent overflow. Single words may be broken at arbitrary
         points only if there are no otherwise acceptable break points in the line. **/
     word-break: break-word;
 
     &--edit {
-      & > div:first-of-type {
+      > div:first-of-type {
         padding-left: 0;
       }
 
-      & > div:last-of-type {
+      > div:last-of-type {
         padding-right: 0;
       }
     }
 
     .table-header-cell {
-      .flex-1;
+      flex: 1;
+      font-family: $font-family-strong;
       min-width: 125px;
 
       &__icon {
@@ -107,24 +108,24 @@
 
     &,
     &-vc {
-      border-bottom: 2px @navi-lighter-gray solid;
+      border-bottom: 2px map-get($denali-grey-colors, '400') solid;
       padding: 0 0 5px;
 
       .table-header-cell {
-        .display-flex;
         cursor: pointer;
-        padding: @cell-padding;
+        display: flex;
+        padding: $cell-padding;
 
         .metric {
           text-transform: capitalize;
         }
 
         &.sortable-item.is-dragging {
-          border: 1px solid @navi-lighter-gray;
+          background-color: $body-bg-color;
+          border: 1px solid map-get($denali-grey-colors, '400');
           box-shadow: 0 5px 10px 3px;
-          background-color: @navi-white;
-          z-index: 2;
           cursor: grabbing;
+          z-index: 2;
         }
 
         &__title {
@@ -157,8 +158,8 @@
       }
 
       &--view {
-        .display-flex;
         align-items: flex-end;
+        display: flex;
       }
 
       &--edit {
@@ -171,11 +172,11 @@
         }
 
         .table-header-cell {
-          background-color: @navi-white;
-          border-bottom: 2px @navi-lighter-gray solid;
+          background-color: $body-bg-color;
+          border-bottom: 2px map-get($denali-grey-colors, '400') solid;
 
           &__input {
-            border: 1px solid @navi-gray-400;
+            border: 1px solid map-get($denali-grey-colors, '400');
             padding: 5px;
           }
         }
@@ -192,8 +193,8 @@
       &:not(.table-header-row-vc--edit) th .table-header-cell {
         height: 0;
         overflow-y: hidden;
-        padding-top: 0;
         padding-bottom: 0;
+        padding-top: 0;
       }
     }
   }
@@ -205,11 +206,11 @@
   }
 
   .table-header-cell {
-    .display-flex;
-    .flex-1;
-    min-width: 125px;
     cursor: pointer;
-    padding: @cell-padding;
+    display: flex;
+    flex: 1;
+    min-width: 125px;
+    padding: $cell-padding;
 
     &__icon {
       padding: 3px 5px;
@@ -217,6 +218,7 @@
 
     &__title {
       flex: 1;
+
       &--custom-name {
         text-decoration: underline;
         text-decoration-style: dotted;
@@ -230,37 +232,37 @@
 
   .scroll-container {
     flex: 1;
-    position: relative;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
     // targets inner div of ember-collection holding the row divs
-    & > div > div {
+    > div > div {
       // horizontal scrollbar not needed here
       // I don't like the obvious overflow hidden solution due to too many bad practices
       // so using a solution that gives the right width when vertical scrollbar is present
-      width: ~'calc(100% + 2px)';
+      width: calc(100% + 2px);
     }
   }
 
   .table-body {
-    .display-flex;
-    .flex-flow-column;
-    .flex-1;
+    display: flex;
+    flex: 1;
+    flex-flow: column;
     min-height: 0;
   }
 
   .table-row {
-    .display-flex;
-    margin: @row-margin;
+    display: flex;
+    margin: $row-margin;
     white-space: nowrap;
 
     .table-cell {
-      .display-flex;
-      .flex-1;
+      display: flex;
+      flex: 1;
       min-width: 125px;
       overflow: hidden;
-      white-space: nowrap;
       text-overflow: ellipsis;
+      white-space: nowrap;
 
       .table-cell-content {
         margin: auto 0;
@@ -285,10 +287,10 @@
       }
 
       .table-cell {
-        border-bottom: 1px @navi-lighter-gray solid;
-        font-size: @font-size-mid;
-        font-family: @font-family-strong;
-        padding: @cell-padding;
+        border-bottom: 1px map-get($denali-grey-colors, '400') solid;
+        font-family: $font-family-strong;
+        font-size: 12px;
+        padding: $cell-padding;
 
         &--total {
           display: flex;
@@ -298,27 +300,28 @@
           margin-left: 5px;
 
           &--icon {
-            color: @navi-light-gray-2;
+            color: map-get($denali-grey-colors, '600');
           }
         }
       }
     }
 
     &:hover {
-      background-color: @denali-active-blue;
+      background-color: rgba(map-get($denali-brand-colors, '300'), 0.08);
     }
   }
 
   .metric {
     .table-header-cell__title {
-      .align-right;
+      justify-content: flex-end;
+      text-align: right;
     }
   }
 
   &__edit-header-msg {
     .d-icon {
-      margin-right: 4px;
       font-size: 1.4rem;
+      margin-right: 4px;
       vertical-align: sub;
     }
   }
@@ -326,15 +329,16 @@
 
 .table-cell__info-message--tooltip {
   &.ember-tooltip {
-    font-size: @font-size-xsmall;
+    font-size: 10px;
   }
 }
 
 .table-header-cell__title {
-  line-height: @navi-header-line-height;
-  max-height: @navi-header-line-height * @navi-table-max-wrap;
+  line-height: $navi-header-line-height;
+  max-height: $navi-header-line-height * $navi-table-max-wrap;
+
   &:hover {
-    max-height: @navi-header-line-height * 40;
+    max-height: $navi-header-line-height * 40;
   }
 }
 
