@@ -89,7 +89,7 @@
       >
         <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
           {{#each @columns as |column|}}
-            <td class="table-cell">
+            <td class="table-cell {{column.fragment.type}}">
               {{#if (and (eq column.fragment.type "timeDimension") row.__meta__.isTotalRow)}}
                 {{#let (component (concat @cellRendererPrefix "total")) as |TotalRenderer|}}
                   <TotalRenderer

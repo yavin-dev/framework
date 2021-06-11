@@ -44,7 +44,7 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
     flex: 1;
     flex-basis: 0;
     flex-flow: column;
-    
+
     &--vc {
       overflow-y: auto;
     }
@@ -79,7 +79,7 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
     min-width: 100%;
   }
 
-  .table-header-row {    
+  .table-header-row {
     display: flex;
     margin: $row-margin;
     /** Break long column titles to prevent overflow. Single words may be broken at arbitrary
@@ -263,6 +263,10 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      &.metric {
+        text-align: right;
+      }
 
       .table-cell-content {
         margin: auto 0;
