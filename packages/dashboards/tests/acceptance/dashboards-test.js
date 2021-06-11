@@ -389,6 +389,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 
@@ -424,6 +425,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create another new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 
@@ -514,6 +516,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create widget
     await visit('/dashboards/1/widgets/new');
     await animationsSettled();
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 
@@ -698,6 +701,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 
