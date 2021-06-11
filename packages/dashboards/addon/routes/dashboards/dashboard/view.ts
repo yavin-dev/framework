@@ -172,7 +172,7 @@ export default class DashboardsDashboardViewRoute extends Route {
 
   @action
   willTransition(transition: Transition) {
-    //don't cancel on filters updates, cancelation is in the `model` hook if model or filter values have changed
+    //don't cancel on filters updates, cancellation is in the `model` hook if model or filter values have changed
     if (transition.to.name !== this.routeName && transition.to.name !== 'dashboards.dashboard.index') {
       this._cancelWidgetDataTasks();
     }

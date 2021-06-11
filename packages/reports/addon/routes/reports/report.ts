@@ -19,7 +19,6 @@ import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
-import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 type ModelParams = { report_id: string } | { widget_id: string };
 type ReportModelParams = { report_id: string };
@@ -28,8 +27,6 @@ export type ReportLike = ReportModel | DashboardWidget;
 
 export default class ReportsReportRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
-
-  @service declare naviMetadata: NaviMetadataService;
 
   @service declare user: UserService;
 
@@ -57,8 +54,7 @@ export default class ReportsReportRoute extends Route {
     const { report_id } = params as ReportModelParams;
     await this.user.findOrRegister();
     const report = this.findByTempId(report_id) || (await this.store.findRecord('report', report_id));
-    const { dataSource: dataSourceName } = report?.request || {};
-    await this.naviMetadata.loadMetadata({ dataSourceName });
+    await report.request?.loadMetadata();
     return this.setDefaultVisualization(report);
   }
 
