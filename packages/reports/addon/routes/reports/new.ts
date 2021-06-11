@@ -35,6 +35,7 @@ export default class ReportsNewRoute extends Route {
    * Transitions to newly created report
    */
   afterModel(report: ReportModel) {
+    console.log('new report');
     return this.replaceWith('reports.report.edit', report.tempId);
   }
 
