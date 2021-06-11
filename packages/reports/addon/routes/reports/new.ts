@@ -24,6 +24,18 @@ export default class ReportsNewRoute extends Route {
 
   @service declare user: UserService;
 
+  queryParams = {
+    datasource: {
+      refreshModel: true,
+    },
+  };
+
+  beforeModel(transition: Transition) {
+    console.log('beforeModel');
+    const datasource = Number(transition.to?.queryParams?.datasource ?? 1);
+    console.log(datasource);
+  }
+
   model(_params: {}, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
 
@@ -52,14 +64,18 @@ export default class ReportsNewRoute extends Route {
    * Returns a new model for this route
    */
   protected async newModel(): Promise<ReportLike> {
+    console.log('new model');
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-
+    //const datasource = Number(transition.to?.queryParams?.datasource ?? 1);
+    //console.log('datasource ', datasource);
     const report = this.store.createRecord('report', {
       author,
+      //datasource,
       request: this.store.createFragment('bard-request-v2/request', {}),
       visualization: { type: defaultVisualization },
     });
+    console.log();
     return report;
   }
 }
