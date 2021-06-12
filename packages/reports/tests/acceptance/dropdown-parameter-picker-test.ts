@@ -15,6 +15,7 @@ module('Acceptance | Dropdown Parameter Picker test', function (hooks) {
 
   test('verify dropdown parameter picker', async function (assert) {
     await visit('/reports/new');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 

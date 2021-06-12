@@ -47,7 +47,6 @@ module('Acceptance | custom reports', function (hooks) {
 
   test('Run report with a filter', async function (assert) {
     await visit('/reports/new');
-    await click('.report-builder-source-selector__source-button[data-source-name="Game Stats"]');
     await animationsSettled();
 
     // Add filter

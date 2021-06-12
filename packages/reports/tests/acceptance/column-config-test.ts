@@ -24,6 +24,7 @@ async function getRequestURL() {
 
 async function newReport() {
   await visit('/reports/new');
+  await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
   await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
   await animationsSettled();
 }

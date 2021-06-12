@@ -47,7 +47,9 @@ module('Unit | Service | compression', function (hooks) {
     assert.expect(5);
 
     const user = Store.createRecord('user', { id: 'midna' });
-    const request = Store.createFragment('bard-request-v2/request', {});
+    const request = Store.createFragment('bard-request-v2/request', {
+      dataSource: 'bardOne',
+    });
     const report = Store.createRecord('report', {
       id: '1234',
       title: 'Hello World',
