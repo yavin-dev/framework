@@ -68,7 +68,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
 
   async fetchEverything(options?: MetadataOptions): Promise<TODO> {
     const fullViewReq = this.query('table', '', { query: { format: 'fullview' }, ...options });
-    const metricFunctionsReq = this.fetchAll('columnFunction');
+    const metricFunctionsReq = this.fetchAll('columnFunction', options);
     const [{ tables }, metricFunctions] = await Promise.all([fullViewReq, metricFunctionsReq]);
     return { tables, metricFunctions };
   }
