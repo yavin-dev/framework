@@ -53,7 +53,7 @@ module('Unit | Route | reports/new', function (hooks) {
   });
 
   test('newModel', async function (assert) {
-    const model = await this.owner.lookup('route:reports/new').newModel();
+    const model = await this.owner.lookup('route:reports/new').newModel('');
     assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
     assert.equal(model.request.dataSource, 'bardOne', 'Should fall back to default dataSource');
   });

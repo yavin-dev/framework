@@ -12,7 +12,7 @@ import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
-
+import { getDataSource, getDefaultDataSourceName } from 'navi-data/utils/adapter';
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
 
@@ -30,24 +30,17 @@ export default class ReportsNewRoute extends Route {
     },
   };
 
-  beforeModel(transition: Transition) {
-    console.log('beforeModel');
-    const datasource = Number(transition.to?.queryParams?.datasource ?? 1);
-    console.log(datasource);
-  }
-
   model(_params: {}, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
-
+    const datasource = transition.to?.queryParams?.datasource ?? '';
     // Allow for a report to be passed through the URL
-    return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel();
+    return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel(datasource);
   }
 
   /**
    * Transitions to newly created report
    */
   afterModel(report: ReportModel) {
-    console.log('new report');
     return this.replaceWith('reports.report.edit', report.tempId);
   }
 
@@ -63,19 +56,21 @@ export default class ReportsNewRoute extends Route {
   /**
    * Returns a new model for this route
    */
-  protected async newModel(): Promise<ReportLike> {
-    console.log('new model');
+  protected async newModel(datasource: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    //const datasource = Number(transition.to?.queryParams?.datasource ?? 1);
-    //console.log('datasource ', datasource);
+    try {
+      getDataSource(datasource);
+    } catch (e) {
+      datasource = getDefaultDataSourceName();
+    }
     const report = this.store.createRecord('report', {
       author,
-      //datasource,
-      request: this.store.createFragment('bard-request-v2/request', {}),
+      request: this.store.createFragment('bard-request-v2/request', {
+        dataSource: datasource,
+      }),
       visualization: { type: defaultVisualization },
     });
-    console.log();
     return report;
   }
 }
