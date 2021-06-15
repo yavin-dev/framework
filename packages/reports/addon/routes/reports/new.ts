@@ -11,7 +11,7 @@ import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
-import { getDataSource, getDefaultDataSourceName } from 'navi-data/utils/adapter';
+import { getDataSource } from 'navi-data/utils/adapter';
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
 
@@ -22,9 +22,7 @@ export default class ReportsNewRoute extends Route {
   @service declare user: UserService;
 
   queryParams = {
-    datasource: {
-      refreshModel: true,
-    },
+    datasource: {},
   };
 
   model(_params: {}, transition: Transition): Promise<ReportLike> {
@@ -57,15 +55,16 @@ export default class ReportsNewRoute extends Route {
   protected async newModel(datasource: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
+    let reportDatasource: string | null = datasource;
     try {
-      getDataSource(datasource);
+      getDataSource(reportDatasource);
     } catch (e) {
-      datasource = getDefaultDataSourceName();
+      reportDatasource = null;
     }
     const report = this.store.createRecord('report', {
       author,
       request: this.store.createFragment('bard-request-v2/request', {
-        dataSource: datasource,
+        dataSource: reportDatasource,
       }),
       visualization: { type: defaultVisualization },
     });
