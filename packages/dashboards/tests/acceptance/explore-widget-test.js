@@ -225,6 +225,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Unsaved widget == */
     await visit('/dashboards/1/widgets/new');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 

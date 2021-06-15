@@ -12,7 +12,7 @@ const NEW_MODEL = {
   createdOn: null,
   request: {
     columns: [],
-    dataSource: 'bardOne',
+    dataSource: null,
     filters: [],
     limit: null,
     requestVersion: '2.0',
@@ -55,7 +55,6 @@ module('Unit | Route | reports/new', function (hooks) {
   test('newModel', async function (assert) {
     const model = await this.owner.lookup('route:reports/new').newModel('');
     assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new report model is returned');
-    assert.equal(model.request.dataSource, 'bardOne', 'Should fall back to default dataSource');
   });
 
   test('deserializeUrlModel', async function (assert) {

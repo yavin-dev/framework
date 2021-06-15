@@ -49,8 +49,8 @@ export default class DashboardsDashboardRoute extends Route {
    */
   async model({ dashboard_id }: { dashboard_id: string }): Promise<DashboardModel> {
     const dashboard = await this.store.findRecord('dashboard', dashboard_id);
-    const dataSources = [...new Set(dashboard.widgets.map((w) => w?.request?.dataSource))];
-    await Promise.all(dataSources.map((dataSourceName) => this.naviMetadata.loadMetadata({ dataSourceName })));
+    const widgets = await dashboard.widgets;
+    await Promise.all(widgets.map((w) => w?.request?.loadMetadata()));
     return dashboard;
   }
 

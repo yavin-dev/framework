@@ -26,17 +26,15 @@
           id={{concat "navi-report-action-export-" @index}}
           class="navi-reports-index__report-control export {{unless @item.request.validations.isTruelyValid "navi-report__action-link--force-disabled"}}"
           @report={{@item}}
-          @disabled={{not @item.request.validations.isTruelyValid}}
         >
-          <DenaliIcon 
+          <DenaliIcon
             id={{concat "navi-report-action-export-" @index}}
             class="p-4 link"
-            disabled={{not @item.request.validations.isTruelyValid}}
-            @size="small" 
+            @size="small"
             @icon="download"
           />
           <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-export-" @index}}>
-            {{if @item.request.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+            Export the report
           </EmberTooltip>
         </ExportAction>
       {{/let}}
@@ -51,11 +49,11 @@
     @buildUrl={{this.buildUrl}}
     @disabled={{@item.isNew}}
   >
-    <DenaliIcon 
+    <DenaliIcon
       disabled={{@item.isNew}}
-      class="p-4 link" 
-      @size="small" 
-      @icon="share-arrow" 
+      class="p-4 link"
+      @size="small"
+      @icon="share-arrow"
     />
     <EmberTooltip @popperContainer="body" @targetId={{concat "navi-report-action-share-" @index}}>
       {{if @item.isNew "Save report to enable share" "Share the report"}}
@@ -72,17 +70,16 @@
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
         @onDelete={{delivery-rule-action "DELETE_DELIVERY_RULE"}}
         as |onOpen|
-      > 
-        <DenaliIcon 
+      >
+        <DenaliIcon
           id="navi-report-action-schedule-{{@index}}"
-          disabled={{not @item.request.validations.isTruelyValid}}
           @icon="time"
           @size="small"
           class="navi-actions__schedule-btn p-4 link"
           {{on "click" onOpen}}
         />
         <EmberTooltip @popperContainer="body" @targetId="navi-report-action-schedule-{{@index}}">
-          {{if @item.request.validations.isTruelyValid "Schedule the report" "Validate report to enable scheduling"}}
+          Schedule the report
         </EmberTooltip>
       </CommonActions::Schedule>
     {{/if}}
@@ -96,9 +93,9 @@
         @deleteAction={{item-action "DELETE_ITEM" @item}}
         as |onDelete|
       >
-        <DenaliIcon 
-          @size="small" 
-          @icon="trash" 
+        <DenaliIcon
+          @size="small"
+          @icon="trash"
           class="navi-actions__delete-btn p-4 link"
           id="navi-report-action-delete-{{@index}}"
           {{on "click" onDelete}}

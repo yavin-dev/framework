@@ -9,7 +9,6 @@ import Fragment from 'ember-data-model-fragments/fragment';
 //@ts-ignore
 import { fragmentArray } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 //@ts-ignore
 import { isEqual } from 'lodash-es';
 //@ts-ignore
@@ -70,36 +69,36 @@ const Validations = buildValidations({
 
 export default class RequestFragment extends Fragment.extend(Validations) implements RequestV2 {
   @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: () => [] })
-  filters!: FragmentArray<FilterFragment>;
+  declare filters: FragmentArray<FilterFragment>;
 
   @fragmentArray('bard-request-v2/fragments/column', { defaultValue: () => [] })
-  columns!: FragmentArray<ColumnFragment>;
+  declare columns: FragmentArray<ColumnFragment>;
 
   @attr('string')
-  table!: string; // TODO this can be undefined when only `dataSource` is set
+  declare table: string; // TODO this can be undefined when only `dataSource` is set
 
   @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
-  sorts!: FragmentArray<SortFragment>;
+  declare sorts: FragmentArray<SortFragment>;
 
   @attr('number')
-  limit!: number | null;
+  declare limit: number | null;
 
   @attr('string', { defaultValue: '2.0' })
-  requestVersion!: '2.0';
+  declare requestVersion: '2.0';
 
-  @attr('string', { defaultValue: getDefaultDataSourceName() })
-  dataSource!: string;
+  @attr('string')
+  declare dataSource: string;
 
   @service
   private fragmentFactory!: FragmentFactory;
 
   @service
-  private naviMetadata!: NaviMetadataService;
+  private declare naviMetadata: NaviMetadataService;
 
   /**
    * @property store - Store service with fragments
    */
-  store!: Store;
+  declare store: Store;
 
   /**
    * @method clone
@@ -147,6 +146,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource,
     });
+  }
+
+  async loadMetadata(): Promise<void> {
+    const { dataSource: dataSourceName } = this;
+    if (dataSourceName) {
+      await this.naviMetadata.loadMetadata({ dataSourceName });
+    }
   }
 
   @computed('table', 'dataSource')

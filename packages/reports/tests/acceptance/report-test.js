@@ -35,6 +35,7 @@ let CompressionService;
 
 async function newReport() {
   await visit('/reports/new');
+  await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
   await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
   await animationsSettled();
 }
@@ -976,7 +977,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
   });
 
-  test('reports route actions -- clone', async function (assert) {
+  test('reports route actions - clone', async function (assert) {
     assert.expect(2);
 
     await visit('/reports');

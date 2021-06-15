@@ -1,29 +1,29 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .navi-visualization-config {
-  border-top: 1px solid @navi-lighter-gray;
+  border-top: 1px solid map-get($denali-grey-colors, '300');
   display: flex;
-  flex-flow: column;
   flex: 1;
   flex-basis: 0;
+  flex-flow: column;
   max-width: 300px;
-  padding: 10px 5px;
   overflow-y: auto;
+  padding: 10px 5px;
 
   &__contents {
     display: flex;
-    flex-flow: column;
     flex: 1;
     flex-basis: 0;
+    flex-flow: column;
     min-height: 0;
     padding: 20px;
   }
 
   &__warn-msg {
-    text-align: center;
     padding: 10px;
+    text-align: center;
   }
 }

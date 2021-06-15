@@ -1,13 +1,13 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .navi-loader {
   &__container {
+    align-items: center;
     display: flex;
     flex-flow: column;
-    align-items: center;
     justify-content: center;
     margin: 10px;
     width: 100%;

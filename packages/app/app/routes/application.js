@@ -4,15 +4,12 @@
  */
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import config from 'navi-app/config/environment';
 export default class ApplicationRoute extends Route {
   @service naviMetadata;
 
   @service user;
 
   async model() {
-    //kick off datasource loading
-    config.navi.dataSources.forEach(({ name: dataSourceName }) => this.naviMetadata.loadMetadata({ dataSourceName }));
     await this.user.findOrRegister();
   }
 }

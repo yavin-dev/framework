@@ -7,7 +7,6 @@ import Route from '@ember/routing/route';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type CompressionService from 'navi-core/services/compression';
-import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
@@ -19,8 +18,6 @@ export default class ReportsNewRoute extends Route {
   @service declare naviVisualizations: NaviVisualizationsService;
 
   @service declare compression: CompressionService;
-
-  @service('navi-metadata') declare metadataService: NaviMetadataService;
 
   @service declare user: UserService;
 
@@ -47,6 +44,7 @@ export default class ReportsNewRoute extends Route {
   private async deserializeUrlModel(modelString: string): Promise<ReportLike> {
     try {
       const model = (await this.compression.decompressModel(modelString)) as ReportModel;
+      await model.request?.loadMetadata();
       return this.store.createRecord('report', model.clone());
     } catch (e) {
       throw new Error('Could not parse model query param');

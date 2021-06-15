@@ -13,7 +13,7 @@ const NEW_MODEL = {
       sorts: [],
       limit: null,
       requestVersion: '2.0',
-      dataSource: 'bardOne',
+      dataSource: null,
     },
   ],
   title: 'Untitled Widget',
