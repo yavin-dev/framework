@@ -3,7 +3,7 @@ import Component from '@ember/component';
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, triggerEvent } from '@ember/test-helpers';
+import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { assertTooltipContent } from 'ember-tooltips/test-support';
 import { ForbiddenError } from 'ember-ajax/errors';
@@ -22,7 +22,7 @@ module('Integration | Component | navi widget', function (hooks) {
   hooks.beforeEach(function () {
     this.owner.register(
       'helper:route-action',
-      buildHelper(() => undefined),
+      buildHelper(() => () => undefined),
       {
         instantiate: false,
       }
@@ -179,8 +179,6 @@ module('Integration | Component | navi widget', function (hooks) {
   });
 
   test('delete action visibility', async function (assert) {
-    assert.expect(2);
-
     this.set('widgetModel', WIDGET);
 
     await render(hbs`
@@ -192,6 +190,10 @@ module('Integration | Component | navi widget', function (hooks) {
 
     this.set('canEdit', true);
     assert.dom('.navi-widget__delete-btn').isVisible('Delete action is visible when user can edit');
+
+    await click('.navi-widget__delete-btn');
+    assert.dom('.delete__modal').exists('The delete modal is shown');
+    await click('.modal-container .close');
 
     this.set('canEdit', false);
     assert.dom('.navi-widget__delete-btn').isNotVisible('Delete action is hidden when user can not edit');

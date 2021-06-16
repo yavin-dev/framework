@@ -287,6 +287,25 @@ module('Acceptance | Dashboards', function (hooks) {
     );
   });
 
+  test('Delete a widget', async function (assert) {
+    await visit('/dashboards/2');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map((el) => el.textContent.trim()),
+      ['Clicks', 'Last Week By OS'],
+      'The widgets are shown'
+    );
+
+    await click('.navi-widget__delete-btn');
+    await click('.delete__modal-delete-btn');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map((el) => el.textContent.trim()),
+      ['Last Week By OS'],
+      'The widget is deleted'
+    );
+  });
+
   test('favorite dashboards', async function (assert) {
     assert.expect(2);
 
