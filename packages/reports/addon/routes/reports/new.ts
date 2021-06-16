@@ -27,7 +27,7 @@ export default class ReportsNewRoute extends Route {
 
   model(_params: {}, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
-    const datasource = transition.to?.queryParams?.datasource ?? '';
+    const datasource = transition.to?.queryParams?.datasource;
     // Allow for a report to be passed through the URL
     return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel(datasource);
   }
@@ -52,12 +52,12 @@ export default class ReportsNewRoute extends Route {
   /**
    * Returns a new model for this route
    */
-  protected async newModel(datasource: string): Promise<ReportLike> {
+  protected async newModel(datasource: string | undefined): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    let reportDatasource: string | null = datasource;
+    let reportDatasource: string | undefined | null = datasource;
     try {
-      getDataSource(reportDatasource);
+      getDataSource(reportDatasource ?? '');
     } catch (e) {
       reportDatasource = null;
     }
