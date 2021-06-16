@@ -13,7 +13,7 @@ const NEW_MODEL = {
       sorts: [],
       limit: null,
       requestVersion: '2.0',
-      dataSource: null,
+      dataSource: 'bardOne',
     },
   ],
   title: 'Untitled Widget',
@@ -71,7 +71,7 @@ module('Unit | Route | dashboards/dashboard/widgets/new', function (hooks) {
 
   test('newModel', async function (assert) {
     await settled();
-    const model = await Route.newModel('');
+    const model = await Route.newModel();
     assert.deepEqual(model.toJSON(), NEW_MODEL, 'A new widget model is returned');
     assert.equal(
       model.get('author.id'),
