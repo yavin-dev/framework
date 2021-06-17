@@ -37,12 +37,14 @@
           class="link"
           @model={{@model}}
           @deleteAction={{route-action "deleteWidget"}}
+          as |showDeleteModal|
         >
           <DenaliIcon 
             id="navi-widget__delete-btn-{{@index}}" 
             @size="small" 
             @icon="trash" 
-            class="navi-widget__delete-btn link" 
+            class="navi-widget__delete-btn link"
+            {{on "click" showDeleteModal}}
           />
           <EmberTooltip @popperContainer="body" @text="Delete" @targetId="navi-widget__delete-btn-{{@index}}" />
         </CommonActions::Delete>
