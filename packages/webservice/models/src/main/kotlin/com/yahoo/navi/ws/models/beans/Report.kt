@@ -20,7 +20,7 @@ import javax.persistence.Table
 
 @Entity
 @DiscriminatorValue("Report")
-@Include(type = "reports")
+@Include(name = "reports")
 @Table(name = "custom_reports")
 @CreatePermission(expression = IS_AUTHOR)
 @UpdatePermission(expression = IS_AUTHOR)

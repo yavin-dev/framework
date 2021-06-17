@@ -22,7 +22,7 @@ import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
 
 @Entity
-@Include(type = "dashboards")
+@Include(name = "dashboards")
 @DiscriminatorValue("Dashboard")
 @CreatePermission(expression = IS_AUTHOR)
 @UpdatePermission(expression = "$IS_AUTHOR OR $IS_EDITOR")

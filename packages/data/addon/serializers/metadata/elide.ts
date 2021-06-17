@@ -40,10 +40,15 @@ type ColumnNode = {
 };
 export type MetricNode = ColumnNode & { defaultFormat: string };
 
+type TableSource = Connection<{
+  suggestionColumns: Connection<Partial<DimensionNode>>;
+  valueSource: Connection<Partial<DimensionNode>>;
+}>;
+
 export type DimensionNode = ColumnNode & {
   cardinality: ElideCardinality;
   valueSourceType: ValueSourceType;
-  tableSource: string | null;
+  tableSource: TableSource | null;
   values: string[];
 };
 
@@ -188,6 +193,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       const { node } = edge;
 
       const cardinality = this._normalizeCardinality(node.cardinality);
+      const tableSource = node.tableSource?.edges[0];
       const payload: ElideDimensionMetadataPayload = {
         id: node.id,
         name: node.friendlyName,
@@ -202,7 +208,14 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         type: node.columnType,
         expression: node.expression,
         valueSourceType: node.valueSourceType,
-        tableSource: node.tableSource ? { valueSource: node.tableSource } : undefined,
+        ...(tableSource
+          ? {
+              tableSource: {
+                valueSource: tableSource.node.valueSource.edges[0].node.id,
+                suggestionColumns: tableSource.node.suggestionColumns.edges.map((e) => ({ id: e.node.id })),
+              },
+            }
+          : {}),
         values: node.values,
       };
       return this.dimensionFactory.create(payload);
