@@ -52,7 +52,7 @@ export default class ReportsNewRoute extends Route {
   /**
    * Returns a new model for this route
    */
-  protected async newModel(datasource: string | undefined): Promise<ReportLike> {
+  protected async newModel(datasource?: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
     let reportDatasource: string | undefined | null = datasource;
