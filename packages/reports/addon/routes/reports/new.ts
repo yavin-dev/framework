@@ -55,25 +55,25 @@ export default class ReportsNewRoute extends Route {
   protected async newModel(dataSource?: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    if (typeof dataSource === 'string') {
-      try {
-        console.log('getdatasource ', typeof dataSource === 'string' ? dataSource : '');
-        getDataSource(dataSource);
-        const report = this.store.createRecord('report', {
-          author,
-          request: this.store.createFragment('bard-request-v2/request', {
-            dataSource,
-          }),
-          visualization: { type: defaultVisualization },
-        });
-        return report;
-      } catch (e) {
-        throw new Error('Could not parse datasource query param');
-      }
-    } else {
+
+    if (typeof dataSource === 'undefined') {
       const report = this.store.createRecord('report', {
         author,
         request: this.store.createFragment('bard-request-v2/request', {}),
+        visualization: { type: defaultVisualization },
+      });
+      return report;
+    } else {
+      try {
+        getDataSource(dataSource);
+      } catch (e) {
+        throw new Error('Could not parse datasource query param');
+      }
+      const report = this.store.createRecord('report', {
+        author,
+        request: this.store.createFragment('bard-request-v2/request', {
+          dataSource,
+        }),
         visualization: { type: defaultVisualization },
       });
       return report;
