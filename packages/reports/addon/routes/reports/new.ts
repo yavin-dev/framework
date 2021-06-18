@@ -27,7 +27,7 @@ export default class ReportsNewRoute extends Route {
 
   model(_params: {}, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
-    const datasource = transition.to?.queryParams?.datasource ?? null;
+    const datasource = transition.to?.queryParams?.datasource;
     // Allow for a report to be passed through the URL
     return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel(datasource);
   }
@@ -52,22 +52,31 @@ export default class ReportsNewRoute extends Route {
   /**
    * Returns a new model for this route
    */
-  protected async newModel(datasource: string | null): Promise<ReportLike> {
+  protected async newModel(dataSource?: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-    let reportDatasource: string | null = datasource;
-    try {
-      getDataSource(reportDatasource ?? '');
-    } catch (e) {
-      reportDatasource = null;
+    if (typeof dataSource === 'string') {
+      try {
+        console.log('getdatasource ', typeof dataSource === 'string' ? dataSource : '');
+        getDataSource(dataSource);
+        const report = this.store.createRecord('report', {
+          author,
+          request: this.store.createFragment('bard-request-v2/request', {
+            dataSource,
+          }),
+          visualization: { type: defaultVisualization },
+        });
+        return report;
+      } catch (e) {
+        throw new Error('Could not parse datasource query param');
+      }
+    } else {
+      const report = this.store.createRecord('report', {
+        author,
+        request: this.store.createFragment('bard-request-v2/request', {}),
+        visualization: { type: defaultVisualization },
+      });
+      return report;
     }
-    const report = this.store.createRecord('report', {
-      author,
-      request: this.store.createFragment('bard-request-v2/request', {
-        dataSource: reportDatasource,
-      }),
-      visualization: { type: defaultVisualization },
-    });
-    return report;
   }
 }
