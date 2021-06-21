@@ -7,12 +7,25 @@
       dbConnectionName: DemoConnection
       dimensions: [
         {
+          name: title_id_values
+          friendlyName: Title Id Values
+          cardinality: medium
+          category: Attributes
+          type: TEXT
+          definition: '{{$title_id}}'
+        }
+        {
           name: title_id
           friendlyName: Title Id
           cardinality: medium
           category: Attributes
           type: TEXT
           definition: '{{$title_id}}'
+          tableSource: {
+            table: NetflixTitles
+            column: title_id_values
+            suggestionColumns: ['title', 'show_type']
+          }
         }
         {
           name: show_type

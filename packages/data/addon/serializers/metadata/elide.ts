@@ -208,14 +208,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         type: node.columnType,
         expression: node.expression,
         valueSourceType: node.valueSourceType,
-        ...(tableSource
+        tableSource: tableSource
           ? {
-              tableSource: {
-                valueSource: tableSource.node.valueSource.edges[0].node.id,
-                suggestionColumns: tableSource.node.suggestionColumns.edges.map((e) => ({ id: e.node.id })),
-              },
+              valueSource: tableSource.node.valueSource.edges[0].node.id,
+              suggestionColumns: tableSource.node.suggestionColumns.edges.map((e) => ({ id: e.node.id as string })),
             }
-          : {}),
+          : undefined,
         values: node.values,
       };
       return this.dimensionFactory.create(payload);

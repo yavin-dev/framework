@@ -52,8 +52,11 @@ export default Factory.extend({
     return 'NONE';
   },
 
-  tableSource() {
-    return this.valueSourceType === 'TABLE' ? 'table0.dimension0' : null;
+  tableSourceIds() {
+    if (this.valueSourceType === 'TABLE') {
+      return ['tableSource0'];
+    }
+    return [];
   },
 
   values() {

@@ -551,7 +551,38 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             columnType: 'field',
             expression: '',
             valueSourceType: 'NONE',
-            tableSource: null,
+            tableSource: {
+              pageInfo: null,
+              edges: [
+                {
+                  cursor: '',
+                  node: {
+                    valueSource: {
+                      pageInfo: null,
+                      edges: [
+                        {
+                          cursor: '',
+                          node: {
+                            id: 'somewhere.age_value',
+                          },
+                        },
+                      ],
+                    },
+                    suggestionColumns: {
+                      pageInfo: null,
+                      edges: [
+                        {
+                          cursor: '',
+                          node: {
+                            id: 'somewhere.age_description',
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+            },
             values: [],
           },
           cursor: '',
@@ -592,7 +623,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         isSortable: true,
         expression: '',
         valueSourceType: 'NONE',
-        tableSource: undefined,
+        tableSource: {
+          valueSource: 'somewhere.age_value',
+          suggestionColumns: [{ id: 'somewhere.age_description' }],
+        },
         values: [],
       },
       {
