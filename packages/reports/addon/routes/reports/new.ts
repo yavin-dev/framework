@@ -11,7 +11,7 @@ import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
-
+import { getDataSource } from 'navi-data/utils/adapter';
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
 
@@ -21,11 +21,15 @@ export default class ReportsNewRoute extends Route {
 
   @service declare user: UserService;
 
+  queryParams = {
+    datasource: {},
+  };
+
   model(_params: {}, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
-
+    const datasource = transition.to?.queryParams?.datasource;
     // Allow for a report to be passed through the URL
-    return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel();
+    return modelQueryParam ? this.deserializeUrlModel(modelQueryParam) : this.newModel(datasource);
   }
 
   /**
@@ -48,13 +52,21 @@ export default class ReportsNewRoute extends Route {
   /**
    * Returns a new model for this route
    */
-  protected async newModel(): Promise<ReportLike> {
+  protected async newModel(dataSource?: string): Promise<ReportLike> {
     const author = this.user.getUser();
     const defaultVisualization = this.naviVisualizations.defaultVisualization();
-
+    if (dataSource !== undefined) {
+      try {
+        getDataSource(dataSource); //validate datasource param
+      } catch (e) {
+        throw new Error('Could not locate requested data source');
+      }
+    }
     const report = this.store.createRecord('report', {
       author,
-      request: this.store.createFragment('bard-request-v2/request', {}),
+      request: this.store.createFragment('bard-request-v2/request', {
+        dataSource,
+      }),
       visualization: { type: defaultVisualization },
     });
     return report;

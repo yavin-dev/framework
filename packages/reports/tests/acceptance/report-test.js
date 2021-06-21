@@ -195,6 +195,25 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasValue(/^https:\/\/data.naviapp.io\/\S+$/, 'shows api url from right datasource');
   });
 
+  test('New report - datasource query param', async function (assert) {
+    assert.expect(1);
+    await visit('/reports/new?datasource=bardTwo');
+    assert
+      .dom('.report-builder-sidebar__source')
+      .hasText('Bard Two', 'Appropriate Datasource is selected in new report');
+  });
+
+  test('New report - incorrect datasource query param', async function (assert) {
+    assert.expect(1);
+    await visit('/reports/new?datasource=Test');
+    assert
+      .dom('.navi-info-message')
+      .containsText(
+        'An error occurred while retrieving your report.',
+        'An error message is displayed for an invalid datasource'
+      );
+  });
+
   test('Revert changes when exiting report - existing report', async function (assert) {
     // visit report 1
     await visit('/reports/1/view');

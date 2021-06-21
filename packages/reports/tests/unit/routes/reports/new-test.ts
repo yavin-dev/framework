@@ -81,4 +81,10 @@ module('Unit | Route | reports/new', function (hooks) {
         )
       );
   });
+
+  test('newModel with datasource', async function (assert) {
+    const model = await this.owner.lookup('route:reports/new').newModel('bardTwo');
+    const expectedModel = model.toJSON();
+    assert.deepEqual(expectedModel.request.dataSource, 'bardTwo', 'A new report model with datasource is returned');
+  });
 });
