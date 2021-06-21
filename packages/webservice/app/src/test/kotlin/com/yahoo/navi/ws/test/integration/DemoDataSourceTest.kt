@@ -11,10 +11,11 @@ class DemoDataSourceTest : IntegrationTest() {
         given()
             .header("User", "testuser")
             .When()
-            .get("/NetflixTitles")
+            .get("/table/NetflixTitles")
             .then()
             .assertThat()
             .statusCode(200)
-            .body("data[0].type", Matchers.equalTo("NetflixTitles"))
+            .body("data.type", Matchers.equalTo("table"))
+            .body("data.id", Matchers.equalTo("NetflixTitles"))
     }
 }
