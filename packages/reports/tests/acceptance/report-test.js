@@ -206,7 +206,12 @@ module('Acceptance | Navi Report', function (hooks) {
   test('New report - incorrect datasource query param', async function (assert) {
     assert.expect(1);
     await visit('/reports/new?datasource=Test');
-    assert.dom('.report-builder-sidebar__source').hasText('Data Sources', 'No Datasource is selected in new report');
+    assert
+      .dom('.navi-info-message')
+      .containsText(
+        'An error occurred while retrieving your report.',
+        'An error message is displayed for an invalid datasource'
+      );
   });
 
   test('Revert changes when exiting report - existing report', async function (assert) {
