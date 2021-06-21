@@ -73,7 +73,9 @@ module('Integration | Component | dashboard filters', function (hooks) {
 
     this.set('dashboard', { filters: [] });
 
-    assert.dom().hasText('Filters', 'When no filters are provided, only "Filters" is rendered');
+    assert
+      .dom()
+      .hasText('Filters No Filters Configured', 'When no filters are provided, only no filters msg is rendered');
   });
 
   test('toggle collapse', async function (assert) {
@@ -101,8 +103,6 @@ module('Integration | Component | dashboard filters', function (hooks) {
   });
 
   test('A filter can be added', async function (assert) {
-    assert.expect(10);
-
     this.set('dashboard', {
       filters: arr([]),
       widgets: Promise.resolve([
@@ -159,37 +159,53 @@ module('Integration | Component | dashboard filters', function (hooks) {
 
     assert
       .dom('.dashboard-filters--expanded__add-filter-button')
-      .isNotVisible('add filter button is not visible when collapsed initially');
+      .doesNotExist('add filter button is not visible when collapsed initially');
 
     await click('.dashboard-filters__expand-button');
 
     assert
       .dom('.dashboard-filters--expanded__add-filter-button')
-      .isVisible('add filter button is visible when expanded');
+      .isDisabled('add filter button is disabled when adding a new filter');
 
-    await click('.dashboard-filters--expanded__add-filter-button');
+    assert
+      .dom('.dashboard-filters--expanded-add-row')
+      .exists('new filter row exits after expanding when no filters exits');
 
-    assert.dom('.dashboard-filters--expanded__add-filter-button').isNotVisible('add filter button vanishes');
-
-    assert.dom('.dashboard-filters--expanded-add-row').isVisible('add row appears');
-
-    await click('.dashboard-filters--expanded-add-row__close');
-
-    assert.dom('.dashboard-filters--expanded__add-filter-button').isVisible('add filter button is back');
-
-    await click('.dashboard-filters--expanded__add-filter-button');
-
-    assert.dom('.dashboard-filters--expanded__add-filter-button').isNotVisible('add filter button vanishes again');
-
-    assert.dom('.dashboard-filters--expanded-add-row').isVisible('add row appears again');
+    assert
+      .dom('.dashboard-filters--expanded-add-row__close')
+      .isDisabled('removing new filter row is disable if it is the only filter');
 
     await selectChoose('.dashboard-filters--expanded-add-row__dimension-selector', '.ember-power-select-option', 1);
 
-    assert.dom('.dashboard-filters--expanded__add-filter-button').isVisible('add filter button appears again');
+    assert
+      .dom('.dashboard-filters--expanded__add-filter-button')
+      .isNotDisabled('add filter button is enabled after a new filter column is selected');
 
-    assert.dom('.dashboard-filters--expanded-add-row').isNotVisible('add row vanishes again');
+    assert.dom('.filter-collection__remove').isNotDisabled('removing filter row is enabled once a column is selected');
+
+    assert.dom('.dashboard-filters--expanded-add-row').isNotVisible('add row vanishes after selecting a column');
 
     assert.dom('.filter-builder__subject').hasText('Product Family id');
+
+    await click('.dashboard-filters--expanded__add-filter-button');
+
+    assert
+      .dom('.dashboard-filters--expanded-add-row')
+      .exists('new filter row exits after clicking add new filter button');
+
+    assert
+      .dom('.dashboard-filters--expanded__add-filter-button')
+      .isDisabled('add filter button is disabled when adding a new filter');
+
+    assert
+      .dom('.dashboard-filters--expanded-add-row__close')
+      .isNotDisabled('removing new filter row is enabled if it is not the only filter');
+
+    await click('.dashboard-filters--expanded-add-row__close');
+
+    assert
+      .dom('.dashboard-filters--expanded-add-row')
+      .doesNotExist('new filter row is removed after clicking remove button');
   });
 
   test('updating a filter', async function (assert) {
