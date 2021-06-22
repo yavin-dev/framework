@@ -118,11 +118,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       table: tableId || '',
       columns: [
         { field: id, parameters, type: 'dimension' },
-        ...suggestionColumns.map<Column>(({ id, parameters = {} }) => ({
-          field: `${tableId}.${id}`,
-          parameters,
-          type: 'dimension',
-        })),
+        ...suggestionColumns.map<Column>(({ id, parameters = {} }) => ({ field: id, parameters, type: 'dimension' })),
       ],
       filters: predicate.map((pred) => ({
         field: id,

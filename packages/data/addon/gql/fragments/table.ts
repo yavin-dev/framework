@@ -42,7 +42,26 @@ const fragment = gql`
           columnType
           expression
           valueSourceType
-          tableSource
+          tableSource {
+            edges {
+              node {
+                suggestionColumns {
+                  edges {
+                    node {
+                      id
+                    }
+                  }
+                }
+                valueSource {
+                  edges {
+                    node {
+                      id
+                    }
+                  }
+                }
+              }
+            }
+          }
           values
         }
       }

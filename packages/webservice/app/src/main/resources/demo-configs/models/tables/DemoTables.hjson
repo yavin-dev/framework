@@ -7,12 +7,25 @@
       dbConnectionName: DemoConnection
       dimensions: [
         {
+          name: title_id_values
+          friendlyName: Title Id Values
+          cardinality: medium
+          category: Attributes
+          type: TEXT
+          definition: '{{$title_id}}'
+        }
+        {
           name: title_id
           friendlyName: Title Id
           cardinality: medium
           category: Attributes
           type: TEXT
           definition: '{{$title_id}}'
+          tableSource: {
+            table: NetflixTitles
+            column: title_id_values
+            suggestionColumns: ['title', 'show_type']
+          }
         }
         {
           name: show_type
@@ -66,31 +79,31 @@
             {
                type: DAY
                sql :  '''
-               PARSEDATETIME(FORMATDATETIME({{}}, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'yyyy-MM-dd'), 'yyyy-MM-dd')
                '''
             }
             {
                type: WEEK
                sql :  '''
-               PARSEDATETIME(FORMATDATETIME({{}}, 'YYYY-ww'), 'YYYY-ww')
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'YYYY-ww'), 'YYYY-ww')
                '''
             }
             {
                type: ISOWEEK
                sql :  '''
-               DATEADD('DAY', 1, PARSEDATETIME(FORMATDATETIME({{}}, 'YYYY-ww'), 'YYYY-ww'))
+               DATEADD('DAY', 1, PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'YYYY-ww'), 'YYYY-ww'))
                '''
             }
             {
                type: MONTH
                sql :  '''
-               PARSEDATETIME(FORMATDATETIME({{}}, 'yyyy-MM'), 'yyyy-MM')
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'yyyy-MM'), 'yyyy-MM')
                '''
             }
             {
                type: YEAR
                sql :  '''
-               PARSEDATETIME(YEAR({{}}), 'yyyy')
+               PARSEDATETIME(YEAR({{$$column.expr}}), 'yyyy')
                '''
             }
           ]

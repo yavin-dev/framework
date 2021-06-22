@@ -15,6 +15,7 @@ export default function (server: any) {
   server.createList('metric', 1, { table: table0 });
   server.createList('metric', 2, { table: table1 });
   server.createList('dimension', 2, { table: table0 });
+  server.create('table-source');
   server.createList('dimension', 4, { table: table1 });
   const timeDimTables = [table1];
   grains.forEach((grain) => {

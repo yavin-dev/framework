@@ -50,7 +50,7 @@ const schema = gql`
 
   type DimensionConnection {
     pageInfo: PageInfo
-    edges: [DimensionEdge!]!
+    edges: [DimensionEdge]
   }
 
   type DimensionEdge {
@@ -117,10 +117,19 @@ const schema = gql`
     NONE
   }
 
-  type TableSourceType {
+  type TableSource {
     id: DeferredID
-    valueSource: Dimension
-    suggestionSources: [Dimension]
+    valueSource: DimensionConnection
+    suggestionColumns: DimensionConnection
+  }
+
+  type TableSourceConnection {
+    pageInfo: PageInfo
+    edges: [TableSourceEdge]
+  }
+
+  type TableSourceEdge {
+    node: TableSource!
   }
 
   type Dimension implements Node & ColumnInterface {
@@ -136,7 +145,7 @@ const schema = gql`
     columnType: ColumnType
     expression: String
     valueSourceType: ValueSourceType!
-    tableSource: String
+    tableSource: TableSourceConnection
     values: [String]
   }
 

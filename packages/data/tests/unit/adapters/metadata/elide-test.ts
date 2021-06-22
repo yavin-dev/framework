@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
-import scenario from 'navi-data/mirage/scenarios/elide-one';
+import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
 
@@ -91,7 +91,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.expect(6);
 
     // Seed our mirage database
-    scenario(this.server);
+    ElideOneScenario(this.server);
 
     const expectedFields = [
       'id',
@@ -196,7 +196,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
               id: 'table0.dimension0',
               name: 'dimension0',
               friendlyName: 'Dimension 0',
-              tableSource: null,
+              tableSource: {
+                __typename: 'TableSourceConnection',
+                edges: [],
+              },
               tags: ['DISPLAY'],
               valueSourceType: 'NONE',
               valueType: 'TEXT',
@@ -215,7 +218,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
               id: 'table0.dimension1',
               name: 'dimension1',
               friendlyName: 'Dimension 1',
-              tableSource: null,
+              tableSource: {
+                __typename: 'TableSourceConnection',
+                edges: [],
+              },
               tags: ['DISPLAY'],
               valueSourceType: 'ENUM',
               valueType: 'TEXT',
@@ -240,10 +246,36 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
               id: 'table0.dimension2',
               name: 'dimension2',
               friendlyName: 'Dimension 2',
-              tableSource: 'table0.dimension0',
               tags: ['DISPLAY'],
               valueSourceType: 'TABLE',
               valueType: 'TEXT',
+              tableSource: {
+                __typename: 'TableSourceConnection',
+                edges: [
+                  {
+                    __typename: 'TableSourceEdge',
+                    node: {
+                      __typename: 'TableSource',
+                      suggestionColumns: {
+                        __typename: 'DimensionConnection',
+                        edges: [],
+                      },
+                      valueSource: {
+                        __typename: 'DimensionConnection',
+                        edges: [
+                          {
+                            __typename: 'DimensionEdge',
+                            node: {
+                              __typename: 'Dimension',
+                              id: 'table0.dimension0',
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
               values: [],
             },
           },
@@ -307,7 +339,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.expect(1);
 
     // Seed our mirage database
-    scenario(this.server);
+    ElideOneScenario(this.server);
 
     const result = await Adapter.fetchById('table', 'table0', {
       dataSourceName: 'elideOne',
@@ -393,7 +425,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         id: 'table0.dimension0',
                         name: 'dimension0',
                         friendlyName: 'Dimension 0',
-                        tableSource: null,
+                        tableSource: {
+                          __typename: 'TableSourceConnection',
+                          edges: [],
+                        },
                         tags: ['DISPLAY'],
                         valueSourceType: 'NONE',
                         valueType: 'TEXT',
@@ -412,7 +447,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         id: 'table0.dimension1',
                         name: 'dimension1',
                         friendlyName: 'Dimension 1',
-                        tableSource: null,
+                        tableSource: {
+                          __typename: 'TableSourceConnection',
+                          edges: [],
+                        },
                         tags: ['DISPLAY'],
                         valueSourceType: 'ENUM',
                         valueType: 'TEXT',
@@ -437,7 +475,33 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         id: 'table0.dimension2',
                         name: 'dimension2',
                         friendlyName: 'Dimension 2',
-                        tableSource: 'table0.dimension0',
+                        tableSource: {
+                          __typename: 'TableSourceConnection',
+                          edges: [
+                            {
+                              __typename: 'TableSourceEdge',
+                              node: {
+                                __typename: 'TableSource',
+                                suggestionColumns: {
+                                  __typename: 'DimensionConnection',
+                                  edges: [],
+                                },
+                                valueSource: {
+                                  __typename: 'DimensionConnection',
+                                  edges: [
+                                    {
+                                      __typename: 'DimensionEdge',
+                                      node: {
+                                        __typename: 'Dimension',
+                                        id: 'table0.dimension0',
+                                      },
+                                    },
+                                  ],
+                                },
+                              },
+                            },
+                          ],
+                        },
                         tags: ['DISPLAY'],
                         valueSourceType: 'TABLE',
                         valueType: 'TEXT',

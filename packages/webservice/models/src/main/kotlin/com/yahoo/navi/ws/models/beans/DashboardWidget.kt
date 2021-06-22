@@ -32,7 +32,7 @@ import javax.persistence.TemporalType
 import javax.persistence.Transient
 
 @Entity
-@Include(rootLevel = false, type = "dashboardWidgets")
+@Include(rootLevel = false, name = "dashboardWidgets")
 @CreatePermission(expression = "$IS_AUTHOR OR $IS_EDITOR")
 @UpdatePermission(expression = "$IS_AUTHOR OR $IS_EDITOR")
 @DeletePermission(expression = "$IS_AUTHOR OR $IS_EDITOR")

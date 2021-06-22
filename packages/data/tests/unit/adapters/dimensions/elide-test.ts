@@ -229,7 +229,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
 
     const factDimColumn = 'table1.dimension2';
     const lookupDimColumn = 'table0.dimension0';
-    const suggestionColumn = 'dimension1';
+    const suggestionColumn = 'table0.dimension1';
 
     const factDim = this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as ElideDimensionMetadataModel;
     const suggestionsDim = new ElideDimensionMetadataModel(this.owner, {
@@ -244,7 +244,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
 
     const expectedColumns: RequestV2['columns'] = [
       { field: lookupDimColumn, parameters: {}, type: 'dimension' },
-      { field: `table0.${suggestionColumn}`, parameters: {}, type: 'dimension' },
+      { field: suggestionColumn, parameters: {}, type: 'dimension' },
     ];
 
     assertRequest(this, (request, _options) => {
