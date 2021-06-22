@@ -279,20 +279,22 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise with the updated asyncQuery's id and status
    */
-  cancelAsyncQuery(id: string, dataSourceName?: string) {
+  cancelAsyncQuery(id: string, dataSourceName?: string, options: RequestOptions = {}) {
+    const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['asyncFactsCancel'];
     dataSourceName = dataSourceName || getDefaultDataSource().name;
-    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
   /**
    * @param id
    * @returns Promise that resolves to the result of the AsyncQuery fetch query
    */
-  fetchAsyncQuery(id: string, dataSourceName?: string) {
+  fetchAsyncQuery(id: string, dataSourceName?: string, options: RequestOptions = {}) {
+    const headers = options.customHeaders || {};
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
     dataSourceName = dataSourceName || getDefaultDataSource().name;
-    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName, headers } });
   }
 
   /**
@@ -309,12 +311,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @returns Promise that resolves to the result of the TableExport creation mutation
    */
   createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+    const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
-    // TODO: Add other options based on RequestOptions
-    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName } };
+    const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName, headers } };
     return this.apollo.mutate(queryOptions);
   }
 
@@ -323,9 +325,10 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param dataSourceName
    * @returns Promise with the updated tableExport's id and status
    */
-  cancelTableExport(id: string, dataSourceName: string) {
+  cancelTableExport(id: string, dataSourceName: string, options: RequestOptions = {}) {
+    const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
-    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName } });
+    return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
   /**
@@ -362,13 +365,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     try {
       while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
         yield timeout(this._pollingInterval);
-        tableExportPayload = yield this.fetchTableExport(id, request.dataSource);
+        tableExportPayload = yield this.fetchTableExport(id, request.dataSource, options);
         status = tableExportPayload?.tableExport.edges[0]?.node.status;
       }
       return tableExportPayload;
     } finally {
       if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-        yield this.cancelTableExport(id, request.dataSource);
+        yield this.cancelTableExport(id, request.dataSource, options);
       }
     }
   }
@@ -378,9 +381,10 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param dataSourceName
    * @returns Promise that resolves to the result of the TableExport fetch query
    */
-  fetchTableExport(id: string, dataSourceName: string) {
+  fetchTableExport(id: string, dataSourceName: string, options: RequestOptions = {}) {
+    const headers = options.customHeaders || {};
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
-    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName } });
+    return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName, headers } });
   }
 
   /**
@@ -400,13 +404,13 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     try {
       while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
         yield timeout(this._pollingInterval);
-        asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource);
+        asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource, options);
         status = asyncQueryPayload?.asyncQuery.edges[0]?.node.status;
       }
       return asyncQueryPayload;
     } finally {
       if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-        yield this.cancelAsyncQuery(id, request.dataSource);
+        yield this.cancelAsyncQuery(id, request.dataSource, options);
       }
     }
   }
