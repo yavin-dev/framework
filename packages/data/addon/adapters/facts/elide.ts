@@ -316,7 +316,6 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const query = this.dataQueryFromRequest(request);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
-    // TODO: Add other options based on RequestOptions
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName, headers } };
     return this.apollo.mutate(queryOptions);
   }
