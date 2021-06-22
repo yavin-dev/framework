@@ -484,7 +484,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'cancelAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -571,7 +571,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -664,7 +664,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchTableExport sends custom headers');
 
       response = {
         tableExport: {
