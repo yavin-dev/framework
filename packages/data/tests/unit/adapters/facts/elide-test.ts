@@ -475,6 +475,40 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.deepEqual(result, response, 'createAsyncQuery returns the correct response payload');
   });
 
+  test('cancelAsyncQuery - header', async function (assert) {
+    assert.expect(1);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody, requestHeaders }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+
+      response = {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.id,
+                status: 'CANCELLED',
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    await adapter.cancelAsyncQuery('request1', 'elideOne', {
+      customHeaders: {
+        Authentication: 'Bearer abc-123',
+      },
+    });
+  });
+
   test('fetchAsyncQuery - success', async function (assert) {
     assert.expect(2);
 
@@ -528,6 +562,58 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
+  test('fetchAsyncQuery - header', async function (assert) {
+    assert.expect(1);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody, requestHeaders }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+
+      response = {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.ids[0],
+                query: 'foo',
+                queryType: 'GRAPHQL_V1_0',
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: '200',
+                  contentLength: 2,
+                  responseBody: JSON.stringify({
+                    table: {
+                      edges: [
+                        {
+                          node: {
+                            metric: 123,
+                            dimension: 'foo',
+                          },
+                        },
+                      ],
+                    },
+                  }),
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+
+    await adapter.fetchAsyncQuery('request1', 'elideOne', {
+      customHeaders: {
+        Authentication: 'Bearer abc-123',
+      },
+    });
+  });
+
   test('fetchTableExport - success', async function (assert) {
     assert.expect(2);
 
@@ -567,6 +653,46 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     });
     const result = await adapter.fetchTableExport('request1', 'elideOne');
     assert.deepEqual(result, response, 'fetchTableExport returns the correct response payload');
+  });
+
+  test('fetchTableExport - header', async function (assert) {
+    assert.expect(1);
+
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+
+    let response;
+    Server.post(HOST, function ({ requestBody, requestHeaders }) {
+      const requestObj = JSON.parse(requestBody);
+
+      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+
+      response = {
+        tableExport: {
+          edges: [
+            {
+              node: {
+                id: requestObj.variables.ids[0],
+                query: 'foo',
+                queryType: 'GRAPHQL_V1_0',
+                status: 'COMPLETE',
+                result: {
+                  httpStatus: '200',
+                  url: 'downloadURL',
+                  message: '',
+                },
+              },
+            },
+          ],
+        },
+      };
+
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
+    });
+    await adapter.fetchTableExport('request1', 'elideOne', {
+      customHeaders: {
+        Authentication: 'Bearer abc-123',
+      },
+    });
   });
 
   test('fetchDataForRequest - success', async function (assert) {
