@@ -16,6 +16,6 @@ export type Args = {
 
 export default class NaviVisualizationsPieChartComponent extends Component {
   get isApexEnabled(): boolean {
-    return !!featureFlag('enableApexCharts');
+    return true;
   }
 }

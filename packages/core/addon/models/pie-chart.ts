@@ -83,12 +83,11 @@ export default class PieChart
    * @param {Object} response - response object
    * @return {Object} this object
    */
-  rebuildConfig(request: RequestFragment, response: NaviFactResponse) {
-    this.isValidForRequest(request);
-
-    const chartType = chartTypeForRequest(request);
-    const series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, this.validations, request, response);
-    this.metadata = { series };
+  rebuildConfig(_request: RequestFragment, _response: NaviFactResponse) {
+    //this.isValidForRequest(request);
+    //const chartType = chartTypeForRequest(request);
+    //const series = this.getSeriesBuilder(chartType).call(this, CONFIG_PATH, this.validations, request, response);
+    // this.metadata = { series };
     return this;
   }
 }

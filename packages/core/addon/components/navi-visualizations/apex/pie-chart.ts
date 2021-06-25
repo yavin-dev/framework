@@ -6,6 +6,7 @@
  *   @options={{this.visualizationOptions}}
  * />
  */
+import { chartTypeForRequest } from 'navi-core/utils/chart-data';
 import ApexChartComponent from './base';
 import Component from '@ember/component';
 import { computed } from '@ember/object';
@@ -87,8 +88,6 @@ export function normalize(request: RequestFragment, response: NaviFactResponse, 
 export default class ApexPieChartComponent extends ApexChartComponent {
   extraClassNames = 'pie-chart-widget pie-chart-widget--apex';
 
-  @readOnly('args.options.series') declare seriesConfig: PieChartConfig['metadata']['series'];
-
   @computed('baseOptions', 'pieChartOptions', 'dataOptions')
   get chartOptions(): ApexOptions {
     const { baseOptions, pieChartOptions, chartTooltip, dataOptions } = this;
@@ -96,14 +95,10 @@ export default class ApexPieChartComponent extends ApexChartComponent {
     return merge({}, baseOptions, pieChartOptions, chartTooltip, dataOptions);
   }
 
-  @computed('request.metricColumns.@each.displayName', 'seriesConfig.{type,config.metricCid}')
+  @computed('request.metricColumns.@each.displayName')
   get metric() {
-    const { request, seriesConfig } = this;
-    if (seriesConfig.type === 'dimension') {
-      const { metricCid } = seriesConfig.config;
-      return request?.metricColumns.find(({ cid }) => cid === metricCid);
-    }
-    return undefined;
+    const { request } = this;
+    return request?.metricColumns.length === 1 ? request?.metricColumns[0] : undefined;
   }
 
   @computed('metric.displayName')
@@ -122,10 +117,13 @@ export default class ApexPieChartComponent extends ApexChartComponent {
     };
   }
 
-  @computed('request.metricColumns.[]', 'response.rows.[]', 'seriesConfig.{type,config.metricCid}')
+  @computed('request.metricColumns.[]', 'response.rows.[]', 'validations')
   get chartData() {
-    const { request, response, seriesConfig } = this;
-    return normalize(request, response, seriesConfig);
+    const { request, response } = this;
+    const chartType = chartTypeForRequest(request);
+    const series = this.getSeriesBuilder(chartType, request, response);
+
+    return normalize(request, response, series);
   }
 
   @computed('request.metricColumns.[]', 'chartData', 'seriesConfig.{type,config.metricCid}')
