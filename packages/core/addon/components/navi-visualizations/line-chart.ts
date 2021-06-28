@@ -99,7 +99,15 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * config options for the chart
    */
-  @computed('args.options', 'dataConfig')
+  @computed(
+    'args.options',
+    'chartTooltip',
+    'dataConfig',
+    'dataSelectionConfig',
+    'xAxisTickValues',
+    'yAxisDataFormat',
+    'yAxisLabelConfig'
+  )
   get config() {
     const { pointConfig: point } = this;
     //deep merge DEFAULT_OPTIONS, custom options, and data
@@ -271,7 +279,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * component used for rendering HTMLBars templates
    */
-  @computed('firstModel', 'dataConfig')
+  @computed('builder', 'dataConfig', 'firstModel', 'tooltipComponentName')
   get tooltipComponent() {
     const { request, seriesConfig } = this;
     const tooltipComponentName = this.tooltipComponentName;
@@ -342,7 +350,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * configuration for tooltip
    */
-  @computed('seriesConfig.config', 'dataConfig.data.json', 'tooltipComponent', 'firstModel')
+  @computed('dataConfig.data.json', 'firstModel', 'request', 'seriesConfig.config', 'tooltipComponent')
   get chartTooltip() {
     const rawData = this.dataConfig.data?.json;
     const tooltipComponent = this.tooltipComponent;
@@ -355,20 +363,19 @@ export default class LineChart extends ChartBuildersBase<Args> {
          * Since tooltipData.x only contains the index value, map it
          * to the raw x value for better formatting
          */
-        let x = rawData[tooltipData[0].x].x.rawValue,
-          tooltip = tooltipComponent.create({
-            tooltipData,
-            x,
-            request,
-            seriesConfig,
-          });
-
-        run(() => {
-          let element = document.createElement('div');
-          tooltip.appendTo(element);
+        const x = rawData[tooltipData[0].x].x.rawValue;
+        const tooltip = tooltipComponent.create({
+          tooltipData,
+          x,
+          request,
+          seriesConfig,
         });
 
-        let innerHTML = tooltip.element.innerHTML;
+        run(() => {
+          tooltip.appendTo(document.createElement('div'));
+        });
+
+        const innerHTML = tooltip.element.innerHTML;
         tooltip.destroy();
         return innerHTML;
       },

@@ -1,19 +1,50 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
+import { TestContext as Context } from 'ember-test-helpers';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
+import StoreService from '@ember-data/store';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import type { TableColumn } from 'navi-core/components/navi-visualizations/table';
+import type NaviTableCellRenderer from 'navi-core/components/navi-table-cell-renderer';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+
+type ComponentArgs = NaviTableCellRenderer['args'];
+
+interface TestContext extends Context, ComponentArgs {}
 
 module('Integration | Component | navi table cell renderer', function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  test('it renders the correct cell renderer', async function (assert) {
-    this.set('column', {
-      fragment: { type: 'metric', canonicalName: 'foo' },
-      attributes: {},
+  hooks.beforeEach(async function (this: TestContext) {
+    const MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
+
+    const store = this.owner.lookup('service:store') as StoreService;
+    this.request = store.createFragment('bard-request-v2/request', {
+      columns: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' }],
+      filters: [],
+      sorts: [],
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
+      table: 'network',
     });
+  });
+
+  test('it renders the correct cell renderer', async function (this: TestContext, assert) {
+    const fragment = this.request.columns.objectAt(0) as ColumnFragment;
+    const column: TableColumn = {
+      fragment,
+      attributes: {},
+      sortDirection: 'none',
+      columnId: fragment.cid,
+    };
+    this.set('column', column);
 
     this.set('data', {
-      foo: 12,
+      uniqueIdentifier: 12,
     });
 
     this.set('request', {});

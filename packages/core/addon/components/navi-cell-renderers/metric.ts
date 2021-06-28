@@ -11,25 +11,21 @@
  * />
  */
 import BaseCellRenderer from './base';
-import { isEmpty } from '@ember/utils';
-import numeral from 'numeral';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type { MetricValue } from 'navi-data/serializers/facts/interface';
 
 export default class MetricCellRenderer extends BaseCellRenderer {
   /**
    * value to be rendered on the cell
    */
   get displayValue(): string {
-    const { columnValue } = this;
-
-    if (isEmpty(columnValue)) {
-      return '--';
-    }
-
-    const { format } = this.args.column.attributes;
-    if (format) {
-      return numeral(columnValue).format(format);
-    }
-
-    return `${columnValue}`;
+    const { column } = this.args;
+    const fragment = column.fragment as ColumnFragment<'metric'>;
+    return fragment.columnMetadata.formatValue(
+      this.columnValue as MetricValue,
+      fragment,
+      this.args.data,
+      column.attributes.format
+    );
   }
 }

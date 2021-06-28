@@ -15,10 +15,11 @@ import Component from '@glimmer/component';
 import { dasherize } from '@ember/string';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { TableColumn } from './navi-visualizations/table';
+import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 // TODO: Better Column/data type
 export type CellRendererArgs = {
-  data: Record<string, string | number | null>;
+  data: ResponseRow;
   column: TableColumn;
   request: RequestFragment;
 };

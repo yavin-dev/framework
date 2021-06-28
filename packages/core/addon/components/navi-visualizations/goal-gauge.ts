@@ -104,7 +104,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Object} - general gauge configuration
    */
-  @computed('args.options.{baselineValue,goalValue}')
+  @computed('args.options.{baselineValue,goalValue}', 'config.{prefix,unit}')
   get gauge() {
     return {
       width: 20,
@@ -112,9 +112,9 @@ export default class GoalGaugeVisualization extends Component<Args> {
       min: this.args.options.baselineValue,
       label: {
         extents: (value: number) => {
-          let number = this._formatNumber(value),
-            prefix = this.config.prefix,
-            unit = this.config.unit;
+          const number = this._formatNumber(value);
+          const prefix = this.config.prefix;
+          const unit = this.config.unit;
           return `${prefix}${number}${unit}`;
         },
       },
@@ -125,7 +125,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @property {Array} - threshold values to indicate what color to render
    * C3 Threshold Algorithm: if < threshold value indexN, use color indexN
    */
-  @computed('args.options.{baselineValue,goalValue}')
+  @computed('args.options.{baselineValue,goalValue}', 'config.{baselineValue,goalValue,thresholdPercentages}')
   get thresholdValues() {
     const diff = this.config.goalValue - this.config.baselineValue;
 
@@ -135,7 +135,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   /**
    * @property {Object} - color gauge configuration
    */
-  @computed('config.{goalValue,thresholdColors}')
+  @computed('config.{goalValue,thresholdColors}', 'thresholdValues')
   get color() {
     return {
       pattern: this.config.thresholdColors,
@@ -148,6 +148,7 @@ export default class GoalGaugeVisualization extends Component<Args> {
   }
 
   willDestroy() {
+    super.willDestroy();
     this._removeTitle();
   }
   /**
