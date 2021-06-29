@@ -11,7 +11,7 @@
 
 ## Yavin Framework [![Pipeline Status][status-image]][status-url]
 
-> **Note:** This repository contains the core code of the Yavin framework. If you want to build an application using Yavin, visit the [Yavin App Repository](https://github.com/yavin-dev/app).
+> **Note:** This test repository contains the core code of the Yavin framework. If you want to build an application using Yavin, visit the [Yavin App Repository](https://github.com/yavin-dev/app).
 
 Yavin is a framework for rapidly building custom data applications that offers both a UI and an API.
 Yavin can also be deployed as a standalone business intelligence tool in a few simple steps.
