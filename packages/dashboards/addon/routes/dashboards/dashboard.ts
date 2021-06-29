@@ -16,6 +16,7 @@ import type DashboardModel from 'navi-core/models/dashboard';
 import type DashboardsDashboardController from 'navi-dashboards/controllers/dashboards/dashboard';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import widget from 'navi-dashboards/controllers/dashboards/dashboard/widgets/widget';
 
 // Trimmed down types https://github.com/gridstack/gridstack.js/blob/bcd609370e0c816d63ceaac69ab6bf38c3154074/src/types.ts#L188
 interface GridStackWidget {
@@ -50,7 +51,15 @@ export default class DashboardsDashboardRoute extends Route {
   async model({ dashboard_id }: { dashboard_id: string }): Promise<DashboardModel> {
     const dashboard = await this.store.findRecord('dashboard', dashboard_id);
     const widgets = await dashboard.widgets;
-    await Promise.all(widgets.map((w) => w?.request?.loadMetadata()));
+    await Promise.all(
+      widgets.map((w) => {
+        w?.request?.loadMetadata();
+      })
+    );
+    let promises: Promise<Request>[] = [];
+    widgets.map((w: DashboardWidget) => promises.push(w?.request?.loadMetadata()));
+
+    await Promise.allSettled(promises);
     return dashboard;
   }
 

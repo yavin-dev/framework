@@ -398,4 +398,84 @@ export default [
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
   },
+  {
+    id: 11,
+    dashboardId: 7,
+    authorId: 'navi_user',
+    title: 'Datasource error',
+    visualization: {
+      type: 'line-chart',
+      version: 1,
+      metadata: {
+        axis: {
+          y: {
+            series: {
+              type: 'metric',
+              config: {
+                metrics: ['adClicks', 'navClicks'],
+              },
+            },
+          },
+        },
+      },
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day',
+        },
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P7D',
+          },
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1',
+        dataSource: 'foo',
+      },
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00',
+  },
+  {
+    id: 12,
+    dashboardId: 7,
+    authorId: 'navi_user',
+    title: 'Mobile DAU Goal',
+    visualization: {
+      type: 'goal-gauge',
+      version: 1,
+      metadata: {
+        baselineValue: 200,
+        goalValue: 1000,
+        metric: { metric: 'adClicks', parameters: {} },
+      },
+    },
+    requests: [
+      {
+        logicalTable: {
+          table: 'network',
+          timeGrain: 'day',
+        },
+        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
+        dimensions: [],
+        filters: [],
+        intervals: [
+          {
+            end: 'current',
+            start: 'P1D',
+          },
+        ],
+        bardVersion: 'v1',
+        requestVersion: 'v1',
+      },
+    ],
+    createdOn: '2016-01-01 00:00:00',
+    updatedOn: '2016-01-01 00:00:00',
+  },
 ];

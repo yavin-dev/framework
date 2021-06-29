@@ -24,7 +24,7 @@ export function getDataSource<T extends keyof DataSourceRegistry>(dataSourceName
   if (dataSource) {
     return dataSource as DataSourceRegistry[T];
   }
-  assert(`Datasource ${dataSourceName} should be configured in the navi environment`);
+  throw new Error(`Datasource ${dataSourceName} should be configured in the navi environment`);
 }
 
 /**

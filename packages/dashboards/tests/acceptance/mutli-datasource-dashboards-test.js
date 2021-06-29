@@ -118,6 +118,6 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     );
 
     await click('.navi-dashboard__save-button');
-    assert.equal(currentURL(), '/dashboards/7/view', 'Dashboard saves without issue');
+    assert.equal(currentURL(), '/dashboards/8/view', 'Dashboard saves without issue');
   });
 });
