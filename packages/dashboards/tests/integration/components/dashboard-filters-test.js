@@ -169,7 +169,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
 
     assert
       .dom('.dashboard-filters--expanded-add-row')
-      .exists('new filter row exits after expanding when no filters exits');
+      .exists('new filter row exits after expanding when no filters exists');
 
     assert
       .dom('.dashboard-filters--expanded-add-row__close')
@@ -191,7 +191,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
 
     assert
       .dom('.dashboard-filters--expanded-add-row')
-      .exists('new filter row exits after clicking add new filter button');
+      .exists('new filter row exists after clicking add new filter button');
 
     assert
       .dom('.dashboard-filters--expanded__add-filter-button')
