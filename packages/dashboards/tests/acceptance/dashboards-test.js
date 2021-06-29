@@ -758,6 +758,7 @@ module('Acceptance | Dashboards', function (hooks) {
   test('Bad Datasource', async function (assert) {
     assert.expect(2);
 
+    setupOnerror(() => undefined);
     await visit('dashboards/7');
 
     let widgets = findAll('.navi-widget__title').map((el) => el.textContent.trim());
