@@ -10,11 +10,11 @@ echo "Deploying navi webservice models to artifactory for branch $BRANCH"
 if [ $BRANCH = 'master' ]
 then
     echo 'Publishing beta build...'
-    ./gradlew -PpublishTag=beta -p models artifactoryPublish
+    ./gradlew -PpublishTag=beta -PisSnapshot=true -p models publish
 elif [ $BRANCH = '0.2.x-alpha' ]
 then
     echo 'Publishing alpha build...'
-    ./gradlew -p models artifactoryPublish
+    ./gradlew -PisSnapshot=true -p models publish
 else
     echo 'Not a publishable branch'
 fi
