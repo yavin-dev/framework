@@ -27,14 +27,17 @@ dependencies {
 ```
 repositories {
     maven {
-        url "https://oss.jfrog.org/artifactory/oss-snapshot-local"
+        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        content {
+            includeGroup("dev.yavin")
+        }
     }
 }
 ```
 
 ```
 dependencies {
-    implementation("com.yahoo.navi:models:0.2.0-SNAPSHOT")
+    implementation("dev.yavin:models:0.2.0-SNAPSHOT")
 }
 ```
 
@@ -73,7 +76,7 @@ dependencies {
     <repository>
         <id>oss-snapshot-local</id>
         <name>oss-snapshot-local</name>
-        <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+        <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
 </repositories>
 ```
@@ -81,7 +84,7 @@ dependencies {
 ```xml
 <dependencies>
     <dependency>
-      <groupId>com.yahoo.navi</groupId>
+      <groupId>dev.yavin</groupId>
       <artifactId>models</artifactId>
       <version>0.2.0-SNAPSHOT</version>
     </dependency>

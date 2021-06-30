@@ -79,6 +79,8 @@ publishing {
         maven {
             val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            // This line is evaluated before gradle.taskGraph.whenReady so the version did not contain "SNAPSHOT" in name,
+            // so it was using releaseUrl instead of snapshotUrl. isSnapshot is passed in as project property in maven-publish.sh.
             url = if (project.hasProperty("isSnapshot") && project.property("isSnapshot").toString().equals("true")) snapshotsRepoUrl else releasesRepoUrl
             credentials {
                 username = System.getenv("OSSRH_USER") as String?
