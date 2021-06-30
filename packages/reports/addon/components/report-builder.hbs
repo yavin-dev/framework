@@ -1,6 +1,6 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
-  <ReportBuilder::Sidebar 
+  <ReportBuilder::Sidebar
     @isOpen={{this.isSidebarOpen}}
     @disabled={{@disabled}}
     @report={{@report}}
@@ -29,18 +29,20 @@
           (if @isFiltersCollapsed " report-builder__container--filters--collapsed")
         }}>
         <span class="report-builder__container-header">
-          <span
-            class="report-builder__container-header__filters-toggle"
-            role="button"
+          <button
+            class="report-builder__container-header__filters-toggle p-0"
+            type="button"
             {{on "click" (fn (optional @onUpdateFiltersCollapsed) (not @isFiltersCollapsed))}}>
             <h4 class="report-builder__container-header__title">Filters</h4>
-            <NaviIcon
+            <DenaliIcon
+              @icon={{if @isFiltersCollapsed "arrowhead-right" "arrowhead-down"}}
+              @size="small"
               class="report-builder__container-header__filters-toggle-icon"
-              @icon="angle-down" />
-          </span>
+            />
+          </button>
           {{#unless @isFiltersCollapsed}}
-            <span class="report-builder__container-header__message">
-              Click the icon <NaviIcon @icon="filter" class="report-builder__container-header__message--icon" /> next to a dimension/metric to add a filter.
+            <span class="report-builder__container-header__message flex align-items-center">
+              Click <DenaliIcon @icon="filter-add" @size="small" class="report-builder__container-header__message--icon m-x-2" /> next to a dimension/metric to add a filter.
             </span>
           {{/unless}}
         </span>

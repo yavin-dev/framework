@@ -1,9 +1,14 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="dashboard-filters {{if this.isCollapsed "dashboard-filters--collapsed" "dashboard-filters--expanded"}}">
   <div class={{if this.isCollapsed "flex"}}>
-    <span class="dashboard-filters__expand-button m-r-4" role="button" {{on "click" (toggle "isCollapsed" this)}}>
-      <NaviIcon @icon="sliders" /> Filters<NaviIcon @icon="angle-down" class="dashboard-filters__toggle" />
-    </span>
+    <button class="dashboard-filters__expand-button m-r-4 link" type="button" {{on "click" (toggle "isCollapsed" this)}}>
+      <span>Filters</span>
+      <DenaliIcon
+        @icon={{if this.isCollapsed "arrowhead-right" "arrowhead-down"}}
+        @size="small"
+        class="dashboard-filters__toggle"
+      />
+    </button>
 
     <FilterCollection
       class="dashboard-filters-collection"
@@ -15,7 +20,7 @@
     />
 
     {{#unless this.isCollapsed}}
-      {{#if this.isAddingMode}}
+      {{#if (or this.isAddingMode (not this.request.filters.length) )}}
         <div class="dashboard-filters--expanded-add-row flex">
           <div class="p-y-4">
             <DenaliButton
@@ -24,6 +29,7 @@
               @size="medium"
               @icon="minus-circle"
               @iconOnly={{true}}
+              disabled={{not this.request.filters.length}}
               {{on "click" (toggle "isAddingMode" this)}}
             />
           </div>
@@ -32,7 +38,7 @@
               <DashboardDimensionSelector
                 class="dashboard-filters--expanded-add-row__dimension-selector"
                 @dashboard={{@dashboard}}
-                @onChange={{queue @onAddFilter (toggle "isAddingMode" this)}}
+                @onChange={{queue @onAddFilter (fn (mut this.isAddingMode) false)}}
               />
             </div>
             <DenaliInput
@@ -49,17 +55,17 @@
             />
           </div>
         </div>
-      {{else}}
-        <DenaliButton
-          class="dashboard-filters--expanded__add-filter-button"
-          @size="medium"
-          @icon="filter-add"
-          @style="text"
-          {{on "click" (toggle "isAddingMode" this)}}
-        >
-          Add Filter
-        </DenaliButton>
       {{/if}}
+      <DenaliButton
+        class="dashboard-filters--expanded__add-filter-button"
+        @size="medium"
+        @icon="filter-add"
+        @style="text"
+        disabled={{or this.isAddingMode (not this.request.filters.length)}}
+        {{on "click" (toggle "isAddingMode" this)}}
+      >
+        Add Filter
+      </DenaliButton>
     {{/unless}}
   </div>
 </div>

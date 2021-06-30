@@ -1,5 +1,5 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="filter-collection {{if @isCollapsed "filter-collection--collapsed"}}" ...attributes>
+<div class="filter-collection {{if @isCollapsed "filter-collection--collapsed flex"}}" ...attributes>
   {{#each this.filters as |filter|}}
     {{#let (component (concat "filter-builders/" filter.type)) as |FilterBuilder|}}
       {{#if @isCollapsed}}
@@ -34,5 +34,9 @@
         </div>
       {{/if}}
     {{/let}}
+  {{else}}
+    {{#if @isCollapsed}}
+      <span class="is-grey-600">No Filters Configured</span>
+    {{/if}}
   {{/each}}
 </div>

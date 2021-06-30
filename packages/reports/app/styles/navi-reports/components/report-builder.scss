@@ -62,14 +62,6 @@
     &--collapsed {
       align-items: flex-start;
       flex-flow: row;
-
-      .report-builder__container-header {
-        width: 60px;
-
-        &__filters-toggle-icon {
-          transform: rotate(-90deg);
-        }
-      }
     }
   }
 

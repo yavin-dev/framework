@@ -93,7 +93,6 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
 
     //add filters
     await click('.dashboard-filters__toggle');
-    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Container');
     await selectChoose('.filter-values--dimension-select__trigger', '1');
 

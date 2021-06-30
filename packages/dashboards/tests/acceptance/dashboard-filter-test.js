@@ -34,7 +34,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
     };
 
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters--expanded__add-filter-button');
 
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
@@ -115,7 +114,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
     };
 
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters--expanded__add-filter-button');
 
     await selectChoose('.dashboard-dimension-selector', 'Multi System Id');
 
@@ -294,7 +292,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     //Add a filter with no values
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
@@ -326,8 +323,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
       'No new requests run on empty filter remove (model hook should use cached data)'
     );
 
-    //Add the filter with no values again
-    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     assert.equal(dataRequests.length, 3, 'No new requests run on filter add (model hook should use cached data)');
@@ -385,7 +380,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     //Add a filter with no values
     await click('.dashboard-filters__expand-button');
-    await click('.dashboard-filters--expanded__add-filter-button');
     await selectChoose('.dashboard-dimension-selector', 'Property');
 
     let decompressed = await CompressionService.decompress(currentURL().split('=')[1]);
