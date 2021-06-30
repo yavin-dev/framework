@@ -136,7 +136,6 @@ export default [
     id: 7,
     title: 'Datasource Error Dashboard',
     authorId: 'navi_user',
-    dashboardWidgetIds: [11, 12],
     createdOn: '2016-01-01 03:00:00',
     updatedOn: '2016-01-01 03:00:00',
     deliveryRuleIds: [],
@@ -144,8 +143,8 @@ export default [
     presentation: {
       version: 1,
       layout: [
-        { column: 0, row: 0, height: 4, width: 6, widgetId: 11 },
-        { column: 6, row: 0, height: 4, width: 6, widgetId: 12 },
+        { column: 0, row: 0, height: 4, width: 6, widgetId: 10 },
+        { column: 6, row: 0, height: 4, width: 6, widgetId: 11 },
       ],
       columns: 12,
     },

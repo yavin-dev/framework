@@ -399,7 +399,7 @@ export default [
     updatedOn: '2016-01-01 00:00:00',
   },
   {
-    id: 11,
+    id: 10,
     dashboardId: 7,
     authorId: 'navi_user',
     title: 'Datasource error',
@@ -443,7 +443,7 @@ export default [
     updatedOn: '2016-01-01 00:00:00',
   },
   {
-    id: 12,
+    id: 11,
     dashboardId: 7,
     authorId: 'navi_user',
     title: 'Mobile DAU Goal',
