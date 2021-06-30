@@ -147,7 +147,7 @@ jobs:
       - ~main
       - ~alpha-main
     steps:
-      - decrypt: . ./decrypt.sh
+      - decrypt: ./decrypt.sh
       - publish: ./scripts/maven-publish.sh
     secrets:
       - GPG_KEY
