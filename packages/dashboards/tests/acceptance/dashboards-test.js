@@ -9,6 +9,7 @@ import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import $ from 'jquery';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import { setupOnerror } from '@ember/test-helpers';
 
 let confirm;
 
@@ -367,7 +368,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/8/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     assert
       .dom('.dashboard-header__page-title .clickable')
@@ -718,7 +719,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/7/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/8/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
@@ -736,7 +737,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Save without running
     await click('.navi-report-widget__save-btn');
     assert.ok(
-      currentURL().endsWith('/dashboards/7/view'),
+      currentURL().endsWith('/dashboards/8/view'),
       'After saving without running, user is brought back to dashboard view'
     );
 
@@ -755,5 +756,20 @@ module('Acceptance | Dashboards', function (hooks) {
       ['Date Time (day)', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
+  });
+
+  test('Bad Datasource', async function (assert) {
+    assert.expect(2);
+
+    setupOnerror(() => undefined);
+    await visit('dashboards/7');
+
+    let widgets = findAll('.navi-widget__title').map((el) => el.textContent.trim());
+
+    assert.deepEqual(widgets, ['Datasource error', 'Mobile DAU Goal'], 'Both widgets show up');
+
+    assert
+      .dom('.navi-widget__content.error-container')
+      .containsText('There was an error with your request.', 'Error text shows for the bad datasource widget');
   });
 });
