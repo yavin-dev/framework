@@ -139,7 +139,7 @@ jobs:
     secrets:
       - NPM_TOKEN
 
-  publish-artifactory:
+  publish-maven:
     annotations:
       screwdriver.cd/ram: LOW
       screwdriver.cd/cpu: LOW
@@ -147,10 +147,14 @@ jobs:
       - ~main
       - ~alpha-main
     steps:
-      - publish: ./scripts/artifactory-publish.sh
+      - decrypt: ./decrypt.sh
+      - publish: ./scripts/maven-publish.sh
     secrets:
-      - ARTIFACTORY_USER
-      - ARTIFACTORY_KEY
+      - GPG_KEY
+      - GPG_ENCPHRASE
+      - OSSRH_TOKEN
+      - OSSRH_USER
+      - GPG_PASSPHRASE
 
   gh-pages:
     requires: main

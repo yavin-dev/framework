@@ -1,18 +1,12 @@
-import com.jfrog.bintray.gradle.BintrayExtension
-import org.jfrog.gradle.plugin.artifactory.dsl.DoubleDelegateWrapper
-import org.jfrog.gradle.plugin.artifactory.dsl.PublisherConfig
-import org.jfrog.gradle.plugin.artifactory.task.ArtifactoryTask
-
 description = "The models required to be stored for the webservice"
 
 plugins {
     base
     kotlin("jvm")
     `maven-publish`
-    id("com.jfrog.bintray") version "1.8.5"
-    id("com.jfrog.artifactory") version "4.16.1"
     kotlin("plugin.allopen") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
+    `signing`
 }
 
 java {
@@ -42,10 +36,21 @@ val sourcesJar by tasks.registering(Jar::class) {
 
 artifacts.add("archives", sourcesJar)
 
+group = "dev.yavin"
+
 publishing {
     publications {
-        create<MavenPublication>("models") {
+        create<MavenPublication>("mavenJava") {
+            artifactId = "models"
             from(components["java"])
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
+                }
+            }
             pom {
                 name.set("Navi: Webservice models")
                 description.set(project.description)
@@ -62,54 +67,47 @@ publishing {
                         email.set("team-navi@googlegroups.com")
                     }
                 }
+                scm {
+                    connection.set("scm:git:https://github.com/yavin-dev/framework.git")
+                    developerConnection.set("scm:git:ssh:git@github.com:yavin-dev/framework.git")
+                    url.set("http://yavin.dev")
+                }
             }
         }
     }
+    repositories {
+        maven {
+            val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+            val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            // This line is evaluated before gradle.taskGraph.whenReady so the version did not contain "SNAPSHOT" in name,
+            // so it was using releaseUrl instead of snapshotUrl. isSnapshot is passed in as project property in maven-publish.sh.
+            url = if (project.hasProperty("isSnapshot") && project.property("isSnapshot").toString().equals("true")) snapshotsRepoUrl else releasesRepoUrl
+            credentials {
+                username = System.getenv("OSSRH_USER") as String?
+                password = System.getenv("OSSRH_TOKEN") as String?
 
+            }
+        }
+    }
+}
+
+project.setProperty("signing.password", System.getenv("GPG_PASSPHRASE"))
+
+signing {
+    sign(publishing.publications["mavenJava"])
 }
 
 gradle.taskGraph.whenReady {
-    if (hasTask(":models:artifactoryPublish")) {
+    if (hasTask(":models:publish")) {
         var tag = ""
         if(project.hasProperty("publishTag")) {
             tag = "-${project.property("publishTag")}"
         }
-        version = "${version}${tag}-SNAPSHOT"
-        println("Overriding version as $version for artifactory")
+        var snapshot = ""
+        if(project.hasProperty("isSnapshot") && project.property("isSnapshot").toString().equals("true")) {
+            snapshot = "-SNAPSHOT"
+        }
+        version = "${version}${tag}${snapshot}"
+        println("Overriding version as $version for maven")
     }
-}
-
-// Config for snapshot deploys
-artifactory {
-    setContextUrl("https://oss.jfrog.org")
-
-    publish(closureOf<PublisherConfig> {
-        repository(closureOf<DoubleDelegateWrapper> {
-            this.invokeMethod("setRepoKey", "oss-snapshot-local")
-            this.invokeMethod("setUsername", System.getenv("ARTIFACTORY_USER"))
-            this.invokeMethod("setPassword", System.getenv("ARTIFACTORY_KEY"))
-        })
-        defaults(closureOf<ArtifactoryTask> {
-            publications("models")
-        })
-    })
-}
-
-// Config for bintray deploy
-bintray {
-    user = System.getenv("BINTRAY_USER")
-    key = System.getenv("BINTRAY_KEY")
-    publish = true
-    setPublications("models")
-    pkg(closureOf<BintrayExtension.PackageConfig> {
-        repo = "maven"
-        name = "navi"
-        userOrg = "yahoo"
-        desc = "Navi is a production quality analytics reporting UI with out of the box support for Fili."
-        websiteUrl = "https://github.com/yahoo/yavin/tree/master/packages/webservice"
-        issueTrackerUrl = "https://github.com/yahoo/yavin/issues"
-        vcsUrl = "https://github.com/yahoo/navi.git"
-        setLabels("navi", "reports", "dashboards", "visualizations", "elide", "webservice")
-        setLicenses("MIT")
-    })
 }
