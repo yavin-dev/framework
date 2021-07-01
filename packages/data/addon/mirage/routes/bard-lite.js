@@ -274,7 +274,6 @@ export default function(
           let groupedRow = Object.values(groupBy(row, dim === 'dateTime' ? dim : `${dim}|id`));
           groupedRow = groupedRow.reduce((aggAcc, aggRow) => {
             const subtotalRow = aggRow.reduce((acc, row) => {
-              console.log(row, 'row');
               if (row.__rollupMask !== getMask(['dateTime', ...dimensions])) {
                 //subtotal row, skip
                 return acc;
@@ -298,7 +297,6 @@ export default function(
               });
 
               const nullDims = difference(['dateTime', ...dimensions], [...processedDims, dim]);
-              console.log(nullDims, [...processedDims, dim], dimensions);
               nullDims.forEach(nullDim => {
                 if (nullDim === 'dateTime') {
                   acc.dateTime = null;
