@@ -11,7 +11,7 @@ import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 import type LayoutFragment from 'navi-core/models/fragments/layout';
 import type FragmentArrayBase from 'ember-data-model-fragments/FragmentArray';
-import type NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export default class DashboardsDashboardWidgetsAddRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;

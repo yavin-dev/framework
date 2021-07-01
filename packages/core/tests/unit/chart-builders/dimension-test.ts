@@ -377,7 +377,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
       ],
     };
     const x = '2016-05-31 00:00:00.000';
-    const tooltipData = [{ x, id: -3, name: 'All Other', value: 4088487125 }];
+    const tooltipData = [{ x, id: -3, name: '-3', value: 4088487125 }];
 
     //Populates the 'byXSeries' property in the builder that buildTooltip uses
     DimensionChartBuilder.buildData(DATA, config, REQUEST);

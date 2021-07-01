@@ -52,6 +52,7 @@
     "graphql-tag": "^2.10.1",
     "lodash-es": "^4.17.11",
     "miragejs": "^0.1.41",
+    "numeral": "^2.0.6",
     "papaparse": "^5.1.1",
     "pretender": "^3.4.3"
   },
@@ -64,6 +65,7 @@
     "@types/ember__test-helpers": "^1.7.3",
     "@types/faker": "^5.1.6",
     "@types/lodash-es": "^4.17.3",
+    "@types/numeral": "0.0.28",
     "@types/papaparse": "^5.0.3",
     "@types/qunit": "^2.9.1",
     "@types/rsvp": "^4.0.3",

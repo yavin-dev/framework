@@ -9,6 +9,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import ColumnFragment from './bard-request-v2/fragments/column';
 import { get } from '@ember/object';
+import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export type MetricSeries = {
   type: 'metric';
@@ -161,7 +162,7 @@ export default class ChartVisualization extends Visualization {
   private updateDimensionSeries(
     request: RequestFragment,
     currentDimensionSeries: DimensionSeriesValues[],
-    responseRows: Record<string, unknown>[]
+    responseRows: ResponseRow[]
   ) {
     const builtDimensionSeries = this.buildDimensionSeriesValues(request, responseRows);
 

@@ -150,43 +150,43 @@ export default [
                 dimensionOrder: ['platform', 'game'],
                 dimensions: [
                   {
-                    name: 'Switch,Galaxy 2',
+                    name: 'switch,galaxy_2',
                     values: { platform: 'switch', game: 'galaxy_2' },
                   },
                   {
-                    name: 'Entertainment System,3D Land',
+                    name: 'nes,3d_land',
                     values: { platform: 'nes', game: '3d_land' },
                   },
                   {
-                    name: 'Entertainment System,Sunshine',
+                    name: 'nes,sunshine',
                     values: { platform: 'nes', game: 'sunshine' },
                   },
                   {
-                    name: 'Switch,Kart',
+                    name: 'switch,kart',
                     values: { platform: 'switch', game: 'kart' },
                   },
                   {
-                    name: 'Entertainment System,Kart',
+                    name: 'entertainment system,kart',
                     values: { platform: 'nes', game: 'kart' },
                   },
                   {
-                    name: 'Entertainment System,Oddysey',
+                    name: 'entertainment system,oddysey',
                     values: { platform: 'nes', game: 'oddysey' },
                   },
                   {
-                    name: '64,Oddysey',
+                    name: '64,oddysey',
                     values: { platform: '64', game: 'oddysey' },
                   },
                   {
-                    name: '64,3D Land',
+                    name: '64,3d land',
                     values: { platform: '64', game: '3d_land' },
                   },
                   {
-                    name: '64,Galaxy',
+                    name: '64,galaxy',
                     values: { platform: '64', game: 'galaxy' },
                   },
                   {
-                    name: '64,Sunshine',
+                    name: '64,sunshine',
                     values: { platform: '64', game: 'sunshine' },
                   },
                 ],

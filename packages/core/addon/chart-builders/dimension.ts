@@ -131,7 +131,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
   private buildC3Row(
     value: string,
     displayValue: string,
-    rows: Record<string, unknown>[],
+    rows: ResponseRow[],
     seriesKey: string[],
     metric: ColumnFragment,
     nonTimeDimensions: ColumnFragment[]
@@ -189,7 +189,7 @@ export default class DimensionChartBuilder extends EmberObject implements BaseCh
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return this.tooltipData.map((series: TooltipData) => {
           // Get the full data for this combination of x + series
-          let dataForSeries = builder.byXSeries?.getDataForKey(`${this.x} ${series.id}`) || [];
+          let dataForSeries = builder.byXSeries?.getDataForKey(`${this.x} ${series.name}`) || [];
 
           return dataForSeries[0];
         });

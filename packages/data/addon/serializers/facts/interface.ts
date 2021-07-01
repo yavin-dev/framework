@@ -6,8 +6,13 @@ import type { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interfa
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
+export type MetricValue = number | undefined | null;
+export type DimensionValue = string | number | boolean | undefined | null;
+export type RowMetadata = unknown;
+export type RowValue = MetricValue | DimensionValue | RowMetadata;
+
 export interface ResponseV1 {
-  readonly rows: Array<Record<string, unknown>>;
+  readonly rows: Array<Record<string, RowValue>>;
   readonly meta: {
     pagination?: {
       currentPage: number;

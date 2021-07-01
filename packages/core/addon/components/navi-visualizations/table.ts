@@ -17,11 +17,12 @@ import { action, computed } from '@ember/object';
 import { groupBy } from 'lodash-es';
 import EmberArray from '@ember/array';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
-import { SortDirection } from 'navi-data/adapters/facts/interface';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
+import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type { ResponseRow } from 'navi-data/models/navi-fact-response';
+import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',
@@ -148,12 +149,13 @@ export default class Table extends Component<Args> {
       return totRow;
     }, {});
 
+    //TODO type me
     totalRow.__meta__ = {
       isTotalRow: true,
       hasPartialData,
     };
 
-    return totalRow;
+    return totalRow as ResponseRow;
   }
 
   /**

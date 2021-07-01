@@ -148,7 +148,7 @@ export default class NaviVisualizationsPieChartComponent extends ChartBuildersBa
             assert('buildData must be called in the chart-builder before the tooltip can be rendered', byXSeries);
             // Get the full data for this combination of x + series
             const series = this.requiredToolTipData;
-            const dataForSeries = byXSeries.getDataForKey(`${this.x} ${series.id}`) || [];
+            const dataForSeries = byXSeries.getDataForKey(`${this.x} ${series.name}`) || [];
 
             return dataForSeries[0];
           }),

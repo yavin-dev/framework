@@ -9,6 +9,8 @@ import StoreService from '@ember-data/store';
 import MetricLabelVisualization from 'navi-core/components/navi-visualizations/metric-label';
 import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+//@ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::MetricLabel
@@ -31,21 +33,22 @@ function _setModel(row: Record<string, unknown>): void {
 }
 module('Integration | Component | navi-visualization/metric-label', function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function (this: TestContext) {
+  hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
     this.options = {
       format: undefined,
-      metricCid: 'cid_magic',
+      metricCid: 'cid',
     };
     this.model = A([
       {
         request: store.createFragment('bard-request-v2/request', {
           columns: [
             {
-              cid: 'cid_magic',
+              cid: 'cid',
               type: 'metric',
-              field: 'magic',
+              field: 'uniqueIdentifier',
               parameters: {},
               alias: 'Magic Points (MP)',
               source: 'bardOne',
@@ -60,12 +63,12 @@ module('Integration | Component | navi-visualization/metric-label', function (ho
         response: NaviFactResponse.create({ rows: [] }),
       },
     ]);
+    const MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('metric label renders correctly', async function (assert) {
-    assert.expect(2);
-
-    _setModel({ magic: 30 });
+    _setModel({ uniqueIdentifier: 30 });
     await render(TEMPLATE);
 
     assert
@@ -76,9 +79,7 @@ module('Integration | Component | navi-visualization/metric-label', function (ho
   });
 
   test('metric label renders correctly when model has multiple metrics', async function (assert) {
-    assert.expect(2);
-
-    _setModel({ magic: 30, hp: 40 });
+    _setModel({ uniqueIdentifier: 30, hp: 40 });
     await render(TEMPLATE);
 
     assert
@@ -89,24 +90,12 @@ module('Integration | Component | navi-visualization/metric-label', function (ho
   });
 
   test('metric label renders formatted string when format not null', async function (this: TestContext, assert) {
-    assert.expect(1);
-
-    const request = this.model.firstObject?.request as RequestFragment;
-    request.columns.clear();
-    const rupees = request.addColumn({
-      type: 'metric',
-      field: 'rupees',
-      parameters: {},
-      alias: 'Rupees',
-      source: 'bardOne',
-    });
-
     this.options = {
       format: '$ 0,0[.]00',
-      metricCid: rupees.cid,
+      metricCid: 'cid',
     };
 
-    _setModel({ rupees: 1000000 });
+    _setModel({ uniqueIdentifier: 1000000 });
     await render(TEMPLATE);
     assert.dom('.metric-label-vis__value').hasText('$ 1,000,000', 'metric value is formatted correctly');
   });

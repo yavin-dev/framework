@@ -9,11 +9,11 @@
  * />
  */
 import Component from '@glimmer/component';
-import numeral from 'numeral';
 import { computed } from '@ember/object';
 import { VisualizationModel } from './table';
 import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
+import type { MetricValue } from 'navi-data/serializers/facts/interface';
 
 export type Args = {
   model: VisualizationModel;
@@ -39,7 +39,7 @@ export default class MetricLabelVisualization extends Component<Args> {
   }
 
   @computed('args.{model.[],options.metricCid}')
-  get metric(): ColumnFragment | undefined {
+  get metric(): ColumnFragment<'metric'> | undefined {
     const { request } = this.args.model?.firstObject || {};
     const { metricCid } = this.args.options;
     const metricColumn = request?.metricColumns.find(({ cid }) => cid === metricCid);
@@ -57,9 +57,8 @@ export default class MetricLabelVisualization extends Component<Args> {
       const { response } = model?.firstObject || {};
       const firstRow = response?.rows?.[0] || {};
       const { canonicalName } = metric;
-      const value = firstRow[canonicalName] as string;
-
-      return options?.format ? numeral(value).format(options.format) : String(value);
+      const value = firstRow[canonicalName] as MetricValue;
+      return metric.columnMetadata.formatValue(value, metric, firstRow, options.format);
     }
     return undefined;
   }
