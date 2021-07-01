@@ -412,7 +412,7 @@ export default [
             series: {
               type: 'metric',
               config: {
-                metrics: ['adClicks', 'navClicks'],
+                metrics: ['adClicks'],
               },
             },
           },
@@ -421,61 +421,107 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        columns: [
           {
-            end: 'current',
-            start: 'P7D',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            alias: null,
+            field: 'navClicks',
+            parameters: {},
+            type: 'metric',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
         dataSource: 'foo',
+        filters: [
+          {
+            field: 'network.dateTime',
+            operator: 'bet',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+            values: ['P1D', 'current'],
+          },
+        ],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'network',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
     updatedOn: '2016-01-01 00:00:00',
   },
   {
-    id: 11,
-    dashboardId: 7,
-    authorId: 'navi_user',
     title: 'Mobile DAU Goal',
+    dashboardId: 7,
+    id: 11,
+    authorId: 'navi_user',
     visualization: {
       type: 'goal-gauge',
-      version: 1,
+      version: 2,
       metadata: {
         baselineValue: 200,
         goalValue: 1000,
-        metric: { metric: 'adClicks', parameters: {} },
+        metricCid: 'm1',
       },
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        columns: [
           {
-            end: 'current',
-            start: 'P1D',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            alias: null,
+            field: 'navClicks',
+            cid: 'm1',
+            parameters: {},
+            type: 'metric',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        dataSource: 'bardOne',
+        filters: [
+          {
+            field: 'network.dateTime',
+            operator: 'bet',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+            values: ['P1D', 'current'],
+          },
+        ],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'network',
       },
     ],
-    createdOn: '2016-01-01 00:00:00',
-    updatedOn: '2016-01-01 00:00:00',
+    createdOn: '2016-01-01 00:00:00.000',
+    updatedOn: '2016-01-01 00:00:00.000',
   },
 ];
