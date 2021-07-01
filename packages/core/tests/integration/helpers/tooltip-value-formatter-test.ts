@@ -10,7 +10,7 @@ interface TestContext {
   fragmentFactory: FragmentFactory;
 }
 
-module('helper:tooltip-value-formatter', function (this: TestContext, hooks) {
+module('Integration | Helper | tooltip-value-formatter', function (this: TestContext, hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
