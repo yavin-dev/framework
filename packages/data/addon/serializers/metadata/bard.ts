@@ -2,29 +2,37 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
-import CARDINALITY_SIZES, { Cardinality } from '../../utils/enums/cardinality-sizes';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import RequestConstraintMetadataModel, {
-  RequestConstraintMetadataPayload,
-} from 'navi-data/models/metadata/request-constraint';
-import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
-import { assert } from '@ember/debug';
-import { isNone } from '@ember/utils';
-import {
-  FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION,
-  ColumnFunctionParametersValues,
-} from 'navi-data/models/metadata/function-parameter';
-import BardTableMetadataModel, { BardTableMetadataPayload, GrainOrdering } from 'navi-data/models/metadata/bard/table';
+import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
-import { Grain } from 'navi-data/utils/date';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
+import { assert } from '@ember/debug';
+import { isNone } from '@ember/utils';
+import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
+import type ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
+import type { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import type TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
+import type { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import type RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
+import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata/request-constraint';
+import type { MetadataModelMap, EverythingMetadataPayload } from './base';
+import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import type {
+  FunctionParameterMetadataPayload,
+  ColumnFunctionParametersValues,
+} from 'navi-data/models/metadata/function-parameter';
+import type { Cardinality } from '../../utils/enums/cardinality-sizes';
+import type { Grain } from 'navi-data/utils/date';
 import type { Factory } from 'navi-data/models/native-with-create';
+import type TableMetadataModel from 'navi-data/models/metadata/table';
 
 const SMALL_CARDINALITY = config.navi.cardinalities.small;
 const MEDIUM_CARDINALITY = config.navi.cardinalities.medium;
@@ -106,9 +114,14 @@ type TableTimeGrainInfo = {
 
 export default class BardMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
-  protected tableFactory = getOwner(this).factoryFor('model:metadata/bard/table') as Factory<
+
+  private bardTableFactory = getOwner(this).factoryFor('model:metadata/bard/table') as Factory<
     typeof BardTableMetadataModel
   >;
+
+  protected createTableModel(payload: BardTableMetadataPayload): TableMetadataModel {
+    return this.bardTableFactory.create(payload);
+  }
 
   /**
    * Transform the bard metadata into a shape that our internal data models can use
@@ -227,7 +240,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     const columnFunctions = rawColumnFunctions ? this.normalizeColumnFunctions(rawColumnFunctions, dataSourceName) : [];
 
     return {
-      tables: tablePayloads.map((payload) => this.tableFactory.create(payload)),
+      tables: tablePayloads.map(this.createTableModel.bind(this)),
       dimensions: Object.values(dimensions),
       metrics: Object.values(metrics),
       timeDimensions: Object.values(timeDimensions),
@@ -291,7 +304,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         },
       ],
     };
-    return this.columnFunctionFactory.create(payload);
+    return this.createColumnFunctionModel(payload);
   }
 
   /**
@@ -323,7 +336,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       })),
       timeZone: 'UTC',
     };
-    return this.timeDimensionFactory.create(payload);
+    return this.createTimeDimensionModel(payload);
   }
 
   /**
@@ -350,7 +363,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         },
       },
     };
-    return this.requestConstraintFactory.create(payload);
+    return this.createConstraintModel(payload);
   }
 
   /**
@@ -377,7 +390,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         },
       },
     };
-    return this.requestConstraintFactory.create(payload);
+    return this.createConstraintModel(payload);
   }
 
   /**
@@ -431,7 +444,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         },
       ],
     };
-    return this.columnFunctionFactory.create(payload);
+    return this.createColumnFunctionModel(payload);
   }
 
   /**
@@ -454,7 +467,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         _parametersPayload: this.constructFunctionParameters(parameters, dataSourceName),
         source: dataSourceName,
       };
-      return this.columnFunctionFactory.create(newColumnFunction);
+      return this.createColumnFunctionModel(newColumnFunction);
     }
     return null;
   }
@@ -503,7 +516,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         ...d,
         isSortable: true,
       }));
-    return payloads.map((payload) => this.timeDimensionFactory.create(payload));
+    return payloads.map(this.createTimeDimensionModel.bind(this));
   }
 
   /**
@@ -512,7 +525,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
    */
   private normalizeDimensions(dimensions: RawDimensionPayload[], dataSourceName: string): DimensionMetadataModel[] {
     const payloads = this.normalizeDimensionPayloads(dimensions, dataSourceName);
-    return payloads.map((payload) => this.dimensionFactory.create(payload));
+    return payloads.map(this.createDimensionModel.bind(this));
   }
 
   /**
@@ -582,7 +595,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         partialData: isNone(description),
         columnFunctionId: metricFunctionId,
       };
-      return this.metricFactory.create(payload);
+      return this.createMetricModel(payload);
     });
   }
 
@@ -596,16 +609,16 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
   ): ColumnFunctionMetadataModel[] {
     return columnFunctions.map((func) => {
       const { id, name, description, arguments: args } = func;
-      const normalizedFunc: ColumnFunctionMetadataPayload = {
+      const payload: ColumnFunctionMetadataPayload = {
         id,
         name,
         description,
         source: dataSourceName,
       };
       if (args) {
-        normalizedFunc._parametersPayload = this.constructFunctionParameters(args, dataSourceName);
+        payload._parametersPayload = this.constructFunctionParameters(args, dataSourceName);
       }
-      return this.columnFunctionFactory.create(normalizedFunc);
+      return this.createColumnFunctionModel(payload);
     });
   }
 

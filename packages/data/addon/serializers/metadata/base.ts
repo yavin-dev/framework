@@ -11,6 +11,12 @@ import type TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dime
 import type ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
 import type RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 import type { Factory } from 'navi-data/models/native-with-create';
+import type { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import type { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import type { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import type { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata/request-constraint';
 
 export interface EverythingMetadataPayload {
   tables: TableMetadataModel[];
@@ -34,18 +40,18 @@ export interface MetadataModelMap {
 export type RawMetadataPayload = unknown;
 
 export default abstract class NaviMetadataSerializer extends EmberObject {
-  protected metricFactory = getOwner(this).factoryFor('model:metadata/metric') as Factory<typeof MetricMetadataModel>;
-  protected dimensionFactory = getOwner(this).factoryFor('model:metadata/dimension') as Factory<
+  private metricFactory = getOwner(this).factoryFor('model:metadata/metric') as Factory<typeof MetricMetadataModel>;
+  private dimensionFactory = getOwner(this).factoryFor('model:metadata/dimension') as Factory<
     typeof DimensionMetadataModel
   >;
-  protected timeDimensionFactory = getOwner(this).factoryFor('model:metadata/time-dimension') as Factory<
+  private timeDimensionFactory = getOwner(this).factoryFor('model:metadata/time-dimension') as Factory<
     typeof TimeDimensionMetadataModel
   >;
-  protected requestConstraintFactory = getOwner(this).factoryFor('model:metadata/request-constraint') as Factory<
+  private requestConstraintFactory = getOwner(this).factoryFor('model:metadata/request-constraint') as Factory<
     typeof RequestConstraintMetadataModel
   >;
-  protected tableFactory = getOwner(this).factoryFor('model:metadata/table') as Factory<typeof TableMetadataModel>;
-  protected columnFunctionFactory = getOwner(this).factoryFor('model:metadata/column-function') as Factory<
+  private tableFactory = getOwner(this).factoryFor('model:metadata/table') as Factory<typeof TableMetadataModel>;
+  private columnFunctionFactory = getOwner(this).factoryFor('model:metadata/column-function') as Factory<
     typeof ColumnFunctionMetadataModel
   >;
 
@@ -54,4 +60,28 @@ export default abstract class NaviMetadataSerializer extends EmberObject {
     rawPayload: RawMetadataPayload,
     dataSourceName: string
   ): MetadataModelMap[K] | undefined;
+
+  protected createTableModel(payload: TableMetadataPayload): TableMetadataModel {
+    return this.tableFactory.create(payload);
+  }
+
+  protected createTimeDimensionModel(payload: TimeDimensionMetadataPayload): TimeDimensionMetadataModel {
+    return this.timeDimensionFactory.create(payload);
+  }
+
+  protected createDimensionModel(payload: DimensionMetadataPayload): DimensionMetadataModel {
+    return this.dimensionFactory.create(payload);
+  }
+
+  protected createMetricModel(payload: MetricMetadataPayload): MetricMetadataModel {
+    return this.metricFactory.create(payload);
+  }
+
+  protected createColumnFunctionModel(payload: ColumnFunctionMetadataPayload): ColumnFunctionMetadataModel {
+    return this.columnFunctionFactory.create(payload);
+  }
+
+  protected createConstraintModel(payload: RequestConstraintMetadataPayload): RequestConstraintMetadataModel {
+    return this.requestConstraintFactory.create(payload);
+  }
 }

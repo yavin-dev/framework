@@ -2,21 +2,28 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
-import CARDINALITY_SIZES, { Cardinality } from '../../utils/enums/cardinality-sizes';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
-import { RawColumnType } from '../../models/metadata/column';
-import { TableMetadataPayload } from '../../models/metadata/table';
-import MetricMetadataModel, { MetricMetadataPayload } from '../../models/metadata/metric';
-import DimensionMetadataModel from '../../models/metadata/dimension';
-import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
-import NaviMetadataSerializer, { MetadataModelMap, EverythingMetadataPayload } from './base';
+import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import { assert } from '@ember/debug';
+import { getOwner } from '@ember/application';
 import { upperFirst } from 'lodash-es';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
-import { assert } from '@ember/debug';
-import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
-import { getOwner } from '@ember/application';
-import { Grain } from 'navi-data/utils/date';
+import type { Cardinality } from '../../utils/enums/cardinality-sizes';
+import type { RawColumnType } from '../../models/metadata/column';
+import type { TableMetadataPayload } from '../../models/metadata/table';
+import type MetricMetadataModel from '../../models/metadata/metric';
+import type { MetricMetadataPayload } from '../../models/metadata/metric';
+import type DimensionMetadataModel from '../../models/metadata/dimension';
+import type TimeDimensionMetadataModel from '../../models/metadata/time-dimension';
+import type { TimeDimensionMetadataPayload } from '../../models/metadata/time-dimension';
+import type ColumnFunctionMetadataModel from '../../models/metadata/column-function';
+import type { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
+import type { MetadataModelMap, EverythingMetadataPayload } from './base';
+import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import type { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import type { Factory } from 'navi-data/models/native-with-create';
+import type { Grain } from 'navi-data/utils/date';
 
 type Edge<T> = {
   node: T;
@@ -81,7 +88,13 @@ export interface TablePayload {
 export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
-  protected dimensionFactory = getOwner(this).factoryFor('model:metadata/elide/dimension');
+  private elideDimensionFactory = getOwner(this).factoryFor('model:metadata/elide/dimension') as Factory<
+    typeof ElideDimensionMetadataModel
+  >;
+
+  protected createDimensionModel(payload: ElideDimensionMetadataPayload): DimensionMetadataModel {
+    return this.elideDimensionFactory.create(payload);
+  }
 
   /**
    * Transform the elide metadata into a shape that our internal data models can use
@@ -136,7 +149,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     });
 
     return {
-      tables: tablePayloads.map((p) => this.tableFactory.create(p)),
+      tables: tablePayloads.map(this.createTableModel.bind(this)),
       metrics,
       dimensions,
       timeDimensions,
@@ -173,7 +186,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         type: node.columnType,
         expression: node.expression,
       };
-      return this.metricFactory.create(payload);
+      return this.createMetricModel(payload);
     });
   }
 
@@ -216,7 +229,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           : undefined,
         values: node.values,
       };
-      return this.dimensionFactory.create(payload);
+      return this.createDimensionModel(payload);
     });
   }
 
@@ -256,8 +269,8 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         expression: node.expression,
       };
       return {
-        timeDimension: this.timeDimensionFactory.create(timeDimensionPayload),
-        columnFunction: this.columnFunctionFactory.create(columnFunctionPayload),
+        timeDimension: this.createTimeDimensionModel(timeDimensionPayload),
+        columnFunction: this.createColumnFunctionModel(columnFunctionPayload),
       };
     });
   }
