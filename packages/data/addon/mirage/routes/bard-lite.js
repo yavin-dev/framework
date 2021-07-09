@@ -246,6 +246,7 @@ export default function(
         const flagMap = rollupDimensionMask.map(rolledDim => (rolledupDims.includes(rolledDim) ? 1 : 0));
         return parseInt(flagMap.join(''), 2);
       };
+      const fullMask = getMask(['dateTime', ...dimensions]);
       let grandTotalRow;
 
       if (request.queryParams.rollupGrandTotal) {
@@ -263,7 +264,7 @@ export default function(
           });
 
           if (hasRollUpDim) {
-            row.__rollupMask = getMask(['dateTime', ...dimensions]);
+            row.__rollupMask = fullMask;
           }
           return acc;
         }, null);
@@ -274,16 +275,24 @@ export default function(
           let groupedRow = Object.values(groupBy(row, dim === 'dateTime' ? dim : `${dim}|id`));
           groupedRow = groupedRow.reduce((aggAcc, aggRow) => {
             const subtotalRow = aggRow.reduce((acc, row) => {
-              if (row.__rollupMask !== getMask(['dateTime', ...dimensions])) {
+              if (row.__rollupMask !== fullMask) {
                 //subtotal row, skip
                 return acc;
               }
               processedDims.forEach(prevDim => {
-                acc[`${prevDim}|id`] = row[`${prevDim}|id`];
-                acc[`${prevDim}|desc`] = row[`${prevDim}|desc`];
+                if (prevDim === 'dateTime') {
+                  acc.dateTime = row.dateTime;
+                } else {
+                  acc[`${prevDim}|id`] = row[`${prevDim}|id`];
+                  acc[`${prevDim}|desc`] = row[`${prevDim}|desc`];
+                }
               });
-              acc[`${dim}|id`] = row[`${dim}|id`];
-              acc[`${dim}|desc`] = row[`${dim}|desc`];
+              if (dim === 'dateTime') {
+                acc.dateTime = row.dateTime;
+              } else {
+                acc[`${dim}|id`] = row[`${dim}|id`];
+                acc[`${dim}|desc`] = row[`${dim}|desc`];
+              }
 
               if (hasRollUpDim) {
                 acc.__rollupMask = getMask([...processedDims, dim]);
@@ -307,6 +316,7 @@ export default function(
               });
               return acc;
             }, {});
+
             if (Object.keys(subtotalRow).length > 0) {
               aggAcc.push([...aggRow, subtotalRow]);
             } else {
