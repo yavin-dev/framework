@@ -41,6 +41,10 @@ module('Unit | Serializer | Report', function(hooks) {
                 start: '2015-11-09 00:00:00.000'
               }
             ],
+            rollup: {
+              columns: [],
+              grandTotal: false
+            },
             bardVersion: 'v1',
             requestVersion: 'v1',
             dataSource: 'dummy'
@@ -133,6 +137,10 @@ module('Unit | Serializer | Report', function(hooks) {
                 start: '2018-02-09 00:00:00.000'
               }
             ],
+            rollup: {
+              columns: [],
+              grandTotal: false
+            },
             bardVersion: 'v1',
             requestVersion: 'v1',
             dataSource: 'dummy'

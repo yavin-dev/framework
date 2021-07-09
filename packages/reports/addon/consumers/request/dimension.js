@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -29,7 +29,9 @@ export default ActionConsumer.extend({
      * @param {Object} dimension - dimension model
      */
     [RequestActions.REMOVE_DIMENSION]({ currentModel }, dimension) {
-      get(currentModel, 'request').removeRequestDimensionByModel(dimension);
+      const request = currentModel.request;
+      request.removeRollupColumn(dimension);
+      request.removeRequestDimensionByModel(dimension);
     },
 
     /**
@@ -38,7 +40,9 @@ export default ActionConsumer.extend({
      * @param {Object} dimension - DS.Fragment of a dimension that should be removed from the request
      */
     [RequestActions.REMOVE_DIMENSION_FRAGMENT]({ currentModel }, dimension) {
-      get(currentModel, 'request').removeRequestDimension(dimension);
+      const request = currentModel.request;
+      request.removeRollupColumn(dimension);
+      request.removeRequestDimension(dimension);
     },
 
     /**

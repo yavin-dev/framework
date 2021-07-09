@@ -77,6 +77,10 @@ module('Unit | Model | dashboard widget', function(hooks) {
                   start: 'P1D'
                 }
               ],
+              rollup: {
+                columns: [],
+                grandTotal: false
+              },
               bardVersion: 'v1',
               requestVersion: 'v1',
               dataSource: 'dummy',

@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -7,6 +7,7 @@ import DS from 'ember-data';
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { get } from '@ember/object';
 import { inject as service } from '@ember/service';
+import { featureFlag } from 'navi-core/helpers/feature-flag';
 
 export default DS.JSONSerializer.extend({
   bardMetadata: service(),
@@ -38,6 +39,9 @@ export default DS.JSONSerializer.extend({
     // transform sorts to have appropriate aliases, removes parameter map
     request.sort = this._removeParameters(this._toggleAlias(request.sort, canonToAlias));
     request.having = this._removeParameters(this._toggleAlias(request.having, canonToAlias));
+    if (!featureFlag('enableFiliTotals')) {
+      delete request.rollup;
+    }
     return request;
   },
 
@@ -92,6 +96,13 @@ export default DS.JSONSerializer.extend({
       filter.dimension = `${namespace}.${filter.dimension}`;
       return filter;
     });
+
+    if (request.rollup?.columns.length > 0) {
+      request.rollup.columns = request.rollup.columns.map(column => {
+        column.dimension = `${namespace}.${column.dimension}`;
+        return column;
+      });
+    }
 
     return this._super(type, request);
   },
