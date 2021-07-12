@@ -279,20 +279,15 @@ export default function(
                 //subtotal row, skip
                 return acc;
               }
-              processedDims.forEach(prevDim => {
-                if (prevDim === 'dateTime') {
+              const presentDims = [...processedDims, dim];
+              presentDims.forEach(dim => {
+                if (dim === 'dateTime') {
                   acc.dateTime = row.dateTime;
                 } else {
-                  acc[`${prevDim}|id`] = row[`${prevDim}|id`];
-                  acc[`${prevDim}|desc`] = row[`${prevDim}|desc`];
+                  acc[`${dim}|id`] = row[`${dim}|id`];
+                  acc[`${dim}|desc`] = row[`${dim}|desc`];
                 }
               });
-              if (dim === 'dateTime') {
-                acc.dateTime = row.dateTime;
-              } else {
-                acc[`${dim}|id`] = row[`${dim}|id`];
-                acc[`${dim}|desc`] = row[`${dim}|desc`];
-              }
 
               if (hasRollUpDim) {
                 acc.__rollupMask = getMask([...processedDims, dim]);
