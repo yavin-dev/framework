@@ -217,9 +217,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   _buildRollupParam(request: RequestV1) {
     const dimensions = array(request?.rollup?.columns);
     return dimensions.length
-      ? `/${array(dimensions.mapBy('dimension'))
+      ? array(dimensions.mapBy('dimension'))
           .uniq()
-          .join(',')}`
+          .join(',')
       : '';
   }
 
