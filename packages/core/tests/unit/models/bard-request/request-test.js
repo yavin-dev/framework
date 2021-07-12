@@ -1861,6 +1861,7 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
     request.addDimension({ dimension: 'bar' });
 
     request.pushRollupColumn({ dimension: 'foo' });
+    request.pushRollupColumn({ dimension: 'foo' }); //test duplicate push
     assert.deepEqual(
       request.rollup.toJSON(),
       {

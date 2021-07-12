@@ -402,27 +402,18 @@ export default Fragment.extend(Validations, {
   /* == Rollup == */
 
   pushRollupColumn(dimensionObj) {
-    if (!this.rollup.columns) {
-      this.rollup = this.store.createFragment('bard-request/fragments/rollup');
-    }
     this.removeRollupColumn(dimensionObj); //remove duplicate
     this.rollup.columns.createFragment(dimensionObj);
   },
 
   removeRollupColumn(dimensionObj) {
-    if (!this.rollup.columns) {
-      this.rollup = this.store.createFragment('bard-request/fragments/rollup');
-    }
-    const columns = this.rollup.columns,
-      dimension = dimensionObj.dimension;
+    const { columns } = this.rollup;
+    const { dimension } = dimensionObj;
     const dimColumn = columns.findBy('dimension', dimension);
     columns.removeFragment(dimColumn);
   },
 
   setGrandTotal(grandTotal) {
-    if (this.rollup.grandTotal === undefined || this.rollup.grandTotal === null) {
-      this.rollup = this.store.createFragment('bard-request/fragments/rollup');
-    }
     this.rollup.grandTotal = !!grandTotal;
   },
 
