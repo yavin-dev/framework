@@ -4,7 +4,7 @@ export default [
     title: 'Kart Wins By Character',
     createdOn: '1992-08-27 00:00:00',
     updatedOn: '2017-04-28 00:00:00',
-    authorId: 'navi_user',
+    ownerId: 'navi_user',
     dashboardId: 1,
     visualization: {
       type: 'line-chart',

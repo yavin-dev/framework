@@ -55,7 +55,7 @@ export default function () {
   this.del('/reports/:id', function ({ reports, users }, request) {
     const { id } = request.params;
     const report = reports.find(id);
-    const user = users.find(report.authorId);
+    const user = users.find(report.ownerId);
 
     if (!report) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
