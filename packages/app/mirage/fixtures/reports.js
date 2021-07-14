@@ -8,7 +8,7 @@ export default [
     title: 'Kart Wins By Character',
     createdOn: '1992-08-27 00:00:00',
     updatedOn: '2017-04-28 00:00:00',
-    authorId: 'navi_user',
+    ownerId: 'navi_user',
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -69,7 +69,7 @@ export default [
     title: 'Top Played Games',
     createdOn: '1992-08-27 00:00:00',
     updatedOn: '2017-04-28 00:00:00',
-    authorId: 'navi_user',
+    ownerId: 'navi_user',
     visualization: {
       type: 'line-chart',
       version: 1,
@@ -136,7 +136,7 @@ export default [
     title: 'Coin Counts',
     createdOn: '1992-08-27 00:00:00',
     updatedOn: '2017-04-28 00:00:00',
-    authorId: 'navi_user',
+    ownerId: 'navi_user',
     visualization: {
       type: 'line-chart',
       version: 1,

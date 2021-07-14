@@ -28,7 +28,7 @@ export default function () {
   this.del('/dashboards/:id', ({ dashboards, users }, request) => {
     const { id } = request.params;
     const dashboard = dashboards.find(id);
-    const user = users.find(dashboard.authorId);
+    const user = users.find(dashboard.ownerId);
 
     if (!dashboard) {
       return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
@@ -61,10 +61,10 @@ export default function () {
   this.post('/dashboards', function ({ dashboards, users }) {
     const attrs = this.normalizedRequestAttrs();
     const dashboard = dashboards.create(attrs);
-    const author = users.find(dashboard.authorId);
+    const owner = users.find(dashboard.ownerId);
 
     // Update user with new dashboard
-    author.update(dashboards, author.dashboards.add(dashboard));
+    owner.update(dashboards, owner.dashboards.add(dashboard));
 
     // Init properties
     dashboard.update({
