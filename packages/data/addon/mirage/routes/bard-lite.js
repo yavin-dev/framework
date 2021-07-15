@@ -268,6 +268,12 @@ export default function(
           }
           return acc;
         }, null);
+      } else {
+        rows = rows.map(row => {
+          if (hasRollUpDim) {
+            row.__rollupMask = fullMask;
+          }
+        });
       }
 
       rollupDimensions.forEach(dim => {
