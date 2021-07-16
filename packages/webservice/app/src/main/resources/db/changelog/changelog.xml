@@ -133,4 +133,24 @@
           );
         </sql>
     </changeSet>
+    <changeSet author="admin" id="3">
+        <sql>
+            CREATE TABLE DeliveryRule (
+            id integer AUTO_INCREMENT,
+            createdOn timestamp,
+            updatedOn timestamp,
+            lastDeliveredOn timestamp,
+            owner varchar(255),
+            deliveredItem_id int,
+            format MEDIUMTEXT not null,
+            frequency int not null,
+            recipients TEXT,
+            scheduling_rules MEDIUMTEXT,
+            version varchar(36),
+            PRIMARY KEY (id),
+            FOREIGN KEY (deliveredItem_id) references Asset(id),
+            FOREIGN KEY (owner) references User(id)
+            );
+        </sql>
+    </changeSet>
 </databaseChangeLog>
