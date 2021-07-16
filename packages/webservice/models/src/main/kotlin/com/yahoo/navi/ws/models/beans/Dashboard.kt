@@ -52,4 +52,7 @@ class Dashboard : Asset(), HasOwner, HasEditors {
         ]
     )
     var filters: MutableSet<Filter> = mutableSetOf()
+
+    @OneToMany(mappedBy = "deliveredItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var deliveryRules: MutableSet<DeliveryRule>? = null
 }

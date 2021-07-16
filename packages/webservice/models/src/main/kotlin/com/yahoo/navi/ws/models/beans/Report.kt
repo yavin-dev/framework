@@ -13,9 +13,11 @@ import com.yahoo.navi.ws.models.beans.fragments.Visualization
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
+import javax.persistence.OneToMany
 
 @Entity
 @DiscriminatorValue("report")
@@ -42,4 +44,7 @@ class Report : Asset(), HasOwner {
         ]
     )
     var visualization: Visualization? = null
+
+    @OneToMany(mappedBy = "deliveredItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var deliveryRules: MutableSet<DeliveryRule>? = null
 }

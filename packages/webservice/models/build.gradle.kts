@@ -26,6 +26,7 @@ dependencies {
     implementation("com.yahoo.elide", "elide-core", "5.0.2")
     implementation("javax.persistence", "javax.persistence-api", "2.2")
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
+    implementation("jakarta.mail:jakarta.mail-api:1.6.7")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {

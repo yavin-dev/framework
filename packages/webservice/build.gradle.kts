@@ -38,7 +38,6 @@ subprojects {
     apply(plugin = "org.jmailen.kotlinter")
 
     repositories {
-        jcenter()
         mavenLocal()
         maven(url = "https://repo.maven.apache.org/maven2")
     }
