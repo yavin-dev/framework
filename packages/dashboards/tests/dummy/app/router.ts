@@ -13,7 +13,6 @@ Router.map(function () {
   this.route('directory', function () {
     this.route('my-data');
   });
-  this.route('index', { path: '/' });
   reportRoutes(this);
   dashboardRoutes(this);
   dashboardCollectionRoutes(this);
