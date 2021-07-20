@@ -2,11 +2,7 @@
 <div class="container-full" ...attributes>
   <div class="row">
     <div class="col-1-1">
-      {{#if (feature-flag "enableDirectory")}}
-        <LinkTo @route="directory.my-data" class="dashboard-header__breadcrumb-link">Directory</LinkTo>
-      {{else}}
-        <LinkTo @route="dashboards" class="dashboard-header__breadcrumb-link">Dashboards</LinkTo>
-      {{/if}}
+      <LinkTo @route="index" class="dashboard-header__breadcrumb-link">Home</LinkTo>
     </div>
   </div>
   <div class="row align-items-center">
