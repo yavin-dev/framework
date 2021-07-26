@@ -1,6 +1,6 @@
 {
   "name": "navi-search",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Search for navi",
   "keywords": [
     "ember-addon"
@@ -38,10 +38,10 @@
     "ember-cli-mirage": "~2.2.0",
     "ember-cli-typescript": "^4.1.0",
     "ember-data": "~3.24.0",
-    "navi-core": "0.2.0",
-    "navi-dashboards": "0.2.0",
-    "navi-data": "0.2.0",
-    "navi-reports": "0.2.0",
+    "navi-core": "0.3.0",
+    "navi-dashboards": "0.3.0",
+    "navi-data": "0.3.0",
+    "navi-reports": "0.3.0",
     "pretender": "^3.4.3"
   },
   "devDependencies": {
@@ -95,7 +95,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-qunit": "^4.0.0",
     "loader.js": "^4.7.0",
-    "navi-notifications": "0.2.0",
+    "navi-notifications": "0.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
     "qunit": "^2.14.0",
