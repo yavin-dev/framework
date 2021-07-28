@@ -295,7 +295,7 @@ export default function(
                   acc[`${dim}|desc`] = row[`${dim}|desc`];
                 }
               });
-              
+
               if (hasRollUpDim) {
                 acc.__rollupMask = getMask([...processedDims, dim]);
               }
