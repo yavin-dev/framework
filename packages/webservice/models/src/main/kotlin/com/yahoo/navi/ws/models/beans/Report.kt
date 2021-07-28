@@ -7,10 +7,12 @@ package com.yahoo.navi.ws.models.beans
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.Request
 import com.yahoo.navi.ws.models.beans.fragments.Visualization
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
+import com.yahoo.navi.ws.models.hooks.ReportDeletionHook
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import javax.persistence.CascadeType
@@ -25,6 +27,11 @@ import javax.persistence.OneToMany
 @CreatePermission(expression = IS_OWNER)
 @UpdatePermission(expression = IS_OWNER)
 @DeletePermission(expression = IS_OWNER)
+@LifeCycleHookBinding(
+    phase = LifeCycleHookBinding.TransactionPhase.PRESECURITY, // TODO - change to PREFLUSH when Elide supports it.
+    operation = LifeCycleHookBinding.Operation.DELETE,
+    hook = ReportDeletionHook::class
+)
 class Report : Asset(), HasOwner {
 
     @Column(name = "request", columnDefinition = "MEDIUMTEXT")
