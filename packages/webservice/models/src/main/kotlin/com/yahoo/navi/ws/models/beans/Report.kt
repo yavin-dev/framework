@@ -6,6 +6,7 @@ package com.yahoo.navi.ws.models.beans
 
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.Exclude
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
@@ -19,6 +20,7 @@ import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.DiscriminatorValue
 import javax.persistence.Entity
+import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
 
 @Entity
@@ -54,4 +56,8 @@ class Report : Asset(), HasOwner {
 
     @OneToMany(mappedBy = "deliveredItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var deliveryRules: MutableSet<DeliveryRule>? = null
+
+    @Exclude
+    @ManyToMany(mappedBy = "favoriteReports")
+    var favoritedBy: MutableSet<User>? = null
 }

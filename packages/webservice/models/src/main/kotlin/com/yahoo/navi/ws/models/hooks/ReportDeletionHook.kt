@@ -6,31 +6,29 @@
 package com.yahoo.navi.ws.models.hooks
 
 import com.yahoo.elide.annotation.LifeCycleHookBinding
-import com.yahoo.elide.core.exceptions.BadRequestException
 import com.yahoo.elide.core.lifecycle.LifeCycleHook
 import com.yahoo.elide.core.security.ChangeSpec
 import com.yahoo.elide.core.security.RequestScope
-import com.yahoo.navi.ws.models.beans.User
+import com.yahoo.navi.ws.models.beans.Report
 import java.util.Optional
 
 /**
- * Validates a User model on creation.  Elide 5 does not support CreatePermission checks
- * on ID fields - and so this logic is implemented as a hook.  Longer term, Navi should
- * not overload the ID field - it should be a simple surrogate key.
+ * Cleans up references to a report so it can be safely deleted.
  */
-class UserValidationHook : LifeCycleHook<User> {
+class ReportDeletionHook : LifeCycleHook<Report> {
     override fun execute(
         operation: LifeCycleHookBinding.Operation?,
         phase: LifeCycleHookBinding.TransactionPhase?,
-        user: User?,
+        report: Report?,
         requestScope: RequestScope?,
         changes: Optional<ChangeSpec>?
     ) {
-        val principalName = requestScope?.user?.name
-        val userName = user?.id
+        var favoriteUsers = report?.favoritedBy
 
-        if (principalName.isNullOrEmpty() || userName != principalName) {
-            throw BadRequestException("Forbidden User Identity")
+        if (favoriteUsers != null) {
+            for (user in favoriteUsers) {
+                user?.favoriteReports?.remove(report)
+            }
         }
     }
 }
