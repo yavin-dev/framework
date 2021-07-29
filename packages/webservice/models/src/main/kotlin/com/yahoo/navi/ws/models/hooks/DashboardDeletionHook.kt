@@ -27,7 +27,7 @@ class DashboardDeletionHook : LifeCycleHook<Dashboard> {
 
         if (favoriteUsers != null) {
             for (user in favoriteUsers) {
-                user?.favoriteReports?.remove(dashboard)
+                user?.favoriteDashboards?.remove(dashboard)
             }
         }
     }
