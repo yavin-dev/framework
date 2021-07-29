@@ -6,12 +6,15 @@ package com.yahoo.navi.ws.models.beans
 
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
+import com.yahoo.elide.annotation.Exclude
 import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation
 import com.yahoo.navi.ws.models.beans.fragments.request.Filter
 import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
+import com.yahoo.navi.ws.models.hooks.DashboardDeletionHook
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
 import javax.persistence.CascadeType
@@ -27,6 +30,11 @@ import javax.persistence.OneToMany
 @CreatePermission(expression = IS_OWNER)
 @UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR")
 @DeletePermission(expression = IS_OWNER)
+@LifeCycleHookBinding(
+    phase = LifeCycleHookBinding.TransactionPhase.PRESECURITY, // TODO - change to PREFLUSH when Elide supports it.
+    operation = LifeCycleHookBinding.Operation.DELETE,
+    hook = DashboardDeletionHook::class
+)
 class Dashboard : Asset(), HasOwner, HasEditors {
 
     @ManyToMany(mappedBy = "editingDashboards")
@@ -55,4 +63,8 @@ class Dashboard : Asset(), HasOwner, HasEditors {
 
     @OneToMany(mappedBy = "deliveredItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var deliveryRules: MutableSet<DeliveryRule>? = null
+
+    @Exclude
+    @ManyToMany(mappedBy = "favoriteDashboards")
+    var favoritedBy: MutableSet<User>? = null
 }
