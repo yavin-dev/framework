@@ -126,6 +126,7 @@ class DeliveryRulesTest : IntegrationTest() {
                 "data.attributes.schedulingRules.mustHaveData", equalTo(false),
                 "data.attributes.recipients", hasItems("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev"),
                 "data.attributes.lastDeliveredOn", nullValue(),
+                "data.attributes.dataSources", nullValue(),
                 "data.relationships.owner.data.id", equalTo(USER1),
                 "data.relationships.deliveredItem.data.type", equalTo("reports"),
                 "data.relationships.deliveredItem.data.id", equalTo("1")

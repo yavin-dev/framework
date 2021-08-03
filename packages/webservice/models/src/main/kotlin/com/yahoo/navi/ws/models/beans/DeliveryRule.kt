@@ -105,6 +105,17 @@ class DeliveryRule : HasOwner {
     @ManyToOne()
     var deliveredItem: Asset? = null
 
+    val dataSources: Set<String>
+        @ComputedAttribute
+        @Transient
+        get() {
+            return when (this.deliveredItem) {
+                is Report -> setOf((this.deliveredItem as Report).request.dataSource)
+                is Dashboard -> ((this.deliveredItem as Dashboard).widgets.map { it.requests[0].dataSource }).toSet()
+                else -> emptySet()
+            }
+        }
+
     val deliveryType: String?
         @ComputedAttribute
         @Transient
