@@ -568,4 +568,74 @@ class DashboardTest : IntegrationTest() {
             .body("data.attributes.filters[1].field", equalTo("desc"))
             .body("data.attributes.filters[1].operator", equalTo("contains"))
     }
+
+    @Test
+    fun deleteFavoritedDashboard() {
+        val dashboardId: String = createDashboard(USER1)
+        markAsFavorite(USER1, dashboardId)
+        deleteDashboard(USER1, dashboardId)
+    }
+
+    fun createDashboard(user: String): String {
+        // Post a report
+        val id: String = given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "A dashboard",
+                            "presentation": $presentation
+                        },
+                        "relationships": {
+                            ${owner(user)}
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/dashboards")
+            .then()
+            .log().all()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        return id
+    }
+
+    fun markAsFavorite(user: String, dashboardId: String) {
+        given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": [
+                        { "type": "dashboards", "id": $dashboardId }
+                    ]
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/users/$user/relationships/favoriteDashboards")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+    }
+
+    fun deleteDashboard(user: String, dashboardId: String) {
+        given()
+            .header("User", user)
+            .When()
+            .delete("/dashboards/$dashboardId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+    }
 }

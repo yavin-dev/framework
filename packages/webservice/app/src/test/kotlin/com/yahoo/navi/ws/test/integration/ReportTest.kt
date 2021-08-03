@@ -584,4 +584,75 @@ class ReportTest : IntegrationTest() {
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
     }
+
+    @Test
+    fun deleteFavoritedReport() {
+        val reportId: String = createReport(USER1)
+        markAsFavorite(USER1, reportId)
+        deleteReport(USER1, reportId)
+    }
+
+    fun createReport(user: String): String {
+        // Post a report
+        val id: String = given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report",
+                            "request": $reqStr,
+                            "visualization": $visualStr
+                        },
+                        "relationships": {
+                            ${owner(user)}
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/reports")
+            .then()
+            .log().all()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        return id
+    }
+
+    fun markAsFavorite(user: String, reportId: String) {
+        given()
+            .header("User", user)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": [
+                        { "type": "reports", "id": $reportId }
+                    ]
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/users/$user/relationships/favoriteReports")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+    }
+
+    fun deleteReport(user: String, reportId: String) {
+        given()
+            .header("User", user)
+            .When()
+            .delete("/reports/$reportId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+    }
 }
