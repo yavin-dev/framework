@@ -83,7 +83,7 @@ export default Fragment.extend(Validations, {
     defaultValue: []
   }),
   dataSource: DS.attr('string', { defaultValue: getDefaultDataSourceName() }),
-  rollup: fragment('bard-request/fragments/rollup', { defaultValue: { columns: [], grandTotal: false } }),
+  rollup: fragment('bard-request/fragments/rollup', { defaultValue: () => ({ columns: [], grandTotal: false }) }),
   responseFormat: DS.attr('string', { defaultValue: 'json' }),
   bardVersion: DS.attr('string', { defaultValue: 'v1' }),
   requestVersion: DS.attr('string', { defaultValue: 'v1' }),
