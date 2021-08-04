@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -52,8 +52,27 @@
 
   &__clone-icon,
   &__filter-icon,
-  &__star-icon {
+  &__star-icon,
+  &__rollup-icon {
     .navi-column-config-icon;
     margin: 0 4px;
+  }
+
+  &__rollup-icon {
+    border-radius: 5px;
+    color: @denali-brand-700;
+    padding: 5px;
+    background-color: transparent;
+    &:hover {
+      color: @denali-brand-600;
+    }
+    &--active {
+      color: white;
+      background-color: @denali-brand-700;
+      &:hover {
+        color: white;
+        background-color: @denali-brand-600;
+      }
+    }
   }
 }
