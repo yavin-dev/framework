@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -174,6 +174,35 @@ class Table extends Component {
   }
 
   /**
+   * Adds meta into rows for serverside data rollups.
+   *
+   * @param {Array<Row>} tableData - Rows of data to render
+   * @param {RequestV1} request - request in order
+   * @returns {Array<Row>} - tableData with added meta to denote rollup rows
+   */
+  _mapRollups(tableData, request) {
+    if (request?.rollup?.columns?.length <= 0 && !request?.rollup?.grandTotal) {
+      return tableData;
+    }
+    const fullMask = parseInt(new Array((request.dimensions?.length ?? 0) + 1).fill('1').join(''), 2);
+    return tableData.map(row => {
+      if (row.__rollupMask === undefined || row.__rollupMask === null) {
+        return row;
+      }
+      if (!row.__meta__) {
+        row.__meta__ = {};
+      }
+      if (row.__rollupMask !== fullMask) {
+        set(row, '__meta__.isRollup', true);
+      }
+      if (row.__rollupMask === 0) {
+        set(row, '__meta__.setisTotalRow', true);
+      }
+      return row;
+    });
+  }
+
+  /**
    * @method _hasCustomDisplayName
    * Determines if column has a custom display name
    *
@@ -208,10 +237,12 @@ class Table extends Component {
   /**
    * @property {Object} tableData
    */
-  @computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}')
+  @computed('rawData', 'columns', 'options.showTotals.{grandTotal,subtotal}', 'request')
   get tableData() {
     let tableData = this._computeSubtotals(),
       rawData = this.rawData;
+
+    tableData = this._mapRollups(tableData, this.request);
 
     if (!this.options?.showTotals?.grandTotal) {
       return tableData;

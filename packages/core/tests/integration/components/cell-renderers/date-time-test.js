@@ -190,6 +190,28 @@ module('Integration | Component | cell renderers/date-time', function(hooks) {
       .hasText('06/03/2016 11:12:13', 'The date-time cell renders the second value correctly');
   });
 
+  test('Rollup null field', async function(assert) {
+    assert.expect(2);
+    _setRequestForTimeGrain(this, 'day');
+    this.set('data', { ...this.data, dateTime: null });
+    this.rollup = true;
+
+    await render(hbs`
+      <NaviCellRenderers::DateTime
+        @data={{this.data}}
+        @column={{this.column}}
+        @request={{this.request}}
+        @isRollup={{this.rollup}}
+      />
+    `);
+
+    assert.dom('.table-cell-content').hasText('\xa0', 'renders non breaking space if rollup');
+
+    this.set('rollup', false);
+
+    assert.dom('.table-cell-content').hasText('--', 'renders double dash when non rollup');
+  });
+
   /**
    * Set the test context request property with a granularity string
    * @function _setRequestForTimeGrain

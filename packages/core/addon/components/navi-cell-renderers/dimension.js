@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -76,9 +76,9 @@ export default class DimensionCellRenderer extends Component {
   /**
    * @property {String} value - value that should be displayed in table cell
    */
-  @computed('dimensionField', 'descField', 'idField', 'data')
+  @computed('dimensionField', 'descField', 'idField', 'data', 'isRollup')
   get value() {
-    const { dimensionField, descField, idField, data } = this;
+    const { dimensionField, descField, idField, data, isRollup } = this;
 
     if (dimensionField) {
       if (!isEmpty(data?.[dimensionField])) {
@@ -88,6 +88,10 @@ export default class DimensionCellRenderer extends Component {
       return data[descField];
     } else if (!isEmpty(data?.[idField])) {
       return data[idField];
+    }
+
+    if (isRollup) {
+      return '\xa0';
     }
 
     return '--';

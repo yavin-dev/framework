@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class={{this.tableHeadersClass}}>
   {{#unless @isEditingMode}}
     <SortableGroup
@@ -57,9 +57,9 @@
                   @focus-out={{fn @updateColumnDisplayName column}}
                 />
                 {{#if (eq column.type "metric")}}
-                  <NumberFormatDropdown 
-                    class="table-header-cell__number-format-dropdown" 
-                    @column={{column}} 
+                  <NumberFormatDropdown
+                    class="table-header-cell__number-format-dropdown"
+                    @column={{column}}
                     @onUpdateReport={{@onUpdateReport}}
                   />
                 {{/if}}
@@ -89,8 +89,8 @@
         @bufferSize={{@bufferSize}}
         as |row idx|
       >
-        <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
-          {{#each @columns as |column|}}
+        <tr class="table-row-vc {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if row.__meta__.isRollup "table-row__rollup-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
+          {{#each @columns as |column index|}}
             <td class="table-cell">
               {{#if (and (eq column.type "dateTime") row.__meta__.isTotalRow)}}
                 {{component
@@ -99,10 +99,14 @@
                     column=column
                 }}
               {{else}}
+                {{#if (and (eq index 0) row.__meta__.isRollup)}}
+                  <div class="table-row-subtotal">Subtotal</div>
+                {{/if}}
                 <NaviTableCellRenderer
                   @data={{row}}
                   @column={{column}}
                   @request={{@request}}
+                  @isRollup={{row.__meta__.isRollup}}
                 />
               {{/if}}
             </td>

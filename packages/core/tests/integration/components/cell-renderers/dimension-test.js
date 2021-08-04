@@ -129,4 +129,25 @@ module('Integration | Component | cell renderers/dimension', function(hooks) {
         'The dimension cell renders title correctly when present description field is not present'
       );
   });
+
+  test('dimension rollup render', async function(assert) {
+    assert.expect(2);
+    this.set('data', { ...this.data, 'os|id': null, 'os|desc': null });
+    this.rollup = true;
+
+    await render(hbs`
+      <NaviCellRenderers::Dimension
+        @data={{this.data}}
+        @column={{this.column}}
+        @request={{this.request}}
+        @isRollup={{this.rollup}}
+      />
+    `);
+
+    assert.dom('.table-cell-content').hasText('\xa0', 'renders non breaking space when rollup is true');
+
+    this.set('rollup', false);
+
+    assert.dom('.table-cell-content').hasText('--', 'renders dash when rollup is false');
+  });
 });

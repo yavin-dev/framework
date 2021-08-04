@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -285,6 +285,16 @@
       &.table-row__total-row {
         background-color: @navi-gray-100;
         font-weight: 600;
+      }
+
+      &.table-row__rollup-row {
+        background-color: @denali-grey-300;
+        & .table-cell {
+          vertical-align: bottom;
+        }
+        & .table-row-subtotal {
+          font-weight: 600;
+        }
       }
 
       &.table-row__total-row.table-row__last-row {

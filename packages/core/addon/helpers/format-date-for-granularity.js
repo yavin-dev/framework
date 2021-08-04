@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
@@ -42,12 +42,13 @@ function _formatWeek(startDate) {
  * @function formatDateForGranularity
  * @param {String} date
  * @param {String} granularity
+ * @param {String} - optional blank value
  * @returns {String} date in a human readable format based on granularity
  */
-export function formatDateForGranularity(date, granularity) {
+export function formatDateForGranularity(date, granularity, blankValue = '--') {
   //Construct date to avoid deprecation warning
   if (!isValidMoment(date)) {
-    return '--';
+    return blankValue;
   }
 
   if (granularity === 'week') {
