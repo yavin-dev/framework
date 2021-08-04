@@ -19,6 +19,7 @@ export interface ResponseV1 {
       rowsPerPage: number;
       numberOfResults: number;
     };
+    missingIntervals?: string[];
   };
 }
 
