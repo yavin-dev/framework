@@ -4,7 +4,7 @@
  */
 package com.yahoo.navi.ws.models.beans.enums
 
-enum class ColumnType {
+enum class ColumnarType {
     dimension,
     timeDimension,
     metric,

@@ -4,7 +4,18 @@
  */
 package com.yahoo.navi.ws.models.beans.fragments.request
 
+import com.yahoo.navi.ws.models.beans.enums.ColumnarType
+import org.hibernate.annotations.Parameter
+import org.hibernate.annotations.Type
+
 data class Sort(
-    var metric: String = "",
+    var field: String = "",
+    @Type(
+        type = "com.yahoo.navi.ws.models.types.JsonType",
+        parameters = [
+            Parameter(name = "class", value = "java.utils.HashMap")
+        ]
+    ) var parameters: Map<String, String> = emptyMap(),
+    var type: ColumnarType? = null,
     var direction: String = ""
 )

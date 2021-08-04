@@ -11,7 +11,7 @@ import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation
-import com.yahoo.navi.ws.models.beans.fragments.request.Filter
+import com.yahoo.navi.ws.models.beans.fragments.request.DashboardFilter
 import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import com.yahoo.navi.ws.models.hooks.DashboardDeletionHook
@@ -32,7 +32,7 @@ import javax.persistence.OneToMany
 @UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR")
 @DeletePermission(expression = IS_OWNER)
 @LifeCycleHookBinding(
-    phase = LifeCycleHookBinding.TransactionPhase.PRESECURITY, // TODO - change to PREFLUSH when Elide supports it.
+    phase = LifeCycleHookBinding.TransactionPhase.PREFLUSH,
     operation = LifeCycleHookBinding.Operation.DELETE,
     hook = DashboardDeletionHook::class
 )
@@ -60,7 +60,7 @@ class Dashboard : Asset(), HasOwner, HasEditors {
             Parameter(name = "class", value = "java.util.Set")
         ]
     )
-    var filters: MutableSet<Filter> = mutableSetOf()
+    var filters: MutableSet<DashboardFilter> = mutableSetOf()
 
     @OneToMany(mappedBy = "deliveredItem", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var deliveryRules: MutableSet<DeliveryRule>? = null
