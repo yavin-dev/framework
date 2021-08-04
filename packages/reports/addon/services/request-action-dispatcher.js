@@ -1,5 +1,5 @@
 /**
- * Copyright 2019, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
@@ -36,7 +36,11 @@ export const RequestActions = {
   UPDATE_METRIC_PARAM: 'updateMetricParam',
   UPDATE_METRIC_FRAGMENT_WITH_PARAM: 'updateMetricFragmentWithParam',
   UPDATE_TABLE: 'updateTable',
-  UPSERT_SORT: 'upsertSort'
+  UPSERT_SORT: 'upsertSort',
+
+  PUSH_ROLLUP_COLUMN: 'pushRollupColumn',
+  REMOVE_ROLLUP_COLUMN: 'removeRollupColumn',
+  UPDATE_GRAND_TOTAL: 'updateGrandTotal'
 };
 
 export default ActionDispatcher.extend({
@@ -52,7 +56,8 @@ export default ActionDispatcher.extend({
       'request/logical-table',
       'request/metric',
       'request/time-grain',
-      'request/sort'
+      'request/sort',
+      'request/rollup'
     ];
   })
 });

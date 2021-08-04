@@ -247,6 +247,7 @@ export default function(
         return parseInt(flagMap.join(''), 2);
       };
       const fullMask = getMask(['dateTime', ...dimensions]);
+
       let grandTotalRow;
 
       if (request.queryParams.rollupGrandTotal) {

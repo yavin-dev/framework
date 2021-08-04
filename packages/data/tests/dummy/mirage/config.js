@@ -1,5 +1,6 @@
 import config from 'dummy/config/environment';
 import BardMeta from 'navi-data/mirage/routes/bard-meta';
+import BardLite from 'navi-data/mirage/routes/bard-lite';
 import GraphQL from 'navi-data/mirage/routes/graphql';
 
 export default function() {
@@ -11,5 +12,6 @@ export default function() {
     GraphQL.call(this);
     this.urlPrefix = `${dataSource.uri}/v1`;
     BardMeta.call(this);
+    BardLite.call(this);
   }
 }

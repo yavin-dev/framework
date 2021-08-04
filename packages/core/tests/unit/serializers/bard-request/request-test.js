@@ -2,7 +2,9 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get, set } from '@ember/object';
+import { cloneDeep } from 'lodash-es';
 import { run } from '@ember/runloop';
+import config from 'ember-get-config';
 
 let Store;
 
@@ -380,5 +382,89 @@ module('Unit | Serializer | Request', function(hooks) {
       ['dateTime', 'How many are available', 'Personally sold amount'],
       'metric meta is loaded correctly into sort'
     );
+  });
+
+  test('Rollup serialization', async function(assert) {
+    assert.expect(3);
+    let baseReport = {
+      data: {
+        type: 'report',
+        id: '99',
+        attributes: {
+          request: {
+            logicalTable: { table: 'network' },
+            dimensions: [
+              {
+                dimension: 'os'
+              },
+              {
+                dimension: 'age'
+              }
+            ],
+            filters: [],
+            having: [],
+            rollup: {
+              columns: [
+                {
+                  dimension: 'dateTime'
+                },
+                {
+                  dimension: 'os'
+                },
+                {
+                  dimension: 'age'
+                }
+              ],
+              grandTotal: true
+            },
+            metrics: [
+              {
+                metric: 'adClicks'
+              }
+            ]
+          }
+        }
+      }
+    };
+    run(() => {
+      Store.pushPayload(cloneDeep(baseReport));
+      let report = Store.peekRecord('report', '99');
+
+      const serialized = report.serialize();
+      assert.ok(
+        serialized.data.attributes.request.hasOwnProperty('rollup'),
+        'Request does serialize rollup if fili totals feature flag are on'
+      );
+      assert.deepEqual(
+        serialized.data.attributes.request.rollup,
+        {
+          columns: [
+            {
+              dimension: 'dateTime'
+            },
+            {
+              dimension: 'os'
+            },
+            {
+              dimension: 'age'
+            }
+          ],
+          grandTotal: true
+        },
+        'Rollup is serialized correctly'
+      );
+
+      const ogSetting = config.navi.FEATURES.enableFiliTotals;
+      config.navi.FEATURES.enableFiliTotals = false;
+
+      const withoutRollup = report.serialize();
+
+      assert.notOk(
+        withoutRollup.data.attributes.request.hasOwnProperty('rollup'),
+        'Request does not serialize rollup if fili totals are off'
+      );
+
+      config.navi.FEATURES.enableFiliTotals = ogSetting;
+    });
   });
 });

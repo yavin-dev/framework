@@ -25,6 +25,10 @@ const ExpectedRequest = {
         direction: 'asc'
       }
     ],
+    rollup: {
+      columns: [],
+      grandTotal: false
+    },
     intervals: [
       {
         end: '2015-11-16 00:00:00.000',

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import DS from 'ember-data';
@@ -83,6 +83,7 @@ export default Fragment.extend(Validations, {
     defaultValue: []
   }),
   dataSource: DS.attr('string', { defaultValue: getDefaultDataSourceName() }),
+  rollup: fragment('bard-request/fragments/rollup', { defaultValue: () => ({ columns: [], grandTotal: false }) }),
   responseFormat: DS.attr('string', { defaultValue: 'json' }),
   bardVersion: DS.attr('string', { defaultValue: 'v1' }),
   requestVersion: DS.attr('string', { defaultValue: 'v1' }),
@@ -398,6 +399,24 @@ export default Fragment.extend(Validations, {
     filter.setProperties(props);
   },
 
+  /* == Rollup == */
+
+  pushRollupColumn(dimensionObj) {
+    this.removeRollupColumn(dimensionObj); //remove duplicate
+    this.rollup.columns.createFragment(dimensionObj);
+  },
+
+  removeRollupColumn(dimensionObj) {
+    const { columns } = this.rollup;
+    const { dimension } = dimensionObj;
+    const dimColumn = columns.findBy('dimension', dimension);
+    columns.removeFragment(dimColumn);
+  },
+
+  setGrandTotal(grandTotal) {
+    this.rollup.grandTotal = !!grandTotal;
+  },
+
   /* == Sort == */
 
   /**
@@ -635,6 +654,15 @@ export default Fragment.extend(Validations, {
           interval: Interval.parseFromStrings(interval.start, interval.end)
         })
       ),
+
+      rollup: store.createFragment('bard-request/fragments/rollup', {
+        columns: clonedRequest.rollup.columns.map(column =>
+          store.createFragment('bard-request/fragments/dimension', {
+            dimension: column.dimension
+          })
+        ),
+        grandTotal: clonedRequest.rollup.grandTotal
+      }),
 
       responseFormat: clonedRequest.responseFormat,
       dataSource: clonedRequest.dataSource

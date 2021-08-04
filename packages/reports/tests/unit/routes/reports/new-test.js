@@ -30,7 +30,11 @@ const NEW_MODEL = {
     },
     metrics: [],
     requestVersion: 'v1',
-    sort: []
+    sort: [],
+    rollup: {
+      columns: [],
+      grandTotal: false
+    }
   },
   title: 'Untitled Report',
   updatedOn: null,

@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -30,6 +30,10 @@ export default BaseMetadataTransform.extend({
       const splitName = serialized.split('.');
       namespace = splitName.shift();
       serialized = splitName.join('.');
+    }
+
+    if (serialized == 'dateTime') {
+      return serialized;
     }
 
     // Lookup dimension id in time-dimensions if not found

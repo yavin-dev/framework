@@ -1852,4 +1852,66 @@ module('Unit | Model Fragment | BardRequest - Request', function(hooks) {
       );
     });
   });
+
+  test('Rollup request features', assert => {
+    assert.expect(5);
+    let mockModel = Store.peekRecord('fragments-mock', 1),
+      request = mockModel.get('request');
+
+    request.addDimension({ dimension: 'bar' });
+
+    request.pushRollupColumn({ dimension: 'foo' });
+    request.pushRollupColumn({ dimension: 'foo' }); //test duplicate push
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: [{ dimension: 'foo' }],
+        grandTotal: false
+      },
+      'Adding a dimension column works as expected'
+    );
+
+    request.pushRollupColumn({ dimension: 'bar' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: [{ dimension: 'foo' }, { dimension: 'bar' }],
+        grandTotal: false
+      },
+      'Adding another dimension pushes it to end of columns array'
+    );
+
+    request.removeRollupColumn({ dimension: 'foo' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: [{ dimension: 'bar' }],
+        grandTotal: false
+      },
+      'Correct column was removed'
+    );
+
+    request.setGrandTotal(true);
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: [{ dimension: 'bar' }],
+        grandTotal: true
+      },
+      'Grand Total is toggled'
+    );
+
+    request.pushRollupColumn({ dimension: 'dateTime' });
+
+    const clonedRequest = request.clone();
+
+    assert.deepEqual(
+      clonedRequest.rollup.toJSON(),
+      {
+        columns: [{ dimension: 'bar' }, { dimension: 'dateTime' }],
+        grandTotal: true
+      },
+      'Rollup was cloned correctly'
+    );
+  });
 });

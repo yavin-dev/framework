@@ -27,6 +27,10 @@ const NEW_MODEL = {
       metrics: [],
       having: [],
       sort: [],
+      rollup: {
+        columns: [],
+        grandTotal: false
+      },
       requestVersion: 'v1'
     }
   ],
