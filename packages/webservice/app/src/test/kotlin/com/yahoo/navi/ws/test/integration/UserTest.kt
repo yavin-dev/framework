@@ -151,20 +151,37 @@ class UserTest : IntegrationTest() {
                         "attributes": {
                             "title": "A Report",
                             "request": {
-                                "logicalTable":{
-                                   "timeGrain":"day",
-                                   "table":"base"
-                                },
-                                "bardVersion":"1.0",
-                                "requestVersion":"v1",
-                                "intervals":[{
-                                    "start":"2015-08-20 00:00:00.000",
-                                    "end":"2015-08-21 00:00:00.000"
+                                "filters":[{
+                                    "field": "id",
+                                    "values":["-1","102","103"],
+                                    "type":"dimension",
+                                    "operator":"include"
                                 }],
-                                "metrics": [
-                                    {"metric": "m1"},
-                                    {"metric": "m2", "parameters": {}}
-                                ]
+                                "columns":[
+                                {
+                                    "field": "metric1",
+                                    "type": "metric"
+                                },
+                                {
+                                    "field": "metric2",
+                                    "type": "metric"
+                                },
+                                {
+                                    "field": "metric3",
+                                    "type": "metric",
+                                    "parameters": { "param1" : "paramVal1" }
+                                },
+                                {
+                                    "field": "dim1",
+                                    "type": "dimension"
+                                },
+                                {
+                                    "field": "dim2",
+                                    "type": "dimension"
+                                }],
+                                "table" : "base",
+                                "dataSource": "",
+                                "requestVersion":"2.0"
                             }
                         },
                         "relationships": {
