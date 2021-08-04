@@ -7,7 +7,7 @@ import config from 'ember-get-config';
 
 const TEST_FORMAT = 'YYYY-MM-DD';
 
-const TEMPLATE = hbs`<NaviDatePicker 
+const TEMPLATE = hbs`<NaviDatePicker
   @date={{this.date}}
   @dateTimePeriod={{this.dateTimePeriod}}
   @onUpdate={{this.onUpdate}}

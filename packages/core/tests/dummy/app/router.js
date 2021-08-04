@@ -20,4 +20,5 @@ Router.map(function () {
   this.route('metric-label');
   this.route('pie-chart');
   this.route('buttons');
+  this.route('date-pick');
 });
