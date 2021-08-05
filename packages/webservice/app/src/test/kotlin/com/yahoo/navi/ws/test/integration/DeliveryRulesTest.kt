@@ -673,7 +673,7 @@ class DeliveryRulesTest : IntegrationTest() {
                     resource(
                         type("dashboards"),
                         attributes(
-                            attr("title", "A dashboards"),
+                            attr("title", "A dashboard"),
                         ),
                         relationships(
                             relation(
@@ -704,7 +704,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         resource(
                             type("dashboardWidgets"),
                             attributes(
-                                attr("title", "A dashboards"),
+                                attr("title", "A dashboard widget for $dataSource"),
                                 attr(
                                     "requests",
                                     arrayListOf(

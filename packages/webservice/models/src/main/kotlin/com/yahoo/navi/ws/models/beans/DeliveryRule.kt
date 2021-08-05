@@ -109,14 +109,14 @@ class DeliveryRule : HasOwner {
         @ComputedAttribute
         @Transient
         get() {
-            return when (this.deliveredItem) {
-                is Report -> setOf((this.deliveredItem as Report)?.request?.dataSource).filterNotNull().toSet()
-                is Dashboard -> (this.deliveredItem as Dashboard).widgets.flatMap {
-                    widget ->
-                    widget.requests.map { req -> req.dataSource }
-                }.filterNotNull().toSet()
-                else -> emptySet()
+
+            val item = this.deliveredItem ?: return emptySet();
+            val requests = when (item) {
+                is Report -> arrayListOf(item.request)
+                is Dashboard -> item.widgets.flatMap { widget -> widget.requests }
+                else -> emptyList()
             }
+            return requests.mapNotNull { request -> request?.dataSource }.toSet()
         }
 
     val deliveryType: String?
