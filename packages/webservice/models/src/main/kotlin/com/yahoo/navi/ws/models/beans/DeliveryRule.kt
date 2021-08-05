@@ -105,6 +105,19 @@ class DeliveryRule : HasOwner {
     @ManyToOne()
     var deliveredItem: Asset? = null
 
+    val dataSources: Set<String>
+        @ComputedAttribute
+        @Transient
+        get() {
+            val item = this.deliveredItem ?: return emptySet()
+            val requests = when (item) {
+                is Report -> arrayListOf(item.request)
+                is Dashboard -> item.widgets.flatMap { widget -> widget.requests }
+                else -> emptyList()
+            }
+            return requests.mapNotNull { request -> request?.dataSource }.toSet()
+        }
+
     val deliveryType: String?
         @ComputedAttribute
         @Transient
