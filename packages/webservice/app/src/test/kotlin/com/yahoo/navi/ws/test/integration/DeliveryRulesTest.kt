@@ -8,6 +8,8 @@ import com.yahoo.navi.ws.models.beans.fragments.SchedulingRules
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.apache.http.HttpStatus
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsInAnyOrder
+import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItems
 import org.hamcrest.Matchers.nullValue
@@ -126,7 +128,7 @@ class DeliveryRulesTest : IntegrationTest() {
                 "data.attributes.schedulingRules.mustHaveData", equalTo(false),
                 "data.attributes.recipients", hasItems("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev"),
                 "data.attributes.lastDeliveredOn", nullValue(),
-                "data.attributes.dataSources", nullValue(),
+                "data.attributes.dataSources", equalTo(emptyList<String>()), // no request, no dataSources
                 "data.relationships.owner.data.id", equalTo(USER1),
                 "data.relationships.deliveredItem.data.type", equalTo("reports"),
                 "data.relationships.deliveredItem.data.id", equalTo("1")
@@ -273,7 +275,6 @@ class DeliveryRulesTest : IntegrationTest() {
             .`when`()
             .post("/deliveryRules")
             .then()
-            .log().all()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
 
@@ -577,5 +578,211 @@ class DeliveryRulesTest : IntegrationTest() {
             .then()
             .assertThat()
             .body("data.size()", Matchers.equalTo(0))
+    }
+
+    @Test
+    fun `it provides the report dataSource`() {
+        var dataSource = "dataSourceA"
+
+        val reportId: String = given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("reports"),
+                        attributes(
+                            attr("title", "A report"),
+                            attr(
+                                "request",
+                                attributes(
+                                    attr("dataSource", dataSource)
+                                )
+                            )
+                        ),
+                        relationships(
+                            relation(
+                                "owner",
+                                linkage(
+                                    type("users"),
+                                    id(USER1)
+                                )
+                            )
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/reports")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        val ruleId: String = given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("frequency", "week"),
+                            attr("format", format),
+                            attr("recipients", arrayOf("email1@yavin.dev")),
+                            attr("version", "1"),
+                            attr("schedulingRules", schedulingRules)
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id(reportId))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/$ruleId"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.dataSources", equalTo(listOf(dataSource)),
+            )
+    }
+
+    @Test
+    fun `it provides the dashboard dataSources`() {
+
+        val dataSources = listOf("dataSourceA", "dataSourceB", "dataSourceC", "dataSourceA")
+
+        val dashboardId: String = given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("dashboards"),
+                        attributes(
+                            attr("title", "A dashboards"),
+                        ),
+                        relationships(
+                            relation(
+                                "owner",
+                                linkage(
+                                    type("users"),
+                                    id(USER1)
+                                )
+                            )
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/dashboards")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        dataSources.forEach { dataSource ->
+            given()
+                .header("User", USER1)
+                .contentType("application/vnd.api+json")
+                .body(
+                    data(
+                        resource(
+                            type("dashboardWidgets"),
+                            attributes(
+                                attr("title", "A dashboards"),
+                                attr(
+                                    "requests",
+                                    arrayListOf(
+                                        attributes(
+                                            attr("dataSource", dataSource)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ).toJSON()
+                )
+                .`when`()
+                .post("/dashboards/$dashboardId/widgets")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_CREATED)
+        }
+
+        val ruleId: String = given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("frequency", "week"),
+                            attr("format", format),
+                            attr("recipients", arrayOf("email1@yavin.dev")),
+                            attr("version", "1"),
+                            attr("schedulingRules", schedulingRules)
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("dashboards"), id(dashboardId))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        // Test that dataSources is the set of widget dataSources
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/$ruleId"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.dataSources", containsInAnyOrder("dataSourceA", "dataSourceB", "dataSourceC")
+            )
+
+        // Test that dataSources filtering
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules?filter=dataSources=hasmember=dataSourceA;dataSources=hasnomember=dataSourceD"]
+            .then()
+            .assertThat()
+            .body(
+                "data.id", hasItems("1")
+            )
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules?filter=dataSources=hasmember=dataSourceA;dataSources=hasmember=dataSourceD"]
+            .then()
+            .assertThat()
+            .body(
+                "data.id", empty<Any>()
+            )
     }
 }

@@ -110,8 +110,11 @@ class DeliveryRule : HasOwner {
         @Transient
         get() {
             return when (this.deliveredItem) {
-                is Report -> setOf((this.deliveredItem as Report).request.dataSource)
-                is Dashboard -> ((this.deliveredItem as Dashboard).widgets.map { it.requests[0].dataSource }).toSet()
+                is Report -> setOf((this.deliveredItem as Report)?.request?.dataSource).filterNotNull().toSet()
+                is Dashboard -> (this.deliveredItem as Dashboard).widgets.flatMap {
+                    widget ->
+                    widget.requests.map { req -> req.dataSource }
+                }.filterNotNull().toSet()
                 else -> emptySet()
             }
         }

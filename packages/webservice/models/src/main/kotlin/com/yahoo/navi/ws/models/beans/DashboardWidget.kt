@@ -12,6 +12,7 @@ import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.elide.core.exceptions.InvalidValueException
 import com.yahoo.navi.ws.models.beans.fragments.DashboardWidgetVisualization
 import com.yahoo.navi.ws.models.beans.fragments.Request
+import com.yahoo.navi.ws.models.beans.fragments.RequestList
 import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
@@ -79,10 +80,10 @@ class DashboardWidget : HasOwner, HasEditors {
     @Type(
         type = "com.yahoo.navi.ws.models.types.JsonType",
         parameters = [
-            Parameter(name = "class", value = "java.util.ArrayList")
+            Parameter(name = "class", value = "com.yahoo.navi.ws.models.beans.fragments.RequestList")
         ]
     )
-    var requests: ArrayList<Request> = arrayListOf()
+    var requests: List<Request> = RequestList()
 
     @Column(name = "visualization", columnDefinition = "MEDIUMTEXT")
     @Type(
