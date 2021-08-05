@@ -662,7 +662,6 @@ class DeliveryRulesTest : IntegrationTest() {
 
     @Test
     fun `it provides the dashboard dataSources`() {
-
         val dataSources = listOf("dataSourceA", "dataSourceB", "dataSourceC", "dataSourceA")
 
         val dashboardId: String = given()
