@@ -109,7 +109,6 @@ class DeliveryRule : HasOwner {
         @ComputedAttribute
         @Transient
         get() {
-
             val item = this.deliveredItem ?: return emptySet();
             val requests = when (item) {
                 is Report -> arrayListOf(item.request)
