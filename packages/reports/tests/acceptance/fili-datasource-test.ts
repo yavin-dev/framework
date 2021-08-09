@@ -49,10 +49,10 @@ module('Acceptance | fili datasource', function (hooks) {
         .dom('.filter-builder__operator-trigger')
         .hasText('Between', 'Between is the selected filter builder operator');
 
-      await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+      await clickTrigger('.filter-values--date-range-input__low-value.ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Low value calendar opened');
 
-      await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+      await clickTrigger('.filter-values--date-range-input__high-value.ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('High value calendar opened');
 
       await selectChoose('.filter-builder__operator-trigger', 'Current');
@@ -73,7 +73,7 @@ module('Acceptance | fili datasource', function (hooks) {
       await selectChoose('.filter-builder__operator-trigger', 'Since');
       assert.dom('.filter-builder__operator-trigger').hasText('Since', 'Since is the selected filter builder operator');
 
-      await clickTrigger('.filter-values--date-input__trigger .ember-basic-dropdown-trigger');
+      await clickTrigger('.filter-values--date-input__trigger.ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Calendar opened');
 
       await selectChoose('.filter-builder__operator-trigger', 'Before');
@@ -81,7 +81,7 @@ module('Acceptance | fili datasource', function (hooks) {
         .dom('.filter-builder__operator-trigger')
         .hasText('Before', 'Before is the selected filter builder operator');
 
-      await clickTrigger('.filter-values--date-input__trigger .ember-basic-dropdown-trigger');
+      await clickTrigger('.filter-values--date-input__trigger.ember-basic-dropdown-trigger');
       assert.dom('.ember-power-calendar').exists('Calendar opened');
     }
   });

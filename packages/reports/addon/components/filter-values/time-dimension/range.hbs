@@ -13,13 +13,13 @@
       @onUpdate={{this.setTimeStartMoment}}
       class="filter-values--date-range-input__trigger filter-values--date-range-input__low-value col-3-7"
     >
-      <DenaliInput 
+      <DenaliInput
         @size="medium"
         @iconBack="calendar-event"
         @iconBackClass="is-brand-300"
         title={{object-at @filter.values 0}}
-        value={{this.startDateText}} 
-        readonly={{true}} 
+        value={{this.startDateText}}
+        readonly={{true}}
         placeholder={{this.startPlaceholder}}
       />
     </DropdownDatePicker>
@@ -32,13 +32,13 @@
       @onUpdate={{this.setTimeEndMoment}}
       class="filter-values--date-range-input__trigger filter-values--date-range-input__high-value col-3-7"
     >
-      <DenaliInput 
+      <DenaliInput
         @size="medium"
         @iconBack="calendar-event"
         @iconBackClass="is-brand-300"
         title={{object-at @filter.values 1}}
-        value={{this.endDateText}} 
-        readonly={{true}} 
+        value={{this.endDateText}}
+        readonly={{true}}
         placeholder={{this.endPlaceholder}}
       />
     </DropdownDatePicker>
