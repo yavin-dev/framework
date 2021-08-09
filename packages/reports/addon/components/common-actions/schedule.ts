@@ -27,6 +27,7 @@ const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
 interface Args {
+  disabled?: boolean;
   model: DeliverableItemModel;
   onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
@@ -200,6 +201,10 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
+    if (this.args.disabled) {
+      return;
+    }
+
     //Kick off a fetch for existing delivery rules
     this.deliveryRule = this.args.model.deliveryRuleForUser;
 

@@ -1,27 +1,42 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="report-control multiple-format-export" ...attributes>
-  <BasicDropdown @renderInPlace={{true}} as |dd|>
-    <dd.Trigger {{on "mouseleave" (fn this.close dd)}}>
-      {{yield}}
-    </dd.Trigger>
-
-    {{#unless @disabled}}
-      <dd.Content {{on "mouseenter" (fn this.open dd)}} {{on "mouseleave" (fn this.close dd)}}>
-        <ul class="multiple-format-export__dropdown">
-          {{#each this.exportFormats as |exportFormat|}}
-            <li>
-              <NaviIcon @icon={{exportFormat.icon}} />
-              <a
-                download={{dasherize this.filename}}
-                href={{await exportFormat.href}}
-                {{on "click" (queue (fn this.notify exportFormat.type) (fn this.close dd))}}
-              >
-                {{exportFormat.type}}
-              </a>
-            </li>
-          {{/each}}
-        </ul>
-      </dd.Content>
-    {{/unless}}
-  </BasicDropdown>
-</div>
+<DenaliMenu class="multiple-format-export" @alignContent="left" ...attributes as |Menu|>
+  <Menu.Trigger>
+    {{yield}}
+  </Menu.Trigger>
+  {{#unless @disabled}}
+    <Menu.Content>
+      {{#each this.exportFormats as |exportFormat|}}
+        {{! @report.isNew is falsey with dashboards so this works as expected in dashboards}}
+        {{#if (and @report.isNew exportFormat.requiresSaved)}}
+          <DenaliLink
+            @iconFront={{exportFormat.icon}}
+            @state="disabled"
+            class="multiple-format-export__menu-link--disabled"
+          >
+            {{exportFormat.type}}
+            <EmberTooltip @side="left">
+              Save report to enable this option
+            </EmberTooltip>
+          </DenaliLink>
+        {{else if exportFormat.async}}
+          <DenaliLink
+            role="button"
+            @iconFront={{exportFormat.icon}}
+            {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.href))}}
+          >
+            {{exportFormat.type}}
+          </DenaliLink>
+        {{else}}
+          <DenaliLink
+            @iconFront={{exportFormat.icon}}
+            download={{dasherize this.filename}}
+            href={{await exportFormat.href}}
+            {{on "click" (fn this.notify exportFormat.type)}}
+          >
+            {{exportFormat.type}}
+          </DenaliLink>
+        {{/if}}
+      {{/each}}
+    </Menu.Content>
+  {{/unless}}
+</DenaliMenu>

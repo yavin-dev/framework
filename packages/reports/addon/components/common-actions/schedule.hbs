@@ -1,30 +1,30 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
-  @isOpen={{this.showModal}}
+  @isOpen={{if @disabled false this.showModal}}
   @onClose={{queue this.closeModal (fn @onRevert this.localDeliveryRule)}}
   class="schedule__modal"
-  ...attributes 
+  ...attributes
   as |Modal|
 >
   <Modal.Content>
     <h3 class="schedule__modal-header m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
     {{#if (is-rejected this.deliveryRule)}}
-        <DenaliAlert 
-          @style="danger" 
+        <DenaliAlert
+          @style="danger"
           @isBlock={{true}}
-          class="m-b-30" 
+          class="m-b-30"
           as |Alert|
         >
           <Alert.Title>Error</Alert.Title>
           <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
         </DenaliAlert>
     {{else}}
-        {{#if this.notification}}	
-          <DenaliAlert 
-            @style="danger" 
+        {{#if this.notification}}
+          <DenaliAlert
+            @style="danger"
             @isBlock={{true}}
-            class="m-b-30" 
+            class="m-b-30"
             as |Alert|
           >
             <Alert.Title>Error</Alert.Title>
@@ -106,7 +106,7 @@
           disabled={{this.disableSave}}
           isLoading={{this.isSaving}}
           {{on "click" (queue (toggle "isSaving" this) this.doSave)}}
-        >        
+        >
           {{#if this.localDeliveryRule.isNew}}
             Save
           {{else}}

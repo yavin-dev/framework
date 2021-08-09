@@ -42,14 +42,14 @@
           {{#if (feature-flag "enableDashboardExport")}}
             {{!-- Export action enabled if the dashboard is valid --}}
             <DashboardActions::Export
-              class="dashboard-header__export-btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
+              class="dashboard-header__export-btn"
               @dashboard={{@dashboard}}
               @disabled={{not @dashboard.validations.isTruelyValid}}
             >
-              <DenaliButton 
-                disabled={{not @dashboard.validations.isTruelyValid}} 
-                @icon="download" 
-                @style="text" 
+              <DenaliButton
+                disabled={{not @dashboard.validations.isTruelyValid}}
+                @icon="download"
+                @style="text"
                 @size="medium"
               >
                 Export

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -38,6 +38,15 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
   @computed('dashboard.id')
   get exportHref() {
     return Promise.resolve(`/export?dashboard=${this.dashboard.id}`);
+  }
+
+  /**
+   * @property {String} gsheetExportHref - Href for google sheet export
+   * @override
+   */
+  @computed('dashboard.id')
+  get gsheetExportHref() {
+    return `/gsheet-export/dashboard/${this.dashboard.id}`;
   }
 
   /**
