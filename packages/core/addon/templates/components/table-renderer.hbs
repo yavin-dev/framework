@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="table-widget__horizontal-scroll-container" ...attributes>
   <div class= "table-widget-container">
     {{#if @isEditingMode}}
@@ -18,11 +18,11 @@
         {{/each}}
       </div>
     {{else}}
-      <SortableGroup 
-        class="table-header-row" 
-        @model={{readonly @columns}} 
-        @direction="x" 
-        @onChange={{@updateColumnOrder}} 
+      <SortableGroup
+        class="table-header-row"
+        @model={{readonly @columns}}
+        @direction="x"
+        @onChange={{@updateColumnOrder}}
         as | group |
       >
         {{#each group.model as |column|}}
@@ -67,8 +67,8 @@
           @bufferSize={{@bufferSize}}
           as |row idx|
         >
-          <div class="table-row {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
-            {{#each @columns as |column|}}
+          <div class="table-row {{if row.__meta__.isTotalRow "table-row__total-row"}} {{if row.__meta__.isRollup "table-row__rollup-row"}} {{if (eq idx (sub @tableData.length 1)) "table-row__last-row"}}">
+            {{#each @columns as |column index|}}
               <div class="table-cell">
                 {{#if (and (eq column.type "dateTime") row.__meta__.isTotalRow)}}
                   {{component

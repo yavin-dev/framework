@@ -1396,7 +1396,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
   });
 
   test('Rollup test', async function(assert) {
-    assert.expect(4);
+    assert.expect(6);
     const OG = config.navi.FEATURES.enableFiliTotals;
     config.navi.FEATURES.enableFiliTotals = true;
     await visit('/reports/1/view');
@@ -1428,6 +1428,12 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Property rollup added to query'
     );
 
+    await click('.navi-report__run-btn');
+
+    await click('.visualization-toggle__option[title="Data Table"]');
+
+    assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
+
     await click('.navi-column-config-base__rollup-icon');
     await click('span[title="Property"]');
     await click('span[title="Date Time (Day)"]');
@@ -1439,6 +1445,12 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'https://data.naviapp.io/v1/data/network/day/property/?dateTime=2015-11-09%2000%3A00%3A00.000%2F2015-11-16%2000%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&format=json',
       'Rollup removed from query after toggling off both dimensions'
     );
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.table-row__rollup-row')
+      .doesNotExist('Table visualization has all rollup styled rows removed after toggling off both dimensions');
 
     config.navi.FEATURES.enableFiliTotals = OG;
   });

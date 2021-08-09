@@ -405,4 +405,89 @@ module('Unit | Component | table', function(hooks) {
       'compute total returns a total row object for the rows passed in based on the overriding method'
     );
   });
+
+  test('Rollup visualization', function(assert) {
+    assert.expect(2);
+    delete OPTIONS.showTotals;
+    const model = A([
+      {
+        request: {
+          dataSource: 'dummy',
+          metrics: [
+            {
+              metric: 'uniqueIdentifier',
+              parameters: {},
+              toJSON() {
+                return { metric: 'uniqueIdentifier', parameters: {} };
+              }
+            }
+          ],
+          dimensions: [
+            {
+              dimension: 'dimension'
+            },
+            {
+              dimension: 'dimension' //intentional duplicate
+            }
+          ],
+          rollup: {
+            columns: [{ dimension: 'dimension' }]
+          },
+          logicalTable: { table: 'network', timeGrain: 'day' },
+          sort: [{ metric: 'dateTime', direction: 'desc' }]
+        },
+        response: {
+          rows: [
+            {
+              dateTime: '2021-01-01',
+              'dimension|id': 'dim1',
+              uniqueIdentifier: 123,
+              __rollupMask: 3
+            },
+            {
+              dateTime: null,
+              'dimension|id': 'dim1',
+              uniqueIdentifier: 123,
+              __rollupMask: 1
+            },
+            {
+              dateTime: '2021-01-01',
+              'dimension|id': 'dim2',
+              uniqueIdentifier: 321,
+              __rollupMask: 3
+            },
+            {
+              dateTime: null,
+              'dimension|id': 'dim2',
+              uniqueIdentifier: 321,
+              __rollupMask: 1
+            },
+            {
+              dateTime: null,
+              'dimension|id': null,
+              uniqueIdentifier: 321,
+              __rollupMask: 0
+            }
+          ]
+        }
+      }
+    ]);
+
+    let component = this.owner.factoryFor('component:navi-visualizations/table').create({
+      model: model,
+      options: OPTIONS
+    });
+
+    const rollupRows = component.tableData.map(row => !!row.__meta__.isRollup);
+
+    assert.deepEqual(rollupRows, [false, true, false, true, true], 'Correct rows are identified as rollup rows');
+
+    const grandTotalRows = component.tableData.map(row => !!row.__meta__.isTotalRow);
+
+    assert.deepEqual(
+      grandTotalRows,
+      [false, false, false, false, true],
+      'Correct rows are identified as grand total rows'
+    );
+  });
 });
