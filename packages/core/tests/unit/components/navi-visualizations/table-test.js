@@ -407,7 +407,7 @@ module('Unit | Component | table', function(hooks) {
   });
 
   test('Rollup visualization', function(assert) {
-    assert.expect(1);
+    assert.expect(2);
     delete OPTIONS.showTotals;
     const model = A([
       {
@@ -425,6 +425,9 @@ module('Unit | Component | table', function(hooks) {
           dimensions: [
             {
               dimension: 'dimension'
+            },
+            {
+              dimension: 'dimension' //intentional duplicate
             }
           ],
           rollup: {
@@ -458,6 +461,12 @@ module('Unit | Component | table', function(hooks) {
               'dimension|id': 'dim2',
               uniqueIdentifier: 321,
               __rollupMask: 1
+            },
+            {
+              dateTime: null,
+              'dimension|id': null,
+              uniqueIdentifier: 321,
+              __rollupMask: 0
             }
           ]
         }
@@ -471,6 +480,14 @@ module('Unit | Component | table', function(hooks) {
 
     const rollupRows = component.tableData.map(row => !!row.__meta__.isRollup);
 
-    assert.deepEqual(rollupRows, [false, true, false, true], 'Correct rolls are identified as rollup rows');
+    assert.deepEqual(rollupRows, [false, true, false, true, true], 'Correct rows are identified as rollup rows');
+
+    const grandTotalRows = component.tableData.map(row => !!row.__meta__.isTotalRow);
+
+    assert.deepEqual(
+      grandTotalRows,
+      [false, false, false, false, true],
+      'Correct rows are identified as grand total rows'
+    );
   });
 });

@@ -91,7 +91,7 @@ export default class DimensionCellRenderer extends Component {
     }
 
     if (isRollup) {
-      return '\xa0';
+      return '\xa0'; //non-breaking space.
     }
 
     return '--';

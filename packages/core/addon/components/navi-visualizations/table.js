@@ -184,7 +184,8 @@ class Table extends Component {
     if (request?.rollup?.columns?.length <= 0 && !request?.rollup?.grandTotal) {
       return tableData;
     }
-    const fullMask = parseInt(new Array((request.dimensions?.length ?? 0) + 1).fill('1').join(''), 2);
+    const dimensionCount = new Set(request?.dimensions?.map(dimension => dimension.dimension)).size;
+    const fullMask = parseInt(new Array(dimensionCount + 1).fill('1').join(''), 2);
     return tableData.map(row => {
       if (row.__rollupMask === undefined || row.__rollupMask === null) {
         return row;
@@ -196,7 +197,7 @@ class Table extends Component {
         set(row, '__meta__.isRollup', true);
       }
       if (row.__rollupMask === 0) {
-        set(row, '__meta__.setisTotalRow', true);
+        set(row, '__meta__.isTotalRow', true);
       }
       return row;
     });

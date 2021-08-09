@@ -1448,7 +1448,9 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
 
     await click('.navi-report__run-btn');
 
-    assert.dom('.table-row__rollup-row').doesNotExist('Table visualization has all rollup styled rows removed');
+    assert
+      .dom('.table-row__rollup-row')
+      .doesNotExist('Table visualization has all rollup styled rows removed after toggling off both dimensions');
 
     config.navi.FEATURES.enableFiliTotals = OG;
   });
