@@ -12,7 +12,11 @@
             class="navi-column-config-base__rollup-icon {{if @column.isRollup "navi-column-config-base__rollup-icon--active"}}"
             role="button"
             {{on "click" @toggleRollup}}
-          />
+          >
+            <EmberTooltip>
+              Click to {{if @column.isRollup 'Remove' 'Add'}} subtotal rows based on this column.
+            </EmberTooltip>
+          </NaviIcon>
         {{/if}}
         <NaviIcon @icon="clone"
           class="navi-column-config-base__clone-icon {{if (eq @column.name "dateTime") "navi-column-config-base__clone-icon--disabled"}}"

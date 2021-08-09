@@ -1407,7 +1407,7 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Default query with no rollup'
     );
 
-    await click('span[title="Date Time (Day)"');
+    await click('span[title="Date Time (Day)"]');
     await click('.navi-column-config-base__rollup-icon');
 
     apiURL = await getRequestURL();
@@ -1417,8 +1417,8 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
       'Datetime rollup added to query'
     );
 
-    await click('span[title="Date Time (Day)"');
-    await click('span[title="Property"');
+    await click('span[title="Date Time (Day)"]');
+    await click('span[title="Property"]');
     await click('.navi-column-config-base__rollup-icon');
 
     apiURL = await getRequestURL();
@@ -1435,8 +1435,8 @@ module('Acceptance | Navi Report | Column Config', function(hooks) {
     assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
 
     await click('.navi-column-config-base__rollup-icon');
-    await click('span[title="Property"');
-    await click('span[title="Date Time (Day)"');
+    await click('span[title="Property"]');
+    await click('span[title="Date Time (Day)"]');
     await click('.navi-column-config-base__rollup-icon');
 
     apiURL = await getRequestURL();
