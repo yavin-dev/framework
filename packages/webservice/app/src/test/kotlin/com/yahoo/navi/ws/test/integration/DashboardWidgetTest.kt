@@ -59,60 +59,24 @@ class DashboardWidgetTest : IntegrationTest() {
 
         requests = (
             """[
-            [{
-                "logicalTable":{
-                    "timeGrain":"day",
-                    "table":"base"
-                },
-                "bardVersion":"1.0",
-                "requestVersion":"2.0",
-                "intervals":[{
-                    "start":"2015-08-20 00:00:00.000",
-                    "end":"2015-08-21 00:00:00.000"
-                }],
-                "filters":[{
-                    "field": null,
-                    "values":["-1","102","103"],
-                    "dimension":"age",
-                    "operator":"include"
-                }],
-                "metrics":[
-                    {"metric":"metric1","parameters":{}},
-                    {"metric":"metric2","parameters":{}},
-                    {"metric":"metric3","parameters":{"param1":"paramVal1","param2":"paramVal2"}}
-                ],
-                "dimensions":[
-                    {"dimension":"dim1"},
-                    {"dimension":"dim2"}
-                ]
-            }],
-            [{
-                "logicalTable":{
-                    "timeGrain":"day",
-                    "table":"base"
-                },
-                "bardVersion":"1.0",
-                "requestVersion":"2.0",
-                "intervals":[{
-                    "start":"2015-08-20 00:00:00.000",
-                    "end":"2015-08-21 00:00:00.000"
-                }],
-                "filters":[{
-                    "field": null,
-                    "values":["-1","102","103"],
-                    "dimension":"age",
-                    "operator":"include"
-                }],
-                "metrics":[
-                    {"metric":"metric1","parameters":{}},
-                    {"metric":"metric2","parameters":{}},
-                    {"metric":"metric3","parameters":{"param1":"paramVal1","param2":"paramVal2"}}
-                ],
-                "dimensions":[
-                    {"dimension":"dim1"},
-                    {"dimension":"dim2"}
-                ]
-            }]
+            {
+                "filters": [],
+                "columns": [],
+                "table": "tableA",
+                "sorts": [],
+                "dataSource": "dataSourceA",
+                "limit": null, 
+                "requestVersion": "2.0"
+            },
+            {
+                "filters": [],
+                "columns": [],
+                "table": "tableB",
+                "sorts": [],
+                "dataSource": "dataSourceA",
+                "limit": null, 
+                "requestVersion": "2.0"
+            }
         ]
             """.trimIndent()
             )
@@ -246,7 +210,7 @@ class DashboardWidgetTest : IntegrationTest() {
             .assertThat()
             .body("data.id", hasItems("1", "2"))
             .body("data.attributes.title", hasItems("A widget 1"))
-            .body("data.attributes.requests.logicalTable.table", hasItems(arrayListOf(arrayListOf("base"), arrayListOf("base")), arrayListOf(arrayListOf("base"), arrayListOf("base"))))
+            .body("data.attributes.requests.table", hasItems(arrayListOf("tableA", "tableB"), arrayListOf("tableA", "tableB")))
             .body("data.attributes.visualization", containsInAnyOrder(matchesJsonMap(visual1), matchesJsonMap(visual2)))
 
         // delete a widget

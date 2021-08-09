@@ -31,7 +31,7 @@ import javax.persistence.OneToMany
 @UpdatePermission(expression = IS_OWNER)
 @DeletePermission(expression = IS_OWNER)
 @LifeCycleHookBinding(
-    phase = LifeCycleHookBinding.TransactionPhase.PRESECURITY, // TODO - change to PREFLUSH when Elide supports it.
+    phase = LifeCycleHookBinding.TransactionPhase.PREFLUSH,
     operation = LifeCycleHookBinding.Operation.DELETE,
     hook = ReportDeletionHook::class
 )
