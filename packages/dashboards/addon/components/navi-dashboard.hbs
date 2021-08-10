@@ -7,11 +7,14 @@
     @onUpdateFilter={{fn @onUpdateFilter @dashboard}}
     @onRemoveFilter={{fn @onRemoveFilter @dashboard}}
     @onAddFilter={{fn @onAddFilter @dashboard}}
+    @hasShadow={{this.showHeaderShadow}}
     class="p-y-10"
   />
   <div class="navi-dashboard__body">
     {{#if @dashboard.widgets.length}}
-      <div class="navi-dashboard__widgets">
+      <div class="navi-dashboard__widgets"
+        {{on "scroll" this.onScroll}}
+      >
         <GridStack
           @options={{hash column=@width}}
           @onChange={{route-action "didUpdateLayout"}}

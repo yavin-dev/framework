@@ -12,6 +12,7 @@ import type Store from '@ember-data/store';
 
 interface Args {
   dashboard: DashboardModel;
+  hasShadow: boolean;
   onRemoveFilter(filter: FilterFragment): void;
   onUpdateFilter(filter: FilterFragment): void;
   onAddFilter(): void;
