@@ -6,6 +6,8 @@ import Component from '@glimmer/component';
 import { computed } from '@ember/object';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type { TaskInstance } from 'ember-concurrency';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 
 interface Args {
   dashboard: DashboardModel;
@@ -20,6 +22,8 @@ interface Args {
 }
 
 export default class NaviDashboard extends Component<Args> {
+  @tracked showHeaderShadow = false;
+
   /**
    * This property exists because ember-data-model-fragments
    * does not always propagate dirty state up to the parent
@@ -36,5 +40,10 @@ export default class NaviDashboard extends Component<Args> {
       dashboard.filters.get('hasDirtyAttributes') ||
       dashboard.presentation.get('hasDirtyAttributes')
     );
+  }
+
+  @action
+  onScroll({ target: { scrollTop } }: { target: HTMLElement }) {
+    this.showHeaderShadow = scrollTop > 0;
   }
 }
