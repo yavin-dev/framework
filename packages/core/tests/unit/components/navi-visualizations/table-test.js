@@ -442,31 +442,31 @@ module('Unit | Component | table', function(hooks) {
               dateTime: '2021-01-01',
               'dimension|id': 'dim1',
               uniqueIdentifier: 123,
-              __rollupMask: 3
+              __rollupMask: '3'
             },
             {
               dateTime: null,
               'dimension|id': 'dim1',
               uniqueIdentifier: 123,
-              __rollupMask: 1
+              __rollupMask: '1'
             },
             {
               dateTime: '2021-01-01',
               'dimension|id': 'dim2',
               uniqueIdentifier: 321,
-              __rollupMask: 3
+              __rollupMask: '3'
             },
             {
               dateTime: null,
               'dimension|id': 'dim2',
               uniqueIdentifier: 321,
-              __rollupMask: 1
+              __rollupMask: '1'
             },
             {
               dateTime: null,
               'dimension|id': null,
               uniqueIdentifier: 321,
-              __rollupMask: 0
+              __rollupMask: '0'
             }
           ]
         }

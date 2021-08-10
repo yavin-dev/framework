@@ -190,13 +190,14 @@ class Table extends Component {
       if (row.__rollupMask === undefined || row.__rollupMask === null) {
         return row;
       }
+      const rollupMask = Number(row.__rollupMask);
       if (!row.__meta__) {
         row.__meta__ = {};
       }
-      if (row.__rollupMask !== fullMask) {
+      if (rollupMask !== fullMask) {
         set(row, '__meta__.isRollup', true);
       }
-      if (row.__rollupMask === 0) {
+      if (rollupMask === 0) {
         set(row, '__meta__.isTotalRow', true);
       }
       return row;

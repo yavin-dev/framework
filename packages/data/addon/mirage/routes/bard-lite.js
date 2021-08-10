@@ -244,7 +244,7 @@ export default function(
       const getMask = rolledupDims => {
         const rollupDimensionMask = ['dateTime', ...dimensions];
         const flagMap = rollupDimensionMask.map(rolledDim => (rolledupDims.includes(rolledDim) ? 1 : 0));
-        return parseInt(flagMap.join(''), 2);
+        return String(parseInt(flagMap.join(''), 2));
       };
       const fullMask = getMask(['dateTime', ...dimensions]);
 
@@ -256,7 +256,7 @@ export default function(
             acc = {};
             Object.keys(row).forEach(key => (acc[key] = null));
             if (hasRollUpDim) {
-              acc.__rollupMask = 0;
+              acc.__rollupMask = '0';
             }
           }
 
