@@ -63,7 +63,7 @@ export type TableVisualizationMetadata = {
   };
 };
 
-type Field = { field: string; parameters: Record<string, unknown> };
+type Field = { field: string; parameters: Record<string, string> };
 /**
  *
  * @param column the
