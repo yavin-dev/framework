@@ -27,8 +27,8 @@ const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
 
 interface Args {
-  disabled?: boolean;
   model: DeliverableItemModel;
+  isValid?(): Promise<boolean>;
   onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onRevert(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
@@ -70,6 +70,13 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked isSaving = false;
 
   @tracked showModal = false;
+
+  /**
+   * @property {Promise} isValid - Promise resolving to whether item is valid to be scheduled
+   */
+  get isValid() {
+    return this.args.isValid?.() || Promise.resolve(true);
+  }
 
   /**
    * @property {Array} frequencies
@@ -201,10 +208,6 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
-    if (this.args.disabled) {
-      return;
-    }
-
     //Kick off a fetch for existing delivery rules
     this.deliveryRule = this.args.model.deliveryRuleForUser;
 

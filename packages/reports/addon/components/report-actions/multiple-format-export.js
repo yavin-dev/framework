@@ -180,7 +180,7 @@ export default class MultipleFormatExport extends Component {
     };
 
     this.naviNotifications.add({
-      title: typeTitles[type] ?? `${type}? Got it. Your download should begin soon.`,
+      title: typeTitles[type] ?? `The ${type} download should begin shortly`,
       style: 'info',
       timeout: 'medium',
     });

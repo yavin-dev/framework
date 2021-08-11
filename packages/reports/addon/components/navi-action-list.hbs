@@ -25,14 +25,12 @@
         <ReportActions::MultipleFormatExport
           class="navi-report-actions__export"
           @report={{@item}}
-          @disabled={{not @item.validations.isTruelyValid}}
         >
           <DenaliIcon
             id={{concat "navi-report-actions__export-" @index}}
             class="navi-report-actions__export-btn p-4 link m-r-4"
             @size="small"
             @icon="download"
-            disabled={{not @item.validations.isTruelyValid}}
           />
         </ReportActions::MultipleFormatExport>
       {{else}}
@@ -47,7 +45,6 @@
               @size="small"
               @icon="download"
               class="navi-report-actions__export-btn m-r-4"
-              disabled={{not @item.validations.isTruelyValid}}
               {{on "click" onClick}}
             >
             </DenaliButton>
@@ -56,7 +53,7 @@
       {{/if}}
     {{/let}}
     <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
-      {{if @item.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+      Export the report
     </EmberTooltip>
   {{/if}}
 
@@ -84,7 +81,7 @@
     {{!-- Schedule only enabled for an owned report and if it valid--}}
     {{#if (feature-flag "enableScheduleReports")}}
       <CommonActions::Schedule
-        @disabled={{not @item.validations.isTruelyValid}}
+        @isValid={{this.isReportValid}}
         @model={{@item}}
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
@@ -96,11 +93,10 @@
           @icon="time"
           @size="small"
           class="navi-report-actions__schedule p-4 link m-r-4"
-          disabled={{not @item.validations.isTruelyValid}}
           {{on "click" onOpen}}
         />
         <EmberTooltip @popperContainer="body" @targetId="navi-report-actions__schedule-{{@index}}">
-          {{if @item.validations.isTruelyValid "Schedule the report" "Run a valid report to enable scheduling"}}
+          Schedule the report
         </EmberTooltip>
       </CommonActions::Schedule>
     {{/if}}
