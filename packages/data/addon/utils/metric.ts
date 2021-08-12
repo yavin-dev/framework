@@ -5,7 +5,7 @@
 import { isEmpty } from '@ember/utils';
 import { get } from '@ember/object';
 
-type Parameters = Record<string, unknown>;
+type Parameters = Record<string, string>;
 interface ColumnAttributes {
   name: string;
   parameters: Parameters;

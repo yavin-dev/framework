@@ -4,6 +4,11 @@
  */
 
 .dashboard-header {
+  &--shadow {
+    box-shadow: rgb(48 48 48 / 35%) 0 6px 8px -4px;
+    z-index: 1;
+  }
+
   &__page-title {
     display: flex;
     font-size: 30px;
