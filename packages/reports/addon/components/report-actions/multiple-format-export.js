@@ -187,23 +187,45 @@ export default class MultipleFormatExport extends Component {
   }
 
   @action
-  async handleAsync(href, event) {
+  async handleAsync(exportFormat, filename, event) {
     event.preventDefault();
-    const naviNotifications = this.naviNotifications;
+    const { report, naviNotifications } = this;
+    const { async: asyncExport, href } = exportFormat;
 
     try {
-      const response = await fetch(href);
-      const json = await response.json();
-      naviNotifications?.clear();
-      naviNotifications?.add({
-        title: json.url
-          ? htmlSafe(
-              `Your export is done and available at <a href="${json.url}" target="_blank" rel="noopener noreferrer">here &raquo;</a>`
-            )
-          : 'Your export has finished!',
-        style: 'info',
-        timeout: 'long',
-      });
+      await report.request?.loadMetadata();
+
+      if (!report.validations.isTruelyValid) {
+        naviNotifications?.clear();
+        naviNotifications?.add({
+          title: 'Your export has failed. Please run a valid report and try again.',
+          style: 'danger',
+          timeout: 'long',
+        });
+        return;
+      }
+
+      if (asyncExport) {
+        const response = await fetch(href);
+        const json = await response.json();
+        naviNotifications?.clear();
+        naviNotifications?.add({
+          title: json.url
+            ? htmlSafe(
+                `Your export is done and available at <a href="${json.url}" target="_blank" rel="noopener noreferrer">here &raquo;</a>`
+              )
+            : 'Your export has finished!',
+          style: 'info',
+          timeout: 'long',
+        });
+      } else {
+        const link = document.createElement('a');
+        const url = await href;
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.click(); // initiate download
+        link.remove();
+      }
     } catch (e) {
       console.error(e);
       naviNotifications?.clear();

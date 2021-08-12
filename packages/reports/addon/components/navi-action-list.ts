@@ -37,7 +37,7 @@ export default class NaviActionList extends Component<Args> {
 
   @action
   async isReportValid(): Promise<boolean> {
-    await this.args.item.request.loadMetadata();
+    await this.args.item.request?.loadMetadata();
     return this.args.item.validations.isTruelyValid;
   }
 }

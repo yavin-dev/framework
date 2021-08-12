@@ -16,20 +16,11 @@
               Save report to enable this option
             </EmberTooltip>
           </span>
-        {{else if exportFormat.async}}
+        {{else}}
           <DenaliLink
             role="button"
             @iconFront={{exportFormat.icon}}
-            {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat.href))}}
-          >
-            {{exportFormat.type}}
-          </DenaliLink>
-        {{else}}
-          <DenaliLink
-            @iconFront={{exportFormat.icon}}
-            download={{dasherize this.filename}}
-            href={{await exportFormat.href}}
-            {{on "click" (fn this.notify exportFormat.type)}}
+            {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleAsync exportFormat (dasherize this.filename)))}}
           >
             {{exportFormat.type}}
           </DenaliLink>
