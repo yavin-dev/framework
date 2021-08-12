@@ -16,7 +16,6 @@ import layout from '../../templates/components/report-actions/multiple-format-ex
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { later, cancel } from '@ember/runloop';
-import { htmlSafe } from '@ember/template';
 
 @templateLayout(layout)
 @tagName('')
@@ -186,8 +185,17 @@ export default class MultipleFormatExport extends Component {
     });
   }
 
+  async startDownload(href, filename) {
+    const link = document.createElement('a');
+    const url = await href;
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.click();
+    link.remove();
+  }
+
   @action
-  async handleAsync(exportFormat, filename, event) {
+  async handleExport(exportFormat, filename, event) {
     event.preventDefault();
     const { report, naviNotifications } = this;
     const { async: asyncExport, href } = exportFormat;
@@ -210,27 +218,18 @@ export default class MultipleFormatExport extends Component {
         const json = await response.json();
         naviNotifications?.clear();
         naviNotifications?.add({
-          title: json.url
-            ? htmlSafe(
-                `Your export is done and available at <a href="${json.url}" target="_blank" rel="noopener noreferrer">here &raquo;</a>`
-              )
-            : 'Your export has finished!',
+          title: json.url ? `Your export is done and available at ${json.url}` : 'Your export has finished!',
           style: 'info',
           timeout: 'long',
         });
       } else {
-        const link = document.createElement('a');
-        const url = await href;
-        link.setAttribute('href', url);
-        link.setAttribute('download', filename);
-        link.click(); // initiate download
-        link.remove();
+        this.startDownload(href, filename);
       }
     } catch (e) {
       console.error(e);
       naviNotifications?.clear();
       naviNotifications?.add({
-        title: e.message,
+        title: 'foo',
         style: 'danger',
         timeout: 'medium',
       });

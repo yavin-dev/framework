@@ -9,9 +9,9 @@ import config from 'ember-get-config';
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
       @report={{this.report}}
-      @title={{this.title}}
       @disabled={{this.disabled}}
       @naviNotifications={{this.mockNotifications}}
+      @startDownload={{this.startDownload}}
     >
       Export
     </ReportActions::MultipleFormatExport>
@@ -32,31 +32,41 @@ module('Integration | Component | report actions - multiple-format-export', func
       clear: () => null,
     };
 
-    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    // Mock download
+    this.startDownload = () => null;
+
     const report = await Store.findRecord('report', 1);
     this.set('report', report);
   });
 
-  test('export links', async function (assert) {
-    assert.expect(4);
+  test('it renders', async function (assert) {
+    assert.expect(1);
+    await render(TEMPLATE);
+    assert.dom('.menu-trigger').hasText('Export', 'Component yields content as expected');
+  });
 
+  test('export download links', async function (assert) {
+    assert.expect(3);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+
     const factService = this.owner.lookup('service:navi-facts');
     const compressionService = this.owner.lookup('service:compression');
 
     await render(TEMPLATE);
 
-    assert.dom('.menu-trigger').hasText('Export', 'Component yields content as expected');
-
     // CSV
-    let expectedHref = factService.getURL(this.report.get('request').serialize(), { format: 'csv' });
-    assert.equal(
-      $('.menu-content a:contains("CSV")').attr('href'),
-      expectedHref,
-      'CSV link has appropriate link to API'
-    );
+    const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
+    this.set('startDownload', (href) => assert.equal(href, expectedHref, 'CSV link is correct'));
+    await click($('.menu-content a:contains("CSV")')[0]);
 
-    const exportHref = $('.menu-content a:contains("PDF")').attr('href');
+    // PDF
+    let exportHref;
+    this.set('startDownload', async (href) => (exportHref = await href));
+    await render(TEMPLATE);
+    await click($('.menu-content a:contains("PDF")')[0]);
+
     const encodedModel = exportHref.split('/export?reportModel=')[1];
 
     const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
@@ -65,25 +75,28 @@ module('Integration | Component | report actions - multiple-format-export', func
     //strip off owner
     delete expectedModel.data.relationships;
 
-    assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
+    assert.deepEqual(actualModel, expectedModel, 'PDF link is correct');
 
-    const pngHref = $('.menu-content a:contains("PNG")').attr('href');
-    assert.equal(`${exportHref}&fileType=png`, pngHref, 'PNG link has appropriate link to export service');
-    config.navi.FEATURES.exportFileTypes = [];
+    // PNG
+    const expectedPngHref = `${exportHref}&fileType=png`;
+    await click($('.menu-content a:contains("PNG")')[0]);
+    assert.equal(exportHref, expectedPngHref, 'PNG link has appropriate link to export service');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('filename', async function (assert) {
     assert.expect(1);
 
-    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv'];
-    await render(TEMPLATE);
 
-    assert.equal(
-      $('.menu-content a:contains("CSV")').attr('download'),
-      'hyrule-news',
-      'The download attribute is set to the dasherized report name'
+    this.set('startDownload', async (href, filename) =>
+      assert.equal(filename, 'hyrule-news', 'The download attribute is set to the dasherized report name')
     );
+
+    await render(TEMPLATE);
+    await click($('.menu-content a:contains("CSV")')[0]);
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
@@ -96,40 +109,30 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert.dom('.menu-content').doesNotExist('Dropdown content should not exist');
   });
 
-  test('notifications', async function (assert) {
-    assert.expect(1);
+  test('notifications - valid report', async function (assert) {
+    assert.expect(2);
 
-    this.mockNotifications.add = ({ title }) => {
-      assert.equal(
-        title,
-        'The CSV download should begin shortly',
-        'A notification is added for the clicked export type'
-      );
-    };
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv'];
 
-    this.set('exportFormats', [
-      {
-        type: 'CSV',
-        href: null,
-        icon: 'file-text-o',
-      },
-    ]);
-    await render(hbs`
-      <ReportActions::MultipleFormatExport
-        @report={{this.report}}
-        @disabled={{this.disabled}}
-        @naviNotifications={{this.mockNotifications}}
-        @exportFormats={{this.exportFormats}}
-      >
-        Export
-      </ReportActions::MultipleFormatExport>
-    `);
+    this.mockNotifications.add = ({ title }) => assert.step(title);
 
+    await render(TEMPLATE);
     await click($('.menu-content a:contains("CSV")')[0]);
+
+    assert.verifySteps(
+      ['The CSV download should begin shortly'],
+      'A single notification is added for the clicked export type'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('GSheet Notification', async function (assert) {
     assert.expect(2);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['gsheet'];
 
     let addCalls = 0;
     this.mockNotifications.add = ({ title }) => {
@@ -143,31 +146,37 @@ module('Integration | Component | report actions - multiple-format-export', func
       } else {
         assert.equal(
           title,
-          'Your export is done and available at <a href="https://google.com/sheets/foo" target="_blank" rel="noopener noreferrer">here &raquo;</a>',
+          'Your export is done and available at https://google.com/sheets/foo',
           'Second notification after ajax call comes back'
         );
       }
     };
 
-    this.set('exportFormats', [
-      {
-        type: 'Google Sheet',
-        href: '/gsheet-export/report/1',
-        icon: 'google',
-        async: true,
-      },
-    ]);
-    await render(hbs`
-      <ReportActions::MultipleFormatExport
-        @report={{this.report}}
-        @disabled={{this.disabled}}
-        @naviNotifications={{this.mockNotifications}}
-        @exportFormats={{this.exportFormats}}
-      >
-        Export
-      </ReportActions::MultipleFormatExport>
-    `);
-
+    await render(TEMPLATE);
     await click($('.menu-content a:contains("Google Sheet")')[0]);
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('notifications - invalid report', async function (assert) {
+    assert.expect(3);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv'];
+
+    const report = await Store.findRecord('report', 2);
+    this.set('report', report);
+
+    this.mockNotifications.add = ({ title }) => assert.step(title);
+
+    await render(TEMPLATE);
+    await click($('.menu-content a:contains("CSV")')[0]);
+
+    assert.verifySteps(
+      ['The CSV download should begin shortly', 'Your export has failed. Please run a valid report and try again.'],
+      'An error notification is added for an invalid report'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 });
