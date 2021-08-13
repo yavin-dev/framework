@@ -12,7 +12,7 @@
     <appender name="LOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${logDir}/server.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [${springAppName}, %X{X-B3-TraceId:-}] %-5level %logger{36}.%M - %msg%n</Pattern>
+            <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] [${springAppName}, %X{X-B3-TraceId:-}] %-5level %logger{36}.%M %mdc{user} - %msg%n</Pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${logDir}/archived/server_%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -26,7 +26,10 @@
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
 
     <!-- Log JPA Datastore HQL Statements -->
-    <logger name="com.yahoo.elide.datastores.jpa.porting.EntityManagerWrapper" level="DEBUG" />
+    <logger name="com.yahoo.elide.core.hibernate.hql.DefaultQueryLogger" level="DEBUG" />
+
+    <!-- Log SQL/JPQL Timings -->
+    <logger name="com.yahoo.elide.core.utils.TimedFunction" level="DEBUG" />
 
     <!-- Log HTTP Error Explanations -->
     <logger name="com.yahoo.elide.graphql.QueryRunner" level="DEBUG" />

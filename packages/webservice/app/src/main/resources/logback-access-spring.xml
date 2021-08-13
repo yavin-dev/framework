@@ -9,8 +9,8 @@
             <maxHistory>30</maxHistory>
             <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
-        <encoder>
-            <pattern>%t{yyyy-MM-dd:HH:mm:ss Z} %remoteIP %user %requestURL %statusCode %bytesSent %elapsedTime %header{X-B3-TraceId} %requestContent %responseContent</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%t{yyyy-MM-dd:HH:mm:ss Z} %remoteIP %user %requestURL %statusCode %bytesSent %elapsedTime %header{X-B3-TraceId} %requestContent</pattern>
         </encoder>
     </appender>
 

@@ -30,7 +30,7 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.6")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     // drivers for models
@@ -47,6 +47,9 @@ dependencies {
     implementation("io.micrometer","micrometer-core", "1.5.1")
     implementation("org.projectlombok", "lombok", "1.18.10")
     implementation("org.liquibase", "liquibase-core", "3.8.1")
+
+    //Enables access logs.
+    implementation("net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
