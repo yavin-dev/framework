@@ -1,22 +1,25 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
+import Service from '@ember/service';
+import { task } from 'ember-concurrency';
 
 const TEMPLATE = hbs`
   <ReportActions::Export
     @report={{this.report}}
+    as |onClick|
   >
-  <DenaliButton
-    @style="text"
-    @size="medium"
-    @icon="download"
-    class="report-actions__export-btn"
-    {{on "click" (perform this.getDownloadURLTask)}}
-  >
-    Export
-  </DenaliButton>
+    <DenaliButton
+      @style="text"
+      @size="medium"
+      @icon="download"
+      class="report-actions__export-btn"
+      {{on "click" onClick}}
+    >
+      Export
+    </DenaliButton>
   </ReportActions::Export>`;
 
 let Store;
@@ -25,43 +28,110 @@ module('Integration | Component | report actions - export', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function () {
+  hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
+    const report = await Store.findRecord('report', 1);
+    this.set('report', report);
   });
 
   test('Component Renders', async function (assert) {
-    this.owner.lookup('service:navi-metadata').loadMetadata();
-    const report = await Store.findRecord('report', 1);
-
-    this.set('report', report);
     await render(TEMPLATE);
     assert.dom('.report-actions__export-btn').hasText('Export', 'Component yields given text');
   });
 
-  test('Component is not disabled for unsaved reports', async function (assert) {
+  test('export url', async function (assert) {
     assert.expect(1);
 
-    let request = {
-      table: 'network',
-      dataSource: 'bardOne',
-      limit: null,
-      requestVersion: '2.0',
-      filters: [
-        {
-          type: 'timeDimension',
-          source: 'bardOne',
-          field: 'network.dateTime',
-          parameters: { grain: 'day' },
-          operator: 'bet',
-          values: ['current', 'next'],
-        },
-      ],
-      columns: [],
-      sorts: [],
-    };
-    this.set('report', Store.createRecord('report', { title: 'New Report', request }));
+    await render(TEMPLATE);
+    await click('.report-actions__export-btn');
+
+    const factService = this.owner.lookup('service:navi-facts');
+    const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
+    assert.equal(
+      document.querySelector('.export__download-link').getAttribute('href'),
+      expectedHref,
+      'The href attribute is set correctly'
+    );
+  });
+
+  test('filename', async function (assert) {
+    assert.expect(1);
 
     await render(TEMPLATE);
-    assert.dom('.report-actions__export-btn').isNotDisabled('Component is not disabled for unsaved reports');
+    await click('.report-actions__export-btn');
+
+    assert.equal(
+      document.querySelector('.export__download-link').getAttribute('download'),
+      'hyrule-news',
+      'The download attribute is set correctly'
+    );
+  });
+
+  test('notifications - valid report', async function (assert) {
+    assert.expect(2);
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    this.owner.register('service:navi-notifications', MockNotifications);
+
+    await render(TEMPLATE);
+    await click('.report-actions__export-btn');
+
+    assert.verifySteps(
+      ['Your CSV download should begin shortly'],
+      'A single notification is added for a valid report'
+    );
+  });
+
+  test('notifications - invalid report', async function (assert) {
+    assert.expect(3);
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    this.owner.register('service:navi-notifications', MockNotifications);
+
+    const report = await Store.findRecord('report', 2);
+    this.set('report', report);
+
+    await render(TEMPLATE);
+    await click('.report-actions__export-btn');
+
+    assert.verifySteps(
+      ['Your CSV download should begin shortly', 'Please run a valid report and try again.'],
+      'An error notification is added for an invalid report'
+    );
+  });
+
+  test('notifications - error', async function (assert) {
+    assert.expect(3);
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    class MockFacts extends Service {
+      // eslint-disable-next-line require-yield
+      @task *getDownloadURL() {
+        throw new Error(`Whoa! Couldn't get the url`);
+      }
+    }
+
+    this.owner.register('service:navi-notifications', MockNotifications);
+    this.owner.register('service:navi-facts', MockFacts);
+
+    await render(TEMPLATE);
+    await click('.report-actions__export-btn');
+
+    assert.verifySteps(
+      ['Your CSV download should begin shortly', `Whoa! Couldn't get the url`],
+      'An error notification is added when an error is thrown'
+    );
   });
 });

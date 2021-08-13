@@ -5,7 +5,6 @@
  * Usage:
  *    <DashboardActions::Export
  *      @dashboard={{@dashboard}}
- *      @disabled={{not @dashboard.validations.isTruelyValid}}
  *    >
  *      Inner template
  *    </DashboardActions::Export>

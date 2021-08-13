@@ -12,6 +12,7 @@ import type NaviNotificationsService from 'navi-core/services/interfaces/navi-no
 import type ReportModel from 'navi-core/models/report';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Ember from 'ember';
+import { dasherize } from '@ember/string';
 
 interface Args {
   report: ReportModel;
@@ -26,7 +27,7 @@ export default class ReportActionExport extends Component<Args> {
   /**
    * instance of navi notifications service
    */
-  @service naviNotifications!: NaviNotificationsService;
+  @service declare naviNotifications: NaviNotificationsService;
 
   /**
    * export format
@@ -53,10 +54,9 @@ export default class ReportActionExport extends Component<Args> {
     const serializedRequest = this.args.report.request.serialize() as RequestV2;
 
     try {
-      const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
+      const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, { format: 'csv' });
       this.downloadURLLink(url);
     } catch (e) {
-      console.error(e);
       this.showErrorNotification(e?.message);
     }
   }
@@ -101,18 +101,13 @@ export default class ReportActionExport extends Component<Args> {
       const anchorElement = document.createElement('a');
       anchorElement.setAttribute('class', 'export__download-link');
       anchorElement.setAttribute('href', url);
-      anchorElement.setAttribute('download', this.filename);
+      anchorElement.setAttribute('download', dasherize(this.filename));
       anchorElement.setAttribute('target', '_blank');
       document.querySelector('#export__download-url')?.appendChild(anchorElement);
-      anchorElement.click();
-      if (Ember.testing) {
-        await this.delay(5000);
+      if (!Ember.testing) {
+        anchorElement.click();
+        document.querySelector('#export__download-url')?.removeChild(anchorElement);
       }
-      document.querySelector('#export__download-url')?.removeChild(anchorElement);
     }
-  }
-
-  delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }
