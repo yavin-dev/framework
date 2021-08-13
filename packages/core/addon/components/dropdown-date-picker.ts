@@ -10,14 +10,13 @@
  *   />
  */
 import Component from '@glimmer/component';
-import { Moment } from 'moment';
+import type { Moment } from 'moment';
 
 type Args = {
   date: Moment;
-  dateTimePeriod: string;
-  onUpdate: Function;
+  dateTimePeriod: Grain;
+  onUpdate: (date: Moment) => void;
 };
 
-class DropdownDatePicker extends Component<Args> {}
+export default class DropdownDatePicker extends Component<Args> {}
 
-export default DropdownDatePicker;
