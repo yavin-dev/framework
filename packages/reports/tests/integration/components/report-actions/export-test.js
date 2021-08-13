@@ -80,10 +80,7 @@ module('Integration | Component | report actions - export', function (hooks) {
     await render(TEMPLATE);
     await click('.report-actions__export-btn');
 
-    assert.verifySteps(
-      ['Your CSV download should begin shortly'],
-      'A single notification is added for a valid report'
-    );
+    assert.verifySteps(['Your CSV download should begin shortly'], 'A single notification is added for a valid report');
   });
 
   test('notifications - invalid report', async function (assert) {

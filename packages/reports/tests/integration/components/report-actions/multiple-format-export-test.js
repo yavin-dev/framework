@@ -5,13 +5,12 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
+import Service from '@ember/service';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
       @report={{this.report}}
       @disabled={{this.disabled}}
-      @naviNotifications={{this.mockNotifications}}
-      @startDownload={{this.startDownload}}
     >
       Export
     </ReportActions::MultipleFormatExport>
@@ -25,18 +24,9 @@ module('Integration | Component | report actions - multiple-format-export', func
 
   hooks.beforeEach(async function () {
     Store = this.owner.lookup('service:store');
-
-    // Mock notifications
-    this.mockNotifications = {
-      add: () => null,
-      clear: () => null,
-    };
-
-    // Mock download
-    this.startDownload = () => null;
-
     const report = await Store.findRecord('report', 1);
     this.set('report', report);
+    this.set('disabled', false);
   });
 
   test('it renders', async function (assert) {
@@ -45,30 +35,40 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert.dom('.menu-trigger').hasText('Export', 'Component yields content as expected');
   });
 
-  test('export download links', async function (assert) {
-    assert.expect(3);
+  test('export CSV download link', async function (assert) {
+    assert.expect(1);
 
     const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
-    const factService = this.owner.lookup('service:navi-facts');
-    const compressionService = this.owner.lookup('service:compression');
-
     await render(TEMPLATE);
 
-    // CSV
+    const factService = this.owner.lookup('service:navi-facts');
     const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
-    this.set('startDownload', (href) => assert.equal(href, expectedHref, 'CSV link is correct'));
+
     await click($('.menu-content a:contains("CSV")')[0]);
+    assert.equal(
+      document.querySelector('.export__download-link').getAttribute('href'),
+      expectedHref,
+      'The href attribute is set correctly for CSV'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('export PDF download link', async function (assert) {
+    assert.expect(1);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+
+    await render(TEMPLATE);
 
     // PDF
-    let exportHref;
-    this.set('startDownload', async (href) => (exportHref = await href));
-    await render(TEMPLATE);
     await click($('.menu-content a:contains("PDF")')[0]);
-
-    const encodedModel = exportHref.split('/export?reportModel=')[1];
-
+    const actualPDFhref = document.querySelector('.export__download-link').getAttribute('href');
+    const encodedModel = actualPDFhref.split('/export?reportModel=')[1];
+    const compressionService = this.owner.lookup('service:compression');
     const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = this.report.serialize();
 
@@ -77,10 +77,31 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     assert.deepEqual(actualModel, expectedModel, 'PDF link is correct');
 
-    // PNG
-    const expectedPngHref = `${exportHref}&fileType=png`;
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('export PNG download link', async function (assert) {
+    assert.expect(2);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+
+    await render(TEMPLATE);
+
+    // PDF
     await click($('.menu-content a:contains("PNG")')[0]);
-    assert.equal(exportHref, expectedPngHref, 'PNG link has appropriate link to export service');
+    const actualPNGhref = document.querySelector('.export__download-link').getAttribute('href');
+    assert.ok(actualPNGhref.endsWith('&fileType=png'), 'url has correct fileType query param');
+
+    const encodedModel = actualPNGhref.replace('&fileType=png', '').split('/export?reportModel=')[1];
+    const compressionService = this.owner.lookup('service:compression');
+    const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
+    const expectedModel = this.report.serialize();
+
+    //strip off owner
+    delete expectedModel.data.relationships;
+
+    assert.deepEqual(actualModel, expectedModel, 'PNG link is correct');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -91,12 +112,14 @@ module('Integration | Component | report actions - multiple-format-export', func
     const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv'];
 
-    this.set('startDownload', async (href, filename) =>
-      assert.equal(filename, 'hyrule-news', 'The download attribute is set to the dasherized report name')
-    );
-
     await render(TEMPLATE);
     await click($('.menu-content a:contains("CSV")')[0]);
+    assert.equal(
+      document.querySelector('.export__download-link').getAttribute('download'),
+      'hyrule-news',
+      'The download attribute is set correctly'
+    );
+
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
@@ -109,20 +132,89 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert.dom('.menu-content').doesNotExist('Dropdown content should not exist');
   });
 
+  test('unsaved report', async function (assert) {
+    assert.expect(2);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'gsheet'];
+
+    const request = {
+      table: 'network',
+      dataSource: 'bardOne',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          source: 'bardOne',
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['current', 'next'],
+        },
+      ],
+      columns: [],
+      sorts: [],
+    };
+    this.set('report', Store.createRecord('report', { title: 'New Report', request }));
+    await render(TEMPLATE);
+
+    assert
+      .dom($('.menu-content span:contains("Google Sheet")')[0])
+      .hasClass('is-disabled', 'option that requires save is disabled');
+    assert
+      .dom($('.menu-content a:contains("CSV")')[0])
+      .doesNotHaveClass('is-disabled', 'option that does not require save is not disabled');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
   test('notifications - valid report', async function (assert) {
     assert.expect(2);
 
     const originalFlag = config.navi.FEATURES.exportFileTypes;
-    config.navi.FEATURES.exportFileTypes = ['csv'];
-
-    this.mockNotifications.add = ({ title }) => assert.step(title);
+    config.navi.FEATURES.exportFileTypes = ['pdf'];
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
-    await click($('.menu-content a:contains("CSV")')[0]);
+    await click($('.menu-content a:contains("PDF")')[0]);
 
     assert.verifySteps(
-      ['The CSV download should begin shortly'],
+      ['Your PDF download should begin shortly'],
       'A single notification is added for the clicked export type'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('notifications - invalid report', async function (assert) {
+    assert.expect(3);
+
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['png'];
+
+    const report = await Store.findRecord('report', 2);
+    this.set('report', report);
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    this.owner.register('service:navi-notifications', MockNotifications);
+
+    await render(TEMPLATE);
+    await click($('.menu-content a:contains("PNG")')[0]);
+
+    assert.verifySteps(
+      ['Your PNG download should begin shortly', 'Please run a valid report and try again.'],
+      'An error notification is added for an invalid report'
     );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
@@ -135,22 +227,26 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = ['gsheet'];
 
     let addCalls = 0;
-    this.mockNotifications.add = ({ title }) => {
-      addCalls++;
-      if (addCalls === 1) {
-        assert.equal(
-          title,
-          'We are building your spreadsheet and sending it to Google Drive. Keep an eye out for the email!',
-          'A notification is added for the clicked export type'
-        );
-      } else {
-        assert.equal(
-          title,
-          'Your export is done and available at https://google.com/sheets/foo',
-          'Second notification after ajax call comes back'
-        );
+    class MockNotifications extends Service {
+      add({ title }) {
+        addCalls++;
+        if (addCalls === 1) {
+          assert.equal(
+            title,
+            'We are building your spreadsheet and sending it to Google Drive. Keep an eye out for the email!',
+            'A notification is added for the clicked export type'
+          );
+        } else {
+          assert.equal(
+            title,
+            'Your export is done and available at https://google.com/sheets/foo',
+            'Second notification after ajax call comes back'
+          );
+        }
       }
-    };
+      clear() {}
+    }
+    this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
     await click($('.menu-content a:contains("Google Sheet")')[0]);
@@ -158,23 +254,33 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
-  test('notifications - invalid report', async function (assert) {
+  test('notifications - error', async function (assert) {
     assert.expect(3);
 
     const originalFlag = config.navi.FEATURES.exportFileTypes;
-    config.navi.FEATURES.exportFileTypes = ['csv'];
+    config.navi.FEATURES.exportFileTypes = ['png'];
+    class MockNotifications extends Service {
+      add({ title }) {
+        assert.step(title);
+      }
+      clear() {}
+    }
+    class MockCompression extends Service {
+      // eslint-disable-next-line require-yield
+      compressModel() {
+        throw new Error(`Whoa! Compression failed`);
+      }
+    }
 
-    const report = await Store.findRecord('report', 2);
-    this.set('report', report);
-
-    this.mockNotifications.add = ({ title }) => assert.step(title);
+    this.owner.register('service:navi-notifications', MockNotifications);
+    this.owner.register('service:compression', MockCompression);
 
     await render(TEMPLATE);
-    await click($('.menu-content a:contains("CSV")')[0]);
+    await click($('.menu-content a:contains("PNG")')[0]);
 
     assert.verifySteps(
-      ['The CSV download should begin shortly', 'Your export has failed. Please run a valid report and try again.'],
-      'An error notification is added for an invalid report'
+      ['Your PNG download should begin shortly', `Whoa! Compression failed`],
+      'An error notification is added when an error is thrown'
     );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
