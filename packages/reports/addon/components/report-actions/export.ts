@@ -5,11 +5,11 @@
 
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
-import { task } from 'ember-concurrency';
+import { TaskGenerator, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
-import NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
-import ReportModel from 'navi-core/models/report';
+import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
+import type ReportModel from 'navi-core/models/report';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Ember from 'ember';
 
@@ -19,39 +19,79 @@ interface Args {
 
 export default class ReportActionExport extends Component<Args> {
   /**
-   * @property {Service} facts - instance of navi facts service
+   * instance of navi facts service
    */
   @service('navi-facts') declare facts: NaviFactsService;
 
   /**
-   * @property {Service} naviNotifications - instance of navi notifications service
+   * instance of navi notifications service
    */
   @service naviNotifications!: NaviNotificationsService;
 
   /**
-   * Gets the table export url from facts service
+   * export format
    */
-  @task *getDownloadURLTask() {
+  exportType = 'CSV';
+
+  /**
+   * filename for the downloaded file
+   */
+  get filename() {
+    return this.args.report.title;
+  }
+
+  /**
+   * Determines whether the report is valid for exporting
+   */
+  async isValidForExport(): Promise<boolean> {
+    const { report } = this.args;
+    await report.request?.loadMetadata();
+    return report.validations.isTruelyValid;
+  }
+
+  @task *downloadTask(): TaskGenerator<void> {
     const serializedRequest = this.args.report.request.serialize() as RequestV2;
-    this.showExportNotification();
+
     try {
       const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {});
       this.downloadURLLink(url);
-    } catch (error) {
-      this.showErrorNotification();
+    } catch (e) {
+      console.error(e);
+      this.showErrorNotification(e?.message);
+    }
+  }
+
+  /**
+   * Gets the table export url from facts service
+   */
+  @task *exportTask(): TaskGenerator<void> {
+    this.showExportNotification();
+
+    const isValid: boolean = yield this.isValidForExport();
+
+    if (!isValid) {
+      this.showErrorNotification('Please run a valid report and try again.');
+    } else {
+      yield taskFor(this.downloadTask).perform();
     }
   }
 
   showExportNotification(): void {
-    this.naviNotifications.add({
-      title: `The CSV download should begin shortly`,
+    const { naviNotifications, exportType } = this;
+
+    naviNotifications.clear();
+    naviNotifications.add({
+      title: `Your ${exportType} download should begin shortly`,
       style: 'info',
     });
   }
 
-  showErrorNotification(): void {
-    this.naviNotifications.add({
-      title: 'An error occurred while exporting',
+  showErrorNotification(message?: string): void {
+    const { naviNotifications } = this;
+
+    naviNotifications.clear();
+    naviNotifications.add({
+      title: message ?? `An error occurred while exporting.`,
       style: 'danger',
     });
   }
@@ -61,7 +101,7 @@ export default class ReportActionExport extends Component<Args> {
       const anchorElement = document.createElement('a');
       anchorElement.setAttribute('class', 'export__download-link');
       anchorElement.setAttribute('href', url);
-      anchorElement.setAttribute('download', this.args.report.title);
+      anchorElement.setAttribute('download', this.filename);
       anchorElement.setAttribute('target', '_blank');
       document.querySelector('#export__download-url')?.appendChild(anchorElement);
       anchorElement.click();

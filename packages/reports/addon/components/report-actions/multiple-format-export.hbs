@@ -20,7 +20,7 @@
           <DenaliLink
             role="button"
             @iconFront={{exportFormat.icon}}
-            {{on "click" (queue (fn this.notify exportFormat.type) (fn this.handleExport exportFormat (dasherize this.filename)))}}
+            {{on "click" (queue (set this.exportType exportFormat.type) (perform this.exportTask))}}
           >
             {{exportFormat.type}}
           </DenaliLink>
@@ -29,3 +29,4 @@
     </Menu.Content>
   {{/unless}}
 </DenaliMenu>
+<span id="export__download-url"></span>

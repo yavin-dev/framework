@@ -5,55 +5,50 @@
  * Usage:
  *    <DashboardActions::Export
  *      @dashboard={{@dashboard}}
- *      @title={{@dashboard.title}}
  *      @disabled={{not @dashboard.validations.isTruelyValid}}
  *    >
  *      Inner template
  *    </DashboardActions::Export>
  */
 
-import { computed } from '@ember/object';
 import MultipleFormatExport from 'navi-reports/components/report-actions/multiple-format-export';
+import { task } from 'ember-concurrency';
 
 export default class DashboardMultipleFormatExport extends MultipleFormatExport {
   /**
-   * @property {String} filename - filename for the downloaded file
    * @override
    */
-  @computed('dashboard.title')
   get filename() {
-    return `${this.dashboard.title}-dashboard`;
+    return `${this.args.dashboard.title}-dashboard`;
   }
 
   /**
-   * @property {undefined} csvHref - CSV export is not available for dashboards
+   * Determines whether the dashboard is valid for exporting
    * @override
    */
-  csvHref = undefined;
-
-  /**
-   * @property {Promise} exportHref - Promise resolving to export to file link
-   * @override
-   */
-  @computed('dashboard.id')
-  get exportHref() {
-    return Promise.resolve(`/export?dashboard=${this.dashboard.id}`);
+  isValidForExport() {
+    return this.args.dashboard.validations.isTruelyValid;
   }
 
   /**
-   * @property {String} gsheetExportHref - Href for google sheet export
    * @override
    */
-  @computed('dashboard.id')
+  @task *getExportDownloadURL() {
+    return yield `/export?dashboard=${this.args.dashboard.id}`;
+  }
+
+  /**
+   * Href for google sheet export
+   * @override
+   */
   get gsheetExportHref() {
-    return `/gsheet-export/dashboard/${this.dashboard.id}`;
+    return `/gsheet-export/dashboard/${this.args.dashboard.id}`;
   }
 
   /**
-   * @property {Array} exportFormats - A list of export formats
+   * A list of export formats
    * @override
    */
-  @computed('exportHref')
   get exportFormats() {
     return super.exportFormats.filter((format) => format.type !== 'CSV');
   }
