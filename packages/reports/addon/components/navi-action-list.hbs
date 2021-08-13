@@ -81,7 +81,7 @@
     {{!-- Schedule only enabled for an owned report and if it valid--}}
     {{#if (feature-flag "enableScheduleReports")}}
       <CommonActions::Schedule
-        @isValid={{this.isReportValid}}
+        @isValidForSchedule={{this.isReportValid}}
         @model={{@item}}
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}

@@ -18,7 +18,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert.dom('.schedule__modal').exists('Schedule modal pops up when action is clicked');
 
@@ -68,7 +68,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Reopen the schedule modal
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -101,7 +101,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Open an existing schedule
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     // The initial state of the Cancel button should say "Close"
     assert
@@ -146,7 +146,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Reopen the modal
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -177,7 +177,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert
       .dom('.schedule__modal-delete-btn')
@@ -215,7 +215,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
 
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert
       .dom('.schedule__modal-delete-btn')
@@ -244,7 +244,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert.dom('.schedule__modal-must-have-data-toggle').isNotChecked('mustHaveData is false initially');
 
@@ -266,7 +266,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after clicking the cancel button');
 
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -288,7 +288,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     // Enter an email
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
@@ -306,7 +306,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Reopen the same schedule modal
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -348,7 +348,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert
       .dom('.schedule__modal-helper-recipients')
@@ -404,7 +404,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Reopen the modal
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     assert.deepEqual(
       findAll('.schedule__modal-input--recipients .tag').map((e) => e.innerText.trim()),
@@ -427,7 +427,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     await visit('/reports');
     await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
     await waitFor('.alert');
 
     assert
@@ -492,7 +492,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
     await triggerEvent('.navi-collection__row0', 'mouseenter');
 
-    await click('.navi-actions__schedule-btn');
+    await click('.navi-report-actions__schedule');
 
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
@@ -524,5 +524,23 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
+  });
+
+  test('schedule modal invalid report', async function (assert) {
+    assert.expect(3);
+    await visit('/reports');
+
+    // Click "Schedule"
+    await triggerEvent('.navi-collection__row1', 'mouseenter');
+    await click('.navi-report-actions__schedule');
+
+    assert
+      .dom('.schedule__modal .alert')
+      .hasText('Please run a valid report to enable scheduling.', 'Error is displayed when validation fails');
+
+    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'The close button says "Close"');
+    await click('.schedule__modal-cancel-btn');
+
+    assert.dom('.schedule__modal-header').isNotVisible('Schedule modal closes after clicking the close button');
   });
 });

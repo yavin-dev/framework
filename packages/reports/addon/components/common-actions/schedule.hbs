@@ -151,14 +151,14 @@
             {{/unless}}
           {{/if}}
         {{else}}
-          <h3 class="schedule__modal-header m-b-10">This {{this.localDeliveryRule.deliveryType}} is not valid</h3>
+          <h3 class="schedule__modal-header m-b-10">This {{@model.constructor.modelName}} is not valid</h3>
           <DenaliAlert
             @style="danger"
             @isBlock={{true}}
             class="m-b-30"
             as |Alert|
           >
-            <Alert.Context>Please run a valid {{this.localDeliveryRule.deliveryType}} to enable scheduling.</Alert.Context>
+            <Alert.Context>Please run a valid {{@model.constructor.modelName}} to enable scheduling.</Alert.Context>
           </DenaliAlert>
           <DenaliButton
             class="schedule__modal-cancel-btn m-r-5"
