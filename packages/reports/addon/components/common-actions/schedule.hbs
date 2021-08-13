@@ -8,11 +8,11 @@
   as |Modal|
 >
   <Modal.Content>
-    {{#if (is-pending this.isValid)}}
+    {{#if (is-pending this.isValidForSchedule)}}
       <NaviLoader />
     {{else}}
-      {{#if (is-fulfilled this.isValid)}}
-        {{#if (await this.isValid)}}
+      {{#if (is-fulfilled this.isValidForSchedule)}}
+        {{#if (await this.isValidForSchedule)}}
           <h3 class="schedule__modal-header m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
           {{#if (is-rejected this.deliveryRule)}}
             <DenaliAlert

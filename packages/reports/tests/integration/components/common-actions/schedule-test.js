@@ -25,20 +25,19 @@ const unscheduledModel = {
 const TEMPLATE = hbs`
 <CommonActions::Schedule
   @model={{this.model}}
+  @isValidForSchedule={{this.isValidForSchedule}}
   @onSave={{this.onSaveAction}}
   @onRevert={{this.onRevertAction}}
   @onDelete={{this.onDeleteAction}}
-  @disabled={{this.isDisabled}}
   as |toggleModal|
 >
   <button
     type="button"
     class="schedule-action__button"
-    disabled={{this.isDisabled}}
     {{on "click" toggleModal}}
   >
     <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
-  </button> 
+  </button>
 </CommonActions::Schedule>
 `;
 
@@ -46,34 +45,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
+    this.set('isValidForSchedule', () => Promise.resolve(true));
     this.set('onSaveAction', () => {});
     this.set('onRevertAction', () => {});
     this.set('onDeleteAction', () => {});
-  });
-
-  test('schedule modal - test disabled', async function (assert) {
-    assert.expect(1);
-    this.set('model', TestModel);
-
-    await render(TEMPLATE);
-
-    this.set('isDisabled', false);
-
-    assert.notOk(
-      $('.schedule-action__button').is(':disabled'),
-      'Schedule is enabled when the disabled is set to false'
-    );
-  });
-
-  test('schedule modal - test enabled', async function (assert) {
-    assert.expect(1);
-    this.set('model', TestModel);
-
-    await render(TEMPLATE);
-
-    this.set('isDisabled', true);
-
-    assert.ok($('.schedule-action__button').is(':disabled'), 'Schedule is enabled when the disabled is set to false');
   });
 
   test('it renders', async function (assert) {
@@ -86,8 +61,21 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.ok($('.navi-report__action-icon').is(':visible'), 'A schedule icon is rendered in the component');
   });
 
+  test('schedule modal - not valid', async function (assert) {
+    assert.expect(1);
+    this.set('model', TestModel);
+    this.set('isValidForSchedule', () => Promise.resolve(false));
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert
+      .dom('.schedule__modal .alert')
+      .hasText('Please run a valid to enable scheduling.', 'Error is displayed when validation fails');
+  });
+
   test('schedule modal', async function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     this.set('model', unscheduledModel);
 
@@ -96,6 +84,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
+
+    assert.dom('.schedule__modal .alert').doesNotExist('Error is not displayed when item is valid');
 
     assert.equal(
       $('.schedule__modal-header').text().trim(),

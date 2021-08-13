@@ -28,7 +28,7 @@ const defaultFormats = ['csv'];
 
 interface Args {
   model: DeliverableItemModel;
-  isValid?(): Promise<boolean>;
+  isValidForSchedule?(): Promise<boolean>;
   onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onRevert(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
@@ -72,10 +72,10 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked showModal = false;
 
   /**
-   * @property {Promise} isValid - Promise resolving to whether item is valid to be scheduled
+   * Promise resolving to whether item is valid to be scheduled
    */
-  get isValid() {
-    return this.args.isValid?.() || Promise.resolve(true);
+  get isValidForSchedule() {
+    return this.args.isValidForSchedule?.() || Promise.resolve(true);
   }
 
   /**
