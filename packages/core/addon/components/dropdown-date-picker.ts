@@ -11,6 +11,7 @@
  */
 import Component from '@glimmer/component';
 import type { Moment } from 'moment';
+import type { Grain } from 'navi-data/utils/date';
 
 type Args = {
   date: Moment;
@@ -19,4 +20,3 @@ type Args = {
 };
 
 export default class DropdownDatePicker extends Component<Args> {}
-
