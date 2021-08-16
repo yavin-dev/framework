@@ -10,7 +10,7 @@
             <totalSizeCap>100MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
-            <pattern>%t{yyyy-MM-dd:HH:mm:ss Z} %remoteIP %user %requestURL %statusCode %bytesSent %elapsedTime %header{X-B3-TraceId} %requestContent %responseContent</pattern>
+            <pattern>%t{yyyy-MM-dd:HH:mm:ss Z} %remoteIP %user %requestURL %statusCode %bytesSent %elapsedTime %header{X-B3-TraceId} %requestContent</pattern>
         </encoder>
     </appender>
 
