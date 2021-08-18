@@ -5,6 +5,6 @@
 import { Model, hasMany, belongsTo } from 'miragejs';
 
 export default Model.extend({
-  table: belongsTo(),
+  table: belongsTo('elideTable'),
   tableSource: hasMany('table-source', { inverse: null }),
 });

@@ -11,7 +11,7 @@ const timeDimIds = ['eventTime', 'orderTime'];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function (server: any) {
   server.create('time-zone', { id: 'UTC', short: 'UTC', long: 'Universal Time Coordinated' });
-  const [table0, table1] = server.createList('table', 2);
+  const [table0, table1] = server.createList('elide-table', 2);
   server.createList('metric', 3, { table: table0 });
   server.createList('metric', 2, { table: table1 });
   server.createList('dimension', 2, { table: table0 });

@@ -1,0 +1,17 @@
+query GetAsyncQuery($ids: [String!]) {
+  asyncQuery(op: FETCH, ids: $ids) {
+    edges {
+      node {
+        id
+        query
+        queryType
+        status
+        result {
+          httpStatus
+          contentLength
+          responseBody
+        }
+      }
+    }
+  }
+}
