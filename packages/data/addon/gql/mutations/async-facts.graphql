@@ -1,0 +1,20 @@
+mutation UpsertAsyncQuery($id: ID, $query: String, $asyncAfterSeconds: Int) {
+  asyncQuery(
+    op: UPSERT
+    data: {id: $id, query: $query, queryType: GRAPHQL_V1_0, status: QUEUED, asyncAfterSeconds: $asyncAfterSeconds}
+  ) {
+    edges {
+      node {
+        id
+        query
+        queryType
+        status
+        result {
+          contentLength
+          responseBody
+          httpStatus
+        }
+      }
+    }
+  }
+}

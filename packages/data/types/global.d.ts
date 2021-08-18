@@ -11,3 +11,9 @@ declare module 'ember-uuid';
 declare module 'ember-cli-mirage';
 
 type TODO<T = any> = T;
+
+// Apollo GraphQL imports
+declare module '*.graphql' {
+  const doc: import('graphql').DocumentNode;
+  export default doc;
+}

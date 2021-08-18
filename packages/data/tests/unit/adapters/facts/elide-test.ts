@@ -1,14 +1,15 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { asyncFactsMutationStr } from 'navi-data/gql/mutations/async-facts';
-import { asyncFactsCancelMutationStr } from 'navi-data/gql/mutations/async-facts-cancel';
-import { asyncFactsQueryStr } from 'navi-data/gql/queries/async-facts';
+import { print } from 'graphql';
+import asyncFactsMutationStr from 'navi-data/gql/mutations/async-facts.graphql';
+import asyncFactsCancelMutationStr from 'navi-data/gql/mutations/async-facts-cancel.graphql';
+import asyncFactsQueryStr from 'navi-data/gql/queries/async-facts.graphql';
+import exportFactsQueryStr from 'navi-data/gql/queries/export-facts.graphql';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
-import { exportFactsQueryStr } from 'navi-data/gql/queries/export-facts';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import { taskFor } from 'ember-concurrency-ts';
 
@@ -358,10 +359,9 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         }).replace(/[ \t\r\n]+/g, ' '),
         'createAsyncQuery sends the correct query variable string'
       );
-
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsMutationStr).replace(/[ \t\r\n]+/g, ''),
         'createAsyncQuery sends the correct mutation to create a new asyncQuery'
       );
 
@@ -396,8 +396,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     let response;
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
-
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.authentication, 'Bearer abc-123', 'createAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -451,7 +450,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        asyncFactsCancelMutationStr.replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsCancelMutationStr).replace(/[ \t\r\n]+/g, ''),
         'cancelAsyncQuery sends the correct mutation to cancel an asyncQuery'
       );
 
@@ -484,7 +483,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'cancelAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.authentication, 'Bearer abc-123', 'cancelAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -520,7 +519,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
         'fetchAsyncQuery sent the correct query to fetch an asyncQuery'
       );
 
@@ -571,7 +570,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchAsyncQuery sends custom headers');
+      assert.equal(requestHeaders.authentication, 'Bearer abc-123', 'fetchAsyncQuery sends custom headers');
 
       response = {
         asyncQuery: {
@@ -625,7 +624,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        exportFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+        print(exportFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
         'fetchTableExport sent the correct query to fetch a tableExport'
       );
 
@@ -664,7 +663,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, function ({ requestBody, requestHeaders }) {
       const requestObj = JSON.parse(requestBody);
 
-      assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchTableExport sends custom headers');
+      assert.equal(requestHeaders.authentication, 'Bearer abc-123', 'fetchTableExport sends custom headers');
 
       response = {
         tableExport: {
@@ -717,13 +716,13 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          asyncFactsMutationStr.replace(/[ \t\r\n]+/g, ''),
+          print(asyncFactsMutationStr).replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest first creates an asyncQuery'
         );
       } else if (callCount < 6) {
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          asyncFactsQueryStr.replace(/[ \t\r\n]+/g, ''),
+          print(asyncFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest polls for the asyncQuery to complete'
         );
         assert.equal(

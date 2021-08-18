@@ -1,0 +1,84 @@
+fragment TableFragment on ElideTable {
+  id
+  name
+  friendlyName
+  description
+  category
+  cardinality
+  isFact
+  metrics {
+    edges {
+      node {
+        id
+        name
+        friendlyName
+        description
+        category
+        valueType
+        tags
+        columnType
+        expression
+      }
+    }
+  }
+  dimensions {
+    edges {
+      node {
+        id
+        name
+        friendlyName
+        description
+        cardinality
+        category
+        valueType
+        tags
+        columnType
+        expression
+        valueSourceType
+        tableSource {
+          edges {
+            node {
+              suggestionColumns {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+              valueSource {
+                edges {
+                  node {
+                    id
+                  }
+                }
+              }
+            }
+          }
+        }
+        values
+      }
+    }
+  }
+  timeDimensions {
+    edges {
+      node {
+        id
+        name
+        friendlyName
+        description
+        category
+        valueType
+        tags
+        columnType
+        expression
+        supportedGrains {
+          edges {
+            node {
+              grain
+            }
+          }
+        }
+      }
+    }
+  }
+}

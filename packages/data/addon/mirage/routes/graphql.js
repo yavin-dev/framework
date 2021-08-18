@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { createGraphQLHandler, mirageGraphQLFieldResolver } from '@miragejs/graphql';
-import graphQLSchema from '../../gql/schema';
+import graphQLSchema from '../../gql/schema.graphql';
 import gql from 'graphql-tag';
 import faker from 'faker';
 import moment from 'moment';
@@ -363,7 +363,7 @@ function _getResponseBody(db, asyncQueryRecord) {
     const seed = _getSeedForRequest(table, args, fields);
     faker.seed(seed);
 
-    if (db.tables.find(table) && fields.length) {
+    if (db.elideTables.find(table) && fields.length) {
       const columns = fields.reduce(
         (groups, column) => {
           const type = ['metrics', 'dimensions', 'timeDimensions'].find((t) => db[t].find(column));

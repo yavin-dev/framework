@@ -36,7 +36,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     this.server.post('https://data.naviapp.io', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
-      assert.notOk(operationName, 'No operation name specified');
+      assert.equal(operationName, 'GetTables', 'operation name is correct');
       assert.deepEqual(variables, {}, 'No variables are passed in options');
       assert.equal(
         removeTypeNameField(query),
@@ -57,7 +57,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     this.server.post('https://data.naviapp.io', (_schema: TODO, { requestBody }: { requestBody: string }) => {
       const { operationName, variables, query } = JSON.parse(requestBody);
 
-      assert.notOk(operationName, 'No operation name specified');
+      assert.equal(operationName, 'GetTable', 'operation name is correct');
       assert.deepEqual(variables, { ids: ['foo'] }, 'id variable is passed in options');
       assert.equal(
         removeTypeNameField(query),
@@ -76,7 +76,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     this.server.post(
       'https://data.naviapp.io',
       (_schema: TODO, { requestHeaders }: { requestHeaders: Record<string, string> }) => {
-        assert.equal(requestHeaders.Authentication, 'Bearer abc-123', 'fetchById sends custom headers');
+        assert.equal(requestHeaders.authentication, 'Bearer abc-123', 'fetchById sends custom headers');
         return [];
       }
     );
@@ -349,10 +349,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       result,
       {
         table: {
-          __typename: 'TableConnection',
+          __typename: 'ElideTableConnection',
           edges: [
             {
-              __typename: 'TableEdge',
+              __typename: 'ElideTableEdge',
               node: {
                 id: 'table0',
                 name: 'table0',
@@ -515,7 +515,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                   edges: [],
                   __typename: 'TimeDimensionConnection',
                 },
-                __typename: 'Table',
+                __typename: 'ElideTable',
               },
             },
           ],

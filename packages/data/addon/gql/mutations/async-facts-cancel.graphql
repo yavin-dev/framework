@@ -1,0 +1,10 @@
+mutation CancelAsyncQuery($id: ID) {
+  asyncQuery(op: UPDATE, data: { id: $id, status: CANCELLED }) {
+    edges {
+      node {
+        id
+        status
+      }
+    }
+  }
+}
