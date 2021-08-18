@@ -68,7 +68,7 @@ module('Integration | Component | filter-values/time-dimension/range', function 
     await render(TEMPLATE);
 
     // Click start date
-    await click('.filter-values--date-range-input__low-value > .dropdown-date-picker__trigger');
+    await click('.filter-values--date-range-input__low-value.dropdown-date-picker__trigger');
     const newStartStr = '2019-11-28';
 
     this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {
@@ -80,7 +80,7 @@ module('Integration | Component | filter-values/time-dimension/range', function 
     this.set('filter.values', [`${newStartStr}T00:00:00.000Z`, end]);
 
     // Click end date
-    await click('.filter-values--date-range-input__high-value > .dropdown-date-picker__trigger');
+    await click('.filter-values--date-range-input__high-value.dropdown-date-picker__trigger');
     const newEndStr = '2019-12-07';
 
     this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {

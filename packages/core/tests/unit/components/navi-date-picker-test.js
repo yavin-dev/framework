@@ -1,6 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import moment from 'moment';
+import { createGlimmerComponent } from 'navi-core/test-support';
 
 module('Unit | Component | Navi Date Picker', function (hooks) {
   setupTest(hooks);
@@ -8,7 +9,10 @@ module('Unit | Component | Navi Date Picker', function (hooks) {
   test('_isDateSameAsLast', function (assert) {
     assert.expect(3);
 
-    const component = this.owner.factoryFor('component:navi-date-picker').create({ date: moment.utc().startOf('day') });
+    const component = createGlimmerComponent('component:navi-date-picker', {
+      date: moment.utc().startOf('day'),
+      dateTimePeriod: 'day',
+    });
     const testDate1 = moment('1995-11-17');
     const testDate2 = moment('1995-11-11');
 

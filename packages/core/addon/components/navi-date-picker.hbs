@@ -5,6 +5,7 @@
   @onSelect={{this.changeDate}}
   @center={{this.centerDate}}
   @onCenterChange={{this.setCenterDate}} as |powerCalendar|
+  {{did-update this.updatedAttrs @date @dateTimePeriod}}
 >
   {{#if (includes this.dateTimePeriod (w "hour day week isoWeek"))}}
     <powerCalendar.Nav>
