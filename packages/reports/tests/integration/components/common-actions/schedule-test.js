@@ -20,6 +20,9 @@ const TestModel = {
 const unscheduledModel = {
   title: 'Test Test',
   deliveryRuleForUser: new RSVP.Promise((resolve) => resolve(null)),
+  constructor: {
+    modelName: 'report',
+  },
 };
 
 const TEMPLATE = hbs`
@@ -38,7 +41,7 @@ const TEMPLATE = hbs`
     {{on "click" toggleModal}}
   >
     <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
-  </button> 
+  </button>
 </CommonActions::Schedule>
 `;
 
@@ -87,8 +90,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal', async function (assert) {
-    assert.expect(9);
-
     this.set('model', unscheduledModel);
 
     await render(TEMPLATE);
@@ -97,40 +98,25 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
 
-    assert.equal(
-      $('.schedule__modal-header').text().trim(),
-      'Schedule report',
-      'The primary header makes use of the category of page appropriately'
-    );
+    assert
+      .dom('.schedule__modal-header')
+      .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
 
     assert.deepEqual(
-      $('.input-group label')
-        .toArray()
-        .map((el) => $(el).text().trim()),
+      findAll('.input-group label').map((el) => el.textContent.trim()),
       ['Recipients', 'Frequency', 'Format', 'Only send if data is present', ''],
       'Schedule Modal has all the expected sections'
     );
 
-    assert.ok(
-      $('.schedule__modal-input--recipients').is(':visible'),
-      'Schedule Modal component renders an text area for recipients'
-    );
+    assert
+      .dom('.schedule__modal-input--recipients')
+      .exists('Schedule Modal component renders an text area for recipients');
 
-    assert.ok(
-      $('.schedule__modal-frequency-trigger').is(':visible'),
-      'Schedule Modal component renders an dropdown for frequencies'
-    );
+    assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'Week is the default frequency value');
 
-    assert.ok(
-      $('.schedule__modal-format-trigger').is(':visible'),
-      'Schedule Modal component renders an dropdown for formats'
-    );
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', '`.csv` is the default format value');
 
-    assert.equal($('.schedule__modal-frequency-trigger').text().trim(), 'Week', 'Week is the default frequency value');
-
-    assert.equal($('.schedule__modal-format-trigger').text().trim(), 'csv', '`.csv` is the default format value');
-
-    assert.notOk($('.schedule__modal-rejected').is(':visible'), 'rejected error does not show');
+    assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
   });
 
   test('schedule modal - delivery rule passed in', async function (assert) {

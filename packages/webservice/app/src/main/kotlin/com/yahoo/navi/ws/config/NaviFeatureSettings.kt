@@ -8,4 +8,6 @@ class NaviFeatureSettings {
     var enableDashboardsFilters = true
     var enableTableEditing = true
     var enableTotals = true
+    var enableScheduleReports = true
+    var enableScheduleDashboards = true
 }

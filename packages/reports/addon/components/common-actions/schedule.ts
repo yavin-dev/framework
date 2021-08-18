@@ -78,6 +78,11 @@ export default class ScheduleActionComponent extends Component<Args> {
     return arr(config.navi.schedule?.frequencies || defaultFrequencies);
   }
 
+  get modelType() {
+    //@ts-ignore
+    return this.args.model.constructor.modelName;
+  }
+
   /**
    * @property {Array} formats
    */
@@ -123,8 +128,6 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   _createNewDeliveryRule() {
     return this.store.createRecord('delivery-rule', {
-      // @ts-ignore
-      deliveryType: this.args.model.constructor.modelName,
       format: { type: this.formats.firstObject },
     });
   }
