@@ -5,6 +5,7 @@
 import VisualizationSerializer from './visualization';
 import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
 import { assert } from '@ember/debug';
+import { isEmpty } from '@ember/utils';
 import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 
 interface FieldTypes {
@@ -88,12 +89,22 @@ function getColumnField(column: LegacyColumn<LegacyFieldType>): Field {
   }
 }
 
-type ColumnInfo = {
-  requestIndex: number;
-  requestColumn: Column;
-  tableIndex: number;
-  tableColumn: LegacyMetadataColumn;
-};
+type ColumnInfo =
+  | { requestIndex: number; requestColumn: Column; tableIndex: number; tableColumn: LegacyMetadataColumn }
+  | {
+      // These could be undefined if the table was not updated properly and tried to display a column that no longer existed
+      requestIndex: undefined;
+      requestColumn: undefined;
+      tableIndex: number;
+      tableColumn: LegacyMetadataColumn;
+    }
+  | {
+      requestIndex: number;
+      requestColumn: Column;
+      // These can be undefined since converting an all grain request will add a request column with no corresponding table column
+      tableIndex: undefined;
+      tableColumn: undefined;
+    };
 
 /**
  * Builds a map of column canonical name to both request and visualization data
@@ -150,19 +161,34 @@ export function normalizeTableV2(
   const columnData: Record<string, ColumnInfo> = buildColumnInfo(request, visualization);
 
   // Rearranges request columns to match table order
-  request.columns = Object.values(columnData).reduce((columns, columnInfo) => {
-    const { tableColumn, tableIndex, requestColumn } = columnInfo;
-    if (tableColumn.hasCustomDisplayName) {
-      // If display name is custom move over to request
-      requestColumn.alias = tableColumn.displayName;
-    }
-    columns[tableIndex] = requestColumn;
-    return columns;
-  }, [] as Column[]);
+  const missedRequestColumns: Column[] = [];
+  const reorderedColumns = Object.values(columnData)
+    .reduce((columns: Column[], columnInfo) => {
+      const { tableColumn, tableIndex, requestColumn } = columnInfo;
+      if (requestColumn && tableColumn) {
+        // this column exists in request and table
+        assert('Table index must exist if table column exists', tableIndex !== undefined);
+        if (tableColumn.hasCustomDisplayName) {
+          // If display name is custom move over to request
+          requestColumn.alias = tableColumn.displayName;
+        }
+        columns[tableIndex] = requestColumn;
+      } else if (requestColumn !== undefined && tableColumn === undefined) {
+        // this column only exists in the request
+        missedRequestColumns.push(requestColumn);
+      }
+      return columns;
+    }, [])
+    .filter((c) => c); // remove skipped columns
+  request.columns = [...reorderedColumns, ...missedRequestColumns];
 
   // extract column attributes
   const columnAttributes = Object.values(columnData).reduce((columns, columnInfo) => {
     const { tableColumn, requestColumn } = columnInfo;
+    if (tableColumn === undefined || requestColumn === undefined) {
+      // this column does not exist in the table
+      return columns;
+    }
     const { attributes } = tableColumn;
     assert(
       `The request column ${requestColumn.field} should have a present 'cid' field`,
@@ -172,7 +198,7 @@ export function normalizeTableV2(
     const format = tableColumn.format !== undefined ? tableColumn.format : attributes?.format;
     columns[requestColumn.cid] = {
       ...(canAggregateSubtotal !== undefined ? { canAggregateSubtotal } : {}),
-      ...(format !== undefined ? { format } : {}),
+      ...(!isEmpty(format) ? { format } : {}),
     };
     return columns;
   }, {} as Record<string, TableColumnAttributes>);
@@ -189,7 +215,7 @@ export function normalizeTableV2(
     } else {
       canonicalName = `${showTotals.subtotal}(field=id)`;
     }
-    subtotal = columnData[canonicalName].requestColumn.cid;
+    subtotal = columnData[canonicalName].requestColumn?.cid;
   }
 
   return {

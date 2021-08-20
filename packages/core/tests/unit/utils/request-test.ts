@@ -497,4 +497,44 @@ module('Unit | Utils | Request', function (hooks) {
       'year timegrain filters are moved to inclusive end date'
     );
   });
+
+  test('normalize v1 to v2 - all grain', function (assert) {
+    assert.expect(1);
+
+    const request: RequestV1<string> = {
+      intervals: [{ start: '2021-06-13 00:00:00.000', end: '2021-08-12 00:00:00.000' }],
+      filters: [],
+      dimensions: [],
+      metrics: [],
+      logicalTable: { table: 'tableName', timeGrain: 'all' },
+      sort: [],
+      having: [],
+      dataSource: 'facts',
+      requestVersion: 'v1',
+    };
+
+    assert.deepEqual(
+      normalizeV1toV2(request, 'bardOne'),
+      {
+        columns: [],
+        dataSource: 'bardOne',
+        filters: [
+          {
+            field: 'tableName.dateTime',
+            operator: 'bet',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+            values: ['2021-06-13T00:00:00.000Z', '2021-08-11T00:00:00.000Z'],
+          },
+        ],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'tableName',
+      },
+      'all timeGrain is converted to filter as day grain with inclusive end date with no column'
+    );
+  });
 });
