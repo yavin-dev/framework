@@ -6,11 +6,12 @@ import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/
 import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import moment from 'moment';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain } from 'navi-data/utils/date';
+import { GrainWithAll } from 'navi-data/addon/serializers/metadata/bard';
 
 type LogicalTable = {
   table: string;
-  timeGrain: Grain;
+  timeGrain: GrainWithAll;
 };
 
 type Interval = {
@@ -170,12 +171,14 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   };
 
   //normalize dateTime column
-  requestV2.columns.push({
-    cid: nanoid(10),
-    type: 'timeDimension',
-    field: `${table}.dateTime`,
-    parameters: { grain },
-  });
+  if (grain !== 'all') {
+    requestV2.columns.push({
+      cid: nanoid(10),
+      type: 'timeDimension',
+      field: `${table}.dateTime`,
+      parameters: { grain },
+    });
+  }
 
   //normalize dimensions
   normalized.dimensions.forEach(({ dimension }) =>
@@ -204,8 +207,9 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
     // if start and end are dates, end.subtract(1, getPeriodForGrain(grain))
     const startMoment = moment.utc(start);
     const endMoment = moment.utc(end);
+    const filterGrain = grain === 'all' ? 'day' : grain;
     if (startMoment.isValid() && endMoment.isValid()) {
-      endMoment.subtract(1, getPeriodForGrain(grain));
+      endMoment.subtract(1, getPeriodForGrain(filterGrain));
     }
 
     start = startMoment.isValid() ? startMoment.toISOString() : start;
@@ -217,7 +221,7 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
       operator: 'bet',
       values: [start, end],
       parameters: {
-        grain,
+        grain: filterGrain,
       },
     });
   });
