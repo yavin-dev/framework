@@ -14,6 +14,7 @@ import com.yahoo.navi.ws.models.beans.enums.DeliveryFrequency
 import com.yahoo.navi.ws.models.beans.fragments.DeliveryFormat
 import com.yahoo.navi.ws.models.beans.fragments.SchedulingRules
 import com.yahoo.navi.ws.models.checks.DefaultAdminCheck
+import com.yahoo.navi.ws.models.checks.DefaultJobRunnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck
 import org.hibernate.annotations.CreationTimestamp
@@ -66,7 +67,7 @@ class DeliveryRule : HasOwner {
 
     @Temporal(TemporalType.TIMESTAMP)
     @CreatePermission(expression = DefaultNobodyCheck.NOBODY)
-    @UpdatePermission(expression = DefaultAdminCheck.IS_ADMIN)
+    @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN}")
     var lastDeliveredOn: Date? = null
 
     @NotNull
