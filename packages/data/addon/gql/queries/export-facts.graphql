@@ -1,0 +1,18 @@
+query GetTableExport($ids: [String!]) {
+  tableExport(op: FETCH, ids: $ids) {
+    edges {
+      node {
+        id
+        query
+        queryType
+        resultType
+        status
+        result {
+          httpStatus
+          url
+          message
+        }
+      }
+    }
+  }
+}

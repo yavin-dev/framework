@@ -38,8 +38,8 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @attr('moment')
   updatedOn!: Moment;
 
-  @attr('string', { defaultValue: 'report' })
-  deliveryType!: string;
+  @attr('string')
+  readonly deliveryType!: string;
 
   @attr('string', { defaultValue: 'week' })
   frequency!: string;

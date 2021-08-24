@@ -1,0 +1,11 @@
+#import "../fragments/table.graphql"
+
+query GetTables {
+  table {
+    edges {
+      node {
+        ...TableFragment
+      }
+    }
+  }
+}

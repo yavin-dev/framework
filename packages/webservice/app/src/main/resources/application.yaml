@@ -39,6 +39,9 @@ spring:
       ddl-auto: 'none'
       jdbc:
         use_scrollable_resultset: true
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
   datasource:
     url: 'jdbc:h2:file:./yavin;DB_CLOSE_DELAY=-1'
     username: 'navidev'

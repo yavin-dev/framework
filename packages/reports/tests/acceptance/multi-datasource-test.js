@@ -51,9 +51,9 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await clickItem('dimension', 'Date Time');
 
     await selectChoose($('.filter-builder__operator-trigger:eq(0)')[0], 'Between');
-    await clickTrigger('.filter-values--date-range-input__low-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__low-value.ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value.ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     await click('.navi-report__run-btn');
@@ -103,7 +103,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     assert.dom('.c3-legend-item').containsText('1', 'Bar chart legend has the right value');
 
     await click('.report-builder__container-header__filters-toggle');
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value.ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
     await click('.navi-report__run-btn');
 

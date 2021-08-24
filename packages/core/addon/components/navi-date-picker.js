@@ -10,11 +10,10 @@
  *      @onUpdate={{this.handleUpdate}}
  *   />
  */
-import Component from '@ember/component';
-import { set, computed, action } from '@ember/object';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { action } from '@ember/object';
 import { assert } from '@ember/debug';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import layout from '../templates/components/navi-date-picker';
 import moment from 'moment';
 import { range } from 'lodash-es';
 import {
@@ -38,70 +37,71 @@ function isValidCalendarDate(date, dateTimePeriod) {
   return date.clone().startOf('day').isSame(date);
 }
 
-@templateLayout(layout)
-@tagName('')
 class NaviDatePicker extends Component {
-  /**
-   * @method init
-   * @override
-   */
-  init() {
-    super.init(...arguments);
-    const { centerDate, date, dateTimePeriod } = this;
+  constructor() {
+    super(...arguments);
+    this.date = this.args.date;
+    this.dateTimePeriod = this.args.dateTimePeriod;
     const localDateAsUTCDay = moment().utc(true).startOf('day');
-    const center = centerDate || date || localDateAsUTCDay;
-
-    assert(isValidCalendarDateMessage, isValidCalendarDate(center, dateTimePeriod));
+    const center = this.args.centerDate || this.date || localDateAsUTCDay;
+    assert(isValidCalendarDateMessage, isValidCalendarDate(center, this.dateTimePeriod));
 
     // convert utc date to local for ember-power-calendar
-    set(this, 'centerDate', center.clone().local(true));
+    this.centerDate = center.clone().local(true);
+    this.selectedDate = center.clone().local(true);
+    this.previousDate = center.clone().local(true);
   }
 
   /**
-   * @method didReceiveAttrs
+   * @method updatedAttrs
    * @override
    */
-  didReceiveAttrs() {
-    super.didReceiveAttrs(...arguments);
-
-    const { previousDate, date, dateTimePeriod } = this;
-
+  @action
+  updatedAttrs(element, [updatedDate, updatedDateTimePeriod]) {
     let newDate;
-    if (date && date !== previousDate) {
-      assert(isValidCalendarDateMessage, isValidCalendarDate(date, dateTimePeriod));
+    if (updatedDate && updatedDate !== this.previousDate) {
+      assert(isValidCalendarDateMessage, isValidCalendarDate(updatedDate, this.dateTimePeriod));
       // convert utc date to local for ember-power-calendar
-      newDate = date.clone().local(true);
+      newDate = updatedDate.clone().local(true);
     }
 
-    if (date && !date.isSame(previousDate)) {
-      set(this, 'selectedDate', newDate);
-      set(this, 'centerDate', newDate);
+    if (updatedDate && !updatedDate.isSame(this.previousDate)) {
+      this.selectedDate = newDate;
+      this.centerDate = newDate;
+    }
+
+    if (this.dateTimePeriod !== updatedDateTimePeriod) {
+      this.dateTimePeriod = updatedDateTimePeriod;
     }
 
     //Store old date for re-render logic above
-    set(this, 'previousDate', newDate);
-    set(this, '_lastTimeDate', newDate);
+    this.previousDate = newDate;
+    this._lastTimeDate = newDate;
   }
+
+  /**
+   * @property {Moment} selectedDate - the date currently selected
+   */
+  @tracked selectedDate;
 
   /**
    * @property {Moment} date - date should be after `minDate`
    */
-  date;
+  @tracked date;
 
   /**
    * @property {Moment} centerDate - The date that determines the current view of the calendar, defaults to selected date initially
    */
-  centerDate;
+  @tracked centerDate;
 
   /**
    * @property {String} dateTimePeriod - unit of time being selected ('day', 'week', or 'month')
    */
-  dateTimePeriod = 'day';
+  @tracked dateTimePeriod = 'day';
 
   /**
    * @property {Date} minDate - minimum selectable date
    */
-  @computed('dateTimePeriod')
   get minDate() {
     return new Date(getFirstDayEpochForGrain(this.dateTimePeriod));
   }
@@ -109,7 +109,6 @@ class NaviDatePicker extends Component {
   /**
    * @property {String[]} months - The months available to pick from in the current year
    */
-  @computed('centerDate', 'minDate')
   get months() {
     const { centerDate, minDate } = this;
 
@@ -125,7 +124,6 @@ class NaviDatePicker extends Component {
   /**
    * @property {String[]} years - The years available to pick from
    */
-  @computed('minDate')
   get years() {
     const start = moment(this.minDate).year();
     const end = moment().year() + 1;
@@ -198,7 +196,7 @@ class NaviDatePicker extends Component {
   _isDateSameAsLast(newDate) {
     const { _lastTimeDate: lastTime } = this;
 
-    set(this, '_lastTimeDate', newDate);
+    this._lastTimeDate = newDate;
 
     if (!lastTime) {
       return false;
@@ -215,7 +213,7 @@ class NaviDatePicker extends Component {
    */
   @action
   setCenterDate({ moment: newDate }) {
-    set(this, 'centerDate', newDate);
+    this.centerDate = newDate;
   }
 
   /**
@@ -234,9 +232,9 @@ class NaviDatePicker extends Component {
     }
 
     // Use date in local time for selected date
-    set(this, 'selectedDate', newDate);
-    const handleUpdate = this.onUpdate;
-    if (handleUpdate) {
+    this.selectedDate = newDate;
+    const handleUpdate = this.args.onUpdate;
+    if (handleUpdate && newDate) {
       // convert to utc before passing to action
       handleUpdate(newDate.clone().utc(true));
     }

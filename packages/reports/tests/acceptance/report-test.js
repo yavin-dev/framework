@@ -143,7 +143,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickTrigger('.filter-values--date-range-input__low-value');
 
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
     await click('.navi-report__run-btn');
 
@@ -1755,7 +1755,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickTrigger('.filter-values--date-range-input__low-value');
 
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
-    await clickTrigger('.filter-values--date-range-input__high-value .ember-basic-dropdown-trigger');
+    await clickTrigger('.filter-values--date-range-input__high-value.ember-basic-dropdown-trigger');
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     assert.deepEqual(

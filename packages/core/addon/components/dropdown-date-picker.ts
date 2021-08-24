@@ -9,11 +9,14 @@
  *       @dateTimePeriod="day"
  *   />
  */
-import Component from '@ember/component';
-import layout from '../templates/components/dropdown-date-picker';
-import { layout as templateLayout } from '@ember-decorators/component';
+import Component from '@glimmer/component';
+import type { Moment } from 'moment';
+import type { Grain } from 'navi-data/utils/date';
 
-@templateLayout(layout)
-class DropdownDatePicker extends Component {}
+type Args = {
+  date: Moment;
+  dateTimePeriod: Grain;
+  onUpdate: (date: Moment) => void;
+};
 
-export default DropdownDatePicker;
+export default class DropdownDatePicker extends Component<Args> {}

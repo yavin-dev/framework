@@ -12,8 +12,8 @@
       <NaviLoader />
     {{else}}
       {{#if (is-fulfilled this.isValidForSchedule)}}
+        <h3 class="schedule__modal-header m-b-10">Schedule {{capitalize this.modelType}}</h3>
         {{#if (await this.isValidForSchedule)}}
-          <h3 class="schedule__modal-header m-b-10">Schedule {{this.localDeliveryRule.deliveryType}}</h3>
           {{#if (is-rejected this.deliveryRule)}}
             <DenaliAlert
               @style="danger"
@@ -22,7 +22,7 @@
               as |Alert|
             >
               <Alert.Title>Error</Alert.Title>
-              <Alert.Context>An error occurred while fetching the schedule for this {{this.localDeliveryRule.deliveryType}}.</Alert.Context>
+              <Alert.Context>An error occurred while fetching the schedule for this {{this.modelType}}.</Alert.Context>
             </DenaliAlert>
           {{else}}
             {{#if this.notification}}
@@ -151,14 +151,13 @@
             {{/unless}}
           {{/if}}
         {{else}}
-          <h3 class="schedule__modal-header m-b-10">This {{@model.constructor.modelName}} is not valid</h3>
           <DenaliAlert
             @style="danger"
             @isBlock={{true}}
             class="m-b-30"
             as |Alert|
           >
-            <Alert.Context>Please run a valid {{@model.constructor.modelName}} to enable scheduling.</Alert.Context>
+            <Alert.Context>Please run a valid {{this.modelType}} to enable scheduling.</Alert.Context>
           </DenaliAlert>
           <DenaliButton
             class="schedule__modal-cancel-btn m-r-5"

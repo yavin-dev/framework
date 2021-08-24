@@ -1,13 +1,14 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import AsyncFactsMutation from './mutations/async-facts';
-import AsyncFactsCancel from './mutations/async-facts-cancel';
-import AsyncFactsQuery from './queries/async-facts';
-import TableExportFactsMutation from './mutations/export-facts';
-import TableExportFactsCancel from './mutations/export-facts-cancel';
-import TableExportFactsQuery from './queries/export-facts';
+
+import AsyncFactsMutation from './mutations/async-facts.graphql';
+import AsyncFactsCancel from './mutations/async-facts-cancel.graphql';
+import AsyncFactsQuery from './queries/async-facts.graphql';
+import TableExportFactsMutation from './mutations/export-facts.graphql';
+import TableExportFactsCancel from './mutations/export-facts-cancel.graphql';
+import TableExportFactsQuery from './queries/export-facts.graphql';
 
 export default {
   asyncFactsMutation: AsyncFactsMutation,
