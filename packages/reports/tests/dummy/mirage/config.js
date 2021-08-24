@@ -11,7 +11,7 @@ export default function () {
   this.passthrough('/write-coverage');
 
   this.get('/gsheet-export/report/:id', () => ({
-    url: 'https://google.com/sheets/foo'
+    url: 'https://google.com/sheets/foo',
   }));
 
   // Mock bard facts + metadata

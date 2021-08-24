@@ -91,10 +91,12 @@
       </span>
     </ReportActions::Export>
   {{/if}}
+  {{#if exportFileTypes}}
+    <EmberTooltip @targetId="report-actions__export">
+      {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+    </EmberTooltip>
+  {{/if}}
 {{/let}}
-<EmberTooltip @targetId="report-actions__export">
-  {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-</EmberTooltip>
 
 {{!-- Share only enabled on a Valid saved report --}}
 <span>

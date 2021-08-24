@@ -96,9 +96,11 @@
                 </span>
               </ReportActions::Export>
             {{/if}}
-            <EmberTooltip @targetId="navi-report-widget__action-export">
-              {{if @model.validations.isTruelyValid "Export the widget" "Run a valid widget to enable export"}}
-            </EmberTooltip>
+            {{#if exportFileTypes}}
+              <EmberTooltip @targetId="navi-report-widget__action-export">
+                {{if @model.validations.isTruelyValid "Export the widget" "Run a valid widget to enable export"}}
+              </EmberTooltip>
+            {{/if}}
           {{/let}}
 
           <LinkTo

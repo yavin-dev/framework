@@ -49,10 +49,12 @@
         </span>
       </ReportActions::Export>
     {{/if}}
+    {{#if exportFileTypes}}
+      <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
+        Export the report
+      </EmberTooltip>
+    {{/if}}
   {{/let}}
-  <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
-    Export the report
-  </EmberTooltip>
 
   {{!-- Share only enabled on a saved report --}}
   <CommonActions::Share
