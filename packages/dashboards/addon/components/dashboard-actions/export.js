@@ -22,18 +22,10 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
   }
 
   /**
-   * Determines whether the dashboard is valid for exporting
    * @override
    */
-  isValidForExport() {
-    return this.args.dashboard.validations.isTruelyValid;
-  }
-
-  /**
-   * @override
-   */
-  @task *getExportDownloadURL() {
-    return yield `/export?dashboard=${this.args.dashboard.id}`;
+  get exportHref() {
+    return `/export?dashboard=${this.args.dashboard.id}`;
   }
 
   /**
@@ -50,5 +42,13 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    */
   get exportFormats() {
     return super.exportFormats.filter((format) => format.type !== 'CSV');
+  }
+
+  /**
+   * Determines whether the dashboard is valid for exporting
+   * @override
+   */
+  isValidForExport() {
+    return this.args.dashboard.validations.isTruelyValid;
   }
 }

@@ -38,6 +38,31 @@ export default class MultipleFormatExport extends ReportActionExport {
   @tracked supportedFileTypes = featureFlag('exportFileTypes');
 
   /**
+   * Promise resolving to export to file link
+   */
+  get exportHref() {
+    const {
+      args: { report },
+      compression,
+      store,
+    } = this;
+
+    const serializedModel = report.toJSON() as ReportModel;
+
+    // Create new report model in case we're dealing with a widget model
+    const newModel = store.createRecord('report', {
+      title: serializedModel.title,
+      request: report.request.clone(),
+      visualization: store.createFragment(serializedModel.visualization.type, serializedModel.visualization),
+    });
+
+    // Model compression requires an id
+    newModel.set('id', newModel.tempId);
+
+    return compression.compressModel(newModel).then((compressedModel) => `/export?reportModel=${compressedModel}`);
+  }
+
+  /**
    * Href for google sheet export
    */
   get gsheetExportHref() {
@@ -99,7 +124,7 @@ export default class MultipleFormatExport extends ReportActionExport {
       if (exportType === 'CSV') {
         yield taskFor(super.downloadTask).perform();
       } else if (exportType === 'PDF' || exportType === 'PNG') {
-        let url: string = yield taskFor(this.getExportDownloadURL).perform();
+        let url: string = yield this.exportHref;
         if (exportType === 'PNG') {
           url += '&fileType=png';
         }
@@ -134,27 +159,6 @@ export default class MultipleFormatExport extends ReportActionExport {
     } else {
       super.showExportNotification();
     }
-  }
-
-  @task *getExportDownloadURL(): TaskGenerator<string> {
-    const {
-      args: { report: model },
-      compression,
-      store,
-    } = this;
-    const clonedModel = model.toJSON() as ReportModel;
-
-    //Create new report model in case dealing with a widget model
-    const newModel = store.createRecord('report', {
-      title: clonedModel.title,
-      request: model.get('request').clone(),
-      visualization: store.createFragment(clonedModel.visualization.type, clonedModel.visualization),
-    });
-
-    //Model compression requires an id
-    newModel.set('id', newModel.tempId);
-    const serializedModel = yield compression.compressModel(newModel);
-    return yield `/export?reportModel=${serializedModel}`;
   }
 
   @task *gSheetExportTask(): TaskGenerator<void> {

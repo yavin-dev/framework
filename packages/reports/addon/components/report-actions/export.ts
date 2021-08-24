@@ -107,10 +107,16 @@ export default class ReportActionExport extends Component<Args> {
       anchorElement.setAttribute('download', dasherize(this.filename));
       anchorElement.setAttribute('target', '_blank');
       document.querySelector('#export__download-url')?.appendChild(anchorElement);
-      if (!Ember.testing) {
+      if (Ember.testing) {
+        await this.delay(5000);
+      } else {
         anchorElement.click();
-        document.querySelector('#export__download-url')?.removeChild(anchorElement);
       }
+      anchorElement.remove();
     }
+  }
+
+  delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

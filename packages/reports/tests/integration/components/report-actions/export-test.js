@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, find } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
@@ -48,7 +48,7 @@ module('Integration | Component | report actions - export', function (hooks) {
     const factService = this.owner.lookup('service:navi-facts');
     const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
     assert.equal(
-      document.querySelector('.export__download-link').getAttribute('href'),
+      find('.export__download-link').getAttribute('href'),
       expectedHref,
       'The href attribute is set correctly'
     );
@@ -61,7 +61,7 @@ module('Integration | Component | report actions - export', function (hooks) {
     await click('.report-actions__export-btn');
 
     assert.equal(
-      document.querySelector('.export__download-link').getAttribute('download'),
+      find('.export__download-link').getAttribute('download'),
       'hyrule-news',
       'The download attribute is set correctly'
     );

@@ -106,7 +106,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
-    await click('.report-actions__clone-btn');
+    await click('.report-actions__clone');
 
     assert.ok(
       currentURL().endsWith('/edit'),
@@ -161,7 +161,7 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('New report - copy api', async function (assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     await newReport();
     await clickItem('metric', 'Ad Clicks');
@@ -175,10 +175,11 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
-
+    assert.dom('.get-api__action-btn').isDisabled('Copy api button is disabled before running');
+    await click('.navi-report__run-btn');
     await click('.get-api__action-btn');
 
-    assert.dom('.get-api__modal').exists('Copy modal is open after fixing error clicking button');
+    assert.dom('.get-api__modal').exists('Copy modal is open');
 
     /* == Add some more metrics and check that copy modal updates == */
     await click('.d-close');
@@ -536,7 +537,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(2);
 
     await visit('/reports/1/view');
-    await click('.report-actions__clone-btn');
+    await click('.report-actions__clone');
 
     assert.ok(
       TempIdRegex.test(currentURL()),
@@ -546,28 +547,29 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
   });
 
-  test('Clone action - enabled/disabled', async function (assert) {
-    assert.expect(2);
+  test('Clone action - disabled', async function (assert) {
+    assert.expect(1);
+
+    await visit('/reports/new');
+
+    assert.dom('.report-actions__clone').hasAttribute('disabled', '', 'Clone action is disabled for a new report');
+  });
+
+  test('Clone action - enabled', async function (assert) {
+    assert.expect(1);
 
     await visit('/reports/1/view');
 
     assert
-      .dom('.report-actions__clone-btn')
-      .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled for a valid report');
-
-    // Remove all metrics to create , but do not save
-    await clickItem('metric', 'Ad Clicks');
-    await clickItem('metric', 'Nav Link Clicks');
-
-    assert
-      .dom('.report-actions__clone-btn')
-      .hasNoClass('navi-report__action-link--force-disabled', 'Clone action is enabled from a valid save report');
+      .dom('.report-actions__clone')
+      .doesNotHaveAttribute('disabled', '', 'Clone action is enabled for a valid report');
   });
 
   test('Export feature flag - disabled', async function (assert) {
     assert.expect(1);
 
     let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = [];
 
     await visit('/reports/1/view');
 
@@ -604,29 +606,23 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/1/view');
 
-    assert
-      .dom('.report-actions__export-btn')
-      .hasNoClass('navi-report__action-link--force-disabled', 'Export action is enabled for a valid report');
+    assert.dom('.report-actions__export-btn').isEnabled('Export action is enabled for a valid report');
 
     // Remove dimension to make it out of sync with the visualization
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
 
     //currently failing as it should
-    assert
-      .dom('.report-actions__export-btn')
-      .hasClass('is-disabled', 'Export action is disabled when report is not valid');
+    assert.dom('.report-actions__export-btn').isDisabled('Export action is disabled when report is not valid');
 
     // Revert changes to make it in sync with the visualization
     await click('.navi-report__revert-btn');
 
-    assert.dom('.report-actions__export-btn').hasNoClass('is-disabled', 'Export action is enabled for a valid report');
+    assert.dom('.report-actions__export-btn').isEnabled('Export action is enabled for a valid report');
 
     // Remove visualization metric to create an invalid report
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
-    assert
-      .dom('.report-actions__export-btn')
-      .hasClass('is-disabled', 'Export action is disabled when report is not valid');
+    assert.dom('.report-actions__export-btn').isDisabled('Export action is disabled when report is not valid');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -640,7 +636,7 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = ['csv'];
     await visit('/reports/1/view');
     await click($('.report-actions__export-btn:contains(Export)')[0]);
-    assert.dom('.alert.is-info').hasText('The CSV download should begin shortly');
+    assert.dom('.alert.is-info').hasText('Your CSV download should begin shortly');
     assert.ok(
       $('.export__download-link').attr('href').includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
@@ -681,29 +677,26 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/1/view');
-    await clickTrigger('.multiple-format-export');
-
+    await click($('.menu-content a:contains("CSV")')[0]);
     assert.ok(
-      $('.multiple-format-export__dropdown a:contains(CSV)')
-        .attr('href')
-        .includes('/network/day/property;show=id/?dateTime='),
+      find('.export__download-link').getAttribute('href').includes('/network/day/property;show=id/?dateTime='),
       'Export url contains dimension path param'
     );
 
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
-    await clickTrigger('.multiple-format-export');
+    await click($('.menu-content a:contains("CSV")')[0]);
 
     assert.ok(
-      $('.multiple-format-export__dropdown a:contains(CSV)')
-        .attr('href')
+      find('.export__download-link')
+        .getAttribute('href')
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
-      'Groupby changes are automatically included in export url'
+      'Export url contains dimension path param'
     );
 
     assert.notOk(
-      $('.multiple-format-export__dropdown a:contains(CSV)').attr('href').includes('filter'),
+      find('.export__download-link').getAttribute('href').includes('filter'),
       'No filters are initially present in export url'
     );
 
@@ -712,18 +705,17 @@ module('Acceptance | Navi Report', function (hooks) {
     /* == Update filter value == */
     await selectChoose('.filter-values--dimension-select__trigger', '1');
     await click('.navi-report__run-btn');
-    await clickTrigger('.multiple-format-export');
+    await click($('.menu-content a:contains("CSV")')[0]);
 
     assert.ok(
-      decodeURIComponent($('.multiple-format-export__dropdown a:contains(CSV)').attr('href')).includes(
-        'productFamily|id-in["1"]'
-      ),
+      decodeURIComponent(find('.export__download-link').getAttribute('href')).includes('productFamily|id-in["1"]'),
       'Filter updates are automatically included in export url'
     );
 
-    assert
-      .dom(findAll('.multiple-format-export__dropdown a').filter((el) => el.textContent.trim() === 'CSV')[0])
-      .hasAttribute('href', /^https:\/\/data.naviapp.io\/\S+$/, 'uses csv export from right datasource');
+    assert.ok(
+      find('.export__download-link').getAttribute('href').startsWith('https://data.naviapp.io/'),
+      'uses csv export from right datasource'
+    );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -738,73 +730,62 @@ module('Acceptance | Navi Report', function (hooks) {
 
     const store = this.owner.lookup('service:store');
 
+    const getActualModel = (href) => {
+      const compressed = href.split('/export?reportModel=')[1].split('&fileType=png')[0];
+      return CompressionService.decompressModel(compressed);
+    };
+
     await visit('/reports/1/view');
-    await clickTrigger('.multiple-format-export');
 
-    const exportHref = $('.multiple-format-export__dropdown a:contains("PDF")').attr('href');
-    let encodedModel = exportHref.split('/export?reportModel=')[1];
-
-    const actualModel = (await CompressionService.decompressModel(encodedModel)).serialize();
     const expectedModel = (await store.findRecord('report', 1)).serialize();
-
     //strip off owner
     delete expectedModel.data.relationships;
 
+    await click($('.menu-content a:contains("PDF")')[0]);
+    let actualModel = (await getActualModel(find('.export__download-link').getAttribute('href'))).serialize();
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');
 
-    const exportToPngHref = $('.multiple-format-export__dropdown a:contains("PNG")').attr('href');
-    assert.equal(`${exportHref}&fileType=png`, exportToPngHref, 'PNG link has appropriate link to export service');
+    await click($('.menu-content a:contains("PNG")')[0]);
+    actualModel = (await getActualModel(find('.export__download-link').getAttribute('href'))).serialize();
+    assert.deepEqual(actualModel, expectedModel, 'PNG link has appropriate link to export service');
 
     /* == Add groupby == */
     await clickItem('dimension', 'Product Family');
     await click('.navi-report__run-btn');
-    await clickTrigger('.multiple-format-export');
 
-    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
-      .attr('href')
-      .split('/export?reportModel=')[1];
-    await CompressionService.decompressModel(encodedModel).then((model) => {
-      assert.equal(
-        get(model, 'request.columns').objectAt(4).get('displayName'),
-        'Product Family (id)',
-        'Groupby changes are automatically included in export url'
-      );
-    });
+    await click($('.menu-content a:contains("PDF")')[0]);
+    let model = await getActualModel(find('.export__download-link').getAttribute('href'));
+    assert.equal(
+      model.request.columns.objectAt(4).get('displayName'),
+      'Product Family (id)',
+      'Groupby changes are automatically included in export url'
+    );
 
     /* == Change to table == */
     await click('.visualization-toggle__option-icon[title="Data Table"]');
     await click('.navi-report__run-btn');
-    await clickTrigger('.multiple-format-export');
 
-    encodedModel = $('.multiple-format-export__dropdown a:contains("PDF")')
-      .attr('href')
-      .split('/export?reportModel=')[1];
-    await CompressionService.decompressModel(encodedModel).then((model) => {
-      assert.equal(
-        get(model, 'visualization.type'),
-        'table',
-        'Visualization type changes are automatically included in export url'
-      );
-    });
+    await click($('.menu-content a:contains("PDF")')[0]);
+    model = await getActualModel(find('.export__download-link').getAttribute('href'));
+    assert.equal(
+      model.visualization.type,
+      'table',
+      'Visualization type changes are automatically included in export url'
+    );
 
     /* == Add grand total to table == */
     await click('.report-view__visualization-edit-btn');
     await animationsSettled();
     await click('.table-config__total-toggle-button--grand-total');
     await click('.navi-report__run-btn');
-    await clickTrigger('.multiple-format-export');
 
-    encodedModel = $('.multiple-format-export__dropdown a:contains("PNG")')
-      .attr('href')
-      .replace('&fileType=png', '')
-      .split('/export?reportModel=')[1];
-    await CompressionService.decompressModel(encodedModel).then((model) => {
-      assert.equal(
-        get(model, 'visualization.metadata.showTotals.grandTotal'),
-        true,
-        'Visualization config changes are automatically included in export url'
-      );
-    });
+    await click($('.menu-content a:contains("PNG")')[0]);
+    model = await getActualModel(find('.export__download-link').getAttribute('href'));
+    assert.equal(
+      model.visualization.metadata.showTotals.grandTotal,
+      true,
+      'Visualization config changes are automatically included in export url'
+    );
 
     config.navi.FEATURES.exportFileTypes = originalExportFlag;
     config.navi.FEATURES.enableTotals = originalTotalsFlag;
@@ -826,20 +807,20 @@ module('Acceptance | Navi Report', function (hooks) {
   test('Share report', async function (assert) {
     /* == Saved report == */
     await visit('/reports/1/view');
-    await click('.report-actions__share-btn');
+    await click('.report-actions__share');
 
     // Remove all metrics to create an invalid report
     await clickItem('metric', 'Ad Clicks');
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom('.report-actions__share-btn')
+      .dom('.report-actions__share')
       .doesNotHaveAttribute('disabled', '', 'Share action is disabled for invalid report');
 
     // Share is disabled on new
     await visit('/reports/new');
 
-    assert.dom('.report-actions__share-btn').hasAttribute('disabled', '', 'Share action is disabled for new report');
+    assert.dom('.report-actions__share').hasAttribute('disabled', '', 'Share action is disabled for new report');
   });
 
   test('Delete report on success', async function (assert) {
@@ -857,7 +838,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     await visit('/reports/1/view');
-    await click('.report-actions__delete-btn');
+    await click('.report-actions__delete');
 
     assert
       .dom('.delete__modal-details')
@@ -887,14 +868,14 @@ module('Acceptance | Navi Report', function (hooks) {
     await newReport();
 
     assert
-      .dom('.report-actions__delete-btn')
+      .dom('.report-actions__delete')
       .doesNotHaveAttribute('disabled', '', 'Delete action is enabled for a valid report');
 
     // Delete is not Disabled on valid
     await visit('/reports/1/view');
 
     assert
-      .dom('.report-actions__delete-btn')
+      .dom('.report-actions__delete')
       .doesNotHaveAttribute('disabled', '', 'Delete action is enabled for a valid report');
 
     /*
@@ -905,11 +886,11 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('metric', 'Nav Link Clicks');
 
     assert
-      .dom('.report-actions__delete-btn')
+      .dom('.report-actions__delete')
       .doesNotHaveAttribute('disabled', '', 'Delete action is enabled when report is not valid');
 
     // Check Delete modal appear
-    await click('.report-actions__delete-btn');
+    await click('.report-actions__delete');
 
     assert
       .dom('.delete__modal-details')
@@ -921,7 +902,7 @@ module('Acceptance | Navi Report', function (hooks) {
     server.delete('/reports/:id', () => new Response(500));
 
     await visit('/reports/2/view');
-    await click('.report-actions__delete-btn');
+    await click('.report-actions__delete');
     await click('.delete__modal-delete-btn');
 
     assert.ok(currentURL().endsWith('reports/2/view'), 'User stays on current view when delete fails');
@@ -1003,7 +984,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     // Click "Clone"
-    await click('.navi-collection__row0 .clone');
+    await click('.navi-collection__row0 .navi-report-actions__clone');
 
     assert.ok(
       TempIdRegex.test(currentURL()),
@@ -1019,7 +1000,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-collection__row0 .navi-actions__delete-btn');
+    await click('.navi-collection__row0 .navi-report-actions__delete-btn');
 
     assert
       .dom('.delete__modal-details')

@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, find } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
@@ -48,7 +48,7 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.equal(
-      document.querySelector('.export__download-link').getAttribute('href'),
+      find('.export__download-link').getAttribute('href'),
       expectedHref,
       'The href attribute is set correctly for CSV'
     );
@@ -66,7 +66,7 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     // PDF
     await click($('.menu-content a:contains("PDF")')[0]);
-    const actualPDFhref = document.querySelector('.export__download-link').getAttribute('href');
+    const actualPDFhref = find('.export__download-link').getAttribute('href');
     const encodedModel = actualPDFhref.split('/export?reportModel=')[1];
     const compressionService = this.owner.lookup('service:compression');
     const actualModel = (await compressionService.decompressModel(encodedModel)).serialize();
@@ -90,7 +90,7 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     // PDF
     await click($('.menu-content a:contains("PNG")')[0]);
-    const actualPNGhref = document.querySelector('.export__download-link').getAttribute('href');
+    const actualPNGhref = find('.export__download-link').getAttribute('href');
     assert.ok(actualPNGhref.endsWith('&fileType=png'), 'url has correct fileType query param');
 
     const encodedModel = actualPNGhref.replace('&fileType=png', '').split('/export?reportModel=')[1];
@@ -115,7 +115,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     await render(TEMPLATE);
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.equal(
-      document.querySelector('.export__download-link').getAttribute('download'),
+      find('.export__download-link').getAttribute('download'),
       'hyrule-news',
       'The download attribute is set correctly'
     );
