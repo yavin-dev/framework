@@ -9,7 +9,7 @@ import Service from '@ember/service';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
-      @report={{this.report}}
+      @model={{this.report}}
       @disabled={{this.disabled}}
     >
       Export

@@ -6,8 +6,8 @@
   {{#unless @disabled}}
     <Menu.Content>
       {{#each this.exportFormats as |exportFormat|}}
-        {{! @report.isNew is falsey with dashboards so this works as expected in dashboards}}
-        {{#if (and @report.isNew exportFormat.requiresSaved)}}
+        {{! @model.isNew is falsey with dashboards so this works as expected in dashboards}}
+        {{#if (and @model.isNew exportFormat.requiresSaved)}}
           <span class="link has-icon-front is-disabled">
             <DenaliIcon @icon={{exportFormat.icon}} />
 

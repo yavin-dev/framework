@@ -4,7 +4,7 @@
  *
  * Usage:
  *   <ReportActions::MultipleFormatExport
- *      @report={{@report}}
+ *      @model={{@report}}
  *      @disabled={{not @report.validations.isTruelyValid}}
  *   >
  *      Inner template
@@ -42,17 +42,17 @@ export default class MultipleFormatExport extends ReportActionExport {
    */
   get exportHref() {
     const {
-      args: { report },
+      args: { model },
       compression,
       store,
     } = this;
 
-    const serializedModel = report.toJSON() as ReportModel;
+    const serializedModel = model.toJSON() as ReportModel;
 
     // Create new report model in case we're dealing with a widget model
     const newModel = store.createRecord('report', {
       title: serializedModel.title,
-      request: report.request.clone(),
+      request: model.request.clone(),
       visualization: store.createFragment(serializedModel.visualization.type, serializedModel.visualization),
     });
 
@@ -66,7 +66,7 @@ export default class MultipleFormatExport extends ReportActionExport {
    * Href for google sheet export
    */
   get gsheetExportHref() {
-    return `/gsheet-export/report/${this.args.report.id}`;
+    return `/gsheet-export/report/${this.args.model.id}`;
   }
 
   /**

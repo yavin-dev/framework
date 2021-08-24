@@ -15,7 +15,7 @@ import Ember from 'ember';
 import { dasherize } from '@ember/string';
 
 interface Args {
-  report: ReportModel;
+  model: ReportModel;
 }
 
 export default class ReportActionExport extends Component<Args> {
@@ -34,24 +34,29 @@ export default class ReportActionExport extends Component<Args> {
    */
   exportType = 'CSV';
 
+  get modelType() {
+    //@ts-ignore
+    return this.args.model.constructor.modelName;
+  }
+
   /**
    * filename for the downloaded file
    */
   get filename() {
-    return this.args.report.title;
+    return this.args.model.title;
   }
 
   /**
    * Determines whether the report is valid for exporting
    */
   async isValidForExport(): Promise<boolean> {
-    const { report } = this.args;
-    await report.request?.loadMetadata();
-    return report.validations.isTruelyValid;
+    const { model } = this.args;
+    await model.request?.loadMetadata();
+    return model.validations.isTruelyValid;
   }
 
   @task *downloadTask(): TaskGenerator<void> {
-    const serializedRequest = this.args.report.request.serialize() as RequestV2;
+    const serializedRequest = this.args.model.request.serialize() as RequestV2;
 
     try {
       const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {
@@ -73,7 +78,7 @@ export default class ReportActionExport extends Component<Args> {
     const isValid: boolean = yield this.isValidForExport();
 
     if (!isValid) {
-      this.showErrorNotification('Please run a valid report and try again.');
+      this.showErrorNotification(`Please run a valid ${this.modelType} and try again.`);
     } else {
       yield taskFor(this.downloadTask).perform();
     }

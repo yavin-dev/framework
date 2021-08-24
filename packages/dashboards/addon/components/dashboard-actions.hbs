@@ -17,7 +17,7 @@
       {{!-- Export action enabled if the dashboard is valid --}}
       <DashboardActions::Export
         class="dashboard-actions__export"
-        @dashboard={{dashboard}}
+        @model={{dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
       >
         <DenaliIcon
@@ -57,7 +57,6 @@
       {{!-- Scheduling is only enabled for own and valid dashboard --}}
       {{#if (feature-flag "enableScheduleDashboards")}}
         <DashboardActions::Schedule
-          class="dashboard-actions__schedule"
           @disabled={{not dashboard.validations.isTruelyValid}}
           @model={{dashboard}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
@@ -66,6 +65,7 @@
           as |onOpen|
         >
           <DenaliIcon
+            class="dashboard-actions__schedule"
             id="dashboard-actions__schedule-{{@index}}"
             disabled={{not dashboard.validations.isTruelyValid}}
             @icon="time"

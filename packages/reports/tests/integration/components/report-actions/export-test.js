@@ -8,7 +8,7 @@ import { task } from 'ember-concurrency';
 
 const TEMPLATE = hbs`
   <ReportActions::Export
-    @report={{this.report}}
+    @model={{this.report}}
     as |onClick|
   >
     <DenaliButton

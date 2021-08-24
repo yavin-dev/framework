@@ -79,7 +79,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal', async function (assert) {
-    assert.expect(10);
+    assert.expect(8);
 
     this.set('model', unscheduledModel);
 

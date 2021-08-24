@@ -2,7 +2,6 @@ import { click, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import $ from 'jquery';
 
 module('Acceptances | Report to dashboard action', function (hooks) {
   setupApplicationTest(hooks);
@@ -12,17 +11,16 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     assert.expect(1);
 
     await visit('/reports/1/view');
-    assert.ok(
-      !!$('.report-actions__addToDashboard').length,
-      'Add to Dashboard button is visible when feature flag is on'
-    );
+    assert
+      .dom('.report-actions__add-to-dashboard')
+      .isVisible('Add to Dashboard button is visible when feature flag is on');
   });
 
   test('Add to dashboard button is hidden when there are unrun request changes', async function (assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');
-    assert.ok(!!$('.report-actions__addToDashboard').length, 'Add to Dashboard button is visible by default');
+    assert.dom('.report-actions__add-to-dashboard').isEnabled('Add to Dashboard button is enabled for a valid request');
 
     // Remove all columns to make invalid
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
@@ -30,19 +28,16 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
-    assert.notOk(
-      !!$('.report-actions__addToDashboard').length,
-
-      'Add to Dashboard button is hidden when all metrics is disabled'
-    );
+    assert
+      .dom('.report-actions__add-to-dashboard')
+      .isDisabled('Add to Dashboard button is disabled when all metrics are removed');
 
     // Revert changes and run query
     await click('.navi-report__revert-btn');
     await click('.navi-report__run-btn');
 
-    assert.ok(
-      !!$('.report-actions__addToDashboard').length,
-      'Add to Dashboard button is once again visible after running the latest request'
-    );
+    assert
+      .dom('.report-actions__add-to-dashboard')
+      .isEnabled('Add to Dashboard button is once again enabled after running a valid request');
   });
 });

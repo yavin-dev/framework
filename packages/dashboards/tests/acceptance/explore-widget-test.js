@@ -4,7 +4,6 @@ import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
-import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import $ from 'jquery';
 import { clickItem } from 'navi-reports/test-support/report-builder';
 import { selectChoose } from 'ember-power-select/test-support';
@@ -148,16 +147,11 @@ module('Acceptance | Exploring Widgets', function (hooks) {
   });
 
   test('Export action', async function (assert) {
-    let originalFeatureFlag = config.navi.FEATURES.exportFileTypes;
-
-    // Turn flag off
-    config.navi.FEATURES.exportFileTypes = [];
+    assert.expect(4);
 
     await visit('/dashboards/1/widgets/2/view');
 
-    assert
-      .dom($('.report-actions__export-btn:contains(Export)')[0])
-      .doesNotHaveClass('.report-actions__export-btn--is-disabled', 'Export action is enabled for a valid request');
+    assert.dom('.navi-report-widget__action-export-btn').isNotDisabled('Export action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
     assert
@@ -168,26 +162,21 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
     assert
-      .dom($('.report-actions__export-btn:contains(Export)')[0])
-      .doesNotHaveClass(
-        '.report-actions__export-btn--is-disabled',
-        'Export action is disabled when request is not valid'
-      );
+      .dom('.navi-report-widget__action-export-btn')
+      .isDisabled('Export action is disabled when request is not valid');
 
     assert
       .dom('.navi-report-widget__body .report-builder__container--result')
       .isVisible('Widget body has a visualization on the view route');
-
-    config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
 
   test('Multi export action', async function (assert) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/2/view');
-    await clickTrigger('.multiple-format-export');
+    await click($('.menu-content a:contains("PDF")')[0]);
     assert
-      .dom($('.multiple-format-export__dropdown a:contains(PDF)')[0])
+      .dom('.export__download-link')
       .hasAttribute('href', /export\?reportModel=/, 'Export url contains serialized report');
   });
 
@@ -195,18 +184,14 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
-    assert
-      .dom('.get-api__action-btn')
-      .doesNotHaveAttribute('disabled', 'Get API action is enabled for a valid request');
+    assert.dom('.get-api__action-btn').isEnabled('Get API action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
-    assert
-      .dom('.get-api__action-btn')
-      .hasAttribute('disabled', '', 'Get API action is disabled when request is not valid');
+    assert.dom('.get-api__action-btn').isDisabled('Get API action is disabled when request is not valid');
   });
 
   test('Share action', async function (assert) {
@@ -232,14 +217,11 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await clickItem('metric', 'Ad Clicks');
     await click('.navi-report-widget__run-btn');
 
-    assert.notOk(
-      !!$('.navi-report-widget__action:contains(Share)').length,
-      'Share action is not present on an unsaved report'
-    );
+    assert.dom('navi-report-widget__action-share').doesNotExist('Share action is not present for an unsaved report');
 
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');
-    await triggerCopySuccess('.navi-report-widget__share-btn');
+    await triggerCopySuccess('.navi-report-widget__action-share');
   });
 
   test('Delete widget', async function (assert) {
@@ -247,10 +229,9 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     /* == Not owner == */
     await visit('/dashboards/3/widgets/4/view');
-    assert.notOk(
-      !!$('.navi-report-widget__action:contains(Delete)').length,
-      'Delete action is not available if user is not the owner'
-    );
+    assert
+      .dom('navi-report-widget__action-delete')
+      .doesNotExist('Delete action is not available if user is not the owner');
 
     /* == Delete success == */
     await visit('/dashboards/1');
@@ -262,7 +243,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     );
 
     await visit('/dashboards/1/widgets/2/view');
-    await click('.navi-report-widget__delete-btn');
+    await click('.navi-report-widget__action-delete');
     assert
       .dom('.delete__modal-details')
       .hasText('This action cannot be undone. This will permanently delete the Mobile DAU Graph dashboard widget.');
@@ -284,7 +265,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await visit('/dashboards/1/widgets/1/view');
     originalWidgetTitle = find('.navi-report-widget__title').textContent.trim();
 
-    await click($('.navi-report-widget__action-link:contains("Clone As Report")')[0]);
+    await click('.navi-report-widget__action-clone');
 
     assert.ok(
       TempIdRegex.test(currentURL()),

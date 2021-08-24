@@ -4,28 +4,28 @@
  *
  * Usage:
  *    <DashboardActions::Export
- *      @dashboard={{@dashboard}}
+ *      @model={{@dashboard}}
+ *      @disabled={{not @dashboard.validations.isTruelyValid}}
  *    >
  *      Inner template
  *    </DashboardActions::Export>
  */
 
 import MultipleFormatExport from 'navi-reports/components/report-actions/multiple-format-export';
-import { task } from 'ember-concurrency';
 
 export default class DashboardMultipleFormatExport extends MultipleFormatExport {
   /**
    * @override
    */
   get filename() {
-    return `${this.args.dashboard.title}-dashboard`;
+    return `${this.args.model.title}-dashboard`;
   }
 
   /**
    * @override
    */
   get exportHref() {
-    return `/export?dashboard=${this.args.dashboard.id}`;
+    return `/export?dashboard=${this.args.model.id}`;
   }
 
   /**
@@ -33,7 +33,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    * @override
    */
   get gsheetExportHref() {
-    return `/gsheet-export/dashboard/${this.args.dashboard.id}`;
+    return `/gsheet-export/dashboard/${this.args.model.id}`;
   }
 
   /**
@@ -49,6 +49,6 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    * @override
    */
   isValidForExport() {
-    return this.args.dashboard.validations.isTruelyValid;
+    return this.args.model.validations.isTruelyValid;
   }
 }

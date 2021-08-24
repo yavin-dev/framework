@@ -772,4 +772,22 @@ module('Acceptance | Dashboards', function (hooks) {
       .dom('.navi-widget__content.error-container')
       .containsText('There was an error with your request.', 'Error text shows for the bad datasource widget');
   });
+
+  test('Export download links', async function (assert) {
+    assert.expect(2);
+    await visit('/dashboards/1');
+    await click($('.menu-content a:contains("PDF")')[0]);
+    assert.equal(
+      find('.export__download-link').getAttribute('href'),
+      '/export?dashboard=1',
+      'Export to PDF action generates a correct download link'
+    );
+
+    await click($('.menu-content a:contains("PNG")')[0]);
+    assert.equal(
+      find('.export__download-link').getAttribute('href'),
+      '/export?dashboard=1&fileType=png',
+      'Export to PNG action generates a correct download link'
+    );
+  });
 });

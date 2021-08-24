@@ -60,7 +60,7 @@
       <ReportActions::MultipleFormatExport
         class="report-actions__export"
         id="report-actions__export"
-        @report={{@model}}
+        @model={{@model}}
         @disabled={{not @model.validations.isTruelyValid}}
       >
         <DenaliButton
@@ -75,7 +75,7 @@
       </ReportActions::MultipleFormatExport>
     {{else}}
       <ReportActions::Export
-        @report={{@model}}
+        @model={{@model}}
         as |onClick|
       >
         <span id="report-actions__export">

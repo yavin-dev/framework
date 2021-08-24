@@ -24,7 +24,7 @@
       {{#if (gt exportFileTypes.length 1)}}
         <ReportActions::MultipleFormatExport
           class="navi-report-actions__export"
-          @report={{@item}}
+          @model={{@item}}
         >
           <DenaliIcon
             id={{concat "navi-report-actions__export-" @index}}
@@ -35,7 +35,7 @@
         </ReportActions::MultipleFormatExport>
       {{else}}
         <ReportActions::Export
-          @report={{@item}}
+          @model={{@item}}
           as |onClick|
         >
           {{!-- this wrapper div exists because tooltip doesn't render for a disabled button --}}
