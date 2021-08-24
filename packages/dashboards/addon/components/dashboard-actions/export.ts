@@ -15,6 +15,7 @@ import MultipleFormatExport from 'navi-reports/components/report-actions/multipl
 
 export default class DashboardMultipleFormatExport extends MultipleFormatExport {
   /**
+   * filename for the downloaded file
    * @override
    */
   get filename() {
@@ -22,10 +23,11 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
   }
 
   /**
+   * Promise resolving to export to file link
    * @override
    */
   get exportHref() {
-    return `/export?dashboard=${this.args.model.id}`;
+    return Promise.resolve(`/export?dashboard=${this.args.model.id}`);
   }
 
   /**
