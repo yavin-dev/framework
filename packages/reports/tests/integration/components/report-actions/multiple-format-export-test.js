@@ -213,7 +213,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     await click($('.menu-content a:contains("PNG")')[0]);
 
     assert.verifySteps(
-      ['Your PNG download should begin shortly', 'Please run a valid report and try again.'],
+      ['Your PNG download should begin shortly', 'Please validate the report and try again.'],
       'An error notification is added for an invalid report'
     );
 

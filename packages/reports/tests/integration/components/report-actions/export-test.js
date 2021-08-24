@@ -100,7 +100,7 @@ module('Integration | Component | report actions - export', function (hooks) {
     await click('.report-actions__export-btn');
 
     assert.verifySteps(
-      ['Your CSV download should begin shortly', 'Please run a valid report and try again.'],
+      ['Your CSV download should begin shortly', 'Please validate the report and try again.'],
       'An error notification is added for an invalid report'
     );
   });

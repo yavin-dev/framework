@@ -57,7 +57,7 @@
       {{!-- Scheduling is only enabled for own and valid dashboard --}}
       {{#if (feature-flag "enableScheduleDashboards")}}
         <DashboardActions::Schedule
-          @disabled={{not dashboard.validations.isTruelyValid}}
+          @isValidForSchedule={{this.isItemValid}}
           @model={{dashboard}}
           @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
           @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}
@@ -65,12 +65,10 @@
           as |onOpen|
         >
           <DenaliIcon
-            class="dashboard-actions__schedule"
             id="dashboard-actions__schedule-{{@index}}"
-            disabled={{not dashboard.validations.isTruelyValid}}
             @icon="time"
             @size="small"
-            class="p-4 link m-r-4"
+            class="dashboard-actions__schedule p-4 link m-r-4"
             {{on "click" onOpen}}
           />
           <EmberTooltip @targetId="dashboard-actions__schedule-{{@index}}" @popperContainer="body">

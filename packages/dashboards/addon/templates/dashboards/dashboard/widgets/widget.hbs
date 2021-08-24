@@ -55,7 +55,7 @@
             </CommonActions::GetApi>
           </span>
           <EmberTooltip @targetId="navi-report-widget__action-copy-api">
-            {{if @model.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
+            {{if @model.validations.isTruelyValid "API Query" "Run a valid widget to copy"}}
           </EmberTooltip>
 
           {{!-- Export action is only enabled when request is valid --}}
@@ -99,7 +99,7 @@
               {{/if}}
             {{/let}}
             <EmberTooltip @targetId="navi-report-widget__action-export">
-              {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+              {{if @model.validations.isTruelyValid "Export the widget" "Run a valid widget to enable export"}}
             </EmberTooltip>
           {{/if}}
 
@@ -126,7 +126,7 @@
                 Share
               </CommonActions::Share>
               <EmberTooltip>
-                {{if @model.validations.isTruelyValid "Share the report" "Run a valid report to share"}}
+                {{if @model.validations.isTruelyValid "Share the widget" "Run a valid widget to share"}}
               </EmberTooltip>
             </span>
           {{/unless}}

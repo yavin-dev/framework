@@ -78,7 +78,7 @@ export default class ReportActionExport extends Component<Args> {
     const isValid: boolean = yield this.isValidForExport();
 
     if (!isValid) {
-      this.showErrorNotification(`Please run a valid ${this.modelType} and try again.`);
+      this.showErrorNotification(`Please validate the ${this.modelType} and try again.`);
     } else {
       yield taskFor(this.downloadTask).perform();
     }

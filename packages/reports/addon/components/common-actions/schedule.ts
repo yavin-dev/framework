@@ -75,7 +75,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    * Promise resolving to whether item is valid to be scheduled
    */
   get isValidForSchedule() {
-    return this.args.isValidForSchedule?.() || Promise.resolve(true);
+    return this.args.isValidForSchedule?.() ?? Promise.resolve(true);
   }
 
   /**

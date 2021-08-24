@@ -3,4 +3,13 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NaviActionList from 'navi-reports/components/navi-action-list';
-export default class DashboardActionList extends NaviActionList {}
+import { action } from '@ember/object';
+export default class DashboardActionList extends NaviActionList {
+  /**
+   * @override
+   */
+  @action
+  isItemValid() {
+    return this.args.item.validations.isTruelyValid;
+  }
+}

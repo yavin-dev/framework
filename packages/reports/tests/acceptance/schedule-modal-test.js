@@ -536,7 +536,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert
       .dom('.schedule__modal .alert')
-      .hasText('Please run a valid report to enable scheduling.', 'Error is displayed when validation fails');
+      .hasText('Please validate the report to enable scheduling.', 'Error is displayed when validation fails');
 
     assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'The close button says "Close"');
     await click('.schedule__modal-cancel-btn');

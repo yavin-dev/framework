@@ -18,7 +18,6 @@
     </EmberTooltip>
   </LinkTo>
 
-  {{!-- Export only enabled on a valid report --}}
   {{#if (feature-flag "exportFileTypes")}}
     {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
       {{#if (gt exportFileTypes.length 1)}}
@@ -81,7 +80,7 @@
     {{!-- Schedule only enabled for an owned report and if it valid--}}
     {{#if (feature-flag "enableScheduleReports")}}
       <CommonActions::Schedule
-        @isValidForSchedule={{this.isReportValid}}
+        @isValidForSchedule={{this.isItemValid}}
         @model={{@item}}
         @onSave={{delivery-rule-action "SAVE_DELIVERY_RULE"}}
         @onRevert={{delivery-rule-action "REVERT_DELIVERY_RULE"}}

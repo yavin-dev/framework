@@ -92,7 +92,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
 
     await click($('.menu-content a:contains("PDF")')[0]);
     assert.verifySteps(
-      ['Your PDF download should begin shortly', 'Please run a valid dashboard and try again.'],
+      ['Your PDF download should begin shortly', 'Please validate the dashboard and try again.'],
       'An error notification is added for an invalid dashboard'
     );
   });
