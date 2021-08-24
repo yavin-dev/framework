@@ -37,8 +37,7 @@
       <CommonActions::Share
         @buildUrl={{fn this.buildUrl dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
-        class="dashboard-actions__share"
-        class="p-0"
+        class="dashboard-actions__share p-0"
       >
         <DenaliIcon
           disabled={{not dashboard.validations.isTruelyValid}}
@@ -52,9 +51,9 @@
       {{if dashboard.validations.isTruelyValid "Share the dashboard" "Validate dashboard to enable share"}}
     </EmberTooltip>
 
-    {{!-- Delete action visible when user owns the Dashboard --}}
+
     {{#if dashboard.isUserOwner}}
-      {{!-- Scheduling is only enabled for own and valid dashboard --}}
+      {{!-- Scheduling is visible when user owns the Dashboard --}}
       {{#if (feature-flag "enableScheduleDashboards")}}
         <DashboardActions::Schedule
           @isValidForSchedule={{this.isItemValid}}
@@ -72,11 +71,12 @@
             {{on "click" onOpen}}
           />
           <EmberTooltip @targetId="dashboard-actions__schedule-{{@index}}" @popperContainer="body">
-            {{if dashboard.validations.isTruelyValid "Schedule the dashboard" "Validate dashboard to enable scheduling"}}
+            Schedule the dashboard
           </EmberTooltip>
         </DashboardActions::Schedule>
       {{/if}}
 
+      {{!-- Delete action is visible when user owns the Dashboard --}}
       <CommonActions::Delete
         class="dashboard-actions__delete"
         @model={{dashboard}}

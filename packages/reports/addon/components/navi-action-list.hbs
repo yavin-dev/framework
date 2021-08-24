@@ -18,43 +18,41 @@
     </EmberTooltip>
   </LinkTo>
 
-  {{#if (feature-flag "exportFileTypes")}}
-    {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
-      {{#if (gt exportFileTypes.length 1)}}
-        <ReportActions::MultipleFormatExport
-          class="navi-report-actions__export"
-          @model={{@item}}
-        >
-          <DenaliIcon
-            id={{concat "navi-report-actions__export-" @index}}
-            class="navi-report-actions__export-btn p-4 link m-r-4"
+  {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
+    {{#if (gt exportFileTypes.length 1)}}
+      <ReportActions::MultipleFormatExport
+        class="navi-report-actions__export"
+        @model={{@item}}
+      >
+        <DenaliIcon
+          id={{concat "navi-report-actions__export-" @index}}
+          class="navi-report-actions__export-btn p-4 link m-r-4"
+          @size="small"
+          @icon="download"
+        />
+      </ReportActions::MultipleFormatExport>
+    {{else if exportFileTypes}}
+      <ReportActions::Export
+        @model={{@item}}
+        as |onClick|
+      >
+        {{!-- this wrapper div exists because tooltip doesn't render for a disabled button --}}
+        <span id={{concat "navi-report-actions__export-" @index}}>
+          <DenaliButton
+            @style="text"
             @size="small"
             @icon="download"
-          />
-        </ReportActions::MultipleFormatExport>
-      {{else}}
-        <ReportActions::Export
-          @model={{@item}}
-          as |onClick|
-        >
-          {{!-- this wrapper div exists because tooltip doesn't render for a disabled button --}}
-          <span id={{concat "navi-report-actions__export-" @index}}>
-            <DenaliButton
-              @style="text"
-              @size="small"
-              @icon="download"
-              class="navi-report-actions__export-btn m-r-4"
-              {{on "click" onClick}}
-            >
-            </DenaliButton>
-          </span>
-        </ReportActions::Export>
-      {{/if}}
-    {{/let}}
-    <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
-      Export the report
-    </EmberTooltip>
-  {{/if}}
+            class="navi-report-actions__export-btn m-r-4"
+            {{on "click" onClick}}
+          >
+          </DenaliButton>
+        </span>
+      </ReportActions::Export>
+    {{/if}}
+  {{/let}}
+  <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
+    Export the report
+  </EmberTooltip>
 
   {{!-- Share only enabled on a saved report --}}
   <CommonActions::Share

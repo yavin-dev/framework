@@ -4,6 +4,7 @@
  */
 import NaviActionList from 'navi-reports/components/navi-action-list';
 import { action } from '@ember/object';
+
 export default class DashboardActionList extends NaviActionList {
   /**
    * @override

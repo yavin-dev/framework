@@ -12,7 +12,6 @@
  */
 
 import { inject as service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import ReportActionExport from 'navi-reports/components/report-actions/export';
 import type StoreService from '@ember-data/store';
@@ -31,11 +30,6 @@ export default class MultipleFormatExport extends ReportActionExport {
    * instance of store service
    */
   @service declare store: StoreService;
-
-  /**
-   * supported file types for export
-   */
-  @tracked supportedFileTypes = featureFlag('exportFileTypes');
 
   /**
    * Promise resolving to export to file link
@@ -73,8 +67,7 @@ export default class MultipleFormatExport extends ReportActionExport {
    * A list of export formats
    */
   get exportFormats(): Array<{ type: string; icon: string; requiresSaved: boolean }> {
-    const { supportedFileTypes } = this;
-
+    const supportedFileTypes = featureFlag('exportFileTypes');
     const exportFormats = [];
 
     if (Array.isArray(supportedFileTypes)) {
