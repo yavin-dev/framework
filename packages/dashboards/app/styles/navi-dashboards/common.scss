@@ -20,3 +20,9 @@
     width: 100%;
   }
 }
+
+.ember-power-select-group {
+  .ember-power-select-options {
+    overflow-y: hidden;
+  }
+}
