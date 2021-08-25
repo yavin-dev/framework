@@ -18,6 +18,7 @@ import {
   parseMetrics,
 } from './bard-lite-parsers';
 import { getPeriodForGrain } from 'navi-data/utils/date';
+import { groupBy, difference } from 'lodash-es';
 import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
@@ -177,8 +178,10 @@ export default function (
   this.get('/data/*path', function (_db, request) {
     faker.seed(request.url.length);
     let [table, grain, ...dimensionPaths] = request.params.path.split('/') as [string, GrainWithAll] & string[];
+    const hasRollUpDim = dimensionPaths.includes('__rollupMask');
     const dimensions = dimensionPaths
       .filter((d) => d.length > 0)
+      .filter((dim) => dim !== '__rollupMask')
       .sort()
       .map((d) => parseDimension(d));
 
@@ -267,6 +270,113 @@ export default function (
       .filter((r) => r !== undefined);
 
     let missingIntervals = request.queryParams.metrics.includes('uniqueIdentifier') ? MISSING_INTERVALS : undefined;
+
+    //lets do subtotal total stuff
+    const processedDims: string[] = [];
+    const requestDimensionNames: string[] = dimensions.map((dim) => dim.name);
+    if (request.queryParams.rollupTo || request.queryParams.rollupGrandTotal) {
+      let rollupDimensions: string[] = [];
+      if (request.queryParams.rollupTo) {
+        rollupDimensions = request.queryParams.rollupTo.split(',');
+      }
+      let groupedRows: any = [[...rows]];
+      const metrics = parseMetrics(request.queryParams.metrics);
+      const getMask = (rolledupDims: string[]) => {
+        const rollupDimensionMask = ['dateTime', ...requestDimensionNames];
+        const flagMap = rollupDimensionMask.map((rolledDim) => (rolledupDims.includes(rolledDim) ? 1 : 0));
+        return String(parseInt(flagMap.join(''), 2));
+      };
+      const fullMask = getMask(['dateTime', ...requestDimensionNames]);
+
+      let grandTotalRow;
+
+      if (request.queryParams.rollupGrandTotal) {
+        grandTotalRow = rows.reduce((acc: any, row) => {
+          if (acc === null) {
+            acc = {};
+            Object.keys(row).forEach((key) => (acc[key] = null));
+            if (hasRollUpDim) {
+              acc.__rollupMask = '0';
+            }
+          }
+
+          metrics.forEach((metric) => {
+            acc[metric] = acc[metric] + Number(row[metric]);
+          });
+
+          if (hasRollUpDim) {
+            row.__rollupMask = fullMask;
+          }
+          return acc;
+        }, null);
+      } else {
+        rows = rows.map((row) => {
+          if (hasRollUpDim) {
+            row.__rollupMask = fullMask;
+          }
+          return row;
+        });
+      }
+
+      rollupDimensions.forEach((dim) => {
+        groupedRows = groupedRows.map((row: any) => {
+          let groupedRow = Object.values(groupBy(row, dim === 'dateTime' ? dim : `${dim}|id`));
+          groupedRow = groupedRow.reduce((aggAcc, aggRow) => {
+            const subtotalRow = aggRow.reduce((acc, row) => {
+              if (row.__rollupMask !== fullMask) {
+                //subtotal row, skip
+                return acc;
+              }
+              const presentDims = [...processedDims, dim];
+              presentDims.forEach((dim) => {
+                if (dim === 'dateTime') {
+                  acc.dateTime = row.dateTime;
+                } else {
+                  acc[`${dim}|id`] = row[`${dim}|id`];
+                  acc[`${dim}|desc`] = row[`${dim}|desc`];
+                }
+              });
+
+              if (hasRollUpDim) {
+                acc.__rollupMask = getMask([...processedDims, dim]);
+              }
+
+              metrics.forEach((metric) => {
+                if (!acc[metric]) {
+                  acc[metric] = 0;
+                }
+                acc[metric] = Number(acc[metric]) + Number(row[metric]);
+              });
+
+              const nullDims = difference(['dateTime', ...dimensions], [...processedDims, dim]);
+              nullDims.forEach((nullDim) => {
+                if (nullDim === 'dateTime') {
+                  acc.dateTime = null;
+                  return;
+                }
+                acc[`${nullDim}|id`] = null;
+                acc[`${nullDim}|desc`] = null;
+              });
+              return acc;
+            }, {});
+
+            if (Object.keys(subtotalRow).length > 0) {
+              aggAcc.push([...aggRow, subtotalRow]);
+            } else {
+              aggAcc.push(aggRow);
+            }
+            return aggAcc;
+          }, []);
+          return groupedRow;
+        });
+        if (groupedRows.length === 1) {
+          groupedRows = groupedRows[0];
+        }
+        processedDims.push(dim);
+      });
+      const flatRows = groupedRows.flat(rollupDimensions.length);
+      rows = grandTotalRow ? [...flatRows, grandTotalRow] : flatRows;
+    }
 
     return {
       rows,
