@@ -64,12 +64,18 @@ export type Sort = {
   direction: SortDirection;
 };
 
+export type Rollup = {
+  columns: string[];
+  grandTotal: boolean;
+};
+
 // TODO: Remove V2 once V1 is no longer in use
 export type RequestV2 = {
   filters: Filter[];
   columns: Column[];
   table: string;
   dataSource: string;
+  rollup?: Rollup;
   sorts: Sort[];
   limit?: number | null;
   requestVersion: '2.0';

@@ -425,6 +425,10 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
             direction: 'desc',
           },
         ],
+        rollup: {
+          columns: [],
+          grandTotal: false,
+        },
         table: 'network',
         dataSource: 'bardOne',
         limit: 2,
@@ -453,6 +457,67 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
       request.nonTimeDimensions,
       request.columns.filter((c) => c.type === 'dimension'),
       'nonTimeDimensions recomputes when the request columns change'
+    );
+  });
+
+  test('Rollup request features', (assert) => {
+    assert.expect(5);
+    const request = mockModel.get('request');
+
+    request.addColumn({ cid: 'bar' });
+
+    request.pushRollupColumn({ cid: 'foo' });
+    request.pushRollupColumn({ cid: 'foo' }); //test duplicate push
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['foo'],
+        grandTotal: false,
+      },
+      'Adding a dimension column works as expected'
+    );
+
+    request.pushRollupColumn({ cid: 'bar' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['foo', 'bar'],
+        grandTotal: false,
+      },
+      'Adding another dimension pushes it to end of columns array'
+    );
+
+    request.removeRollupColumn({ cid: 'foo' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['bar'],
+        grandTotal: false,
+      },
+      'Correct column was removed'
+    );
+
+    request.setGrandTotal(true);
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['bar'],
+        grandTotal: true,
+      },
+      'Grand Total is toggled'
+    );
+
+    request.pushRollupColumn({ cid: 'dateTime' });
+
+    const clonedRequest = request.clone();
+
+    assert.deepEqual(
+      clonedRequest.rollup.toJSON(),
+      {
+        columns: ['bar', 'dateTime'],
+        grandTotal: true,
+      },
+      'Rollup was cloned correctly'
     );
   });
 });
