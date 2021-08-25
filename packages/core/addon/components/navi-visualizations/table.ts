@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -159,6 +159,28 @@ export default class Table extends Component<Args> {
   }
 
   /**
+   * Adds meta into rows for serverside data rollups
+   */
+  _mapRollups(tableData: ResponseRow[], request: RequestFragment) {
+    if (request?.rollup?.columns?.length <= 0 && !request?.rollup?.grandTotal) {
+      return tableData;
+    }
+    const dimensionCount = new Set(request?.columns.filter((col) => col.type !== 'metric')).size;
+    const fullMask = parseInt(new Array(dimensionCount).fill('1').join(''), 2);
+    return tableData.map((row) => {
+      if (row.__rollupMask === undefined || row.__rollupMask === null) {
+        return row;
+      }
+      const rollupMask = Number(row.__rollupMask);
+      row.__meta__ = {
+        isRollup: rollupMask !== fullMask,
+        isGrandTotal: rollupMask === 0,
+      };
+      return row;
+    });
+  }
+
+  /**
    * Compute subtotal for selected dimension in the data
    *
    * @returns data with subtotal rows
@@ -187,10 +209,12 @@ export default class Table extends Component<Args> {
     return groupBy(rawData, (row: ResponseRow) => row[canonicalName]);
   }
 
-  @computed('rawData', 'selectedSubtotal', 'args.options.showTotals.grandTotal', 'groupedData')
+  @computed('rawData', 'selectedSubtotal', 'args.options.showTotals.grandTotal', 'groupedData', 'request')
   get tableData(): ResponseRow[] {
     const { rawData } = this;
-    const tableData = this._computeSubtotals();
+    let tableData = this._computeSubtotals();
+
+    tableData = this._mapRollups(tableData, this.request);
 
     if (!this.args.options?.showTotals?.grandTotal) {
       return tableData;

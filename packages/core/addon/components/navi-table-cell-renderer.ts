@@ -1,5 +1,5 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Picks the correct cell renderer to use. Allows for extension in apps.
@@ -22,6 +22,8 @@ export type CellRendererArgs = {
   data: ResponseRow;
   column: TableColumn;
   request: RequestFragment;
+  isRollup: boolean;
+  isGrandTotal: boolean;
 };
 
 export default class NaviTableCellRenderer extends Component<CellRendererArgs> {

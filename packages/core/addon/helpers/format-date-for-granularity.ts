@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { helper as buildHelper } from '@ember/component/helper';
@@ -37,9 +37,9 @@ function formatWeek(startDate: string): string {
 /**
  * Returns a date in a human readable format based on granularity
  */
-export function formatDateForGranularity(date: string, grain: Grain) {
+export function formatDateForGranularity(date: string, grain: Grain, blankValue = '--') {
   if (!isValidMoment(date)) {
-    return '--';
+    return blankValue;
   }
 
   const period = getPeriodForGrain(grain);

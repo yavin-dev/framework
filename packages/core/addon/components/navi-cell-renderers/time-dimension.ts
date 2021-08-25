@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -26,6 +26,13 @@ export default class TimeDimensionCellRenderer extends BaseCellRenderer {
 
   get displayValue() {
     const { columnValue, timeGrain } = this;
-    return formatDateForGranularity(`${columnValue}`, timeGrain);
+    const { isRollup, isGrandTotal } = this.args;
+    let blankValue = '--';
+    if (isGrandTotal) {
+      blankValue = '';
+    } else if (isRollup) {
+      blankValue = '\xa0'; //non-breaking space
+    }
+    return formatDateForGranularity(`${columnValue}`, timeGrain, blankValue);
   }
 }
