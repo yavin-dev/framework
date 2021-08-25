@@ -15,6 +15,7 @@ export type VisualizationType = FilteredKeys<FragmentRegistry, VisualizationFrag
 // Forces global fragments to be augmented (e.g. for other addons) into the registry
 import 'navi-core/models/bard-request-v2/fragments/column';
 import 'navi-core/models/bard-request-v2/fragments/filter';
+import 'navi-core/models/bard-request-v2/fragments/rollup';
 import 'navi-core/models/bard-request-v2/fragments/sort';
 import 'navi-core/models/bard-request-v2/request';
 import 'navi-core/models/fragments/layout';

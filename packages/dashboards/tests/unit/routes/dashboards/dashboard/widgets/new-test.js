@@ -11,6 +11,10 @@ const NEW_MODEL = {
       filters: [],
       columns: [],
       sorts: [],
+      rollup: {
+        columns: [],
+        grandTotal: false,
+      },
       limit: null,
       requestVersion: '2.0',
       dataSource: null,

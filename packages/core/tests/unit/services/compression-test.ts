@@ -28,8 +28,8 @@ module('Unit | Service | compression', function (hooks) {
     const compressedString = await Service.compress(object);
 
     assert.equal(
-      compressedString,
-      encodeURIComponent(compressedString),
+      compressedString.replace(/[+/=]/g, ''),
+      encodeURIComponent(compressedString.replace(/[+/=]/g, '')),
       'The object compressed to a string safe for use in a URL without requiring an id'
     );
 
@@ -59,8 +59,8 @@ module('Unit | Service | compression', function (hooks) {
     const compressedString = await Service.compressModel(report);
 
     assert.equal(
-      compressedString,
-      encodeURIComponent(compressedString),
+      compressedString.replace(/[+/=]/g, ''),
+      encodeURIComponent(compressedString.replace(/[+/=]/g, '')),
       'The model compresses to a string safe for use in a URL'
     );
 
