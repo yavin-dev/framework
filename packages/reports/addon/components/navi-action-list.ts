@@ -8,36 +8,14 @@
  *      @index={{this.index}}
  *   />
  */
-import Component from '@glimmer/component';
-import { inject as service } from '@ember/service';
+import NaviBaseActionList from 'navi-reports/components/navi-base-action-list';
 import { action } from '@ember/object';
-import RouterService from '@ember/routing/router-service';
-import ReportModel from 'navi-core/addon/models/report';
+import type ReportModel from 'navi-core/models/report';
 
-interface Args {
-  item: ReportModel;
-  idex: number;
-}
-export default class NaviActionList extends Component<Args> {
-  @service
-  router!: RouterService;
-
+export default class NaviActionList extends NaviBaseActionList<ReportModel> {
   @action
-  buildUrl() {
-    const { id, constructor } = this.args.item;
-    if (id) {
-      //@ts-ignore
-      const modelType = constructor.modelName;
-      const baseUrl = document.location.origin;
-      const modelUrl = this.router.urlFor(`${modelType}s.${modelType}`, id);
-      return baseUrl + modelUrl;
-    }
-    return '';
-  }
-
-  @action
-  async isItemValid(): Promise<boolean> {
+  async isItemValid() {
     await this.args.item.request?.loadMetadata();
-    return this.args.item.validations.isTruelyValid;
+    return this.args.item.validations?.isTruelyValid;
   }
 }

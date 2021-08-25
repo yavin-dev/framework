@@ -15,10 +15,10 @@ import { inject as service } from '@ember/service';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import ReportActionExport from 'navi-reports/components/report-actions/export';
 import type StoreService from '@ember-data/store';
-import type CompressionService from 'navi-core/addon/services/compression';
+import type CompressionService from 'navi-core/services/compression';
 import { TaskGenerator, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
-import type ReportModel from 'navi-core/addon/models/report';
+import type ReportModel from 'navi-core/models/report';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**

@@ -11,7 +11,7 @@ import config from 'ember-get-config';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
-import { Factory } from 'navi-data/addon/models/native-with-create';
+import { Factory } from 'navi-data/models/native-with-create';
 
 let MetadataService: NaviMetadataService, Store: StoreService, TableFactory: Factory<typeof TableMetadataModel>;
 
