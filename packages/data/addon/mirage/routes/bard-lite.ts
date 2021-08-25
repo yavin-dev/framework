@@ -369,7 +369,7 @@ export default function (
           }, []);
           return groupedRow;
         });
-        if (groupedRows.length == 1) {
+        if (groupedRows.length === 1) {
           groupedRows = groupedRows[0];
         }
         processedDims.push(dim);
