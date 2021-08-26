@@ -95,7 +95,7 @@
             @dropdownClass="w-full"
             @disabled={{lt this.formats.length 2}}
             @options={{this.formats}}
-            @selected={{this.localDeliveryRule.format.type}}
+            @selected={{this.localDeliveryRule.format}}
             @searchEnabled={{false}}
             @onChange={{this.updateFormat}}
             @renderInPlace={{true}}
