@@ -267,6 +267,27 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   }
 
   /**
+   * Builds rollup query params
+   * @param {RequestV1} request
+   * @return {String}
+   */
+  _buildRollupParam(request: RequestV2): string {
+    const columns = request.columns;
+    const rollupColumns = request.rollup?.columns || [];
+    return rollupColumns.length
+      ? array(
+          rollupColumns.map((rollupColumn) => {
+            const column = columns.find((col) => rollupColumn === col.cid);
+            return column && isDateTime(column) ? 'dateTime' : column?.field;
+          })
+        )
+          .uniq()
+          .filter((x) => !!x)
+          .join(',')
+      : '';
+  }
+
+  /**
    * Builds a URL path for a request
    */
   _buildURLPath(request: RequestV2, options: RequestOptions = {}): string {
@@ -283,7 +304,11 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     }
     let timeGrain: GrainWithAll = grains.length === 1 ? grains[0] : 'all';
     timeGrain = 'isoWeek' === timeGrain ? 'week' : timeGrain;
-    const dimensions = this._buildDimensionsPath(request);
+    let dimensions = this._buildDimensionsPath(request);
+
+    if ((request.rollup?.columns?.length || -1) > 0 || request?.rollup?.grandTotal) {
+      dimensions = `${dimensions}/__rollupMask`;
+    }
 
     const tableMeta = this.naviMetadata.getById('table', table, request.dataSource) as
       | BardTableMetadataModel
@@ -302,6 +327,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request);
     const sort = this._buildSortParam(request);
+    const rollupTo = this._buildRollupParam(request);
 
     const query: Query = {
       dateTime: this._buildDateTimeParam(request),
@@ -309,6 +335,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       ...(filters ? { filters } : {}),
       ...(having ? { having } : {}),
       ...(sort ? { sort } : {}),
+      ...(rollupTo ? { rollupTo } : {}),
+      ...(request.rollup?.grandTotal === true ? { rollupGrandTotal: true } : {}),
       format: options?.format ?? 'json',
     };
 
