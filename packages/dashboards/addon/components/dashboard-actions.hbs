@@ -27,13 +27,13 @@
           class="p-4 link m-r-4"
         />
         <EmberTooltip @popperContainer="body">
-          {{if dashboard.validations.isTruelyValid "Export the dashboard" "Validate dashboard to enable export"}}
+          {{if dashboard.validations.isTruelyValid "Export the dashboard" "Unable to export invalid dashboard"}}
         </EmberTooltip>
       </DashboardActions::Export>
     {{/if}}
 
     {{!-- Share action enabled if the dashboard is valid --}}
-    <span id={{concat "dashboard-actions__share-" dashboard.id}}>
+    <span id="dashboard-actions__share-{{dashboard.id}}">
       <CommonActions::Share
         @buildUrl={{fn this.buildUrl dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
@@ -47,8 +47,8 @@
         />
       </CommonActions::Share>
     </span>
-    <EmberTooltip @targetId={{concat "dashboard-actions__share-" dashboard.id}} @popperContainer="body">
-      {{if dashboard.validations.isTruelyValid "Share the dashboard" "Validate dashboard to enable share"}}
+    <EmberTooltip @targetId="dashboard-actions__share-{{dashboard.id}}" @popperContainer="body">
+      {{if dashboard.validations.isTruelyValid "Share the dashboard" "Unable to share invalid dashboard"}}
     </EmberTooltip>
 
 

@@ -25,7 +25,7 @@
         @model={{@item}}
       >
         <DenaliIcon
-          id={{concat "navi-report-actions__export-" @index}}
+          id="navi-report-actions__export-{{@index}}"
           class="navi-report-actions__export-btn p-4 link m-r-4"
           @size="small"
           @icon="download"
@@ -37,7 +37,7 @@
         as |onClick|
       >
         {{!-- this wrapper div exists because tooltip doesn't render for a disabled button --}}
-        <span id={{concat "navi-report-actions__export-" @index}}>
+        <span id="navi-report-actions__export-{{index}}">
           <DenaliButton
             @style="text"
             @size="small"
@@ -50,7 +50,7 @@
       </ReportActions::Export>
     {{/if}}
     {{#if exportFileTypes}}
-      <EmberTooltip @targetId={{concat "navi-report-actions__export-" @index}} @popperContainer="body">
+      <EmberTooltip @targetId="navi-report-actions__export-{{@index}}" @popperContainer="body">
         Export the report
       </EmberTooltip>
     {{/if}}
@@ -64,13 +64,13 @@
     class="p-0"
   >
     <DenaliIcon
-      id={{concat "navi-report-actions__share-" @index}}
+      id="navi-report-actions__share-{{@index}}"
       disabled={{@item.isNew}}
       class="p-4 link m-r-4"
       @size="small"
       @icon="share-arrow"
     />
-    <EmberTooltip @targetId={{concat "navi-report-actions__share-" @index}} @popperContainer="body">
+    <EmberTooltip @targetId="navi-report-actions__share-{{@index}}" @popperContainer="body">
       {{if @item.isNew "Save report to enable share" "Share the report"}}
     </EmberTooltip>
   </CommonActions::Share>

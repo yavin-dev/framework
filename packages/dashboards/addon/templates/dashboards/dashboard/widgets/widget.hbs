@@ -55,14 +55,13 @@
             </CommonActions::GetApi>
           </span>
           <EmberTooltip @targetId="navi-report-widget__action-copy-api">
-            {{if @model.validations.isTruelyValid "API Query" "Run a valid widget to copy"}}
+            {{if @model.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid widget"}}
           </EmberTooltip>
 
           {{!-- Export action is only enabled when request is valid --}}
           {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
             {{#if (gt exportFileTypes.length 1)}}
               <ReportActions::MultipleFormatExport
-                class="navi-report-widget__action-export"
                 id="navi-report-widget__action-export"
                 @model={{@model}}
                 @disabled={{not @model.validations.isTruelyValid}}
@@ -98,7 +97,7 @@
             {{/if}}
             {{#if exportFileTypes}}
               <EmberTooltip @targetId="navi-report-widget__action-export">
-                {{if @model.validations.isTruelyValid "Export the widget" "Run a valid widget to enable export"}}
+                {{if @model.validations.isTruelyValid "Export the widget" "Unable to export invalid widget"}}
               </EmberTooltip>
             {{/if}}
           {{/let}}
@@ -126,7 +125,7 @@
                 Share
               </CommonActions::Share>
               <EmberTooltip>
-                {{if @model.validations.isTruelyValid "Share the widget" "Run a valid widget to share"}}
+                {{if @model.validations.isTruelyValid "Share the widget" "Unable to share invalid widget"}}
               </EmberTooltip>
             </span>
           {{/unless}}

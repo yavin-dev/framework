@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { find, click, render } from '@ember/test-helpers';
+import { click, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import Service from '@ember/service';
@@ -37,29 +37,31 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
     assert.notOk(!!$('.menu-content a:contains("CSV")').length, 'Export to CSV is not available for dashboards');
 
     await click($('.menu-content a:contains("PDF")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      '/export?dashboard=123',
-      'Export to PDF action generates a correct download link'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute('href', '/export?dashboard=123', 'Export to PDF action generates a correct download link');
 
     await click($('.menu-content a:contains("PNG")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      '/export?dashboard=123&fileType=png',
-      'Export to PNG action generates a correct download link'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        '/export?dashboard=123&fileType=png',
+        'Export to PNG action generates a correct download link'
+      );
   });
 
   test('export filename', async function (assert) {
     assert.expect(1);
 
     await click($('.menu-content a:contains("PDF")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('download'),
-      'akkala-tech-lab-weekly-reports-dashboard',
-      'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'download',
+        'akkala-tech-lab-weekly-reports-dashboard',
+        'Download attribute is set to the dasherized dashboard name, appended with -dashboard'
+      );
   });
 
   test('disabled', async function (assert) {

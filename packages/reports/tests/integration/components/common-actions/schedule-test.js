@@ -75,7 +75,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert
       .dom('.schedule__modal .alert')
-      .hasText('Please validate the report to enable scheduling.', 'Error is displayed when validation fails');
+      .hasText(
+        'Unable to schedule invalid report. Please fix errors before proceeding.',
+        'Error is displayed when validation fails'
+      );
   });
 
   test('schedule modal', async function (assert) {

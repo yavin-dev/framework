@@ -47,11 +47,7 @@ module('Integration | Component | report actions - export', function (hooks) {
 
     const factService = this.owner.lookup('service:navi-facts');
     const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      expectedHref,
-      'The href attribute is set correctly'
-    );
+    assert.dom('.export__download-link').hasAttribute('href', expectedHref, 'The href attribute is set correctly');
   });
 
   test('filename', async function (assert) {

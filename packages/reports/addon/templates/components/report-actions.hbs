@@ -22,7 +22,7 @@
     </span>
   </ReportActions::AddToDashboard>
   <EmberTooltip @targetId="report-actions__add-to-dashboard">
-    {{if @model.validations.isTruelyValid "Add visualization to Dashboard" "Run a valid report to enable adding to Dashboard"}}
+    {{if @model.validations.isTruelyValid "Add visualization to Dashboard" "Unable to add invalid report to dashboard"}}
   </EmberTooltip>
 {{/if}}
 
@@ -36,7 +36,7 @@
   </CommonActions::GetApi>
 </span>
 <EmberTooltip @targetId="report-actions__copy-api">
-  {{if @model.validations.isTruelyValid "API Query of the report" "Run a valid report to enable API Query"}}
+  {{if @model.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid report"}}
 </EmberTooltip>
 
 <LinkTo
@@ -93,7 +93,7 @@
   {{/if}}
   {{#if exportFileTypes}}
     <EmberTooltip @targetId="report-actions__export">
-      {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
+      {{if @model.validations.isTruelyValid "Export the report" "Unable to export invalid report"}}
     </EmberTooltip>
   {{/if}}
 {{/let}}
@@ -138,7 +138,7 @@
       </span>
     </CommonActions::Schedule>
     <EmberTooltip @targetId="report-actions__schedule">
-      {{if @model.validations.isTruelyValid "Schedule the report" "Run a valid report to enable scheduling"}}
+      {{if @model.validations.isTruelyValid "Schedule the report" "Unable to schedule invalid report"}}
     </EmberTooltip>
   {{/if}}
 

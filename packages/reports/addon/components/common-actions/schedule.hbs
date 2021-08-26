@@ -157,7 +157,9 @@
             class="m-b-30"
             as |Alert|
           >
-            <Alert.Context>Please validate the {{this.modelType}} to enable scheduling.</Alert.Context>
+            <Alert.Context>
+              Unable to schedule invalid {{this.modelType}}. Please fix errors before proceeding.
+            </Alert.Context>
           </DenaliAlert>
           <DenaliButton
             class="schedule__modal-cancel-btn m-r-5"

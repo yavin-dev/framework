@@ -777,17 +777,17 @@ module('Acceptance | Dashboards', function (hooks) {
     assert.expect(2);
     await visit('/dashboards/1');
     await click($('.menu-content a:contains("PDF")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      '/export?dashboard=1',
-      'Export to PDF action generates a correct download link'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute('href', '/export?dashboard=1', 'Export to PDF action generates a correct download link');
 
     await click($('.menu-content a:contains("PNG")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      '/export?dashboard=1&fileType=png',
-      'Export to PNG action generates a correct download link'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        '/export?dashboard=1&fileType=png',
+        'Export to PNG action generates a correct download link'
+      );
   });
 });

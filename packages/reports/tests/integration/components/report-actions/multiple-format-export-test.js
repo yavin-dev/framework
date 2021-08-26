@@ -47,11 +47,9 @@ module('Integration | Component | report actions - multiple-format-export', func
     const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
 
     await click($('.menu-content a:contains("CSV")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('href'),
-      expectedHref,
-      'The href attribute is set correctly for CSV'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute('href', expectedHref, 'The href attribute is set correctly for CSV');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
