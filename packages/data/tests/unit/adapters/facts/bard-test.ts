@@ -4,6 +4,7 @@ import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
 import config from 'ember-get-config';
 import { taskFor } from 'ember-concurrency-ts';
 import moment from 'moment';
+import { cloneDeep } from 'lodash-es';
 import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
@@ -71,35 +72,45 @@ const TestRequest: RequestV2 = {
         parameters: {
           grain: 'grain1',
         },
+        cid: 'dt1',
         type: 'timeDimension',
       },
       {
         field: 'm1',
         parameters: {},
+        cid: 'kjlasdf',
         type: 'metric',
       },
       {
         field: 'm2',
         parameters: {},
+        cid: 'lkasdjf',
         type: 'metric',
       },
       {
         field: 'r',
         parameters: { p: '123', as: 'a' },
+        cid: 'puioqwer',
         type: 'metric',
       },
       {
         field: 'd1',
         parameters: { field: 'id' },
+        cid: 'znmxcv',
         type: 'dimension',
       },
       {
         field: 'd2',
         parameters: { field: 'desc' },
+        cid: 'ipuhozxvc',
         type: 'dimension',
       },
     ],
     sorts: [],
+    rollup: {
+      columns: [],
+      grandTotal: false,
+    },
   },
   Response = {
     rows: [
@@ -112,6 +123,9 @@ const TestRequest: RequestV2 = {
       test: true,
     },
   },
+  TestRequestWithRollup: RequestV2 = Object.assign(cloneDeep(TestRequest), {
+    rollup: { columns: ['dt1', 'znmxcv', 'ipuhozxvc'], grandTotal: true },
+  }),
   MockBardResponse: ResponseData = [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
 
 let Adapter: BardFactsAdapter, Server: PretenderServer;
@@ -689,6 +703,20 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     );
   });
 
+  test('_buildRollupParam', function (assert) {
+    assert.expect(3);
+
+    assert.equal(Adapter._buildRollupParam(EmptyRequest), '', 'Returns empty string with no rollup property');
+
+    assert.equal(Adapter._buildRollupParam(TestRequest), '', 'Returns empty string with empty columns');
+
+    assert.equal(
+      Adapter._buildRollupParam(TestRequestWithRollup),
+      'dateTime,d1,d2',
+      'Returns dimension name in correct order comma separated'
+    );
+  });
+
   test('_buildHavingParam', function (assert) {
     assert.expect(7);
 
@@ -772,7 +800,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildURLPath', function (assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     assert.equal(
       Adapter._buildURLPath({ ...EmptyRequest, table: 'tableName', dataSource: 'bardOne' }),
@@ -839,10 +867,16 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/`,
       '_buildURLPath correctly built the URL path for the provided request when a host is configured'
     );
+
+    assert.equal(
+      Adapter._buildURLPath(TestRequestWithRollup),
+      `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=desc/__rollupMask/`,
+      '_buildURLPath requests __rollupMask dimension when rollup is present'
+    );
   });
 
   test('_buildQuery', function (assert) {
-    assert.expect(5);
+    assert.expect(6);
 
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
@@ -918,6 +952,20 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         _cache: false,
       },
       '_buildQuery correctly built the query object for a request without caching'
+    );
+
+    assert.deepEqual(
+      Adapter._buildQuery(TestRequestWithRollup),
+      {
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
+        metrics: 'm1,m2,r(p=123)',
+        having: 'm1-gt[0]',
+        rollupTo: 'dateTime,d1,d2',
+        rollupGrandTotal: true,
+        format: 'json',
+      },
+      '_buildQuery adds correct rollup params'
     );
   });
 
@@ -1006,7 +1054,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('urlForFindQuery', function (assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     assert.equal(
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest)),
@@ -1080,6 +1128,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       decodeURIComponent(Adapter.urlForFindQuery(TestRequest, { dataSourceName: 'bardTwo' })),
       `${HOST2}/v1/data/table1/grain1/d1;show=id/d2;show=desc/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&format=json`,
       'uriForFindQuery renders alternative host name if option is given'
+    );
+
+    assert.equal(
+      decodeURIComponent(Adapter.urlForFindQuery(TestRequestWithRollup)),
+      HOST +
+        '/v1/data/table1/grain1/d1;show=id/d2;show=desc/__rollupMask/?dateTime=2015-01-03/2015-01-04T00:00:00.000&metrics=m1,m2,r(p=123)&filters=d3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]&having=m1-gt[0]&rollupTo=dateTime,d1,d2&rollupGrandTotal=true&format=json',
+      'urlForFindQuery correctly built the URL for the provided request with the rollup is enabled'
     );
   });
 
