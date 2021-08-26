@@ -76,7 +76,7 @@
           @options={{this.formats}}
           @selected={{this.localDeliveryRule.format.type}}
           @searchEnabled={{false}}
-          @onChange={{this.updateFormat}}
+          @onChange={{fn (mut this.localDeliveryRule.format.type)}}
           @renderInPlace={{true}}
           as | format |
         >
