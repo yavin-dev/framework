@@ -28,6 +28,7 @@ const defaultFormats = ['csv'];
 
 interface Args {
   model: DeliverableItemModel;
+  isValidForSchedule?(): Promise<boolean>;
   onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onRevert(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
@@ -69,6 +70,13 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked isSaving = false;
 
   @tracked showModal = false;
+
+  /**
+   * Promise resolving to whether item is valid to be scheduled
+   */
+  get isValidForSchedule(): Promise<boolean> {
+    return this.args.isValidForSchedule?.() ?? Promise.resolve(true);
+  }
 
   /**
    * @property {Array} frequencies
@@ -203,14 +211,18 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
-    //Kick off a fetch for existing delivery rules
-    this.deliveryRule = this.args.model.deliveryRuleForUser;
+    const isValidForSchedule = await this.isValidForSchedule;
 
-    try {
-      const rule = await this.deliveryRule;
-      this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
-    } catch (e) {
-      this.localDeliveryRule = this._createNewDeliveryRule();
+    if (isValidForSchedule) {
+      //Kick off a fetch for existing delivery rules
+      this.deliveryRule = this.args.model.deliveryRuleForUser;
+
+      try {
+        const rule = await this.deliveryRule;
+        this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
+      } catch (e) {
+        this.localDeliveryRule = this._createNewDeliveryRule();
+      }
     }
   }
 

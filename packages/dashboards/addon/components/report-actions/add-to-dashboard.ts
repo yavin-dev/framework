@@ -1,4 +1,4 @@
-import { A } from '@ember/array';
+import EmberArray, { A } from '@ember/array';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Component from '@glimmer/component';
@@ -34,7 +34,7 @@ export default class AddToDashboardComponent extends Component<Args> {
   @service
   user!: UserService;
 
-  get groupedDashboards() {
+  get groupedDashboards(): EmberArray<{ groupName: string; options: Array<DashboardModel> }> {
     return A([
       {
         groupName: 'My Dashboards',

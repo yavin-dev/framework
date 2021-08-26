@@ -7,7 +7,7 @@ import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/
 import { nanoid } from 'nanoid';
 import moment from 'moment';
 import { getPeriodForGrain } from 'navi-data/utils/date';
-import { GrainWithAll } from 'navi-data/addon/serializers/metadata/bard';
+import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 
 type LogicalTable = {
   table: string;

@@ -4,7 +4,7 @@
  */
 
 import Component from '@glimmer/component';
-import { A } from '@ember/array';
+import EmberArray, { A } from '@ember/array';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import DashboardModel from 'navi-core/models/dashboard';
@@ -35,7 +35,9 @@ export default class AddWidgetComponent extends Component<Args> {
   /**
    * @property {Array} reportsWithCreate - users reports with create new as the first object
    */
-  get reportsWithCreate() {
+  get reportsWithCreate(): EmberArray<
+    { id: string; title: string } | { groupName: string; options: Array<ReportModel> }
+  > {
     return A([
       newReport,
       {
