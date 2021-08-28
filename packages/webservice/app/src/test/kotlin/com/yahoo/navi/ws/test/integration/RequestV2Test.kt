@@ -208,6 +208,97 @@ class RequestV2Test : IntegrationTest() {
     }
 
     @Test
+    fun testRollup() {
+        given()
+            .header("User", USER)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report With Rollup",
+                            "request": {
+                                "rollup": {
+                                    "columns": ["cid1", "cid3"],
+                                    "grandTotal": true
+                                },
+                                "requestVersion": "2.0"
+                            },
+                            "visualization": $visualStr
+                        },
+                        "relationships": {
+                            ${owner(USER)}
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/reports")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", USER)
+            .contentType("application/vnd.api+json")
+            .When()
+            .get("/reports/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_OK)
+            .body("data.attributes.request.rollup.columns", hasItems("cid1", "cid3"))
+            .body("data.attributes.request.rollup.grandTotal", equalTo(true))
+
+        given()
+            .header("User", USER)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report With Rollup",
+                            "request": {
+                                "rollup": {
+                                    "columns": [],
+                                    "grandTotal": false
+                                },
+                                "requestVersion": "2.0"
+                            },
+                            "visualization": $visualStr
+                        },
+                        "relationships": {
+                            ${owner(USER)}
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/reports")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        val emptyStringList: List<String> = emptyList()
+
+        given()
+            .header("User", USER)
+            .contentType("application/vnd.api+json")
+            .When()
+            .get("/reports/2")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_OK)
+            .body("data.attributes.request.rollup.columns", equalTo(emptyStringList))
+            .body("data.attributes.request.rollup.grandTotal", equalTo(false))
+    }
+
+    @Test
     fun testHaving() {
         given()
             .header("User", USER)

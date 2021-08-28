@@ -99,6 +99,7 @@ class ReportTest : IntegrationTest() {
             |"filters":[{"field":"id", "values":["-1", "102", "103"], "type":"dimension", "parameters":{}, "operator":"include"}], 
             |"requestVersion":"2.0", 
             |"sorts":[], 
+            |"rollup": {"columns":[], "grandTotal":false},
             |"dataSource":"", 
             |"table":"base"
             |}
