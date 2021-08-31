@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, triggerEvent, click, find } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
@@ -46,6 +46,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     const factService = this.owner.lookup('service:navi-facts');
     const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert
       .dom('.export__download-link')
@@ -63,6 +64,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     await render(TEMPLATE);
 
     // PDF
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     const actualPDFhref = find('.export__download-link').getAttribute('href');
     const encodedModel = actualPDFhref.split('/export?reportModel=')[1];
@@ -86,7 +88,8 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await render(TEMPLATE);
 
-    // PDF
+    // PNG
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PNG")')[0]);
     const actualPNGhref = find('.export__download-link').getAttribute('href');
     assert.ok(actualPNGhref.endsWith('&fileType=png'), 'url has correct fileType query param');
@@ -111,6 +114,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = ['csv'];
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.equal(
       find('.export__download-link').getAttribute('download'),
@@ -127,6 +131,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.set('disabled', true);
     await render(TEMPLATE);
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     assert.dom('.menu-content').doesNotExist('Dropdown content should not exist');
   });
 
@@ -157,6 +162,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.set('report', Store.createRecord('report', { title: 'New Report', request }));
     await render(TEMPLATE);
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     assert
       .dom($('.menu-content span:contains("Google Sheet")')[0])
       .hasClass('is-disabled', 'option that requires save is disabled');
@@ -181,6 +187,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
 
     assert.verifySteps(
@@ -208,6 +215,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PNG")')[0]);
 
     assert.verifySteps(
@@ -247,6 +255,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("Google Sheet")')[0]);
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
@@ -274,6 +283,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     this.owner.register('service:compression', MockCompression);
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PNG")')[0]);
 
     assert.verifySteps(

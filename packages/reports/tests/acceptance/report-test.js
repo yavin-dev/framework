@@ -677,6 +677,7 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
 
     await visit('/reports/1/view');
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.ok(
       find('.export__download-link').getAttribute('href').includes('/network/day/property;show=id/?dateTime='),
@@ -741,6 +742,7 @@ module('Acceptance | Navi Report', function (hooks) {
     //strip off owner
     delete expectedModel.data.relationships;
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     let actualModel = (await getActualModel(find('.export__download-link').getAttribute('href'))).serialize();
     assert.deepEqual(actualModel, expectedModel, 'PDF link has appropriate link to export service');

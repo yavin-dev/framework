@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { click, render } from '@ember/test-helpers';
+import { click, render, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import Service from '@ember/service';
@@ -34,6 +34,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
 
     assert.dom('.menu-trigger').hasText('Export', 'Component yields content as expected');
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     assert.notOk(!!$('.menu-content a:contains("CSV")').length, 'Export to CSV is not available for dashboards');
 
     await click($('.menu-content a:contains("PDF")')[0]);
@@ -54,6 +55,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
   test('export filename', async function (assert) {
     assert.expect(1);
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     assert
       .dom('.export__download-link')
@@ -92,6 +94,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
     });
     await render(TEMPLATE);
 
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     assert.verifySteps(
       ['Your PDF download should begin shortly', 'Please validate the dashboard and try again.'],
@@ -127,6 +130,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
     this.owner.register('service:navi-notifications', MockNotifications);
 
     await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("Google Sheet")')[0]);
   });
 });

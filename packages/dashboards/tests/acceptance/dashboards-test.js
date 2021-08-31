@@ -1,4 +1,4 @@
-import { click, currentURL, fillIn, find, findAll, visit, blur, waitFor } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, visit, blur, waitFor, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
@@ -776,6 +776,7 @@ module('Acceptance | Dashboards', function (hooks) {
   test('Export download links', async function (assert) {
     assert.expect(2);
     await visit('/dashboards/1');
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     assert
       .dom('.export__download-link')

@@ -211,18 +211,14 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
-    const isValidForSchedule = await this.isValidForSchedule;
+    //Kick off a fetch for existing delivery rules
+    this.deliveryRule = this.args.model.deliveryRuleForUser;
 
-    if (isValidForSchedule) {
-      //Kick off a fetch for existing delivery rules
-      this.deliveryRule = this.args.model.deliveryRuleForUser;
-
-      try {
-        const rule = await this.deliveryRule;
-        this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
-      } catch (e) {
-        this.localDeliveryRule = this._createNewDeliveryRule();
-      }
+    try {
+      const rule = await this.deliveryRule;
+      this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
+    } catch (e) {
+      this.localDeliveryRule = this._createNewDeliveryRule();
     }
   }
 

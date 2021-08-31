@@ -1,4 +1,4 @@
-import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit, waitFor } from '@ember/test-helpers';
+import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit, waitFor, triggerEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
@@ -174,6 +174,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     assert.expect(1);
 
     await visit('/dashboards/1/widgets/2/view');
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("PDF")')[0]);
     assert
       .dom('.export__download-link')

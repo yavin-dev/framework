@@ -118,6 +118,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from bardTwo datasource');
 
     //check CSV export url
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.ok(
       find('.export__download-link')?.getAttribute('href').startsWith('https://data2.naviapp.io/'),
@@ -179,6 +180,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       );
 
     //check CSV export url
+    await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert
       .dom('.export__download-link')
