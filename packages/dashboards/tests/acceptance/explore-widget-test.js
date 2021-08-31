@@ -1,4 +1,15 @@
-import { find, click, fillIn, currentURL, currentRouteName, findAll, blur, visit, waitFor, triggerEvent } from '@ember/test-helpers';
+import {
+  find,
+  click,
+  fillIn,
+  currentURL,
+  currentRouteName,
+  findAll,
+  blur,
+  visit,
+  waitFor,
+  triggerEvent,
+} from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { setupApplicationTest } from 'ember-qunit';
@@ -218,7 +229,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     await clickItem('metric', 'Ad Clicks');
     await click('.navi-report-widget__run-btn');
 
-    assert.dom('navi-report-widget__action-share').doesNotExist('Share action is not present for an unsaved report');
+    assert.dom('.navi-report-widget__action-share').isDisabled('Share action is disabled for an unsaved report');
 
     /* == Saved widget == */
     await visit('/dashboards/1/widgets/2/view');

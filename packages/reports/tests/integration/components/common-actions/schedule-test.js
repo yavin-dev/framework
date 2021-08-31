@@ -433,7 +433,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       findAll('.schedule__modal .alert p').map((el) => el.textContent.trim()),
       [
         'An error occurred while fetching the schedule for this report.',
-        'Unable to schedule invalid report. Please fix errors before proceeding.'
+        'Unable to schedule invalid report. Please fix errors before proceeding.',
       ],
       'Both fetching and invalid errors are displayed'
     );

@@ -32,23 +32,19 @@
       </DashboardActions::Export>
     {{/if}}
 
-    {{!-- Share action enabled if the dashboard is valid --}}
-    <span id="dashboard-actions__share-{{dashboard.id}}">
-      <CommonActions::Share
-        @buildUrl={{fn this.buildUrl dashboard}}
-        @disabled={{not dashboard.validations.isTruelyValid}}
-        class="dashboard-actions__share p-0"
-      >
-        <DenaliIcon
-          disabled={{not dashboard.validations.isTruelyValid}}
-          @size="small"
-          @icon="share-arrow"
-          class="p-4 link m-r-4"
-        />
-      </CommonActions::Share>
-    </span>
+    <CommonActions::Share
+      @buildUrl={{fn this.buildUrl dashboard}}
+      class="dashboard-actions__share p-0"
+    >
+      <DenaliIcon
+        id="dashboard-actions__share-{{dashboard.id}}"
+        @size="small"
+        @icon="share-arrow"
+        class="p-4 link m-r-4"
+      />
+    </CommonActions::Share>
     <EmberTooltip @targetId="dashboard-actions__share-{{dashboard.id}}" @popperContainer="body">
-      {{if dashboard.validations.isTruelyValid "Share the dashboard" "Unable to share invalid dashboard"}}
+      Share the dashboard
     </EmberTooltip>
 
 

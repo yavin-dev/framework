@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { visit, findAll, click, fillIn, find } from '@ember/test-helpers';
+import { visit, findAll, click, fillIn, find, triggerEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';

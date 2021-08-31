@@ -114,21 +114,19 @@
             Clone the widget as report
           </EmberTooltip>
 
-          {{#unless @model.isNew}}
-            {{!-- Share only enabled on a Valid widget --}}
-            <span>
-              <CommonActions::Share
-                @disabled={{not @model.validations.isTruelyValid}}
-                class="button is-text is-medium navi-report-widget__action-share"
-              >
-                <DenaliIcon @icon="share-arrow" />
-                Share
-              </CommonActions::Share>
-              <EmberTooltip>
-                {{if @model.validations.isTruelyValid "Share the widget" "Unable to share invalid widget"}}
-              </EmberTooltip>
-            </span>
-          {{/unless}}
+          {{!-- Share only enabled on a saved widget --}}
+          <span>
+            <CommonActions::Share
+              @disabled={{@model.isNew}}
+              class="button is-text is-medium navi-report-widget__action-share"
+            >
+              <DenaliIcon @icon="share-arrow" />
+              Share
+            </CommonActions::Share>
+            <EmberTooltip>
+              {{if @model.isNew "Save widget to enable share" "Share the widget"}}
+            </EmberTooltip>
+          </span>
 
           {{#if @model.dashboard.isUserOwner}}
             <CommonActions::Delete

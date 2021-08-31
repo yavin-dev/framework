@@ -57,11 +57,9 @@
             </DashboardActions::Export>
           {{/if}}
 
-          {{!-- Share action enables when dashboard is valid --}}
           <CommonActions::Share
             class="dashboard-header__share-btn button is-text is-medium"
             @pageTitle={{@dashboard.title}}
-            @disabled={{not @dashboard.validations.isTruelyValid}}
           >
             <DenaliIcon @icon="share-arrow" />
             Share
