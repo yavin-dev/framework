@@ -5,11 +5,13 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support';
+//@ts-ignore
+import { animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
-
 const DeliveryRule = {
   frequency: 'Week',
-  format: { type: 'csv' },
+  format: 'csv',
   recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {
@@ -351,6 +353,29 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
+  test('format options - onChange', async function (assert) {
+    assert.expect(1);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    this.set('model', TestModel);
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    await click('.schedule__modal-format-trigger');
+
+    await selectChoose('.schedule__modal-format-trigger', 'csv');
+
+    await animationsSettled();
+
+    assert.equal(
+      $('.schedule__modal-format-trigger .ember-power-select-selected-item').text().trim(),
+      'csv',
+      'Schedule format  CSV shouldbe selected on change '
+    );
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
   test('format options - config exportFileTypes is empty', async function (assert) {
     assert.expect(2);
 
