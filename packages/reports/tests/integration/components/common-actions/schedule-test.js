@@ -5,10 +5,13 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
+import { selectChoose } from 'ember-power-select/test-support';
+//@ts-ignore
+import { animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
 const DeliveryRule = {
   frequency: 'Week',
-  format: { type: 'csv' },
+  format: 'csv',
   recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {
