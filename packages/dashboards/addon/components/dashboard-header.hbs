@@ -42,12 +42,12 @@
           {{#if (feature-flag "enableDashboardExport")}}
             {{!-- Export action enabled if the dashboard is valid --}}
             <DashboardActions::Export
-              class="dashboard-header__export-btn {{unless @dashboard.validations.isTruelyValid "disabled"}}"
-              @dashboard={{@dashboard}}
+              @model={{@dashboard}}
               @disabled={{not @dashboard.validations.isTruelyValid}}
             >
               <DenaliButton
                 disabled={{not @dashboard.validations.isTruelyValid}}
+                class="dashboard-header__export-btn"
                 @icon="download"
                 @style="text"
                 @size="medium"
@@ -57,11 +57,9 @@
             </DashboardActions::Export>
           {{/if}}
 
-          {{!-- Share action enables when dashboard is valid --}}
           <CommonActions::Share
             class="dashboard-header__share-btn button is-text is-medium"
             @pageTitle={{@dashboard.title}}
-            @disabled={{not @dashboard.validations.isTruelyValid}}
           >
             <DenaliIcon @icon="share-arrow" />
             Share

@@ -6,7 +6,6 @@ import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import config from 'ember-get-config';
-import RSVP from 'rsvp';
 
 const DeliveryRule = {
   frequency: 'Week',
@@ -14,12 +13,20 @@ const DeliveryRule = {
   recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {
+  constructor: { modelName: 'report' },
   title: 'Test Test',
-  deliveryRuleForUser: new RSVP.Promise((resolve) => resolve(DeliveryRule)),
+  deliveryRuleForUser: Promise.resolve(DeliveryRule),
+};
+const errorModel = {
+  constructor: { modelName: 'report' },
+  title: 'Test Test',
+  get deliveryRuleForUser() {
+    return Promise.reject('boo');
+  },
 };
 const unscheduledModel = {
   title: 'Test Test',
-  deliveryRuleForUser: new RSVP.Promise((resolve) => resolve(null)),
+  deliveryRuleForUser: Promise.resolve(null),
   constructor: {
     modelName: 'report',
   },
@@ -28,16 +35,15 @@ const unscheduledModel = {
 const TEMPLATE = hbs`
 <CommonActions::Schedule
   @model={{this.model}}
+  @isValidForSchedule={{this.isValidForSchedule}}
   @onSave={{this.onSaveAction}}
   @onRevert={{this.onRevertAction}}
   @onDelete={{this.onDeleteAction}}
-  @disabled={{this.isDisabled}}
   as |toggleModal|
 >
   <button
     type="button"
     class="schedule-action__button"
-    disabled={{this.isDisabled}}
     {{on "click" toggleModal}}
   >
     <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
@@ -49,34 +55,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
+    this.set('isValidForSchedule', () => Promise.resolve(true));
     this.set('onSaveAction', () => {});
     this.set('onRevertAction', () => {});
     this.set('onDeleteAction', () => {});
-  });
-
-  test('schedule modal - test disabled', async function (assert) {
-    assert.expect(1);
-    this.set('model', TestModel);
-
-    await render(TEMPLATE);
-
-    this.set('isDisabled', false);
-
-    assert.notOk(
-      $('.schedule-action__button').is(':disabled'),
-      'Schedule is enabled when the disabled is set to false'
-    );
-  });
-
-  test('schedule modal - test enabled', async function (assert) {
-    assert.expect(1);
-    this.set('model', TestModel);
-
-    await render(TEMPLATE);
-
-    this.set('isDisabled', true);
-
-    assert.ok($('.schedule-action__button').is(':disabled'), 'Schedule is enabled when the disabled is set to false');
   });
 
   test('it renders', async function (assert) {
@@ -84,19 +66,22 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.ok($('.schedule-action__button').is(':visible'), 'Schedule Modal component is rendered');
+    assert.dom('.schedule-action__button').isVisible('Schedule Modal component is rendered');
 
-    assert.ok($('.navi-report__action-icon').is(':visible'), 'A schedule icon is rendered in the component');
+    assert.dom('.navi-report__action-icon').isVisible('A schedule icon is rendered in the component');
   });
 
-  test('schedule modal', async function (assert) {
+  test('schedule modal when valid', async function (assert) {
+    assert.expect(8);
+
     this.set('model', unscheduledModel);
 
     await render(TEMPLATE);
-
     await click('.schedule-action__button');
 
-    assert.ok($('.modal.is-active').is(':visible'), 'Schedule Modal component is rendered when the button is clicked');
+    assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
+
+    assert.dom('.schedule__modal .alert').doesNotExist('Error is not displayed when item is valid');
 
     assert
       .dom('.schedule__modal-header')
@@ -119,7 +104,45 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
   });
 
-  test('schedule modal - delivery rule passed in', async function (assert) {
+  test('schedule modal when invalid', async function (assert) {
+    assert.expect(10);
+
+    this.set('model', unscheduledModel);
+    this.set('isValidForSchedule', () => Promise.resolve(false));
+
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
+
+    assert
+      .dom('.schedule__modal-header')
+      .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
+
+    assert
+      .dom('.schedule__modal .alert')
+      .hasText(
+        'Unable to schedule invalid report. Please fix errors before proceeding.',
+        'Error is displayed when validation fails'
+      );
+
+    assert.dom('.schedule__modal-input--recipients').doesNotExist('Input for recipients is not rendered');
+
+    assert.dom('.schedule__modal-frequency-trigger').doesNotExist('Frequency selector is not rendered');
+
+    assert.dom('.schedule__modal-format-trigger').doesNotExist('Format selector is not rendered');
+
+    assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
+
+    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+
+    assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
+
+    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
+  });
+
+  test('schedule modal - delivery rule passed in when valid', async function (assert) {
     assert.expect(2);
     this.set('model', TestModel);
 
@@ -128,18 +151,34 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule-action__button');
 
     assert.deepEqual(
-      $('.schedule__modal-input--recipients .tag')
-        .toArray()
-        .map((e) => e.textContent.trim()),
+      findAll('.schedule__modal-input--recipients .tag').map((el) => el.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
       'The recipients are fetched from the delivery rule'
     );
 
-    assert.equal(
-      $('.schedule__modal-frequency-trigger').text().trim(),
-      'Week',
-      'The frequency is fetched from the delivery rule'
+    assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'The frequency is fetched from the delivery rule');
+  });
+
+  test('schedule modal - delivery rule passed in when invalid', async function (assert) {
+    assert.expect(4);
+    this.set('model', TestModel);
+    this.set('isValidForSchedule', () => Promise.resolve(false));
+
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    assert.deepEqual(
+      findAll('.schedule__modal-input--recipients .tag').map((el) => el.textContent.trim()),
+      ['test@oath.com', 'rule@oath.com'],
+      'The recipients are fetched from the delivery rule'
     );
+
+    assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'The frequency is fetched from the delivery rule');
+
+    assert.dom('.schedule__modal-save-btn').exists('Save button is rendered');
+
+    assert.dom('.schedule__modal-delete-btn').exists('Delete button is rendered');
   });
 
   test('onSave Action', async function (assert) {
@@ -156,7 +195,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       .dom('.schedule__modal-save-btn')
       .hasText('Save', 'The save button says `Save` when model does not have a delivery rule for the current user');
 
-    assert.ok($('.schedule__modal-save-btn').attr('disabled'), 'The save button should be disabled initially');
+    assert.dom('.schedule__modal-save-btn').isDisabled('The save button should be disabled initially');
 
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
 
@@ -170,10 +209,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await click('.schedule__modal-frequency-trigger');
     await nativeMouseUp($('.ember-power-select-option:contains(Month)')[0]);
 
-    assert.notOk(
-      $('.schedule__modal-save-btn').attr('disabled'),
-      'The save button should be enabled after making valid changes'
-    );
+    assert.dom('.schedule__modal-save-btn').isEnabled('The save button should be enabled after making valid changes');
 
     this.set('onSaveAction', (rule) => {
       assert.equal(rule.get('frequency'), 'month', 'Selected frequency is updated in the delivery rule');
@@ -194,11 +230,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     //Click save after modal is open
     await click('.schedule__modal-save-btn');
 
-    assert.equal(
-      $('.schedule__modal-cancel-btn').text().trim(),
-      'Close',
-      'Show close button after save a delivery rule'
-    );
+    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Show close button after save a delivery rule');
   });
 
   test('onRevert Action', async function (assert) {
@@ -234,11 +266,9 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    assert.equal(
-      $('.schedule__modal-delete-btn').length,
-      1,
-      'Delete button is shown when deliveryRule is present for current user'
-    );
+    assert
+      .dom('.schedule__modal-delete-btn')
+      .exists({ count: 1 }, 'Delete button is shown when deliveryRule is present for current user');
 
     await click('.schedule__modal-delete-btn');
 
@@ -341,5 +371,85 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       .includesText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
+  });
+
+  test('error fetching delivery rule when valid', async function (assert) {
+    assert.expect(11);
+
+    this.set('model', errorModel);
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
+
+    assert
+      .dom('.schedule__modal-header')
+      .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
+
+    assert
+      .dom('.schedule__modal .alert')
+      .hasText('Error An error occurred while fetching the schedule for this report.', 'Error is displayed correctly');
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
+      ['Recipients', 'Frequency', 'Format', 'Only send if data is present', ''],
+      'Schedule Modal has all the expected sections'
+    );
+
+    assert
+      .dom('.schedule__modal-input--recipients')
+      .exists('Schedule Modal component renders an text area for recipients');
+
+    assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'Week is the default frequency value');
+
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', '`.csv` is the default format value');
+
+    assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
+
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
+
+    assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
+
+    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
+  });
+
+  test('error fetching delivery rule when invalid', async function (assert) {
+    assert.expect(10);
+
+    this.set('model', errorModel);
+    this.set('isValidForSchedule', () => Promise.resolve(false));
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
+
+    assert
+      .dom('.schedule__modal-header')
+      .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
+
+    assert.deepEqual(
+      findAll('.schedule__modal .alert p').map((el) => el.textContent.trim()),
+      [
+        'An error occurred while fetching the schedule for this report.',
+        'Unable to schedule invalid report. Please fix errors before proceeding.',
+      ],
+      'Both fetching and invalid errors are displayed'
+    );
+
+    assert.dom('.schedule__modal-input--recipients').doesNotExist('Input for recipients is not rendered');
+
+    assert.dom('.schedule__modal-frequency-trigger').doesNotExist('Frequency selector is not rendered');
+
+    assert.dom('.schedule__modal-format-trigger').doesNotExist('Format selector is not rendered');
+
+    assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
+
+    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+
+    assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
+
+    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 });

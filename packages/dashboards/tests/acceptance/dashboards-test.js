@@ -1,4 +1,4 @@
-import { click, currentURL, fillIn, find, findAll, visit, blur, waitFor } from '@ember/test-helpers';
+import { click, currentURL, fillIn, find, findAll, visit, blur, waitFor, triggerEvent } from '@ember/test-helpers';
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
@@ -771,5 +771,24 @@ module('Acceptance | Dashboards', function (hooks) {
     assert
       .dom('.navi-widget__content.error-container')
       .containsText('There was an error with your request.', 'Error text shows for the bad datasource widget');
+  });
+
+  test('Export download links', async function (assert) {
+    assert.expect(2);
+    await visit('/dashboards/1');
+    await triggerEvent('.menu-trigger', 'mouseenter');
+    await click($('.menu-content a:contains("PDF")')[0]);
+    assert
+      .dom('.export__download-link')
+      .hasAttribute('href', '/export?dashboard=1', 'Export to PDF action generates a correct download link');
+
+    await click($('.menu-content a:contains("PNG")')[0]);
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        '/export?dashboard=1&fileType=png',
+        'Export to PNG action generates a correct download link'
+      );
   });
 });

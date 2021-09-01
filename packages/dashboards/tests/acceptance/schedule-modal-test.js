@@ -13,7 +13,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.dashboard-actions__schedule-btn');
+    await click('.dashboard-actions__schedule');
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
@@ -40,7 +40,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     await click('.schedule__modal-format-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
-      ['pdf', 'png'],
+      ['pdf', 'png', 'gsheet'],
       'Schedule format should have correct options'
     );
 
@@ -63,7 +63,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
 
     //Reopen the modal because it closed when saved
     await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.dashboard-actions__schedule-btn');
+    await click('.dashboard-actions__schedule');
 
     // Check that all fields match the delivery rule we just saved
     assert

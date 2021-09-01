@@ -1,0 +1,32 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliMenu class="multiple-format-export" @alignContent="left" ...attributes as |Menu|>
+  <Menu.Trigger>
+    {{yield}}
+  </Menu.Trigger>
+  {{#unless @disabled}}
+    <Menu.Content>
+      {{#each this.exportFormats as |exportFormat|}}
+        {{! @model.isNew is falsey with dashboards so this works as expected in dashboards}}
+        {{#if (and @model.isNew exportFormat.requiresSaved)}}
+          <span class="link has-icon-front is-disabled">
+            <DenaliIcon @icon={{exportFormat.icon}} />
+
+            {{exportFormat.type}}
+            <EmberTooltip @side="left">
+              Save to enable this option
+            </EmberTooltip>
+          </span>
+        {{else}}
+          <DenaliLink
+            role="button"
+            @iconFront={{exportFormat.icon}}
+            {{on "click" (queue (set this.exportType exportFormat.type) (perform this.exportTask))}}
+          >
+            {{exportFormat.type}}
+          </DenaliLink>
+        {{/if}}
+      {{/each}}
+    </Menu.Content>
+  {{/unless}}
+</DenaliMenu>
+<span id="export__download-url"></span>

@@ -11,5 +11,6 @@ module.exports = {
     '@ember/optional-features': '1.3.0 || 2.0.0',
     '@embroider/macros': '0.40.0 || 0.41.0',
     'ember-modifier': '2.1.1 || 2.1.2',
+    'ember-composable-helpers': '4.4.1 || 4.5.0',
   },
 };

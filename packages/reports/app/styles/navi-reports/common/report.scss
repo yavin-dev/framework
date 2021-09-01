@@ -42,32 +42,11 @@
         white-space: nowrap;
       }
 
-      .navi-report__action-link {
-        display: flex;
-      }
-
     }
   }
 
   &-invalid__unauthorized-body {
     text-align: center;
-  }
-
-  &__action-link--is-disabled,
-  &__action--is-disabled button {
-    color: map-get($denali-grey-colors, '600');
-    cursor: not-allowed;
-  }
-
-  // TODO :: Investigate why this style could not be consolidated with
-  // &__action-link--is-disabled
-  &__action-link--force-disabled {
-    color: map-get($denali-grey-colors, '600') !important;
-    cursor: not-allowed !important;
-  }
-
-  &__icon {
-    padding: 4px;
   }
 
   &__body {
@@ -102,10 +81,6 @@
     button {
       margin: 0 5px;
     }
-  }
-
-  &__report-action {
-    margin-top: 0;
   }
 }
 

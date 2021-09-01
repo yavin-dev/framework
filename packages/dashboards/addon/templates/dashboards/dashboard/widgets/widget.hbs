@@ -45,77 +45,89 @@
       <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
         <div class="navi-report-widget__header-actions">
           {{!-- Get API action is only enabled when request is valid --}}
-          <CommonActions::GetApi
-            @request={{@model.request}}
-            disabled={{not @model.request.validations.isTruelyValid}}
-          >
-            <DenaliIcon @icon="code" />
-              API Query
-            <EmberTooltip>
-              {{if @model.request.validations.isTruelyValid "API Query" "Run a valid report to copy"}}
-            </EmberTooltip>
-          </CommonActions::GetApi>
+          <span id="navi-report-widget__action-copy-api">
+            <CommonActions::GetApi
+              @request={{@model.request}}
+              disabled={{not @model.validations.isTruelyValid}}
+            >
+              <DenaliIcon @icon="code" />
+              API query
+            </CommonActions::GetApi>
+          </span>
+          <EmberTooltip @targetId="navi-report-widget__action-copy-api">
+            {{if @model.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid widget"}}
+          </EmberTooltip>
 
           {{!-- Export action is only enabled when request is valid --}}
           {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
             {{#if (gt exportFileTypes.length 1)}}
-              {{#let (component "report-actions/multiple-format-export") as |ExportAction|}}
-                <ExportAction
-                  class="navi-report-widget__action-link {{unless @model.validations.isTruelyValid "is-disabled"}}"
-                  @report={{@model}}
-                  @disabled={{not @model.validations.isTruelyValid}}
+              <ReportActions::MultipleFormatExport
+                id="navi-report-widget__action-export"
+                @model={{@model}}
+                @disabled={{not @model.validations.isTruelyValid}}
+              >
+                <DenaliButton
+                  @style="text"
+                  @size="medium"
+                  @icon="download"
+                  class="navi-report-widget__action-export-btn"
+                  disabled={{not @model.validations.isTruelyValid}}
                 >
-                  <DenaliIcon @icon="download" />
                   Export
-                </ExportAction>
-              {{/let}}
-            {{else}}
-              {{#let (component "report-actions/export") as |ExportAction|}}
-                <ExportAction
-                  class="report-actions__export is-text is-medium {{unless @model.validations.isTruelyValid "is-disabled"}}"
-                  id="report-actions__export"
-                  @report={{@model}}
-                  @disabled={{not @model.validations.isTruelyValid}}
-                  as |onClick|
-                >
+                </DenaliButton>
+              </ReportActions::MultipleFormatExport>
+            {{else if exportFileTypes}}
+              <ReportActions::Export
+                @model={{@model}}
+                as |onClick|
+              >
+                <span id="navi-report-widget__action-export">
                   <DenaliButton
                     @style="text"
                     @size="medium"
                     @icon="download"
-                    class="report-actions__export-btn"
+                    class="navi-report-widget__action-export-btn"
+                    disabled={{not @model.validations.isTruelyValid}}
                     {{on "click" onClick}}
                   >
                     Export
                   </DenaliButton>
-                  <EmberTooltip>
-                    {{if @model.validations.isTruelyValid "Export the report" "Run a valid report to enable export"}}
-                  </EmberTooltip>
-                </ExportAction>
-              {{/let}}
+                </span>
+              </ReportActions::Export>
+            {{/if}}
+            {{#if exportFileTypes}}
+              <EmberTooltip @targetId="navi-report-widget__action-export">
+                {{if @model.validations.isTruelyValid "Export the widget" "Unable to export invalid widget"}}
+              </EmberTooltip>
             {{/if}}
           {{/let}}
 
           <LinkTo
             @route="dashboards.dashboard.widgets.widget.clone-to-report"
-            class="navi-report-widget__action-link button is-text is-medium"
+            class="navi-report-widget__action-clone button is-text is-medium"
+            id="navi-report-widget__action-clone"
           >
             <DenaliIcon @icon="copy-file" />
             Clone As Report
           </LinkTo>
+          <EmberTooltip @targetId="navi-report-widget__action-clone">
+            Clone the widget as report
+          </EmberTooltip>
 
-          {{#unless @model.isNew}}
-            {{!-- Share only enabled on a Valid widget --}}
+          {{!-- Share only enabled on a saved widget --}}
+          <span>
             <CommonActions::Share
-              @disabled={{not @model.request.validations.isTruelyValid}}
-              class="button is-text is-medium navi-report-widget__share-btn"
+              @disabled={{@model.isNew}}
+              class="button is-text is-medium navi-report-widget__action-share"
             >
               <DenaliIcon @icon="share-arrow" />
               Share
-              <EmberTooltip>
-                {{if @model.request.validations.isTruelyValid "Share" "Run a valid report to share"}}
-              </EmberTooltip>
             </CommonActions::Share>
-          {{/unless}}
+            <EmberTooltip>
+              {{if @model.isNew "Save widget to enable share" "Share the widget"}}
+            </EmberTooltip>
+          </span>
+
           {{#if @model.dashboard.isUserOwner}}
             <CommonActions::Delete
               @model={{@model}}
@@ -126,11 +138,15 @@
                 @style="text"
                 @size="medium"
                 @icon="trash"
-                class="navi-report-widget__delete-btn"
+                id="navi-report-widget__action-delete"
+                class="navi-report-widget__action-delete"
                 {{on "click" onDelete}}>
                 Delete
               </DenaliButton>
             </CommonActions::Delete>
+            <EmberTooltip @targetId="navi-report-widget__action-delete">
+              Delete the widget
+            </EmberTooltip>
           {{/if}}
         </div>
       </div>

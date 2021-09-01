@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { visit, findAll, click, fillIn } from '@ember/test-helpers';
+import { visit, findAll, click, fillIn, find, triggerEvent } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';
@@ -118,10 +118,12 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       .hasValue(/^https:\/\/data2.naviapp.io\/\S+$/, 'shows api url from bardTwo datasource');
 
     //check CSV export url
-    await clickTrigger('.multiple-format-export');
-    assert
-      .dom(findAll('.multiple-format-export__dropdown a').filter((el) => el.textContent.trim() === 'CSV')[0])
-      .hasAttribute('href', /^https:\/\/data2.naviapp.io\/\S+$/, 'uses csv export from right datasource');
+    await triggerEvent('.menu-trigger', 'mouseenter');
+    await click($('.menu-content a:contains("CSV")')[0]);
+    assert.ok(
+      find('.export__download-link')?.getAttribute('href').startsWith('https://data2.naviapp.io/'),
+      'uses csv export from right datasource'
+    );
 
     config.navi.FEATURES.exportFileTypes = [];
   });
@@ -178,9 +180,10 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       );
 
     //check CSV export url
-    await clickTrigger('.multiple-format-export');
+    await triggerEvent('.menu-trigger', 'mouseenter');
+    await click($('.menu-content a:contains("CSV")')[0]);
     assert
-      .dom(findAll('.multiple-format-export__dropdown a').filter((el) => el.textContent.trim() === 'CSV')[0])
+      .dom('.export__download-link')
       .hasAttribute(
         'href',
         'https://data2.naviapp.io/v1/data/inventory/day/container;show=id/displayCurrency;show=id/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=csv',
