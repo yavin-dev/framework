@@ -200,9 +200,11 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       'Recipients field is populated by existing delivery rule'
     );
 
-    assert
-      .dom('.schedule__modal-format-trigger .ember-power-select-selected-item')
-      .hasText('csv', 'Format field is populated by existing delivery rule');
+    assert.equal(
+      $('.schedule__modal-format-trigger .ember-power-select-selected-item').text().trim(),
+      { type: 'csv' },
+      'Format field is populated by existing delivery rule'
+    );
 
     await click('.schedule__modal-delete-btn');
     assert
