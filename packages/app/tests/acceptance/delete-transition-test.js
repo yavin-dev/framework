@@ -1,7 +1,6 @@
 import { click, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 module('Acceptance | delete transition', function (hooks) {
