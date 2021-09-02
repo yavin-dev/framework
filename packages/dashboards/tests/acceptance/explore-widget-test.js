@@ -64,15 +64,15 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     await visit('/dashboards/1/widgets/1');
 
-    assert.dom('.navi-report-widget__breadcrumb-link').hasText('Directory', 'Breadcrumb begins with "Directory" link');
+    assert.dom('.navi-report-widget__breadcrumb-link').hasText('Home', 'Breadcrumb begins with "Home" index link');
 
     assert
       .dom('.navi-report-widget__breadcrumb-link')
-      .hasAttribute('href', '/directory/my-data', 'First breadcrumb item links to my-data route');
+      .hasAttribute('href', '/', 'First breadcrumb item links to my-data route');
 
     assert
       .dom(findAll('.navi-report-widget__breadcrumb-link')[1])
-      .hasText('Tumblr Goals Dashboard', 'Breadcrumb begins with "Directory" link');
+      .hasText('Tumblr Goals Dashboard', 'Second breadcrumb item has dashboard title');
 
     assert
       .dom(findAll('.navi-report-widget__breadcrumb-link')[1])
