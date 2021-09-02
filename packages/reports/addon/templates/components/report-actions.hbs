@@ -72,7 +72,7 @@
         Export
       </DenaliButton>
     </ReportActions::MultipleFormatExport>
-  {{else if exportFileTypes}}
+  {{else if (not (is-empty exportFileTypes))}}
     <ReportActions::Export
       @model={{@model}}
       as |onClick|
@@ -91,7 +91,7 @@
       </span>
     </ReportActions::Export>
   {{/if}}
-  {{#if exportFileTypes}}
+  {{#if (not (is-empty exportFileTypes))}}
     <EmberTooltip @targetId="report-actions__export">
       {{if @model.validations.isTruelyValid "Export the report" "Unable to export invalid report"}}
     </EmberTooltip>

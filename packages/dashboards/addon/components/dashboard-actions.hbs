@@ -13,10 +13,11 @@
       </EmberTooltip>
     </LinkTo>
 
-    {{#if (feature-flag "enableDashboardExport")}}
+    {{#if (and (feature-flag "enableDashboardExport") (not (is-empty (feature-flag "exportFileTypes"))))}}
       {{!-- Export action enabled if the dashboard is valid --}}
       <DashboardActions::Export
         class="dashboard-actions__export"
+        id="dashboard-actions__export-{{dashboard.id}}"
         @model={{dashboard}}
         @disabled={{not dashboard.validations.isTruelyValid}}
       >
@@ -26,10 +27,10 @@
           @icon="download"
           class="p-4 link m-r-4"
         />
-        <EmberTooltip @popperContainer="body">
-          {{if dashboard.validations.isTruelyValid "Export the dashboard" "Unable to export invalid dashboard"}}
-        </EmberTooltip>
       </DashboardActions::Export>
+      <EmberTooltip @targetId="dashboard-actions__export-{{dashboard.id}}" @popperContainer="body">
+        {{if dashboard.validations.isTruelyValid "Export the dashboard" "Unable to export invalid dashboard"}}
+      </EmberTooltip>
     {{/if}}
 
     <CommonActions::Share
