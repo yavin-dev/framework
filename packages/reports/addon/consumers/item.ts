@@ -5,24 +5,22 @@
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { ItemActions } from 'navi-reports/services/item-action-dispatcher';
 import { inject as service } from '@ember/service';
-import { featureFlag } from 'navi-core/helpers/feature-flag';
 import { capitalize } from '@ember/string';
-import RouterService from '@ember/routing/router-service';
-import DS from 'ember-data';
-import NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
+import type RouterService from '@ember/routing/router-service';
+import type Model from '@ember-data/model';
+import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 
 export default class ItemConsumer extends ActionConsumer {
   @service
-  naviNotifications!: NaviNotificationsService;
+  declare naviNotifications: NaviNotificationsService;
 
-  @service()
-  router!: RouterService;
+  @service
+  declare router: RouterService;
 
   actions = {
-    async [ItemActions.DELETE_ITEM](this: ItemConsumer, item: DS.Model) {
+    async [ItemActions.DELETE_ITEM](this: ItemConsumer, item: Model) {
       //@ts-ignore
       const itemType = item.constructor.modelName?.replace(/-/g, ' ');
-      const transitionRoute = featureFlag('enableDirectory') ? 'directory' : itemType + 's';
 
       try {
         item.deleteRecord();
@@ -34,7 +32,7 @@ export default class ItemConsumer extends ActionConsumer {
           timeout: 'short',
         });
 
-        this.router.transitionTo(transitionRoute);
+        this.router.transitionTo('index');
       } catch (e) {
         // Restore record
         item.rollbackAttributes();

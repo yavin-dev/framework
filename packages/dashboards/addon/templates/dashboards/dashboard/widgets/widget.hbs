@@ -6,11 +6,7 @@
     <div class="row">
       <div class="col-1-1">
         <div class="navi-report-widget__breadcrumb">
-          {{#if (feature-flag "enableDirectory")}}
-            <LinkTo @route="directory.my-data" class="navi-report-widget__breadcrumb-link">Directory</LinkTo>
-          {{else}}
-            <LinkTo @route="dashboards" class="navi-report-widget__breadcrumb-link">Dashboards</LinkTo>
-          {{/if}}
+          <LinkTo @route="index" class="navi-report-widget__breadcrumb-link">Home</LinkTo>
           <NaviIcon @icon="angle-right" />
           {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
             {{#if this.parentQueryParams}}

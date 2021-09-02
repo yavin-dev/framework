@@ -51,9 +51,13 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await clickItem('dimension', 'Date Time');
 
     await selectChoose($('.filter-builder__operator-trigger:eq(0)')[0], 'Between');
+    // First of last month
     await clickTrigger('.filter-values--date-range-input__low-value.ember-basic-dropdown-trigger');
+    await click('.ember-power-calendar-nav-control--previous');
     await click($('button.ember-power-calendar-day--current-month:contains(1)')[0]);
+    // Second of last month
     await clickTrigger('.filter-values--date-range-input__high-value.ember-basic-dropdown-trigger');
+    await click('.ember-power-calendar-nav-control--previous');
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     await click('.navi-report__run-btn');
