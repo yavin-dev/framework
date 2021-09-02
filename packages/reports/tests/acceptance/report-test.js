@@ -576,7 +576,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.deepEqual(
       findAll('.report-header__header-actions .button').map((e) => e.textContent.trim()),
       ['API Query', 'Clone', 'Share', 'Schedule', 'Delete'],
-      'Export is disabled by default'
+      'Export button is not rendered'
     );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;

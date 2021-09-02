@@ -39,7 +39,7 @@
             Clone
           </LinkTo>
 
-          {{#if (feature-flag "enableDashboardExport")}}
+          {{#if (and (feature-flag "enableDashboardExport") (not (is-empty (feature-flag "exportFileTypes"))))}}
             {{!-- Export action enabled if the dashboard is valid --}}
             <DashboardActions::Export
               @model={{@dashboard}}
