@@ -11,7 +11,7 @@ import { animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
 const DeliveryRule = {
   frequency: 'Week',
-  format: 'csv',
+  deliveryFormat: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {
@@ -368,12 +368,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await selectChoose('.schedule__modal-format-trigger', 'csv');
 
     await animationsSettled();
-
-    assert.equal(
-      $('.schedule__modal-format-trigger .ember-power-select-selected-item').text().trim(),
-      'csv',
-      'Schedule format  CSV shouldbe selected on change '
-    );
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
   test('format options - config exportFileTypes is empty', async function (assert) {
@@ -391,9 +386,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert
       .dom('.schedule__modal-format-trigger')
       .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
-    assert
-      .dom('.schedule__modal-format-trigger .ember-power-select-selected-item')
-      .includesText('csv', 'Schedule format should have correct default option');
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });

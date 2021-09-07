@@ -3,6 +3,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
 import SchedulingRuleFragment from './fragments/scheduling-rules';
+import DeliveryFormatFragment from './fragments/delivery-format';
 import UserModel from './user';
 import DeliverableItemModel from './deliverable-item';
 import { Moment } from 'moment';
@@ -47,8 +48,8 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @fragment('fragments/scheduling-rules', { defaultValue: () => ({ mustHaveData: false }) })
   schedulingRules!: SchedulingRuleFragment;
 
-  @attr()
-  format!: string;
+  @fragment('fragments/delivery-format')
+  schedulingFormat!: DeliveryFormatFragment;
 
   @attr({ defaultValue: () => [] })
   recipients!: string[];
