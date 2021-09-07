@@ -7,7 +7,7 @@ import Fragment from 'ember-data-model-fragments/fragment';
 
 export default class DeliveryFormatFragment extends Fragment {
   @attr('string')
-  type!: string;
+  declare type: string;
 }
 
 declare module 'navi-core/models/registry' {
