@@ -20,6 +20,7 @@ import 'navi-core/models/bard-request-v2/request';
 import 'navi-core/models/fragments/layout';
 import 'navi-core/models/fragments/presentation';
 import 'navi-core/models/fragments/scheduling-rules';
+import 'navi-core/models/fragments/delivery-format';
 import 'navi-core/models/bar-chart';
 import 'navi-core/models/goal-gauge';
 import 'navi-core/models/line-chart';

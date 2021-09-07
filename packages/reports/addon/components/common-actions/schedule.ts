@@ -239,7 +239,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   updateFormat(type: string) {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
-    this.localDeliveryRule.schedulingFormat.type = type;
+    this.localDeliveryRule.deliveryFormat.type = type;
   }
 
   /**
