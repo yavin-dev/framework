@@ -39,4 +39,15 @@ module('Integration | Helper | model for', function (hooks) {
     await render(hbs`<span>{{model-for 'missing-route'}}</span>`);
     assert.dom('span').hasText('', 'model-for helper returns undefined when route does not exist');
   });
+
+  test('modelFor - empty parameter', async function (assert) {
+    await render(hbs`<span>{{model-for ''}}</span>`);
+    assert.dom('span').hasText('', 'model-for helper returns undefined when route is empty string');
+
+    await render(hbs`<span>{{model-for null}}</span>`);
+    assert.dom('span').hasText('', 'model-for helper returns undefined when route is null');
+
+    await render(hbs`<span>{{model-for undefined}}</span>`);
+    assert.dom('span').hasText('', 'model-for helper returns undefined when route is undefined');
+  });
 });

@@ -4,6 +4,7 @@
  */
 import Helper from '@ember/component/helper';
 import { getOwner } from '@ember/application';
+import { isEmpty } from '@ember/utils';
 import type Route from '@ember/routing/route';
 
 export default class ModelForHelper extends Helper {
@@ -13,7 +14,10 @@ export default class ModelForHelper extends Helper {
    * in a route hierarchy. If the ancestor route's model was a promise,
    * its resolved result is returned.
    */
-  compute([name]: [string]) {
+  compute([name]: [string | null | undefined]) {
+    if (isEmpty(name)) {
+      return;
+    }
     const route = getOwner(this).lookup(`route:${name}`) as Route | undefined;
     if (!route) {
       return;

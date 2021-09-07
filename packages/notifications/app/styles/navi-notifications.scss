@@ -1,12 +1,12 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .navi-notifications {
-  display: flex;
-  justify-content: center;
+  // Only cover width of notification contents https://stackoverflow.com/a/23384995
+  left: 50%;
   position: absolute;
-  width: 100%;
+  transform: translate(-50%, 0);
   z-index: 1000;
 }
