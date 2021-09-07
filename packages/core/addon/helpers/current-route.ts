@@ -20,7 +20,7 @@ export default class CurrentRouteHelper extends Helper {
   /**
    * @returns name of currently visited route
    */
-  compute(_args?: unknown): string {
+  compute(_args?: unknown): string | null {
     return this.router.currentRouteName;
   }
 }

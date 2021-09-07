@@ -10,7 +10,7 @@ export default class extends JSONAPISerializer {
 
   keyForRelationship = (attr) => camelize(attr);
 
-  serializeIds: 'always';
+  serializeIds = 'always';
 
   getCoalescedIds(request) {
     const { filter } = request.queryParams ?? {};

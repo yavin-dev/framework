@@ -10,12 +10,15 @@ export default class ParentRouteHelper extends CurrentRouteHelper {
   /**
    * @returns name of parent to currently visited route
    */
-  compute(_args?: unknown): string {
+  compute(_args?: unknown): string | null {
     const currentRoute = super.compute(...arguments);
-    const pathElements = currentRoute.split('.');
+    const pathElements = currentRoute?.split('.') ?? [];
 
     // Remove the leaf route
     pathElements.pop();
+    if (pathElements.length === 0) {
+      return null;
+    }
 
     return pathElements.join('.');
   }
