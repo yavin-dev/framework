@@ -365,6 +365,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
+
   test('format options - config exportFileTypes is empty', async function (assert) {
     assert.expect(2);
 
