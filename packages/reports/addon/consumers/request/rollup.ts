@@ -4,10 +4,10 @@
  */
 import { inject as service } from '@ember/service';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
-import Route from '@ember/routing/route';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import ColumnFragment from 'navi-core/addon/models/bard-request-v2/fragments/column';
-import ReportModel from 'navi-core/models/report';
+import type Route from '@ember/routing/route';
+import type ColumnFragment from 'navi-core/addon/models/bard-request-v2/fragments/column';
+import type ReportModel from 'navi-core/models/report';
 
 export default class RollupConsumer extends ActionConsumer {
   @service

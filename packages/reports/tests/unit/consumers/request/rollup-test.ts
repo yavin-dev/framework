@@ -4,10 +4,10 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import { run } from '@ember/runloop';
-import StoreService from '@ember-data/store';
-import RollupConsumer from 'navi-reports/consumers/request/rollup';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import { Column } from 'navi-data/adapters/facts/interface';
+import type StoreService from '@ember-data/store';
+import type RollupConsumer from 'navi-reports/consumers/request/rollup';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type { Column } from 'navi-data/adapters/facts/interface';
 
 let Store: StoreService;
 let Consumer: RollupConsumer;

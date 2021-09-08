@@ -14,10 +14,10 @@ const Validations = buildValidations({
 
 export default class RollupFragment extends Fragment.extend(Validations) implements Rollup {
   @attr({ defaultValue: () => [] })
-  columns!: Rollup['columns'];
+  declare columns: Rollup['columns'];
 
   @attr('boolean', { defaultValue: false })
-  grandTotal!: Rollup['grandTotal'];
+  declare grandTotal: Rollup['grandTotal'];
 }
 
 declare module 'navi-core/models/registry' {
