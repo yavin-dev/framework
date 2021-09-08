@@ -17,7 +17,7 @@ const Validations = buildValidations({
       message: 'Please select a delivery frequency',
     }),
   ],
-  deliveryFormat: [
+  format: [
     validator('presence', {
       presence: true,
       message: 'Please select a delivery format',
@@ -49,7 +49,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   schedulingRules!: SchedulingRuleFragment;
 
   @fragment('fragments/delivery-format')
-  deliveryFormat!: DeliveryFormatFragment;
+  format!: DeliveryFormatFragment;
 
   @attr({ defaultValue: () => [] })
   recipients!: string[];

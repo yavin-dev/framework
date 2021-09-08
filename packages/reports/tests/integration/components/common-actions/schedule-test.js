@@ -11,7 +11,7 @@ import { animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
 const DeliveryRule = {
   frequency: 'Week',
-  deliveryFormat: { type: 'csv' },
+  format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
 };
 const TestModel = {

@@ -136,7 +136,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   _createNewDeliveryRule() {
     return this.store.createRecord('delivery-rule', {
-      deliveryFormat: { type: this.formats.firstObject },
+      format: { type: this.formats.firstObject },
     });
   }
 
@@ -239,7 +239,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   updateFormat(type: string) {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
-    this.localDeliveryRule.deliveryFormat.type = type;
+    this.localDeliveryRule.format.type = type;
   }
 
   /**

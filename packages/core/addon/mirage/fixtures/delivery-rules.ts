@@ -21,7 +21,7 @@ export default [
       stopAfter: '2017-09-04 00:00:00',
       every: '2 weeks',
     },
-    deliveryFormat: {
+    format: {
       type: 'csv',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
@@ -42,7 +42,7 @@ export default [
       stopAfter: '2017-09-01 00:00:00',
       every: '2 weeks',
     },
-    deliveryFormat: {
+    format: {
       type: 'csv',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
@@ -60,7 +60,7 @@ export default [
     deliveryType: 'dashboard',
     frequency: 'week',
     schedulingRules: {},
-    deliveryFormat: {
+    format: {
       type: 'pdf',
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
