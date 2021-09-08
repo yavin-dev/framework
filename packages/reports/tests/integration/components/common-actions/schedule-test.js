@@ -5,9 +5,6 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
-import { selectChoose } from 'ember-power-select/test-support';
-//@ts-ignore
-import { animationsSettled } from 'ember-animated/test-support';
 import config from 'ember-get-config';
 const DeliveryRule = {
   frequency: 'Week',
@@ -365,9 +362,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule__modal-format-trigger');
 
-    await selectChoose('.schedule__modal-format-trigger', 'csv');
-
-    await animationsSettled();
     assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
