@@ -17,7 +17,7 @@ const Validations = buildValidations({
       message: 'Please select a delivery frequency',
     }),
   ],
-  deliveryFormat: [
+  format: [
     validator('presence', {
       presence: true,
       message: 'Please select a delivery format',

@@ -15,7 +15,7 @@ const ExpectedDeliveryRule = {
   schedulingRules: {
     mustHaveData: false,
   },
-  deliveryFormat: {
+  format: {
     type: 'csv',
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
@@ -82,12 +82,12 @@ module('Unit | Model | delivery rule', function (hooks) {
       assert.equal(v1.validations.get('messages').length, 0, 'There are no validation errors');
 
       //setting format to null
-      deliveryRule.set('deliveryFormat', null);
+      deliveryRule.set('format', null);
       const v2 = await deliveryRule.validate();
 
       assert.notOk(v2.validations.get('isValid'), 'deliveryRule is invalid');
       assert.equal(v2.validations.get('messages').length, 1, 'One Field is invalid in the deliveryRule model');
-      assert.notOk(v2.model.get('validations.attrs.deliveryFormat.isValid'), 'Delivery format must have a value');
+      assert.notOk(v2.model.get('validations.attrs.format.isValid'), 'Delivery format must have a value');
 
       //setting frequency to null
       deliveryRule.set('frequency', null);

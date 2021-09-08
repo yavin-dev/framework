@@ -136,7 +136,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   _createNewDeliveryRule() {
     return this.store.createRecord('delivery-rule', {
-      deliveryFormat: { type: this.formats.firstObject },
+      format: { type: this.formats.firstObject },
     });
   }
 
