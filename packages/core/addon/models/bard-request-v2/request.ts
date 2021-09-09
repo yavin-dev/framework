@@ -7,7 +7,7 @@ import { inject as service } from '@ember/service';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 //@ts-ignore
-import { fragmentArray } from 'ember-data-model-fragments/attributes';
+import { fragmentArray, fragment } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
 import { isEqual } from 'lodash-es';
@@ -15,7 +15,7 @@ import { isEqual } from 'lodash-es';
 import Interval from 'navi-data/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import type { RequestV2, SortDirection, Parameters } from 'navi-data/adapters/facts/interface';
+import type { RequestV2, SortDirection, Parameters, Rollup } from 'navi-data/adapters/facts/interface';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Store from '@ember-data/store';
@@ -80,6 +80,9 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
   declare sorts: FragmentArray<SortFragment>;
 
+  @fragment('bard-request-v2/fragments/rollup', { defaultValue: () => ({ columns: [], grandTotal: false }) })
+  declare rollup: Rollup;
+
   @attr('number')
   declare limit: number | null;
 
@@ -142,6 +145,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
         });
         return newSort;
       }),
+      rollup: store.createFragment('bard-request-v2/fragments/rollup', clonedRequest.rollup),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource,
@@ -345,6 +349,33 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
 
     this.sorts.pushObject(this.fragmentFactory.createSort(type, source, field, parameters, direction));
+  }
+
+  /**
+   * Pushes column cid to end of rollup list, removing dupes.
+   * @param column - dimension column to add a rollup
+   */
+  pushRollupColumn(column: ColumnFragment) {
+    const columnExists = this.columns.toArray().some((requestColumn) => requestColumn.cid === column.cid);
+    assert(`Rollup column with cid: ${column.cid} must exist in request`, columnExists);
+    this.removeRollupColumn(column); //remove duplicate
+    this.rollup.columns.push(column.cid);
+  }
+
+  /**
+   * Removes column cid from rollup list
+   * @param column - dimension column to remove
+   */
+  removeRollupColumn(column: ColumnFragment) {
+    this.rollup.columns = this.rollup.columns.filter((rollupCid) => rollupCid !== column.cid);
+  }
+
+  /**
+   * Sets rollup grand total
+   * @param grandTotal - toggle grandTotal rollup
+   */
+  setGrandTotal(grandTotal: boolean) {
+    this.rollup.grandTotal = !!grandTotal;
   }
 
   /**

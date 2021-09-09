@@ -61,6 +61,10 @@ const ExpectedRequest = {
         type: 'metric',
       },
     ],
+    rollup: {
+      columns: [],
+      grandTotal: false,
+    },
     limit: null,
     requestVersion: '2.0',
     dataSource: 'bardOne',

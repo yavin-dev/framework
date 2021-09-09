@@ -105,6 +105,10 @@ module('Unit | Model | dashboard widget', function (hooks) {
                   values: ['P1D', 'current'],
                 },
               ],
+              rollup: {
+                columns: [],
+                grandTotal: false,
+              },
               limit: null,
               requestVersion: '2.0',
               sorts: [],

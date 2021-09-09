@@ -24,6 +24,10 @@ export const RequestActions = <const>{
 
   UPSERT_SORT: 'upsertSort',
   REMOVE_SORT: 'removeSort',
+
+  PUSH_ROLLUP_COLUMN: 'pushRollupColumn',
+  REMOVE_ROLLUP_COLUMN: 'removeRollupColumn',
+  UPDATE_GRAND_TOTAL: 'updateGrandTotal',
 };
 
 export default class RequestActionDispatcher extends ActionDispatcher {
@@ -36,6 +40,7 @@ export default class RequestActionDispatcher extends ActionDispatcher {
       'request/sort',
       'request/fili',
       'request/constraint',
+      'request/rollup',
     ];
   }
 }

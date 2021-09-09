@@ -425,6 +425,10 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
             direction: 'desc',
           },
         ],
+        rollup: {
+          columns: [],
+          grandTotal: false,
+        },
         table: 'network',
         dataSource: 'bardOne',
         limit: 2,
@@ -453,6 +457,65 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
       request.nonTimeDimensions,
       request.columns.filter((c) => c.type === 'dimension'),
       'nonTimeDimensions recomputes when the request columns change'
+    );
+  });
+
+  test('Rollup request features', (assert) => {
+    assert.expect(5);
+    const request = mockModel.get('request');
+
+    request.pushRollupColumn({ cid: '2222222222' });
+    request.pushRollupColumn({ cid: '2222222222' }); //test duplicate push
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['2222222222'],
+        grandTotal: false,
+      },
+      'Adding a dimension column works as expected'
+    );
+
+    request.pushRollupColumn({ cid: '3333333333' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['2222222222', '3333333333'],
+        grandTotal: false,
+      },
+      'Adding another dimension pushes it to end of columns array'
+    );
+
+    request.removeRollupColumn({ cid: '2222222222' });
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['3333333333'],
+        grandTotal: false,
+      },
+      'Correct column was removed'
+    );
+
+    request.setGrandTotal(true);
+    assert.deepEqual(
+      request.rollup.toJSON(),
+      {
+        columns: ['3333333333'],
+        grandTotal: true,
+      },
+      'Grand Total is toggled'
+    );
+
+    request.pushRollupColumn({ cid: '1111111111' });
+
+    const clonedRequest = request.clone();
+
+    assert.deepEqual(
+      clonedRequest.rollup.toJSON(),
+      {
+        columns: ['3333333333', '1111111111'],
+        grandTotal: true,
+      },
+      'Rollup was cloned correctly'
     );
   });
 });

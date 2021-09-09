@@ -29,7 +29,7 @@ module('Unit | Service | compression', function (hooks) {
 
     assert.equal(
       compressedString,
-      encodeURIComponent(compressedString),
+      encodeURI(compressedString),
       'The object compressed to a string safe for use in a URL without requiring an id'
     );
 
@@ -60,7 +60,7 @@ module('Unit | Service | compression', function (hooks) {
 
     assert.equal(
       compressedString,
-      encodeURIComponent(compressedString),
+      encodeURI(compressedString),
       'The model compresses to a string safe for use in a URL'
     );
 

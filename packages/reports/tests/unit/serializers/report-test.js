@@ -59,6 +59,10 @@ module('Unit | Serializer | Report', function (hooks) {
                 values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
               },
             ],
+            rollup: {
+              columns: [],
+              grandTotal: false,
+            },
             limit: null,
             requestVersion: '2.0',
             sorts: [],
@@ -157,6 +161,10 @@ module('Unit | Serializer | Report', function (hooks) {
                 values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
               },
             ],
+            rollup: {
+              columns: [],
+              grandTotal: false,
+            },
             limit: null,
             requestVersion: '2.0',
             sorts: [],
