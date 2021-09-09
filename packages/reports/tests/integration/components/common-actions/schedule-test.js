@@ -350,6 +350,46 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
+  test('format options - with csv to `exportFileTypes`', async function (assert) {
+    assert.expect(1);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png'];
+    this.set('model', TestModel);
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    await click('.schedule__modal-format-trigger');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
+      ['csv', 'pdf', 'png'],
+      'Schedule format should have correct options'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('format options - with csv to `exportFileTypes` and sort the format types', async function (assert) {
+    assert.expect(1);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['pdf', 'csv', 'png'];
+    this.set('model', TestModel);
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    await click('.schedule__modal-format-trigger');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
+      ['csv', 'pdf', 'png'],
+      'Schedule format should have correct options'
+    );
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
   test('format options - onChange', async function (assert) {
     assert.expect(1);
 
