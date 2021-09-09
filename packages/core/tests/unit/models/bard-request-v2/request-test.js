@@ -464,34 +464,32 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.expect(5);
     const request = mockModel.get('request');
 
-    request.addColumn({ cid: 'bar' });
-
-    request.pushRollupColumn({ cid: 'foo' });
-    request.pushRollupColumn({ cid: 'foo' }); //test duplicate push
+    request.pushRollupColumn({ cid: '2222222222' });
+    request.pushRollupColumn({ cid: '2222222222' }); //test duplicate push
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['foo'],
+        columns: ['2222222222'],
         grandTotal: false,
       },
       'Adding a dimension column works as expected'
     );
 
-    request.pushRollupColumn({ cid: 'bar' });
+    request.pushRollupColumn({ cid: '3333333333' });
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['foo', 'bar'],
+        columns: ['2222222222', '3333333333'],
         grandTotal: false,
       },
       'Adding another dimension pushes it to end of columns array'
     );
 
-    request.removeRollupColumn({ cid: 'foo' });
+    request.removeRollupColumn({ cid: '2222222222' });
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['bar'],
+        columns: ['3333333333'],
         grandTotal: false,
       },
       'Correct column was removed'
@@ -501,20 +499,20 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['bar'],
+        columns: ['3333333333'],
         grandTotal: true,
       },
       'Grand Total is toggled'
     );
 
-    request.pushRollupColumn({ cid: 'dateTime' });
+    request.pushRollupColumn({ cid: '1111111111' });
 
     const clonedRequest = request.clone();
 
     assert.deepEqual(
       clonedRequest.rollup.toJSON(),
       {
-        columns: ['bar', 'dateTime'],
+        columns: ['3333333333', '1111111111'],
         grandTotal: true,
       },
       'Rollup was cloned correctly'
