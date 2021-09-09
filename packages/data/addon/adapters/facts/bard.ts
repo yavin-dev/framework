@@ -268,7 +268,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds rollup query params
-   * @param {RequestV1} request
+   * @param {RequestV2} request
    * @return {String}
    */
   _buildRollupParam(request: RequestV2): string {
