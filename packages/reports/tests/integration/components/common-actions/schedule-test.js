@@ -6,7 +6,6 @@ import { render, click, blur, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import config from 'ember-get-config';
-
 const DeliveryRule = {
   frequency: 'Week',
   format: { type: 'csv' },
@@ -351,6 +350,22 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
+  test('format options - onChange', async function (assert) {
+    assert.expect(1);
+
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['pdf', 'png'];
+    this.set('model', TestModel);
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    await click('.schedule__modal-format-trigger');
+
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
   test('format options - config exportFileTypes is empty', async function (assert) {
     assert.expect(2);
 
@@ -366,9 +381,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert
       .dom('.schedule__modal-format-trigger')
       .hasAttribute('aria-disabled', 'true', 'The formats dropdown is disabled by default');
-    assert
-      .dom('.schedule__modal-format-trigger .ember-power-select-selected-item')
-      .includesText('csv', 'Schedule format should have correct default option');
+    assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Schedule format should have correct default option');
 
     config.navi.FEATURES.exportFileTypes = originalFeatureFlag;
   });
