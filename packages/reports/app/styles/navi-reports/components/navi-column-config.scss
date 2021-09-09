@@ -19,6 +19,29 @@
   }
 }
 
+@mixin navi-subtotal-button {
+  background-color: transparent;
+  border-radius: 5px;
+  color: $links-text-color;
+  cursor: pointer;
+  margin: 0 1px;
+  padding: 3px;
+
+  &:hover {
+    color: $links-hover-text-color;
+  }
+
+  &--active {
+    background-color: $links-text-color;
+    color: map-get($denali-grey-colors, '100');
+
+    &:hover {
+      background-color: $links-hover-text-color;
+      color: map-get($denali-grey-colors, '100');
+    }
+  }
+}
+
 .navi-column-config {
   display: flex;
   height: 100%;
@@ -37,6 +60,21 @@
     flex-flow: column;
     max-width: 250px;
     width: 250px;
+
+    &-header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    &-buttons {
+      margin-right: 4px;
+      padding: 8px 0;
+    }
+  }
+
+  &__grandtotal-icon {
+    @include navi-subtotal-button;
   }
 
   &__columns {

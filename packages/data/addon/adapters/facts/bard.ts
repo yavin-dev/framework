@@ -273,16 +273,15 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildRollupParam(request: RequestV2): string {
     const columns = request.columns;
-    const rollupColumns = request.rollup?.columns || [];
+    const rollupColumnCids = request.rollup?.columns || [];
+    const rollupColumns = columns.filter((col) => rollupColumnCids.includes(col.cid || ''));
     return rollupColumns.length
       ? array(
           rollupColumns.map((rollupColumn) => {
-            const column = columns.find((col) => rollupColumn === col.cid);
-            return column && isDateTime(column) ? 'dateTime' : column?.field;
+            return rollupColumn && isDateTime(rollupColumn) ? 'dateTime' : rollupColumn?.field;
           })
         )
           .uniq()
-          .filter((x) => !!x)
           .join(',')
       : '';
   }

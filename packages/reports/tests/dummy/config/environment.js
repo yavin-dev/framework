@@ -42,6 +42,7 @@ module.exports = function (environment) {
           type: 'bard',
           options: {
             enableDimensionSearch: true,
+            enableSubtotals: true,
           },
         },
         {

@@ -38,6 +38,16 @@
             title="Add Filter"
             {{on "click" @onAddFilter}}
           />
+          {{#if (and @supportsSubtotal (not-eq @column.fragment.type "metric"))}}
+            <DenaliIcon
+              class="navi-column-config-base__rollup-icon {{if @column.isRollup "navi-column-config-base__rollup-icon--active"}}"
+              role="button"
+              @icon="hash-solid"
+              @size="small"
+              title="{{if @column.isRollup 'Remove' 'Add'}} subtotal rows based on this column."
+              {{on "click" @toggleRollup}}
+            />
+          {{/if}}
         </span>
       </div>
     </div>

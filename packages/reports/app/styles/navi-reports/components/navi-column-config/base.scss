@@ -35,8 +35,13 @@
   &__clone-icon,
   &__filter-icon,
   &__sort-icon,
-  &__star-icon {
+  &__star-icon,
+  &__rollup-icon {
     @include navi-column-config-icon;
     margin: 0 4px;
+  }
+
+  &__rollup-icon {
+    @include navi-subtotal-button;
   }
 }

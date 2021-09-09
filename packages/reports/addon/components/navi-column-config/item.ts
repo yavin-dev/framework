@@ -24,6 +24,8 @@ interface Args {
   onUpsertSort(direction: SortDirection): void;
   onRemoveSort(): void;
   onRenameColumn(alias?: string): void;
+  toggleRollup(): void;
+  supportsSubtotal: boolean;
   onUpdateColumnParam(paramId: string, paramValue: ColumnFragment['parameters'][string]): void;
 }
 

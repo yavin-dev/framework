@@ -18,6 +18,8 @@ const TEMPLATE = hbs`
   @onRemoveSort={{optional this.onRemoveSort}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{optional this.onUpdateColumnParam}}
+  @toggleRollup={{optional this.toggleRollup}}
+  @supportsSubtotal={{this.supportsSubtotal}}
 />`;
 
 type ComponentArgs = NaviColumnConfigBase['args'];
@@ -41,12 +43,15 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
       filters: [],
     });
 
+    this.set('supportsSubototal', false);
+
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
   });
 
   test('it renders', async function (this: TestContext, assert) {
     this.set('column', {
       isFiltered: false,
+      isRollup: false,
       fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
     });
 
@@ -90,6 +95,7 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
     const fragment = this.request.addColumn(metricBase);
     this.column = {
       fragment,
+      isRollup: false,
       isFiltered: false,
       isRequired: false,
     };
@@ -121,5 +127,29 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
       ['onRenameColumn', 'cloneColumn', 'onAddFilter', 'onUpsertSort', 'onRemoveSort'],
       'actions are performed in the order they are called'
     );
+  });
+
+  test('it renders rollup button', async function (this: TestContext, assert) {
+    this.set('supportsSubtotal', true);
+
+    this.set('column', {
+      isRequired: false,
+      isFiltered: false,
+      isRollup: false,
+      fragment: this.fragmentFactory.createColumn('dimension', 'bardOne', 'property'),
+    });
+
+    this.set('toggleRollup', () => {
+      this.set('column.isRollup', !this.column.isRollup);
+    });
+
+    await render(TEMPLATE);
+
+    assert.dom('.navi-column-config-base__rollup-icon').exists('Rollup toggle button exists');
+    assert.dom('.navi-column-config-base__rollup-icon--active').doesNotExist('Rollup is not active on this column');
+
+    await click('.navi-column-config-base__rollup-icon');
+
+    assert.dom('.navi-column-config-base__rollup-icon--active').exists('Rollup is active when button is clicked');
   });
 });

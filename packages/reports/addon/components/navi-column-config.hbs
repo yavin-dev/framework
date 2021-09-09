@@ -1,7 +1,21 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-column-config" ...attributes>
   <div class="navi-column-config__panel">
-    <h4 class="navi-column-config__title">Columns</h4>
+    <div class="navi-column-config__panel-header">
+      <h4 class="navi-column-config__title">Columns</h4>
+      <div class="navi-column-config__panel-buttons">
+        {{#if this.supportsSubtotal}}
+           <DenaliIcon
+              class="navi-column-config__grandtotal-icon {{if @report.request.rollup.grandTotal "navi-column-config__grandtotal-icon--active"}}"
+              role="button"
+              @icon="hash-solid"
+              @size="small"
+              title="{{if @report.request.rollup.grandTotal 'Remove' 'Add'}} grand total display."
+              {{on "click" this.toggleGrandTotal}}
+            />
+        {{/if}}
+      </div>
+    </div>
     <ol class="navi-column-config__columns" {{sortable-group groupName="navi-column-config" onChange=this.reorderColumns direction="y"}}>
       {{#each this.columns key="fragment" as |column|}}
         <NaviColumnConfig::Item
@@ -16,6 +30,8 @@
           @onRemoveSort={{fn @onRemoveSort column.fragment}}
           @onRenameColumn={{fn @onRenameColumn column.fragment}}
           @onUpdateColumnParam={{fn @onUpdateColumnParam column.fragment}}
+          @toggleRollup={{fn this.toggleRollup column}}
+          @supportsSubtotal={{this.supportsSubtotal}}
         />
       {{/each}}
     </ol>
