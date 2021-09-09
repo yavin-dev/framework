@@ -46,5 +46,14 @@ export default class RollupConsumer extends ActionConsumer {
       const { request } = route.modelFor(routeName) as ReportModel;
       request.setGrandTotal(isGrandTotal);
     },
+
+    /**
+     * @action REMOVE_COLUMN_FRAGMENT
+     * @param route - removes column from rollup when column fragment is removed.
+     * @param columnFragment - data model fragment of the column
+     */
+    [RequestActions.REMOVE_COLUMN_FRAGMENT](this: RollupConsumer, route: Route, columnFragment: ColumnFragment) {
+      this.requestActionDispatcher.dispatch(RequestActions.REMOVE_ROLLUP_COLUMN, route, columnFragment);
+    },
   };
 }

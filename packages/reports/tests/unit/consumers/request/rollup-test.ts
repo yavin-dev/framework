@@ -110,4 +110,28 @@ module('Unit | Consumer | request rollup', function (hooks) {
 
     assert.notOk(CurrentModel.request.rollup.grandTotal, 'Grand total is back to false');
   });
+
+  test('REMOVE_COLUMN_FRAGMENT', function (assert) {
+    assert.expect(1);
+    run(() => {
+      Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, OS);
+      Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, AGE);
+      Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, DEVICE_TYPE);
+      Consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, Route, AGE);
+    });
+    assert.deepEqual(CurrentModel.request.rollup?.columns, ['c1', 'c3'], 'The correct columns is removed');
+  });
+
+  test('Column not in request assertion', function (assert) {
+    assert.throws(() => {
+      run(() => {
+        Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, {
+          cid: 'c7',
+          type: 'dimension',
+          field: 'os',
+          parameters: { field: 'id' },
+        });
+      });
+    }, 'Assertion is thrown when column is added that is not in the request');
+  });
 });

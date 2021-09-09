@@ -356,6 +356,8 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @param column - dimension column to add a rollup
    */
   pushRollupColumn(column: ColumnFragment) {
+    const columnExists = this.columns.toArray().some((requestColumn) => requestColumn.cid === column.cid);
+    assert(`Rollup column with cid: ${column.cid} must exist in request`, columnExists);
     this.removeRollupColumn(column); //remove duplicate
     this.rollup.columns.push(column.cid);
   }
