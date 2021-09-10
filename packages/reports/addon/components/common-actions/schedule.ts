@@ -100,8 +100,13 @@ export default class ScheduleActionComponent extends Component<Args> {
     if (!formats) {
       formats = defaultFormats.slice();
       const supportedFormats = featureFlag('exportFileTypes');
-      if (Array.isArray(supportedFormats)) {
+      if (Array.isArray(supportedFormats) && supportedFormats.length > 0) {
         formats = [...formats, ...supportedFormats];
+        const uniqFormats = [...new Set(formats)];
+        formats = uniqFormats.sort(function (a, b) {
+          //Sort the index based on defaultFormat inputs
+          return defaultFormats.indexOf(b) - defaultFormats.indexOf(a);
+        });
       }
     }
 
@@ -239,7 +244,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   updateFormat(type: string) {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
-    this.localDeliveryRule.format = type;
+    this.localDeliveryRule.format.type = type;
   }
 
   /**
