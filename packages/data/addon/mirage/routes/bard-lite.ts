@@ -171,6 +171,9 @@ export default function (
   this: Server,
   metricBuilder = (_metric: string, _row: ResponseRow, _dimKey: string): number => {
     return Number(faker.finance.amount());
+  },
+  dateTimeFormatter = (date: moment.Moment, _grain: GrainWithAll, _table: string) => {
+    return date.format(API_DATE_FORMAT);
   }
 ) {
   _loadPredefinedDimensions();
@@ -215,7 +218,7 @@ export default function (
     }
 
     // Convert each date into a row of data
-    let rows: ResponseRow[] = dates.map((date) => ({ dateTime: date.format(API_DATE_FORMAT) }));
+    let rows: ResponseRow[] = dates.map((date) => ({ dateTime: dateTimeFormatter(date, grain, table) }));
 
     // Add id and desc for each dimension
     dimensions.forEach((dimension) => {
