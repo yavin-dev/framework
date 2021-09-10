@@ -175,4 +175,36 @@ module('Integration | Component | cell renderers/time-dimension', function (hook
 
     assert.dom('.table-cell-content').hasText('2016', 'The time-dimension cell renders the year value correctly');
   });
+
+  test('Rollup null field', async function (this: TestContext, assert) {
+    assert.expect(4);
+    _setRequestForTimeGrain(this, 'day');
+    this.set('data', { ...this.data, 'network.dateTime(grain=day)': null });
+    this.set('rollup', true);
+    this.set('grandTotal', false);
+
+    await render(hbs`
+      <NaviCellRenderers::TimeDimension
+        @data={{this.data}}
+        @column={{this.column}}
+        @request={{this.request}}
+        @isRollup={{this.rollup}}
+        @isGrandTotal={{this.grandTotal}}
+      />
+    `);
+
+    assert.dom('.table-cell-content').hasText('\xa0', 'renders non breaking space if rollup');
+
+    this.set('rollup', false);
+
+    assert.dom('.table-cell-content').hasText('--', 'renders double dash when non rollup');
+
+    this.set('grandTotal', true);
+
+    assert.dom('.table-cell-content').hasText('', 'renders empty when grandTotal');
+
+    this.set('rollup', true);
+
+    assert.dom('.table-cell-content').hasText('', 'renders empty when grandTotal and rollup are both set');
+  });
 });

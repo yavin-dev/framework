@@ -402,4 +402,85 @@ module('Unit | Component | table', function (hooks) {
       'compute total returns a total row object for the rows passed in based on the overriding method'
     );
   });
+
+  test('Rollup visualization', function (assert) {
+    assert.expect(2);
+    delete OPTIONS.showTotals;
+    const model = A([
+      {
+        request: {
+          dataSource: 'bardOne',
+          requestVersion: '2.0',
+          table: 'network',
+          columns: [
+            {
+              cid: 'cid_dateTime',
+              type: 'timeDimension',
+              field: 'network.dateTime',
+              parameters: { grain: 'day' },
+              source: 'bardOne',
+            },
+            { cid: 'cid_osId', type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
+            { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
+          ],
+          sorts: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc', source: 'bardOne' }],
+          rollup: {
+            columns: ['cid_osId'],
+            grandTotal: true,
+          },
+        },
+        response: {
+          rows: [
+            {
+              'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+              'os|id': 'dim1',
+              uniqueIdentifier: 123,
+              __rollupMask: '3',
+            },
+            {
+              'network.dateTime(grain=day)': null,
+              'os|id': 'dim1',
+              uniqueIdentifier: 123,
+              __rollupMask: '1',
+            },
+            {
+              'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
+              'os|id': 'dim2',
+              uniqueIdentifier: 321,
+              __rollupMask: '3',
+            },
+            {
+              'network.dateTime(grain=day)': null,
+              'os|id': 'dim2',
+              uniqueIdentifier: 321,
+              __rollupMask: '1',
+            },
+            {
+              'network.dateTime(grain=day)': null,
+              'os|id': null,
+              uniqueIdentifier: 321,
+              __rollupMask: '0',
+            },
+          ],
+        },
+      },
+    ]);
+
+    const component = createGlimmerComponent('component:navi-visualizations/table', {
+      options: OPTIONS,
+      model,
+    });
+
+    const rollupRows = component.tableData.map((row) => !!row.__meta__.isRollup);
+
+    assert.deepEqual(rollupRows, [false, true, false, true, true], 'Correct rows are identified as rollup rows');
+
+    const grandTotalRows = component.tableData.map((row) => !!row.__meta__.isGrandTotal);
+
+    assert.deepEqual(
+      grandTotalRows,
+      [false, false, false, false, true],
+      'Correct rows are identified as grand total rows'
+    );
+  });
 });
