@@ -1761,7 +1761,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     assert.deepEqual(
-      findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map((el) =>
+      findAll('.ember-power-select-multiple-option :not(.ember-power-select-multiple-remove-btn)').map((el) =>
         el.textContent.trim()
       ),
       ['no comma', 'yes, comma'],

@@ -9,7 +9,6 @@ import { clickTrigger, selectChoose, selectSearch, nativeMouseUp } from 'ember-p
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
-import $ from 'jquery';
 import Service from '@ember/service';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
@@ -32,8 +31,8 @@ interface TestContext extends Context {
 const HOST = config.navi.dataSources[0].uri;
 
 const TEMPLATE = hbs`
-<FilterValues::DimensionSelect 
-  @filter={{this.filter}} 
+<FilterValues::DimensionSelect
+  @filter={{this.filter}}
   @isCollapsed={{this.isCollapsed}}
   @onUpdateFilter={{this.onUpdateFilter}}
 />
@@ -61,7 +60,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
+    const selectedValueText = findAll('.ember-power-select-multiple-option div:nth-of-type(1)').map((el) =>
       el.textContent?.trim()
     );
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
@@ -72,8 +71,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    let optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      expectedOptionText = AgeValues.map(({ id, description }) => `${id} (${description})`);
+    const optionText = findAll('.ember-power-select-option').map((el) =>
+      el.textContent
+        ?.trim()
+        .split('\n')
+        .map((s) => s.trim())
+    );
+    const expectedOptionText = AgeValues.map(({ id, description }) => [id, `description: ${description}`]);
     /*
      * Since vertical-collection is used for rendering the dropdown options,
      * some later options may be cropped from the DOM, so just check the first 10
@@ -104,7 +108,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
+    const selectedValueText = findAll('.ember-power-select-multiple-option div:nth-of-type(1)').map((el) =>
       el.textContent?.trim()
     );
     const expectedValueDimensions = ContainerValues.filter(({ id }) => this.filter.values.includes(id));
@@ -114,8 +118,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    const optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim());
-    const expectedOptionText = ContainerValues.map(({ id, description }) => `${id} (${description})`);
+    const optionText = findAll('.ember-power-select-option').map((el) =>
+      el.textContent
+        ?.trim()
+        .split('\n')
+        .map((s) => s.trim())
+    );
+    const expectedOptionText = ContainerValues.map(({ id, description }) => [id, `description: ${description}`]);
 
     /*
      * Since vertical-collection is used for rendering the dropdown options,
@@ -198,16 +207,20 @@ module('Integration | Component | filter values/dimension select', function (hoo
     const visibleOptions = () =>
       findAll('.ember-power-select-option')
         .filter((el) => (el as HTMLElement).offsetParent !== null) // only visible elements
-        .map((el) => el.textContent?.trim())
-        .sort();
+        .map((el) =>
+          el.textContent
+            ?.trim()
+            .split('\n')
+            .map((s) => s.trim())
+        );
 
-    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
-      ({ id, description }) => `${description} (${id})`
-    );
+    const expectedValueDimensions = ContainerValues.filter(({ description }) =>
+      description.includes(searchTerm)
+    ).map(({ id, description }) => [description, `id: ${id}`]);
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
 
-    await nativeMouseUp($(`.ember-power-select-option:contains(Bag)`)[0]);
+    await nativeMouseUp('.ember-power-select-option div[title="Bag"]');
 
     assert.deepEqual(
       visibleOptions(),

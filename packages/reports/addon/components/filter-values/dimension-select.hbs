@@ -26,7 +26,10 @@
       @dropdownClass="filter-values--dimension-select__dropdown"
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"
       as |dim|>
-        <span title={{dim.displayValue}}>{{dim.displayValue}}</span>
+        <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>{{dim.displayValue}}</div>
+        {{#each-in dim.suggestions as |col val|}}
+          <div class="filter-values--dimension-select__option-context is-grey-600" title={{val}}><span class="cap">{{col}}</span>: <span>{{val}}</span></div>
+        {{/each-in}}
     </PowerSelectMultiple>
   </div>
 {{/if}}

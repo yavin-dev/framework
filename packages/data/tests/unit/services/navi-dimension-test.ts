@@ -63,7 +63,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Handcrafted Frozen Mouse',
       'Licensed Soft Ball',
     ].map((dimVal) =>
-      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: {} })
     );
     const all = await taskFor(service.all).perform({ columnMetadata });
 
@@ -259,7 +259,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'Tasty Fresh Towels (enum)',
       'Intelligent Steel Pizza (enum)',
     ].map((dimVal) =>
-      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: {} })
     );
     const all = await taskFor(service.all).perform({ columnMetadata });
 
@@ -280,7 +280,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     const findValues = ['Awesome Plastic Fish', 'Refined Fresh Bacon'];
     const filters: DimensionFilter[] = [{ operator: 'in', values: findValues }];
     const expectedDimensionModels = findValues.map((dimVal) =>
-      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: {} })
     );
     const find = await taskFor(service.find).perform({ columnMetadata }, filters);
     assert.deepEqual(
@@ -301,7 +301,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     ) as DimensionMetadataModel;
     const search = await taskFor(service.search).perform({ columnMetadata }, 'plastic');
     const expectedDimensionModels = ['Awesome Plastic Fish', 'Licensed Plastic Pants'].map((dimVal) =>
-      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: [] })
+      this.dimensionModelFactory.create({ value: dimVal, dimensionColumn: { columnMetadata }, suggestions: {} })
     );
     assert.deepEqual(
       search.values,
