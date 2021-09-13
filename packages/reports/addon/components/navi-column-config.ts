@@ -68,9 +68,6 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
 
   @computed('args.report.request.dataSource')
   get supportsSubtotal(): boolean {
-    if (!this.args.report.request.dataSource) {
-      return false;
-    }
     const dataSource = getDataSource<'bard'>(this.args.report.request.dataSource).options;
     return dataSource?.enableSubtotals ?? false;
   }
