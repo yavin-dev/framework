@@ -17,6 +17,8 @@ const TEMPLATE = hbs`
   @onRemoveSort={{optional this.onRemoveSort}}
   @onRenameColumn={{optional this.onRenameColumn}}
   @onUpdateColumnParam={{this.onUpdateColumnParam}}
+  @toggleRollup={{optional this.toggleRollup}}
+  @supportsSubtotal={{this.supportsSubtotal}}
 />
 `;
 module('Integration | Component | navi-column-config/metric', function (hooks) {
@@ -26,6 +28,8 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
   hooks.beforeEach(async function () {
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
+
+    this.set('supportsSubtotal', false);
 
     this.onUpdateColumnParam = (paramId, paramKey) => {
       this.set('column.fragment.parameters', {
@@ -186,5 +190,14 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     await fillIn(columnNameInput, 'Money');
     await triggerKeyEvent(columnNameInput, 'keyup', 13);
+  });
+
+  test('metrics do not render rollup button', async function (assert) {
+    this.set('supportsSubtotal', true);
+    this.column = await getMetricColumn('multipleParamMetric', {});
+
+    await render(TEMPLATE);
+
+    assert.dom('.navi-column-config-base__rollup-icon').doesNotExist('Rollup is not available on a metric column');
   });
 });

@@ -20,6 +20,8 @@ interface NaviColumnConfigBaseArgs {
   onRemoveSort(): void;
   onRenameColumn(newColumnName?: string): void;
   onUpdateColumnParam(param: string, paramValue: string): void;
+  toggleRollup(): void;
+  supportsSubtotal: boolean;
 }
 
 type AllDirectionSort = SortDirection | 'none';

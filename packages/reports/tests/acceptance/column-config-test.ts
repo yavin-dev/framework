@@ -17,7 +17,7 @@ function getColumns() {
 
 async function getRequestURL() {
   await click('.get-api__action-btn');
-  const url = (find('.get-api__api-input input') as HTMLInputElement).value;
+  const url = (find('.get-api__api-input') as HTMLInputElement).value;
   await click('.get-api__cancel-btn');
   return new URL(url);
 }
@@ -1305,5 +1305,59 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     apiURL = await getRequestURL();
     assert.notOk(apiURL.searchParams.has('sort'), 'Sort is removed from request when metric params changed');
+  });
+
+  test('Rollup test', async function (assert) {
+    assert.expect(5);
+    await visit('/reports/1/view');
+    let apiURL = await getRequestURL();
+    assert.equal(
+      apiURL.href,
+      'https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&format=json',
+      'Default query with no rollup'
+    );
+
+    await click('span[title="Date Time (day)"]');
+    await click('.navi-column-config-base__rollup-icon');
+
+    apiURL = await getRequestURL();
+    assert.equal(
+      apiURL.href,
+      'https://data.naviapp.io/v1/data/network/day/property;show=id/__rollupMask/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&rollupTo=dateTime&format=json',
+      'Datetime rollup added to query'
+    );
+
+    await click('span[title="Date Time (day)"]');
+    await click('span[title="Property (id)"]');
+    await click('.navi-column-config-base__rollup-icon');
+
+    apiURL = await getRequestURL();
+    assert.equal(
+      apiURL.href,
+      'https://data.naviapp.io/v1/data/network/day/property;show=id/__rollupMask/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&rollupTo=dateTime%2Cproperty&format=json',
+      'Property rollup added to query'
+    );
+
+    await click('.navi-column-config__grandtotal-icon');
+
+    apiURL = await getRequestURL();
+    assert.equal(
+      apiURL.href,
+      'https://data.naviapp.io/v1/data/network/day/property;show=id/__rollupMask/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&rollupTo=dateTime%2Cproperty&rollupGrandTotal=true&format=json',
+      'grandTotal added to query'
+    );
+
+    await click('.navi-column-config-base__rollup-icon');
+    await click('span[title="Property (id)"]');
+    await click('span[title="Date Time (day)"]');
+    await click('.navi-column-config-base__rollup-icon');
+    await click('.navi-column-config__grandtotal-icon');
+
+    apiURL = await getRequestURL();
+    assert.equal(
+      apiURL.href,
+      'https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&format=json',
+      'Rollup removed from query after toggling off both dimensions'
+    );
   });
 });

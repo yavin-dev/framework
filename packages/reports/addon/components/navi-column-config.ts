@@ -6,6 +6,7 @@ import Component from '@glimmer/component';
 import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import { getDataSource } from 'navi-data/utils/adapter';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
 import type { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
@@ -22,11 +23,15 @@ interface NaviColumnConfigArgs {
   onRemoveSort(column: ColumnFragment): void;
   onRenameColumn(column: ColumnFragment, alias: string): void;
   onReorderColumn(column: ColumnFragment, index: number): void;
+  onPushRollup(column: ColumnFragment): void;
+  onRemoveRollup(column: ColumnFragment): void;
+  onUpdateGrandTotal(grandTotal: boolean): void;
 }
 
 export type ConfigColumn = {
   isFiltered: boolean;
   isRequired: boolean;
+  isRollup: boolean;
   fragment: ColumnFragment;
 };
 
@@ -40,12 +45,12 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   /**
    * Dimension and metric columns from the request
    */
-  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[]}')
+  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[],rollup.columns.[]}')
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();
     if (request.table !== undefined) {
-      const { columns, filters } = request;
+      const { columns, filters, rollup } = request;
 
       const filteredColumns = filters.map(({ canonicalName }) => canonicalName);
 
@@ -53,11 +58,22 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
           isRequired: requiredColumns.has(column),
+          isRollup: rollup.columns.includes(column.cid),
           fragment: column,
         };
       });
     }
     return [];
+  }
+
+  @computed('args.report.request.dataSource')
+  get supportsSubtotal(): boolean {
+    //TODO: We shouldn't need this line because TS, but js tests causing a big regression. Remove and fix tests.
+    if (!this.args.report.request.dataSource) {
+      return false;
+    }
+    const dataSource = getDataSource<'bard'>(this.args.report.request.dataSource).options;
+    return dataSource?.enableSubtotals ?? false;
   }
 
   /**
@@ -68,6 +84,27 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   cloneColumn(column: ConfigColumn) {
     const { columnMetadata, parameters } = column.fragment;
     this.args.onAddColumn(columnMetadata, { ...parameters });
+  }
+
+  /**
+   * Toggles adding column to rollup list.
+   * @param column - column to toggle rollup on
+   */
+  @action
+  toggleRollup(column: ConfigColumn) {
+    if (column.isRollup) {
+      this.args.onRemoveRollup(column.fragment);
+    } else {
+      this.args.onPushRollup(column.fragment);
+    }
+  }
+
+  /**
+   * Toggles grandTotal on rollup
+   */
+  @action
+  toggleGrandTotal() {
+    this.args.onUpdateGrandTotal(!this.args.report.request.rollup.grandTotal);
   }
 
   /**
