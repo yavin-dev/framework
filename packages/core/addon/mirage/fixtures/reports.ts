@@ -40,6 +40,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [{ dimension: 'property' }],
       filters: [],
@@ -99,6 +100,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [
         {
@@ -159,6 +161,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
@@ -201,6 +204,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
@@ -250,6 +254,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
       dimensions: [],
       filters: [],
@@ -312,6 +317,7 @@ export default [
         table: 'tableA',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [
         {
           metric: 'revenue',
@@ -372,6 +378,7 @@ export default [
         table: 'tableA',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [
         {
           metric: 'revenue',
@@ -432,6 +439,7 @@ export default [
         table: 'oak',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [
         {
           metric: 'revenue',
@@ -480,6 +488,7 @@ export default [
         table: 'network',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [{ metric: 'uniqueIdentifier' }],
       dimensions: [],
       filters: [],
@@ -529,6 +538,7 @@ export default [
         table: 'tableA',
         timeGrain: 'day',
       },
+      dataSource: 'bardOne',
       metrics: [
         {
           metric: 'revenue',
