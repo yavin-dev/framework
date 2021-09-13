@@ -68,6 +68,10 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
 
   @computed('args.report.request.dataSource')
   get supportsSubtotal(): boolean {
+    //TODO: We shouldn't need this line because TS, but js tests causing a big regression. Remove and fix tests.
+    if (!this.args.report.request.dataSource) {
+      return false;
+    }
     const dataSource = getDataSource<'bard'>(this.args.report.request.dataSource).options;
     return dataSource?.enableSubtotals ?? false;
   }
