@@ -33,7 +33,7 @@ import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
 import Interval from 'navi-data/utils/classes/interval';
 
-export type Query = RequestOptions & Record<string, string | number | boolean>;
+export type Query = Record<string, string | number | boolean>;
 
 /**
  * @param column - dimension column
