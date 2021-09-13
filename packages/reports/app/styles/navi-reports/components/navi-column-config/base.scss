@@ -41,7 +41,8 @@
     margin: 0 4px;
   }
 
-  &__rollup-icon {
+  &__rollup-icon,
+  &__sort-icon {
     @include navi-subtotal-button;
   }
 }

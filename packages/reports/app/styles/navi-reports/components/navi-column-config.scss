@@ -11,7 +11,13 @@
   }
 
   &--active {
-    color: $links-hover-text-color;
+    background-color: $links-text-color;
+    color: map-get($denali-grey-colors, '100');
+
+    &:hover {
+      background-color: $links-hover-text-color;
+      color: map-get($denali-grey-colors, '100');
+    }
   }
 
   &--disabled {
@@ -21,7 +27,7 @@
 
 @mixin navi-subtotal-button {
   background-color: transparent;
-  border-radius: 5px;
+  border-radius: 3px;
   color: $links-text-color;
   cursor: pointer;
   margin: 0 1px;
@@ -68,7 +74,7 @@
     }
 
     &-buttons {
-      margin-right: 4px;
+      margin-right: 5px;
       padding: 8px 0;
     }
   }

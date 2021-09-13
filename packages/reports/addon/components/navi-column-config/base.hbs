@@ -21,14 +21,16 @@
             @icon="duplicate"
             @size="small"
             title="Duplicate Column"
+            role="button"
             {{on "click" @cloneColumn}}
           />
           <DenaliIcon
-            class="navi-column-config-base__sort-icon {{unless @column.fragment.columnMetadata.isSortable "navi-column-config-base__sort-icon--disabled"}}"
-            @icon={{if @column.fragment.sortedDirection "swap-vertical-circle-solid" "swap-vertical-circle"}}
+            class="navi-column-config-base__sort-icon {{unless @column.fragment.columnMetadata.isSortable "navi-column-config-base__sort-icon--disabled"}} {{if @column.fragment.sortedDirection "navi-column-config-base__sort-icon--active"}}"
+            @icon="swap-vertical-circle"
             @size="small"
             disabled={{not @column.fragment.columnMetadata.isSortable}}
             title={{if @column.fragment.columnMetadata.isSortable (if @column.fragment.sortedDirection "Remove Sort" "Add Sort") "This column cannot be sorted"}}
+            role="button"
             {{on "click" (fn this.updateSort (if @column.fragment.sortedDirection 'none' 'desc'))}}
           />
           <DenaliIcon
@@ -36,6 +38,7 @@
             @icon="filter-add"
             @size="small"
             title="Add Filter"
+            role="button"
             {{on "click" @onAddFilter}}
           />
           {{#if (and @supportsSubtotal (not-eq @column.fragment.type "metric"))}}

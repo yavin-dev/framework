@@ -59,7 +59,6 @@ export default class ColumnConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
       request.removeColumn(column);
-      this.requestActionDispatcher.dispatch(RequestActions.REMOVE_ROLLUP_COLUMN, route, column);
     },
 
     /**
