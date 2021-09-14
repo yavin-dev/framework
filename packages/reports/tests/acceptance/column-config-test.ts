@@ -1308,7 +1308,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('Rollup test', async function (assert) {
-    assert.expect(11);
+    assert.expect(8);
     await visit('/reports/1/view');
     let apiURL = await getRequestURL();
     assert.equal(
@@ -1339,12 +1339,9 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-report__run-btn');
-    find('.table-widget .scroll-container > div > div')?.scrollTo(0, 9999);
-    await settled();
 
     await click('.visualization-toggle__option-icon[title="Data Table"]');
     assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
-    assert.dom('.table-row__grand-total-row').doesNotExist('Table visualization does not have grandtotal styled rows');
 
     await click('.navi-column-config__grandtotal-icon');
 
@@ -1356,11 +1353,8 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-report__run-btn');
-    find('.table-widget .scroll-container > div > div')?.scrollTo(0, 9999);
-    await settled();
 
     assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
-    assert.dom('.table-row__grand-total-row').exists('Table visualization has grandtotal styled rows');
 
     //await this.pauseTest();
 
@@ -1378,15 +1372,9 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-report__run-btn');
-    find('.table-widget .scroll-container > div > div')?.scrollTo(0, 9999);
-    await settled();
 
     assert
       .dom('.table-row__rollup-row')
       .doesNotExist('Table visualization has all rollup styled rows removed after toggling off both dimensions');
-
-    assert
-      .dom('.table-row__grand-total-row')
-      .doesNotExist('Table visualization grand total is gone when grand total is toggled off');
   });
 });
