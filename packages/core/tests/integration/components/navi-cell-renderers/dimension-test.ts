@@ -92,4 +92,35 @@ module('Integration | Component | cell renderers/dimension', function (hooks) {
       .dom('.table-cell-content')
       .hasText('--', 'The dimension cell renders correctly when present description field is not present');
   });
+
+  test('dimension rollup render', async function (this: TestContext, assert) {
+    assert.expect(4);
+    this.set('data', { ...this.data, 'os(field=id)': null, 'os(field=desc)': null });
+    this.set('rollup', true);
+    this.set('grandTotal', false);
+
+    await render(hbs`
+      <NaviCellRenderers::Dimension
+        @data={{this.data}}
+        @column={{this.column}}
+        @request={{this.request}}
+        @isRollup={{this.rollup}}
+        @isGrandTotal={{this.grandTotal}}
+      />
+    `);
+
+    assert.dom('.table-cell-content').hasText('\xa0', 'renders non breaking space when rollup is true');
+
+    this.set('rollup', false);
+
+    assert.dom('.table-cell-content').hasText('--', 'renders dash when rollup is false');
+
+    this.set('grandTotal', true);
+
+    assert.dom('.table-cell-content').hasText('', 'renders blank when grandTotal is true');
+
+    this.set('rollup', true);
+
+    assert.dom('.table-cell-content').hasText('', 'renders blank when grandTotal and rollup is true');
+  });
 });

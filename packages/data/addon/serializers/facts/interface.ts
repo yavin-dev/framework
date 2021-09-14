@@ -8,7 +8,12 @@ import type NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 
 export type MetricValue = number | undefined | null;
 export type DimensionValue = string | number | boolean | undefined | null;
-export type RowMetadata = unknown;
+export type RowMetadata = {
+  isTotalRow?: boolean;
+  hasPartialData?: boolean;
+  isRollup?: boolean;
+  isGrandTotal?: boolean;
+};
 export type RowValue = MetricValue | DimensionValue | RowMetadata;
 
 export interface ResponseV1 {

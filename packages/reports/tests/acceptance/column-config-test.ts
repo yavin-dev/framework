@@ -1308,7 +1308,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('Rollup test', async function (assert) {
-    assert.expect(5);
+    assert.expect(8);
     await visit('/reports/1/view');
     let apiURL = await getRequestURL();
     assert.equal(
@@ -1338,6 +1338,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'Property rollup added to query'
     );
 
+    await click('.navi-report__run-btn');
+
+    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
+
     await click('.navi-column-config__grandtotal-icon');
 
     apiURL = await getRequestURL();
@@ -1346,6 +1351,10 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'https://data.naviapp.io/v1/data/network/day/property;show=id/__rollupMask/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&rollupTo=dateTime%2Cproperty&rollupGrandTotal=true&format=json',
       'grandTotal added to query'
     );
+
+    await click('.navi-report__run-btn');
+
+    assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
 
     await click('.navi-column-config-base__rollup-icon');
     await click('span[title="Property (id)"]');
@@ -1359,5 +1368,11 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&format=json',
       'Rollup removed from query after toggling off both dimensions'
     );
+
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.table-row__rollup-row')
+      .doesNotExist('Table visualization has all rollup styled rows removed after toggling off both dimensions');
   });
 });

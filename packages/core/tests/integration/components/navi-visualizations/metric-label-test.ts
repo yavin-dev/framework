@@ -11,6 +11,7 @@ import RequestFragment from 'navi-core/models/bard-request-v2/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import type { RowValue } from 'navi-data/addon/serializers/facts/interface';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::MetricLabel
@@ -27,7 +28,7 @@ interface TestContext extends Context, ComponentArgs {}
  * @param context - test context
  * @param row - object containing row of data
  */
-function _setModel(row: Record<string, unknown>): void {
+function _setModel(row: Record<string, RowValue>): void {
   const test = getContext() as TestContext;
   set(test.model.firstObject!.response, 'rows', [row]);
 }
