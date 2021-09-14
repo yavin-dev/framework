@@ -1356,8 +1356,6 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
 
-    //await this.pauseTest();
-
     await click('.navi-column-config-base__rollup-icon');
     await click('span[title="Property (id)"]');
     await click('span[title="Date Time (day)"]');
