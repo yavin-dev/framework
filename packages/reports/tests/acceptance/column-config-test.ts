@@ -1,5 +1,5 @@
 import { module, test, skip } from 'qunit';
-import { findAll, visit, click, fillIn, blur, currentURL, find, settled } from '@ember/test-helpers';
+import { findAll, visit, click, fillIn, blur, currentURL, find } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
