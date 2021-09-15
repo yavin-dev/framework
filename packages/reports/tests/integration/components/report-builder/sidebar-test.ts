@@ -123,8 +123,8 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
 
     assert.deepEqual(
       findAll('.report-builder-source-selector__source-name').map((el) => el.textContent?.trim()),
-      ['Network', 'Protected Table', 'Table A', 'Table B', 'Table C'],
-      'The available tables are listed'
+      ['Network', 'Network', 'Protected Table', 'Table A', 'Table B', 'Table C'],
+      'The suggested and available tables are listed'
     );
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();

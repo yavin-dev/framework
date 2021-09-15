@@ -7,6 +7,7 @@ declare module 'navi-config' {
     description?: string;
     uri: string;
     options?: Options;
+    suggestedDataTables?: string[];
   };
 
   export interface FiliConfigOptions {

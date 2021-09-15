@@ -7,7 +7,7 @@
           <DenaliBreadcrumb class="report-builder-sidebar__breadcrumb flex-1 font-12" @items={{array "Select A Datasource"}} as |item|>
             <button
               type="button"
-              class="report-builder-sidebar__breadcrumb-item report-builder-sidebar__breadcrumb-item--placeholder upper link is-secondary is-sub"
+              class="report-builder-sidebar__breadcrumb-item report-builder-sidebar__breadcrumb-item--placeholder link is-secondary is-sub"
             >
               {{item}}
             </button>
@@ -17,7 +17,7 @@
             <button
               type="button"
               title={{item.name}}
-              class="report-builder-sidebar__breadcrumb-item upper link"
+              class="report-builder-sidebar__breadcrumb-item link"
               disabled={{@disabled}}
               data-level={{item.path.length}}
               {{on "click" (fn this.setSourcePath item.path)}}
@@ -45,6 +45,7 @@
           {{#if (eq path.length 0)}}
             <ReportBuilder::SourceSelector
               class="report-builder-source-selector--datasources"
+              @sourceType="data sources"
               @currentSource={{this.requestDataSource}}
               @emptyMsg="No data sources were configured."
               @sourcesTask={{this.dataSources}}
@@ -53,6 +54,7 @@
           {{else if (eq path.length 1)}}
             <ReportBuilder::SourceSelector
               class="report-builder-source-selector--tables"
+              @sourceType="tables"
               @emptyMsg="There are no tables for this datasource."
               @currentSource={{this.requestTableMetadata}}
               @sourcesTask={{this.tables}}

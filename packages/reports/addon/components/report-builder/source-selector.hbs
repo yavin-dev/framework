@@ -1,28 +1,53 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="report-builder-source-selector p-y-10" ...attributes>
+<div class="report-builder-source-selector" ...attributes>
   {{#if @sourcesTask.isSuccessful}}
     {{#if (gt @sourcesTask.value.length 0)}}
-      <ol class="report-builder-source-selector__list p-l-20 p-r-10">
-        {{#each @sourcesTask.value as |item idx|}}
-          <li class="report-builder-source-selector__source flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
-            <button
-              type="button"
-              class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
-              {{on "click" (fn @setSource item.source)}}
-              data-source-name={{item.name}}
+      {{#let (filter-by "isSuggested" @sourcesTask.value) as |suggestedSources|}}
+        {{#if (gt suggestedSources.length 0)}}
+          <div class="report-builder-source-selector-title p-t-15 p-l-20">
+            <DenaliChip
+              class="upper is-bold"
+              @size="small"
+              @backgroundColor="lime"
+              @backgroundShade="100"
+              @textColor="green"
+              @textShade="800"
             >
-              <span class="report-builder-source-selector__source-name flex-1">
-                <span class={{if (eq @currentSource.source item.source) "link is-active"}}>{{item.name}}</span>
-                {{#if item.description}}
-                  <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-grey-500" @icon="information-circle" @size="small" />
-                  <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
-                {{/if}}
-              </span>
-              <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
-            </button>
-          </li>
-        {{/each}}
-      </ol>
+              <DenaliIcon
+                @icon="star"
+                @size="extrasmall"
+                class="p-b-3"
+              />
+              Suggested {{@sourceType}}
+            </DenaliChip>
+          </div>
+          <ReportBuilder::SourceSelectorList
+            @sources={{suggestedSources}}
+            @currentSource={{@currentSource}}
+            @setSource={{@setSource}}
+          />
+          <div class="report-builder-source-selector-title p-t-15 p-l-20">
+            <DenaliChip
+              class="upper is-bold"
+              @size="small"
+              @backgroundColor="grey"
+              @backgroundShade="300"
+            >
+              <DenaliIcon
+                @icon="table"
+                @size="extrasmall"
+                class="p-b-3"
+              />
+              All available {{@sourceType}}
+            </DenaliChip>
+          </div>
+        {{/if}}
+      {{/let}}
+      <ReportBuilder::SourceSelectorList
+        @sources={{@sourcesTask.value}}
+        @currentSource={{@currentSource}}
+        @setSource={{@setSource}}
+      />
     {{else}}
       <NaviInfoMessage
         @icon="warning"

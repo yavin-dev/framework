@@ -14,6 +14,7 @@ window.NAVI_APP = {
       displayName: 'Default',
       uri: 'https://fact.naviapp.io',
       type: 'bard',
+      suggestedDataTables: ['gameStats'],
     },
   ],
   appPersistence: {

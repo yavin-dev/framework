@@ -5,7 +5,8 @@
         "name": "default",
         "displayName": "Default",
         "uri": "https://{filiHostname}",
-        "type": "bard"
+        "type": "bard",
+        "suggestedDataTables": ["gameStats"]
       }
     ],
     "appPersistence": {
@@ -20,7 +21,8 @@
         "name": "default",
         "displayName": "Default",
         "uri": "http://localhost:8080/graphql/api/v1",
-        "type": "elide"
+        "type": "elide",
+        "suggestedDataTables": []
       }
     ],
     "appPersistence": {
