@@ -30,7 +30,7 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.9")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", "5.0.12")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     // drivers for models
@@ -49,7 +49,7 @@ dependencies {
     implementation("org.liquibase", "liquibase-core", "3.8.1")
 
     //Enables access logs.
-    implementation("net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1")
+    implementation("net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.9.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
@@ -92,7 +92,7 @@ tasks.register<NpmTask>("buildUI") {
 }
 
 tasks.register<Copy>("copyNaviApp") {
-    dependsOn("buildUI")
+    //dependsOn("buildUI")
     from("../../app/dist")
     into("$buildDir/resources/main/META-INF/resources/ui")
 }
