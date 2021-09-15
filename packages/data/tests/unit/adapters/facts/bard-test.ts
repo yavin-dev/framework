@@ -108,7 +108,7 @@ const TestRequest: RequestV2 = {
     ],
     sorts: [],
     rollup: {
-      columns: [],
+      columnCids: [],
       grandTotal: false,
     },
   },
@@ -124,7 +124,7 @@ const TestRequest: RequestV2 = {
     },
   },
   TestRequestWithRollup: RequestV2 = Object.assign(cloneDeep(TestRequest), {
-    rollup: { columns: ['znmxcv', 'ipuhozxvc', 'dt1'], grandTotal: true },
+    rollup: { columnCids: ['znmxcv', 'ipuhozxvc', 'dt1'], grandTotal: true },
   }),
   MockBardResponse: ResponseData = [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
 

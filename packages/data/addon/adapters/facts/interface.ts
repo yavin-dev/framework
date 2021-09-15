@@ -65,7 +65,7 @@ export type Sort = {
 };
 
 export type Rollup = {
-  columns: string[];
+  columnCids: string[];
   grandTotal: boolean;
 };
 

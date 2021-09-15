@@ -74,14 +74,18 @@ module('Unit | Consumer | request rollup', function (hooks) {
       Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, OS);
     });
 
-    assert.deepEqual(CurrentModel.request?.rollup?.columns[0], 'c1', 'pushes requested column to rollup on request');
+    assert.deepEqual(CurrentModel.request?.rollup?.columnCids[0], 'c1', 'pushes requested column to rollup on request');
 
     run(() => {
       Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, AGE);
       Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, DEVICE_TYPE);
     });
 
-    assert.deepEqual(CurrentModel.request.rollup?.columns, ['c1', 'c2', 'c3'], 'Columns are added in the right order');
+    assert.deepEqual(
+      CurrentModel.request.rollup?.columnCids,
+      ['c1', 'c2', 'c3'],
+      'Columns are added in the right order'
+    );
   });
 
   test('REMOVE_ROLLUP_COLUMN', function (assert) {
@@ -93,7 +97,7 @@ module('Unit | Consumer | request rollup', function (hooks) {
       Consumer.send(RequestActions.REMOVE_ROLLUP_COLUMN, Route, AGE);
     });
 
-    assert.deepEqual(CurrentModel.request.rollup?.columns, ['c1', 'c3'], 'The correct columns is removed');
+    assert.deepEqual(CurrentModel.request.rollup?.columnCids, ['c1', 'c3'], 'The correct columns is removed');
   });
 
   test('UPDATE_GRAND_TOTAL', function (assert) {
@@ -119,7 +123,7 @@ module('Unit | Consumer | request rollup', function (hooks) {
       Consumer.send(RequestActions.PUSH_ROLLUP_COLUMN, Route, DEVICE_TYPE);
       Consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, Route, AGE);
     });
-    assert.deepEqual(CurrentModel.request.rollup?.columns, ['c1', 'c3'], 'The correct columns is removed');
+    assert.deepEqual(CurrentModel.request.rollup?.columnCids, ['c1', 'c3'], 'The correct columns is removed');
   });
 
   test('Column not in request assertion', function (assert) {

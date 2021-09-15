@@ -58,7 +58,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
           isRequired: requiredColumns.has(column),
-          isRollup: rollup.columns.includes(column.cid),
+          isRollup: rollup.columnCids.includes(column.cid),
           fragment: column,
         };
       });

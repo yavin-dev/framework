@@ -425,7 +425,7 @@ module('Unit | Component | table', function (hooks) {
           ],
           sorts: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc', source: 'bardOne' }],
           rollup: {
-            columns: ['cid_osId'],
+            columnCids: ['cid_osId'],
             grandTotal: true,
           },
         },

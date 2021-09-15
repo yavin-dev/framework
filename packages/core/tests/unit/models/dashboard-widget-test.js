@@ -106,7 +106,7 @@ module('Unit | Model | dashboard widget', function (hooks) {
                 },
               ],
               rollup: {
-                columns: [],
+                columnCids: [],
                 grandTotal: false,
               },
               limit: null,

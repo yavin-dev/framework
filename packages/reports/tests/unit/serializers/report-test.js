@@ -60,7 +60,7 @@ module('Unit | Serializer | Report', function (hooks) {
               },
             ],
             rollup: {
-              columns: [],
+              columnCids: [],
               grandTotal: false,
             },
             limit: null,
@@ -162,7 +162,7 @@ module('Unit | Serializer | Report', function (hooks) {
               },
             ],
             rollup: {
-              columns: [],
+              columnCids: [],
               grandTotal: false,
             },
             limit: null,
