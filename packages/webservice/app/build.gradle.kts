@@ -92,7 +92,7 @@ tasks.register<NpmTask>("buildUI") {
 }
 
 tasks.register<Copy>("copyNaviApp") {
-    //dependsOn("buildUI")
+    dependsOn("buildUI")
     from("../../app/dist")
     into("$buildDir/resources/main/META-INF/resources/ui")
 }
