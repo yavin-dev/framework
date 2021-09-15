@@ -31,15 +31,11 @@ export default class ColumnSelector extends Component<ColumnSelectorArgs> {
       args: { allColumns },
     } = this;
 
-    //let tempColumns = allColumns.filter(column => column.name.indexOf('Revenue'))
-    let tempColumns = allColumns.filter(
-      (column) => column.name.toLocaleLowerCase().includes('revenue')
-      //Object.keys(column).some(o => column.name.toLocaleLowerCase().includes('revenue'))
-    );
+    let tempColumns = allColumns.filter((column) => column.name.toLocaleLowerCase().includes('revenue'));
     console.log('Columns ', allColumns);
     console.log('tempColumns ', tempColumns);
     if (query) console.log('query:', query);
 
-    return query ? searchRecords(tempColumns, query, 'name') : tempColumns;
+    return query ? searchRecords(allColumns, query, 'name') : allColumns;
   }
 }
