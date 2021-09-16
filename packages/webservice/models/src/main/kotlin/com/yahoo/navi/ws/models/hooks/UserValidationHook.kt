@@ -5,7 +5,8 @@
 
 package com.yahoo.navi.ws.models.hooks
 
-import com.yahoo.elide.annotation.LifeCycleHookBinding
+import com.yahoo.elide.annotation.LifeCycleHookBinding.Operation
+import com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase
 import com.yahoo.elide.core.dictionary.EntityDictionary
 import com.yahoo.elide.core.exceptions.BadRequestException
 import com.yahoo.elide.core.lifecycle.LifeCycleHook
@@ -22,15 +23,18 @@ import javax.inject.Inject
  * on ID fields - and so this logic is implemented as a hook.  Longer term, Navi should
  * not overload the ID field - it should be a simple surrogate key.
  */
-class UserValidationHook() : LifeCycleHook<User> {
+class UserValidationHook : LifeCycleHook<User> {
     @Inject
     private lateinit var dictionary: EntityDictionary
+
+    private val adminCheck by lazy {
+        dictionary.injector.instantiate(dictionary.getCheck(IS_ADMIN)) as DefaultAdminCheck?
+    }
 
     /**
      * Validates that the current requesting user is an admin or the same user that is being created
      */
-    override fun execute(operation: LifeCycleHookBinding.Operation, phase: LifeCycleHookBinding.TransactionPhase, user: User, requestScope: RequestScope, changes: Optional<ChangeSpec>) {
-        val adminCheck = dictionary.injector.instantiate(dictionary.getCheck(IS_ADMIN)) as DefaultAdminCheck?
+    override fun execute(operation: Operation, phase: TransactionPhase, user: User, requestScope: RequestScope, changes: Optional<ChangeSpec>) {
         val isRequestingUserAdmin = adminCheck?.ok(requestScope.user) ?: false
 
         val principalName = requestScope.user?.name
