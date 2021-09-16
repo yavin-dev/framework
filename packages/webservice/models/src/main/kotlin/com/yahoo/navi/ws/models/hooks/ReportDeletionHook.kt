@@ -17,17 +17,17 @@ import java.util.Optional
  */
 class ReportDeletionHook : LifeCycleHook<Report> {
     override fun execute(
-        operation: LifeCycleHookBinding.Operation?,
-        phase: LifeCycleHookBinding.TransactionPhase?,
-        report: Report?,
-        requestScope: RequestScope?,
-        changes: Optional<ChangeSpec>?
+        operation: LifeCycleHookBinding.Operation,
+        phase: LifeCycleHookBinding.TransactionPhase,
+        report: Report,
+        requestScope: RequestScope,
+        changes: Optional<ChangeSpec>
     ) {
-        var favoriteUsers = report?.favoritedBy
+        val favoriteUsers = report.favoritedBy
 
         if (favoriteUsers != null) {
             for (user in favoriteUsers) {
-                user?.favoriteReports?.remove(report)
+                user.favoriteReports.remove(report)
             }
         }
     }

@@ -13,6 +13,7 @@ import com.yahoo.elide.core.exceptions.InvalidValueException
 import com.yahoo.navi.ws.models.beans.fragments.DashboardWidgetVisualization
 import com.yahoo.navi.ws.models.beans.fragments.Request
 import com.yahoo.navi.ws.models.beans.fragments.RequestList
+import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
@@ -34,9 +35,9 @@ import javax.persistence.Transient
 
 @Entity
 @Include(rootLevel = false, name = "dashboardWidgets")
-@CreatePermission(expression = "$IS_OWNER OR $IS_EDITOR")
-@UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR")
-@DeletePermission(expression = "$IS_OWNER OR $IS_EDITOR")
+@CreatePermission(expression = "$IS_OWNER OR $IS_EDITOR OR $IS_ADMIN")
+@UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR OR $IS_ADMIN")
+@DeletePermission(expression = "$IS_OWNER OR $IS_EDITOR OR $IS_ADMIN")
 class DashboardWidget : HasOwner, HasEditors {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

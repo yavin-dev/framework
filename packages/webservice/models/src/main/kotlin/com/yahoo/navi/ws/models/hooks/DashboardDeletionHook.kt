@@ -23,11 +23,11 @@ class DashboardDeletionHook : LifeCycleHook<Dashboard> {
         requestScope: RequestScope?,
         changes: Optional<ChangeSpec>?
     ) {
-        var favoriteUsers = dashboard?.favoritedBy
+        val favoriteUsers = dashboard?.favoritedBy
 
         if (favoriteUsers != null) {
             for (user in favoriteUsers) {
-                user?.favoriteDashboards?.remove(dashboard)
+                user.favoriteDashboards.remove(dashboard)
             }
         }
     }
