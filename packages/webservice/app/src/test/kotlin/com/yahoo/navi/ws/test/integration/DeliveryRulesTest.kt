@@ -514,12 +514,67 @@ class DeliveryRulesTest : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
+    }
 
-        // admin can delete other user's delivery rules
-        registerRole("admin")
-        registerUserRole("admin", USER2)
+    @Test
+    fun `admin can modify user delivery rules`() {
+        val adminUser = "admin"
+        val adminRole = "admin"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerUserRole(adminRole, adminUser)
+
+        // admin can create for other users
         given()
-            .header("User", USER2)
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("frequency", "day"),
+                            attr("format", format),
+                            attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
+                            attr("version", "1")
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id("1"))),
+                            relation("owner", linkage(type("users"), id(USER2)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        // admin can update for other users
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("frequency", "month")
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // admin can delete for other users
+        given()
+            .header("User", adminUser)
             .`when`()
             .delete("deliveryRules/1")
             .then()

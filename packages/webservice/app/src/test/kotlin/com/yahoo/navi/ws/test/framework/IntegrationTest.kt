@@ -44,9 +44,9 @@ abstract class IntegrationTest : RestAssuredSupport {
     /**
      * Registers a test user
      */
-    fun registerUser(user: String) {
+    fun registerUser(user: String, submitter: String? = user) {
         given()
-            .header("User", user)
+            .header("User", submitter)
             .contentType("application/vnd.api+json")
             .body(
                 """
@@ -91,9 +91,9 @@ abstract class IntegrationTest : RestAssuredSupport {
     /**
      * Registers user-role relationship
      */
-    fun registerUserRole(role: String, user: String) {
+    fun registerUserRole(role: String, user: String, submitter: String? = user) {
         given()
-            .header("User", user)
+            .header("User", submitter)
             .contentType("application/vnd.api+json")
             .body(
                 """
@@ -117,7 +117,7 @@ abstract class IntegrationTest : RestAssuredSupport {
      * @return number returned by COUNT query
      */
     fun getCountForSelectQuery(query: String): Int {
-        var numberOfRows: Int
+        val numberOfRows: Int
         try {
             val rs = this.entityManager.createQuery(query)
             numberOfRows = rs.resultList.size

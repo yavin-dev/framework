@@ -5,6 +5,7 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import org.apache.http.HttpStatus
@@ -187,6 +188,73 @@ class DashboardTest : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_FORBIDDEN)
+    }
+
+    @Test
+    fun `admin can modify user dashboards`() {
+        val adminUser = "admin"
+        val adminRole = "admin"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerUserRole(adminRole, adminUser)
+
+        // admin can create for other users
+        val createdId: String = given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("dashboards"),
+                        attributes(
+                            attr("title", "A Dashboard")
+                        ),
+                        relationships(
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                )
+            )
+            .When()
+            .post("/dashboards")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        // admin can update for other users
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("dashboards"),
+                        id(createdId),
+                        attributes(
+                            attr("title", "A New Dashboard")
+                        ),
+                        relationships(
+                            relation("owner", linkage(type("users"), id(USER2)))
+                        )
+                    )
+                )
+            )
+            .When()
+            .patch("/dashboards/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // admin can delete for other users
+        given()
+            .header("User", adminUser)
+            .When()
+            .delete("/dashboards/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
     }
 
     @Test

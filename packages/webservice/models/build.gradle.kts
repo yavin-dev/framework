@@ -6,7 +6,7 @@ plugins {
     `maven-publish`
     kotlin("plugin.allopen") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
-    `signing`
+    signing
 }
 
 java {
@@ -23,7 +23,7 @@ allOpen {
 }
 
 dependencies {
-    implementation("com.yahoo.elide", "elide-core", "5.0.9")
+    implementation("com.yahoo.elide", "elide-core", "5.0.12")
     implementation("javax.persistence", "javax.persistence-api", "2.2")
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
     implementation("jakarta.mail:jakarta.mail-api:1.6.7")
@@ -59,7 +59,7 @@ publishing {
                 licenses {
                     license {
                         name.set("MIT License")
-                        url.set("http://www.opensource.org/licenses/mit-license.php")
+                        url.set("https://www.opensource.org/licenses/mit-license.php")
                         distribution.set("repo")
                     }
                 }
@@ -71,7 +71,7 @@ publishing {
                 scm {
                     connection.set("scm:git:https://github.com/yavin-dev/framework.git")
                     developerConnection.set("scm:git:ssh:git@github.com:yavin-dev/framework.git")
-                    url.set("http://yavin.dev")
+                    url.set("https://yavin.dev")
                 }
             }
         }
@@ -82,10 +82,10 @@ publishing {
             val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             // This line is evaluated before gradle.taskGraph.whenReady so the version did not contain "SNAPSHOT" in name,
             // so it was using releaseUrl instead of snapshotUrl. isSnapshot is passed in as project property in maven-publish.sh.
-            url = if (project.hasProperty("isSnapshot") && project.property("isSnapshot").toString().equals("true")) snapshotsRepoUrl else releasesRepoUrl
+            url = if (project.hasProperty("isSnapshot") && project.property("isSnapshot").toString() == "true") snapshotsRepoUrl else releasesRepoUrl
             credentials {
-                username = System.getenv("OSSRH_USER") as String?
-                password = System.getenv("OSSRH_TOKEN") as String?
+                username = System.getenv("OSSRH_USER")
+                password = System.getenv("OSSRH_TOKEN")
 
             }
         }
@@ -105,7 +105,7 @@ gradle.taskGraph.whenReady {
             tag = "-${project.property("publishTag")}"
         }
         var snapshot = ""
-        if(project.hasProperty("isSnapshot") && project.property("isSnapshot").toString().equals("true")) {
+        if(project.hasProperty("isSnapshot") && project.property("isSnapshot").toString() == "true") {
             snapshot = "-SNAPSHOT"
         }
         version = "${version}${tag}${snapshot}"
