@@ -12,8 +12,8 @@ import com.yahoo.elide.core.exceptions.BadRequestException
 import com.yahoo.elide.core.lifecycle.LifeCycleHook
 import com.yahoo.elide.core.security.ChangeSpec
 import com.yahoo.elide.core.security.RequestScope
+import com.yahoo.elide.core.security.checks.UserCheck
 import com.yahoo.navi.ws.models.beans.User
-import com.yahoo.navi.ws.models.checks.DefaultAdminCheck
 import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import java.util.Optional
 import javax.inject.Inject
@@ -28,7 +28,7 @@ class UserValidationHook : LifeCycleHook<User> {
     private lateinit var dictionary: EntityDictionary
 
     private val adminCheck by lazy {
-        dictionary.injector.instantiate(dictionary.getCheck(IS_ADMIN)) as DefaultAdminCheck?
+        dictionary.injector.instantiate(dictionary.getCheck(IS_ADMIN)) as UserCheck?
     }
 
     /**
