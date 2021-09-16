@@ -14,7 +14,7 @@ export default class GsheetExportService extends Service {
    * @param urlSuffix - the url of the gsheet to be fetched
    * @param signal - a signal so that the request can be cancelled if need be
    */
-  async fetchURL(exportUrl: string, urlSuffix: string, signal = null) {
+  async fetchURL(exportUrl: string, urlSuffix: string, signal: AbortSignal | null = null) {
     const response = await fetch(`${exportUrl}/${urlSuffix}`, {
       credentials: 'include',
       signal,
@@ -31,7 +31,7 @@ export default class GsheetExportService extends Service {
    * @param fileId - the fileId of the gsheet being checked on
    * @param signal - a signal so that the request can be cancelled if need be
    */
-  async pollGsheet(exportUrl: string, fileId: string, signal = null) {
+  async pollGsheet(exportUrl: string, fileId: string, signal: AbortSignal | null = null) {
     const response = await fetch(`${exportUrl}/gsheet-export/status/${fileId}`, {
       credentials: 'include',
       signal,
@@ -51,12 +51,16 @@ export default class GsheetExportService extends Service {
     const controller = new AbortController();
     const signal = controller.signal;
     try {
-      const spreadsheetInfo = yield this.fetchURL(exportUrl, urlSuffix, signal);
+      const spreadsheetInfo: { fileId: string; url: string } = yield this.fetchURL(exportUrl, urlSuffix, signal);
       const startTime = Number(new Date());
       let done = false;
 
       while (Number(new Date()) - startTime < this.TIMEOUT_MS) {
-        const pollResponse = yield this.pollGsheet(exportUrl, spreadsheetInfo.fileId, signal);
+        const pollResponse: { hasMovedToTeamDrive: boolean } = yield this.pollGsheet(
+          exportUrl,
+          spreadsheetInfo.fileId,
+          signal
+        );
         if (pollResponse.hasMovedToTeamDrive) {
           done = true;
           break;
