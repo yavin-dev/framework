@@ -9,6 +9,7 @@ import reportCollection from './routes/report-collections';
 import dashboardWidget from './routes/dashboard-widget';
 import deliveryRules from './routes/delivery-rules';
 import role from './routes/role';
+import gsheet from './routes/gsheet';
 
 export default function () {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
@@ -34,4 +35,8 @@ export default function () {
   user.call(this);
   report.call(this);
   role.call(this);
+
+  // catching gsheet export routes
+  this.urlPrefix = 'https://export-server-url.com:4443';
+  gsheet.call(this);
 }
