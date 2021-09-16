@@ -5,7 +5,7 @@
 import { htmlSafe } from '@ember/template';
 
 // TODO: Replace once resolved https://github.com/typed-ember/ember-cli-typescript/issues/1155#issue-629409268
-export type SafeString = ReturnType<typeof htmlSafe>
+export type SafeString = ReturnType<typeof htmlSafe>;
 export type MessageStyle = 'default' | 'info' | 'warning' | 'success' | 'danger';
 export type MessageTimeout = 'short' | 'medium' | 'long' | 'none';
 
