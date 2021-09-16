@@ -93,7 +93,7 @@ module('Integration | Component | report-builder/source-selector-list', function
       .hasText('Source B', 'And it is source B');
 
     assert
-      .dom('.report-builder-source-selector__source--selected .report-builder-source-selector__source-name > span')
+      .dom('.report-builder-source-selector__source--selected .report-builder-source-selector__source-name')
       .hasClass('is-active', 'Selected source name has active class');
   });
 });
