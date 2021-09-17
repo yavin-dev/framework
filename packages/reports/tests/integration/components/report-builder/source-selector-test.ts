@@ -42,8 +42,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows loading state', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     //@ts-ignore
     this.sourcesTask.isSuccessful = false;
     //@ts-ignore
@@ -56,8 +54,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows sources with suggestions', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     await render(TEMPLATE);
 
     assert.deepEqual(
@@ -67,15 +63,23 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     );
 
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source').map((el) => el.textContent?.trim()),
-      ['Source A', 'Source B', 'Source A'],
-      'The sources are listed correctly'
+      findAll('.report-builder-source-selector-list--suggested .report-builder-source-selector__source').map((el) =>
+        el.textContent?.trim()
+      ),
+      ['Source A'],
+      'The suggested sources are listed correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.report-builder-source-selector-list--all .report-builder-source-selector__source').map((el) =>
+        el.textContent?.trim()
+      ),
+      ['Source B', 'Source A'],
+      'All available sources are listed correctly'
     );
   });
 
   test('it shows sources without suggestions', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     //@ts-ignore
     this.sourcesTask.value[1].isSuggested = false;
     await render(TEMPLATE);
@@ -84,8 +88,14 @@ module('Integration | Component | report-builder/source-selector', function (hoo
       .dom('.report-builder-source-selector-title')
       .doesNotExist('Titles are not displayed if no sources are suggested.');
 
+    assert
+      .dom('.report-builder-source-selector-list--suggested')
+      .doesNotExist('Suggested sources list is not displayed if no sources are suggested.');
+
     assert.deepEqual(
-      findAll('.report-builder-source-selector__source').map((el) => el.textContent?.trim()),
+      findAll('.report-builder-source-selector-list--all .report-builder-source-selector__source').map((el) =>
+        el.textContent?.trim()
+      ),
       ['Source B', 'Source A'],
       'The sources are listed as passed in'
     );
@@ -111,7 +121,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows empty state', async function (this: TestContext, assert) {
-
     //@ts-ignore
     this.sourcesTask.value = [];
     await render(TEMPLATE);
@@ -126,8 +135,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows error state', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     //@ts-ignore
     this.sourcesTask.isSuccessful = false;
     await render(TEMPLATE);

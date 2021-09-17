@@ -32,8 +32,6 @@ module('Integration | Component | report-builder/source-selector-list', function
   });
 
   test('renders nothing when sources are empty', async function (this: TestContext, assert) {
-    assert.expect(1);
-
     this.sources = [];
     await render(TEMPLATE);
 
@@ -41,8 +39,6 @@ module('Integration | Component | report-builder/source-selector-list', function
   });
 
   test('it shows sources', async function (this: TestContext, assert) {
-    assert.expect(2);
-
     await render(TEMPLATE);
 
     assert.dom('.report-builder-source-selector__source').exists({ count: 2 }, 'There are two sources');

@@ -22,6 +22,7 @@
             </DenaliChip>
           </div>
           <ReportBuilder::SourceSelectorList
+            class="report-builder-source-selector-list--suggested"
             @sources={{suggestedSources}}
             @currentSource={{@currentSource}}
             @setSource={{@setSource}}
@@ -44,6 +45,7 @@
         {{/if}}
       {{/let}}
       <ReportBuilder::SourceSelectorList
+        class="report-builder-source-selector-list--all"
         @sources={{@sourcesTask.value}}
         @currentSource={{@currentSource}}
         @setSource={{@setSource}}
