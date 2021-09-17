@@ -87,7 +87,7 @@ module('Integration | Component | report-builder/source-selector', function (hoo
     assert.deepEqual(
       findAll('.report-builder-source-selector__source').map((el) => el.textContent?.trim()),
       ['Source B', 'Source A'],
-      'The sources are listed as passded in'
+      'The sources are listed as passed in'
     );
   });
 
@@ -111,7 +111,6 @@ module('Integration | Component | report-builder/source-selector', function (hoo
   });
 
   test('it shows empty state', async function (this: TestContext, assert) {
-    assert.expect(2);
 
     //@ts-ignore
     this.sourcesTask.value = [];
