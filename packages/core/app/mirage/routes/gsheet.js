@@ -11,7 +11,10 @@ export default function () {
   this.get('/gsheet-export/status/:fileId', function () {
     count = count + 1;
     return {
+      spreadsheetId: 'rickRoll',
       hasMovedToTeamDrive: count % 3 === 0,
+      createdTime: 'then',
+      modifiedTime: 'now',
     };
   });
 }

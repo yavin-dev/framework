@@ -28,7 +28,6 @@ module('Unit | Service | GsheetExportService', function (hooks) {
       }
     };
     const result = await service.fetchURL(exportURL, 'notAnotherRickRoll');
-    console.log('test result:\n', result);
     assert.deepEqual(
       result,
       {
@@ -55,7 +54,10 @@ module('Unit | Service | GsheetExportService', function (hooks) {
     assert.deepEqual(
       result,
       {
+        spreadsheetId: 'rickRoll',
         hasMovedToTeamDrive: false,
+        createdTime: 'then',
+        modifiedTime: 'now',
       },
       'poll gsheet returns data from endpoint'
     );
@@ -89,9 +91,8 @@ module('Unit | Service | GsheetExportService', function (hooks) {
   });
 
   test('it times out correctly', async function (assert) {
-    service.TIMEOUT_MS = 5000;
     assert.rejects(
-      taskFor(service.fetchAndPollGsheet).perform(exportURL, 'notAnotherRickRoll'),
+      taskFor(service.fetchAndPollGsheet).perform(exportURL, 'notAnotherRickRoll', { timeoutMs: 5000 }),
       /Poll timeout exceeded/,
       'Method throws once poll timeout has exceeded'
     );
