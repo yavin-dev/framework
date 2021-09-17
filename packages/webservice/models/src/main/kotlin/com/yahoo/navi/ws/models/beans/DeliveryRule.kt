@@ -14,9 +14,10 @@ import com.yahoo.navi.ws.models.beans.enums.DeliveryFrequency
 import com.yahoo.navi.ws.models.beans.fragments.DeliveryFormat
 import com.yahoo.navi.ws.models.beans.fragments.SchedulingRules
 import com.yahoo.navi.ws.models.checks.DefaultAdminCheck
+import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultJobRunnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
-import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck
+import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
@@ -40,9 +41,9 @@ import javax.validation.constraints.Size
 @Entity
 @Include(name = "deliveryRules")
 @DiscriminatorValue("deliveryRule")
-@CreatePermission(expression = "${DefaultOwnerCheck.IS_OWNER} OR ${DefaultAdminCheck.IS_ADMIN}")
-@UpdatePermission(expression = "${DefaultOwnerCheck.IS_OWNER} OR ${DefaultAdminCheck.IS_ADMIN}")
-@DeletePermission(expression = "${DefaultOwnerCheck.IS_OWNER} OR ${DefaultAdminCheck.IS_ADMIN}")
+@CreatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@UpdatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@DeletePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 class DeliveryRule : HasOwner {
 
     @Id

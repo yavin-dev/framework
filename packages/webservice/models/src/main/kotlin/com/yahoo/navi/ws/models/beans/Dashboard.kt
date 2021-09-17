@@ -12,6 +12,7 @@ import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.DashboardPresentation
 import com.yahoo.navi.ws.models.beans.fragments.request.DashboardFilter
+import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultEditorsCheck.Companion.IS_EDITOR
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import com.yahoo.navi.ws.models.hooks.DashboardDeletionHook
@@ -28,9 +29,9 @@ import javax.persistence.OneToMany
 @Entity
 @Include(name = "dashboards")
 @DiscriminatorValue("dashboard")
-@CreatePermission(expression = IS_OWNER)
-@UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR")
-@DeletePermission(expression = IS_OWNER)
+@CreatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@UpdatePermission(expression = "$IS_OWNER OR $IS_EDITOR OR $IS_ADMIN")
+@DeletePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 @LifeCycleHookBinding(
     phase = LifeCycleHookBinding.TransactionPhase.PREFLUSH,
     operation = LifeCycleHookBinding.Operation.DELETE,

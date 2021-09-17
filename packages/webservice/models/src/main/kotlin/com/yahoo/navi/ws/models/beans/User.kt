@@ -8,6 +8,7 @@ import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
+import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultDashboardOwnerCheck.Companion.IS_DASHBOARD_OWNER
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck.Companion.NOBODY
 import com.yahoo.navi.ws.models.checks.DefaultSameUserCheck.Companion.IS_SAME_USER
@@ -29,8 +30,8 @@ import javax.validation.constraints.NotBlank
 
 @Entity
 @Include(name = "users")
-@DeletePermission(expression = NOBODY)
-@UpdatePermission(expression = IS_SAME_USER)
+@DeletePermission(expression = "$NOBODY OR $IS_ADMIN")
+@UpdatePermission(expression = "$IS_SAME_USER OR $IS_ADMIN")
 @LifeCycleHookBinding(
     operation = LifeCycleHookBinding.Operation.CREATE,
     phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
