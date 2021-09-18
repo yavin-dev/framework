@@ -27,9 +27,11 @@
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"
       as |dim|>
         <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>{{dim.displayValue}}</div>
-        {{#each-in dim.suggestions as |field value|}}
-          <div class="filter-values--dimension-select__option-context is-grey-600" title={{value}}><span class="cap">{{field}}</span>: <span>{{value}}</span></div>
-        {{/each-in}}
+        <div class="filter-values--dimension-select__option-context">
+          {{#each-in dim.suggestions as |field value|}}
+            <span class="filter-values--dimension-select__option-context is-grey-700" title={{value}}><span class="cap is-grey-600">{{field}}</span>: {{value}} </span>
+          {{/each-in}}
+        </div>
     </PowerSelectMultiple>
   </div>
 {{/if}}

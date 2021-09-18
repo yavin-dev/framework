@@ -40,8 +40,6 @@ export default class ElideDimensionSerializer extends EmberObject implements Nav
       const values = edges.map((edge: ResponseEdge) =>
         this.dimensionModelFactory.create({
           value: edge.node.col0,
-          //suggestions: suggestionColumns.map((_, idx) => edge.node[`col${idx + 1}`]),
-          //support params
           suggestions: suggestionColumns.reduce(
             (obj, col, idx) => ({
               ...obj,
