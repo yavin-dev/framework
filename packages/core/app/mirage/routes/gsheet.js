@@ -13,8 +13,8 @@ export default function () {
     return {
       spreadsheetId: 'rickRoll',
       hasMovedToTeamDrive: count % 3 === 0,
-      createdTime: 'then',
-      modifiedTime: 'now',
+      createdTime: '2021-09-10T21:12:31.000Z',
+      modifiedTime: '2021-09-10T21:22:00.000Z',
     };
   });
 }

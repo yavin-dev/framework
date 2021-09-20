@@ -7,7 +7,7 @@ import type GsheetExportService from 'navi-core/services/gsheet-export';
 import { taskFor } from 'ember-concurrency-ts';
 
 let service: GsheetExportService;
-const exportURL = 'https://export-server-url.com:4443';
+const exportURL = new URL('https://export-server-url.com:4443/notAnotherRickRoll');
 
 module('Unit | Service | GsheetExportService', function (hooks) {
   setupTest(hooks);
@@ -27,7 +27,7 @@ module('Unit | Service | GsheetExportService', function (hooks) {
         deferred.resolve(callCount);
       }
     };
-    const result = await service.fetchURL(exportURL, 'notAnotherRickRoll');
+    const result = await service.fetchURL(exportURL);
     assert.deepEqual(
       result,
       {
@@ -56,8 +56,8 @@ module('Unit | Service | GsheetExportService', function (hooks) {
       {
         spreadsheetId: 'rickRoll',
         hasMovedToTeamDrive: false,
-        createdTime: 'then',
-        modifiedTime: 'now',
+        createdTime: '2021-09-10T21:12:31.000Z',
+        modifiedTime: '2021-09-10T21:22:00.000Z',
       },
       'poll gsheet returns data from endpoint'
     );
@@ -78,7 +78,7 @@ module('Unit | Service | GsheetExportService', function (hooks) {
         deferred.resolve(callCountPoll);
       }
     };
-    const result = await taskFor(service.fetchAndPollGsheet).perform(exportURL, 'notAnotherRickRoll');
+    const result = await taskFor(service.fetchAndPollGsheet).perform(exportURL);
 
     assert.deepEqual(
       result,
@@ -92,7 +92,7 @@ module('Unit | Service | GsheetExportService', function (hooks) {
 
   test('it times out correctly', async function (assert) {
     assert.rejects(
-      taskFor(service.fetchAndPollGsheet).perform(exportURL, 'notAnotherRickRoll', { timeoutMs: 5000 }),
+      taskFor(service.fetchAndPollGsheet).perform(exportURL, { timeoutMs: 5000 }),
       /Poll timeout exceeded/,
       'Method throws once poll timeout has exceeded'
     );

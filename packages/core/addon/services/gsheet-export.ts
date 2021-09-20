@@ -23,11 +23,10 @@ export default class GsheetExportService extends Service {
   /**
    * Fetches the given URL
    * @param exportUrl - the url of gsheet export
-   * @param exportPath - the url of the gsheet to be fetched
    * @param signal - a signal so that the request can be cancelled if need be
    */
-  async fetchURL(exportUrl: string, exportPath: string, signal: AbortSignal | null = null): Promise<GSheetExport> {
-    const response = await fetch(`${exportUrl}/${exportPath}`, {
+  async fetchURL(exportUrl: URL, signal: AbortSignal | null = null): Promise<GSheetExport> {
+    const response = await fetch(`${exportUrl}`, {
       credentials: 'include',
       signal,
     });
@@ -43,37 +42,35 @@ export default class GsheetExportService extends Service {
    * @param fileId - the fileId of the gsheet being checked on
    * @param signal - a signal so that the request can be cancelled if need be
    */
-  async pollGsheet(exportUrl: string, fileId: string, signal: AbortSignal | null = null): Promise<GSheetStatus> {
-    const response = await fetch(`${exportUrl}/gsheet-export/status/${fileId}`, {
+  async pollGsheet(exportUrl: URL, fileId: string, signal: AbortSignal | null = null): Promise<GSheetStatus> {
+    const response = await fetch(`${exportUrl.origin}/gsheet-export/status/${fileId}`, {
       credentials: 'include',
       signal,
     });
     if (!response.ok) {
-      throw new Error(`Error while fetching GSheet Export ${response.status} - ${response.statusText}`);
+      throw new Error(
+        `Error while fetching GSheet Export for ${exportUrl} ${response.status} - ${response.statusText}`
+      );
     }
     return response.json();
   }
 
   /**
    * Fetches a gsheet and then polls until either it reaches a google team drive or times out
-   * @param exportUrl - the url of gsheet export (the portion of the URL that will be used for both fetch and poll)
-   * @param exportPath - the url of the gsheet to be fetched (the portion of the URL that will only be used for fetch)
+   * @param exportUrl - the url of gsheet export
+   * @param options - an object containing information to control the timeout and poll rate settings
    */
-  @task *fetchAndPollGsheet(exportUrl: string, exportPath: string, options: Options = {}) {
+  @task *fetchAndPollGsheet(exportUrl: URL, options: Options = {}) {
     const pollOptions = { pollRateMs: this.POLL_RATE_MS, timeoutMs: this.TIMEOUT_MS, ...options };
     const controller = new AbortController();
     const signal = controller.signal;
     try {
-      const spreadsheetInfo: { fileId: string; url: string } = yield this.fetchURL(exportUrl, exportPath, signal);
-      const startTime = Number(new Date());
+      const spreadsheetInfo: GSheetExport = yield this.fetchURL(exportUrl, signal);
       let done = false;
+      const startTime = Number(new Date());
 
       while (Number(new Date()) - startTime < pollOptions.timeoutMs) {
-        const pollResponse: { hasMovedToTeamDrive: boolean } = yield this.pollGsheet(
-          exportUrl,
-          spreadsheetInfo.fileId,
-          signal
-        );
+        const pollResponse: GSheetStatus = yield this.pollGsheet(exportUrl, spreadsheetInfo.fileId, signal);
         if (pollResponse.hasMovedToTeamDrive) {
           done = true;
           break;
