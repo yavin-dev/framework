@@ -19,7 +19,6 @@ import type CompressionService from 'navi-core/services/compression';
 import { TaskGenerator, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type ReportModel from 'navi-core/models/report';
-import type GsheetExportService from 'navi-core/services/gsheet-export';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**
@@ -31,11 +30,6 @@ export default class MultipleFormatExport extends ReportActionExport {
    * instance of store service
    */
   @service declare store: StoreService;
-
-  /**
-   * instance of gsheet export service
-   */
-  @service declare gsheetExportService: GsheetExportService;
 
   /**
    * Promise resolving to export to file link
@@ -163,7 +157,7 @@ export default class MultipleFormatExport extends ReportActionExport {
   @task *gSheetExportTask(): TaskGenerator<void> {
     const { naviNotifications } = this;
 
-    const response = yield this.gsheetExportService.fetchAndPollGsheet(new URL(this.gsheetExportHref, location));
+    const response = yield fetch(this.gsheetExportHref);
     const json = yield response.json();
 
     naviNotifications?.clear();
