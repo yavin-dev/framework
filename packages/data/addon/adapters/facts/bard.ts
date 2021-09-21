@@ -273,7 +273,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildRollupParam(request: RequestV2): string {
     const columns = request.columns;
-    const rollupColumnCids = request.rollup?.columns || [];
+    const rollupColumnCids = request.rollup?.columnCids || [];
     return [
       ...columns.reduce((colSet, requestColumn) => {
         if (rollupColumnCids.includes(requestColumn.cid ?? '')) {
@@ -303,7 +303,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     timeGrain = 'isoWeek' === timeGrain ? 'week' : timeGrain;
     let dimensions = this._buildDimensionsPath(request);
 
-    if ((request.rollup?.columns?.length ?? -1) > 0 || request?.rollup?.grandTotal) {
+    if ((request.rollup?.columnCids?.length ?? -1) > 0 || request?.rollup?.grandTotal) {
       dimensions = `${dimensions}/__rollupMask`;
     }
 

@@ -12,7 +12,7 @@ const NEW_MODEL = {
       columns: [],
       sorts: [],
       rollup: {
-        columns: [],
+        columnCids: [],
         grandTotal: false,
       },
       limit: null,

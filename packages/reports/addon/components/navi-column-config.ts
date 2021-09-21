@@ -45,7 +45,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   /**
    * Dimension and metric columns from the request
    */
-  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[],rollup.columns.[]}')
+  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[],rollup.columnCids.[]}')
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();
@@ -58,7 +58,7 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
         return {
           isFiltered: filteredColumns.includes(column.canonicalName),
           isRequired: requiredColumns.has(column),
-          isRollup: rollup.columns.includes(column.cid),
+          isRollup: rollup.columnCids.includes(column.cid),
           fragment: column,
         };
       });

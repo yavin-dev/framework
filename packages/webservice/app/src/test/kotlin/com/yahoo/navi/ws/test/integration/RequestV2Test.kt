@@ -221,7 +221,7 @@ class RequestV2Test : IntegrationTest() {
                             "title": "A Report With Rollup",
                             "request": {
                                 "rollup": {
-                                    "columns": ["cid1", "cid3"],
+                                    "columnCids": ["cid1", "cid3"],
                                     "grandTotal": true
                                 },
                                 "requestVersion": "2.0"
@@ -249,7 +249,7 @@ class RequestV2Test : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
-            .body("data.attributes.request.rollup.columns", hasItems("cid1", "cid3"))
+            .body("data.attributes.request.rollup.columnCids", hasItems("cid1", "cid3"))
             .body("data.attributes.request.rollup.grandTotal", equalTo(true))
 
         given()
@@ -264,7 +264,7 @@ class RequestV2Test : IntegrationTest() {
                             "title": "A Report With Rollup",
                             "request": {
                                 "rollup": {
-                                    "columns": [],
+                                    "columnCids": [],
                                     "grandTotal": false
                                 },
                                 "requestVersion": "2.0"
@@ -294,7 +294,7 @@ class RequestV2Test : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_OK)
-            .body("data.attributes.request.rollup.columns", equalTo(emptyStringList))
+            .body("data.attributes.request.rollup.columnCids", equalTo(emptyStringList))
             .body("data.attributes.request.rollup.grandTotal", equalTo(false))
     }
 

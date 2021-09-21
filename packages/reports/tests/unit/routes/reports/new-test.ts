@@ -16,7 +16,7 @@ const NEW_MODEL = {
     filters: [],
     limit: null,
     rollup: {
-      columns: [],
+      columnCids: [],
       grandTotal: false,
     },
     requestVersion: '2.0',

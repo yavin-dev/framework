@@ -426,7 +426,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
           },
         ],
         rollup: {
-          columns: [],
+          columnCids: [],
           grandTotal: false,
         },
         table: 'network',
@@ -469,7 +469,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['2222222222'],
+        columnCids: ['2222222222'],
         grandTotal: false,
       },
       'Adding a dimension column works as expected'
@@ -479,7 +479,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['2222222222', '3333333333'],
+        columnCids: ['2222222222', '3333333333'],
         grandTotal: false,
       },
       'Adding another dimension pushes it to end of columns array'
@@ -489,7 +489,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['3333333333'],
+        columnCids: ['3333333333'],
         grandTotal: false,
       },
       'Correct column was removed'
@@ -499,7 +499,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       request.rollup.toJSON(),
       {
-        columns: ['3333333333'],
+        columnCids: ['3333333333'],
         grandTotal: true,
       },
       'Grand Total is toggled'
@@ -512,7 +512,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
     assert.deepEqual(
       clonedRequest.rollup.toJSON(),
       {
-        columns: ['3333333333', '1111111111'],
+        columnCids: ['3333333333', '1111111111'],
         grandTotal: true,
       },
       'Rollup was cloned correctly'

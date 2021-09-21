@@ -62,7 +62,7 @@ const ExpectedRequest = {
       },
     ],
     rollup: {
-      columns: [],
+      columnCids: [],
       grandTotal: false,
     },
     limit: null,

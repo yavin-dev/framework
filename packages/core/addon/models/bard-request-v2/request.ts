@@ -80,7 +80,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
   declare sorts: FragmentArray<SortFragment>;
 
-  @fragment('bard-request-v2/fragments/rollup', { defaultValue: () => ({ columns: [], grandTotal: false }) })
+  @fragment('bard-request-v2/fragments/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
   declare rollup: Rollup;
 
   @attr('number')
@@ -359,7 +359,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     const columnExists = this.columns.toArray().some((requestColumn) => requestColumn.cid === column.cid);
     assert(`Rollup column with cid: ${column.cid} must exist in request`, columnExists);
     this.removeRollupColumn(column); //remove duplicate
-    this.rollup.columns.push(column.cid);
+    this.rollup.columnCids.push(column.cid);
   }
 
   /**
@@ -367,7 +367,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * @param column - dimension column to remove
    */
   removeRollupColumn(column: ColumnFragment) {
-    this.rollup.columns = this.rollup.columns.filter((rollupCid) => rollupCid !== column.cid);
+    this.rollup.columnCids = this.rollup.columnCids.filter((rollupCid) => rollupCid !== column.cid);
   }
 
   /**

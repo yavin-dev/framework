@@ -162,7 +162,7 @@ export default class Table extends Component<Args> {
    * Adds meta into rows for serverside data rollups
    */
   _mapRollups(tableData: ResponseRow[], request: RequestFragment) {
-    if (request?.rollup?.columns?.length <= 0 && !request?.rollup?.grandTotal) {
+    if (request?.rollup?.columnCids?.length <= 0 && !request?.rollup?.grandTotal) {
       return tableData;
     }
     const dimensionCount = new Set(request?.columns.filter((col) => col.type !== 'metric')).size;

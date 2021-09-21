@@ -8,13 +8,13 @@ import { Rollup } from 'navi-data/adapters/facts/interface';
 import { validator, buildValidations } from 'ember-cp-validations';
 
 const Validations = buildValidations({
-  columns: [validator('has-many')],
+  columnCids: [validator('has-many')],
   grandTotal: validator('presence', true),
 });
 
 export default class RollupFragment extends Fragment.extend(Validations) implements Rollup {
   @attr({ defaultValue: () => [] })
-  declare columns: Rollup['columns'];
+  declare columnCids: Rollup['columnCids'];
 
   @attr('boolean', { defaultValue: false })
   declare grandTotal: Rollup['grandTotal'];
