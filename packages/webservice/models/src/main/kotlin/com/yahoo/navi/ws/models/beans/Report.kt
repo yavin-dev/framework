@@ -12,6 +12,7 @@ import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.fragments.Request
 import com.yahoo.navi.ws.models.beans.fragments.Visualization
+import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import com.yahoo.navi.ws.models.hooks.ReportDeletionHook
 import org.hibernate.annotations.Parameter
@@ -27,9 +28,9 @@ import javax.persistence.OneToMany
 @Entity
 @DiscriminatorValue("report")
 @Include(name = "reports")
-@CreatePermission(expression = IS_OWNER)
-@UpdatePermission(expression = IS_OWNER)
-@DeletePermission(expression = IS_OWNER)
+@CreatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@UpdatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@DeletePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 @LifeCycleHookBinding(
     phase = LifeCycleHookBinding.TransactionPhase.PREFLUSH,
     operation = LifeCycleHookBinding.Operation.DELETE,

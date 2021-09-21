@@ -5,6 +5,7 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher
 import org.apache.http.HttpStatus
@@ -85,6 +86,69 @@ class UserTest : IntegrationTest() {
          * Registering User1
          */
         registerUser(naviUser1)
+    }
+
+    @Test
+    fun `admin can modify users`() {
+        val adminUser = "admin"
+        val testRole = "test"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerRole(testRole)
+        registerUserRole(adminRole, adminUser)
+
+        val createdId: String =
+            given()
+                .header("User", adminUser)
+                .contentType("application/vnd.api+json")
+                .body(
+                    datum(
+                        resource(
+                            type("users"),
+                            id("newUser"),
+                        )
+                    ).toJSON()
+                )
+                .`when`()
+                .post("/users")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.SC_CREATED)
+                .extract()
+                .path("data.id")
+
+        // admin can update for other users
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("users"),
+                        id(createdId),
+                        relationships(
+                            relation(
+                                "roles",
+                                linkage(type("roles"), id(testRole))
+                            )
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/users/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // admin can delete for other users
+        given()
+            .header("User", adminUser)
+            .`when`()
+            .delete("/users/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
     }
 
     @Test

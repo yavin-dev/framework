@@ -1,6 +1,7 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import com.yahoo.navi.ws.test.framework.matchers.RegexMatcher.Companion.matchesRegex
@@ -338,6 +339,74 @@ class ReportTest : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_NOT_FOUND)
+    }
+
+    @Test
+    fun `admin can modify user reports`() {
+        val adminUser = "admin"
+        val adminRole = "admin"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerUserRole(adminRole, adminUser)
+
+        // admin can create for other users
+        val createdId: String = given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "reports",
+                        "attributes": {
+                            "title": "A Report",
+                            "request": $reqStr,
+                            "visualization": $visualStr
+                        },
+                        "relationships": {
+                            ${owner(USER1)}
+                        }
+                    }
+                }
+                """.trimIndent(),
+            )
+            .When()
+            .post("/reports")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        // admin can update for other users
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("reports"),
+                        id("1"),
+                        attributes(
+                            attr("title", "A new title")
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/reports/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // admin can delete for other users
+        given()
+            .header("User", adminUser)
+            .`when`()
+            .delete("reports/$createdId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
     }
 
     @Test

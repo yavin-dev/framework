@@ -5,6 +5,7 @@
 package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
+import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import com.yahoo.navi.ws.test.framework.matchers.JsonMatcher.Companion.matchesJsonMap
 import org.apache.http.HttpStatus
@@ -494,5 +495,150 @@ class DashboardWidgetTest : IntegrationTest() {
             .then()
             .assertThat()
             .statusCode(HttpStatus.SC_CREATED)
+    }
+
+    @Test
+    fun `admin can modify user widgets`() {
+        val adminUser = "admin"
+        val adminRole = "admin"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerUserRole(adminRole, adminUser)
+
+        // user2 creates dashboard
+        val dashboardId: String = given()
+            .header("User", USER2)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "dashboards",
+                        "attributes": {
+                            "title": "Admin created dashboard",
+                            "presentation": $presentation
+                        },
+                        "relationships": {
+                            ${owner(USER2)}
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/dashboards")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        // admin cannot create for user that is not dashboard owner
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "dashboardWidgets",
+                        "attributes": {
+                            "title": "Admin created widget 1",
+                            "requests": $requests,
+                            "visualization": $visual1
+                        },
+                        "relationships": {
+                            "dashboard": {
+                                "data": {
+                                    "type": "dashboards",
+                                    "id": "$dashboardId"
+                                }
+                            },
+                            "owner": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$USER1"
+                                }
+                            }
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/dashboards/$dashboardId/widgets")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+
+        // admin can create for dashboard owner
+        val widgetId: String = given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                """
+                {
+                    "data": {
+                        "type": "dashboardWidgets",
+                        "attributes": {
+                            "title": "Admin created widget 1",
+                            "requests": $requests,
+                            "visualization": $visual1
+                        },
+                        "relationships": {
+                            "dashboard": {
+                                "data": {
+                                    "type": "dashboards",
+                                    "id": "$dashboardId"
+                                }
+                            },
+                            "owner": {
+                                "data": {
+                                    "type": "users",
+                                    "id": "$USER2"
+                                }
+                            }
+                        }
+                    }
+                }
+                """.trimIndent()
+            )
+            .When()
+            .post("/dashboards/$dashboardId/widgets")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+            .extract()
+            .path("data.id")
+
+        // admin can update for other users
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("dashboardWidgets"),
+                        id(widgetId),
+                        attributes(
+                            attr("title", "A new title")
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/dashboards/$dashboardId/widgets/$widgetId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        // admin can delete for other users
+        given()
+            .header("User", adminUser)
+            .`when`()
+            .delete("/dashboards/$dashboardId/widgets/$widgetId")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
     }
 }

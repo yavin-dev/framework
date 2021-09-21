@@ -22,16 +22,11 @@ import javax.servlet.http.HttpServletRequestWrapper
 class AuthFilter(private val userDetailsService: UserDetailsService) : Filter {
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val user = (request as HttpServletRequest).getHeader("User") ?: "admin"
-        var authorities: Collection<GrantedAuthority>
-        if (user !== null) {
-            authorities = try {
-                val userDetails = userDetailsService.loadUserByUsername(user)
-                userDetails.authorities
-            } catch (e: UsernameNotFoundException) {
-                ArrayList<GrantedAuthority>()
-            }
-        } else {
-            authorities = ArrayList<GrantedAuthority>()
+        val authorities: Collection<GrantedAuthority> = try {
+            val userDetails = userDetailsService.loadUserByUsername(user)
+            userDetails.authorities
+        } catch (e: UsernameNotFoundException) {
+            emptyList()
         }
 
         chain.run {
