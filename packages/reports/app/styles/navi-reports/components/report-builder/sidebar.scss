@@ -8,7 +8,7 @@
     border-style: solid;
   }
 
-  @include grey-border();
+  @include grey-border;
   background-color: $body-bg-color;
   border-width: 0 1px 0 0;
   display: flex;
@@ -19,6 +19,10 @@
   // TODO: Could be tablet down
   &--float {
     position: absolute;
+  }
+
+  &__header {
+    background-color: $tabs-primary-bg-color;
   }
 
   &__breadcrumb {
@@ -49,8 +53,6 @@
   }
 
   &__content {
-    @include grey-border;
-    border-width: 1px 0 0;
     min-width: 300px;
     overflow: auto;
   }

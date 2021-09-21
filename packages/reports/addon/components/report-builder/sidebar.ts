@@ -139,6 +139,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
       name: table.name,
       description: table.description,
       source: table,
+      isSuggested: dataSource.suggestedDataTables?.includes(table.id),
     }));
     return sources;
   }

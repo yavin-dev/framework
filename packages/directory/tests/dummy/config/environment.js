@@ -28,6 +28,7 @@ module.exports = function (environment) {
           description: 'Interesting User Insights',
           uri: 'https://data.naviapp.io',
           type: 'bard',
+          suggestedDataTables: ['network'],
         },
       ],
       appPersistence: {

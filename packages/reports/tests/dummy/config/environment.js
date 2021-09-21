@@ -44,6 +44,7 @@ module.exports = function (environment) {
             enableDimensionSearch: true,
             enableSubtotals: true,
           },
+          suggestedDataTables: ['network'],
         },
         {
           name: 'bardTwo',

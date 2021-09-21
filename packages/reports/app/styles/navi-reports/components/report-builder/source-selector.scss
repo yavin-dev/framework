@@ -6,9 +6,25 @@
 .report-builder-source-selector {
   width: 300px;
 
-  li:hover button {
-    color: map-get($denali-grey-colors, '700');
-    cursor: pointer;
+  &-title {
+    &:not(:first-child) {
+      border-top: 1px solid $menu-border-color;
+    }
+
+    .d-icon {
+      display: inline-block;
+    }
+  }
+
+  li {
+    &:not(:last-child) {
+      border-bottom: 1px solid $menu-border-color;
+    }
+
+    &:hover button {
+      color: map-get($denali-grey-colors, '700');
+      cursor: pointer;
+    }
   }
 
   &__source-name {
