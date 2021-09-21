@@ -170,7 +170,7 @@ export default class MultipleFormatExport extends ReportActionExport {
 
     naviNotifications?.clear();
     naviNotifications?.add({
-      title: response ? `Your export is done and available at ${response}` : 'Your export has finished!',
+      title: response.url ? `Your export is done and available at ${response.url}` : 'Your export has finished!',
       style: 'info',
       timeout: 'long',
     });

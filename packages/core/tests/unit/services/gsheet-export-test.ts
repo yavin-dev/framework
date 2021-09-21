@@ -22,7 +22,7 @@ module('Unit | Service | GsheetExportService', function (hooks) {
     const deferred = RSVP.defer();
     //@ts-ignore
     this.server.pretender.handledRequest = (verb, path) => {
-      if (path.endsWith('/notAnotherRickRoll')) {
+      if (path.endsWith('/notAnotherRickRoll?async=true')) {
         callCount++;
         deferred.resolve(callCount);
       }
@@ -69,7 +69,7 @@ module('Unit | Service | GsheetExportService', function (hooks) {
     const deferred = RSVP.defer();
     //@ts-ignore
     this.server.pretender.handledRequest = (verb, path) => {
-      if (path.endsWith('/notAnotherRickRoll')) {
+      if (path.endsWith('/notAnotherRickRoll?async=true')) {
         callCountFetch++;
         deferred.resolve(callCountFetch);
       }
@@ -82,7 +82,10 @@ module('Unit | Service | GsheetExportService', function (hooks) {
 
     assert.deepEqual(
       result,
-      'https://youtu.be/dQw4w9WgXcQ',
+      {
+        fileId: 'rickRoll',
+        url: 'https://youtu.be/dQw4w9WgXcQ',
+      },
       'fetchAndPollGsheet returns correct url for requested document'
     );
 

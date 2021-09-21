@@ -2,6 +2,7 @@
  * Copyright (c) 2021, Yahoo! Inc.
  */
 import Service from '@ember/service';
+import type { TaskGenerator } from 'ember-concurrency';
 import { timeout, task } from 'ember-concurrency';
 
 type Options = { pollRateMs?: number; timeoutMs?: number };
@@ -26,7 +27,9 @@ export default class GsheetExportService extends Service {
    * @param signal - a signal so that the request can be cancelled if need be
    */
   async fetchURL(exportUrl: URL, signal: AbortSignal | null = null): Promise<GSheetExport> {
-    const response = await fetch(`${exportUrl}`, {
+    const asyncExport = new URL(exportUrl.href);
+    asyncExport.searchParams.set('async', 'true');
+    const response = await fetch(`${asyncExport}`, {
       credentials: 'include',
       signal,
     });
@@ -60,7 +63,7 @@ export default class GsheetExportService extends Service {
    * @param exportUrl - the url of gsheet export
    * @param options - an object containing information to control the timeout and poll rate settings
    */
-  @task *fetchAndPollGsheet(exportUrl: URL, options: Options = {}) {
+  @task *fetchAndPollGsheet(exportUrl: URL, options: Options = {}): TaskGenerator<GSheetExport> {
     const pollOptions = { pollRateMs: this.POLL_RATE_MS, timeoutMs: this.TIMEOUT_MS, ...options };
     const controller = new AbortController();
     const signal = controller.signal;
@@ -80,7 +83,7 @@ export default class GsheetExportService extends Service {
       if (!done) {
         throw new Error('Poll timeout exceeded');
       }
-      return spreadsheetInfo.url;
+      return spreadsheetInfo;
     } finally {
       controller.abort();
     }
