@@ -20,6 +20,7 @@ import { TaskGenerator, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type ReportModel from 'navi-core/models/report';
 import type GsheetExportService from 'navi-core/services/gsheet-export';
+import { htmlSafe } from '@ember/template';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**
@@ -171,7 +172,9 @@ export default class MultipleFormatExport extends ReportActionExport {
     naviNotifications?.add({
       title: 'Your export has finished!',
       context: response.url
-        ? `Click <a href="${response.url}" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>`
+        ? htmlSafe(
+            `Click <a href="${response.url}" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>`
+          )
         : undefined,
       style: 'success',
       timeout: 'long',

@@ -103,11 +103,11 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
   });
 
   test('GSheet Notification', async function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     let addCalls = 0;
     class MockNotifications extends Service {
-      add({ title }) {
+      add({ title, context }) {
         addCalls++;
         if (addCalls === 1) {
           assert.equal(
@@ -117,6 +117,11 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
           );
         } else {
           assert.equal(title, 'Your export has finished!', 'Second notification after ajax call comes back');
+          assert.equal(
+            context,
+            'Click <a href="https://google.com/sheets/foo" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>',
+            'correct URL was returned'
+          );
         }
       }
       clear() {
