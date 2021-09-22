@@ -116,11 +116,7 @@ module('Integration | Component | dashboard actions/export', function (hooks) {
             'A notification is added for the clicked export type'
           );
         } else {
-          assert.equal(
-            title,
-            'Your export is done and available at https://google.com/sheets/foo',
-            'Second notification after ajax call comes back'
-          );
+          assert.equal(title, 'Your export has finished!', 'Second notification after ajax call comes back');
         }
       }
       clear() {

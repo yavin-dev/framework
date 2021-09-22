@@ -163,15 +163,17 @@ export default class MultipleFormatExport extends ReportActionExport {
   @task *gSheetExportTask(): TaskGenerator<void> {
     const { naviNotifications } = this;
 
-    console.log('gsheetExportHref');
     const response = yield taskFor(this.gsheetExport.fetchAndPollGsheet).perform(
       new URL(this.gsheetExportHref, window.location.origin)
     );
 
     naviNotifications?.clear();
     naviNotifications?.add({
-      title: response.url ? `Your export is done and available at ${response.url}` : 'Your export has finished!',
-      style: 'info',
+      title: 'Your export has finished!',
+      context: response.url
+        ? `Click <a href="${response.url}" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>`
+        : undefined,
+      style: 'success',
       timeout: 'long',
     });
   }
