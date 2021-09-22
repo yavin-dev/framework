@@ -11,7 +11,7 @@ export type MessageTimeout = 'short' | 'medium' | 'long' | 'none';
 
 export interface MessageOptions {
   title: string | SafeString;
-  context?: string;
+  context?: string | SafeString;
   style?: MessageStyle;
   timeout?: MessageTimeout;
   extra?: unknown;

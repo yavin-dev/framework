@@ -13,6 +13,10 @@ export default function () {
   this.get('/gsheet-export/report/:id', () => ({
     url: 'https://google.com/sheets/foo',
   }));
+  this.urlPrefix = window.location.origin;
+  this.get('/gsheet-export/status/:id', () => ({
+    hasMovedToTeamDrive: true,
+  }));
 
   // Mock bard facts + metadata
   this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;

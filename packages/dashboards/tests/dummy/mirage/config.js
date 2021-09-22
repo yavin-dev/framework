@@ -15,6 +15,10 @@ export default function () {
   this.get('/gsheet-export/dashboard/:id', () => ({
     url: 'https://google.com/sheets/foo',
   }));
+  this.urlPrefix = window.location.origin;
+  this.get('/gsheet-export/status/:id', () => ({
+    hasMovedToTeamDrive: true,
+  }));
 
   /* == Mock Fact Data == */
   this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;

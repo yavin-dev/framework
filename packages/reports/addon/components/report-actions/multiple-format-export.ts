@@ -19,6 +19,8 @@ import type CompressionService from 'navi-core/services/compression';
 import { TaskGenerator, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type ReportModel from 'navi-core/models/report';
+import type GsheetExportService from 'navi-core/services/gsheet-export';
+import { htmlSafe } from '@ember/template';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**
@@ -30,6 +32,11 @@ export default class MultipleFormatExport extends ReportActionExport {
    * instance of store service
    */
   @service declare store: StoreService;
+
+  /**
+   * instance of gsheet export service
+   */
+  @service declare gsheetExport: GsheetExportService;
 
   /**
    * Promise resolving to export to file link
@@ -157,13 +164,19 @@ export default class MultipleFormatExport extends ReportActionExport {
   @task *gSheetExportTask(): TaskGenerator<void> {
     const { naviNotifications } = this;
 
-    const response = yield fetch(this.gsheetExportHref);
-    const json = yield response.json();
+    const response = yield taskFor(this.gsheetExport.fetchAndPollGsheet).perform(
+      new URL(this.gsheetExportHref, window.location.origin)
+    );
 
     naviNotifications?.clear();
     naviNotifications?.add({
-      title: json.url ? `Your export is done and available at ${json.url}` : 'Your export has finished!',
-      style: 'info',
+      title: 'Your export has finished!',
+      context: response.url
+        ? htmlSafe(
+            `Click <a href="${response.url}" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>`
+          )
+        : undefined,
+      style: 'success',
       timeout: 'long',
     });
   }

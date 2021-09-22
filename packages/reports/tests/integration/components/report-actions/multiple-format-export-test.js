@@ -227,14 +227,14 @@ module('Integration | Component | report actions - multiple-format-export', func
   });
 
   test('GSheet Notification', async function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['gsheet'];
 
     let addCalls = 0;
     class MockNotifications extends Service {
-      add({ title }) {
+      add({ title, context }) {
         addCalls++;
         if (addCalls === 1) {
           assert.equal(
@@ -243,10 +243,11 @@ module('Integration | Component | report actions - multiple-format-export', func
             'A notification is added for the clicked export type'
           );
         } else {
+          assert.equal(title, 'Your export has finished!', 'Second notification after ajax call comes back');
           assert.equal(
-            title,
-            'Your export is done and available at https://google.com/sheets/foo',
-            'Second notification after ajax call comes back'
+            context,
+            'Click <a href="https://google.com/sheets/foo" target="_blank" rel="noopener noreferrer">here to view it &raquo;</a>',
+            'correct URL was returned'
           );
         }
       }
