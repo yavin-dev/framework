@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { capitalize, last } from 'lodash-es';
+import { capitalize, tail } from 'lodash-es';
 
 /**
  * Returns formatted message based on error object
@@ -16,7 +16,9 @@ export function getApiErrMsg(error = {}, defaultMsg) {
   if (detail) {
     let message = detail[0];
     message = message.detail ?? message;
-    return capitalize(last(message.split(':')).trim());
+    const messages = message.split(':');
+    message = messages.length > 1 ? tail(messages).join(':') : messages[0];
+    return capitalize(message.trim());
   }
 
   return defaultMsg;
