@@ -14,7 +14,9 @@ export function getApiErrMsg(error = {}, defaultMsg) {
   const { detail } = error;
 
   if (detail) {
-    return capitalize(last(detail[0].split(':')).trim());
+    let message = detail[0];
+    message = message.detail ?? message;
+    return capitalize(last(message.split(':')).trim());
   }
 
   return defaultMsg;
