@@ -2,7 +2,7 @@
 <div class={{this.tableHeadersClass}}>
   {{#unless @isEditingMode}}
     {{#let "table-renderer-vc" as |groupName|}}
-      <ol class="table-header-row-vc table-header-row-vc--view" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}} {{on "click" @headerClicked}}>
+      <ol role="button" class="table-header-row-vc table-header-row-vc--view" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}} {{on "click" @headerClicked}}>
         {{#each @columns as |column|}}
           <li
             class="table-header-cell {{column.fragment.type}}"
