@@ -290,12 +290,17 @@ export default class Table extends Component<Args> {
   }
 
   /**
-   * sends sort action when timeDimension header is clicked
-   * @param column clicked table column
+   * sends sort action when column header is clicked
    */
   @action
-  headerClicked(column: TableColumn): void {
-    if (!column.fragment.columnMetadata.isSortable) {
+  headerClicked({ target }: { target: HTMLElement }): void {
+    const columnId = target.closest('li')?.getAttribute('data-column-id');
+    if (!columnId) {
+      return;
+    }
+
+    const column = this.columns.find((c) => c.columnId === columnId);
+    if (!column?.fragment.columnMetadata.isSortable) {
       return;
     }
 

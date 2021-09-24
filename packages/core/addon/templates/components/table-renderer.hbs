@@ -21,14 +21,13 @@
       </div>
     {{else}}
       {{#let "table-renderer" as |groupName|}}
-        <ol class="table-header-row" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}}>
+        <ol class="table-header-row" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}} {{on "click" @headerClicked}}>
           {{#each @columns as |column|}}
             <li
               class="table-header-cell {{column.fragment.type}}"
-              role="button"
-              {{on "click" (fn @headerClicked column)}}
               {{sortable-item groupName=groupName model=column isDraggingDisabled=@isDraggingDisabled}}
               data-name={{column.fragment.canonicalName}}
+              data-column-id={{column.columnId}}
             >
               <span
                 class="table-header-cell__title {{if column.fragment.alias "table-header-cell__title--custom-name"}}"
