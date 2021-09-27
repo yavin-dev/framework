@@ -11,6 +11,7 @@ import { A } from '@ember/array';
 export default A([
   { name: 'Number', format: '0,0.00' },
   { name: 'Decimal', format: '0.000' },
+  { name: 'Percentage', format: '0.00%' },
   { name: 'Nice Number', format: '0.0a' },
   { name: 'Money', format: '$0,0[.]00' },
 ]);
