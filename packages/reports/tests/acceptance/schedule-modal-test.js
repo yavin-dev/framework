@@ -481,9 +481,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         400,
         {},
         {
-          errors: [
-            'InvalidValueException: Invalid value: Invalid Email: must be a valid oath.com or yahoo-inc.com email',
-          ],
+          errors: ['InvalidValueException: Invalid Email: must be a valid oath.com or yahoo-inc.com email'],
         }
       );
     });
@@ -501,7 +499,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert.equal(
       find('.alert p').innerText.trim(),
-      'Must be a valid oath.com or yahoo-inc.com email',
+      'Invalid email: must be a valid oath.com or yahoo-inc.com email',
       'failing notification is shown if server returns 400'
     );
 
