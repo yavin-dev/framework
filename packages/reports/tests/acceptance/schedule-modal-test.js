@@ -499,7 +499,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert.equal(
       find('.alert p').innerText.trim(),
-      'Invalid email: Must be a valid oath.com or yahoo-inc.com email',
+      'Invalid email: must be a valid oath.com or yahoo-inc.com email',
       'failing notification is shown if server returns 400'
     );
 
