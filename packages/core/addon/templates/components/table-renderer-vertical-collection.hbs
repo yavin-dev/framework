@@ -2,14 +2,13 @@
 <div class={{this.tableHeadersClass}}>
   {{#unless @isEditingMode}}
     {{#let "table-renderer-vc" as |groupName|}}
-      <ol class="table-header-row-vc table-header-row-vc--view" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}}>
+      <ol role="button" class="table-header-row-vc table-header-row-vc--view" {{sortable-group groupName=groupName onChange=@updateColumnOrder direction="x"}} {{on "click" @headerClicked}}>
         {{#each @columns as |column|}}
           <li
             class="table-header-cell {{column.fragment.type}}"
             data-name={{column.fragment.canonicalName}}
-            role="button"
+            data-column-id={{column.columnId}}
             {{sortable-handle}}
-            {{on "click" (fn @headerClicked column)}}
             {{sortable-item groupName=groupName model=column isDraggingDisabled=@isDraggingDisabled onDragStart=(set this "isDragged" true) onDragStop=(set this "isDragged" false)}}
           >
             <span

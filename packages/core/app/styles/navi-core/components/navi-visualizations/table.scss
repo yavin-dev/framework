@@ -100,10 +100,6 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
       flex: 1;
       font-family: $font-family-strong;
       min-width: 125px;
-
-      &__icon {
-        padding: 3px 5px;
-      }
     }
 
     &,
@@ -162,6 +158,10 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
         display: flex;
       }
 
+      .table-header-cell {
+        align-items: flex-end;
+      }
+
       &--edit {
         th:first-of-type > div {
           padding-left: 0;
@@ -172,6 +172,7 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
         }
 
         .table-header-cell {
+          align-items: center;
           background-color: $body-bg-color;
           border-bottom: 2px map-get($denali-grey-colors, '400') solid;
 
@@ -179,14 +180,6 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
             border: 1px solid map-get($denali-grey-colors, '400');
             padding: 5px;
           }
-        }
-      }
-
-      .table-header-cell {
-        align-items: flex-end;
-
-        &__icon {
-          padding: 3px 5px 17px;
         }
       }
 
@@ -211,10 +204,6 @@ $font-family-strong: 'HelveticaNeueW01-55Roma', Helvetica, Arial, sans-serif;
     flex: 1;
     min-width: 125px;
     padding: $cell-padding;
-
-    &__icon {
-      padding: 3px 5px;
-    }
 
     &__title {
       flex: 1;
