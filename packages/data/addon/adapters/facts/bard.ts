@@ -258,8 +258,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     if (having?.length) {
       return having
         .map((having) => {
-          const { field, operator, values = [] } = having;
-          return `${field}-${operator}[${values.join(',')}]`;
+          const { field, parameters, operator, values = [] } = having;
+          return `${canonicalizeMetric({ metric: field, parameters })}-${operator}[${values.join(',')}]`;
         })
         .join(',');
     }

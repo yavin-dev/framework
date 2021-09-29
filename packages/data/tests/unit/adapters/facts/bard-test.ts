@@ -718,8 +718,6 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildHavingParam', function (assert) {
-    assert.expect(7);
-
     let singleHaving: RequestV2 = {
       ...EmptyRequest,
       filters: [{ field: 'm1', type: 'metric', parameters: {}, operator: 'gt', values: [0] }],
@@ -795,6 +793,67 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     assert.equal(
       Adapter._buildHavingParam(havingValueArray),
       'm1-gt[1,2,3]',
+      '_buildHavingParam built the correct string when having a `values` array'
+    );
+
+    const havingMetricWithSingleParam: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          field: 'm1',
+          type: 'metric',
+          parameters: { param: 'val' },
+          operator: 'gt',
+          values: [1, 2, 3],
+        },
+      ],
+    };
+    assert.equal(
+      Adapter._buildHavingParam(havingMetricWithSingleParam),
+      'm1(param=val)-gt[1,2,3]',
+      '_buildHavingParam built the correct string when having a `values` array'
+    );
+
+    const havingMetricWithMultipleParams: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          field: 'm1',
+          type: 'metric',
+          parameters: { trend: 'none', aggregation: 'dayAvg' },
+          operator: 'gt',
+          values: [1, 2, 3],
+        },
+      ],
+    };
+    assert.equal(
+      Adapter._buildHavingParam(havingMetricWithMultipleParams),
+      'm1(aggregation=dayAvg,trend=none)-gt[1,2,3]',
+      '_buildHavingParam built the correct string when having a `values` array'
+    );
+
+    const havingMetricsWithMultipleParams: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          field: 'm1',
+          type: 'metric',
+          parameters: { trend: 'none', aggregation: 'dayAvg' },
+          operator: 'gt',
+          values: [100],
+        },
+        {
+          field: 'm1',
+          type: 'metric',
+          parameters: { trend: 'DoD', aggregation: 'dayAvg' },
+          operator: 'gt',
+          values: [0.1],
+        },
+      ],
+    };
+    assert.equal(
+      Adapter._buildHavingParam(havingMetricsWithMultipleParams),
+      'm1(aggregation=dayAvg,trend=none)-gt[100],m1(aggregation=dayAvg,trend=DoD)-gt[0.1]',
       '_buildHavingParam built the correct string when having a `values` array'
     );
   });
