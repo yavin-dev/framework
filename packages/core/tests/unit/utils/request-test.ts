@@ -1,11 +1,22 @@
 import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 import { toggleAlias, normalizeV1, normalizeV1toV2, RequestV1 } from 'navi-core/utils/request';
 import { unset } from 'lodash-es';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 let request: RequestV1<string>;
+let naviMetadata: NaviMetadataService;
 
 module('Unit | Utils | Request', function (hooks) {
-  hooks.beforeEach(function () {
+  setupTest(hooks);
+  setupMirage(hooks);
+
+  hooks.beforeEach(async function () {
+    naviMetadata = this.owner.lookup('service:navi-metadata');
+    await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
+
     request = {
       requestVersion: 'v1',
       logicalTable: { table: 'network', timeGrain: 'day' },
@@ -244,9 +255,9 @@ module('Unit | Utils | Request', function (hooks) {
   });
 
   test('normalize v1 to v2', function (assert) {
-    assert.expect(12);
+    assert.expect(14);
 
-    const normalized = normalizeV1toV2(request, 'bardOne');
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
 
     assert.equal(normalized.requestVersion, '2.0', 'requestVersion is set correctly');
 
@@ -279,10 +290,24 @@ module('Unit | Utils | Request', function (hooks) {
           },
         },
         {
+          field: 'age',
+          type: 'dimension',
+          parameters: {
+            field: 'desc',
+          },
+        },
+        {
           field: 'platform',
           type: 'dimension',
           parameters: {
             field: 'id',
+          },
+        },
+        {
+          field: 'platform',
+          type: 'dimension',
+          parameters: {
+            field: 'desc',
           },
         },
         {
@@ -416,7 +441,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-01-03' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -433,7 +458,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-02-01', end: '2021-02-08' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -450,7 +475,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-03-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -467,7 +492,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-04-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -484,7 +509,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2022-01-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -514,7 +539,7 @@ module('Unit | Utils | Request', function (hooks) {
     };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne'),
+      normalizeV1toV2(request, 'bardOne', naviMetadata),
       {
         columns: [],
         dataSource: 'bardOne',
@@ -535,6 +560,98 @@ module('Unit | Utils | Request', function (hooks) {
         table: 'tableName',
       },
       'all timeGrain is converted to filter as day grain with inclusive end date with no column'
+    );
+  });
+
+  test('normalize v1 to v2 - show fields', function (assert) {
+    assert.expect(3);
+
+    const request: RequestV1<string> = {
+      intervals: [],
+      filters: [],
+      dimensions: [{ dimension: 'multiSystemId' }],
+      metrics: [],
+      logicalTable: { table: 'tableName', timeGrain: 'all' },
+      sort: [],
+      having: [],
+      dataSource: 'bardOne',
+      requestVersion: 'v1',
+    };
+
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
+
+    const cids = normalized.columns.map((c) => c.cid);
+    cids.forEach((cid, idx) => {
+      assert.equal(cid?.length, 10, 'column cid has proper value');
+      //remove from validation since cid value is non deterministic
+      unset(normalized, `columns[${idx}].cid`);
+    });
+
+    assert.deepEqual(
+      normalized,
+      {
+        columns: [
+          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'desc' } },
+          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'other' } },
+        ],
+        dataSource: 'bardOne',
+        filters: [],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'tableName',
+      },
+      'Dimension with show tag on fields are added to the request'
+    );
+  });
+
+  test('normalize v1 to v2 - default fields', function (assert) {
+    assert.expect(4);
+
+    const dimension = 'contextId';
+
+    const request: RequestV1<string> = {
+      intervals: [],
+      filters: [],
+      dimensions: [{ dimension }],
+      metrics: [],
+      logicalTable: { table: 'tableName', timeGrain: 'all' },
+      sort: [],
+      having: [],
+      dataSource: 'bardOne',
+      requestVersion: 'v1',
+    };
+
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
+
+    const cids = normalized.columns.map((c) => c.cid);
+    cids.forEach((cid, idx) => {
+      assert.equal(cid?.length, 10, 'column cid has proper value');
+      //remove from validation since cid value is non deterministic
+      unset(normalized, `columns[${idx}].cid`);
+    });
+
+    assert.deepEqual(
+      naviMetadata.getById('dimension', dimension, 'bardOne')?.fields?.map((f) => f.name),
+      ['id', 'desc', 'skip'],
+      `Three dimension fields exist for ${dimension}`
+    );
+
+    assert.deepEqual(
+      normalized,
+      {
+        columns: [
+          { type: 'dimension', field: dimension, parameters: { field: 'id' } },
+          { type: 'dimension', field: dimension, parameters: { field: 'desc' } },
+        ],
+        dataSource: 'bardOne',
+        filters: [],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'tableName',
+      },
+      'Dimension with multiple fields only shows id,desc by default'
     );
   });
 });

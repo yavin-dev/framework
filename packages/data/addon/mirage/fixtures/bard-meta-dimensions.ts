@@ -228,7 +228,7 @@ export default {
       category: 'test',
       datatype: 'text',
       storageStrategy: 'none',
-      fields: defaultFields,
+      fields: [...defaultFields, { name: 'skip', description: 'skipped field' }],
     },
     {
       name: 'multiSystemId',
@@ -239,7 +239,8 @@ export default {
       storageStrategy: 'loaded',
       fields: [
         { name: 'id', tags: ['id'] },
-        { name: 'desc', tags: ['description'] },
+        { name: 'desc', tags: ['description', 'show'] },
+        { name: 'other', tags: ['show'] },
         { name: 'key', tags: ['primaryKey'] },
       ],
     },

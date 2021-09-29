@@ -11,6 +11,7 @@ import { normalizeMetricLabelV2 } from './metric-label';
 import { normalizeLineChartV2 } from './line-chart';
 import { normalizeBarChartV2 } from './bar-chart';
 import { normalizeGoalGaugeV2 } from './goal-gauge';
+import { normalizePieChartV2 } from './pie-chart';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeVisualization(request: RequestFragment, visualization?: any) {
@@ -24,6 +25,8 @@ export function normalizeVisualization(request: RequestFragment, visualization?:
     return normalizeBarChartV2(request, visualization);
   } else if (visualization?.type === 'goal-gauge') {
     return normalizeGoalGaugeV2(request, visualization);
+  } else if (visualization?.type === 'pie-chart') {
+    return normalizePieChartV2(request, visualization);
   }
   return visualization;
 }

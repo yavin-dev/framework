@@ -38,7 +38,7 @@ export default class RequestSerializer extends JSONSerializer {
       //if datasource is undefined, try to infer from metadata
       const dateSourceName = request.dataSource || this.getTableNamespace(request.logicalTable.table);
 
-      normalized = normalizeV1toV2(request, dateSourceName);
+      normalized = normalizeV1toV2(request, dateSourceName, this.naviMetadata);
     } else {
       normalized = { ...request };
     }

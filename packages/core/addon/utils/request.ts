@@ -1,13 +1,15 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
-import { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import moment from 'moment';
 import { getPeriodForGrain } from 'navi-data/utils/date';
-import { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import { assert } from '@ember/debug';
+import type { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
+import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 type LogicalTable = {
   table: string;
@@ -150,7 +152,11 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
  * @param namespace - request datasource
  * @returns request normalized into v2
  */
-export function normalizeV1toV2(request: RequestV1<string>, dataSource: string): RequestV2 {
+export function normalizeV1toV2(
+  request: RequestV1<string>,
+  dataSource: string,
+  metadata?: NaviMetadataService
+): RequestV2 {
   //normalize v1 request
   const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
@@ -181,25 +187,45 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   }
 
   //normalize dimensions
-  normalized.dimensions.forEach(({ dimension }) =>
-    requestV2.columns.push({
-      cid: nanoid(10),
-      type: 'dimension',
-      field: removeNamespace(dimension, dataSource),
-      parameters: {
-        field: 'id',
-      },
-    })
-  );
+  normalized.dimensions.forEach(({ dimension }) => {
+    // skip if dimension is null or empty
+    if (dimension) {
+      const dimMeta = metadata?.getById('dimension', dimension, dataSource);
+      // get all show fields
+      const showFields = dimMeta?.getFieldsForTag('show').map((f) => f.name) ?? [];
+
+      const allFields = dimMeta?.fields?.map((field) => field.name) ?? [];
+      // default to id/desc from available fields
+      const idOrDescFields = allFields.filter((field) => ['id', 'desc'].includes(field));
+
+      let fields = ['id'];
+      if (showFields.length) {
+        fields = showFields;
+      } else if (idOrDescFields.length) {
+        fields = idOrDescFields;
+      }
+      assert(`At least one dimension field must exist for ${dimension}`, fields.length > 0);
+      fields.forEach((field) =>
+        requestV2.columns.push({
+          cid: nanoid(10),
+          type: 'dimension',
+          field: removeNamespace(dimension, dataSource),
+          parameters: { field },
+        })
+      );
+    }
+  });
 
   //normalize metrics
   normalized.metrics.forEach(({ metric, parameters = {} }) => {
-    requestV2.columns.push({
-      cid: nanoid(10),
-      type: 'metric',
-      field: removeNamespace(metric, dataSource),
-      parameters,
-    });
+    if (metric) {
+      requestV2.columns.push({
+        cid: nanoid(10),
+        type: 'metric',
+        field: removeNamespace(metric, dataSource),
+        parameters,
+      });
+    }
   });
 
   //normalize intervals
