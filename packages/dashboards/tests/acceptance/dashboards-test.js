@@ -397,7 +397,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget', async function (assert) {
-    assert.expect(15);
+    assert.expect(17);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -412,6 +412,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
     await click('.add-widget__new-btn');
+    assert.dom('.get-api__action-btn').isDisabled('API query action is disabled when a new widget is created');
     await click('.report-builder-source-selector__source-button[data-source-name="Bard One"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
@@ -421,6 +422,8 @@ module('Acceptance | Dashboards', function (hooks) {
     await clickItem('dimension', 'Date Time');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Day');
     await clickItem('metric', 'Total Clicks');
+
+    assert.dom('.get-api__action-btn').isEnabled('API query action is enabled when the request is valid');
 
     // Save without running
     await click('.navi-report-widget__save-btn');
