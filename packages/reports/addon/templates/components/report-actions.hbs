@@ -26,17 +26,17 @@
   </EmberTooltip>
 {{/if}}
 
-{{!-- API Query Enabled only for a valid report --}}
+{{!-- API Query Enabled only for a valid request --}}
 <span id="report-actions__copy-api">
   <CommonActions::GetApi
     @request={{@model.request}}
-    @disabled={{not @model.validations.isTruelyValid}}
+    @disabled={{not @model.request.validations.isTruelyValid}}
   >
     <DenaliIcon @icon="code" />API Query
   </CommonActions::GetApi>
 </span>
 <EmberTooltip @targetId="report-actions__copy-api">
-  {{if @model.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid report"}}
+  {{if @model.request.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid report"}}
 </EmberTooltip>
 
 <LinkTo

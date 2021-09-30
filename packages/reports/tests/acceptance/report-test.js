@@ -160,10 +160,11 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
-  test('New report - copy api', async function (assert) {
-    assert.expect(4);
+  test('New report - API query', async function (assert) {
+    assert.expect(5);
 
     await newReport();
+    assert.dom('.get-api__action-btn').isDisabled('API query button is disabled when a new report is created');
     await clickItem('metric', 'Ad Clicks');
 
     //add date-dimension
@@ -175,8 +176,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('button.ember-power-calendar-day--current-month:contains(5)')[0]);
     await clickTrigger('.filter-values--date-range-input__high-value');
     await click($('button.ember-power-calendar-day--current-month:contains(10)')[0]);
-    assert.dom('.get-api__action-btn').isDisabled('Copy api button is disabled before running');
-    await click('.navi-report__run-btn');
+    assert.dom('.get-api__action-btn').isEnabled('API query button is enabled even before running');
     await click('.get-api__action-btn');
 
     assert.dom('.get-api__modal').exists('Copy modal is open');
@@ -793,17 +793,17 @@ module('Acceptance | Navi Report', function (hooks) {
     config.navi.FEATURES.enableTotals = originalTotalsFlag;
   });
 
-  test('Get API action - enabled/disabled', async function (assert) {
+  test('API query action - enabled/disabled', async function (assert) {
     await visit('/reports/13/view');
 
-    assert.dom('.get-api__action-btn').isNotDisabled('Get API action is enabled for a valid report');
+    assert.dom('.get-api__action-btn').isEnabled('API query action is enabled for a valid request');
 
     // Remove all metrics
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
 
-    assert.dom('.get-api__action-btn').isDisabled('Get API action is disabled for an invalid report');
+    assert.dom('.get-api__action-btn').isDisabled('API query action is disabled for an invalid request');
   });
 
   test('Share report', async function (assert) {
@@ -1768,7 +1768,6 @@ module('Acceptance | Navi Report', function (hooks) {
       'The selected dimensions are shown even with a comma'
     );
 
-    await click('.navi-report__run-btn');
     await click('.get-api__action-btn');
 
     const url = find('.get-api__api-input').value;

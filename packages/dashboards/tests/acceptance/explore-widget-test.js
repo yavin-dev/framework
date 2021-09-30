@@ -192,18 +192,18 @@ module('Acceptance | Exploring Widgets', function (hooks) {
       .hasAttribute('href', /export\?reportModel=/, 'Export url contains serialized report');
   });
 
-  test('Get API action - enabled/disabled', async function (assert) {
+  test('API query action - enabled/disabled', async function (assert) {
     assert.expect(2);
 
     await visit('/dashboards/1/widgets/2/view');
-    assert.dom('.get-api__action-btn').isEnabled('Get API action is enabled for a valid request');
+    assert.dom('.get-api__action-btn').isEnabled('API query action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
     await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
-    assert.dom('.get-api__action-btn').isDisabled('Get API action is disabled when request is not valid');
+    assert.dom('.get-api__action-btn').isDisabled('API query action is disabled when the request is not valid');
   });
 
   test('Share action', async function (assert) {

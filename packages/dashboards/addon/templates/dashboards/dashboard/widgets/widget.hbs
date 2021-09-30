@@ -40,18 +40,18 @@
       </div>
       <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
         <div class="navi-report-widget__header-actions">
-          {{!-- Get API action is only enabled when request is valid --}}
+          {{!-- API query action is enabled only when the request is valid --}}
           <span id="navi-report-widget__action-copy-api">
             <CommonActions::GetApi
               @request={{@model.request}}
-              disabled={{not @model.validations.isTruelyValid}}
+              disabled={{not @model.request.validations.isTruelyValid}}
             >
               <DenaliIcon @icon="code" />
               API query
             </CommonActions::GetApi>
           </span>
           <EmberTooltip @targetId="navi-report-widget__action-copy-api">
-            {{if @model.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid widget"}}
+            {{if @model.request.validations.isTruelyValid "Get API Query" "Unable to get API query on invalid widget"}}
           </EmberTooltip>
 
           {{!-- Export action is only enabled when request is valid --}}
