@@ -7,7 +7,12 @@ import type { ColumnInstance, ColumnMetadataPayload, ColumnType } from 'navi-dat
 import type { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 
-type Field = TODO;
+interface Field {
+  name: string;
+  longName?: string;
+  description?: string;
+  tags?: string[];
+}
 
 export type SuggestionColumn = { id: string; parameters?: Parameters };
 export type TableSource = {
