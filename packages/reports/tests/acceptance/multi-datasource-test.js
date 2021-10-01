@@ -96,7 +96,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Container (id)', 'Used Amount', 'Date Time (day)'],
+      ['Date Time (day)', 'Container (id)', 'Used Amount'],
       'Table displays correct header titles'
     );
 
