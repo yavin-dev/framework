@@ -45,6 +45,7 @@ export type RawEverythingPayload = {
 type RawDimensionField = {
   name: string;
   description?: string;
+  longName: string;
   tags?: string[];
 };
 
@@ -277,11 +278,13 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     dimension: RawDimensionPayload,
     dataSourceName: string
   ): ColumnFunctionMetadataModel {
+    console.log('createDimensionFieldColumnFunction', dimension);
     const { fields = [] } = dimension;
     const defaultValue =
       fields.find((field) => field.tags && field.tags.includes('primaryKey'))?.name || fields[0]?.name;
     const sorted = fields.map((field) => field.name).sort();
     const columnFunctionId = `${this.namespace}:dimensionField(fields=${sorted.join(',')})`;
+    console.log('fields ', fields);
     const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,
       name: 'Dimension Field',
@@ -299,11 +302,12 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           _localValues: fields.map((field) => ({
             id: field.name,
             description: undefined, // ignoring dimension field description for
-            name: field.name,
+            name: field.longName,
           })),
         },
       ],
     };
+    console.log(payload);
     return this.createColumnFunctionModel(payload);
   }
 
