@@ -356,9 +356,14 @@ export default [
             displayName: 'Date',
           },
           {
-            field: 'property',
             type: 'dimension',
-            displayName: 'Property',
+            attributes: { name: 'multiSystemId', field: 'desc' },
+            displayName: 'Multi System Id (desc)',
+          },
+          {
+            type: 'dimension',
+            attributes: { name: 'multiSystemId', field: 'other' },
+            displayName: 'Multi System Id (other)',
           },
           {
             field: 'revenue(currency=USD)',
@@ -371,6 +376,10 @@ export default [
             displayName: 'Revenue (EUR)',
           },
         ],
+        showTotals: {
+          subtotal: 'multiSystemId',
+          grandTotal: true,
+        },
       },
     },
     request: {
@@ -395,7 +404,7 @@ export default [
       ],
       dimensions: [
         {
-          dimension: 'property',
+          dimension: 'multiSystemId',
         },
       ],
       filters: [],

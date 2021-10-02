@@ -7,6 +7,7 @@ import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 interface FieldTypes {
   metric: 'metric';
@@ -131,7 +132,10 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
       const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.${canonicalName}(grain=${grain})`;
     } else if (newCol.type === 'dimension') {
-      canonicalName = `${canonicalName}(field=id)`;
+      const field =
+        column.attributes?.field ??
+        request.columns.find((c) => c.type === 'dimension' && c.field === canonicalName)?.parameters.field;
+      canonicalName = `${canonicalName}(field=${field})`;
     }
     const data = columnData[canonicalName] || {};
     data.tableIndex = index;
@@ -139,6 +143,50 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
     columnData[canonicalName] = data;
   });
   return columnData;
+}
+
+/**
+ * The legacy table visualization would display by checking the following rules
+ * - 1) If the dimension had `show` fields -> make them individual columns (e.g. [Dim (key), Dim (desc)])
+ * - 2) If the desc field was available    -> show it (with id only on hover)
+ * - 3) If the id field was available      -> show it
+ * @param request - the requested data for this table
+ * @param metadata - the metadata service with the datasource already loaded
+ */
+function injectDimensionFields(request: RequestV2, metadata: NaviMetadataService) {
+  const newColumns: RequestV2['columns'] = [];
+  request.columns.forEach((col) => {
+    const { type, field } = col;
+    if (type === 'dimension') {
+      const dimMeta = metadata.getById(type, field, request.dataSource);
+      // get all show fields for dimension
+      let showFields = dimMeta?.getFieldsForTag('show').map((f) => f.name) ?? [];
+      if (showFields.length === 0) {
+        const allFields = dimMeta?.fields?.map((f) => f.name);
+        let bestField: string;
+        if (allFields) {
+          // Use desc or id if available. If neither match grab the first field
+          bestField = ['desc', 'id'].find((idOrDesc) => allFields.includes(idOrDesc)) ?? allFields[0];
+        } else {
+          bestField = 'desc'; // default to desc
+        }
+        showFields = [bestField];
+      }
+      showFields.forEach((field) => {
+        newColumns.push({
+          ...col,
+          parameters: {
+            ...col.parameters,
+            field,
+          },
+        });
+      });
+    } else {
+      newColumns.push(col);
+    }
+  });
+
+  request.columns = newColumns;
 }
 
 /**
@@ -152,12 +200,14 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
  */
 export function normalizeTableV2(
   request: RequestV2,
-  visualization: TableVisMetadataPayloadV1 | TableVisualizationMetadata
+  visualization: TableVisMetadataPayloadV1 | TableVisualizationMetadata,
+  metadata: NaviMetadataService
 ): TableVisualizationMetadata {
   if (visualization.version === 2) {
     return visualization;
   }
 
+  injectDimensionFields(request, metadata);
   const columnData: Record<string, ColumnInfo> = buildColumnInfo(request, visualization);
 
   // Rearranges request columns to match table order
@@ -213,7 +263,8 @@ export function normalizeTableV2(
       const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.dateTime(grain=${grain})`;
     } else {
-      canonicalName = `${showTotals.subtotal}(field=id)`;
+      const dimensionField = request.columns.find((c) => c.field === showTotals.subtotal)?.parameters.field;
+      canonicalName = `${showTotals.subtotal}(field=${dimensionField})`;
     }
     subtotal = columnData[canonicalName].requestColumn?.cid;
   }

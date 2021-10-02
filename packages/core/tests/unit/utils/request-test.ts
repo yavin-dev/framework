@@ -255,9 +255,9 @@ module('Unit | Utils | Request', function (hooks) {
   });
 
   test('normalize v1 to v2', function (assert) {
-    assert.expect(14);
+    assert.expect(12);
 
-    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
+    const normalized = normalizeV1toV2(request, 'bardOne');
 
     assert.equal(normalized.requestVersion, '2.0', 'requestVersion is set correctly');
 
@@ -290,24 +290,10 @@ module('Unit | Utils | Request', function (hooks) {
           },
         },
         {
-          field: 'age',
-          type: 'dimension',
-          parameters: {
-            field: 'desc',
-          },
-        },
-        {
           field: 'platform',
           type: 'dimension',
           parameters: {
             field: 'id',
-          },
-        },
-        {
-          field: 'platform',
-          type: 'dimension',
-          parameters: {
-            field: 'desc',
           },
         },
         {
@@ -441,7 +427,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-01-03' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
+      normalizeV1toV2(request, 'bardOne').filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -458,7 +444,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-02-01', end: '2021-02-08' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
+      normalizeV1toV2(request, 'bardOne').filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -475,7 +461,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-03-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
+      normalizeV1toV2(request, 'bardOne').filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -492,7 +478,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-04-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
+      normalizeV1toV2(request, 'bardOne').filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -509,7 +495,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2022-01-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
+      normalizeV1toV2(request, 'bardOne').filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -539,7 +525,7 @@ module('Unit | Utils | Request', function (hooks) {
     };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne', naviMetadata),
+      normalizeV1toV2(request, 'bardOne'),
       {
         columns: [],
         dataSource: 'bardOne',
@@ -564,7 +550,7 @@ module('Unit | Utils | Request', function (hooks) {
   });
 
   test('normalize v1 to v2 - show fields', function (assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     const request: RequestV1<string> = {
       intervals: [],
@@ -578,7 +564,7 @@ module('Unit | Utils | Request', function (hooks) {
       requestVersion: 'v1',
     };
 
-    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
+    const normalized = normalizeV1toV2(request, 'bardOne');
 
     const cids = normalized.columns.map((c) => c.cid);
     cids.forEach((cid, idx) => {
@@ -590,10 +576,7 @@ module('Unit | Utils | Request', function (hooks) {
     assert.deepEqual(
       normalized,
       {
-        columns: [
-          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'desc' } },
-          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'other' } },
-        ],
+        columns: [{ type: 'dimension', field: 'multiSystemId', parameters: { field: 'id' } }],
         dataSource: 'bardOne',
         filters: [],
         limit: null,
@@ -606,7 +589,7 @@ module('Unit | Utils | Request', function (hooks) {
   });
 
   test('normalize v1 to v2 - default fields', function (assert) {
-    assert.expect(4);
+    assert.expect(3);
 
     const dimension = 'contextId';
 
@@ -622,7 +605,7 @@ module('Unit | Utils | Request', function (hooks) {
       requestVersion: 'v1',
     };
 
-    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
+    const normalized = normalizeV1toV2(request, 'bardOne');
 
     const cids = normalized.columns.map((c) => c.cid);
     cids.forEach((cid, idx) => {
@@ -640,10 +623,7 @@ module('Unit | Utils | Request', function (hooks) {
     assert.deepEqual(
       normalized,
       {
-        columns: [
-          { type: 'dimension', field: dimension, parameters: { field: 'id' } },
-          { type: 'dimension', field: dimension, parameters: { field: 'desc' } },
-        ],
+        columns: [{ type: 'dimension', field: dimension, parameters: { field: 'id' } }],
         dataSource: 'bardOne',
         filters: [],
         limit: null,

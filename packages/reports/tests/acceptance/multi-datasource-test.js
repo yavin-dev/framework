@@ -161,25 +161,25 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Display Currency (id)', 'Used Amount', 'Revenue (GIL)'],
+      ['Date Time (day)', 'Container (desc)', 'Display Currency (desc)', 'Used Amount', 'Revenue (GIL)'],
       'Table displays correct header titles'
     );
     assert.dom('.table-widget__table .table-row-vc').exists('Table rows exist');
 
     await click('.visualization-toggle__option-icon[title="Bar Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Bar chart has right Y axis label');
-    assert.dom('.c3-legend-item').containsText('2,ANG', 'Bar chart legend has right value');
+    assert.dom('.c3-legend-item').containsText('Bank,UNKNOWN', 'Bar chart legend has right value');
 
     await click('.visualization-toggle__option-icon[title="Line Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Line chart has right Y Axis label');
-    assert.dom('.c3-legend-item').containsText('2,ANG', 'Line chart has right legend value');
+    assert.dom('.c3-legend-item').containsText('Bank,UNKNOWN', 'Line chart has right legend value');
 
     //check api url
     await click('.get-api__action-btn');
     assert
       .dom('.get-api__modal input')
       .hasValue(
-        'https://data2.naviapp.io/v1/data/inventory/day/container;show=id/displayCurrency;show=id/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=json',
+        'https://data2.naviapp.io/v1/data/inventory/day/container;show=desc/displayCurrency;show=desc/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=json',
         'shows api url from bardTwo datasource'
       );
 
@@ -190,7 +190,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       .dom('.export__download-link')
       .hasAttribute(
         'href',
-        'https://data2.naviapp.io/v1/data/inventory/day/container;show=id/displayCurrency;show=id/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=csv',
+        'https://data2.naviapp.io/v1/data/inventory/day/container;show=desc/displayCurrency;show=desc/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=csv',
         'uses csv export from right datasource'
       );
 

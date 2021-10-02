@@ -1278,7 +1278,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.deepEqual(
       seriesLabels,
       ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
-      '3 series are initially present'
+      '4 series are initially present'
     );
     assert.deepEqual(hiddenLabels, [], 'No series are initially hidden from chart');
 
@@ -1792,14 +1792,14 @@ module('Acceptance | Navi Report', function (hooks) {
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
       '.table-header-cell[data-name="navClicks"]',
-      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="property(field=desc)"]',
       '.table-header-cell[data-name="adClicks"]',
       '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -1810,7 +1810,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'The headers are ordered correctly'
     );
 
@@ -1818,14 +1818,14 @@ module('Acceptance | Navi Report', function (hooks) {
       'mouse',
       '.table-header-row-vc--view .table-header-cell',
       '.table-header-cell[data-name="navClicks"]',
-      '.table-header-cell[data-name="property(field=id)"]',
+      '.table-header-cell[data-name="property(field=desc)"]',
       '.table-header-cell[data-name="adClicks"]',
       '.table-header-cell[data-name="network.dateTime(grain=day)"]'
     );
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)'],
       'The headers are reordered as specified by the reorder'
     );
 
@@ -1834,7 +1834,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Nav Link Clicks', 'Property (id)', 'Ad Clicks', 'Date Time (day)', 'Total Clicks'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)', 'Total Clicks'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -1935,7 +1935,7 @@ module('Acceptance | Navi Report', function (hooks) {
     const columns = () => findAll('.table-widget__table-headers .table-header-cell').map((el) => el.textContent.trim());
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'Report loads with expected columns'
     );
 
@@ -1943,14 +1943,14 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
+      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
 
     await click('.navi-report__revert-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'Report revertted successfully'
     );
 
@@ -1959,7 +1959,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
+      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
   });
@@ -1974,7 +1974,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown
 
     const navClicksCell = () => find('.table-row-vc').querySelectorAll('.table-cell-content.metric')[1];
-    assert.dom(navClicksCell()).hasText('880.41', 'The original metric value has no formatting');
+    assert.dom(navClicksCell()).hasText('305.99', 'The original metric value has no formatting');
     assert.dom('.number-format-selector__radio-custom input').isChecked('The custom input is selected');
 
     find('.number-format-selector__radio-money input').checked = true; // change format to money
@@ -1983,6 +1983,6 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.number-format-selector__radio-money input').isChecked('The money input is selected');
 
     await click('.number-format-dropdown');
-    assert.dom(navClicksCell()).hasText('$880.41', 'The metric is re-rendered in the money format');
+    assert.dom(navClicksCell()).hasText('$305.99', 'The metric is re-rendered in the money format');
   });
 });
