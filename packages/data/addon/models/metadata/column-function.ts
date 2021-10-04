@@ -23,6 +23,7 @@ export default class ColumnFunctionMetadataModel extends NativeWithCreate {
     const parameterFactory = owner.factoryFor('model:metadata/function-parameter') as Factory<typeof FunctionParameter>;
     const parameters = (this._parametersPayload || []).map((param) => parameterFactory.create(param));
     this.parameters = parameters;
+    console.log('ColumnFunctionMetadataModel ', this.parameters);
   }
 
   static identifierField = 'id';

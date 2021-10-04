@@ -56,6 +56,11 @@ export default class ColumnMetadataModel extends NativeWithCreate {
    */
   declare name: string;
 
+  /**
+   * Display longName of column
+   */
+  declare longName: string;
+
   declare metadataType: ColumnType;
 
   /**

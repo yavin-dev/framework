@@ -278,13 +278,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     dimension: RawDimensionPayload,
     dataSourceName: string
   ): ColumnFunctionMetadataModel {
-    console.log('createDimensionFieldColumnFunction', dimension);
     const { fields = [] } = dimension;
     const defaultValue =
       fields.find((field) => field.tags && field.tags.includes('primaryKey'))?.name || fields[0]?.name;
     const sorted = fields.map((field) => field.name).sort();
     const columnFunctionId = `${this.namespace}:dimensionField(fields=${sorted.join(',')})`;
-    console.log('fields ', fields);
     const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,
       name: 'Dimension Field',
@@ -307,7 +305,6 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         },
       ],
     };
-    console.log(payload);
     return this.createColumnFunctionModel(payload);
   }
 
@@ -441,7 +438,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
           _localValues: timeGrainInfo.timeGrains.map((grain) => ({
-            id: grain.name,
+            id: grain.longName,
             description: grain.description,
             name: grain.longName,
           })),

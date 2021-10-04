@@ -20,9 +20,12 @@ export default class NaviFormatterService extends Service {
 
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
-
+    console.log('parameters ', parameters, paramValues);
+    console.log('columnMetadata', columnMetadata);
     const name = columnMetadata?.name || '--';
+    console.log('name', name);
     if (paramValues.length) {
+      console.log(`${name} (${paramValues.join(',')})`);
       return `${name} (${paramValues.join(',')})`;
     } else {
       return name;
