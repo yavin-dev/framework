@@ -55,11 +55,11 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
     super(owner, args);
   }
 
-  @service('navi-dimension')
-  declare dimensionService: NaviDimensionService;
+  @service
+  declare naviDimensions: NaviDimensionService;
 
-  @service('navi-metadata')
-  declare metadataService: NaviMetadataService;
+  @service
+  declare naviMetadata: NaviMetadataService;
 
   declare id: string;
 
@@ -93,12 +93,12 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
     const [lookup, dimensionId] = this.expression?.split(':') || [];
     if (this.type === 'ref' && lookup === 'dimension' && dimensionId) {
-      return this.metadataService
+      return this.naviMetadata
         .findById('dimension', dimensionId, this.source)
         .then((columnMetadata) => {
           assert(`The dimension metadata for ${dimensionId} should exist`, columnMetadata);
           const dimension: DimensionColumn = { columnMetadata, parameters: {} };
-          return taskFor(this.dimensionService.all).perform(dimension);
+          return taskFor(this.naviDimensions.all).perform(dimension);
         })
         .then((v) => v.values.map((d) => ({ id: `${d.value}`, description: d.displayValue })));
     }

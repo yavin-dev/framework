@@ -16,6 +16,7 @@ import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/mode
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
+import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -444,10 +445,12 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     fields: [
       {
         name: 'id',
+        longName: 'Id',
         description: 'Dimension ID',
       },
       {
         name: 'desc',
+        longName: 'Desc',
         description: 'Dimension Description',
       },
     ],
@@ -472,6 +475,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     fields: [
       {
         name: 'foo',
+        longName: 'Foo',
         description: 'bar',
       },
     ],
@@ -496,6 +500,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     fields: [
       {
         name: 'id',
+        longName: 'Id',
         description: 'Dimension ID',
       },
     ],
@@ -640,12 +645,12 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id',
+            name: 'Id',
           },
           {
             description: undefined,
             id: 'desc',
-            name: 'desc',
+            name: 'Desc',
           },
         ],
         defaultValue: 'id',
@@ -669,7 +674,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'foo',
-            name: 'foo',
+            name: 'Foo',
           },
         ],
         defaultValue: 'foo',
@@ -693,7 +698,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id',
+            name: 'Id',
           },
         ],
         defaultValue: 'id',
@@ -861,28 +866,25 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
-    console.log(Payload);
-    console.log(Serializer.normalize('everything', Payload, 'bardOne'));
-    console.log({
+    assert.expect(7);
+    const compare: EverythingMetadataPayload = {
       metrics: Metrics,
       dimensions: Dimensions,
       timeDimensions: TimeDimensions,
       tables: Tables,
       columnFunctions: ColumnFunctions,
       requestConstraints: RequestConstraints,
-    });
+    };
+    const normalized = Serializer.normalize('everything', Payload, 'bardOne');
+
     assert.deepEqual(
-      Serializer.normalize('everything', Payload, 'bardOne'),
-      {
-        metrics: Metrics,
-        dimensions: Dimensions,
-        timeDimensions: TimeDimensions,
-        tables: Tables,
-        columnFunctions: ColumnFunctions,
-        requestConstraints: RequestConstraints,
-      },
-      'One column function is created for all metrics with only the currency parameter'
+      Object.keys(compare).sort(),
+      Object.keys(normalized as object).sort(),
+      'Everything metadata payload has all types'
     );
+    Object.keys(compare).forEach((key: keyof EverythingMetadataPayload) => {
+      assert.deepEqual(compare[key], normalized?.[key], `All normalized ${key} are created correctly`);
+    });
   });
 
   test('normalize `everything` with column functions', function (assert) {
