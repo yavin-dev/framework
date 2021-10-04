@@ -67,10 +67,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -84,6 +86,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -97,6 +100,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -144,10 +148,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -161,6 +167,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -174,6 +181,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -216,10 +224,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -233,6 +243,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -246,6 +257,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -304,6 +316,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -317,6 +330,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -352,6 +366,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -365,6 +380,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -845,6 +861,17 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
+    console.log(Payload);
+    console.log(Serializer.normalize('everything', Payload, 'bardOne'));
+    console.log({
+      metrics: Metrics,
+      dimensions: Dimensions,
+      timeDimensions: TimeDimensions,
+      tables: Tables,
+      columnFunctions: ColumnFunctions,
+      requestConstraints: RequestConstraints,
+    });
+    debugger;
     assert.deepEqual(
       Serializer.normalize('everything', Payload, 'bardOne'),
       {
@@ -1012,10 +1039,12 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         {
           name: 'foo',
           description: 'bar',
+          longName: 'Foo',
         },
         {
           name: 'baz',
           description: 'bang',
+          longName: 'Baz',
         },
       ],
       datatype: 'text',

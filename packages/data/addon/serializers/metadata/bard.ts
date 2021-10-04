@@ -45,6 +45,7 @@ export type RawEverythingPayload = {
 type RawDimensionField = {
   name: string;
   description?: string;
+  longName: string;
   tags?: string[];
 };
 
@@ -299,7 +300,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           _localValues: fields.map((field) => ({
             id: field.name,
             description: undefined, // ignoring dimension field description for
-            name: field.name,
+            name: field.longName,
           })),
         },
       ],
