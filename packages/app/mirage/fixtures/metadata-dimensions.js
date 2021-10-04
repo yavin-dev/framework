@@ -8,53 +8,53 @@ const fields = [{ name: 'id' }, { name: 'desc' }];
 export default [
   {
     name: 'platform',
-    longName: 'Platform',
+    longName: 'LongPlatform',
     cardinality: 5000,
     category: 'Other',
     fields: [
       {
         name: 'id',
-        tags: ['show', 'id']
+        tags: ['show', 'id'],
       },
       {
         name: 'desc',
-        tags: ['show', 'desc']
-      }
-    ]
+        tags: ['show', 'desc'],
+      },
+    ],
   },
   {
     name: 'game',
-    longName: 'Game',
+    longName: 'LongGame',
     cardinality: 50000000,
     category: 'Other',
-    fields
+    fields,
   },
   {
     name: 'item',
-    longName: 'Item',
+    longName: 'LongItem',
     cardinality: 100,
     category: 'Other',
-    fields
+    fields,
   },
   {
     name: 'enemy',
-    longName: 'Enemy',
+    longName: 'LongEnemy',
     cardinality: 100,
     category: 'Character',
-    fields
+    fields,
   },
   {
     name: 'character',
-    longName: 'Character',
+    longName: 'LongCharacter',
     cardinality: 100,
     category: 'Character',
-    fields
+    fields,
   },
   {
     name: 'location',
-    longName: 'Location',
+    longName: 'LongLocation',
     cardinality: 100,
     category: 'Other',
-    fields
-  }
+    fields,
+  },
 ];
