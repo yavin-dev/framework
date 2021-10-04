@@ -4,10 +4,14 @@
  */
 //@ts-ignore
 import AssetSerializer from './asset';
-import type Model from '@ember-data/model';
+import { inject as service } from '@ember/service';
 import { normalizeVisualization } from './report';
+import type Model from '@ember-data/model';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 export default class DashboardWidgetSerializer extends AssetSerializer {
+  @service declare naviMetadata: NaviMetadataService;
+
   /**
    * Normalizes payload so that it can be applied to models correctly
    * @param type - class type as a DS model
@@ -18,7 +22,7 @@ export default class DashboardWidgetSerializer extends AssetSerializer {
     const normalized = super.normalize(type, dashboardWidget) as TODO;
 
     const { requests, visualization } = normalized.data?.attributes;
-    normalized.data.attributes.visualization = normalizeVisualization(requests[0], visualization);
+    normalized.data.attributes.visualization = normalizeVisualization(requests[0], visualization, this.naviMetadata);
 
     return normalized;
   }

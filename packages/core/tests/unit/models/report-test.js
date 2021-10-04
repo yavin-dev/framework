@@ -41,14 +41,6 @@ const ExpectedRequest = {
       },
       {
         alias: null,
-        field: 'property',
-        parameters: {
-          field: 'desc',
-        },
-        type: 'dimension',
-      },
-      {
-        alias: null,
         field: 'adClicks',
         parameters: {},
         type: 'metric',
@@ -127,7 +119,7 @@ module('Unit | Model | report', function (hooks) {
   });
 
   test('Retrieving records', async function (assert) {
-    assert.expect(7);
+    assert.expect(6);
 
     await run(async () => {
       const report = await Store.findRecord('report', 1);

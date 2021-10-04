@@ -125,15 +125,15 @@ function _fakeDimensionValues(dimension: FiliDimension, count: number): Dimensio
   let fakeValues: DimensionRow[] = [];
 
   for (let i = 0; i < count; i++) {
-    let key = null;
+    let extraKeys = {};
     // used to generate alternative primary keys for dimensions that don't use `id` as their primaryKey (in this case uses `key` instead)
     if (dimension.name === 'multiSystemId') {
-      key = `k${i + 1}`;
+      extraKeys = { key: `k${i + 1}`, other: `o${i + 1}` };
     }
     fakeValues.push({
       id: `${i + 1}`,
       description: faker.commerce.productName(),
-      ...(key ? { key } : {}),
+      ...extraKeys,
     });
   }
 
