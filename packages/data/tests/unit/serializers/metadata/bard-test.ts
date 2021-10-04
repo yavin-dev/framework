@@ -871,7 +871,6 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       columnFunctions: ColumnFunctions,
       requestConstraints: RequestConstraints,
     });
-    debugger;
     assert.deepEqual(
       Serializer.normalize('everything', Payload, 'bardOne'),
       {
