@@ -183,7 +183,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       }
       const dataSourceConfig = getDataSource(request.dataSource) as FiliDataSource;
       const sinceOperatorEnd = dataSourceConfig.options?.sinceOperatorEndPeriod;
-      end = sinceOperatorEnd ?? moment.utc('9999-12-31').startOf(filterGrain).toISOString();
+      end = sinceOperatorEnd
+        ? moment.utc().add(moment.duration(sinceOperatorEnd)).startOf(filterGrain).toISOString()
+        : moment.utc('9999-12-31').startOf(filterGrain).toISOString();
     } else if (timeFilter.operator === 'lte') {
       start = moment
         .utc(config.navi.dataEpoch || '0001-01-01')
