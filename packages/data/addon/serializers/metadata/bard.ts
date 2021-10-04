@@ -45,7 +45,7 @@ export type RawEverythingPayload = {
 type RawDimensionField = {
   name: string;
   description?: string;
-  longName?: string;
+  longName: string;
   tags?: string[];
 };
 
