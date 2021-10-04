@@ -4,19 +4,21 @@
  */
 //@ts-ignore
 import AssetSerializer from './asset';
-import type Model from '@ember-data/model';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import { inject as service } from '@ember/service';
 import { normalizeTableV2 } from './table';
 import { normalizeMetricLabelV2 } from './metric-label';
 import { normalizeLineChartV2 } from './line-chart';
 import { normalizeBarChartV2 } from './bar-chart';
 import { normalizeGoalGaugeV2 } from './goal-gauge';
 import { normalizePieChartV2 } from './pie-chart';
+import type Model from '@ember-data/model';
+import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function normalizeVisualization(request: RequestFragment, visualization?: any) {
+export function normalizeVisualization(request: RequestFragment, visualization: any, metadata: NaviMetadataService) {
   if (visualization?.type === 'table') {
-    return normalizeTableV2(request, visualization);
+    return normalizeTableV2(request, visualization, metadata);
   } else if (visualization?.type === 'metric-label') {
     return normalizeMetricLabelV2(request, visualization);
   } else if (visualization?.type === 'line-chart') {
@@ -32,6 +34,8 @@ export function normalizeVisualization(request: RequestFragment, visualization?:
 }
 
 export default class ReportSerializer extends AssetSerializer {
+  @service declare naviMetadata: NaviMetadataService;
+
   /**
    * Normalizes payload so that it can be applied to models correctly
    * @param type - class type as a DS model
@@ -42,7 +46,7 @@ export default class ReportSerializer extends AssetSerializer {
     const normalized = super.normalize(type, report) as TODO;
 
     const { request, visualization } = normalized.data?.attributes;
-    normalized.data.attributes.visualization = normalizeVisualization(request, visualization);
+    normalized.data.attributes.visualization = normalizeVisualization(request, visualization, this.naviMetadata);
 
     return normalized;
   }

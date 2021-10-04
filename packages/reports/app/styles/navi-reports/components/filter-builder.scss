@@ -9,7 +9,7 @@ $filter-builder-padding: 4px;
   &__subject {
     padding: $filter-builder-padding;
     padding-bottom: 0; //when on column mode on small screen
-    
+
     &-name {
       align-items: center;
       display: flex;
@@ -30,7 +30,7 @@ $filter-builder-padding: 4px;
 
     &-dropdown {
       .ember-power-select-options {
-        max-height: unset;
+        max-height: 40rem;
       }
     }
   }

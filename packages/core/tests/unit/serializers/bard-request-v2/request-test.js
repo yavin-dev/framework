@@ -109,7 +109,7 @@ module('Unit | Serializer | Request', function (hooks) {
 
     assert.equal(requestVersion, '2.0', 'request version is set correctly');
 
-    assert.equal(columns.length, 8, 'request has correct number of columns');
+    assert.equal(columns.length, 6, 'request has correct number of columns');
 
     assert.equal(columns.objectAt(0).columnMetadata.id, 'network.dateTime', 'dateTime column is normalized correctly');
     assert.equal(columns.objectAt(0).type, 'timeDimension', 'dateTime column type is set correctly');
@@ -118,8 +118,8 @@ module('Unit | Serializer | Request', function (hooks) {
     assert.equal(columns.objectAt(1).columnMetadata.id, 'age', 'dimension columns are normalized correctly');
     assert.deepEqual(columns.objectAt(1).parameters, { field: 'id' }, 'dimension columns have a field parameter');
 
-    assert.equal(columns.objectAt(5).columnMetadata.id, 'revenue', 'metric columns are normalized correctly');
-    assert.deepEqual(columns.objectAt(5).parameters, { currency: 'USD' }, 'metric columns have correct parameters');
+    assert.equal(columns.objectAt(3).columnMetadata.id, 'revenue', 'metric columns are normalized correctly');
+    assert.deepEqual(columns.objectAt(3).parameters, { currency: 'USD' }, 'metric columns have correct parameters');
 
     assert.equal(filters.length, 5, 'request has correct number of filter fragments');
 

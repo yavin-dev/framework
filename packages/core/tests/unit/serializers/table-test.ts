@@ -5,6 +5,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { normalizeTableV2, TableVisMetadataPayloadV1, TableVisualizationMetadata } from 'navi-core/serializers/table';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { normalizeV1toV2, RequestV1 } from 'navi-core/utils/request';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 const defaultAttributes = {};
 const expected: TableVisualizationMetadata = {
@@ -35,10 +36,16 @@ const expected: TableVisualizationMetadata = {
   type: 'table',
   version: 2,
 };
+let naviMetadata: NaviMetadataService;
 
 module('Unit | Serializer | table', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(async function () {
+    naviMetadata = this.owner.lookup('service:navi-metadata');
+    await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
+  });
 
   test('normalizeTableV2', function (assert) {
     assert.expect(4);
@@ -83,7 +90,7 @@ module('Unit | Serializer | table', function (hooks) {
 
     const TestRequest: RequestV2 = {
       table: 'table1',
-      dataSource: 'test',
+      dataSource: 'bardOne',
       limit: null,
       requestVersion: '2.0',
       filters: [],
@@ -157,7 +164,7 @@ module('Unit | Serializer | table', function (hooks) {
       'When version 2 is passed in, it does nothing'
     );
 
-    const newMetadata = normalizeTableV2(TestRequest, initialMetadata);
+    const newMetadata = normalizeTableV2(TestRequest, initialMetadata, naviMetadata);
 
     assert.deepEqual(
       TestRequest.columns.map((c) => c.field),
@@ -236,7 +243,7 @@ module('Unit | Serializer | table', function (hooks) {
     };
 
     const request = normalizeV1toV2(requestV1, 'facts');
-    const result = normalizeTableV2(request, visualization);
+    const result = normalizeTableV2(request, visualization, naviMetadata);
 
     const [cid1, cid2] = Object.keys(result.metadata.columnAttributes);
     assert.deepEqual(
@@ -262,7 +269,7 @@ module('Unit | Serializer | table', function (hooks) {
         columns: [
           { cid: '', field: 'valuables2', parameters: { aggregation: 'total' }, type: 'metric' },
           { cid: '', field: 'valuables', parameters: { aggregation: 'total', trend: 'none' }, type: 'metric' },
-          { cid: '', field: 'dim', parameters: { field: 'id' }, type: 'dimension' },
+          { cid: '', field: 'dim', parameters: { field: 'desc' }, type: 'dimension' },
         ],
         dataSource: 'facts',
         filters: [
@@ -282,6 +289,100 @@ module('Unit | Serializer | table', function (hooks) {
         table: 'tableName',
       },
       'the v1 request is normalized with the all grain and missing request columns'
+    );
+  });
+
+  test('v1 report and visualization - injects show fields', async function (assert) {
+    const requestV1: RequestV1<string> = {
+      logicalTable: { table: 'tableA', timeGrain: 'day' },
+      dataSource: 'bardOne',
+      metrics: [
+        { metric: 'revenue', parameters: { currency: 'USD' } },
+        { metric: 'revenue', parameters: { currency: 'EUR' } },
+      ],
+      dimensions: [{ dimension: 'multiSystemId' }],
+      filters: [],
+      intervals: [{ end: '2018-02-16 00:00:00.000', start: '2018-02-09 00:00:00.000' }],
+      having: [],
+      sort: [],
+      requestVersion: 'v1',
+    };
+    const visualization: TableVisMetadataPayloadV1 = {
+      type: 'table',
+      version: 1,
+      metadata: {
+        columns: [
+          { field: 'dateTime', type: 'dateTime', displayName: 'Date' },
+          {
+            type: 'dimension',
+            attributes: { name: 'multiSystemId', field: 'desc' },
+            displayName: 'Multi System Id (desc)',
+          },
+          {
+            type: 'dimension',
+            attributes: { name: 'multiSystemId', field: 'other' },
+            displayName: 'Multi System Id (other)',
+          },
+          { field: 'revenue(currency=USD)', type: 'metric', displayName: 'Revenue (USD)' },
+          { field: 'revenue(currency=EUR)', type: 'metric', displayName: 'Revenue (EUR)' },
+        ],
+        showTotals: {
+          subtotal: 'multiSystemId',
+          grandTotal: true,
+        },
+      },
+    };
+
+    const request = normalizeV1toV2(requestV1, 'bardOne');
+    const result = normalizeTableV2(request, visualization, naviMetadata);
+
+    assert.deepEqual(
+      result,
+      {
+        metadata: {
+          columnAttributes: {
+            ...Object.fromEntries(Object.keys(result.metadata.columnAttributes).map((k) => [k, {}])),
+          },
+          showTotals: {
+            grandTotal: true,
+            subtotal: request.columns.find((c) => c.field === 'multiSystemId')?.cid,
+          },
+        },
+        type: 'table',
+        version: 2,
+      },
+      'the table metadata is properly generated when show fields are injected as columns'
+    );
+
+    request.columns.forEach((c) => (c.cid = ''));
+    assert.deepEqual(
+      request,
+      {
+        columns: [
+          { cid: '', type: 'timeDimension', field: 'tableA.dateTime', parameters: { grain: 'day' } },
+          { cid: '', type: 'dimension', field: 'multiSystemId', parameters: { field: 'desc' } },
+          { cid: '', type: 'dimension', field: 'multiSystemId', parameters: { field: 'other' } },
+          { cid: '', type: 'metric', field: 'revenue', parameters: { currency: 'USD' } },
+          { cid: '', type: 'metric', field: 'revenue', parameters: { currency: 'EUR' } },
+        ],
+        filters: [
+          {
+            field: 'tableA.dateTime',
+            operator: 'bet',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+            values: ['2018-02-09T00:00:00.000Z', '2018-02-15T00:00:00.000Z'],
+          },
+        ],
+        limit: null,
+        requestVersion: '2.0',
+        sorts: [],
+        table: 'tableA',
+        dataSource: 'bardOne',
+      },
+      'the v2 request contains show fields enumerated as separate columns'
     );
   });
 });
