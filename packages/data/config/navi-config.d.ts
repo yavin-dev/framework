@@ -13,6 +13,7 @@ declare module 'navi-config' {
   export interface FiliConfigOptions {
     enableDimensionSearch?: boolean;
     enableSubtotals?: boolean;
+    sinceOperatorEndPeriod?: string;
   }
   export type FiliDataSource = BaseDataSource<'bard', FiliConfigOptions>;
 

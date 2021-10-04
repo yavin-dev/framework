@@ -10,7 +10,7 @@ import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric } from '../../utils/metric';
-import { configHost } from '../../utils/adapter';
+import { configHost, getDataSource } from '../../utils/adapter';
 import NaviFactAdapter, {
   Filter,
   RequestOptions,
@@ -32,6 +32,7 @@ import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
 import Interval from 'navi-data/utils/classes/interval';
+import { FiliDataSource } from 'navi-config';
 
 export type Query = Record<string, string | number | boolean>;
 
@@ -180,7 +181,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       if (!moment.utc(start).isValid()) {
         throw new FactAdapterError(`Since operator only supports datetimes, '${start}' is invalid`);
       }
-      end = moment.utc('9999-12-31').startOf(filterGrain).toISOString();
+      const dataSourceConfig = getDataSource(request.dataSource) as FiliDataSource;
+      const sinceOperatorEnd = dataSourceConfig.options?.sinceOperatorEndPeriod;
+      end = sinceOperatorEnd ?? moment.utc('9999-12-31').startOf(filterGrain).toISOString();
     } else if (timeFilter.operator === 'lte') {
       start = moment
         .utc(config.navi.dataEpoch || '0001-01-01')
