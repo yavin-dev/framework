@@ -60,9 +60,10 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option div:nth-of-type(1)').map((el) =>
-      el.textContent?.trim()
-    );
+    const selectedValueText = findAll(
+      '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
+    ).map((el) => el.textContent?.trim());
+
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
 
     assert.deepEqual(
@@ -76,6 +77,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
         ?.trim()
         .split('\n')
         .map((s) => s.trim())
+        .filter((s) => s)
     );
     const expectedOptionText = AgeValues.map(({ id, description }) => [id, `description: ${description}`]);
     /*
@@ -108,9 +110,10 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option div:nth-of-type(1)').map((el) =>
-      el.textContent?.trim()
-    );
+    const selectedValueText = findAll(
+      '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
+    ).map((el) => el.textContent?.trim());
+
     const expectedValueDimensions = ContainerValues.filter(({ id }) => this.filter.values.includes(id));
     assert.deepEqual(
       selectedValueText,
@@ -123,6 +126,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
         ?.trim()
         .split('\n')
         .map((s) => s.trim())
+        .filter((s) => s)
     );
     const expectedOptionText = ContainerValues.map(({ id, description }) => [id, `description: ${description}`]);
 
@@ -212,6 +216,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
             ?.trim()
             .split('\n')
             .map((s) => s.trim())
+            .filter((s) => s)
         );
 
     const expectedValueDimensions = ContainerValues.filter(({ description }) =>
