@@ -126,7 +126,13 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     } else {
       yield timeout(SEARCH_DEBOUNCE_OFFLINE_MS);
       const rawValues: NaviDimensionModel[] = yield this.dimensionValues;
-      return rawValues.filter((v) => v.displayValue.toLowerCase().includes(searchTerm.toLowerCase()));
+      return rawValues.filter((v) => {
+        const lowerTerm = searchTerm.toLowerCase();
+        return (
+          v.displayValue.toLowerCase().includes(lowerTerm) ||
+          Object.values(v.suggestions ?? {}).some((s) => s.toLowerCase().includes(lowerTerm))
+        );
+      });
     }
   }
 }

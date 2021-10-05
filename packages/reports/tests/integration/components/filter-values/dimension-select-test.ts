@@ -308,4 +308,33 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'Sort is applied as number for string number dimensions'
     );
   });
+
+  test('local search', async function (this: TestContext, assert) {
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    await render(TEMPLATE);
+
+    await selectSearch('.filter-values--dimension-select__trigger', '10');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['10', 'description: 65 and over']],
+      'For small cardinality dimensions, local search uses dimension values'
+    );
+
+    await clickTrigger();
+    await selectSearch('.filter-values--dimension-select__trigger', 'Un');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [
+        ['-1', 'description: Unknown'],
+        ['1', 'description: under 13'],
+      ],
+      'For small cardinality dimensions, local search uses context values'
+    );
+  });
 });
