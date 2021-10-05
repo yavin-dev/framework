@@ -248,7 +248,6 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   /**
    * @property columnTypes - Array of the column types
    */
-  @computed('columns.[]')
   get columnTypes(): ColumnType[] {
     return this.columns.map((column) => column.type);
   }
