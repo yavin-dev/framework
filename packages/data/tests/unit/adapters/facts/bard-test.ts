@@ -342,7 +342,13 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     });
 
     const startDate = '2021-02-01';
-    const expectedEnd = moment().utc().add(3, 'months').startOf('isoWeek').toISOString().replace('Z', '');
+    const expectedEnd = moment()
+      .utc()
+      .add(3, 'months')
+      .add(1, 'week')
+      .startOf('isoWeek')
+      .toISOString()
+      .replace('Z', '');
     const since = singleValue(startDate, 'gte');
     assert.deepEqual(
       Adapter._buildDateTimeParam(since),
