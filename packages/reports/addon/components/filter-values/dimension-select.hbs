@@ -30,7 +30,7 @@
           <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>{{dim.displayValue}}</div>
           <div class="filter-values--dimension-select__option-context">
             {{#each-in dim.suggestions as |field value|}}
-              <span class="filter-values--dimension-select__option-context is-grey-700" title={{value}}><span class="cap is-grey-600">{{field}}</span>: {{value}} </span>
+              <span class="filter-values--dimension-select__option-context-item is-grey-700" title={{value}}><span class="cap is-grey-600">{{field}}</span>: {{value}} </span>
             {{/each-in}}
           </div>
         </div>
