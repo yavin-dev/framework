@@ -16,7 +16,7 @@ const HOST2 = config.navi.dataSources[1].uri;
 
 const EmptyRequest: RequestV2 = {
   table: '',
-  dataSource: '',
+  dataSource: 'bardOne',
   requestVersion: '2.0',
   limit: null,
   columns: [],
@@ -242,7 +242,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -342,11 +342,25 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     });
 
     const startDate = '2021-02-01';
+    const expectedEnd = moment()
+      .utc()
+      .add(3, 'months')
+      .add(1, 'week')
+      .startOf('isoWeek')
+      .toISOString()
+      .replace('Z', '');
     const since = singleValue(startDate, 'gte');
     assert.deepEqual(
       Adapter._buildDateTimeParam(since),
+      `${startDate}/${expectedEnd}`,
+      '_buildDateTimeParam uses configured end date period for since operator'
+    );
+
+    since.dataSource = 'bardTwo';
+    assert.deepEqual(
+      Adapter._buildDateTimeParam(since),
       `${startDate}/9999-12-27T00:00:00.000`,
-      '_buildDateTimeParam uses far future aligned to grain for since operator'
+      '_buildDateTimeParam uses far future aligned to grain for since operator when nothing is configured'
     );
 
     const sinceBadDate = singleValue('fakeDate', 'gte');
