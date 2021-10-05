@@ -53,31 +53,11 @@ module('Unit | Model | navi dimension', function (hooks) {
     ) as DimensionMetadataModel;
     const dimensionColumn: DimensionColumn = { columnMetadata };
     const value = 'link';
-    const model = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: [] });
+    const model = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: {} });
 
     assert.equal(
       model.displayValue,
       `${value}`,
-      '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
-    );
-
-    const withSuggestion = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: ['Link'] });
-
-    assert.equal(
-      withSuggestion.displayValue,
-      `${value} (Link)`,
-      '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
-    );
-
-    const withSuggestions = this.dimensionModelFactory.create({
-      dimensionColumn,
-      value,
-      suggestions: ['Link', 'anchor'],
-    });
-
-    assert.equal(
-      withSuggestions.displayValue,
-      `${value} (Link, anchor)`,
       '`NaviDimensionModel` has a `displayValue` field which is a stringified version of `value`'
     );
   });
@@ -104,7 +84,7 @@ module('Unit | Model | navi dimension', function (hooks) {
     const model2WithSuggestions = this.dimensionModelFactory.create({
       dimensionColumn: { columnMetadata, parameters },
       value,
-      suggestions: ['Ignore me'],
+      suggestions: { col1: 'Ignore me' },
     });
     assert.ok(
       model2.isEqual(model2WithSuggestions),

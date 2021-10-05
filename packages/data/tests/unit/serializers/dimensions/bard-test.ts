@@ -43,9 +43,10 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
       ContainerDimValues.map(({ id }) => id),
       '`normalize` hydrated NaviDimensionModel objects with the correct field value'
     );
+
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ id, description }) => `${id} (${description})`),
+      ContainerDimValues.map(({ id }) => id),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });
@@ -72,7 +73,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
 
     assert.deepEqual(
       normalized.values.map(({ displayValue }) => displayValue),
-      ContainerDimValues.map(({ id, description }) => `${description} (${id})`),
+      ContainerDimValues.map(({ description }) => description),
       '`normalize` hydrated NaviDimensionModel and produced the correct `displayValue`'
     );
   });
@@ -109,7 +110,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     const noSuggestionsColumn: DimensionColumn = { columnMetadata: noSuggestions, parameters: { field: 'desc' } };
     assert.deepEqual(
       this.serializer.normalize(noSuggestionsColumn, payload).values.map((v) => v.suggestions),
-      [[], [], [], []],
+      [{}, {}, {}, {}],
       '`normalize` dimension with no suggestion columns gives empty array'
     );
 
@@ -127,10 +128,10 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     assert.deepEqual(
       this.serializer.normalize(descColumn, payload).values.map((v) => v.suggestions),
       [
-        ['1', 'Bag'],
-        ['2', 'Bank'],
-        ['3', 'Saddle Bag'],
-        ['4', 'Retainer'],
+        { id: '1', description: 'Bag' },
+        { id: '2', description: 'Bank' },
+        { id: '3', description: 'Saddle Bag' },
+        { id: '4', description: 'Retainer' },
       ],
       '`normalize` uses the suggestion columns that were not selected as suggestions'
     );
@@ -138,7 +139,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     const idColumn: DimensionColumn = { columnMetadata: withSuggestions, parameters: { field: 'id' } };
     assert.deepEqual(
       this.serializer.normalize(idColumn, payload).values.map((v) => v.suggestions),
-      [['Bag'], ['Bank'], ['Saddle Bag'], ['Retainer']],
+      [{ description: 'Bag' }, { description: 'Bank' }, { description: 'Saddle Bag' }, { description: 'Retainer' }],
       '`normalize` uses the suggestion columns that were not selected as suggestions'
     );
   });

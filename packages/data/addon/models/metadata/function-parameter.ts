@@ -100,7 +100,15 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
           const dimension: DimensionColumn = { columnMetadata, parameters: {} };
           return taskFor(this.dimensionService.all).perform(dimension);
         })
-        .then((v) => v.values.map((d) => ({ id: `${d.value}`, description: d.displayValue })));
+        .then((v) =>
+          v.values.map((d) => {
+            const context = d.suggestions ? ` (${Object.values(d.suggestions)})` : '';
+            return {
+              id: `${d.value}`,
+              description: `${d.displayValue}${context}`,
+            };
+          })
+        );
     }
     return undefined;
   }
