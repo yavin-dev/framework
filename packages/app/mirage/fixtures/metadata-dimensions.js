@@ -14,47 +14,47 @@ export default [
     fields: [
       {
         name: 'id',
-        tags: ['show', 'id'],
+        tags: ['show', 'id']
       },
       {
         name: 'desc',
-        tags: ['show', 'desc'],
-      },
-    ],
+        tags: ['show', 'desc']
+      }
+    ]
   },
   {
     name: 'game',
     longName: 'LongGame',
     cardinality: 50000000,
     category: 'Other',
-    fields,
+    fields
   },
   {
     name: 'item',
     longName: 'LongItem',
     cardinality: 100,
     category: 'Other',
-    fields,
+    fields
   },
   {
     name: 'enemy',
     longName: 'LongEnemy',
     cardinality: 100,
     category: 'Character',
-    fields,
+    fields
   },
   {
     name: 'character',
     longName: 'LongCharacter',
     cardinality: 100,
     category: 'Character',
-    fields,
+    fields
   },
   {
     name: 'location',
     longName: 'LongLocation',
     cardinality: 100,
     category: 'Other',
-    fields,
-  },
+    fields
+  }
 ];
