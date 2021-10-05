@@ -121,8 +121,8 @@ module('Integration | Component | navi-column-config', function (hooks) {
 
     await render(TEMPLATE);
 
-    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('metric', 'adClicks', 'bardOne');
+    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('metric', 'navClicks', 'bardOne');
     await animationsSettled();
 
@@ -196,8 +196,8 @@ module('Integration | Component | navi-column-config', function (hooks) {
   test('dimensions - adding', async function (assert) {
     assert.expect(2);
 
-    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('dimension', 'browser', 'bardOne');
+    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
     addItem('dimension', 'currency', 'bardOne');
     await render(TEMPLATE);
 
@@ -288,8 +288,8 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
-      ['Date Time (Day)', 'Browser (id)', 'Nav Link Clicks', 'Currency (id)', 'Ad Clicks', 'Product Family (id)'],
-      'columns are displayed in the order they are added'
+      ['Date Time (Day)', 'Browser (id)', 'Currency (id)', 'Product Family (id)', 'Nav Link Clicks', 'Ad Clicks'],
+      'columns are grouped by type when added'
     );
   });
 
@@ -455,12 +455,12 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
-      ['Date Time (Day)', 'Browser (id)', 'Ad Clicks', 'Date Time (Day)'],
+      ['Date Time (Day)', 'Date Time (Day)', 'Browser (id)', 'Ad Clicks'],
       'Only the most recently added time dimension column is marked as last added'
     );
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, false, true],
+      [false, true, false, false],
       'Only the most recently added time dimension column is marked as last added'
     );
 
@@ -469,7 +469,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--last-added')),
-      [false, false, false, false, true],
+      [false, false, false, true, false],
       'Only the most recently added dimension column is marked as last added'
     );
 
@@ -506,7 +506,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
-      [false, false, true],
+      [false, true, false],
       'Last added column is open'
     );
 
@@ -514,7 +514,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
-      [false, true, false],
+      [false, false, true],
       'Clicked metric column is open'
     );
 
@@ -522,13 +522,13 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
-      [false, false, true],
+      [false, true, false],
       'Clicked dimension column is open'
     );
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
-      ['Date Time (Day)', 'Ad Clicks', 'Browser (id)'],
+      ['Date Time (Day)', 'Browser (id)', 'Ad Clicks'],
       'The expected columns are in the column config'
     );
   });
@@ -551,5 +551,45 @@ module('Integration | Component | navi-column-config', function (hooks) {
     await drag('mouse', `${dimensionColumn} .navi-column-config-item__handle`, () => {
       return { dy: 200, dx: undefined };
     });
+  });
+
+  test('adding a column after reordering', async function (assert) {
+    assert.expect(4);
+
+    addItem('metric', 'adClicks', 'bardOne');
+    addItem('dimension', 'browser', 'bardOne');
+    //manual reorder
+    this.report.request.columns.reverseObjects();
+    await render(TEMPLATE);
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
+      ['Ad Clicks', 'Browser (id)'],
+      'The expected columns are in the column config'
+    );
+
+    addItem('metric', 'navClicks', 'bardOne');
+    await render(TEMPLATE);
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
+      ['Ad Clicks', 'Browser (id)', 'Nav Link Clicks'],
+      'Metrics are always added at the end'
+    );
+
+    addItem('dimension', 'currency', 'bardOne');
+    await render(TEMPLATE);
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
+      ['Ad Clicks', 'Browser (id)', 'Currency (id)', 'Nav Link Clicks'],
+      'Dimensions are added after the last dimension'
+    );
+
+    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Day' });
+    addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'Week' });
+    await render(TEMPLATE);
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
+      ['Date Time (Day)', 'Date Time (Week)', 'Ad Clicks', 'Browser (id)', 'Currency (id)', 'Nav Link Clicks'],
+      'Date dimensions are added at the start'
+    );
   });
 });

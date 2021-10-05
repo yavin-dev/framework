@@ -758,7 +758,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('.menu-content a:contains("PDF")')[0]);
     let model = await getActualModel(find('.export__download-link').getAttribute('href'));
     assert.equal(
-      model.request.columns.objectAt(4).get('displayName'),
+      model.request.columns.objectAt(2).get('displayName'),
       'Product Family (id)',
       'Groupby changes are automatically included in export url'
     );

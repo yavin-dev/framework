@@ -241,7 +241,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Property (id)', 'Ad Clicks', 'Nav Link Clicks', 'Date Time (isoWeek)'],
+      ['Date Time (isoWeek)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'A Date Time column is added matching the existing filter grain'
     );
   });
