@@ -132,6 +132,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     gt: (f, v) => `${f}=gt=('${v}')`,
     bet: (f, v) => `${f}=ge=('${v[0]}');${f}=le=('${v[1]}')`,
     nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
+    intervals: (f, v) => `${f}=in=(${v.map((e) => `'${e}'`).join(',')})`,
   };
 
   private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>): string {
