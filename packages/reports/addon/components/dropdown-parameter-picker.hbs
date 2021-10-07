@@ -3,12 +3,12 @@
   <PowerSelect
     @options={{this.options}}
     @onOpen={{this.fetchParameterOptions}}
-    @selected={{@parameterValue}}
+    @selected={{this.select}}
     @onChange={{fn this.onUpdate}}
     @triggerComponent="dropdown-parameter-trigger"
     @dropdownClass="dropdown-parameter-picker__dropdown"
-    as |parameter|
+    as |option|
   >
-    {{parameter}}
+    {{option}}
   </PowerSelect>
 </div>

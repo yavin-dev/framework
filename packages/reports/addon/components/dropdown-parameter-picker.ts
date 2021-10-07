@@ -16,21 +16,30 @@ interface Args {
 
 export default class ParameterPickerComponent extends Component<Args> {
   @tracked
-  options: { groupName: string; options: string[] | undefined }[] = [];
+  options: { groupName: string; options: (string | undefined)[] | undefined }[] = [];
 
   @action
   async fetchParameterOptions() {
-    const valuesPromise = this.args.parameterMetadata.values;
+    const valuesPromise = await this.args.parameterMetadata.values;
     this.options = [
       {
         groupName: capitalize(this.args.parameterMetadata.name),
-        options: (await valuesPromise)?.map((el) => el.id),
+        options: valuesPromise?.map((el) => el.name),
       },
     ];
   }
 
   @action
-  onUpdate(id: unknown) {
+  async onUpdate(name: unknown) {
+    let id = await this.args.parameterMetadata.values?.then((parameters) => {
+      return parameters.find((value) => value.name === name)?.id;
+    });
     this.args.onUpdate(this.args.parameterMetadata.id, id);
+  }
+
+  get select() {
+    return this.args.parameterMetadata.values?.then((parameters) => {
+      return parameters.find((value) => value.id === this.args.parameterValue)?.name;
+    });
   }
 }
