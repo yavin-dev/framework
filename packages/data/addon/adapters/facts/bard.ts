@@ -200,6 +200,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       if (!moment.utc(end).isValid()) {
         throw new FactAdapterError(`Before operator only supports datetimes, '${end}' is invalid`);
       }
+    } else if (timeFilter.operator === 'intervals') {
+      return timeFilter.values.join(',');
     } else {
       assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
     }
