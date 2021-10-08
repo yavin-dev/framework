@@ -153,7 +153,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
       let filterVals = values.map((v) => escape(`${v}`));
 
-      if (type === 'timeDimension' && operator !== 'isnull') {
+      if (type === 'timeDimension' && operator !== 'isnull' && operator !== 'intervals') {
         const grain = filter.parameters.grain as Grain;
         let timeValues: (Moment | string)[] = filterVals;
         if (['bet', 'nbet'].includes(operator)) {

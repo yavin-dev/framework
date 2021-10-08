@@ -1092,6 +1092,25 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     );
   });
 
+  test('buildFilterStr - intervals', function (assert) {
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const intervalFilter: Filter[] = [
+      {
+        field: 'table1.timeDim',
+        parameters: { grain: 'day' },
+        type: 'timeDimension',
+        operator: 'intervals',
+        values: ['2021-10/2021-12', '2022-10/2022-12', '2023-10/2023-12'],
+      },
+    ];
+
+    assert.deepEqual(
+      adapter['buildFilterStr'](intervalFilter, {}),
+      "timeDim[grain:day]=in=('2021-10/2021-12','2022-10/2022-12','2023-10/2023-12')",
+      '`buildFilterStr` returns correct filter for an intervals operator'
+    );
+  });
+
   test('urlForFindQuery', function (assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
