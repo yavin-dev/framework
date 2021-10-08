@@ -13,7 +13,32 @@ import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
 
 export default class NaviFormatterService extends Service {
-  formatColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
+  async formatColumnName(
+    columnMetadata?: ColumnMetadataModel,
+    parameters?: Parameters,
+    alias?: string | null
+  ): Promise<string> {
+    if (alias) {
+      return alias;
+    }
+    console.log('formatColumnName******', parameters);
+    const allParams = omit(parameters || {}, 'as');
+    const paramValues = Object.values(allParams);
+
+    let parameterMetadata = await columnMetadata?.parameters[0]?.values;
+
+    let paramNames = paramValues?.map((param) => {
+      return parameterMetadata?.find((value) => value.id === param)?.name;
+    });
+    const name = columnMetadata?.name || '--';
+
+    if (paramNames.length) {
+      return `${name} (${paramNames.join(',')})`;
+    } else {
+      return name;
+    }
+  }
+  formatColumnnnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
     if (alias) {
       return alias;
     }
@@ -21,14 +46,16 @@ export default class NaviFormatterService extends Service {
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
 
+    console.log('paramValues ', paramValues);
     const name = columnMetadata?.name || '--';
+
+    console.log('paramValues ', paramValues, paramValues.length);
     if (paramValues.length) {
       return `${name} (${paramValues.join(',')})`;
     } else {
       return name;
     }
   }
-
   formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
     if (isEmpty(value)) {
       return '--';

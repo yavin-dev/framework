@@ -26,7 +26,7 @@
       type="button"
       {{on "click" this.openColumn}}
     >
-      <span title="{{@column.fragment.displayName}}" class="navi-column-config-item__name">{{@column.fragment.displayName}}</span>
+      <span title="{{@column.fragment.displayName}}" class="navi-column-config-item__name">!!!!{{await @column.fragment.displayName}}</span>
       {{#if this.canDrag}}
         <span class="navi-column-config-item__handle p-x-2 link is-secondary" {{sortable-handle}}>
           <DenaliIcon @icon="drag" @size="small" />
