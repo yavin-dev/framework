@@ -33,7 +33,8 @@ export type FilterOperator =
   | 'isnull'
   | 'bet'
   | 'nbet'
-  | 'contains';
+  | 'contains'
+  | 'intervals';
 
 export const SORT_DIRECTIONS = <const>['desc', 'asc'];
 

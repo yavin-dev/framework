@@ -132,11 +132,15 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     gt: (f, v) => `${f}=gt=('${v}')`,
     bet: (f, v) => `${f}=ge=('${v[0]}');${f}=le=('${v[1]}')`,
     nbet: (f, v) => `${f}=lt=('${v[0]}'),${f}=gt=('${v[1]}')`,
+    intervals: (f, v) => `${f}=in=(${v.map((e) => `'${e}'`).join(',')})`,
   };
 
   private buildFilterStr(filters: Filter[], canonicalToAlias: Record<string, string>): string {
     const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
+
+      //TODO: Support intervals by creating a series of between operators and splitting each interval
+      assert(`Filter operator not supported: intervals`, operator !== 'intervals');
 
       //skip filters without values
       if (0 === values.length) {
