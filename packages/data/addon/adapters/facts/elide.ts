@@ -139,6 +139,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const filterStrings = filters.map((filter) => {
       const { field, parameters, operator, values, type } = filter;
 
+      //TODO: Support intervals by creating a series of between operators and splitting each interval
+      assert(`Filter operator not supported: intervals`, operator !== 'intervals');
+
       //skip filters without values
       if (0 === values.length) {
         return null;
@@ -153,7 +156,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
       let filterVals = values.map((v) => escape(`${v}`));
 
-      if (type === 'timeDimension' && operator !== 'isnull' && operator !== 'intervals') {
+      if (type === 'timeDimension' && operator !== 'isnull') {
         const grain = filter.parameters.grain as Grain;
         let timeValues: (Moment | string)[] = filterVals;
         if (['bet', 'nbet'].includes(operator)) {
