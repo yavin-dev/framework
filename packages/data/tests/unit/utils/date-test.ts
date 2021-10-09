@@ -3,7 +3,9 @@ import {
   getFirstDayOfGrain,
   PARAM_DATE_FORMAT_STRING,
   getLastDayOfGrain,
+  getLastDayOfGrainBefore,
   getFirstDayEpochForGrain,
+  getFirstDayOfGrainAfter,
   getPeriodForGrain,
 } from 'navi-data/utils/date';
 import { module, test } from 'qunit';
@@ -141,6 +143,64 @@ module('Unit | Utils | DateUtils', function () {
     );
   });
 
+  test('getFirstDayOfGrainAfter - unit tests', function (assert) {
+    let expectedDate1 = moment('2014-10-20').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment('2014-10-15'), 'isoWeek', API_DATE_FORMAT_STRING),
+      expectedDate1,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate1 + ' as expected'
+    );
+
+    let expectedDate2 = moment().add(1, 'week').subtract(1, 'day').startOf('isoWeek').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment(), 'isoWeek'),
+      expectedDate2,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate2 + ' as expected'
+    );
+
+    let expectedDate3 = moment('2014-10-01').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment('2014-09-15'), 'month', API_DATE_FORMAT_STRING),
+      expectedDate3,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate3 + ' as expected'
+    );
+
+    let expectedDate4 = moment().add(1, 'month').subtract(1, 'day').startOf('month').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment(), 'month'),
+      expectedDate4,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate4 + ' as expected'
+    );
+
+    let expectedDate5 = moment('2014-01-01').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment('2013-09-15'), 'year', API_DATE_FORMAT_STRING),
+      expectedDate5,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate5 + ' as expected'
+    );
+
+    let expectedDate6 = moment().add(1, 'year').subtract(1, 'day').startOf('year').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment(), 'year'),
+      expectedDate6,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate6 + ' as expected'
+    );
+
+    let expectedDate7 = moment('2013-09-15').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment('2013-09-15'), 'day', API_DATE_FORMAT_STRING),
+      expectedDate7,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate7 + ' as expected'
+    );
+
+    let expectedDate8 = moment().startOf('day').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getFirstDayOfGrainAfter(moment(), 'day'),
+      expectedDate8,
+      'getFirstDayOfGrainAfter returned: ' + expectedDate8 + ' as expected'
+    );
+  });
+
   test('getLastDayOfGrain - unit tests', function (assert) {
     const dateFormat = API_DATE_FORMAT_STRING;
     const dateFormat1 = PARAM_DATE_FORMAT_STRING;
@@ -199,6 +259,64 @@ module('Unit | Utils | DateUtils', function () {
       getLastDayOfGrain(moment('2014-10-23'), 'day', dateFormat1),
       expectedDate8,
       'getLastDayOfGrain returned: ' + expectedDate8 + ' as expected'
+    );
+  });
+
+  test('getLastDayOfGrainBefore - unit tests', function (assert) {
+    let expectedDate1 = moment('2014-10-12').format(PARAM_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment('2014-10-15'), 'isoWeek', PARAM_DATE_FORMAT_STRING),
+      expectedDate1,
+      'getLastDayOfGrainBefore returned: ' + expectedDate1 + ' as expected'
+    );
+
+    let expectedDate2 = moment().subtract(1, 'week').add(1, 'day').endOf('isoWeek').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment(), 'isoWeek'),
+      expectedDate2,
+      'getLastDayOfGrainBefore returned: ' + expectedDate2 + ' as expected'
+    );
+
+    let expectedDate3 = moment('2014-08-31').format(PARAM_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment('2014-09-15'), 'month', PARAM_DATE_FORMAT_STRING),
+      expectedDate3,
+      'getLastDayOfGrainBefore returned: ' + expectedDate3 + ' as expected'
+    );
+
+    let expectedDate4 = moment().subtract(1, 'month').add(1, 'day').endOf('month').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment(), 'month'),
+      expectedDate4,
+      'getLastDayOfGrainBefore returned: ' + expectedDate4 + ' as expected'
+    );
+
+    let expectedDate5 = moment('2012-12-31').format(PARAM_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment('2013-09-15'), 'year', PARAM_DATE_FORMAT_STRING),
+      expectedDate5,
+      'getLastDayOfGrainBefore returned: ' + expectedDate5 + ' as expected'
+    );
+
+    let expectedDate6 = moment().subtract(1, 'year').add(1, 'day').endOf('year').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment(), 'year'),
+      expectedDate6,
+      'getLastDayOfGrainBefore returned: ' + expectedDate6 + ' as expected'
+    );
+
+    let expectedDate7 = moment('2013-09-15').format(PARAM_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment('2013-09-15'), 'day', PARAM_DATE_FORMAT_STRING),
+      expectedDate7,
+      'getLastDayOfGrainBefore returned: ' + expectedDate7 + ' as expected'
+    );
+
+    let expectedDate8 = moment().endOf('day').format(API_DATE_FORMAT_STRING);
+    assert.equal(
+      getLastDayOfGrainBefore(moment(), 'day'),
+      expectedDate8,
+      'getLastDayOfGrainBefore returned: ' + expectedDate8 + ' as expected'
     );
   });
 

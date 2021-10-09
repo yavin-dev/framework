@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -33,16 +33,6 @@ export function getPeriodForGrain(grain: Grain): DateTimePeriod {
 }
 
 /**
- * Returns the epoch date at the start of the given grain
- */
-export function getFirstDayEpochForGrain(grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
-  const period = getPeriodForGrain(grain);
-  const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
-
-  return epochDate.add(1, period).subtract(1, 'day').startOf(grain).format(dateFormat);
-}
-
-/**
  * Returns last day of grain for a given date
  */
 export function getLastDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
@@ -50,8 +40,40 @@ export function getLastDayOfGrain(date: Moment, grain: Grain, dateFormat: string
 }
 
 /**
+ * Returns last day of grain before a given date
+ */
+export function getLastDayOfGrainBefore(
+  date: Moment,
+  grain: Grain,
+  dateFormat: string = API_DATE_FORMAT_STRING
+): string {
+  const period = getPeriodForGrain(grain);
+  return moment(date).subtract(1, period).add(1, 'day').endOf(grain).format(dateFormat);
+}
+
+/**
  * Returns first day of grain for a given date
  */
 export function getFirstDayOfGrain(date: Moment, grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
   return moment(date).startOf(grain).format(dateFormat);
+}
+
+/**
+ * Returns first day of grain after a given date
+ */
+export function getFirstDayOfGrainAfter(
+  date: Moment,
+  grain: Grain,
+  dateFormat: string = API_DATE_FORMAT_STRING
+): string {
+  const period = getPeriodForGrain(grain);
+  return moment(date).add(1, period).subtract(1, 'day').startOf(grain).format(dateFormat);
+}
+
+/**
+ * Returns the epoch date at the start of the given grain
+ */
+export function getFirstDayEpochForGrain(grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
+  const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
+  return getFirstDayOfGrainAfter(epochDate, grain, dateFormat);
 }
