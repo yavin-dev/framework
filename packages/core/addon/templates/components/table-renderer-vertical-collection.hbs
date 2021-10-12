@@ -15,7 +15,7 @@
               class="table-header-cell__title {{if column.fragment.alias "table-header-cell__title--custom-name"}}"
               title="Drag column header to reorder"
             >
-              V{{await column.fragment.displayName}}
+              {{await column.fragment.displayName}}
             </span>
             {{#if column.sortDirection}}
               <NaviTableSortIcon

@@ -12,10 +12,10 @@
   <div class="filter-builder" ...attributes>
     <div class="filter-builder__subject xs-col-1-2 sm-col-1-2 col-1-5">
       <div class="filter-builder__subject-name">
-        <span class="name m-r-4">!!{{await this.columnName}}</span>
+        <span class="name m-r-4">{{await this.columnName}}</span>
         {{#each-in @filter.parameters as |paramName paramValue|}}
           <DropdownParameterPicker
-            data-filter-subject={{@filter.displayName}}
+            data-filter-subject={{await @filter.displayName}}
             data-filter-param={{paramName}}
             @parameterMetadata={{find-by "id" paramName @filter.columnMetadata.parameters}}
             @parameterValue={{paramValue}}
@@ -32,7 +32,7 @@
         @selected={{this.selectedValueBuilder}}
         @searchEnabled={{false}}
         @onChange={{this.setOperator}}
-        data-filter-subject={{@filter.displayName}}
+        data-filter-subject={{await @filter.displayName}}
         as | operator |
       >
         {{operator.name}}
