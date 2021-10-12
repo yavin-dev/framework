@@ -44,11 +44,11 @@ module('Integration | Component | dropdown date picker', function (hooks) {
 
     assert
       .dom('.ember-power-calendar-day--current-month[data-date="2018-12-19"]')
-      .hasAttribute('disabled', '', 'Min date is passed down to the date picker');
+      .isDisabled('Min date is passed down to the date picker');
 
     assert
       .dom('.ember-power-calendar-day--current-month[data-date="2018-12-31"]')
-      .hasAttribute('disabled', '', 'Min date is passed down to the date picker');
+      .isDisabled('Max date is passed down to the date picker');
 
     await click('.ember-power-calendar-day--current-month[data-date="2018-12-24"]');
     await clickTrigger('.dropdown-date-picker__trigger');
