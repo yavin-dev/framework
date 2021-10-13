@@ -250,8 +250,9 @@ export default {
       cardinality: 39896,
       category: 'test',
       datatype: 'date',
+      subdatatype: 'second',
       storageStrategy: 'loaded',
-      fields: defaultFields,
+      fields: [defaultFields[0]],
     },
     {
       name: 'commaDim',

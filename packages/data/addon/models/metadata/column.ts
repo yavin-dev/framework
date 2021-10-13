@@ -24,7 +24,7 @@ export interface ColumnMetadataPayload {
   description?: string;
   tableId?: string; // Some columns do not have unique IDs
   source: string;
-  valueType: TODO<string>;
+  valueType?: string;
   type: RawColumnType;
   isSortable: boolean;
   expression?: string;

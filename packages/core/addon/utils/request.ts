@@ -8,6 +8,7 @@ import moment from 'moment';
 import { getPeriodForGrain } from 'navi-data/utils/date';
 import type { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 type LogicalTable = {
   table: string;
@@ -144,13 +145,24 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   return normalized;
 }
 
+export function getSubTypeForDimension(dimension: string, dataSource: string, naviMetadata: NaviMetadataService) {
+  if (naviMetadata.getById('timeDimension', dimension, dataSource)) {
+    return 'timeDimension';
+  }
+  return 'dimension';
+}
+
 /**
  * Normalizes Request V1 payload into V2
  * @param request
  * @param namespace - request datasource
  * @returns request normalized into v2
  */
-export function normalizeV1toV2(request: RequestV1<string>, dataSource: string): RequestV2 {
+export function normalizeV1toV2(
+  request: RequestV1<string>,
+  dataSource: string,
+  naviMetadata: NaviMetadataService
+): RequestV2 {
   //normalize v1 request
   const normalized = Object.assign({}, normalizeV1(request, dataSource));
 
@@ -184,11 +196,21 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
   normalized.dimensions.forEach(({ dimension }) => {
     // skip if dimension is null or empty
     if (dimension) {
+      const type = getSubTypeForDimension(dimension, dataSource, naviMetadata);
+      let extraParams = {};
+      if (type === 'timeDimension') {
+        const grain = naviMetadata.getById(type, dimension, dataSource)?.getParameter('grain')?.defaultValue;
+        extraParams = { grain: grain ?? 'day' };
+      }
+
       requestV2.columns.push({
         cid: nanoid(10),
-        type: 'dimension',
+        type,
         field: removeNamespace(dimension, dataSource),
-        parameters: { field: 'id' }, // By default only request id
+        parameters: {
+          field: 'id',
+          ...extraParams,
+        },
       });
     }
   });
@@ -231,20 +253,46 @@ export function normalizeV1toV2(request: RequestV1<string>, dataSource: string):
 
   //normalize filters
   normalized.filters.forEach(({ dimension, field, operator, values }) => {
+    const type = getSubTypeForDimension(dimension, dataSource, naviMetadata);
     let filterValues;
-    if (operator === 'null') {
-      operator = 'isnull';
-      filterValues = [true];
-    } else if (operator === 'notnull') {
-      operator = 'isnull';
-      filterValues = [false];
+    if (type === 'timeDimension') {
+      if (operator === 'lt') {
+        operator = 'lte';
+        let [end] = values;
+        const endMoment = moment.utc(end);
+        if (endMoment.isValid()) {
+          end = endMoment.subtract(1, 'day').toISOString();
+        }
+        filterValues = [end];
+      } else {
+        filterValues = values;
+      }
     } else {
-      filterValues = values;
+      if (operator === 'null') {
+        operator = 'isnull';
+        filterValues = [true];
+      } else if (operator === 'notnull') {
+        operator = 'isnull';
+        filterValues = [false];
+      } else {
+        filterValues = values;
+      }
     }
+
+    let extraParams = {};
+    if (type === 'timeDimension') {
+      const grain = naviMetadata.getById(type, dimension, dataSource)?.getParameter('grain')?.defaultValue;
+      extraParams = { grain: grain ?? 'day' };
+    }
+
     requestV2.filters.push({
-      type: 'dimension',
+      type,
       field: removeNamespace(dimension, dataSource),
-      parameters: { field: field || 'id' },
+      // TODO: 'day' grain for timeDimension???
+      parameters: {
+        field: field || 'id',
+        ...extraParams,
+      },
       operator: operator as FilterOperator,
       values: filterValues,
     });
