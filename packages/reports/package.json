@@ -31,7 +31,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.27",
+    "@denali-design/ember": "^1.0.0-alpha.29",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/render-modifiers": "^1.0.2",
