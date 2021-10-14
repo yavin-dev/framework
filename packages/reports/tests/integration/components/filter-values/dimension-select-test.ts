@@ -323,7 +323,6 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'For small cardinality dimensions, local search uses dimension values'
     );
 
-    await clickTrigger();
     await selectSearch('.filter-values--dimension-select__trigger', 'Un');
     assert.deepEqual(
       findAll('.filter-values--dimension-select__option').map((el) => [
@@ -335,6 +334,36 @@ module('Integration | Component | filter values/dimension select', function (hoo
         ['1', 'description: under 13'],
       ],
       'For small cardinality dimensions, local search uses context values'
+    );
+  });
+
+  test('changing dimension parameters', async function (this: TestContext, assert) {
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    await render(TEMPLATE);
+
+    await selectSearch('.filter-values--dimension-select__trigger', '10');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['10', 'description: 65 and over']],
+      '`dimension-select` fetches values for initial dimension field'
+    );
+    //close select
+    await clickTrigger();
+
+    //change field to `description`
+    this.set('filter', this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'desc' }, 'in', []));
+
+    await selectSearch('.filter-values--dimension-select__trigger', 'over');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['65 and over', 'id: 10']],
+      '`dimension-select` fetches values for new dimension field'
     );
   });
 });
