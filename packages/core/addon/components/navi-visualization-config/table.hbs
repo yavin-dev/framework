@@ -33,7 +33,7 @@
               @selected={{this.selectedSubtotal}}
               as |dimension|
             >
-              {{dimension.displayName}}
+              {{await dimension.displayName}}
             </PowerSelect>
           </DenaliInputGroup>
         {{/if}}

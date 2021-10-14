@@ -163,9 +163,9 @@ module('Integration | Component | table', function (hooks) {
     assert.deepEqual(
       headers,
       [
-        'Date Time (day)',
-        'Operating System (id)',
-        'Operating System (desc)',
+        'Date Time (Day)',
+        'Operating System (Id)',
+        'Operating System (Desc)',
         'Unique Identifiers',
         'Total Page Views',
         'Platform Revenue (USD)',
@@ -258,9 +258,9 @@ module('Integration | Component | table', function (hooks) {
     assert.deepEqual(
       headers,
       [
-        'Date Time (day)',
-        'Container (id)',
-        'Container (desc)',
+        'Date Time (Day)',
+        'Container (Id)',
+        'Container (Desc)',
         'Quantity of thing',
         'Used Amount',
         'Personally sold amount',

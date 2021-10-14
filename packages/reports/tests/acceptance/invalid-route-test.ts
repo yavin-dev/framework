@@ -11,7 +11,7 @@ module('Acceptance | Navi Report | Invalid Route', function (hooks) {
   test('Error data request', async function (assert) {
     await visit('/reports/5/view');
 
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-report__run-btn');

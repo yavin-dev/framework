@@ -21,15 +21,18 @@ export default class NaviFormatterService extends Service {
     if (alias) {
       return alias;
     }
+    console.log(parameters);
+    console.log(columnMetadata);
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
 
     let parameterMetadata = await columnMetadata?.parameters[0]?.values;
+    console.log('parameter data', parameterMetadata, paramValues);
     let paramNames = paramValues?.map((param) => {
-      return parameterMetadata?.find((value) => value.id === param)?.name ?? {};
+      return parameterMetadata?.find((value) => value.id === param)?.name ?? param;
     });
     const name = columnMetadata?.name || '--';
-
+    console.log(name, ':', paramNames, '$$$', paramValues);
     if (paramNames.length) {
       return `${name} (${paramNames.join(',')})`;
     } else {
@@ -37,6 +40,21 @@ export default class NaviFormatterService extends Service {
     }
   }
 
+  formatMetricColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
+    if (alias) {
+      return alias;
+    }
+
+    const allParams = omit(parameters || {}, 'as');
+    const paramValues = Object.values(allParams);
+
+    const name = columnMetadata?.name || '--';
+    if (paramValues.length) {
+      return `${name} (${paramValues.join(',')})`;
+    } else {
+      return name;
+    }
+  }
   formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
     if (isEmpty(value)) {
       return '--';

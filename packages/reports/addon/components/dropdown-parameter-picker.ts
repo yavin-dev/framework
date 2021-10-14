@@ -20,26 +20,28 @@ export default class ParameterPickerComponent extends Component<Args> {
 
   @action
   async fetchParameterOptions() {
-    const valuesPromise = await this.args.parameterMetadata.values;
+    const valuesPromise = await this.args.parameterMetadata?.values;
     this.options = [
       {
         groupName: capitalize(this.args.parameterMetadata.name),
-        options: valuesPromise?.map((el) => el.name),
+        options: valuesPromise?.map((el) => el.name ?? el.id),
       },
     ];
+    console.log(this.options);
   }
 
   @action
-  async onUpdate(name: unknown) {
+  async onUpdate(selected: unknown) {
+    console.log('on update', name);
     let id = await this.args.parameterMetadata.values?.then((parameters) => {
-      return parameters.find((value) => value.name === name)?.id;
+      return parameters.find((value) => value.name === selected)?.id ?? selected;
     });
     this.args.onUpdate(this.args.parameterMetadata.id, id);
   }
 
   get select() {
-    return this.args.parameterMetadata.values?.then((parameters) => {
-      return parameters.find((value) => value.id === this.args.parameterValue)?.name;
+    return this.args.parameterMetadata?.values?.then((parameters) => {
+      return parameters.find((value) => value.id === this.args.parameterValue)?.name ?? this.args.parameterValue;
     });
   }
 }

@@ -33,7 +33,7 @@ module('Acceptance | Navi Report | Error Route', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((e) => e.textContent),
-      ['Date Time (day)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Ad Clicks', 'Nav Link Clicks'],
       'The column config is displayed in the error route'
     );
   });

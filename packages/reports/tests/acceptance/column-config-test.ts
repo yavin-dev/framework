@@ -40,7 +40,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'Existing report loads columns correctly'
     );
 
@@ -120,7 +120,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'Browser dimension is still open after removing Age'
     );
 
-    await click('.navi-column-config-item__name[title="Date Time (day)"]');
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
     await selectChoose('.navi-column-config-item__parameter-trigger', 'Week');
     await animationsSettled();
     assert.deepEqual(
@@ -365,7 +365,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Age (id)', 'Revenue (USD)', 'Browser (id)'],
+      ['Date Time (Day)', 'Age (id)', 'Revenue (USD)', 'Browser (id)'],
       'The columns are ordered as inserted'
     );
 
@@ -373,7 +373,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       getColumns(),
-      ['Browser (id)', 'Revenue (USD)', 'Age (id)', 'Date Time (day)'],
+      ['Browser (id)', 'Revenue (USD)', 'Age (id)', 'Date Time (Day)'],
       'The columns are reordered'
     );
   });
@@ -508,7 +508,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await animationsSettled();
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Ad Clicks', 'Age (id)', 'Browser (id)', 'Nav Link Clicks', 'Ad Clicks'],
+      ['Date Time (Day)', 'Ad Clicks', 'Age (id)', 'Browser (id)', 'Nav Link Clicks', 'Ad Clicks'],
       'Dimensions, then metrics are displayed in the column config'
     );
   });
@@ -1317,7 +1317,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'Default query with no rollup'
     );
 
-    await click('span[title="Date Time (day)"]');
+    await click('span[title="Date Time (Day)"]');
     await click('.navi-column-config-base__rollup-icon');
 
     apiURL = await getRequestURL();
@@ -1327,7 +1327,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'Datetime rollup added to query'
     );
 
-    await click('span[title="Date Time (day)"]');
+    await click('span[title="Date Time (Day)"]');
     await click('span[title="Property (id)"]');
     await click('.navi-column-config-base__rollup-icon');
 
@@ -1358,7 +1358,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     await click('.navi-column-config-base__rollup-icon');
     await click('span[title="Property (id)"]');
-    await click('span[title="Date Time (day)"]');
+    await click('span[title="Date Time (Day)"]');
     await click('.navi-column-config-base__rollup-icon');
     await click('.navi-column-config__grandtotal-icon');
 

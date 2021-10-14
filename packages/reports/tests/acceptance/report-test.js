@@ -68,7 +68,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/13');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-report__run-btn');
 
     assert.equal(currentURL(), '/reports/13/invalid', 'User is transitioned to invalid route');
@@ -105,7 +105,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Add a dimension filter
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.report-actions__clone');
 
     assert.ok(
@@ -219,10 +219,10 @@ module('Acceptance | Navi Report', function (hooks) {
     // visit report 1
     await visit('/reports/1/view');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time day');
+    assert.dom('.filter-builder__subject').hasText('Date Time Day');
 
     // remove the dateTime column
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
@@ -231,7 +231,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.navi-report__revert-btn').isNotVisible('After clicking "Revert Changes", button is once again hidden');
 
     assert.dom('.navi-column-config-item[data-name="dateTime"]');
-    assert.dom('.filter-builder__subject').hasText('Date Time day');
+    assert.dom('.filter-builder__subject').hasText('Date Time Day');
   });
 
   test('Revert changes - existing report', async function (assert) {
@@ -240,19 +240,19 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/13/view');
 
     assert.ok(
-      !!$('.filter-builder__subject:contains(day)').length,
+      !!$('.filter-builder__subject:contains(Day)').length,
       'After navigating to a route, the Timegrain "day" option is visible'
     );
 
     // Remove a metric
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.navi-report__revert-btn').isVisible('Revert changes button is visible once a change has been made');
 
     await click('.navi-report__revert-btn');
 
     assert.ok(
-      !!$('.filter-builder__subject:contains(day)').length,
+      !!$('.filter-builder__subject:contains(Day)').length,
       'After navigating out of the route, the report model is rolled back'
     );
 
@@ -357,7 +357,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!$('.filter-builder__subject:contains(isoWeek)').length,
+      !!$('.filter-builder__subject:contains(Week)').length,
       'On cancel the dirty state of the report still remains'
     );
 
@@ -380,7 +380,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     // Changes were not reverted, but they were not saved
     assert.ok(
-      !!$('.filter-builder__subject:contains(isoWeek)').length,
+      !!$('.filter-builder__subject:contains(Week)').length,
       'On cancel the dirty state of the report still remains'
     );
 
@@ -411,7 +411,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Press the save as
     await click('.save-as__save-as-btn');
 
-    assert.ok(!!$('.filter-builder__subject:contains(isoWeek)').length, 'The new Dim is shown in the new report.');
+    assert.ok(!!$('.filter-builder__subject:contains(Week)').length, 'The new Dim is shown in the new report.');
 
     // New Report is run
     let emberId = find('.report-view.ember-view').id,
@@ -428,7 +428,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/13');
 
-    assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
+    assert.ok(!!$('.filter-builder__subject:contains(Day)').length, 'Old unsaved report have the old DIM.');
 
     assert
       .dom('.report-header__title')
@@ -455,7 +455,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Press the save as
     await click('.save-as__save-as-btn');
 
-    assert.ok(!!$('.filter-builder__subject:contains(month)').length, 'The new Dim is shown in the new report.');
+    assert.ok(!!$('.filter-builder__subject:contains(Month)').length, 'The new Dim is shown in the new report.');
 
     // New Report is run
     let emberId = find('.report-view.ember-view').id,
@@ -470,7 +470,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/13');
 
-    assert.ok(!!$('.filter-builder__subject:contains(day)').length, 'Old unsaved report have the old DIM.');
+    assert.ok(!!$('.filter-builder__subject:contains(Day)').length, 'Old unsaved report have the old DIM.');
 
     assert
       .dom('.report-header__title')
@@ -506,7 +506,7 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasText('RequestV2 testing report', 'Old Report with unchanged title is being viewed.');
 
     // Dirty state of old
-    assert.ok(!!$('.filter-builder__subject:contains(isoWeek)').length, 'Old unsaved report have the old DIM.');
+    assert.ok(!!$('.filter-builder__subject:contains(Week)').length, 'Old unsaved report have the old DIM.');
   });
 
   test('Save report', async function (assert) {
@@ -651,6 +651,7 @@ module('Acceptance | Navi Report', function (hooks) {
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
+    debugger;
     assert.notOk(
       $('.export__download-link').attr('href').includes('filter'),
       'No filters are initially present in export url'
@@ -758,7 +759,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('.menu-content a:contains("PDF")')[0]);
     let model = await getActualModel(find('.export__download-link').getAttribute('href'));
     assert.equal(
-      model.request.columns.objectAt(4).get('displayName'),
+      await model.request.columns.objectAt(4).get('displayName'),
       'Product Family (id)',
       'Groupby changes are automatically included in export url'
     );
@@ -801,7 +802,7 @@ module('Acceptance | Navi Report', function (hooks) {
     // Remove all metrics
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
 
     assert.dom('.get-api__action-btn').isDisabled('API query action is disabled for an invalid request');
   });
@@ -1037,7 +1038,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/13/view');
 
     assert.ok(
-      !!$('.filter-builder__subject:contains(day)').length,
+      !!$('.filter-builder__subject:contains(Day)').length,
       'After navigating out of the route, the report model is rolled back'
     );
 
@@ -1051,7 +1052,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await visit('/reports/13/view');
 
     assert.ok(
-      !!$('.filter-builder__subject:contains(day)').length,
+      !!$('.filter-builder__subject:contains(Day)').length,
       'After navigating out of the route, the report model is rolled back'
     );
   });
@@ -1798,7 +1799,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (Day)'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -1809,7 +1810,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'The headers are ordered correctly'
     );
 
@@ -1824,7 +1825,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.innerText.trim()),
-      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (Day)'],
       'The headers are reordered as specified by the reorder'
     );
 
@@ -1833,7 +1834,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       findAll('.table-header-row-vc--view .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (day)', 'Total Clicks'],
+      ['Nav Link Clicks', 'Property (desc)', 'Ad Clicks', 'Date Time (Day)', 'Total Clicks'],
       'The headers are reordered as specified by the reorder'
     );
   });
@@ -1934,7 +1935,7 @@ module('Acceptance | Navi Report', function (hooks) {
     const columns = () => findAll('.table-widget__table-headers .table-header-cell').map((el) => el.textContent.trim());
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'Report loads with expected columns'
     );
 
@@ -1942,14 +1943,14 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
+      ['Date Time (Day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
 
     await click('.navi-report__revert-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks'],
       'Report revertted successfully'
     );
 
@@ -1958,7 +1959,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-report__run-btn');
     assert.deepEqual(
       columns(),
-      ['Date Time (day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
+      ['Date Time (Day)', 'Property (desc)', 'Ad Clicks', 'Nav Link Clicks', 'Page Views'],
       'Report changed and ran successfully'
     );
   });

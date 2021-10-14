@@ -22,7 +22,7 @@
       @onClose={{set this.searchTerm undefined}}
       @search={{perform this.searchDimensionValues}}
       @closeOnSelect={{false}}
-      @placeholder="{{capitalize await @filter.displayName}} Values"
+      @placeholder="{{capitalize (await @filter.displayName)}} Values"
       @loadingMessage="Loading..."
       @dropdownClass="filter-values--dimension-select__dropdown"
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"

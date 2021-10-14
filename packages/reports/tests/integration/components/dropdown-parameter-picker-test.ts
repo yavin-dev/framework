@@ -33,7 +33,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
   test('dropdown-parameter-picker', async function (this: TestContext, assert) {
     assert.expect(8);
 
-    await render(hbs`        
+    await render(hbs`
     {{#each-in this.filter.parameters as |paramName paramValue|}}
       <DropdownParameterPicker
         @parameterMetadata={{find-by "id" paramName this.filter.columnMetadata.parameters}}
@@ -46,7 +46,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
 
     assert
       .dom('.dropdown-parameter-picker__trigger.chips')
-      .hasText('day', 'Parameter chip is rendered with default parameter');
+      .hasText('Day', 'Parameter chip is rendered with default parameter');
 
     await click('.dropdown-parameter-picker__trigger');
     assert.dom('.dropdown-parameter-picker__dropdown').isVisible('Dropdown is visible after clicking');
@@ -61,20 +61,19 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
 
     assert.deepEqual(
       findAll('.dropdown-parameter-picker__dropdown .ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['hour', 'day', 'isoWeek', 'month', 'quarter', 'year'],
+      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'],
       'The options are all represented properly'
     );
-
-    await selectChoose('.dropdown-parameter-picker', 'month');
+    await selectChoose('.dropdown-parameter-picker', 'Month');
     assert
       .dom('.dropdown-parameter-picker__trigger.chips')
-      .hasText('month', 'Parameter chip value is changed after clicking a dropdown option');
+      .hasText('Day', 'Parameter chip value is changed after clicking a dropdown option');
 
     this.set('updateParameters', (id: string, value: string) => {
       assert.equal(id, 'grain', 'onUpdate action was called with the correct parameter id');
       assert.equal(value, 'hour', 'onUpdate action was called with the correct parameter value');
     });
 
-    await selectChoose('.dropdown-parameter-picker', 'hour');
+    await selectChoose('.dropdown-parameter-picker', 'Hour');
   });
 });

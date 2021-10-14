@@ -32,8 +32,8 @@ interface TestContext extends Context {
 const HOST = config.navi.dataSources[0].uri;
 
 const TEMPLATE = hbs`
-<FilterValues::DimensionSelect 
-  @filter={{this.filter}} 
+<FilterValues::DimensionSelect
+  @filter={{this.filter}}
   @isCollapsed={{this.isCollapsed}}
   @onUpdateFilter={{this.onUpdateFilter}}
 />

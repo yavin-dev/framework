@@ -57,36 +57,32 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
 
     await render(TEMPLATE);
 
+    //console.log('columnMetadata ', this.column.fragment.columnMetadata);
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders dimension API column name');
+      .hasText(this.column.fragment.columnMetadata.name, 'NaviColumnConfig::Base renders dimension API column name');
 
     assert
       .dom('.navi-column-config-base__api-column-name')
       .hasAttribute(
         'title',
-        `API Column: ${this.column.fragment.columnMetadata.id}`,
+        `API Column: ${this.column.fragment.columnMetadata.name}`,
         'NaviColumnConfig::Base renders a title attribute for the API Column name'
       );
 
     this.set('column', {
       fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks'),
     });
-
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders metric API column name');
+      .hasText(this.column.fragment.columnMetadata.name, 'NaviColumnConfig::Base renders metric API column name');
 
     this.set('column', {
       fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime'),
     });
-
     assert
       .dom('.navi-column-config-base__api-column-name')
-      .hasText(
-        'network.dateTime',
-        'NaviColumnConfig::Base has a special case for rendering the dateTime API column name'
-      );
+      .hasText('Date Time', 'NaviColumnConfig::Base has a special case for rendering the dateTime API column name');
   });
 
   test('it supports action', async function (this: TestContext, assert) {
