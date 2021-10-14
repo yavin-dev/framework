@@ -354,10 +354,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     await clickTrigger();
 
     //change field to `description`
-    this.set(
-      'filter',
-      this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'description' }, 'in', [])
-    );
+    this.set('filter', this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'desc' }, 'in', []));
 
     await selectSearch('.filter-values--dimension-select__trigger', 'over');
     assert.deepEqual(
