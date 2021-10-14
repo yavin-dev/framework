@@ -59,6 +59,7 @@
     "ember-truth-helpers": "^3.0.0",
     "ember-uuid": "^2.1.0",
     "lodash-es": "^4.17.11",
+    "gridstack": "^4.2.7",
     "navi-core": "0.4.0",
     "navi-data": "0.4.0",
     "navi-reports": "0.4.0"

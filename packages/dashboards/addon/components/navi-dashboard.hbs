@@ -16,7 +16,15 @@
         {{on "scroll" this.onScroll}}
       >
         <GridStack
-          @options={{hash column=@width}}
+          @options={{hash 
+            column=@width
+            disableOneColumnMode=true
+            animate=false
+            marginTop=0
+            marginBottom=20
+            cellHeight="80px"
+          }}
+          @onResizestop={{this.doItemResize}}
           @onChange={{route-action "didUpdateLayout"}}
         >
           {{#each @dashboard.presentation.layout as |layout|}}

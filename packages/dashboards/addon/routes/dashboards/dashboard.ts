@@ -21,8 +21,8 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 interface GridStackWidget {
   x: number;
   y: number;
-  width: number;
-  height: number;
+  w: number;
+  h: number;
   id: number | string;
 }
 
@@ -72,8 +72,8 @@ export default class DashboardsDashboardRoute extends Route {
 
       //Make sure the widget is still a member of the dashboard
       if (modelWidget) {
-        let { y: row, x: column, height, width } = updatedWidget;
-        setProperties(modelWidget, { column, row, height, width });
+        let { y: row, x: column, h, w } = updatedWidget;
+        setProperties(modelWidget, { column, row, height: h, width: w });
       }
     });
   }
