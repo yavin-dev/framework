@@ -21,8 +21,8 @@ import {
   getFirstDayOfGrain,
   getLastDayOfGrain,
   getPeriodForGrain,
-  getFirstDayOfGrainAfter,
-  getLastDayOfGrainBefore,
+  getFirstDayOfGrainSince,
+  getLastDayOfGrainUntil,
 } from 'navi-data/utils/date';
 
 const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day grain';
@@ -111,7 +111,7 @@ class NaviDatePicker extends Component {
     } = this;
     assert(`minDate: ${isValidCalendarDateMessage}`, !minDate || isValidCalendarDate(minDate, dateTimePeriod));
     return new Date(
-      minDate ? getFirstDayOfGrainAfter(minDate, dateTimePeriod) : getFirstDayEpochForGrain(dateTimePeriod)
+      minDate ? getFirstDayOfGrainSince(minDate, dateTimePeriod) : getFirstDayEpochForGrain(dateTimePeriod)
     );
   }
 
@@ -125,7 +125,7 @@ class NaviDatePicker extends Component {
     } = this;
 
     assert(`maxDate: ${isValidCalendarDateMessage}`, !maxDate || isValidCalendarDate(maxDate, dateTimePeriod));
-    return maxDate && new Date(getLastDayOfGrainBefore(maxDate, dateTimePeriod));
+    return maxDate && new Date(getLastDayOfGrainUntil(maxDate, dateTimePeriod));
   }
 
   /**

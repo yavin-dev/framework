@@ -40,9 +40,9 @@ export function getLastDayOfGrain(date: Moment, grain: Grain, dateFormat: string
 }
 
 /**
- * Returns last day of grain before a given date
+ * Returns last day of grain until a given date
  */
-export function getLastDayOfGrainBefore(
+export function getLastDayOfGrainUntil(
   date: Moment,
   grain: Grain,
   dateFormat: string = API_DATE_FORMAT_STRING
@@ -59,9 +59,9 @@ export function getFirstDayOfGrain(date: Moment, grain: Grain, dateFormat: strin
 }
 
 /**
- * Returns first day of grain after a given date
+ * Returns first day of grain since a given date
  */
-export function getFirstDayOfGrainAfter(
+export function getFirstDayOfGrainSince(
   date: Moment,
   grain: Grain,
   dateFormat: string = API_DATE_FORMAT_STRING
@@ -75,5 +75,5 @@ export function getFirstDayOfGrainAfter(
  */
 export function getFirstDayEpochForGrain(grain: Grain, dateFormat: string = API_DATE_FORMAT_STRING): string {
   const epochDate = moment(config.navi.dataEpoch, EPOCH_FORMAT_STRING);
-  return getFirstDayOfGrainAfter(epochDate, grain, dateFormat);
+  return getFirstDayOfGrainSince(epochDate, grain, dateFormat);
 }
