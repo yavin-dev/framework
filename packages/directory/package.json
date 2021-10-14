@@ -32,7 +32,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.27",
+    "@denali-design/ember": "^1.0.0-alpha.29",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "broccoli-funnel": "^3.0.8",

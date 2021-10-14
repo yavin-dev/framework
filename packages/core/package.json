@@ -19,7 +19,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.27",
+    "@denali-design/ember": "^1.0.0-alpha.29",
     "@ember-decorators/component": "^6.1.1",
     "@ember/jquery": "^0.6.1",
     "@ember/render-modifiers": "^1.0.2",
