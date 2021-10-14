@@ -40,7 +40,7 @@ export default class BardDimensionSerializer extends EmberObject implements Navi
         this.dimensionModelFactory.create({
           dimensionColumn,
           value: row[requestedField],
-          suggestions: otherFields.map((field) => row[field]),
+          suggestions: otherFields.reduce((obj, field) => ({ ...obj, [field]: row[field] }), {}),
         })
       );
       return this.responseFactory.create({ values, meta: rawPayload.meta });

@@ -1092,6 +1092,26 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     );
   });
 
+  test('buildFilterStr - intervals', function (assert) {
+    assert.expect(1);
+    const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
+    const intervalFilter: Filter[] = [
+      {
+        field: 'table1.timeDim',
+        parameters: { grain: 'day' },
+        type: 'timeDimension',
+        operator: 'intervals',
+        values: ['2021-10/2021-12', '2022-10/2022-12', '2023-10/2023-12'],
+      },
+    ];
+
+    try {
+      adapter['buildFilterStr'](intervalFilter, {});
+    } catch (e) {
+      assert.equal(e.message, 'Assertion Failed: Filter operator not supported: intervals');
+    }
+  });
+
   test('urlForFindQuery', function (assert) {
     assert.expect(1);
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');

@@ -651,7 +651,6 @@ module('Acceptance | Navi Report', function (hooks) {
         .includes('/network/day/property;show=id/productFamily;show=id/?dateTime='),
       'Groupby changes are automatically included in export url'
     );
-    debugger;
     assert.notOk(
       $('.export__download-link').attr('href').includes('filter'),
       'No filters are initially present in export url'
@@ -759,7 +758,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('.menu-content a:contains("PDF")')[0]);
     let model = await getActualModel(find('.export__download-link').getAttribute('href'));
     assert.equal(
-      await model.request.columns.objectAt(4).get('displayName'),
+      await model.request.columns.objectAt(2).get('displayName'),
       'Product Family (id)',
       'Groupby changes are automatically included in export url'
     );
@@ -1762,9 +1761,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click($('button.ember-power-calendar-day--current-month:contains(2)')[0]);
 
     assert.deepEqual(
-      findAll('.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)').map((el) =>
-        el.textContent.trim()
-      ),
+      findAll('.filter-values--dimension-select__option').map((el) => el.textContent.trim()),
       ['no comma', 'yes, comma'],
       'The selected dimensions are shown even with a comma'
     );

@@ -50,11 +50,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-values--dimension-select__trigger').map((el) =>
-        [
-          ...el.querySelectorAll(
-            '.ember-power-select-multiple-option span:not(.ember-power-select-multiple-remove-btn)'
-          ),
-        ].map((el) => el.textContent.trim())
+        [...el.querySelectorAll('.filter-values--dimension-select__option')].map((el) => el.textContent.trim())
       ),
       [['1', '2', '3'], ['1']],
       'Dimension value selector showing the right values'

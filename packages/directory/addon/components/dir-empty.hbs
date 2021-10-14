@@ -1,18 +1,24 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<DirTablePlaceholder
-  class="dir-empty"
-  @icon="folder-open"
-  @title="Nothing Here Yet"
->
-  <p>There currently is not anything in this collection.</p>
-  {{#each-in (from-entries this.fileTypes) as |typeName fileType|}}
-    <LinkTo @route={{fileType.linkRoute}}>
-      <DenaliButton 
-        @icon={{fileType.iconClass}}
-        @style="text" 
-      >
+<DenaliBox class="dir-table-placeholder p-40 dir-empty" ...attributes as |Box|>
+
+  <img class="d-icon m-20" src="{{this.rootURL}}assets/images/jump-right-in.svg" alt="layered reports"/>
+
+  <Box.Header>{{"Let's jump right in!"}}</Box.Header>
+  <div class="m-t-20">
+    <p>
+      Get started by creating a report or dashboard.
+      <br />
+      Anything you create and save will be added here.
+    </p>
+    {{#each-in (from-entries this.fileTypes) as |typeName fileType|}}
+      <LinkTo @route={{fileType.linkRoute}}>
+        <DenaliButton
+          @icon={{fileType.iconClass}}
+          @style="text"
+        >
         New {{capitalize (singularize typeName) }}
-      </DenaliButton>
-    </LinkTo>
-  {{/each-in}}
-</DirTablePlaceholder>
+        </DenaliButton>
+      </LinkTo>
+    {{/each-in}}
+  </div>
+</DenaliBox>

@@ -78,7 +78,7 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
     );
 
     const expectedModels = ['foo', 'bar', 'baz'].map((value) =>
-      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [] })
+      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: {} })
     );
     const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(
@@ -155,7 +155,7 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
       }),
     };
     const expectedModels = ['foo', 'bar', 'baz'].map((value) =>
-      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: [capitalize(value)] })
+      this.dimensionModelFactory.create({ value, dimensionColumn, suggestions: { dimension3: capitalize(value) } })
     );
     const dimensionResponse = serializer.normalize(dimensionColumn, payload);
     assert.deepEqual(

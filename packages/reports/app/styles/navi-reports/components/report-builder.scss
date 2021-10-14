@@ -61,12 +61,14 @@
 
     &--collapsed {
       align-items: flex-start;
+      background: $tabs-primary-bg-color;
       flex-flow: row;
     }
   }
 
   &__container-header {
     align-items: center;
+    background: $tabs-primary-bg-color;
     display: flex;
     flex-direction: row;
     justify-content: space-between;

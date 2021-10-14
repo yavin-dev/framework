@@ -66,9 +66,11 @@ module('Acceptance | table', function (hooks) {
     assert.expect(6);
 
     await visit('/table');
+    debugger;
     assert.dom('.table-header-cell__input').isNotVisible('Table header edit field should not be visible');
 
     await click('.table-config__total-toggle-button');
+    debugger;
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert
@@ -110,7 +112,7 @@ module('Acceptance | table', function (hooks) {
     assert.expect(2);
 
     await visit('/table');
-
+    debugger;
     await click('.table-config__total-toggle-button');
     await fillIn('.timeDimension .input > .table-header-cell__input', '');
     await blur('.timeDimension .input > .table-header-cell__input');
@@ -118,7 +120,7 @@ module('Acceptance | table', function (hooks) {
 
     assert
       .dom('.table-header-row-vc--view .timeDimension > .table-header-cell__title')
-      .hasText('Date Time (week)', 'DateTime field should have the default name "Date"');
+      .hasText('Date Time (Week)', 'DateTime field should have the default name "Date"');
 
     assert
       .dom('.table-header-row-vc--view .timeDimension')

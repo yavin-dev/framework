@@ -11,6 +11,8 @@ module('Integration | Component | dir-empty', function (hooks) {
 
     assert
       .dom(this.element)
-      .hasText('Nothing Here Yet There currently is not anything in this collection. New Report New Dashboard');
+      .hasText(
+        "Let's jump right in! Get started by creating a report or dashboard. Anything you create and save will be added here. New Report New Dashboard"
+      );
   });
 });

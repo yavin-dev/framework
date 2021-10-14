@@ -9,7 +9,6 @@ import { clickTrigger, selectChoose, selectSearch, nativeMouseUp } from 'ember-p
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
-import $ from 'jquery';
 import Service from '@ember/service';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
@@ -61,9 +60,10 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
-      el.textContent?.trim()
-    );
+    const selectedValueText = findAll(
+      '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
+    ).map((el) => el.textContent?.trim());
+
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
 
     assert.deepEqual(
@@ -72,8 +72,14 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    let optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      expectedOptionText = AgeValues.map(({ id, description }) => `${id} (${description})`);
+    const optionText = findAll('.ember-power-select-option').map((el) =>
+      el.textContent
+        ?.trim()
+        .split('\n')
+        .map((s) => s.trim())
+        .filter((s) => s)
+    );
+    const expectedOptionText = AgeValues.map(({ id, description }) => [id, `description: ${description}`]);
     /*
      * Since vertical-collection is used for rendering the dropdown options,
      * some later options may be cropped from the DOM, so just check the first 10
@@ -104,9 +110,10 @@ module('Integration | Component | filter values/dimension select', function (hoo
     // Open value selector
     await clickTrigger();
 
-    const selectedValueText = findAll('.ember-power-select-multiple-option span:nth-of-type(2)').map((el) =>
-      el.textContent?.trim()
-    );
+    const selectedValueText = findAll(
+      '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
+    ).map((el) => el.textContent?.trim());
+
     const expectedValueDimensions = ContainerValues.filter(({ id }) => this.filter.values.includes(id));
     assert.deepEqual(
       selectedValueText,
@@ -114,8 +121,14 @@ module('Integration | Component | filter values/dimension select', function (hoo
       'Filter value ids are converted into full dimension objects and displayed as selected'
     );
 
-    const optionText = findAll('.ember-power-select-option').map((el) => el.textContent?.trim());
-    const expectedOptionText = ContainerValues.map(({ id, description }) => `${id} (${description})`);
+    const optionText = findAll('.ember-power-select-option').map((el) =>
+      el.textContent
+        ?.trim()
+        .split('\n')
+        .map((s) => s.trim())
+        .filter((s) => s)
+    );
+    const expectedOptionText = ContainerValues.map(({ id, description }) => [id, `description: ${description}`]);
 
     /*
      * Since vertical-collection is used for rendering the dropdown options,
@@ -198,16 +211,21 @@ module('Integration | Component | filter values/dimension select', function (hoo
     const visibleOptions = () =>
       findAll('.ember-power-select-option')
         .filter((el) => (el as HTMLElement).offsetParent !== null) // only visible elements
-        .map((el) => el.textContent?.trim())
-        .sort();
+        .map((el) =>
+          el.textContent
+            ?.trim()
+            .split('\n')
+            .map((s) => s.trim())
+            .filter((s) => s)
+        );
 
-    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
-      ({ id, description }) => `${description} (${id})`
-    );
+    const expectedValueDimensions = ContainerValues.filter(({ description }) =>
+      description.includes(searchTerm)
+    ).map(({ id, description }) => [description, `id: ${id}`]);
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
 
-    await nativeMouseUp($(`.ember-power-select-option:contains(Bag)`)[0]);
+    await nativeMouseUp('.ember-power-select-option div[title="Bag"]');
 
     assert.deepEqual(
       visibleOptions(),
@@ -288,6 +306,35 @@ module('Integration | Component | filter values/dimension select', function (hoo
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
       ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3'],
       'Sort is applied as number for string number dimensions'
+    );
+  });
+
+  test('local search', async function (this: TestContext, assert) {
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    await render(TEMPLATE);
+
+    await selectSearch('.filter-values--dimension-select__trigger', '10');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['10', 'description: 65 and over']],
+      'For small cardinality dimensions, local search uses dimension values'
+    );
+
+    await clickTrigger();
+    await selectSearch('.filter-values--dimension-select__trigger', 'Un');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [
+        ['-1', 'description: Unknown'],
+        ['1', 'description: under 13'],
+      ],
+      'For small cardinality dimensions, local search uses context values'
     );
   });
 });

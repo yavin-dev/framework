@@ -9,10 +9,10 @@ import NativeWithCreate from 'navi-data/models/native-with-create';
 interface NaviDimensionModelPayload {
   dimensionColumn: DimensionColumn;
   value: Readonly<unknown>;
-  suggestions?: Readonly<unknown[]>;
+  suggestions?: Readonly<Record<string, string>>;
 }
 
-export default class NaviDimensionModel extends NativeWithCreate {
+export default class NaviDimensionModel extends NativeWithCreate implements NaviDimensionModel {
   constructor(owner: unknown, args: NaviDimensionModelPayload) {
     super(owner, args);
   }
@@ -30,17 +30,13 @@ export default class NaviDimensionModel extends NativeWithCreate {
   /**
    * Dimension value
    */
-  declare suggestions?: Readonly<unknown[]>;
+  declare suggestions?: Readonly<Record<string, string>>;
 
   /**
    * Dimension value for display purposes
    */
   get displayValue() {
-    const { value, suggestions } = this;
-    if (suggestions?.length) {
-      return `${value} (${suggestions.join(', ')})`;
-    }
-    return `${value}`;
+    return `${this.value}`;
   }
 
   isEqual(other: NaviDimensionModel) {
