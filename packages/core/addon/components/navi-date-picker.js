@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -21,6 +21,8 @@ import {
   getFirstDayOfGrain,
   getLastDayOfGrain,
   getPeriodForGrain,
+  getFirstDayOfGrainSince,
+  getLastDayOfGrainUntil,
 } from 'navi-data/utils/date';
 
 const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day grain';
@@ -85,7 +87,7 @@ class NaviDatePicker extends Component {
   @tracked selectedDate;
 
   /**
-   * @property {Moment} date - date should be after `minDate`
+   * @property {Moment} date - date should be after `minDate` and before `maxDate`
    */
   @tracked date;
 
@@ -103,19 +105,44 @@ class NaviDatePicker extends Component {
    * @property {Date} minDate - minimum selectable date
    */
   get minDate() {
-    return new Date(getFirstDayEpochForGrain(this.dateTimePeriod));
+    const {
+      dateTimePeriod,
+      args: { minDate },
+    } = this;
+    assert(`minDate: ${isValidCalendarDateMessage}`, !minDate || isValidCalendarDate(minDate, dateTimePeriod));
+    return new Date(
+      minDate ? getFirstDayOfGrainSince(minDate, dateTimePeriod) : getFirstDayEpochForGrain(dateTimePeriod)
+    );
+  }
+
+  /**
+   * @property {Date | undefined} maxDate - maximum selectable date
+   */
+  get maxDate() {
+    const {
+      dateTimePeriod,
+      args: { maxDate },
+    } = this;
+
+    assert(`maxDate: ${isValidCalendarDateMessage}`, !maxDate || isValidCalendarDate(maxDate, dateTimePeriod));
+    return maxDate && new Date(getLastDayOfGrainUntil(maxDate, dateTimePeriod));
   }
 
   /**
    * @property {String[]} months - The months available to pick from in the current year
    */
   get months() {
-    const { centerDate, minDate } = this;
+    const { centerDate, minDate, maxDate } = this;
 
     let months = moment.months();
     const minDateTime = moment(minDate);
+    const maxDateTime = moment(maxDate);
+    if (centerDate.year() === maxDateTime.year()) {
+      const maxMonth = maxDateTime.month();
+      months = months.filter((m, i) => i <= maxMonth);
+    }
     if (centerDate.year() === minDateTime.year()) {
-      const minMonth = minDateTime.month - 1;
+      const minMonth = minDateTime.month();
       months = months.filter((m, i) => i >= minMonth);
     }
     return months;
@@ -125,8 +152,9 @@ class NaviDatePicker extends Component {
    * @property {String[]} years - The years available to pick from
    */
   get years() {
-    const start = moment(this.minDate).year();
-    const end = moment().year() + 1;
+    const { minDate, maxDate } = this;
+    const start = moment(minDate).year();
+    const end = moment(maxDate).year() + 1;
     return range(start, end).map((y) => y.toString());
   }
 
@@ -136,8 +164,15 @@ class NaviDatePicker extends Component {
    * @param calendar - reference to calendar object
    * @param e - the input event
    */
+  @action
   changeCenter(unit, calendar, e) {
+    const { minDate, maxDate } = this;
     let newCenter = moment(calendar.center).clone()[unit](e.target.value);
+    if (minDate && newCenter.isBefore(minDate)) {
+      newCenter = moment(minDate);
+    } else if (maxDate && newCenter.isAfter(maxDate)) {
+      newCenter = moment(maxDate);
+    }
     return calendar.actions.changeCenter(newCenter);
   }
 

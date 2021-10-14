@@ -9,6 +9,8 @@ const TEST_FORMAT = 'YYYY-MM-DD';
 
 const TEMPLATE = hbs`<NaviDatePicker
   @date={{this.date}}
+  @minDate={{this.minDate}}
+  @maxDate={{this.maxDate}}
   @dateTimePeriod={{this.dateTimePeriod}}
   @onUpdate={{this.onUpdate}}
 />`;
@@ -205,8 +207,6 @@ module('Integration | Component | Navi Date Picker', function (hooks) {
   });
 
   test('Change center date through select', async function (assert) {
-    assert.expect(4);
-
     this.set('date', moment.utc('2015-07-14', TEST_FORMAT));
 
     await render(TEMPLATE);
@@ -223,11 +223,29 @@ module('Integration | Component | Navi Date Picker', function (hooks) {
     // change year
     assert.equal(getYear(), '2015', 'The center date year starts as the passed in date');
 
-    const yearSelect = getYearSelect();
+    let yearSelect = getYearSelect();
     yearSelect.selectedIndex = yearSelect.selectedIndex + 1;
     await triggerEvent(yearSelect, 'change');
 
     assert.equal(getYear(), '2016', 'The center date changes to next year');
+    assert.equal(getMonth(), 'June', 'The center month does not change');
+
+    this.set('minDate', moment.utc('2014-11-14', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2017-02-14', TEST_FORMAT));
+
+    yearSelect = getYearSelect();
+    yearSelect.selectedIndex = yearSelect.selectedIndex - 2;
+    await triggerEvent(yearSelect, 'change');
+
+    assert.equal(getYear(), '2014', 'The center date changes to next year');
+    assert.equal(getMonth(), 'November', 'The center month changes to month of min date');
+
+    yearSelect = getYearSelect();
+    yearSelect.selectedIndex = yearSelect.selectedIndex + 3;
+    await triggerEvent(yearSelect, 'change');
+
+    assert.equal(getYear(), '2017', 'The center date changes to next year');
+    assert.equal(getMonth(), 'February', 'The center month changes to month of max date');
   });
 
   test('Change date action', async function (assert) {
@@ -397,9 +415,123 @@ module('Integration | Component | Navi Date Picker', function (hooks) {
     config.navi.dataEpoch = originalEpoch;
   });
 
+  test('Min and max date', async function (assert) {
+    assert.expect(7);
+
+    let originalEpoch = config.navi.dataEpoch,
+      testEpoch = '2013-05-14';
+
+    config.navi.dataEpoch = testEpoch;
+
+    const minDay = moment.utc('2013-05-07', TEST_FORMAT),
+      dayBeforeMin = minDay.clone().subtract(1, 'day'),
+      maxDay = moment.utc('2013-05-28', TEST_FORMAT),
+      dayAfterMax = maxDay.clone().add(1, 'day'),
+      epochDay = moment.utc(testEpoch, TEST_FORMAT);
+
+    this.set('date', moment.utc('2013-05-23', TEST_FORMAT));
+    this.set('minDate', minDay);
+    this.set('maxDate', maxDay);
+    this.set('dateTimePeriod', 'day');
+    await render(TEMPLATE);
+
+    assert.ok(isDayDisabled(dayBeforeMin), 'Day Selection - Day before min date is not selectable');
+    assert.ok(isDayDisabled(dayAfterMax), 'Day Selection - Day after max date is not selectable');
+    assert.ok(isDayEnabled(epochDay), 'Day Selection - Epoch date is selectable');
+
+    /* == IsoWeek Selection == */
+    this.set('dateTimePeriod', 'isoWeek');
+
+    const startOfFirstFullWeek = minDay.clone().add(1, 'isoWeek').subtract(1, 'day').startOf('isoWeek'),
+      dayBeforeFirstWeek = startOfFirstFullWeek.clone().subtract(1, 'day'),
+      endOfLastFullWeek = maxDay.clone().subtract(1, 'isoWeek').add(1, 'day').endOf('isoWeek'),
+      dayAfterLastWeek = endOfLastFullWeek.clone().add(1, 'day');
+
+    assert.ok(
+      isDayDisabled(dayBeforeFirstWeek),
+      'Week Selection - Week containing days before min date is not selectable'
+    );
+    assert.ok(isDayEnabled(startOfFirstFullWeek), 'Week Selection - First full week after min date is selectable');
+    assert.ok(
+      isDayDisabled(dayAfterLastWeek),
+      'Week Selection - Week containing days after max date is not selectable'
+    );
+    assert.ok(isDayEnabled(endOfLastFullWeek), 'Week Selection - First full week before max date is selectable');
+
+    // Set back to original values to avoid affecting other tests
+    config.navi.dataEpoch = originalEpoch;
+  });
+
+  test('Year select', async function (assert) {
+    this.set('date', moment.utc('2021-04-22', TEST_FORMAT));
+    this.set('minDate', moment.utc('2019-12-31', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2023-05-29', TEST_FORMAT));
+    this.set('dateTimePeriod', 'day');
+    await render(TEMPLATE);
+    assert.deepEqual(
+      getYearSelectOptions(),
+      ['2019', '2020', '2021', '2022', '2023'],
+      'year select has correct options for `day` grain'
+    );
+
+    this.set('dateTimePeriod', 'week');
+    assert.deepEqual(
+      getYearSelectOptions(),
+      ['2020', '2021', '2022', '2023'],
+      'year select has correct options for `week` grain'
+    );
+
+    this.set('minDate', moment.utc('2021-01-31', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2021-05-29', TEST_FORMAT));
+    assert.deepEqual(getYearSelectOptions(), ['2021'], 'year select has only one option when min year = max year');
+  });
+
+  test('Month select', async function (assert) {
+    this.set('date', moment.utc('2021-01-22', TEST_FORMAT));
+    this.set('minDate', moment.utc('2019-12-31', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2023-05-29', TEST_FORMAT));
+    this.set('dateTimePeriod', 'day');
+    await render(TEMPLATE);
+    assert.deepEqual(getMonthSelectOptions(), moment.months(), 'month select options include all months');
+
+    this.set('minDate', moment.utc('2021-03-31', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2021-05-29', TEST_FORMAT));
+    assert.deepEqual(
+      getMonthSelectOptions(),
+      ['March', 'April', 'May'],
+      'month select has correct options when min year = max year'
+    );
+
+    this.set('minDate', moment.utc('2020-11-30', TEST_FORMAT));
+    this.set('maxDate', moment.utc('2021-02-22', TEST_FORMAT));
+    assert.deepEqual(
+      getMonthSelectOptions(),
+      ['January', 'February'],
+      'month select has correct options for the selected year'
+    );
+
+    let yearSelect = getYearSelect();
+    yearSelect.selectedIndex = 0;
+    await triggerEvent(yearSelect, 'change');
+    assert.deepEqual(
+      getMonthSelectOptions(),
+      ['November', 'December'],
+      'month select has correct options for the previous year'
+    );
+
+    this.set('dateTimePeriod', 'week');
+    yearSelect = getYearSelect();
+    yearSelect.selectedIndex = 0;
+    await triggerEvent(yearSelect, 'change');
+    assert.deepEqual(getMonthSelectOptions(), ['December'], 'month select has correct options for `week` grain');
+  });
+
+  const getOptionsArray = (select) => Array.from(select.options).map((option) => option.value);
   const getMonthSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select > select');
+  const getMonthSelectOptions = () => getOptionsArray(getMonthSelect());
   const getMonth = () => find('.ember-power-calendar-nav-title > span').childNodes[2].textContent;
   const getYearSelect = () => find('.ember-power-calendar-nav-title .with-invisible-select:nth-of-type(2) > select');
+  const getYearSelectOptions = () => getOptionsArray(getYearSelect());
   const getYear = () => find('.ember-power-calendar-nav-title > span:nth-of-type(2)').childNodes[2].textContent;
 
   /**
