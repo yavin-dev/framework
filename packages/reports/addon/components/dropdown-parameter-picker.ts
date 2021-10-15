@@ -27,12 +27,10 @@ export default class ParameterPickerComponent extends Component<Args> {
         options: valuesPromise?.map((el) => el.name ?? el.id),
       },
     ];
-    console.log(this.options);
   }
 
   @action
   async onUpdate(selected: unknown) {
-    console.log('on update', name);
     let id = await this.args.parameterMetadata.values?.then((parameters) => {
       return parameters.find((value) => value.name === selected)?.id ?? selected;
     });

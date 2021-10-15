@@ -66,11 +66,9 @@ module('Acceptance | table', function (hooks) {
     assert.expect(6);
 
     await visit('/table');
-    debugger;
     assert.dom('.table-header-cell__input').isNotVisible('Table header edit field should not be visible');
 
     await click('.table-config__total-toggle-button');
-    debugger;
     assert.dom('.table-header-cell__input').isVisible('Table header edit field should be visible');
 
     assert

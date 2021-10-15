@@ -32,12 +32,12 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
   get displayName() {
     const { alias, parameters, columnMetadata } = this;
     if (columnMetadata?.metadataType === 'metric') {
-      return this.naviFormatter.formatMetricColumnName(columnMetadata, parameters, null);
+      return this.naviFormatter.formatMetricColumnName(columnMetadata, parameters, alias);
     }
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
   }
 
-  @computed('request.sorts.@each.direction')
+  @computed('canonicalName', 'request.sorts.@each.direction')
   get sortedDirection(): SortDirection | null {
     const sorts = this.request?.sorts || [];
 

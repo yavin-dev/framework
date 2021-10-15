@@ -39,7 +39,6 @@ module('Acceptance | Dropdown Parameter Picker test', function (hooks) {
     );
 
     await selectChoose('.dropdown-parameter-picker', 'Hour');
-    debugger;
     assert.dom('.dropdown-parameter-picker .chips').hasText('Hour', 'Date Time parameter is updated properly');
   });
 });

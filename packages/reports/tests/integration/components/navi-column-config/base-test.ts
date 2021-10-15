@@ -57,7 +57,6 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
 
     await render(TEMPLATE);
 
-    //console.log('columnMetadata ', this.column.fragment.columnMetadata);
     assert
       .dom('.navi-column-config-base__api-column-name')
       .hasText(this.column.fragment.columnMetadata.name, 'NaviColumnConfig::Base renders dimension API column name');

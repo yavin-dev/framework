@@ -106,7 +106,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
     );
     await render(TEMPLATE);
-    debugger;
+
     assert.dom('.metric-title').hasText('How many are available', 'the aliased metric title is correctly displayed');
 
     this.request = store.createFragment('bard-request-v2/request', {
@@ -133,7 +133,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
     );
     await render(TEMPLATE);
-debugger;
+
     assert.dom('.metric-title').hasText('Number Available', 'the aliased metric title is correctly displayed');
   });
 
@@ -328,10 +328,10 @@ debugger;
       table: null,
       columns: [
         {
-          cid: 'cid_m1',
-          type: 'metric',
-          field: 'm1',
+          field: 'revenue',
           parameters: {},
+          cid: 'cid_revenue',
+          type: 'metric',
           alias: 'A real good metric',
           source: 'bardOne',
         },
@@ -342,14 +342,16 @@ debugger;
       dataSource: 'bardOne',
       requestVersion: '2.0',
     });
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
-      metricCid: 'cid_m1',
+      metricCid: 'cid_revenue',
     });
+    this.set(
+      'model',
+      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ revenue: '75' }] }) }])
+    );
     await render(TEMPLATE);
-debugger;
     assert.dom('.metric-title').hasText('A real good metric', 'custom metric title is correctly displayed');
   });
 

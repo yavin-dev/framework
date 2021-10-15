@@ -390,7 +390,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Age (id)', 'Browser (id)', 'Revenue (USD)'],
+      ['Date Time (Day)', 'Age (id)', 'Browser (id)', 'Revenue (USD)'],
       'The columns are ordered correctly'
     );
 
@@ -398,7 +398,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       getColumns(),
-      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (day)'],
+      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (Day)'],
       'The columns are reordered'
     );
 
@@ -415,8 +415,8 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
         'Age (id)',
         'Currency (id)',
         'Revenue (USD)',
-        'Date Time (day)',
-        'Date Time (day)',
+        'Date Time (Day)',
+        'Date Time (Day)',
         'Nav Link Clicks',
         'Ad Clicks',
       ],
