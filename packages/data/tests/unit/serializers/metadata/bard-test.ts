@@ -92,8 +92,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
-              subdatatype: 'second',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -170,8 +169,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
-              subdatatype: 'second',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -243,8 +241,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
-              subdatatype: 'second',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -315,8 +312,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
-              subdatatype: 'second',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -364,8 +360,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
-              subdatatype: 'second',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -492,7 +487,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       suggestionColumns: [{ id: 'dimensionThree', parameters: { field: 'id' } }],
     },
     isSortable: true,
-    valueType: 'date',
+    valueType: 'dateTime',
     storageStrategy: null,
     partialData: true,
     supportedGrains: [

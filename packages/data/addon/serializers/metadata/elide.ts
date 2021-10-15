@@ -40,7 +40,7 @@ type ColumnNode = {
   friendlyName: string;
   description: string;
   category: string;
-  valueType: TODO<string>;
+  valueType: string;
   tags: string[];
   columnType: RawColumnType;
   expression: string;

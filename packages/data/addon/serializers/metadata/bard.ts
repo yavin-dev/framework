@@ -56,8 +56,7 @@ type RawColumnPayload = {
 };
 
 export type RawDimensionPayload = RawColumnPayload & {
-  datatype?: 'text' | 'date';
-  subdatatype?: Grain | 'date';
+  datatype?: 'text' | 'number' | 'date' | 'dateTime';
   storageStrategy?: TODO<'loaded' | 'none'>;
   cardinality: number;
   fields: RawDimensionField[];
@@ -113,6 +112,15 @@ type TableTimeGrainInfo = {
   timeGrains: TimeGrainInfo[];
 };
 
+function grainForDataType(dataType: RawDimensionPayload['datatype']): Grain | undefined {
+  if (dataType === 'dateTime') {
+    return 'second';
+  } else if (dataType === 'date') {
+    return 'day';
+  }
+  return undefined;
+}
+
 export default class BardMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
@@ -154,7 +162,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
 
           // Construct each dimension / time-dimension
           timegrain.dimensions.forEach((dimension) => {
-            const isTimeDimension = dimension.datatype === 'date';
+            const isTimeDimension = dimension.datatype === 'date' || dimension.datatype === 'dateTime';
 
             const accDimensionList = isTimeDimension ? currentTimeDimensions : currentDimensions;
             const accTableDimensionList = isTimeDimension ? tableTimeDimensionIds : tableDimensionIds;
@@ -289,8 +297,8 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     const defaultValue =
       fields.find((field) => field.tags && field.tags.includes('primaryKey'))?.name || fields[0]?.name;
     const sorted = fields.map((field) => field.name).sort();
-    const grains: Grain[] =
-      dimension.subdatatype && dimension.subdatatype !== 'date' ? [dimension.subdatatype] : [<const>'day'];
+    const grain = grainForDataType(dimension.datatype);
+    const grains: Grain[] = grain ? [grain] : [];
     const columnFunctionId = `${this.namespace}:timeDimension(fields=${sorted.join(',')},grains=${grains.join(',')})`;
     const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,
@@ -576,10 +584,10 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         const dimMetaPayload = this.normalizeDimensionPayloads([dimension], dataSourceName)[0];
         return [dimMetaPayload, dimension] as const;
       })
-      .filter(([normalized, _original]) => normalized.valueType === 'date')
+      .filter(([_normalized, original]) => original.datatype === 'date' || original.datatype === 'dateTime')
       .map<TimeDimensionMetadataPayload>(([normalized, original]) => {
-        const grains =
-          original.subdatatype && original.subdatatype !== 'date' ? [original.subdatatype] : [<const>'day'];
+        const grain = grainForDataType(original.datatype);
+        const grains: Grain[] = grain ? [grain] : [];
         return {
           supportedGrains: grains.map((grain) => ({ id: grain, expression: '', grain: capitalize(grain) })),
           timeZone: 'utc',

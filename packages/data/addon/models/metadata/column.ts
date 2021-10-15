@@ -99,7 +99,7 @@ export default class ColumnMetadataModel extends NativeWithCreate {
   /**
    * enum value describing what type the values of this column hold
    */
-  declare valueType: TODO<string>;
+  declare valueType: string;
 
   declare tags: string[];
 
