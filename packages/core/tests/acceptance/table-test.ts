@@ -110,6 +110,7 @@ module('Acceptance | table', function (hooks) {
     assert.expect(2);
 
     await visit('/table');
+
     await click('.table-config__total-toggle-button');
     await fillIn('.timeDimension .input > .table-header-cell__input', '');
     await blur('.timeDimension .input > .table-header-cell__input');
