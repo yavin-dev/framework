@@ -106,6 +106,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
     );
     await render(TEMPLATE);
+    debugger;
     assert.dom('.metric-title').hasText('How many are available', 'the aliased metric title is correctly displayed');
 
     this.request = store.createFragment('bard-request-v2/request', {
@@ -132,7 +133,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
     );
     await render(TEMPLATE);
-
+debugger;
     assert.dom('.metric-title').hasText('Number Available', 'the aliased metric title is correctly displayed');
   });
 
@@ -348,7 +349,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       metricCid: 'cid_m1',
     });
     await render(TEMPLATE);
-
+debugger;
     assert.dom('.metric-title').hasText('A real good metric', 'custom metric title is correctly displayed');
   });
 

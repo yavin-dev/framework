@@ -164,8 +164,8 @@ module('Integration | Component | table', function (hooks) {
       headers,
       [
         'Date Time (Day)',
-        'Operating System (Id)',
-        'Operating System (Desc)',
+        'Operating System (id)',
+        'Operating System (desc)',
         'Unique Identifiers',
         'Total Page Views',
         'Platform Revenue (USD)',
@@ -259,8 +259,8 @@ module('Integration | Component | table', function (hooks) {
       headers,
       [
         'Date Time (Day)',
-        'Container (Id)',
-        'Container (Desc)',
+        'Container (id)',
+        'Container (desc)',
         'Quantity of thing',
         'Used Amount',
         'Personally sold amount',

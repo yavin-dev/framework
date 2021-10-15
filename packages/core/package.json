@@ -50,6 +50,7 @@
     "ember-power-calendar": "^0.16.2",
     "ember-power-calendar-moment": "^0.1.7",
     "ember-power-calendar-selectors": "^0.1.1",
+    "ember-promise-helpers": "^1.0.6",
     "ember-resize": "^0.3.4",
     "ember-sortable": "2.2.3",
     "ember-tooltips": "^3.2.0",
