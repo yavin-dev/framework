@@ -332,7 +332,7 @@ module('Integration | Component | pie chart', function (hooks) {
     assert.dom('.c3-title').hasText('Total Page Views', 'The metric name is displayed in the metric label correctly');
 
     const metricColumn = this.model.firstObject?.request.columns.firstObject as ColumnFragment;
-
+    debugger;
     // set alias
     const alias = 'Metric Alias';
     metricColumn.set('alias', alias);

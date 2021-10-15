@@ -94,13 +94,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
    */
   @action
   fetchDimensionOptions(): void {
-    if (this.dimensionValues === undefined) {
-      const { dimensionColumn } = this;
-      if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
-        this.dimensionValues = taskFor(this.naviDimension.all)
-          .perform(dimensionColumn)
-          .then((r) => r.values);
-      }
+    const { dimensionColumn } = this;
+    if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+      this.dimensionValues = taskFor(this.naviDimension.all)
+        .perform(dimensionColumn)
+        .then((r) => r.values);
     }
   }
 

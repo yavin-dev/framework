@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -15,6 +15,8 @@ import type { Grain } from 'navi-data/utils/date';
 
 type Args = {
   date: Moment;
+  minDate?: Moment;
+  maxDate?: Moment;
   dateTimePeriod: Grain;
   onUpdate: (date: Moment) => void;
 };

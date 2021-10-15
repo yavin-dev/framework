@@ -156,6 +156,7 @@ module('Integration | Component | table', function (hooks) {
 
     await render(TEMPLATE);
 
+    debugger;
     assert.dom('.table-widget').isVisible('The table widget component is visible');
 
     let headers = findAll('.table-header-row-vc--view .table-header-cell').map((el) => el.textContent.trim());

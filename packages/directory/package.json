@@ -32,7 +32,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.27",
+    "@denali-design/ember": "^1.0.0-alpha.29",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "broccoli-funnel": "^3.0.8",
@@ -70,7 +70,7 @@
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-basic-dropdown": "^3.0.11",
+    "ember-basic-dropdown": "^3.0.19",
     "ember-cli": "~3.25.3",
     "ember-cli-clipboard": "^0.15.0",
     "ember-cli-dependency-checker": "^3.2.0",

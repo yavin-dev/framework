@@ -65,7 +65,7 @@ module('Integration | Component | visualization config/goal gauge', function (ho
     });
 
     await render(Template);
-    debugger;
+
     await fillIn('.goal-gauge-config__baseline-input', '1');
   });
 
