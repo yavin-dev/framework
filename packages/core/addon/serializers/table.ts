@@ -8,7 +8,7 @@ import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import { getSubTypeForDimension } from 'navi-core/utils/request';
+import { getRealDimensionType } from 'navi-core/utils/request';
 
 interface FieldTypes {
   metric: 'metric';
@@ -137,7 +137,7 @@ function buildColumnInfo(
       const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.${canonicalName}(grain=${grain})`;
     } else if (newCol.type === 'dimension') {
-      const type = getSubTypeForDimension(field, request.dataSource, naviMetadata);
+      const type = getRealDimensionType(field, request.dataSource, naviMetadata);
       const requestColumn = request.columns.find((c) => c.type === type && c.field === field);
       const fieldParam = column.attributes?.field ?? requestColumn?.parameters.field;
       assert(`field param must be found for dimension ${canonicalName}`, fieldParam);

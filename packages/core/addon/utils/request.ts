@@ -145,11 +145,15 @@ export function normalizeV1(request: RequestV1<string>, namespace?: string): Req
   return normalized;
 }
 
-export function getSubTypeForDimension(dimension: string, dataSource: string, naviMetadata: NaviMetadataService) {
-  if (naviMetadata.getById('timeDimension', dimension, dataSource)) {
-    return 'timeDimension';
-  }
-  return 'dimension';
+/**
+ * Checks if a given 'dimension' from a v1 fili request is a v2 'dimension' or 'timeDimension'
+ * @param dimension - dimension to lookup
+ * @param dataSource - datasource of dimension
+ * @param naviMetadata - metadata service
+ * @returns 'timeDimension' | 'dimension'
+ */
+export function getRealDimensionType(dimension: string, dataSource: string, naviMetadata: NaviMetadataService) {
+  return naviMetadata.getById('timeDimension', dimension, dataSource) ? 'timeDimension' : 'dimension';
 }
 
 /**
@@ -196,7 +200,7 @@ export function normalizeV1toV2(
   normalized.dimensions.forEach(({ dimension }) => {
     // skip if dimension is null or empty
     if (dimension) {
-      const type = getSubTypeForDimension(dimension, dataSource, naviMetadata);
+      const type = getRealDimensionType(dimension, dataSource, naviMetadata);
       let extraParams = {};
       if (type === 'timeDimension') {
         const grain = naviMetadata.getById(type, dimension, dataSource)?.getParameter('grain')?.defaultValue;
@@ -253,7 +257,7 @@ export function normalizeV1toV2(
 
   //normalize filters
   normalized.filters.forEach(({ dimension, field, operator, values }) => {
-    const type = getSubTypeForDimension(dimension, dataSource, naviMetadata);
+    const type = getRealDimensionType(dimension, dataSource, naviMetadata);
     let filterValues;
     if (type === 'timeDimension') {
       if (operator === 'lt') {
@@ -288,7 +292,6 @@ export function normalizeV1toV2(
     requestV2.filters.push({
       type,
       field: removeNamespace(dimension, dataSource),
-      // TODO: 'day' grain for timeDimension???
       parameters: {
         field: field || 'id',
         ...extraParams,
