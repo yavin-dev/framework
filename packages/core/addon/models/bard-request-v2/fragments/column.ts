@@ -29,7 +29,7 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
   @fragmentOwner() request?: RequestFragment;
 
   @computed('alias', 'parameters', 'columnMetadata')
-  get displayName() {
+  get displayName(): any {
     const { alias, parameters, columnMetadata } = this;
     if (columnMetadata?.metadataType === 'metric') {
       return this.naviFormatter.formatMetricColumnName(columnMetadata, parameters, alias);

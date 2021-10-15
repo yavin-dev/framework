@@ -360,8 +360,6 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     values,
   }: BaseLiteral & { operator: FilterFragment['operator']; values: FilterFragment['values'] }) {
     const filter = this.fragmentFactory.createFilter(type, this.dataSource, field, parameters, operator, values);
-    console.log(type, this.dataSource, field, parameters, operator, values);
-    console.log(filter);
     this.filters.pushObject(filter);
     return filter;
   }
