@@ -112,13 +112,13 @@ type TableTimeGrainInfo = {
   timeGrains: TimeGrainInfo[];
 };
 
-function grainForDataType(dataType: RawDimensionPayload['datatype']): Grain | undefined {
+function grainForDataType(dataType: RawDimensionPayload['datatype']): Grain | never {
   if (dataType === 'dateTime') {
     return 'second';
   } else if (dataType === 'date') {
     return 'day';
   }
-  return undefined;
+  throw new Error(`The dataType ${dataType} has no grain attached to it`);
 }
 
 export default class BardMetadataSerializer extends NaviMetadataSerializer {
