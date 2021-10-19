@@ -50,7 +50,7 @@ module('Acceptance | custom reports', function (hooks) {
     await animationsSettled();
 
     // Add filter
-    await clickItemFilter('dimension', 'LongCharacter');
+    await clickItemFilter('dimension', 'Character');
     await selectChoose('.filter-values--dimension-select__trigger', '1');
     assert.dom('.filter-values--dimension-select__trigger').containsText('1', 'A filter value can be selected');
   });
