@@ -4,9 +4,10 @@
  */
 
 .navi-notifications {
-  // Only cover width of notification contents https://stackoverflow.com/a/23384995
-  left: 50%;
-  position: absolute;
-  transform: translate(-50%, 0);
+  left: 0;
+  margin: 0 auto;
+  position: fixed;
+  right: 0;
+  width: 400px;
   z-index: 1000;
 }
