@@ -1,0 +1,51 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+$navi-date-picker-cell-size: 40px;
+$navi-date-picker-hover-color: #eee;
+
+.navi-date-picker {
+  @include ember-power-calendar($cell-size: $navi-date-picker-cell-size);
+  @include ember-power-calendar-selectors($cell-size: $navi-date-picker-cell-size);
+  background: map-get($denali-grey-colors, '100');
+  border-color: map-get($denali-grey-colors, '400');
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.16);
+  margin-top: 2px;
+  z-index: 2;
+
+  &-week {
+    .ember-power-calendar-week:hover {
+      > .ember-power-calendar-week-day:not(.ember-power-calendar-day--selected) {
+        background-color: $navi-date-picker-hover-color;
+      }
+    }
+  }
+
+  &-quarter {
+    .ember-power-calendar-selector-month-row--quarter:hover {
+      > .ember-power-calendar-selector-month:not(.ember-power-calendar-selector-month--selected) {
+        background-color: $navi-date-picker-hover-color;
+      }
+    }
+  }
+
+  .with-invisible-select {
+    font-size: 125%;
+    position: relative;
+    top: 5px;
+
+    select {
+      bottom: 0;
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+}
