@@ -6,26 +6,26 @@
 export default [
   {
     name: 'hour',
-    longName: 'LongHour',
+    longName: 'Hour',
   },
   {
     name: 'day',
-    longName: 'LongDay',
+    longName: 'Day',
   },
   {
     name: 'week',
-    longName: 'LongWeek',
+    longName: 'Week',
   },
   {
     name: 'month',
-    longName: 'LongMonth',
+    longName: 'Month',
   },
   {
     name: 'quarter',
-    longName: 'LongQuarter',
+    longName: 'Quarter',
   },
   {
     name: 'year',
-    longName: 'LongYear',
+    longName: 'Year',
   },
 ];
