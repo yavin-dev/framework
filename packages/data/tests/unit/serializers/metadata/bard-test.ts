@@ -92,7 +92,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -169,7 +169,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -241,7 +241,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -312,7 +312,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -360,7 +360,7 @@ const Payload: RawEverythingPayload = {
               name: 'dimensionThree',
               longName: 'Dimension Three',
               cardinality: 50000,
-              datatype: 'date',
+              datatype: 'dateTime',
               fields: [
                 {
                   name: 'id',
@@ -472,7 +472,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     cardinality: 'MEDIUM',
     category: 'dateCategory',
     description: undefined,
-    columnFunctionId: 'normalizer-generated:dimensionField(fields=id)',
+    columnFunctionId: 'normalizer-generated:timeDimension(fields=id,grains=second)',
     id: 'dimensionThree',
     name: 'Dimension Three',
     source: 'bardOne',
@@ -487,14 +487,14 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       suggestionColumns: [{ id: 'dimensionThree', parameters: { field: 'id' } }],
     },
     isSortable: true,
-    valueType: 'date',
+    valueType: 'dateTime',
     storageStrategy: null,
     partialData: true,
     supportedGrains: [
       {
         expression: '',
-        grain: 'Day',
-        id: 'day',
+        grain: 'Second',
+        id: 'second',
       },
     ],
     timeZone: 'utc',
@@ -688,9 +688,19 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         source: 'bardOne',
         type: 'ref',
       },
+      {
+        _localValues: [{ id: 'second', name: 'second' }],
+        defaultValue: 'second',
+        description: 'The time grain to group dates by',
+        expression: 'self',
+        id: 'grain',
+        name: 'Time Grain',
+        source: 'bardOne',
+        type: 'ref',
+      },
     ],
     description: 'Dimension Field',
-    id: 'normalizer-generated:dimensionField(fields=id)',
+    id: 'normalizer-generated:timeDimension(fields=id,grains=second)',
     name: 'Dimension Field',
     source: 'bardOne',
   },

@@ -305,6 +305,11 @@ export default [
             displayName: 'Date',
           },
           {
+            field: 'userSignupDate',
+            type: 'dimension',
+            displayName: 'User Signup Date',
+          },
+          {
             field: 'revenue(currency=USD)',
             type: 'metric',
             displayName: 'Revenue (USD)',
@@ -326,8 +331,12 @@ export default [
           },
         },
       ],
-      dimensions: [],
-      filters: [],
+      dimensions: [{ dimension: 'userSignupDate' }],
+      filters: [
+        { dimension: 'userSignupDate', field: 'id', operator: 'gte', values: ['2021-10-02'] },
+        { dimension: 'userSignupDate', field: 'id', operator: 'lt', values: ['2021-10-10'] },
+        { dimension: 'userSignupDate', field: 'id', operator: 'bet', values: ['2021-09-04', '2021-09-08'] },
+      ],
       intervals: [
         {
           end: '2018-02-16 00:00:00.000',
@@ -782,7 +791,7 @@ export default [
   },
   {
     id: 15,
-    title: 'Unownerized',
+    title: 'Unauthorized',
     createdOn: '2015-04-01 00:00:00',
     updatedOn: '2015-04-01 00:00:00',
     ownerId: 'navi_user',
