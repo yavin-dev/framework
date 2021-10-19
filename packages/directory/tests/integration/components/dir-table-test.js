@@ -217,7 +217,7 @@ module('Integration | Component | dir table', function (hooks) {
     assert
       .dom('.lt-body')
       .hasText(
-        'Nothing Here Yet There currently is not anything in this collection. New Report New Dashboard',
+        "Let's jump right in! Get started by creating a report or dashboard. Anything you create and save will be added here. New Report New Dashboard",
         "Gives the correct message when no items are present and there's no search query"
       );
 

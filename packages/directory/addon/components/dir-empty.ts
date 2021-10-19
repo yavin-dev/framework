@@ -7,7 +7,9 @@
  */
 import Component from '@glimmer/component';
 import FileTypes from 'navi-directory/utils/enums/file-types';
+import config from 'ember-get-config';
 
 export default class DirEmptyComponent extends Component {
   fileTypes = Object.entries(FileTypes.definitions);
+  rootURL = config.rootURL;
 }

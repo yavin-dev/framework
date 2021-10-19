@@ -31,7 +31,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.26",
+    "@denali-design/ember": "^1.0.0-alpha.30",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^2.0.0",
     "@ember/render-modifiers": "^1.0.2",
@@ -59,7 +59,7 @@
     "ember-moment": "^7.8.1",
     "ember-power-calendar": "^0.16.2",
     "ember-power-calendar-moment": "^0.1.7",
-    "ember-power-calendar-selectors": "^0.1.1",
+    "ember-power-calendar-selectors": "^0.1.2",
     "ember-promise-helpers": "^1.0.6",
     "ember-set-helper": "^0.1.1",
     "ember-sortable": "2.2.3",
@@ -87,7 +87,7 @@
     "@typescript-eslint/eslint-plugin": "^2.23.0",
     "@typescript-eslint/parser": "^2.23.0",
     "broccoli-asset-rev": "^3.0.0",
-    "ember-basic-dropdown": "^3.0.11",
+    "ember-basic-dropdown": "^3.0.19",
     "ember-cli": "~3.25.3",
     "ember-cli-autoprefixer": "~0.8.1",
     "ember-cli-code-coverage": "^1.0.0-beta.8",

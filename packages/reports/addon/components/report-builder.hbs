@@ -23,21 +23,22 @@
   </div>
   <div class="report-builder__main">
     {{#if this.hasValidLogicalTable}}
-      <div class={{
-        concat "report-builder__container report-builder__container--filters"
-          (if @disabled " report-builder__container--disabled")
-          (if @isFiltersCollapsed " report-builder__container--filters--collapsed")
-        }}>
-        <span class="report-builder__container-header">
+      <div
+        class="report-builder__container report-builder__container--filters p-0
+          {{if @disabled "report-builder__container--disabled"}}
+          {{if @isFiltersCollapsed " report-builder__container--filters--collapsed"}}
+        "
+      >
+        <span class="report-builder__container-header {{if @isFiltersCollapsed "p-y-10 p-l-10" "p-10"}}">
           <button
             class="report-builder__container-header__filters-toggle p-0"
             type="button"
             {{on "click" (fn (optional @onUpdateFiltersCollapsed) (not @isFiltersCollapsed))}}>
             <h4 class="report-builder__container-header__title">Filters</h4>
             <DenaliIcon
-              @icon={{if @isFiltersCollapsed "arrowhead-right" "arrowhead-down"}}
+              @icon={{if @isFiltersCollapsed "arrowhead-down-circle" "arrowhead-up-circle"}}
               @size="small"
-              class="report-builder__container-header__filters-toggle-icon"
+              class="report-builder__container-header__filters-toggle-icon m-l-2"
             />
           </button>
           {{#unless @isFiltersCollapsed}}
@@ -48,12 +49,12 @@
         </span>
 
         <FilterCollection
-          class="report-builder__filter-collection"
           @isCollapsed={{@isFiltersCollapsed}}
           @onUpdateCollapsed={{optional @onUpdateFiltersCollapsed}}
           @request={{this.request}}
           @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
           @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
+          class="report-builder__filter-collection p-10"
         />
 
       </div>

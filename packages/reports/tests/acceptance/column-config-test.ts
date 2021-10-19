@@ -365,16 +365,62 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Age (id)', 'Revenue (USD)', 'Browser (id)'],
-      'The columns are ordered as inserted'
+      ['Date Time (day)', 'Age (id)', 'Browser (id)', 'Revenue (USD)'],
+      'The columns are ordered correctly'
     );
 
-    await reorderColumns('browser(field=id)', 'revenue(currency=USD)', 'age(field=id)', 'network.dateTime(grain=day)');
+    await reorderColumns('browser(field=id)', 'age(field=id)', 'revenue(currency=USD)', 'network.dateTime(grain=day)');
 
     assert.deepEqual(
       getColumns(),
-      ['Browser (id)', 'Revenue (USD)', 'Age (id)', 'Date Time (day)'],
+      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (day)'],
       'The columns are reordered'
+    );
+  });
+
+  test('adding columns after reordering', async function (assert) {
+    assert.expect(3);
+    await newReport();
+
+    await clickItem('dimension', 'Date Time');
+    await clickItem('dimension', 'Age');
+    await clickItem('metric', 'Revenue');
+    await clickItem('dimension', 'Browser');
+    await animationsSettled();
+
+    assert.deepEqual(
+      getColumns(),
+      ['Date Time (day)', 'Age (id)', 'Browser (id)', 'Revenue (USD)'],
+      'The columns are ordered correctly'
+    );
+
+    await reorderColumns('browser(field=id)', 'age(field=id)', 'revenue(currency=USD)', 'network.dateTime(grain=day)');
+
+    assert.deepEqual(
+      getColumns(),
+      ['Browser (id)', 'Age (id)', 'Revenue (USD)', 'Date Time (day)'],
+      'The columns are reordered'
+    );
+
+    await clickItem('metric', 'Nav Link Clicks');
+    await clickItem('metric', 'Ad Clicks');
+    await clickItem('dimension', 'Date Time');
+    await clickItem('dimension', 'Currency');
+    await animationsSettled();
+
+    assert.deepEqual(
+      getColumns(),
+      [
+        'Browser (id)',
+        'Age (id)',
+        'Currency (id)',
+        'Revenue (USD)',
+        'Date Time (day)',
+        'Date Time (day)',
+        'Nav Link Clicks',
+        'Ad Clicks',
+      ],
+      'The columns are ordered correctly'
     );
   });
 
@@ -498,17 +544,18 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await newReport();
 
     assert.deepEqual(getColumns(), [], 'Initially no columns are visible');
-    await clickItem('dimension', 'Date Time');
     await clickItem('metric', 'Ad Clicks');
     await clickItem('dimension', 'Age');
-    await clickItem('dimension', 'Browser');
     await clickItem('metric', 'Nav Link Clicks');
     await clickItem('metric', 'Ad Clicks');
+    await clickItem('dimension', 'Date Time');
+    await clickItem('dimension', 'Browser');
+    await clickItem('dimension', 'Date Time');
 
     await animationsSettled();
     assert.deepEqual(
       getColumns(),
-      ['Date Time (day)', 'Ad Clicks', 'Age (id)', 'Browser (id)', 'Nav Link Clicks', 'Ad Clicks'],
+      ['Date Time (day)', 'Date Time (day)', 'Age (id)', 'Browser (id)', 'Ad Clicks', 'Nav Link Clicks', 'Ad Clicks'],
       'Dimensions, then metrics are displayed in the column config'
     );
   });

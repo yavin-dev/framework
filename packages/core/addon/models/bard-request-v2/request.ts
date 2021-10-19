@@ -246,6 +246,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
+   * @property columnTypes - Array of the column types
+   */
+  get columnTypes(): ColumnType[] {
+    return this.columns.map((column) => column.type);
+  }
+
+  /**
    * Sets the table of the request
    */
   setTableByMetadata(table: TableMetadataModel) {
@@ -254,20 +261,50 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   }
 
   /**
-   * Adds the column to the request
+   * Finds the index to insert a column at
    */
-  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias?: string }): ColumnFragment {
-    return this.columns.pushObject(this.fragmentFactory.createColumn(type, source, field, parameters, alias));
+  _getColumnInsertIndex(type: ColumnType): number {
+    const { columnTypes } = this;
+    let index = this.columns.length;
+
+    if (type === 'dimension') {
+      index = columnTypes.lastIndexOf('dimension') + 1;
+      if (!index) {
+        index = columnTypes.lastIndexOf('timeDimension') + 1;
+      }
+    }
+
+    if (type === 'timeDimension') {
+      index = columnTypes.lastIndexOf('timeDimension') + 1;
+    }
+
+    return index;
   }
 
   /**
-   * Adds a column with it's default parameters
+   * Adds a column to the request
+   */
+  _insertColumn(column: ColumnFragment) {
+    const index = this._getColumnInsertIndex(column.type);
+    this.columns.insertAt(index, column);
+    return column;
+  }
+
+  /**
+   * Adds a column to the request
+   */
+  addColumn({ type, source, field, parameters, alias }: BaseLiteral & { alias?: string }): ColumnFragment {
+    const column = this.fragmentFactory.createColumn(type, source, field, parameters, alias);
+    return this._insertColumn(column);
+  }
+
+  /**
+   * Adds a column with its default parameters
    */
   addColumnFromMetaWithParams(columnMetadataModel: ColumnMetadataModels, parameters: Parameters = {}): ColumnFragment {
     const defaultParams = columnMetadataModel.getDefaultParameters() || {};
-    return this.columns.pushObject(
-      this.fragmentFactory.createColumnFromMeta(columnMetadataModel, { ...defaultParams, ...parameters })
-    );
+    const column = this.fragmentFactory.createColumnFromMeta(columnMetadataModel, { ...defaultParams, ...parameters });
+    return this._insertColumn(column);
   }
 
   /**

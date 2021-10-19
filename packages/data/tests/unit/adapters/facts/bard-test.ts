@@ -242,7 +242,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(10);
+    assert.expect(12);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -341,6 +341,20 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       ],
     });
 
+    const multiValues = (values: string[], operator: Filter['operator']): RequestV2 => ({
+      ...EmptyRequest,
+      table: 'tableName',
+      filters: [
+        {
+          field: 'tableName.dateTime',
+          type: 'timeDimension',
+          parameters: { grain: 'isoWeek' },
+          operator,
+          values,
+        },
+      ],
+    });
+
     const startDate = '2021-02-01';
     const expectedEnd = moment()
       .utc()
@@ -396,6 +410,20 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       '_buildDateTimeParam throws error if end date is not a valid datetime'
     );
     config.navi.dataEpoch = originalDataEpoch;
+
+    const singleIntervalsOperator = singleValue('2021-10/2021-12', 'intervals');
+    assert.equal(
+      Adapter._buildDateTimeParam(singleIntervalsOperator),
+      '2021-10/2021-12',
+      'Single interval operator renders date value as is'
+    );
+
+    const multiIntervalsOperator = multiValues(['2021-10/2021-12', '2022-10/2022-12', '2023-10/2023-12'], 'intervals');
+    assert.equal(
+      Adapter._buildDateTimeParam(multiIntervalsOperator),
+      '2021-10/2021-12,2022-10/2022-12,2023-10/2023-12',
+      'Multiple interval operator renders date values comma separated as is'
+    );
   });
 
   test('_buildDateTimeParam all grain with macros', function (assert) {
@@ -528,7 +556,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildFiltersParam', function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     let singleFilter: RequestV2 = {
       ...EmptyRequest,
@@ -652,6 +680,38 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       Adapter._buildFiltersParam(quoteFilters),
       'd3|id-in["with ""quote""","but why"]',
       '_buildFiltersParam correctly escapes " in filters'
+    );
+
+    const timeDimensionFilters: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'd4',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'gte',
+          values: ['2021-09-04T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 'd5',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'lte',
+          values: ['2021-09-09T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 'd6',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'bet',
+          values: ['2021-09-03T00:00:00.000Z', '2021-09-07T00:00:00.000Z'],
+        },
+      ],
+    };
+    assert.equal(
+      Adapter._buildFiltersParam(timeDimensionFilters),
+      'd4|id-gte["2021-09-04"],d5|id-lte["2021-09-09"],d6|id-bet["2021-09-03","2021-09-08"]',
+      '_buildFiltersParam built the correct filters for non dateTime timeDimensions'
     );
   });
 

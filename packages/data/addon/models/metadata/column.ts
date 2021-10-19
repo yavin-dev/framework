@@ -24,7 +24,7 @@ export interface ColumnMetadataPayload {
   description?: string;
   tableId?: string; // Some columns do not have unique IDs
   source: string;
-  valueType: TODO<string>;
+  valueType?: string;
   type: RawColumnType;
   isSortable: boolean;
   expression?: string;
@@ -99,7 +99,7 @@ export default class ColumnMetadataModel extends NativeWithCreate {
   /**
    * enum value describing what type the values of this column hold
    */
-  declare valueType: TODO<string>;
+  declare valueType: string;
 
   declare tags: string[];
 

@@ -8,6 +8,7 @@ import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
 import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import { getRealDimensionType } from 'navi-core/utils/request';
 
 interface FieldTypes {
   metric: 'metric';
@@ -112,7 +113,11 @@ type ColumnInfo =
  * @param request the requested data for this table
  * @param visualization the existing visualization metadata
  */
-function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayloadV1): Record<string, ColumnInfo> {
+function buildColumnInfo(
+  request: RequestV2,
+  visualization: TableVisMetadataPayloadV1,
+  naviMetadata: NaviMetadataService
+): Record<string, ColumnInfo> {
   const columnData: Record<string, ColumnInfo> = {};
   request.columns.forEach((column, index) => {
     const { field, parameters } = column;
@@ -132,10 +137,15 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
       const grain = request.columns.find((c) => c.field === `${table}.dateTime`)?.parameters.grain;
       canonicalName = `${table}.${canonicalName}(grain=${grain})`;
     } else if (newCol.type === 'dimension') {
-      const field =
-        column.attributes?.field ??
-        request.columns.find((c) => c.type === 'dimension' && c.field === canonicalName)?.parameters.field;
-      canonicalName = `${canonicalName}(field=${field})`;
+      const type = getRealDimensionType(field, request.dataSource, naviMetadata);
+      const requestColumn = request.columns.find((c) => c.type === type && c.field === field);
+      const fieldParam = column.attributes?.field ?? requestColumn?.parameters.field;
+      assert(`field param must be found for dimension ${canonicalName}`, fieldParam);
+      const newParams = {
+        ...requestColumn?.parameters,
+        field: fieldParam,
+      };
+      canonicalName = canonicalizeMetric({ metric: field, parameters: newParams });
     }
     const data = columnData[canonicalName] || {};
     data.tableIndex = index;
@@ -153,12 +163,12 @@ function buildColumnInfo(request: RequestV2, visualization: TableVisMetadataPayl
  * @param request - the requested data for this table
  * @param metadata - the metadata service with the datasource already loaded
  */
-function injectDimensionFields(request: RequestV2, metadata: NaviMetadataService) {
+function injectDimensionFields(request: RequestV2, naviMetadata: NaviMetadataService) {
   const newColumns: RequestV2['columns'] = [];
   request.columns.forEach((col) => {
     const { type, field } = col;
     if (type === 'dimension') {
-      const dimMeta = metadata.getById(type, field, request.dataSource);
+      const dimMeta = naviMetadata.getById(type, field, request.dataSource);
       // get all show fields for dimension
       let showFields = dimMeta?.getFieldsForTag('show').map((f) => f.name) ?? [];
       if (showFields.length === 0) {
@@ -201,14 +211,14 @@ function injectDimensionFields(request: RequestV2, metadata: NaviMetadataService
 export function normalizeTableV2(
   request: RequestV2,
   visualization: TableVisMetadataPayloadV1 | TableVisualizationMetadata,
-  metadata: NaviMetadataService
+  naviMetadata: NaviMetadataService
 ): TableVisualizationMetadata {
   if (visualization.version === 2) {
     return visualization;
   }
 
-  injectDimensionFields(request, metadata);
-  const columnData: Record<string, ColumnInfo> = buildColumnInfo(request, visualization);
+  injectDimensionFields(request, naviMetadata);
+  const columnData: Record<string, ColumnInfo> = buildColumnInfo(request, visualization, naviMetadata);
 
   // Rearranges request columns to match table order
   const missedRequestColumns: Column[] = [];

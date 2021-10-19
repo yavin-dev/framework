@@ -249,9 +249,9 @@ export default {
       longName: 'User Signup Date',
       cardinality: 39896,
       category: 'test',
-      datatype: 'date',
+      datatype: 'dateTime',
       storageStrategy: 'loaded',
-      fields: defaultFields,
+      fields: [defaultFields[0]],
     },
     {
       name: 'commaDim',
