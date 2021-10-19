@@ -556,7 +556,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildFiltersParam', function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     let singleFilter: RequestV2 = {
       ...EmptyRequest,
@@ -680,6 +680,38 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       Adapter._buildFiltersParam(quoteFilters),
       'd3|id-in["with ""quote""","but why"]',
       '_buildFiltersParam correctly escapes " in filters'
+    );
+
+    const timeDimensionFilters: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'd4',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'gte',
+          values: ['2021-09-04T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 'd5',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'lte',
+          values: ['2021-09-09T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 'd6',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'bet',
+          values: ['2021-09-03T00:00:00.000Z', '2021-09-07T00:00:00.000Z'],
+        },
+      ],
+    };
+    assert.equal(
+      Adapter._buildFiltersParam(timeDimensionFilters),
+      'd4|id-gte["2021-09-04"],d5|id-lte["2021-09-09"],d6|id-bet["2021-09-03","2021-09-08"]',
+      '_buildFiltersParam built the correct filters for non dateTime timeDimensions'
     );
   });
 

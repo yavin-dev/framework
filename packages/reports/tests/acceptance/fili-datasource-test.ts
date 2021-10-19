@@ -254,4 +254,34 @@ module('Acceptance | fili datasource', function (hooks) {
       .dom(findAll('.filter-builder__values')[1])
       .hasText('', 'The values are cleared after switching dimension fields');
   });
+
+  test('Fili request v1 to v2 date dimensions', async function (assert) {
+    assert.expect(3);
+    await visit('/reports/7/view');
+
+    assert.deepEqual(
+      findAll('.filter-builder__subject').map((el) => el.textContent?.trim().replace(/\s+/g, ' ')),
+      ['Date Time day', 'User Signup Date id second', 'User Signup Date id second', 'User Signup Date id second'],
+      'Date dimension filters are correctly migrated'
+    );
+    assert.deepEqual(
+      findAll('.filter-builder__values').map((el) =>
+        Array.from(el.querySelectorAll('input')).map((el) => el.value.trim())
+      ),
+      [
+        ['Feb 09, 2018', 'Feb 15, 2018'],
+        // date dimension values
+        ['Oct 02, 2021'],
+        ['Oct 09, 2021'],
+        ['Sep 04, 2021', 'Sep 08, 2021'],
+      ],
+      'Date dimension filter values are correctly migrated'
+    );
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Date Time (day)', 'User Signup Date (id,second)', 'Revenue (USD)'],
+      'Date dimension columns shows up correctly with fields and grains'
+    );
+  });
 });

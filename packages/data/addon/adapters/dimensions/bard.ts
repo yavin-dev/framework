@@ -80,7 +80,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
       };
     });
 
-    return andQueries.length ? { filters: serializeFilters(requestV2Filters) } : {};
+    return andQueries.length ? { filters: serializeFilters(requestV2Filters, dimension.columnMetadata.source) } : {};
   }
 
   _find(
