@@ -318,7 +318,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           _localValues: fields.map((field) => ({
             id: field.name,
             description: undefined, // ignoring dimension field description for
-            name: field.name,
+            name: field.longName ?? field.name,
           })),
         },
         {

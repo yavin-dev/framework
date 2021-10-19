@@ -261,7 +261,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim().replace(/\s+/g, ' ')),
-      ['Date Time day', 'User Signup Date id second', 'User Signup Date id second', 'User Signup Date id second'],
+      ['Date Time Day', 'User Signup Date id second', 'User Signup Date id second', 'User Signup Date id second'],
       'Date dimension filters are correctly migrated'
     );
     assert.deepEqual(
@@ -280,7 +280,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Date Time (day)', 'User Signup Date (id,second)', 'Revenue (USD)'],
+      ['Date Time (Day)', 'User Signup Date (id,second)', 'Revenue (USD)'],
       'Date dimension columns shows up correctly with fields and grains'
     );
   });
