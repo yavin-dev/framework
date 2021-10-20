@@ -1,5 +1,5 @@
 mutation CancelTableExport($id: String) {
-  tableExport(op: UPDATE, ids: [$id], data: { status: CANCELLED }) {
+  tableExport(op: UPDATE, data: { id: $id, status: CANCELLED }) {
     edges {
       node {
         id
