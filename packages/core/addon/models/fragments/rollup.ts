@@ -22,6 +22,6 @@ export default class RollupFragment extends Fragment.extend(Validations) impleme
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/fragments/rollup': RollupFragment;
+    'fragments/rollup': RollupFragment;
   }
 }

@@ -52,7 +52,7 @@ module('Integration | Component | report builder', function (hooks) {
     this.set(
       'report',
       Store.createRecord('report', {
-        request: Store.createFragment('bard-request-v2/request', {
+        request: Store.createFragment('request', {
           table: null,
           dataSource: null,
           limit: null,

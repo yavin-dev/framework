@@ -7,7 +7,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/fragments/filter';
 
 interface TestContext extends Context {
   filter: FilterFragment;

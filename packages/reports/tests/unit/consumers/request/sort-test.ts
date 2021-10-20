@@ -1,14 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import StoreService from 'ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import SortConsumer from 'navi-reports/consumers/request/sort';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/fragments/column';
 
 const timeDimension = {
   type: 'timeDimension',
@@ -54,7 +54,7 @@ module('Unit | Consumer | request sort', function (hooks) {
   });
 
   test('UPSERT_SORT', function (assert) {
-    const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
+    const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',
@@ -106,7 +106,7 @@ module('Unit | Consumer | request sort', function (hooks) {
   });
 
   test('REMOVE_SORT', function (assert) {
-    const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
+    const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',
@@ -125,7 +125,7 @@ module('Unit | Consumer | request sort', function (hooks) {
   });
 
   test('REMOVE_COLUMN_FRAGMENT', function (assert) {
-    const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
+    const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',

@@ -19,10 +19,10 @@ import type { RequestV2, SortDirection, Parameters, Rollup } from 'navi-data/ada
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Store from '@ember-data/store';
-import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ColumnFragment from 'navi-core/models/fragments/column';
 import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import type { ColumnMetadataModels } from './fragments/base';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type FilterFragment from 'navi-core/models/fragments/filter';
 import type SortFragment from './fragments/sort';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type { ColumnType } from 'navi-data/models/metadata/column';
@@ -68,19 +68,19 @@ const Validations = buildValidations({
 });
 
 export default class RequestFragment extends Fragment.extend(Validations) implements RequestV2 {
-  @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: () => [] })
+  @fragmentArray('fragments/filter', { defaultValue: () => [] })
   declare filters: FragmentArray<FilterFragment>;
 
-  @fragmentArray('bard-request-v2/fragments/column', { defaultValue: () => [] })
+  @fragmentArray('fragments/column', { defaultValue: () => [] })
   declare columns: FragmentArray<ColumnFragment>;
 
   @attr('string')
   declare table: string; // TODO this can be undefined when only `dataSource` is set
 
-  @fragmentArray('bard-request-v2/fragments/sort', { defaultValue: () => [] })
+  @fragmentArray('fragments/sort', { defaultValue: () => [] })
   declare sorts: FragmentArray<SortFragment>;
 
-  @fragment('bard-request-v2/fragments/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
+  @fragment('fragments/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
   declare rollup: Rollup;
 
   @attr('number')
@@ -111,9 +111,9 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     const { store } = this;
     const clonedRequest = this.toJSON() as RequestFragment; //POJO form of RequestFragment;
 
-    return store.createFragment('bard-request-v2/request', {
+    return store.createFragment('request', {
       filters: clonedRequest.filters.map((filter) => {
-        const newFilter = store.createFragment('bard-request-v2/fragments/filter', {
+        const newFilter = store.createFragment('fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,
@@ -124,7 +124,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
         return newFilter;
       }),
       columns: clonedRequest.columns.map((column) => {
-        const newColumn = store.createFragment('bard-request-v2/fragments/column', {
+        const newColumn = store.createFragment('fragments/column', {
           cid: column.cid, // Needs to be the same for visualization column references
           field: column.field,
           parameters: column.parameters,
@@ -136,7 +136,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
       }),
       table: clonedRequest.table,
       sorts: clonedRequest.sorts.map((sort) => {
-        const newSort = store.createFragment('bard-request-v2/fragments/sort', {
+        const newSort = store.createFragment('fragments/sort', {
           field: sort.field,
           parameters: sort.parameters,
           type: sort.type,
@@ -145,7 +145,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
         });
         return newSort;
       }),
-      rollup: store.createFragment('bard-request-v2/fragments/rollup', clonedRequest.rollup),
+      rollup: store.createFragment('fragments/rollup', clonedRequest.rollup),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource,
@@ -439,6 +439,6 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/request': RequestFragment;
+    request: RequestFragment;
   }
 }

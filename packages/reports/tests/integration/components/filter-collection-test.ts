@@ -10,8 +10,8 @@ import { TestContext as Context } from 'ember-test-helpers';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import FilterFragment from 'navi-core/models/fragments/filter';
+import RequestFragment from 'navi-core/models/request';
 
 interface TestContext extends Context {
   request: RequestFragment;
@@ -36,7 +36,7 @@ module('Integration | Component | filter collection', function (hooks) {
     const factory = this.owner.lookup('service:fragment-factory') as FragmentFactory;
     this.set(
       'request',
-      store.createFragment('bard-request-v2/request', {
+      store.createFragment('request', {
         columns: [],
         filters: [
           factory.createFilter('dimension', 'bardOne', 'age', {}, 'isnull', [false]),

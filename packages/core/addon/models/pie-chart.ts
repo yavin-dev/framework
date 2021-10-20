@@ -9,7 +9,7 @@ import { attr } from '@ember-data/model';
 import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from 'navi-core/utils/chart-data';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type { TypedVisualizationFragment } from './visualization';
 

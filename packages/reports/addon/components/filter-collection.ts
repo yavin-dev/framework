@@ -4,8 +4,8 @@
  */
 import Component from '@glimmer/component';
 import { computed } from '@ember/object';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import RequestFragment from 'navi-core/models/request';
+import FilterFragment from 'navi-core/models/fragments/filter';
 import { dasherize } from '@ember/string';
 import { inject as service } from '@ember/service';
 import RequestConstrainer from 'navi-reports/services/request-constrainer';

@@ -6,9 +6,9 @@ import Service, { inject as service } from '@ember/service';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { ColumnType } from 'navi-data/models/metadata/column';
 import type Store from '@ember-data/store';
-import type ColumnFragment from '../models/bard-request-v2/fragments/column';
-import type FilterFragment from '../models/bard-request-v2/fragments/filter';
-import type SortFragment from '../models/bard-request-v2/fragments/sort';
+import type ColumnFragment from '../models/fragments/column';
+import type FilterFragment from '../models/fragments/filter';
+import type SortFragment from '../models/fragments/sort';
 import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 export default class FragmentFactory extends Service {
@@ -45,7 +45,7 @@ export default class FragmentFactory extends Service {
     parameters: Record<string, string> = {},
     alias?: string
   ): ColumnFragment {
-    return this.store.createFragment('bard-request-v2/fragments/column', {
+    return this.store.createFragment('fragments/column', {
       field,
       type,
       parameters,
@@ -88,7 +88,7 @@ export default class FragmentFactory extends Service {
     operator: FilterFragment['operator'],
     values: FilterFragment['values']
   ): FilterFragment {
-    return this.store.createFragment('bard-request-v2/fragments/filter', {
+    return this.store.createFragment('fragments/filter', {
       field,
       parameters,
       type,
@@ -128,7 +128,7 @@ export default class FragmentFactory extends Service {
     parameters: Record<string, string> = {},
     direction: SortDirection
   ): SortFragment {
-    return this.store.createFragment('bard-request-v2/fragments/sort', {
+    return this.store.createFragment('fragments/sort', {
       field,
       parameters,
       type,

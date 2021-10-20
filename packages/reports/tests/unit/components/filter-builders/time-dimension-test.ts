@@ -7,7 +7,7 @@ import { createGlimmerComponent } from 'navi-core/test-support';
 import TimeDimensionFilterBuilder, { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
 import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { Grain } from 'navi-data/utils/date';
 
 let Request: RequestFragment;
@@ -16,7 +16,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
   hooks.beforeEach(async function (this: TestContext) {
     const store = this.owner.lookup('service:store') as StoreService;
-    Request = store.createFragment('bard-request-v2/request', {
+    Request = store.createFragment('request', {
       table: 'network',
       columns: [],
       filters: [

@@ -51,7 +51,7 @@ module('Unit | Component | table', function (hooks) {
 
     MODEL = A([
       {
-        request: store.createFragment('bard-request-v2/request', {
+        request: store.createFragment('request', {
           table: 'network',
           columns: [
             {

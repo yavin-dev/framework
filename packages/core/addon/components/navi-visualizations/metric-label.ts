@@ -11,7 +11,7 @@
 import Component from '@glimmer/component';
 import { computed } from '@ember/object';
 import { VisualizationModel } from './table';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/fragments/column';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
 

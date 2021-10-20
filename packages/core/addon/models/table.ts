@@ -9,7 +9,7 @@ import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
 import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 
 function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {
   const requestCids = new Set(request.columns.map((column) => column.cid));

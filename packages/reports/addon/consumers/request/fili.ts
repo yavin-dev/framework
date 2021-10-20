@@ -12,13 +12,13 @@ import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
 import moment from 'moment';
 import Interval from 'navi-data/utils/classes/interval';
 import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
-import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ColumnFragment from 'navi-core/models/fragments/column';
 import type ReportModel from 'navi-core/models/report';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { Filter, Parameters } from 'navi-data/adapters/facts/interface';
 import type Route from '@ember/routing/route';
 import type { Grain } from 'navi-data/utils/date';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type FilterFragment from 'navi-core/models/fragments/filter';
 
 export default class FiliConsumer extends ActionConsumer {
   @service

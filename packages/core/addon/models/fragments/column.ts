@@ -12,7 +12,7 @@ import { computed } from '@ember/object';
 import { fragmentOwner } from 'ember-data-model-fragments/attributes';
 import type NaviFormatterService from 'navi-data/services/navi-formatter';
 import type { ColumnType } from 'navi-data/models/metadata/column';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 
 /**
  * @augments {BaseFragment}
@@ -45,6 +45,6 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/fragments/column': ColumnFragment;
+    'fragments/column': ColumnFragment;
   }
 }

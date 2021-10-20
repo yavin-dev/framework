@@ -10,7 +10,7 @@ import type FiliConsumer from 'navi-reports/consumers/request/fili';
 import type StoreService from '@ember-data/store';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { NaviDataSource } from 'navi-config';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 
 let consumer: FiliConsumer;
 const dispatchedActions: string[] = [];
@@ -50,7 +50,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('UPDATE_FILTER', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       table: 'network',
       filters: [
         {
@@ -112,7 +112,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('UPDATE_FILTER - update column grain', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       table: 'network',
       filters: [
         {
@@ -166,7 +166,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('UPDATE_FILTER - update dimension field', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       table: 'network',
       filters: [
         {
@@ -207,7 +207,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('DID_ADD_COLUMN', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const requestExistingFilter = store.createFragment('bard-request-v2/request', {
+    const requestExistingFilter = store.createFragment('request', {
       table: 'network',
       filters: [
         {
@@ -255,7 +255,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
-    const requestExistingColumn = store.createFragment('bard-request-v2/request', {
+    const requestExistingColumn = store.createFragment('request', {
       table: 'network',
       filters: [],
       sorts: [],
@@ -298,7 +298,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       table: 'network',
       filters: [
         {
@@ -408,7 +408,7 @@ module('Unit | Consumer | request fili', function (hooks) {
 
   test('ADD_DIMENSION_FILTER', function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       table: 'network',
       filters: [],
       sorts: [],

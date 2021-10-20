@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { groupDataByDimensions, chartTypeForRequest } from 'navi-core/utils/chart-data';
 import { buildTestRequest } from '../../helpers/request';
 import { setupTest } from 'ember-qunit';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/fragments/column';
 
 module('Unit | Utils | Chart Data', function (hooks) {
   setupTest(hooks);

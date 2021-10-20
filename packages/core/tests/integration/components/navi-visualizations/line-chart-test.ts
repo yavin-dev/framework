@@ -518,7 +518,7 @@ module('Integration | Component | line chart', function (hooks) {
       'model',
       A([
         {
-          request: store.createFragment('bard-request-v2/request', {
+          request: store.createFragment('request', {
             table: 'inventory',
             columns: [
               {

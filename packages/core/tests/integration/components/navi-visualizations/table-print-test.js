@@ -48,7 +48,7 @@ module('Integration | Component | navi visualizations/table print', function (ho
 
     const Model = A([
       {
-        request: store.createFragment('bard-request-v2/request', {
+        request: store.createFragment('request', {
           dataSource: 'bardOne',
           requestVersion: '2.0',
           table: 'network',

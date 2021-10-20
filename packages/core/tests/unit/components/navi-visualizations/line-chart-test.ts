@@ -44,7 +44,7 @@ module('Unit | Component | line chart', function (hooks) {
         { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', uniqueIdentifier: 172724594, totalPageViews: 3697156058 }
       ],
     });
-    const request = Store.createFragment('bard-request-v2/request', {
+    const request = Store.createFragment('request', {
       table: 'network',
       columns: [
         {

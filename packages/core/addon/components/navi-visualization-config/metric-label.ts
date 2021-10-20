@@ -4,7 +4,7 @@
  */
 import { action, set } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/fragments/column';
 import { Args as MetricLabelArgs } from '../navi-visualizations/metric-label';
 import NaviVisualizationConfigBaseComponent from './base';
 

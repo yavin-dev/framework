@@ -12,7 +12,7 @@ import { normalizeBarChartV2 } from './bar-chart';
 import { normalizeGoalGaugeV2 } from './goal-gauge';
 import { normalizePieChartV2 } from './pie-chart';
 import type Model from '@ember-data/model';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

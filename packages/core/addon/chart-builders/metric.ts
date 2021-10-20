@@ -19,12 +19,12 @@ import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-forma
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import EmberObject, { computed } from '@ember/object';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { BaseChartBuilder, C3Row, EmptyC3Data } from './base';
 import { tracked } from '@glimmer/tracking';
 import { MetricSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/fragments/column';
 
 const BLANK_X_VALUE = '';
 

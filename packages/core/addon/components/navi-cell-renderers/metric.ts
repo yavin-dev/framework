@@ -11,7 +11,7 @@
  * />
  */
 import BaseCellRenderer from './base';
-import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ColumnFragment from 'navi-core/models/fragments/column';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
 
 export default class MetricCellRenderer extends BaseCellRenderer {

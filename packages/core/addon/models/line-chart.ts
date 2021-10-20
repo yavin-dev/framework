@@ -8,7 +8,7 @@ import { attr } from '@ember-data/model';
 import ChartVisualization, { ChartConfig, ChartVisualizationType } from './chart-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, DATE_TIME_SERIES, chartTypeForRequest, ChartType } from 'navi-core/utils/chart-data';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { TypedVisualizationFragment } from './visualization';
 

@@ -7,7 +7,7 @@ import { tracked } from '@glimmer/tracking';
 import { computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import type DashboardModel from 'navi-core/models/dashboard';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type FilterFragment from 'navi-core/models/fragments/filter';
 import type Store from '@ember-data/store';
 
 interface Args {
@@ -30,11 +30,11 @@ export default class DashboardFiltersComponent extends Component<Args> {
 
   @computed('args.dashboard.filters.[]')
   get request() {
-    return this.store.createFragment('bard-request-v2/request', {
+    return this.store.createFragment('request', {
       table: null,
       columns: [],
       filters: (this.args.dashboard.filters || []).map((filter) => {
-        const newFilter = this.store.createFragment('bard-request-v2/fragments/filter', {
+        const newFilter = this.store.createFragment('fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,

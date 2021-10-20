@@ -34,6 +34,6 @@ export default class FilterFragment extends BaseFragment.extend(Validations) imp
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/fragments/filter': FilterFragment;
+    'fragments/filter': FilterFragment;
   }
 }

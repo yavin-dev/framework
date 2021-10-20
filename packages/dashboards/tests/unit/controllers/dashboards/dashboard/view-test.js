@@ -21,7 +21,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
   test('updateFilter', async function (assert) {
     assert.expect(3);
 
-    let osFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+    let osFilter = Store.createFragment('fragments/filter', {
         type: 'dimension',
         field: 'os',
         parameters: {
@@ -80,7 +80,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
 
   test('removeFilter', async function (assert) {
     assert.expect(3);
-    let osFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+    let osFilter = Store.createFragment('fragments/filter', {
         type: 'dimension',
         field: 'os',
         parameters: {
@@ -211,7 +211,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
   test('Updating multidatasource filter', async function (assert) {
     assert.expect(2);
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
-    const containerFilter = Store.createFragment('bard-request-v2/fragments/filter', {
+    const containerFilter = Store.createFragment('fragments/filter', {
       type: 'dimension',
       field: 'container',
       parameters: {

@@ -10,7 +10,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import UserModel from './user';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import { Moment } from 'moment';
-import FilterFragment from './bard-request-v2/fragments/filter';
+import FilterFragment from './fragments/filter';
 import DashboardWidget from './dashboard-widget';
 import PresentationFragment from './fragments/presentation';
 
@@ -40,7 +40,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   @hasMany('dashboard-widget', { async: true })
   widgets!: AsyncHasMany<DashboardWidget>;
 
-  @fragmentArray('bard-request-v2/fragments/filter', { defaultValue: [] })
+  @fragmentArray('fragments/filter', { defaultValue: [] })
   filters!: FragmentArray<FilterFragment>;
 
   @fragment('fragments/presentation', { defaultValue: () => ({}) })
@@ -85,7 +85,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
       owner: user,
       widgets: [],
       filters: this.filters.map((filter) => {
-        return this.store.createFragment('bard-request-v2/fragments/filter', {
+        return this.store.createFragment('fragments/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,

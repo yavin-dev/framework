@@ -7,7 +7,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/fragments/filter';
 import Lookback from 'navi-reports/components/filter-values/time-dimension/lookback';
 import { getDateRangeFormat } from '../../../../helpers/get-date-range';
 
