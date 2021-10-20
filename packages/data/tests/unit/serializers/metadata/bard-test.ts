@@ -16,6 +16,7 @@ import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/mode
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
+import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -67,10 +68,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -84,6 +87,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -97,6 +101,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -144,10 +149,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -161,6 +168,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -174,6 +182,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -216,10 +225,12 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
                 {
                   name: 'desc',
                   description: 'Dimension Description',
+                  longName: 'Desc',
                 },
               ],
             },
@@ -233,6 +244,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -246,6 +258,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -304,6 +317,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -317,6 +331,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -352,6 +367,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'foo',
                   description: 'bar',
+                  longName: 'Foo',
                 },
               ],
             },
@@ -365,6 +381,7 @@ const Payload: RawEverythingPayload = {
                 {
                   name: 'id',
                   description: 'Dimension ID',
+                  longName: 'Id',
                 },
               ],
             },
@@ -429,10 +446,12 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
       {
         name: 'id',
         description: 'Dimension ID',
+        longName: 'Id',
       },
       {
         name: 'desc',
         description: 'Dimension Description',
+        longName: 'Desc',
       },
     ],
     tableSource: {
@@ -456,6 +475,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     fields: [
       {
         name: 'foo',
+        longName: 'Foo',
         description: 'bar',
       },
     ],
@@ -481,6 +501,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
       {
         name: 'id',
         description: 'Dimension ID',
+        longName: 'Id',
       },
     ],
     tableSource: {
@@ -624,12 +645,12 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id',
+            name: 'Id',
           },
           {
             description: undefined,
             id: 'desc',
-            name: 'desc',
+            name: 'Desc',
           },
         ],
         defaultValue: 'id',
@@ -653,7 +674,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'foo',
-            name: 'foo',
+            name: 'Foo',
           },
         ],
         defaultValue: 'foo',
@@ -677,7 +698,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
           {
             description: undefined,
             id: 'id',
-            name: 'id',
+            name: 'Id',
           },
         ],
         defaultValue: 'id',
@@ -855,18 +876,25 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
+    assert.expect(7);
+    const expected: EverythingMetadataPayload = {
+      metrics: Metrics,
+      dimensions: Dimensions,
+      timeDimensions: TimeDimensions,
+      tables: Tables,
+      columnFunctions: ColumnFunctions,
+      requestConstraints: RequestConstraints,
+    };
+    const normalized = Serializer.normalize('everything', Payload, 'bardOne');
+
     assert.deepEqual(
-      Serializer.normalize('everything', Payload, 'bardOne'),
-      {
-        metrics: Metrics,
-        dimensions: Dimensions,
-        timeDimensions: TimeDimensions,
-        tables: Tables,
-        columnFunctions: ColumnFunctions,
-        requestConstraints: RequestConstraints,
-      },
-      'One column function is created for all metrics with only the currency parameter'
+      Object.keys(expected).sort(),
+      Object.keys(normalized as object).sort(),
+      'Everything metadata payload has all types'
     );
+    Object.keys(expected).forEach((key: keyof EverythingMetadataPayload) => {
+      assert.deepEqual(expected[key], normalized?.[key], `All normalized ${key} are created correctly`);
+    });
   });
 
   test('normalize `everything` with column functions', function (assert) {
@@ -1022,10 +1050,12 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         {
           name: 'foo',
           description: 'bar',
+          longName: 'Foo',
         },
         {
           name: 'baz',
           description: 'bang',
+          longName: 'Baz',
         },
       ],
       datatype: 'text',
