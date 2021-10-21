@@ -19,6 +19,7 @@ module.exports = {
   rules: {
     'multiline-comment-style': ['error', 'starred-block'],
     'ember/no-jquery': 'error',
+    'no-debugger': 'error',
   },
   overrides: [
     // node files
