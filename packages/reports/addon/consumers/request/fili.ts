@@ -160,7 +160,7 @@ export default class FiliConsumer extends ActionConsumer {
     },
 
     /**
-     * @action ADD_DIMENSION_FILTER - TODO THIS IS BROKEN
+     * @action ADD_DIMENSION_FILTER
      * @param route - route that has a model that contains a request property
      * @param dimension - dimension to filter
      */
@@ -175,7 +175,6 @@ export default class FiliConsumer extends ActionConsumer {
 
       const filiDateTimeColumn = request.columns.find(isFiliDateTime);
       const requestedGrain = parameters.grain;
-      debugger;
       if (
         dimensionMetadataModel.metadataType === 'timeDimension' &&
         dimensionMetadataModel === filiDateTimeColumn?.columnMetadata &&
