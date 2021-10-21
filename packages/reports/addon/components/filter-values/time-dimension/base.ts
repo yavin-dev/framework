@@ -23,6 +23,17 @@ export default class BaseTimeDimensionFilter extends Component<TimeDimensionFilt
   @readOnly('args.filter.parameters.grain') grain!: Grain;
 
   /**
+   * Currently the date picker only supports down to the day
+   */
+  get calendarGrain() {
+    const grain = this.args.filter.parameters.grain as Grain;
+    if (grain === 'hour' || grain === 'minute' || grain === 'second') {
+      return 'day';
+    }
+    return grain;
+  }
+
+  /**
    * the datetime format to display based on the time grain
    */
   @computed('grain')

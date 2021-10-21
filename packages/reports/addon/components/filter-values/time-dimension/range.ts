@@ -8,9 +8,9 @@
  *     @onUpdateFilter={{this.update}}
  *   />
  */
+import BaseIntervalComponent from './base-interval';
 import { action } from '@ember/object';
 import { Moment } from 'moment';
-import BaseIntervalComponent from './base-interval';
 
 export default class DimensionDateRange extends BaseIntervalComponent {
   /**

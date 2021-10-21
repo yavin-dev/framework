@@ -19,6 +19,11 @@ import type { Filter, Parameters } from 'navi-data/adapters/facts/interface';
 import type Route from '@ember/routing/route';
 import type { Grain } from 'navi-data/utils/date';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type SortFragment from 'navi-core/models/bard-request-v2/fragments/sort';
+
+function isFiliDateTime(col: ColumnFragment | FilterFragment | SortFragment) {
+  return col.field.endsWith('.dateTime') && col.type === 'timeDimension';
+}
 
 export default class FiliConsumer extends ActionConsumer {
   @service
@@ -36,19 +41,23 @@ export default class FiliConsumer extends ActionConsumer {
   }
 
   expandFilterInterval(route: Route, dateTimeFilter: FilterFragment, newGrain: Grain) {
+    let intervalGrain = newGrain;
+    if (newGrain === 'hour' || newGrain === 'minute' || newGrain === 'second') {
+      intervalGrain = 'day';
+    }
     let values;
     if (dateTimeFilter.operator === 'bet') {
       const oldGrain = dateTimeFilter.parameters.grain as Grain;
       let [start, end] = dateTimeFilter.values as string[];
       if (typeof end === 'string' && moment.utc(end).isValid()) {
-        if (GrainOrdering[oldGrain] > GrainOrdering[newGrain]) {
+        if (GrainOrdering[oldGrain] > GrainOrdering[intervalGrain]) {
           end = moment
             .utc(end as string)
             .add(1, getPeriodForGrain(oldGrain))
-            .subtract(1, getPeriodForGrain(newGrain))
+            .subtract(1, getPeriodForGrain(intervalGrain))
             .toISOString();
         } else {
-          const interval = Interval.parseInclusive(start, end, oldGrain).asMomentsInclusive(newGrain);
+          const interval = Interval.parseInclusive(start, end, oldGrain).asMomentsInclusive(intervalGrain);
           start = interval.start.toISOString();
           end = interval.end.toISOString();
         }
@@ -78,27 +87,28 @@ export default class FiliConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const { dateTimeFilter } = request;
 
       const newGrain = changeset.parameters?.grain;
       // the grain was updated but no values were specified
-      if (dateTimeFilter === filterFragment && newGrain) {
-        const values = valuesForOperator(dateTimeFilter, newGrain as Grain);
+      if (isFiliDateTime(filterFragment) && newGrain) {
+        const values = valuesForOperator(filterFragment, newGrain as Grain);
         const changeset = { values };
-        this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+        this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, filterFragment, changeset);
       }
 
-      const { timeGrainColumn } = request;
-      if (newGrain && timeGrainColumn && timeGrainColumn.parameters.grain !== newGrain) {
+      const filiDateTimeColumns = request.columns.filter(isFiliDateTime);
+      if (newGrain && filiDateTimeColumns.some((c) => c.parameters.grain !== newGrain)) {
         // update filterFragment before dispatch to prevent infinite loop
         filterFragment.setProperties(changeset);
-        this.requestActionDispatcher.dispatch(
-          RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS,
-          route,
-          timeGrainColumn,
-          'grain',
-          newGrain
-        );
+        filiDateTimeColumns.forEach((col) => {
+          this.requestActionDispatcher.dispatch(
+            RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS,
+            route,
+            col,
+            'grain',
+            newGrain
+          );
+        });
       }
 
       if (filterFragment.type === 'dimension' && changeset.parameters && !changeset.values) {
@@ -123,17 +133,18 @@ export default class FiliConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
 
-      const { dateTimeFilter } = request;
       // If the date time grain was updated
-      if (columnFragment.type === 'timeDimension' && parameterKey === 'grain') {
+      if (isFiliDateTime(columnFragment) && parameterKey === 'grain') {
         // and there is a date time filter, update filter grain to match
-        if (dateTimeFilter && dateTimeFilter.parameters.grain !== parameterValue) {
-          this.expandFilterInterval(route, dateTimeFilter, parameterValue as Grain);
-        }
+        request.filters
+          .filter((f) => isFiliDateTime(f) && f.parameters.grain !== parameterValue)
+          .forEach((filiDateTimeFilter) =>
+            this.expandFilterInterval(route, filiDateTimeFilter, parameterValue as Grain)
+          );
 
         // update all other date time grains to match
         request.columns
-          .filter((c) => c.type === 'timeDimension' && c !== columnFragment)
+          .filter((c) => isFiliDateTime(c) && c !== columnFragment)
           .forEach((dateTimeColumn) => {
             if (dateTimeColumn.parameters.grain !== parameterValue) {
               this.requestActionDispatcher.dispatch(
@@ -149,7 +160,7 @@ export default class FiliConsumer extends ActionConsumer {
     },
 
     /**
-     * @action ADD_DIMENSION_FILTER
+     * @action ADD_DIMENSION_FILTER - TODO THIS IS BROKEN
      * @param route - route that has a model that contains a request property
      * @param dimension - dimension to filter
      */
@@ -157,20 +168,29 @@ export default class FiliConsumer extends ActionConsumer {
       this: FiliConsumer,
       route: Route,
       dimensionMetadataModel: DimensionMetadataModel,
-      _parameters: Parameters
+      parameters: Parameters = {}
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
 
-      const { dateTimeFilter, timeGrain } = request;
+      const filiDateTimeColumn = request.columns.find(isFiliDateTime);
+      const requestedGrain = parameters.grain;
+      debugger;
       if (
         dimensionMetadataModel.metadataType === 'timeDimension' &&
-        dimensionMetadataModel === dateTimeFilter?.columnMetadata &&
-        timeGrain &&
-        dateTimeFilter.parameters.grain !== timeGrain
+        dimensionMetadataModel === filiDateTimeColumn?.columnMetadata &&
+        requestedGrain &&
+        filiDateTimeColumn.parameters.grain !== requestedGrain
       ) {
-        const changeset = { parameters: { ...dateTimeFilter.parameters, grain: timeGrain } };
-        this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
+        request.filters.filter(isFiliDateTime).forEach((filiDateTimeFilter) => {
+          const changeset = {
+            parameters: {
+              ...filiDateTimeFilter.parameters,
+              grain: filiDateTimeColumn.parameters.grain,
+            },
+          };
+          this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, filiDateTimeFilter, changeset);
+        });
       }
     },
 
@@ -183,10 +203,11 @@ export default class FiliConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
 
-      const { timeGrainColumn, dateTimeFilter } = request;
-      const existingGrain = dateTimeFilter?.parameters?.grain || timeGrainColumn?.parameters?.grain;
+      const filtersAndColumns = [...request.columns.toArray(), ...request.filters.toArray()];
+      const filiDateTimes = filtersAndColumns.filter((col) => isFiliDateTime(col) && col !== column);
+      const existingGrain = filiDateTimes.find((col) => col.parameters.grain)?.parameters.grain;
       // if a date time column was added and there is an existing grain, update the grain to match
-      if (column.type === 'timeDimension' && existingGrain && column.parameters.grain !== existingGrain) {
+      if (isFiliDateTime(column) && existingGrain && column.parameters.grain !== existingGrain) {
         this.requestActionDispatcher.dispatch(
           RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS,
           route,

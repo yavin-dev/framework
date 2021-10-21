@@ -65,6 +65,9 @@ export function valuesForOperator(
   grain: Grain,
   newOperator?: InternalOperatorType
 ): TimeFilterValues {
+  if (grain === 'hour' || grain === 'minute' || grain === 'second') {
+    grain = 'day';
+  }
   newOperator = newOperator || internalOperatorForValues(filter);
   const [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
 
