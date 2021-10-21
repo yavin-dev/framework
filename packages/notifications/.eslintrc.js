@@ -22,6 +22,9 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/ban-ts-ignore': 'off',
 
+    // cleanliness & consistency
+    'no-debugger': 'error',
+
     // prettier
     'prettier/prettier': 'error',
 

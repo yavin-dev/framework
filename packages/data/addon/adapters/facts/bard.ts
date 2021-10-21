@@ -142,7 +142,11 @@ export function serializeFilters(filters: Filter[], dataSource: string): string 
         } else {
           serializedValues = [filterValues[0], filterValues[1]];
         }
-        serializedValues = serializedValues.map((t) => t.replace('T00:00:00.000', ''));
+        if (filter.parameters.grain === 'day') {
+          serializedValues = serializedValues.map((t) => moment.utc(t).format('YYYY-MM-DD'));
+        } else if (filter.parameters.grain === 'second') {
+          serializedValues = serializedValues.map((t) => moment.utc(t).format('YYYY-MM-DD HH:mm:ss'));
+        }
       } else {
         serializedValues = values.map((v: string | number) => String(v).replace(/"/g, '""')); // csv serialize " -> ""
       }

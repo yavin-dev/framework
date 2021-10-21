@@ -35,6 +35,7 @@ module.exports = {
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
     'prefer-rest-params': 'off', // useful for super(...arguments) calls
+    'no-debugger': 'error',
     'ember/no-empty-glimmer-component-classes': 'off', // ignore to keep arg types on template only components
 
     // typescript

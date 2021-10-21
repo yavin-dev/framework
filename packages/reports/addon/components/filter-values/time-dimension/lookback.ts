@@ -77,7 +77,7 @@ export default class LookbackInput extends BaseIntervalComponent {
   get dateDescription(): string {
     const { grain, dateRange, lookback } = this;
     let datePeriod = grain;
-    if (datePeriod === 'hour') {
+    if (datePeriod === 'hour' || datePeriod === 'minute' || datePeriod === 'second') {
       datePeriod = 'day';
     }
     return `${datePeriod}${lookback === 1 ? '' : 's'} (${dateRange})`;
