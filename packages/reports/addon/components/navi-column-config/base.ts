@@ -37,7 +37,7 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   ];
 
   get apiColumnName(): string {
-    return this.args.column.fragment.columnMetadata.name;
+    return this.args.column.fragment.columnMetadata.id;
   }
 
   @action

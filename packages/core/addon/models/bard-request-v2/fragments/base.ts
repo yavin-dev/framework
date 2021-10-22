@@ -81,7 +81,7 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   }
 
   @computed('parameters', 'columnMetadata')
-  get displayName(): any {
+  get displayName(): Promise<string> | string {
     const { parameters, columnMetadata } = this;
     if (columnMetadata?.metadataType === 'metric') {
       return this.naviFormatter.formatMetricColumnName(columnMetadata, parameters, null);

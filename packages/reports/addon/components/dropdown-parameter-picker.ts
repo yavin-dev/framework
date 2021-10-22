@@ -6,7 +6,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
-import FunctionParameter from 'navi-data/models/metadata/function-parameter';
+import FunctionParameter, { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
 
 interface Args {
   parameterMetadata: FunctionParameter;
@@ -16,7 +16,7 @@ interface Args {
 
 export default class ParameterPickerComponent extends Component<Args> {
   @tracked
-  options: { groupName: string; options: (string | undefined)[] | undefined }[] = [];
+  options: { groupName: string; options: ColumnFunctionParametersValues | undefined }[] = [];
 
   @action
   async fetchParameterOptions() {
@@ -24,17 +24,14 @@ export default class ParameterPickerComponent extends Component<Args> {
     this.options = [
       {
         groupName: capitalize(this.args.parameterMetadata.name),
-        options: valuesPromise?.map((el) => el.name ?? el.id),
+        options: valuesPromise,
       },
     ];
   }
 
   @action
-  async onUpdate(selected: unknown) {
-    let id = await this.args.parameterMetadata.values?.then((parameters) => {
-      return parameters.find((value) => value.name === selected)?.id ?? selected;
-    });
-    this.args.onUpdate(this.args.parameterMetadata.id, id);
+  onUpdate(selected: any) {
+    this.args.onUpdate(this.args.parameterMetadata.id, selected.id);
   }
 
   get select() {
