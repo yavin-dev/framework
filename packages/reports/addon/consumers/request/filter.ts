@@ -57,6 +57,7 @@ export default class FilterConsumer extends ActionConsumer {
         const opDictionary: Record<string, FilterFragment['operator']> = {
           time: 'gte',
           date: 'bet',
+          datetime: 'bet',
           number: 'eq',
           default: 'in',
         };
@@ -76,7 +77,12 @@ export default class FilterConsumer extends ActionConsumer {
       };
       let values;
       if (dimensionMetadataModel.metadataType === 'timeDimension' && defaultOperator === 'bet') {
-        values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
+        const isTime = ['hour', 'minute', 'second'].includes(filter.parameters.grain);
+        if (isTime) {
+          values = valuesForOperator(filter, 'day', OPERATORS.dateRange);
+        } else {
+          values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
+        }
       }
 
       const newFilter = request.addFilter({

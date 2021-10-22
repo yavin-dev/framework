@@ -242,7 +242,7 @@ module('Unit | Serializer | table', function (hooks) {
       },
     };
 
-    const request = normalizeV1toV2(requestV1, 'facts');
+    const request = normalizeV1toV2(requestV1, 'facts', naviMetadata);
     const result = normalizeTableV2(request, visualization, naviMetadata);
 
     const [cid1, cid2] = Object.keys(result.metadata.columnAttributes);
@@ -300,7 +300,7 @@ module('Unit | Serializer | table', function (hooks) {
         { metric: 'revenue', parameters: { currency: 'USD' } },
         { metric: 'revenue', parameters: { currency: 'EUR' } },
       ],
-      dimensions: [{ dimension: 'multiSystemId' }],
+      dimensions: [{ dimension: 'multiSystemId' }, { dimension: 'userSignupDate' }],
       filters: [],
       intervals: [{ end: '2018-02-16 00:00:00.000', start: '2018-02-09 00:00:00.000' }],
       having: [],
@@ -324,6 +324,11 @@ module('Unit | Serializer | table', function (hooks) {
             displayName: 'Multi System Id (other)',
           },
           { field: 'revenue(currency=USD)', type: 'metric', displayName: 'Revenue (USD)' },
+          {
+            type: 'dimension',
+            attributes: { name: 'userSignupDate' },
+            displayName: 'User Signup Date',
+          },
           { field: 'revenue(currency=EUR)', type: 'metric', displayName: 'Revenue (EUR)' },
         ],
         showTotals: {
@@ -333,7 +338,7 @@ module('Unit | Serializer | table', function (hooks) {
       },
     };
 
-    const request = normalizeV1toV2(requestV1, 'bardOne');
+    const request = normalizeV1toV2(requestV1, 'bardOne', naviMetadata);
     const result = normalizeTableV2(request, visualization, naviMetadata);
 
     assert.deepEqual(
@@ -354,16 +359,19 @@ module('Unit | Serializer | table', function (hooks) {
       'the table metadata is properly generated when show fields are injected as columns'
     );
 
-    request.columns.forEach((c) => (c.cid = ''));
+    request.columns.forEach((c) => {
+      delete c.cid;
+    });
     assert.deepEqual(
       request,
       {
         columns: [
-          { cid: '', type: 'timeDimension', field: 'tableA.dateTime', parameters: { grain: 'day' } },
-          { cid: '', type: 'dimension', field: 'multiSystemId', parameters: { field: 'desc' } },
-          { cid: '', type: 'dimension', field: 'multiSystemId', parameters: { field: 'other' } },
-          { cid: '', type: 'metric', field: 'revenue', parameters: { currency: 'USD' } },
-          { cid: '', type: 'metric', field: 'revenue', parameters: { currency: 'EUR' } },
+          { type: 'timeDimension', field: 'tableA.dateTime', parameters: { grain: 'day' } },
+          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'desc' } },
+          { type: 'dimension', field: 'multiSystemId', parameters: { field: 'other' } },
+          { type: 'metric', field: 'revenue', parameters: { currency: 'USD' } },
+          { type: 'timeDimension', field: 'userSignupDate', parameters: { field: 'id', grain: 'second' } },
+          { type: 'metric', field: 'revenue', parameters: { currency: 'EUR' } },
         ],
         filters: [
           {

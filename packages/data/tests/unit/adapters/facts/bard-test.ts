@@ -556,7 +556,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildFiltersParam', function (assert) {
-    assert.expect(9);
+    assert.expect(11);
 
     let singleFilter: RequestV2 = {
       ...EmptyRequest,
@@ -680,6 +680,76 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       Adapter._buildFiltersParam(quoteFilters),
       'd3|id-in["with ""quote""","but why"]',
       '_buildFiltersParam correctly escapes " in filters'
+    );
+
+    const secondTimeDimensionFilters: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 't5',
+          parameters: { field: 'id', grain: 'second' },
+          operator: 'lte',
+          values: ['2021-09-09T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 't6',
+          parameters: { field: 'id', grain: 'second' },
+          operator: 'lte',
+          values: ['2021-09-09T06:12:34.456Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 't7',
+          parameters: { field: 'id', grain: 'second' },
+          operator: 'bet',
+          values: ['P1D', 'current'],
+        },
+      ],
+    };
+    const secondFormat = 'YYYY-MM-DD HH:mm:ss';
+    const yesterdaySecond = moment.utc().subtract(1, 'day').format(secondFormat);
+    const todaySecond = moment.utc().format(secondFormat);
+    assert.equal(
+      Adapter._buildFiltersParam(secondTimeDimensionFilters),
+      `t5|id-lte["2021-09-09 00:00:00"],t6|id-lte["2021-09-09 06:12:34"],t7|id-bet["${yesterdaySecond}","${todaySecond}"]`,
+      '_buildFiltersParam built the correct filters for non dateTime timeDimensions'
+    );
+
+    const dayTimeDimensionFilters: RequestV2 = {
+      ...EmptyRequest,
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 't4',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'gte',
+          values: ['2021-09-04T00:00:00.000Z'],
+        },
+        {
+          type: 'timeDimension',
+          field: 't5',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'bet',
+          values: ['P1D', 'current'],
+        },
+        {
+          type: 'timeDimension',
+          field: 't6',
+          parameters: { field: 'id', grain: 'day' },
+          operator: 'bet',
+          values: ['2021-09-03T00:00:00.000Z', '2021-09-07T00:00:00.000Z'],
+        },
+      ],
+    };
+    const dayFormat = 'YYYY-MM-DD';
+    const yesterday = moment.utc().subtract(1, 'day').startOf('day').format(dayFormat);
+    const today = moment.utc().startOf('day').format(dayFormat);
+    assert.equal(
+      Adapter._buildFiltersParam(dayTimeDimensionFilters),
+      `t4|id-gte["2021-09-04"],t5|id-bet["${yesterday}","${today}"],t6|id-bet["2021-09-03","2021-09-08"]`,
+      '_buildFiltersParam built the correct filters for non dateTime timeDimensions'
     );
   });
 

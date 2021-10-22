@@ -51,8 +51,72 @@ function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
       id: 'formatDimensionFieldName--dimension-with-period',
     });
   }
-  const parameters = omit(column.parameters, 'field');
+  const ignoredParams = ['field'];
+  if (column.type === 'timeDimension') {
+    ignoredParams.push('grain');
+  }
+  const parameters = omit(column.parameters, ...ignoredParams);
   return canonicalizeMetric({ metric: column.field, parameters });
+}
+
+export function buildTimeDimensionFilterValues(
+  timeFilter: Filter,
+  dataSource: string,
+  allowCustomMacros: boolean,
+  allowISOMacros: boolean
+): [string, string] | string[] {
+  const filterGrain = timeFilter?.parameters?.grain as Grain;
+  let start: string, end: string;
+  if (timeFilter.operator === 'bet') {
+    [start, end] = timeFilter.values as string[];
+    if (allowCustomMacros) {
+      // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
+      const endMoment = end ? moment.utc(end) : undefined;
+      if (endMoment?.isValid()) {
+        end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
+      }
+    } else {
+      const interval = Interval.parseInclusive(start, end, filterGrain).asMomentsForTimePeriod(filterGrain);
+      // Don't overwrite durations
+      if (!(allowISOMacros && start.startsWith('P'))) {
+        start = interval.start.toISOString();
+      }
+      end = interval.end.toISOString();
+    }
+  } else if (timeFilter.operator === 'gte') {
+    [start] = timeFilter.values as string[];
+    if (!moment.utc(start).isValid()) {
+      throw new FactAdapterError(`Since operator only supports datetimes, '${start}' is invalid`);
+    }
+    const dataSourceConfig = getDataSource(dataSource) as FiliDataSource;
+    const sinceOperatorEnd = dataSourceConfig.options?.sinceOperatorEndPeriod;
+    end = sinceOperatorEnd
+      ? moment
+          .utc()
+          .add(moment.duration(sinceOperatorEnd))
+          .add(1, filterGrain === 'isoWeek' ? 'week' : filterGrain)
+          .startOf(filterGrain)
+          .toISOString()
+      : moment.utc('9999-12-31').startOf(filterGrain).toISOString();
+  } else if (timeFilter.operator === 'lte') {
+    start = moment
+      .utc(config.navi.dataEpoch || '0001-01-01')
+      .startOf(filterGrain)
+      .toISOString();
+    [end] = timeFilter.values as string[];
+    if (!moment.utc(end).isValid()) {
+      throw new FactAdapterError(`Before operator only supports datetimes, '${end}' is invalid`);
+    }
+  } else if (timeFilter.operator === 'intervals') {
+    return timeFilter.values as string[];
+  } else {
+    assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
+  }
+
+  // Removing Z to strip off time zone if it's there
+  start = start.replace('Z', '');
+  end = end.replace('Z', '');
+  return [start, end];
 }
 
 /**
@@ -60,12 +124,33 @@ function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
  * @param filters - list of filters to be ANDed together for fili
  * @returns serialized filter string
  */
-export function serializeFilters(filters: Filter[]): string {
+export function serializeFilters(filters: Filter[], dataSource: string): string {
   return filters
     .map((filter) => {
-      let { operator, values } = filter;
-      let serializedValues = values
-        .map((v: string | number) => String(v).replace(/"/g, '""')) // csv serialize " -> ""
+      let { operator, values, type } = filter;
+
+      let serializedValues;
+      if (type === 'timeDimension') {
+        const filterValues = buildTimeDimensionFilterValues(filter, dataSource, false, false);
+
+        if (operator === 'lte') {
+          serializedValues = [filterValues[1]];
+        } else if (operator === 'gte') {
+          serializedValues = [filterValues[0]];
+        } else if (operator === 'intervals') {
+          serializedValues = filterValues;
+        } else {
+          serializedValues = [filterValues[0], filterValues[1]];
+        }
+        if (filter.parameters.grain === 'day') {
+          serializedValues = serializedValues.map((t) => moment.utc(t).format('YYYY-MM-DD'));
+        } else if (filter.parameters.grain === 'second') {
+          serializedValues = serializedValues.map((t) => moment.utc(t).format('YYYY-MM-DD HH:mm:ss'));
+        }
+      } else {
+        serializedValues = values.map((v: string | number) => String(v).replace(/"/g, '""')); // csv serialize " -> ""
+      }
+      serializedValues = serializedValues
         .map((v) => `"${v}"`) // wrap each "value"
         .join(','); // comma to separate
 
@@ -117,7 +202,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildDimensionsPath(request: RequestV2 /*options*/): string {
     const dimensionToFields = request.columns
-      .filter((c) => c.type === 'dimension')
+      .filter((c) => c.type === 'dimension' || (c.type === 'timeDimension' && !isDateTime(c)))
       .reduce((dimensionToFields: Record<string, string[]>, dim) => {
         const dimName = canonicalizeFiliDimension(dim);
         if (!dimensionToFields[dimName]) {
@@ -158,58 +243,12 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
         `The requested filter timeGrain '${filterGrain}', must match the column timeGrain '${columnGrain}'`
       );
     }
-
-    let start: string, end: string;
-    if (timeFilter.operator === 'bet') {
-      [start, end] = timeFilter.values as string[];
-      if (columnGrain === 'all') {
-        const interval = Interval.parseInclusive(start, end, filterGrain).asMomentsForTimePeriod(filterGrain);
-        // Don't overwrite durations
-        if (!start.startsWith('P')) {
-          start = interval.start.toISOString();
-        }
-        end = interval.end.toISOString();
-      } else {
-        // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
-        const endMoment = end ? moment.utc(end) : undefined;
-        if (endMoment?.isValid()) {
-          end = endMoment.add(1, getPeriodForGrain(filterGrain)).toISOString();
-        }
-      }
-    } else if (timeFilter.operator === 'gte') {
-      [start] = timeFilter.values as string[];
-      if (!moment.utc(start).isValid()) {
-        throw new FactAdapterError(`Since operator only supports datetimes, '${start}' is invalid`);
-      }
-      const dataSourceConfig = getDataSource(request.dataSource) as FiliDataSource;
-      const sinceOperatorEnd = dataSourceConfig.options?.sinceOperatorEndPeriod;
-      end = sinceOperatorEnd
-        ? moment
-            .utc()
-            .add(moment.duration(sinceOperatorEnd))
-            .add(1, filterGrain === 'isoWeek' ? 'week' : filterGrain)
-            .startOf(filterGrain)
-            .toISOString()
-        : moment.utc('9999-12-31').startOf(filterGrain).toISOString();
-    } else if (timeFilter.operator === 'lte') {
-      start = moment
-        .utc(config.navi.dataEpoch || '0001-01-01')
-        .startOf(filterGrain)
-        .toISOString();
-      [end] = timeFilter.values as string[];
-      if (!moment.utc(end).isValid()) {
-        throw new FactAdapterError(`Before operator only supports datetimes, '${end}' is invalid`);
-      }
-    } else if (timeFilter.operator === 'intervals') {
-      return timeFilter.values.join(',');
-    } else {
-      assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
+    const filterValues = buildTimeDimensionFilterValues(timeFilter, request.dataSource, columnGrain !== 'all', true);
+    if (timeFilter.operator === 'intervals') {
+      return filterValues.join(',');
     }
 
-    // Removing Z to strip off time zone if it's there
-    start = start.replace('Z', '');
-    end = end.replace('Z', '');
-    return `${start}/${end}`;
+    return `${filterValues[0]}/${filterValues[1]}`;
   }
 
   /**
@@ -228,10 +267,12 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * Builds a filters param string for a request
    */
   _buildFiltersParam(request: RequestV2): string | undefined {
-    const filters = request.filters.filter((fil) => fil.type === 'dimension' && fil.values.length !== 0);
+    const filters = request.filters
+      .filter((fil) => fil.type === 'dimension' || (fil.type === 'timeDimension' && !isDateTime(fil)))
+      .filter((fil) => fil.values.length !== 0);
 
     if (filters?.length) {
-      return serializeFilters(filters);
+      return serializeFilters(filters, request.dataSource);
     }
     return undefined;
   }

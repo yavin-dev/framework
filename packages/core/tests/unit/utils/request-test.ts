@@ -21,7 +21,7 @@ module('Unit | Utils | Request', function (hooks) {
       requestVersion: 'v1',
       logicalTable: { table: 'network', timeGrain: 'day' },
       intervals: [{ end: 'current', start: 'P7D' }],
-      dimensions: [{ dimension: 'age' }, { dimension: 'platform' }],
+      dimensions: [{ dimension: 'age' }, { dimension: 'platform' }, { dimension: 'userSignupDate' }],
       filters: [
         {
           dimension: 'age',
@@ -46,6 +46,18 @@ module('Unit | Utils | Request', function (hooks) {
           field: 'id',
           operator: 'null',
           values: [],
+        },
+        {
+          dimension: 'userSignupDate',
+          field: 'id',
+          operator: 'lt',
+          values: ['2020-03-04'],
+        },
+        {
+          dimension: 'userSignupDate',
+          field: 'id',
+          operator: 'bet',
+          values: ['2020-03-04', '2020-03-08'],
         },
       ],
       metrics: [
@@ -218,6 +230,9 @@ module('Unit | Utils | Request', function (hooks) {
         {
           dimension: 'platform',
         },
+        {
+          dimension: 'userSignupDate',
+        },
       ],
       'dimensions are normalized correctly'
     );
@@ -249,15 +264,27 @@ module('Unit | Utils | Request', function (hooks) {
           operator: 'null',
           values: [],
         },
+        {
+          dimension: 'userSignupDate',
+          field: 'id',
+          operator: 'lt',
+          values: ['2020-03-04'],
+        },
+        {
+          dimension: 'userSignupDate',
+          field: 'id',
+          operator: 'bet',
+          values: ['2020-03-04', '2020-03-08'],
+        },
       ],
       'filters are normalized correctly'
     );
   });
 
   test('normalize v1 to v2', function (assert) {
-    assert.expect(12);
+    assert.expect(13);
 
-    const normalized = normalizeV1toV2(request, 'bardOne');
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
 
     assert.equal(normalized.requestVersion, '2.0', 'requestVersion is set correctly');
 
@@ -295,6 +322,14 @@ module('Unit | Utils | Request', function (hooks) {
           parameters: {
             field: 'id',
           },
+        },
+        {
+          field: 'userSignupDate',
+          parameters: {
+            field: 'id',
+            grain: 'second',
+          },
+          type: 'timeDimension',
         },
         {
           field: 'revenue',
@@ -368,6 +403,26 @@ module('Unit | Utils | Request', function (hooks) {
           values: [true],
         },
         {
+          field: 'userSignupDate',
+          operator: 'lte',
+          parameters: {
+            field: 'id',
+            grain: 'second',
+          },
+          type: 'timeDimension',
+          values: ['2020-03-03T00:00:00.000Z'],
+        },
+        {
+          field: 'userSignupDate',
+          operator: 'bet',
+          parameters: {
+            field: 'id',
+            grain: 'second',
+          },
+          type: 'timeDimension',
+          values: ['2020-03-04', '2020-03-08'],
+        },
+        {
           field: 'revenue',
           operator: 'lt',
           parameters: {
@@ -427,7 +482,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-01-03' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -444,7 +499,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-02-01', end: '2021-02-08' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -461,7 +516,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-03-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -478,7 +533,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2021-04-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -495,7 +550,7 @@ module('Unit | Utils | Request', function (hooks) {
     request.intervals[0] = { start: '2021-01-01', end: '2022-01-01' };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne').filters[0],
+      normalizeV1toV2(request, 'bardOne', naviMetadata).filters[0],
       {
         type: 'timeDimension',
         field: 'network.dateTime',
@@ -525,7 +580,7 @@ module('Unit | Utils | Request', function (hooks) {
     };
 
     assert.deepEqual(
-      normalizeV1toV2(request, 'bardOne'),
+      normalizeV1toV2(request, 'bardOne', naviMetadata),
       {
         columns: [],
         dataSource: 'bardOne',
@@ -564,7 +619,7 @@ module('Unit | Utils | Request', function (hooks) {
       requestVersion: 'v1',
     };
 
-    const normalized = normalizeV1toV2(request, 'bardOne');
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
 
     const cids = normalized.columns.map((c) => c.cid);
     cids.forEach((cid, idx) => {
@@ -605,7 +660,7 @@ module('Unit | Utils | Request', function (hooks) {
       requestVersion: 'v1',
     };
 
-    const normalized = normalizeV1toV2(request, 'bardOne');
+    const normalized = normalizeV1toV2(request, 'bardOne', naviMetadata);
 
     const cids = normalized.columns.map((c) => c.cid);
     cids.forEach((cid, idx) => {

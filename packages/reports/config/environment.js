@@ -7,6 +7,8 @@ module.exports = function (/* environment, appConfig */) {
     },
     navi: {
       predefinedIntervalRanges: {
+        second: ['P1D', 'P4D'],
+        minute: ['P1D', 'P4D', 'P7D'],
         hour: ['P1D', 'P7D', 'P14D', 'P30D'],
         day: ['P1D', 'P7D', 'P14D', 'P30D', 'P60D', 'P90D', 'P180D', 'P400D'],
         //TODO: Better 'week' support

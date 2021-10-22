@@ -59,7 +59,7 @@
     "ember-moment": "^7.8.1",
     "ember-power-calendar": "^0.16.2",
     "ember-power-calendar-moment": "^0.1.7",
-    "ember-power-calendar-selectors": "^0.1.1",
+    "ember-power-calendar-selectors": "^0.1.2",
     "ember-promise-helpers": "^1.0.6",
     "ember-set-helper": "^0.1.1",
     "ember-sortable": "2.2.3",

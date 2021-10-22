@@ -50,6 +50,10 @@ const DIMENSION_OPS = {
   notin: (filterValues: string[], value: DimensionRow, field: string) => !DIMENSION_OPS.in(filterValues, value, field),
   contains: (filterValues: string[], value: DimensionRow, field: string) =>
     filterValues.some((v) => value[field]?.includes(v)),
+  // TODO: fili date dimension support
+  lte: () => true,
+  gte: () => true,
+  bet: () => true,
 };
 
 type ResponseRow = Record<string, unknown>;
