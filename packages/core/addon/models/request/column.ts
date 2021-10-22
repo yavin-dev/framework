@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { attr } from '@ember-data/model';
-import BaseFragment from './base';
+import BaseFragment from '../fragments/base';
 import { Column, SortDirection } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
@@ -34,7 +34,7 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
   }
 
-  @computed('request.sorts.@each.direction')
+  @computed('canonicalName', 'request.sorts.@each.direction')
   get sortedDirection(): SortDirection | null {
     const sorts = this.request?.sorts || [];
 
@@ -45,6 +45,6 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'fragments/column': ColumnFragment;
+    'request/column': ColumnFragment;
   }
 }

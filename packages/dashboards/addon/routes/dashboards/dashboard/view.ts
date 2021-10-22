@@ -150,7 +150,7 @@ export default class DashboardsDashboardViewRoute extends Route {
           source: fil.source,
         };
 
-        const newFragment = this.store.createFragment('fragments/filter', newFragmentFields);
+        const newFragment = this.store.createFragment('request/filter', newFragmentFields);
         modelFilters.pushObject(newFragment);
       });
     } catch (e) {

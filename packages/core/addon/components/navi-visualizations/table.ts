@@ -19,7 +19,7 @@ import EmberArray from '@ember/array';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import type RequestFragment from 'navi-core/models/request';
 import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { SortDirection } from 'navi-data/adapters/facts/interface';

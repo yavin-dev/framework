@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 import StoreService from 'ember-data/store';
 import { TestContext as Context } from 'ember-test-helpers';
 import RequestFragment from 'navi-core/models/request';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { TableColumn } from 'navi-core/components/navi-visualizations/table';
 
 interface TestContext extends Context {

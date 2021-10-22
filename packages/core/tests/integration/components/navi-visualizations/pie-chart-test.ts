@@ -16,7 +16,7 @@ import { Args as ComponentArgs } from 'navi-core/components/navi-visualizations/
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import RequestFragment from 'navi-core/models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::PieChart

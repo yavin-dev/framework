@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import type Route from '@ember/routing/route';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
 
 export default class RollupConsumer extends ActionConsumer {

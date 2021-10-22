@@ -10,7 +10,7 @@ import { tracked } from '@glimmer/tracking';
 import { next } from '@ember/runloop';
 import { assert } from '@ember/debug';
 import type { ConfigColumn } from '../navi-column-config';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type { SortDirection } from 'navi-data/adapters/facts/interface';
 
 interface Args {

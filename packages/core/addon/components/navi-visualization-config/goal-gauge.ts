@@ -4,7 +4,7 @@
  */
 import { action, set } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { Args as GoalGaugeArgs } from '../navi-visualizations/goal-gauge';
 import NaviVisualizationConfigBaseComponent from './base';
 

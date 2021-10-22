@@ -11,7 +11,7 @@ import fade from 'ember-animated/transitions/fade';
 import { tracked } from '@glimmer/tracking';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ScreenService from 'navi-core/services/screen';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 
 const REPORT_STATE = <const>{
   RUNNING: 'running',

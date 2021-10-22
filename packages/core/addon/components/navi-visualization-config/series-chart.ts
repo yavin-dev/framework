@@ -6,7 +6,7 @@ import Component from '@glimmer/component';
 import { Args as BaseArgs } from './base';
 import { action } from '@ember/object';
 import { assert } from '@ember/debug';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { DateTimeSeries, DimensionSeries, MetricSeries } from 'navi-core/models/chart-visualization';
 import { SeriesConfig } from 'navi-core/chart-builders/base';
 

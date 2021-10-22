@@ -19,11 +19,11 @@ import type { RequestV2, SortDirection, Parameters, Rollup } from 'navi-data/ada
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Store from '@ember-data/store';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import type { ColumnMetadataModels } from './fragments/base';
-import type FilterFragment from 'navi-core/models/fragments/filter';
-import type SortFragment from './fragments/sort';
+import type FilterFragment from 'navi-core/models/request/filter';
+import type SortFragment from 'navi-core/models/request/sort';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type { ColumnType } from 'navi-data/models/metadata/column';
 import type { Grain } from 'navi-data/utils/date';
@@ -68,16 +68,16 @@ const Validations = buildValidations({
 });
 
 export default class RequestFragment extends Fragment.extend(Validations) implements RequestV2 {
-  @fragmentArray('fragments/filter', { defaultValue: () => [] })
+  @fragmentArray('request/filter', { defaultValue: () => [] })
   declare filters: FragmentArray<FilterFragment>;
 
-  @fragmentArray('fragments/column', { defaultValue: () => [] })
+  @fragmentArray('request/column', { defaultValue: () => [] })
   declare columns: FragmentArray<ColumnFragment>;
 
   @attr('string')
   declare table: string; // TODO this can be undefined when only `dataSource` is set
 
-  @fragmentArray('fragments/sort', { defaultValue: () => [] })
+  @fragmentArray('request/sort', { defaultValue: () => [] })
   declare sorts: FragmentArray<SortFragment>;
 
   @fragment('fragments/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
@@ -113,7 +113,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
 
     return store.createFragment('request', {
       filters: clonedRequest.filters.map((filter) => {
-        const newFilter = store.createFragment('fragments/filter', {
+        const newFilter = store.createFragment('request/filter', {
           field: filter.field,
           parameters: filter.parameters,
           type: filter.type,
@@ -124,7 +124,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
         return newFilter;
       }),
       columns: clonedRequest.columns.map((column) => {
-        const newColumn = store.createFragment('fragments/column', {
+        const newColumn = store.createFragment('request/column', {
           cid: column.cid, // Needs to be the same for visualization column references
           field: column.field,
           parameters: column.parameters,
@@ -136,7 +136,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
       }),
       table: clonedRequest.table,
       sorts: clonedRequest.sorts.map((sort) => {
-        const newSort = store.createFragment('fragments/sort', {
+        const newSort = store.createFragment('request/sort', {
           field: sort.field,
           parameters: sort.parameters,
           type: sort.type,

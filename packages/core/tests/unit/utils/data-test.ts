@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { topN, mostRecentData, dataByDimensions, maxDataByDimensions } from 'navi-core/utils/data';
 import { setupTest } from 'ember-qunit';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 module('Unit | Utils | Data', function (hooks) {
   setupTest(hooks);

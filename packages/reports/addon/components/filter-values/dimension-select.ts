@@ -16,7 +16,7 @@ import { taskFor } from 'ember-concurrency-ts';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type RequestFragment from 'navi-core/models/request';
-import type FilterFragment from 'navi-core/models/fragments/filter';
+import type FilterFragment from 'navi-core/models/request/filter';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type { IndexedOptions } from '../power-select-collection-options';

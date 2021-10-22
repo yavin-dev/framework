@@ -7,7 +7,7 @@ import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, ChartType } from 'na
 import Visualization from './visualization';
 import RequestFragment from 'navi-core/models/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import ColumnFragment from './fragments/column';
+import ColumnFragment from './request/column';
 import { get } from '@ember/object';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 

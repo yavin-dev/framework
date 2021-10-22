@@ -9,7 +9,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import $ from 'jquery';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 
 interface TestContext extends Context {
   filter: FilterFragment;

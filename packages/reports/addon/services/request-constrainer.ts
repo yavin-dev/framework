@@ -12,8 +12,8 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Route from '@ember/routing/route';
 import type ReportModel from 'navi-core/models/report';
 import type UpdateReportActionDispatcher from './update-report-action-dispatcher';
-import type ColumnFragment from 'navi-core/models/fragments/column';
-import type FilterFragment from 'navi-core/models/fragments/filter';
+import type ColumnFragment from 'navi-core/models/request/column';
+import type FilterFragment from 'navi-core/models/request/filter';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
 
 export type TemplateDispatcherAction = [string, ...any[]] & any[];

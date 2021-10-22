@@ -6,7 +6,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import RequestFragment from 'navi-core/models/request';
 import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import Route from '@ember/routing/route';

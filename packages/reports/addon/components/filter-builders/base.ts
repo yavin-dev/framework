@@ -6,7 +6,7 @@
  */
 import Component from '@glimmer/component';
 import { action, computed } from '@ember/object';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import { assert } from '@ember/debug';
 import RequestFragment from 'navi-core/models/request';
 import { Filter, FilterOperator } from 'navi-data/adapters/facts/interface';

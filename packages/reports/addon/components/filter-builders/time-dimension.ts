@@ -7,7 +7,7 @@ import { assert, warn } from '@ember/debug';
 import { action, computed } from '@ember/object';
 import { capitalize } from '@ember/string';
 import moment from 'moment';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import { parseDuration } from 'navi-data/utils/classes/duration';
 import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';

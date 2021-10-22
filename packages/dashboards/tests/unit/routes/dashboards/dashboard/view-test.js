@@ -22,7 +22,7 @@ module('Unit | Route | dashboards/dashboard/view', function (hooks) {
     assert.expect(7);
 
     let owner = await Store.findRecord('user', 'navi_user'),
-      genderFilter = Store.createFragment('fragments/filter', {
+      genderFilter = Store.createFragment('request/filter', {
         type: 'dimension',
         field: 'gender',
         parameters: {
@@ -32,7 +32,7 @@ module('Unit | Route | dashboards/dashboard/view', function (hooks) {
         values: ['Male'],
         source: 'bardOne',
       }),
-      ageFilter = Store.createFragment('fragments/filter', {
+      ageFilter = Store.createFragment('request/filter', {
         type: 'dimension',
         field: 'age',
         parameters: {

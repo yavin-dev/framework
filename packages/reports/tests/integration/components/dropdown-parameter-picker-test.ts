@@ -6,7 +6,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
 
@@ -33,7 +33,7 @@ module('Integration | Component | dropdown parameter picker', function (hooks) {
   test('dropdown-parameter-picker', async function (this: TestContext, assert) {
     assert.expect(8);
 
-    await render(hbs`        
+    await render(hbs`
     {{#each-in this.filter.parameters as |paramName paramValue|}}
       <DropdownParameterPicker
         @parameterMetadata={{find-by "id" paramName this.filter.columnMetadata.parameters}}

@@ -9,7 +9,7 @@ import { CellRendererArgs } from 'navi-core/components/navi-table-cell-renderer'
 import StoreService from 'ember-data/store';
 import { TableColumn } from 'navi-core/components/navi-visualizations/table';
 import RequestFragment from 'navi-core/models/request';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const TEMPLATE = hbs`
   <NaviCellRenderers::Total

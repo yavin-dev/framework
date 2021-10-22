@@ -7,7 +7,7 @@ import { computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { Grain } from 'navi-data/utils/date';
 import Args from '../args-interface';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 
 type TimeFilterFragment = FilterFragment & { values: string[] };
 interface TimeDimensionFilterArgs extends Args {

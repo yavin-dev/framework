@@ -2,17 +2,17 @@ import Model, { attr } from '@ember-data/model';
 //@ts-ignore
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
-import type FilterFragment from 'navi-core/models/fragments/filter';
-import type ColumnFragment from 'navi-core/models/fragments/column';
-import type SortFragment from 'navi-core/models/fragments/sort';
+import type FilterFragment from 'navi-core/models/request/filter';
+import type ColumnFragment from 'navi-core/models/request/column';
+import type SortFragment from 'navi-core/models/request/sort';
 import type RequestFragment from 'navi-core/models/request';
 
 export default class FragmentsV2MockModel extends Model {
-  @fragmentArray('fragments/filter')
+  @fragmentArray('request/filter')
   declare filters: FragmentArray<FilterFragment>;
-  @fragmentArray('fragments/column')
+  @fragmentArray('request/column')
   declare columns: FragmentArray<ColumnFragment>;
-  @fragmentArray('fragments/sort')
+  @fragmentArray('request/sort')
   declare sorts: FragmentArray<SortFragment>;
   @fragment('request')
   declare request: RequestFragment;

@@ -8,7 +8,7 @@ import { TestContext } from 'ember-test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import SortConsumer from 'navi-reports/consumers/request/sort';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const timeDimension = {
   type: 'timeDimension',

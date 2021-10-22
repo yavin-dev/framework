@@ -24,7 +24,7 @@ import { BaseChartBuilder, C3Row, EmptyC3Data } from './base';
 import { tracked } from '@glimmer/tracking';
 import { MetricSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const BLANK_X_VALUE = '';
 

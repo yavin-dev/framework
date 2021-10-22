@@ -13,10 +13,10 @@ type FilteredKeys<Registry, BaseClass> = {
 export type VisualizationType = FilteredKeys<FragmentRegistry, VisualizationFragment>;
 
 // Forces global fragments to be augmented (e.g. for other addons) into the registry
-import 'navi-core/models/fragments/column';
-import 'navi-core/models/fragments/filter';
+import 'navi-core/models/request/column';
+import 'navi-core/models/request/filter';
 import 'navi-core/models/fragments/rollup';
-import 'navi-core/models/fragments/sort';
+import 'navi-core/models/request/sort';
 import 'navi-core/models/request';
 import 'navi-core/models/fragments/layout';
 import 'navi-core/models/fragments/presentation';

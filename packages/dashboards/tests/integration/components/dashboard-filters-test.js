@@ -143,7 +143,7 @@ module('Integration | Component | dashboard filters', function (hooks) {
     });
 
     this.set('onAddFilter', (dimension) => {
-      const filter = Store.createFragment('fragments/filter', {
+      const filter = Store.createFragment('request/filter', {
         type: 'dimension',
         field: dimension.field,
         parameters: {

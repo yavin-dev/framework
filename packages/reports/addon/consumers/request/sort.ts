@@ -8,7 +8,7 @@ import { set } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { isEqual } from 'lodash-es';
 import Route from '@ember/routing/route';
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import ReportModel from 'navi-core/models/report';
 import { SortDirection } from 'navi-data/adapters/facts/interface';
 import Base, { ColumnMetadataModels } from 'navi-core/models/fragments/base';

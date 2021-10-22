@@ -23,7 +23,7 @@ import type { NaviDataSource } from 'navi-config';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type ReportModel from 'navi-core/models/report';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type { SourceItem } from './source-selector';
 import type { OrphanObserver } from 'ember-animated/services/motion';
 

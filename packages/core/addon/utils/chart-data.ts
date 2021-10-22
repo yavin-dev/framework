@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import ColumnFragment from 'navi-core/models/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import RequestFragment from 'navi-core/models/request';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';

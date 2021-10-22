@@ -10,7 +10,7 @@ import type Route from '@ember/routing/route';
 import type { ColumnMetadataModels } from 'navi-core/models/fragments/base';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import type ReportModel from 'navi-core/models/report';
-import type ColumnFragment from 'navi-core/models/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 import type MetricMetadataModel from 'navi-data/models/metadata/metric';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';

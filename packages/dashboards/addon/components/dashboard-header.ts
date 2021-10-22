@@ -4,7 +4,7 @@
  */
 
 import Component from '@glimmer/component';
-import FilterFragment from 'navi-core/models/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import DashboardModel from 'navi-core/models/dashboard';
 
 interface Args {
