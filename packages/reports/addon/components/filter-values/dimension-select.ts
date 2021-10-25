@@ -11,6 +11,7 @@ import { tracked } from '@glimmer/tracking';
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import { getDataSource } from 'navi-data/utils/adapter';
 import { sortBy } from 'lodash-es';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
@@ -75,6 +76,17 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return [];
   }
 
+  get isSmallCardinality() {
+    const { dimensionColumn } = this;
+    return dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0];
+  }
+
+  get usesDimensionSearch() {
+    const source = this.args.filter.source;
+    const filiOptions = getDataSource<'bard'>(source).options;
+    return !!filiOptions?.enableDimensionSearch;
+  }
+
   @action
   setValues(dimension: NaviDimensionModel[]) {
     const values = dimension.map(({ value }) => value) as (string | number)[];
@@ -83,6 +95,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @action
   sortValues(dimensions: IndexedOptions<NaviDimensionModel>[]) {
+    //respect sort from server
+    if (!this.isSmallCardinality && this.usesDimensionSearch) {
+      return dimensions;
+    }
     if (isNumericDimensionArray(dimensions)) {
       return sortBy(dimensions, [(d) => Number(d.option.value)]);
     }
@@ -95,7 +111,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   @action
   fetchDimensionOptions(): void {
     const { dimensionColumn } = this;
-    if (dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+    if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
         .then((r) => r.values);
