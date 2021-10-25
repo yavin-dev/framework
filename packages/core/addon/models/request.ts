@@ -80,7 +80,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
   @fragmentArray('request/sort', { defaultValue: () => [] })
   declare sorts: FragmentArray<SortFragment>;
 
-  @fragment('fragments/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
+  @fragment('request/rollup', { defaultValue: () => ({ columnCids: [], grandTotal: false }) })
   declare rollup: Rollup;
 
   @attr('number')
@@ -145,7 +145,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
         });
         return newSort;
       }),
-      rollup: store.createFragment('fragments/rollup', clonedRequest.rollup),
+      rollup: store.createFragment('request/rollup', clonedRequest.rollup),
       limit: clonedRequest.limit,
       requestVersion: clonedRequest.requestVersion,
       dataSource: clonedRequest.dataSource,
