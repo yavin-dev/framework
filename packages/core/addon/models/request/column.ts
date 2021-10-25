@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { attr } from '@ember-data/model';
-import BaseFragment from '../fragments/base';
+import BaseFragment from '../request/base';
 import { Column, SortDirection } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';

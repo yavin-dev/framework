@@ -21,7 +21,7 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Store from '@ember-data/store';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
-import type { ColumnMetadataModels } from './fragments/base';
+import type { ColumnMetadataModels } from './request/base';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type SortFragment from 'navi-core/models/request/sort';
 import type TableMetadataModel from 'navi-data/models/metadata/table';

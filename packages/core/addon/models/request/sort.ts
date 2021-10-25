@@ -4,7 +4,7 @@
  */
 import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
-import BaseFragment from '../fragments/base';
+import BaseFragment from '../request/base';
 import { SortDirection, Sort } from 'navi-data/adapters/facts/interface';
 
 const Validations = buildValidations({

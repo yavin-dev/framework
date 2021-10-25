@@ -7,7 +7,7 @@ import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
 import type Route from '@ember/routing/route';
-import type { ColumnMetadataModels } from 'navi-core/models/fragments/base';
+import type { ColumnMetadataModels } from 'navi-core/models/request/base';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/request/column';
