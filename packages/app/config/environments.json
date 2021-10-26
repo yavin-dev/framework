@@ -23,6 +23,14 @@
         "uri": "http://localhost:8080/graphql/api/v1",
         "type": "elide",
         "suggestedDataTables": []
+      },
+      {
+        "name": "defaultWithNamespace",
+        "displayName": "Default with Namespace",
+        "uri": "http://localhost:8080/graphql/api/v1",
+        "type": "elide",
+        "namespace": "DemoNamespace",
+        "suggestedDataTables": []
       }
     ],
     "appPersistence": {

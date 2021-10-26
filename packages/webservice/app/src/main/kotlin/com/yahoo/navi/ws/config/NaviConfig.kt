@@ -23,11 +23,20 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
             "Default",
             null,
             elideSettings.graphql.path,
+            null,
+            DataSourceTypes.elide,
+        ),
+        DataSource(
+            "defaultWithNamespace",
+            "Default with Namespace",
+            null,
+            elideSettings.graphql.path,
+            "DemoNamespace",
             DataSourceTypes.elide,
         )
     )
 
-    var appPersistence = DataSource("persistence", "Persistence", null, elideSettings.jsonApi.path, DataSourceTypes.elide)
+    var appPersistence = DataSource("persistence", "Persistence", null, elideSettings.jsonApi.path, null, DataSourceTypes.elide)
 
     @JsonProperty("FEATURES")
     var features = NaviFeatureSettings()

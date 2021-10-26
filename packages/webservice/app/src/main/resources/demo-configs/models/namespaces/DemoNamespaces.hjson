@@ -1,0 +1,10 @@
+{
+  namespaces:
+  [
+    {
+      name: DemoNamespace
+      description: Namespace for Demo Purposes
+      friendlyName: Demo Namespace
+    }
+  ]
+}

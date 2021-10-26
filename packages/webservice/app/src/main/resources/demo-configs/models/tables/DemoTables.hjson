@@ -1,8 +1,178 @@
 {
   tables: [
     {
-      name:  NetflixTitles
+      name: NetflixTitles
       friendlyName: Netflix Titles
+      table: netflix_titles
+      dbConnectionName: DemoConnection
+      dimensions: [
+        {
+          name: title_id_values
+          friendlyName: Title Id Values
+          cardinality: medium
+          category: Attributes
+          type: TEXT
+          definition: '{{$title_id}}'
+        }
+        {
+          name: title_id
+          friendlyName: Title Id
+          cardinality: medium
+          category: Attributes
+          type: TEXT
+          definition: '{{$title_id}}'
+          tableSource: {
+            table: NetflixTitles
+            column: title_id_values
+            suggestionColumns: ['title', 'show_type']
+          }
+        }
+        {
+          name: show_type
+          friendlyName: Show Type
+          // Not necessary if values are provided
+          // cardinality: tiny
+          category: Attributes
+          type: TEXT
+          definition: '{{$type}}'
+          values: ['TV Show', 'Movie']
+        }
+        {
+          name: title
+          friendlyName: Title
+          cardinality: medium
+          category: Attributes
+          type: TEXT
+          definition: '{{$title}}'
+        }
+        {
+          name: director
+          friendlyName: Director
+          cardinality: small
+          category: Attributes
+          type: TEXT
+          definition: '{{$director}}'
+        }
+        {
+          name: cast
+          friendlyName: Cast List
+          cardinality: large
+          category: Attributes
+          type: TEXT
+          definition: '{{$cast_list}}'
+        }
+        {
+          name: country
+          friendlyName: Countries
+          cardinality: small
+          category: Attributes
+          type: TEXT
+          definition: '{{$country}}'
+        }
+        {
+          name: date_available
+          friendlyName: Available Since
+          category: Date
+          type: TIME
+          definition: '{{$date_added}}'
+          grains: [
+            {
+               type: DAY
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'yyyy-MM-dd'), 'yyyy-MM-dd')
+               '''
+            }
+            {
+               type: WEEK
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'YYYY-ww'), 'YYYY-ww')
+               '''
+            }
+            {
+               type: ISOWEEK
+               sql :  '''
+               DATEADD('DAY', 1, PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'YYYY-ww'), 'YYYY-ww'))
+               '''
+            }
+            {
+               type: MONTH
+               sql :  '''
+               PARSEDATETIME(FORMATDATETIME({{$$column.expr}}, 'yyyy-MM'), 'yyyy-MM')
+               '''
+            }
+            {
+               type: YEAR
+               sql :  '''
+               PARSEDATETIME(YEAR({{$$column.expr}}), 'yyyy')
+               '''
+            }
+          ]
+        }
+        {
+          name: release_year
+          friendlyName: Release Year
+          category: Date
+          type: TIME
+          definition: '{{$release_year}}'
+          grains: [
+            {
+               type: YEAR
+            }
+          ]
+        }
+        {
+          name: film_rating
+          friendlyName: Film Rating
+          cardinality: tiny
+          category: Attributes
+          type: TEXT
+          definition: '{{$rating}}'
+        }
+        {
+          name: genres
+          friendlyName: Genre
+          cardinality: small
+          category: Attributes
+          type: TEXT
+          definition: '{{$listed_in}}'
+        }
+        {
+          name: description
+          friendlyName: Description
+          cardinality: large
+          category: Attributes
+          type: TEXT
+          definition: '{{$description}}'
+        }
+      ]
+      measures: [
+        {
+          name: count
+          friendlyName: Title Count
+          category: Stats
+          type: INTEGER
+          definition: 'count({{title_id}})'
+        }
+        {
+          name: total_seasons
+          friendlyName: Total Seasons
+          category: Stats
+          type: INTEGER
+          definition: "sum(cast (case when {{$duration}} like '% Seasons' then REPLACE({{$duration}}, ' Seasons', '') else '0' end AS INT))"
+        }
+        {
+          name: movie_duration
+          friendlyName: Duration (in mins)
+          category: Stats
+          type: INTEGER
+          definition: "sum(cast (case when {{$duration}} like '% min' then REPLACE({{$duration}}, ' min', '') else '0' end AS INT))"
+        }
+      ]
+    },
+    {
+      namespace: DemoNamespace
+      name: TrendingNow
+      friendlyName: Trending Now
       table: netflix_titles
       dbConnectionName: DemoConnection
       dimensions: [

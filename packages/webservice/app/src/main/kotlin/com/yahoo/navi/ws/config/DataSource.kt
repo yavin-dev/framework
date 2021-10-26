@@ -13,6 +13,7 @@ data class DataSource(
     var displayName: String,
     var description: String? = null,
     var uri: String,
+    var namespace: String? = null,
     var type: DataSourceTypes,
     var timeout: Int = 900000,
     var suggestedDataTables: List<String> = emptyList(),
