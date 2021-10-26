@@ -29,12 +29,15 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
   @fragmentOwner() request?: RequestFragment;
 
   @computed('alias', 'parameters', 'columnMetadata')
-  get displayName(): Promise<string> | string {
+  get displayName(): string {
     const { alias, parameters, columnMetadata } = this;
-    if (columnMetadata?.metadataType === 'metric') {
-      return this.naviFormatter.formatMetricColumnName(columnMetadata, parameters, alias);
-    }
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
+  }
+
+  @computed('alias', 'parameters', 'columnMetadata')
+  get displayNiceName(): Promise<string> {
+    const { alias, parameters, columnMetadata } = this;
+    return this.naviFormatter.formatNiceColumnName(columnMetadata, parameters, alias);
   }
 
   @computed('canonicalName', 'request.sorts.@each.direction')

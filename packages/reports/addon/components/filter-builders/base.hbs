@@ -15,7 +15,7 @@
         <span class="name m-r-4">{{await this.columnName}}</span>
         {{#each-in @filter.parameters as |paramName paramValue|}}
           <DropdownParameterPicker
-            data-filter-subject={{await @filter.displayName}}
+            data-filter-subject={{await @filter.displayNiceName}}
             data-filter-param={{paramName}}
             @parameterMetadata={{find-by "id" paramName @filter.columnMetadata.parameters}}
             @parameterValue={{paramValue}}
@@ -32,7 +32,7 @@
         @selected={{this.selectedValueBuilder}}
         @searchEnabled={{false}}
         @onChange={{this.setOperator}}
-        data-filter-subject={{await @filter.displayName}}
+        data-filter-subject={{await @filter.displayNiceName}}
         as | operator |
       >
         {{operator.name}}

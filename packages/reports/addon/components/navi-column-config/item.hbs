@@ -11,7 +11,7 @@
   <div class="navi-column-config-item__header">
     <button
       type="button"
-      aria-label="delete {{dasherize @column.fragment.type}} {{await @column.fragment.displayName}}"
+      aria-label="delete {{dasherize @column.fragment.type}} {{await @column.fragment.displayNiceName}}"
       class="navi-column-config-item__remove-icon link"
       disabled={{@column.isRequired}}
       {{on "click" @onRemoveColumn}}
@@ -26,7 +26,7 @@
       type="button"
       {{on "click" this.openColumn}}
     >
-      <span title="{{await @column.fragment.displayName}}" class="navi-column-config-item__name">{{await @column.fragment.displayName}}</span>
+      <span title="{{await @column.fragment.displayNiceName}}" class="navi-column-config-item__name">{{await @column.fragment.displayNiceName}}</span>
       {{#if this.canDrag}}
         <span class="navi-column-config-item__handle p-x-2 link is-secondary" {{sortable-handle}}>
           <DenaliIcon @icon="drag" @size="small" />

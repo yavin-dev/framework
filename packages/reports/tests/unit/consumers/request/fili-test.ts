@@ -238,7 +238,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     consumer.send(
       RequestActions.DID_ADD_COLUMN,
       routeFor(requestExistingFilter),
-      requestExistingFilter.timeGrainColumn
+      requestExistingFilter.columns.objectAt(0)
     );
     assert.deepEqual(
       dispatchedActions,
@@ -441,15 +441,15 @@ module('Unit | Consumer | request fili', function (hooks) {
       RequestActions.ADD_DIMENSION_FILTER,
       route,
       this.metadataService.getById('dimension', 'age', 'bardOne'),
-      {}
+      { field: 'id' }
     );
-    assert.deepEqual(dispatchedActions, [], 'Thno actions are called when a dimension is updatede');
+    assert.deepEqual(dispatchedActions, [], 'No actions are called when a dimension is updated');
 
     consumer.send(
       RequestActions.ADD_DIMENSION_FILTER,
       route,
       this.metadataService.getById('timeDimension', 'network.dateTime', 'bardOne'),
-      {}
+      { grain: 'newFilterGrain' }
     );
     assert.deepEqual(
       dispatchedActions,

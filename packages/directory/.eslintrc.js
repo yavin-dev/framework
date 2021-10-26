@@ -24,6 +24,7 @@ module.exports = {
 
     // cleanliness & consistency
     'prefer-const': 'off', // const has misleading safety implications
+    'no-debugger': 'error',
 
     // typescript
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

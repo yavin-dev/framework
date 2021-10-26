@@ -13,7 +13,7 @@ import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
 
 export default class NaviFormatterService extends Service {
-  async formatColumnName(
+  async formatNiceColumnName(
     columnMetadata?: ColumnMetadataModel,
     parameters?: Parameters,
     alias?: string | null
@@ -23,8 +23,16 @@ export default class NaviFormatterService extends Service {
     }
     const allParams = omit(parameters || {}, 'as');
     const paramValues = Object.values(allParams);
+    const parameterMetadata: { id: string; name?: string | undefined; description?: string | undefined }[] = [];
 
-    let parameterMetadata = await columnMetadata?.parameters[0]?.values;
+    columnMetadata?.parameters?.forEach(async function (e) {
+      let parameterValues = await e.values;
+      parameterValues?.forEach((value) => {
+        parameterMetadata.push(value);
+      });
+    });
+    await Promise.all(parameterMetadata);
+
     let paramNames = paramValues?.map((param) => {
       return parameterMetadata?.find((value) => value.id === param)?.name ?? param;
     });
@@ -36,7 +44,7 @@ export default class NaviFormatterService extends Service {
     }
   }
 
-  formatMetricColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
+  formatColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
     if (alias) {
       return alias;
     }

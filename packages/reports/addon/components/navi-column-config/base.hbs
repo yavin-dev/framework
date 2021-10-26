@@ -61,7 +61,7 @@
           type="text"
           @wrapperClass="w-full"
           value={{@column.fragment.alias}}
-          placeholder={{await @column.fragment.displayName}}
+          placeholder={{await @column.fragment.displayNiceName}}
           {{on "input" (pipe (pick "target.value") (fn @onRenameColumn))}}
         />
       </DenaliInputGroup>

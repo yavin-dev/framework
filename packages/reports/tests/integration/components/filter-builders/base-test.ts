@@ -33,7 +33,7 @@ module('Integration | Component | filter-builders/base', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText(await this.filter.displayName, "Subject's name is display in filter builder");
+      .hasText(await this.filter.displayNiceName, "Subject's name is display in filter builder");
     assert
       .dom('.filter-builder__operator-trigger')
       .hasText('Equals', 'The filter current operator is selected by default');
@@ -58,7 +58,10 @@ module('Integration | Component | filter-builders/base', function (hooks) {
 
     assert
       .dom('.filter-builder')
-      .hasText(`${await this.filter.displayName} equals Test Filter Value One`, 'Rendered correctly when collapsed');
+      .hasText(
+        `${await this.filter.displayNiceName} equals Test Filter Value One`,
+        'Rendered correctly when collapsed'
+      );
   });
 
   test('changing operator', async function (assert) {

@@ -68,6 +68,6 @@ module('Integration | Component | filter-builders/dimension', function (hooks) {
 
     assert
       .dom('.filter-builder')
-      .hasText(`${await this.filter.displayName} equals 1 2 3`, 'Rendered correctly when collapsed');
+      .hasText(`${await this.filter.displayNiceName} equals 1 2 3`, 'Rendered correctly when collapsed');
   });
 });

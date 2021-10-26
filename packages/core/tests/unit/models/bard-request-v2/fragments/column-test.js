@@ -122,17 +122,17 @@ module('Unit | Model | Fragment | BardRequest - Column', function (hooks) {
   test('Display Name', async function (assert) {
     const column = mockModel.columns.objectAt(0);
 
-    assert.equal(await column.displayName, 'time', 'Display name is as expected with an alias');
+    assert.equal(await column.displayNiceName, 'time', 'Display name is as expected with an alias');
 
     column.set('alias', null);
     assert.equal(
-      await column.displayName,
+      await column.displayNiceName,
       'Date Time (Day)',
       'Display name is as expected without an alias and with params'
     );
 
     column.set('parameters', {});
-    assert.equal(await column.displayName, 'Date Time', 'Display name is as expected without params or an alias');
+    assert.equal(await column.displayNiceName, 'Date Time', 'Display name is as expected without params or an alias');
   });
 
   test('sortedDirection', async function (assert) {
