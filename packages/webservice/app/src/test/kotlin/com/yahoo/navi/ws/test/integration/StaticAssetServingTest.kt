@@ -30,19 +30,29 @@ class StaticAssetServingTest : IntegrationTest() {
             .statusCode(200)
             .get("/ui/")
 
-        given()
-            .header("User", "testuser")
-            .expect()
-            .header("Cache-Control", cacheControlHeader)
-            .statusCode(200)
-            .get("/ui/assets/vendor.css")
+        val indexHtml =
+            ClassLoader.getSystemClassLoader().getResource("META-INF/resources/ui/index.html")?.readText() ?: ""
+        val cssRegex = Regex("<link rel=\"stylesheet\" href=\"(/ui/assets/vendor(.*)\\.css)\" />")
+        val jsRegex = Regex("<script src=\"(/ui/assets/navi-app(.*)\\.js)\"></script>")
+
+        val css = cssRegex.find(indexHtml)?.groups?.elementAt(1)?.value ?: ""
+        val js = jsRegex.find(indexHtml)?.groups?.elementAt(1)?.value ?: ""
 
         given()
             .header("User", "testuser")
             .expect()
             .header("Cache-Control", cacheControlHeader)
+            .header("Content-Type", "text/css")
             .statusCode(200)
-            .get("/ui/assets/vendor.js")
+            .get(css)
+
+        given()
+            .header("User", "testuser")
+            .expect()
+            .header("Cache-Control", cacheControlHeader)
+            .header("Content-Type", "application/javascript")
+            .statusCode(200)
+            .get(js)
     }
 
     @Test
