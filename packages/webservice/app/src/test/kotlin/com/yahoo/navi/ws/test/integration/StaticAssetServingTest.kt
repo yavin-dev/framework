@@ -11,6 +11,7 @@ import org.hamcrest.CoreMatchers.equalTo
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.anyString
 
 class StaticAssetServingTest : IntegrationTest() {
 
@@ -18,6 +19,31 @@ class StaticAssetServingTest : IntegrationTest() {
     override fun setUp() {
         super.setUp()
         RestAssured.basePath = "/"
+    }
+
+    @Test
+    fun cache_static_assets_test() {
+        val cacheControlHeader = "max-age=3600"
+        given()
+            .header("User", "testuser")
+            .expect()
+            .header("Cache-Control", cacheControlHeader)
+            .statusCode(200)
+            .get("/ui/")
+
+        given()
+            .header("User", "testuser")
+            .expect()
+            .header("Cache-Control", cacheControlHeader)
+            .statusCode(200)
+            .get("/ui/assets/vendor.css")
+
+        given()
+            .header("User", "testuser")
+            .expect()
+            .header("Cache-Control", cacheControlHeader)
+            .statusCode(200)
+            .get("/ui/assets/vendor.js")
     }
 
     @Test
