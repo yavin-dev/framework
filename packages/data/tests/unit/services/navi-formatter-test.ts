@@ -22,14 +22,10 @@ module('Unit | Service | navi formatter', function (hooks) {
   test('no parameters', async function (assert) {
     assert.expect(3);
 
-    assert.equal(Service.formatMetricColumnName(metric), 'Revenue', 'Prints name');
+    assert.equal(Service.formatColumnName(metric), 'Revenue', 'Prints name');
+    assert.equal(Service.formatColumnName(metric, undefined, 'override'), 'override', 'Prints alias instead of name');
     assert.equal(
-      Service.formatMetricColumnName(metric, undefined, 'override'),
-      'override',
-      'Prints alias instead of name'
-    );
-    assert.equal(
-      Service.formatMetricColumnName(emptyMetric, undefined, 'override'),
+      Service.formatColumnName(emptyMetric, undefined, 'override'),
       'override',
       'Prints alias even with no name'
     );
@@ -38,24 +34,24 @@ module('Unit | Service | navi formatter', function (hooks) {
   test('parameters', async function (assert) {
     assert.expect(5);
 
-    assert.equal(Service.formatMetricColumnName(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
+    assert.equal(Service.formatColumnName(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
     assert.equal(
-      Service.formatMetricColumnName(metric, { as: 'lame' }),
+      Service.formatColumnName(metric, { as: 'lame' }),
       'Revenue',
       'Prints name and hides the "as" parameter'
     );
     assert.equal(
-      Service.formatMetricColumnName(metric, { realParam: 'realValue' }),
+      Service.formatColumnName(metric, { realParam: 'realValue' }),
       'Revenue (realValue)',
       'Prints name with real parameter'
     );
     assert.equal(
-      Service.formatMetricColumnName(metric, { as: 'lame', realParam: 'realValue' }),
+      Service.formatColumnName(metric, { as: 'lame', realParam: 'realValue' }),
       'Revenue (realValue)',
       'Prints name with real parameter and hides "as"'
     );
     assert.equal(
-      Service.formatMetricColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }),
+      Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }),
       'Revenue (realValue1,realValue2)',
       'Prints name with multiple real parameters and hides "as"'
     );
@@ -63,27 +59,19 @@ module('Unit | Service | navi formatter', function (hooks) {
 
   test('parameters with alias', async function (assert) {
     assert.equal(
-      Service.formatMetricColumnName(metric, {}, 'override'),
+      Service.formatColumnName(metric, {}, 'override'),
       'override',
       'Prints alias and hides empty parameters'
     );
     assert.equal(
-      Service.formatMetricColumnName(metric, { as: 'lame' }, 'override'),
+      Service.formatColumnName(metric, { as: 'lame' }, 'override'),
       'override',
       'Prints alias and hides the "as" parameter'
     );
-    assert.equal(
-      Service.formatMetricColumnName(metric, { realParam: 'realValue' }, 'override'),
-      'override',
-      'Prints alias'
-    );
+    assert.equal(Service.formatColumnName(metric, { realParam: 'realValue' }, 'override'), 'override', 'Prints alias');
 
     assert.equal(
-      Service.formatMetricColumnName(
-        metric,
-        { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' },
-        'override'
-      ),
+      Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }, 'override'),
       'override',
       'Prints alias and hides real params and "as"'
     );
@@ -92,8 +80,8 @@ module('Unit | Service | navi formatter', function (hooks) {
   test('empty metric', async function (assert) {
     assert.expect(3);
 
-    assert.equal(Service.formatMetricColumnName({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');
-    assert.equal(Service.formatMetricColumnName(emptyMetric), '--', 'Prints "--" if metric is empty');
-    assert.equal(Service.formatMetricColumnName(undefined), '--', 'Prints "--" if metric is undefined');
+    assert.equal(Service.formatColumnName({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');
+    assert.equal(Service.formatColumnName(emptyMetric), '--', 'Prints "--" if metric is empty');
+    assert.equal(Service.formatColumnName(undefined), '--', 'Prints "--" if metric is undefined');
   });
 });

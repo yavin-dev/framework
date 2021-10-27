@@ -50,6 +50,7 @@ module('Unit | Serializer | Report', function (hooks) {
             dataSource: 'bardOne',
             filters: [
               {
+                alias: null,
                 field: 'network.dateTime',
                 operator: 'bet',
                 parameters: {
@@ -152,6 +153,7 @@ module('Unit | Serializer | Report', function (hooks) {
             dataSource: 'bardOne',
             filters: [
               {
+                alias: null,
                 field: 'network.dateTime',
                 operator: 'bet',
                 parameters: {

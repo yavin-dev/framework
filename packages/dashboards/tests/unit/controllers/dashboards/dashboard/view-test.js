@@ -48,7 +48,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiALL4DGA8gMrUQAdQoATLAHcUAXRqQ4UUaSwoaOfAnwBbOPGRpQ8xaQhKAvjRgBPPKVEQd5JBCyUaSLIwRc4pAEYaojzkvmbSZkA',
+              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiALL4DGA8gMrUQAdQoATLAHcUAXRqQ4UUaSwoaDCPlblGUKDRz4E+ALZx4yNKHmLSEJQF8aMAJ55SoiKfJIIWSjSQsRgQuOFIAI0NRHnIw+2l7IA',
           },
         },
         'Updating the filter sets the filters query param to the expected compressed string'
@@ -60,6 +60,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           filters: [
             {
+              alias: null,
               type: 'dimension',
               field: 'os',
               parameters: {
@@ -235,7 +236,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters:
-              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiAIwgC6NkcUAE1IBjLORj4KiaiBz4E+ALZx4yNKD6DSEIQF8aMAJ55SAiMvJIIYmUiyMEwuKQBG8gQBUA7lhC6uukA',
+              'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiAIwgC6NkcUAE1IBjLORj4KiaiAYR8rcoyhQaOfAnwBbOPGRpQfQaQhCAvjRgBPPKQEQd5JBDEykWRgmFxSAIw0CACoA7lggZlxmQA',
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -247,6 +248,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           filters: [
             {
+              alias: null,
               type: 'dimension',
               field: 'container',
               parameters: {
