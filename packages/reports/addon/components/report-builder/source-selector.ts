@@ -7,6 +7,7 @@ import type { TaskInstance } from 'ember-concurrency';
 
 export interface SourceItem<Source = unknown> {
   name: string;
+  friendlyName?: string;
   description?: string;
   source: Source;
   isSuggested?: boolean;

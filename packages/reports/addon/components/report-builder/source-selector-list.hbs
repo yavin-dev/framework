@@ -10,7 +10,7 @@
           data-source-name={{item.name}}
         >
           <span class="report-builder-source-selector__source-name flex-1 m-r-20 {{if (eq @currentSource.source item.source) "link is-active"}}">
-            {{item.name}}
+            {{or item.friendlyName item.name}}
           </span>
           {{#if item.description}}
             <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-brand-300" @icon="information-circle" @size="small" />

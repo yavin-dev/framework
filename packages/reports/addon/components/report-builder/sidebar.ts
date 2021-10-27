@@ -51,6 +51,7 @@ const mapDataSource = (dataSource: NaviDataSource): SourceItem<NaviDataSource> =
 
 const mapTable = (table: TableMetadataModel): SourceItem<TableMetadataModel> => ({
   name: table.name,
+  friendlyName: table.friendlyName,
   description: table.description,
   source: table,
 });
@@ -137,6 +138,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
     const factTables = this.metadataService.all('table', dataSource.name).filter((t) => t.isFact === true);
     const sources = sortBy(factTables, ['name']).map((table) => ({
       name: table.name,
+      friendlyName: table.friendlyName,
       description: table.description,
       source: table,
       isSuggested: dataSource.suggestedDataTables?.includes(table.id),
@@ -146,7 +148,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
 
   protected get path() {
     const sources = this.sourcePath as SourceItem[];
-    return ['Data Sources', ...sources.map((source) => source.name)];
+    return ['Data Sources', ...sources.map((source) => source.friendlyName || source.name)];
   }
 
   get breadcrumb() {

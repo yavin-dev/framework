@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NaviMetadataSerializer from './base';
@@ -68,6 +68,14 @@ export type TimeDimensionGrainNode = {
   expression: string;
   grain: string;
 };
+
+export type TableNamespaceNode = {
+  id: string;
+  name: string;
+  friendlyName: string;
+  description: string;
+};
+
 type TableNode = {
   id: string;
   name: string;
@@ -76,6 +84,7 @@ type TableNode = {
   category: string;
   cardinality: ElideCardinality;
   isFact: boolean;
+  namespace: Connection<TableNamespaceNode>;
   metrics: Connection<MetricNode>;
   dimensions: Connection<DimensionNode>;
   timeDimensions: Connection<TimeDimensionNode>;
@@ -115,6 +124,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       const newTable: TableMetadataPayload = {
         id: table.id,
         name: table.name,
+        friendlyName: table.friendlyName,
         category: table.category,
         description: table.description,
         cardinality: this._normalizeCardinality(table.cardinality),
@@ -124,6 +134,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         timeDimensionIds: [],
         requestConstraintIds: [],
         source,
+        namespace: this._normalizeTableNamespace(table.namespace),
       };
 
       const newTableMetrics = this._normalizeTableMetrics(table.metrics, table.id, source);
@@ -156,6 +167,14 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       columnFunctions,
       requestConstraints: [],
     };
+  }
+
+  /**
+   * @private
+   * Normalizes the ElideNamespaceConnection JSON response
+   */
+  _normalizeTableNamespace(namespaceConnection: Connection<TableNamespaceNode>): string {
+    return namespaceConnection.edges[0].node.id;
   }
 
   /**

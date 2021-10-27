@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NativeWithCreate from 'navi-data/models/native-with-create';
@@ -15,6 +15,7 @@ import type TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dime
 export interface TableMetadataPayload {
   id: string;
   name: string;
+  friendlyName?: string;
   category?: string;
   description?: string;
   cardinality?: Cardinality;
@@ -24,6 +25,7 @@ export interface TableMetadataPayload {
   timeDimensionIds: string[];
   requestConstraintIds: string[];
   source: string;
+  namespace?: string;
   tags?: string[];
 }
 
@@ -43,6 +45,8 @@ export default class TableMetadataModel extends NativeWithCreate {
   declare id: string;
 
   declare name: string;
+
+  declare friendlyName?: string;
 
   declare description?: string;
 
@@ -66,6 +70,8 @@ export default class TableMetadataModel extends NativeWithCreate {
    * the datasource this metadata is from.
    */
   declare source: string;
+
+  declare namespace?: string;
 
   get metrics(): MetricMetadataModel[] {
     return this.metricIds.map((id) => this.naviMetadata.getById('metric', id, this.source)).filter(isPresent);

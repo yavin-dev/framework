@@ -2,7 +2,7 @@
   tables: [
     {
       name: NetflixTitles
-      friendlyName: Netflix Titles
+      description: Netflix Titles
       table: netflix_titles
       dbConnectionName: DemoConnection
       dimensions: [
@@ -173,6 +173,7 @@
       namespace: DemoNamespace
       name: TrendingNow
       friendlyName: Trending Now
+      description: Trending Now on Netflix
       table: netflix_titles
       dbConnectionName: DemoConnection
       dimensions: [
