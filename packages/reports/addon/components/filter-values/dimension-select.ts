@@ -11,7 +11,6 @@ import { tracked } from '@glimmer/tracking';
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import { getDataSource } from 'navi-data/utils/adapter';
 import { sortBy } from 'lodash-es';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
@@ -20,12 +19,10 @@ import type RequestFragment from 'navi-core/models/bard-request-v2/request';
 import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type { IndexedOptions } from '../power-select-collection-options';
 import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 const SEARCH_DEBOUNCE_MS = 250;
 const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
-
 interface DimensionSelectComponentArgs {
   filter: FilterFragment;
   request: RequestFragment;
@@ -36,8 +33,8 @@ function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
 }
-function isNumericDimensionArray(arr: IndexedOptions<NaviDimensionModel>[]): boolean {
-  return arr.every((d) => isNumeric(d.option.value as string));
+function isNumericDimensionArray(arr: NaviDimensionModel[]): boolean {
+  return arr.every((d) => isNumeric(d.value as string));
 }
 
 export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
@@ -81,28 +78,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return dimensionColumn.columnMetadata.cardinality === CARDINALITY_SIZES[0];
   }
 
-  get usesDimensionSearch() {
-    const source = this.args.filter.source;
-    const filiOptions = getDataSource<'bard'>(source).options;
-    return !!filiOptions?.enableDimensionSearch;
-  }
-
   @action
   setValues(dimension: NaviDimensionModel[]) {
     const values = dimension.map(({ value }) => value) as (string | number)[];
     this.args.onUpdateFilter({ values });
-  }
-
-  @action
-  sortValues(dimensions: IndexedOptions<NaviDimensionModel>[]) {
-    //respect sort from server
-    if (!this.isSmallCardinality && this.usesDimensionSearch) {
-      return dimensions;
-    }
-    if (isNumericDimensionArray(dimensions)) {
-      return sortBy(dimensions, [(d) => Number(d.option.value)]);
-    }
-    return sortBy(dimensions, ['option.value']);
   }
 
   /**
@@ -114,7 +93,13 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
-        .then((r) => r.values);
+        .then((r) => r.values)
+        .then((dimensions) => {
+          if (isNumericDimensionArray(dimensions)) {
+            return sortBy(dimensions, [(d) => Number(d.value)]);
+          }
+          return sortBy(dimensions, ['value']);
+        });
     }
   }
 
@@ -130,23 +115,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (!searchTerm) {
       return undefined;
     }
-    if (this.dimensionValues === undefined) {
-      yield timeout(SEARCH_DEBOUNCE_MS);
-      const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
-        this.dimensionColumn,
-        searchTerm
-      );
-      return dimensionResponse.values;
-    } else {
-      yield timeout(SEARCH_DEBOUNCE_OFFLINE_MS);
-      const rawValues: NaviDimensionModel[] = yield this.dimensionValues;
-      return rawValues.filter((v) => {
-        const lowerTerm = searchTerm.toLowerCase();
-        return (
-          v.displayValue.toLowerCase().includes(lowerTerm) ||
-          Object.values(v.suggestions ?? {}).some((s) => s.toLowerCase().includes(lowerTerm))
-        );
-      });
-    }
+    yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
+    const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
+      this.dimensionColumn,
+      searchTerm
+    );
+    return dimensionResponse.values;
   }
 }
