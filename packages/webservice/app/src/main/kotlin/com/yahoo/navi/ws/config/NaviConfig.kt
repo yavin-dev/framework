@@ -27,8 +27,8 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
             DataSourceTypes.elide,
         ),
         DataSource(
-            "defaultWithNamespace",
-            "Default with Namespace",
+            "withNamespace",
+            "With a Namespace",
             null,
             elideSettings.graphql.path,
             "DemoNamespace",
