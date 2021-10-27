@@ -1,7 +1,7 @@
 #import "../fragments/table.graphql"
 
-query GetTable($ids: [String!]) {
-  table(ids: $ids) {
+query GetTable($ids: [String!], $filter: String!) {
+  table(ids: $ids, filter: $filter) {
     edges {
       node {
         ...TableFragment

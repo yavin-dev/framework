@@ -6,6 +6,7 @@ declare module 'navi-config' {
     displayName: string;
     description?: string;
     uri: string;
+    namespace?: string;
     options?: Options;
     suggestedDataTables?: string[];
   };

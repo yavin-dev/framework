@@ -55,3 +55,14 @@ export function configHost(options: SourceAdapterOptions = {}): string {
   const { dataSourceName } = options;
   return dataSourceName ? getDataSource(dataSourceName).uri : getDefaultDataSource().uri;
 }
+
+/**
+ * Returns data source namespace given a data source name
+ * @param options - adapter options that include dataSourceName
+ * @returns datasource namespace or undefined
+ */
+export function getDataSourceNamespace(options: SourceAdapterOptions = {}): string | undefined {
+  const { dataSourceName } = options;
+  const dataSource = dataSourceName ? getDataSource(dataSourceName) : getDefaultDataSource();
+  return dataSource.namespace || undefined;
+}
