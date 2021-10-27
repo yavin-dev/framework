@@ -8,6 +8,7 @@ import com.jayway.restassured.RestAssured
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,13 +23,22 @@ class StaticAssetServingTest : IntegrationTest() {
 
     @Test
     fun cache_static_assets_test() {
-        val cacheControlHeader = "max-age=3600"
+        val noCacheHeader = "max-age=0"
         given()
             .header("User", "testuser")
             .expect()
-            .header("Cache-Control", cacheControlHeader)
+            .header("Cache-Control", noCacheHeader)
+            .header("Etag", Matchers.hasLength(35))
             .statusCode(200)
             .get("/ui/")
+        given()
+            .header("User", "testuser")
+            .expect()
+            .header("Cache-Control", noCacheHeader)
+            .header("Etag", Matchers.hasLength(35))
+            .header("Content-Type", "application/javascript;charset=UTF-8")
+            .statusCode(200)
+            .get("/ui/assets/server-generated-config.js")
 
         val indexHtml =
             ClassLoader.getSystemClassLoader().getResource("META-INF/resources/ui/index.html")?.readText() ?: ""
@@ -38,10 +48,12 @@ class StaticAssetServingTest : IntegrationTest() {
         val css = cssRegex.find(indexHtml)?.groups?.elementAt(1)?.value ?: ""
         val js = jsRegex.find(indexHtml)?.groups?.elementAt(1)?.value ?: ""
 
+        val cacheControlHeader = "max-age=60, must-revalidate"
         given()
             .header("User", "testuser")
             .expect()
             .header("Cache-Control", cacheControlHeader)
+            .header("Etag", Matchers.hasLength(35))
             .header("Content-Type", "text/css")
             .statusCode(200)
             .get(css)
@@ -50,6 +62,7 @@ class StaticAssetServingTest : IntegrationTest() {
             .header("User", "testuser")
             .expect()
             .header("Cache-Control", cacheControlHeader)
+            .header("Etag", Matchers.hasLength(35))
             .header("Content-Type", "application/javascript")
             .statusCode(200)
             .get(js)

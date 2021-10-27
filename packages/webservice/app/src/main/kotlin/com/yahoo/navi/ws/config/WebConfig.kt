@@ -5,19 +5,18 @@
 
 package com.yahoo.navi.ws.config
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
+import org.springframework.web.filter.ShallowEtagHeaderFilter
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
-import java.util.concurrent.TimeUnit
 
 /**
  * Configures the web container.
  */
 @Configuration
 class WebConfig : WebMvcConfigurer {
-    val ASSET_CACHE_SECONDS = TimeUnit.HOURS.toSeconds(1).toInt()
-
     override fun addViewControllers(registry: ViewControllerRegistry) {
         registry.addViewController("/ui/").setViewName("forward:/ui/index.html")
         registry.addViewController("/ui/**/{path:[^\\.]*}").setViewName("forward:/ui/")
@@ -25,10 +24,11 @@ class WebConfig : WebMvcConfigurer {
         registry.addViewController("/").setViewName("redirect:/ui/")
     }
 
-    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry
-            .addResourceHandler("/ui/**", "/ui/*")
-            .addResourceLocations("/ui/")
-            .setCachePeriod(ASSET_CACHE_SECONDS)
+    @Bean
+    fun shallowEtagHeaderFilter(): FilterRegistrationBean<ShallowEtagHeaderFilter>? {
+        val filterRegistrationBean = FilterRegistrationBean(ShallowEtagHeaderFilter())
+        filterRegistrationBean.addUrlPatterns("/ui/*")
+        filterRegistrationBean.setName("etagFilter")
+        return filterRegistrationBean
     }
 }
