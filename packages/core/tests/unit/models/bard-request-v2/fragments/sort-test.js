@@ -92,6 +92,7 @@ module('Unit | Model | Fragment | BardRequest - Sort', function (hooks) {
       mockModel.serialize().data.attributes.sorts,
       [
         {
+          alias: null,
           field: 'revenue',
           parameters: {
             currency: 'USD',
@@ -109,6 +110,7 @@ module('Unit | Model | Fragment | BardRequest - Sort', function (hooks) {
       mockModel.serialize().data.attributes.sorts,
       [
         {
+          alias: null,
           field: 'revenue',
           type: 'metric',
           parameters: {},

@@ -96,6 +96,7 @@ module('Unit | Model | dashboard widget', function (hooks) {
               dataSource: 'bardOne',
               filters: [
                 {
+                  alias: null,
                   field: 'network.dateTime',
                   operator: 'bet',
                   parameters: {

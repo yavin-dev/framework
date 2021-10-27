@@ -101,6 +101,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function (hooks) {
       mockModel.serialize().data.attributes.filters,
       [
         {
+          alias: null,
           field: 'revenue',
           parameters: {
             currency: 'USD',
@@ -119,6 +120,7 @@ module('Unit | Model | Fragment | BardRequest - Filter', function (hooks) {
       mockModel.serialize().data.attributes.filters,
       [
         {
+          alias: null,
           field: 'revenue',
           parameters: {},
           operator: 'gt',

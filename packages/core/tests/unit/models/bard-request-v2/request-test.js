@@ -23,6 +23,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
               request: {
                 filters: [
                   {
+                    alias: null,
                     field: 'network.dateTime',
                     operator: 'bet',
                     type: 'timeDimension',
@@ -30,6 +31,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
                     values: ['P1D', 'current'],
                   },
                   {
+                    alias: null,
                     field: 'uniqueIdentifier',
                     type: 'metric',
                     operator: 'gt',
@@ -367,6 +369,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
       {
         filters: [
           {
+            alias: null,
             field: 'network.dateTime',
             type: 'timeDimension',
             parameters: { grain: 'day' },
@@ -374,6 +377,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
             values: ['P1D', 'current'],
           },
           {
+            alias: null,
             field: 'uniqueIdentifier',
             type: 'metric',
             parameters: {},
@@ -413,12 +417,14 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
         ],
         sorts: [
           {
+            alias: null,
             field: 'dateTime',
             type: 'timeDimension',
             parameters: {},
             direction: 'asc',
           },
           {
+            alias: null,
             field: 'navClicks',
             type: 'metric',
             parameters: {},

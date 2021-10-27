@@ -16,6 +16,7 @@ const ExpectedRequest = {
         operator: 'bet',
         values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
         field: 'network.dateTime',
+        alias: null,
         parameters: {
           grain: 'day',
         },
@@ -24,30 +25,30 @@ const ExpectedRequest = {
     ],
     columns: [
       {
-        alias: null,
         field: 'network.dateTime',
+        alias: null,
         parameters: {
           grain: 'day',
         },
         type: 'timeDimension',
       },
       {
-        alias: null,
         field: 'property',
+        alias: null,
         parameters: {
           field: 'id',
         },
         type: 'dimension',
       },
       {
-        alias: null,
         field: 'adClicks',
+        alias: null,
         parameters: {},
         type: 'metric',
       },
       {
-        alias: null,
         field: 'navClicks',
+        alias: null,
         parameters: {},
         type: 'metric',
       },
@@ -57,6 +58,7 @@ const ExpectedRequest = {
       {
         direction: 'asc',
         field: 'navClicks',
+        alias: null,
         parameters: {},
         type: 'metric',
       },
@@ -146,6 +148,8 @@ module('Unit | Model | report', function (hooks) {
       });
 
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
+      console.log(serialized);
+      console.log(ExpectedReport);
       assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
