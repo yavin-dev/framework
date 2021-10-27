@@ -4,8 +4,8 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import StoreService from 'ember-data/store';
 import { TestContext as Context } from 'ember-test-helpers';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import RequestFragment from 'navi-core/models/request';
+import ColumnFragment from 'navi-core/models/request/column';
 import { TableColumn } from 'navi-core/components/navi-visualizations/table';
 
 interface TestContext extends Context {
@@ -42,7 +42,7 @@ module('Integration | Component | cell renderers/time-dimension', function (hook
 
     this.set(
       'request',
-      store.createFragment('bard-request-v2/request', {
+      store.createFragment('request', {
         columns: [
           {
             type: 'timeDimension',

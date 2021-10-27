@@ -187,7 +187,7 @@ export default class LineChartRoute extends Route {
     grain: Grain,
     interval: { start: string; end: string }
   ) {
-    return this.store.createFragment('bard-request-v2/request', {
+    return this.store.createFragment('request', {
       table: 'network',
       columns: [
         {

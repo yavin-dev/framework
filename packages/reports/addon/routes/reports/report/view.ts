@@ -16,7 +16,7 @@ import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
 

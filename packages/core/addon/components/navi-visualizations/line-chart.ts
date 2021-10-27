@@ -16,7 +16,7 @@ import { run } from '@ember/runloop';
 import ChartBuildersBase from './chart-builders-base';
 import { VisualizationModel } from './table';
 import { BaseChartBuilder } from 'navi-core/chart-builders/base';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 import { Grain } from 'navi-data/utils/date';
 import { ChartSeries } from 'navi-core/models/chart-visualization';

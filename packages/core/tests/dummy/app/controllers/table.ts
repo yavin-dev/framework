@@ -6,7 +6,7 @@ import { merge } from 'lodash-es';
 import { Args, TableColumn } from 'navi-core/components/navi-visualizations/table';
 import { ModelFrom } from 'navi-core/utils/type-utils';
 import TableRoute from '../routes/table';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { TableColumnAttributes } from 'navi-core/serializers/table';
 
 export default class TableController extends Controller {

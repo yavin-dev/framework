@@ -5,9 +5,9 @@
 import Component from '@glimmer/component';
 import { set, computed, action } from '@ember/object';
 import NaviVisualizationConfigSeriesChartComponent, { SeriesOptions } from './navi-visualization-config/series-chart';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { DimensionSeriesValues } from 'navi-core/models/chart-visualization';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 type Args = SeriesOptions & {
   onUpdateConfig: NaviVisualizationConfigSeriesChartComponent['args']['onUpdateConfig'];

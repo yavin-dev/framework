@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 
 export function getSelectedMetricsOfBase(metricMetadataModel: ColumnMetadataModel, request: RequestFragment) {

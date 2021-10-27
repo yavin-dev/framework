@@ -14,9 +14,9 @@ import { getTranslation } from 'navi-core/utils/chart';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Args as ComponentArgs } from 'navi-core/components/navi-visualizations/pie-chart';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::PieChart
@@ -84,7 +84,7 @@ module('Integration | Component | pie chart', function (hooks) {
     injectC3Enhancements();
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
-    Request = this.owner.lookup('service:store').createFragment('bard-request-v2/request', RequestJSON);
+    Request = this.owner.lookup('service:store').createFragment('request', RequestJSON);
     Response = NaviFactResponse.create({
       rows: [
         {
@@ -359,7 +359,7 @@ module('Integration | Component | pie chart', function (hooks) {
     ];
     clonedModel.request = this.owner
       .lookup('service:store')
-      .createFragment('bard-request-v2/request', { ...RequestJSON, columns: newColumns });
+      .createFragment('request', { ...RequestJSON, columns: newColumns });
     this.set('model', A([clonedModel]));
     this.set('options', {
       series: {
@@ -435,7 +435,7 @@ module('Integration | Component | pie chart', function (hooks) {
       },
     ];
     const bardTwoModel = {
-      request: this.owner.lookup('service:store').createFragment('bard-request-v2/request', {
+      request: this.owner.lookup('service:store').createFragment('request', {
         ...RequestJSON,
         columns: newColumns,
         filters: newFilters,
@@ -509,7 +509,7 @@ module('Integration | Component | pie chart', function (hooks) {
     ];
     clonedModel.request = this.owner
       .lookup('service:store')
-      .createFragment('bard-request-v2/request', { ...RequestJSON, columns: newColumns });
+      .createFragment('request', { ...RequestJSON, columns: newColumns });
     clonedModel.request.columns.forEach((c) => (c.source = Request.dataSource));
     this.set('model', A([clonedModel]));
 

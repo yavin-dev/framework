@@ -45,7 +45,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
 
     this.report = Store.createRecord('report', {
-      request: Store.createFragment('bard-request-v2/request', {
+      request: Store.createFragment('request', {
         table: 'tableA',
         dataSource: 'bardOne',
         limit: null,

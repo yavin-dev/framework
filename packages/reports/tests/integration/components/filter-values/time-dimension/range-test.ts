@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, click } from '@ember/test-helpers';
 import { TestContext as Context } from 'ember-test-helpers';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import hbs from 'htmlbars-inline-precompile';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 //@ts-ignore

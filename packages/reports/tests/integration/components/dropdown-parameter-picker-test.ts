@@ -6,7 +6,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
 

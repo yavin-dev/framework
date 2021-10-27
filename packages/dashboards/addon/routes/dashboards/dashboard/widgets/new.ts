@@ -27,7 +27,7 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
     const widget = this.store.createRecord('dashboard-widget', {
       owner,
       dashboard,
-      requests: A([this.store.createFragment('bard-request-v2/request', {})]),
+      requests: A([this.store.createFragment('request', {})]),
       visualization: { type: defaultVisualization },
     });
 

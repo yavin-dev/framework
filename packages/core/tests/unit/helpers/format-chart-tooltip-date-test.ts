@@ -11,7 +11,7 @@ module('Unit | Helpers | Format Chart Tooltip Date', function (hooks) {
 
     const store = this.owner.lookup('service:store') as Store;
 
-    const request = store.createFragment('bard-request-v2/request', {
+    const request = store.createFragment('request', {
       dataSource: 'bardOne',
       requestVersion: '2.0',
       table: 'network',

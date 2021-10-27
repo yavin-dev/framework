@@ -8,7 +8,7 @@
  */
 import { assert } from '@ember/debug';
 import EmberObject from '@ember/object';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 function isPresent<T>(t: T | undefined | null | void): t is T {
   return t !== undefined && t !== null;

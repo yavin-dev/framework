@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import type { TestContext as Context } from 'ember-test-helpers';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type NaviColumnConfigBase from 'navi-reports/components/navi-column-config/base';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 
@@ -35,7 +35,7 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
   hooks.beforeEach(async function (this: TestContext) {
     this.fragmentFactory = this.owner.lookup('service:fragment-factory');
     const store = this.owner.lookup('service:store');
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: 'tableA',
       dataSource: 'bardOne',
       columns: [],

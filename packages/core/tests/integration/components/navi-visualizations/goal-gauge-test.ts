@@ -7,7 +7,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import GoalGaugeVisualization from 'navi-core/components/navi-visualizations/goal-gauge';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -32,7 +32,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     const MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
     this.options = { metricCid: 'cid_pageViews', baselineValue: 290000000, goalValue: 310000000 };
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: 'inventory',
       columns: [
         {
@@ -82,7 +82,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     await MetadataService.loadMetadata({ dataSourceName: 'bardTwo' });
     this.set('options', { metricCid: 'cid_available', baselineValue: 290000000, goalValue: 310000000 });
 
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: 'inventory',
       columns: [
         {
@@ -109,7 +109,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
     assert.dom('.metric-title').hasText('How many are available', 'the aliased metric title is correctly displayed');
 
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -185,7 +185,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     assert.expect(3);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -220,7 +220,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
   test('goal-guage with parameterized metric', async function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -269,7 +269,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     assert.expect(6);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -324,7 +324,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     assert.expect(1);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -359,7 +359,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     assert.expect(2);
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [
         {
@@ -397,7 +397,7 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
   test('goal-gauge - missing metric', async function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       table: null,
       columns: [],
       filters: [],

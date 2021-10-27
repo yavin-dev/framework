@@ -8,8 +8,8 @@ import { merge } from 'lodash-es';
 import { CellRendererArgs } from 'navi-core/components/navi-table-cell-renderer';
 import StoreService from '@ember-data/store';
 import { TableColumn } from 'navi-core/components/navi-visualizations/table';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import RequestFragment from 'navi-core/models/request';
+import ColumnFragment from 'navi-core/models/request/column';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -40,7 +40,7 @@ module('Integration | Component | cell renderers/metric', function (hooks) {
     this.set('data', data);
     this.set(
       'request',
-      store.createFragment('bard-request-v2/request', {
+      store.createFragment('request', {
         columns: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' }],
         filters: [],
         sorts: [],

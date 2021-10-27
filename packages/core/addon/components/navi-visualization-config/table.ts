@@ -11,7 +11,7 @@
  */
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { Args as TableArgs } from 'navi-core/components/navi-visualizations/table';
 import NaviVisualizationConfigBaseComponent from './base';
 

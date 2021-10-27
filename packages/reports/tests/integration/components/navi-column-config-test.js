@@ -43,7 +43,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
     this.set(
       'report',
       Store.createRecord('report', {
-        request: Store.createFragment('bard-request-v2/request', {
+        request: Store.createFragment('request', {
           table: 'tableA',
           dataSource: 'bardOne',
           columns: [],

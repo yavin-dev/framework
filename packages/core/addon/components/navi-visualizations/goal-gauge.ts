@@ -11,10 +11,10 @@ import { guidFor } from '@ember/object/internals';
 // @ts-ignore
 import d3 from 'd3';
 import numeral from 'numeral';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import { VisualizationModel } from './table';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 
 const DEFAULT_OPTIONS = {
   baselineValue: 0,

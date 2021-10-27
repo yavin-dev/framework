@@ -20,8 +20,8 @@ import type LayoutFragment from 'navi-core/models/fragments/layout';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type NaviFactsModel from 'navi-data/models/navi-facts';
 import type DashboardWidgetModel from 'navi-core/models/dashboard-widget';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type RequestFragment from 'navi-core/models/request';
+import type FilterFragment from 'navi-core/models/request/filter';
 import type { TaskInstance, TaskGenerator } from 'ember-concurrency';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;

@@ -28,7 +28,7 @@ module('Integration | Component | visualization config/metric-label', function (
       metricCid: 'cid_bubbles',
     };
     this.onUpdateConfig = () => null;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       columns: [
         {
           cid: 'cid_bubbles',

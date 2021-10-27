@@ -4,7 +4,7 @@
  */
 import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
-import BaseFragment from './base';
+import BaseFragment from '../request/base';
 import { SortDirection, Sort } from 'navi-data/adapters/facts/interface';
 
 const Validations = buildValidations({
@@ -24,6 +24,6 @@ export default class SortFragment extends BaseFragment.extend(Validations) imple
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/fragments/sort': SortFragment;
+    'request/sort': SortFragment;
   }
 }

@@ -4,7 +4,7 @@
  */
 //@ts-ignore
 import BaseValidator from 'ember-cp-validations/validators/base';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 type ValidatorOptions = {
   request: RequestFragment;

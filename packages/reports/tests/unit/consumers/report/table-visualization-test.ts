@@ -20,7 +20,7 @@ module('Unit | Consumer | report table visualization', function (hooks) {
   });
 
   test('UPDATE_TABLE_COLUMN_ORDER', function (assert) {
-    const request = Store.createFragment('bard-request-v2/request', {
+    const request = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',
@@ -75,7 +75,7 @@ module('Unit | Consumer | report table visualization', function (hooks) {
   test('UPDATE_TABLE_COLUMN', function (assert) {
     assert.expect(1);
 
-    const request = Store.createFragment('bard-request-v2/request', {
+    const request = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',

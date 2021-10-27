@@ -1,4 +1,4 @@
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import Interval from 'navi-data/utils/classes/interval';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 //@ts-ignore
