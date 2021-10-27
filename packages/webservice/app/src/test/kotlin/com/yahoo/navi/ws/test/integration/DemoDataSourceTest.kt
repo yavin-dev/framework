@@ -17,4 +17,16 @@ class DemoDataSourceTest : IntegrationTest() {
             .statusCode(200)
             .body("data[0].type", Matchers.equalTo("NetflixTitles"))
     }
+
+    @Test
+    fun simple_table_with_namespace_test() {
+        given()
+            .header("User", "testuser")
+            .When()
+            .get("/DemoNamespace_TrendingNow")
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("data[0].type", Matchers.equalTo("DemoNamespace_TrendingNow"))
+    }
 }
