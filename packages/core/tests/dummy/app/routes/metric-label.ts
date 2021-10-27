@@ -1,6 +1,6 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 const row: Record<string, number> = {
   bottles: 1000000,
@@ -12,7 +12,7 @@ const row: Record<string, number> = {
 
 export default class MetricLabelRoute extends Route {
   makeModel(column: Parameters<RequestFragment['addColumn']>[0]) {
-    const request = this.store.createFragment('bard-request-v2/request', {
+    const request = this.store.createFragment('request', {
       table: null,
       columns: [column],
       filters: [],

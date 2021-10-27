@@ -6,7 +6,7 @@ import { RequestActions } from 'navi-reports/services/request-action-dispatcher'
 import { run } from '@ember/runloop';
 import type StoreService from '@ember-data/store';
 import type RollupConsumer from 'navi-reports/consumers/request/rollup';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type { Column } from 'navi-data/adapters/facts/interface';
 
 let Store: StoreService;
@@ -49,7 +49,7 @@ module('Unit | Consumer | request rollup', function (hooks) {
     };
 
     CurrentModel = {
-      request: Store.createFragment('bard-request-v2/request', {
+      request: Store.createFragment('request', {
         table: 'network',
         limit: null,
         dataSource: 'bardOne',

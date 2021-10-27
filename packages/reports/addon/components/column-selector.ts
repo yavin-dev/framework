@@ -6,7 +6,7 @@
 import { guidFor } from '@ember/object/internals';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 //@ts-ignore
 import { searchRecords } from 'navi-core/utils/search';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';

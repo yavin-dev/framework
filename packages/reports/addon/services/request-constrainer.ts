@@ -6,14 +6,14 @@ import Service, { inject as service } from '@ember/service';
 import { RequestActions } from './request-action-dispatcher';
 import { matches } from 'lodash-es';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Route from '@ember/routing/route';
 import type ReportModel from 'navi-core/models/report';
 import type UpdateReportActionDispatcher from './update-report-action-dispatcher';
-import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type ColumnFragment from 'navi-core/models/request/column';
+import type FilterFragment from 'navi-core/models/request/filter';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
 
 export type TemplateDispatcherAction = [string, ...any[]] & any[];

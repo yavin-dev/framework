@@ -20,7 +20,7 @@ import tooltipLayout from '../templates/chart-tooltips/date';
 import DataGroup from 'navi-core/utils/classes/data-group';
 import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { BaseChartBuilder, BLANK_X_VALUE, C3Row, EmptyC3Data, TooltipData } from './base';
 import { tracked } from '@glimmer/tracking';
 import { DateTimeSeries } from 'navi-core/models/chart-visualization';

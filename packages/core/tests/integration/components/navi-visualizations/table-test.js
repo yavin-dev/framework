@@ -95,7 +95,7 @@ module('Integration | Component | table', function (hooks) {
 
     Model = arr([
       {
-        request: Store.createFragment('bard-request-v2/request', {
+        request: Store.createFragment('request', {
           dataSource: 'bardOne',
           requestVersion: '2.0',
           table: 'network',
@@ -197,7 +197,7 @@ module('Integration | Component | table', function (hooks) {
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
     const model = arr([
       {
-        request: Store.createFragment('bard-request-v2/request', {
+        request: Store.createFragment('request', {
           dataSource: 'bardTwo',
           requestVersion: '2.0',
           table: 'inventory',

@@ -7,7 +7,7 @@
  *
  */
 import NaviVisualizationBaseManifest from './base';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 export default class LineChartManifest extends NaviVisualizationBaseManifest {
   name = 'line-chart';

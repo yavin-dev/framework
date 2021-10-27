@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, fillIn, triggerEvent, click } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';

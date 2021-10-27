@@ -18,7 +18,7 @@ import { VisualizationModel } from './table';
 import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { getTranslation } from '../../utils/chart';
 import ChartBuildersBase from './chart-builders-base';
-import RequestV2 from '../../models/bard-request-v2/request';
+import RequestV2 from '../../models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { BaseChartBuilder, SeriesType, TooltipData } from 'navi-core/chart-builders/base';
 import { ChartSeries } from 'navi-core/models/chart-visualization';

@@ -5,7 +5,7 @@ import { set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { merge } from 'lodash-es';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import StoreService from '@ember-data/store';
 import { PieChartConfig } from 'navi-core/models/pie-chart';
 
@@ -69,7 +69,7 @@ export default class PieChartController extends Controller {
     ]);
   }
 
-  multiDimensionRequest = this.store.createFragment('bard-request-v2/request', {
+  multiDimensionRequest = this.store.createFragment('request', {
     columns: [
       {
         cid: 'cid_network.dateTime(grain=day)',

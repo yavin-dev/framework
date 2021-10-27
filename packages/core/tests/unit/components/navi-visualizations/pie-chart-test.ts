@@ -8,7 +8,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import PieChart, { PieChartOptions } from 'navi-core/components/navi-visualizations/pie-chart';
 import { createGlimmerComponent } from 'navi-core/test-support';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 
 let Request: RequestFragment;
@@ -19,7 +19,7 @@ module('Unit | Component | pie chart', function (hooks) {
 
   hooks.beforeEach(async function (this: TestContext) {
     await this.owner.lookup('service:navi-metadata').loadMetadata();
-    Request = this.owner.lookup('service:store').createFragment('bard-request-v2/request', {
+    Request = this.owner.lookup('service:store').createFragment('request', {
       columns: [
         {
           cid: 'cid_age(field=desc)',

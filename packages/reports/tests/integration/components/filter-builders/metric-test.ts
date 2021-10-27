@@ -7,16 +7,16 @@ import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import FragmentFactory from 'navi-core/services/fragment-factory';
 
 interface TestContext extends Context {
   filter: FilterFragment;
 }
 const TEMPLATE = hbs`
-  <FilterBuilders::Metric 
-    @filter={{this.filter}} 
-    @isCollapsed={{this.isCollapsed}} 
+  <FilterBuilders::Metric
+    @filter={{this.filter}}
+    @isCollapsed={{this.isCollapsed}}
   />`;
 
 module('Integration | Component | filter-builders/metric', function (hooks) {

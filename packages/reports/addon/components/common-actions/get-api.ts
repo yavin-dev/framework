@@ -5,7 +5,7 @@
 import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import NaviFactsService from 'navi-data/services/navi-facts';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 /**

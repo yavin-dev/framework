@@ -69,7 +69,7 @@ export default class TableRoute extends Route {
     return resolve(
       A([
         {
-          request: this.store.createFragment('bard-request-v2/request', {
+          request: this.store.createFragment('request', {
             table: null,
             columns: [
               {

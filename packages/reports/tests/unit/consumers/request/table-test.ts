@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
 import Route from '@ember/routing/route';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import TableConsumer from 'navi-reports/consumers/request/table';
 import { TestContext } from 'ember-test-helpers';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -45,7 +45,7 @@ module('Unit | Consumer | request table', function (hooks) {
   });
 
   test('UPDATE_TABLE', function (assert) {
-    const request: RequestFragment = Store.createFragment('bard-request-v2/request', {
+    const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',

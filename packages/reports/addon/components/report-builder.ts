@@ -13,7 +13,7 @@ import fade from 'ember-animated/transitions/fade';
 import type ScreenService from 'navi-core/services/screen';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type ReportModel from 'navi-core/models/report';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 
 interface Args {
   report: ReportModel;

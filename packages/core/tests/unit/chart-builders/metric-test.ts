@@ -9,7 +9,7 @@ import MetricChartBuilder from 'navi-core/chart-builders/metric';
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';
 import EmberObject from '@ember/object';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import { setOwner } from '@ember/application';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
@@ -284,7 +284,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
   });
 
   test('buildData - no time dimension', function (assert) {
-    const request = this.store.createFragment('bard-request-v2/request', {
+    const request = this.store.createFragment('request', {
       columns: [
         { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
         { type: 'metric', field: 'pageViews', parameters: {}, source: 'bardOne' },

@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import LineChartManifest from 'navi-core/navi-visualization-manifests/line-chart';
 
 let ValidRequest: RequestFragment;
@@ -15,7 +15,7 @@ module('Unit | Manifests | line chart', function (hooks) {
 
     Manifest = this.owner.lookup('navi-visualization-manifest:line-chart');
 
-    ValidRequest = store.createFragment('bard-request-v2/request', {
+    ValidRequest = store.createFragment('request', {
       dataSource: 'bardOne',
       requestVersion: '2.0',
       table: 'network',

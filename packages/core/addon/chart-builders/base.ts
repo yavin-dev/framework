@@ -4,7 +4,7 @@
  */
 import Mixin from '@ember/object/mixin';
 import EmberObject from '@ember/object';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { DateTimeSeries, DimensionSeries, MetricSeries } from 'navi-core/models/chart-visualization';
 import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
 import DataGroup from 'navi-core/utils/classes/data-group';
