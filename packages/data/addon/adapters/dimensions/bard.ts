@@ -91,6 +91,14 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     return andQueries.length ? { filters: serializeFilters(requestV2Filters, dimension.columnMetadata.source) } : {};
   }
 
+  _searchDimensions(dimensions: FiliDimensionResponse, query: string): FiliDimensionResponse {
+    const results = SearchUtils.searchDimensionRecords(arr(dimensions.rows), query, 5000, 1) as SearchUtilResult[];
+    return {
+      rows: results.map((result: SearchUtilResult) => result.record),
+      ...(dimensions.meta ? { meta: dimensions.meta } : {}),
+    };
+  }
+
   _find(
     url: string,
     data: Record<string, string | number | boolean>,
@@ -157,19 +165,6 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     return yield this._find(url, data, options);
   }
 
-  @task *searchUtil(dimensions: FiliDimensionResponse, query: string): TaskGenerator<FiliDimensionResponse> {
-    const results = yield SearchUtils.searchDimensionRecords(
-      arr(dimensions.rows),
-      query,
-      5000,
-      1
-    ) as SearchUtilResult[];
-    return {
-      rows: results.map((result: SearchUtilResult) => result.record),
-      ...(dimensions.meta ? { meta: dimensions.meta } : {}),
-    };
-  }
-
   @task *search(
     dimension: DimensionColumn,
     query: string,
@@ -179,7 +174,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     const filiOptions = getDataSource<'bard'>(source).options;
     if (cardinality === CARDINALITY_SIZES[0]) {
       const all = yield taskFor(this.all).perform(dimension);
-      return yield taskFor(this.searchUtil).perform(all, query);
+      return this._searchDimensions(all, query);
     } else if (filiOptions?.enableDimensionSearch) {
       const url = this._buildUrl(dimension, 'search');
       const data: Record<string, string> = query ? { query } : {};
@@ -195,7 +190,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
         ],
         options
       );
-      return yield taskFor(this.searchUtil).perform(results, query);
+      return this._searchDimensions(results, query);
     }
   }
 }

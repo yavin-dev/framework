@@ -253,7 +253,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       meta: { some: 'metaData' },
     };
 
-    const results = await taskFor(this.adapter.searchUtil).perform(dimensionsToSearch, 'foo');
+    const results = this.adapter._searchDimensions(dimensionsToSearch, 'foo');
     assert.deepEqual(
       results,
       {
