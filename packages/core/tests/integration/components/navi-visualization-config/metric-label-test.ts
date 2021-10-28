@@ -53,7 +53,6 @@ module('Integration | Component | visualization config/metric-label', function (
 
     await render(Template);
 
-    debugger;
     assert
       .dom('.metric-label-config__label-input')
       .hasValue(
