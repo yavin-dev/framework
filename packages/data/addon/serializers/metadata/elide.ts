@@ -123,8 +123,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     const tablePayloads = edges.map(({ node: table }) => {
       const newTable: TableMetadataPayload = {
         id: table.id,
-        name: table.name,
-        friendlyName: table.friendlyName,
+        name: table.friendlyName,
         category: table.category,
         description: table.description,
         cardinality: this._normalizeCardinality(table.cardinality),

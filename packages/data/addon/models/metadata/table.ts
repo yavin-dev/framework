@@ -15,7 +15,6 @@ import type TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dime
 export interface TableMetadataPayload {
   id: string;
   name: string;
-  friendlyName?: string;
   category?: string;
   description?: string;
   cardinality?: Cardinality;
@@ -45,8 +44,6 @@ export default class TableMetadataModel extends NativeWithCreate {
   declare id: string;
 
   declare name: string;
-
-  declare friendlyName?: string;
 
   declare description?: string;
 
