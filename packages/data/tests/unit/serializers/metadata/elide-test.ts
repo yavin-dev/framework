@@ -1,14 +1,16 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import ElideMetadataSerializer, { TimeDimensionGrainNode } from 'navi-data/serializers/metadata/elide';
+import type ElideMetadataSerializer from 'navi-data/serializers/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
 import config from 'ember-get-config';
-import {
+import type {
   TablePayload,
+  NamespaceNode,
   MetricNode,
   Connection,
   DimensionNode,
   TimeDimensionNode,
+  TimeDimensionGrainNode,
 } from 'navi-data/serializers/metadata/elide';
 import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
@@ -40,6 +42,20 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               category: 'cat1',
               cardinality: 'SMALL',
               isFact: true,
+              namespace: {
+                edges: [
+                  {
+                    node: {
+                      id: 'default',
+                      name: 'default',
+                      friendlyName: 'default',
+                      description: 'Default Namespace',
+                    },
+                    cursor: '',
+                  },
+                ],
+                pageInfo: [],
+              },
               metrics: {
                 edges: [
                   {
@@ -144,6 +160,20 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               category: 'cat2',
               cardinality: 'MEDIUM',
               isFact: true,
+              namespace: {
+                edges: [
+                  {
+                    node: {
+                      id: 'default',
+                      name: 'default',
+                      friendlyName: 'default',
+                      description: 'Default Namespace',
+                    },
+                    cursor: '',
+                  },
+                ],
+                pageInfo: [],
+              },
               metrics: {
                 edges: [
                   {
@@ -235,7 +265,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     const expectedTablePayloads: TableMetadataPayload[] = [
       {
         id: 'tableA',
-        name: 'Table A',
+        name: 'Friendly Table A',
         description: 'Table A',
         category: 'cat1',
         cardinality: 'SMALL',
@@ -245,10 +275,11 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         timeDimensionIds: ['tableA.td1'],
         requestConstraintIds: [],
         source: 'bardOne',
+        namespace: 'default',
       },
       {
         id: 'tableB',
-        name: 'Table B',
+        name: 'Friendly Table B',
         description: 'Table B',
         category: 'cat2',
         cardinality: 'MEDIUM',
@@ -258,6 +289,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         timeDimensionIds: [],
         requestConstraintIds: [],
         source: 'bardOne',
+        namespace: 'default',
       },
     ];
 
@@ -448,6 +480,28 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         requestConstraints: [],
       },
       'Table 0'
+    );
+  });
+
+  test('_normalizeTableNamespace', function (assert) {
+    const namespaceConnectionPayload: Connection<NamespaceNode> = {
+      edges: [
+        {
+          node: {
+            id: 'DemoNamespace',
+            name: 'DemoNamespace',
+            friendlyName: 'DemoNamespace',
+            description: 'Demo Namespace',
+          },
+          cursor: '',
+        },
+      ],
+      pageInfo: [],
+    };
+    assert.equal(
+      Serializer._normalizeTableNamespace(namespaceConnectionPayload),
+      'DemoNamespace',
+      'Namespace connection payload is normalized properly'
     );
   });
 

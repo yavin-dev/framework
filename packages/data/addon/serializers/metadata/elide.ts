@@ -69,7 +69,7 @@ export type TimeDimensionGrainNode = {
   grain: string;
 };
 
-export type TableNamespaceNode = {
+export type NamespaceNode = {
   id: string;
   name: string;
   friendlyName: string;
@@ -84,7 +84,7 @@ type TableNode = {
   category: string;
   cardinality: ElideCardinality;
   isFact: boolean;
-  namespace: Connection<TableNamespaceNode>;
+  namespace: Connection<NamespaceNode>;
   metrics: Connection<MetricNode>;
   dimensions: Connection<DimensionNode>;
   timeDimensions: Connection<TimeDimensionNode>;
@@ -172,7 +172,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
    * @private
    * Normalizes the ElideNamespaceConnection JSON response
    */
-  _normalizeTableNamespace(namespaceConnection: Connection<TableNamespaceNode>): string {
+  _normalizeTableNamespace(namespaceConnection: Connection<NamespaceNode>): string {
     return namespaceConnection.edges[0].node.id;
   }
 

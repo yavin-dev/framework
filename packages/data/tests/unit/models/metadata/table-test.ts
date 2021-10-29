@@ -25,6 +25,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
       requestConstraintIds: ['constraint'],
       isFact: true,
       source: 'bardOne',
+      namespace: 'default',
       tags: ['DISPLAY'],
     };
 
@@ -88,7 +89,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
   });
 
   test('it properly hydrates properties', function (assert) {
-    assert.expect(12);
+    assert.expect(13);
 
     const {
       id,
@@ -101,6 +102,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
       timeDimensionIds,
       requestConstraintIds,
       source,
+      namespace,
       isFact,
       tags,
     } = Model;
@@ -119,6 +121,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
       'requestConstraintIds property is hydrated properly'
     );
     assert.equal(source, Payload.source, 'source property is hydrated properly');
+    assert.equal(namespace, Payload.namespace, 'namespace property is hydrated properly');
     assert.deepEqual(tags, Payload.tags, 'tags property is hydrated properly');
     assert.deepEqual(isFact, Payload.isFact, 'isFact property is hydrated properly');
   });
