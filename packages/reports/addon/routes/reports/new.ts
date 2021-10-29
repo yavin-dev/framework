@@ -64,7 +64,7 @@ export default class ReportsNewRoute extends Route {
     }
     const report = this.store.createRecord('report', {
       owner,
-      request: this.store.createFragment('bard-request-v2/request', {
+      request: this.store.createFragment('request', {
         dataSource,
       }),
       visualization: { type: defaultVisualization },

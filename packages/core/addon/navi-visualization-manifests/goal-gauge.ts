@@ -6,7 +6,7 @@
  * This file registers the visualization with navi
  */
 import NaviVisualizationBaseManifest from './base';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 export default class GoalGaugeManifest extends NaviVisualizationBaseManifest {
   name = 'goal-gauge';

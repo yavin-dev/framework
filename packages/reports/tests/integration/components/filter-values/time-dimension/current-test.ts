@@ -4,7 +4,7 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import FilterFragment from 'navi-core/models/request/filter';
 import CurrentPeriod from 'navi-reports/components/filter-values/time-dimension/current';
 import { getDateRangeFormat } from '../../../../helpers/get-date-range';
 

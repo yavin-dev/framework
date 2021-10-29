@@ -6,7 +6,7 @@ import { readOnly } from '@ember/object/computed';
 import VisualizationFragment, { TypedVisualizationFragment } from './visualization';
 import { buildValidations, validator } from 'ember-cp-validations';
 import { attr } from '@ember-data/model';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
 /**

@@ -7,7 +7,7 @@ import { set } from '@ember/object';
 import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import MetricLabelVisualization from 'navi-core/components/navi-visualizations/metric-label';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -44,7 +44,7 @@ module('Integration | Component | navi-visualization/metric-label', function (ho
     };
     this.model = A([
       {
-        request: store.createFragment('bard-request-v2/request', {
+        request: store.createFragment('request', {
           columns: [
             {
               cid: 'cid',

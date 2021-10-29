@@ -6,7 +6,7 @@ import DataGroup from 'navi-core/utils/classes/data-group';
 import { assert } from '@ember/debug';
 import { maxBy } from 'lodash-es';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 /**

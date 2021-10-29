@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import GoalGaugeManifest from 'navi-core/navi-visualization-manifests/goal-gauge';
 
 let ValidRequest: RequestFragment;
@@ -15,7 +15,7 @@ module('Unit | Manifests | goal gauge', function (hooks) {
 
     Manifest = this.owner.lookup('navi-visualization-manifest:goal-gauge');
 
-    ValidRequest = store.createFragment('bard-request-v2/request', {
+    ValidRequest = store.createFragment('request', {
       dataSource: 'bardOne',
       requestVersion: '2.0',
       table: 'network',

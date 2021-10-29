@@ -11,7 +11,7 @@ import ReportToWidget from 'navi-dashboards/mixins/controllers/report-to-widget'
 import type CompressionService from 'navi-core/services/compression';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DashboardModel from 'navi-core/models/dashboard';
-import type FilterFragment from 'navi-core/models/bard-request-v2/fragments/filter';
+import type FilterFragment from 'navi-core/models/request/filter';
 import type { Filter } from 'navi-data/adapters/facts/interface';
 
 export type URLFilter = Filter & { source: string };

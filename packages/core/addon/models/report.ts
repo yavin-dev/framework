@@ -5,7 +5,7 @@ import { fragment } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from './deliverable-item';
 import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
-import RequestFragment from './bard-request-v2/request';
+import RequestFragment from './request';
 import UserModel from './user';
 import { Moment } from 'moment';
 // eslint-disable-next-line ember/use-ember-data-rfc-395-imports
@@ -36,7 +36,7 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
   @belongsTo('user', { async: true })
   owner!: DS.PromiseObject<UserModel>;
 
-  @fragment('bard-request-v2/request', { defaultValue: () => ({}) })
+  @fragment('request', { defaultValue: () => ({}) })
   request!: RequestFragment;
 
   /**

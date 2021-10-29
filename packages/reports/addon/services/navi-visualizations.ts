@@ -9,7 +9,7 @@
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import config from 'ember-get-config';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 import { VisualizationType } from 'navi-core/models/registry';
 

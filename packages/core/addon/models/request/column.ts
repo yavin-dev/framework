@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { attr } from '@ember-data/model';
-import BaseFragment from './base';
+import BaseFragment from '../request/base';
 import { Column, SortDirection } from 'navi-data/adapters/facts/interface';
 import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
@@ -12,7 +12,7 @@ import { computed } from '@ember/object';
 import { fragmentOwner } from 'ember-data-model-fragments/attributes';
 import type NaviFormatterService from 'navi-data/services/navi-formatter';
 import type { ColumnType } from 'navi-data/models/metadata/column';
-import type RequestFragment from 'navi-core/models/bard-request-v2/request';
+import type RequestFragment from 'navi-core/models/request';
 
 /**
  * @augments {BaseFragment}
@@ -34,7 +34,7 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
   }
 
-  @computed('request.sorts.@each.direction')
+  @computed('canonicalName', 'request.sorts.@each.direction')
   get sortedDirection(): SortDirection | null {
     const sorts = this.request?.sorts || [];
 
@@ -45,6 +45,6 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
 
 declare module 'navi-core/models/registry' {
   export interface FragmentRegistry {
-    'bard-request-v2/fragments/column': ColumnFragment;
+    'request/column': ColumnFragment;
   }
 }

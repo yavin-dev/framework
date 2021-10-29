@@ -27,7 +27,7 @@ module('Unit | Component | Goal Gauge', function (hooks) {
       //prettier-ignore
       rows: [{ m1: 75 }],
     });
-    const request = Store.createFragment('bard-request-v2/request', {
+    const request = Store.createFragment('request', {
       table: 'network',
       columns: [
         {

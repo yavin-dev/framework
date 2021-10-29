@@ -30,7 +30,7 @@ module('Integration | Component | visualization config/goal gauge', function (ho
       metricCid: 'cid_pageViews',
     };
     this.onUpdateConfig = () => null;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       columns: [
         {
           cid: 'cid_pageViews',

@@ -11,7 +11,7 @@ export default Route.extend({
     return resolve(
       A([
         {
-          request: this.store.createFragment('bard-request-v2/request', {
+          request: this.store.createFragment('request', {
             columns: [
               {
                 cid: 'cid_network.dateTime(grain=day)',

@@ -7,7 +7,7 @@ import BuilderClass from 'navi-core/chart-builders/dimension';
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/dimension';
 import { buildTestRequest } from 'dummy/tests/helpers/request';
 import { C3Row } from 'navi-core/chart-builders/base';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -92,7 +92,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
   });
 
   test('buildData - no time dimension', function (assert) {
-    const request = this.store.createFragment('bard-request-v2/request', {
+    const request = this.store.createFragment('request', {
       columns: [
         { type: 'metric', field: 'totalPageViews', cid: 'cid_totalPageViews', parameters: {}, source: 'bardOne' },
         { type: 'dimension', field: 'age', cid: 'cid_age', parameters: {}, source: 'bardOne' },

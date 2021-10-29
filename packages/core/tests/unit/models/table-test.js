@@ -14,7 +14,7 @@ let COLUMN_ID_INDEX = 0;
 function buildTestRequest(dimensions = [], metrics = [], timeGrain = 'day') {
   const store = getContext().owner.lookup('service:store');
 
-  return store.createFragment('bard-request-v2/request', {
+  return store.createFragment('request', {
     table: 'tableName',
     requestVersion: '2.0',
     dataSource: 'bardOne',

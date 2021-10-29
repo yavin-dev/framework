@@ -18,7 +18,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
 
   hooks.beforeEach(function () {
     Store = this.owner.lookup('service:store');
-    this.TestRequestElide = Store.createFragment('bard-request-v2/request', {
+    this.TestRequestElide = Store.createFragment('request', {
       table: 'tableA',
       columns: [
         { field: 'datestamp', parameters: {}, type: 'timeDimension' },
@@ -30,7 +30,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
       dataSource: 'elideOne',
     });
 
-    this.TestRequestBard = Store.createFragment('bard-request-v2/request', {
+    this.TestRequestBard = Store.createFragment('request', {
       table: 'network',
       filters: [
         {

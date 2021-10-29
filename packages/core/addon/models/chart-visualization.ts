@@ -5,9 +5,9 @@
 import { topN, maxDataByDimensions } from 'navi-core/utils/data';
 import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, ChartType } from 'navi-core/utils/chart-data';
 import Visualization from './visualization';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import ColumnFragment from './bard-request-v2/fragments/column';
+import ColumnFragment from './request/column';
 import { get } from '@ember/object';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 

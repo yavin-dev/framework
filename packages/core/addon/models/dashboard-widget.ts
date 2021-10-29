@@ -14,7 +14,7 @@ import hasVisualization from 'navi-core/mixins/models/has-visualization';
 import { validator, buildValidations } from 'ember-cp-validations';
 import DashboardModel from './dashboard';
 import type { Moment } from 'moment';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
@@ -33,7 +33,7 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
   @attr('string', { defaultValue: 'Untitled Widget' }) title!: string;
   @attr('moment') createdOn!: Moment;
   @attr('moment') updatedOn!: Moment;
-  @fragmentArray('bard-request-v2/request', { defaultValue: () => [] })
+  @fragmentArray('request', { defaultValue: () => [] })
   requests!: FragmentArray<RequestFragment>;
 
   /**

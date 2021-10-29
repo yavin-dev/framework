@@ -5,7 +5,7 @@
 import { set } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
-import type RequestFragment from './bard-request-v2/request';
+import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
 

@@ -2,7 +2,7 @@ import { assert } from '@ember/debug';
 import { getContext } from '@ember/test-helpers';
 import { TestContext } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 
 export type Column = { cid?: string; field: string; parameters?: Record<string, string> };
 
@@ -23,7 +23,7 @@ export function buildTestRequest(
   assert('interval must be an object', !Array.isArray(interval) && interval.start && interval.end);
   const store = (getContext() as TestContext).owner.lookup('service:store') as StoreService;
 
-  return store.createFragment('bard-request-v2/request', {
+  return store.createFragment('request', {
     table: 'network',
     filters: [
       {

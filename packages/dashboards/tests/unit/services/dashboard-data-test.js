@@ -262,7 +262,7 @@ module('Unit | Service | dashboard data', function (hooks) {
 
     const makeFilter = ({ dimension }) => {
       const values = NO_VALUE_FILTERS.includes(dimension) ? [] : ['1'];
-      return Store.createFragment('bard-request-v2/fragments/filter', {
+      return Store.createFragment('request/filter', {
         type: 'dimension',
         field: dimension,
         parameter: {

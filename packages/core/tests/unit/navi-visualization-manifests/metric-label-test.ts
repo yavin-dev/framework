@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
-import RequestFragment from 'navi-core/models/bard-request-v2/request';
+import RequestFragment from 'navi-core/models/request';
 import MetricLabelManifest from 'navi-core/navi-visualization-manifests/metric-label';
 
 let ValidRequest: RequestFragment;
@@ -15,7 +15,7 @@ module('Unit | Manifests | metric label', function (hooks) {
 
     Manifest = this.owner.lookup('navi-visualization-manifest:metric-label');
 
-    ValidRequest = store.createFragment('bard-request-v2/request', {
+    ValidRequest = store.createFragment('request', {
       dataSource: 'bardOne',
       requestVersion: '2.0',
       table: 'network',

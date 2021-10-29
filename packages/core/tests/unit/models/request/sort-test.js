@@ -5,7 +5,7 @@ import setupMirage from 'ember-cli-mirage/test-support/setup-mirage';
 
 let mockModel;
 
-module('Unit | Model | Fragment | BardRequest - Sort', function (hooks) {
+module('Unit | Model | Request | Sort', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 

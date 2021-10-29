@@ -8,7 +8,7 @@ import StoreService from '@ember-data/store';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import type { TableColumn } from 'navi-core/components/navi-visualizations/table';
 import type NaviTableCellRenderer from 'navi-core/components/navi-table-cell-renderer';
-import type ColumnFragment from 'navi-core/models/bard-request-v2/fragments/column';
+import type ColumnFragment from 'navi-core/models/request/column';
 
 type ComponentArgs = NaviTableCellRenderer['args'];
 
@@ -23,7 +23,7 @@ module('Integration | Component | navi table cell renderer', function (hooks) {
     await MetadataService.loadMetadata({ dataSourceName: 'bardOne' });
 
     const store = this.owner.lookup('service:store') as StoreService;
-    this.request = store.createFragment('bard-request-v2/request', {
+    this.request = store.createFragment('request', {
       columns: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' }],
       filters: [],
       sorts: [],
