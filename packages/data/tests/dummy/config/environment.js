@@ -58,6 +58,14 @@ module.exports = function (environment) {
           uri: 'https://data2.naviapp.com/graphql',
           type: 'elide',
         },
+        {
+          name: 'elideWithNamespace',
+          displayName: 'Elide with Namespace',
+          description: 'Elide with Namespace Description',
+          uri: 'https://data.naviapp.io/graphql',
+          namespace: 'DemoNamespace',
+          type: 'elide',
+        },
       ],
       defaultDataSource: 'bardOne',
       cardinalities: {
