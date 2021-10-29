@@ -6,6 +6,7 @@ import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import Service from '@ember/service';
+import moment from 'moment';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
@@ -109,7 +110,7 @@ module('Integration | Component | report actions - multiple-format-export', func
 
   test('filename', async function (assert) {
     assert.expect(1);
-
+    const dateString = moment().format('YYYYMMDD-tHHmmss');
     const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv'];
 
@@ -118,7 +119,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     await click($('.menu-content a:contains("CSV")')[0]);
     assert.equal(
       find('.export__download-link').getAttribute('download'),
-      'hyrule-news',
+      `hyrule-news-${dateString}.csv`,
       'The download attribute is set correctly'
     );
 
