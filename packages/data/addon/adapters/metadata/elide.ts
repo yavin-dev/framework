@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
@@ -36,7 +36,7 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       query
     );
 
-    const { dataSourceName, customHeaders } = options;
+    const { dataSourceName, customHeaders: headers } = options;
     const queryOptions = {
       query,
       variables: {
@@ -45,7 +45,7 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       },
       context: {
         dataSourceName,
-        headers: customHeaders,
+        headers,
       },
       ...options,
     };
