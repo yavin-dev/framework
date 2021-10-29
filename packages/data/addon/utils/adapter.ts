@@ -63,6 +63,6 @@ export function configHost(options: SourceAdapterOptions = {}): string {
  */
 export function getDataSourceNamespace(options: SourceAdapterOptions = {}): string | undefined {
   const { dataSourceName } = options;
-  const dataSource = dataSourceName ? getDataSource(dataSourceName) : getDefaultDataSource();
-  return dataSource.namespace || undefined;
+  const dataSource = dataSourceName ? getDataSource(dataSourceName) : undefined;
+  return dataSource?.namespace || undefined;
 }
