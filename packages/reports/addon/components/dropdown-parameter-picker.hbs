@@ -3,7 +3,7 @@
   <PowerSelect
     @options={{this.options}}
     @onOpen={{this.fetchParameterOptions}}
-    @selected={{await this.select}}
+    @selected={{await this.selected}}
     @onChange={{fn this.onUpdate}}
     @triggerComponent="dropdown-parameter-trigger"
     @dropdownClass="dropdown-parameter-picker__dropdown"

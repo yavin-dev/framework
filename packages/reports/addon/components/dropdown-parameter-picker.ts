@@ -34,7 +34,7 @@ export default class ParameterPickerComponent extends Component<Args> {
     this.args.onUpdate(this.args.parameterMetadata.id, selected.id);
   }
 
-  get select() {
+  get selected() {
     return this.args.parameterMetadata?.values?.then((parameters) => {
       return parameters.find((value) => value.id === this.args.parameterValue)?.name ?? this.args.parameterValue;
     });
