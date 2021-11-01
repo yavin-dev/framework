@@ -57,7 +57,7 @@ export default class GroupedListComponent extends Component<Args> {
     } = this;
 
     const items: Array<
-      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string | boolean>
+      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>
     > = [];
     return Object.keys(groupedItems).reduce((items, name) => {
       const groupItems = groupedItems[name];
