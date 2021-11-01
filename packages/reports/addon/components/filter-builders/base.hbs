@@ -12,7 +12,7 @@
   <div class="filter-builder" ...attributes>
     <div class="filter-builder__subject xs-col-1-2 sm-col-1-2 col-1-5">
       <div class="filter-builder__subject-name">
-        <span class="name m-r-4">{{await this.columnName}}</span>
+        <span class="name m-r-4">{{this.columnName}}</span>
         {{#each-in @filter.parameters as |paramName paramValue|}}
           <DropdownParameterPicker
             data-filter-subject={{await @filter.displayNiceName}}
