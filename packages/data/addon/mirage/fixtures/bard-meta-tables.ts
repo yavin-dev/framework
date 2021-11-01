@@ -24,4 +24,9 @@ export default [
     longName: 'Table C',
     description: 'Rich in vitamin C',
   },
+  {
+    name: 'tableD',
+    longName: 'Table D',
+    description: 'table with only one metric category',
+  },
 ];

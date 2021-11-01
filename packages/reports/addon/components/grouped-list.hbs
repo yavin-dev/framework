@@ -7,22 +7,28 @@
     @bufferSize={{10}}
     @containerSelector="#{{this.guid}}"
     as |item idx|>
-    {{#if item.isGroup}}
-      <li
-        class="grouped-list__group-header"
-        role="button"
-        {{on "click" (fn this.toggleOpen item.name)}}
-        >
-        <DenaliIcon
-          class="grouped-list__group-header-icon grouped-list__group-header-icon--{{if item.isOpen "open" "closed"}}"
-          @icon="arrowhead-{{if item.isOpen "down" "right"}}"
-        />
-        <span class="grouped-list__group-header-content">{{item.name}} ({{item.length}})</span>
-      </li>
-    {{else}}
-      <li class="grouped-list__item m-l-18 m-t-2">
+    {{#if this.isSingleCategory}}
+      <li class="grouped-list__item m-t-2">
         {{yield item idx}}
       </li>
+    {{else}}
+      {{#if item.isGroup}}
+        <li
+          class="grouped-list__group-header"
+          role="button"
+          {{on "click" (fn this.toggleOpen item.name)}}
+          >
+          <DenaliIcon
+            class="grouped-list__group-header-icon grouped-list__group-header-icon--{{if item.isOpen "open" "closed"}}"
+            @icon="arrowhead-{{if item.isOpen "down" "right"}}"
+          />
+          <span class="grouped-list__group-header-content">{{item.name}} ({{item.length}})</span>
+        </li>
+      {{else}}
+        <li class="grouped-list__item m-l-18 m-t-2">
+          {{yield item idx}}
+        </li>
+      {{/if}}
     {{/if}}
   </VerticalCollection>
 </ul>

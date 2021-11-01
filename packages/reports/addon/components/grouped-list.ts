@@ -17,8 +17,18 @@ interface Args {
 }
 
 export default class GroupedListComponent extends Component<Args> {
+  constructor() {
+    //@ts-ignore
+    super(...arguments);
+    if (Object.keys(this.groupedItems).length === 1) {
+      this.isSingleCategory = true;
+    }
+  }
+
   @tracked
   groupConfigs: Record<string, boolean> = {};
+
+  isSingleCategory = false;
 
   guid = guidFor(this);
 
@@ -47,14 +57,16 @@ export default class GroupedListComponent extends Component<Args> {
     } = this;
 
     const items: Array<
-      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>
+      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string | boolean>
     > = [];
     return Object.keys(groupedItems).reduce((items, name) => {
       const groupItems = groupedItems[name];
       const isOpen = groupConfigs[name] || shouldOpenAllGroups;
 
-      items.push({ name, length: groupItems.length, isOpen, isGroup: true });
-      if (isOpen) {
+      if (!this.isSingleCategory) {
+        items.push({ name, length: groupItems.length, isOpen, isGroup: true });
+      }
+      if (isOpen || this.isSingleCategory) {
         items.push(...groupItems);
       }
       return items;
