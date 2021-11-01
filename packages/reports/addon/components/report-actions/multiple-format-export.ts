@@ -119,6 +119,7 @@ export default class MultipleFormatExport extends ReportActionExport {
 
   /**
    * @override
+   * Added datastring format in filename
    */
   get filename(): string {
     const dateString = moment().format('YYYYMMDDTHHmmss');
