@@ -37,7 +37,7 @@ module('Unit | Service | navi formatter', function (hooks) {
     assert.equal(Service.formatColumnName(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
     assert.equal(
       Service.formatColumnName(metric, { as: 'lame' }),
-      'Revenue',
+      'Revenue (lame)',
       'Prints name and hides the "as" parameter'
     );
     assert.equal(
@@ -47,12 +47,12 @@ module('Unit | Service | navi formatter', function (hooks) {
     );
     assert.equal(
       Service.formatColumnName(metric, { as: 'lame', realParam: 'realValue' }),
-      'Revenue (realValue)',
+      'Revenue (lame,realValue)',
       'Prints name with real parameter and hides "as"'
     );
     assert.equal(
       Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }),
-      'Revenue (realValue1,realValue2)',
+      'Revenue (lame,realValue1,realValue2)',
       'Prints name with multiple real parameters and hides "as"'
     );
   });

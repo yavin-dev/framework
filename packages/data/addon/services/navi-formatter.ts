@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { omit } from 'lodash-es';
 import { isEmpty } from '@ember/utils';
 import numeral from 'numeral';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
@@ -11,6 +10,7 @@ import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { MetricColumn } from 'navi-data/models/metadata/metric';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
+import { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
 
 export default class NaviFormatterService extends Service {
   async formatNiceColumnName(
@@ -21,9 +21,8 @@ export default class NaviFormatterService extends Service {
     if (alias) {
       return alias;
     }
-    const allParams = omit(parameters || {}, 'as');
-    const paramValues = Object.values(allParams);
-    const parameterMetadata: { id: string; name?: string | undefined; description?: string | undefined }[] = [];
+    const paramValues = Object.values(parameters || {});
+    const parameterMetadata: ColumnFunctionParametersValues = [];
 
     columnMetadata?.parameters?.forEach(async function (e) {
       let parameterValues = await e.values;
@@ -49,8 +48,7 @@ export default class NaviFormatterService extends Service {
       return alias;
     }
 
-    const allParams = omit(parameters || {}, 'as');
-    const paramValues = Object.values(allParams);
+    const paramValues = Object.values(parameters || {});
     const name = columnMetadata?.name || '--';
     if (paramValues.length) {
       return `${name} (${paramValues.join(',')})`;
