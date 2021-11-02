@@ -39,8 +39,7 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   @attr('string')
   field!: string;
 
-  @attr('string')
-  alias?: string | null;
+  declare alias?: string | null;
 
   @attr({
     defaultValue() {
