@@ -86,7 +86,6 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   /**
    * Column display name containing param value ids or provided alias
    */
-    
   @computed('alias', 'parameters', 'columnMetadata')
   get displayName(): string {
     const { alias, parameters, columnMetadata } = this;
