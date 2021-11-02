@@ -83,14 +83,19 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
     set(this, 'parameters', { ...this.parameters, ...parameters });
   }
 
-  //display column name
+  /**
+   * Column display name containing param value ids or provided alias
+   */
+    
   @computed('alias', 'parameters', 'columnMetadata')
   get displayName(): string {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
   }
 
-  //display nice column name formulated by looking up parameter metadata
+  /**
+   * Promise based column display name containing param nice name values or provided alias
+   */
   @computed('alias', 'parameters', 'columnMetadata')
   get displayNiceName(): Promise<string> {
     const { alias, parameters, columnMetadata } = this;

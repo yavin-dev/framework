@@ -148,8 +148,6 @@ module('Unit | Model | report', function (hooks) {
       });
 
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-      console.log(serialized);
-      console.log(ExpectedReport);
       assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
     });
   });
