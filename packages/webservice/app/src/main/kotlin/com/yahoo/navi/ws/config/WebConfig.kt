@@ -26,7 +26,9 @@ class WebConfig : WebMvcConfigurer {
 
     @Bean
     fun shallowEtagHeaderFilter(): FilterRegistrationBean<ShallowEtagHeaderFilter>? {
-        val filterRegistrationBean = FilterRegistrationBean(ShallowEtagHeaderFilter())
+        val filter = ShallowEtagHeaderFilter()
+        filter.isWriteWeakETag = true
+        val filterRegistrationBean = FilterRegistrationBean(filter)
         filterRegistrationBean.addUrlPatterns("/ui/*")
         filterRegistrationBean.setName("etagFilter")
         return filterRegistrationBean

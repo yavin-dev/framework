@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit
 class CacheInterceptor : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         val interceptor = WebContentInterceptor()
-        interceptor.addCacheMapping(CacheControl.maxAge(1, TimeUnit.MINUTES).mustRevalidate(), "/ui/assets/*")
         interceptor.addCacheMapping(CacheControl.maxAge(0, TimeUnit.SECONDS), "/ui/index.html", "/ui/assets/server-generated-config.js")
+        interceptor.addCacheMapping(CacheControl.maxAge(1, TimeUnit.MINUTES).mustRevalidate(), "/ui/**")
         registry.addInterceptor(interceptor)
     }
 }
