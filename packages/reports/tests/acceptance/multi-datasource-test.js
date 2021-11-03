@@ -67,7 +67,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     assert
       .dom(findAll('.filter-builder__subject .chips')[0])
-      .hasText('day', 'Date time filter parameter renders correctly');
+      .hasText('Day', 'Date time filter parameter renders correctly');
 
     assert.dom(findAll('.filter-builder__subject .name')[1]).hasText('Container', 'Second filter rendered correctly');
 
@@ -85,7 +85,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert
       .dom('.report-builder__container--filters--collapsed')
-      .containsText('Filters Date Time (day) between', 'Collapsed date filter contains right text');
+      .containsText('Filters Date Time (Day) between', 'Collapsed date filter contains right text');
     assert
       .dom('.report-builder__container--filters--collapsed')
       .containsText('Container (id) equals 1', 'Collapsed dimension filter contains right text');
@@ -96,7 +96,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (id)', 'Used Amount'],
+      ['Date Time (Day)', 'Container (id)', 'Used Amount'],
       'Table displays correct header titles'
     );
 
@@ -146,10 +146,9 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       ['Date Time', 'Container', 'Used Amount'],
       'Filter titles rendered correctly'
     );
-
     assert.deepEqual(
       findAll('.filter-builder__subject .chips').map((el) => el.textContent.trim()),
-      ['day', 'id'],
+      ['Day', 'id'],
       'Filter parameters rendered correctly'
     );
 
@@ -161,7 +160,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //check visualizations are showing up correctly
     assert.deepEqual(
       findAll('.table-widget__table-headers .table-header-cell__title').map((el) => el.textContent.trim()),
-      ['Date Time (day)', 'Container (desc)', 'Display Currency (desc)', 'Used Amount', 'Revenue (GIL)'],
+      ['Date Time (Day)', 'Container (desc)', 'Display Currency (desc)', 'Used Amount', 'Revenue (GIL)'],
       'Table displays correct header titles'
     );
     assert.dom('.table-widget__table .table-row-vc').exists('Table rows exist');
@@ -205,7 +204,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //assert filters, metrics and dimensions are reset
     assert
       .dom('.filter-builder__subject')
-      .includesText('Date Time day', 'The request is constrained and adds back the required filters');
+      .includesText('Date Time Day', 'The request is constrained and adds back the required filters');
     assert.dom('.report-builder__container--filters--collapsed').doesNotExist('The filters are reopened');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;

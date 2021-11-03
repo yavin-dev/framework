@@ -444,7 +444,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date Time (day)', 'Total Clicks'],
+      ['Date Time (Day)', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
 
@@ -484,7 +484,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date Time (day)', 'Total Page Views'],
+      ['Date Time (Day)', 'Total Page Views'],
       'Table columns for the second new widget are rendered correctly'
     );
 
@@ -756,7 +756,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     assert.deepEqual(
       widgetColumns,
-      ['Date Time (day)', 'Total Clicks'],
+      ['Date Time (Day)', 'Total Clicks'],
       'Table columns for the new widget are rendered correctly'
     );
   });

@@ -72,7 +72,6 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
     this.set('column', {
       fragment: this.fragmentFactory.createColumn('metric', 'bardOne', 'adClicks'),
     });
-
     assert
       .dom('.navi-column-config-base__api-column-name')
       .hasText(this.column.fragment.columnMetadata.id, 'NaviColumnConfig::Base renders metric API column name');
@@ -80,7 +79,6 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
     this.set('column', {
       fragment: this.fragmentFactory.createColumn('timeDimension', 'bardOne', 'network.dateTime'),
     });
-
     assert
       .dom('.navi-column-config-base__api-column-name')
       .hasText(
