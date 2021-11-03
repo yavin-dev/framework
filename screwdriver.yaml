@@ -2,7 +2,7 @@ cache:
   pipeline: [~/.npm, ~/.gradle]
 
 shared:
-  image: maven:3.6.3-jdk-8
+  image: maven:3.8.2-openjdk-11
   annotations:
     screwdriver.cd/ram: TURBO
     screwdriver.cd/cpu: TURBO
