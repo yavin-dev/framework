@@ -14,21 +14,12 @@ interface Args {
   containerSelector: string;
   groupByField: string;
   sortByField?: string | null;
+  isSingleCategory?: boolean;
 }
 
 export default class GroupedListComponent extends Component<Args> {
-  constructor() {
-    //@ts-ignore
-    super(...arguments);
-    if (Object.keys(this.groupedItems).length === 1) {
-      this.isSingleCategory = true;
-    }
-  }
-
   @tracked
   groupConfigs: Record<string, boolean> = {};
-
-  isSingleCategory = false;
 
   guid = guidFor(this);
 
@@ -59,14 +50,27 @@ export default class GroupedListComponent extends Component<Args> {
     const items: Array<
       { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>
     > = [];
-    return Object.keys(groupedItems).reduce((items, name) => {
-      const groupItems = groupedItems[name];
-      const isOpen = groupConfigs[name] || shouldOpenAllGroups;
 
-      if (!this.isSingleCategory) {
+    // make categories into sorted array
+    let sortedCategories = Object.entries(groupedItems).sort(function (a, b) {
+      if (a[0] === `Uncategorized`) {
+        return 1;
+      } else if (b[0] === `Uncategorized`) {
+        return -1;
+      } else {
+        return a[0].localeCompare(b[0]);
+      }
+    });
+
+    // flatten category headers and items into single list
+    return sortedCategories.reduce((items, ele) => {
+      const groupItems = ele[1];
+      const name = ele[0];
+      const isOpen = groupConfigs[name] || shouldOpenAllGroups;
+      if (!this.args.isSingleCategory) {
         items.push({ name, length: groupItems.length, isOpen, isGroup: true });
       }
-      if (isOpen || this.isSingleCategory) {
+      if (isOpen || this.args.isSingleCategory) {
         items.push(...groupItems);
       }
       return items;
