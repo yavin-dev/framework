@@ -101,7 +101,6 @@ module('Unit | Model | Request | Filter', function (hooks) {
       mockModel.serialize().data.attributes.filters,
       [
         {
-          alias: null,
           field: 'revenue',
           parameters: {
             currency: 'USD',
@@ -120,7 +119,6 @@ module('Unit | Model | Request | Filter', function (hooks) {
       mockModel.serialize().data.attributes.filters,
       [
         {
-          alias: null,
           field: 'revenue',
           parameters: {},
           operator: 'gt',

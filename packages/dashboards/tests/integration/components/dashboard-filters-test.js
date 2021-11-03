@@ -9,7 +9,6 @@ import { A as arr } from '@ember/array';
 let Store, MetadataService;
 
 const serializedFilter1 = {
-  alias: null,
   field: 'age',
   operator: 'in',
   parameters: {

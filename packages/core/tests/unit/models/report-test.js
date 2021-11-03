@@ -16,7 +16,6 @@ const ExpectedRequest = {
         operator: 'bet',
         values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
         field: 'network.dateTime',
-        alias: null,
         parameters: {
           grain: 'day',
         },
@@ -58,7 +57,6 @@ const ExpectedRequest = {
       {
         direction: 'asc',
         field: 'navClicks',
-        alias: null,
         parameters: {},
         type: 'metric',
       },

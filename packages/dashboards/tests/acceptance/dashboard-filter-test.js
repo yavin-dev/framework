@@ -337,7 +337,6 @@ module('Acceptance | Dashboard Filters', function (hooks) {
       {
         filters: [
           {
-            alias: null,
             type: 'dimension',
             field: 'property',
             parameters: {

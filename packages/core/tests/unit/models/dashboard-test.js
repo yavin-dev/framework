@@ -27,7 +27,6 @@ module('Unit | Model | dashboard', function (hooks) {
           createdOn: '2016-02-01 00:00:00.000',
           filters: [
             {
-              alias: null,
               type: 'dimension',
               field: 'property',
               parameters: {
@@ -37,7 +36,6 @@ module('Unit | Model | dashboard', function (hooks) {
               values: ['114', '100001'],
             },
             {
-              alias: null,
               type: 'dimension',
               field: 'property',
               parameters: {
@@ -47,7 +45,6 @@ module('Unit | Model | dashboard', function (hooks) {
               values: ['1'],
             },
             {
-              alias: null,
               type: 'dimension',
               field: 'property',
               parameters: {
@@ -57,7 +54,6 @@ module('Unit | Model | dashboard', function (hooks) {
               values: ['2', '3'],
             },
             {
-              alias: null,
               type: 'dimension',
               field: 'eventId',
               parameters: {
@@ -157,7 +153,6 @@ module('Unit | Model | dashboard', function (hooks) {
         clonedFilterModel.filters,
         [
           {
-            alias: null,
             type: 'dimension',
             field: 'age',
             parameters: {
@@ -167,7 +162,6 @@ module('Unit | Model | dashboard', function (hooks) {
             values: [1, 2, 3],
           },
           {
-            alias: null,
             type: 'dimension',
             field: 'container',
             parameters: {
