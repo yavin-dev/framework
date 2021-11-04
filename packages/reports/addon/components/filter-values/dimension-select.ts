@@ -48,6 +48,9 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   searchTerm?: string;
 
   @tracked
+  event: any;
+
+  @tracked
   dimensionValues?: Promise<NaviDimensionModel[]>;
 
   get dimensionColumn(): DimensionColumn {
@@ -77,8 +80,12 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @action
   setValues(dimension: NaviDimensionModel[]) {
-    const values = dimension.map(({ value }) => value) as (string | number)[];
-    this.args.onUpdateFilter({ values });
+    this.event = event;
+    const type = this.event.type;
+    if (type === 'mouseup' || type === 'mousedown') {
+      const values = dimension.map(({ value }) => value) as (string | number)[];
+      this.args.onUpdateFilter({ values });
+    }
   }
 
   @action
@@ -99,6 +106,26 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
         .then((r) => r.values);
+    }
+  }
+
+  /**
+   * Uses the text that a user has written in the search bar and pressed 'Enter'
+   */
+  @action
+  handleKeydown(dropdown: any, event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      const { dimensionColumn } = this;
+      debugger;
+      const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+      const term = dropdown.searchText.trim();
+      if (term != undefined && term != '') {
+        const value = term.toLowerCase() as string | number;
+        const dimension = dropdown.selected as NaviDimensionModel[];
+        dimension.push(dimensionModelFactory.create({ value, dimensionColumn }));
+        const values = dimension.map(({ value }) => value) as (string | number)[];
+        this.args.onUpdateFilter({ values });
+      }
     }
   }
 

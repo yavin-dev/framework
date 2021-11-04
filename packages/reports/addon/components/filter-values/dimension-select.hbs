@@ -21,6 +21,7 @@
       @onClose={{set this.searchTerm undefined}}
       @search={{perform this.searchDimensionValues}}
       @closeOnSelect={{false}}
+      @onKeydown={{this.handleKeydown}}
       @placeholder="{{capitalize @filter.displayName}} Values"
       @loadingMessage="Loading..."
       @dropdownClass="filter-values--dimension-select__dropdown"

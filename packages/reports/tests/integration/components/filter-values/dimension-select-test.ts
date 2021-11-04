@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, triggerKeyEvent, typeIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -219,9 +219,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
             .filter((s) => s)
         );
 
-    const expectedValueDimensions = ContainerValues.filter(({ description }) =>
-      description.includes(searchTerm)
-    ).map(({ id, description }) => [description, `id: ${id}`]);
+    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
+      ({ id, description }) => [description, `id: ${id}`]
+    );
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
 
@@ -364,6 +364,26 @@ module('Integration | Component | filter values/dimension select', function (hoo
       ]),
       [['65 and over', 'id: 10']],
       '`dimension-select` fetches values for new dimension field'
+    );
+  });
+
+  test('testing manual filter', async function (this: TestContext, assert) {
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
+      this.set('filter.values', changeSet.values);
+    };
+
+    await render(TEMPLATE);
+
+    await clickTrigger();
+    await typeIn('.filter-values--dimension-select__trigger input', 'abc');
+    await triggerKeyEvent('.filter-values--dimension-select__trigger input', 'keydown', 'Enter');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['abc', '']]
     );
   });
 });
