@@ -28,12 +28,6 @@ export default class ColumnFragment<T extends ColumnType = ColumnType> extends B
 
   @fragmentOwner() request?: RequestFragment;
 
-  @computed('alias', 'parameters', 'columnMetadata')
-  get displayName(): string {
-    const { alias, parameters, columnMetadata } = this;
-    return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
-  }
-
   @computed('canonicalName', 'request.sorts.@each.direction')
   get sortedDirection(): SortDirection | null {
     const sorts = this.request?.sorts || [];

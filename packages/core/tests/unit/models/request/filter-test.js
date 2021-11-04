@@ -133,9 +133,9 @@ module('Unit | Model | Request | Filter', function (hooks) {
   test('Display Name', async function (assert) {
     const filter = mockModel.filters.objectAt(0);
 
-    assert.equal(filter.displayName, 'Revenue (USD)', 'Display name is as expected with params');
+    assert.equal(await filter.displayNiceName, 'Revenue (USD)', 'Display name is as expected with params');
 
     filter.set('parameters', {});
-    assert.equal(filter.displayName, 'Revenue', 'Display name is as expected with no params');
+    assert.equal(await filter.displayNiceName, 'Revenue', 'Display name is as expected with no params');
   });
 });

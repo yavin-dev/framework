@@ -39,6 +39,8 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   @attr('string')
   field!: string;
 
+  declare alias?: string | null;
+
   @attr({
     defaultValue() {
       return {};
@@ -80,9 +82,21 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
     set(this, 'parameters', { ...this.parameters, ...parameters });
   }
 
-  @computed('parameters', 'columnMetadata')
-  get displayName() {
-    const { parameters, columnMetadata } = this;
-    return this.naviFormatter.formatColumnName(columnMetadata, parameters, null);
+  /**
+   * Column display name containing param value ids or provided alias
+   */
+  @computed('alias', 'parameters', 'columnMetadata')
+  get displayName(): string {
+    const { alias, parameters, columnMetadata } = this;
+    return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
+  }
+
+  /**
+   * Promise based column display name containing param nice name values or provided alias
+   */
+  @computed('alias', 'parameters', 'columnMetadata')
+  get displayNiceName(): Promise<string> {
+    const { alias, parameters, columnMetadata } = this;
+    return this.naviFormatter.formatNiceColumnName(columnMetadata, parameters, alias);
   }
 }

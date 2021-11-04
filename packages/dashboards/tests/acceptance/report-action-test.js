@@ -23,7 +23,7 @@ module('Acceptances | Report to dashboard action', function (hooks) {
     assert.dom('.report-actions__add-to-dashboard').isEnabled('Add to Dashboard button is enabled for a valid request');
 
     // Remove all columns to make invalid
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete dimension Property (id)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');

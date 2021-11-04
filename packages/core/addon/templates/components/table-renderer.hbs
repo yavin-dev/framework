@@ -9,7 +9,7 @@
               type="text"
               @size="medium"
               value={{column.fragment.alias}}
-              placeholder={{column.fragment.displayName}}
+              placeholder={{await column.fragment.displayNiceName}}
               class="table-header-cell__input"
               {{on "input" (pipe (pick "target.value") (fn @updateColumnDisplayName column.fragment))}}
             />
@@ -34,7 +34,7 @@
                 title="Drag column header to reorder"
                 {{sortable-handle}}
               >
-                {{column.fragment.displayName}}
+                {{await column.fragment.displayNiceName}}
               </span>
               {{#if column.sortDirection}}
                 <NaviTableSortIcon
