@@ -22,6 +22,7 @@ import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import SearchUtils from 'navi-data/utils/search';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -38,13 +39,13 @@ type LegacyAdapterOptions = {
 };
 
 export type FiliDimensionResponse = {
-  rows: Record<string, string>[];
+  rows: ResponseRow[];
   meta?: Record<string, unknown>;
 };
 
 type SearchUtilResult = {
   relevance: number;
-  record: Record<string, string>;
+  record: ResponseRow;
 };
 
 export const DefaultField = 'id';

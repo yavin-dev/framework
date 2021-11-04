@@ -89,16 +89,17 @@ export default {
       record = records.objectAt(i) as Record<string, string>;
 
       // Determine relevance based on string match weight
-      let descriptionMatchWeight = this.getPartialMatchWeight(
-          (record?.description || '').toLowerCase(),
+      const { id, ...rest } = record;
+      let nonIdMatchWeight = this.getPartialMatchWeight(
+          (Object.values(rest).join(' ') || '').toLowerCase(),
           query.toLowerCase()
         ),
-        idMatchWeight = this.getExactMatchWeight((record?.id || '').toLowerCase(), query.toLowerCase()),
-        relevance = descriptionMatchWeight || idMatchWeight;
+        idMatchWeight = this.getExactMatchWeight((id || '').toLowerCase(), query.toLowerCase()),
+        relevance = nonIdMatchWeight || idMatchWeight;
 
       // If both id and description match the query, take the most relevant
-      if (descriptionMatchWeight && idMatchWeight) {
-        relevance = Math.min(descriptionMatchWeight, idMatchWeight);
+      if (nonIdMatchWeight && idMatchWeight) {
+        relevance = Math.min(nonIdMatchWeight, idMatchWeight);
       }
 
       if (relevance) {
