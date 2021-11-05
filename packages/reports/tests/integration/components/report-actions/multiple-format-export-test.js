@@ -6,6 +6,7 @@ import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import Service from '@ember/service';
+import moment from 'moment';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
