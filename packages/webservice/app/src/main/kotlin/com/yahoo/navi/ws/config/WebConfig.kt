@@ -5,7 +5,10 @@
 
 package com.yahoo.navi.ws.config
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.filter.ShallowEtagHeaderFilter
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
@@ -19,5 +22,15 @@ class WebConfig : WebMvcConfigurer {
         registry.addViewController("/ui/**/{path:[^\\.]*}").setViewName("forward:/ui/")
         registry.addViewController("/ui").setViewName("redirect:/ui/")
         registry.addViewController("/").setViewName("redirect:/ui/")
+    }
+
+    @Bean
+    fun shallowEtagHeaderFilter(): FilterRegistrationBean<ShallowEtagHeaderFilter>? {
+        val filter = ShallowEtagHeaderFilter()
+        filter.isWriteWeakETag = true
+        val filterRegistrationBean = FilterRegistrationBean(filter)
+        filterRegistrationBean.addUrlPatterns("/ui/*")
+        filterRegistrationBean.setName("etagFilter")
+        return filterRegistrationBean
     }
 }

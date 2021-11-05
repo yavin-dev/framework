@@ -1,6 +1,6 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="chart-tooltip__title">
-  {{this.metric.displayName}}
+  {{await this.metric.displayNiceName}}
   ({{if this.requiredToolTipData.ratio (format-number this.requiredToolTipData.ratio style="percent") "--"}})
 </div>
 <hr class="chart-tooltip__break">

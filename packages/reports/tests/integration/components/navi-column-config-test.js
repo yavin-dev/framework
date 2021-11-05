@@ -83,7 +83,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
-      ['Date Time (day)'],
+      ['Date Time (Day)'],
       'The date time column is initially added and set to day'
     );
 
@@ -97,7 +97,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
       .dom('.navi-column-config-item__remove-icon')
       .isNotDisabled('remove button of time dimension column is not disabled');
 
-    await click('.navi-column-config-item__name[title="Date Time (day)"]');
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
     await clickTrigger('.navi-column-config-item__parameter'); // open the time grain dropdown
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-dropdown .ember-power-select-option').map((el) =>
@@ -315,10 +315,10 @@ module('Integration | Component | navi-column-config', function (hooks) {
     addItem('timeDimension', 'tableA.dateTime', 'bardOne', { grain: 'day' });
     await render(TEMPLATE);
     await animationsSettled();
-    await click('.navi-column-config-item__name[title="Date Time (day)"]');
+    await click('.navi-column-config-item__name[title="Date Time (Day)"]');
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent.trim()),
-      ['Date Time (day)'],
+      ['Date Time (Day)'],
       'Initial columns are added'
     );
 

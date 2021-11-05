@@ -92,7 +92,7 @@ module('Integration | Component | navi visualizations/table print', function (ho
 
     assert.deepEqual(
       headers,
-      ['Date Time (day)', 'Operating System (id)', 'Operating System (desc)', 'Unique Identifiers', 'Total Page Views'],
+      ['Date Time (Day)', 'Operating System (id)', 'Operating System (desc)', 'Unique Identifiers', 'Total Page Views'],
       'The table renders the headers correctly based on the request'
     );
 

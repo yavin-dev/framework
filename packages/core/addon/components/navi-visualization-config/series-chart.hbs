@@ -11,7 +11,7 @@
           @triggerClass="metric-select__select-trigger w-full"
           as |metric|
         >
-          {{metric.displayName}}
+          {{await metric.displayNiceName}}
         </PowerSelect>
       </DenaliInputGroup>
     </div>
