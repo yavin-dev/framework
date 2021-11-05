@@ -36,7 +36,7 @@ export default class ColumnSelector extends Component<ColumnSelectorArgs> {
   }
 
   get isSingleCategory() {
-    const grouped = groupBy(this.args.allColumns, (row) => row.category?.split(',')[0] || `Uncategorized`);
+    const grouped = groupBy(this.args.allColumns, (row) => row.category?.split(',')[0]);
     return Object.keys(grouped).length === 1;
   }
 }

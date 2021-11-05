@@ -63,9 +63,7 @@ export default class GroupedListComponent extends Component<Args> {
     });
 
     // flatten category headers and items into single list
-    return sortedCategories.reduce((items, ele) => {
-      const groupItems = ele[1];
-      const name = ele[0];
+    sortedCategories.forEach(([name, groupItems]) => {
       const isOpen = groupConfigs[name] || shouldOpenAllGroups;
       if (!this.args.isSingleCategory) {
         items.push({ name, length: groupItems.length, isOpen, isGroup: true });
@@ -73,8 +71,8 @@ export default class GroupedListComponent extends Component<Args> {
       if (isOpen || this.args.isSingleCategory) {
         items.push(...groupItems);
       }
-      return items;
-    }, items);
+    });
+    return items;
   }
 
   /**
