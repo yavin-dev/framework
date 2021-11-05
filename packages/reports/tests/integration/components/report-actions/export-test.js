@@ -1,10 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click, find } from '@ember/test-helpers';
+import { render, click } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
 import { task } from 'ember-concurrency';
+import moment from 'moment';
 
 const TEMPLATE = hbs`
   <ReportActions::Export
@@ -45,9 +46,16 @@ module('Integration | Component | report actions - export', function (hooks) {
     await render(TEMPLATE);
     await click('.report-actions__export-btn');
 
+    const dateString = moment().format('YYYYMMDDTHHmmss');
     const factService = this.owner.lookup('service:navi-facts');
-    const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
-    assert.dom('.export__download-link').hasAttribute('href', expectedHref, 'The href attribute is set correctly');
+    const expectedHref = factService.getURL(this.report.request.serialize(), {
+      format: 'csv',
+      fileName: `Hyrule News-${dateString}.csv`,
+    });
+    assert.ok(
+      /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/.test(expectedHref),
+      'csv export url is generated for the report'
+    );
   });
 
   test('filename', async function (assert) {
@@ -56,10 +64,10 @@ module('Integration | Component | report actions - export', function (hooks) {
     await render(TEMPLATE);
     await click('.report-actions__export-btn');
 
-    assert.equal(
-      find('.export__download-link').getAttribute('download'),
-      'hyrule-news',
-      'The download attribute is set correctly'
+    const csv = document.querySelector('.export__download-link')?.getAttribute('href') ?? '';
+    assert.ok(
+      /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/.test(csv),
+      'csv export url is generated for the report'
     );
   });
 

@@ -18,6 +18,7 @@ export type RequestOptions = {
   cache?: boolean;
   queryParams?: Record<string, string | number>;
   dataSourceName?: string;
+  fileName?: string;
 };
 
 export type FilterOperator =

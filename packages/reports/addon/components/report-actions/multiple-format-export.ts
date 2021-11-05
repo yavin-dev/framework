@@ -21,9 +21,6 @@ import { taskFor } from 'ember-concurrency-ts';
 import type ReportModel from 'navi-core/models/report';
 import type GsheetExportService from 'navi-core/services/gsheet-export';
 import { htmlSafe } from '@ember/template';
-import { RequestV2 } from 'navi-data/addon/adapters/facts/interface';
-import { getDataSource } from 'navi-data/utils/adapter';
-import moment from 'moment';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**
@@ -119,27 +116,13 @@ export default class MultipleFormatExport extends ReportActionExport {
 
   /**
    * @override
-   * Added datastring format in filename
-   */
-  get filename(): string {
-    const dateString = moment().format('YYYYMMDDTHHmmss');
-    return `${super.filename}-${dateString}.csv`;
-  }
-
-  /**
-   * @override
    */
   @task *downloadTask(): TaskGenerator<void> {
     const { exportType } = this;
 
     try {
       if (exportType === 'CSV') {
-        const serializedRequest = this.args.model.request.serialize() as RequestV2;
-        let url = yield taskFor(super.downloadTask).perform();
-        if (getDataSource(serializedRequest.dataSource).type === 'bard') {
-          url = `${url}&filename=${this.filename}`;
-        }
-        this.downloadURLLink(url);
+        yield taskFor(super.downloadTask).perform();
       } else if (exportType === 'PDF' || exportType === 'PNG') {
         let url: string = yield this.exportHref;
         if (exportType === 'PNG') {

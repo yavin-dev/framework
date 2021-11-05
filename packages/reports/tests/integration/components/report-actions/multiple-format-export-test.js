@@ -44,14 +44,17 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await render(TEMPLATE);
 
+    const dateString = moment().format('YYYYMMDDTHHmmss');
     const factService = this.owner.lookup('service:navi-facts');
-    const expectedHref = factService.getURL(this.report.request.serialize(), { format: 'csv' });
-
+    const expectedHref = factService.getURL(this.report.request.serialize(), {
+      format: 'csv',
+      fileName: `Hyrule News-${dateString}.csv`,
+    });
     await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert
       .dom('.export__download-link')
-      .hasAttribute('href', expectedHref, 'The href attribute is set correctly for CSV');
+      .hasAttribute('href'.trim(), expectedHref, 'The href attribute is set correctly for CSV');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -110,18 +113,21 @@ module('Integration | Component | report actions - multiple-format-export', func
 
   test('filename', async function (assert) {
     assert.expect(1);
-    const dateString = moment().format('YYYYMMDD-tHHmmss');
     const originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv'];
+    const dateString = moment().format('YYYYMMDDTHHmmss');
 
     await render(TEMPLATE);
     await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
-    assert.equal(
-      find('.export__download-link').getAttribute('download'),
-      `hyrule-news-${dateString}.csv`,
-      'The download attribute is set correctly'
-    );
+
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        `https://data.naviapp.io/v1/data/network/day/property;show=id/?dateTime=2015-11-09T00%3A00%3A00.000%2F2015-11-16T00%3A00%3A00.000&metrics=adClicks%2CnavClicks&sort=navClicks%7Casc&format=csv&filename=Hyrule%20News-${dateString}.csv`,
+        'The download attribute is set correctly'
+      );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });

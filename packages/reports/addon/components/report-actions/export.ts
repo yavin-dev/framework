@@ -13,6 +13,7 @@ import type ReportModel from 'navi-core/models/report';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import Ember from 'ember';
 import { dasherize } from '@ember/string';
+import moment from 'moment';
 
 interface Args {
   model: ReportModel;
@@ -43,7 +44,8 @@ export default class ReportActionExport extends Component<Args> {
    * filename for the downloaded file
    */
   get filename() {
-    return this.args.model.title;
+    const dateString = moment().format('YYYYMMDDTHHmmss');
+    return `${this.args.model.title}-${dateString}.csv`;
   }
 
   /**
@@ -59,9 +61,10 @@ export default class ReportActionExport extends Component<Args> {
     const serializedRequest = this.args.model.request.serialize() as RequestV2;
 
     try {
-      const url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {
+      let url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {
         format: 'csv',
         dataSourceName: serializedRequest.dataSource,
+        fileName: this.filename,
       });
       this.downloadURLLink(url);
     } catch (e) {

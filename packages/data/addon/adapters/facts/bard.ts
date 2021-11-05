@@ -347,6 +347,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       ...(rollupTo ? { rollupTo } : {}),
       ...(request.rollup?.grandTotal === true ? { rollupGrandTotal: true } : {}),
       format: options?.format ?? 'json',
+      ...(options?.fileName ? { filename: options.fileName } : {}),
     };
 
     const { page, perPage, cache, queryParams } = options || {};
