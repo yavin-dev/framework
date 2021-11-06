@@ -138,7 +138,6 @@ export default class ReportBuilderSidebar extends Component<Args> {
     return yield sortBy(sources, ['name']);
   }
 
-  // TODO: fetch namespaces via api
   @task *fetchDataSourceNamespaces(dataSource: NaviDataSource): TaskGenerator<SourceItem<NaviDataSource>[]> {
     if (!Array.isArray(dataSource.namespaces)) {
       return yield [];

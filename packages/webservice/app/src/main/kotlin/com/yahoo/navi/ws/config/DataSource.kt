@@ -8,7 +8,6 @@ enum class DataSourceTypes {
     elide
 }
 
-// TODO: redundant once we fetch namespaces via api
 data class DataSourceNamespace(
     var name: String,
     var displayName: String,

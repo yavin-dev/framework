@@ -5,7 +5,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import GQLQueries from 'navi-data/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
-import ElideWithNamespaceScenario from 'navi-data/mirage/scenarios/elide-with-namespace';
+import ElideOneDemoNamespaceScenario from 'navi-data/mirage/scenarios/elide-one-demo-namespace';
 import ElideMetadataAdapter from 'navi-data/adapters/metadata/elide';
 import { TestContext } from 'ember-test-helpers';
 
@@ -56,7 +56,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     });
 
     await Adapter.fetchAll('table', { dataSourceName: 'elideOne' });
-    await Adapter.fetchAll('table', { dataSourceName: 'elideWithNamespace' });
+    await Adapter.fetchAll('table', { dataSourceName: 'elideOne.DemoNamespace' });
   });
 
   test('fetchById - request format', async function (this: MirageTestContext, assert) {
@@ -85,7 +85,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       return [];
     });
     await Adapter.fetchById('table', 'foo', { dataSourceName: 'elideOne' });
-    await Adapter.fetchById('table', 'foo', { dataSourceName: 'elideWithNamespace' });
+    await Adapter.fetchById('table', 'foo', { dataSourceName: 'elideOne.DemoNamespace' });
   });
 
   test('fetchById - request headers', async function (this: MirageTestContext, assert) {
@@ -377,11 +377,11 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     );
   });
 
-  test('fetchAll - response - with namespace', async function (this: MirageTestContext, assert) {
+  test('fetchAll - response - demo namespace', async function (this: MirageTestContext, assert) {
     assert.expect(8);
 
     // Seed our mirage database
-    ElideWithNamespaceScenario(this.server);
+    ElideOneDemoNamespaceScenario(this.server);
 
     const expectedFields = [
       'id',
@@ -399,7 +399,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     ];
 
     const { table: tableConnection } = await Adapter.fetchAll('table', {
-      dataSourceName: 'elideWithNamespace',
+      dataSourceName: 'elideOne.DemoNamespace',
     });
     const tables = tableConnection.edges.map((edge: TODO) => edge.node);
 
@@ -825,7 +825,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     );
   });
 
-  test('fetchById - response - with namespace', async function (this: MirageTestContext, assert) {
+  test('fetchById - response - demo namespace', async function (this: MirageTestContext, assert) {
     assert.expect(1);
 
     // Seed our mirage database

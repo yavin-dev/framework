@@ -25,7 +25,7 @@
         "namespaces": [
           {
             "name": "DemoNamespace",
-            "displayName": "With Namespace"
+            "displayName": "Demo Namespace"
           }
         ],
         "suggestedDataTables": ["NetflixTitles", "DemoNamespace_TrendingNow"]

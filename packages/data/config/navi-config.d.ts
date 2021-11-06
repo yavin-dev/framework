@@ -1,6 +1,5 @@
 import { Grain } from 'navi-data/utils/date';
 declare module 'navi-config' {
-  // TODO: redundant once we fetch namespaces via api
   export type DataSourceNamespace = {
     name: string;
     displayName: string;

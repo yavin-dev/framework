@@ -27,7 +27,7 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
             listOf(
                 DataSourceNamespace(
                     "DemoNamespace",
-                    "With Namespace",
+                    "Demo Namespace",
                 )
             ),
             listOf("NetflixTitles", "DemoNamespace_TrendingNow")
