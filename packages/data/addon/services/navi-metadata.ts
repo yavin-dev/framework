@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
@@ -79,12 +79,8 @@ export default class NaviMetadataService extends Service {
     }) as EmberArray<MetadataModelRegistry[K]>;
   }
 
-  private async loadAndProcessMetadata(
-    dataSource: NaviDataSource,
-    options: RequestOptions & { dataSourceName: string }
-  ): Promise<void> {
-    const { type: dataSourceType } = dataSource;
-    const { dataSourceName } = options;
+  private async loadAndProcessMetadata(dataSource: NaviDataSource, options: RequestOptions): Promise<void> {
+    const { type: dataSourceType, name: dataSourceName } = dataSource;
     const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
     const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);
     if (normalized) {
@@ -94,20 +90,19 @@ export default class NaviMetadataService extends Service {
 
   loadMetadata(options: RequestOptions = {}): Promise<void> {
     const dataSource = this.dataSourceFor(options.dataSourceName);
-    const dataSourceName = options.dataSourceName ?? dataSource.name;
-    const existingPromise = this.loadMetadataPromises[dataSourceName];
+    const existingPromise = this.loadMetadataPromises[dataSource.name];
 
     if (existingPromise) {
       return existingPromise;
     }
 
-    const newPromise = this.loadAndProcessMetadata(dataSource, { ...options, dataSourceName });
+    const newPromise = this.loadAndProcessMetadata(dataSource, options);
 
     //cache promise so we don't execute multiple load fetches
-    this.loadMetadataPromises[dataSourceName] = newPromise;
+    this.loadMetadataPromises[dataSource.name] = newPromise;
 
     //if load fails remove from cache so we can retry
-    newPromise.catch(() => delete this.loadMetadataPromises[dataSourceName]);
+    newPromise.catch(() => delete this.loadMetadataPromises[dataSource.name]);
 
     return newPromise;
   }
