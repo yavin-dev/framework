@@ -16,7 +16,7 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { toLeft, toRight } from 'navi-reports/transitions/custom-move-over';
 //@ts-ignore
 import move from 'ember-animated/motions/move';
-import { task } from 'ember-concurrency';
+import { task, all } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskInstance, TaskGenerator } from 'ember-concurrency';
 import type { NaviDataSource } from 'navi-config';
@@ -120,14 +120,37 @@ export default class ReportBuilderSidebar extends Component<Args> {
   }
 
   @task *fetchDataSources(): TaskGenerator<SourceItem<NaviDataSource>[]> {
-    const sources: SourceItem<NaviDataSource>[] = sortBy(config.navi.dataSources, ['displayName']).map(
-      (dataSource) => ({
+    let sources: SourceItem<NaviDataSource>[] = [];
+    const fetchNamespacesTasks: TaskInstance<SourceItem<NaviDataSource>[]>[] = [];
+
+    config.navi.dataSources.forEach((dataSource) => {
+      sources.push({
         name: dataSource.displayName,
         description: dataSource.description,
         source: dataSource,
-      })
-    );
-    return yield sources;
+      });
+
+      fetchNamespacesTasks.push(taskFor(this.fetchDataSourceNamespaces).perform(dataSource));
+    });
+
+    const namespaces = (yield all(fetchNamespacesTasks)).flat();
+    sources = [...sources, ...namespaces];
+    return yield sortBy(sources, ['name']);
+  }
+
+  // TODO: fetch namespaces via api
+  @task *fetchDataSourceNamespaces(dataSource: NaviDataSource): TaskGenerator<SourceItem<NaviDataSource>[]> {
+    if (!Array.isArray(dataSource.namespaces)) {
+      return yield [];
+    }
+
+    return yield dataSource.namespaces.map(({ name, displayName, description }) => {
+      return {
+        name: displayName,
+        description,
+        source: getDataSource(`${dataSource.name}.${name}`),
+      };
+    });
   }
 
   @task({ restartable: true }) *getTablesForDataSource(

@@ -8,7 +8,6 @@ import GQLQueries from 'navi-data/gql/metadata-queries';
 import { assert } from '@ember/debug';
 import { DocumentNode } from 'graphql';
 import { isPresent } from '@ember/utils';
-import { getDataSourceNamespace } from 'navi-data/utils/adapter';
 import NaviMetadataAdapter, { MetadataOptions } from './interface';
 
 export type MetadataQueryType = keyof typeof GQLQueries;
@@ -36,11 +35,16 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       query
     );
 
-    const { dataSourceName, customHeaders: headers } = options;
+    let { dataSourceName, customHeaders: headers } = options;
+    let namespace = 'default';
+    if (dataSourceName?.includes('.')) {
+      [dataSourceName, namespace] = dataSourceName.split('.');
+    }
+
     const queryOptions = {
       query,
       variables: {
-        filter: `namespace.id=='${getDataSourceNamespace({ dataSourceName }) ?? 'default'}'`,
+        filter: `namespace.id=='${namespace}'`,
         ...(isPresent(id) && { ids: [id] }),
       },
       context: {

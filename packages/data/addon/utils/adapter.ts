@@ -5,6 +5,7 @@
 import config from 'ember-get-config';
 import { assert } from '@ember/debug';
 import { DataSourceRegistry, NaviDataSource } from 'navi-config';
+import { omit } from 'lodash-es';
 
 export type SourceAdapterOptions = {
   dataSourceName?: string;
@@ -20,11 +21,25 @@ export function getDataSource<T extends keyof DataSourceRegistry>(dataSourceName
   const {
     navi: { dataSources },
   } = config;
-  const dataSource = dataSources.find(({ name }) => name === dataSourceName);
-  if (dataSource) {
-    return dataSource as DataSourceRegistry[T];
+  const [lookupName, lookupNamespace] = dataSourceName.split('.');
+  const dataSource = dataSources.find(({ name }) => name === lookupName);
+  if (!dataSource) {
+    throw new Error(`Datasource "${lookupName}" should be configured in the navi environment`);
   }
-  throw new Error(`Datasource ${dataSourceName} should be configured in the navi environment`);
+  if (lookupNamespace) {
+    const namespace = dataSource.namespaces?.find(({ name }) => name === lookupNamespace);
+    if (!namespace) {
+      throw new Error(
+        `Namespace "${lookupNamespace}" should be configured for datasource "${lookupName}" in the navi environment`
+      );
+    }
+    return {
+      ...omit(dataSource, ['namespaces']),
+      ...namespace,
+      name: dataSourceName,
+    } as DataSourceRegistry[T];
+  }
+  return dataSource as DataSourceRegistry[T];
 }
 
 /**
@@ -54,15 +69,4 @@ export function getDefaultDataSourceName(): string {
 export function configHost(options: SourceAdapterOptions = {}): string {
   const { dataSourceName } = options;
   return dataSourceName ? getDataSource(dataSourceName).uri : getDefaultDataSource().uri;
-}
-
-/**
- * Returns data source namespace given a data source name
- * @param options - adapter options that include dataSourceName
- * @returns datasource namespace or undefined
- */
-export function getDataSourceNamespace(options: SourceAdapterOptions = {}): string | undefined {
-  const { dataSourceName } = options;
-  const dataSource = dataSourceName ? getDataSource(dataSourceName) : undefined;
-  return dataSource?.namespace || undefined;
 }

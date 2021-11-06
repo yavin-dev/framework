@@ -79,8 +79,12 @@ export default class NaviMetadataService extends Service {
     }) as EmberArray<MetadataModelRegistry[K]>;
   }
 
-  private async loadAndProcessMetadata(dataSource: NaviDataSource, options: RequestOptions): Promise<void> {
-    const { type: dataSourceType, name: dataSourceName } = dataSource;
+  private async loadAndProcessMetadata(
+    dataSource: NaviDataSource,
+    options: RequestOptions & { dataSourceName: string }
+  ): Promise<void> {
+    const { type: dataSourceType } = dataSource;
+    const { dataSourceName } = options;
     const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
     const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);
     if (normalized) {
@@ -90,19 +94,20 @@ export default class NaviMetadataService extends Service {
 
   loadMetadata(options: RequestOptions = {}): Promise<void> {
     const dataSource = this.dataSourceFor(options.dataSourceName);
-    const existingPromise = this.loadMetadataPromises[dataSource.name];
+    const dataSourceName = options.dataSourceName ?? dataSource.name;
+    const existingPromise = this.loadMetadataPromises[dataSourceName];
 
     if (existingPromise) {
       return existingPromise;
     }
 
-    const newPromise = this.loadAndProcessMetadata(dataSource, options);
+    const newPromise = this.loadAndProcessMetadata(dataSource, { ...options, dataSourceName });
 
     //cache promise so we don't execute multiple load fetches
-    this.loadMetadataPromises[dataSource.name] = newPromise;
+    this.loadMetadataPromises[dataSourceName] = newPromise;
 
     //if load fails remove from cache so we can retry
-    newPromise.catch(() => delete this.loadMetadataPromises[dataSource.name]);
+    newPromise.catch(() => delete this.loadMetadataPromises[dataSourceName]);
 
     return newPromise;
   }

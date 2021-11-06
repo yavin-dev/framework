@@ -1,13 +1,7 @@
 import { module, test } from 'qunit';
 import config from 'ember-get-config';
 import { set } from '@ember/object';
-import {
-  getDefaultDataSourceName,
-  configHost,
-  getDataSource,
-  getDefaultDataSource,
-  getDataSourceNamespace,
-} from 'navi-data/utils/adapter';
+import { getDefaultDataSourceName, configHost, getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 
 module('Unit - Utils - Adapter Utils', function () {
   test('getDataSource correctly returns datasource object', function (assert) {
@@ -96,15 +90,5 @@ module('Unit - Utils - Adapter Utils', function () {
     assert.equal(configHost({}), 'https://data.naviapp.io', 'returns first host if default is unspecified');
 
     set(config, 'navi.defaultDataSource', oldDefault);
-  });
-
-  test('getDataSourceNamespace returns correct source object namespace depending on configuration', function (assert) {
-    assert.equal(getDataSourceNamespace({ dataSourceName: 'bardOne' }), undefined, 'bardOne namespace is undefined');
-    assert.equal(
-      getDataSourceNamespace({ dataSourceName: 'elideWithNamespace' }),
-      'DemoNamespace',
-      'elideWithNamespace namespace is correct'
-    );
-    assert.equal(getDataSourceNamespace({}), undefined, 'undefined is returned if datasource is not specified');
   });
 });

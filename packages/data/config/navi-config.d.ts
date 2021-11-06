@@ -1,13 +1,17 @@
 import { Grain } from 'navi-data/utils/date';
 declare module 'navi-config' {
-  export type BaseDataSource<Type, Options = void> = {
-    type: Type;
+  // TODO: redundant once we fetch namespaces via api
+  export type DataSourceNamespace = {
     name: string;
     displayName: string;
     description?: string;
+  };
+
+  export type BaseDataSource<Type, Options = void> = DataSourceNamespace & {
+    type: Type;
     uri: string;
-    namespace?: string;
     options?: Options;
+    namespaces?: DataSourceNamespace[];
     suggestedDataTables?: string[];
   };
 
