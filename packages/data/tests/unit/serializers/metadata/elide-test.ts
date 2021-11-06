@@ -5,7 +5,6 @@ import { TestContext } from 'ember-test-helpers';
 import config from 'ember-get-config';
 import type {
   TablePayload,
-  NamespaceNode,
   MetricNode,
   Connection,
   DimensionNode,
@@ -275,7 +274,6 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         timeDimensionIds: ['tableA.td1'],
         requestConstraintIds: [],
         source: 'bardOne',
-        namespace: 'default',
       },
       {
         id: 'tableB',
@@ -289,7 +287,6 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         timeDimensionIds: [],
         requestConstraintIds: [],
         source: 'bardOne',
-        namespace: 'default',
       },
     ];
 
@@ -480,28 +477,6 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         requestConstraints: [],
       },
       'Table 0'
-    );
-  });
-
-  test('_normalizeTableNamespace', function (assert) {
-    const namespaceConnectionPayload: Connection<NamespaceNode> = {
-      edges: [
-        {
-          node: {
-            id: 'DemoNamespace',
-            name: 'DemoNamespace',
-            friendlyName: 'DemoNamespace',
-            description: 'Demo Namespace',
-          },
-          cursor: '',
-        },
-      ],
-      pageInfo: [],
-    };
-    assert.equal(
-      Serializer._normalizeTableNamespace(namespaceConnectionPayload),
-      'DemoNamespace',
-      'Namespace connection payload is normalized properly'
     );
   });
 

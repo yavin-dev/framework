@@ -133,7 +133,6 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         timeDimensionIds: [],
         requestConstraintIds: [],
         source,
-        namespace: this._normalizeTableNamespace(table.namespace),
       };
 
       const newTableMetrics = this._normalizeTableMetrics(table.metrics, table.id, source);
@@ -166,14 +165,6 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       columnFunctions,
       requestConstraints: [],
     };
-  }
-
-  /**
-   * @private
-   * Normalizes the ElideNamespaceConnection JSON response
-   */
-  _normalizeTableNamespace(namespaceConnection: Connection<NamespaceNode>): string {
-    return namespaceConnection.edges[0].node.id;
   }
 
   /**
