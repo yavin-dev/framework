@@ -64,11 +64,13 @@ module('Integration | Component | report actions - export', function (hooks) {
     await render(TEMPLATE);
     await click('.report-actions__export-btn');
 
-    const csv = document.querySelector('.export__download-link')?.getAttribute('href') ?? '';
-    assert.ok(
-      /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/.test(csv),
-      'csv export url is generated for the report'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/,
+        'csv export url is generated for the report'
+      );
   });
 
   test('notifications - valid report', async function (assert) {

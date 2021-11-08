@@ -54,7 +54,7 @@ module('Integration | Component | report actions - multiple-format-export', func
     await click($('.menu-content a:contains("CSV")')[0]);
     assert
       .dom('.export__download-link')
-      .hasAttribute('href'.trim(), expectedHref, 'The href attribute is set correctly for CSV');
+      .hasAttribute('href', expectedHref, 'The href attribute is set correctly for CSV');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -120,11 +120,13 @@ module('Integration | Component | report actions - multiple-format-export', func
     await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
 
-    const csv = document.querySelector('.export__download-link')?.getAttribute('href') ?? '';
-    assert.ok(
-      /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/.test(csv),
-      'csv export url is generated for the report'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/,
+        'csv export url is generated for the report'
+      );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });

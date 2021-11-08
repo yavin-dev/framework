@@ -186,11 +186,13 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     //check CSV export url
     await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
-    const csv = document.querySelector('.export__download-link')?.getAttribute('href') ?? '';
-    assert.ok(
-      /(?=.*?data2.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/.test(csv),
-      'csv export url is generated for the report'
-    );
+    assert
+      .dom('.export__download-link')
+      .hasAttribute(
+        'href',
+        /(?=.*?data2.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/,
+        'csv export url is generated for the report'
+      );
 
     await click('.d-close');
 

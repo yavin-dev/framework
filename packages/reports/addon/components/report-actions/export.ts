@@ -45,7 +45,7 @@ export default class ReportActionExport extends Component<Args> {
    */
   get filename() {
     const dateString = moment().format('YYYYMMDDTHHmmss');
-    return `${this.args.model.title}-${dateString}.csv`;
+    return `${this.args.model.title}-${dateString}`;
   }
 
   /**
@@ -64,7 +64,7 @@ export default class ReportActionExport extends Component<Args> {
       let url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {
         format: 'csv',
         dataSourceName: serializedRequest.dataSource,
-        fileName: this.filename,
+        fileName: `${this.filename}.csv`,
       });
       this.downloadURLLink(url);
     } catch (e) {
