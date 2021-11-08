@@ -9,7 +9,7 @@ shared:
     steps:
       - .: &install-node
           install-node: |
-            sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
+            sd-cmd exec screwdriver/install-nodejs@1.0.3 $NODE_VERSION
             export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
       - .: &npm-cache-verify
           npm-cache-verify: npm cache verify
