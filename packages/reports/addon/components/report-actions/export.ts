@@ -41,7 +41,7 @@ export default class ReportActionExport extends Component<Args> {
   }
 
   /**
-   * filename for the downloaded file
+   * filename along with the format for the downloaded file
    */
   get filename() {
     const dateString = moment().format('YYYYMMDDTHHmmss');
