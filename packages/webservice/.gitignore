@@ -1,6 +1,9 @@
 .gradle
-build/
+derby.log
+yavin.h2.db
+yavin.trace.db 
 
+build/
 app/target
 app/build
 app/out
