@@ -22,5 +22,5 @@ data class Request(
     var rollup: Rollup = Rollup(),
     var limit: Int? = null,
     var dataSource: String? = null,
-    val requestVersion: String = "2.0"
+    var requestVersion: String = "2.0"
 )
