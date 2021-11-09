@@ -1,6 +1,6 @@
 {
   "name": "navi-admin",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Admin panel for navi",
   "private": true,
   "keywords": [
@@ -37,7 +37,7 @@
     "ember-cli-htmlbars": "^5.3.2",
     "ember-cli-mirage": "~2.2.0",
     "ember-cli-typescript": "^4.1.0",
-    "navi-core": "0.3.0"
+    "navi-core": "0.4.0"
   },
   "devDependencies": {
     "@denali-design/ember": "^1.0.0-alpha.30",
