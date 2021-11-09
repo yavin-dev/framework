@@ -190,7 +190,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       .dom('.export__download-link')
       .hasAttribute(
         'href',
-        /(?=.*?data2.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/,
+        /(?=.*?data2.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=Report%20for%20different%20datasource-\d\d\d\d\d\d\d*T\d\d\d\d\d\d)/,
         'csv export url is generated for the report'
       );
 

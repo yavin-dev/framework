@@ -68,7 +68,7 @@ module('Integration | Component | report actions - export', function (hooks) {
       .dom('.export__download-link')
       .hasAttribute(
         'href',
-        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=)/,
+        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=Hyrule%20News-\d\d\d\d\d\d\d*T\d\d\d\d\d\d)/,
         'csv export url is generated for the report'
       );
   });
