@@ -132,7 +132,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
       findAll('.report-builder-source-selector-list--all .report-builder-source-selector__source-name').map((el) =>
         el.textContent?.trim()
       ),
-      ['Network', 'Protected Table', 'Table A', 'Table B', 'Table C'],
+      ['Network', 'Protected Table', 'Table A', 'Table B', 'Table C', 'Table D'],
       'All available tables are listed'
     );
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');

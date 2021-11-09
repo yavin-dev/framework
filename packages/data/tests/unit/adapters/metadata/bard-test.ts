@@ -48,6 +48,7 @@ module('Unit | Adapter | metadata/bard', function (hooks) {
         { dimensions: 31, grains: 6, metrics: 42, name: 'tableB' },
         { dimensions: 31, grains: 7, metrics: 42, name: 'protected' },
         { dimensions: 31, grains: 6, metrics: 33, name: 'tableC' },
+        { dimensions: 31, grains: 7, metrics: 6, name: 'tableD' },
       ],
       '`fetchEverything` correctly requested all datasource metadata'
     );
@@ -57,7 +58,7 @@ module('Unit | Adapter | metadata/bard', function (hooks) {
     const tables = await Adapter.fetchAll('table');
     assert.deepEqual(
       tables.map((t: { name: string }) => t.name),
-      ['network', 'tableA', 'tableB', 'protected', 'tableC'],
+      ['network', 'tableA', 'tableB', 'protected', 'tableC', 'tableD'],
       '`fetchAll` correctly requested table metadata'
     );
   });

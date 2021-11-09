@@ -16,13 +16,26 @@ module('Integration | Component | grouped list', function (hooks) {
       { val: 5, field: null },
     ]);
 
-    this.set('sortme', [
+    this.set('sortmeV1', [
       { name: 'ice cream stand', cat: 'places' },
       { name: 'zebra', cat: 'animals' },
       { name: 'zoo', cat: 'places' },
       { name: 'aardvark', cat: 'animals' },
       { name: 'bees', cat: 'animals' },
       { name: 'apple stand', cat: 'places' },
+    ]);
+
+    this.set('sortmeV2', [
+      { name: 'bop', cat: 'onomatopoeia' },
+      { name: 'thwack', cat: null },
+      { name: 'sleep', cat: 'zzz' },
+    ]);
+
+    this.set('oneCategory', [
+      { name: 'Pikachu', category: 'Pokemon' },
+      { name: 'Infernape', category: 'Pokemon' },
+      { name: 'Empoleon', category: 'Pokemon' },
+      { name: 'Torterra', category: 'Pokemon' },
     ]);
   });
 
@@ -52,17 +65,17 @@ module('Integration | Component | grouped list', function (hooks) {
     const groups = findAll('.grouped-list__group-header-content');
     assert.deepEqual(
       groups.map((el) => el.textContent.trim()),
-      ['foo (3)', 'bar (1)', 'Uncategorized (2)'],
+      ['bar (1)', 'foo (3)', 'Uncategorized (2)'],
       'the groups in the grouped-list are rendered, only the first item in the groupByField is considered for grouping'
     );
 
-    assert.dom(groups[0]).hasText('foo (3)', 'the first group header is `foo(3)`');
+    assert.dom(groups[1]).hasText('foo (3)', 'the second group header is `foo(3)`');
 
-    await click(groups[0]);
+    await click(groups[1]);
     assert.deepEqual(
       findAll('.grouped-list__item').map((el) => el.textContent.trim()),
       ['1', '2', '3'],
-      'the items under the first group header belong to the group'
+      'the items under the second group header belong to the group'
     );
 
     this.set('shouldOpenAllGroups', true);
@@ -71,17 +84,17 @@ module('Integration | Component | grouped list', function (hooks) {
 
     assert.deepEqual(
       findAll('.grouped-list li').map((el) => el.textContent.trim()),
-      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'Uncategorized (2)', '4', '5'],
+      ['bar (1)', '6', 'foo (3)', '1', '2', '3', 'Uncategorized (2)', '4', '5'],
       'All groups are open when `shouldOpenAllGroups` attribute is true'
     );
   });
 
-  test('sorted groups', async function (assert) {
+  test('groups are sorted by sortByField', async function (assert) {
     assert.expect(1);
 
     await render(hbs`
       <GroupedList
-        @items={{this.sortme}}
+        @items={{this.sortmeV1}}
         @shouldOpenAllGroups={{true}}
         @containerSelector="body"
         @groupByField="cat"
@@ -95,8 +108,60 @@ module('Integration | Component | grouped list', function (hooks) {
     const allItems = findAll('.grouped-list li');
     assert.deepEqual(
       allItems.map((el) => el.textContent.trim()),
-      ['places (3)', 'apple stand', 'ice cream stand', 'zoo', 'animals (3)', 'aardvark', 'bees', 'zebra'],
+      ['animals (3)', 'aardvark', 'bees', 'zebra', 'places (3)', 'apple stand', 'ice cream stand', 'zoo'],
       "The 'places' and 'animals' groups are sorted by the `sortByField`"
+    );
+  });
+
+  test('categories are sorted alphabetically', async function (assert) {
+    assert.expect(1);
+
+    await render(hbs`
+      <GroupedList
+        @items={{this.sortmeV2}}
+        @shouldOpenAllGroups={{false}}
+        @containerSelector="body"
+        @groupByField="cat"
+        @sortByField="name"
+        as | item |
+      >
+        {{item.name}}
+      </GroupedList>
+    `);
+
+    const allItems = findAll('.grouped-list li');
+    assert.deepEqual(
+      allItems.map((el) => el.textContent.trim()),
+      ['onomatopoeia (1)', 'zzz (1)', 'Uncategorized (1)'],
+      "The categories are sorted alphabetically with 'Uncategorized' last"
+    );
+  });
+
+  test('all items are in one category', async function (assert) {
+    assert.expect(2);
+
+    await render(hbs`
+      <GroupedList
+        @items={{this.oneCategory}}
+        @shouldOpenAllGroups={{false}}
+        @containerSelector="body"
+        @groupByField="category"
+        @sortByField="name"
+        @isSingleCategory="true"
+        as | item |
+      >
+        {{item.name}}
+      </GroupedList>
+    `);
+
+    const allItems = findAll('.grouped-list li');
+    assert
+      .dom('.grouped-list__group-header')
+      .doesNotExist('no category header is shown when all items are one category');
+    assert.deepEqual(
+      allItems.map((ele) => ele.textContent.trim()),
+      ['Empoleon', 'Infernape', 'Pikachu', 'Torterra'],
+      'all items are displayed without header'
     );
   });
 });
