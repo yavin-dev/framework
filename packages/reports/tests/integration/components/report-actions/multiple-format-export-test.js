@@ -6,7 +6,6 @@ import $ from 'jquery';
 import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import Service from '@ember/service';
-import moment from 'moment';
 
 const TEMPLATE = hbs`
     <ReportActions::MultipleFormatExport
@@ -44,17 +43,15 @@ module('Integration | Component | report actions - multiple-format-export', func
 
     await render(TEMPLATE);
 
-    const dateString = moment().format('YYYYMMDDTHHmmss');
-    const factService = this.owner.lookup('service:navi-facts');
-    const expectedHref = factService.getURL(this.report.request.serialize(), {
-      format: 'csv',
-      fileName: `Hyrule News-${dateString}.csv`,
-    });
     await triggerEvent('.menu-trigger', 'mouseenter');
     await click($('.menu-content a:contains("CSV")')[0]);
     assert
       .dom('.export__download-link')
-      .hasAttribute('href', expectedHref, 'The href attribute is set correctly for CSV');
+      .hasAttribute(
+        'href',
+        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=Hyrule%20News-\d\d\d\d\d\d\d*T\d\d\d\d\d\d)/,
+        'csv export url is generated for the report'
+      );
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
@@ -123,8 +120,8 @@ module('Integration | Component | report actions - multiple-format-export', func
     assert
       .dom('.export__download-link')
       .hasAttribute(
-        'href',
-        /(?=.*?data.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=Hyrule%20News-\d\d\d\d\d\d\d*T\d\d\d\d\d\d)/,
+        'download',
+        /(?=.*hyrule-news-\d\d\d\d\d\d\d*-t\d\d\d\d\d\d)/,
         'csv export url is generated for the report'
       );
 
