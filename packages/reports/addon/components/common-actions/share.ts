@@ -14,7 +14,8 @@ export default class ShareActionComponent extends Component<Args> {
   @service
   naviNotifications!: NaviNotificationsService;
 
-  get shareUrl() {
+  @action
+  shareUrl() {
     // Allow custom url logic for sharing something other than current page
     const { buildUrl } = this.args;
     return buildUrl ? buildUrl() : document.location.href;
@@ -26,7 +27,7 @@ export default class ShareActionComponent extends Component<Args> {
       title: 'Link copied',
       style: 'info',
       timeout: 'short',
-      extra: this.shareUrl,
+      extra: this.shareUrl(),
     });
   }
 }
