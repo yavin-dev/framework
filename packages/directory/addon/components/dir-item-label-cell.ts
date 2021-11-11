@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * This component won't be used directly. It is passed to ember-light-table as a custom cell component.
@@ -10,16 +10,23 @@
  * />
  */
 import Component from '@glimmer/component';
+import type ReportModel from 'navi-core/models/report';
+import DashboardModel from 'navi-core/models/dashboard';
 
-interface DirItemNameCellComponentArgs {
-  value: TODO<{ constructor: { modelName: string }; modelId: string }>;
+interface DirItemLabelCellComponentArgs {
+  value: ReportModel | DashboardModel;
 }
 
-export default class DirItemLabelCellComponent extends Component<DirItemNameCellComponentArgs> {
+export default class DirItemLabelCellComponent extends Component<DirItemLabelCellComponentArgs> {
   /**
-   * @property {String} itemId - the id of the model or the tempId of an unsaved model
+   * @property {String[]} labels - the labels that will be applied to this row of the table
    */
-  get itemId() {
-    return this.args.value?.modelId;
+  get labels() {
+    let labs: string[] = [];
+    // add the scheduled label to scheduled reports/dashboards
+    if (this.args.value?.deliveryRules?.length > 0) {
+      labs.push('Scheduled');
+    }
+    return labs;
   }
 }

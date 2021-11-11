@@ -1,8 +1,9 @@
-{{#if @value}}
+{{!-- Copyright 2021, Yahoo Inc. --}}
+{{#each this.labels as |label|}}
 <DenaliChip
   @size="small"
-  class="dir-item-name-cell__unsaved-label"
+  class="dir-item-label-cell"
 >
-  {{@value}}
+  {{label}}
 </DenaliChip>
-{{/if}}
+{{/each}}

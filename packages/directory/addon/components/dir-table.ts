@@ -44,7 +44,6 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
     const items = this.args.items || [];
     return items.map((item) => ({
       model: item,
-      labels: item.deliveryRules?.length > 0 ? 'Scheduled' : '',
       lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a'),
     }));
   }
@@ -100,7 +99,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
       },
       {
         label: 'LABEL',
-        valuePath: 'labels',
+        valuePath: 'model',
         sortable: false,
         hideable: false,
         draggable: false,
