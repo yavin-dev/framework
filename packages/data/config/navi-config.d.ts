@@ -4,6 +4,7 @@ declare module 'navi-config' {
     name: string;
     displayName: string;
     description?: string;
+    suggestedDataTables?: string[];
   };
 
   export type BaseDataSource<Type, Options = void> = DataSourceNamespace & {
@@ -11,7 +12,6 @@ declare module 'navi-config' {
     uri: string;
     options?: Options;
     namespaces?: DataSourceNamespace[];
-    suggestedDataTables?: string[];
   };
 
   export interface FiliConfigOptions {

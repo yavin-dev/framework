@@ -12,6 +12,7 @@ data class DataSourceNamespace(
     var name: String,
     var displayName: String,
     var description: String? = null,
+    var suggestedDataTables: List<String> = emptyList(),
 )
 
 data class DataSource(

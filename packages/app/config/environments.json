@@ -25,10 +25,11 @@
         "namespaces": [
           {
             "name": "DemoNamespace",
-            "displayName": "Demo Namespace"
+            "displayName": "Demo Namespace",
+            "suggestedDataTables": ["DemoNamespace_TrendingNow"]
           }
         ],
-        "suggestedDataTables": ["NetflixTitles", "DemoNamespace_TrendingNow"]
+        "suggestedDataTables": ["NetflixTitles"]
       }
     ],
     "appPersistence": {
