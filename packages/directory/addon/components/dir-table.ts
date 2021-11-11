@@ -16,6 +16,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
+//eslint-disable-next-line
 // @ts-ignore
 import Table from 'ember-light-table';
 
@@ -43,6 +44,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
     const items = this.args.items || [];
     return items.map((item) => ({
       model: item,
+      labels: item.deliveryRules?.length > 0 ? 'Scheduled' : '',
       lastUpdatedDate: moment(item.updatedOn).format('MM/DD/YYYY -  hh:mm:ss a'),
     }));
   }
@@ -94,6 +96,18 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         width: '200px',
         classNames: 'dir-table__header-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--lastUpdatedDate',
+        breakpoints: ['desktop', 'jumbo'],
+      },
+      {
+        label: 'LABEL',
+        valuePath: 'labels',
+        sortable: false,
+        hideable: false,
+        draggable: false,
+        width: '165px',
+        cellComponent: 'dir-item-label-cell',
+        classNames: 'dir-table__header-cell',
+        cellClassNames: 'dir-table__cell dir-table__cell--label',
         breakpoints: ['desktop', 'jumbo'],
       },
     ];
