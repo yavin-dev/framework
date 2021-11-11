@@ -189,8 +189,8 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
       .dom('.export__download-link')
       .hasAttribute(
         'href',
-        'https://data2.naviapp.io/v1/data/inventory/day/container;show=desc/displayCurrency;show=desc/?dateTime=P3D%2Fcurrent&metrics=usedAmount%2Crevenue(currency%3DGIL)&filters=container%7Cid-in%5B%222%22%5D&having=usedAmount-gt%5B50%5D&format=csv',
-        'uses csv export from right datasource'
+        /(?=.*?data2.naviapp.io)(?=.*format=csv)(?=.*dateTime=)(?=.*csv&filename=Report%20for%20different%20datasource-\d\d\d\d\d\d\d*T\d\d\d\d\d\d)/,
+        'csv export url is generated for the report'
       );
 
     await click('.d-close');
