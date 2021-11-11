@@ -8,6 +8,7 @@
   padding: 0 10px 10px;
 
   &__api-column-name {
+    direction: rtl; /* show an ellipsis at the front of the column name */
     overflow: hidden;
     padding: 4px 6px;
     text-overflow: ellipsis;

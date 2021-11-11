@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
@@ -35,12 +35,21 @@ export default class ElideMetadataAdapter extends EmberObject implements NaviMet
       query
     );
 
+    let { dataSourceName, customHeaders: headers } = options;
+    let namespace = 'default';
+    if (dataSourceName?.includes('.')) {
+      [dataSourceName, namespace] = dataSourceName.split('.');
+    }
+
     const queryOptions = {
       query,
-      ...(isPresent(id) && { variables: { ids: [id] } }),
+      variables: {
+        filter: `namespace.id=='${namespace}'`,
+        ...(isPresent(id) && { ids: [id] }),
+      },
       context: {
-        dataSourceName: options.dataSourceName,
-        headers: options.customHeaders,
+        dataSourceName,
+        headers,
       },
       ...options,
     };

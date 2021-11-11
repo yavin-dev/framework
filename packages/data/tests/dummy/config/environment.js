@@ -50,6 +50,13 @@ module.exports = function (environment) {
           description: 'Elide One Description',
           uri: 'https://data.naviapp.io/graphql',
           type: 'elide',
+          namespaces: [
+            {
+              name: 'DemoNamespace',
+              displayName: 'Demo Namespace',
+              description: 'Demo Namespace Description',
+            },
+          ],
         },
         {
           name: 'elideTwo',

@@ -1,8 +1,8 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { grains } from './elide-one';
+import { grains, defaultNamespaceAttrs } from './elide-one';
 import { capitalize } from '@ember/string';
 
 const timeDimIds = ['eventTime', 'orderTime'];
@@ -11,7 +11,8 @@ const timeDimIds = ['eventTime', 'orderTime'];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function (server: any) {
   server.create('time-zone', { id: 'UTC', short: 'UTC', long: 'Universal Time Coordinated' });
-  const [table0, table1] = server.createList('elide-table', 2);
+  const namespace = server.create('elide-namespace', defaultNamespaceAttrs);
+  const [table0, table1] = server.createList('elide-table', 2, { namespace: [namespace] });
   server.createList('metric', 1, { table: table0 });
   server.createList('metric', 2, { table: table1 });
   server.createList('dimension', 2, { table: table0 });

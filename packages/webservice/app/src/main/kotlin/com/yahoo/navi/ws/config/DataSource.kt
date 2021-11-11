@@ -8,12 +8,20 @@ enum class DataSourceTypes {
     elide
 }
 
+data class DataSourceNamespace(
+    var name: String,
+    var displayName: String,
+    var description: String? = null,
+    var suggestedDataTables: List<String> = emptyList(),
+)
+
 data class DataSource(
     var name: String,
     var displayName: String,
     var description: String? = null,
     var uri: String,
     var type: DataSourceTypes,
-    var timeout: Int = 900000,
+    var namespaces: List<DataSourceNamespace> = emptyList(),
     var suggestedDataTables: List<String> = emptyList(),
+    var timeout: Int = 900000,
 )

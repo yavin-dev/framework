@@ -19,6 +19,7 @@ type ElideTableEdge {
 type ElideTable implements Node {
   id: DeferredID!
   name: String
+  namespace: ElideNamespaceConnection
   friendlyName: String
   isFact: Boolean
   description: String
@@ -28,6 +29,22 @@ type ElideTable implements Node {
   dimensions: DimensionConnection
   timeDimensions: TimeDimensionConnection
   tableTags: [String!]
+}
+
+type ElideNamespaceConnection {
+  pageInfo: PageInfo
+  edges: [ElideNamespaceEdge!]!
+}
+
+type ElideNamespaceEdge {
+  node: ElideNamespace!
+}
+
+type ElideNamespace {
+  id: DeferredID!
+  name: String
+  friendlyName: String
+  description: String
 }
 
 type MetricConnection {
