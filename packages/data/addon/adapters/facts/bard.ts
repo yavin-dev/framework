@@ -21,7 +21,7 @@ import NaviFactAdapter, {
   Sort,
   FactAdapterError,
 } from './interface';
-import { omit } from 'lodash-es';
+import { omit, capitalize } from 'lodash-es';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import moment from 'moment';
 import config from 'ember-get-config';
@@ -63,13 +63,23 @@ export function buildTimeDimensionFilterValues(
   timeFilter: Filter,
   dataSource: string,
   allowCustomMacros: boolean,
-  allowISOMacros: boolean
+  allowISOMacros: boolean,
+  columnGrain?: GrainWithAll
 ): [string, string] | string[] {
   const filterGrain = timeFilter?.parameters?.grain as Grain;
   let start: string, end: string;
   if (timeFilter.operator === 'bet') {
     [start, end] = timeFilter.values as string[];
     if (allowCustomMacros) {
+      if (columnGrain === 'all') {
+        const grainSuffix = capitalize(getPeriodForGrain(filterGrain));
+        if (start === 'current') {
+          start += grainSuffix;
+        }
+        if (['current', 'next'].includes(end)) {
+          end += grainSuffix;
+        }
+      }
       // Add 1 period to convert [inclusive, inclusive] to [inclusive, exclusive) format
       const endMoment = end ? moment.utc(end) : undefined;
       if (endMoment?.isValid()) {
@@ -243,7 +253,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
         `The requested filter timeGrain '${filterGrain}', must match the column timeGrain '${columnGrain}'`
       );
     }
-    const filterValues = buildTimeDimensionFilterValues(timeFilter, request.dataSource, columnGrain !== 'all', true);
+    const filterValues = buildTimeDimensionFilterValues(timeFilter, request.dataSource, true, true, columnGrain);
     if (timeFilter.operator === 'intervals') {
       return filterValues.join(',');
     }
