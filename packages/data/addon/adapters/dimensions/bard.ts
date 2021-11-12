@@ -178,7 +178,8 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     } else if (filiOptions?.enableDimensionSearch) {
       const url = this._buildUrl(dimension, 'search');
       const data: Record<string, string> = query ? { query } : {};
-      return yield this._find(url, data, options);
+      const results = yield this._find(url, data, options);
+      return this._searchDimensions(results, query); //TODO: Remove researching dimensions, when bard search ordering improves
     } else {
       const results = yield taskFor(this.find).perform(
         dimension,
