@@ -71,7 +71,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      debugger;
       return values.map((value) => dimensionModelFactory.create({ value, dimensionColumn }));
     }
     return [];
@@ -86,7 +85,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   setValues(dimension: NaviDimensionModel[]) {
     const values = [] as (string | number)[];
     for (const entry of dimension) {
-      debugger;
       let toPush: string | number;
       if (entry.manualInputEntry === true) {
         toPush = entry.manualQuery as string | number;
@@ -96,7 +94,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
         values.push(toPush);
       }
     }
-    debugger;
     this.args.onUpdateFilter({ values });
   }
 
@@ -107,7 +104,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   fetchDimensionOptions(): void {
     const { dimensionColumn } = this;
     if (this.isSmallCardinality) {
-      debugger;
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
         .then((r) => r.values)
@@ -144,13 +140,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
         manualQuery: searchTerm.toLowerCase(),
       })
     );
-    debugger;
     yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
     const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
       this.dimensionColumn,
       searchTerm
     );
-    debugger;
     if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
       return dimensionResponse.values;
     }
