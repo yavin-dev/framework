@@ -6,6 +6,16 @@ fragment TableFragment on ElideTable {
   category
   cardinality
   isFact
+  namespace {
+    edges {
+      node {
+        id
+        name
+        friendlyName
+        description
+      }
+    }
+  }
   metrics {
     edges {
       node {

@@ -22,7 +22,7 @@ class ServerGeneratedConfigTest : IntegrationTest() {
     @Test
     fun server_generated_config() {
         val expected: String? =
-            """var NAVI_APP = {"user":"testuser","dataSources":[{"name":"default","displayName":"Default","description":null,"uri":"/graphql/api/v1","type":"elide","timeout":900000,"suggestedDataTables":[]}],"appPersistence":{"name":"persistence","displayName":"Persistence","description":null,"uri":"/api/v1","type":"elide","timeout":900000,"suggestedDataTables":[]},"FEATURES":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true,"enableScheduleReports":true,"enableScheduleDashboards":true}};"""
+            """var NAVI_APP = {"user":"testuser","dataSources":[{"name":"default","displayName":"Default","description":null,"uri":"/graphql/api/v1","type":"elide","namespaces":[{"name":"DemoNamespace","displayName":"Demo Namespace","description":null,"suggestedDataTables":["DemoNamespace_TrendingNow"]}],"suggestedDataTables":["NetflixTitles"],"timeout":900000}],"appPersistence":{"name":"persistence","displayName":"Persistence","description":null,"uri":"/api/v1","type":"elide","namespaces":[],"suggestedDataTables":[],"timeout":900000},"FEATURES":{"enableDashboardsFilters":true,"enableTableEditing":true,"enableTotals":true,"enableScheduleReports":true,"enableScheduleDashboards":true}};"""
 
         val actual: String = given()
             .header("User", "testuser")

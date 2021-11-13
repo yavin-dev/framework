@@ -6,6 +6,7 @@
 import { A } from '@ember/array';
 import { w } from '@ember/string';
 import PaginationUtils from './pagination';
+import type NativeArray from '@ember/array';
 
 export default {
   /**
@@ -19,7 +20,7 @@ export default {
    *           Number representing how close query matches string
    *           undefined if no match
    */
-  getPartialMatchWeight(string, query) {
+  getPartialMatchWeight(string: string, query: string): number | undefined {
     // Split search query into individual words
     let searchTokens = w(query.trim()),
       allTokensFound = true;
@@ -52,7 +53,7 @@ export default {
    *           Number representing how close query matches string
    *           undefined if no match
    */
-  getExactMatchWeight(string, query) {
+  getExactMatchWeight(string: string, query: string): number | undefined {
     if (string.indexOf(query) !== -1) {
       // Compute match weight
       return string.length - query.length + 1;
@@ -74,25 +75,31 @@ export default {
    *          record - asset record
    *          relevance - distance between record and search query
    */
-  searchDimensionRecords(records, query, resultLimit, page) {
+  searchDimensionRecords(
+    records: NativeArray<unknown>,
+    query: string,
+    resultLimit: number,
+    page = 1
+  ): { record: Record<string, string>; relevance: number }[] {
     let results = [],
       record;
 
     // Filter, map, and sort records based on how close each record is to the search query
     for (let i = 0; i < records.length; i++) {
-      record = records.objectAt(i);
+      record = records.objectAt(i) as Record<string, string>;
 
       // Determine relevance based on string match weight
-      let descriptionMatchWeight = this.getPartialMatchWeight(
-          (record.description || '').toLowerCase(),
+      const { id, ...rest } = record;
+      let nonIdMatchWeight = this.getPartialMatchWeight(
+          (Object.values(rest).join(' ') || '').toLowerCase(),
           query.toLowerCase()
         ),
-        idMatchWeight = this.getExactMatchWeight((record.id || '').toLowerCase(), query.toLowerCase()),
-        relevance = descriptionMatchWeight || idMatchWeight;
+        idMatchWeight = this.getExactMatchWeight((id || '').toLowerCase(), query.toLowerCase()),
+        relevance = nonIdMatchWeight || idMatchWeight;
 
       // If both id and description match the query, take the most relevant
-      if (descriptionMatchWeight && idMatchWeight) {
-        relevance = Math.min(descriptionMatchWeight, idMatchWeight);
+      if (nonIdMatchWeight && idMatchWeight) {
+        relevance = Math.min(nonIdMatchWeight, idMatchWeight);
       }
 
       if (relevance) {

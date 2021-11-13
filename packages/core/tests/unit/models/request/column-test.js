@@ -119,7 +119,27 @@ module('Unit | Model | Request | Column', function (hooks) {
     );
   });
 
-  test('Display Name', async function (assert) {
+  test('Display Nice Name', async function (assert) {
+    const column = mockModel.columns.objectAt(0);
+
+    assert.equal(await column.displayNiceName, 'time', 'Display nice name is as expected with an alias');
+
+    column.set('alias', null);
+    assert.equal(
+      await column.displayNiceName,
+      'Date Time (Day)',
+      'Display nice name is as expected without an alias and with params'
+    );
+
+    column.set('parameters', {});
+    assert.equal(
+      await column.displayNiceName,
+      'Date Time',
+      'Display nice name is as expected without params or an alias'
+    );
+  });
+
+  test('Display Name', function (assert) {
     const column = mockModel.columns.objectAt(0);
 
     assert.equal(column.displayName, 'time', 'Display name is as expected with an alias');

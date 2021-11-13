@@ -24,6 +24,15 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
             null,
             elideSettings.graphql.path,
             DataSourceTypes.elide,
+            listOf(
+                DataSourceNamespace(
+                    "DemoNamespace",
+                    "Demo Namespace",
+                    null,
+                    listOf("DemoNamespace_TrendingNow")
+                )
+            ),
+            listOf("NetflixTitles")
         )
     )
 

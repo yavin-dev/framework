@@ -15,7 +15,7 @@ export default {
    * @param {Number} [limit] - number of records per page
    * @param {Number} [page] - page number
    */
-  getPaginatedRecords(allRecords, limit, page) {
+  getPaginatedRecords<T>(allRecords: Array<T>, limit: number, page: number): Array<T> {
     assert('allRecords param must be defined', allRecords);
     if (limit) {
       assert('Limit must be of type number', typeOf(limit) === 'number');

@@ -284,7 +284,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     );
   });
 
-  test('sort is applied to search', async function (this: TestContext, assert) {
+  test('sort is NOT applied to search', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
     const factory = this.dimensionModelFactory;
@@ -302,10 +302,11 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     await clickTrigger(); // open
     await selectSearch('.filter-values--dimension-select__trigger', 'Property');
+    //if client side sorting was applied we'd see: ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3']
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3'],
-      'Sort is applied as number for string number dimensions'
+      ['Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
+      'Sort is applied as it was given from server mock'
     );
   });
 
@@ -375,15 +376,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     await render(TEMPLATE);
 
-    await clickTrigger();
-    await typeIn('.filter-values--dimension-select__trigger input', 'abc');
-    await triggerKeyEvent('.filter-values--dimension-select__trigger input', 'keydown', 'Enter');
+    await selectSearch('.filter-values--dimension-select__trigger', 'abc');
     assert.deepEqual(
       findAll('.filter-values--dimension-select__option').map((el) => [
         el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
-      [['abc', '']]
+      [['"abc"', '']]
     );
   });
 });

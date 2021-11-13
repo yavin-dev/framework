@@ -6,6 +6,7 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
+import { A as arr } from '@ember/array';
 import { configHost, getDataSource } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
@@ -19,6 +20,8 @@ import type { DimensionFilter } from './interface';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import SearchUtils from 'navi-data/utils/search';
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -37,6 +40,11 @@ type LegacyAdapterOptions = {
 export type FiliDimensionResponse = {
   rows: Record<string, string>[];
   meta?: Record<string, unknown>;
+};
+
+type SearchUtilResult = {
+  relevance: number;
+  record: Record<string, string>;
 };
 
 export const DefaultField = 'id';
@@ -81,6 +89,14 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     });
 
     return andQueries.length ? { filters: serializeFilters(requestV2Filters, dimension.columnMetadata.source) } : {};
+  }
+
+  _searchDimensions(dimensions: FiliDimensionResponse, query: string): FiliDimensionResponse {
+    const results = SearchUtils.searchDimensionRecords(arr(dimensions.rows), query, 5000, 1) as SearchUtilResult[];
+    return {
+      rows: results.map((result: SearchUtilResult) => result.record),
+      ...(dimensions.meta ? { meta: dimensions.meta } : {}),
+    };
   }
 
   _find(
@@ -154,14 +170,17 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     query: string,
     options: ServiceOptions = {}
   ): TaskGenerator<FiliDimensionResponse> {
-    const { source } = dimension.columnMetadata;
+    const { source, cardinality } = dimension.columnMetadata;
     const filiOptions = getDataSource<'bard'>(source).options;
-    if (filiOptions?.enableDimensionSearch) {
+    if (cardinality === CARDINALITY_SIZES[0]) {
+      const all = yield taskFor(this.all).perform(dimension);
+      return this._searchDimensions(all, query);
+    } else if (filiOptions?.enableDimensionSearch) {
       const url = this._buildUrl(dimension, 'search');
       const data: Record<string, string> = query ? { query } : {};
       return yield this._find(url, data, options);
     } else {
-      return yield taskFor(this.find).perform(
+      const results = yield taskFor(this.find).perform(
         dimension,
         [
           {
@@ -171,6 +190,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
         ],
         options
       );
+      return this._searchDimensions(results, query);
     }
   }
 }

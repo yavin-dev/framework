@@ -24,30 +24,30 @@ const ExpectedRequest = {
     ],
     columns: [
       {
-        alias: null,
         field: 'network.dateTime',
+        alias: null,
         parameters: {
           grain: 'day',
         },
         type: 'timeDimension',
       },
       {
-        alias: null,
         field: 'property',
+        alias: null,
         parameters: {
           field: 'id',
         },
         type: 'dimension',
       },
       {
-        alias: null,
         field: 'adClicks',
+        alias: null,
         parameters: {},
         type: 'metric',
       },
       {
-        alias: null,
         field: 'navClicks',
+        alias: null,
         parameters: {},
         type: 'metric',
       },

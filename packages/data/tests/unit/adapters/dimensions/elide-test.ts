@@ -7,6 +7,7 @@ import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimensi
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { TestContext as Context } from 'ember-test-helpers';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
+import ElideOneDemoNamespaceScenario from 'navi-data/mirage/scenarios/elide-one-demo-namespace';
 import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -58,6 +59,12 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     this.server.factorySequences = {};
     ElideTwoScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideTwo' });
+
+    this.server.db.emptyData();
+    //@ts-ignore
+    this.server.factorySequences = {};
+    ElideOneDemoNamespaceScenario(this.server);
+    await this.metadataService.loadMetadata({ dataSourceName: 'elideOne.DemoNamespace' });
   });
 
   test('find', async function (this: TestContext, assert) {
@@ -262,7 +269,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
       columnMetadata: this.metadataService.getById(
         'dimension',
         'table0.dimension0',
-        'elideTwo'
+        'elideOne.DemoNamespace'
       ) as DimensionMetadataModel,
       parameters: {
         foo: 'baz',
@@ -281,7 +288,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
       ],
       table: 'table0',
       limit: null,
-      dataSource: 'elideTwo',
+      dataSource: 'elideOne.DemoNamespace',
       requestVersion: '2.0',
     };
     const expectedOptions = {
@@ -396,7 +403,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
       columnMetadata: this.metadataService.getById(
         'dimension',
         'table0.dimension1',
-        'elideOne'
+        'elideOne.DemoNamespace'
       ) as DimensionMetadataModel,
     };
 

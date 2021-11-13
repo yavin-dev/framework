@@ -38,11 +38,11 @@ module('Acceptance | fili datasource', function (hooks) {
       const grainId = grain === 'Week' ? 'isoWeek' : grain.toLowerCase();
       assert
         .dom('.navi-column-config-item__name')
-        .hasText(`Date Time (${grainId})`, 'The column config grain parameter is updated');
+        .hasText(`Date Time (${grain})`, 'The column config grain parameter is updated');
 
       assert
         .dom('.filter-builder__subject')
-        .hasText(`Date Time ${grainId}`, `The filter is updated to the ${grainId} grain`);
+        .hasText(`Date Time ${grain}`, `The filter is updated to the ${grainId} grain`);
 
       await selectChoose('.filter-builder__operator-trigger', 'Between');
       assert
@@ -60,7 +60,7 @@ module('Acceptance | fili datasource', function (hooks) {
         .dom('.filter-builder__operator-trigger')
         .hasText(`Current ${capitalize(grainId)}`, 'Current is the selected filter builder operator');
 
-      assert.dom('.filter-values--current-period').containsText(`The current ${grainId}`, `Shows current ${grain}`);
+      assert.dom('.filter-values--current-period').containsText(`The current ${grainId}`, `Shows current ${grainId}`);
 
       await selectChoose('.filter-builder__operator-trigger', 'In The Past');
       assert
@@ -93,11 +93,11 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.dom('.report-builder-sidebar__source').hasText('Network', 'A fili table is selected');
 
-    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists on a new report');
+    assert.dom('.filter-builder__subject').hasText('Date Time Day', 'A date time filter exists on a new report');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
     await clickItem('timeDimension', 'Date Time');
-    assert.dom('.navi-column-config-item__name').hasText('Date Time (day)', 'The date time column was added');
+    assert.dom('.navi-column-config-item__name').hasText('Date Time (Day)', 'The date time column was added');
     assert
       .dom('.navi-column-config-item__remove-icon')
       .isNotDisabled('The date time can be removed when there is an all grain');
@@ -110,8 +110,7 @@ module('Acceptance | fili datasource', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
     await animationsSettled();
-
-    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time Day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
   });
 
@@ -122,13 +121,12 @@ module('Acceptance | fili datasource', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
     await click('.report-builder-source-selector__source-button[data-source-name="Table C"]');
     await animationsSettled();
-
-    assert.dom('.filter-builder__subject').hasText('Date Time day', 'A date time filter exists after switching tables');
+    assert.dom('.filter-builder__subject').hasText('Date Time Day', 'A date time filter exists after switching tables');
     assert.dom('.filter-collection__remove').isDisabled('The date time filter cannot be removed');
 
     assert
       .dom('.navi-column-config-item__name')
-      .hasText('Date Time (day)', 'A date time column exists after switching to a table with no all grain');
+      .hasText('Date Time (Day)', 'A date time column exists after switching to a table with no all grain');
     assert.dom('.navi-column-config-item__remove-icon').isDisabled('The date time column cannot be removed');
   });
 
@@ -210,38 +208,38 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Date Time (day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'All columns exist as expected'
     );
 
-    await selectChoose('.dropdown-parameter-picker', 'year');
+    await selectChoose('.dropdown-parameter-picker', 'Year');
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time year', 'Date time matches existing filter grain on the report');
+      .hasText('Date Time Year', 'Date time matches existing filter grain on the report');
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Date Time (year)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Year)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'Date Time column is updated to match filter grain of year'
     );
 
-    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (day)
+    await click('.navi-column-config-item__remove-icon'); // Remove Date Time (Day)
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
       ['Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'Date Time is removed'
     );
 
-    await selectChoose('.dropdown-parameter-picker', 'isoWeek');
+    await selectChoose('.dropdown-parameter-picker', 'Week');
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time isoWeek', 'Date time matches existing filter grain on the report');
+      .hasText('Date Time Week', 'Date time matches existing filter grain on the report');
 
     await clickItem('dimension', 'Date Time');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Date Time (isoWeek)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      ['Date Time (Week)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
       'A Date Time column is added matching the existing filter grain'
     );
   });
@@ -263,7 +261,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.filter-builder__subject').map((el) => el.textContent?.trim().replace(/\s+/g, ' ')),
-      ['Date Time day', 'User Signup Date id second', 'User Signup Date id second', 'User Signup Date id second'],
+      ['Date Time Day', 'User Signup Date id second', 'User Signup Date id second', 'User Signup Date id second'],
       'Date dimension filters are correctly migrated'
     );
     assert.deepEqual(
@@ -282,7 +280,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
-      ['Date Time (day)', 'User Signup Date (id,second)', 'Revenue (USD)'],
+      ['Date Time (Day)', 'User Signup Date (id,second)', 'Revenue (USD)'],
       'Date dimension columns shows up correctly with fields and grains'
     );
   });

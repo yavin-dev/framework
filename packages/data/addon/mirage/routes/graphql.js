@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { createGraphQLHandler, mirageGraphQLFieldResolver } from '@miragejs/graphql';
@@ -421,7 +421,7 @@ function _getResponseBody(db, asyncQueryRecord) {
       if (sort.length) {
         rows = orderBy(
           rows,
-          sort.map((r) => (row) => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
+          sort.map((r) => (row) => Number(row[r.field]) ? Number(row[r.field]) : row[r.field]), // metric values need to be cast to numbers in order to sort properly
           sort.map((r) => r.direction)
         );
       }
@@ -483,9 +483,16 @@ export default function () {
           if (filter) {
             const rsql = parse(filter);
             if ('COMPARISON' === rsql.type && '==' === rsql.operator) {
-              args[rsql.left.selector] = rsql.right.value;
+              let { selector } = rsql.left;
+              if (selector.includes('.') && selector !== 'namespace.id') {
+                throw new Error(`filtering on a related model is not currently supported in mirage mocks: ${filter}`);
+              } else {
+                // `namespace.id` doesn't match any attribute of the records, so we want to change it to `namespaceIds`
+                selector = 'namespaceIds';
+              }
+              args[selector] = rsql.right.value;
             } else {
-              throw new Error(`rsql expression is not currently support in mirage mocks: ${filter}`);
+              throw new Error(`rsql expression is not currently supported in mirage mocks: ${filter}`);
             }
             delete args.filter;
           }

@@ -1,13 +1,17 @@
 import { Grain } from 'navi-data/utils/date';
 declare module 'navi-config' {
-  export type BaseDataSource<Type, Options = void> = {
-    type: Type;
+  export type DataSourceNamespace = {
     name: string;
     displayName: string;
     description?: string;
+    suggestedDataTables?: string[];
+  };
+
+  export type BaseDataSource<Type, Options = void> = DataSourceNamespace & {
+    type: Type;
     uri: string;
     options?: Options;
-    suggestedDataTables?: string[];
+    namespaces?: DataSourceNamespace[];
   };
 
   export interface FiliConfigOptions {

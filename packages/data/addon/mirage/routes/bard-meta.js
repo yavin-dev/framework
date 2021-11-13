@@ -40,6 +40,12 @@ export default function () {
             defaultMetricModels = defaultMetricModels.slice(0, 10);
           }
 
+          if (table.name === 'tableD') {
+            defaultMetricModels = defaultMetricModels.filter((ele) => {
+              return ele.category === 'Page Views';
+            });
+          }
+
           if (table.name !== 'network') {
             tableDimModels = [...tableDimModels, ...dimModels.highCardinalityDims];
           }
@@ -49,6 +55,11 @@ export default function () {
           } else {
             if (!isBardTwo) {
               defaultMetricModels = [...defaultMetricModels, ...metricModels.dayAvgMetrics];
+              if (table.name === 'tableD') {
+                defaultMetricModels = defaultMetricModels.filter((ele) => {
+                  return ele.category === 'Page Views';
+                });
+              }
             }
 
             return {

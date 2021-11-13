@@ -1,6 +1,6 @@
 {
   "name": "navi-core",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Library of common logic, components, and styles for navi",
   "scripts": {
     "build": "ember build --environment=production",
@@ -48,6 +48,7 @@
     "ember-intl": "^5.5.0",
     "ember-math-helpers": "^2.3.0",
     "ember-moment": "^7.8.1",
+    "ember-promise-helpers": "^1.0.6",
     "ember-power-calendar": "^0.16.2",
     "ember-power-calendar-moment": "^0.1.7",
     "ember-power-calendar-selectors": "^0.1.2",
@@ -58,7 +59,7 @@
     "lodash-es": "^4.17.11",
     "lz-string": "^1.4.4",
     "nanoid": "^3.1.12",
-    "navi-data": "0.3.0",
+    "navi-data": "0.4.0",
     "numeral": "^2.0.6",
     "resize-observer-polyfill": "^1.5.1"
   },

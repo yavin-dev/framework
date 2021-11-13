@@ -20,6 +20,7 @@
         @shouldOpenAllGroups={{this.query.length}}
         @groupByField="category"
         @sortByField={{unless this.query.length "name"}}
+        @isSingleCategory={{this.isSingleCategory}}
         as | column idx |
       >
         <div class="column-selector__column flex space-between m-b-4">

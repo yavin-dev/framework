@@ -19,7 +19,7 @@ module('Acceptance | Dropdown Parameter Picker test', function (hooks) {
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
 
-    assert.dom('.dropdown-parameter-picker .chips').hasText('day', 'Date Time parameter is shown properly upon open');
+    assert.dom('.dropdown-parameter-picker .chips').hasText('Day', 'Date Time parameter is shown properly upon open');
 
     await clickTrigger('.dropdown-parameter-picker');
     assert.dom('.dropdown-parameter-picker__dropdown').isVisible('Dropdown is visible after clicking parameter chip');
@@ -34,11 +34,11 @@ module('Acceptance | Dropdown Parameter Picker test', function (hooks) {
 
     assert.deepEqual(
       findAll('.dropdown-parameter-picker__dropdown .ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['hour', 'day', 'isoWeek', 'month', 'quarter', 'year'],
+      ['Hour', 'Day', 'Week', 'Month', 'Quarter', 'Year'],
       'The options are all represented properly'
     );
 
-    await selectChoose('.dropdown-parameter-picker', 'hour');
-    assert.dom('.dropdown-parameter-picker .chips').hasText('hour', 'Date Time parameter is updated properly');
+    await selectChoose('.dropdown-parameter-picker', 'Hour');
+    assert.dom('.dropdown-parameter-picker .chips').hasText('Hour', 'Date Time parameter is updated properly');
   });
 });

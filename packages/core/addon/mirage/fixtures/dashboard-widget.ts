@@ -89,21 +89,25 @@ export default [
       metadata: {
         columns: [
           {
+            alias: null,
             field: 'dateTime',
             type: 'dateTime',
             displayName: 'Date',
           },
           {
+            alias: null,
             field: 'os',
             type: 'dimension',
             displayName: 'OS',
           },
           {
+            alias: null,
             field: 'uniqueIdentifier',
             type: 'metric',
             displayName: 'Unique Identifier',
           },
           {
+            alias: null,
             field: 'totalPageViews',
             type: 'metric',
             displayName: 'Total Page Views',
@@ -187,21 +191,25 @@ export default [
       metadata: {
         columns: [
           {
+            alias: null,
             field: 'dateTime',
             type: 'dateTime',
             displayName: 'Date',
           },
           {
+            alias: null,
             field: 'os',
             type: 'dimension',
             displayName: 'OS',
           },
           {
+            alias: null,
             field: 'uniqueIdentifier',
             type: 'metric',
             displayName: 'Unique Identifier',
           },
           {
+            alias: null,
             field: 'totalPageViews',
             type: 'metric',
             displayName: 'Total Page Views',

@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NaviMetadataSerializer from './base';
@@ -68,6 +68,14 @@ export type TimeDimensionGrainNode = {
   expression: string;
   grain: string;
 };
+
+export type NamespaceNode = {
+  id: string;
+  name: string;
+  friendlyName: string;
+  description: string;
+};
+
 type TableNode = {
   id: string;
   name: string;
@@ -76,6 +84,7 @@ type TableNode = {
   category: string;
   cardinality: ElideCardinality;
   isFact: boolean;
+  namespace: Connection<NamespaceNode>;
   metrics: Connection<MetricNode>;
   dimensions: Connection<DimensionNode>;
   timeDimensions: Connection<TimeDimensionNode>;
@@ -114,7 +123,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     const tablePayloads = edges.map(({ node: table }) => {
       const newTable: TableMetadataPayload = {
         id: table.id,
-        name: table.name,
+        name: table.friendlyName,
         category: table.category,
         description: table.description,
         cardinality: this._normalizeCardinality(table.cardinality),

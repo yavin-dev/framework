@@ -19,12 +19,10 @@ import type RequestFragment from 'navi-core/models/request';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type { IndexedOptions } from '../power-select-collection-options';
 import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 const SEARCH_DEBOUNCE_MS = 250;
 const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
-let ifInDropdown: boolean = false;
 
 interface DimensionSelectComponentArgs {
   filter: FilterFragment;
@@ -36,8 +34,8 @@ function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
 }
-function isNumericDimensionArray(arr: IndexedOptions<NaviDimensionModel>[]): boolean {
-  return arr.every((d) => isNumeric(d.option.value as string));
+function isNumericDimensionArray(arr: NaviDimensionModel[]): boolean {
+  return arr.every((d) => isNumeric(d.value as string));
 }
 
 export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
@@ -73,6 +71,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+      debugger;
       return values.map((value) => dimensionModelFactory.create({ value, dimensionColumn }));
     }
     return [];
@@ -85,46 +84,21 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @action
   setValues(dimension: NaviDimensionModel[]) {
-    this.event = event;
-    const type = this.event.type;
-    if (type === 'mouseup' || type === 'mousedown' || ifInDropdown === true) {
-      const values = dimension.map(({ value }) => value) as (string | number)[];
-      this.args.onUpdateFilter({ values });
-      ifInDropdown = false;
-    }
-  }
-
-  /*
-  @action
-  sortValues(dimensions: IndexedOptions<NaviDimensionModel>[]) {
-    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-    const dimension: NaviDimensionModel[] = [];
-    if (this.searchTerm !== undefined) {
-      const { dimensionColumn } = this;
-      const term = this.searchTerm.trim();
-      const value = term.toLowerCase() as string | number;
-      dimension.push(dimensionModelFactory.create({ value, dimensionColumn }));
-      for (let each of dimensions) {
-        const updatedIdx = Number(each.idx)+1;
-        //const stringIdx = ""+updatedIdx;
-        each.idx = updatedIdx;
+    const values = [] as (string | number)[];
+    for (const entry of dimension) {
+      debugger;
+      let toPush: string | number;
+      if (entry.manualInputEntry === true) {
+        toPush = entry.manualQuery as string | number;
+        values.push(toPush);
+      } else {
+        toPush = entry.value as string | number;
+        values.push(toPush);
       }
     }
-    
     debugger;
-    if (isNumericDimensionArray(dimensions)) {
-      sortBy(dimensions, [(d) => Number(d.option.value)]);
-      if (this.searchTerm === undefined) {
-        return dimensions;
-      }
-      return [{option: dimension[0], idx:0},...dimensions];
-    }
-    sortBy(dimensions, ['option.value']);
-    if (this.searchTerm === undefined) {
-      return dimensions;
-    }
-    return [{option: dimension[0], idx:0},...dimensions];
-  }*/
+    this.args.onUpdateFilter({ values });
+  }
 
   /**
    * Fetches dimension options once when the dropdown is opened
@@ -133,6 +107,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   fetchDimensionOptions(): void {
     const { dimensionColumn } = this;
     if (this.isSmallCardinality) {
+      debugger;
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
         .then((r) => r.values)
@@ -146,60 +121,40 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   }
 
   /**
-   * Uses the text that a user has written in the search bar and pressed 'Enter'
-   */
-  @action
-  handleKeydown(dropdown: any, event: KeyboardEvent) {
-    if (event.keyCode === 40) {
-      ifInDropdown = true;
-    }
-    if (ifInDropdown === false && event.keyCode === 13) {
-      const { dimensionColumn } = this;
-      const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      const term = dropdown.searchText.trim();
-      if (term != undefined && term != '') {
-        const value = term.toLowerCase() as string | number;
-        const dimension = dropdown.selected as NaviDimensionModel[];
-        dimension.push(dimensionModelFactory.create({ value, dimensionColumn }));
-        const values = dimension.map(({ value }) => value) as (string | number)[];
-        this.args.onUpdateFilter({ values });
-      }
-    }
-  }
-
-  /**
    * Searches for dimensions containing search term (locally if all results are available)
    * @param term Search term to filter by
    * @returns list of matching dimension models
    */
   @task({ restartable: true })
   *searchDimensionValues(term: string): TaskGenerator<NaviDimensionModel[] | undefined> {
+    const { dimensionColumn } = this;
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
     if (!searchTerm) {
       return undefined;
     }
-    if (this.dimensionValues === undefined) {
-      yield timeout(SEARCH_DEBOUNCE_MS);
-      const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
-        this.dimensionColumn,
-        searchTerm
-      );
+    const dimension: NaviDimensionModel[] = [];
+    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+    const value = (('"' + searchTerm.toLowerCase()) as string | number) + '"';
+    dimension.push(
+      dimensionModelFactory.create({
+        value,
+        dimensionColumn,
+        manualInputEntry: true,
+        manualQuery: searchTerm.toLowerCase(),
+      })
+    );
+    debugger;
+    yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
+    const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
+      this.dimensionColumn,
+      searchTerm
+    );
+    debugger;
+    if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
       return dimensionResponse.values;
-    } else {
-      yield timeout(SEARCH_DEBOUNCE_OFFLINE_MS);
-      const rawValues: NaviDimensionModel[] = yield this.dimensionValues;
-      //      const dimension: NaviDimensionModel[] = [];
-      //      const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      //      const value = searchTerm.toLowerCase() as string | number;
-      //      dimension.push(dimensionModelFactory.create({ value, dimensionColumn }));
-      return rawValues.filter((v) => {
-        const lowerTerm = searchTerm.toLowerCase();
-        return (
-          v.displayValue.toLowerCase().includes(lowerTerm) ||
-          Object.values(v.suggestions ?? {}).some((s) => s.toLowerCase().includes(lowerTerm))
-        );
-      });
     }
+
+    return [dimension[0], ...dimensionResponse.values];
   }
 }

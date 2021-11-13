@@ -19,6 +19,17 @@ module('Unit - Utils - Adapter Utils', function () {
       dataSources.find((s) => s.name === 'bardTwo'),
       'Other datasource is fetched from config'
     );
+    assert.deepEqual(
+      getDataSource('elideOne.DemoNamespace'),
+      {
+        name: 'elideOne.DemoNamespace',
+        displayName: 'Demo Namespace',
+        description: 'Demo Namespace Description',
+        type: 'elide',
+        uri: 'https://data.naviapp.io/graphql',
+      },
+      'Datasource with namespace is fetched from config'
+    );
 
     assert.throws(
       () => {
@@ -31,8 +42,15 @@ module('Unit - Utils - Adapter Utils', function () {
       () => {
         getDataSource('wowie');
       },
-      /Datasource wowie should be configured in the navi environment/,
+      /Datasource "wowie" should be configured in the navi environment/,
       'Assertion fails when nonexistent datasource is requested'
+    );
+    assert.throws(
+      () => {
+        getDataSource('elideOne.wowie');
+      },
+      /Namespace "wowie" should be configured for datasource "elideOne" in the navi environment/,
+      'Assertion fails when nonexistent namespace is requested'
     );
   });
 
@@ -68,7 +86,7 @@ module('Unit - Utils - Adapter Utils', function () {
     set(config, 'navi.defaultDataSource', oldDefault);
   });
 
-  test('configHost gets correct source object depending on configuration', function (assert) {
+  test('configHost gets correct source object uri depending on configuration', function (assert) {
     assert.equal(
       configHost({ dataSourceName: 'bardOne' }),
       'https://data.naviapp.io',

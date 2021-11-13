@@ -150,7 +150,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert
       .dom('.filter-builder__subject')
-      .hasText('Date Time day', 'After clicking "Revert Changes", the changed time grain is returned');
+      .hasText('Date Time Day', 'After clicking "Revert Changes", the changed time grain is returned');
 
     assert
       .dom('.navi-report-widget__revert-btn')
@@ -166,9 +166,9 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     // Remove all columns to create an invalid request
     assert
-      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]')
+      .dom('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]')
       .exists('The dateTime remove icon exists');
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 
@@ -199,7 +199,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     assert.dom('.get-api__action-btn').isEnabled('API query action is enabled for a valid request');
 
     // Remove all columns to create an invalid request
-    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (day)"]');
+    await click('.navi-column-config-item__remove-icon[aria-label="delete time-dimension Date Time (Day)"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Nav Link Clicks"]');
     await click('.navi-column-config-item__remove-icon[aria-label="delete metric Ad Clicks"]');
 

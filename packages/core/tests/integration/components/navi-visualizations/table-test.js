@@ -163,7 +163,7 @@ module('Integration | Component | table', function (hooks) {
     assert.deepEqual(
       headers,
       [
-        'Date Time (day)',
+        'Date Time (Day)',
         'Operating System (id)',
         'Operating System (desc)',
         'Unique Identifiers',
@@ -258,7 +258,7 @@ module('Integration | Component | table', function (hooks) {
     assert.deepEqual(
       headers,
       [
-        'Date Time (day)',
+        'Date Time (Day)',
         'Container (id)',
         'Container (desc)',
         'Quantity of thing',

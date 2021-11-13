@@ -14,6 +14,7 @@ interface Args {
   containerSelector: string;
   groupByField: string;
   sortByField?: string | null;
+  isSingleCategory?: boolean;
 }
 
 export default class GroupedListComponent extends Component<Args> {
@@ -46,19 +47,31 @@ export default class GroupedListComponent extends Component<Args> {
       groupConfigs,
     } = this;
 
-    const items: Array<
-      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>
-    > = [];
-    return Object.keys(groupedItems).reduce((items, name) => {
-      const groupItems = groupedItems[name];
-      const isOpen = groupConfigs[name] || shouldOpenAllGroups;
+    const items: Array<{ name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>> =
+      [];
 
-      items.push({ name, length: groupItems.length, isOpen, isGroup: true });
-      if (isOpen) {
+    // make categories into sorted array
+    let sortedCategories = Object.entries(groupedItems).sort(function (a, b) {
+      if (a[0] === `Uncategorized`) {
+        return 1;
+      } else if (b[0] === `Uncategorized`) {
+        return -1;
+      } else {
+        return a[0].localeCompare(b[0]);
+      }
+    });
+
+    // flatten category headers and items into single list
+    sortedCategories.forEach(([name, groupItems]) => {
+      const isOpen = groupConfigs[name] || shouldOpenAllGroups;
+      if (!this.args.isSingleCategory) {
+        items.push({ name, length: groupItems.length, isOpen, isGroup: true });
+      }
+      if (isOpen || this.args.isSingleCategory) {
         items.push(...groupItems);
       }
-      return items;
-    }, items);
+    });
+    return items;
   }
 
   /**

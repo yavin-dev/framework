@@ -10,7 +10,7 @@
       @size="medium"
       type="text"
       class="goal-gauge-config__label-input"
-      placeholder={{this.metricColumn.displayName}}
+      placeholder={{await this.metricColumn.displayNiceName}}
       value={{this.metricColumn.alias}}
       {{on "input" (pipe (pick "target.value") (fn this.updateLabel))}}
     />

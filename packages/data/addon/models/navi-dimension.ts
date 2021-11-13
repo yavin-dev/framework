@@ -10,6 +10,8 @@ interface NaviDimensionModelPayload {
   dimensionColumn: DimensionColumn;
   value: Readonly<unknown>;
   suggestions?: Readonly<Record<string, string>>;
+  manualQuery?: Readonly<unknown>;
+  manualInputEntry?: Readonly<unknown>;
 }
 
 export default class NaviDimensionModel extends NativeWithCreate implements NaviDimensionModel {
@@ -31,6 +33,16 @@ export default class NaviDimensionModel extends NativeWithCreate implements Navi
    * Dimension value
    */
   declare suggestions?: Readonly<Record<string, string>>;
+
+  /**
+   * Manual Entry Input
+   */
+  declare manualInputEntry?: Readonly<unknown>;
+
+  /**
+   * Manual Entry Input Query
+   */
+  declare manualQuery?: Readonly<unknown>;
 
   /**
    * Dimension value for display purposes

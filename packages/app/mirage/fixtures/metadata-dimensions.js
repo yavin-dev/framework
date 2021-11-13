@@ -3,7 +3,10 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-const fields = [{ name: 'id' }, { name: 'desc' }];
+const fields = [
+  { name: 'id', longName: 'Id' },
+  { name: 'desc', longName: 'Desc' },
+];
 
 export default [
   {
@@ -14,10 +17,12 @@ export default [
     fields: [
       {
         name: 'id',
+        longName: 'Id',
         tags: ['show', 'id'],
       },
       {
         name: 'desc',
+        longName: 'Desc',
         tags: ['show', 'desc'],
       },
     ],

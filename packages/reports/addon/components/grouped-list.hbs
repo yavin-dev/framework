@@ -20,7 +20,7 @@
         <span class="grouped-list__group-header-content">{{item.name}} ({{item.length}})</span>
       </li>
     {{else}}
-      <li class="grouped-list__item m-l-18 m-t-2">
+      <li class="grouped-list__item m-t-2 {{if @isSingleCategory '' 'm-l-18'}}">
         {{yield item idx}}
       </li>
     {{/if}}

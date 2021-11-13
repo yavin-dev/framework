@@ -174,12 +174,12 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
             id: '-3',
           },
           {
-            description: 'Not Available',
-            id: '-2',
-          },
-          {
             description: '65 and over',
             id: '10',
+          },
+          {
+            description: 'Not Available',
+            id: '-2',
           },
         ],
       },
@@ -223,5 +223,57 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
 
     // Sending request for provided clientId
     await taskFor(this.adapter.find).perform(ageColumn, [{ operator: 'in', values: ['1'] }], { clientId: 'test id' });
+  });
+
+  test('searchUtil task calls and transforms search results', async function (this: TestContext, assert) {
+    assert.expect(1);
+    const dimensionsToSearch = {
+      rows: [
+        {
+          id: '1',
+          description: 'foo bar',
+        },
+        {
+          id: '2',
+          description: 'nope',
+        },
+        {
+          id: '3',
+          description: 'foo bar foo',
+        },
+        {
+          id: 'foo4',
+          description: 'nah',
+        },
+        {
+          id: '5',
+          description: 'nadda',
+        },
+      ],
+      meta: { some: 'metaData' },
+    };
+
+    const results = this.adapter._searchDimensions(dimensionsToSearch, 'foo');
+    assert.deepEqual(
+      results,
+      {
+        rows: [
+          {
+            id: 'foo4',
+            description: 'nah',
+          },
+          {
+            id: '1',
+            description: 'foo bar',
+          },
+          {
+            id: '3',
+            description: 'foo bar foo',
+          },
+        ],
+        meta: { some: 'metaData' },
+      },
+      'Returns expected search results and returns results as a FiliDimensionResult, passing through meta prop'
+    );
   });
 });

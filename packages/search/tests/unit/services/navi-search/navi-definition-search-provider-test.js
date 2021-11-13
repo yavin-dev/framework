@@ -39,7 +39,7 @@ module('Unit | Service | navi-definition-search-provider', function (hooks) {
 
     const makeDateTime = (table) => ({ id: `${table}.dateTime`, name: 'Date Time' });
     const expectedResults = [
-      ...['network', 'tableA', 'tableB', 'protected', 'tableC'].map((table) => makeDateTime(table)),
+      ...['network', 'tableA', 'tableB', 'protected', 'tableC', 'tableD'].map((table) => makeDateTime(table)),
       {
         id: 'timeSpent',
         name: 'Time Spent',

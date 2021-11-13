@@ -22,7 +22,14 @@
         "displayName": "Default",
         "uri": "http://localhost:8080/graphql/api/v1",
         "type": "elide",
-        "suggestedDataTables": []
+        "namespaces": [
+          {
+            "name": "DemoNamespace",
+            "displayName": "Demo Namespace",
+            "suggestedDataTables": ["DemoNamespace_TrendingNow"]
+          }
+        ],
+        "suggestedDataTables": ["NetflixTitles"]
       }
     ],
     "appPersistence": {

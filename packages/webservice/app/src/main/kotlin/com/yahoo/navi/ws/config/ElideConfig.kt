@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -23,8 +23,8 @@ class ElideConfig {
             .withEntityDictionary(dictionary)
             .withDefaultMaxPageSize(settings.maxPageSize)
             .withDefaultPageSize(settings.pageSize)
-            .withJoinFilterDialect(RSQLFilterDialect(dictionary))
-            .withSubqueryFilterDialect(RSQLFilterDialect(dictionary))
+            .withJoinFilterDialect(RSQLFilterDialect.builder().dictionary(dictionary).build())
+            .withSubqueryFilterDialect(RSQLFilterDialect.builder().dictionary(dictionary).build())
             .withAuditLogger(com.yahoo.elide.core.audit.Slf4jLogger())
             .withISO8601Dates("yyyy-MM-dd HH:mm:ss", TimeZone.getTimeZone("UTC"))
             .withJsonApiPath(settings.jsonApi.path)
