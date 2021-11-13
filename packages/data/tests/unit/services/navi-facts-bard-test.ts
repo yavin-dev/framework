@@ -76,7 +76,7 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
       .catch((response) => {
         assert.equal(
           response.details[0],
-          'Date time cannot have zero length intervals. value1/value1.',
+          'Date time cannot have zero length interval. value1/value1.',
           'Error is thrown for using macros with "all" grain'
         );
       });
