@@ -16,7 +16,6 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
-//eslint-disable-next-line
 // @ts-ignore
 import Table from 'ember-light-table';
 
