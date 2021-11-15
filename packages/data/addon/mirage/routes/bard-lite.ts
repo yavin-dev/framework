@@ -84,9 +84,10 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
 
   if (grain === 'all') {
     let validInterval = true;
+    const regex = (macro: string) => new RegExp(`^(?<macro>(${macro}))(?<grain>[A-Z][a-z]+)$`);
 
     // try matching for currentDay, currentWeek etc.
-    let match = start.match(/^(?<macro>(current))(?<grain>[A-Z][a-z]+)$/)?.groups;
+    let match = start.match(regex('current'))?.groups;
     startMacro = match?.macro;
     const startGrain = match?.grain?.toLowerCase() as Grain;
     // validate grain
@@ -99,7 +100,7 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
     }
 
     // try matching for currentDay, nextWeek etc.
-    match = end.match(/^(?<macro>(current|next))(?<grain>[A-Z][a-z]+)$/)?.groups;
+    match = end.match(regex('current|next'))?.groups;
     endMacro = match?.macro;
     nonAllGrain = (match?.grain?.toLowerCase() ?? 'day') as Grain;
     // validate grain
