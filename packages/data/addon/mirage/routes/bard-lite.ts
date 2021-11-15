@@ -85,7 +85,7 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
   if (grain === 'all') {
     let validInterval = true;
 
-    // try and match for currentDay, currentWeek etc.
+    // try matching for currentDay, currentWeek etc.
     let match = start.match(/^(?<macro>(current))(?<grain>[A-Z][a-z]+)$/)?.groups;
     startMacro = match?.macro;
     const startGrain = match?.grain?.toLowerCase() as Grain;
@@ -98,7 +98,7 @@ function _getDates(grain: GrainWithAll, start: string, end: string) {
       validInterval = false;
     }
 
-    // try and match for currentDay, nextWeek etc.
+    // try matching for currentDay, nextWeek etc.
     match = end.match(/^(?<macro>(current|next))(?<grain>[A-Z][a-z]+)$/)?.groups;
     endMacro = match?.macro;
     nonAllGrain = (match?.grain?.toLowerCase() ?? 'day') as Grain;

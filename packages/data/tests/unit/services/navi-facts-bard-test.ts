@@ -49,7 +49,7 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
   });
 
   test('fetch and catch error', async function (this: TestContext, assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     const request = allWithFilterGrain('day', ['currentFoo', 'nextDay']);
     await taskFor(this.service.fetch)
@@ -73,8 +73,19 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
         );
       });
 
-    const request3 = allWithFilterGrain('day', ['value1', 'value1']);
-    request3.columns = [
+    const request3 = allWithFilterGrain('day', ['2021-04-31', '2021-05-03']);
+    await taskFor(this.service.fetch)
+      .perform(request3, { dataSourceName: request3.dataSource })
+      .catch((response) => {
+        assert.equal(
+          response.details[0],
+          "Invalid interval for 'all' grain. 2021-04-31/2021-05-04T00:00:00.000.",
+          'Error is thrown for using invalid dates with "all" grain'
+        );
+      });
+
+    const request4 = allWithFilterGrain('day', ['value1', 'value1']);
+    request4.columns = [
       {
         type: 'timeDimension',
         field: '.dateTime',
@@ -83,7 +94,7 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
     ];
 
     await taskFor(this.service.fetch)
-      .perform(request3, { dataSourceName: request3.dataSource })
+      .perform(request4, { dataSourceName: request4.dataSource })
       .catch((response) => {
         assert.equal(
           response.details[0],
