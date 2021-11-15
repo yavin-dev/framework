@@ -16,6 +16,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import Table from 'ember-light-table';
 
@@ -112,6 +113,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
 
     const { sortBy, sortDir } = this.args;
     if (!isEmpty(sortBy)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortColumn = columns.find((col) => col.sortByKey === sortBy) as any;
 
       if (sortColumn) {
