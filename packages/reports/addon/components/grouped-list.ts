@@ -15,6 +15,7 @@ interface Args {
   groupByField: string;
   sortByField?: string | null;
   isSingleCategory?: boolean;
+  shouldSort?: boolean;
 }
 
 export default class GroupedListComponent extends Component<Args> {
@@ -43,7 +44,7 @@ export default class GroupedListComponent extends Component<Args> {
   get flatItems() {
     const {
       groupedItems,
-      args: { shouldOpenAllGroups },
+      args: { shouldOpenAllGroups, shouldSort },
       groupConfigs,
     } = this;
 
@@ -58,7 +59,7 @@ export default class GroupedListComponent extends Component<Args> {
       } else if (b[0] === `Uncategorized`) {
         return -1;
       } else {
-        return a[0].localeCompare(b[0]);
+        return shouldSort ? a[0].localeCompare(b[0]) : 0;
       }
     });
 

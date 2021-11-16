@@ -18,6 +18,7 @@
       <GroupedList
         @items={{this.filteredColumns}}
         @shouldOpenAllGroups={{this.query.length}}
+        @shouldSort={{not this.query.length}}
         @groupByField="category"
         @sortByField={{unless this.query.length "name"}}
         @isSingleCategory={{this.isSingleCategory}}
