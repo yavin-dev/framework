@@ -49,21 +49,43 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
   });
 
   test('fetch and catch error', async function (this: TestContext, assert) {
-    const request = allWithFilterGrain('day', ['P1D', 'current']);
+    assert.expect(4);
 
+    const request = allWithFilterGrain('day', ['currentFoo', 'nextDay']);
     await taskFor(this.service.fetch)
       .perform(request, { dataSourceName: request.dataSource })
       .catch((response) => {
-        assert.ok(true, 'A request error falls into the promise catch block');
         assert.equal(
           response.details[0],
-          "Invalid interval for 'all' grain.",
-          'Error is thrown for using macros with "all" grain'
+          "Invalid interval for 'all' grain. currentFoo/nextDay.",
+          'Error is thrown for using an invalid macro as interval start with "all" grain'
         );
       });
 
-    const request2 = allWithFilterGrain('day', ['value1', 'value1']);
-    request2.columns = [
+    const request2 = allWithFilterGrain('day', ['currentDay', 'nextFoo']);
+    await taskFor(this.service.fetch)
+      .perform(request2, { dataSourceName: request2.dataSource })
+      .catch((response) => {
+        assert.equal(
+          response.details[0],
+          "Invalid interval for 'all' grain. currentDay/nextFoo.",
+          'Error is thrown for using an invalid macro as interval end with "all" grain'
+        );
+      });
+
+    const request3 = allWithFilterGrain('day', ['2021-04-31', '2021-05-03']);
+    await taskFor(this.service.fetch)
+      .perform(request3, { dataSourceName: request3.dataSource })
+      .catch((response) => {
+        assert.equal(
+          response.details[0],
+          "Invalid interval for 'all' grain. 2021-04-31/2021-05-04T00:00:00.000.",
+          'Error is thrown for using invalid dates with "all" grain'
+        );
+      });
+
+    const request4 = allWithFilterGrain('day', ['value1', 'value1']);
+    request4.columns = [
       {
         type: 'timeDimension',
         field: '.dateTime',
@@ -72,12 +94,12 @@ module('Unit | Service | Navi Facts - Bard', function (hooks) {
     ];
 
     await taskFor(this.service.fetch)
-      .perform(request2, { dataSourceName: request2.dataSource })
+      .perform(request4, { dataSourceName: request4.dataSource })
       .catch((response) => {
         assert.equal(
           response.details[0],
-          'Date time cannot have zero length intervals. value1/value1.',
-          'Error is thrown for using macros with "all" grain'
+          'Date time cannot have zero length interval. value1/value1.',
+          'Error is thrown for zero length interval'
         );
       });
   });

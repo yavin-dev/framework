@@ -253,7 +253,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
           type: 'timeDimension',
           parameters: { grain: 'day' },
           operator: 'bet',
-          values: ['2021-02-13', '2021-04-12'],
+          values: ['2021-02-13T00:00:00.000Z', '2021-04-12T00:00:00.000Z'],
         },
       ],
     };
@@ -445,22 +445,21 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     const request1 = allWithFilterGrain('day', ['P1D', 'current']);
     assert.strictEqual(
       Adapter._buildDateTimeParam(request1),
-      `P1D/${moment.utc().startOf('day').toISOString().replace('Z', '')}`,
+      `P1D/currentDay`,
       '_buildDateTimeParam forces the "current" macro to a real date if the all grain is used'
     );
 
-    const request2 = allWithFilterGrain('isoWeek', ['2020-04-20', 'next']);
+    const request2 = allWithFilterGrain('isoWeek', ['2020-04-20T00:00:00.000Z', 'next']);
     assert.strictEqual(
       Adapter._buildDateTimeParam(request2),
-      `2020-04-20T00:00:00.000/${moment.utc().startOf('isoWeek').add(1, 'week').toISOString().replace('Z', '')}`,
+      `2020-04-20T00:00:00.000/nextWeek`,
       '_buildDateTimeParam forces the "next" macro to a real date if the all grain is used'
     );
 
     const request3 = allWithFilterGrain('month', ['current', 'next']);
-    const currentMonth = moment.utc().startOf('month');
     assert.strictEqual(
       Adapter._buildDateTimeParam(request3),
-      `${currentMonth.toISOString().replace('Z', '')}/${currentMonth.add(1, 'month').toISOString().replace('Z', '')}`,
+      `currentMonth/nextMonth`,
       '_buildDateTimeParam forces the "current" and "next" macro to a real date if the all grain is used'
     );
   });
