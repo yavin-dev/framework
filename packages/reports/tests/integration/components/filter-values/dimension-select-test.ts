@@ -219,9 +219,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
             .filter((s) => s)
         );
 
-    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
-      ({ id, description }) => [description, `id: ${id}`]
-    );
+    const expectedValueDimensions = ContainerValues.filter(({ description }) =>
+      description.includes(searchTerm)
+    ).map(({ id, description }) => [description, `id: ${id}`]);
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
 
@@ -305,7 +305,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     //if client side sorting was applied we'd see: ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3']
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['\"property\"','Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
+      ['"property"', 'Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
       'Sort is applied as it was given from server mock'
     );
   });
@@ -330,7 +330,8 @@ module('Integration | Component | filter values/dimension select', function (hoo
         el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
-      [ ['\"un\"',''],
+      [
+        ['"un"', ''],
         ['-1', 'description: Unknown'],
         ['1', 'description: under 13'],
       ],
@@ -363,8 +364,10 @@ module('Integration | Component | filter values/dimension select', function (hoo
         el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
-      [['\"over\"',''],
-      ['65 and over', 'id: 10']],
+      [
+        ['"over"', ''],
+        ['65 and over', 'id: 10'],
+      ],
       '`dimension-select` fetches values for new dimension field'
     );
   });
