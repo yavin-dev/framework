@@ -9,7 +9,7 @@ import EmberArray from '@ember/array';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
-import numeral from 'numeral';
+import numbro from 'numbro';
 import { merge } from 'lodash-es';
 import moment from 'moment';
 import { run } from '@ember/runloop';
@@ -43,7 +43,7 @@ const DEFAULT_OPTIONS = <const>{
         config: {},
       },
       tick: {
-        format: (val: number) => numeral(val).format('0.00a'),
+        format: (val: number) => numbro(val).format('0.00a'),
         count: 4,
       },
       label: {
@@ -386,7 +386,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
    * @param val - number to format
    * @returns formatted number
    */
-  formattingFunction = (val: number) => numeral(val).format('0.00a');
+  formattingFunction = (val: number) => numbro(val).format({ mantissa: 2, average: val > 1000 });
 
   /**
    * adds the formattingFunction to the chart config
