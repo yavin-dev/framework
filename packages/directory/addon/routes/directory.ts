@@ -6,14 +6,15 @@ import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import DirectoryController from 'navi-directory/controllers/directory';
+import type UserService from 'navi-core/services/user';
 
 export default class DirectoryRoute extends Route {
   /**
    * @property {Service} user
    */
-  @service user: TODO;
+  @service declare user: UserService;
 
-  controller!: DirectoryController;
+  declare controller: DirectoryController;
 
   /**
    * @property {Object} queryParams
