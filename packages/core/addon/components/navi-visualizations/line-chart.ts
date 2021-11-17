@@ -43,7 +43,7 @@ const DEFAULT_OPTIONS = <const>{
         config: {},
       },
       tick: {
-        format: (val: number) => numbro(val).format('0.00a'),
+        format: (val: number) => numbro(val).format({ mantissa: 2, average: val > 1000 }),
         count: 4,
       },
       label: {
