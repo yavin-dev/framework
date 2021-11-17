@@ -4,7 +4,7 @@
  */
 
 import { helper as buildHelper } from '@ember/component/helper';
-import numeral from 'numeral';
+import numbro from 'numbro';
 
 /**
  * Formats the number smartly
@@ -31,13 +31,13 @@ export function smartFormatNumber([value]: Array<number | string>): string {
   let absValue = Math.abs(value);
 
   if (absValue === 0 || (absValue >= 1 && absValue < 100)) {
-    return numeral(value).format(hasPoint ? '0,0.00' : '0,0[.]00');
+    return numbro(value).format({ mantissa: 2, optionalMantissa: !hasPoint, thousandSeparated: true });
   } else if (absValue >= 0.0001 && absValue < 1) {
-    return numeral(value).format('0.0000');
+    return numbro(value).format({ mantissa: 4 });
   } else if (absValue < 0.0001) {
     return value.toExponential(4);
   }
-  return numeral(value).format('0,0');
+  return numbro(value).format({ thousandSeparated: true });
 }
 
 export default buildHelper(smartFormatNumber);

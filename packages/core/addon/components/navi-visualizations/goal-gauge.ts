@@ -10,7 +10,7 @@ import { isPresent } from '@ember/utils';
 import { guidFor } from '@ember/object/internals';
 // @ts-ignore
 import d3 from 'd3';
-import numeral from 'numeral';
+import numbro from 'numbro';
 import FilterFragment from 'navi-core/models/request/filter';
 import { VisualizationModel } from './table';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
@@ -207,7 +207,11 @@ export default class GoalGaugeVisualization extends Component<Args> {
    * @returns {String} formatted number
    */
   _formatNumber(value: number) {
-    const formatStr = value >= 1000000000 ? '0.[000]a' : '0.[00]a';
-    return numeral(value).format(formatStr).toUpperCase();
+    const formatObj = {
+      mantissa: value > 1000000000 ? 3 : 2,
+      trimMantissa: true,
+      average: value > 1000,
+    };
+    return numbro(value).format(formatObj).toUpperCase();
   }
 }
