@@ -25,7 +25,6 @@ module('Acceptance | line chart', function (hooks) {
     assert
       .dom(metricCharts[0].querySelector('.chart-tooltip__value'))
       .includesText('rc=6', 'The row count is correct for the first metric chart.');
-    // await hideTooltip(0);
 
     // check text of the tooltip container
     await showTooltip(getEmberComponent(metricCharts[1].id), 1);
