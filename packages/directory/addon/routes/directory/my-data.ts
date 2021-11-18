@@ -11,8 +11,11 @@ import { run } from '@ember/runloop';
 import { isPresent } from '@ember/utils';
 import type UserService from 'navi-core/services/user';
 import type UserModel from 'navi-core/models/user';
+import type ReportModel from 'navi-core/models/report';
+import type DashboardModel from 'navi-core/models/dashboard';
 
 type DirectoryParams = { type: string; filter: string };
+type Asset = ReportModel | DashboardModel;
 export default class DirectoryMyDataRoute extends Route {
   /**
    * @property { Service } user
@@ -50,7 +53,7 @@ export default class DirectoryMyDataRoute extends Route {
    * @param {object} user
    * @param {object} queryParams - all directory query params
    */
-  async _fetchItems(user: UserModel, { type, filter }: DirectoryParams) {
+  async _fetchItems(user: UserModel, { type, filter }: DirectoryParams): Promise<Asset[]> {
     const items = arr();
 
     if (type === null || type === 'reports') {
@@ -76,14 +79,14 @@ export default class DirectoryMyDataRoute extends Route {
       });
     }
 
-    return items;
+    return items as Asset[];
   }
 
   /**
    * @method model
    * @override
    */
-  model() {
+  model(): { items: Promise<Asset[]> } {
     const user = this.user.getUser();
     assert('The user is found', user);
     const directoryParams = this.paramsFor('directory') as DirectoryParams;
