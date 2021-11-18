@@ -60,7 +60,7 @@ export default class NaviFormatterService extends Service {
     if (isEmpty(value)) {
       return '--';
     }
-    const format = requestedFormat ? requestedFormat : { mantissa: 9, trimMantissa: true, thousandSeparated: true };
+    const format = requestedFormat ? requestedFormat : { thousandSeparated: true };
     return numbro(value).format(format);
   }
 }
