@@ -14,20 +14,40 @@ module('Acceptance | line chart', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
+  test('row count passed to tooltip formatter', async function (assert) {
+    assert.expect(2);
+
+    await visit('/line-chart');
+
+    const metricCharts = findAll('.line-chart-widget.type-metric');
+    // check text of the tooltip container
+    await showTooltip(getEmberComponent(metricCharts[0].id), 1);
+    assert
+      .dom(metricCharts[0].querySelector('.chart-tooltip__value'))
+      .includesText('rc=6', 'The row count is correct for the first metric chart.');
+    // await hideTooltip(0);
+
+    // check text of the tooltip container
+    await showTooltip(getEmberComponent(metricCharts[1].id), 1);
+    assert
+      .dom(metricCharts[1].querySelector('.chart-tooltip__value'))
+      .includesText('rc=2', 'The row count is correct for the second metric chart.');
+  });
+
   test('tooltip updates', async function (assert) {
     assert.expect(2);
 
     await visit('/line-chart');
 
     // check text of the tooltip container
-    await showTooltip();
+    await showTooltip(getChartComponent(5), 1);
     assert.dom('.chart-tooltip__sub-title').hasText('Ad Clicks', "The tooltip contains the metric's display name.");
 
     // Select a different metric
     await selectChoose('.metric-select__select-trigger', 'Revenue (USD)');
 
     // check text of the tooltip container
-    await showTooltip();
+    await showTooltip(getChartComponent(5), 1);
     assert
       .dom('.chart-tooltip__sub-title')
       .hasText(
@@ -160,15 +180,19 @@ module('Acceptance | line chart', function (hooks) {
   });
 
   /**
-   * @function showTooltip
-   * @param {Object} container - app container
    * This will show the chart tooltip so that we can fetch its contents.
    */
-  async function showTooltip() {
-    const emberId = findAll('.chart-container .navi-vis-c3-chart')[1]?.id;
-    const component = (getContext() as TestContext).owner.lookup('-view-registry:main')[emberId];
+  function getChartComponent(chartIndex: number) {
+    const chartElement = findAll('.navi-vis-c3-chart')[chartIndex];
+    return getEmberComponent(chartElement.id);
+  }
+  function getEmberComponent(id: string) {
+    const component = (getContext() as TestContext).owner.lookup('-view-registry:main')[id];
+    return component;
+  }
+  async function showTooltip(component: any, x: number) {
     const c3 = component.chart;
-    c3.tooltip.show({ x: 1 });
+    c3.tooltip.show({ x });
     await waitFor('.c3-tooltip-container');
   }
 });
