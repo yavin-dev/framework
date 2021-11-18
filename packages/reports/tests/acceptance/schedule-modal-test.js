@@ -527,7 +527,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
 
     // Click "Schedule"
-    await triggerEvent('.navi-collection__row1', 'mouseenter');
+    await triggerEvent('.navi-collection__row3', 'mouseenter');
     await click('.navi-report-actions__schedule');
 
     assert
