@@ -835,7 +835,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       reportNames,
-      ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12'],
+      ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12', 'Invalid report'],
       'Report 1 is initially listed in reports route'
     );
 
@@ -852,7 +852,11 @@ module('Acceptance | Navi Report', function (hooks) {
 
     reportNames = findAll('.table tbody td:first-child').map((el) => el.innerText.trim());
 
-    assert.deepEqual(reportNames, ['Hyrule Ad&Nav Clicks', 'Report 12'], 'Deleted report is removed from list');
+    assert.deepEqual(
+      reportNames,
+      ['Hyrule Ad&Nav Clicks', 'Report 12', 'Invalid report'],
+      'Deleted report is removed from list'
+    );
 
     // /* == Not owner == */
     await visit('/reports/3/view');
@@ -974,7 +978,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.deepEqual(
       titles,
-      ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12'],
+      ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12', 'Invalid report'],
       'the report list with `navi-users`s reports is shown'
     );
   });
@@ -1014,7 +1018,11 @@ module('Acceptance | Navi Report', function (hooks) {
 
     let reportNames = findAll('.table tbody td:first-child').map((el) => el.innerText.trim());
 
-    assert.deepEqual(reportNames, ['Hyrule Ad&Nav Clicks', 'Report 12'], 'Deleted report is removed from list');
+    assert.deepEqual(
+      reportNames,
+      ['Hyrule Ad&Nav Clicks', 'Report 12', 'Invalid report'],
+      'Deleted report is removed from list'
+    );
   });
 
   test('Visiting Reports Route From Breadcrumb', async function (assert) {

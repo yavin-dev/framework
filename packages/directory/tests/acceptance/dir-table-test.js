@@ -12,7 +12,7 @@ module('Acceptance | dir table', function (hooks) {
 
     await visit('/directory/my-data');
 
-    assert.dom('tbody tr').exists({ count: 6 }, 'All items for a user are listed by default in my-data');
+    assert.dom('tbody tr').exists({ count: 7 }, 'All items for a user are listed by default in my-data');
 
     await visit('/directory/my-data?filter=favorites');
 
@@ -29,6 +29,7 @@ module('Acceptance | dir table', function (hooks) {
       '02/01/2016 - 12:00:00 am',
       '01/01/2016 - 03:00:00 am',
       '01/01/2016 - 12:00:00 am',
+      '04/01/2015 - 12:00:00 am',
       '01/03/2015 - 12:00:00 am',
       '01/01/2015 - 12:00:00 am',
     ];
