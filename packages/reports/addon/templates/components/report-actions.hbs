@@ -130,7 +130,7 @@
           @style="text"
           @size="medium"
           @icon="time"
-          disabled={{not @model.validations.isTruelyValid}}
+          disabled={{not @model.request.validations.isTruelyValid}}
           {{on "click" onOpen}}
         >
           Schedule
@@ -138,7 +138,7 @@
       </span>
     </CommonActions::Schedule>
     <EmberTooltip @targetId="report-actions__schedule">
-      {{if @model.validations.isTruelyValid "Schedule the report" "Unable to schedule invalid report"}}
+      {{if @model.request.validations.isTruelyValid "Schedule the report" "Unable to schedule invalid report"}}
     </EmberTooltip>
   {{/if}}
 

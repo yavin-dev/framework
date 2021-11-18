@@ -16,6 +16,6 @@ export default class NaviActionList extends NaviBaseActionList<ReportModel> {
   @action
   async isItemValid() {
     await this.args.item.request?.loadMetadata();
-    return this.args.item.validations?.isTruelyValid;
+    return this.args.item.request?.validations?.isTruelyValid;
   }
 }

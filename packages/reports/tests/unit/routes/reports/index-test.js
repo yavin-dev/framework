@@ -21,11 +21,11 @@ module('Unit | Route | reports/index', function (hooks) {
       return run(() => {
         return route.model().then((model) => {
           return model.get('reports').then((reports) => {
-            assert.deepEqual(reports.mapBy('id'), ['1', '2', '4'], 'Routes model returns the reports');
+            assert.deepEqual(reports.mapBy('id'), ['1', '2', '4', '6'], 'Routes model returns the reports');
 
             assert.deepEqual(
               reports.mapBy('title'),
-              ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12'],
+              ['Hyrule News', 'Hyrule Ad&Nav Clicks', 'Report 12', 'Invalid report'],
               'Model contains user reports and favorite reports'
             );
           });
