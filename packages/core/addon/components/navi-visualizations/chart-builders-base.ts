@@ -24,7 +24,7 @@ export default class ChartBuildersBase<Args> extends Component<Args> {
     const builderMap = chartBuilderEntries.reduce((map: Record<string, BaseChartBuilder | undefined>, builderName) => {
       const [, chartBuilder] = builderRegExp.exec(builderName) || [];
       const builderKey = camelize(chartBuilder);
-      map[builderKey] = owner.lookup(`chart-builder:${builderKey}`);
+      map[builderKey] = owner.factoryFor(`chart-builder:${builderKey}`).create();
       return map;
     }, {});
     return builderMap;
