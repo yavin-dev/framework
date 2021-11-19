@@ -133,10 +133,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
     const value = searchTerm as string | number;
     const manualQuery = dimensionModelFactory.create({
-                  value,
-        	  dimensionColumn,
-        	  manualInputEntry: true
-      	        }) as ManualInput;
+      value,
+      dimensionColumn,
+      manualInputEntry: true,
+    }) as ManualInput;
 
     return [manualQuery, ...dimensionResponse.values];
   }
