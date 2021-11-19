@@ -35,16 +35,6 @@ export default class NaviDimensionModel extends NativeWithCreate implements Navi
   declare suggestions?: Readonly<Record<string, string>>;
 
   /**
-   * Manual Entry Input
-   */
-  declare manualInputEntry?: Readonly<unknown>;
-
-  /**
-   * Manual Entry Input Query
-   */
-  declare manualQuery?: Readonly<unknown>;
-
-  /**
    * Dimension value for display purposes
    */
   get displayValue() {

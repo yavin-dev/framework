@@ -30,6 +30,11 @@ interface DimensionSelectComponentArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
+interface ManualInput extends NaviDimensionModel {
+  manualInputEntry: boolean;
+  manualQuery: string;
+}
+
 function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
@@ -45,9 +50,6 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @tracked
   searchTerm?: string;
-
-  @tracked
-  event: any;
 
   @tracked
   dimensionValues?: Promise<NaviDimensionModel[]>;
@@ -83,17 +85,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @action
   setValues(dimension: NaviDimensionModel[]) {
-    const values = [] as (string | number)[];
-    for (const entry of dimension) {
-      let toPush: string | number;
-      if (entry.manualInputEntry === true) {
-        toPush = entry.manualQuery as string | number;
-        values.push(toPush);
-      } else {
-        toPush = entry.value as string | number;
-        values.push(toPush);
-      }
-    }
+    const values = dimension.map(({ value }) => value) as (string | number)[];
     this.args.onUpdateFilter({ values });
   }
 
@@ -129,17 +121,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (!searchTerm) {
       return undefined;
     }
-    const dimension: NaviDimensionModel[] = [];
-    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-    const value = (('"' + searchTerm.toLowerCase()) as string | number) + '"';
-    dimension.push(
-      dimensionModelFactory.create({
-        value,
-        dimensionColumn,
-        manualInputEntry: true,
-        manualQuery: searchTerm.toLowerCase(),
-      })
-    );
+
     yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
     const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
       this.dimensionColumn,
@@ -149,6 +131,17 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       return dimensionResponse.values;
     }
 
+    const dimension: ManualInput[] = [];
+    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+    const value = searchTerm.toLowerCase() as string | number;
+    dimension.push(
+      dimensionModelFactory.create({
+        value,
+        dimensionColumn,
+        manualInputEntry: true,
+        manualQuery: searchTerm.toLowerCase(),
+      })
+    );
     return [dimension[0], ...dimensionResponse.values];
   }
 }
