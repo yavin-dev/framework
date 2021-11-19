@@ -32,7 +32,6 @@ interface DimensionSelectComponentArgs {
 
 interface ManualInput extends NaviDimensionModel {
   manualInputEntry: boolean;
-  manualQuery: string;
 }
 
 function isNumeric(num: string) {
@@ -131,17 +130,14 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       return dimensionResponse.values;
     }
 
-    const dimension: ManualInput[] = [];
     const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-    const value = searchTerm.toLowerCase() as string | number;
-    dimension.push(
-      dimensionModelFactory.create({
-        value,
-        dimensionColumn,
-        manualInputEntry: true,
-        manualQuery: searchTerm.toLowerCase(),
-      })
-    );
-    return [dimension[0], ...dimensionResponse.values];
+    const value = searchTerm as string | number;
+    const manualQuery = dimensionModelFactory.create({
+                  value,
+        	  dimensionColumn,
+        	  manualInputEntry: true
+      	        }) as ManualInput;
+
+    return [manualQuery, ...dimensionResponse.values];
   }
 }

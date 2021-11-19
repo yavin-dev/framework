@@ -305,7 +305,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     //if client side sorting was applied we'd see: ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3']
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['"property"', 'Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
+      ['"Property"', 'Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
       'Sort is applied as it was given from server mock'
     );
   });
@@ -331,7 +331,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
       [
-        ['"un"', ''],
+        ['"Un"', ''],
         ['-1', 'description: Unknown'],
         ['1', 'description: under 13'],
       ],
