@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="report-builder-source-selector" ...attributes>
+<div class="report-builder-source-selector flex-1" ...attributes>
   {{#if @sourcesTask.isSuccessful}}
     {{#if (gt @sourcesTask.value.length 0)}}
       {{#let (filter-by "isSuggested" @sourcesTask.value) as |suggestedSources|}}
