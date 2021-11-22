@@ -4,7 +4,7 @@
  */
 
 .report-builder-source-selector {
-  width: 300px;
+  min-width: 300px;
 
   &-title {
     &:not(:first-child) {
