@@ -30,12 +30,6 @@ interface DimensionSelectComponentArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
-/*
-interface ManualInput extends NaviDimensionModel {
-  manualInputEntry: boolean;
-}
-*/
-
 function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
