@@ -27,7 +27,7 @@
       as |dim|>
         <div class="filter-values--dimension-select__option">
           <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>
-            {{#if dim.manualInputEntry}}
+            {{#if dim.meta.manualInputEntry}}
               "{{dim.displayValue}}"
             {{else}}
                {{dim.displayValue}}

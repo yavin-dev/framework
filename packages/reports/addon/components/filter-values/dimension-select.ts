@@ -30,9 +30,11 @@ interface DimensionSelectComponentArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
+/*
 interface ManualInput extends NaviDimensionModel {
   manualInputEntry: boolean;
 }
+*/
 
 function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
@@ -135,9 +137,18 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const manualQuery = dimensionModelFactory.create({
       value,
       dimensionColumn,
-      manualInputEntry: true,
-    }) as ManualInput;
+    });
 
-    return [manualQuery, ...dimensionResponse.values];
+    const manualModel = {
+      value: manualQuery.value,
+      dimensionColumn: manualQuery.dimensionColumn,
+      displayValue: manualQuery.displayValue,
+      isEqual: manualQuery.isEqual,
+      meta: {
+        manualInputEntry: true,
+      },
+    };
+
+    return [manualModel, ...dimensionResponse.values];
   }
 }
