@@ -4,10 +4,6 @@
  *
  * This component won't be used directly. It is passed to ember-light-table as a custom cell component.
  * Ember-light-table will pass any parameters in through the value attribute.
- *
- * <DirItemNameCell
- *  @value={{@item}}
- * />
  */
 import Component from '@glimmer/component';
 import type ReportModel from 'navi-core/models/report';
@@ -22,11 +18,11 @@ export default class DirItemLabelCellComponent extends Component<DirItemLabelCel
    * @property {String[]} labels - the labels that will be applied to this row of the table
    */
   get labels() {
-    let labs: string[] = [];
+    let labels: string[] = [];
     // add the scheduled label to scheduled reports/dashboards
     if (this.args.value?.deliveryRules?.length > 0) {
-      labs.push('Scheduled');
+      labels.push('Scheduled');
     }
-    return labs;
+    return labels;
   }
 }
