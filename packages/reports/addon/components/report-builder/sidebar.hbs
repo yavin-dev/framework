@@ -2,7 +2,7 @@
 <AnimatedContainer class="report-builder-sidebar {{if (is-mobile) "report-builder-sidebar--float"}} column">
   <AnimatedIf @predicate={{@isOpen}} @use={{this.drawerTransition}} @duration={{100}}>
     <div class="report-builder-sidebar__header row align-items-center space-between p-l-18 p-y-7">
-      <div>
+      <div class="col">
         {{#if (eq this.sourcePath.length 0)}}
           <DenaliBreadcrumb class="report-builder-sidebar__breadcrumb flex-1 font-12" @items={{array "Select A Datasource"}} as |item|>
             <button
