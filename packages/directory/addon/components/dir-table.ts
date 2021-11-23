@@ -16,6 +16,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import Table from 'ember-light-table';
 
@@ -96,10 +97,23 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         cellClassNames: 'dir-table__cell dir-table__cell--lastUpdatedDate',
         breakpoints: ['desktop', 'jumbo'],
       },
+      {
+        label: 'LABEL',
+        valuePath: 'model',
+        sortable: false,
+        hideable: false,
+        draggable: false,
+        width: '165px',
+        cellComponent: 'dir-item-label-cell',
+        classNames: 'dir-table__header-cell',
+        cellClassNames: 'dir-table__cell dir-table__cell--label',
+        breakpoints: ['desktop', 'jumbo'],
+      },
     ];
 
     const { sortBy, sortDir } = this.args;
     if (!isEmpty(sortBy)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const sortColumn = columns.find((col) => col.sortByKey === sortBy) as any;
 
       if (sortColumn) {
