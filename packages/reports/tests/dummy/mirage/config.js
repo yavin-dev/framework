@@ -17,7 +17,7 @@ export default function () {
   this.get('/gsheet-export/status/:id', () => ({
     hasMovedToTeamDrive: true,
   }));
-  this.get('/gsheet-export/report/', (_, req) => ({
+  this.get('/gsheet-export/report/', () => ({
     url: 'https://google.com/sheets/foo',
   }));
 
