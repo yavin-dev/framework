@@ -13,6 +13,9 @@ export default function () {
   this.get('/gsheet-export/report/:id', () => ({
     url: 'https://google.com/sheets/foo',
   }));
+  this.get('/gsheet-export/report/', (_, req) => ({
+    url: 'https://google.com/sheets/foo',
+  }));
   this.urlPrefix = window.location.origin;
   this.get('/gsheet-export/status/:id', () => ({
     hasMovedToTeamDrive: true,
