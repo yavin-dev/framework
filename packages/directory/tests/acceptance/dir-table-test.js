@@ -1,9 +1,9 @@
 import { module, test } from 'qunit';
-import { click, currentURL, findAll, fillIn, visit } from '@ember/test-helpers';
+import { click, currentURL, find, findAll, fillIn, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Acceptance | dir table', function (hooks) {
+module('Acceptance | dir-table', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
@@ -111,5 +111,37 @@ module('Acceptance | dir table', function (hooks) {
     assert
       .dom('.dir-table-filter select')
       .hasValue('Dashboards', 'The selected type is set based on the query param in the url');
+  });
+
+  test('favorite item toggle', async function (assert) {
+    assert.expect(6);
+    await visit('/directory/my-data');
+    const user = await this.owner.lookup('service:user').findUser();
+    const item = find('.dir-table__cell--name');
+
+    // make sure item is already favorite
+    assert.ok(item.firstElementChild.classList.contains('d-star-solid'), 'favorite item renders a solid star');
+    let favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
+    assert.equal(
+      favoriteReports[0],
+      item.lastElementChild.textContent.trim(),
+      'user stored data matches rendered title'
+    );
+
+    // un-favorite item
+    await click(item.firstElementChild);
+
+    // make sure UI un-favorite is reflected both in stored data & visually
+    assert.ok(item.firstElementChild.classList.contains('d-star'), 'non-favorite item shows a hollow star');
+    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
+    assert.equal(favoriteReports.length, 0, 'user no longer stores item as favorite');
+
+    // re-favorite item
+    await click(item.firstElementChild);
+
+    // make sure UI re-favorite shows up both in stored data & visually
+    assert.ok(item.firstElementChild.classList.contains('d-star-solid'), 'non-favorite item shows a solid star');
+    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
+    assert.equal(favoriteReports[0], item.lastElementChild.textContent.trim(), 'user stores item as favorite again');
   });
 });

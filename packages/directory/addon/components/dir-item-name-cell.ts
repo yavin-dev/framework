@@ -10,14 +10,22 @@
  * />
  */
 import Component from '@glimmer/component';
-import FileTypes from 'navi-directory/utils/enums/file-types';
 import { pluralize } from 'ember-inflector';
-
+import { inject as service } from '@ember/service';
+import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
+import type UserService from 'navi-core/services/user';
+import ReportModel from 'navi-core/models/report';
+import DashboardModel from 'navi-core/models/dashboard';
+import { assert } from '@ember/debug';
+import { action } from '@ember/object';
 interface DirItemNameCellComponentArgs {
-  value: TODO<{ constructor: { modelName: string }; modelId: string }>;
+  value: ReportModel | DashboardModel;
 }
 
 export default class DirItemNameCellComponent extends Component<DirItemNameCellComponentArgs> {
+  @service declare user: UserService;
+  @service declare naviNotifications: NaviNotificationsService;
+
   /**
    * @property {String} itemLink - the route that this component should link to (without the id)
    */
@@ -37,19 +45,46 @@ export default class DirItemNameCellComponent extends Component<DirItemNameCellC
    * @property {String} type - the type of the item
    */
   get type() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    //@ts-ignore (ember data generates this field)
     return this.args.value?.constructor?.modelName;
   }
 
-  /**
-   * @property {String} iconClass - the icon class that is passed to navi-icon
-   */
-  get iconClass() {
-    const type = pluralize(this.type) as 'reports' | 'dashboards';
-    return FileTypes.definitions[type]?.iconClass;
-  }
+  @action
+  toggleFavorite(isFavorite: boolean) {
+    const user = this.user.getUser();
+    assert('User is found', user);
+    const updateOperation = isFavorite ? 'removeObject' : 'addObject';
+    const rollbackOperation = isFavorite ? 'addObject' : 'removeObject';
 
-  get iconColorClass() {
-    const type = pluralize(this.type) as 'reports' | 'dashboards';
-    return `is-${FileTypes.definitions[type]?.color}`;
+    // if this is a report, update user favoriteReports
+    if (this.args.value instanceof ReportModel) {
+      const report = this.args.value;
+      user.favoriteReports[updateOperation](report);
+      user.save().catch(() => {
+        //manually rollback - fix once ember-data has a way to rollback relationships
+        user.favoriteReports[rollbackOperation](report);
+        this.naviNotifications.add({
+          title: 'An error occurred while updating favorite reports',
+          style: 'danger',
+          timeout: 'medium',
+        });
+      });
+    }
+
+    // if this is a dashboard, update user favoriteDashboards
+    else if (this.args.value instanceof DashboardModel) {
+      const dashboard = this.args.value;
+      user.favoriteDashboards[updateOperation](dashboard);
+      user.save().catch(() => {
+        //manually rollback - fix once ember-data has a way to rollback relationships
+        user.favoriteDashboards[rollbackOperation](dashboard);
+        this.naviNotifications.add({
+          title: 'OOPS! An error occurred while updating favorite dashboards',
+          style: 'danger',
+          timeout: 'medium',
+        });
+      });
+    }
   }
 }

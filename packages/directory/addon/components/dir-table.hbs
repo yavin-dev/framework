@@ -27,7 +27,7 @@
 
       {{#if this.table.isEmpty}}
         <body.no-data>
-          {{#if this.isSearching}}
+          {{#if (not (is-empty @searchQuery))}}
             <DirEmptySearch @searchQuery={{@searchQuery}} />
           {{else}}
             <DirEmpty />

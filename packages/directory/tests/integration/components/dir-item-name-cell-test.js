@@ -27,17 +27,15 @@ module('Integration | Component | dir-item-name-cell', function (hooks) {
     set(this, 'item', report);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.dom('.d-file-text').exists('The correct icon is used for a report');
-
     assert.dom(this.element).hasText('Report 1', "The item's title is displayed in the component");
 
-    assert.dom('.d-star-solid').exists('The favorite icon is shown for a favorited item');
+    assert.dom('.d-star-solid').exists('The favorite icon is shown for a favorite item');
+    assert.dom('.d-star').doesNotExist('The empty-start icon is not shown for a favorite item');
 
     set(this, 'item', dashboard);
     await render(hbs`<DirItemNameCell @value={{this.item}} />`);
 
-    assert.dom('.d-dashboard-tile').exists('The correct icon is used for a dashboard');
-
+    assert.dom('.d-star').exists('The empty-star icon is shown for a item that is not a favorite');
     assert.dom('.d-star-solid').doesNotExist('The favorite icon is not shown for a item that is not a favorite');
   });
 

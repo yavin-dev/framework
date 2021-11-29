@@ -1,19 +1,23 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<LinkTo @route={{this.itemLink}} @model={{this.itemId}} class="dir-item-name-cell">
-  <DenaliIcon 
-    class={{this.iconColorClass}}
-    @icon={{this.iconClass}} 
-    @size="small"
-  />
-  <span>{{@value.title}}</span>
-</LinkTo>
 {{#if @value.isFavorite}}
-  <DenaliIcon 
-    class="is-yellow-500"
-    @icon="star-solid" 
-    @size="small" 
+  <DenaliIcon
+    class="link m-x-5"
+    @icon="star-solid"
+    @size="small"
+    {{on "click" (fn this.toggleFavorite @value.isFavorite)}}
+  />
+{{else}}
+  <DenaliIcon
+    class="link m-x-5"
+    @icon="star"
+    @size="small"
+    {{on "click" (fn this.toggleFavorite @value.isFavorite)}}
   />
 {{/if}}
+
+<LinkTo @route={{this.itemLink}} @model={{this.itemId}} class="dir-item-name-cell">
+  <span>{{@value.title}}</span>
+</LinkTo>
 
 {{#if @value.tempId}}
   <DenaliChip
