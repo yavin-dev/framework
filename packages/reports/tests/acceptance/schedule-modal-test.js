@@ -1,6 +1,6 @@
 // jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
 /* eslint ember/no-global-jquery: 1 */
-import { find, click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
+import { click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
