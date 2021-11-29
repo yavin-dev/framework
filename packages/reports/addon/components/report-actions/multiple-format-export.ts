@@ -67,7 +67,9 @@ export default class MultipleFormatExport extends ReportActionExport {
    * Href for google sheet export
    */
   get gsheetExportHref() {
-    return `/gsheet-export/report?model=${this.args.model}`;
+    const { compression } = this;
+
+    return `/gsheet-export/report?model=${compression.compress(this.args.model)}`;
   }
 
   /**
