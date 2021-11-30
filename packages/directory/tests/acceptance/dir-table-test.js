@@ -117,31 +117,28 @@ module('Acceptance | dir-table', function (hooks) {
     assert.expect(6);
     await visit('/directory/my-data');
     const user = await this.owner.lookup('service:user').findUser();
-    const item = find('.dir-table__cell--name');
+    const favIcon = find('.dir-table__cell--favorite');
+    const favTitle = find('.dir-table__cell--name');
 
     // make sure item is already favorite
-    assert.ok(item.firstElementChild.classList.contains('d-star-solid'), 'favorite item renders a solid star');
+    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'favorite item renders a solid star');
     let favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(
-      favoriteReports[0],
-      item.lastElementChild.textContent.trim(),
-      'user stored data matches rendered title'
-    );
+    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stored data matches rendered title');
 
     // un-favorite item
-    await click(item.firstElementChild);
+    await click(favIcon.firstElementChild);
 
     // make sure UI un-favorite is reflected both in stored data & visually
-    assert.ok(item.firstElementChild.classList.contains('d-star'), 'non-favorite item shows a hollow star');
+    assert.ok(favIcon.firstElementChild.classList.contains('d-star'), 'non-favorite item shows a hollow star');
     favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
     assert.equal(favoriteReports.length, 0, 'user no longer stores item as favorite');
 
     // re-favorite item
-    await click(item.firstElementChild);
+    await click(favIcon.firstElementChild);
 
     // make sure UI re-favorite shows up both in stored data & visually
-    assert.ok(item.firstElementChild.classList.contains('d-star-solid'), 'non-favorite item shows a solid star');
+    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'non-favorite item shows a solid star');
     favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(favoriteReports[0], item.lastElementChild.textContent.trim(), 'user stores item as favorite again');
+    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stores item as favorite again');
   });
 });
