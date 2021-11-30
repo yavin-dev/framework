@@ -31,7 +31,9 @@
             as |Alert|
           >
             <Alert.Title>Error</Alert.Title>
-            <Alert.Context>{{this.notification}}</Alert.Context>
+            {{#each this.notification as |message|}}
+              <Alert.Context>{{message}}</Alert.Context>
+            {{/each}}
           </DenaliAlert>
         {{/if}}
       {{/if}}

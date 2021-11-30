@@ -8,7 +8,7 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 // @ts-ignore
-import { getApiErrMsg } from 'navi-core/utils/persistence-error';
+import { getAllApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
 import { computed, setProperties, action } from '@ember/object';
 import RSVP from 'rsvp';
@@ -65,7 +65,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   /**
    * @property {string} notification - In modal notification text
    */
-  @tracked notification?: string;
+  @tracked notification?: string[];
 
   @tracked isSaving = false;
 
@@ -173,7 +173,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         });
         this.closeModal();
       } catch (errors) {
-        this.notification = getApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings');
+        this.notification = getAllApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings');
       } finally {
         this.isSaving = false;
         this.attemptedSave = true;
@@ -207,7 +207,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         timeout: 'short',
       });
     } catch (e) {
-      this.notification = `An error occurred while removing the delivery schedule`;
+      this.notification = [`An error occurred while removing the delivery schedule`];
     }
   }
 
