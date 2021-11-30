@@ -1,11 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, typeIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
-import { clickTrigger, selectChoose, selectSearch, nativeMouseUp } from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, selectSearch, nativeMouseUp} from 'ember-power-select/test-support/helpers';
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
@@ -373,6 +373,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
   });
 
   test('testing manual filter', async function (this: TestContext, assert) {
+    assert.expect(2);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
     this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
       this.set('filter.values', changeSet.values);
@@ -388,5 +389,17 @@ module('Integration | Component | filter values/dimension select', function (hoo
       ]),
       [['"abc"', '']]
     );
+
+    this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
+      assert.deepEqual(
+        changeSet.values,
+        [...this.filter.values, 'xyz'],
+        'changeSet should update after clicking on a value from dropdown'
+      );
+    };
+
+    await clickTrigger();
+    await typeIn('.filter-values--dimension-select__trigger input', 'xyz');
+    await nativeMouseUp('.ember-power-select-option');
   });
 });
