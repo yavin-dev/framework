@@ -46,12 +46,24 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
   get columns() {
     const columns = [
       {
+        label: '',
+        valuePath: 'model',
+        sortable: false,
+        hideable: false,
+        draggable: false,
+        width: '80px',
+        classNames: 'dir-table__header-cell dir-table__header-cell--favorite',
+        cellComponent: 'dir-item-favorite-cell',
+        cellClassNames: 'dir-table__cell dir-table__cell--favorite',
+        breakpoints: ['tablet', 'desktop', 'jumbo'],
+      },
+      {
         label: 'NAME',
         valuePath: 'model',
         sortByKey: 'title',
         hideable: false,
         draggable: false,
-        classNames: 'dir-table__header-cell dir-table__header-cell--name p-l-40',
+        classNames: 'dir-table__header-cell dir-table__header-cell--name',
         cellComponent: 'dir-item-name-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--name',
       },
@@ -64,7 +76,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         classNames: 'dir-table__header-cell dir-table__header-cell--actions',
         cellComponent: 'dir-asset-row-actions',
         cellClassNames: 'dir-table__cell dir-table__cell--actions',
-        breakpoints: ['tablet', 'desktop', 'jumbo'],
+        breakpoints: ['mobile', 'tablet', 'desktop', 'jumbo'],
       },
       {
         label: 'OWNER',
@@ -99,7 +111,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         cellComponent: 'dir-item-label-cell',
         classNames: 'dir-table__header-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--label',
-        breakpoints: ['desktop', 'jumbo'],
+        breakpoints: ['jumbo'],
       },
     ];
 

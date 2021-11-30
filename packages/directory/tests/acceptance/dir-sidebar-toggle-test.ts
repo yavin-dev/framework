@@ -1,6 +1,7 @@
 import { findAll, click, currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
