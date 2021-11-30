@@ -55,10 +55,4 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
   &__cell {
     cursor: default;
   }
-
-  &__header-cell {
-    &--name {
-      padding-left: 10px;
-    }
-  }
 }

@@ -49,7 +49,7 @@ module('Integration | Component | dir table', function (hooks) {
 
     assert.deepEqual(
       findAll('th').map((elm) => elm.innerText.trim()),
-      ['NAME', '', 'OWNER', 'LAST UPDATED DATE', 'LABEL'],
+      ['', 'NAME', '', 'OWNER', 'LAST UPDATED DATE', 'LABEL'],
       'The correct columns are generated for the table'
     );
 
@@ -84,7 +84,7 @@ module('Integration | Component | dir table', function (hooks) {
 
     assert.deepEqual(
       th.map((elm) => elm.className.includes('is-sortable')),
-      [true, false, true, true, false],
+      [false, true, false, true, true, false],
       'Only title, owner and last update columns are sortable'
     );
 

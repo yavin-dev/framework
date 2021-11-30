@@ -42,7 +42,7 @@ module('Acceptance | dir-table', function (hooks) {
       'items are sorted by updatedOn desc'
     );
 
-    await click(findAll('th')[3]);
+    await click(findAll('th')[4]);
 
     assert.equal(
       currentURL(),
@@ -56,7 +56,7 @@ module('Acceptance | dir-table', function (hooks) {
       'items are sorted by updatedOn asc after re-sorting by updatedOn'
     );
 
-    await click('th');
+    await click(findAll('th')[1]);
 
     assert.equal(
       currentURL(),
@@ -84,7 +84,7 @@ module('Acceptance | dir-table', function (hooks) {
 
     await visit('/directory/my-data?filter=favorites');
 
-    await click(findAll('th')[2]);
+    await click(findAll('th')[3]);
 
     assert.equal(
       currentURL(),
