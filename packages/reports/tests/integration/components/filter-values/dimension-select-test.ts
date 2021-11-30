@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
-import { clickTrigger, selectChoose, selectSearch, nativeMouseUp} from 'ember-power-select/test-support/helpers';
+import { clickTrigger, selectChoose, selectSearch, nativeMouseUp } from 'ember-power-select/test-support/helpers';
 import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
