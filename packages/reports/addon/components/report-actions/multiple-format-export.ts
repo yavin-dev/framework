@@ -69,7 +69,7 @@ export default class MultipleFormatExport extends ReportActionExport {
   get gsheetExportHref() {
     const { compression } = this;
 
-    return `/gsheet-export/report?model=${compression.compress(this.args.model)}`;
+    return `/gsheet-export/report?model=${compression.compressModel(this.args.model)}`;
   }
 
   /**
