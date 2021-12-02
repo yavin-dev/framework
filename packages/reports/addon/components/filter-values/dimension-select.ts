@@ -34,9 +34,11 @@ function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
 }
-function isNumericDimensionArray(arr: NaviDimensionModel[]): boolean {
-  return arr.every((d) => isNumeric(d.value as string));
+function isNumericDimensionArray(arr: ExtraNaviDimModel[]): boolean {
+  return arr.every((d) => isNumeric(d.model.value as string));
 }
+
+type ExtraNaviDimModel = { model: NaviDimensionModel; meta: { manualInputEntry: boolean; }; };
 
 export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
   @service declare naviDimension: NaviDimensionService;
@@ -47,7 +49,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   searchTerm?: string;
 
   @tracked
-  dimensionValues?: Promise<NaviDimensionModel[]>;
+  dimensionValues?: Promise<ExtraNaviDimModel[]>;
 
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
@@ -63,12 +65,12 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return this.dimensionValues;
   }
 
-  get selectedDimensions(): NaviDimensionModel[] {
+  get selectedDimensions(): ExtraNaviDimModel[] {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      return values.map((value) => dimensionModelFactory.create({ value, dimensionColumn }));
+      return values.map((value) => ({model: dimensionModelFactory.create({ value, dimensionColumn }), meta: { manualInputEntry: false }}));
     }
     return [];
   }
@@ -79,8 +81,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   }
 
   @action
-  setValues(dimension: NaviDimensionModel[]) {
-    const values = dimension.map(({ value }) => value) as (string | number)[];
+  setValues(dimension: ExtraNaviDimModel[]) {
+    const values = dimension.map(({ model }) => model.value) as (string | number)[];
     this.args.onUpdateFilter({ values });
   }
 
@@ -93,15 +95,15 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
-        .then((r) => r.values)
+        .then((r) => r.values.map((value) => ({ model: value , meta: { manualInputEntry: false } })))
         .then((dimensions) => {
           if (isNumericDimensionArray(dimensions)) {
-            return sortBy(dimensions, [(d) => Number(d.value)]);
+            return sortBy(dimensions, [(d) => Number(d.model.value)]);
           }
-          return sortBy(dimensions, ['value']);
+          return sortBy(dimensions, ['model.value']);
         });
     }
-  }
+  } 
 
   /**
    * Searches for dimensions containing search term (locally if all results are available)
@@ -109,7 +111,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
    * @returns list of matching dimension models
    */
   @task({ restartable: true })
-  *searchDimensionValues(term: string): TaskGenerator<NaviDimensionModel[] | undefined> {
+  *searchDimensionValues(term: string): TaskGenerator<ExtraNaviDimModel[] | undefined> {
     const { dimensionColumn } = this;
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
@@ -122,8 +124,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       this.dimensionColumn,
       searchTerm
     );
+
+    const dimensionResponseModel = dimensionResponse.values.map(values => ({model: values, meta: { manualInputEntry: false}})) as ExtraNaviDimModel[];
+     
     if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
-      return dimensionResponse.values;
+      return dimensionResponseModel;
     }
 
     const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
@@ -134,15 +139,11 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     });
 
     const manualModel = {
-      value: manualQuery.value,
-      dimensionColumn: manualQuery.dimensionColumn,
-      displayValue: manualQuery.displayValue,
-      isEqual: manualQuery.isEqual,
+      model: manualQuery,
       meta: {
         manualInputEntry: true,
       },
     };
-
-    return [manualModel, ...dimensionResponse.values];
+    return [manualModel, ...dimensionResponseModel];
   }
 }

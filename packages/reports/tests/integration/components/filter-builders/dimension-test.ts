@@ -34,11 +34,12 @@ module('Integration | Component | filter-builders/dimension', function (hooks) {
 
   test('it renders', async function (this: TestContext, assert) {
     await render(TEMPLATE);
-
+    debugger;
     assert
       .dom('.filter-builder__subject')
       .hasText(`${this.filter.columnMetadata.name} id`, "Subject's name is display in filter builder");
 
+    debugger;
     assert
       .dom('.filter-builder__operator-trigger .ember-power-select-selected-item')
       .hasText('Equals', 'The filter current operator is selected by default');
@@ -64,8 +65,9 @@ module('Integration | Component | filter-builders/dimension', function (hooks) {
 
   test('collapsed', async function (this: TestContext, assert) {
     this.set('isCollapsed', true);
+    debugger;
     await render(TEMPLATE);
-
+    debugger;
     assert
       .dom('.filter-builder')
       .hasText(`${await this.filter.displayNiceName} equals 1 2 3`, 'Rendered correctly when collapsed');

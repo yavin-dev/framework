@@ -26,15 +26,15 @@
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"
       as |dim|>
         <div class="filter-values--dimension-select__option">
-          <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>
+          <div class="filter-values--dimension-select__option-value" title={{dim.model.displayValue}}>
             {{#if dim.meta.manualInputEntry}}
-              "{{dim.displayValue}}"
+              "{{dim.model.displayValue}}"
             {{else}}
-               {{dim.displayValue}}
+               {{dim.model.displayValue}}
             {{/if}}
           </div>
           <div class="filter-values--dimension-select__option-context">
-            {{#each-in dim.suggestions as |field value|}}
+            {{#each-in dim.model.suggestions as |field value|}}
               <span class="filter-values--dimension-select__option-context-item is-grey-700" title={{value}}><span class="cap is-grey-600">{{field}}</span>: {{value}} </span>
             {{/each-in}}
           </div>

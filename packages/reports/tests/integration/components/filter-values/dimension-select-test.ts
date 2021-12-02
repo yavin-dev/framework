@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll, typeIn } from '@ember/test-helpers';
+import { render, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -59,11 +59,11 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     // Open value selector
     await clickTrigger();
-
+    debugger;
     const selectedValueText = findAll(
       '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
     ).map((el) => el.textContent?.trim());
-
+    debugger;
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
 
     assert.deepEqual(
@@ -399,7 +399,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     };
 
     await clickTrigger();
-    await typeIn('.filter-values--dimension-select__trigger input', 'xyz');
+    await fillIn('.filter-values--dimension-select__trigger input', 'xyz');
     await nativeMouseUp('.ember-power-select-option');
   });
 });
