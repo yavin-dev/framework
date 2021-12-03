@@ -114,7 +114,7 @@ module('Acceptance | dir-table', function (hooks) {
   });
 
   test('favorite item toggle', async function (assert) {
-    assert.expect(6);
+    assert.expect(9);
     await visit('/directory/my-data');
     const user = await this.owner.lookup('service:user').findUser();
     const favIcon = find('.dir-table__cell--favorite');
@@ -137,8 +137,27 @@ module('Acceptance | dir-table', function (hooks) {
     await click(favIcon.firstElementChild);
 
     // make sure UI re-favorite shows up both in stored data & visually
-    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'non-favorite item shows a solid star');
+    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'favorite item shows a solid star');
     favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
     assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stores item as favorite again');
+
+    // Mock server path endpoint to mock failure
+    server.patch('/users/:id', () => new Response(500));
+
+    // favorite item data update error
+    await click(favIcon.firstElementChild);
+    assert
+      .dom('.alert.is-danger')
+      .hasText(
+        'Oh no! An error occurred while updating favorite reports',
+        'Notification shown when error updating favorite reports'
+      );
+
+    // make sure UI hasn't changed and item is still favorite
+    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'item still shows favorite solid star');
+    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
+    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stores item as favorite again');
+
+    user.send('becameInvalid');
   });
 });

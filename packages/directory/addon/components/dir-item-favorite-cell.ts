@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * This component won't be used directly. It is passed to ember-light-table as a custom cell component.
@@ -41,7 +41,7 @@ export default class DirItemFavoriteCellComponent extends Component<DirItemFavor
         //manually rollback - fix once ember-data has a way to rollback relationships
         user.favoriteReports[rollbackOperation](report);
         this.naviNotifications.add({
-          title: 'An error occurred while updating favorite reports',
+          title: 'Oh no! An error occurred while updating favorite reports',
           style: 'danger',
           timeout: 'medium',
         });
@@ -56,7 +56,7 @@ export default class DirItemFavoriteCellComponent extends Component<DirItemFavor
         //manually rollback - fix once ember-data has a way to rollback relationships
         user.favoriteDashboards[rollbackOperation](dashboard);
         this.naviNotifications.add({
-          title: 'OOPS! An error occurred while updating favorite dashboards',
+          title: 'Oh no! An error occurred while updating favorite dashboards',
           style: 'danger',
           timeout: 'medium',
         });
