@@ -92,8 +92,10 @@ module('Integration | Component | report actions - multiple-format-export', func
       const actualModel = this.report.serialize();
       const compressionService = this.owner.lookup('service:compression');
       const decompressedModel = (await compressionService.decompressModel(model)).serialize();
-      // const compressedModel = await compressionService.compressModel(this.report);
-      //assert.equal(model, compressedModel, 'model is serialized');
+      /*
+       *  const compressedModel = await compressionService.compressModel(this.report);
+       * assert.equal(model, compressedModel, 'model is serialized');
+       */
       assert.deepEqual(decompressedModel, actualModel, 'model deserializes correctly');
     });
 
