@@ -69,7 +69,7 @@ export default class MultipleFormatExport extends ReportActionExport {
   get gsheetExportHref() {
     const { compression } = this;
 
-    return `/gsheet-export/report?model=${compression.compressModel(this.args.model)}`;
+    return compression.compressModel(this.args.model).then((model) => `/gsheet-export/report?model=${model}`);
   }
 
   /**
@@ -166,8 +166,9 @@ export default class MultipleFormatExport extends ReportActionExport {
   @task *gSheetExportTask(): TaskGenerator<void> {
     const { naviNotifications } = this;
 
+    let gSheetExport = yield this.gsheetExportHref;
     const response = yield taskFor(this.gsheetExport.fetchAndPollGsheet).perform(
-      new URL(this.gsheetExportHref, window.location.origin)
+      new URL(gSheetExport, window.location.origin)
     );
 
     naviNotifications?.clear();
