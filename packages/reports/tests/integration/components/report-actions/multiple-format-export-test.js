@@ -81,6 +81,26 @@ module('Integration | Component | report actions - multiple-format-export', func
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
+  test('export gSheet download link - Mirage', async function (assert) {
+    assert.expect(1);
+    const originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'pdf', 'png', 'gsheet'];
+
+    this.server.urlPrefix = '';
+    this.server.get('/gsheet-export/report', async (_, req) => {
+      const { model } = req.queryParams;
+      const actualModel = this.report.serialize();
+      const compressionService = this.owner.lookup('service:compression');
+      const decompressedModel = (await compressionService.decompressModel(model)).serialize();
+      assert.deepEqual(decompressedModel, actualModel, 'model deserializes correctly');
+    });
+
+    await render(TEMPLATE);
+    await triggerEvent('.menu-trigger', 'mouseenter');
+    await click($('.menu-content a:contains("Google Sheet")')[0]);
+    config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
   test('export PNG download link', async function (assert) {
     assert.expect(2);
 

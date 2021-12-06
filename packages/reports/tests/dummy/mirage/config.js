@@ -17,6 +17,9 @@ export default function () {
   this.get('/gsheet-export/status/:id', () => ({
     hasMovedToTeamDrive: true,
   }));
+  this.get('/gsheet-export/report/', () => ({
+    url: 'https://google.com/sheets/foo',
+  }));
 
   // Mock bard facts + metadata
   this.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
