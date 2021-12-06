@@ -59,11 +59,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     // Open value selector
     await clickTrigger();
-    debugger;
     const selectedValueText = findAll(
       '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
     ).map((el) => el.textContent?.trim());
-    debugger;
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
 
     assert.deepEqual(
