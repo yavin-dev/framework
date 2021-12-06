@@ -4,7 +4,7 @@
     <FilterValues::InvalidValue/>
   {{else}}
     {{#each (await this.selectedDimensions) as |dim|}}
-      <span class="filter-values--collapsed--value">{{dim.displayValue}}</span>
+      <span class="filter-values--collapsed--value">{{dim.model.displayValue}}</span>
     {{/each}}
   {{/if}}
 {{else}}

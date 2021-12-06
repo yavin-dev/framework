@@ -30,6 +30,22 @@ interface DimensionSelectComponentArgs {
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
+interface NaviDimMeta {
+  manualInputEntry?: boolean;
+}
+class ExtraNaviDimModel {
+  model: NaviDimensionModel;
+  meta: NaviDimMeta;
+  constructor(model: NaviDimensionModel, meta: NaviDimMeta = {}) {
+    this.model = model;
+    this.meta = meta;
+  }
+
+  isEqual(other: unknown): boolean {
+    return other instanceof ExtraNaviDimModel && this.model.isEqual(other.model);
+  }
+}
+
 function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
@@ -37,8 +53,6 @@ function isNumeric(num: string) {
 function isNumericDimensionArray(arr: ExtraNaviDimModel[]): boolean {
   return arr.every((d) => isNumeric(d.model.value as string));
 }
-
-type ExtraNaviDimModel = { model: NaviDimensionModel; meta: { manualInputEntry: boolean; }; };
 
 export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
   @service declare naviDimension: NaviDimensionService;
@@ -70,7 +84,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      return values.map((value) => ({model: dimensionModelFactory.create({ value, dimensionColumn }), meta: { manualInputEntry: false }}));
+      return values.map(
+        (value) =>
+          new ExtraNaviDimModel(dimensionModelFactory.create({ value, dimensionColumn }), { manualInputEntry: false })
+      );
     }
     return [];
   }
@@ -95,7 +112,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
-        .then((r) => r.values.map((value) => ({ model: value , meta: { manualInputEntry: false } })))
+        .then((r) => r.values.map((value) => new ExtraNaviDimModel(value, { manualInputEntry: false })))
         .then((dimensions) => {
           if (isNumericDimensionArray(dimensions)) {
             return sortBy(dimensions, [(d) => Number(d.model.value)]);
@@ -103,7 +120,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
           return sortBy(dimensions, ['model.value']);
         });
     }
-  } 
+  }
 
   /**
    * Searches for dimensions containing search term (locally if all results are available)
@@ -125,8 +142,10 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       searchTerm
     );
 
-    const dimensionResponseModel = dimensionResponse.values.map(values => ({model: values, meta: { manualInputEntry: false}})) as ExtraNaviDimModel[];
-     
+    const dimensionResponseModel = dimensionResponse.values.map(
+      (values) => new ExtraNaviDimModel(values, { manualInputEntry: false })
+    );
+
     if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
       return dimensionResponseModel;
     }
@@ -138,12 +157,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       dimensionColumn,
     });
 
-    const manualModel = {
-      model: manualQuery,
-      meta: {
-        manualInputEntry: true,
-      },
-    };
+    const manualModel = new ExtraNaviDimModel(manualQuery, { manualInputEntry: true });
     return [manualModel, ...dimensionResponseModel];
   }
 }
