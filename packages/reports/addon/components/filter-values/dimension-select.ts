@@ -86,7 +86,9 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
       return values.map(
         (value) =>
-          new ExtraNaviDimModel(dimensionModelFactory.create({ value, dimensionColumn }), { manualInputEntry: undefined })
+          new ExtraNaviDimModel(dimensionModelFactory.create({ value, dimensionColumn }), {
+            manualInputEntry: undefined,
+          })
       );
     }
     return [];
