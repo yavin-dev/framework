@@ -41,10 +41,14 @@
   }
 
   &__source {
-    max-width: 200px;
+    max-width: 250px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    &[data-selecting='columns'] {
+      max-width: 400px;
+    }
   }
 
   &__separator {

@@ -1,6 +1,6 @@
 // jquery is still needed until ember-tag-input test helper typeInInput behaves with triggerEvent
 /* eslint ember/no-global-jquery: 1 */
-import { find, click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
+import { click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
@@ -467,7 +467,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal error when saving schedule', async function (assert) {
-    assert.expect(2);
+    assert.expect(8);
 
     //suppress errors and exceptions for this test because 500 response will throw an error
     let originalLoggerError = Ember.Logger.error,
@@ -476,32 +476,33 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     Ember.Logger.error = () => {};
     Ember.Test.adapter.exception = () => {};
 
+    await visit('/reports');
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    await click('.navi-report-actions__schedule');
+    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
+    await blur('.js-ember-tag-input-new');
+
     server.post('/deliveryRules', () => {
       return new Mirage.Response(
         400,
         {},
         {
-          errors: ['InvalidValueException: Invalid Email: must be a valid oath.com or yahoo-inc.com email'],
+          errors: [
+            'InvalidValueException: Invalid Email: must be a valid oath.com or yahoo-inc.com email',
+            'InvalidValueException: Invalid Recipients: cannot schedule report with unauthorized users',
+          ],
         }
       );
     });
-    await visit('/reports');
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-
-    await click('.navi-report-actions__schedule');
-
-    await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
-    await blur('.js-ember-tag-input-new');
 
     //Save the schedule
     await click('.schedule__modal-save-btn');
     await waitFor('.alert');
 
-    assert.equal(
-      find('.alert p').innerText.trim(),
-      'Invalid email: must be a valid oath.com or yahoo-inc.com email',
-      'failing notification is shown if server returns 400'
-    );
+    let errors = findAll('.alert p');
+    assert.equal(errors[1].innerText, 'Invalid recipients: cannot schedule report with unauthorized users');
+    assert.equal(errors[0].innerText, 'Invalid email: must be a valid oath.com or yahoo-inc.com email');
+    assert.equal(errors.length, 2, 'failing notifications are shown if server returns 400');
 
     server.post('/deliveryRules', () => {
       return new Mirage.Response(500);
@@ -518,6 +519,47 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         'failing notification is shown if server returns 500'
       );
 
+    server.post('/deliveryRules', () => {
+      return new Mirage.Response(
+        401,
+        {},
+        {
+          errors: [
+            {
+              status: 401,
+              title: 'Invalid Recipients',
+              detail: 'cannot schedule report with unauthorized users',
+            },
+            {
+              status: 401,
+              title: 'Invalid Email',
+              detail: 'must be a valid oath.com or yahoo-inc.com email',
+            },
+            {
+              status: 401,
+              title: 'Invalid Something Else',
+              detail: '',
+            },
+            {
+              status: 401,
+              title: 'Invalid Something Else',
+              detail: '',
+            },
+          ],
+        }
+      );
+    });
+
+    //Save the schedule
+    await click('.schedule__modal-save-btn');
+    await waitFor('.alert');
+
+    errors = findAll('.alert p');
+    assert.equal(errors[0].innerText, 'Cannot schedule report with unauthorized users');
+    assert.equal(errors[1].innerText, 'Must be a valid oath.com or yahoo-inc.com email');
+    assert.equal(errors[2].innerText, 'There was an error updating your delivery settings');
+    assert.equal(errors.length, 3, 'all errors show up formatted correctly for object-type errors');
+
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
   });
@@ -527,7 +569,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
 
     // Click "Schedule"
-    await triggerEvent('.navi-collection__row1', 'mouseenter');
+    await triggerEvent('.navi-collection__row3', 'mouseenter');
     await click('.navi-report-actions__schedule');
 
     assert

@@ -56,6 +56,7 @@ module('Integration | Component | grouped list', function (hooks) {
         @shouldOpenAllGroups={{this.shouldOpenAllGroups}}
         @groupByField="field"
         @containerSelector="body"
+        @shouldSort={{true}}
         as | item |
       >
         {{item.val}}
@@ -89,6 +90,42 @@ module('Integration | Component | grouped list', function (hooks) {
     );
   });
 
+  test('groups are not sorted when @shouldSort is false', async function (assert) {
+    assert.expect(3);
+
+    await render(hbs`
+      <GroupedList
+        @items={{this.items}}
+        @shouldOpenAllGroups={{this.shouldOpenAllGroups}}
+        @groupByField="field"
+        @containerSelector="body"
+        @shouldSort={{false}}
+        as | item |
+      >
+        {{item.val}}
+      </GroupedList>
+    `);
+
+    const groups = findAll('.grouped-list__group-header-content');
+    assert.deepEqual(
+      groups.map((el) => el.textContent.trim()),
+      ['foo (3)', 'bar (1)', 'Uncategorized (2)'],
+      'the groups are in expected order when @shouldSort is false'
+    );
+
+    assert.dom(groups[1]).hasText('bar (1)', 'the second group header is `bar (1)`');
+
+    this.set('shouldOpenAllGroups', true);
+    // changing shouldOpenAllGroups causes vertical collection render so we need to wait
+    await settled();
+
+    assert.deepEqual(
+      findAll('.grouped-list li').map((el) => el.textContent.trim()),
+      ['foo (3)', '1', '2', '3', 'bar (1)', '6', 'Uncategorized (2)', '4', '5'],
+      'All groups are open when `shouldOpenAllGroups` attribute is true'
+    );
+  });
+
   test('groups are sorted by sortByField', async function (assert) {
     assert.expect(1);
 
@@ -99,6 +136,7 @@ module('Integration | Component | grouped list', function (hooks) {
         @containerSelector="body"
         @groupByField="cat"
         @sortByField="name"
+        @shouldSort={{true}}
         as | item |
       >
         {{item.name}}
@@ -123,6 +161,7 @@ module('Integration | Component | grouped list', function (hooks) {
         @containerSelector="body"
         @groupByField="cat"
         @sortByField="name"
+        @shouldSort={{true}}
         as | item |
       >
         {{item.name}}
@@ -148,6 +187,7 @@ module('Integration | Component | grouped list', function (hooks) {
         @groupByField="category"
         @sortByField="name"
         @isSingleCategory="true"
+        @shouldSort={{true}}
         as | item |
       >
         {{item.name}}

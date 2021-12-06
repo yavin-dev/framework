@@ -26,7 +26,6 @@
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "@html-next/vertical-collection": "^2.0.0",
-    "@types/numeral": "0.0.28",
     "ember-ajax": "^5.0.0",
     "ember-auto-import": "^1.10.1",
     "ember-basic-dropdown": "^3.0.19",
@@ -60,7 +59,7 @@
     "lz-string": "^1.4.4",
     "nanoid": "^3.1.12",
     "navi-data": "0.4.0",
-    "numeral": "^2.0.6",
+    "numbro": "^2.3.5",
     "resize-observer-polyfill": "^1.5.1"
   },
   "devDependencies": {

@@ -1,5 +1,3 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-
 <h3>By Metric</h3>
 <div class="chart-container metric">
   <NaviVisualizationConfig::Wrapper
@@ -9,6 +7,7 @@
     @onUpdateConfig={{fn (mut this.metricOptions)}}
   />
   <NaviVisualizations::LineChart
+    class="type-{{this.metricOptions.axis.y.series.type}}"
     @model={{this.model.default}}
     @options={{this.metricOptions}}
   />
@@ -16,24 +15,28 @@
 
 <h3>By Year</h3>
 <NaviVisualizations::LineChart
+  class="type-{{this.timeOptions.axis.y.series.type}}"
   @model={{this.model.default}}
   @options={{this.timeOptions}}
 />
 
 <h3>Hours by Day</h3>
 <NaviVisualizations::LineChart
+  class="type-{{this.hourByDayTimeOptions.axis.y.series.type}}"
   @model={{this.model.hourGrain}}
   @options={{this.hourByDayTimeOptions}}
 />
 
 <h3>Minutes by Hour</h3>
 <NaviVisualizations::LineChart
+  class="type-{{this.minuteByHourTimeOptions.axis.y.series.type}}"
   @model={{this.model.minuteGrain}}
   @options={{this.minuteByHourTimeOptions}}
 />
 
 <h3>Seconds by Minute</h3>
 <NaviVisualizations::LineChart
+  class="type-{{this.secondByMinuteTimeOptions.axis.y.series.type}}"
   @model={{this.model.secondGrain}}
   @options={{this.secondByMinuteTimeOptions}}
 />
@@ -47,6 +50,7 @@
     @onUpdateConfig={{this.onUpdateConfig}}
   />
   <NaviVisualizations::LineChart
+    class="type-{{this.dimensionOptions.axis.y.series.type}}"
     @model={{this.model.dimension}}
     @options={{this.dimensionOptions}}
   />
@@ -54,13 +58,14 @@
 
 <h3>Highlight Anomalies</h3>
 <NaviVisualizations::LineChart
+  class="type-{{this.amomalousOptions.axis.y.series.type}}"
   @model={{this.model.anomalous}}
   @options={{this.amomalousOptions}}
 />
 
 <h3>Custom Chart Builder</h3>
 <NaviVisualizations::LineChart
-  class="custom-chart-builder"
+  class="custom-chart-builder type-{{this.customOptions.axis.y.series.type}}"
   @model={{this.model.default}}
   @options={{this.customOptions}}
 />

@@ -4,7 +4,7 @@
  */
 import Service from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import numeral from 'numeral';
+import numbro from 'numbro';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { MetricColumn } from 'navi-data/models/metadata/metric';
@@ -60,8 +60,8 @@ export default class NaviFormatterService extends Service {
     if (isEmpty(value)) {
       return '--';
     }
-    const format = requestedFormat ? requestedFormat : '0,0.[0000000000]';
-    return numeral(value).format(format);
+    const format = requestedFormat ? requestedFormat : { thousandSeparated: true };
+    return numbro(value).format(format);
   }
 }
 

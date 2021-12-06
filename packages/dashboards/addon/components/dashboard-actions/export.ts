@@ -35,7 +35,7 @@ export default class DashboardMultipleFormatExport extends MultipleFormatExport 
    * @override
    */
   get gsheetExportHref() {
-    return `/gsheet-export/dashboard/${this.args.model.id}`;
+    return Promise.resolve(`/gsheet-export/dashboard/${this.args.model.id}`);
   }
 
   /**
