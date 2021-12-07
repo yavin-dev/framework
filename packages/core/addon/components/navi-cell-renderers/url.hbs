@@ -1,0 +1,22 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if (not (is-empty this.columnValue))}}
+  <div class="table-cell-content {{dasherize @column.fragment.type}} table-cell-url" ...attributes>
+    <DenaliLink
+      href={{this.columnValue}}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={{this.columnValue}}
+    >
+      {{this.displayValue}}
+    </DenaliLink>
+  </div>
+{{else}}
+  <NaviCellRenderers::Dimension
+    @data={{@data}}
+    @column={{@column}}
+    @request={{@request}}
+    @isRollup={{@isRollup}}
+    @isGrandTotal={{@isGrandTotal}}
+    ...attributes
+  />
+{{/if}}

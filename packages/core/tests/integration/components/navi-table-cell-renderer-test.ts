@@ -81,5 +81,17 @@ module('Integration | Component | navi table cell renderer', function (hooks) {
 
     assert.dom('.table-cell-content').hasText('05/12/2012', 'renders time-dimension value');
     assert.dom('.table-cell-content').hasClass('time-dimension', 'renders using date-time cell-formatter');
+
+    this.set('column', {
+      fragment: { type: 'dimension', canonicalName: 'tableName.url(field=id)', columnMetadata: { valueType: 'url' } },
+      attributes: {},
+    });
+
+    this.set('data', {
+      'tableName.url(field=id)': 'https://example.com',
+    });
+
+    assert.dom('.table-cell-content').hasText('https://example.com', 'renders url value');
+    assert.dom('.table-cell-content').hasClass('table-cell-url', 'renders using url cell-formatter');
   });
 });

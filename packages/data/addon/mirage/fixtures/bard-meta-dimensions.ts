@@ -271,6 +271,15 @@ export default {
       storageStrategy: 'loaded',
       fields: defaultFields,
     },
+    {
+      name: 'urlDim',
+      longName: 'Dimension with URL',
+      cardinality: 2,
+      category: 'test',
+      datatype: 'url',
+      storageStrategy: 'loaded',
+      fields: [defaultFields[0]],
+    },
   ],
 
   highCardinalityDims: [

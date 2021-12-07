@@ -34,7 +34,7 @@ export default class NaviTableCellRenderer extends Component<CellRendererArgs> {
    */
   get cellRenderer() {
     const { prefix } = this;
-    const { type } = this.args.column.fragment;
-    return `${prefix}${dasherize(type)}`;
+    const { type, columnMetadata } = this.args.column.fragment;
+    return `${prefix}${columnMetadata?.valueType === 'url' ? 'url' : dasherize(type)}`;
   }
 }
