@@ -33,7 +33,7 @@ interface DimensionSelectComponentArgs {
 interface NaviDimMeta {
   manualInputEntry?: boolean;
 }
-export class ExtraNaviDimModel {
+export class DimModelWrapper {
   model: NaviDimensionModel;
   meta: NaviDimMeta;
   constructor(model: NaviDimensionModel, meta: NaviDimMeta = {}) {
@@ -42,7 +42,7 @@ export class ExtraNaviDimModel {
   }
 
   isEqual(other: unknown): boolean {
-    return other instanceof ExtraNaviDimModel && this.model.isEqual(other.model);
+    return other instanceof DimModelWrapper && this.model.isEqual(other.model);
   }
 }
 
@@ -50,7 +50,7 @@ function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
 }
-function isNumericDimensionArray(arr: ExtraNaviDimModel[]): boolean {
+function isNumericDimensionArray(arr: DimModelWrapper[]): boolean {
   return arr.every((d) => isNumeric(d.model.value as string));
 }
 
@@ -63,7 +63,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   searchTerm?: string;
 
   @tracked
-  dimensionValues?: Promise<ExtraNaviDimModel[]>;
+  dimensionValues?: Promise<DimModelWrapper[]>;
 
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
@@ -79,14 +79,14 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     return this.dimensionValues;
   }
 
-  get selectedDimensions(): ExtraNaviDimModel[] {
+  get selectedDimensions(): DimModelWrapper[] {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
       return values.map(
         (value) =>
-          new ExtraNaviDimModel(dimensionModelFactory.create({ value, dimensionColumn }), {
+          new DimModelWrapper(dimensionModelFactory.create({ value, dimensionColumn }), {
             manualInputEntry: undefined,
           })
       );
@@ -100,7 +100,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   }
 
   @action
-  setValues(dimension: ExtraNaviDimModel[]) {
+  setValues(dimension: DimModelWrapper[]) {
     const values = dimension.map(({ model }) => model.value) as (string | number)[];
     this.args.onUpdateFilter({ values });
   }
@@ -114,7 +114,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
-        .then((r) => r.values.map((value) => new ExtraNaviDimModel(value, { manualInputEntry: false })))
+        .then((r) => r.values.map((value) => new DimModelWrapper(value, { manualInputEntry: false })))
         .then((dimensions) => {
           if (isNumericDimensionArray(dimensions)) {
             return sortBy(dimensions, [(d) => Number(d.model.value)]);
@@ -130,7 +130,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
    * @returns list of matching dimension models
    */
   @task({ restartable: true })
-  *searchDimensionValues(term: string): TaskGenerator<ExtraNaviDimModel[] | undefined> {
+  *searchDimensionValues(term: string): TaskGenerator<DimModelWrapper[] | undefined> {
     const { dimensionColumn } = this;
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
@@ -145,7 +145,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     );
 
     const dimensionResponseModel = dimensionResponse.values.map(
-      (values) => new ExtraNaviDimModel(values, { manualInputEntry: false })
+      (values) => new DimModelWrapper(values, { manualInputEntry: false })
     );
 
     if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
@@ -159,7 +159,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       dimensionColumn,
     });
 
-    const manualModel = new ExtraNaviDimModel(manualQuery, { manualInputEntry: true });
+    const manualModel = new DimModelWrapper(manualQuery, { manualInputEntry: true });
     return [manualModel, ...dimensionResponseModel];
   }
 }
