@@ -4,7 +4,7 @@
     <FilterValues::InvalidValue/>
   {{else}}
     {{#each (await this.selectedDimensions) as |dim|}}
-      <span class="filter-values--collapsed--value">{{dim.displayValue}}</span>
+      <span class="filter-values--collapsed--value">{{dim.model.displayValue}}</span>
     {{/each}}
   {{/if}}
 {{else}}
@@ -26,9 +26,15 @@
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"
       as |dim|>
         <div class="filter-values--dimension-select__option">
-          <div class="filter-values--dimension-select__option-value" title={{dim.displayValue}}>{{dim.displayValue}}</div>
+          <div class="filter-values--dimension-select__option-value" title={{dim.model.displayValue}}>
+            {{#if dim.meta.manualInputEntry}}
+              "{{dim.model.displayValue}}"
+            {{else}}
+               {{dim.model.displayValue}}
+            {{/if}}
+          </div>
           <div class="filter-values--dimension-select__option-context">
-            {{#each-in dim.suggestions as |field value|}}
+            {{#each-in dim.model.suggestions as |field value|}}
               <span class="filter-values--dimension-select__option-context-item is-grey-700" title={{value}}><span class="cap is-grey-600">{{field}}</span>: {{value}} </span>
             {{/each-in}}
           </div>

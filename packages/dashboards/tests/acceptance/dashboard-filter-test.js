@@ -119,9 +119,8 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     await fillIn('.filter-values--dimension-select__trigger input', '1');
     await selectChoose('.filter-values--dimension-select__trigger', '1');
-
     assert.ok(
-      dataRequests.every((request) => request.queryParams.filters == 'multiSystemId|key-in["k1"]'),
+      dataRequests.every((request) => request.queryParams.filters == 'multiSystemId|key-in["1"]'),
       'each widget request has the filter added using the key field'
     );
     assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');

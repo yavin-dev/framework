@@ -23,18 +23,35 @@ import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response
 
 const SEARCH_DEBOUNCE_MS = 250;
 const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
+
 interface DimensionSelectComponentArgs {
   filter: FilterFragment;
   request: RequestFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
 }
 
+interface NaviDimMeta {
+  manualInputEntry?: boolean;
+}
+export class DimModelWrapper {
+  model: NaviDimensionModel;
+  meta: NaviDimMeta;
+  constructor(model: NaviDimensionModel, meta: NaviDimMeta = {}) {
+    this.model = model;
+    this.meta = meta;
+  }
+
+  isEqual(other: unknown): boolean {
+    return other instanceof DimModelWrapper && this.model.isEqual(other.model);
+  }
+}
+
 function isNumeric(num: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- isNan should accept any
   return !isNaN(num as any);
 }
-function isNumericDimensionArray(arr: NaviDimensionModel[]): boolean {
-  return arr.every((d) => isNumeric(d.value as string));
+function isNumericDimensionArray(arr: DimModelWrapper[]): boolean {
+  return arr.every((d) => isNumeric(d.model.value as string));
 }
 
 export default class DimensionSelectComponent extends Component<DimensionSelectComponentArgs> {
@@ -46,7 +63,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   searchTerm?: string;
 
   @tracked
-  dimensionValues?: Promise<NaviDimensionModel[]>;
+  dimensionValues?: Promise<DimModelWrapper[]>;
 
   get dimensionColumn(): DimensionColumn {
     const { filter } = this.args;
@@ -59,16 +76,20 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.searchTerm !== undefined) {
       return undefined; // we are searching, so only show search results
     }
-
     return this.dimensionValues;
   }
 
-  get selectedDimensions(): NaviDimensionModel[] {
+  get selectedDimensions(): DimModelWrapper[] {
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
       const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
-      return values.map((value) => dimensionModelFactory.create({ value, dimensionColumn }));
+      return values.map(
+        (value) =>
+          new DimModelWrapper(dimensionModelFactory.create({ value, dimensionColumn }), {
+            manualInputEntry: undefined,
+          })
+      );
     }
     return [];
   }
@@ -79,8 +100,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   }
 
   @action
-  setValues(dimension: NaviDimensionModel[]) {
-    const values = dimension.map(({ value }) => value) as (string | number)[];
+  setValues(dimension: DimModelWrapper[]) {
+    const values = dimension.map(({ model }) => model.value) as (string | number)[];
     this.args.onUpdateFilter({ values });
   }
 
@@ -93,12 +114,12 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     if (this.isSmallCardinality) {
       this.dimensionValues = taskFor(this.naviDimension.all)
         .perform(dimensionColumn)
-        .then((r) => r.values)
+        .then((r) => r.values.map((value) => new DimModelWrapper(value, { manualInputEntry: false })))
         .then((dimensions) => {
           if (isNumericDimensionArray(dimensions)) {
-            return sortBy(dimensions, [(d) => Number(d.value)]);
+            return sortBy(dimensions, [(d) => Number(d.model.value)]);
           }
-          return sortBy(dimensions, ['value']);
+          return sortBy(dimensions, ['model.value']);
         });
     }
   }
@@ -109,17 +130,36 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
    * @returns list of matching dimension models
    */
   @task({ restartable: true })
-  *searchDimensionValues(term: string): TaskGenerator<NaviDimensionModel[] | undefined> {
+  *searchDimensionValues(term: string): TaskGenerator<DimModelWrapper[] | undefined> {
+    const { dimensionColumn } = this;
     const searchTerm = term.trim();
     this.searchTerm = searchTerm;
     if (!searchTerm) {
       return undefined;
     }
+
     yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
     const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
       this.dimensionColumn,
       searchTerm
     );
-    return dimensionResponse.values;
+
+    const dimensionResponseModel = dimensionResponse.values.map(
+      (values) => new DimModelWrapper(values, { manualInputEntry: false })
+    );
+
+    if (dimensionResponse.values.map((each) => each.value).includes(searchTerm)) {
+      return dimensionResponseModel;
+    }
+
+    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
+    const value = searchTerm as string | number;
+    const manualQuery = dimensionModelFactory.create({
+      value,
+      dimensionColumn,
+    });
+
+    const manualModel = new DimModelWrapper(manualQuery, { manualInputEntry: true });
+    return [manualModel, ...dimensionResponseModel];
   }
 }

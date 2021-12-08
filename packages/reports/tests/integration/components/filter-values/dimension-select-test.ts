@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, findAll } from '@ember/test-helpers';
+import { render, findAll, fillIn } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -59,11 +59,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
 
     // Open value selector
     await clickTrigger();
-
     const selectedValueText = findAll(
       '.ember-power-select-option[aria-selected=true] .filter-values--dimension-select__option-value'
     ).map((el) => el.textContent?.trim());
-
     const expectedValueDimensions = AgeValues.filter(({ id }) => this.filter.values.includes(id));
 
     assert.deepEqual(
@@ -305,7 +303,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
     //if client side sorting was applied we'd see: ['Property 1', 'Property 11', 'Property 111', 'Property 2', 'Property 3']
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
+      ['"Property"', 'Property 1', 'Property 3', 'Property 2', 'Property 11', 'Property 111'],
       'Sort is applied as it was given from server mock'
     );
   });
@@ -331,6 +329,7 @@ module('Integration | Component | filter values/dimension select', function (hoo
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
       [
+        ['"Un"', ''],
         ['-1', 'description: Unknown'],
         ['1', 'description: under 13'],
       ],
@@ -363,8 +362,42 @@ module('Integration | Component | filter values/dimension select', function (hoo
         el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
         el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
       ]),
-      [['65 and over', 'id: 10']],
+      [
+        ['"over"', ''],
+        ['65 and over', 'id: 10'],
+      ],
       '`dimension-select` fetches values for new dimension field'
     );
+  });
+
+  test('testing manual filter', async function (this: TestContext, assert) {
+    assert.expect(2);
+    this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
+    this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
+      this.set('filter.values', changeSet.values);
+    };
+
+    await render(TEMPLATE);
+
+    await selectSearch('.filter-values--dimension-select__trigger', 'abc');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option').map((el) => [
+        el.querySelector('.filter-values--dimension-select__option-value')?.textContent?.trim(),
+        el.querySelector('.filter-values--dimension-select__option-context')?.textContent?.trim(),
+      ]),
+      [['"abc"', '']]
+    );
+
+    this.onUpdateFilter = (changeSet: Partial<FilterFragment>) => {
+      assert.deepEqual(
+        changeSet.values,
+        [...this.filter.values, 'xyz'],
+        'changeSet should update after clicking on a value from dropdown'
+      );
+    };
+
+    await clickTrigger();
+    await fillIn('.filter-values--dimension-select__trigger input', 'xyz');
+    await nativeMouseUp('.ember-power-select-option');
   });
 });

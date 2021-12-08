@@ -23,9 +23,8 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
 
     await clickItemFilter('dimension', 'Property');
     await selectSearch('.filter-values--dimension-select__trigger', 'Property');
-    await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 0);
+    await selectChoose('.filter-values--dimension-select__trigger', '.ember-power-select-option', 1);
     await click('.navi-report__run-btn');
-
     assert.deepEqual(
       findAll('.c3-legend-item').map((el) => el.textContent.trim()),
       ['Property 1'],
