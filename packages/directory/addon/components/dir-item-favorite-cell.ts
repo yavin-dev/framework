@@ -4,10 +4,6 @@
  *
  * This component won't be used directly. It is passed to ember-light-table as a custom cell component.
  * Ember-light-table will pass any parameters in through the value attribute.
- *
- * <DirItemNameCell
- *  @value={{@item}}
- * />
  */
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';

@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { click, currentURL, find, findAll, fillIn, visit } from '@ember/test-helpers';
+import { click, currentURL, findAll, fillIn, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -114,38 +114,36 @@ module('Acceptance | dir-table', function (hooks) {
   });
 
   test('favorite item toggle', async function (assert) {
-    assert.expect(9);
+    assert.expect(5);
     await visit('/directory/my-data');
     const user = await this.owner.lookup('service:user').findUser();
-    const favIcon = find('.dir-table__cell--favorite');
-    const favTitle = find('.dir-table__cell--name');
 
-    // make sure item is already favorite
-    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'favorite item renders a solid star');
-    let favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stored data matches rendered title');
+    // returns list of favorite items (items with solid stars next to them)
+    const getFavorites = () => {
+      return findAll('.dir-table__row')
+        .filter((el) => el.querySelector('.d-star-solid'))
+        .map((fav) => fav.querySelector('.dir-item-name-cell').textContent.trim());
+    };
+
+    // find an item that starts as a favorite
+    const testItem = findAll('.dir-table__row').filter((el) => el.querySelector('.d-star-solid'))[0];
+    const itemTitle = testItem.querySelector('.dir-item-name-cell').textContent.trim();
+    const favCell = testItem.firstElementChild;
 
     // un-favorite item
-    await click(favIcon.firstElementChild);
-
-    // make sure UI un-favorite is reflected both in stored data & visually
-    assert.ok(favIcon.firstElementChild.classList.contains('d-star'), 'non-favorite item shows a hollow star');
-    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(favoriteReports.length, 0, 'user no longer stores item as favorite');
+    await click(favCell.firstElementChild);
+    assert.notOk(getFavorites().includes(itemTitle), 'non-favorite item does not show solid star');
+    assert.dom(favCell.firstElementChild).hasClass('d-star', 'non-favorite item renders hollow star');
 
     // re-favorite item
-    await click(favIcon.firstElementChild);
-
-    // make sure UI re-favorite shows up both in stored data & visually
-    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'favorite item shows a solid star');
-    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stores item as favorite again');
+    await click(favCell.firstElementChild);
+    assert.ok(getFavorites().includes(itemTitle), 'favorite item shows a solid star');
 
     // Mock server path endpoint to mock failure
     server.patch('/users/:id', () => new Response(500));
 
     // favorite item data update error
-    await click(favIcon.firstElementChild);
+    await click(favCell.firstElementChild);
     assert
       .dom('.alert.is-danger')
       .hasText(
@@ -154,9 +152,7 @@ module('Acceptance | dir-table', function (hooks) {
       );
 
     // make sure UI hasn't changed and item is still favorite
-    assert.ok(favIcon.firstElementChild.classList.contains('d-star-solid'), 'item still shows favorite solid star');
-    favoriteReports = user.favoriteReports.toArray().map((ele) => ele.title);
-    assert.equal(favoriteReports[0], favTitle.textContent.trim(), 'user stores item as favorite again');
+    assert.ok(getFavorites().includes(itemTitle), 'item still shows favorite solid star');
 
     user.send('becameInvalid');
   });

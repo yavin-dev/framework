@@ -55,7 +55,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         classNames: 'dir-table__header-cell dir-table__header-cell--favorite',
         cellComponent: 'dir-item-favorite-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--favorite',
-        breakpoints: ['tablet', 'desktop', 'jumbo'],
+        breakpoints: ['mobile', 'tablet', 'desktop', 'jumbo'],
       },
       {
         label: 'NAME',
@@ -76,7 +76,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         classNames: 'dir-table__header-cell dir-table__header-cell--actions',
         cellComponent: 'dir-asset-row-actions',
         cellClassNames: 'dir-table__cell dir-table__cell--actions',
-        breakpoints: ['mobile', 'tablet', 'desktop', 'jumbo'],
+        breakpoints: ['tablet', 'desktop', 'jumbo'],
       },
       {
         label: 'OWNER',

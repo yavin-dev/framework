@@ -11,8 +11,8 @@
  */
 import Component from '@glimmer/component';
 import { pluralize } from 'ember-inflector';
-import ReportModel from 'navi-core/models/report';
-import DashboardModel from 'navi-core/models/dashboard';
+import type ReportModel from 'navi-core/models/report';
+import type DashboardModel from 'navi-core/models/dashboard';
 
 interface DirItemNameCellComponentArgs {
   value: ReportModel | DashboardModel;
