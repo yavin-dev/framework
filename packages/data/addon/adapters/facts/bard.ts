@@ -227,7 +227,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       ? `/${dimensions
           .map((dim) => {
             const fields = [...new Set(dimensionToFields[dim])].filter((field) => !!field);
-            return `${dim}${fields.length > 0 ? `;show=${fields.sort().join(',')}` : ''}`;
+            return `${dim}${fields.length > 0 ? `;show=${fields.join(',')}` : ''}`;
           })
           .join('/')}`
       : '';
