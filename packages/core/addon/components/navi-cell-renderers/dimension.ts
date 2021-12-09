@@ -7,6 +7,8 @@
  *   @data={{this.row}}
  *   @column={{this.column}}
  *   @request={{this.request}}
+ *   @isRollup={{@isRollup}}
+ *   @isGrandTotal={{@isGrandTotal}}
  * />
  */
 

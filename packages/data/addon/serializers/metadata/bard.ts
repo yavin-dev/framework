@@ -57,7 +57,7 @@ type RawColumnPayload = {
 };
 
 export type RawDimensionPayload = RawColumnPayload & {
-  datatype?: 'text' | 'number' | 'date' | 'dateTime';
+  datatype?: 'text' | 'number' | 'date' | 'dateTime' | 'url';
   storageStrategy?: TODO<'loaded' | 'none'>;
   cardinality: number;
   fields: RawDimensionField[];

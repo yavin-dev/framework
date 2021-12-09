@@ -1990,4 +1990,15 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.number-format-dropdown');
     assert.dom(navClicksCell()).hasText('$305.99', 'The metric is re-rendered in the money format');
   });
+
+  test('Table url cell', async function (assert) {
+    await visit('/reports/2/view');
+
+    await clickItem('dimension', 'Dimension with URL');
+    await click('.navi-report__run-btn');
+
+    assert
+      .dom('.table-cell-content.table-cell-url a')
+      .hasAttribute('href', /^https?:\/\/\w+\.\w+/, 'The anchor element is rendered correctly');
+  });
 });
