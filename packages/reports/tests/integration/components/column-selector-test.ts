@@ -53,7 +53,7 @@ module('Integration | Component | column-selector', function (hooks) {
 
     assert.dom('.column-selector__title').hasText('My Awesome Columns', '`column-selector renders a title correctly');
     const groups = findAll('.grouped-list__group-header').map((e) => e?.textContent?.trim());
-    assert.deepEqual(groups, ['Asset (4)', 'test (26)'], '`column-selector` renders column groups correctly');
+    assert.deepEqual(groups, ['Asset (4)', 'test (27)'], '`column-selector` renders column groups correctly');
 
     await click(findAll('.grouped-list__group-header')[0]);
     const groupColumns = findAll('.column-selector__column').map((e) => e?.textContent?.trim());

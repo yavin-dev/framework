@@ -43,12 +43,12 @@ module('Unit | Adapter | metadata/bard', function (hooks) {
         ).size,
       })),
       [
-        { dimensions: 29, grains: 7, metrics: 42, name: 'network' },
-        { dimensions: 31, grains: 7, metrics: 42, name: 'tableA' },
-        { dimensions: 31, grains: 6, metrics: 42, name: 'tableB' },
-        { dimensions: 31, grains: 7, metrics: 42, name: 'protected' },
-        { dimensions: 31, grains: 6, metrics: 33, name: 'tableC' },
-        { dimensions: 31, grains: 7, metrics: 6, name: 'tableD' },
+        { dimensions: 30, grains: 7, metrics: 42, name: 'network' },
+        { dimensions: 32, grains: 7, metrics: 42, name: 'tableA' },
+        { dimensions: 32, grains: 6, metrics: 42, name: 'tableB' },
+        { dimensions: 32, grains: 7, metrics: 42, name: 'protected' },
+        { dimensions: 32, grains: 6, metrics: 33, name: 'tableC' },
+        { dimensions: 32, grains: 7, metrics: 6, name: 'tableD' },
       ],
       '`fetchEverything` correctly requested all datasource metadata'
     );
