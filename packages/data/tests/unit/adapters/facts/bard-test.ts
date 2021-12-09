@@ -210,13 +210,17 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
         { field: 'd2', type: 'dimension', parameters: { field: 'id' } },
         { field: 'd2', type: 'dimension', parameters: { field: 'key' } },
+        { field: 'd2', type: 'dimension', parameters: { field: 'other' } },
         { field: 'd1', type: 'dimension', parameters: { field: 'desc' } },
+        { field: 'd1', type: 'dimension', parameters: { field: 'desc' } },
+        { field: 'd1', type: 'dimension', parameters: { field: 'id' } },
+        { field: 'd1', type: 'dimension', parameters: { field: 'another' } },
       ],
     };
     assert.equal(
       Adapter._buildDimensionsPath(multipleFields),
-      '/d1;show=desc,id/d2;show=id,key',
-      '_buildDimensionsPath built the correct string for duplicate dimension with different and same fields'
+      '/d1;show=id,desc,another/d2;show=id,key,other',
+      '_buildDimensionsPath deduplicates dimension and fields while respecting the order of the fields'
     );
 
     let noFields: RequestV2 = {
