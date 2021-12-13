@@ -49,7 +49,7 @@ module('Integration | Component | dir table', function (hooks) {
 
     assert.deepEqual(
       findAll('th').map((elm) => elm.innerText.trim()),
-      ['NAME', '', 'OWNER', 'LAST UPDATED DATE', 'LABEL'],
+      ['', 'NAME', '', 'OWNER', 'LAST UPDATED DATE', 'LABEL'],
       'The correct columns are generated for the table'
     );
 
@@ -84,7 +84,7 @@ module('Integration | Component | dir table', function (hooks) {
 
     assert.deepEqual(
       th.map((elm) => elm.className.includes('is-sortable')),
-      [true, false, true, true, false],
+      [false, true, false, true, true, false],
       'Only title, owner and last update columns are sortable'
     );
 
@@ -93,7 +93,7 @@ module('Integration | Component | dir table', function (hooks) {
         let i = elm.querySelector('i');
         return i ? i.className.includes('desc') : false;
       }),
-      [false, false, false, true, false],
+      [false, false, false, false, true, false],
       'Last update column is sorted'
     );
 
@@ -140,7 +140,7 @@ module('Integration | Component | dir table', function (hooks) {
       @onColumnClick={{this.onColumnClick}}
     />`);
 
-    await click('th:nth-child(3)');
+    await click('th:nth-child(4)');
 
     // sorting a descending column
 
@@ -161,7 +161,7 @@ module('Integration | Component | dir table', function (hooks) {
       @onColumnClick={{this.onColumnClick}}
     />`);
 
-    await click('th:nth-child(3)');
+    await click('th:nth-child(4)');
 
     // sorting an unsorted column with sortDescFirst=undefined
 
@@ -181,7 +181,7 @@ module('Integration | Component | dir table', function (hooks) {
       @onColumnClick={{this.onColumnClick}}
     />`);
 
-    await click('th:nth-child(3)');
+    await click('th:nth-child(4)');
 
     // sorting an unsorted column with sortDescFirst=true
 
@@ -200,7 +200,7 @@ module('Integration | Component | dir table', function (hooks) {
       @onColumnClick={{this.onColumnClick}}
     />`);
 
-    await click('th:nth-child(4)');
+    await click('th:nth-child(5)');
   });
 
   test('search results messaging', async function (assert) {

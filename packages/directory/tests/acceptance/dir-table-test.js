@@ -3,7 +3,7 @@ import { click, currentURL, findAll, fillIn, visit } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
-module('Acceptance | dir table', function (hooks) {
+module('Acceptance | dir-table', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
@@ -42,7 +42,7 @@ module('Acceptance | dir table', function (hooks) {
       'items are sorted by updatedOn desc'
     );
 
-    await click(findAll('th')[3]);
+    await click(findAll('th')[4]);
 
     assert.equal(
       currentURL(),
@@ -56,7 +56,7 @@ module('Acceptance | dir table', function (hooks) {
       'items are sorted by updatedOn asc after re-sorting by updatedOn'
     );
 
-    await click('th');
+    await click(findAll('th')[1]);
 
     assert.equal(
       currentURL(),
@@ -84,7 +84,7 @@ module('Acceptance | dir table', function (hooks) {
 
     await visit('/directory/my-data?filter=favorites');
 
-    await click(findAll('th')[2]);
+    await click(findAll('th')[3]);
 
     assert.equal(
       currentURL(),
@@ -111,5 +111,49 @@ module('Acceptance | dir table', function (hooks) {
     assert
       .dom('.dir-table-filter select')
       .hasValue('Dashboards', 'The selected type is set based on the query param in the url');
+  });
+
+  test('favorite item toggle', async function (assert) {
+    assert.expect(5);
+    await visit('/directory/my-data');
+    const user = await this.owner.lookup('service:user').findUser();
+
+    // returns list of favorite items (items with solid stars next to them)
+    const getFavorites = () => {
+      return findAll('.dir-table__row')
+        .filter((el) => el.querySelector('.d-star-solid'))
+        .map((fav) => fav.querySelector('.dir-item-name-cell').textContent.trim());
+    };
+
+    // find an item that starts as a favorite
+    const testItem = findAll('.dir-table__row').filter((el) => el.querySelector('.d-star-solid'))[0];
+    const itemTitle = testItem.querySelector('.dir-item-name-cell').textContent.trim();
+    const favCell = testItem.firstElementChild;
+
+    // un-favorite item
+    await click(favCell.firstElementChild);
+    assert.notOk(getFavorites().includes(itemTitle), 'non-favorite item does not show solid star');
+    assert.dom(favCell.firstElementChild).hasClass('d-star', 'non-favorite item renders hollow star');
+
+    // re-favorite item
+    await click(favCell.firstElementChild);
+    assert.ok(getFavorites().includes(itemTitle), 'favorite item shows a solid star');
+
+    // Mock server path endpoint to mock failure
+    server.patch('/users/:id', () => new Response(500));
+
+    // favorite item data update error
+    await click(favCell.firstElementChild);
+    assert
+      .dom('.alert.is-danger')
+      .hasText(
+        'Oh no! An error occurred while updating favorite reports',
+        'Notification shown when error updating favorite reports'
+      );
+
+    // make sure UI hasn't changed and item is still favorite
+    assert.ok(getFavorites().includes(itemTitle), 'item still shows favorite solid star');
+
+    user.send('becameInvalid');
   });
 });

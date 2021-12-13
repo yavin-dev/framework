@@ -65,5 +65,12 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
       },
     },
+    {
+      files: ['tests/**/*.js', 'tests/test-helper.ts'],
+      rules: {
+        '@typescript-eslint/no-use-before-define': 'off',
+        '@typescript-eslint/ban-ts-ignore': 'off',
+      },
+    },
   ],
 };

@@ -29,14 +29,6 @@ interface DirTableComponentArgs {
 }
 
 export default class DirTableComponent extends Component<DirTableComponentArgs> {
-  //TODO replace with `is-empty` helper from ember-truth-helpers once that is released
-  /**
-   * @property {Boolean} isSearching
-   */
-  get isSearching() {
-    return !isEmpty(this.args.searchQuery);
-  }
-
   /**
    * @property {Array} model - Used by ember-light-table to create rows
    */
@@ -53,6 +45,18 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
    */
   get columns() {
     const columns = [
+      {
+        label: '',
+        valuePath: 'model',
+        sortable: false,
+        hideable: false,
+        draggable: false,
+        width: '80px',
+        classNames: 'dir-table__header-cell dir-table__header-cell--favorite',
+        cellComponent: 'dir-item-favorite-cell',
+        cellClassNames: 'dir-table__cell dir-table__cell--favorite',
+        breakpoints: ['mobile', 'tablet', 'desktop', 'jumbo'],
+      },
       {
         label: 'NAME',
         valuePath: 'model',

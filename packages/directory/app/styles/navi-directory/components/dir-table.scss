@@ -13,7 +13,6 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
     th {
       border-bottom: 1px map-get($denali-grey-colors, '600') solid;
       color: map-get($denali-grey-colors, '600');
-      font-family: $font-family-thin;
       font-size: 13px;
       font-weight: normal;
       padding-bottom: 5px;
@@ -34,7 +33,7 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
   &__row {
     border-bottom: 1px map-get($denali-grey-colors, '400') solid;
     font-size: 14px;
-    height: 42px;
+    height: 50px;
     margin: 5px 0;
     padding-left: 5px;
 
@@ -55,15 +54,5 @@ $font-family-thin: 'HelveticaNeue-Thin', 'HelveticaNeueW01-Thin', Helvetica, Ari
 
   &__cell {
     cursor: default;
-
-    &--name {
-      padding-left: 10px;
-    }
-  }
-
-  &__header-cell {
-    &--name {
-      padding-left: 10px;
-    }
   }
 }

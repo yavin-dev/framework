@@ -10,11 +10,12 @@
  * />
  */
 import Component from '@glimmer/component';
-import FileTypes from 'navi-directory/utils/enums/file-types';
 import { pluralize } from 'ember-inflector';
+import type ReportModel from 'navi-core/models/report';
+import type DashboardModel from 'navi-core/models/dashboard';
 
 interface DirItemNameCellComponentArgs {
-  value: TODO<{ constructor: { modelName: string }; modelId: string }>;
+  value: ReportModel | DashboardModel;
 }
 
 export default class DirItemNameCellComponent extends Component<DirItemNameCellComponentArgs> {
@@ -37,19 +38,8 @@ export default class DirItemNameCellComponent extends Component<DirItemNameCellC
    * @property {String} type - the type of the item
    */
   get type() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    //@ts-ignore (ember data generates this field)
     return this.args.value?.constructor?.modelName;
-  }
-
-  /**
-   * @property {String} iconClass - the icon class that is passed to navi-icon
-   */
-  get iconClass() {
-    const type = pluralize(this.type) as 'reports' | 'dashboards';
-    return FileTypes.definitions[type]?.iconClass;
-  }
-
-  get iconColorClass() {
-    const type = pluralize(this.type) as 'reports' | 'dashboards';
-    return `is-${FileTypes.definitions[type]?.color}`;
   }
 }

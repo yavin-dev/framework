@@ -1,5 +1,4 @@
 import { attr, belongsTo, hasMany, AsyncBelongsTo, AsyncHasMany } from '@ember-data/model';
-import { A } from '@ember/array';
 //@ts-ignore
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
 import DeliverableItem from 'navi-core/models/deliverable-item';
@@ -70,8 +69,8 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteDashboards = user?.hasMany('favoriteDashboards').ids();
-    return A(favoriteDashboards).includes(this.id);
+    // referenced this way so that changes are picked up by ember auto-tracking
+    return user?.favoriteDashboards.toArray().some((r) => r.id === this.id);
   }
 
   /**

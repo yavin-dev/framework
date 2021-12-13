@@ -1,4 +1,3 @@
-import { A as arr } from '@ember/array';
 import { attr, belongsTo } from '@ember-data/model';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
@@ -52,8 +51,8 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   get isFavorite() {
     const user = this.user.getUser();
-    const favoriteReports = user?.hasMany('favoriteReports').ids();
-    return arr(favoriteReports).includes(this.id);
+    // referenced this way so that changes are picked up by ember auto-tracking
+    return user?.favoriteReports.toArray().some((r) => r.id === this.id);
   }
 
   /**
