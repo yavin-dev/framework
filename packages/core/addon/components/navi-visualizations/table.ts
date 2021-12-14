@@ -28,7 +28,7 @@ const HEADER_TITLE = {
   grandTotal: 'Grand Total',
   subtotal: 'Subtotal',
 };
-type TotalType = keyof typeof HEADER_TITLE;
+export type TotalType = keyof typeof HEADER_TITLE;
 
 export type TableSortDirection = SortDirection | 'none';
 const NEXT_SORT_DIRECTION: Record<TableSortDirection, TableSortDirection> = {
@@ -37,7 +37,7 @@ const NEXT_SORT_DIRECTION: Record<TableSortDirection, TableSortDirection> = {
   asc: 'none',
 };
 
-type TotalRow = ResponseRow;
+export type TotalRow = ResponseRow;
 
 type UpdateAction = string;
 export type VisualizationModelEntry = { request: RequestFragment; response: NaviFactResponse };
