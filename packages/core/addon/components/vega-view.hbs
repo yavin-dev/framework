@@ -1,2 +1,8 @@
 {{!-- Copyright 2021, Yahoo Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<VegaView @spec={{this.spec}} class=" w-full h-full" />
+<div
+  class="vega-view"
+  id={{this.guid}}
+  {{did-insert this.render}}
+  {{did-update this.render @spec}}
+  ...attributes
+/>

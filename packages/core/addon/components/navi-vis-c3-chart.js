@@ -22,7 +22,8 @@
 import { next, scheduleOnce } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
 import { set, getProperties, get, computed } from '@ember/object';
-import C3Chart from 'ember-c3/components/c3-chart';
+//import C3Chart from 'ember-c3/components/c3-chart';
+import C3Chart from '@glimmer/component';
 import c3 from 'c3';
 import { A } from '@ember/array';
 import $ from 'jquery';
