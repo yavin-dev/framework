@@ -71,6 +71,7 @@ export default class ScheduleActionComponent extends Component<Args> {
 
   @tracked showModal = false;
 
+  deliveryOptions = ['email', 'none'];
   /**
    * Promise resolving to whether item is valid to be scheduled
    */

@@ -153,4 +153,10 @@
             );
         </sql>
     </changeSet>
+    <changeSet author="admin" id="4">
+        <sql>
+            ALTER TABLE DeliveryRule
+                ADD delivery int not null;
+        </sql>
+    </changeSet>
 </databaseChangeLog>

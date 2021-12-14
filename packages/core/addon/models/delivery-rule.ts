@@ -33,6 +33,12 @@ const Validations = buildValidations({
       invalidEmailMsg: 'Not all recipients are valid email addresses',
     }),
   ],
+  delivery: [
+    validator('presence', {
+      presence: true,
+      message: 'Please select a delivery option',
+    }),
+  ],
 });
 
 export default class DeliveryRuleModel extends Model.extend(Validations) {
@@ -60,6 +66,9 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
 
   @attr('number', { defaultValue: 1 })
   version!: number;
+
+  @attr('string', { defaultValue: 'email' })
+  delivery!: string;
 
   @belongsTo('deliverable-item', { async: true, inverse: 'deliveryRules', polymorphic: true })
   deliveredItem!: DS.PromiseObject<DeliverableItemModel>;
