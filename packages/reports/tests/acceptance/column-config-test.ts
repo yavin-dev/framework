@@ -288,8 +288,27 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
   });
 
   test('adding, removing and changing a sort', async function (assert) {
-    assert.expect(6);
+    assert.expect(11);
     await newReport();
+
+    await clickItem('dimension', 'Age');
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Dimension Field Type'],
+      'The sort direction is not listed'
+    );
+    await click('.navi-column-config-base__sort-icon');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .doesNotHaveClass(
+        'navi-column-config-base__sort-icon--active',
+        'The sort icon does not become active for a column that is not sortable'
+      );
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
+      ['Dimension Field Type'],
+      'The sort direction is still not listed'
+    );
 
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
@@ -304,6 +323,10 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       ['Sort Direction', 'Time Grain Type'],
       'A sort direction is applied and becomes the first parameter'
     );
+
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasClass('navi-column-config-base__sort-icon--active', 'The sort icon becomes active');
 
     assert
       .dom('.navi-column-config-item__parameter-trigger')
@@ -325,6 +348,9 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       ['Time Grain Type'],
       'The sort direction is not listed'
     );
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .doesNotHaveClass('navi-column-config-base__sort-icon--active', 'The sort icon is no longer active');
   });
 
   test('toggling a sort', async function (assert) {

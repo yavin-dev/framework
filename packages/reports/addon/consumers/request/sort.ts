@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -55,6 +55,10 @@ export default class SortConsumer extends ActionConsumer {
       columnFragment: ColumnFragment,
       direction: SortDirection
     ) {
+      if (!columnFragment.columnMetadata.isSortable) {
+        return;
+      }
+
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
       const sorts = request.sorts.filter((sort) => sort.canonicalName === columnFragment.canonicalName);
