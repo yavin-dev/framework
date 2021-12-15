@@ -75,9 +75,8 @@ module('Unit | Consumer | request sort', function (hooks) {
       {
         'network.dateTime(grain=day)': 'desc',
         adClicks: 'desc',
-        'age(field=id)': 'desc',
       },
-      'The sorts are added'
+      'The sorts are added only for columns that are sortable'
     );
 
     Consumer.send(RequestActions.UPSERT_SORT, route, request.columns.objectAt(0), 'asc');
@@ -88,18 +87,6 @@ module('Unit | Consumer | request sort', function (hooks) {
       {
         'network.dateTime(grain=day)': 'asc',
         adClicks: 'asc',
-        'age(field=id)': 'desc',
-      },
-      'The sorts are added'
-    );
-
-    Consumer.send(RequestActions.UPSERT_SORT, route, request.columns.objectAt(2), 'asc');
-    assert.deepEqual(
-      getSorts(request),
-      {
-        'network.dateTime(grain=day)': 'asc',
-        adClicks: 'asc',
-        'age(field=id)': 'asc',
       },
       'The sorts are updated'
     );
