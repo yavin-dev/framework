@@ -152,13 +152,17 @@ module('Acceptance | fili datasource', function (hooks) {
   });
 
   test('Fili Dimension sorting disabled', async function (assert) {
-    assert.expect(4);
+    assert.expect(7);
     await newReport();
 
     await clickItem('dimension', 'Date Time');
     assert
       .dom('.navi-column-config-base__sort-icon')
       .doesNotHaveAttribute('disabled', 'A timeDimension column can be sorted');
+    await click('.navi-column-config-base__sort-icon');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasClass('navi-column-config-base__sort-icon--active', 'The timeDimension sort icon becomes active');
 
     await clickItem('dimension', 'Age');
     assert
@@ -167,9 +171,17 @@ module('Acceptance | fili datasource', function (hooks) {
     assert
       .dom('.navi-column-config-base__sort-icon')
       .hasAttribute('title', 'This column cannot be sorted', 'A dimension column cannot be sorted');
+    await click('.navi-column-config-base__sort-icon');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .doesNotHaveClass('navi-column-config-base__sort-icon--active', 'The dimension sort icon does not become active');
 
     await clickItem('metric', 'Revenue');
     assert.dom('.navi-column-config-base__sort-icon').doesNotHaveAttribute('disabled', 'A metric column can be sorted');
+    await click('.navi-column-config-base__sort-icon');
+    assert
+      .dom('.navi-column-config-base__sort-icon')
+      .hasClass('navi-column-config-base__sort-icon--active', 'The metric sort icon becomes active');
   });
 
   test('Fili Remove time column (all grain)', async function (assert) {
