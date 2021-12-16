@@ -13,6 +13,7 @@ import DeliverableItemModel from './deliverable-item';
 import { Moment } from 'moment';
 // eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
+import { computed } from '@ember/object';
 
 const Validations = buildValidations({
   frequency: [
@@ -25,12 +26,14 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       message: 'Please select a delivery format',
+      disabled: computed.equal('model.delivery', 'none'),
     }),
   ],
   recipients: [
     validator('recipients', {
       noRecipientsMsg: 'There must be at least one recipient',
       invalidEmailMsg: 'Not all recipients are valid email addresses',
+      disabled: computed.equal('model.delivery', 'none'),
     }),
   ],
   delivery: [
@@ -62,7 +65,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   format!: DeliveryFormatFragment;
 
   @attr({ defaultValue: () => [] })
-  recipients!: string[];
+  recipients?: string[];
 
   @attr('number', { defaultValue: 1 })
   version!: number;

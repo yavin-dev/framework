@@ -72,8 +72,11 @@
           >
             {{capitalize delivery}}
           </PowerSelect>
+          <div class="schedule__modal-helper-delivery">
+              If 'Email' is selected emails will be automatically delivered to the designated recipients, to not recieve emails select 'None'.
+          </div>
         </DenaliInputGroup>
-        {{#if (eq this.localDeliveryRule.delivery 'email')}}
+        {{#if (eq this.localDeliveryRule.delivery "email")}}
           <DenaliInputGroup
             @label="Recipients"
             @isStacked={{true}}
@@ -122,7 +125,7 @@
             {{capitalize frequency}}
           </PowerSelect>
         </DenaliInputGroup>
-        {{#if (and (feature-flag "enabledNotifyIfData") (eq this.localDeliveryRule.delivery 'email'))}}
+        {{#if (and (feature-flag "enabledNotifyIfData") (eq this.localDeliveryRule.delivery "email"))}}
           <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
             <DenaliSwitch
               class="schedule__modal-must-have-data-toggle"

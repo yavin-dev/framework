@@ -311,6 +311,26 @@ class DeliveryRulesTest : IntegrationTest() {
         given()
             .header("User", USER1)
             .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("delivery", "none"),
+                        )
+                    )
+                )
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
             .`when`()["/deliveryRules/1"]
             .then()
             .assertThat()
@@ -428,6 +448,34 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("user1@yavin.dev", "uasdf")),
                             attr("version", "1")
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id("1"))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+
+        // cannot have null delivery
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("delivery", null),
+                            attr("frequency", "week"),
+                            attr("version", "1"),
+                            attr("recipients", arrayOf("user1@yavin.dev")),
+                            attr("format", format)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
