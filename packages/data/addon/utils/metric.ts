@@ -3,9 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { isEmpty } from '@ember/utils';
-import { get } from '@ember/object';
+import type { Parameters } from 'navi-data/adapters/facts/interface';
 
-type Parameters = Record<string, string>;
 interface ColumnAttributes {
   name: string;
   parameters: Parameters;
@@ -23,8 +22,7 @@ interface MetricObject {
  * @returns object with metric name and parameters
  */
 export function mapColumnAttributes(attributes: ColumnAttributes): MetricObject {
-  let metric = get(attributes, 'name'),
-    parameters = get(attributes, 'parameters') || {};
+  const { name: metric, parameters = {} } = attributes;
 
   if (isEmpty(metric)) {
     throw new Error('Metric Column Attributes Mapper: Error, empty metric name');

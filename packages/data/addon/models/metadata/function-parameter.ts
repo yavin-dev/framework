@@ -16,9 +16,9 @@ export const INTRINSIC_VALUE_EXPRESSION = 'self';
 //TODO is there a better place for this
 export enum DataType {
   TIME = 'TIME',
-  INTEGER = 'TIME',
-  DECIMAL = 'TIME',
-  MONEY = 'TIME',
+  INTEGER = 'INTEGER',
+  DECIMAL = 'DECIMAL',
+  MONEY = 'MONEY',
   TEXT = 'TEXT',
   COORDINATE = 'COORDINATE',
   BOOLEAN = 'BOOLEAN',
@@ -26,7 +26,13 @@ export enum DataType {
   UNKNOWN = 'UNKNOWN',
 }
 
-export type ColumnFunctionParametersValues = { id: string; name?: string; description?: string }[]; //TODO need to normalize
+export type ColumnFunctionParametersValue =
+  | { id: string; name?: string; description?: string }
+  | string
+  | number
+  | boolean;
+
+export type ColumnFunctionParametersValues = ColumnFunctionParametersValue[];
 
 export interface FunctionParameterMetadataPayload {
   id: string;
@@ -59,7 +65,7 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
   declare source: string;
 
-  declare type: ValueSourceType;
+  declare type: DataType;
 
   declare valueSourceType: ValueSourceType;
 
@@ -80,6 +86,10 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
     if (this.valueSourceType === 'TABLE') {
       throw new Error('Table Back Argument Values Not Yet Supported');
+    }
+
+    if (this.type === DataType.BOOLEAN) {
+      return Promise.resolve([true, false]);
     }
 
     return undefined;

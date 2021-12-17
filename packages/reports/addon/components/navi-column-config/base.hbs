@@ -98,11 +98,11 @@
         {{#if (eq param.valueSourceType 'NONE')}}
           <DenaliInput
             @size="medium"
-            type="text"
+            type={{if (or (eq param.type "INTEGER") (eq param.type "DECIMAL")) "number" "text"}}
             @wrapperClass="w-full"
             value={{get @column.fragment.parameters param.id}}
             placeholder={{capitalize param.name}}
-            {{on "input" (pipe (hash id=(pick "target.value")) (fn this.setParameter param))}}
+            {{on "input" (pipe (pick "target.value") (fn this.setParameter param))}}
           />
         {{else}}
           {{#let (await param.values) as |paramValues|}}
@@ -115,7 +115,7 @@
               @searchField={{if paramValues.firstObject.name "name" "description"}}
               @searchPlaceholder="Search {{capitalize param.name}}"
               @options={{paramValues}}
-              @onChange={{fn this.setParameter param}}
+              @onChange={{pipe (pick "id") (fn this.setParameter param)}}
               as | arg |
             >
               <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
