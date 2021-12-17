@@ -71,7 +71,7 @@ class User : HasRoles {
     @Where(clause = "ASSET_TYPE = 'dashboard'")
     var dashboards: MutableSet<Dashboard> = mutableSetOf()
 
-    @UpdatePermission(expression = IS_DASHBOARD_OWNER)
+    @UpdatePermission(expression = "$IS_DASHBOARD_OWNER OR $IS_ADMIN")
     @ManyToMany
     @JoinTable(
         name = "map_editor_to_dashboard_collections",
