@@ -7,6 +7,7 @@ let Route;
 
 const NEW_MODEL = {
   owner: 'navi_user',
+  editors: [],
   createdOn: null,
   filters: [],
   presentation: {

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2021, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import { attr, belongsTo, hasMany, AsyncBelongsTo, AsyncHasMany } from '@ember-data/model';
 //@ts-ignore
 import { fragment, fragmentArray } from 'ember-data-model-fragments/attributes';
@@ -25,63 +29,52 @@ const Validations = buildValidations({
 
 export default class DashboardModel extends DeliverableItem.extend(Validations) {
   @belongsTo('user', { async: true })
-  owner!: AsyncBelongsTo<UserModel>;
+  declare owner: AsyncBelongsTo<UserModel>;
+
+  @hasMany('user', { async: true, inverse: 'editingDashboards' })
+  declare editors: AsyncHasMany<UserModel>;
 
   @attr('string')
-  title!: string;
+  declare title: string;
 
   @attr('moment')
-  createdOn!: Moment;
+  declare createdOn: Moment;
 
   @attr('moment')
-  updatedOn!: Moment;
+  declare updatedOn: Moment;
 
   @hasMany('dashboard-widget', { async: true })
-  widgets!: AsyncHasMany<DashboardWidget>;
+  declare widgets: AsyncHasMany<DashboardWidget>;
 
   @fragmentArray('request/filter', { defaultValue: [] })
-  filters!: FragmentArray<FilterFragment>;
+  declare filters: FragmentArray<FilterFragment>;
 
   @fragment('fragments/presentation', { defaultValue: () => ({}) })
-  presentation!: PresentationFragment;
+  declare presentation: PresentationFragment;
 
-  /**
-   * user is the dashboard owner
-   */
   get isUserOwner() {
     return this.owner.get('id') === config.navi.user;
   }
 
-  /**
-   * user is in the dashboard editor list
-   */
-  isUserEditor = false;
+  get isUserEditor() {
+    return this.editors.map((e) => e.id).includes(config.navi.user);
+  }
 
-  /**
-   * user has edit permissions for dashboard
-   */
   get canUserEdit(): boolean {
     return this.isUserOwner || this.isUserEditor;
   }
 
-  /**
-   * is favorite of owner
-   */
   get isFavorite() {
     const user = this.user.getUser();
     // referenced this way so that changes are picked up by ember auto-tracking
     return user?.favoriteDashboards.toArray().some((r) => r.id === this.id);
   }
 
-  /**
-   * Clones the model
-   *
-   * @returns cloned Dashboard model
-   */
   clone() {
     const user = this.user.getUser();
     const clonedDashboard = Object.assign(this.toJSON(), {
       owner: user,
+      editors: [],
       widgets: [],
       filters: this.filters.map((filter) => {
         return this.store.createFragment('request/filter', {
@@ -101,6 +94,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
     return this.store.createRecord('dashboard', clonedDashboard);
   }
 }
+
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.
 declare module 'ember-data/types/registries/model' {
   export default interface ModelRegistry {
