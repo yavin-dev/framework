@@ -236,7 +236,8 @@ class DashboardTest : IntegrationTest() {
                             attr("title", "A New Dashboard")
                         ),
                         relationships(
-                            relation("owner", linkage(type("users"), id(USER2)))
+                            relation("owner", linkage(type("users"), id(USER2))),
+                            relation("editors", linkage(type("users"), id(USER3)))
                         )
                     )
                 )
