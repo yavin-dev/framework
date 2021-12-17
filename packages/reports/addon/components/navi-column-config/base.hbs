@@ -95,22 +95,33 @@
             </NaviIcon>
           {{/if}}
         </label>
-        {{#let (await param.values) as |paramValues|}}
-          <PowerSelect
-            @searchEnabled={{true}}
-            @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
-            @triggerId="{{this.classId}}-{{param.id}}"
-            @dropdownClass="navi-column-config-item__parameter-dropdown"
-            @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
-            @searchField={{if paramValues.firstObject.name "name" "description"}}
-            @searchPlaceholder="Search {{capitalize param.name}}"
-            @options={{paramValues}}
-            @onChange={{fn this.setParameter param}}
-            as | arg |
-          >
-            <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
-          </PowerSelect>
-        {{/let}}
+        {{#if (eq param.valueSourceType 'NONE')}}
+          <DenaliInput
+            @size="medium"
+            type="text"
+            @wrapperClass="w-full"
+            value={{get @column.fragment.parameters param.id}}
+            placeholder={{capitalize param.name}}
+            {{on "input" (pipe (hash id=(pick "target.value")) (fn this.setParameter param))}}
+          />
+        {{else}}
+          {{#let (await param.values) as |paramValues|}}
+            <PowerSelect
+              @searchEnabled={{true}}
+              @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
+              @triggerId="{{this.classId}}-{{param.id}}"
+              @dropdownClass="navi-column-config-item__parameter-dropdown"
+              @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
+              @searchField={{if paramValues.firstObject.name "name" "description"}}
+              @searchPlaceholder="Search {{capitalize param.name}}"
+              @options={{paramValues}}
+              @onChange={{fn this.setParameter param}}
+              as | arg |
+            >
+              <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
+            </PowerSelect>
+          {{/let}}
+        {{/if}}
       </div>
     {{/each}}
   </div>
