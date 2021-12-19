@@ -9,8 +9,6 @@ import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import type NaviFactsModel from 'navi-data/models/navi-facts';
-//@ts-ignore
-import RequestBuilder from 'navi-data/builder/request';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
@@ -45,9 +43,9 @@ export default class NaviFactsService extends Service {
    * @param baseRequest - existing request to start from
    * @returns request builder interface
    */
-  request(baseRequest: RequestV2) {
+  request(_baseRequest: RequestV2) {
     // TODO: Fix here
-    return RequestBuilder.create(baseRequest);
+    throw new Error('request builder not supported');
   }
 
   /**

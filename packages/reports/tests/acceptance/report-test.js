@@ -2001,4 +2001,33 @@ module('Acceptance | Navi Report', function (hooks) {
       .dom('.table-cell-content.table-cell-url a')
       .hasAttribute('href', /^https?:\/\/\w+\.\w+/, 'The anchor element is rendered correctly');
   });
+
+  test('bulk import', async function (assert) {
+    await visit('/reports/2/edit');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option-value').map((el) => el.textContent.trim()),
+      ['114', '100001'],
+      'initial dimension values are present'
+    );
+
+    async function paste(text) {
+      const selector = '.ember-power-select-trigger-multiple-input';
+      await triggerEvent(selector, 'paste', { clipboardData: { getData: () => text } });
+    }
+    const valid = '.dimension-bulk-import__values--valid';
+    const invalid = '.dimension-bulk-import__values--invalid';
+    async function wait() {
+      const powerSelect = '.filter-values--dimension-select__trigger';
+      await Promise.all([waitFor(`${valid} ${powerSelect}`), waitFor(`${invalid} ${powerSelect}`)]);
+    }
+
+    await paste('114, 114, 100002 , 3 ,,1 ,2');
+    await wait();
+    await click('.dimension-bulk-import__add-all');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option-value').map((el) => el.textContent.trim()),
+      ['114', '100001', '100002', '3', '1', '2'],
+      'pasted values are added'
+    );
+  });
 });

@@ -46,8 +46,8 @@
       placeholder={{this.maybePlaceholder}}
       disabled={{@select.disabled}}
       tabindex={{@tabindex}}
-      {{!-- TODO Paste has been disabled since bulk import is not working --}}
-      {{!-- onPaste={{action "onPaste"}} --}}
+      onPaste={{this.onPaste}}
+      {{!-- {{on "paste" this.onPaste}} --}}
       {{on "focus" @onFocus}}
       {{on "blur" @onBlur}}
       {{on "input" this.handleInput}}
@@ -58,12 +58,12 @@
 <span class="ember-power-select-status-icon"></span>
 
 {{!-- Added logic for bulk import --}}
-<NaviModal @isShown={{this._showBulkImport}}>
+{{#if this.showBulkImport}}
   <DimensionBulkImport
-    @dimension={{@extra.filter.subject}}
-    @queryIds={{this._bulkImportQueryIds}}
-    @rawQuery={{this._bulkImportRawValue}}
-    @onSelectValues={{queue this.importValues (set this._showBulkImport false)}}
-    @onCancel={{set this._showBulkImport false}}
+    @isOpen={{this.showBulkImport}}
+    @dimension={{@extra.filter}}
+    @query={{this.bulkImportRawValue}}
+    @onSelectValues={{queue @extra.bulkImport (fn (mut this.showBulkImport) false)}}
+    @onCancel={{fn (mut this.showBulkImport) false}}
   />
-</NaviModal>
+{{/if}}
