@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="dashboard-actions flex-1 flex" ...attributes>
+<div class="dashboard-actions flex-1 flex align-items-center" ...attributes>
   {{#with @item as | dashboard |}}
     {{!-- Clone action enabled at all times --}}
     <LinkTo class="dashboard-actions__clone" @route="dashboards.dashboard.clone" @model={{dashboard.id}}>
@@ -35,7 +35,7 @@
 
     <CommonActions::Share
       @buildUrl={{fn this.buildUrl dashboard}}
-      class="dashboard-actions__share p-0"
+      class="dashboard-actions__share p-0 flex"
     >
       <DenaliIcon
         id="dashboard-actions__share-{{dashboard.id}}"
