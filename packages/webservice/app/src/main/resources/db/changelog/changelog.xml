@@ -156,7 +156,7 @@
     <changeSet author="admin" id="4">
         <sql>
             ALTER TABLE DeliveryRule
-                ADD delivery int not null;
+                ADD delivery int not null default 0;
         </sql>
     </changeSet>
 </databaseChangeLog>
