@@ -24,6 +24,7 @@ module('Unit | Model | dashboard', function (hooks) {
         JSON.parse(JSON.stringify(rec.toJSON())), //to remove undefined props
         {
           owner: 'navi_user',
+          editors: [],
           createdOn: '2016-02-01 00:00:00.000',
           filters: [
             {
@@ -137,7 +138,9 @@ module('Unit | Model | dashboard', function (hooks) {
       const clonedModel = model.clone().toJSON();
       const expectedModel = model.toJSON();
 
+      // resetting permissions
       expectedModel.owner = 'navi_user';
+      expectedModel.editors = [];
 
       // setting attributes to null, which are not necessary to check in clone object
       expectedModel.createdOn = null;
