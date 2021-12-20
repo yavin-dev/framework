@@ -59,29 +59,27 @@
           Close
         </DenaliButton>
       {{else}}
-        <div class="schedule__modal-delviery  m-b-30">
-          <DenaliInputGroup @label="Delivery">
-            <PowerSelect
-              class="w-full"
-              @triggerClass="schedule__modal-delivery-trigger w-full"
-              @dropdownClass="w-full"
-              @options={{this.deliveryOptions}}
-              @selected={{this.localDeliveryRule.delivery}}
-              @renderInPlace={{true}}
-              @onChange={{fn (mut this.localDeliveryRule.delivery)}}
-              as | delivery |
-            >
-              {{capitalize delivery}}
-            </PowerSelect>
-          </DenaliInputGroup>
-          <div class="schedule__modal-helper-delivery">
+        <DenaliInputGroup @label="Delivery" @isStacked={{true}}>
+          <PowerSelect
+            class="w-full"
+            @triggerClass="schedule__modal-delivery-trigger w-full"
+            @dropdownClass="w-full"
+            @options={{this.deliveryOptions}}
+            @selected={{this.localDeliveryRule.delivery}}
+            @renderInPlace={{true}}
+            @onChange={{fn (mut this.localDeliveryRule.delivery)}}
+            as | delivery |
+          >
+            {{capitalize delivery}}
+          </PowerSelect>
+          <div class="schedule__modal-helper-delivery m-b-30">
             {{#if (eq this.localDeliveryRule.delivery "email")}}
               Send this  {{this.modelType}} in an email on a recurring basis
             {{else}}
               Schedule and cache this {{this.modelType}} without delivery
             {{/if}}
           </div>
-        </div>
+        </DenaliInputGroup>
         {{#if (eq this.localDeliveryRule.delivery "email")}}
           <DenaliInputGroup
             @label="Recipients"
