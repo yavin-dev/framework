@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="navi-report-actions flex-1 flex" ...attributes>
+<div class="navi-report-actions flex-1 flex align-items-center" ...attributes>
   {{!-- Clone only enabled on a saved report --}}
   <LinkTo
     class="navi-report-actions__clone"
@@ -10,7 +10,7 @@
     <DenaliIcon
       @size="small"
       @icon="copy-file"
-      class="p-4 link m-r-4"
+      class="p-x-4 link m-r-4"
       disabled={{@item.isNew}}
     />
     <EmberTooltip @popperContainer="body">
@@ -26,7 +26,7 @@
         @model={{@item}}
       >
         <DenaliIcon
-          class="navi-report-actions__export-btn p-4 link m-r-4"
+          class="navi-report-actions__export-btn p-x-4 link m-r-4"
           @size="small"
           @icon="download"
         />
@@ -39,7 +39,7 @@
         {{!-- this wrapper div exists because tooltip doesn't render for a disabled button --}}
         <DenaliIcon
           id="navi-report-actions__export-{{@index}}"
-          class="navi-report-actions__export-btn p-4 link m-r-4"
+          class="navi-report-actions__export-btn p-x-4 link m-r-4"
           @size="small"
           @icon="download"
           {{on "click" onClick}}
@@ -58,12 +58,12 @@
     @pageTitle={{@item.title}}
     @buildUrl={{this.buildUrl}}
     @disabled={{@item.isNew}}
-    class="p-0"
+    class="p-0 flex"
   >
     <DenaliIcon
       id="navi-report-actions__share-{{@index}}"
       disabled={{@item.isNew}}
-      class="p-4 link m-r-4"
+      class="p-x-4 link m-r-4"
       @size="small"
       @icon="share-arrow"
     />
@@ -88,7 +88,7 @@
           id="navi-report-actions__schedule-{{@index}}"
           @icon="time"
           @size="small"
-          class="navi-report-actions__schedule p-4 link m-r-4"
+          class="navi-report-actions__schedule p-x-4 link m-r-4"
           {{on "click" onOpen}}
         />
         <EmberTooltip @popperContainer="body" @targetId="navi-report-actions__schedule-{{@index}}">
@@ -110,7 +110,7 @@
       <DenaliIcon
         @size="small"
         @icon="trash"
-        class="navi-report-actions__delete-btn p-4 link m-r-4"
+        class="navi-report-actions__delete-btn p-x-4 link m-r-4"
         id="navi-report-actions__delete-{{@index}}"
         {{on "click" onDelete}}
       />
