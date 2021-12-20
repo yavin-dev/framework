@@ -57,7 +57,7 @@ export default class DashboardModel extends DeliverableItem.extend(Validations) 
   }
 
   get isUserEditor() {
-    return this.editors.some((e) => e.id === config.navi.user);
+    return this.editors.some((e: UserModel) => e.id === config.navi.user);
   }
 
   get canUserEdit(): boolean {
