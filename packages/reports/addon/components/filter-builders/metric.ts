@@ -29,12 +29,12 @@ export default class MetricFilterBuilderComponent extends BaseFilterBuilderCompo
         component: 'filter-values/value-input',
       },
       {
-        operator: 'eq' as const,
+        operator: 'in' as const,
         name: 'Equals (=)',
         component: 'filter-values/value-input',
       },
       {
-        operator: 'neq' as const,
+        operator: 'notin' as const,
         name: 'Not equals (!=)',
         component: 'filter-values/value-input',
       },
