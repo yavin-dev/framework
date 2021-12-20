@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer } from 'pretender';
 import config from 'ember-get-config';
@@ -247,42 +247,6 @@ module('Unit | Service | Navi Facts', function (hooks) {
           'Adapter error is shown'
         );
       });
-  });
-
-  skip('request builder', function (/*assert*/) {
-    // TODO: Remove request builder?
-    /*
-    let requestBuilder = Service.request({
-      metrics: [
-        {
-          metric: 'pageViews',
-          parameters: {
-            type: 'dimension'
-          }
-        }
-      ]
-    });
-
-    let newRequest = requestBuilder.addMetrics({ metric: 'adClicks' });
-
-    assert.deepEqual(
-      newRequest.metrics,
-      [
-        {
-          metric: 'pageViews',
-          parameters: {
-            type: 'dimension'
-          }
-        },
-        {
-          metric: 'adClicks'
-        }
-      ],
-      'Request returns a builder interface that allows extension'
-    );
-
-    assert.notEqual(Service.request(newRequest), newRequest, 'Each call to request returns a new builder instance');
-    */
   });
 
   test('fetchNext', async function (assert) {

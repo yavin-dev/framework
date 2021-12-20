@@ -1,0 +1,31 @@
+/**
+ * Copyright Yahoo 2021
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+.dimension-bulk-import {
+  &__items-title {
+    display: inline-flex;
+  }
+
+  &.modal {
+    .modal-container {
+      width: 600px;
+    }
+  }
+
+  .filter-values--dimension-select__trigger {
+    &.ember-power-select-trigger::before {
+      display: none;
+    }
+
+    .ember-power-select-multiple-options {
+      max-height: 200px;
+      overflow: auto;
+    }
+
+    .ember-power-select-trigger-multiple-input {
+      display: none;
+    }
+  }
+}

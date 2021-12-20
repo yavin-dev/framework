@@ -4,56 +4,46 @@
  *
  * An ember-power-select trigger component that can import a list of comma separated values on paste
  */
-import { A } from '@ember/array';
 import Trigger from 'ember-power-select/components/power-select-multiple/trigger';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
+import type FilterFragment from 'navi-core/models/request/filter';
 
-const BULK_IMPORT_DELIMITER = ',';
-
+type Args = Trigger['args'];
 export default class PowerSelectBulkImportTrigger extends Trigger {
-  @tracked
-  _showBulkImport = false;
+  declare args: Args & { extra: { bulkImport: (values: unknown[]) => void; filter: FilterFragment } };
+  @tracked showBulkImport = false;
 
   /**
    * list of ids that were pasted into search input
    */
   @tracked
-  _bulkImportQueryIds: string[] = [];
+  bulkImportQueryIds: string[] = [];
 
   /**
    * String that was pasted into search input
    */
   @tracked
-  _bulkImportRawValue?: string;
-
-  /**
-   * @param {Array} values - list of power select options to select
-   */
-  @action
-  importValues(values: string[]) {
-    const oldSelection = this.args.select.selected;
-    const newSelection = A([...oldSelection, ...values]).uniq();
-    this.args.select.actions.select(newSelection);
-  }
+  bulkImportRawValue?: string;
 
   /**
    * Grabs text pasted into search input and opens the bulk import modal if delimeter is present
-   * @action onPaste
-   * @param {ClipboardEvent} pasteEvent
+   * @param pasteEvent
    */
-  // TODO Paste has been disabled since bulk import is not working
+  @action
   onPaste(pasteEvent: ClipboardEvent) {
     // Get pasted data via clipboard API
     const clipboardData = pasteEvent.clipboardData;
     const pastedData = clipboardData?.getData('Text') || '';
-    const queryIds = pastedData.split(BULK_IMPORT_DELIMITER).map((s) => s.trim());
-    const isBulkImportRequest = queryIds.length > 1;
+    const isBulkImportRequest =
+      pastedData
+        .split(',')
+        .map((v) => v.trim())
+        .filter((v) => v.length > 0).length > 1;
 
     if (isBulkImportRequest) {
-      this._showBulkImport = true;
-      this._bulkImportQueryIds = queryIds;
-      this._bulkImportRawValue = pastedData;
+      this.showBulkImport = true;
+      this.bulkImportRawValue = pastedData;
     }
   }
 }
