@@ -16,7 +16,7 @@
         @size="medium"
         type="text"
         value={{this.query}}
-        @errorMsg="Add Multiple {{@dimension.columnMetadata.name}} values"
+        @errorMsg="Add Multiple {{@dimension.columnMetadata.name}} values (comma,separated,list)"
         {{on "input" (pipe (pick "target.value") (fn (mut this.query)))}}
       />
     </DenaliInputGroup>
