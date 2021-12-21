@@ -56,6 +56,39 @@ export default [
     fields,
   },
   {
+    category: 'Order',
+    name: 'crmLineMasterOrderCurrencyCode',
+    longName: 'Order Currency',
+    description: 'Billing currency of the order.',
+    datatype: 'number',
+    fields: [
+      {
+        name: 'id',
+        description: 'Billing currency of the order.',
+        tags: ['primaryKey'],
+      },
+    ],
+    values: 'https://uad-data.digits.ouryahoo.com:4443/v1/dimensions/crmLineMasterOrderCurrencyCode/values',
+    cardinality: 46,
+    storageStrategy: 'loaded',
+    tables: [
+      {
+        category: 'General',
+        name: 'allUad',
+        longName: 'All UAD',
+        granularity: 'day',
+        uri: 'https://uad-data.digits.ouryahoo.com:4443/v1/tables/allUad/day',
+      },
+      {
+        category: 'General',
+        name: 'allUad',
+        longName: 'All UAD',
+        granularity: 'week',
+        uri: 'https://uad-data.digits.ouryahoo.com:4443/v1/tables/allUad/week',
+      },
+    ],
+  },
+  {
     name: 'location',
     longName: 'Location',
     cardinality: 100,
