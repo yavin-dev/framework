@@ -8,6 +8,9 @@ import Fragment from 'ember-data-model-fragments/fragment';
 export default class SchedulingRuleFragment extends Fragment {
   @attr('boolean')
   mustHaveData!: boolean;
+
+  @attr('boolean')
+  overwriteFile!: boolean;
 }
 
 declare module 'navi-core/models/registry' {

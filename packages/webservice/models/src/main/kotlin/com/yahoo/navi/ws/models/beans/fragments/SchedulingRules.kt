@@ -11,5 +11,6 @@ import org.hibernate.annotations.TypeDef
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @TypeDef(typeClass = JsonType::class, name = "json")
 data class SchedulingRules(
-    var mustHaveData: Boolean = false
+    var mustHaveData: Boolean = false,
+    var overwriteFile: Boolean = false
 )

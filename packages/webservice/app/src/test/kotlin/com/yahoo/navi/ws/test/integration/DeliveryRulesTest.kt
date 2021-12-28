@@ -20,7 +20,7 @@ class DeliveryRulesTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
     private val format: DeliveryFormat = DeliveryFormat(DeliveryType.csv)
-    private val schedulingRules: SchedulingRules = SchedulingRules(false)
+    private val schedulingRules: SchedulingRules = SchedulingRules(false, false)
 
     @BeforeEach
     fun setup() {
@@ -126,6 +126,7 @@ class DeliveryRulesTest : IntegrationTest() {
                 "data.attributes.frequency", equalTo("week"),
                 "data.attributes.format.type", equalTo("csv"),
                 "data.attributes.schedulingRules.mustHaveData", equalTo(false),
+                "data.attributes.schedulingRules.overwriteFile", equalTo(false),
                 "data.attributes.recipients", hasItems("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev"),
                 "data.attributes.lastDeliveredOn", nullValue(),
                 "data.attributes.dataSources", equalTo(emptyList<String>()), // no request, no dataSources
@@ -288,7 +289,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("frequency", "quarter"),
-                            attr("schedulingRules", SchedulingRules(true))
+                            attr("schedulingRules", SchedulingRules(true, true))
                         )
                     )
                 )
@@ -307,7 +308,8 @@ class DeliveryRulesTest : IntegrationTest() {
             .assertThat()
             .body(
                 "data.attributes.frequency", equalTo("quarter"),
-                "data.attributes.schedulingRules.mustHaveData", equalTo(true)
+                "data.attributes.schedulingRules.mustHaveData", equalTo(true),
+                "data.attributes.schedulingRules.overwriteFile", equalTo(true)
             )
 
         given()

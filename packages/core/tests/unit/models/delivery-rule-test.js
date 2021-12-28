@@ -14,6 +14,7 @@ const ExpectedDeliveryRule = {
   frequency: 'week',
   schedulingRules: {
     mustHaveData: false,
+    overwriteFile: false,
   },
   format: {
     type: 'csv',
