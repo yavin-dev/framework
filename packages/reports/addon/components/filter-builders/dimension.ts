@@ -46,7 +46,7 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
 
     return [
       { internalId: OPERATORS.in, operator: 'in' as const, name: 'Equals', component: inputComponent },
-      { internalId: OPERATORS.notin, operator: 'neq' as const, name: 'Not Equals', component: inputComponent },
+      { internalId: OPERATORS.notin, operator: 'notin' as const, name: 'Not Equals', component: inputComponent },
       {
         internalId: OPERATORS.isnulltrue,
         operator: 'isnull' as const,
