@@ -45,7 +45,7 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
       storageStrategy === 'none' ? 'filter-values/multi-value-input' : 'filter-values/dimension-select';
 
     return [
-      { internalId: OPERATORS.in, operator: 'eq' as const, name: 'Equals', component: inputComponent },
+      { internalId: OPERATORS.in, operator: 'in' as const, name: 'Equals', component: inputComponent },
       { internalId: OPERATORS.notin, operator: 'neq' as const, name: 'Not Equals', component: inputComponent },
       {
         internalId: OPERATORS.isnulltrue,

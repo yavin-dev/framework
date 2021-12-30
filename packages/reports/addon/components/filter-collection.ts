@@ -44,7 +44,10 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
    * Get appropriate filter builder type based on column type
    */
   private getFilterType(filter: FilterFragment) {
-    const { type } = filter;
-    return dasherize(type);
+    const { columnMetadata } = filter;
+    if (columnMetadata.metadataType === 'dimension' && columnMetadata.valueType === 'number') {
+      return 'metric';
+    }
+    return dasherize(filter.type);
   }
 }
