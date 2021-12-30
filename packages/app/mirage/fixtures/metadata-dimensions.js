@@ -56,20 +56,6 @@ export default [
     fields,
   },
   {
-    category: 'Order',
-    name: 'orderBudget',
-    longName: 'Order Budget',
-    description: 'Budget of the order.',
-    datatype: 'number',
-    fields: [
-      {
-        name: 'id',
-        tags: ['primaryKey'],
-      },
-    ],
-    cardinality: 45,
-  },
-  {
     name: 'location',
     longName: 'Location',
     cardinality: 100,

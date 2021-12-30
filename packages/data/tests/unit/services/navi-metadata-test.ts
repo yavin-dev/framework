@@ -51,7 +51,17 @@ module('Unit | Service | navi-metadata', function (hooks) {
     );
     assert.deepEqual(
       dimensions.mapBy('id'),
-      ['item', 'container', 'location', 'requirement', 'recipe', 'displayCurrency', 'eventId', 'parentEventId'],
+      [
+        'item',
+        'container',
+        'location',
+        'requirement',
+        'recipe',
+        'displayCurrency',
+        'orderBudget',
+        'eventId',
+        'parentEventId',
+      ],
       'All `bardTwo` dimensions are loaded'
     );
 

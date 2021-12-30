@@ -358,5 +358,19 @@ export default {
       storageStrategy: 'loaded',
       fields: defaultFields,
     },
+    {
+      category: 'Order',
+      name: 'orderBudget',
+      longName: 'Order Budget',
+      description: 'Budget of the order.',
+      datatype: 'number',
+      fields: [
+        {
+          name: 'id',
+          tags: ['primaryKey'],
+        },
+      ],
+      cardinality: 45,
+    },
   ],
 };
