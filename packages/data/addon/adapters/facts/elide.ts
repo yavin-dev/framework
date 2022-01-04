@@ -50,7 +50,7 @@ export function getElideField(fieldName: string, parameters: Parameters = {}, al
   const paramsInner = Object.entries(parameters)
     .map(([param, rawValue]) => {
       const val = typeof rawValue === 'string' ? `"${rawValue}"` : rawValue;
-      return `${param}:"${val}"`;
+      return `${param}:${val}`;
     })
     .join(', ');
   const paramsStr = paramsInner.length > 0 ? `(${paramsInner})` : '';

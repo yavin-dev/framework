@@ -86,7 +86,7 @@
     {{/if}}
     {{#each @column.fragment.columnMetadata.parameters as |param|}}
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
-        <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type
+        <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}}
           {{#if param.description}}
             <NaviIcon @icon="question-circle-o">
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">

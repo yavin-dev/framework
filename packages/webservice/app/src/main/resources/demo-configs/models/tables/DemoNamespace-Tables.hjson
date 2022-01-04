@@ -154,27 +154,29 @@
           friendlyName: Total Seasons
           category: Stats
           type: INTEGER
-          definition: "sum(cast (case when {{$duration}} like '% min' then REPLACE({{$duration}}, ' min', '') else '0' end AS INT)) / {{$$column.args.div}}"
+          definition: "sum(cast (case when {{$duration}} like '% min' then REPLACE({{$duration}}, ' min', '') else '0' end AS INT)) / {{$$column.args.divisor}}"
           arguments: [
             {
-              name: div
+              name: divisor
+              description: Number to divide metric by
               type: Integer
               default: 1 
             }
           ]
         }
         {
-          name: movie_duration_jk
+          name: movie_duration
           friendlyName: Duration (in mins)
           category: Stats
           type: INTEGER
-          definition: "sum(cast (case when {{$duration}} like '% min' then REPLACE({{$duration}}, ' min', '') else '0' end AS INT)) / {{$$column.args.div}}"
+          definition: "sum(cast (case when {{$duration}} like '% min' then REPLACE({{$duration}}, ' min', '') else '0' end AS INT)) / {{$$column.args.divisor}}"
           arguments: [
             {
-              name: div
+              name: divisor
               type: TEXT 
+              description: Number to divide metric by
               values: ["1", "60", "360"]
-              default: 1 
+              default: "1" 
             }
           ]
         }
