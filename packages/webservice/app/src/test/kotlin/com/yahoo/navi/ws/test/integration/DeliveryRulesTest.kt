@@ -4,6 +4,7 @@ import com.jayway.restassured.RestAssured.given
 import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
 import com.yahoo.navi.ws.models.beans.enums.DeliveryType
 import com.yahoo.navi.ws.models.beans.fragments.DeliveryFormat
+import com.yahoo.navi.ws.models.beans.fragments.FormatOptions
 import com.yahoo.navi.ws.models.beans.fragments.SchedulingRules
 import com.yahoo.navi.ws.test.framework.IntegrationTest
 import org.apache.http.HttpStatus
@@ -20,7 +21,7 @@ class DeliveryRulesTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
     private val format: DeliveryFormat = DeliveryFormat(DeliveryType.csv)
-    private val schedulingRules: SchedulingRules = SchedulingRules(false, false)
+    private val schedulingRules: SchedulingRules = SchedulingRules(false)
 
     @BeforeEach
     fun setup() {
@@ -126,7 +127,6 @@ class DeliveryRulesTest : IntegrationTest() {
                 "data.attributes.frequency", equalTo("week"),
                 "data.attributes.format.type", equalTo("csv"),
                 "data.attributes.schedulingRules.mustHaveData", equalTo(false),
-                "data.attributes.schedulingRules.overwriteFile", equalTo(false),
                 "data.attributes.recipients", hasItems("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev"),
                 "data.attributes.lastDeliveredOn", nullValue(),
                 "data.attributes.dataSources", equalTo(emptyList<String>()), // no request, no dataSources
@@ -289,7 +289,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("frequency", "quarter"),
-                            attr("schedulingRules", SchedulingRules(true, true))
+                            attr("schedulingRules", SchedulingRules(true))
                         )
                     )
                 )
@@ -309,7 +309,6 @@ class DeliveryRulesTest : IntegrationTest() {
             .body(
                 "data.attributes.frequency", equalTo("quarter"),
                 "data.attributes.schedulingRules.mustHaveData", equalTo(true),
-                "data.attributes.schedulingRules.overwriteFile", equalTo(true)
             )
 
         given()
@@ -839,6 +838,88 @@ class DeliveryRulesTest : IntegrationTest() {
             .assertThat()
             .body(
                 "data.id", empty<Any>()
+            )
+    }
+
+    @Test
+    fun `format options`() {
+        val formatWithOptions: DeliveryFormat = DeliveryFormat(DeliveryType.gsheet, FormatOptions(true))
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("frequency", "week"),
+                            attr("format", formatWithOptions),
+                            attr(
+                                "recipients",
+                                arrayOf("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev")
+                            ),
+                            attr("version", "1"),
+                            attr("schedulingRules", schedulingRules)
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id("1"))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.id", equalTo("1"),
+                "data.attributes.format.type", equalTo("gsheet"),
+                "data.attributes.format.options.overwriteFile", equalTo(true),
+                "data.relationships.deliveredItem.data.type", equalTo("reports"),
+                "data.relationships.deliveredItem.data.id", equalTo("1")
+            )
+
+        formatWithOptions.options?.overwriteFile = false
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("format", formatWithOptions)
+                        )
+                    )
+                )
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.id", equalTo("1"),
+                "data.attributes.format.type", equalTo("gsheet"),
+                "data.attributes.format.options.overwriteFile", equalTo(false)
             )
     }
 }

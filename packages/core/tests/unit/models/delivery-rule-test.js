@@ -14,10 +14,12 @@ const ExpectedDeliveryRule = {
   frequency: 'week',
   schedulingRules: {
     mustHaveData: false,
-    overwriteFile: false,
   },
   format: {
     type: 'csv',
+    options: {
+      overwriteFile: false,
+    },
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
   version: 1,
@@ -110,6 +112,18 @@ module('Unit | Model | delivery rule', function (hooks) {
       assert.notOk(v5.validations.get('isValid'), 'deliveryRule is invalid');
       assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
       assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
+    });
+  });
+
+  test('Format options', async function (assert) {
+    const deliveryRule = await Store.findRecord('deliveryRule', 1);
+    deliveryRule.format.type = 'gsheet';
+    deliveryRule.format.options.overwriteFile = true;
+    assert.deepEqual(deliveryRule.toJSON().format, {
+      type: 'gsheet',
+      options: {
+        overwriteFile: true,
+      },
     });
   });
 });
