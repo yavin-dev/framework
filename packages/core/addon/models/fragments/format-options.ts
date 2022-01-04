@@ -7,7 +7,7 @@ import Fragment from 'ember-data-model-fragments/fragment';
 
 export default class FormatOptions extends Fragment {
   @attr('boolean')
-  overwriteFile!: boolean;
+  declare overwriteFile: boolean;
 }
 
 declare module 'navi-core/models/registry' {
