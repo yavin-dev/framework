@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
@@ -137,6 +137,23 @@
               @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}/>
           </DenaliInputGroup>
         {{/if}}
+
+        {{#if (includes this.localDeliveryRule.format.type this.overwriteableFormats)}}
+          <DenaliInputGroup @label="Overwrite spreadsheet" class="schedule__modal-overwrite">
+            <DenaliSwitch
+              class="schedule__modal-overwrite-toggle"
+              @isEnabled={{this.localDeliveryRule.format.options.overwriteFile}}
+              @onChange={{this.toggleOverwriteFile}}/>
+          </DenaliInputGroup>
+          <p class="help-text m-b-30 is-grey-700">
+            {{#if this.localDeliveryRule.format.options.overwriteFile}}
+              Data will be replaced in the same sheet every {{this.localDeliveryRule.frequency}}
+            {{else}}
+              A new sheet will be created every {{this.localDeliveryRule.frequency}}
+            {{/if}}
+          </p>
+        {{/if}}
+
         {{#if (is-rejected this.deliveryRule)}}
           <DenaliButton
             class="schedule__modal-cancel-btn m-r-5"

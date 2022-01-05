@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -22,6 +22,7 @@ import type NaviNotificationService from 'navi-core/services/interfaces/navi-not
 import type UserService from 'navi-core/services/user';
 import type DeliverableItemModel from 'navi-core/models/deliverable-item';
 import type { RSVPMethodsObj } from 'navi-reports/consumers/delivery-rule';
+import GsheetFormat from 'navi-core/addon/models/gsheet';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];
@@ -72,6 +73,12 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked showModal = false;
 
   deliveryOptions = ['email', 'none'];
+  /**
+   * List of formats it makes sense to show 'overwrite file' toggle
+   * Good for cloud based formats
+   */
+  overwriteableFormats = ['gsheet'];
+
   /**
    * Promise resolving to whether item is valid to be scheduled
    */
@@ -247,6 +254,24 @@ export default class ScheduleActionComponent extends Component<Args> {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
     assert('The format is defined', this.localDeliveryRule.format);
     this.localDeliveryRule.format.type = type;
+  }
+
+  @action
+  toggleOverwriteFile() {
+    assert('The localDeliveryRule is defined', this.localDeliveryRule);
+    assert(
+      'Must be a type that supports overwriteFile in order to toggle',
+      this.overwriteableFormats.includes(this.localDeliveryRule.format.type)
+    );
+    const format = this.localDeliveryRule.format as GsheetFormat; //currently only type that supports this, make more dynamic with new types
+    if (!format.options) {
+      format.options = { overwriteFile: false };
+    }
+    const newOverwrite = !format.options?.overwriteFile;
+    format.options.overwriteFile = newOverwrite;
+    this.localDeliveryRule.format = format;
+    // eslint-disable-next-line no-self-assign
+    this.localDeliveryRule = this.localDeliveryRule;
   }
 
   /**

@@ -6,7 +6,9 @@ import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
 import Mirage from 'ember-cli-mirage';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { selectChoose } from 'ember-power-select/test-support/helpers';
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   setupApplicationTest(hooks);
@@ -93,6 +95,52 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.schedule__modal-must-have-data-toggle')
       .isChecked('mustHaveData field is set by the saved delivery rule');
+  });
+
+  test('schedule modal with overwrite file toggle', async function (assert) {
+    assert.expect(9);
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['csv', 'gsheet'];
+
+    await visit('/reports');
+
+    // Click "Schedule"
+    await triggerEvent('.navi-collection__row2', 'mouseenter');
+    await click('.navi-report-actions__schedule');
+
+    assert.dom('.schedule__modal-overwrite').doesNotExist('No overwrite toggle for unsupported formats');
+
+    await selectChoose('.schedule__modal-format-trigger', 'gsheet');
+
+    assert.dom('.schedule__modal-overwrite').exists('Overwrite toggle for supported formats');
+
+    assert.dom('.schedule__modal-overwrite-toggle').isNotChecked('overwrite is unchecked by default');
+
+    assert.dom('.help-text').hasText('A new sheet will be created every month', 'Help text shows correct');
+
+    await click('.schedule__modal-overwrite-toggle');
+
+    assert.dom('.schedule__modal-overwrite-toggle').isChecked('overwrite toggles on when clicked');
+
+    assert
+      .dom('.help-text')
+      .hasText('Data will be replaced in the same sheet every month', 'Help text shows correct when toggle is updated');
+
+    await click('.schedule__modal-save-btn');
+    await waitFor('.alert');
+
+    assert
+      .dom('.alert')
+      .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
+
+    assert.dom('.modal.is-active').isNotVisible('Modal closed on successful save');
+
+    await triggerEvent('.navi-collection__row2', 'mouseenter');
+    await click('.navi-report-actions__schedule');
+
+    assert.dom('.schedule__modal-overwrite-toggle').isChecked('overwrite is saved and can be seen on reopen');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('schedule modal save changes to existing schedule', async function (assert) {

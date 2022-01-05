@@ -34,5 +34,11 @@
     &__helper-recipients {
       color: map-get($denali-grey-colors, '300');
     }
+
+    &-overwrite {
+      label {
+        min-width: 182px;
+      }
+    }
   }
 }
