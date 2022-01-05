@@ -22,6 +22,34 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     config.navi.FEATURES.enableVerticalCollectionTableIterator = false;
   });
 
+  test('dimension filter with metric operations', async function (assert) {
+    assert.expect(1);
+
+    // redirecting to reports
+    await visit('/reports/new');
+
+    // report source selector
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+
+    await animationsSettled();
+
+    // triggering dimesnion
+    await clickItem('dimension', 'Display Currency');
+    await clickItemFilter('dimension', 'Display Currency');
+
+    // select the dimesion value
+    await selectChoose('.filter-values--dimension-select__trigger', '1');
+
+    // matching the operator
+    await selectChoose($('.filter-builder__operator-trigger:eq(1)')[0], 'Equals');
+
+    // validating
+    assert
+      .dom(findAll('.filter-builder__subject .name')[1])
+      .hasText('Display Currency', 'Second filter rendered correctly');
+  });
+
   test('multi datasource report', async function (assert) {
     assert.expect(19);
 
