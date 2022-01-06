@@ -9,32 +9,32 @@ export default Factory.extend({
 
   id(): string {
     //@ts-ignore
-    return `${this.table?.id}.timeDimension${this.index}`;
+    return `${this.table?.id}.metric${this.index}`;
   },
 
   name() {
-    return `timeDimension${this.index}`;
+    return `metric${this.index}`;
   },
 
   friendlyName() {
-    return `Time Dimension ${this.index}`;
+    return `Metric ${this.index}`;
   },
 
   description() {
-    return `This is time dimension ${this.index}`;
+    return `This is metric ${this.index}`;
   },
 
   cardinality: 'UNKNOWN',
 
   category: 'categoryOne',
 
-  valueType: 'TIME',
+  valueType: 'INTEGER',
 
   tags: () => ['DISPLAY'],
 
-  columnType: 'field',
+  defaultFormat: 'number',
+
+  columnType: 'FIELD',
 
   expression: null,
-
-  timeZoneId: 'UTC',
 });

@@ -169,52 +169,64 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[0].metrics,
       {
-        __typename: 'MetricConnection',
+        __typename: 'ElideMetricConnection',
         edges: [
           {
             node: {
               id: 'table0.metric0',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric0',
               friendlyName: 'Metric 0',
               description: 'This is metric 0',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
           {
             node: {
               id: 'table0.metric1',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric1',
               friendlyName: 'Metric 1',
               description: 'This is metric 1',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
           {
             node: {
               id: 'table0.metric2',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric2',
               friendlyName: 'Metric 2',
               description: 'This is metric 2',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
         ],
       },
@@ -224,49 +236,50 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[0].dimensions,
       {
-        __typename: 'DimensionConnection',
         edges: [
           {
-            __typename: 'DimensionEdge',
             node: {
-              __typename: 'Dimension',
-              cardinality: 'UNKNOWN',
-              category: 'categoryOne',
-              columnType: 'field',
-              description: 'This is dimension 0',
-              expression: null,
               id: 'table0.dimension0',
               name: 'dimension0',
               friendlyName: 'Dimension 0',
-              tableSource: {
-                __typename: 'TableSourceConnection',
-                edges: [],
-              },
-              tags: ['DISPLAY'],
-              valueSourceType: 'NONE',
+              description: 'This is dimension 0',
+              cardinality: 'UNKNOWN',
+              category: 'categoryOne',
               valueType: 'TEXT',
+              tags: ['DISPLAY'],
+              columnType: 'FIELD',
+              expression: null,
+              valueSourceType: 'NONE',
+              tableSource: {
+                edges: [],
+                __typename: 'ElideTableSourceConnection',
+              },
               values: [],
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
+              __typename: 'ElideDimension',
             },
+            __typename: 'ElideDimensionEdge',
           },
           {
-            __typename: 'DimensionEdge',
             node: {
-              __typename: 'Dimension',
-              cardinality: 'TINY',
-              category: 'categoryOne',
-              columnType: 'field',
-              description: 'This is dimension 1',
-              expression: null,
               id: 'table0.dimension1',
               name: 'dimension1',
               friendlyName: 'Dimension 1',
-              tableSource: {
-                __typename: 'TableSourceConnection',
-                edges: [],
-              },
-              tags: ['DISPLAY'],
-              valueSourceType: 'ENUM',
+              description: 'This is dimension 1',
+              cardinality: 'TINY',
+              category: 'categoryOne',
               valueType: 'TEXT',
+              tags: ['DISPLAY'],
+              columnType: 'FIELD',
+              expression: null,
+              valueSourceType: 'ENUM',
+              tableSource: {
+                edges: [],
+                __typename: 'ElideTableSourceConnection',
+              },
               values: [
                 'Practical Frozen Fish (enum)',
                 'Practical Concrete Chair (enum)',
@@ -274,54 +287,65 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                 'Tasty Fresh Towels (enum)',
                 'Intelligent Steel Pizza (enum)',
               ],
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
+              __typename: 'ElideDimension',
             },
+            __typename: 'ElideDimensionEdge',
           },
           {
-            __typename: 'DimensionEdge',
             node: {
-              __typename: 'Dimension',
-              cardinality: 'SMALL',
-              category: 'categoryOne',
-              columnType: 'field',
-              description: 'This is dimension 2',
-              expression: null,
               id: 'table0.dimension2',
               name: 'dimension2',
               friendlyName: 'Dimension 2',
-              tags: ['DISPLAY'],
-              valueSourceType: 'TABLE',
+              description: 'This is dimension 2',
+              cardinality: 'SMALL',
+              category: 'categoryOne',
               valueType: 'TEXT',
+              tags: ['DISPLAY'],
+              columnType: 'FIELD',
+              expression: null,
+              valueSourceType: 'TABLE',
               tableSource: {
-                __typename: 'TableSourceConnection',
                 edges: [
                   {
-                    __typename: 'TableSourceEdge',
                     node: {
-                      __typename: 'TableSource',
                       suggestionColumns: {
-                        __typename: 'DimensionConnection',
                         edges: [],
+                        __typename: 'ElideColumnConnection',
                       },
                       valueSource: {
-                        __typename: 'DimensionConnection',
                         edges: [
                           {
-                            __typename: 'DimensionEdge',
                             node: {
-                              __typename: 'Dimension',
                               id: 'table0.dimension0',
+                              __typename: 'ElideColumn',
                             },
+                            __typename: 'ElideColumnEdge',
                           },
                         ],
+                        __typename: 'ElideColumnConnection',
                       },
+                      __typename: 'ElideTableSource',
                     },
+                    __typename: 'ElideTableSourceEdge',
                   },
                 ],
+                __typename: 'ElideTableSourceConnection',
               },
               values: [],
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
+              __typename: 'ElideDimension',
             },
+            __typename: 'ElideDimensionEdge',
           },
         ],
+        __typename: 'ElideDimensionConnection',
       },
       'All dimensions and the requested fields are returned for table 0'
     );
@@ -330,37 +354,45 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[1].metrics,
       {
-        __typename: 'MetricConnection',
+        __typename: 'ElideMetricConnection',
         edges: [
           {
             node: {
               id: 'table1.metric3',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric3',
               friendlyName: 'Metric 3',
               description: 'This is metric 3',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
           {
             node: {
               id: 'table1.metric4',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric4',
               friendlyName: 'Metric 4',
               description: 'This is metric 4',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
         ],
       },
@@ -371,15 +403,13 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       tables[1].dimensions,
       {
         edges: [],
-        __typename: 'DimensionConnection',
+        __typename: 'ElideDimensionConnection',
       },
       'Table with no dimensions returns an empty edges array for dimensions'
     );
   });
 
   test('fetchAll - response - demo namespace', async function (this: MirageTestContext, assert) {
-    assert.expect(8);
-
     // Seed our mirage database
     ElideOneDemoNamespaceScenario(this.server);
 
@@ -441,22 +471,26 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[0].metrics,
       {
-        __typename: 'MetricConnection',
+        __typename: 'ElideMetricConnection',
         edges: [
           {
             node: {
               id: 'table0.metric0',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric0',
               friendlyName: 'Metric 0',
               description: 'This is metric 0',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
         ],
       },
@@ -466,22 +500,26 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[0].dimensions,
       {
-        __typename: 'DimensionConnection',
+        __typename: 'ElideDimensionConnection',
         edges: [
           {
-            __typename: 'DimensionEdge',
+            __typename: 'ElideDimensionEdge',
             node: {
-              __typename: 'Dimension',
+              __typename: 'ElideDimension',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               cardinality: 'UNKNOWN',
               category: 'categoryOne',
-              columnType: 'field',
+              columnType: 'FIELD',
               description: 'This is dimension 0',
               expression: null,
               id: 'table0.dimension0',
               name: 'dimension0',
               friendlyName: 'Dimension 0',
               tableSource: {
-                __typename: 'TableSourceConnection',
+                __typename: 'ElideTableSourceConnection',
                 edges: [],
               },
               tags: ['DISPLAY'],
@@ -491,19 +529,23 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
             },
           },
           {
-            __typename: 'DimensionEdge',
+            __typename: 'ElideDimensionEdge',
             node: {
-              __typename: 'Dimension',
+              __typename: 'ElideDimension',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               cardinality: 'TINY',
               category: 'categoryOne',
-              columnType: 'field',
+              columnType: 'FIELD',
               description: 'This is dimension 1',
               expression: null,
               id: 'table0.dimension1',
               name: 'dimension1',
               friendlyName: 'Dimension 1',
               tableSource: {
-                __typename: 'TableSourceConnection',
+                __typename: 'ElideTableSourceConnection',
                 edges: [],
               },
               tags: ['DISPLAY'],
@@ -527,37 +569,45 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[1].metrics,
       {
-        __typename: 'MetricConnection',
+        __typename: 'ElideMetricConnection',
         edges: [
           {
             node: {
               id: 'table1.metric1',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric1',
               friendlyName: 'Metric 1',
               description: 'This is metric 1',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
           {
             node: {
               id: 'table1.metric2',
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
               name: 'metric2',
               friendlyName: 'Metric 2',
               description: 'This is metric 2',
               category: 'categoryOne',
-              valueType: 'NUMBER',
+              valueType: 'INTEGER',
               tags: ['DISPLAY'],
-              columnType: 'field',
+              columnType: 'FIELD',
               expression: null,
-              __typename: 'Metric',
+              __typename: 'ElideMetric',
             },
-            __typename: 'MetricEdge',
+            __typename: 'ElideMetricEdge',
           },
         ],
       },
@@ -567,54 +617,58 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     assert.deepEqual(
       tables[1].dimensions,
       {
-        __typename: 'DimensionConnection',
         edges: [
           {
-            __typename: 'DimensionEdge',
             node: {
-              __typename: 'Dimension',
-              cardinality: 'SMALL',
-              category: 'categoryOne',
-              columnType: 'field',
-              description: 'This is dimension 2',
-              expression: null,
               id: 'table1.dimension2',
               name: 'dimension2',
               friendlyName: 'Dimension 2',
+              description: 'This is dimension 2',
+              cardinality: 'SMALL',
+              category: 'categoryOne',
+              valueType: 'TEXT',
+              tags: ['DISPLAY'],
+              columnType: 'FIELD',
+              expression: null,
+              valueSourceType: 'TABLE',
               tableSource: {
-                __typename: 'TableSourceConnection',
                 edges: [
                   {
-                    __typename: 'TableSourceEdge',
                     node: {
-                      __typename: 'TableSource',
                       suggestionColumns: {
-                        __typename: 'DimensionConnection',
                         edges: [],
+                        __typename: 'ElideColumnConnection',
                       },
                       valueSource: {
-                        __typename: 'DimensionConnection',
                         edges: [
                           {
-                            __typename: 'DimensionEdge',
                             node: {
-                              __typename: 'Dimension',
                               id: 'table0.dimension0',
+                              __typename: 'ElideColumn',
                             },
+                            __typename: 'ElideColumnEdge',
                           },
                         ],
+                        __typename: 'ElideColumnConnection',
                       },
+                      __typename: 'ElideTableSource',
                     },
+                    __typename: 'ElideTableSourceEdge',
                   },
                 ],
+                __typename: 'ElideTableSourceConnection',
               },
-              tags: ['DISPLAY'],
-              valueSourceType: 'TABLE',
-              valueType: 'TEXT',
               values: [],
+              arguments: {
+                edges: [],
+                __typename: 'ElideArgumentConnection',
+              },
+              __typename: 'ElideDimension',
             },
+            __typename: 'ElideDimensionEdge',
           },
         ],
+        __typename: 'ElideDimensionConnection',
       },
       'All dimensions and the requested fields are returned for table 1'
     );
@@ -634,10 +688,8 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       result,
       {
         table: {
-          __typename: 'ElideTableConnection',
           edges: [
             {
-              __typename: 'ElideTableEdge',
               node: {
                 id: 'table0',
                 name: 'table0',
@@ -647,10 +699,8 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                 cardinality: 'SMALL',
                 isFact: true,
                 namespace: {
-                  __typename: 'ElideNamespaceConnection',
                   edges: [
                     {
-                      __typename: 'ElideNamespaceEdge',
                       node: {
                         id: 'default',
                         name: 'default',
@@ -658,8 +708,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         description: 'Default Namespace',
                         __typename: 'ElideNamespace',
                       },
+                      __typename: 'ElideNamespaceEdge',
                     },
                   ],
+                  __typename: 'ElideNamespaceConnection',
                 },
                 metrics: {
                   edges: [
@@ -670,13 +722,17 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 0',
                         description: 'This is metric 0',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                     {
                       node: {
@@ -685,13 +741,17 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 1',
                         description: 'This is metric 1',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                     {
                       node: {
@@ -700,60 +760,66 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 2',
                         description: 'This is metric 2',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                   ],
-                  __typename: 'MetricConnection',
+                  __typename: 'ElideMetricConnection',
                 },
                 dimensions: {
                   edges: [
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'UNKNOWN',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 0',
-                        expression: null,
                         id: 'table0.dimension0',
                         name: 'dimension0',
                         friendlyName: 'Dimension 0',
-                        tableSource: {
-                          __typename: 'TableSourceConnection',
-                          edges: [],
-                        },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'NONE',
+                        description: 'This is dimension 0',
+                        cardinality: 'UNKNOWN',
+                        category: 'categoryOne',
                         valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'NONE',
+                        tableSource: {
+                          edges: [],
+                          __typename: 'ElideTableSourceConnection',
+                        },
                         values: [],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'TINY',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 1',
-                        expression: null,
                         id: 'table0.dimension1',
                         name: 'dimension1',
                         friendlyName: 'Dimension 1',
-                        tableSource: {
-                          __typename: 'TableSourceConnection',
-                          edges: [],
-                        },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'ENUM',
+                        description: 'This is dimension 1',
+                        cardinality: 'TINY',
+                        category: 'categoryOne',
                         valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'ENUM',
+                        tableSource: {
+                          edges: [],
+                          __typename: 'ElideTableSourceConnection',
+                        },
                         values: [
                           'Practical Frozen Fish (enum)',
                           'Practical Concrete Chair (enum)',
@@ -761,64 +827,76 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                           'Tasty Fresh Towels (enum)',
                           'Intelligent Steel Pizza (enum)',
                         ],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'SMALL',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 2',
-                        expression: null,
                         id: 'table0.dimension2',
                         name: 'dimension2',
                         friendlyName: 'Dimension 2',
+                        description: 'This is dimension 2',
+                        cardinality: 'SMALL',
+                        category: 'categoryOne',
+                        valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'TABLE',
                         tableSource: {
-                          __typename: 'TableSourceConnection',
                           edges: [
                             {
-                              __typename: 'TableSourceEdge',
                               node: {
-                                __typename: 'TableSource',
                                 suggestionColumns: {
-                                  __typename: 'DimensionConnection',
                                   edges: [],
+                                  __typename: 'ElideColumnConnection',
                                 },
                                 valueSource: {
-                                  __typename: 'DimensionConnection',
                                   edges: [
                                     {
-                                      __typename: 'DimensionEdge',
                                       node: {
-                                        __typename: 'Dimension',
                                         id: 'table0.dimension0',
+                                        __typename: 'ElideColumn',
                                       },
+                                      __typename: 'ElideColumnEdge',
                                     },
                                   ],
+                                  __typename: 'ElideColumnConnection',
                                 },
+                                __typename: 'ElideTableSource',
                               },
+                              __typename: 'ElideTableSourceEdge',
                             },
                           ],
+                          __typename: 'ElideTableSourceConnection',
                         },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'TABLE',
-                        valueType: 'TEXT',
                         values: [],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                   ],
-                  __typename: 'DimensionConnection',
+                  __typename: 'ElideDimensionConnection',
                 },
                 timeDimensions: {
                   edges: [],
-                  __typename: 'TimeDimensionConnection',
+                  __typename: 'ElideTimeDimensionConnection',
                 },
                 __typename: 'ElideTable',
               },
+              __typename: 'ElideTableEdge',
             },
           ],
+          __typename: 'ElideTableConnection',
         },
       },
       'The expected table is returned with all requested fields'
@@ -826,23 +904,18 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
   });
 
   test('fetchById - response - demo namespace', async function (this: MirageTestContext, assert) {
-    assert.expect(1);
-
     // Seed our mirage database
     ElideOneScenario(this.server);
 
     const result = await Adapter.fetchById('table', 'table0', {
       dataSourceName: 'elideOne',
     });
-
     assert.deepEqual(
       result,
       {
         table: {
-          __typename: 'ElideTableConnection',
           edges: [
             {
-              __typename: 'ElideTableEdge',
               node: {
                 id: 'table0',
                 name: 'table0',
@@ -852,10 +925,8 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                 cardinality: 'SMALL',
                 isFact: true,
                 namespace: {
-                  __typename: 'ElideNamespaceConnection',
                   edges: [
                     {
-                      __typename: 'ElideNamespaceEdge',
                       node: {
                         id: 'default',
                         name: 'default',
@@ -863,8 +934,10 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         description: 'Default Namespace',
                         __typename: 'ElideNamespace',
                       },
+                      __typename: 'ElideNamespaceEdge',
                     },
                   ],
+                  __typename: 'ElideNamespaceConnection',
                 },
                 metrics: {
                   edges: [
@@ -875,13 +948,17 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 0',
                         description: 'This is metric 0',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                     {
                       node: {
@@ -890,13 +967,17 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 1',
                         description: 'This is metric 1',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                     {
                       node: {
@@ -905,60 +986,66 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                         friendlyName: 'Metric 2',
                         description: 'This is metric 2',
                         category: 'categoryOne',
-                        valueType: 'NUMBER',
+                        valueType: 'INTEGER',
                         tags: ['DISPLAY'],
-                        columnType: 'field',
+                        columnType: 'FIELD',
                         expression: null,
-                        __typename: 'Metric',
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideMetric',
                       },
-                      __typename: 'MetricEdge',
+                      __typename: 'ElideMetricEdge',
                     },
                   ],
-                  __typename: 'MetricConnection',
+                  __typename: 'ElideMetricConnection',
                 },
                 dimensions: {
                   edges: [
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'UNKNOWN',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 0',
-                        expression: null,
                         id: 'table0.dimension0',
                         name: 'dimension0',
                         friendlyName: 'Dimension 0',
-                        tableSource: {
-                          __typename: 'TableSourceConnection',
-                          edges: [],
-                        },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'NONE',
+                        description: 'This is dimension 0',
+                        cardinality: 'UNKNOWN',
+                        category: 'categoryOne',
                         valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'NONE',
+                        tableSource: {
+                          edges: [],
+                          __typename: 'ElideTableSourceConnection',
+                        },
                         values: [],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'TINY',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 1',
-                        expression: null,
                         id: 'table0.dimension1',
                         name: 'dimension1',
                         friendlyName: 'Dimension 1',
-                        tableSource: {
-                          __typename: 'TableSourceConnection',
-                          edges: [],
-                        },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'ENUM',
+                        description: 'This is dimension 1',
+                        cardinality: 'TINY',
+                        category: 'categoryOne',
                         valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'ENUM',
+                        tableSource: {
+                          edges: [],
+                          __typename: 'ElideTableSourceConnection',
+                        },
                         values: [
                           'Practical Frozen Fish (enum)',
                           'Practical Concrete Chair (enum)',
@@ -966,64 +1053,76 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
                           'Tasty Fresh Towels (enum)',
                           'Intelligent Steel Pizza (enum)',
                         ],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                     {
-                      __typename: 'DimensionEdge',
                       node: {
-                        __typename: 'Dimension',
-                        cardinality: 'SMALL',
-                        category: 'categoryOne',
-                        columnType: 'field',
-                        description: 'This is dimension 2',
-                        expression: null,
                         id: 'table0.dimension2',
                         name: 'dimension2',
                         friendlyName: 'Dimension 2',
+                        description: 'This is dimension 2',
+                        cardinality: 'SMALL',
+                        category: 'categoryOne',
+                        valueType: 'TEXT',
+                        tags: ['DISPLAY'],
+                        columnType: 'FIELD',
+                        expression: null,
+                        valueSourceType: 'TABLE',
                         tableSource: {
-                          __typename: 'TableSourceConnection',
                           edges: [
                             {
-                              __typename: 'TableSourceEdge',
                               node: {
-                                __typename: 'TableSource',
                                 suggestionColumns: {
-                                  __typename: 'DimensionConnection',
                                   edges: [],
+                                  __typename: 'ElideColumnConnection',
                                 },
                                 valueSource: {
-                                  __typename: 'DimensionConnection',
                                   edges: [
                                     {
-                                      __typename: 'DimensionEdge',
                                       node: {
-                                        __typename: 'Dimension',
                                         id: 'table0.dimension0',
+                                        __typename: 'ElideColumn',
                                       },
+                                      __typename: 'ElideColumnEdge',
                                     },
                                   ],
+                                  __typename: 'ElideColumnConnection',
                                 },
+                                __typename: 'ElideTableSource',
                               },
+                              __typename: 'ElideTableSourceEdge',
                             },
                           ],
+                          __typename: 'ElideTableSourceConnection',
                         },
-                        tags: ['DISPLAY'],
-                        valueSourceType: 'TABLE',
-                        valueType: 'TEXT',
                         values: [],
+                        arguments: {
+                          edges: [],
+                          __typename: 'ElideArgumentConnection',
+                        },
+                        __typename: 'ElideDimension',
                       },
+                      __typename: 'ElideDimensionEdge',
                     },
                   ],
-                  __typename: 'DimensionConnection',
+                  __typename: 'ElideDimensionConnection',
                 },
                 timeDimensions: {
                   edges: [],
-                  __typename: 'TimeDimensionConnection',
+                  __typename: 'ElideTimeDimensionConnection',
                 },
                 __typename: 'ElideTable',
               },
+              __typename: 'ElideTableEdge',
             },
           ],
+          __typename: 'ElideTableConnection',
         },
       },
       'The expected table is returned with all requested fields'

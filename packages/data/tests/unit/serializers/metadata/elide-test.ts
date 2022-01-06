@@ -11,13 +11,13 @@ import type {
   TimeDimensionNode,
   TimeDimensionGrainNode,
 } from 'navi-data/serializers/metadata/elide';
-import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
 import { TableMetadataPayload } from 'navi-data/models/metadata/table';
 import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
 import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import { ElideDimensionMetadataPayload } from 'navi-data/models/metadata/elide/dimension';
+import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 let Serializer: ElideMetadataSerializer;
 
@@ -69,6 +69,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: '',
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -89,9 +90,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: '',
-                      valueSourceType: 'NONE',
+                      valueSourceType: ValueSourceType.NONE,
                       tableSource: null,
                       values: [],
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -107,9 +109,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: '',
-                      valueSourceType: 'NONE',
+                      valueSourceType: ValueSourceType.NONE,
                       tableSource: null,
                       values: [],
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -138,9 +141,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       timeZone: 'UTC',
                       columnType: 'field',
                       expression: '',
-                      valueSourceType: 'NONE',
+                      valueSourceType: ValueSourceType.NONE,
                       tableSource: null,
                       values: [],
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -187,6 +191,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: '',
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -202,6 +207,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       defaultFormat: 'NONE',
                       columnType: 'field',
                       expression: '',
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -222,9 +228,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: '',
-                      valueSourceType: 'NONE',
+                      valueSourceType: ValueSourceType.NONE,
                       tableSource: null,
                       values: [],
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -240,9 +247,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
                       tags: ['IMPORTANT'],
                       columnType: 'field',
                       expression: '',
-                      valueSourceType: 'NONE',
+                      valueSourceType: ValueSourceType.NONE,
                       tableSource: null,
                       values: [],
+                      arguments: { edges: [] },
                     },
                     cursor: '',
                   },
@@ -304,6 +312,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         source: 'bardOne',
         tableId: 'tableA',
+        columnFunctionId: undefined,
       },
       {
         id: 'tableB.m2',
@@ -318,6 +327,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         tableId: 'tableB',
         source: 'bardOne',
+        columnFunctionId: undefined,
       },
       {
         id: 'tableB.m3',
@@ -332,6 +342,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         tableId: 'tableB',
         source: 'bardOne',
+        columnFunctionId: undefined,
       },
     ];
 
@@ -349,9 +360,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         source: 'bardOne',
         tableId: 'tableA',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
+        columnFunctionId: undefined,
       },
       {
         id: 'tableA.d2',
@@ -366,9 +378,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         source: 'bardOne',
         tableId: 'tableA',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
+        columnFunctionId: undefined,
       },
       {
         id: 'tableB.d1',
@@ -383,9 +396,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         source: 'bardOne',
         tableId: 'tableB',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
+        columnFunctionId: undefined,
       },
       {
         id: 'tableB.d2',
@@ -400,9 +414,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         expression: '',
         source: 'bardOne',
         tableId: 'tableB',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
+        columnFunctionId: undefined,
       },
     ];
 
@@ -450,11 +465,11 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             ],
             defaultValue: 'day',
             description: 'The time grain to group dates by',
-            expression: INTRINSIC_VALUE_EXPRESSION,
+            valueSourceType: ValueSourceType.ENUM,
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            type: 'ref',
+            type: DataType.TEXT,
           },
         ],
       },
@@ -497,6 +512,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: '',
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -512,6 +528,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: '',
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -533,6 +550,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
+        columnFunctionId: undefined,
       },
       {
         id: 'impressions',
@@ -547,14 +565,15 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
+        columnFunctionId: undefined,
       },
     ];
     assert.deepEqual(
-      Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source),
+      Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source).map((m) => m.metricModel),
       expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
       'Metric connection payload is normalized properly for a table'
     );
-
+    //TODO test col fn ids
     assert.deepEqual(
       Serializer._normalizeTableMetrics({ edges: [], pageInfo: {} }, tableId, source),
       [],
@@ -579,7 +598,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             tags: ['IMPORTANT'],
             columnType: 'field',
             expression: '',
-            valueSourceType: 'NONE',
+            valueSourceType: ValueSourceType.NONE,
             tableSource: {
               pageInfo: null,
               edges: [
@@ -613,6 +632,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               ],
             },
             values: [],
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -628,9 +648,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             tags: ['DISPLAY'],
             columnType: 'field',
             expression: '',
-            valueSourceType: 'NONE',
+            valueSourceType: ValueSourceType.NONE,
             tableSource: null,
             values: [],
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -651,12 +672,13 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: {
           valueSource: 'somewhere.age_value',
           suggestionColumns: [{ id: 'somewhere.age_description' }],
         },
         values: [],
+        columnFunctionId: undefined,
       },
       {
         id: 'gender',
@@ -671,18 +693,20 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
-        valueSourceType: 'NONE',
+        valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
+        columnFunctionId: undefined,
       },
     ];
 
     assert.deepEqual(
-      Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source),
+      Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source).map((d) => d.dimensionModel),
       expectedDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/elide/dimension').create(p)),
       'Dimension connection payload is normalized properly for a table'
     );
 
+    //TODO test col fn ids
     assert.deepEqual(
       Serializer._normalizeTableDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],
@@ -716,9 +740,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             timeZone: 'PST',
             columnType: 'field',
             expression: '',
-            valueSourceType: 'NONE',
+            valueSourceType: ValueSourceType.NONE,
             tableSource: null,
             values: [],
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -739,9 +764,10 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             timeZone: 'CST',
             columnType: 'field',
             expression: '',
-            valueSourceType: 'NONE',
+            valueSourceType: ValueSourceType.NONE,
             tableSource: null,
             values: [],
+            arguments: { edges: [] },
           },
           cursor: '',
         },
@@ -785,8 +811,8 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               name: 'Time Grain',
               description: 'The time grain to group dates by',
               source,
-              type: 'ref',
-              expression: INTRINSIC_VALUE_EXPRESSION,
+              type: DataType.TEXT,
+              valueSourceType: ValueSourceType.ENUM,
               defaultValue: 'day',
               _localValues: [
                 {
@@ -837,8 +863,8 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               name: 'Time Grain',
               description: 'The time grain to group dates by',
               source,
-              type: 'ref',
-              expression: INTRINSIC_VALUE_EXPRESSION,
+              type: DataType.TEXT,
+              valueSourceType: ValueSourceType.ENUM,
               defaultValue: 'month',
               _localValues: [
                 {
@@ -905,8 +931,8 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             name: 'Time Grain',
             description: 'The time grain to group dates by',
             source: dataSource,
-            type: 'ref',
-            expression: INTRINSIC_VALUE_EXPRESSION,
+            type: DataType.TEXT,
+            valueSourceType: ValueSourceType.ENUM,
             defaultValue: 'day',
             _localValues: grainNodes.map((grain) => {
               const grainName = grain.grain.toLowerCase();

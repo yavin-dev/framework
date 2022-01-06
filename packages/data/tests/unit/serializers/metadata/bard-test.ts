@@ -17,6 +17,8 @@ import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -655,11 +657,11 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         ],
         defaultValue: 'id',
         description: 'The field to be projected for this dimension',
-        expression: 'self',
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
+        valueSourceType: ValueSourceType.ENUM,
       },
     ],
     description: 'Dimension Field',
@@ -679,11 +681,11 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         ],
         defaultValue: 'foo',
         description: 'The field to be projected for this dimension',
-        expression: 'self',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
       },
     ],
     description: 'Dimension Field',
@@ -703,21 +705,21 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         ],
         defaultValue: 'id',
         description: 'The field to be projected for this dimension',
-        expression: 'self',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
       },
       {
         _localValues: [{ id: 'second', name: 'second' }],
         defaultValue: 'second',
         description: 'The time grain to group dates by',
-        expression: 'self',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
       },
     ],
     description: 'Dimension Field',
@@ -732,20 +734,20 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
-        expression: 'dimension:displayCurrency',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'currency',
         name: 'currency',
-        type: 'ref',
+        type: DataType.TEXT,
       },
       {
         _localValues: undefined,
         source: 'bardOne',
         defaultValue: 'none',
         description: undefined,
-        expression: 'dimension:displayFormat',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'format',
         name: 'format',
-        type: 'ref',
+        type: DataType.TEXT,
       },
     ],
     description: '',
@@ -760,10 +762,10 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
-        expression: 'dimension:displayCurrency',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'currency',
         name: 'currency',
-        type: 'ref',
+        type: DataType.TEXT,
       },
     ],
     description: '',
@@ -780,11 +782,11 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
         defaultValue: 'day',
         description: 'The time grain to group dates by',
-        expression: 'self',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
         _localValues: [
           { id: 'day', description: 'The tableName day grain', name: 'Day' },
           { id: 'month', description: 'The tableName month grain', name: 'Month' },
@@ -801,11 +803,11 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
         defaultValue: 'day',
         description: 'The time grain to group dates by',
-        expression: 'self',
+        valueSourceType: ValueSourceType.ENUM,
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: 'ref',
+        type: DataType.TEXT,
         _localValues: [
           {
             description: 'The secondTable day grain',
@@ -893,7 +895,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       'Everything metadata payload has all types'
     );
     Object.keys(expected).forEach((key: keyof EverythingMetadataPayload) => {
-      assert.deepEqual(expected[key], normalized?.[key], `All normalized ${key} are created correctly`);
+      assert.deepEqual(normalized?.[key], expected[key], `All normalized ${key} are created correctly`);
     });
   });
 
@@ -996,10 +998,10 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
             ],
             defaultValue: null,
             description: 'Currency Parameter',
-            expression: 'self',
+            valueSourceType: ValueSourceType.ENUM,
             id: 'currency',
             name: 'currency',
-            type: 'ref',
+            type: DataType.TEXT,
             source: 'bardOne',
           },
         ],
@@ -1017,11 +1019,11 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
           {
             defaultValue: 'day',
             description: 'The time grain to group dates by',
-            expression: 'self',
+            valueSourceType: ValueSourceType.ENUM,
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            type: 'ref',
+            type: DataType.TEXT,
             _localValues: [
               {
                 description: 'The tableName day grain',

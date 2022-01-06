@@ -88,6 +88,8 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
       throw new Error('Table Back Argument Values Not Yet Supported');
     }
 
+    //else valueSourceType is NONE
+
     if (this.type === DataType.BOOLEAN) {
       return Promise.resolve([true, false]);
     }

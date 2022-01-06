@@ -366,29 +366,28 @@ function _getResponseBody(db, asyncQueryRecord) {
     if (db.elideTables.find(table) && fields.length) {
       const columns = fields.reduce(
         (groups, column) => {
-          const type = ['metrics', 'dimensions', 'timeDimensions'].find((t) => db[t].find(column));
-
+          const type = ['elideMetrics', 'elideDimensions', 'elideTimeDimensions'].find((t) => db[t].find(column));
           if (type) {
             groups[type].push(column);
           }
           return groups;
         },
-        { metrics: [], dimensions: [], timeDimensions: [] }
+        { elideMetrics: [], elideDimensions: [], elideTimeDimensions: [] }
       );
 
       // Convert each date into a row of data
       // If no time dimension is sent, just return a single row
       let rows =
-        columns.timeDimensions.length > 0
+        columns.elideTimeDimensions.length > 0
           ? _getDates(
-              filter.filter((fil) => columns.timeDimensions.includes(fil.field)),
-              db.timeDimensions.find(columns.timeDimensions),
+              filter.filter((fil) => columns.elideTimeDimensions.includes(fil.field)),
+              db.elideTimeDimensions.find(columns.elideTimeDimensions),
               fieldToAlias
             )
           : [{}];
 
       // Add each dimension
-      columns.dimensions.forEach((dimension) => {
+      columns.elideDimensions.forEach((dimension) => {
         const filterForDim = filter.find((f) => f.field === dimension); // TODO: Handle parameterized dimensions
         const dimensionValues = _dimensionValues(filterForDim);
 
@@ -407,7 +406,7 @@ function _getResponseBody(db, asyncQueryRecord) {
 
       // Add each metric
       rows = rows.map((currRow) =>
-        columns.metrics.reduce((row, metric) => {
+        columns.elideMetrics.reduce((row, metric) => {
           const field = REMOVE_TABLE_REGEX.exec(metric)[1];
           const aliasedField = fieldToAlias[field] || field;
           return {
@@ -488,7 +487,7 @@ export default function () {
                 throw new Error(`filtering on a related model is not currently supported in mirage mocks: ${filter}`);
               } else {
                 // `namespace.id` doesn't match any attribute of the records, so we want to change it to `namespaceIds`
-                selector = 'namespaceIds';
+                selector = 'namespaceId';
               }
               args[selector] = rsql.right.value;
             } else {
@@ -520,14 +519,14 @@ export default function () {
           const records = mirageGraphQLFieldResolver(obj, args, context, info);
           const asyncQueryRecord = records.edges[0]?.node;
           if (asyncQueryRecord && ['PROCESSING', 'QUEUED'].includes(asyncQueryRecord.status)) {
-            const result = server.create('async-query-result', {
+            const result = server.create('elide-async-query-result', {
               httpStatus: 200,
               responseBody: _getResponseBody(db, asyncQueryRecord),
             });
             if (result.responseBody !== null) {
-              db.asyncQueries.update(asyncQueryRecord.id, { status: 'COMPLETE' });
+              db.elideAsyncQueries.update(asyncQueryRecord.id, { status: 'COMPLETE' });
             }
-            records.edges[0].node = db.asyncQueries.update(asyncQueryRecord.id, { result });
+            records.edges[0].node = db.elideAsyncQueries.update(asyncQueryRecord.id, { result });
           }
           return records;
         },
@@ -536,20 +535,20 @@ export default function () {
         asyncQuery(obj, { op, data }, context) {
           const {
             mirageSchema: {
-              db: { asyncQueries },
+              db: { elideAsyncQueries },
             },
           } = context;
           data = data[0];
           const queryIds = data.id ? [data.id] : [];
           let existingQueries;
           try {
-            existingQueries = asyncQueries.find(queryIds);
+            existingQueries = elideAsyncQueries.find(queryIds);
           } catch (e) {
             // No matching id found
             existingQueries = [];
           }
           if (op === 'UPSERT' && existingQueries.length === 0) {
-            const node = asyncQueries.firstOrCreate(
+            const node = elideAsyncQueries.firstOrCreate(
               {
                 id: data.id,
               },

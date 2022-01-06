@@ -3,9 +3,11 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import FunctionParameterMetadataModel, {
+  DataType,
   FunctionParameterMetadataPayload,
 } from 'navi-data/models/metadata/function-parameter';
 import type { Factory } from 'navi-data/models/native-with-create';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 let Payload: ColumnFunctionMetadataPayload,
   ColumnFunction: ColumnFunctionMetadataModel,
@@ -20,8 +22,8 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       name: 'Currency',
       description: 'moneyz',
       source: 'bardOne',
-      type: 'ref',
-      expression: 'dimension:displayCurrency',
+      type: DataType.TEXT,
+      valueSourceType: ValueSourceType.ENUM,
       defaultValue: 'USD',
     };
 

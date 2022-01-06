@@ -22,7 +22,7 @@ import type ColumnFunctionMetadataModel from '../../models/metadata/column-funct
 import type { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
-import type { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type { Grain } from 'navi-data/utils/date';
 
@@ -32,7 +32,7 @@ type Edge<T> = {
 };
 export type Connection<T> = {
   edges: Edge<T>[];
-  pageInfo: TODO;
+  pageInfo?: TODO;
 };
 type ElideCardinality = Uppercase<'unknown' | 'tiny' | 'small' | 'medium' | 'large' | 'huge'>;
 type ColumnNode = {
@@ -108,6 +108,10 @@ export interface TablePayload {
   table: Connection<TableNode>;
 }
 
+function isPresent<T>(t: T | undefined | null | void): t is T {
+  return t !== undefined && t !== null;
+}
+
 export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
@@ -160,17 +164,18 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       const newTableTimeDimensionColFuncs = newTableTimeDimensionsAndColFuncs.map((obj) => obj.columnFunction);
 
       newTable.metricIds = newTableMetrics.map((m) => m.metricModel.id);
-      newTable.dimensionIds = newTableDimensions.map((d) => d.id);
+      newTable.dimensionIds = newTableDimensions.map((d) => d.dimensionModel.id);
       newTable.timeDimensionIds = newTableTimeDimensions.map((d) => d.id);
 
       metrics = [...metrics, ...newTableMetrics.map((m) => m.metricModel)];
-      dimensions = [...dimensions, ...newTableDimensions];
+      dimensions = [...dimensions, ...newTableDimensions.map((d) => d.dimensionModel)];
       timeDimensions = [...timeDimensions, ...newTableTimeDimensions];
       columnFunctions = [
         ...columnFunctions,
         ...newTableTimeDimensionColFuncs,
         ...newTableMetrics.map((m) => m.columnFunction),
-      ];
+        ...newTableDimensions.map((m) => m.columnFunction),
+      ].filter(isPresent);
 
       return newTable;
     });
@@ -198,7 +203,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     source: string
   ): {
     metricModel: MetricMetadataModel;
-    columnFunction: ColumnFunctionMetadataModel;
+    columnFunction: ColumnFunctionMetadataModel | null;
   }[] {
     return metricConnection.edges.map(({ node }) => {
       const columnFunction = this.createColumnFunction(node.id, node.arguments, source);
@@ -215,7 +220,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         isSortable: true,
         type: node.columnType,
         expression: node.expression,
-        columnFunctionId: columnFunction.id,
+        columnFunctionId: columnFunction?.id,
       };
       return {
         metricModel: this.createMetricModel(payload),
@@ -235,9 +240,13 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     dimensionConnection: Connection<DimensionNode>,
     tableId: string,
     source: string
-  ): DimensionMetadataModel[] {
+  ): {
+    dimensionModel: DimensionMetadataModel;
+    columnFunction: ColumnFunctionMetadataModel | null;
+  }[] {
     return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
+      const columnFunction = this.createColumnFunction(node.id, node.arguments, source);
 
       const cardinality = this._normalizeCardinality(node.cardinality);
       const tableSource = node.tableSource?.edges[0];
@@ -262,8 +271,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
             }
           : undefined,
         values: node.values,
+        columnFunctionId: columnFunction?.id,
       };
-      return this.createDimensionModel(payload);
+      return {
+        dimensionModel: this.createDimensionModel(payload),
+        columnFunction,
+      };
     });
   }
 
@@ -351,7 +364,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           source: dataSourceName,
           defaultValue,
           type: DataType.TEXT,
-          valueSourceType: 'ENUM',
+          valueSourceType: ValueSourceType.ENUM,
           _localValues: grainNodes.map((grain) => {
             const grainName = grain.grain.toLowerCase();
             return {
@@ -372,7 +385,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     columnId: string,
     columnArguments: Connection<ElideArgument>,
     dataSourceName: string
-  ): ColumnFunctionMetadataModel {
+  ): ColumnFunctionMetadataModel | null {
+    // do not create a column function if arguments are not present
+    if (columnArguments.edges.length === 0) {
+      return null;
+    }
+
     const columnFunctionId = `${this.namespace}:column=${columnId}`;
     const payload: ColumnFunctionMetadataPayload = {
       id: columnFunctionId,

@@ -1,17 +1,15 @@
 import { module, test } from 'qunit';
 import FunctionParameterMetadataModel, {
+  DataType,
   FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION,
 } from 'navi-data/models/metadata/function-parameter';
 import { setupTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import Pretender, { Server } from 'pretender';
 // @ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import type { TestContext } from 'ember-test-helpers';
 import type { Factory } from 'navi-data/models/native-with-create';
-
-const HOST = config.navi.dataSources[0].uri;
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 let Payload: FunctionParameterMetadataPayload;
 let server: Server;
@@ -28,10 +26,13 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     Payload = {
       id: 'currency',
       name: 'Currency',
-      type: 'ref',
+      type: DataType.TEXT,
       source: 'bardOne',
-      expression: 'dimension:dimensionOne',
-      _localValues: undefined,
+      valueSourceType: ValueSourceType.ENUM,
+      _localValues: [
+        { id: 'USD', description: 'US Dollars' },
+        { id: 'EUR', description: 'Euros' },
+      ],
       defaultValue: 'USD',
     };
 
@@ -44,19 +45,18 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   });
 
   test('factory has identifierField defined', function (assert) {
-    assert.expect(1);
-
     assert.equal(FunctionParameterMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function (assert) {
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
-
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');
-
     assert.equal(FunctionParameter.type, Payload.type, 'type property was properly hydrated');
-
-    assert.equal(FunctionParameter.expression, Payload.expression, 'expression property was properly hydrated');
+    assert.equal(
+      FunctionParameter.valueSourceType,
+      Payload.valueSourceType,
+      'valueSourceType property was properly hydrated'
+    );
 
     assert.strictEqual(
       FunctionParameter['_localValues'],
@@ -68,70 +68,29 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   });
 
   test('values', async function (assert) {
-    assert.expect(3);
+    assert.expect(4);
 
-    const valuesResponse = <const>{
-      rows: [
-        { id: 'USD', description: 'US Dollars' },
-        { id: 'EUR', description: 'Euros' },
-      ],
-      meta: { test: true },
-    };
+    //Test ENUM
+    const enumValues = await FunctionParameter.values;
+    assert.deepEqual(enumValues, Payload._localValues, 'enum function arguments return the local values');
 
-    //setup Pretender
-    server.get(`${HOST}/v1/dimensions/dimensionOne/values/`, function () {
-      return [200, { 'Content-Type': 'application/json' }, JSON.stringify(valuesResponse)];
-    });
-    const values = await FunctionParameter.values;
+    //Test TABLE
+    FunctionParameter.valueSourceType = ValueSourceType.TABLE;
+    try {
+      await FunctionParameter.values;
+    } catch (e) {
+      assert.equal(e.message, 'Table Back Argument Values Not Yet Supported', 'Table values are not supported');
+    }
 
-    assert.deepEqual(
-      values?.map((val) => ({ id: val.id, description: val.description })),
-      valuesResponse.rows.map(({ id, description }) => ({ id, description: `${id} (${description})` })),
-      'Values are returned correctly for a dimension type function argument'
-    );
+    //Test NONE
+    FunctionParameter.valueSourceType = ValueSourceType.NONE;
+    const noneValues = await FunctionParameter.values;
+    assert.deepEqual(noneValues, undefined, 'none function arguments return undefined');
 
-    const trendArgPayload: FunctionParameterMetadataPayload = {
-      id: 'trend',
-      name: 'Trend',
-      source: 'bardOne',
-      type: 'ref',
-      expression: INTRINSIC_VALUE_EXPRESSION,
-      _localValues: [
-        {
-          id: 'yoy',
-          name: 'YoY',
-          description: 'Year Over Year',
-        },
-        {
-          id: 'wow',
-          name: 'WoW',
-          description: 'Week Over Week',
-        },
-      ],
-      defaultValue: 'wow',
-    };
-
-    const TrendFunctionArgument = FunctionParameterFactory.create(trendArgPayload);
-    const trendValues = await TrendFunctionArgument.values;
-
-    assert.deepEqual(
-      trendValues,
-      trendArgPayload._localValues,
-      'Self referenced function arguments return the local values'
-    );
-
-    const noValuesPayload: FunctionParameterMetadataPayload = {
-      id: 'foo',
-      name: 'Foo',
-      type: 'primitive',
-      source: 'bardOne',
-      expression: undefined,
-      _localValues: undefined,
-      defaultValue: '1',
-    };
-    const NoValuesFunctionArgument = FunctionParameterFactory.create(noValuesPayload);
-    const noValues = await NoValuesFunctionArgument.values;
-
-    assert.strictEqual(noValues, undefined, 'function argument values returns undefined for primitive arguments');
+    //Test NONE + ENUM Value
+    FunctionParameter.valueSourceType = ValueSourceType.NONE;
+    FunctionParameter.type = DataType.BOOLEAN;
+    const booleanValues = await FunctionParameter.values;
+    assert.deepEqual(booleanValues, [true, false], 'none function arguments return undefined');
   });
 });
