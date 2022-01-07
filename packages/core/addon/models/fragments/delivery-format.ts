@@ -4,20 +4,16 @@
  */
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
-//@ts-ignore
-import { fragment } from 'ember-data-model-fragments/attributes';
-import type FormatOptions from './format-options';
+import type { DeliveryFormatType } from 'navi-core/models/registry';
 
 export default class DeliveryFormatFragment extends Fragment {
   @attr('string')
   declare type: string;
 
-  @fragment('fragments/formatOptions', { defaultValue: {} })
-  declare options: FormatOptions;
+  @attr()
+  declare options: unknown;
 }
 
-declare module 'navi-core/models/registry' {
-  export interface FragmentRegistry {
-    'fragments/delivery-format': DeliveryFormatFragment;
-  }
+export interface TypedDeliveryFormat extends DeliveryFormatFragment {
+  type: DeliveryFormatType;
 }
