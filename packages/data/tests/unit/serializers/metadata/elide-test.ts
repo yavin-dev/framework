@@ -469,7 +469,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            type: DataType.TEXT,
+            valueType: DataType.TEXT,
           },
         ],
       },
@@ -811,7 +811,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               name: 'Time Grain',
               description: 'The time grain to group dates by',
               source,
-              type: DataType.TEXT,
+              valueType: DataType.TEXT,
               valueSourceType: ValueSourceType.ENUM,
               defaultValue: 'day',
               _localValues: [
@@ -863,7 +863,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
               name: 'Time Grain',
               description: 'The time grain to group dates by',
               source,
-              type: DataType.TEXT,
+              valueType: DataType.TEXT,
               valueSourceType: ValueSourceType.ENUM,
               defaultValue: 'month',
               _localValues: [
@@ -931,7 +931,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             name: 'Time Grain',
             description: 'The time grain to group dates by',
             source: dataSource,
-            type: DataType.TEXT,
+            valueType: DataType.TEXT,
             valueSourceType: ValueSourceType.ENUM,
             defaultValue: 'day',
             _localValues: grainNodes.map((grain) => {

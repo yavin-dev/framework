@@ -363,7 +363,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           description: 'The time grain to group dates by',
           source: dataSourceName,
           defaultValue,
-          type: DataType.TEXT,
+          valueType: DataType.TEXT,
           valueSourceType: ValueSourceType.ENUM,
           _localValues: grainNodes.map((grain) => {
             const grainName = grain.grain.toLowerCase();

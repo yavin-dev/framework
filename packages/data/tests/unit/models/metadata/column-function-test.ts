@@ -22,7 +22,7 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       name: 'Currency',
       description: 'moneyz',
       source: 'bardOne',
-      type: DataType.TEXT,
+      valueType: DataType.TEXT,
       valueSourceType: ValueSourceType.ENUM,
       defaultValue: 'USD',
     };
@@ -65,7 +65,7 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       'parameters description property is hydrated properly'
     );
     assert.deepEqual(param.source, paramPayload?.source, 'parameters source property is hydrated properly');
-    assert.deepEqual(param.type, paramPayload?.type, 'parameters type property is hydrated properly');
+    assert.deepEqual(param.valueType, paramPayload?.valueType, 'parameters type property is hydrated properly');
     assert.deepEqual(param.expression, paramPayload?.expression, 'parameters expression property is hydrated properly');
     assert.deepEqual(
       param.defaultValue,

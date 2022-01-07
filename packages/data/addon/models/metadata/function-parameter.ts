@@ -6,14 +6,17 @@
  * The values control configuration for an parameters on a base metric
  */
 import { inject as service } from '@ember/service';
+import { assert } from '@ember/debug';
+import { taskFor } from 'ember-concurrency-ts';
 import NativeWithCreate from 'navi-data/models/native-with-create';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import { ValueSourceType } from './elide/dimension';
+import type { DimensionColumn, TableSource } from './dimension';
+import type { ValueSourceType } from './elide/dimension';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
-//TODO is there a better place for this
+//TODO we should use this in the column type definition
 export enum DataType {
   TIME = 'TIME',
   INTEGER = 'INTEGER',
@@ -26,11 +29,15 @@ export enum DataType {
   UNKNOWN = 'UNKNOWN',
 }
 
-export type ColumnFunctionParametersValue =
-  | { id: string; name?: string; description?: string }
-  | string
-  | number
-  | boolean;
+export enum CustomParamDataType {
+  ENTITY = 'ENTITY',
+}
+
+export type ParameterDataType = DataType | CustomParamDataType;
+
+export type BardParamEntity = { id: string; name?: string; description?: string };
+
+export type ColumnFunctionParametersValue = BardParamEntity | string | number | boolean;
 
 export type ColumnFunctionParametersValues = ColumnFunctionParametersValue[];
 
@@ -40,8 +47,9 @@ export interface FunctionParameterMetadataPayload {
   description?: string;
   source: string;
   valueSourceType: ValueSourceType;
-  type: DataType;
+  valueType: ParameterDataType;
   defaultValue?: string | null;
+  tableSource?: TableSource;
   _localValues?: ColumnFunctionParametersValues;
 }
 
@@ -65,9 +73,11 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
   declare source: string;
 
-  declare type: DataType;
+  declare valueType: ParameterDataType;
 
   declare valueSourceType: ValueSourceType;
+
+  declare tableSource?: TableSource;
 
   declare defaultValue?: string | null;
 
@@ -79,21 +89,35 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
   /**
    * promise that resolves to an array of values used for function parameters with an enum type
    */
-  get values(): Promise<ColumnFunctionParametersValues> | undefined {
+  get values(): Promise<ColumnFunctionParametersValues | undefined> {
     if (this.valueSourceType === 'ENUM') {
       return Promise.resolve(this._localValues);
     }
 
     if (this.valueSourceType === 'TABLE') {
-      throw new Error('Table Back Argument Values Not Yet Supported');
+      return this.metadataService
+        .findById('dimension', this.tableSource?.valueSource ?? '', this.source)
+        .then((columnMetadata) => {
+          assert(`The dimension metadata for '${this.tableSource?.valueSource}' should exist`, columnMetadata);
+          const dimension: DimensionColumn = { columnMetadata, parameters: {} };
+          return taskFor(this.dimensionService.all).perform(dimension);
+        })
+        .then((v) =>
+          v.values.map((d) => {
+            const context = d.suggestions ? ` (${Object.values(d.suggestions)})` : '';
+            return {
+              id: `${d.value}`,
+              description: `${d.displayValue}${context}`,
+            };
+          })
+        );
     }
 
     //else valueSourceType is NONE
-
-    if (this.type === DataType.BOOLEAN) {
+    if (this.valueType === DataType.BOOLEAN) {
       return Promise.resolve([true, false]);
     }
 
-    return undefined;
+    return Promise.resolve(undefined);
   }
 }

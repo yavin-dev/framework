@@ -20,6 +20,7 @@ import NaviFactAdapter, {
   Column,
   Sort,
   FactAdapterError,
+  ParameterValue,
 } from './interface';
 import { omit, capitalize } from 'lodash-es';
 import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
@@ -43,7 +44,7 @@ export type Query = Record<string, string | number | boolean>;
 function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
   if (!column.parameters.field) {
     warn(`Dimension '${column.field}' does not specify a 'field' parameter`, {
-      id: 'formatDimensionFieldName--no-field-paramter',
+      id: 'formatDimensionFieldName--no-field-parameter',
     });
   }
   if (column.field.includes('.')) {
@@ -213,7 +214,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   _buildDimensionsPath(request: RequestV2 /*options*/): string {
     const dimensionToFields = request.columns
       .filter((c) => c.type === 'dimension' || (c.type === 'timeDimension' && !isDateTime(c)))
-      .reduce((dimensionToFields: Record<string, string[]>, dim) => {
+      .reduce((dimensionToFields: Record<string, ParameterValue[]>, dim) => {
         const dimName = canonicalizeFiliDimension(dim);
         if (!dimensionToFields[dimName]) {
           dimensionToFields[dimName] = [];

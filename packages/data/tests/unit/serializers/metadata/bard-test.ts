@@ -17,7 +17,7 @@ import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
+import { CustomParamDataType, DataType } from 'navi-data/models/metadata/function-parameter';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 const Payload: RawEverythingPayload = {
@@ -660,7 +660,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
         valueSourceType: ValueSourceType.ENUM,
       },
     ],
@@ -685,7 +685,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
       },
     ],
     description: 'Dimension Field',
@@ -709,7 +709,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
       },
       {
         _localValues: [{ id: 'second', name: 'second' }],
@@ -719,7 +719,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
       },
     ],
     description: 'Dimension Field',
@@ -734,20 +734,26 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
-        valueSourceType: ValueSourceType.ENUM,
+        valueSourceType: ValueSourceType.TABLE,
         id: 'currency',
         name: 'currency',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
+        tableSource: {
+          valueSource: 'displayCurrency',
+        },
       },
       {
         _localValues: undefined,
         source: 'bardOne',
         defaultValue: 'none',
         description: undefined,
-        valueSourceType: ValueSourceType.ENUM,
+        valueSourceType: ValueSourceType.TABLE,
         id: 'format',
         name: 'format',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
+        tableSource: {
+          valueSource: 'displayFormat',
+        },
       },
     ],
     description: '',
@@ -762,10 +768,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         source: 'bardOne',
         defaultValue: 'USD',
         description: undefined,
-        valueSourceType: ValueSourceType.ENUM,
+        valueSourceType: ValueSourceType.TABLE,
         id: 'currency',
         name: 'currency',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
+        tableSource: {
+          valueSource: 'displayCurrency',
+        },
       },
     ],
     description: '',
@@ -786,7 +795,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
         _localValues: [
           { id: 'day', description: 'The tableName day grain', name: 'Day' },
           { id: 'month', description: 'The tableName month grain', name: 'Month' },
@@ -807,7 +816,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        type: DataType.TEXT,
+        valueType: CustomParamDataType.ENTITY,
         _localValues: [
           {
             description: 'The secondTable day grain',
@@ -1001,8 +1010,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
             valueSourceType: ValueSourceType.ENUM,
             id: 'currency',
             name: 'currency',
-            type: DataType.TEXT,
+            valueType: CustomParamDataType.ENTITY,
             source: 'bardOne',
+            tableSource: undefined,
           },
         ],
         description: 'Mo Problems',
@@ -1023,7 +1033,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            type: DataType.TEXT,
+            valueType: CustomParamDataType.ENTITY,
             _localValues: [
               {
                 description: 'The tableName day grain',

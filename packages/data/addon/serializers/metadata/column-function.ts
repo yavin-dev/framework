@@ -35,7 +35,7 @@ export function constructFunctionParameters(
       id: paramName,
       name: paramName,
       description,
-      type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
+      valueType: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
       expression: param.type === 'dimension' ? `dimension:${param.dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
       _localValues: param.type === 'enum' ? param.values : undefined,
       source,

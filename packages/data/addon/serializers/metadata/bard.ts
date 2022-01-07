@@ -5,7 +5,7 @@
 import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
+import { CustomParamDataType, DataType } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
@@ -313,7 +313,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Dimension Field',
           description: 'The field to be projected for this dimension',
           source: dataSourceName,
-          type: DataType.TEXT,
+          valueType: CustomParamDataType.ENTITY,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: fields.map((field) => ({
@@ -327,7 +327,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Time Grain',
           description: 'The time grain to group dates by',
           source: dataSourceName,
-          type: DataType.TEXT,
+          valueType: CustomParamDataType.ENTITY,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue: grains[0],
           _localValues: grains.map((grain) => ({
@@ -366,7 +366,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Dimension Field',
           description: 'The field to be projected for this dimension',
           source: dataSourceName,
-          type: DataType.TEXT,
+          valueType: CustomParamDataType.ENTITY,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: fields.map((field) => ({
@@ -506,7 +506,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Time Grain',
           description: 'The time grain to group dates by',
           source: dataSourceName,
-          type: DataType.TEXT,
+          valueType: CustomParamDataType.ENTITY,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: timeGrainInfo.timeGrains.map((grain) => ({
@@ -545,6 +545,12 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
     return null;
   }
 
+  private readonly paramValueSourceTypeMap: Record<string, ValueSourceType> = {
+    enum: ValueSourceType.ENUM,
+    dimension: ValueSourceType.TABLE,
+    none: ValueSourceType.NONE,
+  };
+
   /**
    * @param parameters - raw function parameters
    * @param dataSourceName - data source name
@@ -561,8 +567,9 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         id: paramName,
         name: paramName,
         description,
-        type: DataType.TEXT,
-        valueSourceType: ValueSourceType.ENUM, //TODO determine contract for user input
+        valueType: ['enum', 'dimension'].includes(param.type) ? CustomParamDataType.ENTITY : DataType.TEXT,
+        valueSourceType: this.paramValueSourceTypeMap[param.type],
+        tableSource: param.type === 'dimension' ? { valueSource: param.dimensionName } : undefined,
         _localValues: param.type === 'enum' ? param.values : undefined,
         source: dataSourceName,
         defaultValue,

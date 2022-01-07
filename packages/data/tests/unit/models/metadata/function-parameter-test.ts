@@ -10,6 +10,8 @@ import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import type { TestContext } from 'ember-test-helpers';
 import type { Factory } from 'navi-data/models/native-with-create';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+// @ts-ignore
+import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Payload: FunctionParameterMetadataPayload;
 let server: Server;
@@ -18,15 +20,15 @@ let FunctionParameter: FunctionParameterMetadataModel;
 
 module('Unit | Metadata Model | Function Parameter', function (hooks) {
   setupTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function (this: TestContext) {
-    server = new Pretender(metadataRoutes);
     await this.owner.lookup('service:navi-metadata').loadMetadata();
 
     Payload = {
       id: 'currency',
       name: 'Currency',
-      type: DataType.TEXT,
+      valueType: DataType.TEXT,
       source: 'bardOne',
       valueSourceType: ValueSourceType.ENUM,
       _localValues: [
@@ -40,10 +42,6 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     FunctionParameter = FunctionParameterFactory.create(Payload);
   });
 
-  hooks.afterEach(function () {
-    server.shutdown();
-  });
-
   test('factory has identifierField defined', function (assert) {
     assert.equal(FunctionParameterMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
@@ -51,7 +49,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   test('it properly hydrates properties', function (assert) {
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');
-    assert.equal(FunctionParameter.type, Payload.type, 'type property was properly hydrated');
+    assert.equal(FunctionParameter.valueType, Payload.valueType, 'type property was properly hydrated');
     assert.equal(
       FunctionParameter.valueSourceType,
       Payload.valueSourceType,
@@ -76,11 +74,21 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
 
     //Test TABLE
     FunctionParameter.valueSourceType = ValueSourceType.TABLE;
-    try {
-      await FunctionParameter.values;
-    } catch (e) {
-      assert.equal(e.message, 'Table Back Argument Values Not Yet Supported', 'Table values are not supported');
-    }
+    FunctionParameter.tableSource = {
+      valueSource: 'gender',
+    };
+    const tableValues = await FunctionParameter.values;
+    assert.deepEqual(
+      tableValues,
+      [
+        { description: '1 (Licensed Steel Keyboard)', id: '1' },
+        { description: '2 (Intelligent Cotton Soap)', id: '2' },
+        { description: '3 (Refined Wooden Tuna)', id: '3' },
+        { description: '4 (Generic Granite Car)', id: '4' },
+        { description: '5 (Refined Frozen Chair)', id: '5' },
+      ],
+      'table function arguments return table values'
+    );
 
     //Test NONE
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
@@ -89,7 +97,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
 
     //Test NONE + ENUM Value
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
-    FunctionParameter.type = DataType.BOOLEAN;
+    FunctionParameter.valueType = DataType.BOOLEAN;
     const booleanValues = await FunctionParameter.values;
     assert.deepEqual(booleanValues, [true, false], 'none function arguments return undefined');
   });
