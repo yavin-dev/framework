@@ -23,7 +23,7 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
   });
 
   test('dimension filter with metric operations', async function (assert) {
-    assert.expect(1);
+    assert.expect(3);
 
     // redirecting to reports
     await visit('/reports/new');
@@ -35,19 +35,25 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
     await animationsSettled();
 
     // triggering dimesnion
-    await clickItem('dimension', 'Display Currency');
-    await clickItemFilter('dimension', 'Display Currency');
+    await clickItem('dimension', 'Order Budget');
+    await clickItemFilter('dimension', 'Order Budget');
 
-    // select the dimesion value
-    await selectChoose('.filter-values--dimension-select__trigger', '1');
-
-    // matching the operator
-    await selectChoose($('.filter-builder__operator-trigger:eq(1)')[0], 'Equals');
+    // add number filter
+    await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'Equals');
+    await fillIn('input.filter-values--value-input', '2');
 
     // validating
     assert
       .dom(findAll('.filter-builder__subject .name')[1])
-      .hasText('Display Currency', 'Second filter rendered correctly');
+      .hasText('Order Budget', 'Number dimension filter is added');
+
+    await click('.navi-report__run-btn');
+    assert.dom('.table-row-vc').exists({ count: 1 }, 'Table has row');
+
+    await click('.get-api__action-btn');
+    assert
+      .dom('.get-api__modal input')
+      .hasValue(/.*orderBudget|id-eq[1].*/, 'number dimension filter is in the request');
   });
 
   test('multi datasource report', async function (assert) {
