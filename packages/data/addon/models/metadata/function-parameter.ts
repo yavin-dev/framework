@@ -29,32 +29,26 @@ export enum DataType {
   UNKNOWN = 'UNKNOWN',
 }
 
-export enum CustomParamDataType {
-  ENTITY = 'ENTITY',
-}
+export type ColumnFunctionParametersValue = string | number | boolean;
 
-export type ParameterDataType = DataType | CustomParamDataType;
-
-export type BardParamEntity = { id: string; name?: string; description?: string };
-
-export type ColumnFunctionParametersValue = BardParamEntity | string | number | boolean;
-
-export type ColumnFunctionParametersValues = ColumnFunctionParametersValue[];
-
+export type PotentialParameterValue = {
+  id: ColumnFunctionParametersValue; // actual param value provided in the request
+  name: string; // descriptive label to show to users when selecting a value
+  description?: string; // shorter label (can be used for column display names)
+};
 export interface FunctionParameterMetadataPayload {
   id: string;
   name: string;
   description?: string;
   source: string;
   valueSourceType: ValueSourceType;
-  valueType: ParameterDataType;
+  valueType: DataType;
   defaultValue?: string | null;
   tableSource?: TableSource;
-  _localValues?: ColumnFunctionParametersValues;
+  _localValues?: PotentialParameterValue[];
 }
 
 export default class FunctionParameterMetadataModel extends NativeWithCreate {
-  static identifierField = 'id';
   constructor(owner: unknown, args: FunctionParameterMetadataPayload) {
     super(owner, args);
   }
@@ -73,7 +67,7 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
   declare source: string;
 
-  declare valueType: ParameterDataType;
+  declare valueType: DataType;
 
   declare valueSourceType: ValueSourceType;
 
@@ -84,14 +78,19 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
   /**
    * enum values for the parameter
    */
-  protected declare _localValues: ColumnFunctionParametersValues;
+  protected declare _localValues?: PotentialParameterValue[];
 
   /**
    * promise that resolves to an array of values used for function parameters with an enum type
    */
-  get values(): Promise<ColumnFunctionParametersValues | undefined> {
+  get values(): Promise<PotentialParameterValue[]> {
     if (this.valueSourceType === 'ENUM') {
-      return Promise.resolve(this._localValues);
+      const { _localValues: values } = this;
+      assert(
+        `The function-parameter '${this.id}':'(${this.name})' is of type 'ENUM' but has no values`,
+        values?.length
+      );
+      return Promise.resolve(values);
     }
 
     if (this.valueSourceType === 'TABLE') {
@@ -104,10 +103,12 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
         })
         .then((v) =>
           v.values.map((d) => {
-            const context = d.suggestions ? ` (${Object.values(d.suggestions)})` : '';
+            const context = d.suggestions ? `${Object.values(d.suggestions)}` : '';
+            debugger;
             return {
               id: `${d.value}`,
-              description: `${d.displayValue}${context}`,
+              name: d.displayValue,
+              description: `${d.displayValue} (${context})`,
             };
           })
         );
@@ -115,9 +116,12 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
     //else valueSourceType is NONE
     if (this.valueType === DataType.BOOLEAN) {
-      return Promise.resolve([true, false]);
+      return Promise.resolve([
+        { id: true, name: 'True' },
+        { id: false, name: 'False' },
+      ]);
     }
 
-    return Promise.resolve(undefined);
+    return Promise.resolve([]);
   }
 }

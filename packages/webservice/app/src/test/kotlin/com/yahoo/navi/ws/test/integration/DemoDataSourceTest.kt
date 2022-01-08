@@ -7,26 +7,54 @@ import org.junit.jupiter.api.Test
 
 class DemoDataSourceTest : IntegrationTest() {
     @Test
-    fun simple_netflix_table_test() {
+    fun `access tables via tables entity`() {
+
+        // default namespace table
         given()
             .header("User", "testuser")
             .When()
-            .get("/NetflixTitles")
+            .get("/table/NetflixTitles")
             .then()
             .assertThat()
             .statusCode(200)
-            .body("data[0].type", Matchers.equalTo("NetflixTitles"))
+            .body("data.id", Matchers.equalTo("NetflixTitles"))
+
+        // DemoNamespace namespace table
+        given()
+            .header("User", "testuser")
+            .When()
+            .get("/table/DemoNamespace_TrendingNow")
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("data.id", Matchers.equalTo("DemoNamespace_TrendingNow"))
+    }
+
+    @Test
+    fun `access tables via namespace entity`() {
+
+        // default namespace table
+        given()
+            .header("User", "testuser")
+            .When()
+            .get("/namespace/default/tables/NetflixTitles")
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("data.id", Matchers.equalTo("NetflixTitles"))
+
+        // DemoNamespace namespace table
+        given()
+            .header("User", "testuser")
+            .When()
+            .get("/namespace/DemoNamespace/tables/DemoNamespace_TrendingNow")
+            .then()
+            .assertThat()
+            .statusCode(200)
+            .body("data.id", Matchers.equalTo("DemoNamespace_TrendingNow"))
     }
 
     @Test
     fun simple_table_with_namespace_test() {
-        given()
-            .header("User", "testuser")
-            .When()
-            .get("/DemoNamespace_TrendingNow")
-            .then()
-            .assertThat()
-            .statusCode(200)
-            .body("data[0].type", Matchers.equalTo("DemoNamespace_TrendingNow"))
     }
 }

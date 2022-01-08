@@ -4,9 +4,6 @@ import FunctionParameterMetadataModel, {
   FunctionParameterMetadataPayload,
 } from 'navi-data/models/metadata/function-parameter';
 import { setupTest } from 'ember-qunit';
-import Pretender, { Server } from 'pretender';
-// @ts-ignore
-import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import type { TestContext } from 'ember-test-helpers';
 import type { Factory } from 'navi-data/models/native-with-create';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
@@ -14,7 +11,6 @@ import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Payload: FunctionParameterMetadataPayload;
-let server: Server;
 let FunctionParameterFactory: Factory<typeof FunctionParameterMetadataModel>;
 let FunctionParameter: FunctionParameterMetadataModel;
 
@@ -32,18 +28,14 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
       source: 'bardOne',
       valueSourceType: ValueSourceType.ENUM,
       _localValues: [
-        { id: 'USD', description: 'US Dollars' },
-        { id: 'EUR', description: 'Euros' },
+        { id: 'USD', name: 'US Dollars' },
+        { id: 'EUR', name: 'Euros' },
       ],
       defaultValue: 'USD',
     };
 
     FunctionParameterFactory = this.owner.factoryFor('model:metadata/function-parameter');
     FunctionParameter = FunctionParameterFactory.create(Payload);
-  });
-
-  test('factory has identifierField defined', function (assert) {
-    assert.equal(FunctionParameterMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function (assert) {
@@ -81,11 +73,11 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     assert.deepEqual(
       tableValues,
       [
-        { description: '1 (Licensed Steel Keyboard)', id: '1' },
-        { description: '2 (Intelligent Cotton Soap)', id: '2' },
-        { description: '3 (Refined Wooden Tuna)', id: '3' },
-        { description: '4 (Generic Granite Car)', id: '4' },
-        { description: '5 (Refined Frozen Chair)', id: '5' },
+        { description: '1 (Licensed Steel Keyboard)', id: '1', name: '1' },
+        { description: '2 (Intelligent Cotton Soap)', id: '2', name: '2' },
+        { description: '3 (Refined Wooden Tuna)', id: '3', name: '3' },
+        { description: '4 (Generic Granite Car)', id: '4', name: '4' },
+        { description: '5 (Refined Frozen Chair)', id: '5', name: '5' },
       ],
       'table function arguments return table values'
     );
@@ -93,12 +85,19 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     //Test NONE
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
     const noneValues = await FunctionParameter.values;
-    assert.deepEqual(noneValues, undefined, 'none function arguments return undefined');
+    assert.deepEqual(noneValues, [], 'none function arguments return undefined');
 
     //Test NONE + ENUM Value
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
     FunctionParameter.valueType = DataType.BOOLEAN;
     const booleanValues = await FunctionParameter.values;
-    assert.deepEqual(booleanValues, [true, false], 'none function arguments return undefined');
+    assert.deepEqual(
+      booleanValues,
+      [
+        { id: true, name: 'True' },
+        { id: false, name: 'False' },
+      ],
+      'none function arguments return undefined'
+    );
   });
 });

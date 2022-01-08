@@ -66,7 +66,11 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
     );
     assert.deepEqual(param.source, paramPayload?.source, 'parameters source property is hydrated properly');
     assert.deepEqual(param.valueType, paramPayload?.valueType, 'parameters type property is hydrated properly');
-    assert.deepEqual(param.expression, paramPayload?.expression, 'parameters expression property is hydrated properly');
+    assert.deepEqual(
+      param.valueSourceType,
+      paramPayload?.valueSourceType,
+      'parameters valueSourceType property is hydrated properly'
+    );
     assert.deepEqual(
       param.defaultValue,
       paramPayload?.defaultValue,

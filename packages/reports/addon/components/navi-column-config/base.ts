@@ -43,9 +43,9 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   @action
   setParameter(param: FunctionParameterMetadataModel, rawParamValue: string | number | boolean) {
     let paramValue = rawParamValue;
-    if ([DataType.INTEGER, DataType.DECIMAL].includes(param.type)) {
+    if ([DataType.INTEGER, DataType.DECIMAL].includes(param.valueType)) {
       paramValue = Number(rawParamValue);
-    } else if (DataType.BOOLEAN === param.type) {
+    } else if (DataType.BOOLEAN === param.valueType) {
       paramValue = Boolean(rawParamValue);
     }
 

@@ -294,7 +294,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await clickItem('dimension', 'Age');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Dimension Field Type'],
+      ['Dimension Field'],
       'The sort direction is not listed'
     );
     await click('.navi-column-config-base__sort-icon');
@@ -306,21 +306,21 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Dimension Field Type'],
+      ['Dimension Field'],
       'The sort direction is still not listed'
     );
 
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Sort Direction', 'Time Grain Type'],
+      ['Sort Direction', 'Time Grain'],
       'A sort direction is applied and becomes the first parameter'
     );
 
@@ -345,7 +345,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await selectChoose('.navi-column-config-item__parameter-trigger', 'None');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
     assert
@@ -360,21 +360,21 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Sort Direction', 'Time Grain Type'],
+      ['Sort Direction', 'Time Grain'],
       'A sort direction is applied and becomes the first parameter'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is toggled off when clicking the icon again'
     );
   });

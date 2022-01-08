@@ -9,6 +9,6 @@
     @dropdownClass="dropdown-parameter-picker__dropdown"
     as |option|
   >
-    {{option.name}}
+    <ParameterListItem @argument={{option}} />
   </PowerSelect>
 </div>

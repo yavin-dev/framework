@@ -6,7 +6,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
-import FunctionParameter, { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
+import FunctionParameter, { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
 
 interface Args {
   parameterMetadata: FunctionParameter;
@@ -16,7 +16,7 @@ interface Args {
 
 export default class ParameterPickerComponent extends Component<Args> {
   @tracked
-  options: { groupName: string; options: ColumnFunctionParametersValues | undefined }[] = [];
+  options: { groupName: string; options: PotentialParameterValue[] }[] = [];
 
   @action
   async fetchParameterOptions() {

@@ -17,7 +17,7 @@ import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
 import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
-import { CustomParamDataType, DataType } from 'navi-data/models/metadata/function-parameter';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 const Payload: RawEverythingPayload = {
@@ -645,12 +645,10 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
         _localValues: [
           {
-            description: undefined,
             id: 'id',
             name: 'Id',
           },
           {
-            description: undefined,
             id: 'desc',
             name: 'Desc',
           },
@@ -660,7 +658,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         valueSourceType: ValueSourceType.ENUM,
       },
     ],
@@ -674,7 +672,6 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
         _localValues: [
           {
-            description: undefined,
             id: 'foo',
             name: 'Foo',
           },
@@ -685,7 +682,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
       },
     ],
     description: 'Dimension Field',
@@ -698,7 +695,6 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
         _localValues: [
           {
-            description: undefined,
             id: 'id',
             name: 'Id',
           },
@@ -709,7 +705,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'field',
         name: 'Dimension Field',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
       },
       {
         _localValues: [{ id: 'second', name: 'second' }],
@@ -719,7 +715,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
       },
     ],
     description: 'Dimension Field',
@@ -737,7 +733,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         valueSourceType: ValueSourceType.TABLE,
         id: 'currency',
         name: 'currency',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         tableSource: {
           valueSource: 'displayCurrency',
         },
@@ -750,7 +746,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         valueSourceType: ValueSourceType.TABLE,
         id: 'format',
         name: 'format',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         tableSource: {
           valueSource: 'displayFormat',
         },
@@ -771,7 +767,7 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         valueSourceType: ValueSourceType.TABLE,
         id: 'currency',
         name: 'currency',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         tableSource: {
           valueSource: 'displayCurrency',
         },
@@ -795,10 +791,10 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         _localValues: [
-          { id: 'day', description: 'The tableName day grain', name: 'Day' },
-          { id: 'month', description: 'The tableName month grain', name: 'Month' },
+          { id: 'day', name: 'Day' },
+          { id: 'month', name: 'Month' },
         ],
       },
     ],
@@ -816,15 +812,13 @@ const ColumnFunctionPayloads: ColumnFunctionMetadataPayload[] = [
         id: 'grain',
         name: 'Time Grain',
         source: 'bardOne',
-        valueType: CustomParamDataType.ENTITY,
+        valueType: DataType.TEXT,
         _localValues: [
           {
-            description: 'The secondTable day grain',
             id: 'day',
             name: 'Day',
           },
           {
-            description: 'The secondTable week grain',
             id: 'isoWeek',
             name: 'Week',
           },
@@ -1010,7 +1004,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
             valueSourceType: ValueSourceType.ENUM,
             id: 'currency',
             name: 'currency',
-            valueType: CustomParamDataType.ENTITY,
+            valueType: DataType.TEXT,
             source: 'bardOne',
             tableSource: undefined,
           },
@@ -1033,10 +1027,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
             id: 'grain',
             name: 'Time Grain',
             source: 'bardOne',
-            valueType: CustomParamDataType.ENTITY,
+            valueType: DataType.TEXT,
             _localValues: [
               {
-                description: 'The tableName day grain',
                 id: 'day',
                 name: 'Day',
               },

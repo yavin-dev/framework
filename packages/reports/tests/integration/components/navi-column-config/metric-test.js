@@ -64,7 +64,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent.trim()),
-      ['Type Type', 'Aggregation Type', 'Age Type', 'Currency Type', 'CurrencyButNullDefault Type'],
+      ['Type', 'Aggregation', 'Age', 'Currency', 'CurrencyButNullDefault'],
       'Multiple parameters config lists are displayed'
     );
     assert.deepEqual(

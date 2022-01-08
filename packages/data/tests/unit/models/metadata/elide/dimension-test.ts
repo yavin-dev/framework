@@ -21,7 +21,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
       isSortable: false,
       type: 'formula',
       tableSource: undefined,
-      valueSourceType: 'ENUM',
+      valueSourceType: ValueSourceType.ENUM,
       cardinality: undefined,
       values: [],
     };

@@ -55,7 +55,7 @@ module('Integration | Component | navi-column-config/time-dimension', function (
 
     assert
       .dom('.navi-column-config-item__parameter-label')
-      .hasText('Time Grain Type', 'The Time Grain parameters is displayed');
+      .hasText('Time Grain', 'The Time Grain parameters is displayed');
     assert.dom('.navi-column-config-item__parameter-trigger').hasText('Week', 'The "Week" Time Grain is selected');
   });
 

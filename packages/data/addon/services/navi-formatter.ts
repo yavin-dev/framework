@@ -11,8 +11,7 @@ import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { MetricColumn } from 'navi-data/models/metadata/metric';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
-import type { BardParamEntity } from 'navi-data/models/metadata/function-parameter';
-import { CustomParamDataType } from 'navi-data/models/metadata/function-parameter';
+import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
 import { hash } from 'ember-concurrency';
 
 export default class NaviFormatterService extends Service {
@@ -25,16 +24,10 @@ export default class NaviFormatterService extends Service {
       return alias;
     }
 
-    //If BardEntity, we need to fetch all values to get the name field
-    const lookups: Record<string, Promise<BardParamEntity[]>> = {};
-    columnMetadata?.parameters?.forEach(async function (e) {
-      if (e.valueType === CustomParamDataType.ENTITY) {
-        lookups[e.id] = e.values as Promise<BardParamEntity[]>;
-      }
-    });
+    const lookups: Record<string, Promise<PotentialParameterValue[]>> = {};
+    columnMetadata?.parameters?.forEach((e) => (lookups[e.id] = e.values));
     const parameterValueLookups = await hash(lookups);
 
-    //If BardEntity, we need to look up the name from the stored id
     const paramNames = Object.entries(parameters).map(([name, value]) =>
       parameterValueLookups[name] ? parameterValueLookups[name].find((e) => e.id === value)?.name ?? value : value
     );
@@ -56,6 +49,7 @@ export default class NaviFormatterService extends Service {
       return name;
     }
   }
+
   formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
     if (isEmpty(value)) {
       return '--';

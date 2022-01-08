@@ -5,7 +5,7 @@
 import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
 import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
-import { CustomParamDataType, DataType } from 'navi-data/models/metadata/function-parameter';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
 import { getOwner } from '@ember/application';
 import { sortBy } from 'lodash-es';
@@ -25,15 +25,12 @@ import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
-import type {
-  FunctionParameterMetadataPayload,
-  ColumnFunctionParametersValues,
-} from 'navi-data/models/metadata/function-parameter';
 import type { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type { Grain } from 'navi-data/utils/date';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { constructFunctionParameters } from './column-function';
 
 const SMALL_CARDINALITY = config.navi.cardinalities.small;
 const MEDIUM_CARDINALITY = config.navi.cardinalities.medium;
@@ -81,8 +78,10 @@ export type RawColumnFunctionArguments = {
   [k: string]: RawColumnFunctionArgument;
 };
 
+export type BardParamEnumValue = { id: string | number | boolean; name: string; description?: string };
+
 export type RawColumnFunctionArgument =
-  | { type: 'enum'; defaultValue?: string | null; values: ColumnFunctionParametersValues; description?: string }
+  | { type: 'enum'; defaultValue?: string | null; values: BardParamEnumValue[]; description?: string }
   | { type: 'dimension'; defaultValue?: string | null; dimensionName: string; description?: string };
 
 export type GrainWithAll = Grain | 'all';
@@ -268,7 +267,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
   }
 
   /**
-   * Separates all grain and normalizes fili timegrains
+   * Separates all grain and normalizes fili time grains
    * @param table - the table to parse time grain info for
    */
   parseTableGrains(table: RawTablePayload): TableTimeGrainInfo {
@@ -313,12 +312,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Dimension Field',
           description: 'The field to be projected for this dimension',
           source: dataSourceName,
-          valueType: CustomParamDataType.ENTITY,
+          valueType: DataType.TEXT,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: fields.map((field) => ({
             id: field.name,
-            description: undefined, // ignoring dimension field description for
             name: field.longName ?? field.name,
           })),
         },
@@ -327,12 +325,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Time Grain',
           description: 'The time grain to group dates by',
           source: dataSourceName,
-          valueType: CustomParamDataType.ENTITY,
+          valueType: DataType.TEXT,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue: grains[0],
           _localValues: grains.map((grain) => ({
             id: grain,
-            // description: grain.description,
             name: grain,
           })),
         },
@@ -366,12 +363,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Dimension Field',
           description: 'The field to be projected for this dimension',
           source: dataSourceName,
-          valueType: CustomParamDataType.ENTITY,
+          valueType: DataType.TEXT,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: fields.map((field) => ({
             id: field.name,
-            description: undefined, // ignoring dimension field description for
             name: field.longName ?? field.name,
           })),
         },
@@ -506,12 +502,11 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           name: 'Time Grain',
           description: 'The time grain to group dates by',
           source: dataSourceName,
-          valueType: CustomParamDataType.ENTITY,
+          valueType: DataType.TEXT,
           valueSourceType: ValueSourceType.ENUM,
           defaultValue,
           _localValues: timeGrainInfo.timeGrains.map((grain) => ({
             id: grain.name,
-            description: grain.description,
             name: grain.longName,
           })),
         },
@@ -537,45 +532,12 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         id: `${this.namespace}:columnFunction(parameters=${sorted.join(',')})`,
         name: '',
         description: '',
-        _parametersPayload: this.constructFunctionParameters(parameters, dataSourceName),
+        _parametersPayload: constructFunctionParameters(parameters, dataSourceName),
         source: dataSourceName,
       };
       return this.createColumnFunctionModel(newColumnFunction);
     }
     return null;
-  }
-
-  private readonly paramValueSourceTypeMap: Record<string, ValueSourceType> = {
-    enum: ValueSourceType.ENUM,
-    dimension: ValueSourceType.TABLE,
-    none: ValueSourceType.NONE,
-  };
-
-  /**
-   * @param parameters - raw function parameters
-   * @param dataSourceName - data source name
-   */
-  private constructFunctionParameters(
-    parameters: RawColumnFunctionArguments,
-    dataSourceName: string
-  ): FunctionParameterMetadataPayload[] {
-    return Object.keys(parameters).map((paramName) => {
-      const param = parameters[paramName];
-      const { defaultValue, description } = param;
-
-      const normalized: FunctionParameterMetadataPayload = {
-        id: paramName,
-        name: paramName,
-        description,
-        valueType: ['enum', 'dimension'].includes(param.type) ? CustomParamDataType.ENTITY : DataType.TEXT,
-        valueSourceType: this.paramValueSourceTypeMap[param.type],
-        tableSource: param.type === 'dimension' ? { valueSource: param.dimensionName } : undefined,
-        _localValues: param.type === 'enum' ? param.values : undefined,
-        source: dataSourceName,
-        defaultValue,
-      };
-      return normalized;
-    });
   }
 
   /**
@@ -704,7 +666,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
         source: dataSourceName,
       };
       if (args) {
-        payload._parametersPayload = this.constructFunctionParameters(args, dataSourceName);
+        payload._parametersPayload = constructFunctionParameters(args, dataSourceName);
       }
       return this.createColumnFunctionModel(payload);
     });

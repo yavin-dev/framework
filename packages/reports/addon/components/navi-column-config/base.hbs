@@ -80,7 +80,7 @@
           @onChange={{pipe (pick "id") this.updateSort}}
           as | arg |
         >
-          <ParameterListItem @argument={{arg}} @parameters={{this.sortDirections}} />
+          <ParameterListItem @argument={{arg}} />
         </PowerSelect>
       </div>
     {{/if}}
@@ -112,13 +112,13 @@
               @triggerId="{{this.classId}}-{{param.id}}"
               @dropdownClass="navi-column-config-item__parameter-dropdown"
               @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
-              @searchField={{if paramValues.firstObject.name "name" "description"}}
+              @searchField={{if paramValues.firstObject.description "description" "name"}}
               @searchPlaceholder="Search {{capitalize param.name}}"
               @options={{paramValues}}
               @onChange={{pipe (pick "id") (fn this.setParameter param)}}
               as | arg |
             >
-              <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
+              <ParameterListItem @argument={{arg}} />
             </PowerSelect>
           {{/let}}
         {{/if}}
