@@ -406,7 +406,6 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         valueSourceType: node.valueSourceType,
         defaultValue: node.defaultValue,
         _localValues: node.values.map((v) => ({ id: v, name: v })),
-        //TODO check shape of local values
       })),
     };
     return this.createColumnFunctionModel(payload);

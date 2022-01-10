@@ -58,8 +58,6 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   });
 
   test('values', async function (assert) {
-    assert.expect(4);
-
     //Test ENUM
     const enumValues = await FunctionParameter.values;
     assert.deepEqual(enumValues, Payload._localValues, 'enum function arguments return the local values');
@@ -85,7 +83,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     //Test NONE
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
     const noneValues = await FunctionParameter.values;
-    assert.deepEqual(noneValues, [], 'none function arguments return undefined');
+    assert.deepEqual(noneValues, [], 'none function arguments return an empty array');
 
     //Test NONE + ENUM Value
     FunctionParameter.valueSourceType = ValueSourceType.NONE;

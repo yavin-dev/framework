@@ -6,12 +6,14 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
-import FunctionParameter, { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
+import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import type { ParameterValue } from 'navi-data/addon/adapters/facts/interface';
 
 interface Args {
   parameterMetadata: FunctionParameter;
-  parameterValue: unknown;
-  onUpdate: (key: string, value: unknown) => void;
+  parameterValue: ParameterValue;
+  onUpdate: (key: string, value: ParameterValue) => void;
 }
 
 export default class ParameterPickerComponent extends Component<Args> {
@@ -30,7 +32,7 @@ export default class ParameterPickerComponent extends Component<Args> {
   }
 
   @action
-  onUpdate(selected: any) {
+  onUpdate(selected: PotentialParameterValue) {
     this.args.onUpdate(this.args.parameterMetadata.id, selected.id);
   }
 

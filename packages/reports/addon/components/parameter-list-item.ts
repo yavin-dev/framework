@@ -13,6 +13,6 @@ export interface ParameterListItemArgs {
 export default class ParameterListItem extends Component<ParameterListItemArgs> {
   get value(): string {
     const displayField = this.args.argument.description ? 'description' : 'name';
-    return this.args.argument[displayField] || '';
+    return this.args.argument[displayField] ?? '';
   }
 }

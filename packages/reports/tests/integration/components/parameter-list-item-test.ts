@@ -15,6 +15,6 @@ module('Integration | Component | parameter-list-item', function (hooks) {
 
     const arg2: ParameterListItemArgs['argument'] = { description: 'descriptionField', name: 'nameField', id: '2' };
     this.set('arg', arg2);
-    assert.dom(this.element).hasText('descriptionField', 'it should show  description field when available');
+    assert.dom(this.element).hasText('descriptionField', 'it should show description field when available');
   });
 });

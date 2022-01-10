@@ -9,7 +9,7 @@ import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
 import type FunctionParameterMetadataModel from 'navi-data/models/metadata/function-parameter';
 import type { ConfigColumn } from '../navi-column-config';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { ParameterValue, SortDirection } from 'navi-data/adapters/facts/interface';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
 
 interface NaviColumnConfigBaseArgs {
@@ -19,7 +19,7 @@ interface NaviColumnConfigBaseArgs {
   onUpsertSort(direction: SortDirection): void;
   onRemoveSort(): void;
   onRenameColumn(newColumnName?: string): void;
-  onUpdateColumnParam(param: string, paramValue: string | number | boolean): void;
+  onUpdateColumnParam(param: string, paramValue: ParameterValue): void;
   toggleRollup(): void;
   supportsSubtotal: boolean;
 }
@@ -41,7 +41,7 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   }
 
   @action
-  setParameter(param: FunctionParameterMetadataModel, rawParamValue: string | number | boolean) {
+  setParameter(param: FunctionParameterMetadataModel, rawParamValue: ParameterValue) {
     let paramValue = rawParamValue;
     if ([DataType.INTEGER, DataType.DECIMAL].includes(param.valueType)) {
       paramValue = Number(rawParamValue);

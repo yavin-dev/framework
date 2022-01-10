@@ -13,6 +13,7 @@ import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { DimensionColumn, TableSource } from './dimension';
 import type { ValueSourceType } from './elide/dimension';
+import type { ParameterValue } from 'navi-data/adapters/facts/interface';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
@@ -29,10 +30,8 @@ export enum DataType {
   UNKNOWN = 'UNKNOWN',
 }
 
-export type ColumnFunctionParametersValue = string | number | boolean;
-
 export type PotentialParameterValue = {
-  id: ColumnFunctionParametersValue; // actual param value provided in the request
+  id: ParameterValue; // actual param value provided in the request
   name: string; // descriptive label to show to users when selecting a value
   description?: string; // shorter label (can be used for column display names)
 };
@@ -104,7 +103,6 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
         .then((v) =>
           v.values.map((d) => {
             const context = d.suggestions ? `${Object.values(d.suggestions)}` : '';
-            debugger;
             return {
               id: `${d.value}`,
               name: d.displayValue,
