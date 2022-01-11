@@ -32,8 +32,8 @@ export enum DataType {
 
 export type PotentialParameterValue = {
   id: ParameterValue; // actual param value provided in the request
-  name: string; // descriptive label to show to users when selecting a value
-  description?: string; // shorter label (can be used for column display names)
+  name: string; // nice name of param value
+  description?: string; // descriptive label for param value (potentially with context)
 };
 export interface FunctionParameterMetadataPayload {
   id: string;

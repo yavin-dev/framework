@@ -528,7 +528,23 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: '',
-            arguments: { edges: [] },
+            arguments: {
+              edges: [
+                {
+                  node: {
+                    id: 'arg-id',
+                    name: 'arg-name',
+                    description: 'arg-description',
+                    type: DataType.INTEGER,
+                    values: ['1', '2'],
+                    valueSourceType: ValueSourceType.ENUM,
+                    tableSource: { edges: [] },
+                    defaultValue: '1',
+                  },
+                  cursor: '',
+                },
+              ],
+            },
           },
           cursor: '',
         },
@@ -565,15 +581,51 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
-        columnFunctionId: undefined,
+        columnFunctionId: 'normalizer-generated:column=impressions',
       },
     ];
+
+    const expectedFunctionPayloads: ColumnFunctionMetadataPayload[] = [
+      {
+        id: 'normalizer-generated:column=impressions',
+        name: 'Column Arguments',
+        description: 'Column Arguments',
+        source,
+        _parametersPayload: [
+          {
+            id: 'arg-name',
+            name: 'arg-name',
+            description: 'arg-description',
+            source,
+            valueSourceType: ValueSourceType.ENUM,
+            valueType: DataType.INTEGER,
+            tableSource: undefined,
+            defaultValue: '1',
+            _localValues: [
+              { id: '1', name: '1' },
+              { id: '2', name: '2' },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const metrics = Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source);
+    const metricModels = metrics.map((m) => m.metricModel);
+    const columnFunctions = metrics.map((m) => m.columnFunction);
+
     assert.deepEqual(
-      Serializer._normalizeTableMetrics(metricConnectionPayload, tableId, source).map((m) => m.metricModel),
+      metricModels,
       expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
-      'Metric connection payload is normalized properly for a table'
+      'metric models are normalized properly'
     );
-    //TODO test col fn ids
+
+    assert.deepEqual(
+      columnFunctions,
+      [null, ...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
+      'metric column functions are normalized properly'
+    );
+
     assert.deepEqual(
       Serializer._normalizeTableMetrics({ edges: [], pageInfo: {} }, tableId, source),
       [],
@@ -651,7 +703,23 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             valueSourceType: ValueSourceType.NONE,
             tableSource: null,
             values: [],
-            arguments: { edges: [] },
+            arguments: {
+              edges: [
+                {
+                  node: {
+                    id: 'arg-id',
+                    name: 'arg-name',
+                    description: 'arg-description',
+                    type: DataType.INTEGER,
+                    values: ['1', '2'],
+                    valueSourceType: ValueSourceType.ENUM,
+                    tableSource: { edges: [] },
+                    defaultValue: '1',
+                  },
+                  cursor: '',
+                },
+              ],
+            },
           },
           cursor: '',
         },
@@ -696,17 +764,51 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
-        columnFunctionId: undefined,
+        columnFunctionId: 'normalizer-generated:column=gender',
       },
     ];
 
+    const expectedFunctionPayloads: ColumnFunctionMetadataPayload[] = [
+      {
+        id: 'normalizer-generated:column=gender',
+        name: 'Column Arguments',
+        description: 'Column Arguments',
+        source,
+        _parametersPayload: [
+          {
+            id: 'arg-name',
+            name: 'arg-name',
+            description: 'arg-description',
+            source,
+            valueSourceType: ValueSourceType.ENUM,
+            valueType: DataType.INTEGER,
+            tableSource: undefined,
+            defaultValue: '1',
+            _localValues: [
+              { id: '1', name: '1' },
+              { id: '2', name: '2' },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const dimensions = Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source);
+    const dimensionModels = dimensions.map((d) => d.dimensionModel);
+    const columnFunctions = dimensions.map((d) => d.columnFunction);
+
     assert.deepEqual(
-      Serializer._normalizeTableDimensions(dimensionConnectionPayload, tableId, source).map((d) => d.dimensionModel),
+      dimensionModels,
       expectedDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/elide/dimension').create(p)),
-      'Dimension connection payload is normalized properly for a table'
+      'dimension models are normalized properly'
     );
 
-    //TODO test col fn ids
+    assert.deepEqual(
+      columnFunctions,
+      [null, ...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
+      'dimension column functions are normalized properly'
+    );
+
     assert.deepEqual(
       Serializer._normalizeTableDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],

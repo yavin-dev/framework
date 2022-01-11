@@ -3,7 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { isEmpty } from '@ember/utils';
-import type { Parameters } from 'navi-data/adapters/facts/interface';
+import FunctionParameterMetadataModel, { DataType } from 'navi-data/models/metadata/function-parameter';
+import { isPresent } from '@ember/utils';
+import type { Parameters, ParameterValue } from 'navi-data/adapters/facts/interface';
 
 interface ColumnAttributes {
   name: string;
@@ -153,4 +155,18 @@ export function parseMetricName(canonicalName: string | MetricObject): MetricObj
     metric,
     parameters,
   };
+}
+
+export function parseParameterValue(
+  parameter: FunctionParameterMetadataModel,
+  rawParamValue: ParameterValue
+): ParameterValue {
+  const { defaultValue, valueType } = parameter;
+  let paramValue: ParameterValue = isPresent(rawParamValue) ? rawParamValue : defaultValue ?? '';
+  if ([DataType.INTEGER, DataType.DECIMAL].includes(valueType)) {
+    paramValue = Number(rawParamValue);
+  } else if (DataType.BOOLEAN === valueType) {
+    paramValue = Boolean(rawParamValue);
+  }
+  return paramValue;
 }

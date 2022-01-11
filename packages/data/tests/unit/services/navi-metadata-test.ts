@@ -79,7 +79,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
     );
     assert.deepEqual(
       metrics.mapBy('id'),
-      ['ownedQuantity', 'usedAmount', 'personalSold', 'available', 'globallySold', 'revenue'],
+      ['ownedQuantity', 'usedAmount', 'personalSold', 'available', 'globallySold', 'revenue', 'seconds'],
       'All `bardTwo` metrics are loaded'
     );
 

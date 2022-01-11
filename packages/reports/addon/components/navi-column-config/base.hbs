@@ -98,10 +98,11 @@
         {{#if (eq param.valueSourceType 'NONE')}}
           <DenaliInput
             @size="medium"
-            type={{if (or (eq param.type "INTEGER") (eq param.type "DECIMAL")) "number" "text"}}
             @wrapperClass="w-full"
+            type={{if (or (eq param.type "INTEGER") (eq param.type "DECIMAL")) "number" "text"}}
             value={{get @column.fragment.parameters param.id}}
             placeholder={{capitalize param.name}}
+            class="navi-column-config-item__parameter-input"
             {{on "input" (pipe (pick "target.value") (fn this.setParameter param))}}
           />
         {{else}}

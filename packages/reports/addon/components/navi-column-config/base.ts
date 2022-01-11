@@ -7,10 +7,10 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
+import { parseParameterValue } from 'navi-data/utils/metric';
 import type FunctionParameterMetadataModel from 'navi-data/models/metadata/function-parameter';
 import type { ConfigColumn } from '../navi-column-config';
 import type { ParameterValue, SortDirection } from 'navi-data/adapters/facts/interface';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
 
 interface NaviColumnConfigBaseArgs {
   column: ConfigColumn;
@@ -42,14 +42,8 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
 
   @action
   setParameter(param: FunctionParameterMetadataModel, rawParamValue: ParameterValue) {
-    let paramValue = rawParamValue;
-    if ([DataType.INTEGER, DataType.DECIMAL].includes(param.valueType)) {
-      paramValue = Number(rawParamValue);
-    } else if (DataType.BOOLEAN === param.valueType) {
-      paramValue = Boolean(rawParamValue);
-    }
-
-    this.args.onUpdateColumnParam(param.id, paramValue);
+    const value = parseParameterValue(param, rawParamValue);
+    this.args.onUpdateColumnParam(param.id, value);
   }
 
   @action

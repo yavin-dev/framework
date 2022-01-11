@@ -1,14 +1,35 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="dropdown-parameter-picker" ...attributes>
-  <PowerSelect
-    @options={{this.options}}
-    @onOpen={{this.fetchParameterOptions}}
-    @selected={{await this.selected}}
-    @onChange={{fn this.onUpdate}}
-    @triggerComponent="dropdown-parameter-trigger"
-    @dropdownClass="dropdown-parameter-picker__dropdown"
-    as |option|
-  >
-    <ParameterListItem @argument={{option}} />
-  </PowerSelect>
+  {{#if (eq @parameterMetadata.valueSourceType 'NONE')}}
+    <BasicDropdown @onClose={{this.onInputClose}} as |dd|>
+      <dd.Trigger class="ember-power-select-trigger">
+        <DropdownParameterTrigger @select={{hash selected=@parameterValue}} />
+      </dd.Trigger>
+      <dd.Content class="ember-power-select-dropdown p-8">
+        <div class="ember-power-select-group-name p-t-0 p-x-0">{{@parameterMetadata.name}}</div>
+        <DenaliInput
+          @size="medium"
+          @wrapperClass="w-full"
+          value={{@parameterValue}}
+          placeholder={{capitalize @parameterMetadata.name}}
+          type={{if (or (eq @parameterMetadata.type "INTEGER") (eq @parameterMetadata.type "DECIMAL")) "number" "text"}}
+          id="dropdown-parameter-picker-input-{{dd.uniqueId}}"
+          class="dropdown-parameter-picker-input"
+          {{on "keydown" (fn this.onKeyDown dd)}}
+        />
+      </dd.Content>
+    </BasicDropdown>
+  {{else}}
+    <PowerSelect
+      @options={{this.options}}
+      @onOpen={{this.fetchParameterOptions}}
+      @selected={{await this.selected}}
+      @onChange={{fn this.onUpdate}}
+      @triggerComponent="dropdown-parameter-trigger"
+      @dropdownClass="dropdown-parameter-picker__dropdown"
+      as |option|
+    >
+      <ParameterListItem @argument={{option}} />
+    </PowerSelect>
+  {{/if}}
 </div>

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /**
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -10,6 +9,7 @@ import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
 import { upperFirst } from 'lodash-es';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
+import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
 import type { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type { RawColumnType } from '../../models/metadata/column';
 import type { TableMetadataPayload } from '../../models/metadata/table';
@@ -384,29 +384,33 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   private createColumnFunction(
     columnId: string,
     columnArguments: Connection<ElideArgument>,
-    dataSourceName: string
+    source: string
   ): ColumnFunctionMetadataModel | null {
     // do not create a column function if arguments are not present
     if (columnArguments.edges.length === 0) {
       return null;
     }
 
-    const columnFunctionId = `${this.namespace}:column=${columnId}`;
+    const id = `${this.namespace}:column=${columnId}`;
+
+    const _parametersPayload: FunctionParameterMetadataPayload[] = columnArguments.edges.map(({ node }) => ({
+      id: node.name,
+      name: node.name,
+      description: node.description,
+      source,
+      valueType: node.type,
+      valueSourceType: node.valueSourceType,
+      tableSource: undefined, //TODO come back and support table source params
+      defaultValue: node.defaultValue,
+      _localValues: node.values.map((v) => ({ id: v, name: v })),
+    }));
+
     const payload: ColumnFunctionMetadataPayload = {
-      id: columnFunctionId,
+      id,
       name: 'Column Arguments',
-      source: dataSourceName,
       description: 'Column Arguments',
-      _parametersPayload: columnArguments.edges.map(({ node }) => ({
-        id: node.name,
-        name: node.name,
-        description: node.description,
-        source: dataSourceName,
-        valueType: node.type,
-        valueSourceType: node.valueSourceType,
-        defaultValue: node.defaultValue,
-        _localValues: node.values.map((v) => ({ id: v, name: v })),
-      })),
+      source,
+      _parametersPayload,
     };
     return this.createColumnFunctionModel(payload);
   }

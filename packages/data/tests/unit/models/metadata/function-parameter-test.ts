@@ -60,7 +60,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   test('values', async function (assert) {
     //Test ENUM
     const enumValues = await FunctionParameter.values;
-    assert.deepEqual(enumValues, Payload._localValues, 'enum function arguments return the local values');
+    assert.deepEqual(enumValues, Payload._localValues, 'enum value source type returns the local values');
 
     //Test TABLE
     FunctionParameter.valueSourceType = ValueSourceType.TABLE;
@@ -77,13 +77,13 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
         { description: '4 (Generic Granite Car)', id: '4', name: '4' },
         { description: '5 (Refined Frozen Chair)', id: '5', name: '5' },
       ],
-      'table function arguments return table values'
+      'table value source type returns table values'
     );
 
     //Test NONE
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
     const noneValues = await FunctionParameter.values;
-    assert.deepEqual(noneValues, [], 'none function arguments return an empty array');
+    assert.deepEqual(noneValues, [], 'none value source type returns an empty array');
 
     //Test NONE + ENUM Value
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
@@ -95,7 +95,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
         { id: true, name: 'True' },
         { id: false, name: 'False' },
       ],
-      'none function arguments return undefined'
+      'none value source type of type boolean returns boolean values'
     );
   });
 });
