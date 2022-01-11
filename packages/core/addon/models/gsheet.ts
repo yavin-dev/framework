@@ -14,10 +14,10 @@ export type GsheetFormatConfig = {
 
 export default class GsheetFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, GsheetFormatConfig {
   @attr('string')
-  type!: GsheetFormatConfig['type'];
+  declare type: GsheetFormatConfig['type'];
 
   @attr({ defaultValue: () => ({ overwriteFile: false }) })
-  options!: GsheetFormatConfig['options'];
+  declare options: GsheetFormatConfig['options'];
 }
 
 declare module 'navi-core/models/registry' {

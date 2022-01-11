@@ -12,10 +12,10 @@ export type PDFFormatConfig = {
 
 export default class PDFFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, PDFFormatConfig {
   @attr('string')
-  type!: PDFFormatConfig['type'];
+  declare type: PDFFormatConfig['type'];
 
   @attr({ defaultValue: () => ({}) })
-  options!: PDFFormatConfig['options'];
+  declare options: PDFFormatConfig['options'];
 }
 
 declare module 'navi-core/models/registry' {

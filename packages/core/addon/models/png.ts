@@ -12,10 +12,10 @@ export type PNGFormatConfig = {
 
 export default class PNGFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, PNGFormatConfig {
   @attr('string')
-  type!: PNGFormatConfig['type'];
+  declare type: PNGFormatConfig['type'];
 
   @attr({ defaultValue: () => ({}) })
-  options!: PNGFormatConfig['options'];
+  declare options: PNGFormatConfig['options'];
 }
 
 declare module 'navi-core/models/registry' {

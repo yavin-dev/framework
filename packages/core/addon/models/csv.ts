@@ -12,10 +12,10 @@ export type CSVFormatConfig = {
 
 export default class CSVFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, CSVFormatConfig {
   @attr('string')
-  type!: CSVFormatConfig['type'];
+  declare type: CSVFormatConfig['type'];
 
   @attr({ defaultValue: () => ({}) })
-  options!: CSVFormatConfig['options'];
+  declare options: CSVFormatConfig['options'];
 }
 
 declare module 'navi-core/models/registry' {
