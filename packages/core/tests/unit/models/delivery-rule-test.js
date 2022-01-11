@@ -17,9 +17,7 @@ const ExpectedDeliveryRule = {
   },
   format: {
     type: 'csv',
-    options: {
-      overwriteFile: false,
-    },
+    options: {},
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
   version: 1,
@@ -124,6 +122,24 @@ module('Unit | Model | delivery rule', function (hooks) {
       options: {
         overwriteFile: true,
       },
+    });
+  });
+
+  test('Retrieving gsheet records', async function (assert) {
+    assert.expect(6);
+
+    await run(async () => {
+      const deliveryRuleNoOptions = await Store.findRecord('deliveryRule', 4);
+      assert.ok(deliveryRuleNoOptions, 'Found deliveryRule with id 4');
+
+      const deliveryRuleWOptions = await Store.findRecord('deliveryRule', 5);
+      assert.ok(deliveryRuleWOptions, 'Found deliveryRule with id 4');
+
+      assert.equal(deliveryRuleNoOptions.format.type, 'gsheet', 'Gets the right format type');
+      assert.equal(deliveryRuleWOptions.format.type, 'gsheet', 'Gets the right format type');
+
+      assert.notOk(deliveryRuleNoOptions.format.options.overwriteFile, 'overwrite file default to false');
+      assert.ok(deliveryRuleWOptions.format.options.overwriteFile, 'overwrite file is set when it is correctly set');
     });
   });
 });

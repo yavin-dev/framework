@@ -1,3 +1,7 @@
+/**
+ * Copyright 2022, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Model, { attr, belongsTo } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
@@ -48,7 +52,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @fragment('fragments/scheduling-rules', { defaultValue: () => ({ mustHaveData: false }) })
   schedulingRules!: SchedulingRuleFragment;
 
-  @fragment('fragments/delivery-format')
+  @fragment('fragments/delivery-format', { polymorphic: true })
   format!: DeliveryFormatFragment;
 
   @attr({ defaultValue: () => [] })
