@@ -2,7 +2,6 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { merge } from 'lodash-es';
 import { get, set, action } from '@ember/object';
 import { assert } from '@ember/debug';
 import Route from '@ember/routing/route';
@@ -237,7 +236,7 @@ export default class ReportsReportRoute extends Route {
     const report = this.modelFor(this.routeName) as ModelFrom<this>;
     const metadata = report.visualization?.metadata;
 
-    set(report.visualization, 'metadata', merge({}, metadata, metadataUpdates));
+    set(report.visualization, 'metadata', { ...metadata, ...metadataUpdates });
   }
 
   /**
