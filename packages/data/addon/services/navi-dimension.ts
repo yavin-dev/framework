@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
@@ -14,6 +14,7 @@ import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 
 export type ServiceOptions = {
   timeout?: number;
@@ -22,7 +23,85 @@ export type ServiceOptions = {
   clientId?: string;
 };
 
+type CacheRecord = {
+  time: number; // the last time this record was accessed
+  dimResponse: NaviDimensionResponse; // the actual records
+};
+
 export default class NaviDimensionService extends Service {
+  /**
+   * @property {Object} _dimensionCache - local cache for dimensions
+   */
+  _dimensionCache: Record<string, CacheRecord> = {};
+
+  /**
+   * keeps the cache from getting too large by:
+   *   1) removing items over an hour old from the cache
+   *   2) removing the oldest item in the cache (if cache is over 5 entries)
+   */
+  private _trimCache(): void {
+    const cache = this._dimensionCache;
+    const now = Date.now();
+    let oldestDate = now;
+    let oldestId = '';
+    for (const [id, record] of Object.entries(cache)) {
+      // remove stale items (over an hour old)
+      if (now - record.time > 60 * 60 * 1000) {
+        delete cache[id];
+      }
+      // find oldest non-stale item
+      else if (record.time < oldestDate) {
+        oldestDate = record.time;
+        oldestId = id;
+      }
+    }
+    // if cache still too large, remove oldest item
+    if (Object.keys(cache).length > 5) {
+      delete cache[oldestId];
+    }
+  }
+
+  /**
+   * adds a given dimResponse/cacheId combo to the cache
+   * @param cacheId string (result of the _getCacheId function)
+   * @param dimResponse NaviDimensionResponse
+   */
+  private _addToCache(cacheId: string, dimResponse: NaviDimensionResponse) {
+    const cache = this._dimensionCache;
+    cache[cacheId] = {
+      time: Date.now(),
+      dimResponse: dimResponse,
+    };
+    this._trimCache();
+  }
+
+  /**
+   * fetches a given cacheId's CacheRecord from the _dimensionCache
+   * returns undefined if not in cache
+   * @param cacheId string (result of the _getCacheId function)
+   * @returns CacheRecord | undefined
+   */
+  private _checkCache(cacheId: string): CacheRecord | undefined {
+    const cache = this._dimensionCache;
+    const results = cache[cacheId];
+    // update record access time
+    if (results) {
+      results.time = Date.now();
+    }
+    this._trimCache();
+    return results;
+  }
+
+  /**
+   * generates the _dimensionCache ID matching a particular dimensions call
+   * @param dimension DimensionColumn
+   * @returns string
+   */
+  private _getCacheId(dimension: DimensionColumn): string {
+    let cacheId = dimension.columnMetadata.id;
+    return cacheId;
+  }
+
   /**
    * @param dataSourceType
    * @returns  adapter instance for type
@@ -45,6 +124,12 @@ export default class NaviDimensionService extends Service {
    * @param options - method options
    */
   @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
+    const cacheId = this._getCacheId(dimension);
+    const cacheResponse = this._checkCache(cacheId);
+    if (cacheResponse) {
+      return cacheResponse.dimResponse;
+    }
+
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const serializer = this.serializerFor(dataSourceType);
@@ -72,7 +157,13 @@ export default class NaviDimensionService extends Service {
         moreResults = false;
       }
     }
-    return NaviDimensionResponse.create({ values });
+    const results = NaviDimensionResponse.create({ values });
+
+    // don't cache anything too big
+    if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+      this._addToCache(cacheId, results);
+    }
+    return results;
   }
 
   /**

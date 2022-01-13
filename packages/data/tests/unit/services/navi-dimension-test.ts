@@ -141,6 +141,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
     await taskFor(service.all).perform({ columnMetadata });
     assert.strictEqual(call, 6, 'It took 3 calls to adapter/serializer to page through all the data');
 
+    service._dimensionCache = {};
+
     adapterCallback = (call, options) => {
       if (call === 0) {
         assert.deepEqual(options, {}, 'No options are passed on first call');
@@ -163,6 +165,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
       2,
       'The service called adapter and serializer then stopped because no pagination options were returned'
     );
+
+    service._dimensionCache = {};
 
     adapterCallback = (call, options) => {
       if (call === 0) {
@@ -209,6 +213,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
     );
     this.server.db.elideAsyncQueries.remove();
 
+    service._dimensionCache = {};
+
     const allPageBy1 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1 });
     assert.strictEqual(
       //@ts-expect-error -- the type does not expect a length property
@@ -234,6 +240,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
 
     assert.strictEqual(all.values.length, 13, 'There are 13 results');
     assert.strictEqual(dataRequestsCount, 1, 'Only one dimension request is created because response fits in one page');
+
+    service._dimensionCache = {};
 
     dataRequestsCount = 0;
     const allPageBy2 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1, page: 1 });
@@ -311,5 +319,73 @@ module('Unit | Service | navi-dimension', function (hooks) {
 
     const noResultSearch = await taskFor(service.search).perform({ columnMetadata }, 'fuggedaboutit');
     assert.deepEqual(noResultSearch.values, [], 'Empty array is returned when no values are found');
+  });
+
+  test('caching requests of type all', async function (this: TestContext, assert) {
+    assert.expect(6);
+
+    const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
+    const metadataService = this.metadataService; // makes typescript happy
+    await metadataService.loadMetadata({ dataSourceName: 'bardOne' });
+
+    // calls the `all` task in the navi-dimension service for a given dimension ID
+    async function runServiceAllTask(dimensionID: string) {
+      const columnMetadata = metadataService.getById('dimension', dimensionID, 'bardOne') as DimensionMetadataModel;
+      return await taskFor(service.all).perform({ columnMetadata });
+    }
+
+    // mock endpoint and keep track of number of calls to it
+    let dataRequestsCount = 0;
+    this.server.pretender.handledRequest = (_, url) => {
+      if (url.includes('/v1/dimensions')) {
+        dataRequestsCount++;
+      }
+    };
+
+    // set-up full cache
+    const dimensions = [
+      await runServiceAllTask('age'),
+      await runServiceAllTask('browser'),
+      await runServiceAllTask('currency'),
+      await runServiceAllTask('gender'),
+      await runServiceAllTask('lang'),
+    ];
+
+    // check cache initial values
+    const cacheKeys = [];
+    const cacheValues = [];
+    for (const [id, record] of Object.entries(service._dimensionCache)) {
+      cacheKeys.push(id);
+      cacheValues.push(record.dimResponse);
+    }
+    assert.deepEqual(dataRequestsCount, 5, "'all' task successfully called 5 times");
+    assert.deepEqual(dimensions, cacheValues, 'records are copied to cache');
+    assert.deepEqual(cacheKeys, ['age', 'browser', 'currency', 'gender', 'lang'], 'cache keys are accurate');
+
+    // re-request item in cache
+    await runServiceAllTask('age');
+    assert.deepEqual(dataRequestsCount, 5, 'age dimension already in cache, endpoint is not called again');
+
+    // request item not in full cache
+    await runServiceAllTask('userRegion');
+    assert.deepEqual(
+      Object.keys(service._dimensionCache),
+      ['age', 'currency', 'gender', 'lang', 'userRegion'],
+      'cache drops least-recently accessed entry (drops browser)'
+    );
+
+    // set-up cache with stale items
+    const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
+    service._dimensionCache['age'].time = twoHoursAgo;
+    service._dimensionCache['gender'].time = twoHoursAgo;
+    service._dimensionCache['userRegion'].time = twoHoursAgo;
+
+    // request item in cache
+    await runServiceAllTask('userRegion');
+    assert.deepEqual(
+      Object.keys(service._dimensionCache),
+      ['currency', 'lang', 'userRegion'],
+      "cache drops items over an hour old (drops age and gender, but keeps userRegion because it's being re-accessed)"
+    );
   });
 });
