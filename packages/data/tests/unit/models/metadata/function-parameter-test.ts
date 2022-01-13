@@ -41,7 +41,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
   test('it properly hydrates properties', function (assert) {
     assert.deepEqual(FunctionParameter.id, Payload.id, 'id property is hydrated properly');
     assert.equal(FunctionParameter.name, Payload.name, 'name property was properly hydrated');
-    assert.equal(FunctionParameter.valueType, Payload.valueType, 'type property was properly hydrated');
+    assert.equal(FunctionParameter.valueType, Payload.valueType, 'valueType property was properly hydrated');
     assert.equal(
       FunctionParameter.valueSourceType,
       Payload.valueSourceType,
@@ -85,7 +85,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
     const noneValues = await FunctionParameter.values;
     assert.deepEqual(noneValues, [], 'none value source type returns an empty array');
 
-    //Test NONE + ENUM Value
+    //Test NONE + boolean Value
     FunctionParameter.valueSourceType = ValueSourceType.NONE;
     FunctionParameter.valueType = DataType.BOOLEAN;
     const booleanValues = await FunctionParameter.values;

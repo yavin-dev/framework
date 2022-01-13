@@ -54,7 +54,4 @@ class DemoDataSourceTest : IntegrationTest() {
             .body("data.id", Matchers.equalTo("DemoNamespace_TrendingNow"))
     }
 
-    @Test
-    fun simple_table_with_namespace_test() {
-    }
 }
