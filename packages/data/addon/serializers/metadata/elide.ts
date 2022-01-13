@@ -391,7 +391,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       return null;
     }
 
-    const id = `${this.namespace}:column=${columnId}`;
+    const id = `${this.namespace}:elide-${source}:column=${columnId}`;
 
     const _parametersPayload: FunctionParameterMetadataPayload[] = columnArguments.edges.map(({ node }) => ({
       id: node.name,
