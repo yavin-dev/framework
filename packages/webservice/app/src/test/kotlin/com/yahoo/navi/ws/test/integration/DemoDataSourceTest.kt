@@ -53,5 +53,4 @@ class DemoDataSourceTest : IntegrationTest() {
             .statusCode(200)
             .body("data.id", Matchers.equalTo("DemoNamespace_TrendingNow"))
     }
-
 }

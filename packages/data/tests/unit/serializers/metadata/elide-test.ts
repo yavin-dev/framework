@@ -581,13 +581,13 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
-        columnFunctionId: 'normalizer-generated:column=impressions',
+        columnFunctionId: 'normalizer-generated:elide-myApi:column=impressions',
       },
     ];
 
     const expectedFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
-        id: 'normalizer-generated:column=impressions',
+        id: 'normalizer-generated:elide-myApi:column=impressions',
         name: 'Column Arguments',
         description: 'Column Arguments',
         source,
@@ -764,13 +764,13 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         valueSourceType: ValueSourceType.NONE,
         tableSource: undefined,
         values: [],
-        columnFunctionId: 'normalizer-generated:column=gender',
+        columnFunctionId: 'normalizer-generated:elide-myApi:column=gender',
       },
     ];
 
     const expectedFunctionPayloads: ColumnFunctionMetadataPayload[] = [
       {
-        id: 'normalizer-generated:column=gender',
+        id: 'normalizer-generated:elide-myApi:column=gender',
         name: 'Column Arguments',
         description: 'Column Arguments',
         source,
