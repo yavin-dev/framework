@@ -6,19 +6,37 @@ import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from '../request/base';
 import { Filter } from 'navi-data/adapters/facts/interface';
+import Interval from 'navi-data/utils/classes/interval';
 
 const Validations = buildValidations({
   operator: validator('presence', {
     presence: true,
     message: 'The `operator` filter field cannot be empty',
   }),
-  values: validator('collection', {
-    collection: true,
-    message() {
-      const { field } = this.model;
-      return `${field} filter must be a collection`;
-    },
-  }),
+  values: [
+    validator('collection', {
+      collection: true,
+      message() {
+        const { field } = this.model;
+        return `${field} filter must be a collection`;
+      },
+    }),
+    validator('inline', {
+      validate(values: Filter['values'], _options: unknown, filter: FilterFragment) {
+        if (filter.type === 'timeDimension' && filter.operator === 'bet') {
+          const [start, end] = values;
+          try {
+            Interval.parseFromStrings(`${start}`, `${end}`);
+            return true;
+          } catch (e) {
+            const filterName = filter.columnMetadata?.name ?? filter.field;
+            return `The '${filterName}' filter has invalid interval ${JSON.stringify(values)}`;
+          }
+        }
+        return true;
+      },
+    }),
+  ],
 });
 
 /**

@@ -12,6 +12,7 @@ import { parseDuration } from 'navi-data/utils/classes/duration';
 import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
+import { isEmpty } from '@ember/utils';
 
 export const MONTHS_IN_QUARTER = 3;
 export const OPERATORS = <const>{
@@ -20,6 +21,7 @@ export const OPERATORS = <const>{
   since: 'since',
   before: 'before',
   dateRange: 'in',
+  advanced: 'advanced',
 };
 type InternalOperatorType = typeof OPERATORS[keyof typeof OPERATORS];
 
@@ -65,11 +67,18 @@ export function valuesForOperator(
   grain: Grain,
   newOperator?: InternalOperatorType
 ): TimeFilterValues {
+  // TODO: Support sub day grain
   if (grain === 'hour' || grain === 'minute' || grain === 'second') {
     grain = 'day';
   }
   newOperator = newOperator || internalOperatorForValues(filter);
-  const [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
+  let [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
+  if (isEmpty(startStr)) {
+    startStr = 'P1D';
+  }
+  if (isEmpty(endStr)) {
+    endStr = 'current';
+  }
 
   const filterGrain = filter.parameters.grain as Grain;
   const interval = Interval.parseInclusive(startStr, endStr, filterGrain);
@@ -103,6 +112,11 @@ export function valuesForOperator(
   } else if (newOperator === OPERATORS.dateRange) {
     const { start, end } = interval.asMomentsInclusive(grain);
     return [start.toISOString(), end.toISOString()];
+  } else if (newOperator === OPERATORS.advanced) {
+    const newInterval = interval.asIntervalForTimePeriod(grain);
+    const intervalValue = Math.abs(newInterval.diffForTimePeriod('day'));
+    const end = newInterval.asMomentsForTimePeriod(grain).end.subtract(1, 'day');
+    return [`P${intervalValue}D`, end.toISOString()];
   }
   warn(`No operator was found for the values '${filter.values.join(',')}'`, {
     id: 'time-dimension-filter-builder-no-operator',
@@ -146,7 +160,7 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
   } else if (moment.isMoment(interval['_start']) && moment.isMoment(interval['_end'])) {
     internalId = OPERATORS.dateRange;
   } else {
-    internalId = OPERATORS.dateRange;
+    internalId = OPERATORS.advanced;
   }
 
   assert(`A component for ${operator} [${values.join(',')}] exists`, internalId);
@@ -195,6 +209,12 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
         name: 'Between',
         component: 'filter-values/time-dimension/range',
       },
+      {
+        operator: 'bet' as const,
+        internalId: OPERATORS.advanced,
+        name: 'Advanced',
+        component: 'filter-values/time-dimension/advanced',
+      },
     ];
   }
 
@@ -204,7 +224,9 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    */
   @computed('args.filter.{values,operator}', 'supportedOperators')
   get selectedValueBuilder(): InteralFilterBuilderOperators {
-    const internalId = internalOperatorForValues(this.args.filter);
+    const internalId = this.args.filter.validations.isValid
+      ? internalOperatorForValues(this.args.filter)
+      : OPERATORS.advanced;
 
     const filterValueBuilder = this.valueBuilders.find((f) => f.internalId === internalId);
     assert(`A filter value component for ${internalId} operator exists`, filterValueBuilder);

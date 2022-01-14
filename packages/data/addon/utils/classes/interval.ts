@@ -315,7 +315,7 @@ export default class Interval {
    * @param format optional format for date strings
    * @returns string representation of given property
    */
-  private static _stringFromProperty(property: IntervalStart | IntervalEnd, format?: string): string {
+  static _stringFromProperty(property: IntervalStart | IntervalEnd, format?: string): string {
     if (moment.isMoment(property)) {
       return format ? property.format(format) : property.toISOString();
     } else if (Duration.isDuration(property)) {

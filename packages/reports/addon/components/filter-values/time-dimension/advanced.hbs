@@ -1,0 +1,32 @@
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{#if @isCollapsed}}
+  {{#if this.interval}}
+    {{this.dateRange}}
+  {{else}}
+    <FilterValues::InvalidValue />
+  {{/if}}
+{{else}}
+  <div class="filter-values--advanced-interval-input row" ...attributes>
+    <DenaliInput
+      @wrapperClass="col-3-7"
+      @size="medium"
+      @state={{unless this.isIntervalValid "error"}}
+      @errorMsg={{unless this.isIntervalValid "Invalid interval"}}
+      placeholder={{this.startPlaceholder}}
+      class="filter-values--advanced-interval-input--start"
+      value={{this.dateStrings.start}}
+      {{on "focusout" (pipe (pick "target.value") this.parseDate this.setTimeStart)}}
+    />
+    <span class="filter-values--advanced-interval-input__separator col-1-7 flex align-items-center justify-content-center">and</span>
+    <DenaliInput
+      @wrapperClass="col-3-7"
+      @size="medium"
+      @state={{unless this.isIntervalValid "error"}}
+      @errorMsg={{unless this.isIntervalValid "Invalid interval"}}
+      placeholder={{this.endPlaceholder}}
+      class="filter-values--advanced-interval-input--end"
+      value={{this.dateStrings.end}}
+      {{on "focusout" (pipe (pick "target.value") this.parseDate this.setTimeEnd)}}
+    />
+  </div>
+{{/if}}
