@@ -920,6 +920,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", formatWithOptions),
+                            attr("delivery", "email"),
                             attr(
                                 "recipients",
                                 arrayOf("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev")

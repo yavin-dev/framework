@@ -80,6 +80,7 @@ export default [
     },
     deliveryType: 'dashboard',
     frequency: 'week',
+    delivery: 'email',
     schedulingRules: {},
     format: {
       type: 'gsheet',
@@ -97,6 +98,7 @@ export default [
       id: 2,
     },
     deliveryType: 'report',
+    delivery: 'email',
     frequency: 'week',
     schedulingRules: {},
     format: {
