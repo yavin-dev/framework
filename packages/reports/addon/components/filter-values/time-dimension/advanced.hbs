@@ -14,8 +14,9 @@
       @errorMsg={{unless this.isIntervalValid "Invalid interval"}}
       placeholder={{this.startPlaceholder}}
       class="filter-values--advanced-interval-input--start"
-      value={{this.dateStrings.start}}
-      {{on "focusout" (pipe (pick "target.value") this.parseDate this.setTimeStart)}}
+      value={{this.start}}
+      {{on "input" (pipe (pick "target.value") (fn (mut this.start)))}}
+      {{on "focusout" this.commitValues}}
     />
     <span class="filter-values--advanced-interval-input__separator col-1-7 flex align-items-center justify-content-center">and</span>
     <DenaliInput
@@ -25,8 +26,9 @@
       @errorMsg={{unless this.isIntervalValid "Invalid interval"}}
       placeholder={{this.endPlaceholder}}
       class="filter-values--advanced-interval-input--end"
-      value={{this.dateStrings.end}}
-      {{on "focusout" (pipe (pick "target.value") this.parseDate this.setTimeEnd)}}
+      value={{this.end}}
+      {{on "input" (pipe (pick "target.value") (fn (mut this.end)))}}
+      {{on "focusout" this.commitValues}}
     />
   </div>
 {{/if}}

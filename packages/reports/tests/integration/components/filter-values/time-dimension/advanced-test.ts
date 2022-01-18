@@ -1,12 +1,11 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { find, render } from '@ember/test-helpers';
+import { fillIn, find, render, blur } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import type Advanced from 'navi-reports/components/filter-values/time-dimension/advanced';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
-import { getContext } from '@ember/test-helpers/setup-context';
 
 type ComponentArgs = Advanced['args'];
 interface TestContext extends Context, ComponentArgs {}
@@ -23,14 +22,10 @@ function getValues(): [string, string] {
 }
 
 function isValidValues(assert: Assert) {
-  const context = getContext() as TestContext;
-  assert.ok(context.filter.validations.isValid, 'Filter values are valid');
   assert.dom('.message').doesNotExist('Invalid message is not shown');
 }
 
 function isInvalidValues(assert: Assert) {
-  const context = getContext() as TestContext;
-  assert.notOk(context.filter.validations.isValid, 'Filter values are invalid');
   assert.dom('.message').hasText('Invalid interval', 'Invalid message is shown');
   assert.dom('.message').exists({ count: 2 }, 'Invalid message is rendered twice');
 }
@@ -86,12 +81,24 @@ module('Integration | Component | filter-values/time-dimension/advanced', functi
     assert.deepEqual(getValues(), ['P4D', '2022-01-01'], 'It renders with the correct values');
     isValidValues(assert);
 
-    this.set('filter.values', ['', 'invalid']);
-    assert.deepEqual(getValues(), ['', 'invalid'], 'It renders with the correct values');
-    isInvalidValues(assert);
+    const start = find('.filter-values--advanced-interval-input--start')!;
+    const end = find('.filter-values--advanced-interval-input--end')!;
 
-    this.set('filter.values', ['2020-01-01T00:00:00.000Z', 'next']);
+    await fillIn(start, '');
+    await fillIn(end, 'invalid');
+    isInvalidValues(assert);
+    this.onUpdateFilter = ({ values }) => {
+      assert.deepEqual(values, ['', 'invalid'], 'Values are updated after focusout');
+    };
+    await blur(end); // invalid after input but before commiting changes
+    assert.deepEqual(getValues(), ['', 'invalid'], 'It renders with the correct values');
+
+    await fillIn(start, '2020-01-01');
+    await fillIn(end, 'next');
+    isValidValues(assert); // valid after input but before commiting changes
+    this.onUpdateFilter = ({ values }) => {
+      assert.deepEqual(values, ['2020-01-01T00:00:00.000Z', 'next'], 'Values are updated after focusout');
+    };
     assert.deepEqual(getValues(), ['2020-01-01', 'next'], 'It renders with the correct values');
-    isValidValues(assert);
   });
 });

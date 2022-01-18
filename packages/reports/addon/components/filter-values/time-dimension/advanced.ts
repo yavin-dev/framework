@@ -6,8 +6,14 @@ import BaseIntervalComponent from './base-interval';
 import { PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import moment from 'moment';
 import Interval from 'navi-data/utils/classes/interval';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+import { isIntervalValid } from 'navi-core/models/request/filter';
 
 export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalComponent {
+  @tracked start = this.formatValue(this.args.filter.values[0]);
+  @tracked end = this.formatValue(this.args.filter.values[1]);
+
   formatValue(date: string) {
     if (typeof date === 'string') {
       try {
@@ -20,16 +26,12 @@ export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalCompo
     return date;
   }
 
-  get dateStrings() {
-    const [start, end] = this.args.filter.values;
-    return {
-      start: this.formatValue(start),
-      end: this.formatValue(end),
-    };
+  get newValues() {
+    return [this.parseDate(this.start), this.parseDate(this.end)];
   }
 
   get isIntervalValid() {
-    return this.args.filter.validations.isValid;
+    return isIntervalValid(this.newValues, this.args.filter);
   }
 
   /**
@@ -41,5 +43,10 @@ export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalCompo
   parseDate(date: string) {
     const momentDate = moment.parseZone(date);
     return momentDate.isValid() ? momentDate.toISOString() : date;
+  }
+
+  @action
+  commitValues() {
+    this.args.onUpdateFilter({ values: this.newValues });
   }
 }
