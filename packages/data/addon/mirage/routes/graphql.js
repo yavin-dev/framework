@@ -486,7 +486,7 @@ export default function () {
               if (selector.includes('.') && selector !== 'namespace.id') {
                 throw new Error(`filtering on a related model is not currently supported in mirage mocks: ${filter}`);
               } else {
-                // `namespace.id` doesn't match any attribute of the records, so we want to change it to `namespaceIds`
+                // `namespace.id` doesn't match any attribute of the records, so we want to change it to `namespaceId`
                 selector = 'namespaceId';
               }
               args[selector] = rsql.right.value;
