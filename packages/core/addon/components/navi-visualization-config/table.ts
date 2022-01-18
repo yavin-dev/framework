@@ -43,7 +43,6 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
   @action
   onToggleGrandTotal(grandTotal: boolean): void {
     const subtotal = this.args.options?.showTotals?.subtotal;
-    console.log(subtotal, { showTotals: { grandTotal, ...(subtotal ? { subtotal } : null) } });
     this.args.onUpdateConfig({ showTotals: { grandTotal, ...(subtotal ? { subtotal } : null) } });
   }
 
