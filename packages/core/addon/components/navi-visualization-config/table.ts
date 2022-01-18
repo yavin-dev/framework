@@ -42,7 +42,9 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
    */
   @action
   onToggleGrandTotal(grandTotal: boolean): void {
-    this.args.onUpdateConfig({ showTotals: { grandTotal } });
+    const subtotal = this.args.options?.showTotals?.subtotal;
+    console.log(subtotal, { showTotals: { grandTotal, ...(subtotal ? { subtotal } : null) } });
+    this.args.onUpdateConfig({ showTotals: { grandTotal, ...(subtotal ? { subtotal } : null) } });
   }
 
   /**
@@ -57,7 +59,7 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
       const { request } = this.args;
       const firstDim = request.dimensionColumns[0];
       this.args.onUpdateConfig({
-        showTotals: { subtotal: firstDim?.cid },
+        showTotals: { subtotal: firstDim?.cid, grandTotal: this.args.options?.showTotals?.grandTotal ?? false },
       });
     } else if (this.args.options?.showTotals?.subtotal !== undefined) {
       const newOptions = { ...this.args.options };
@@ -73,6 +75,8 @@ export default class NaviVisualizationConfigTableComponent extends NaviVisualiza
    */
   @action
   updateSubtotal(dimension: ColumnFragment): void {
-    this.args.onUpdateConfig({ showTotals: { subtotal: dimension.cid } });
+    this.args.onUpdateConfig({
+      showTotals: { subtotal: dimension.cid, grandTotal: this.args.options?.showTotals?.grandTotal ?? false },
+    });
   }
 }
