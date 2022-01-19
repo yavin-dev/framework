@@ -113,7 +113,7 @@
               @triggerId="{{this.classId}}-{{param.id}}"
               @dropdownClass="navi-column-config-item__parameter-dropdown"
               @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
-              @searchField={{if paramValues.firstObject.description "description" "name"}}
+              @searchField={{if paramValues.firstObject.name "name" "id"}}
               @searchPlaceholder="Search {{capitalize param.name}}"
               @options={{paramValues}}
               @onChange={{pipe (pick "id") (fn this.setParameter param)}}

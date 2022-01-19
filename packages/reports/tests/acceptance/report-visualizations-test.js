@@ -89,7 +89,7 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
 
     //add a parameterized metric with a couple of parameters and run the report
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
     await clickItem('metric', 'Platform Revenue');
     await click('.navi-report__run-btn');
 

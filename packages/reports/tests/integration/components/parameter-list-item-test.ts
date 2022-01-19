@@ -8,13 +8,17 @@ module('Integration | Component | parameter-list-item', function (hooks) {
   setupRenderingTest(hooks);
 
   test('it decides whether to show id or not', async function (assert) {
-    const arg1: ParameterListItemArgs['argument'] = { name: 'nameField', id: '1' };
+    const arg1: ParameterListItemArgs['argument'] = { name: '', id: 'idField' };
     this.set('arg', arg1);
     await render(hbs`<ParameterListItem @argument={{this.arg}} />`);
-    assert.dom(this.element).hasText('nameField', 'it should show name field when description is not available');
+    assert.dom(this.element).hasText(`${arg1.id}`, 'it should show name field when name is not available');
 
-    const arg2: ParameterListItemArgs['argument'] = { description: 'descriptionField', name: 'nameField', id: '2' };
+    const arg2: ParameterListItemArgs['argument'] = {
+      description: 'descriptionField',
+      name: 'nameField',
+      id: 'idField',
+    };
     this.set('arg', arg2);
-    assert.dom(this.element).hasText('descriptionField', 'it should show description field when available');
+    assert.dom(this.element).hasText(`${arg2.name}`, 'it should show name field when available');
   });
 });

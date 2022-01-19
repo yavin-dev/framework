@@ -40,7 +40,7 @@ module('Acceptance | navi-report - column parameters', function (hooks) {
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
 
     assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The parameterized metric is added as a filter');
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The parameterized metric is added as a filter');
@@ -51,11 +51,11 @@ module('Acceptance | navi-report - column parameters', function (hooks) {
 
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'USD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter', 'USD');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter', 'CAD');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
 
     assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The filter contains EUR');
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The filter contains USD');

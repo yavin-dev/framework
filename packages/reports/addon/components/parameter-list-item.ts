@@ -4,6 +4,7 @@
  * Component that is used to show items in parameter value power select
  */
 import Component from '@glimmer/component';
+import { isPresent } from '@ember/utils';
 import { PotentialParameterValue } from 'navi-data/addon/models/metadata/function-parameter';
 
 export interface ParameterListItemArgs {
@@ -12,7 +13,7 @@ export interface ParameterListItemArgs {
 
 export default class ParameterListItem extends Component<ParameterListItemArgs> {
   get value(): string {
-    const displayField = this.args.argument.description ? 'description' : 'name';
-    return this.args.argument[displayField] ?? '';
+    const displayField = isPresent(this.args.argument.name) ? 'name' : 'id';
+    return `${this.args.argument[displayField]}` ?? '';
   }
 }

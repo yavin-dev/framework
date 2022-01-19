@@ -69,7 +69,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     );
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Left', 'Total', '6 (30-34)', 'USD (Dollars)', 'CAD (Dollars)'],
+      ['Left', 'total', '6', 'USD', 'CAD'],
       'Multiple parameters values are filled in with selected values'
     );
 
@@ -81,14 +81,14 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     );
 
     await selectChoose('.navi-column-config-item__parameter', 'Right');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[1], 'Daily Average');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[2], '13-17');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[3], 'Euro');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'Drams');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[1], 'dayAvg');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[2], '2');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[3], 'EUR');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'AMD');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Right', 'Daily Average', '2 (13-17)', 'EUR (Euro)', 'AMD (Drams)'],
+      ['Right', 'dayAvg', '2', 'EUR', 'AMD'],
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
 
@@ -118,16 +118,16 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['', 'Total', '6 (30-34)', 'USD (Dollars)', ''],
+      ['', 'total', '6', 'USD', ''],
       'Null parameters have no selected values in trigger'
     );
 
     await selectChoose('.navi-column-config-item__parameter', 'Right');
-    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'CAD (Dollars)');
+    await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'CAD');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
-      ['Right', 'Total', '6 (30-34)', 'USD (Dollars)', 'CAD (Dollars)'],
+      ['Right', 'total', '6', 'USD', 'CAD'],
       'Null value parameters can be changed'
     );
   });
@@ -156,37 +156,22 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
       .hasProperty('placeholder', 'Revenue (USD)', 'Display name of column is shown as a placeholder');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
-      .hasText('USD (Dollars)', 'Current parameter is displayed in the dropdown input');
+      .hasText('USD', 'Current parameter is displayed in the dropdown input');
 
     await click('.navi-column-config-item__parameter-trigger.ember-power-select-trigger');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
-      [
-        '-1 (NULL)',
-        '-2 (UNKNOWN)',
-        'AED (Dirhams)',
-        'AFA (Afghanis)',
-        'ALL (Leke)',
-        'AMD (Drams)',
-        'ANG (Guilders)',
-        'AOA (Kwanza)',
-        'ARS (Pesos)',
-        'AUD (Dollars)',
-        'CAD (Dollars)',
-        'USD (Dollars)',
-        'EUR (Euro)',
-        'INR (Rupees)',
-      ],
+      ['-1', '-2', 'AED', 'AFA', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'CAD', 'USD', 'EUR', 'INR'],
       'The parameter values are loaded into the dropdown'
     );
-    await selectChoose('.navi-column-config-item__parameter', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter', 'CAD');
 
     assert
       .dom(columnNameInput)
       .hasProperty('placeholder', 'Revenue (CAD)', 'Placeholder is updated when parameter is changed');
     assert
       .dom('.navi-column-config-item__parameter-trigger')
-      .hasText('CAD (Dollars)', 'Parameter selector shows new parameter value');
+      .hasText('CAD', 'Parameter selector shows new parameter value');
 
     await fillIn(columnNameInput, 'Money');
     await triggerKeyEvent(columnNameInput, 'keyup', 13);

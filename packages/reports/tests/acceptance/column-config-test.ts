@@ -269,7 +269,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     //change parameter
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
@@ -277,7 +277,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'The first parameterized metric is still open after parameter change'
     );
 
-    //remove the first parameterizde metric
+    //remove the first parameterized metric
     await click(findAll('.navi-column-config-item__remove-icon')[3]);
     assert
       .dom('.navi-column-config-item--open')
@@ -752,7 +752,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]'); // open first Platform Revenue (USD) config
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
 
     assert.deepEqual(
       getColumns(),
@@ -775,7 +775,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'The initial parameterized metrics were added'
     );
 
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
 
     assert.deepEqual(
       getColumns(),
@@ -1320,13 +1320,13 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       14,
       'All options are shown initially'
     );
-    await fillIn('.ember-power-select-search-input', 'Dollars');
+    await fillIn('.ember-power-select-search-input', 'D');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['AUD (Dollars)', 'CAD (Dollars)', 'USD (Dollars)'],
+      ['AED', 'AMD', 'AUD', 'CAD', 'USD'],
       'After searching only the filtered metric is shown'
     );
-    await click(findAll('.ember-power-select-option')[1]);
+    await click(findAll('.ember-power-select-option')[3]);
 
     assert.deepEqual(
       getColumns(),
