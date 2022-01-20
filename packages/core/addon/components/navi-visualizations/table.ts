@@ -165,7 +165,8 @@ export default class Table extends Component<Args> {
     if (request?.rollup?.columnCids?.length <= 0 && !request?.rollup?.grandTotal) {
       return tableData;
     }
-    const dimensionCount = new Set(request?.columns.filter((col) => col.type !== 'metric')).size;
+    const dimensionCount = new Set(request?.columns.filter((col) => col.type !== 'metric').map((col) => col.field))
+      .size;
     const fullMask = parseInt(new Array(dimensionCount).fill('1').join(''), 2);
     return tableData.map((row) => {
       if (row.__rollupMask === undefined || row.__rollupMask === null) {
