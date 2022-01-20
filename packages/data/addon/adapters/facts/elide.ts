@@ -48,7 +48,10 @@ export function getElideField(fieldName: string, parameters: Parameters = {}, al
   const field = parts[parts.length - 1];
 
   const paramsInner = Object.entries(parameters)
-    .map(([param, val]) => `${param}:"${val}"`)
+    .map(([param, rawValue]) => {
+      const val = typeof rawValue === 'string' ? `"${rawValue}"` : rawValue;
+      return `${param}:${val}`;
+    })
     .join(', ');
   const paramsStr = paramsInner.length > 0 ? `(${paramsInner})` : '';
 
@@ -193,7 +196,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
         const alias = columnCanonicalToAlias[canonicalizeMetric({ metric: field, parameters })];
         if (type === 'timeDimension') {
           // The elide time grain is uppercase (but we serialize to lowercase to use as Grain internally)
-          const grain = parameters.grain?.toUpperCase();
+          const grain = parameters.grain ? `${parameters.grain}`.toUpperCase() : undefined;
           parameters = {
             ...parameters,
             ...(grain ? { grain } : {}),

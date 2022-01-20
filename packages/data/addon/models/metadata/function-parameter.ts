@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Column function parameters are named and have rules for what values are valid
@@ -11,46 +11,43 @@ import { taskFor } from 'ember-concurrency-ts';
 import NativeWithCreate from 'navi-data/models/native-with-create';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { DimensionColumn } from './dimension';
+import type { DimensionColumn, TableSource } from './dimension';
+import type { ValueSourceType } from './elide/dimension';
+import type { ParameterValue } from 'navi-data/adapters/facts/interface';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 
-type FunctionParameterType = 'ref' | 'primitive';
-export type ColumnFunctionParametersValues = { id: string; name?: string; description?: string }[]; //TODO need to normalize
-
-type LocalFunctionParameter = FunctionParameterMetadataModel & {
-  type: 'ref';
-  expression: 'self';
-  _localValues: ColumnFunctionParametersValues;
-};
-
-/**
- * Determines whether the values for this function are stored locally
- *
- * @function isLocalFunction
- * @returns {boolean} true if values are stored locally
- */
-function isLocalFunction(
-  functionParameter: FunctionParameterMetadataModel
-): functionParameter is LocalFunctionParameter {
-  return functionParameter.expression === INTRINSIC_VALUE_EXPRESSION;
+//TODO we should use this in the column type definition
+export enum DataType {
+  TIME = 'TIME',
+  INTEGER = 'INTEGER',
+  DECIMAL = 'DECIMAL',
+  MONEY = 'MONEY',
+  TEXT = 'TEXT',
+  COORDINATE = 'COORDINATE',
+  BOOLEAN = 'BOOLEAN',
+  ID = 'ID',
+  UNKNOWN = 'UNKNOWN',
 }
 
+export type PotentialParameterValue = {
+  id: ParameterValue; // actual param value provided in the request
+  name: string; // nice name of param value
+  description?: string; // descriptive label for param value (potentially with context)
+};
 export interface FunctionParameterMetadataPayload {
   id: string;
   name: string;
   description?: string;
   source: string;
-  type: FunctionParameterType;
-  expression?: string;
+  valueSourceType: ValueSourceType;
+  valueType: DataType;
   defaultValue?: string | null;
-  _localValues?: ColumnFunctionParametersValues;
+  tableSource?: TableSource;
+  _localValues?: PotentialParameterValue[];
 }
 
-type Expresion = typeof INTRINSIC_VALUE_EXPRESSION | `dimension:${string}`;
-
 export default class FunctionParameterMetadataModel extends NativeWithCreate {
-  static identifierField = 'id';
   constructor(owner: unknown, args: FunctionParameterMetadataPayload) {
     super(owner, args);
   }
@@ -67,49 +64,62 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
 
   declare description?: string;
 
-  /**
-   * name of the data source this parameter is from.
-   */
   declare source: string;
 
-  declare type: FunctionParameterType;
+  declare valueType: DataType;
 
-  declare expression?: Expresion;
+  declare valueSourceType: ValueSourceType;
+
+  declare tableSource?: TableSource;
 
   declare defaultValue?: string | null;
 
   /**
    * enum values for the parameter
    */
-  protected declare _localValues?: ColumnFunctionParametersValues;
+  protected declare _localValues?: PotentialParameterValue[];
 
   /**
    * promise that resolves to an array of values used for function parameters with an enum type
    */
-  get values(): Promise<ColumnFunctionParametersValues> | undefined {
-    if (isLocalFunction(this)) {
-      return Promise.resolve(this._localValues);
+  get values(): Promise<PotentialParameterValue[]> {
+    if (this.valueSourceType === 'ENUM') {
+      const { _localValues: values } = this;
+      assert(
+        `The function-parameter '${this.id}':'(${this.name})' is of type 'ENUM' but has no values`,
+        values?.length
+      );
+      return Promise.resolve(values);
     }
 
-    const [lookup, dimensionId] = this.expression?.split(':') || [];
-    if (this.type === 'ref' && lookup === 'dimension' && dimensionId) {
+    if (this.valueSourceType === 'TABLE') {
       return this.metadataService
-        .findById('dimension', dimensionId, this.source)
+        .findById('dimension', this.tableSource?.valueSource ?? '', this.source)
         .then((columnMetadata) => {
-          assert(`The dimension metadata for ${dimensionId} should exist`, columnMetadata);
+          assert(`The dimension metadata for '${this.tableSource?.valueSource}' should exist`, columnMetadata);
           const dimension: DimensionColumn = { columnMetadata, parameters: {} };
           return taskFor(this.dimensionService.all).perform(dimension);
         })
         .then((v) =>
           v.values.map((d) => {
-            const context = d.suggestions ? ` (${Object.values(d.suggestions)})` : '';
+            const context = d.suggestions ? `${Object.values(d.suggestions)}` : '';
             return {
               id: `${d.value}`,
-              description: `${d.displayValue}${context}`,
+              name: d.displayValue,
+              description: `${d.displayValue} (${context})`,
             };
           })
         );
     }
-    return undefined;
+
+    //else valueSourceType is NONE
+    if (this.valueType === DataType.BOOLEAN) {
+      return Promise.resolve([
+        { id: true, name: 'True' },
+        { id: false, name: 'False' },
+      ]);
+    }
+
+    return Promise.resolve([]);
   }
 }

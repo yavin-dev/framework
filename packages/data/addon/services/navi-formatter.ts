@@ -10,37 +10,29 @@ import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { MetricColumn } from 'navi-data/models/metadata/metric';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
-import { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
+import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import { hash } from 'ember-concurrency';
 
 export default class NaviFormatterService extends Service {
   async formatNiceColumnName(
     columnMetadata?: ColumnMetadataModel,
-    parameters?: Parameters,
+    parameters: Parameters = {},
     alias?: string | null
   ): Promise<string> {
     if (alias) {
       return alias;
     }
-    const paramValues = Object.values(parameters || {});
-    const parameterMetadata: ColumnFunctionParametersValues = [];
 
-    columnMetadata?.parameters?.forEach(async function (e) {
-      let parameterValues = await e.values;
-      parameterValues?.forEach((value) => {
-        parameterMetadata.push(value);
-      });
-    });
-    await Promise.all(parameterMetadata);
+    const lookups: Record<string, Promise<PotentialParameterValue[]>> = {};
+    columnMetadata?.parameters?.forEach((e) => (lookups[e.id] = e.values));
+    const parameterValueLookups = await hash(lookups);
 
-    let paramNames = paramValues?.map((param) => {
-      return parameterMetadata?.find((value) => value.id === param)?.name ?? param;
-    });
-    const name = columnMetadata?.name || '--';
-    if (paramNames.length) {
-      return `${name} (${paramNames.join(',')})`;
-    } else {
-      return name;
-    }
+    const paramNames = Object.entries(parameters).map(([name, value]) =>
+      parameterValueLookups[name] ? parameterValueLookups[name].find((e) => e.id === value)?.name ?? value : value
+    );
+
+    const name = columnMetadata?.name ?? '--';
+    return paramNames.length ? `${name} (${paramNames.join(',')})` : name;
   }
 
   formatColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
@@ -56,6 +48,7 @@ export default class NaviFormatterService extends Service {
       return name;
     }
   }
+
   formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
     if (isEmpty(value)) {
       return '--';

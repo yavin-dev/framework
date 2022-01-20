@@ -80,13 +80,13 @@
           @onChange={{pipe (pick "id") this.updateSort}}
           as | arg |
         >
-          <ParameterListItem @argument={{arg}} @parameters={{this.sortDirections}} />
+          <ParameterListItem @argument={{arg}} />
         </PowerSelect>
       </div>
     {{/if}}
     {{#each @column.fragment.columnMetadata.parameters as |param|}}
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
-        <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}} Type
+        <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}}
           {{#if param.description}}
             <NaviIcon @icon="question-circle-o">
               <EmberTooltip @side="right" @popperContainer="body" @effect="none">
@@ -95,22 +95,34 @@
             </NaviIcon>
           {{/if}}
         </label>
-        {{#let (await param.values) as |paramValues|}}
-          <PowerSelect
-            @searchEnabled={{true}}
-            @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
-            @triggerId="{{this.classId}}-{{param.id}}"
-            @dropdownClass="navi-column-config-item__parameter-dropdown"
-            @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
-            @searchField={{if paramValues.firstObject.name "name" "description"}}
-            @searchPlaceholder="Search {{capitalize param.name}}"
-            @options={{paramValues}}
-            @onChange={{fn this.setParameter param}}
-            as | arg |
-          >
-            <ParameterListItem @argument={{arg}} @parameters={{paramValues}} />
-          </PowerSelect>
-        {{/let}}
+        {{#if (eq param.valueSourceType 'NONE')}}
+          <DenaliInput
+            @size="medium"
+            @wrapperClass="w-full"
+            type={{if (or (eq param.type "INTEGER") (eq param.type "DECIMAL")) "number" "text"}}
+            value={{get @column.fragment.parameters param.id}}
+            placeholder={{capitalize param.name}}
+            class="navi-column-config-item__parameter-input"
+            {{on "input" (pipe (pick "target.value") (fn this.setParameter param))}}
+          />
+        {{else}}
+          {{#let (await param.values) as |paramValues|}}
+            <PowerSelect
+              @searchEnabled={{true}}
+              @triggerClass="navi-column-config-item__parameter-trigger navi-column-config-base__option-input is-medium"
+              @triggerId="{{this.classId}}-{{param.id}}"
+              @dropdownClass="navi-column-config-item__parameter-dropdown"
+              @selected={{find-by "id" (get @column.fragment.parameters param.id) paramValues}}
+              @searchField={{if paramValues.firstObject.name "name" "id"}}
+              @searchPlaceholder="Search {{capitalize param.name}}"
+              @options={{paramValues}}
+              @onChange={{pipe (pick "id") (fn this.setParameter param)}}
+              as | arg |
+            >
+              <ParameterListItem @argument={{arg}} />
+            </PowerSelect>
+          {{/let}}
+        {{/if}}
       </div>
     {{/each}}
   </div>

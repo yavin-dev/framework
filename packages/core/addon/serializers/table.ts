@@ -6,7 +6,7 @@ import VisualizationSerializer from './visualization';
 import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
-import type { RequestV2, Column } from 'navi-data/adapters/facts/interface';
+import type { RequestV2, Column, Parameters } from 'navi-data/adapters/facts/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import { getRealDimensionType } from 'navi-core/utils/request';
 
@@ -20,7 +20,7 @@ type LegacyType = keyof FieldTypes;
 type LegacyFieldType = FieldTypes[LegacyType];
 interface LegacyColumn<K extends LegacyType> {
   type: K;
-  field?: string | ({ [T in FieldTypes[K]]: string } & { parameters?: Record<string, string> });
+  field?: string | ({ [T in FieldTypes[K]]: string } & { parameters?: Parameters });
   displayName?: string;
   format?: string;
   hasCustomDisplayName?: boolean;
@@ -30,7 +30,7 @@ interface LegacyColumn<K extends LegacyType> {
     field?: string;
     format?: string;
     name?: string;
-    parameters?: Record<string, string>;
+    parameters?: Parameters;
   };
 }
 
@@ -66,7 +66,7 @@ export type TableVisualizationMetadata = {
   };
 };
 
-type Field = { field: string; parameters: Record<string, string> };
+type Field = { field: string; parameters: Parameters };
 /**
  *
  * @param column the

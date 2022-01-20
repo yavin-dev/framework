@@ -8,7 +8,8 @@ import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
 import { upperFirst } from 'lodash-es';
-import { INTRINSIC_VALUE_EXPRESSION } from 'navi-data/models/metadata/function-parameter';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
+import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
 import type { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type { RawColumnType } from '../../models/metadata/column';
 import type { TableMetadataPayload } from '../../models/metadata/table';
@@ -21,7 +22,7 @@ import type ColumnFunctionMetadataModel from '../../models/metadata/column-funct
 import type { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
-import type { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type { Grain } from 'navi-data/utils/date';
 
@@ -31,7 +32,7 @@ type Edge<T> = {
 };
 export type Connection<T> = {
   edges: Edge<T>[];
-  pageInfo: TODO;
+  pageInfo?: TODO;
 };
 type ElideCardinality = Uppercase<'unknown' | 'tiny' | 'small' | 'medium' | 'large' | 'huge'>;
 type ColumnNode = {
@@ -44,18 +45,31 @@ type ColumnNode = {
   tags: string[];
   columnType: RawColumnType;
   expression: string;
+  arguments: Connection<ElideArgument>;
 };
+
 export type MetricNode = ColumnNode & { defaultFormat: string };
 
-type TableSource = Connection<{
+type ElideArgument = {
+  id: string;
+  name: string;
+  description: string;
+  type: DataType;
+  values: string[];
+  valueSourceType: ValueSourceType;
+  tableSource: Connection<TableSource>;
+  defaultValue: string;
+};
+
+export type TableSource = {
   suggestionColumns: Connection<Partial<DimensionNode>>;
   valueSource: Connection<Partial<DimensionNode>>;
-}>;
+};
 
 export type DimensionNode = ColumnNode & {
   cardinality: ElideCardinality;
   valueSourceType: ValueSourceType;
-  tableSource: TableSource | null;
+  tableSource: Connection<TableSource> | null;
   values: string[];
 };
 
@@ -92,6 +106,10 @@ type TableNode = {
 
 export interface TablePayload {
   table: Connection<TableNode>;
+}
+
+function isPresent<T>(t: T | undefined | null | void): t is T {
+  return t !== undefined && t !== null;
 }
 
 export default class ElideMetadataSerializer extends NaviMetadataSerializer {
@@ -145,14 +163,19 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       const newTableTimeDimensions = newTableTimeDimensionsAndColFuncs.map((obj) => obj.timeDimension);
       const newTableTimeDimensionColFuncs = newTableTimeDimensionsAndColFuncs.map((obj) => obj.columnFunction);
 
-      newTable.metricIds = newTableMetrics.map((m) => m.id);
-      newTable.dimensionIds = newTableDimensions.map((d) => d.id);
+      newTable.metricIds = newTableMetrics.map((m) => m.metricModel.id);
+      newTable.dimensionIds = newTableDimensions.map((d) => d.dimensionModel.id);
       newTable.timeDimensionIds = newTableTimeDimensions.map((d) => d.id);
 
-      metrics = [...metrics, ...newTableMetrics];
-      dimensions = [...dimensions, ...newTableDimensions];
+      metrics = [...metrics, ...newTableMetrics.map((m) => m.metricModel)];
+      dimensions = [...dimensions, ...newTableDimensions.map((d) => d.dimensionModel)];
       timeDimensions = [...timeDimensions, ...newTableTimeDimensions];
-      columnFunctions = [...columnFunctions, ...newTableTimeDimensionColFuncs];
+      columnFunctions = [
+        ...columnFunctions,
+        ...newTableTimeDimensionColFuncs,
+        ...newTableMetrics.map((m) => m.columnFunction),
+        ...newTableDimensions.map((m) => m.columnFunction),
+      ].filter(isPresent);
 
       return newTable;
     });
@@ -178,9 +201,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     metricConnection: Connection<MetricNode>,
     tableId: string,
     source: string
-  ): MetricMetadataModel[] {
-    return metricConnection.edges.map((edge: Edge<MetricNode>) => {
-      const { node } = edge;
+  ): {
+    metricModel: MetricMetadataModel;
+    columnFunction: ColumnFunctionMetadataModel | null;
+  }[] {
+    return metricConnection.edges.map(({ node }) => {
+      const columnFunction = this.createColumnFunction(node.id, node.arguments, source);
       const payload: MetricMetadataPayload = {
         id: node.id,
         name: node.friendlyName,
@@ -194,8 +220,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         isSortable: true,
         type: node.columnType,
         expression: node.expression,
+        columnFunctionId: columnFunction?.id,
       };
-      return this.createMetricModel(payload);
+      return {
+        metricModel: this.createMetricModel(payload),
+        columnFunction,
+      };
     });
   }
 
@@ -210,9 +240,13 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
     dimensionConnection: Connection<DimensionNode>,
     tableId: string,
     source: string
-  ): DimensionMetadataModel[] {
+  ): {
+    dimensionModel: DimensionMetadataModel;
+    columnFunction: ColumnFunctionMetadataModel | null;
+  }[] {
     return dimensionConnection.edges.map((edge: Edge<DimensionNode>) => {
       const { node } = edge;
+      const columnFunction = this.createColumnFunction(node.id, node.arguments, source);
 
       const cardinality = this._normalizeCardinality(node.cardinality);
       const tableSource = node.tableSource?.edges[0];
@@ -237,8 +271,12 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
             }
           : undefined,
         values: node.values,
+        columnFunctionId: columnFunction?.id,
       };
-      return this.createDimensionModel(payload);
+      return {
+        dimensionModel: this.createDimensionModel(payload),
+        columnFunction,
+      };
     });
   }
 
@@ -324,9 +362,9 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
           name: 'Time Grain',
           description: 'The time grain to group dates by',
           source: dataSourceName,
-          type: 'ref',
-          expression: INTRINSIC_VALUE_EXPRESSION,
           defaultValue,
+          valueType: DataType.TEXT,
+          valueSourceType: ValueSourceType.ENUM,
           _localValues: grainNodes.map((grain) => {
             const grainName = grain.grain.toLowerCase();
             return {
@@ -338,6 +376,43 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         },
       ],
     };
+  }
+
+  /**
+   * Normalize column arguments as a column function
+   */
+  private createColumnFunction(
+    columnId: string,
+    columnArguments: Connection<ElideArgument>,
+    source: string
+  ): ColumnFunctionMetadataModel | null {
+    // do not create a column function if arguments are not present
+    if (columnArguments.edges.length === 0) {
+      return null;
+    }
+
+    const id = `${this.namespace}:elide-${source}:column=${columnId}`;
+
+    const _parametersPayload: FunctionParameterMetadataPayload[] = columnArguments.edges.map(({ node }) => ({
+      id: node.name,
+      name: node.name,
+      description: node.description,
+      source,
+      valueType: node.type,
+      valueSourceType: node.valueSourceType,
+      tableSource: undefined, //TODO come back and support table source params
+      defaultValue: node.defaultValue,
+      _localValues: node.values.map((v) => ({ id: v, name: v })),
+    }));
+
+    const payload: ColumnFunctionMetadataPayload = {
+      id,
+      name: 'Column Arguments',
+      description: 'Column Arguments',
+      source,
+      _parametersPayload,
+    };
+    return this.createColumnFunctionModel(payload);
   }
 
   /**

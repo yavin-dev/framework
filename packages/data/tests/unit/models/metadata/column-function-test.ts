@@ -3,9 +3,11 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
 import FunctionParameterMetadataModel, {
+  DataType,
   FunctionParameterMetadataPayload,
 } from 'navi-data/models/metadata/function-parameter';
 import type { Factory } from 'navi-data/models/native-with-create';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 let Payload: ColumnFunctionMetadataPayload,
   ColumnFunction: ColumnFunctionMetadataModel,
@@ -20,8 +22,8 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       name: 'Currency',
       description: 'moneyz',
       source: 'bardOne',
-      type: 'ref',
-      expression: 'dimension:displayCurrency',
+      valueType: DataType.TEXT,
+      valueSourceType: ValueSourceType.ENUM,
       defaultValue: 'USD',
     };
 
@@ -63,8 +65,12 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       'parameters description property is hydrated properly'
     );
     assert.deepEqual(param.source, paramPayload?.source, 'parameters source property is hydrated properly');
-    assert.deepEqual(param.type, paramPayload?.type, 'parameters type property is hydrated properly');
-    assert.deepEqual(param.expression, paramPayload?.expression, 'parameters expression property is hydrated properly');
+    assert.deepEqual(param.valueType, paramPayload?.valueType, 'parameters valueType property is hydrated properly');
+    assert.deepEqual(
+      param.valueSourceType,
+      paramPayload?.valueSourceType,
+      'parameters valueSourceType property is hydrated properly'
+    );
     assert.deepEqual(
       param.defaultValue,
       paramPayload?.defaultValue,

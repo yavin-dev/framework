@@ -39,7 +39,8 @@ export type FilterOperator =
 
 export const SORT_DIRECTIONS = <const>['desc', 'asc'];
 
-export type Parameters = Record<string, string>;
+export type Parameters = Record<string, ParameterValue>;
+export type ParameterValue = string | number | boolean;
 
 export type SortDirection = typeof SORT_DIRECTIONS[number];
 

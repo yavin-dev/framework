@@ -1,0 +1,34 @@
+fragment ArgumentFragment on ElideArgument {
+  id
+  name
+  description
+  type
+  values
+  valueSourceType
+  tableSource {
+    edges {
+      node {
+        id
+        suggestionColumns {
+          edges {
+            node {
+              id
+              friendlyName
+              name
+            }
+          }
+        }
+        valueSource {
+          edges {
+            node {
+               id
+               friendlyName
+               name
+            }
+          }
+        }
+      }
+    }
+  }
+  defaultValue
+}

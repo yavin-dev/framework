@@ -156,7 +156,7 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
 export default class TimeDimensionFilterBuilder extends BaseFilterBuilderComponent<TimeDimensionFilterArgs> {
   @computed('args.filter.parameters.grain')
   get timeGrainName() {
-    return capitalize(this.args.filter.parameters.grain);
+    return capitalize(`${this.args.filter.parameters.grain}`);
   }
 
   /**

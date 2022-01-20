@@ -77,7 +77,7 @@ export default class FilterConsumer extends ActionConsumer {
       };
       let values;
       if (dimensionMetadataModel.metadataType === 'timeDimension' && defaultOperator === 'bet') {
-        const isTime = ['hour', 'minute', 'second'].includes(filter.parameters.grain);
+        const isTime = ['hour', 'minute', 'second'].includes(`${filter.parameters.grain}`);
         if (isTime) {
           values = valuesForOperator(filter, 'day', OPERATORS.dateRange);
         } else {

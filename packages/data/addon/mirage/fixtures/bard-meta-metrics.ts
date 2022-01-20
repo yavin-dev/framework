@@ -360,5 +360,17 @@ export default {
         },
       },
     },
+    {
+      category: 'World',
+      name: 'seconds',
+      longName: 'Seconds',
+      type: 'number',
+      parameters: {
+        divisor: {
+          type: 'none',
+          defaultValue: '60',
+        },
+      },
+    },
   ],
 };

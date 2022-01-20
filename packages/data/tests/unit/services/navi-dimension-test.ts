@@ -203,16 +203,16 @@ module('Unit | Service | navi-dimension', function (hooks) {
     assert.strictEqual(all.values.length, 4, 'There are 4 results');
     assert.strictEqual(
       //@ts-expect-error -- the type does not expect a length property
-      this.server.db.asyncQueries.length,
+      this.server.db.elideAsyncQueries.length,
       1,
       'Only one asyncQueries is created because response fits in one page'
     );
-    this.server.db.asyncQueries.remove();
+    this.server.db.elideAsyncQueries.remove();
 
     const allPageBy1 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1 });
     assert.strictEqual(
       //@ts-expect-error -- the type does not expect a length property
-      this.server.db.asyncQueries.length,
+      this.server.db.elideAsyncQueries.length,
       4,
       'Four asyncQueries are created because the page size is 1 and there are 4 results'
     );

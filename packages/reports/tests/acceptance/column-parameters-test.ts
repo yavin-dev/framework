@@ -1,13 +1,18 @@
-import { click, visit } from '@ember/test-helpers';
+import { click, fillIn, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
+//@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
+//@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
+//@ts-ignore
+import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 
-module('Acceptance | navi-report - metric parameters', function (hooks) {
+module('Acceptance | navi-report - column parameters', function (hooks) {
   setupApplicationTest(hooks);
+  setupAnimationTest(hooks);
   setupMirage(hooks);
 
   test('auto open metric config', async function (assert) {
@@ -29,31 +34,52 @@ module('Acceptance | navi-report - metric parameters', function (hooks) {
       .isNotVisible('The metric config dropdown container remains closed when the metric is removed');
   });
 
-  test('metric config - filter parameter', async function (assert) {
+  test('column config - filter parameter', async function (assert) {
     assert.expect(2);
 
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
 
     assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The parameterized metric is added as a filter');
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The parameterized metric is added as a filter');
   });
 
-  test('metric filter', async function (assert) {
+  test('column filter', async function (assert) {
     assert.expect(3);
 
     await visit('/reports/1/view');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'USD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter', 'USD');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter', 'CAD');
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
 
     assert.ok(!!$('.filter-builder__subject:contains(EUR)'), 'The filter contains EUR');
     assert.ok(!!$('.filter-builder__subject:contains(USD)'), 'The filter contains USD');
     assert.ok(!!$('.filter-builder__subject:contains(CAD)'), 'The filter contains CAD');
+  });
+
+  test('input parameter', async function (assert) {
+    await visit('/reports/new');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+    await animationsSettled();
+
+    await clickItem('metric', 'Seconds');
+    assert
+      .dom('.navi-column-config-item__parameter-input')
+      .hasValue('60', 'param input exists with correct default value');
+
+    assert
+      .dom('.navi-column-config-item__name')
+      .hasText('Seconds (60)', 'Column name contains default parameter value');
+
+    await fillIn('.navi-column-config-item__parameter-input', '22');
+    assert
+      .dom('.navi-column-config-item__name')
+      .hasText('Seconds (22)', 'Column name contains updated parameter value ');
   });
 });

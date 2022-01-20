@@ -39,7 +39,7 @@ export default Factory.extend({
 
   tags: () => ['DISPLAY'],
 
-  columnType: 'field',
+  columnType: 'FIELD',
 
   expression: null,
 

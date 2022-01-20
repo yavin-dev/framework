@@ -5,7 +5,11 @@
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import DimensionMetadataModel, { DimensionMetadataPayload } from '../dimension';
 
-export type ValueSourceType = 'ENUM' | 'TABLE' | 'NONE';
+export enum ValueSourceType {
+  ENUM = 'ENUM',
+  TABLE = 'TABLE',
+  NONE = 'NONE',
+}
 
 export interface ElideDimensionMetadataPayload extends DimensionMetadataPayload {
   valueSourceType: ValueSourceType;
