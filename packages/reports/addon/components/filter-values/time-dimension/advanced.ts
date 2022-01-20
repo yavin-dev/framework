@@ -18,7 +18,7 @@ export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalCompo
     if (typeof date === 'string') {
       try {
         const property = Interval.fromString(date);
-        return Interval._stringFromProperty(property, PARAM_DATE_FORMAT_STRING);
+        return Interval.elementToString(property, PARAM_DATE_FORMAT_STRING);
       } catch (e) {
         // invalid value
       }
