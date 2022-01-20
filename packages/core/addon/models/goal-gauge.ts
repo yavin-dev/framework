@@ -41,13 +41,13 @@ export default class GoalGaugeModel
   extends VisualizationFragment.extend(Validations)
   implements GoalGaugeConfig, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'goal-gauge' })
-  type!: GoalGaugeConfig['type'];
+  declare type: GoalGaugeConfig['type'];
 
   @attr('number', { defaultValue: 2 })
-  version!: GoalGaugeConfig['version'];
+  declare version: GoalGaugeConfig['version'];
 
   @attr({ defaultValue: () => ({}) })
-  metadata!: GoalGaugeConfig['metadata'];
+  declare metadata: GoalGaugeConfig['metadata'];
 
   /**
    * Rebuild config based on request and response
@@ -75,11 +75,11 @@ export default class GoalGaugeModel
         goalValue = 1;
       }
 
-      this.set('metadata', {
+      this.metadata = {
         metricCid,
         baselineValue,
         goalValue,
-      });
+      };
     }
     return this;
   }
