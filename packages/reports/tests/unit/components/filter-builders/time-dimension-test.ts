@@ -54,7 +54,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     assert.deepEqual(
       dateBuilder.valueBuilders.map((op) => op.name),
-      ['Current Day', 'In The Past', 'Since', 'Before', 'Between'],
+      ['Current Day', 'In The Past', 'Since', 'Before', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );
 
@@ -62,7 +62,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     assert.deepEqual(
       dateBuilder.valueBuilders.map((op) => op.name),
-      ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between'],
+      ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );
   });
@@ -105,13 +105,17 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       'since',
       'Use since operator for specific dates ending with current interval'
     );
-    assert.deepEqual(intervalId('2019-01-01', 'next'), 'in', 'Use in operator to handle advanced "next" case');
+    assert.deepEqual(
+      intervalId('2019-01-01', 'next'),
+      'advanced',
+      'Use advanced operator to handle date to "next" case'
+    );
 
-    assert.deepEqual(intervalId('P7D', 'next'), 'in', 'Use in operator to handle advanced "next" case');
+    assert.deepEqual(intervalId('P7D', 'next'), 'advanced', 'Use advanced operator to handle period to "next" case');
     assert.deepEqual(
       intervalId('P7D', '2019-01-01'),
-      'in',
-      'Use in operator to handle advanced lookback from date case'
+      'advanced',
+      'Use advanced operator to handle lookback from date case'
     );
   });
 
