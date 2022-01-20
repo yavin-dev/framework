@@ -11,7 +11,7 @@ module('Integration | Component | parameter-list-item', function (hooks) {
     const arg1: ParameterListItemArgs['argument'] = { name: '', id: 'idField' };
     this.set('arg', arg1);
     await render(hbs`<ParameterListItem @argument={{this.arg}} />`);
-    assert.dom(this.element).hasText(`${arg1.id}`, 'it should show name field when name is not available');
+    assert.dom(this.element).hasText(`${arg1.id}`, 'it should show id field when name is not available');
 
     const arg2: ParameterListItemArgs['argument'] = {
       description: 'descriptionField',
