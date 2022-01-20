@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { action, set } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
 import ColumnFragment from 'navi-core/models/request/column';
 import { Args as GoalGaugeArgs } from '../navi-visualizations/goal-gauge';
 import NaviVisualizationConfigBaseComponent from './base';
@@ -11,7 +10,9 @@ import NaviVisualizationConfigBaseComponent from './base';
 type Options = GoalGaugeArgs['options'];
 
 export default class NaviVisualizationConfigGoalGaugeComponent extends NaviVisualizationConfigBaseComponent<Options> {
-  @readOnly('args.request.metricColumns.firstObject') metricColumn!: ColumnFragment;
+  get metricColumn(): ColumnFragment {
+    return this.args.request.metricColumns[0];
+  }
 
   /**
    * @param alias - date string input event
@@ -23,12 +24,12 @@ export default class NaviVisualizationConfigGoalGaugeComponent extends NaviVisua
   }
 
   @action
-  updateBaseline(baselineValue: number) {
-    this.args.onUpdateConfig?.({ baselineValue });
+  updateBaseline(baselineValue: string) {
+    this.args.onUpdateConfig?.({ ...this.args.options, baselineValue: Number(baselineValue) });
   }
 
   @action
-  updateGoal(goalValue: number) {
-    this.args.onUpdateConfig?.({ goalValue });
+  updateGoal(goalValue: string) {
+    this.args.onUpdateConfig?.({ ...this.args.options, goalValue: Number(goalValue) });
   }
 }
