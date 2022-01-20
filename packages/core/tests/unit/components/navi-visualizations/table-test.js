@@ -421,6 +421,7 @@ module('Unit | Component | table', function (hooks) {
               source: 'bardOne',
             },
             { cid: 'cid_osId', type: 'dimension', field: 'os', parameters: { field: 'id' }, source: 'bardOne' },
+            { cid: 'cid_osIddesc', type: 'dimension', field: 'os', parameters: { field: 'desc' }, source: 'bardOne' },
             { type: 'metric', field: 'uniqueIdentifier', parameters: {}, source: 'bardOne' },
           ],
           sorts: [{ type: 'metric', field: 'uniqueIdentifier', parameters: {}, direction: 'asc', source: 'bardOne' }],
