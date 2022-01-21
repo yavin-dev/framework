@@ -845,6 +845,7 @@ input columnInput {
 }
 
 type dashboardFilter {
+  type: ColumnarType
   dimension: String
   field: String
   operator: String
@@ -852,6 +853,7 @@ type dashboardFilter {
 }
 
 input dashboardFilterInput {
+  type: ColumnarType
   dimension: String
   field: String
   operator: String

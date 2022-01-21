@@ -29,7 +29,14 @@ export default [
     deliveryRuleIds: [3],
     filters: [
       {
-        dimension: 'property',
+        type: 'timeDimension',
+        dimension: 'bardOne.network.dateTime',
+        operator: 'bet',
+        field: 'day',
+        values: ['P7D', 'current'],
+      },
+      {
+        dimension: 'bardOne.property',
         operator: 'contains',
         field: 'id',
         values: ['114', '100001'],
@@ -125,8 +132,15 @@ export default [
     updatedOn: '2016-01-01 03:00:00',
     deliveryRuleIds: [],
     filters: [
-      { dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
+      {
+        type: 'timeDimension',
+        dimension: 'bardOne.network.dateTime',
+        operator: 'bet',
+        field: 'day',
+        values: ['P7D', 'current'],
+      },
+      { type: 'dimension', dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
+      { type: 'dimension', dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
     ],
     presentation: {
       version: 1,

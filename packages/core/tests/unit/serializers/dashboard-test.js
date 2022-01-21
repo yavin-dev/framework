@@ -40,10 +40,10 @@ module('Unit | Serializer | dashboard', function (hooks) {
   });
 
   test('normalize', function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
-    let dashboard = {
-        id: '2',
+    const dashboard = {
+        id: '1',
         type: 'dashboard',
         attributes: {
           filters: null,
@@ -62,16 +62,29 @@ module('Unit | Serializer | dashboard', function (hooks) {
 
     assert.deepEqual(serializedRecord, expectedRecord, 'Null on filters property is set to empty array');
 
-    let dashboard2 = {
-        id: '3',
+    const dashboard2 = {
+        id: '2',
         type: 'dashboard',
         attributes: {
           filters: [
+            {
+              type: 'timeDimension',
+              dimension: 'bardOne.network.dateTime',
+              operator: 'bet',
+              field: 'day',
+              values: ['P1D', 'current'],
+            },
             {
               dimension: 'os',
               operator: 'notin',
               field: 'id',
               values: ['a', 'b'],
+            },
+            {
+              dimension: 'bardOne.property',
+              operator: 'contains',
+              field: 'id',
+              values: ['114', '100001'],
             },
           ],
           presentation: {
@@ -85,10 +98,18 @@ module('Unit | Serializer | dashboard', function (hooks) {
       serializedRecord2 = Serializer.normalize(DashboardClass, dashboard2),
       expectedRecord2 = {
         data: {
-          id: '3',
+          id: '2',
           type: 'dashboard',
           attributes: {
             filters: [
+              {
+                type: 'timeDimension',
+                field: 'network.dateTime',
+                parameters: { grain: 'day' },
+                operator: 'bet',
+                values: ['P1D', 'current'],
+                source: 'bardOne',
+              },
               {
                 type: 'dimension',
                 field: 'os',
@@ -97,6 +118,16 @@ module('Unit | Serializer | dashboard', function (hooks) {
                 },
                 operator: 'notin',
                 values: ['a', 'b'],
+                source: 'bardOne',
+              },
+              {
+                type: 'dimension',
+                field: 'property',
+                parameters: {
+                  field: 'id',
+                },
+                operator: 'contains',
+                values: ['114', '100001'],
                 source: 'bardOne',
               },
             ],
@@ -110,11 +141,72 @@ module('Unit | Serializer | dashboard', function (hooks) {
         },
       };
 
-    assert.deepEqual(
-      serializedRecord2,
-      expectedRecord2,
-      'No changes are made when filters is something other than null'
-    );
+    assert.deepEqual(serializedRecord2, expectedRecord2, 'Dashboard with filters is normalized correctly');
+
+    const dashboard3 = {
+        id: '3',
+        type: 'dashboard',
+        attributes: {
+          filters: [
+            {
+              type: 'timeDimension',
+              dimension: 'elide.namespace.table.dateTime',
+              operator: 'bet',
+              field: 'day',
+              values: ['P1D', 'current'],
+            },
+            {
+              dimension: 'elide.namespace.table.os',
+              operator: 'notin',
+              field: 'id',
+              values: ['a', 'b'],
+            },
+          ],
+          presentation: {
+            version: 1,
+            layout: [],
+          },
+          title: 'Filtered',
+        },
+        relationships: {},
+      },
+      serializedRecord3 = Serializer.normalize(DashboardClass, dashboard3),
+      expectedRecord3 = {
+        data: {
+          id: '3',
+          type: 'dashboard',
+          attributes: {
+            filters: [
+              {
+                type: 'timeDimension',
+                field: 'table.dateTime',
+                parameters: { grain: 'day' },
+                operator: 'bet',
+                values: ['P1D', 'current'],
+                source: 'elide.namespace',
+              },
+              {
+                type: 'dimension',
+                field: 'table.os',
+                parameters: {
+                  field: 'id',
+                },
+                operator: 'notin',
+                values: ['a', 'b'],
+                source: 'elide.namespace',
+              },
+            ],
+            presentation: {
+              version: 1,
+              layout: [],
+            },
+            title: 'Filtered',
+          },
+          relationships: {},
+        },
+      };
+
+    assert.deepEqual(serializedRecord3, expectedRecord3, 'Dashboard of source with namespace is normalized correctly');
   });
 
   test('serialize', async function (assert) {
@@ -125,21 +217,32 @@ module('Unit | Serializer | dashboard', function (hooks) {
     assert.equal(serialized.data.attributes.title, 'Multi Source Dashboard', 'Title got serialized correctly');
     assert.deepEqual(
       serialized.data.attributes.filters[0],
-      { dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
-      'bardOne filter serializes correctly with datasource'
+      {
+        type: 'timeDimension',
+        dimension: 'bardOne.network.dateTime',
+        operator: 'bet',
+        field: 'day',
+        values: ['P7D', 'current'],
+      },
+      'bardOne timeDimension filter serializes correctly with datasource'
     );
     assert.deepEqual(
       serialized.data.attributes.filters[1],
-      { dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
+      { type: 'dimension', dimension: 'bardOne.age', operator: 'in', field: 'id', values: [1, 2, 3] },
+      'bardOne dimension filter serializes correctly with datasource'
+    );
+    assert.deepEqual(
+      serialized.data.attributes.filters[2],
+      { type: 'dimension', dimension: 'bardTwo.container', operator: 'notin', field: 'id', values: [1] },
       'bardTwo filter serializes correctly with datasource'
     );
 
     // Test serializing a filter with no parameters
-    set(dashboard.filters.objectAt(0), 'parameters', {});
+    set(dashboard.filters.objectAt(1), 'parameters', {});
     const serialized2 = dashboard.serialize();
     assert.deepEqual(
-      serialized2.data.attributes.filters[0],
-      { dimension: 'bardOne.age', operator: 'in', field: undefined, values: [1, 2, 3] },
+      serialized2.data.attributes.filters[1],
+      { type: 'dimension', dimension: 'bardOne.age', operator: 'in', field: undefined, values: [1, 2, 3] },
       'bardOne filter serializes correctly with datasource'
     );
   });

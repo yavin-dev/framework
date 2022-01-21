@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <GridStackItem
   class="navi-widget"
   @options={{hash
@@ -14,10 +14,10 @@
     <div class="navi-widget__title">
       {{@model.title}}
       {{#if this.filterErrors}}
-        <DenaliIcon 
-          id="navi-widget__filter-errors-{{@index}}" 
-          @icon="warning" 
-          class="navi-widget__filter-errors-icon" 
+        <DenaliIcon
+          id="navi-widget__filter-errors-{{@index}}"
+          @icon="warning"
+          class="navi-widget__filter-errors-icon"
         />
         <EmberTooltip @targetId="navi-widget__filter-errors-{{@index}}" @popperContainer="body">
           {{this.filterErrors}}
@@ -39,10 +39,10 @@
           @deleteAction={{route-action "deleteWidget"}}
           as |showDeleteModal|
         >
-          <DenaliIcon 
-            id="navi-widget__delete-btn-{{@index}}" 
-            @size="small" 
-            @icon="trash" 
+          <DenaliIcon
+            id="navi-widget__delete-btn-{{@index}}"
+            @size="small"
+            @icon="trash"
             class="navi-widget__delete-btn link"
             {{on "click" showDeleteModal}}
           />
@@ -62,13 +62,18 @@
   {{!-- Error --}}
   {{#if @taskInstance.isError}}
     {{!-- TODO: Use Routes::ReportsReportError --}}
-    {{#if (is-forbidden @taskInstance.error)}}
-      <UnauthorizedTable />
-    {{else}}
-      <div class="navi-widget__content error-container">
-        There was an error with your request.
-      </div>
-    {{/if}}
+    {{#let @taskInstance.error as |error|}}
+      {{#if (is-forbidden error)}}
+        <UnauthorizedTable />
+      {{else}}
+        <div class="navi-widget__content error-container">
+          <div>There was an error with your request{{if (is-empty error.details) "." ":"}}</div>
+          {{#each error.details as |errorDetail|}}
+            <div>{{errorDetail}}</div>
+          {{/each}}
+        </div>
+      {{/if}}
+    {{/let}}
   {{/if}}
 
   {{!-- Success --}}

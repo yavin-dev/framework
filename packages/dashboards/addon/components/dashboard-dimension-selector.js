@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -78,8 +78,14 @@ export default class DashboardDimensionSelectorComponent extends Component {
     return Object.entries(dimensionMap).reduce((results, [table, dimensions]) => {
       let dataSource = getDefaultDataSourceName();
       if (table.includes('.')) {
-        [dataSource, ...table] = table.split('.');
-        table = table.join('.');
+        /**
+         * table might be:
+         * dataSource.table (fili/elide)
+         * dataSource.namespace.table (elide)
+         */
+        const split = table.split('.');
+        table = split.pop();
+        dataSource = split.join('.');
       }
 
       dimensions.forEach((dimension) => {
@@ -110,12 +116,11 @@ export default class DashboardDimensionSelectorComponent extends Component {
    */
   mergeWidgetDimensions(widgets) {
     return widgets.reduce((dimensionMap, widget) => {
-      // TODO: Consider including timeDimensions? This would potentially conflict with visualization manifests so skipping for now
-      const { id: tableKey, dimensions } = widget.requests?.firstObject?.tableMetadata || {};
+      const { id: tableKey, dimensions, timeDimensions } = widget.requests?.firstObject?.tableMetadata || {};
       const dataSource = widget?.requests?.firstObject?.dataSource;
       const key = `${dataSource}.${tableKey}`;
       if (!dimensionMap[key]) {
-        dimensionMap[key] = [...dimensions];
+        dimensionMap[key] = [...dimensions, ...timeDimensions];
       }
       return dimensionMap;
     }, {});

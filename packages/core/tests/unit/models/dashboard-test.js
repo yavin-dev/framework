@@ -28,6 +28,15 @@ module('Unit | Model | dashboard', function (hooks) {
           createdOn: '2016-02-01 00:00:00.000',
           filters: [
             {
+              type: 'timeDimension',
+              field: 'network.dateTime',
+              parameters: {
+                grain: 'day',
+              },
+              operator: 'bet',
+              values: ['P7D', 'current'],
+            },
+            {
               type: 'dimension',
               field: 'property',
               parameters: {
@@ -155,6 +164,15 @@ module('Unit | Model | dashboard', function (hooks) {
       assert.deepEqual(
         clonedFilterModel.filters,
         [
+          {
+            type: 'timeDimension',
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            operator: 'bet',
+            values: ['P7D', 'current'],
+          },
           {
             type: 'dimension',
             field: 'age',

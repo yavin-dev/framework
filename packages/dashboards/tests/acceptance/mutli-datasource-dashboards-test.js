@@ -12,7 +12,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupMirage(hooks);
 
   test('Load multi-datasource dashboard', async function (assert) {
-    assert.expect(10);
+    assert.expect(13);
     await visit('/dashboards/6/view');
 
     assert.dom('.navi-widget__header').exists({ count: 3 }, 'Three widgets loaded');
@@ -22,29 +22,44 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
 
     assert
       .dom('.filter-collection--collapsed')
-      .hasText('Age (id) equals 1 2 3 Container (id) not equals 1', 'Collapsed filter has the right text');
+      .containsText('Date Time (Day) in the past 7 days', 'Collapsed date dimension filter has the right text');
+
+    assert
+      .dom('.filter-collection--collapsed')
+      .containsText(
+        'Age (id) equals 1 2 3 Container (id) not equals 1',
+        'Collapsed dimension filters have the right text'
+      );
 
     await click('.dashboard-filters__toggle');
 
     assert
       .dom(findAll('.filter-builder__subject .name')[0])
-      .hasText('Age', 'Dimension 1 is properly labeled in filters');
+      .hasText('Date Time', 'Date Dimension is properly labeled in filters');
 
     assert
       .dom(findAll('.filter-builder__subject .chips')[0])
-      .hasText('id', 'Dimension 1 parameter is properly labeled in filters');
+      .hasText('Day', 'Date Dimension grain is properly labeled in filters');
 
     assert
       .dom(findAll('.filter-builder__subject .name')[1])
-      .hasText('Container', 'Dimension 2 is properly labeled in filters');
+      .hasText('Age', 'Dimension 1 is properly labeled in filters');
 
     assert
       .dom(findAll('.filter-builder__subject .chips')[1])
+      .hasText('id', 'Dimension 1 parameter is properly labeled in filters');
+
+    assert
+      .dom(findAll('.filter-builder__subject .name')[2])
+      .hasText('Container', 'Dimension 2 is properly labeled in filters');
+
+    assert
+      .dom(findAll('.filter-builder__subject .chips')[2])
       .hasText('id', 'Dimension 2 parameter is properly labeled in filters');
 
     assert.deepEqual(
       findAll('.filter-builder__operator-trigger').map((el) => el.textContent.trim()),
-      ['Equals', 'Not Equals'],
+      ['In The Past', 'Equals', 'Not Equals'],
       'Dimension filter operators are shown correctly'
     );
 
@@ -58,7 +73,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
   });
 
   test('Create new multisource dashboard', async function (assert) {
-    assert.expect(8);
+    assert.expect(10);
 
     await visit('/dashboards/new');
     await click('.dashboard-header__add-widget-btn');
@@ -114,5 +129,22 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
 
     await click('.navi-dashboard__save-button');
     assert.equal(currentURL(), '/dashboards/8/view', 'Dashboard saves without issue');
+
+    await click('.filter-collection__remove');
+    await click('.filter-collection__remove');
+
+    assert.deepEqual(
+      widgetsWithFilterWarning(),
+      [],
+      'Filters removed, no widget has a warning that filter does not apply'
+    );
+
+    //add date filter for first datasource
+    await selectChoose('.dashboard-dimension-selector', 'Date Time');
+    assert.deepEqual(
+      widgetsWithFilterWarning(),
+      ['Untitled Widget'],
+      'Widget with bardTwo datasource has a warning that filter does not apply'
+    );
   });
 });

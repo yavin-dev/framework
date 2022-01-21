@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: The fact adapter for the bard request v2 model.
@@ -245,15 +245,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       );
     }
     const timeFilter = dateTimeFilters[0];
-    const filterGrain = timeFilter?.parameters?.grain as Grain;
-
     const timeColumn = request.columns.filter(isDateTime)[0];
     const columnGrain: GrainWithAll = (timeColumn?.parameters?.grain as Grain | undefined) ?? 'all';
-    if (timeColumn && columnGrain !== 'all' && columnGrain !== filterGrain) {
-      throw new FactAdapterError(
-        `The requested filter timeGrain '${filterGrain}', must match the column timeGrain '${columnGrain}'`
-      );
-    }
     const filterValues = buildTimeDimensionFilterValues(timeFilter, request.dataSource, true, true, columnGrain);
     if (timeFilter.operator === 'intervals') {
       return filterValues.join(',');

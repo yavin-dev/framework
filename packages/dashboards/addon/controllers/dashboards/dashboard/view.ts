@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
@@ -13,6 +13,10 @@ import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type { Filter } from 'navi-data/adapters/facts/interface';
+import {
+  findDefaultOperator,
+  getDefaultValuesForTimeFilter,
+} from 'navi-reports/components/filter-builders/time-dimension';
 
 export type URLFilter = Filter & { source: string };
 export type InitialFilter = Pick<URLFilter, 'type' | 'field' | 'source'>;
@@ -74,16 +78,26 @@ export default class DashboardsDashboardViewController extends Controller.extend
   async addFilter(dashboard: DashboardModel, filter: InitialFilter) {
     const filters = dashboardURLFilters(dashboard);
     const dimensionMeta = this.metadataService.getById(filter.type, filter.field, filter.source);
+    const defaultOperator = findDefaultOperator(dimensionMeta?.valueType ?? '');
+    const defaultParams = dimensionMeta?.getDefaultParameters() || {};
     const newFilter: URLFilter = {
       type: filter.type,
       field: filter.field,
-      parameters: dimensionMeta?.getDefaultParameters() ?? {},
-      operator: 'in',
+      parameters: defaultParams,
+      operator: defaultOperator,
       values: [],
       source: filter.source,
     };
 
-    filters.push(newFilter);
+    let values;
+    if (dimensionMeta?.metadataType === 'timeDimension' && defaultOperator === 'bet') {
+      values = getDefaultValuesForTimeFilter(newFilter);
+    }
+
+    filters.push({
+      ...newFilter,
+      ...(values ? { values } : {}),
+    });
 
     const filterQueryParams = await this.compression.compress({ filters });
 
