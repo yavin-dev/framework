@@ -2,6 +2,7 @@ package com.yahoo.navi.ws.test.integration
 
 import com.jayway.restassured.RestAssured.given
 import com.yahoo.elide.test.jsonapi.JsonApiDSL.* // ktlint-disable no-wildcard-imports
+import com.yahoo.navi.ws.models.beans.enums.Delivery
 import com.yahoo.navi.ws.models.beans.enums.DeliveryType
 import com.yahoo.navi.ws.models.beans.fragments.DeliveryFormat
 import com.yahoo.navi.ws.models.beans.fragments.FormatOptions
@@ -21,6 +22,7 @@ class DeliveryRulesTest : IntegrationTest() {
     private val USER1 = "user1"
     private val USER2 = "user2"
     private val format: DeliveryFormat = DeliveryFormat(DeliveryType.csv)
+    private val delivery: Delivery = Delivery.email
     private val schedulingRules: SchedulingRules = SchedulingRules(false)
 
     @BeforeEach
@@ -95,6 +97,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr(
                                 "recipients",
                                 arrayOf("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev")
@@ -123,6 +126,7 @@ class DeliveryRulesTest : IntegrationTest() {
             .assertThat()
             .body(
                 "data.id", equalTo("1"),
+                "data.attributes.delivery", equalTo("email"),
                 "data.attributes.deliveryType", equalTo("report"),
                 "data.attributes.frequency", equalTo("week"),
                 "data.attributes.format.type", equalTo("csv"),
@@ -146,6 +150,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "day"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -173,6 +178,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "day"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -233,6 +239,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("lastDeliveredOn", "2018-12-03 00:00:00"),
                             attr("version", "1")
@@ -263,6 +270,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -290,6 +298,26 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "quarter"),
                             attr("schedulingRules", SchedulingRules(true))
+                        )
+                    )
+                )
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("delivery", "none"),
                         )
                     )
                 )
@@ -334,6 +362,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "moon"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -361,6 +390,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf<String>()),
                             attr("version", "1")
                         ),
@@ -388,6 +418,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("version", "1")
                         ),
                         relationships(
@@ -414,8 +445,37 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("user1@yavin.dev", "uasdf")),
                             attr("version", "1")
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id("1"))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_BAD_REQUEST)
+
+        // cannot have null delivery
+        given()
+            .header("User", USER1)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("delivery", null),
+                            attr("frequency", "week"),
+                            attr("version", "1"),
+                            attr("recipients", arrayOf("user1@yavin.dev")),
+                            attr("format", format)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -444,6 +504,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "day"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -470,6 +531,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "day"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -536,6 +598,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "day"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -595,6 +658,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1")
                         ),
@@ -686,6 +750,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev")),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules)
@@ -789,6 +854,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", format),
+                            attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev")),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules)
@@ -854,6 +920,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         attributes(
                             attr("frequency", "week"),
                             attr("format", formatWithOptions),
+                            attr("delivery", "email"),
                             attr(
                                 "recipients",
                                 arrayOf("email1@yavin.dev", "email2@yavin.dev", "email3@yavin.dev")

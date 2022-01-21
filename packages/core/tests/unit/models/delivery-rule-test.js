@@ -10,6 +10,7 @@ const ExpectedDeliveryRule = {
   updatedOn: '2017-01-01 00:00:00.000',
   owner: 'navi_user',
   deliveredItem: '3',
+  delivery: 'email',
   deliveryType: 'report',
   frequency: 'week',
   schedulingRules: {
@@ -72,7 +73,7 @@ module('Unit | Model | delivery rule', function (hooks) {
   });
 
   test('Validations', async function (assert) {
-    assert.expect(14);
+    assert.expect(17);
 
     await run(async () => {
       const deliveryRule = await Store.findRecord('deliveryRule', 1);
@@ -110,6 +111,34 @@ module('Unit | Model | delivery rule', function (hooks) {
       assert.notOk(v5.validations.get('isValid'), 'deliveryRule is invalid');
       assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
       assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
+
+      //setting frequency to null
+      deliveryRule.set('delivery', null);
+      const v6 = await deliveryRule.validate();
+      assert.notOk(v6.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v6.validations.get('messages').length, 4, 'Four Fields are invalid in the deliveryRule model');
+      assert.notOk(v6.model.get('validations.attrs.delivery.isValid'), 'Delivery option must have a value');
+    });
+  });
+
+  test('No Delivery Validations', async function (assert) {
+    assert.expect(4);
+
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      await deliveryRule.get('deliveredItem');
+      const v1 = await deliveryRule.validate();
+
+      assert.ok(v1.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v1.validations.get('messages').length, 0, 'There are no validation errors');
+
+      deliveryRule.set('delivery', 'none');
+      deliveryRule.set('recipients', []);
+      deliveryRule.set('format', null);
+
+      const v2 = await deliveryRule.validate();
+      assert.ok(v2.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v2.validations.get('messages').length, 0, 'There are no validation errors');
     });
   });
 

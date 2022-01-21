@@ -15,6 +15,7 @@ export default [
       type: 'report',
       id: 3,
     },
+    delivery: 'email',
     deliveryType: 'report',
     frequency: 'week',
     schedulingRules: {
@@ -36,6 +37,7 @@ export default [
       type: 'report',
       id: 4,
     },
+    delivery: 'email',
     deliveryType: 'report',
     frequency: 'month',
     schedulingRules: {
@@ -57,6 +59,7 @@ export default [
       type: 'dashboard',
       id: 2,
     },
+    delivery: 'email',
     deliveryType: 'dashboard',
     frequency: 'week',
     schedulingRules: {},
@@ -77,6 +80,7 @@ export default [
     },
     deliveryType: 'dashboard',
     frequency: 'week',
+    delivery: 'email',
     schedulingRules: {},
     format: {
       type: 'gsheet',
@@ -94,6 +98,7 @@ export default [
       id: 2,
     },
     deliveryType: 'report',
+    delivery: 'email',
     frequency: 'week',
     schedulingRules: {},
     format: {

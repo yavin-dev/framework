@@ -28,6 +28,7 @@ module.exports = function (environment) {
         enableDashboardExport: true,
         exportFileTypes: ['csv'],
         enableScheduleDashboards: true,
+        enableScheduleReports: true,
         enableDashboardFilters: true,
       },
     },
@@ -46,9 +47,7 @@ module.exports = function (environment) {
 
   if (environment === 'development') {
     ENV['ember-cli-mirage'] = {
-      enabled: !(
-        process.env.DISABLE_MOCKS || process.env.APP_ENV === 'localElide'
-      ),
+      enabled: !(process.env.DISABLE_MOCKS || process.env.APP_ENV === 'localElide'),
     };
     /*
      * ENV.APP.LOG_RESOLVER = true;

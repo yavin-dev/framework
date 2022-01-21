@@ -59,21 +59,60 @@
           Close
         </DenaliButton>
       {{else}}
-        <DenaliInputGroup
-          @label="Recipients"
-          @isStacked={{true}}
-          class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
-        >
-          <NaviEmailInput
-            class="schedule__modal-input--recipients w-full"
-            @emails={{readonly this.localDeliveryRule.recipients}}
-            @onUpdateEmails={{this.updateRecipients}}
-            @isDisabled={{is-rejected this.deliveryRule}}
-          />
-          <div class="schedule__modal-helper-recipients">
-            Please enter valid email addresses separated by commas.
+        <DenaliInputGroup @label="Delivery" @isStacked={{true}}>
+          <PowerSelect
+            class="w-full"
+            @triggerClass="schedule__modal-delivery-trigger w-full"
+            @dropdownClass="w-full"
+            @options={{this.deliveryOptions}}
+            @selected={{this.localDeliveryRule.delivery}}
+            @renderInPlace={{true}}
+            @onChange={{fn (mut this.localDeliveryRule.delivery)}}
+            as | delivery |
+          >
+            {{capitalize delivery}}
+          </PowerSelect>
+          <div class="schedule__modal-helper-delivery m-b-30">
+            {{#if (eq this.localDeliveryRule.delivery "email")}}
+              Send this  {{this.modelType}} in an email on a recurring basis
+            {{else}}
+              Schedule and cache this {{this.modelType}} without delivery
+            {{/if}}
           </div>
         </DenaliInputGroup>
+        {{#if (eq this.localDeliveryRule.delivery "email")}}
+          <DenaliInputGroup
+            @label="Recipients"
+            @isStacked={{true}}
+            class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
+          >
+            <NaviEmailInput
+              class="schedule__modal-input--recipients w-full"
+              @emails={{readonly this.localDeliveryRule.recipients}}
+              @onUpdateEmails={{this.updateRecipients}}
+              @isDisabled={{is-rejected this.deliveryRule}}
+            />
+            <div class="schedule__modal-helper-recipients">
+              Please enter valid email addresses separated by commas.
+            </div>
+          </DenaliInputGroup>
+          <DenaliInputGroup @label="Format" class="m-b-30">
+            <PowerSelect
+              class="w-full"
+              @triggerClass="schedule__modal-format-trigger w-full"
+              @dropdownClass="w-full"
+              @disabled={{lt this.formats.length 2}}
+              @options={{this.formats}}
+              @selected={{this.localDeliveryRule.format.type}}
+              @searchEnabled={{false}}
+              @onChange={{this.updateFormat}}
+              @renderInPlace={{true}}
+              as | format |
+            >
+              {{format}}
+            </PowerSelect>
+          </DenaliInputGroup>
+        {{/if}}
         <DenaliInputGroup @label="Frequency" class="m-b-30">
           <PowerSelect
             class="w-full"
@@ -90,23 +129,7 @@
             {{capitalize frequency}}
           </PowerSelect>
         </DenaliInputGroup>
-        <DenaliInputGroup @label="Format" class="m-b-30">
-          <PowerSelect
-            class="w-full"
-            @triggerClass="schedule__modal-format-trigger w-full"
-            @dropdownClass="w-full"
-            @disabled={{lt this.formats.length 2}}
-            @options={{this.formats}}
-            @selected={{this.localDeliveryRule.format.type}}
-            @searchEnabled={{false}}
-            @onChange={{this.updateFormat}}
-            @renderInPlace={{true}}
-            as | format |
-          >
-            {{format}}
-          </PowerSelect>
-        </DenaliInputGroup>
-        {{#if (feature-flag "enabledNotifyIfData")}}
+        {{#if (and (feature-flag "enabledNotifyIfData") (eq this.localDeliveryRule.delivery "email"))}}
           <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
             <DenaliSwitch
               class="schedule__modal-must-have-data-toggle"

@@ -10,6 +10,18 @@ const DeliveryRule = {
   frequency: 'Week',
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
+  delivery: 'email',
+};
+const NoDelivery = {
+  frequency: 'Week',
+  delivery: 'none',
+  format: { type: 'csv' },
+  recipients: ['test@oath.com', 'rule@oath.com'],
+};
+const NoDeliveryModel = {
+  constructor: { modelName: 'report' },
+  title: 'Test Test',
+  deliveryRuleForUser: Promise.resolve(NoDelivery),
 };
 const TestModel = {
   constructor: { modelName: 'report' },
@@ -88,7 +100,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Recipients', 'Frequency', 'Format', 'Only send if data is present', ''],
+      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
       'Schedule Modal has all the expected sections'
     );
 
@@ -446,7 +458,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Recipients', 'Frequency', 'Format', 'Only send if data is present', ''],
+      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
       'Schedule Modal has all the expected sections'
     );
 
@@ -504,5 +516,44 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
 
     assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
+  });
+
+  test('Change to no delivery', async function (assert) {
+    assert.expect(2);
+
+    this.set('model', DeliveryRule);
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
+      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      'Schedule Modal has all the expected sections'
+    );
+
+    await click('.schedule__modal-delivery-trigger');
+    await nativeMouseUp($('.ember-power-select-option:contains(None)')[0]);
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
+      ['Delivery', 'Frequency'],
+      'Schedule Modal has all the expected sections'
+    );
+  });
+
+  test('No Delivery Schedule', async function (assert) {
+    assert.expect(1);
+
+    this.set('model', NoDeliveryModel);
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
+      ['Delivery', 'Frequency'],
+      'Schedule Modal has all the expected sections'
+    );
   });
 });
