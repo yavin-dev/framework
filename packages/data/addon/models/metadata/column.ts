@@ -105,7 +105,7 @@ export default class ColumnMetadataModel extends NativeWithCreate {
 
   declare partialData: boolean;
 
-  declare columnFunctionId: string;
+  declare columnFunctionId?: string;
 
   /**
    * allows parameters to be applied to this column

@@ -8,12 +8,13 @@
     {{/each}}
   {{/if}}
 {{else}}
-  <div class="is-medium">
+  <div class="is-medium flex-1">
     <PowerSelectMultiple
       @searchEnabled={{true}}
       @onOpen={{this.fetchDimensionOptions}}
       @options={{this.options}}
       @selected={{this.selectedDimensions}}
+      @extra={{hash filter=@filter bulkImport=this.bulkImport}}
       @triggerComponent="power-select-bulk-import-trigger"
       @optionsComponent="power-select-collection-options"
       @onChange={{this.setValues}}
@@ -24,6 +25,7 @@
       @loadingMessage="Loading..."
       @dropdownClass="filter-values--dimension-select__dropdown"
       @triggerClass="is-medium filter-values--dimension-select__trigger {{if @filter.validations.attrs.values.isInvalid "filter-values--dimension-select--error"}}"
+      ...attributes
       as |dim|>
         <div class="filter-values--dimension-select__option">
           <div class="filter-values--dimension-select__option-value" title={{dim.model.displayValue}}>

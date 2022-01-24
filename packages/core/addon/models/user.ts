@@ -2,32 +2,33 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Model, { hasMany } from '@ember-data/model';
+import Model, { hasMany, AsyncHasMany } from '@ember-data/model';
 import ReportModel from './report';
 import DeliveryRuleModel from './delivery-rule';
 import DashboardModel from './dashboard';
 import Role from './role';
-// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
-import DS from 'ember-data';
 
 export default class UserModel extends Model {
   @hasMany('report', { async: true, inverse: 'owner' })
-  reports!: DS.PromiseManyArray<ReportModel>;
+  declare reports: AsyncHasMany<ReportModel>;
 
   @hasMany('report', { async: true, inverse: null })
-  favoriteReports!: DS.PromiseManyArray<ReportModel>;
+  declare favoriteReports: AsyncHasMany<ReportModel>;
 
   @hasMany('delivery-rule', { async: true, inverse: 'owner' })
-  deliveryRules!: DS.PromiseManyArray<DeliveryRuleModel>;
+  declare deliveryRules: AsyncHasMany<DeliveryRuleModel>;
 
   @hasMany('dashboard', { async: true, inverse: 'owner' })
-  dashboards!: DS.PromiseManyArray<DashboardModel>;
+  declare dashboards: AsyncHasMany<DashboardModel>;
+
+  @hasMany('dashboard', { async: true, inverse: 'editors' })
+  declare editingDashboards: AsyncHasMany<DashboardModel>;
 
   @hasMany('dashboard', { async: true, inverse: null })
-  favoriteDashboards!: DS.PromiseManyArray<DashboardModel>;
+  declare favoriteDashboards: AsyncHasMany<DashboardModel>;
 
   @hasMany('role', { async: true })
-  roles!: DS.PromiseManyArray<Role>;
+  declare roles: AsyncHasMany<Role>;
 }
 
 // DO NOT DELETE: this is how TypeScript knows how to look up your models.

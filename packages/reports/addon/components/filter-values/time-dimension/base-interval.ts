@@ -18,7 +18,11 @@ export default class BaseIntervalComponent extends BaseTimeDimensionFilter {
     const { values } = this.args.filter;
     let [start, end] = values || [];
     if (start && end) {
-      return Interval.parseInclusive(start, end, this.grain);
+      try {
+        return Interval.parseInclusive(start, end, this.grain);
+      } catch (e) {
+        // invalid interval
+      }
     }
     return undefined;
   }

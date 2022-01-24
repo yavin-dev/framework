@@ -96,10 +96,10 @@ module('Acceptance | Dashboards', function (hooks) {
     await visit('/dashboards/4');
 
     //trigger a change
-    const singlegrid = find('.grid-stack').gridstack;
+    const { gridstack } = find('.grid-stack');
     const item = findAll('.grid-stack-item')[0];
     run(() => {
-      singlegrid.resize(item, 12, 4);
+      gridstack.resize(item, 12, 4);
     });
 
     assert
@@ -592,7 +592,7 @@ module('Acceptance | Dashboards', function (hooks) {
       .hasText('A new title', 'New Dashboard title is persisted with value `A new title` ');
 
     //Not Editor
-    await visit('/dashboards/3');
+    await visit('/dashboards/4');
     assert.dom('.editable-label__icon').isNotVisible('Edit icon is not available if user is not the editor');
   });
 

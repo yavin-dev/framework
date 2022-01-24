@@ -1,3 +1,7 @@
+/**
+ * Copyright 2022, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Model, { attr, belongsTo } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
@@ -9,6 +13,7 @@ import DeliverableItemModel from './deliverable-item';
 import { Moment } from 'moment';
 // eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
+import { computed } from '@ember/object';
 
 const Validations = buildValidations({
   frequency: [
@@ -21,12 +26,20 @@ const Validations = buildValidations({
     validator('presence', {
       presence: true,
       message: 'Please select a delivery format',
+      disabled: computed.equal('model.delivery', 'none'),
     }),
   ],
   recipients: [
     validator('recipients', {
       noRecipientsMsg: 'There must be at least one recipient',
       invalidEmailMsg: 'Not all recipients are valid email addresses',
+      disabled: computed.equal('model.delivery', 'none'),
+    }),
+  ],
+  delivery: [
+    validator('presence', {
+      presence: true,
+      message: 'Please select a delivery option',
     }),
   ],
 });
@@ -48,14 +61,17 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @fragment('fragments/scheduling-rules', { defaultValue: () => ({ mustHaveData: false }) })
   schedulingRules!: SchedulingRuleFragment;
 
-  @fragment('fragments/delivery-format')
+  @fragment('fragments/delivery-format', { polymorphic: true })
   format!: DeliveryFormatFragment;
 
   @attr({ defaultValue: () => [] })
-  recipients!: string[];
+  recipients?: string[];
 
   @attr('number', { defaultValue: 1 })
   version!: number;
+
+  @attr('string', { defaultValue: 'email' })
+  delivery!: string;
 
   @belongsTo('deliverable-item', { async: true, inverse: 'deliveryRules', polymorphic: true })
   deliveredItem!: DS.PromiseObject<DeliverableItemModel>;

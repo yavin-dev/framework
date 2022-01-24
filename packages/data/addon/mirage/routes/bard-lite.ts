@@ -37,7 +37,7 @@ const HAVING_OPS = {
   eq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) === parseFloat(values[0]),
   neq: (values: string[], metricValue: number) => parseFloat(`${metricValue}`) !== parseFloat(values[0]),
   bet: (values: string[], metricValue: number) =>
-    parseFloat(values[0]) < parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) < parseFloat(values[1]),
+    parseFloat(values[0]) <= parseFloat(`${metricValue}`) && parseFloat(`${metricValue}`) <= parseFloat(values[1]),
   nbet: (values: string[], metricValue: number) => !HAVING_OPS.bet(values, metricValue),
 };
 const DIMENSION_OPS = {
@@ -51,10 +51,15 @@ const DIMENSION_OPS = {
   notin: (filterValues: string[], value: DimensionRow, field: string) => !DIMENSION_OPS.in(filterValues, value, field),
   contains: (filterValues: string[], value: DimensionRow, field: string) =>
     filterValues.some((v) => value[field]?.includes(v)),
-  // TODO: fili date dimension support
-  lte: () => true,
-  gte: () => true,
-  bet: () => true,
+  gt: (filterValues: string[], value: DimensionRow, field: string) => value[field]! > filterValues[0],
+  gte: (filterValues: string[], value: DimensionRow, field: string) => value[field]! >= filterValues[0],
+  lt: (filterValues: string[], value: DimensionRow, field: string) => value[field]! < filterValues[0],
+  lte: (filterValues: string[], value: DimensionRow, field: string) => value[field]! <= filterValues[0],
+  eq: (filterValues: string[], value: DimensionRow, field: string) => value[field]! === filterValues[0],
+  neq: (filterValues: string[], value: DimensionRow, field: string) => value[field]! !== filterValues[0],
+  bet: (filterValues: string[], value: DimensionRow, field: string) =>
+    filterValues[0] <= value[field]! && value[field]! <= filterValues[1],
+  nbet: (filterValues: string[], value: DimensionRow, field: string) => !DIMENSION_OPS.bet(filterValues, value, field),
 };
 
 type ResponseRow = Record<string, unknown>;

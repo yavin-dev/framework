@@ -9,7 +9,7 @@ import type Store from '@ember-data/store';
 import type ColumnFragment from '../models/request/column';
 import type FilterFragment from '../models/request/filter';
 import type SortFragment from '../models/request/sort';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
 
 export default class FragmentFactory extends Service {
   @service
@@ -23,7 +23,7 @@ export default class FragmentFactory extends Service {
    */
   createColumnFromMeta(
     columnMetadata: ColumnMetadataModel,
-    parameters: Record<string, string> = {},
+    parameters: Parameters = {},
     alias?: string
   ): ColumnFragment {
     const { id: field, metadataType: type, source } = columnMetadata;
@@ -42,7 +42,7 @@ export default class FragmentFactory extends Service {
     type: ColumnType,
     dataSource: string,
     field: string,
-    parameters: Record<string, string> = {},
+    parameters: Parameters = {},
     alias?: string
   ): ColumnFragment {
     return this.store.createFragment('request/column', {
@@ -125,7 +125,7 @@ export default class FragmentFactory extends Service {
     type: ColumnType,
     dataSource: string,
     field: string,
-    parameters: Record<string, string> = {},
+    parameters: Parameters = {},
     direction: SortDirection
   ): SortFragment {
     return this.store.createFragment('request/sort', {

@@ -10,6 +10,7 @@ const ExpectedDeliveryRule = {
   updatedOn: '2017-01-01 00:00:00.000',
   owner: 'navi_user',
   deliveredItem: '3',
+  delivery: 'email',
   deliveryType: 'report',
   frequency: 'week',
   schedulingRules: {
@@ -17,6 +18,7 @@ const ExpectedDeliveryRule = {
   },
   format: {
     type: 'csv',
+    options: {},
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
   version: 1,
@@ -71,7 +73,7 @@ module('Unit | Model | delivery rule', function (hooks) {
   });
 
   test('Validations', async function (assert) {
-    assert.expect(14);
+    assert.expect(17);
 
     await run(async () => {
       const deliveryRule = await Store.findRecord('deliveryRule', 1);
@@ -109,6 +111,64 @@ module('Unit | Model | delivery rule', function (hooks) {
       assert.notOk(v5.validations.get('isValid'), 'deliveryRule is invalid');
       assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
       assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
+
+      //setting frequency to null
+      deliveryRule.set('delivery', null);
+      const v6 = await deliveryRule.validate();
+      assert.notOk(v6.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v6.validations.get('messages').length, 4, 'Four Fields are invalid in the deliveryRule model');
+      assert.notOk(v6.model.get('validations.attrs.delivery.isValid'), 'Delivery option must have a value');
+    });
+  });
+
+  test('No Delivery Validations', async function (assert) {
+    assert.expect(4);
+
+    await run(async () => {
+      const deliveryRule = await Store.findRecord('deliveryRule', 1);
+      await deliveryRule.get('deliveredItem');
+      const v1 = await deliveryRule.validate();
+
+      assert.ok(v1.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v1.validations.get('messages').length, 0, 'There are no validation errors');
+
+      deliveryRule.set('delivery', 'none');
+      deliveryRule.set('recipients', []);
+      deliveryRule.set('format', null);
+
+      const v2 = await deliveryRule.validate();
+      assert.ok(v2.validations.get('isValid'), 'deliveryRule is valid');
+      assert.equal(v2.validations.get('messages').length, 0, 'There are no validation errors');
+    });
+  });
+
+  test('Format options', async function (assert) {
+    const deliveryRule = await Store.findRecord('deliveryRule', 1);
+    deliveryRule.format.type = 'gsheet';
+    deliveryRule.format.options.overwriteFile = true;
+    assert.deepEqual(deliveryRule.toJSON().format, {
+      type: 'gsheet',
+      options: {
+        overwriteFile: true,
+      },
+    });
+  });
+
+  test('Retrieving gsheet records', async function (assert) {
+    assert.expect(6);
+
+    await run(async () => {
+      const deliveryRuleNoOptions = await Store.findRecord('deliveryRule', 4);
+      assert.ok(deliveryRuleNoOptions, 'Found deliveryRule with id 4');
+
+      const deliveryRuleWOptions = await Store.findRecord('deliveryRule', 5);
+      assert.ok(deliveryRuleWOptions, 'Found deliveryRule with id 4');
+
+      assert.equal(deliveryRuleNoOptions.format.type, 'gsheet', 'Gets the right format type');
+      assert.equal(deliveryRuleWOptions.format.type, 'gsheet', 'Gets the right format type');
+
+      assert.notOk(deliveryRuleNoOptions.format.options.overwriteFile, 'overwrite file default to false');
+      assert.ok(deliveryRuleWOptions.format.options.overwriteFile, 'overwrite file is set when it is correctly set');
     });
   });
 });

@@ -10,6 +10,7 @@ import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
 import com.yahoo.elide.annotation.UpdatePermission
+import com.yahoo.navi.ws.models.beans.enums.Delivery
 import com.yahoo.navi.ws.models.beans.enums.DeliveryFrequency
 import com.yahoo.navi.ws.models.beans.fragments.DeliveryFormat
 import com.yahoo.navi.ws.models.beans.fragments.SchedulingRules
@@ -83,6 +84,9 @@ class DeliveryRule : HasOwner {
         ]
     )
     var format: DeliveryFormat? = null
+
+    @NotNull
+    var delivery: Delivery? = null
 
     @Column(name = "scheduling_rules", columnDefinition = "MEDIUMTEXT")
     @Type(

@@ -3,7 +3,9 @@
   {{#if @icon}}
     <DenaliIcon @icon={{@icon}} @size="medium" class="navi-info-message__icon {{@iconClass}}"/>
   {{/if}}
-  <h3 class="navi-info-message__title m-b-10">{{@title}}</h3>
+  {{#if @title}}
+    <h3 class="navi-info-message__title m-b-10">{{@title}}</h3>
+  {{/if}}
   {{yield}}
   {{#if (has-block 'tech-details')}}
     <div class="navi-info-message__tech-details w-full">

@@ -6,17 +6,28 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
-import FunctionParameter, { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
+import { assert } from '@ember/debug';
+import { parseParameterValue } from 'navi-data/utils/metric';
+import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
+import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import type { ParameterValue } from 'navi-data/addon/adapters/facts/interface';
+import type { Dropdown } from 'ember-basic-dropdown/addon/components/basic-dropdown';
 
 interface Args {
   parameterMetadata: FunctionParameter;
-  parameterValue: unknown;
-  onUpdate: (key: string, value: unknown) => void;
+  parameterValue: ParameterValue;
+  onUpdate: (key: string, value: ParameterValue) => void;
 }
 
 export default class ParameterPickerComponent extends Component<Args> {
   @tracked
-  options: { groupName: string; options: ColumnFunctionParametersValues | undefined }[] = [];
+  options: { groupName: string; options: PotentialParameterValue[] }[] = [];
+
+  get selected() {
+    return this.args.parameterMetadata?.values?.then(
+      (v) => v.find((value) => value.id === this.args.parameterValue)?.name ?? this.args.parameterValue
+    );
+  }
 
   @action
   async fetchParameterOptions() {
@@ -30,13 +41,24 @@ export default class ParameterPickerComponent extends Component<Args> {
   }
 
   @action
-  onUpdate(selected: any) {
-    this.args.onUpdate(this.args.parameterMetadata.id, selected.id);
+  onKeyDown(dropdown: Dropdown, e: KeyboardEvent) {
+    if (e.key === 'Enter') {
+      dropdown.actions.close();
+    }
   }
 
-  get selected() {
-    return this.args.parameterMetadata?.values?.then((parameters) => {
-      return parameters.find((value) => value.id === this.args.parameterValue)?.name ?? this.args.parameterValue;
-    });
+  @action
+  onInputClose(dropdown: Dropdown) {
+    const { uniqueId } = dropdown;
+    const inputEl = document.querySelector(`#dropdown-parameter-picker-input-${uniqueId}`) as HTMLInputElement;
+    assert('Unable to find input element', inputEl);
+    const inputValue = inputEl.value;
+    this.onUpdate({ id: inputValue, name: inputValue });
+  }
+
+  @action
+  onUpdate({ id: rawParamValue }: PotentialParameterValue) {
+    const value = parseParameterValue(this.args.parameterMetadata, rawParamValue);
+    this.args.onUpdate(this.args.parameterMetadata.id, value);
   }
 }

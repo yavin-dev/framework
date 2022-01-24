@@ -269,7 +269,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     //change parameter
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
     await animationsSettled();
     assert.deepEqual(
       findAll('.navi-column-config-item').map((el) => el.classList.contains('navi-column-config-item--open')),
@@ -277,7 +277,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'The first parameterized metric is still open after parameter change'
     );
 
-    //remove the first parameterizde metric
+    //remove the first parameterized metric
     await click(findAll('.navi-column-config-item__remove-icon')[3]);
     assert
       .dom('.navi-column-config-item--open')
@@ -294,7 +294,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await clickItem('dimension', 'Age');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Dimension Field Type'],
+      ['Dimension Field'],
       'The sort direction is not listed'
     );
     await click('.navi-column-config-base__sort-icon');
@@ -306,21 +306,21 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       );
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Dimension Field Type'],
+      ['Dimension Field'],
       'The sort direction is still not listed'
     );
 
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Sort Direction', 'Time Grain Type'],
+      ['Sort Direction', 'Time Grain'],
       'A sort direction is applied and becomes the first parameter'
     );
 
@@ -345,7 +345,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await selectChoose('.navi-column-config-item__parameter-trigger', 'None');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
     assert
@@ -360,21 +360,21 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     await clickItem('dimension', 'Date Time');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is not listed'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Sort Direction', 'Time Grain Type'],
+      ['Sort Direction', 'Time Grain'],
       'A sort direction is applied and becomes the first parameter'
     );
 
     await click('.navi-column-config-base__sort-icon');
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent?.trim()),
-      ['Time Grain Type'],
+      ['Time Grain'],
       'The sort direction is toggled off when clicking the icon again'
     );
   });
@@ -752,7 +752,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
     );
 
     await click('.navi-column-config-item__name[title="Platform Revenue (USD)"]'); // open first Platform Revenue (USD) config
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
 
     assert.deepEqual(
       getColumns(),
@@ -775,7 +775,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       'The initial parameterized metrics were added'
     );
 
-    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD (Dollars)');
+    await selectChoose('.navi-column-config-item__parameter-trigger', 'CAD');
 
     assert.deepEqual(
       getColumns(),
@@ -1320,13 +1320,13 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
       14,
       'All options are shown initially'
     );
-    await fillIn('.ember-power-select-search-input', 'Dollars');
+    await fillIn('.ember-power-select-search-input', 'D');
     assert.deepEqual(
       findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
-      ['AUD (Dollars)', 'CAD (Dollars)', 'USD (Dollars)'],
+      ['AED', 'AMD', 'AUD', 'CAD', 'USD'],
       'After searching only the filtered metric is shown'
     );
-    await click(findAll('.ember-power-select-option')[1]);
+    await click(findAll('.ember-power-select-option')[3]);
 
     assert.deepEqual(
       getColumns(),

@@ -328,15 +328,15 @@ module('Unit | Utils | Interval Class', function () {
     assert.equal(strings.start, start.toISOString(), 'Moments are formatted for API');
   });
 
-  test('_stringFromProperty', function (assert) {
+  test('elementToString', function (assert) {
     assert.expect(3);
 
-    assert.equal(Interval['_stringFromProperty'](new Duration('P7D')), 'P7D', 'Duration is converted to iso string');
+    assert.equal(Interval.elementToString(new Duration('P7D')), 'P7D', 'Duration is converted to iso string');
 
-    assert.equal(Interval['_stringFromProperty']('current'), 'current', 'Macro keeps original value');
+    assert.equal(Interval.elementToString('current'), 'current', 'Macro keeps original value');
 
     let start = moment('2014-10-10', FORMAT);
-    assert.equal(Interval['_stringFromProperty'](start), start.toISOString(), 'Moments are formatted for API');
+    assert.equal(Interval.elementToString(start), start.toISOString(), 'Moments are formatted for API');
   });
 
   test('fromString', function (assert) {

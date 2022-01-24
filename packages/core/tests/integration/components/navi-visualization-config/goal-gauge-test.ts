@@ -6,7 +6,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import NaviVisualizationConfigGoalGaugeComponent from 'navi-core/components/navi-visualization-config/goal-gauge';
 
-const Template = hbs`
+const TEMPLATE = hbs`
   <NaviVisualizationConfig::GoalGauge
     @response={{this.response}}
     @request={{this.request}}
@@ -51,7 +51,7 @@ module('Integration | Component | visualization config/goal gauge', function (ho
   });
 
   test('it renders', async function (this: TestContext, assert) {
-    await render(hbs`<NaviVisualizationConfig::GoalGauge/>`);
+    await render(TEMPLATE);
 
     const headers = findAll('.goal-gauge-config__section-header').map((el) => el?.textContent?.trim());
     assert.deepEqual(headers, ['Goal Label', 'Baseline', 'Goal'], 'headers are displayed for goal gauge config');
@@ -60,22 +60,22 @@ module('Integration | Component | visualization config/goal gauge', function (ho
   test('onUpdateConfig baselineValue input', async function (this: TestContext, assert) {
     assert.expect(1);
 
-    this.set('onUpdateConfig', (result: { baselineValue: string | number }) => {
-      assert.equal(result.baselineValue, 1, 'onUpdateConfig action is called by baseline input');
+    this.set('onUpdateConfig', (result: { baselineValue: number }) => {
+      assert.strictEqual(result.baselineValue, 1, 'onUpdateConfig action is called by baseline input');
     });
 
-    await render(Template);
+    await render(TEMPLATE);
     await fillIn('.goal-gauge-config__baseline-input', '1');
   });
 
   test('onUpdateConfig goalValue input', async function (this: TestContext, assert) {
     assert.expect(1);
 
-    this.set('onUpdateConfig', (result: { goalValue: string | number }) => {
-      assert.equal(result.goalValue, 10, 'onUpdateConfig action is called by goal input');
+    this.set('onUpdateConfig', (result: { goalValue: number }) => {
+      assert.strictEqual(result.goalValue, 10, 'onUpdateConfig action is called by goal input');
     });
 
-    await render(Template);
+    await render(TEMPLATE);
 
     await fillIn('.goal-gauge-config__goal-input', '10');
   });
@@ -83,7 +83,7 @@ module('Integration | Component | visualization config/goal gauge', function (ho
   test('onUpdateConfig goal gauge label input', async function (this: TestContext, assert) {
     assert.expect(1);
 
-    await render(Template);
+    await render(TEMPLATE);
 
     await fillIn('.goal-gauge-config__label-input', 'bottles');
     assert.equal(this.request.metricColumns[0].alias, 'bottles', 'onUpdateConfig action is called by label input');

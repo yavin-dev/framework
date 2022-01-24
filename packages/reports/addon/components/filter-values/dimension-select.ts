@@ -13,6 +13,7 @@ import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import { sortBy } from 'lodash-es';
 import { taskFor } from 'ember-concurrency-ts';
+import { A } from '@ember/array';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type RequestFragment from 'navi-core/models/request';
@@ -102,6 +103,15 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   @action
   setValues(dimension: DimModelWrapper[]) {
     const values = dimension.map(({ model }) => model.value) as (string | number)[];
+    this.args.onUpdateFilter({ values });
+  }
+
+  @action
+  bulkImport(newValues: string[]) {
+    const current = this.args.filter.values;
+    const values = A([...current, ...newValues])
+      .uniq()
+      .toArray();
     this.args.onUpdateFilter({ values });
   }
 

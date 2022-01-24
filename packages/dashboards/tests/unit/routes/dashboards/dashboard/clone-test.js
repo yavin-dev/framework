@@ -6,7 +6,7 @@ import { Response } from 'ember-cli-mirage';
 
 let Route;
 
-const CLONED_MODEL = {
+const EXPECTED_CLONED_MODEL = {
   owner: 'navi_user',
   createdOn: null,
   presentation: {
@@ -16,21 +16,21 @@ const CLONED_MODEL = {
         column: 0,
         height: 4,
         row: 0,
-        widgetId: 12,
+        widgetId: 13,
         width: 6,
       },
       {
         column: 6,
         height: 4,
         row: 0,
-        widgetId: 13,
+        widgetId: 14,
         width: 6,
       },
       {
         column: 0,
         height: 4,
         row: 4,
-        widgetId: 14,
+        widgetId: 15,
         width: 12,
       },
     ],
@@ -57,12 +57,12 @@ module('Unit | Route | dashboards/dashboard/clone', function (hooks) {
     const dashboard = await Route.store.findRecord('dashboard', 1);
     const widgetIdInDashboard = dashboard.presentation.layout.map((layout) => layout.widgetId);
     const model = await Route._cloneDashboard(dashboard);
-    const expectedModel = model.toJSON();
+    const clonedDashboard = model.toJSON();
     const widgetIdInExpectedModel = model.presentation.layout.map((layout) => layout.widgetId);
 
-    assert.equal(expectedModel.title, CLONED_MODEL.title, 'Expected Models title is correct');
+    assert.equal(clonedDashboard.title, EXPECTED_CLONED_MODEL.title, 'Expected Models title is correct');
 
-    assert.equal(expectedModel.owner, CLONED_MODEL.owner, 'Expected Models Owner is correct');
+    assert.equal(clonedDashboard.owner, EXPECTED_CLONED_MODEL.owner, 'Expected Models Owner is correct');
 
     assert.notEqual(
       widgetIdInExpectedModel,
@@ -71,8 +71,8 @@ module('Unit | Route | dashboards/dashboard/clone', function (hooks) {
     );
 
     assert.deepEqual(
-      expectedModel.presentation,
-      CLONED_MODEL.presentation,
+      clonedDashboard.presentation,
+      EXPECTED_CLONED_MODEL.presentation,
       'Expected Models presentation object is correct'
     );
   });

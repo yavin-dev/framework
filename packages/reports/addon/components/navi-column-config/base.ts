@@ -7,10 +7,10 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
+import { parseParameterValue } from 'navi-data/utils/metric';
 import type FunctionParameterMetadataModel from 'navi-data/models/metadata/function-parameter';
-import type { ColumnFunctionParametersValues } from 'navi-data/models/metadata/function-parameter';
 import type { ConfigColumn } from '../navi-column-config';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { ParameterValue, SortDirection } from 'navi-data/adapters/facts/interface';
 
 interface NaviColumnConfigBaseArgs {
   column: ConfigColumn;
@@ -19,7 +19,7 @@ interface NaviColumnConfigBaseArgs {
   onUpsertSort(direction: SortDirection): void;
   onRemoveSort(): void;
   onRenameColumn(newColumnName?: string): void;
-  onUpdateColumnParam(param: string, paramValue: string): void;
+  onUpdateColumnParam(param: string, paramValue: ParameterValue): void;
   toggleRollup(): void;
   supportsSubtotal: boolean;
 }
@@ -41,8 +41,9 @@ export default class NaviColumnConfigBase extends Component<NaviColumnConfigBase
   }
 
   @action
-  setParameter(param: FunctionParameterMetadataModel, paramValue: ColumnFunctionParametersValues[number]) {
-    this.args.onUpdateColumnParam(param.id, paramValue.id);
+  setParameter(param: FunctionParameterMetadataModel, rawParamValue: ParameterValue) {
+    const value = parseParameterValue(param, rawParamValue);
+    this.args.onUpdateColumnParam(param.id, value);
   }
 
   @action

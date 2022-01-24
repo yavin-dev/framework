@@ -1,0 +1,85 @@
+{{!-- Copyright Yahoo 2021. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliModal
+  @isOpen={{@isOpen}}
+  @onClose={{@onCancel}}
+  class="dimension-bulk-import"
+  {{did-insert (perform this.fetchOptions)}}
+  {{did-update (perform this.fetchOptions this.query)}}
+  ...attributes as |Modal|
+>
+  <Modal.Header><h3>Bulk Import</h3></Modal.Header>
+
+  <Modal.Content>
+    <DenaliInputGroup @label="Input" @isStacked={{true}} >
+      <DenaliInput
+        class="dimension-bulk-import__input"
+        @size="medium"
+        type="text"
+        value={{this.query}}
+        @errorMsg="Add Multiple {{@dimension.columnMetadata.name}} values (comma,separated,list)"
+        {{on "input" (pipe (pick "target.value") (fn (mut this.query)))}}
+      />
+    </DenaliInputGroup>
+
+    <div class="dimension-bulk-import__values--valid p-t-15 w-full flex flex-wrap">
+      <div class="p-b-5 w-full">
+        <span class="dimension-bulk-import__items-title align-items-center bold">
+          <DenaliIcon class="is-status-success p-r-5" @icon="check-circle" @size="small" /> Verified Values ({{this.validValues.length}})
+          <EmberTooltip @side="right" @text="Values that have been looked up against the {{@dimension.columnMetadata.name}} dimension." />
+        </span>
+      </div>
+      {{#if this.validValuesTask.isRunning}}
+        <DenaliLoader />
+      {{else if this.validValuesTask.isSuccessful}}
+        <FilterValues::DimensionSelect
+          @request={{undefined}}
+          @filter={{this.makeFilter this.validValues}}
+          @onUpdateFilter={{fn this.updateValues 'validValues'}}
+        />
+      {{else}}
+        <NaviInfoMessage>
+          <:default>Error while fetching values</:default>
+          <:tech-details>{{this.validValuesTask.error}}</:tech-details>
+        </NaviInfoMessage>
+      {{/if}}
+    </div>
+
+    <div class="dimension-bulk-import__values--invalid p-t-15 w-full flex flex-wrap">
+      <div class="p-b-5 w-full">
+        <span class="dimension-bulk-import__items-title align-items-center bold">
+          <DenaliIcon class="is-status-warning p-r-5" @icon="help-circle" @size="small" /> Unverified Values ({{this.invalidValues.length}})
+          <EmberTooltip @side="right" @text="Values that were not found for the {{@dimension.columnMetadata.name}} dimension." />
+        </span>
+      </div>
+      {{#if this.invalidValuesTask.isRunning}}
+        <DenaliLoader />
+      {{else if this.invalidValuesTask.isSuccessful}}
+        <FilterValues::DimensionSelect
+          @request={{undefined}}
+          @filter={{this.makeFilter this.invalidValues}}
+          @onUpdateFilter={{fn this.updateValues 'invalidValues'}}
+        />
+      {{else}}
+        <NaviInfoMessage>
+          <:default>Error while fetching values</:default>
+          <:tech-details>{{this.invalidValuesTask.error}}</:tech-details>
+        </NaviInfoMessage>
+      {{/if}}
+    </div>
+
+  
+    <div class="p-t-15 flex space-between">
+      <div>
+        <DenaliButton class="dimension-bulk-import__add-verified" {{on "click" (fn @onSelectValues this.validValues)}}>
+          Add Verified
+        </DenaliButton>
+        <DenaliButton class="dimension-bulk-import__add-all" @style="outline"  {{on "click" (fn @onSelectValues (append this.validValues this.invalidValues))}}>
+          Add All
+        </DenaliButton>
+      </div>
+      <DenaliButton class="dimension-bulk-import__cancel" @style="text" {{on "click" @onCancel}}>
+        Cancel
+      </DenaliButton>
+    </div>
+  </Modal.Content>
+</DenaliModal>

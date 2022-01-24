@@ -1660,21 +1660,19 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.dom('.filter-builder__values').hasText(`The current day. (${today})`, 'The current day');
   });
 
-  skip("Date picker advanced doesn't modify interval", async function (assert) {
-    //TODO advanced date picker has been disabled
-    assert.expect(6);
+  test("Date picker advanced doesn't modify interval", async function (assert) {
     await visit('/reports/1/view');
 
     await selectChoose('.filter-builder__operator-trigger', 'Advanced');
-    const startInput = findAll('.filter-values--advanced-interval-input__value')[0];
-    const endInput = findAll('.filter-values--advanced-interval-input__value')[1];
+    const startInput = find('.filter-values--advanced-interval-input--start');
+    const endInput = find('.filter-values--advanced-interval-input--end');
     assert.dom(startInput).hasValue('P7D', 'The start input is not modified');
-    assert.dom(endInput).hasValue('2015-11-16', 'The end input is not modified');
+    assert.dom(endInput).hasValue('2015-11-15', 'The end input is not modified');
 
     await click('.get-api__action-btn');
     assert.ok(
       find('.get-api__api-input').value.includes('dateTime=P7D%2F2015-11-16'),
-      'The while in advanced mode shows exactly what is in the start/end inputs'
+      'Advanced mode uses inclusive date range'
     );
     await click('.d-close');
 
@@ -1687,10 +1685,78 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await click('.get-api__action-btn');
     assert.ok(
-      find('.get-api__api-input').value.includes('dateTime=P1M%2F2020-04-01'),
-      'The query is updated to show the new start/end inputs exactly'
+      find('.get-api__api-input').value.includes('dateTime=P1M%2F2020-04-02'),
+      'The query is updated to show the new inclusive start/end dates'
     );
     await click('.d-close');
+  });
+
+  test('Date picker advanced validates manual input', async function (assert) {
+    await visit('/reports/1/view');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    const startInput = () => find('.filter-values--advanced-interval-input--start');
+    const endInput = () => find('.filter-values--advanced-interval-input--end');
+    assert.dom(startInput()).hasValue('P7D', 'The start input is not modified');
+    assert.dom(endInput()).hasValue('2015-11-15', 'The end input is not modified');
+
+    const setInput = async (input, value) => {
+      await fillIn(input, value);
+      await blur(input);
+    };
+    await setInput(startInput(), '');
+
+    assert.dom('.filter-builder__values .message').exists({ count: 2 }, 'The start and end inputs are marked invalid');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown');
+
+    await click('.report-view-overlay__button--run');
+    assert
+      .dom('.navi-info-message__error-list-item')
+      .hasText(
+        `The 'Date Time' filter has invalid interval ["","2015-11-15T00:00:00.000Z"]`,
+        'Invalid interval message is shown'
+      );
+
+    await setInput(endInput(), '');
+    await setInput(startInput(), '2020-04-01');
+    await setInput(endInput(), '2020-04-03');
+
+    assert.dom('.filter-builder__operator-trigger').hasText('Between', 'Operator is updated to between');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Apr 01, 2020', 'The start date is correct');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Apr 03, 2020', 'The end date is correct');
+
+    await click('.info-message__run-link');
+    assert.dom('.line-chart-widget').exists('Interval successfully updated');
+  });
+
+  test('Can switch operator after making advanced invalid', async function (assert) {
+    await visit('/reports/1/view');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    const startInput = () => find('.filter-values--advanced-interval-input--start');
+
+    const setInput = async (input, value) => {
+      await fillIn(input, value);
+      await blur(input);
+    };
+    await setInput(startInput(), '');
+
+    assert.dom('.filter-builder__values .message').exists({ count: 2 }, 'The start and end inputs are marked invalid');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Between');
+
+    assert
+      .dom('.filter-values--date-range-input__low-value input')
+      .hasValue('Nov 15, 2015', 'The start date is correct');
+    assert
+      .dom('.filter-values--date-range-input__high-value input')
+      .hasValue('Nov 15, 2015', 'The end date is correct');
   });
 
   test("Report with an unknown table doesn't crash", async function (assert) {
@@ -2000,5 +2066,34 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.table-cell-content.table-cell-url a')
       .hasAttribute('href', /^https?:\/\/\w+\.\w+/, 'The anchor element is rendered correctly');
+  });
+
+  test('bulk import', async function (assert) {
+    await visit('/reports/2/edit');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option-value').map((el) => el.textContent.trim()),
+      ['114', '100001'],
+      'initial dimension values are present'
+    );
+
+    async function paste(text) {
+      const selector = '.ember-power-select-trigger-multiple-input';
+      await triggerEvent(selector, 'paste', { clipboardData: { getData: () => text } });
+    }
+    const valid = '.dimension-bulk-import__values--valid';
+    const invalid = '.dimension-bulk-import__values--invalid';
+    async function wait() {
+      const powerSelect = '.filter-values--dimension-select__trigger';
+      await Promise.all([waitFor(`${valid} ${powerSelect}`), waitFor(`${invalid} ${powerSelect}`)]);
+    }
+
+    await paste('114, 114, 100002 , 3 ,,1 ,2');
+    await wait();
+    await click('.dimension-bulk-import__add-all');
+    assert.deepEqual(
+      findAll('.filter-values--dimension-select__option-value').map((el) => el.textContent.trim()),
+      ['114', '100001', '100002', '3', '1', '2'],
+      'pasted values are added'
+    );
   });
 });

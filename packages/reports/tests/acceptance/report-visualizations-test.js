@@ -89,7 +89,7 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
 
     //add a parameterized metric with a couple of parameters and run the report
     await clickItem('metric', 'Platform Revenue');
-    await selectChoose('.navi-column-config-item__parameter', 'Euro');
+    await selectChoose('.navi-column-config-item__parameter', 'EUR');
     await clickItem('metric', 'Platform Revenue');
     await click('.navi-report__run-btn');
 
@@ -292,5 +292,25 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
     assert
       .dom('.report-view__info-text')
       .isNotVisible('Updating the column config does not prompt the user to rerun the report');
+  });
+
+  test('Table subtotal/total config', async function (assert) {
+    assert.expect(2);
+    await visit('/reports/new?datasource=bardOne');
+
+    await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
+
+    await clickItem('dimension', 'Date Time');
+    await clickItem('dimension', 'Browser');
+    await clickItem('metric', 'Revenue');
+    await click('.navi-report__run-btn');
+    await click('.report-view__visualization-edit-btn');
+
+    await click('.table-config__total-toggle-button--grand-total');
+    await click('.table-config__total-toggle-button--subtotal');
+    await click('.navi-report__run-btn');
+
+    assert.dom('.table-row__total-row .table-cell--total').hasText('Subtotal');
+    assert.dom('.table-row__total-row.table-row__last-row .table-cell--total').hasText('Grand Total');
   });
 });

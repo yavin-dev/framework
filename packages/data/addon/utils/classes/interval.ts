@@ -198,8 +198,8 @@ export default class Interval {
    */
   asStrings(momentFormat?: string): SerializedWithEnd<string> {
     return {
-      start: Interval._stringFromProperty(this._start, momentFormat),
-      end: Interval._stringFromProperty(this._end, momentFormat),
+      start: Interval.elementToString(this._start, momentFormat),
+      end: Interval.elementToString(this._end, momentFormat),
     };
   }
 
@@ -315,7 +315,7 @@ export default class Interval {
    * @param format optional format for date strings
    * @returns string representation of given property
    */
-  private static _stringFromProperty(property: IntervalStart | IntervalEnd, format?: string): string {
+  static elementToString(property: IntervalStart | IntervalEnd, format?: string): string {
     if (moment.isMoment(property)) {
       return format ? property.format(format) : property.toISOString();
     } else if (Duration.isDuration(property)) {

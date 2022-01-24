@@ -1,6 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import ElideDimensionMetadataModel, { ElideDimensionMetadataPayload } from 'navi-data/models/metadata/elide/dimension';
+import ElideDimensionMetadataModel, {
+  ElideDimensionMetadataPayload,
+  ValueSourceType,
+} from 'navi-data/models/metadata/elide/dimension';
 import type { Factory } from 'navi-data/models/native-with-create';
 
 let PayloadBase: ElideDimensionMetadataPayload;
@@ -18,7 +21,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
       isSortable: false,
       type: 'formula',
       tableSource: undefined,
-      valueSourceType: 'ENUM',
+      valueSourceType: ValueSourceType.ENUM,
       cardinality: undefined,
       values: [],
     };
@@ -44,7 +47,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
 
     const Model = DimensionFactory.create({
       ...PayloadBase,
-      valueSourceType: 'TABLE',
+      valueSourceType: ValueSourceType.TABLE,
       tableSource: {
         valueSource: 'tableName.field',
         suggestionColumns: [],

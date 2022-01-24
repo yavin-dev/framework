@@ -8,15 +8,20 @@
 import EmberObject from '@ember/object';
 import { RawColumnFunctionArguments, RawColumnFunction } from './bard';
 import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import {
-  FunctionParameterMetadataPayload,
-  INTRINSIC_VALUE_EXPRESSION,
-} from 'navi-data/models/metadata/function-parameter';
+import { DataType } from 'navi-data/models/metadata/function-parameter';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
 
 type RawMetricFunctionPayload = {
   'metric-functions': {
     rows: RawColumnFunction[];
   };
+};
+
+const paramValueSourceTypeMap: Record<string, ValueSourceType> = {
+  enum: ValueSourceType.ENUM,
+  dimension: ValueSourceType.TABLE,
+  none: ValueSourceType.NONE,
 };
 
 /**
@@ -35,8 +40,9 @@ export function constructFunctionParameters(
       id: paramName,
       name: paramName,
       description,
-      type: 'ref', // It will always be ref for our case because all our parameters have their valid values defined in a dimension or enum
-      expression: param.type === 'dimension' ? `dimension:${param.dimensionName}` : INTRINSIC_VALUE_EXPRESSION,
+      valueType: DataType.TEXT, //bard does not provide a value type
+      valueSourceType: paramValueSourceTypeMap[param.type],
+      tableSource: param.type === 'dimension' ? { valueSource: param.dimensionName } : undefined,
       _localValues: param.type === 'enum' ? param.values : undefined,
       source,
       defaultValue,

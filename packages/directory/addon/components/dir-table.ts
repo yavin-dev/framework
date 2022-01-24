@@ -51,7 +51,7 @@ export default class DirTableComponent extends Component<DirTableComponentArgs> 
         sortable: false,
         hideable: false,
         draggable: false,
-        width: '80px',
+        width: '50px',
         classNames: 'dir-table__header-cell dir-table__header-cell--favorite',
         cellComponent: 'dir-item-favorite-cell',
         cellClassNames: 'dir-table__cell dir-table__cell--favorite',
