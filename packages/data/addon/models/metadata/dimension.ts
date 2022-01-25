@@ -6,6 +6,7 @@ import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { ColumnInstance, ColumnMetadataPayload, ColumnType } from 'navi-data/models/metadata/column';
 import type { Cardinality } from '../../utils/enums/cardinality-sizes';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
+import { ValueSourceType } from './elide/dimension';
 
 interface Field {
   name: string;
@@ -25,7 +26,7 @@ export interface DimensionMetadataPayload extends ColumnMetadataPayload {
   tableSource?: TableSource;
   fields?: Field[];
   cardinality?: Cardinality;
-  storageStrategy?: TODO<'loaded' | 'none' | null>;
+  valueSourceType: ValueSourceType;
 }
 
 export type DimensionColumn = ColumnInstance<DimensionMetadataModel>;
@@ -66,7 +67,7 @@ export default class DimensionMetadataModel extends ColumnMetadataModel {
 
   declare tableSource?: TableSource;
 
-  declare storageStrategy?: TODO<'loaded' | 'none' | null>;
+  declare valueSourceType: ValueSourceType;
 
   /**
    * Fetches tags for a given field name

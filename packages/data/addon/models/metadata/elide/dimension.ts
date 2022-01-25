@@ -24,7 +24,6 @@ export default class ElideDimensionMetadataModel extends DimensionMetadataModel 
     }
   }
 
-  declare valueSourceType: ValueSourceType;
   declare values: string[];
 
   get valueSource(): ElideDimensionMetadataModel {

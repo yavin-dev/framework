@@ -6,6 +6,7 @@ import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import { Factory } from 'navi-data/models/native-with-create';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 let Payload: DimensionMetadataPayload,
   Dimension: DimensionMetadataModel,
@@ -23,7 +24,7 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
       valueType: 'text',
       isSortable: false,
       type: 'field',
-      storageStrategy: null,
+      valueSourceType: ValueSourceType.TABLE,
       fields: [
         {
           name: 'id',

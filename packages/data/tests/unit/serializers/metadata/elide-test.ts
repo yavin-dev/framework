@@ -439,6 +439,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         timeZone: 'UTC',
         source: 'bardOne',
         tableId: 'tableA',
+        valueSourceType: ValueSourceType.NONE,
         columnFunctionId: 'normalizer-generated:timeGrain(column=tableA.td1;grains=day,week)',
       },
     ];
@@ -900,6 +901,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
           type: 'field',
           isSortable: true,
           expression: '',
+          valueSourceType: ValueSourceType.NONE,
           columnFunctionId: 'normalizer-generated:timeGrain(column=userSignupDate;grains=day,month,week)',
         },
         columnFunction: {
@@ -952,6 +954,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
           type: 'field',
           isSortable: true,
           expression: '',
+          valueSourceType: ValueSourceType.NONE,
           columnFunctionId: 'normalizer-generated:timeGrain(column=orderMonth;grains=month)',
         },
         columnFunction: {
