@@ -72,7 +72,7 @@
           >
             {{capitalize delivery}}
           </PowerSelect>
-          <div class="schedule__modal-helper-delivery m-b-30">
+          <div class="schedule__modal-helper-delivery m-b-30 is-grey-800">
             {{#if (eq this.localDeliveryRule.delivery "email")}}
               Send this  {{this.modelType}} in an email on a recurring basis
             {{else}}
@@ -92,7 +92,7 @@
               @onUpdateEmails={{this.updateRecipients}}
               @isDisabled={{is-rejected this.deliveryRule}}
             />
-            <div class="schedule__modal-helper-recipients">
+            <div class="schedule__modal-helper-recipients is-grey-800">
               Please enter valid email addresses separated by commas.
             </div>
           </DenaliInputGroup>
@@ -145,7 +145,7 @@
               @isEnabled={{this.localDeliveryRule.format.options.overwriteFile}}
               @onChange={{this.toggleOverwriteFile}}/>
           </DenaliInputGroup>
-          <p class="help-text m-b-30 is-grey-700">
+          <p class="help-text m-b-30 is-grey-800">
             {{#if this.localDeliveryRule.format.options.overwriteFile}}
               Data will be replaced in the same sheet every {{this.localDeliveryRule.frequency}}
             {{else}}
