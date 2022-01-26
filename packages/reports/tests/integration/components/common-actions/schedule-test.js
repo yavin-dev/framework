@@ -114,7 +114,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
 
-    assert.dom('.schedule__modal-overwrite').doesNotExist('Overwrite switch not shown for non overwriteable types');
+    assert.dom('.schedule__modal-overwrite').doesNotExist('Overwrite switch not shown for non overwritable types');
   });
 
   test('schedule modal when invalid', async function (assert) {
