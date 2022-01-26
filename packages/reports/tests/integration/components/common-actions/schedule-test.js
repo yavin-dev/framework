@@ -83,7 +83,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal when valid', async function (assert) {
-    assert.expect(8);
+    assert.expect(9);
 
     this.set('model', unscheduledModel);
 
@@ -113,6 +113,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-format-trigger').hasText('csv', '`.csv` is the default format value');
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
+
+    assert.dom('.schedule__modal-overwrite').doesNotExist('Overwrite switch not shown for non overwritable types');
   });
 
   test('schedule modal when invalid', async function (assert) {
@@ -555,5 +557,37 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       ['Delivery', 'Frequency'],
       'Schedule Modal has all the expected sections'
     );
+  });
+
+  test('overwrite file toggle', async function (assert) {
+    let originalFlag = config.navi.FEATURES.exportFileTypes;
+    config.navi.FEATURES.exportFileTypes = ['gsheet'];
+
+    const testDR = {
+      frequency: 'week',
+      format: { type: 'gsheet' },
+      recipients: ['test@oath.com', 'rule@oath.com'],
+    };
+
+    this.set('model', {
+      constructor: { modelName: 'report' },
+      title: 'Test the overwrite',
+      deliveryRuleForUser: Promise.resolve(testDR),
+    });
+    await render(TEMPLATE);
+
+    await click('.schedule-action__button');
+
+    assert.dom('.schedule__modal-overwrite').exists('Overwrite control exists');
+
+    await click('.schedule__modal-overwrite-toggle');
+
+    assert.ok(testDR.format.options.overwriteFile, 'overwrite file toggled on');
+
+    await click('.schedule__modal-overwrite-toggle');
+
+    assert.notOk(testDR.format.options.overwriteFile, 'overwrite file toggled off');
+
+    config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 });

@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
@@ -72,7 +72,7 @@
           >
             {{capitalize delivery}}
           </PowerSelect>
-          <div class="schedule__modal-helper-delivery m-b-30">
+          <div class="schedule__modal-helper-delivery m-b-30 is-grey-800">
             {{#if (eq this.localDeliveryRule.delivery "email")}}
               Send this  {{this.modelType}} in an email on a recurring basis
             {{else}}
@@ -92,7 +92,7 @@
               @onUpdateEmails={{this.updateRecipients}}
               @isDisabled={{is-rejected this.deliveryRule}}
             />
-            <div class="schedule__modal-helper-recipients">
+            <div class="schedule__modal-helper-recipients is-grey-800">
               Please enter valid email addresses separated by commas.
             </div>
           </DenaliInputGroup>
@@ -137,6 +137,23 @@
               @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}/>
           </DenaliInputGroup>
         {{/if}}
+
+        {{#if (includes this.localDeliveryRule.format.type this.overwriteableFormats)}}
+          <DenaliInputGroup @label="Overwrite spreadsheet" class="schedule__modal-overwrite">
+            <DenaliSwitch
+              class="schedule__modal-overwrite-toggle"
+              @isEnabled={{this.localDeliveryRule.format.options.overwriteFile}}
+              @onChange={{this.toggleOverwriteFile}}/>
+          </DenaliInputGroup>
+          <p class="help-text m-b-30 is-grey-800">
+            {{#if this.localDeliveryRule.format.options.overwriteFile}}
+              Data will be replaced in the same sheet every {{this.localDeliveryRule.frequency}}
+            {{else}}
+              A new sheet will be created every {{this.localDeliveryRule.frequency}}
+            {{/if}}
+          </p>
+        {{/if}}
+
         {{#if (is-rejected this.deliveryRule)}}
           <DenaliButton
             class="schedule__modal-cancel-btn m-r-5"
