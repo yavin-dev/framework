@@ -372,6 +372,7 @@ const Payload: RawEverythingPayload = {
                   longName: 'Foo',
                 },
               ],
+              storageStrategy: 'none',
             },
             {
               category: 'dateCategory',
@@ -442,7 +443,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     type: 'field',
     valueType: 'text',
     isSortable: false,
-    storageStrategy: null,
+    valueSourceType: ValueSourceType.TABLE,
     partialData: true,
     fields: [
       {
@@ -484,7 +485,7 @@ const DimensionsPayloads: DimensionMetadataPayload[] = [
     tableSource: {
       suggestionColumns: [{ id: 'dimensionTwo', parameters: { field: 'foo' } }],
     },
-    storageStrategy: null,
+    valueSourceType: ValueSourceType.NONE,
     partialData: true,
   },
 ];
@@ -511,7 +512,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     },
     isSortable: true,
     valueType: 'dateTime',
-    storageStrategy: null,
+    valueSourceType: ValueSourceType.TABLE,
     partialData: true,
     supportedGrains: [
       {
@@ -547,6 +548,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     type: 'field',
     isSortable: true,
     valueType: 'date',
+    valueSourceType: ValueSourceType.NONE,
   },
   {
     category: 'Date',
@@ -573,6 +575,7 @@ const TimeDimensionPayloads: TimeDimensionMetadataPayload[] = [
     type: 'field',
     isSortable: true,
     valueType: 'date',
+    valueSourceType: ValueSourceType.NONE,
   },
 ];
 
@@ -1076,7 +1079,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       cardinality: 'SMALL',
       type: 'field',
       isSortable: false,
-      storageStrategy: null,
+      valueSourceType: ValueSourceType.TABLE,
       fields: rawDimension.fields,
       tableSource: {
         suggestionColumns: rawDimension.fields.map((f) => ({ id: rawDimension.name, parameters: { field: f.name } })),

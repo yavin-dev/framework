@@ -56,7 +56,7 @@ type RawColumnPayload = {
 
 export type RawDimensionPayload = RawColumnPayload & {
   datatype?: 'text' | 'number' | 'date' | 'dateTime' | 'url';
-  storageStrategy?: TODO<'loaded' | 'none'>;
+  storageStrategy?: 'loaded' | 'none';
   cardinality: number;
   fields: RawDimensionField[];
 };
@@ -398,6 +398,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
       isSortable: true,
       type: 'field',
       valueType: 'date',
+      valueSourceType: ValueSourceType.NONE,
       supportedGrains: timeGrainInfo.timeGrains.map(({ name }) => ({
         id: name,
         expression: '',
@@ -619,7 +620,7 @@ export default class BardMetadataSerializer extends NaviMetadataSerializer {
           suggestionColumns: fields?.map((field) => ({ id: name, parameters: { field: field.name } })),
         },
         cardinality: dimCardinality,
-        storageStrategy: storageStrategy || null,
+        valueSourceType: storageStrategy === 'none' ? ValueSourceType.NONE : ValueSourceType.TABLE,
         source: dataSourceName,
         partialData: isNone(description),
       };

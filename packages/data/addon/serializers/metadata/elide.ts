@@ -314,6 +314,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
         isSortable: true,
         type: node.columnType,
         expression: node.expression,
+        valueSourceType: node.valueSourceType,
       };
       return {
         timeDimension: this.createTimeDimensionModel(timeDimensionPayload),

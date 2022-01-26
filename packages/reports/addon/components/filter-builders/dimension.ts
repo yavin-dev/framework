@@ -5,6 +5,7 @@
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import { assert } from '@ember/debug';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 
 export const OPERATORS = <const>{
   in: 'in',
@@ -15,12 +16,12 @@ export const OPERATORS = <const>{
 };
 type InternalOperatorType = typeof OPERATORS[keyof typeof OPERATORS];
 
-interface InteralFilterBuilderOperators extends FilterValueBuilder {
+interface InternalFilterBuilderOperators extends FilterValueBuilder {
   internalId: InternalOperatorType;
 }
 
 export default class DimensionFilterBuilderComponent extends BaseFilterBuilderComponent {
-  get selectedValueBuilder(): InteralFilterBuilderOperators {
+  get selectedValueBuilder(): InternalFilterBuilderOperators {
     const { operator, values } = this.args.filter;
 
     let builder;
@@ -37,12 +38,12 @@ export default class DimensionFilterBuilderComponent extends BaseFilterBuilderCo
     return builder;
   }
 
-  get valueBuilders(): InteralFilterBuilderOperators[] {
-    const storageStrategy = (this.args.filter.columnMetadata as DimensionMetadataModel).storageStrategy;
+  get valueBuilders(): InternalFilterBuilderOperators[] {
+    const { valueSourceType } = this.args.filter.columnMetadata as DimensionMetadataModel;
 
-    //Allow free form input of dimension values when dimension's storageStrategy is 'none'
+    //Allow free form input of dimension values when dimension source type is NONE
     const inputComponent =
-      storageStrategy === 'none' ? 'filter-values/multi-value-input' : 'filter-values/dimension-select';
+      valueSourceType === ValueSourceType.NONE ? 'filter-values/multi-value-input' : 'filter-values/dimension-select';
 
     return [
       { internalId: OPERATORS.in, operator: 'in' as const, name: 'Equals', component: inputComponent },
