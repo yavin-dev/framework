@@ -22,6 +22,7 @@ const ExpectedDeliveryRule = {
   },
   recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
   version: 1,
+  isDisabled: false,
 };
 
 module('Unit | Model | delivery rule', function (hooks) {
