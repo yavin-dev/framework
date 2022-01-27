@@ -186,9 +186,7 @@ export default class DashboardDataService extends Service {
         requestClone.filters
           .toArray()
           .filter((f) => f.field === filter.field)
-          .forEach((f) => {
-            requestClone.removeFilter(f);
-          });
+          .forEach((f) => requestClone.removeFilter(f));
       }
       requestClone.addFilter(filter);
     });
