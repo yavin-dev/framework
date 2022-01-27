@@ -18,7 +18,12 @@ export default class DimensionDateRange extends BaseIntervalComponent {
    */
   @action
   setTimeStartMoment(start: Moment) {
-    this.setTimeStart(start.toISOString());
+    // if the start date is after the end date, set the end date to the start date
+    if (start.isAfter(this.endDate)) {
+      this.setTimeValues([start.toISOString(), start.toISOString()]);
+    } else {
+      this.setTimeStart(start.toISOString());
+    }
   }
 
   /**
@@ -26,6 +31,11 @@ export default class DimensionDateRange extends BaseIntervalComponent {
    */
   @action
   setTimeEndMoment(end: Moment) {
-    this.setTimeEnd(end.toISOString());
+    // if the end date is before the start date, set the start date to the end date
+    if (end.isBefore(this.startDate)) {
+      this.setTimeValues([end.toISOString(), end.toISOString()]);
+    } else {
+      this.setTimeEnd(end.toISOString());
+    }
   }
 }
