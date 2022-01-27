@@ -11,12 +11,14 @@ const DeliveryRule = {
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
   delivery: 'email',
+  isDisabled: false,
 };
 const NoDelivery = {
   frequency: 'Week',
   delivery: 'none',
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
+  isDisabled: false,
 };
 const NoDeliveryModel = {
   constructor: { modelName: 'report' },

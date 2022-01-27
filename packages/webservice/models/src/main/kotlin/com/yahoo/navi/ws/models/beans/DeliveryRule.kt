@@ -88,6 +88,9 @@ class DeliveryRule : HasOwner {
     @NotNull
     var delivery: Delivery? = null
 
+    @NotNull
+    var isDisabled: Boolean? = null
+
     @Column(name = "scheduling_rules", columnDefinition = "MEDIUMTEXT")
     @Type(
         type = "com.yahoo.navi.ws.models.types.JsonType",

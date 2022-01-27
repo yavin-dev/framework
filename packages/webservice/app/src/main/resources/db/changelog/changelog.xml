@@ -157,6 +157,8 @@
         <sql>
             ALTER TABLE DeliveryRule
                 ADD delivery int not null default 0;
+            ALTER TABLE DeliveryRule
+                ADD isDisabled boolean not null default false;
         </sql>
     </changeSet>
 </databaseChangeLog>

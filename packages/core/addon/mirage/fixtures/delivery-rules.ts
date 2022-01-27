@@ -27,6 +27,7 @@ export default [
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1,
+    isDisabled: false,
   },
   {
     id: 2,
@@ -49,6 +50,7 @@ export default [
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1,
+    isDisabled: false,
   },
   {
     id: 3,
@@ -68,6 +70,7 @@ export default [
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1,
+    isDisabled: false,
   },
   {
     id: 4,
@@ -87,6 +90,7 @@ export default [
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1,
+    isDisabled: false,
   },
   {
     id: 5,
@@ -109,5 +113,6 @@ export default [
     },
     recipients: ['user-or-list1@navi.io', 'user-or-list2@navi.io'],
     version: 1,
+    isDisabled: false,
   },
 ];

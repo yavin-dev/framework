@@ -73,6 +73,9 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @attr('string', { defaultValue: 'email' })
   delivery!: string;
 
+  @attr('boolean', { defaultValue: false })
+  isDisabled!: boolean;
+
   @belongsTo('deliverable-item', { async: true, inverse: 'deliveryRules', polymorphic: true })
   deliveredItem!: DS.PromiseObject<DeliverableItemModel>;
 
