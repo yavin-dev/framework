@@ -94,6 +94,30 @@ module('Integration | Component | filter-values/time-dimension/range', function 
     await click(`.ember-power-calendar-day[data-date="${newEndStr}"]`);
   });
 
+  test('changing values - invalid range', async function (this: TestContext, assert) {
+    this.filter.values = ['2022-01-20', '2022-01-26'];
+    await render(TEMPLATE);
+
+    // Click start date
+    const newStartStr = '2022-01-27';
+    this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {
+      const newDate = `${newStartStr}T00:00:00.000Z`;
+      assert.deepEqual(values, [newDate, newDate], 'The end date is updated if it is before the new start date');
+      this.set('filter.values', values);
+    });
+    await click('.filter-values--date-range-input__low-value.dropdown-date-picker__trigger');
+    await click(`.ember-power-calendar-day[data-date="${newStartStr}"]`);
+
+    // Click end date
+    const newEndStr = '2022-01-12';
+    this.set('onUpdateFilter', ({ values }: Partial<FilterFragment>) => {
+      const newDate = `${newEndStr}T00:00:00.000Z`;
+      assert.deepEqual(values, [newDate, newDate], 'The start date is updated if it is after the new end date');
+    });
+    await click('.filter-values--date-range-input__high-value.dropdown-date-picker__trigger');
+    await click(`.ember-power-calendar-day[data-date="${newEndStr}"]`);
+  });
+
   test('collapsed', async function (this: TestContext, assert) {
     assert.expect(2);
 
