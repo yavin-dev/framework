@@ -10,7 +10,7 @@ import com.yahoo.navi.ws.models.beans.DeliveryRule
 import com.yahoo.navi.ws.models.beans.enums.Delivery
 import java.util.Optional
 
-class VerifyDeliveryRuleRecipientsHook : LifeCycleHook<DeliveryRule> {
+class DeliveryRuleConditionalRecipientsHook : LifeCycleHook<DeliveryRule> {
     /**
      * Validates that if delivery is not none recipients is not empty
      */

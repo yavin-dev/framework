@@ -20,7 +20,7 @@ import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultJobRunnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
-import com.yahoo.yavin.ws.hooks.VerifyDeliveryRuleRecipientsHook
+import com.yahoo.yavin.ws.hooks.DeliveryRuleConditionalRecipientsHook
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
@@ -47,7 +47,7 @@ import javax.validation.constraints.NotNull
 @DeletePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 @LifeCycleHookBinding(
     operation = LifeCycleHookBinding.Operation.CREATE,
-    hook = VerifyDeliveryRuleRecipientsHook::class
+    hook = DeliveryRuleConditionalRecipientsHook::class
 )
 class DeliveryRule : HasOwner {
 
