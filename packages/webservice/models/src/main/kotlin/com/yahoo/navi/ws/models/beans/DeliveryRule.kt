@@ -9,6 +9,7 @@ import com.yahoo.elide.annotation.ComputedAttribute
 import com.yahoo.elide.annotation.CreatePermission
 import com.yahoo.elide.annotation.DeletePermission
 import com.yahoo.elide.annotation.Include
+import com.yahoo.elide.annotation.LifeCycleHookBinding
 import com.yahoo.elide.annotation.UpdatePermission
 import com.yahoo.navi.ws.models.beans.enums.Delivery
 import com.yahoo.navi.ws.models.beans.enums.DeliveryFrequency
@@ -19,6 +20,7 @@ import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultJobRunnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
+import com.yahoo.yavin.ws.hooks.DeliveryRuleConditionalRecipientsHook
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.Parameter
 import org.hibernate.annotations.Type
@@ -35,9 +37,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Temporal
 import javax.persistence.TemporalType
 import javax.persistence.Transient
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Size
 
 @Entity
 @Include(name = "deliveryRules")
@@ -45,6 +45,10 @@ import javax.validation.constraints.Size
 @CreatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 @UpdatePermission(expression = "$IS_OWNER OR $IS_ADMIN")
 @DeletePermission(expression = "$IS_OWNER OR $IS_ADMIN")
+@LifeCycleHookBinding(
+    operation = LifeCycleHookBinding.Operation.CREATE,
+    hook = DeliveryRuleConditionalRecipientsHook::class
+)
 class DeliveryRule : HasOwner {
 
     @Id
@@ -100,8 +104,6 @@ class DeliveryRule : HasOwner {
     )
     var schedulingRules: SchedulingRules? = null
 
-    @NotEmpty
-    @Size(min = 1)
     @EmailList
     @Type(
         type = "com.yahoo.navi.ws.models.types.JsonType",
