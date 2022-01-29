@@ -21,6 +21,8 @@ module('Acceptance | Dashboard Filters', function (hooks) {
   });
 
   test('dashboard filter flow', async function (assert) {
+    assert.expect(11);
+
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -82,6 +84,16 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     //test date filter
     await click('.dashboard-filters--expanded__add-filter-button');
+    await selectChoose('.dashboard-dimension-selector', 'Date Time');
+    await click('.dashboard-filters--expanded__add-filter-button');
+    selectChoose('.dashboard-dimension-selector', 'Date Time').catch((e) =>
+      assert.ok(
+        e.message.endsWith(`but "Date Time" didn't match any option`),
+        `"Date Time" is not available to select again`
+      )
+    );
+    //remove date filter, Date Time is again among options
+    await click(findAll('.filter-collection__remove')[1]);
     await selectChoose('.dashboard-dimension-selector', 'Date Time');
     await selectChoose(findAll('.dropdown-parameter-picker')[1], 'Day');
     await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'In The Past');

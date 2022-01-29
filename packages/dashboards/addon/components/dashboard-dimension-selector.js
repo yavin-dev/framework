@@ -21,31 +21,33 @@ export default class DashboardDimensionSelectorComponent extends Component {
   /**
    * @property {Promise} -- creates powerselect options of all dimensions that can be pick based on widgets on the dashboard
    */
-  @computed('dashboard.widgets', 'mergeWidgetDimensions')
+  @computed('dashboard.{widgets.[],filters.[]}', 'mergeWidgetDimensions')
   get groupedDimensions() {
-    const widgetPromises = this.dashboard.widgets;
+    const { widgets: widgetPromises, filters: dashboardFilters } = this.dashboard;
     /*
      * get a list of dimensions per table/timeGrain involved
      * do this so each table/timegrain combination is unique and we don't have to flatten more than we have to.
      * shape will be: {table: [{id, name, category}, ...], ...}
      */
-    return widgetPromises.then(this.mergeWidgetDimensions).then((dimensionMap) => {
-      /*
-       * merge and build category: dimension map
-       * shape will be: {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
-       */
-      const dimObject = this.buildCategoryMap(dimensionMap);
+    return widgetPromises
+      .then((widgets) => this.mergeWidgetDimensions(widgets, dashboardFilters))
+      .then((dimensionMap) => {
+        /*
+         * merge and build category: dimension map
+         * shape will be: {categoryName: {dimensionName: {dimension, name, tables}, ...}, ....}
+         */
+        const dimObject = this.buildCategoryMap(dimensionMap);
 
-      /*
-       * transform into powerselect friendly option
-       * shape will be [{groupName, options: [{dimension, name, tables}, ...]}, ...]
-       */
-      const selectOptions = this.buildPowerSelectOptions(dimObject);
+        /*
+         * transform into powerselect friendly option
+         * shape will be [{groupName, options: [{dimension, name, tables}, ...]}, ...]
+         */
+        const selectOptions = this.buildPowerSelectOptions(dimObject);
 
-      //sort groups
-      selectOptions.sort((a, b) => a.groupName.localeCompare(b.groupName));
-      return selectOptions;
-    });
+        //sort groups
+        selectOptions.sort((a, b) => a.groupName.localeCompare(b.groupName));
+        return selectOptions;
+      });
   }
 
   /**
@@ -110,17 +112,26 @@ export default class DashboardDimensionSelectorComponent extends Component {
   }
 
   /**
-   * Takes a list of widgets and builds an object keyed by table and list of dimensions
+   * Takes a list of widgets and current dashboard filters and builds an object keyed by table and list of dimensions
+   * Excludes timeDimensions which are already filtered on
    * @param {Widget} widgets
    * @returns {Object} - {table: [{id, name, category}, ...], ...}
    */
-  mergeWidgetDimensions(widgets) {
+  mergeWidgetDimensions(widgets, dashboardFilters) {
+    const timeFilters = (dashboardFilters ?? []).filter((filter) => filter.type === 'timeDimension');
+
     return widgets.reduce((dimensionMap, widget) => {
       const { id: tableKey, dimensions, timeDimensions } = widget.requests?.firstObject?.tableMetadata || {};
       const dataSource = widget?.requests?.firstObject?.dataSource;
       const key = `${dataSource}.${tableKey}`;
       if (!dimensionMap[key]) {
-        dimensionMap[key] = [...dimensions, ...timeDimensions];
+        dimensionMap[key] = [
+          ...(dimensions ?? []),
+          ...(timeDimensions ?? []).filter(
+            (timeDimension) =>
+              !timeFilters.find((filter) => filter.source === dataSource && filter.field === timeDimension.id)
+          ),
+        ];
       }
       return dimensionMap;
     }, {});

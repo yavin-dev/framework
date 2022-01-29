@@ -172,6 +172,111 @@ module('Integration | Component | dashboard dimension selector', function (hooks
       'Correct select structure is shown'
     );
   });
+
+  test('it excludes time dimensions that are already filtered on', async function (assert) {
+    assert.expect(1);
+    const dashboard = {
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'b.dateTime',
+          parameters: { grain: 'day' },
+          values: ['P1D', 'current'],
+          source: 'bardOne',
+        },
+      ],
+      widgets: Promise.resolve([
+        {
+          requests: arr(
+            [
+              {
+                dataSource: 'bardOne',
+                requestVersion: '2.0',
+                sorts: [],
+                columns: [],
+                filters: [],
+                limit: null,
+                table: 'a',
+                tableMetadata: {
+                  id: 'a',
+                  timeDimensions: [{ id: 'a.dateTime', name: 'Date Time a', category: 'Date' }],
+                  dimensions: [
+                    { id: 'dim1', name: 'dim1', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2' },
+                  ],
+                },
+              },
+            ],
+            [
+              {
+                dataSource: 'bardOne',
+                requestVersion: '2.0',
+                sorts: [],
+                columns: [],
+                filters: [],
+                limit: null,
+                table: 'b',
+                tableMetadata: {
+                  id: 'b',
+                  timeDimensions: [{ id: 'b.dateTime', name: 'Date Time b', category: 'Date' }],
+                  dimensions: [
+                    { id: 'dim1', name: 'dim1', category: 'cat1' },
+                    { id: 'dim2', name: 'dim2', category: 'cat2' },
+                  ],
+                },
+              },
+            ]
+          ),
+        },
+        {
+          requests: arr([
+            {
+              dataSource: 'bardTwo',
+              requestVersion: '2.0',
+              sorts: [],
+              columns: [],
+              filters: [],
+              limit: null,
+              table: 'b',
+              tableMetadata: {
+                id: 'b',
+                timeDimensions: [{ id: 'b.dateTime', name: 'Date Time', category: 'Date' }],
+                dimensions: [
+                  { id: 'dim3', name: 'dim3', category: 'cat3' },
+                  { id: 'dim4', name: 'dim4', category: 'cat1' },
+                  { id: 'dim2', name: 'dim2', category: 'cat4' },
+                ],
+              },
+            },
+          ]),
+        },
+      ]),
+    };
+
+    this.set('dashboard', dashboard);
+
+    this.set('changeme', () => undefined);
+
+    await render(hbs`<DashboardDimensionSelector @dashboard={{this.dashboard}} @onChange={{this.changeme}} />`);
+
+    await clickTrigger();
+
+    const dropdown = document.querySelector('.ember-basic-dropdown-content');
+
+    assert.deepEqual(
+      structure(dropdown),
+      {
+        'Date (bardOne)': ['Date Time a'],
+        'Date (bardTwo)': ['Date Time'],
+        'cat1 (bardTwo)': ['dim4'],
+        'cat1 (bardOne)': ['dim1'],
+        cat2: ['dim2'],
+        cat3: ['dim3'],
+        cat4: ['dim2'],
+      },
+      'Correct select structure is shown'
+    );
+  });
 });
 
 const structure = (dropdown) =>
