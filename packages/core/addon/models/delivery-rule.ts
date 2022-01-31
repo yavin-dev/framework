@@ -42,6 +42,12 @@ const Validations = buildValidations({
       message: 'Please select a delivery option',
     }),
   ],
+  isDisabled: [
+    validator('presence', {
+      presence: true,
+      message: 'isDisabled is not defined',
+    }),
+  ],
 });
 
 export default class DeliveryRuleModel extends Model.extend(Validations) {
@@ -74,7 +80,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   delivery!: string;
 
   @attr('boolean', { defaultValue: false })
-  isDisabled!: boolean;
+  declare isDisabled: boolean;
 
   @belongsTo('deliverable-item', { async: true, inverse: 'deliveryRules', polymorphic: true })
   deliveredItem!: DS.PromiseObject<DeliverableItemModel>;

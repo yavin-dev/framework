@@ -74,7 +74,7 @@ module('Unit | Model | delivery rule', function (hooks) {
   });
 
   test('Validations', async function (assert) {
-    assert.expect(17);
+    assert.expect(20);
 
     await run(async () => {
       const deliveryRule = await Store.findRecord('deliveryRule', 1);
@@ -113,12 +113,19 @@ module('Unit | Model | delivery rule', function (hooks) {
       assert.equal(v5.validations.get('messages').length, 3, 'Three Fields are invalid in the deliveryRule model');
       assert.notOk(v5.model.get('validations.attrs.recipients.isValid'), 'Recipients must have valid email addresses');
 
-      //setting frequency to null
+      //setting delivery to null
       deliveryRule.set('delivery', null);
       const v6 = await deliveryRule.validate();
       assert.notOk(v6.validations.get('isValid'), 'deliveryRule is invalid');
       assert.equal(v6.validations.get('messages').length, 4, 'Four Fields are invalid in the deliveryRule model');
       assert.notOk(v6.model.get('validations.attrs.delivery.isValid'), 'Delivery option must have a value');
+
+      //setting frequency to null
+      deliveryRule.set('isDisabled', null);
+      const v7 = await deliveryRule.validate();
+      assert.notOk(v7.validations.get('isValid'), 'deliveryRule is invalid');
+      assert.equal(v7.validations.get('messages').length, 5, 'Five Fields are invalid in the deliveryRule model');
+      assert.notOk(v7.model.get('validations.attrs.isDisabled.isValid'), 'isDisabled is not defined');
     });
   });
 
