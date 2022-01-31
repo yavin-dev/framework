@@ -185,7 +185,7 @@ export default class DashboardDataService extends Service {
       if (filter.type === 'timeDimension') {
         requestClone.filters
           .toArray()
-          .filter((f) => f.field === filter.field)
+          .filter((f) => f.source === filter.source && f.field === filter.field)
           .forEach((f) => requestClone.removeFilter(f));
       }
       requestClone.addFilter(filter);
