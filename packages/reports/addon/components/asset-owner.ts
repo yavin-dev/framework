@@ -13,6 +13,6 @@ interface ReportUserArgs {
 
 export default class ReportUser extends Component<ReportUserArgs> {
   get updatedon(): string {
-    return 'Last Modified on ' + moment(this.args.updatedOn).format('MMM');
+    return 'Last Modified on ' + moment(this.args.updatedOn).format('lll');
   }
 }
