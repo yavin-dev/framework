@@ -6,7 +6,7 @@
 import Component from '@glimmer/component';
 import moment from 'moment';
 
-interface ReportUserArgs {
+export interface ReportUserArgs {
   user: string;
   updatedOn: string;
 }
