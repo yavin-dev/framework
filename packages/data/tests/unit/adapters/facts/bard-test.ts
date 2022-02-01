@@ -246,7 +246,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(12);
+    assert.expect(11);
 
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
@@ -265,33 +265,6 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       Adapter._buildDateTimeParam(singleInterval),
       '2021-02-13T00:00:00.000/2021-04-13T00:00:00.000',
       '_buildDateTimeParam built the correct string for a single interval'
-    );
-
-    let differentColumnAndFilterGrain: RequestV2 = {
-      ...EmptyRequest,
-      columns: [
-        {
-          type: 'timeDimension',
-          field: '.dateTime',
-          parameters: { grain: 'day' },
-        },
-      ],
-      filters: [
-        {
-          type: 'timeDimension',
-          field: '.dateTime',
-          parameters: { grain: 'week' },
-          operator: 'bet',
-          values: [],
-        },
-      ],
-    };
-    assert.throws(
-      () => {
-        Adapter._buildDateTimeParam(differentColumnAndFilterGrain);
-      },
-      /The requested filter timeGrain 'week', must match the column timeGrain 'day'/,
-      '_buildDateTimeParam throws an error for different timeGrains requested'
     );
 
     let noIntervals: RequestV2 = { ...EmptyRequest };

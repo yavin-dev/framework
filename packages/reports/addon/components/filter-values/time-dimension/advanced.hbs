@@ -1,7 +1,7 @@
 {{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.interval}}
-    {{this.dateRange}}
+    <span ...attributes>{{this.dateRange}}</span>
   {{else}}
     <FilterValues::InvalidValue />
   {{/if}}

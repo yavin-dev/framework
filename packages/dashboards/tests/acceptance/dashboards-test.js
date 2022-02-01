@@ -236,7 +236,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('Collapsed filters render on load', async function (assert) {
-    assert.expect(3);
+    assert.expect(4);
 
     await visit('/dashboards/1');
 
@@ -253,13 +253,16 @@ module('Acceptance | Dashboards', function (hooks) {
       el.textContent.replace(/\s+/g, ' ').trim()
     );
 
-    assert.equal(filters.length, 4, 'correct number of filters');
+    assert.equal(filters.length, 5, 'correct number of filters');
 
+    const firstFilter = filters.shift();
+
+    assert.ok(firstFilter.startsWith('Date Time (Day) in the past 7 days'), 'correct format of date filter');
     assert.ok(
       filters.every((filter) =>
         /^(Property|EventId) \(id\) (contains|not equals|equals) (.*?\d+.*?)( .*?\d+.*?)*$/.test(filter)
       ),
-      'correct format of filters'
+      'correct format of dimension filters'
     );
   });
 

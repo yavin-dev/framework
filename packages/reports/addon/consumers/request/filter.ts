@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -7,7 +7,10 @@ import Route from '@ember/routing/route';
 import { setProperties } from '@ember/object';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { OPERATORS, valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
+import {
+  findDefaultOperator,
+  getDefaultValuesForTimeFilter,
+} from 'navi-reports/components/filter-builders/time-dimension';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type MetricMetadataModel from 'navi-data/models/metadata/metric';
 import type ColumnFragment from 'navi-core/models/request/column';
@@ -15,7 +18,6 @@ import type ReportModel from 'navi-core/models/report';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
-import type { Grain } from 'navi-data/utils/date';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {
@@ -51,20 +53,6 @@ export default class FilterConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-
-      const findDefaultOperator = (type: string) => {
-        type = type?.toLowerCase();
-        const opDictionary: Record<string, FilterFragment['operator']> = {
-          time: 'gte',
-          date: 'bet',
-          datetime: 'bet',
-          number: 'eq',
-          default: 'in',
-        };
-
-        return opDictionary[type] || opDictionary.default;
-      };
-
       const defaultOperator = findDefaultOperator(dimensionMetadataModel.valueType);
       const defaultParams = dimensionMetadataModel.getDefaultParameters() || {};
       const filter = {
@@ -77,12 +65,7 @@ export default class FilterConsumer extends ActionConsumer {
       };
       let values;
       if (dimensionMetadataModel.metadataType === 'timeDimension' && defaultOperator === 'bet') {
-        const isTime = ['hour', 'minute', 'second'].includes(`${filter.parameters.grain}`);
-        if (isTime) {
-          values = valuesForOperator(filter, 'day', OPERATORS.dateRange);
-        } else {
-          values = valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
-        }
+        values = getDefaultValuesForTimeFilter(filter);
       }
 
       const newFilter = request.addFilter({

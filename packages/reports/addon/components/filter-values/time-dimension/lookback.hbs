@@ -1,7 +1,7 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{#if @isCollapsed}}
   {{#if this.lookback}}
-    {{this.lookback}} {{this.dateDescription}}
+    <span ...attributes>{{this.lookback}} {{this.dateDescription}}</span>
   {{else}}
     <FilterValues::InvalidValue/>
   {{/if}}
@@ -17,8 +17,8 @@
       @triggerClass="filter-values--lookback-trigger is-medium"
       @dropdownClass="filter-values--lookback-dropdown"
       @triggerComponent="filter-values/time-dimension/lookback-trigger"
-      @extra={{hash 
-        value=this.lookback 
+      @extra={{hash
+        value=this.lookback
         onUpdate=this.setLookback
         placeholder=(capitalize (concat this.grain "s"))
       }}

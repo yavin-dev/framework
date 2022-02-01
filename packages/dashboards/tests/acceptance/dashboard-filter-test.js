@@ -21,6 +21,8 @@ module('Acceptance | Dashboard Filters', function (hooks) {
   });
 
   test('dashboard filter flow', async function (assert) {
+    assert.expect(11);
+
     await visit('/dashboards/1/view');
 
     let dataRequests = [];
@@ -79,7 +81,30 @@ module('Acceptance | Dashboard Filters', function (hooks) {
       dataRequests.every((request) => request.queryParams.filters == 'platform|id-contains["win"]'),
       'each widget request has the right filters after one has been removed'
     );
+
+    //test date filter
+    await click('.dashboard-filters--expanded__add-filter-button');
+    await selectChoose('.dashboard-dimension-selector', 'Date Time');
+    await click('.dashboard-filters--expanded__add-filter-button');
+    selectChoose('.dashboard-dimension-selector', 'Date Time').catch((e) =>
+      assert.ok(
+        e.message.endsWith(`but "Date Time" didn't match any option`),
+        `"Date Time" is not available to select again`
+      )
+    );
+    //remove date filter, Date Time is again among options
+    await click(findAll('.filter-collection__remove')[1]);
+    await selectChoose('.dashboard-dimension-selector', 'Date Time');
+    await selectChoose(findAll('.dropdown-parameter-picker')[1], 'Day');
+    await selectChoose(findAll('.filter-builder__operator-trigger')[1], 'In The Past');
     dataRequests = [];
+    await fillIn('.filter-values--lookback-input__value', '7');
+
+    assert.ok(
+      dataRequests.every((request) => request.queryParams.dateTime === 'P7D/current'),
+      'each widget request has the right date filter'
+    );
+    assert.equal(dataRequests.length, 3, 'three data requests were made (one for each widget)');
 
     //test dashboard has the filter on save
     let dashboardBody = {};
@@ -95,7 +120,16 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     assert.deepEqual(
       dashboardBody.data.attributes.filters,
-      [{ dimension: 'bardOne.platform', field: 'id', operator: 'contains', values: ['win'] }],
+      [
+        { type: 'dimension', dimension: 'bardOne.platform', field: 'id', operator: 'contains', values: ['win'] },
+        {
+          dimension: 'bardOne.network.dateTime',
+          field: 'day',
+          operator: 'bet',
+          type: 'timeDimension',
+          values: ['P7D', 'current'],
+        },
+      ],
       'Correct filters are saved with the dashboard'
     );
   });
@@ -127,7 +161,7 @@ module('Acceptance | Dashboard Filters', function (hooks) {
   });
 
   test('dashboard filter query params - ui changes update the model', async function (assert) {
-    assert.expect(12);
+    assert.expect(13);
 
     window.confirm = () => {
       assert.step('confirm called');
@@ -135,6 +169,11 @@ module('Acceptance | Dashboard Filters', function (hooks) {
     };
 
     const INITIAL_FILTERS = [
+      {
+        dimension: 'Date Time (Day)',
+        operator: 'in the past',
+        rawValues: ['7'],
+      },
       {
         dimension: 'Property (id)',
         operator: 'contains',
@@ -167,6 +206,7 @@ module('Acceptance | Dashboard Filters', function (hooks) {
 
     //Remove 3/4 of filters and change operator of remaining one
     await click('.dashboard-filters__expand-button');
+    await click('.filter-collection__remove');
     await click('.filter-collection__remove');
     await click('.filter-collection__remove');
     await click(findAll('.filter-collection__remove')[1]);
@@ -224,6 +264,12 @@ module('Acceptance | Dashboard Filters', function (hooks) {
         'property|id-contains["114","100001"],property|id-notin["1"],property|id-notin["2","3"]',
       ],
       'The requests are sent with the initial filters'
+    );
+
+    assert.deepEqual(
+      dataRequests.map((req) => req.queryParams.dateTime),
+      ['P7D/current', 'P7D/current'],
+      'The requests are sent with the initial date filters'
     );
   });
 
@@ -474,7 +520,7 @@ function extractCollapsedFilters() {
   return findAll('.filter-collection--collapsed-item').map((el) => ({
     dimension: el.querySelector('.filter-dimension--collapsed').textContent.trim(),
     operator: el.querySelector('.filter-operator--collapsed').textContent.trim(),
-    rawValues: [...el.querySelectorAll('.filter-values--collapsed--value')].map(
+    rawValues: [...el.querySelectorAll('.filter-values--collapsed')].map(
       (elm) => elm.textContent.trim().match(/\d+/)[0]
     ),
   }));

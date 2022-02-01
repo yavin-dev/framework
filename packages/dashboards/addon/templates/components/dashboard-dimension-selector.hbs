@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div
   class="dashboard-dimension-selector"
   ...attributes
@@ -14,7 +14,9 @@
       @triggerClass="is-medium"
       as |dimension|
     >
-      <div title="Data Source: {{dimension.dataSource}}">{{dimension.name}}</div>
+      <div title="Data Source: {{dimension.source}}, Table(s): {{join ", " dimension.tables}}">
+        {{dimension.name}}
+      </div>
     </PowerSelect>
   {{/if}}
 </div>

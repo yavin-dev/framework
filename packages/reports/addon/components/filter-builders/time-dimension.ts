@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
@@ -54,6 +54,27 @@ export function intervalPeriodForGrain(grain: Grain): DateGrain {
 }
 
 type FilterLike = Pick<FilterFragment, 'values' | 'parameters' | 'operator'>;
+
+export function findDefaultOperator(type: string): FilterFragment['operator'] {
+  type = type?.toLowerCase();
+  const opDictionary: Record<string, FilterFragment['operator']> = {
+    time: 'gte',
+    date: 'bet',
+    datetime: 'bet',
+    number: 'eq',
+    default: 'in',
+  };
+
+  return opDictionary[type] || opDictionary.default;
+}
+
+export function getDefaultValuesForTimeFilter(filter: FilterLike): TimeFilterValues {
+  const isTime = ['hour', 'minute', 'second'].includes(`${filter.parameters.grain}`);
+  if (isTime) {
+    return valuesForOperator(filter, 'day', OPERATORS.dateRange);
+  }
+  return valuesForOperator(filter, filter.parameters.grain as Grain, OPERATORS.lookback);
+}
 
 /**
  * Converts an Interval to a format suitable to the newOperator while retaining as much information as possible

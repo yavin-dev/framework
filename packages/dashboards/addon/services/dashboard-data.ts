@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { A as arr } from '@ember/array';
@@ -179,9 +179,17 @@ export default class DashboardDataService extends Service {
    */
   protected applyFilters(dashboard: DashboardModel, request: RequestFragment): RequestFragment {
     const requestClone = request.clone();
-    this.getValidGlobalFilters(dashboard, request)
-      .filter((filter) => filter.values.length > 0)
-      .forEach((filter) => requestClone.addFilter(filter));
+    const validFilters = this.getValidGlobalFilters(dashboard, request).filter((filter) => filter.values.length > 0);
+
+    validFilters.forEach((filter) => {
+      if (filter.type === 'timeDimension') {
+        requestClone.filters
+          .toArray()
+          .filter((f) => f.source === filter.source && f.field === filter.field)
+          .forEach((f) => requestClone.removeFilter(f));
+      }
+      requestClone.addFilter(filter);
+    });
 
     return requestClone;
   }
@@ -220,7 +228,10 @@ export default class DashboardDataService extends Service {
    * Checks if a filter can be applied to a request
    */
   protected isFilterValid(request: RequestFragment, filter: FilterFragment): boolean {
-    const validDimensions = request.tableMetadata?.dimensionIds ?? [];
+    const validDimensions = [
+      ...(request.tableMetadata?.dimensionIds ?? []),
+      ...(request.tableMetadata?.timeDimensionIds ?? []),
+    ];
 
     return filter.source === request.dataSource && validDimensions.includes(filter.columnMetadata.id);
   }
