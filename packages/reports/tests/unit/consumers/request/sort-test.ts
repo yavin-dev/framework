@@ -22,6 +22,12 @@ const metric = {
   parameters: {},
   source: 'bardOne',
 };
+const metricWithParam = {
+  type: 'metric',
+  field: 'revenue',
+  parameters: { currency: 'USD' },
+  source: 'bardOne',
+};
 const dimension = {
   type: 'dimension',
   field: 'age',
@@ -131,5 +137,27 @@ module('Unit | Consumer | request sort', function (hooks) {
     Consumer.send(RequestActions.REMOVE_COLUMN_FRAGMENT, route, first);
 
     assert.deepEqual(getSorts(request), {}, 'The sorts are removed');
+  });
+
+  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
+    const request: RequestFragment = Store.createFragment('request', {
+      table: 'network',
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [metricWithParam],
+      filters: [],
+      sorts: [{ ...metricWithParam, direction: 'desc' }],
+    });
+
+    assert.deepEqual(getSorts(request), { 'revenue(currency=USD)': 'desc' }, 'The existing sort is correct');
+
+    const route = routeFor(request);
+
+    const first = request.columns.firstObject as ColumnFragment;
+    first.parameters.currency = 'CAD';
+    Consumer.send(RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS, route, first);
+
+    assert.deepEqual(getSorts(request), {}, 'The sorts are removed with matching base metric');
   });
 });
