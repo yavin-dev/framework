@@ -109,8 +109,13 @@ export default class SortConsumer extends ActionConsumer {
       route: Route,
       columnFragment: ColumnFragment
     ) {
-      const { columnMetadata, parameters } = columnFragment;
-      this.onRemoveColumn(route, columnMetadata, parameters);
+      const { routeName } = route;
+      const { request } = route.modelFor(routeName) as ReportModel;
+      const { columnMetadata } = columnFragment;
+
+      request.sorts
+        .filter((sort) => sort.columnMetadata === columnMetadata)
+        .forEach((sort) => request.removeSort(sort));
     },
   };
 }
