@@ -15,6 +15,8 @@ import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import SearchUtils from 'navi-data/utils/search';
+import { A } from '@ember/array';
 
 export type ServiceOptions = {
   timeout?: number;
@@ -67,6 +69,9 @@ export default class NaviDimensionService extends Service {
    * @param dimResponse NaviDimensionResponse
    */
   private _addToCache(cacheId: string, dimResponse: NaviDimensionResponse) {
+    if (!cacheId) {
+      return;
+    }
     const cache = this._dimensionCache;
     cache[cacheId] = {
       time: Date.now(),
@@ -76,20 +81,39 @@ export default class NaviDimensionService extends Service {
   }
 
   /**
-   * fetches a given cacheId's CacheRecord from the _dimensionCache
-   * returns undefined if not in cache
+   * fetches a given cacheId's CacheRecord from the _dimensionCache, returns undefined if not in cache
    * @param cacheId string (result of the _getCacheId function)
    * @returns CacheRecord | undefined
    */
-  private _checkCache(cacheId: string): CacheRecord | undefined {
-    const cache = this._dimensionCache;
-    const results = cache[cacheId];
-    // update record access time
-    if (results) {
-      results.time = Date.now();
+  private _checkCache(cacheId: string): NaviDimensionResponse | undefined {
+    if (!cacheId) {
+      return;
     }
+    const cache = this._dimensionCache;
+    let cacheResponse = cache[cacheId];
+    let results = undefined;
+
+    // for 'search' type requests, check for cached 'all' requests
+    if (!cacheResponse) {
+      const [dimId, query] = cacheId.split('.');
+      if (query) {
+        cacheResponse = cache[dimId];
+        if (cacheResponse) {
+          // sort the results
+          results = SearchUtils.searchDimensionRecords(A(cacheResponse?.dimResponse.values), query, 5000);
+        }
+      }
+    } else {
+      results = cacheResponse.dimResponse;
+    }
+
+    // if something was found, update record access time
+    if (cacheResponse) {
+      cacheResponse.time = Date.now();
+    }
+
     this._trimCache();
-    return results;
+    return results as NaviDimensionResponse;
   }
 
   /**
@@ -97,8 +121,11 @@ export default class NaviDimensionService extends Service {
    * @param dimension DimensionColumn
    * @returns string
    */
-  private _getCacheId(dimension: DimensionColumn): string {
+  private _getCacheId(dimension: DimensionColumn, query?: string): string {
     let cacheId = dimension.columnMetadata.id;
+    if (query) {
+      cacheId = cacheId + '.' + query;
+    }
     return cacheId;
   }
 
@@ -124,10 +151,11 @@ export default class NaviDimensionService extends Service {
    * @param options - method options
    */
   @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
+    // check cache
     const cacheId = this._getCacheId(dimension);
     const cacheResponse = this._checkCache(cacheId);
     if (cacheResponse) {
-      return cacheResponse.dimResponse;
+      return cacheResponse;
     }
 
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
@@ -159,7 +187,7 @@ export default class NaviDimensionService extends Service {
     }
     const results = NaviDimensionResponse.create({ values });
 
-    // don't cache anything too big
+    // if small, cache results
     if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
       this._addToCache(cacheId, results);
     }
@@ -194,10 +222,23 @@ export default class NaviDimensionService extends Service {
     query: string,
     options: ServiceOptions = {}
   ): TaskGenerator<NaviDimensionResponse> {
+    // check the cache
+    const cacheId = this._getCacheId(dimension, query);
+    const cacheResponse = this._checkCache(cacheId);
+    if (cacheResponse) {
+      return cacheResponse;
+    }
+
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield taskFor(adapter.search).perform(dimension, query, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+    const results = this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+
+    // cache if small
+    if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+      this._addToCache(cacheId, results);
+    }
+    return results;
   }
 }
 

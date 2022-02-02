@@ -321,7 +321,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     assert.deepEqual(noResultSearch.values, [], 'Empty array is returned when no values are found');
   });
 
-  test('caching requests of type all', async function (this: TestContext, assert) {
+  test('caching - all', async function (this: TestContext, assert) {
     assert.expect(6);
 
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
@@ -387,5 +387,55 @@ module('Unit | Service | navi-dimension', function (hooks) {
       ['currency', 'lang', 'userRegion'],
       "cache drops items over an hour old (drops age and gender, but keeps userRegion because it's being re-accessed)"
     );
+  });
+
+  test('caching - search', async function (this: TestContext, assert) {
+    assert.expect(6);
+
+    const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
+    const metadataService = this.metadataService; // makes typescript happy
+    await metadataService.loadMetadata({ dataSourceName: 'bardOne' });
+
+    // runs appropriate task in the navi-dimension service for given dimension ID and set of params
+    async function runServiceTask(dimensionID: string, searchParams?: string) {
+      const columnMetadata = metadataService.getById('dimension', dimensionID, 'bardOne') as DimensionMetadataModel;
+      if (searchParams) {
+        return await taskFor(service.search).perform({ columnMetadata }, searchParams);
+      }
+      return await taskFor(service.all).perform({ columnMetadata });
+    }
+
+    // mock endpoint and keep track of number of calls to it
+    let dataRequestsCount = 0;
+    this.server.pretender.handledRequest = (_, url) => {
+      if (url.includes('/v1/dimensions')) {
+        dataRequestsCount++;
+      }
+    };
+
+    // setup cache
+    await runServiceTask('age');
+    const oldTime = Date.now() - 30 * 60 * 1000;
+    service._dimensionCache['age'].time = oldTime;
+
+    // calling 'search' after calling 'all'
+    await runServiceTask('age', '1');
+    assert.deepEqual(dataRequestsCount, 1, "doesn't trigger data fetch");
+    assert.notEqual(service._dimensionCache['age'].time, oldTime, 'access time updates');
+
+    // calling same search twice
+    await runServiceTask('lang', '1');
+    await runServiceTask('lang', '1');
+    assert.deepEqual(Object.keys(service._dimensionCache), ['age', 'lang.1'], 'cache adds searches correctly to cache');
+    assert.deepEqual(dataRequestsCount, 2, 'finds same search in cache');
+
+    // calling search on same dimension but different query
+    await runServiceTask('lang', '2');
+    assert.deepEqual(
+      Object.keys(service._dimensionCache),
+      ['age', 'lang.1', 'lang.2'],
+      'cache adds new searches correctly to cache'
+    );
+    assert.deepEqual(dataRequestsCount, 3, 'fetches new data for new, un-cached query');
   });
 });
