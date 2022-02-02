@@ -10,6 +10,7 @@ import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
 import type VisualizationModelV2 from './visualization-v2';
 import { formTypeName } from 'navi-core/visualization/manifest';
+import { omit } from 'lodash-es';
 
 //TODO Try to make this an abstract class
 export default class VisualizationFragment extends Fragment implements VisualizationModelV2 {
@@ -66,6 +67,16 @@ export default class VisualizationFragment extends Fragment implements Visualiza
      * TODO: Enable this after figuring out the reason for ember-cp-validations failing
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);
      */
+  }
+
+  /**
+   * Serialize to json excluding namespace
+   * @override
+   */
+  toJSON() {
+    const json = super.toJSON() as this;
+    const withoutNamespace = omit(json, 'namespace');
+    return withoutNamespace;
   }
 }
 
