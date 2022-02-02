@@ -10,8 +10,8 @@ export default class YavinVisualizationModel<T = unknown> extends Fragment {
   @attr('string')
   declare type: string;
 
-  @attr('string')
-  declare version: string;
+  @attr('number')
+  declare version: number;
 
   @attr('string')
   declare namespace: string;

@@ -7,13 +7,93 @@
  */
 
 import Service from '@ember/service';
+import type StoreService from '@ember-data/store';
 import config from 'ember-get-config';
 import { assert } from '@ember/debug';
 import { getOwner, setOwner } from '@ember/application';
-import type RequestFragment from 'navi-core/models/request';
 import { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
+import NaviVisualizationConfigWrapper from 'navi-core/components/navi-visualization-config/wrapper';
+//@ts-ignore
+import ReportVisualization from 'navi-reports/components/report-visualization';
+import type RequestFragment from 'navi-core/models/request';
+import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
+import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
+import type { VisualizationType } from 'navi-core/models/registry';
+import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type YavinVisualizationModel from 'navi-core/models/visualization-v2';
 
 const global = window as typeof window & { requirejs: { entries: Record<string, unknown> } };
+
+class CompatManifest extends YavinVisualizationManifest {
+  old: NaviVisualizationBaseManifest;
+
+  currentVersion;
+  namespace;
+  type;
+  niceName;
+  icon;
+  visualizationComponent = ReportVisualization;
+  settingsPanelComponent = NaviVisualizationConfigWrapper;
+
+  get visualizationType(): VisualizationType {
+    return this.type as VisualizationType;
+  }
+
+  constructor(legacy: NaviVisualizationBaseManifest) {
+    super(...arguments);
+    this.old = legacy;
+
+    const owner = getOwner(this.old);
+    const store = owner.lookup('service:store') as StoreService;
+
+    this.namespace = this.old.name === 'table' ? 'yavin' : '$c3';
+    this.type = this.old.name;
+    this.niceName = this.old.niceName;
+    this.icon = this.old.icon;
+
+    const viz = store.createFragment(this.visualizationType, {}) as TypedVisualizationFragment;
+    this.currentVersion = viz.version;
+    store.unloadRecord(viz);
+  }
+
+  validate(request: RequestFragment): { isValid: boolean; messages?: string[] } {
+    const isValid = this.old.typeIsValid(request);
+    return { isValid };
+  }
+
+  createNewSettings(): unknown {
+    return {};
+  }
+
+  dataDidUpdate(currentSettings: object, request: RequestFragment, response: NaviFactResponse): object {
+    const vizModel = this.store.createFragment(this.visualizationType, currentSettings);
+    vizModel.rebuildConfig(request, response);
+    const settings = vizModel.serialize();
+    this.store.unloadRecord(vizModel);
+    return settings;
+  }
+
+  normalizeModel(c: unknown): Promise<YavinVisualizationModel> {
+    const { visualizationType } = this;
+    const normalized = this.store.createFragment(visualizationType, { c });
+    return Promise.resolve(normalized);
+  }
+
+  // serializeSettings(model: YavinVisualizationModel): YavinVisualizationModel {
+  //   return model;
+  // }
+
+  createModel() {
+    const { currentVersion: version, namespace } = this;
+    const metadata = this.createNewSettings();
+    return this.store.createFragment(this.visualizationType, {
+      type: this.visualizationType,
+      version,
+      namespace,
+      metadata,
+    });
+  }
+}
 
 export default class YavinVisualizationsService extends Service {
   private registry: Map<string, Map<string, YavinVisualizationManifest<unknown>>> = new Map();
@@ -34,9 +114,10 @@ export default class YavinVisualizationsService extends Service {
     visualizationManifests
       .map((key) => {
         const [, name] = visualizationRegExp.exec(key) || [];
-        return owner.lookup(`navi-visualization-manifest:${name}`);
+        return owner.lookup(`navi-visualization-manifest:${name}`) as NaviVisualizationBaseManifest;
       })
-      .forEach((m) => this.registerVisualization(m));
+      .filter((m) => m.name) // filter out base class
+      .forEach((m) => this.registerVisualization(new CompatManifest(m)));
   }
 
   defaultVisualization(): YavinVisualizationManifest {
@@ -72,7 +153,7 @@ export default class YavinVisualizationsService extends Service {
   }
 
   getCategories(): string[] {
-    return Object.keys(this.registry);
+    return [...this.registry.keys()];
   }
 
   getVisualizations(categoryName = this.defaultCategory): YavinVisualizationManifest[] {
@@ -84,12 +165,6 @@ export default class YavinVisualizationsService extends Service {
   }
 
   getVisualization(typeName: string): YavinVisualizationManifest {
-    if (typeName === 'table') {
-      typeName = 'yavin:table';
-    }
-    if (!typeName.includes(':')) {
-      typeName = `$c3:${typeName}`;
-    }
     const categories = [...this.registry.values()];
     const visualization = categories.flatMap((c) => [...c.values()]).find((m) => m.typeName === typeName);
     assert(`Visualization '${typeName}' cannot be found in the visualization registry`, visualization);
@@ -100,6 +175,6 @@ export default class YavinVisualizationsService extends Service {
 // DO NOT DELETE: this is how TypeScript knows how to look up your services.
 declare module '@ember/service' {
   interface Registry {
-    'navi-visualizations': YavinVisualizationsService;
+    visualization: YavinVisualizationsService;
   }
 }
