@@ -28,6 +28,7 @@ shared:
         requires:
           - ~pr
           - ~commit
+          - ~pr:vis-v2
   environment:
     NODE_VERSION: 14.16.1
     JOBS: 4
