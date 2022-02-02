@@ -80,10 +80,6 @@ class CompatManifest extends YavinVisualizationManifest {
     return Promise.resolve(normalized);
   }
 
-  // serializeSettings(model: YavinVisualizationModel): YavinVisualizationModel {
-  //   return model;
-  // }
-
   createModel() {
     const { currentVersion: version, namespace } = this;
     const metadata = this.createNewSettings();

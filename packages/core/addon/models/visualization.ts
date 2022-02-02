@@ -12,7 +12,6 @@ import type VisualizationModelV2 from './visualization-v2';
 import { formTypeName } from 'navi-core/visualization/manifest';
 import { omit } from 'lodash-es';
 
-//TODO Try to make this an abstract class
 export default class VisualizationFragment extends Fragment implements VisualizationModelV2 {
   @attr('string')
   type!: string;
@@ -73,7 +72,7 @@ export default class VisualizationFragment extends Fragment implements Visualiza
    * Serialize to json excluding namespace
    * @override
    */
-  toJSON() {
+  toJSON(): object {
     const json = super.toJSON() as this;
     const withoutNamespace = omit(json, 'namespace');
     return withoutNamespace;
