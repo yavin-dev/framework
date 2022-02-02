@@ -8,17 +8,27 @@ import Fragment from 'ember-data-model-fragments/fragment';
 import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
+import type VisualizationModelV2 from './visualization-v2';
+import { formTypeName } from 'navi-core/visualization/manifest';
+import { omit } from 'lodash-es';
 
-//TODO Try to make this an abstract class
-export default class VisualizationFragment extends Fragment {
+export default class VisualizationFragment extends Fragment implements VisualizationModelV2 {
   @attr('string')
   type!: string;
+
+  @attr('string')
+  namespace!: string;
 
   @attr('number')
   version!: number;
 
   @attr()
   metadata: unknown;
+
+  get typeName(): string {
+    const { namespace, type } = this;
+    return formTypeName(type, namespace);
+  }
 
   /**
    * @property {Object} - temporary request object used for validation
@@ -56,6 +66,16 @@ export default class VisualizationFragment extends Fragment {
      * TODO: Enable this after figuring out the reason for ember-cp-validations failing
      * Ember.assert(`rebuildConfig is not implemented in ${this.constructor.modelName}`);
      */
+  }
+
+  /**
+   * Serialize to json excluding namespace
+   * @override
+   */
+  toJSON(): object {
+    const json = super.toJSON() as this;
+    const withoutNamespace = omit(json, 'namespace');
+    return withoutNamespace;
   }
 }
 
