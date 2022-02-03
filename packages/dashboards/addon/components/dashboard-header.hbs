@@ -25,6 +25,9 @@
           class="dashboard-header__fav-icon m-l-4"
         />
       </div>
+      <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0 p-b-5">
+        <AssetOwner @user={{@dashboard.owner.id}} @updatedOn={{@dashboard.updatedOn}}/>
+      </div>
     </div>
     <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
         <div class="dashboard-header__actions">
