@@ -13,6 +13,7 @@ import { assert } from '@ember/debug';
 import { getOwner, setOwner } from '@ember/application';
 import { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
 import NaviVisualizationConfigWrapper from 'navi-core/components/navi-visualization-config/wrapper';
+import NaviVisualizationWrapper from 'navi-core/components/navi-visualizations/wrapper';
 import type RequestFragment from 'navi-core/models/request';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
@@ -30,7 +31,7 @@ class CompatManifest extends YavinVisualizationManifest {
   type;
   niceName;
   icon;
-  visualizationComponent;
+  visualizationComponent = NaviVisualizationWrapper;
   settingsPanelComponent = NaviVisualizationConfigWrapper;
 
   get visualizationType(): VisualizationType {
@@ -48,9 +49,6 @@ class CompatManifest extends YavinVisualizationManifest {
     this.type = this.old.name;
     this.niceName = this.old.niceName;
     this.icon = this.old.icon;
-
-    // TODO: move this to core
-    this.visualizationComponent = owner.lookup('component:report-visualization');
 
     const viz = store.createFragment(this.visualizationType, {}) as TypedVisualizationFragment;
     this.currentVersion = viz.version;

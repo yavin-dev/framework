@@ -1,0 +1,10 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div id={{this.guid}} class="navi-visualization" ...attributes>
+  <this.visualizationComponent
+    @model={{ember-array this.visualizationHash @annotationData}}
+    @options={{@report.visualization.metadata}}
+    @onUpdateReport={{@onUpdateReport}}
+    @containerComponent={{or @container this.getContainer}}
+    @isEditing={{@isEditing}}
+  />
+</div>
