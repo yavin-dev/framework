@@ -1,5 +1,5 @@
 cache:
-  pipeline: [~/.npm, ~/.gradle]
+  pipeline: [~/.npm, ~/.nvm, ~/.gradle]
 
 shared:
   image: maven:3.8.2-openjdk-11
@@ -11,6 +11,7 @@ shared:
           install-node: |
             sd-cmd exec screwdriver/install-nodejs@latest $NODE_VERSION
             export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use node
+            npm install -g npm@8.3.2
       - .: &npm-cache-verify
           npm-cache-verify: npm cache verify
       - .: &npm-ci
@@ -30,7 +31,7 @@ shared:
           - ~commit
           - ~pr:vis-v2
   environment:
-    NODE_VERSION: 14.16.1
+    NODE_VERSION: 14.19.0
     JOBS: 4
 
 jobs:
