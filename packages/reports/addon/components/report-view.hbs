@@ -1,5 +1,5 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div id={{this.guid}} class="report-view" ...attributes {{did-insert this.setupElement}} {{did-update this.updateResponse @response @isFiltersCollapsed}}>
+<div id={{this.guid}} class="report-view" ...attributes {{did-insert this.setupElement}} {{did-update this.filtersUpdate @isFiltersCollapsed @report.request.filters.length}}>
   <div class="report-view__visualization-main">
     <ReportViewOverlay
       @runReport={{pipe (route-action "validate" @report) (route-action "forceRun" @report)}}
