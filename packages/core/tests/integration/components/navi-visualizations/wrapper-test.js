@@ -42,7 +42,7 @@ const Request = {
 };
 
 let Store;
-module('Integration | Component | report visualization', function (hooks) {
+module('Integration | Component | navi-visualizations/wrapper', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
@@ -73,17 +73,17 @@ module('Integration | Component | report visualization', function (hooks) {
     assert.expect(2);
 
     await render(hbs`
-      {{report-visualization
-        report=report
-        print=false
-      }}
+      <NaviVisualizations::Wrapper
+        @report={{this.report}}
+        @print={{false}}
+      />
     `);
 
-    assert.ok(!!findAll('.table-widget').length, 'report-visualization renders the correct visualization');
+    assert.ok(!!findAll('.table-widget').length, 'navi-visualization wrapper renders the correct visualization');
 
     assert.notOk(
       !!findAll('.table-widget--print').length,
-      'report-visualization renders the correct screen visualization'
+      'navi-visualization wrapper renders the correct screen visualization'
     );
   });
 
@@ -91,13 +91,16 @@ module('Integration | Component | report visualization', function (hooks) {
     assert.expect(1);
 
     await render(hbs`
-      {{report-visualization
-        report=report
-        print=true
-      }}
+      <NaviVisualizations::Wrapper
+        @report={{this.report}}
+        @print={{true}}
+      />
     `);
 
-    assert.ok(!!findAll('.table-widget--print').length, 'report-visualization renders the correct print visualization');
+    assert.ok(
+      !!findAll('.table-widget--print').length,
+      'navi-visualization wrapper renders the correct print visualization'
+    );
   });
 
   test('it renders the specified fallback print visualization', async function (assert) {
@@ -130,21 +133,21 @@ module('Integration | Component | report visualization', function (hooks) {
     this.set('response', NaviFactResponse.create({ rows: [] }));
 
     await render(hbs`
-      {{report-visualization
-        report=report
-        response=response
-        print=true
-      }}
+      <NaviVisualizations::Wrapper
+        @report={{this.report}}
+        @response={{this.response}}
+        @print={{true}}
+      />
     `);
 
     assert.ok(
       !!findAll('.line-chart-widget').length,
-      'report-visualization falls back to non print visualization when print version is not available'
+      'navi-visualization wrapper falls back to non print visualization when print version is not available'
     );
 
     assert.notOk(
       !!findAll('.line-chart-widget--print').length,
-      'report-visualization falls back to non print visualization when print version is not available'
+      'navi-visualization wrapper falls back to non print visualization when print version is not available'
     );
   });
 });
