@@ -30,8 +30,6 @@ import type TransitionContext from 'ember-animated/-private/transition-context';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
-type FilterState = { collapsed: boolean; count: number };
-
 interface ReportViewArgs {
   report: ReportModel;
   response: NaviFactResponse;
@@ -61,8 +59,6 @@ export default class ReportView extends Component<ReportViewArgs> {
   @tracked componentElement!: HTMLElement;
 
   guid = guidFor(this);
-
-  lastFilterState!: FilterState;
 
   get request() {
     return this.args.report.request;
@@ -97,13 +93,6 @@ export default class ReportView extends Component<ReportViewArgs> {
     return this.args.response?.meta.pagination?.numberOfResults === 0;
   }
 
-  get filterState(): FilterState {
-    return {
-      collapsed: this.args.isFiltersCollapsed,
-      count: this.request.filters.length,
-    };
-  }
-
   @action
   getContainer() {
     return document.getElementById(this.guid);
@@ -112,16 +101,11 @@ export default class ReportView extends Component<ReportViewArgs> {
   @action
   setupElement(el: HTMLElement) {
     this.componentElement = el;
-    this.lastFilterState = this.filterState;
   }
 
   @action
-  filtersUpdate(_el: HTMLElement, [isFiltersCollapsed, numFilters]: [ReportViewArgs['isFiltersCollapsed'], number]) {
-    const { collapsed, count } = this.lastFilterState;
-    if (collapsed !== isFiltersCollapsed || numFilters !== count) {
-      this.resizeVisualization();
-    }
-    this.lastFilterState = this.filterState;
+  filtersUpdate(_el: HTMLElement, [_isFiltersCollapsed, _numFilters]: [ReportViewArgs['isFiltersCollapsed'], number]) {
+    this.resizeVisualization();
   }
 
   /**
