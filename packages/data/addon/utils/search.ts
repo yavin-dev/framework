@@ -7,6 +7,8 @@ import { A } from '@ember/array';
 import { w } from '@ember/string';
 import PaginationUtils from './pagination';
 import type NativeArray from '@ember/array';
+import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import MutableArray from '@ember/array/mutable';
 
 export default {
   /**
@@ -114,5 +116,52 @@ export default {
     results = A(results).sortBy('relevance');
 
     return PaginationUtils.getPaginatedRecords(results, resultLimit, page);
+  },
+
+  /**
+   * Searches noramlized navi dimension records and returns filtered results sorted by relevance
+   *
+   * @method searchDimensionRecords
+   * @param {Array} records - collection of records to search
+   * @param {String} query - search query used to filter and rank assets
+   * @param {Number} resultLimit - maximum number of results
+   * @param {Number} [page] - page number starting from page 1
+   * @returns {Array} array of objects in the following form:
+   *          record - asset record
+   *          relevance - distance between record and search query
+   */
+  searchNaviDimensionRecords(
+    records: NaviDimensionModel[],
+    query: string
+  ): MutableArray<{ record: NaviDimensionModel; relevance: number }> {
+    let results: MutableArray<{ record: NaviDimensionModel; relevance: number }> = A(); // = [] as;
+
+    // Filter, map, and sort records based on how close each record is to the search query
+    records.forEach((record) => {
+      // Determine relevance based on string match weight
+      const { value, suggestions } = record;
+      const searchString = suggestions ? (Object.values(suggestions).join(' ') || '').toLowerCase() : '';
+      let nonIdMatchWeight = this.getPartialMatchWeight(searchString, query.toLowerCase()),
+        //@ts-ignore
+        idMatchWeight = this.getExactMatchWeight((value || '').toLowerCase(), query.toLowerCase()),
+        relevance = nonIdMatchWeight || idMatchWeight;
+
+      // If both id and description match the query, take the most relevant
+      if (nonIdMatchWeight && idMatchWeight) {
+        relevance = Math.min(nonIdMatchWeight, idMatchWeight);
+      }
+
+      if (relevance) {
+        // If record matched search query, include it in the filtered results in the desire form
+        results.pushObject({
+          relevance: relevance,
+          record: record,
+        });
+      }
+    });
+
+    results = results.sortBy('relevance');
+
+    return results;
   },
 };

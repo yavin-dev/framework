@@ -100,7 +100,10 @@ export default class NaviDimensionService extends Service {
         cacheResponse = cache[dimId];
         if (cacheResponse) {
           // sort the results
-          results = SearchUtils.searchDimensionRecords(A(cacheResponse?.dimResponse.values), query, 5000);
+          let searchResults = SearchUtils.searchNaviDimensionRecords(A(cacheResponse.dimResponse.values), query);
+          results = {
+            values: searchResults.map((val) => val.record),
+          };
         }
       }
     } else {
@@ -123,6 +126,12 @@ export default class NaviDimensionService extends Service {
    */
   private _getCacheId(dimension: DimensionColumn, query?: string): string {
     let cacheId = dimension.columnMetadata.id;
+    const params = dimension.parameters;
+    if (params) {
+      for (const [key, value] of Object.entries(params)) {
+        cacheId = cacheId + '(' + key + ':' + value + ')';
+      }
+    }
     if (query) {
       cacheId = cacheId + '.' + query;
     }
