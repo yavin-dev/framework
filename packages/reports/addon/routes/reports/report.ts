@@ -188,7 +188,8 @@ export default class ReportsReportRoute extends Route {
         // Switch from temp id to permanent id
         this.replaceWith('reports.report.view', get(report, 'id'));
       })
-      .catch(() => {
+      .catch((e) => {
+        debugger;
         this.naviNotifications.add({
           title: 'An error occurred while saving the report',
           style: 'danger',

@@ -144,8 +144,8 @@ export default class ReportView extends Component<ReportViewArgs> {
 
     const newVisualization = manifest.createModel();
     const newSettings = manifest.dataDidUpdate(newVisualization.metadata, request, response);
-    const normalized = await manifest.normalizeModel(newSettings);
-    report.updateVisualization(normalized);
+    newVisualization.metadata = newSettings;
+    report.updateVisualization(newVisualization);
   }
 
   /**

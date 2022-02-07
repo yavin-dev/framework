@@ -11,7 +11,7 @@ export interface PerspectiveSettings {
   configuration?: PerspectiveViewerConfig;
 }
 
-export class PerspectiveManifest extends YavinVisualizationManifest<PerspectiveSettings> {
+export default class PerspectiveManifest extends YavinVisualizationManifest<PerspectiveSettings> {
   namespace = 'perspective';
   currentVersion = 1;
   type = 'perspective';
