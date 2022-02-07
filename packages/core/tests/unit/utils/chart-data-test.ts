@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { groupDataByDimensions, chartTypeForRequest } from 'navi-core/utils/chart-data';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { setupTest } from 'ember-qunit';
 import ColumnFragment from 'navi-core/models/request/column';
 

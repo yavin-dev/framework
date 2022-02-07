@@ -2,7 +2,7 @@
 import { set } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { TestContext } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import LineChartVisualization from 'navi-core/models/line-chart';

@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext as Context } from 'ember-test-helpers';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import MetricChartBuilder from 'navi-core/chart-builders/metric';
 //@ts-ignore
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/metric';

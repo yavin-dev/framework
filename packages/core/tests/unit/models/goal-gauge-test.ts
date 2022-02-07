@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { set } from '@ember/object';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import StoreService from '@ember-data/store';
 
 module('Unit | Model | Gauge Visualization Fragment', function (hooks) {

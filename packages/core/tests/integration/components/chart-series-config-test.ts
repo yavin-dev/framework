@@ -5,7 +5,7 @@ import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext } from 'ember-test-helpers';
-import { buildTestRequest } from 'dummy/tests/helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 
 const TEMPLATE = hbs`
 <ChartSeriesConfig

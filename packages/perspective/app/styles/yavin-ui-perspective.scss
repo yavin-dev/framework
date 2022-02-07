@@ -1,0 +1,182 @@
+/**
+ * Copyright 2022, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+/* stylelint-disable selector-no-qualifying-type */
+@use 'sass:meta';
+
+//denali icons
+$icon-font: 'denali-icon-font';
+$duplicate: '\ebaf';
+$download: '\eba7';
+$refresh: '\ed63';
+$filter-horizontal: '\ebe5';
+$circle-add: '\ecd5';
+$circle-minus: '\ea1a';
+$more-horizontal-circle: '\ece1';
+$add: '\ea1e';
+$minus: '\ecd9';
+$save: '\ed6f';
+$close: '\eb15';
+$add: '\ea1e';
+$arrowhead-left: '\ea64';
+$arrowhead-right: '\ea68';
+$arrowhead-down: '\ea60';
+$arrowhead-up: '\ea6c';
+$arrowhead-left-circle: '\ea61';
+$arrowhead-right-circle: '\ea66';
+$check-circle: '\eb03';
+$circle: '\eb0b';
+
+perspective-viewer,
+perspective-viewer[theme='Denali'] {
+  --theme-name: 'Denali';
+}
+
+perspective-viewer[theme='Denali'],
+.perspective-viewer-material {
+  --button--font-size: 16px;
+  --config-button--padding: 14px 8px 6px 6px;
+  --column-drop-label--font-size: 8px;
+  --column-drop-container--padding: 0;
+  --column-drop-label--display: inline-block;
+  --column-selector--width: 24px;
+  --column-selector--font-size: 16px;
+  --column_type--width: 25px;
+  --select--padding: 0;
+  --side-panel--padding: 12px 0 6px 8px;
+  --top-panel--padding: 0 0 12px 0;
+  --top-panel-row--display: inline-flex;
+  --active--color: #{map-get($denali-brand-colors, '300')};
+  --inactive-color: #{rgba(map-get($denali-grey-colors, '800'), 0.2)};
+  --plugin--background: #fff;
+  --overflow-hint-icon--color: rgba(0, 0, 0, 0.2);
+  --select--background-color: none;
+  --column-drop-container--background: none;
+  --float--column-type--color: #2670a9;
+  --string--column-type--color: #e32b16;
+  --date--column-type--color: #24874b;
+  --boolean--column-type--color: #ea7319;
+  //--preload-fonts: "Roboto Mono:200;Open Sans:300,400;Material Icons:400";
+  --interface-monospace--font-family: $$font-family-monospace;
+  --button--font-family: #{meta.inspect($icon-font)};
+  --group_by--content: 'Group By';
+  --split_by--content: 'Split By';
+  --inactive-column-selector--content: #{meta.inspect($circle-minus)};
+  --active-column-selector--content: #{meta.inspect($circle-add)};
+  --config-button-icon--content: #{meta.inspect($filter-horizontal)};
+  --overflow-hint-icon--content: 'error_outline';
+  --status-icon--content: null;
+  --reset-button-icon--content: #{meta.inspect($refresh)};
+  --export-button-icon--content: #{meta.inspect($download)};
+  --copy-button-icon--content: #{meta.inspect($duplicate)};
+  --save-button-icon--content: #{meta.inspect($save)};
+  --theme-button-icon--content: 'palette';
+  --sort-order-asc--content: #{meta.inspect($arrowhead-up)};
+  --sort-order-desc--content: #{meta.inspect($arrowhead-down)};
+  --sort-order-none--content: #{meta.inspect($close)};
+  --sort-order-col-asc--content: #{meta.inspect($arrowhead-right)};
+  --sort-order-col-desc--content: #{meta.inspect($arrowhead-left)};
+  --column-add--content: #{meta.inspect($add)};
+  --column-close--content: #{meta.inspect($close)};
+  --d3fc-y1-label--content: #{meta.inspect($arrowhead-down)};
+  --d3fc-y2-label--content: #{meta.inspect($arrowhead-up)};
+  --d3fc-treedata-axis--lines: none;
+  --d3fc-tooltip--background--color: rgba(155, 155, 155, 0.8);
+  --d3fc-tooltip--color: #161616;
+  --d3fc-tooltip--border-color: #fff;
+  --d3fc-tooltip--box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  --d3fc-gridline--color: #eaedef;
+  --d3fc-axis-ticks--color: #161616;
+  --d3fc-axis--lines: #c5c9d0;
+  --d3fc-legend--background: rgba(255, 255, 255, 1);
+  --d3fc-series: rgba(135, 216, 18, 1);
+  --d3fc-series-1: #{map-get($denali-graph-colors, 'yellow')};
+  --d3fc-series-2: #{map-get($denali-graph-colors, 'sky')};
+  --d3fc-series-3: #{map-get($denali-graph-colors, 'violet')};
+  --d3fc-series-4: #{map-get($denali-graph-colors, 'pink')};
+  --d3fc-series-5: #{map-get($denali-graph-colors, 'blue')};
+  --d3fc-series-6: #{map-get($denali-graph-colors, 'orange')};
+  --d3fc-series-7: #{map-get($denali-graph-colors, 'purple')};
+  --d3fc-series-8: #{map-get($denali-graph-colors, 'green')};
+  --d3fc-series-9: #{map-get($denali-graph-colors, 'red')};
+  --d3fc-series-10: #{map-get($denali-brand-colors, '500')};
+  --d3fc-full--gradient: linear-gradient(#4d342f 0%,
+  #e4521b 22.5%,
+  #feeb65 42.5%,
+  #f0f0f0 50%,
+  #dcedc8 57.5%,
+  #42b3d5 67.5%,
+  #1a237e 100%);
+  --d3fc-positive--gradient: linear-gradient(#dcedc8 0%,
+  #42b3d5 35%,
+  #1a237e 100%);
+  --d3fc-negative--gradient: linear-gradient(#feeb65 100%,
+  #e4521b 70%,
+  #4d342f 0%);
+  --rt-pos-cell--color: #{map-get($denali-graph-colors, 'blue')};
+  --rt-neg-cell--color: #{map-get($denali-graph-colors, 'red')};
+  --column-style-open-button--content: #{meta.inspect($more-horizontal-circle)};
+  --column-style-close-button--content: #{meta.inspect($more-horizontal-circle)};
+  --tree-label-collapse--content: #{meta.inspect($arrowhead-right)};
+  --tree-label-expand--content: #{meta.inspect($arrowhead-down)};
+  background-color: map-get($denali-grey-colors, '200');
+  color: map-get($denali-grey-colors, '800');
+  font-family: $font-family-sans-serif;
+}
+
+perspective-viewer[theme='Denali']
+regular-table::-webkit-scrollbar-thumb,
+.perspective-viewer-material regular-table::-webkit-scrollbar-thumb {
+  background-color: #e0e4e9;
+}
+
+perspective-viewer[theme='Denali'] regular-table,
+.perspective-viewer-material regular-table {
+  mask-image: linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0)),
+    linear-gradient(to top, transparent 10%, rgb(0, 0, 0) 90%),
+    linear-gradient(to left, transparent 10%, rgb(0, 0, 0) 90%);
+  mask-position: -12px -12px, bottom right, bottom right;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%, 12px 1000%, 1000% 12px;
+  transition: mask-position 0.3s;
+}
+
+perspective-viewer[theme='Denali'] regular-table:hover,
+.perspective-viewer-material regular-table:hover {
+  mask-position: -12px -12px, top right, bottom left;
+}
+
+perspective-number-column-style[theme='Denali'],
+perspective-string-column-style[theme='Denali'],
+perspective-expression-editor[theme='Denali'] {
+  //--preload-fonts: "Roboto Mono:200;Open Sans:300,400;Material Icons:400";
+  --button--font-family: #{meta.inspect($icon-font)};
+  --active--color: #{map-get($denali-brand-colors, '300')};
+  --inactive-color: #{rgba(map-get($denali-grey-colors, '800'), 0.2)};
+  --plugin--background: ${background-color: map-get($denali-grey-colors, '100');}
+  --overflow-hint-icon--color: rgba(0, 0, 0, 0.2);
+  --select--background-color: none;
+  --column-drop-container--background: none;
+  --float--column-type--color: #2670a9;
+  --string--column-type--color: #e32b16;
+  --date--column-type--color: #24874b;
+  --boolean--column-type--color: #ea7319;
+  --column-style-pos-color--content: #{meta.inspect($add)};
+  --column-style-neg-color--content: #{meta.inspect($minus)};
+  --save-button-icon--content: #{meta.inspect($save)};
+  --reset-button-icon--content: #{meta.inspect($refresh)};
+  --column-style-radio--appearance: radio;
+  --column-style-radio-checked--content: none;
+  --column-style-radio-unchecked--content: none;
+  background-color: map-get($denali-grey-colors, '100');
+  font-family: $font-family-sans-serif;
+}
+
+//pad out the setting button when settings panel is closed
+perspective-viewer:not([settings]) {
+  regular-table {
+    padding: 12px 0 0 24px;
+  }
+}

@@ -5,7 +5,7 @@ import EmberObject from '@ember/object';
 import BuilderClass from 'navi-core/chart-builders/dimension';
 //@ts-ignore
 import TooltipTemplate from '../../../../navi-core/templates/chart-tooltips/dimension';
-import { buildTestRequest } from 'dummy/tests/helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { C3Row } from 'navi-core/chart-builders/base';
 import RequestFragment from 'navi-core/models/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';

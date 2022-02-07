@@ -8,7 +8,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import { TestContext } from 'ember-test-helpers';
-import { buildTestRequest } from 'dummy/tests/helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { DimensionSeries } from 'navi-core/models/chart-visualization';
 
 let Template = hbs`

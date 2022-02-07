@@ -4,7 +4,6 @@
  */
 import Component from '@glimmer/component';
 import type RequestFragment from 'navi-core/models/request';
-import type YavinVisualizationModel from 'navi-core/models/visualization-v2';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type { YavinVisualizationManifest } from './manifest';
 
@@ -15,7 +14,7 @@ export interface YavinVisualizationPanelArgs<Settings = unknown> {
   isEditing: boolean;
   isReadOnly: boolean;
   onUpdateReport: (action: string, ...params: unknown[]) => void;
-  onUpdateSettings(model: YavinVisualizationModel<Settings>): void;
+  onUpdateSettings(model: Settings): void;
   // temporary legacy support
   manifest: YavinVisualizationManifest;
 }
