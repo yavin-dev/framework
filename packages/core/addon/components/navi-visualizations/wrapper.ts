@@ -9,7 +9,7 @@
  *    @container={{this.container}}
  *    @isEditing={{this.isEditing}}
  *    @onUpdateReport={{this.onUpdateReport}}
- *    @print={{this.print}}
+ *    @isPrint={{this.isPrint}}
  *  />
  */
 
@@ -18,7 +18,7 @@ import { action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
 import type YavinVisualizationComponent from 'navi-core/visualization/component';
-import { YavinVisualizationArgs } from 'navi-core/visualization/component';
+import type { YavinVisualizationArgs } from 'navi-core/visualization/component';
 
 export default class NaviVisualizationsWrapper
   extends Component<YavinVisualizationArgs>

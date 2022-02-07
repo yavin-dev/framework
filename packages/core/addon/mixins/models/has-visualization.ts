@@ -28,19 +28,23 @@ export default Mixin.create({
     const { visualization } = this;
 
     if (newVisualization.typeName === visualization?.typeName) {
+      // Only update if there are changes so it doesn't look like the visualization changes needs to be saved
       if (!isEqual(visualization.metadata, newVisualization.metadata)) {
         //@ts-ignore
         visualization.metadata = newVisualization.metadata;
       }
     } else {
+      // assign to null first otherwise the new settings will be applied to the existing visualization (e.g. line chart settings on table model)
+      // since we know this is a different visualization type
       //@ts-ignore
       this.visualization = null;
-      //@ts-ignore
+      //@ts-ignore - assign to serialized version of visualization to support legacy models using the polymorphic route
       this.visualization = newVisualization.serialize();
     }
     //@ts-ignore
     const request = this.request as RequestFragment;
     if (request) {
+      // update the visualization (only needed for legacy) to have the latest request for use in validations
       set(this.visualization, '_request', request);
     }
   },

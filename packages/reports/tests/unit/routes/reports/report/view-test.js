@@ -1,4 +1,4 @@
-import EmberObject, { get } from '@ember/object';
+import EmberObject from '@ember/object';
 import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
 import { module, test } from 'qunit';
