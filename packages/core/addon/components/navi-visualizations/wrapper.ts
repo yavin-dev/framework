@@ -17,34 +17,27 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
-import type ReportModel from 'navi-core/models/report';
+import type YavinVisualizationComponent from 'navi-core/visualization/component';
+import { YavinVisualizationArgs } from 'navi-core/visualization/component';
 
-interface NaviVisualizationsWrapperArgs {
-  report: ReportModel;
-  response: NaviFactResponse;
-  container: unknown;
-  isEditing: boolean;
-  onUpdateReport: (action: string, ...params: unknown[]) => void;
-  print?: boolean;
-}
-
-export default class NaviVisualizationsWrapper extends Component<NaviVisualizationsWrapperArgs> {
+export default class NaviVisualizationsWrapper
+  extends Component<YavinVisualizationArgs>
+  implements YavinVisualizationComponent {
   guid = guidFor(this);
 
   get visualizationHash() {
     return {
-      request: this.args.report.request,
+      request: this.args.request,
       response: this.args.response || { rows: [] },
     };
   }
 
   get visualizationComponent() {
-    const { type } = this.args.report.visualization;
+    const { type } = this.args.manifest;
     const owner = getOwner(this);
     let component;
     const componentName = `navi-visualizations/${type}`;
-    if (this.args.print) {
+    if (this.args.isPrint) {
       const printComponentName = `${componentName}-print`;
       const printComponent = owner.factoryFor(`component:${printComponentName}`)?.class;
       if (printComponent) {

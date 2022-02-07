@@ -43,7 +43,7 @@ export default class ReportsNewRoute extends Route {
     try {
       const model = (await this.compression.decompressModel(modelString)) as ReportModel;
       await model.request?.loadMetadata();
-      return this.store.createRecord('report', model.clone());
+      return model.clone();
     } catch (e) {
       throw new Error('Could not parse model query param');
     }

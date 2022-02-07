@@ -1,4 +1,5 @@
 import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { action, set } from '@ember/object';
 //@ts-ignore
@@ -8,9 +9,16 @@ import { ModelFrom } from 'navi-core/utils/type-utils';
 import TableRoute from '../routes/table';
 import ColumnFragment from 'navi-core/models/request/column';
 import { TableColumnAttributes } from 'navi-core/serializers/table';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class TableController extends Controller {
-  @tracked model!: ModelFrom<TableRoute>;
+  declare model: ModelFrom<TableRoute>;
+
+  @service('visualization') declare visualizationService: YavinVisualizationsService;
+
+  get manifest() {
+    return this.visualizationService.getVisualization('yavin:table');
+  }
 
   @tracked isEditing = false;
 

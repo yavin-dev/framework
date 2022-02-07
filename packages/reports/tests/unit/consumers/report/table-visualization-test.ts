@@ -100,7 +100,7 @@ module('Unit | Consumer | report table visualization', function (hooks) {
       },
     });
 
-    const route = routeFor({ request, visualization });
+    const route = routeFor({ request, visualization: visualization });
 
     Consumer.send(UpdateReportActions.UPDATE_TABLE_COLUMN, route, {
       attributes: { format: 'bar' },

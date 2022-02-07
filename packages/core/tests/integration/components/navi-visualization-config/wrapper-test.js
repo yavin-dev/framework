@@ -10,11 +10,12 @@ let Template = hbs`
   {{navi-visualization-config/wrapper
     response=response
     request=request
-    visualization=visualization
-    onUpdateConfig=(action onUpdateChartConfig)
+    settings=visualization
+    manifest=manifest
+    onUpdateSettings=(action onUpdateChartConfig)
   }}`;
 
-module('Integration | Component | visualization config/warpper', function (hooks) {
+module('Integration | Component | visualization config/wrapper', function (hooks) {
   setupRenderingTest(hooks);
   setupMirage(hooks);
 
@@ -31,6 +32,8 @@ module('Integration | Component | visualization config/warpper', function (hooks
       }),
       { instantiate: false }
     );
+
+    this.set('manifest', { type: 'mock' });
 
     this.set('visualization', {
       type: 'mock',
@@ -54,13 +57,15 @@ module('Integration | Component | visualization config/warpper', function (hooks
 
   test('onUpdateChartConfig', async function (assert) {
     assert.expect(1);
+    const done = assert.async();
 
     this.set('onUpdateChartConfig', (result) => {
       assert.equal(result, 'foo', 'onUpdateChartConfig action is called by the mock component');
+      done();
     });
 
     await render(Template);
 
-    await run(() => click('.navi-visualization-config .navi-visualization-config__contents.mock'));
+    await click('.navi-visualization-config .navi-visualization-config__contents.mock');
   });
 });

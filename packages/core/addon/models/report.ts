@@ -9,6 +9,7 @@ import UserModel from './user';
 import { Moment } from 'moment';
 // eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
+import type { VisualizationType } from 'navi-core/models/registry';
 
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
@@ -63,11 +64,14 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   clone() {
     const clonedReport = this.toJSON() as this; //TODO not totally right
-    return {
+
+    const type = clonedReport.visualization.type as VisualizationType;
+
+    return this.store.createRecord('report', {
       title: clonedReport.title,
-      visualization: this.store.createFragment(clonedReport.visualization.type, clonedReport.visualization),
+      visualization: this.store.createFragment(type, clonedReport.visualization).serialize(),
       request: this.request.clone(),
-    };
+    });
   }
 }
 

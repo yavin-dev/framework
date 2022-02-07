@@ -38,19 +38,26 @@
             No results available.
           </div>
         {{else}}
-          <NaviVisualizations::Wrapper
-            class="report-view__visualization"
-            @report={{@report}}
-            @response={{@response}}
-            @container={{this.getContainer}}
-            @annotationData={{@annotationData}}
-            @isEditing={{and this.isEditingVisualization @hasRequestRun}}
-            @onUpdateReport={{queue
-              (route-action "onUpdateReport")
-              (route-action "validate" @report)
-              (route-action "runReport" @report)
-            }}
-          />
+          {{#let @report.visualization.manifest.visualizationComponent as |VisualizationComponent|}}
+            <VisualizationComponent
+              class="report-view__visualization"
+              @request={{@report.request}}
+              @response={{@response}}
+              @settings={{@report.visualization.metadata}}
+              @isReadOnly={{false}}
+              @isEditing={{and this.isEditingVisualization @hasRequestRun}}
+              @onUpdateReport={{queue
+                (route-action "onUpdateReport")
+                (route-action "validate" @report)
+                (route-action "runReport" @report)
+              }}
+              @onUpdateSettings={{route-action "onUpdateVisualizationConfig"}}
+
+              @manifest={{@report.visualization.manifest}}
+              @container={{this.getContainer}}
+              @annotationData={{@annotationData}}
+            />
+          {{/let}}
           <MissingIntervalsWarning
             @response={{@response}}
             @onDetailsToggle={{this.resizeVisualization}}
@@ -71,13 +78,17 @@
             {{on "click" this.toggleEditVisualization}}
           />
         </div>
-        <NaviVisualizationConfig::Wrapper
-          @request={{@report.request}}
-          @response={{@response.rows}}
-          @classNames="report-view__navi-visualization-config"
-          @visualization={{@report.visualization}}
-          @onUpdateConfig={{route-action "onUpdateVisualizationConfig"}}
-        />
+        {{#let @report.visualization.manifest.settingsPanelComponent as |SettingsPanelComponent|}}
+          <SettingsPanelComponent
+            class="report-view__navi-visualization-config"
+            @request={{@report.request}}
+            @response={{@response.rows}}
+            @settings={{@report.visualization.metadata}}
+            @manifest={{@report.visualization.manifest}}
+            @isEditing={{true}}
+            @onUpdateSettings={{route-action "onUpdateVisualizationConfig"}}
+          />
+        {{/let}}
       </div>
     {{/animated-if}}
   </AnimatedContainer>

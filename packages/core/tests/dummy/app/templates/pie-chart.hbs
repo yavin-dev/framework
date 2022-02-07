@@ -5,8 +5,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.request}}
     @response={{this.response}}
-    @visualization={{this.visualizationOptions}}
-    @onUpdateConfig={{this.onUpdateConfigOneDimension}}
+    @manifest={{this.manifest}}
+    @settings={{this.visualizationOptions.metadata}}
+    @onUpdateSettings={{this.onUpdateConfigOneDimension}}
   />
   <NaviVisualizations::PieChart
     @model={{this.model}}
@@ -19,8 +20,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.multiDimensionRequest}}
     @response={{this.multiDimensionResponse}}
-    @visualization={{this.visualizationOptionsMultiDimension}}
-    @onUpdateConfig={{this.onUpdateConfigMultipleDimension}}
+    @manifest={{this.manifest}}
+    @settings={{this.visualizationOptionsMultiDimension.metadata}}
+    @onUpdateSettings={{this.onUpdateConfigMultipleDimension}}
   />
   <NaviVisualizations::PieChart
     @model={{this.multiDimensionModel}}

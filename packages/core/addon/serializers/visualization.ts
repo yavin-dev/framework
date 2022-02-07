@@ -10,6 +10,6 @@ export default class VisualizationSerializer extends JSONSerializer {
    */
   attrs = {
     // Prevent sending below attributes in legacy visualizations
-    namespace: { serialize: false },
+    // namespace: { serialize: false },
   };
 }

@@ -2,7 +2,7 @@
 <div id={{this.guid}} class="navi-visualization" ...attributes>
   <this.visualizationComponent
     @model={{ember-array this.visualizationHash @annotationData}}
-    @options={{@report.visualization.metadata}}
+    @options={{@settings}}
     @onUpdateReport={{@onUpdateReport}}
     @containerComponent={{or @container this.getContainer}}
     @isEditing={{@isEditing}}

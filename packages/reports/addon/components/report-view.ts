@@ -15,7 +15,6 @@ import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
 import { guidFor } from '@ember/object/internals';
 import { scheduleOnce } from '@ember/runloop';
-import { capitalize } from '@ember/string';
 //@ts-ignore
 import move from 'ember-animated/motions/move';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
@@ -23,10 +22,10 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
 import type ReportModel from 'navi-core/models/report';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
-import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type StoreService from '@ember-data/store';
-import type { VisualizationType } from 'navi-core/models/registry';
 import type TransitionContext from 'ember-animated/-private/transition-context';
+import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 const VISUALIZATION_RESIZE_EVENT = 'resizestop';
 
@@ -45,10 +44,10 @@ interface ReportViewArgs {
 }
 
 export default class ReportView extends Component<ReportViewArgs> {
-  @service('navi-visualizations')
-  declare naviVisualizations: NaviVisualizationsService;
+  @service
+  declare visualization: YavinVisualizationsService;
 
-  @service('store')
+  @service
   declare store: StoreService;
 
   /**
@@ -69,14 +68,14 @@ export default class ReportView extends Component<ReportViewArgs> {
    * annotated with a field corresponding to whether the visualization type is valid based on the request
    */
   get validVisualizations() {
-    return this.naviVisualizations.validVisualizations(this.args.report.request);
+    return this.visualization.validVisualizations(this.args.report.request);
   }
 
   /**
    * Display name of the visualization type
    */
   get visualizationTypeLabel() {
-    return this.args.report.visualization.type.split('-').map(capitalize).join(' ');
+    return this.args.report.visualization.manifest.niceName;
   }
 
   /**
@@ -136,18 +135,17 @@ export default class ReportView extends Component<ReportViewArgs> {
    * @param {String} type
    */
   @action
-  onVisualizationTypeUpdate(type: VisualizationType) {
+  async onVisualizationTypeUpdate(manifest: YavinVisualizationManifest) {
     const {
       report,
       report: { request },
       response,
     } = this.args;
 
-    let newVisualization = this.store.createFragment(type, {
-      _request: request, //Provide request for validation
-    });
-    newVisualization.rebuildConfig(request, response);
-    report.visualization = newVisualization;
+    const newVisualization = manifest.createModel();
+    const newSettings = manifest.dataDidUpdate(newVisualization.metadata, request, response);
+    const normalized = await manifest.normalizeModel(newSettings);
+    report.updateVisualization(normalized);
   }
 
   /**

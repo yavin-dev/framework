@@ -13,6 +13,9 @@ const WIDGET = {
   title: 'Widget 1',
   visualization: {
     type: 'my-test-visualization',
+    manifest: {
+      type: 'my-test-visualization',
+    },
   },
 };
 
@@ -29,7 +32,9 @@ module('Integration | Component | navi widget', function (hooks) {
     );
 
     // Mock a visualization component
-    this.owner.register('component:navi-visualizations/my-test-visualization', class extends Component {});
+    const registration = 'component:navi-visualizations/my-test-visualization';
+    this.owner.register(registration, class extends Component {});
+    WIDGET.visualization.manifest.visualizationComponent = this.owner.factoryFor(registration).class;
   });
 
   test('it renders', async function (assert) {
@@ -117,9 +122,9 @@ module('Integration | Component | navi widget', function (hooks) {
   });
 
   test('visualization', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
-    const data = arr([1, 2, 3]),
+    const data = arr([{ request: 'foo', response: { rows: [1, 2, 3] } }]),
       metadata = {
         xAxis: 'timeseries',
       },
@@ -135,6 +140,7 @@ module('Integration | Component | navi widget', function (hooks) {
         type: 'my-test-visualization',
         version: 1,
         metadata,
+        manifest: { type: 'my-test-visualization' },
       },
     });
 
@@ -143,27 +149,35 @@ module('Integration | Component | navi widget', function (hooks) {
     // Make sure we have a reference to the grid-stack-item so we can test the event system
     let containerComponent = null;
 
+    const registration = 'component:navi-visualizations/my-test-visualization';
+    this.owner.unregister(registration);
     this.owner.register(
-      'component:navi-visualizations/my-test-visualization',
+      registration,
       class extends Component {
         classNames = ['test-visualization'];
 
         didInsertElement() {
           super.didInsertElement(...arguments);
 
-          containerComponent = this.containerComponent;
+          containerComponent = this.container;
 
           // Assert model and options are correct
-          assert.deepEqual(this.options, metadata, 'metadata is passed to visualization as options');
+          assert.deepEqual(this.settings, metadata, 'metadata is passed to visualization as options');
 
-          assert.deepEqual(this.model.toArray(), data, 'data is passed to visualization as model');
+          assert.deepEqual(this.request, data.firstObject.request, 'request data is passed to visualization as model');
+          assert.deepEqual(
+            this.response,
+            data.firstObject.response,
+            'response data is passed to visualization as model'
+          );
 
-          this.containerComponent.element.addEventListener('resizestop', () => {
+          this.container.element.addEventListener('resizestop', () => {
             assert.ok(true, 'visualization can listen to resize events on containerComponent property');
           });
         }
       }
     );
+    this.widgetModel.visualization.manifest.visualizationComponent = this.owner.factoryFor(registration).class;
 
     await render(hbs`
       <NaviWidget

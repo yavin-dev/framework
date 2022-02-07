@@ -5,19 +5,26 @@
 import { set } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
+import { formTypeName } from 'navi-core/visualization/manifest';
+import { omit } from 'lodash-es';
+import { inject as service } from '@ember/service';
 import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
 import type VisualizationModelV2 from './visualization-v2';
-import { formTypeName } from 'navi-core/visualization/manifest';
-import { omit } from 'lodash-es';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
+import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
 
 export default class VisualizationFragment extends Fragment implements VisualizationModelV2 {
+  @service declare visualization: YavinVisualizationsService;
+
   @attr('string')
   type!: string;
 
-  @attr('string')
-  namespace!: string;
+  // @attr('string')
+  get namespace() {
+    return ['metric-label', 'table'].includes(this.type) ? 'yavin' : 'c3';
+  }
 
   @attr('number')
   version!: number;
@@ -28,6 +35,10 @@ export default class VisualizationFragment extends Fragment implements Visualiza
   get typeName(): string {
     const { namespace, type } = this;
     return formTypeName(type, namespace);
+  }
+
+  get manifest(): YavinVisualizationManifest {
+    return this.visualization.getVisualization(this.typeName);
   }
 
   /**

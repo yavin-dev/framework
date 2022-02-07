@@ -180,7 +180,7 @@ module('Integration | Component | report view', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.visualization-toggle__option-icon[title="Data Table"]').isVisible('Table Selector is visible');
+    assert.dom('.visualization-toggle__option-icon[title="Table"]').isVisible('Table Selector is visible');
     assert
       .dom('.visualization-toggle__option-icon[title="Metric Label"]')
       .isVisible('Metric Label Selector is visible');

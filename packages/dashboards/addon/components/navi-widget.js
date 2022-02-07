@@ -10,8 +10,8 @@
  *     @canEdit={{true}}
  *   />
  */
-import { A as arr } from '@ember/array';
 import Component from '@ember/component';
+import { A as arr } from '@ember/array';
 import { computed } from '@ember/object';
 import layout from '../templates/components/navi-widget';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';

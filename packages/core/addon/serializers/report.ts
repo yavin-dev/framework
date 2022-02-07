@@ -18,28 +18,20 @@ import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeVisualization(request: RequestV2, visualization: any, metadata: NaviMetadataService) {
   let normalized = visualization;
-  let namespace;
-  const c3Namespace = 'c3';
   if (visualization?.type === 'table') {
-    namespace = 'yavin';
     normalized = normalizeTableV2(request, visualization, metadata);
   } else if (visualization?.type === 'metric-label') {
-    namespace = c3Namespace;
     normalized = normalizeMetricLabelV2(request, visualization);
   } else if (visualization?.type === 'line-chart') {
-    namespace = c3Namespace;
     normalized = normalizeLineChartV2(request, visualization);
   } else if (visualization?.type === 'bar-chart') {
-    namespace = c3Namespace;
     normalized = normalizeBarChartV2(request, visualization);
   } else if (visualization?.type === 'goal-gauge') {
-    namespace = c3Namespace;
     normalized = normalizeGoalGaugeV2(request, visualization);
   } else if (visualization?.type === 'pie-chart') {
-    namespace = c3Namespace;
     normalized = normalizePieChartV2(request, visualization);
   }
-  return { ...normalized, namespace };
+  return normalized;
 }
 
 export default class ReportSerializer extends AssetSerializer {

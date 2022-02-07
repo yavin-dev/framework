@@ -4,13 +4,13 @@
  */
 
 import Component from '@glimmer/component';
-import { set, computed, action } from '@ember/object';
-import { readOnly } from '@ember/object/computed';
+import { action } from '@ember/object';
 import { getOwner } from '@ember/application';
-import { Args as BaseArgs } from './base';
-import { Args as LineChartArgs } from '../navi-visualizations/line-chart';
 import { cloneDeep } from 'lodash-es';
-import { SeriesConfig, SeriesType } from 'navi-core/chart-builders/base';
+import type { Args as BaseArgs } from './base';
+import type { Args as LineChartArgs } from '../navi-visualizations/line-chart';
+import type { SeriesConfig, SeriesType } from 'navi-core/chart-builders/base';
+import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 
 type Style = LineChartArgs['options']['style'];
 
@@ -22,24 +22,22 @@ export default class NaviVisualizationConfigLineChartComponent extends Component
   curveOptions = <const>['line', 'spline', 'step'];
 
   /**
-   * prefix for the line chart component
-   */
-  typePrefix = 'navi-visualization-config/chart-type/';
-
-  /**
    * whether to display the `stacked` toggle
    */
-  @computed('args.{request,type}')
   get showStackOption() {
-    const { type, request } = this.args;
-    const visualizationManifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`);
+    const { request, type } = this.args;
+    const manifest = getOwner(this).lookup(`navi-visualization-manifest:${type}`) as NaviVisualizationBaseManifest;
 
-    return visualizationManifest.hasGroupBy(request) || visualizationManifest.hasMultipleMetrics(request);
+    return manifest.hasGroupBy(request) || manifest.hasMultipleMetrics(request);
   }
 
-  @readOnly('args.options.axis.y.series.config') seriesConfig!: SeriesConfig;
+  get seriesConfig(): SeriesConfig {
+    return this.args.options?.axis?.y?.series?.config;
+  }
 
-  @readOnly('args.options.axis.y.series.type') seriesType!: SeriesType;
+  get seriesType(): SeriesType {
+    return this.args.options?.axis?.y?.series?.type;
+  }
 
   /**
    * Replace the seriesConfig in visualization config object.
@@ -49,7 +47,7 @@ export default class NaviVisualizationConfigLineChartComponent extends Component
   @action
   onUpdateSeriesConfig(seriesConfig: SeriesConfig) {
     const newOptions = cloneDeep(this.args.options);
-    set(newOptions.axis.y.series, 'config', seriesConfig);
+    newOptions.axis.y.series.config = seriesConfig;
     this.args.onUpdateConfig(newOptions);
   }
 
@@ -62,7 +60,7 @@ export default class NaviVisualizationConfigLineChartComponent extends Component
   @action
   onUpdateStyle<StyleOption extends keyof Style>(field: StyleOption, value: Style[StyleOption]) {
     let newOptions = cloneDeep({ style: {}, ...this.args.options });
-    set(newOptions.style, field, value);
+    newOptions.style[field] = value;
     this.args.onUpdateConfig(newOptions);
   }
 }

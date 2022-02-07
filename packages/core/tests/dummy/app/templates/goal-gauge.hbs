@@ -8,6 +8,7 @@
 <NaviVisualizationConfig::Wrapper
     @request={{@model.firstObject.request}}
     @response={{@model.firstObject.response}}
-    @visualization={{this.goalGaugeVisualization}}
-    @onUpdateConfig={{this.onUpdateConfig}}
+    @manifest={{this.manifest}}
+    @settings={{this.goalGaugeVisualization.metadata}}
+    @onUpdateSettings={{this.onUpdateConfig}}
 />

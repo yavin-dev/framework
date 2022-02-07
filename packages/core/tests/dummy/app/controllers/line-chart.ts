@@ -1,13 +1,22 @@
 import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { merge } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { ModelFrom } from 'navi-core/utils/type-utils';
 import LineChartRoute from '../routes/line-chart';
 import { LineChartConfig } from 'navi-core/models/line-chart';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class LineChartController extends Controller {
-  model!: ModelFrom<LineChartRoute>;
+  declare model: ModelFrom<LineChartRoute>;
+
+  @service declare visualization: YavinVisualizationsService;
+
+  get manifest() {
+    return this.visualization.getVisualization(`c3:${this.chartType}`);
+  }
+
   @tracked chartType = 'line-chart';
 
   @tracked metricOptions = {

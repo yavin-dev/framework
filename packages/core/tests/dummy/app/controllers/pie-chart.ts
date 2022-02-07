@@ -8,10 +8,17 @@ import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/request';
 import StoreService from '@ember-data/store';
 import { PieChartConfig } from 'navi-core/models/pie-chart';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class PieChartController extends Controller {
   @service('store')
-  store!: StoreService;
+  declare store: StoreService;
+
+  @service declare visualization: YavinVisualizationsService;
+
+  get manifest() {
+    return this.visualization.getVisualization('c3:pie-chart');
+  }
 
   @readOnly('model.firstObject.request')
   request!: RequestFragment;

@@ -61,6 +61,9 @@ module('Unit | Route | reports/report', function (hooks) {
   test('setDefaultVisualization', function (assert) {
     const mockReport = {
         visualization: null,
+        updateVisualization: (viz) => {
+          mockReport.visualization = viz.serialize();
+        },
       },
       route = this.owner.factoryFor('route:reports/report').create({
         store: {
@@ -72,7 +75,7 @@ module('Unit | Route | reports/report', function (hooks) {
 
     assert.deepEqual(
       route.setDefaultVisualization(mockReport).visualization,
-      { type: 'table' },
+      { type: 'table', version: 2, metadata: { columnAttributes: {} } },
       'Default visualization is set for null value in visualization'
     );
 

@@ -4,15 +4,17 @@
  */
 
 import Component from '@glimmer/component';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import VisualizationModel from '../../models/visualization';
+import { getOwner } from '@ember/application';
+import type YavinVisualizationPanelComponent from '../../visualization/panel-component';
+import type { YavinVisualizationPanelArgs } from '../../visualization/panel-component';
 
-type Args = {
-  request: RequestV2;
-  response: ResponseV1;
-  visualization: VisualizationModel;
-  onUpdateConfig: (config: TODO) => void;
-};
-
-export default class NaviVisualizationConfigWrapperComponent extends Component<Args> {}
+export default class NaviVisualizationConfigWrapperComponent
+  extends Component<YavinVisualizationPanelArgs>
+  implements YavinVisualizationPanelComponent {
+  get configComponent() {
+    const { type } = this.args.manifest;
+    const owner = getOwner(this);
+    const componentName = `navi-visualization-config/${type}`;
+    return owner.factoryFor(`component:${componentName}`)?.class;
+  }
+}

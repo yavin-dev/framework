@@ -15,6 +15,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 import DashboardModel from './dashboard';
 import type { Moment } from 'moment';
 import type RequestFragment from './request';
+import type { VisualizationType } from 'navi-core/models/registry';
 
 const Validations = buildValidations({
   visualization: [validator('belongs-to')],
@@ -74,9 +75,11 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
   clone() {
     let clonedWidget = this.toJSON() as DashboardWidget;
 
+    const type = clonedWidget.visualization.type as VisualizationType;
+
     return this.store.createRecord('dashboard-widget', {
       title: clonedWidget.title,
-      visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization),
+      visualization: this.store.createFragment(type, clonedWidget.visualization).serialize(),
       requests: this.requests.map((request) => request.clone()),
     });
   }
