@@ -1,4 +1,4 @@
-import EmberObject, { get } from '@ember/object';
+import EmberObject from '@ember/object';
 import { run } from '@ember/runloop';
 import { resolve } from 'rsvp';
 import { module, test } from 'qunit';
@@ -9,7 +9,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
   setupTest(hooks);
 
   test('model', async function (assert) {
-    assert.expect(5);
+    assert.expect(6);
 
     const serializedRequest = 'foo',
       factServiceResponse = 'bar',
@@ -20,20 +20,29 @@ module('Unit | Route | reports/report/view', function (hooks) {
         },
         visualization: {
           type: 'table',
-          isValidForRequest: () => false, // Test invalid config case
-          rebuildConfig(request, response) {
-            assert.equal(
-              request,
-              reportModel.request,
-              'When config is invalid, rebuildConfig is given raw request object'
-            );
 
-            assert.equal(
-              response,
-              factServiceResponse,
-              'When config is invalid, rebuildConfig is given fact service response'
-            );
+          manifest: {
+            validate: () => ({ isValid: true }),
+            dataDidUpdate(_settings, request, response) {
+              assert.equal(
+                request,
+                reportModel.request,
+                'When config is invalid, rebuildConfig is given raw request object'
+              );
+
+              assert.equal(
+                response,
+                factServiceResponse,
+                'When config is invalid, rebuildConfig is given fact service response'
+              );
+            },
+            async normalizeModel(settings) {
+              return { serialize: () => ({ ...settings }) };
+            },
           },
+        },
+        updateVisualization(viz) {
+          assert.deepEqual(viz.serialize(), {}, 'visualization is updated');
         },
       };
 
@@ -75,19 +84,30 @@ module('Unit | Route | reports/report/view', function (hooks) {
   });
 
   test('invalid visualization', function (assert) {
-    assert.expect(1);
-
-    this.owner.register(
-      'navi-visualization-manifest:invalid-type',
-      EmberObject.extend({
-        typeIsValid: () => false,
-      })
-    );
+    assert.expect(2);
 
     let route = this.owner.lookup('route:reports/report/view'),
       report = {
         visualization: {
-          type: 'invalid-type',
+          manifest: {
+            type: 'invalid- ',
+            validate: () => ({ isValid: false }), // Test invalid config case
+          },
+        },
+        updateVisualization(viz) {
+          const newViz = viz.serialize();
+          assert.deepEqual(
+            newViz,
+            {
+              metadata: {
+                columnAttributes: {},
+              },
+              type: 'table',
+              version: 2,
+            },
+            'visualization is updated'
+          );
+          report.visualization = newViz;
         },
       };
 
@@ -95,7 +115,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
       route._setValidVisualizationType(null, report);
     });
 
-    assert.equal(get(report, 'visualization.type'), 'table', 'Any invalid visualization types are defaulted to table');
+    assert.equal(report.visualization.type, 'table', 'Any invalid visualization types are defaulted to table');
   });
 
   test('runReport action', function (assert) {

@@ -10,20 +10,17 @@
  *  />
  */
 import Component from '@glimmer/component';
-import { computed } from '@ember/object';
 import type ReportModel from 'navi-core/models/report';
-import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
+import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
 
 interface Args {
   report: ReportModel;
-  validVisualizations: NaviVisualizationBaseManifest[];
+  validVisualizations: YavinVisualizationManifest[];
   onVisualizationTypeUpdate: (name: string) => void;
 }
 
 export default class VisualizationToggle extends Component<Args> {
-  @computed('args.{report.visualization.type,validVisualizations}')
   get activeVisualization() {
-    const { type: reportType } = this.args.report.visualization;
-    return this.args.validVisualizations.find(({ name }) => name === reportType);
+    return this.args.report.visualization.manifest;
   }
 }

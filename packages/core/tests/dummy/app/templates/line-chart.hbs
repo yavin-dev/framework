@@ -3,8 +3,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.default.0.request}}
     @response={{this.model.default.0.response}}
-    @visualization={{this.metricVisualization}}
-    @onUpdateConfig={{fn (mut this.metricOptions)}}
+    @manifest={{this.manifest}}
+    @settings={{this.metricOptions}}
+    @onUpdateSettings={{fn (mut this.metricOptions)}}
   />
   <NaviVisualizations::LineChart
     class="type-{{this.metricOptions.axis.y.series.type}}"
@@ -46,8 +47,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.dimension.0.request}}
     @response={{this.model.dimension.0.response}}
-    @visualization={{this.dimVisualization}}
-    @onUpdateConfig={{this.onUpdateConfig}}
+    @settings={{this.dimensionOptions}}
+    @manifest={{this.manifest}}
+    @onUpdateSettings={{this.onUpdateConfig}}
   />
   <NaviVisualizations::LineChart
     class="type-{{this.dimensionOptions.axis.y.series.type}}"

@@ -6,8 +6,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.default.0.request}}
     @response={{this.model.default.0.response}}
-    @visualization={{this.metricVisualization}}
-    @onUpdateConfig={{fn (mut this.metricOptions)}}
+    @manifest={{this.manifest}}
+    @settings={{this.metricVisualization.metadata}}
+    @onUpdateSettings={{fn (mut this.metricOptions)}}
   />
   <NaviVisualizations::BarChart
     @model={{this.model.default}}
@@ -26,8 +27,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{this.model.dimension.0.request}}
     @response={{this.model.dimension.0.response}}
-    @visualization={{this.dimVisualization}}
-    @onUpdateConfig={{this.onUpdateConfig}}
+    @manifest={{this.manifest}}
+    @settings={{this.dimVisualization.metadata}}
+    @onUpdateSettings={{this.onUpdateConfig}}
   />
   <NaviVisualizations::BarChart
     @model={{this.model.dimension}}

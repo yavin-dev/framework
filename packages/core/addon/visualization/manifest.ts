@@ -59,7 +59,7 @@ export abstract class YavinVisualizationManifest<Settings = unknown> extends Emb
   createModel(): VisualizationModel<Settings> {
     const { type, currentVersion: version, namespace } = this;
     const metadata = this.createNewSettings();
-    return this.store.createFragment('visualization', {
+    return this.store.createFragment('visualization-v2', {
       type,
       version,
       namespace,

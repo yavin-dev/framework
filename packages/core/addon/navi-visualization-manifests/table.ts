@@ -11,7 +11,7 @@ import RequestFragment from 'navi-core/models/request';
 
 export default class TableManifest extends NaviVisualizationBaseManifest {
   name = 'table';
-  niceName = 'Data Table';
+  niceName = 'Table';
   icon = 'table';
 
   typeIsValid(_request: RequestFragment) {

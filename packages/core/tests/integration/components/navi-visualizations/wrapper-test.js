@@ -41,6 +41,15 @@ const Request = {
   sorts: [],
 };
 
+const TEMPLATE = hbs`
+<NaviVisualizations::Wrapper
+  @request={{this.report.request}}
+  @response={{this.response}}
+  @settings={{this.report.visualization.metadata}}
+  @manifest={{this.report.visualization.manifest}}
+  @isPrint={{this.isPrint}}
+/>`;
+
 let Store;
 module('Integration | Component | navi-visualizations/wrapper', function (hooks) {
   setupRenderingTest(hooks);
@@ -72,12 +81,8 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
   test('it renders the specified visualization', async function (assert) {
     assert.expect(2);
 
-    await render(hbs`
-      <NaviVisualizations::Wrapper
-        @report={{this.report}}
-        @print={{false}}
-      />
-    `);
+    this.set('isPrint', false);
+    await render(TEMPLATE);
 
     assert.ok(!!findAll('.table-widget').length, 'navi-visualization wrapper renders the correct visualization');
 
@@ -90,12 +95,8 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
   test('it renders the specified print visualization', async function (assert) {
     assert.expect(1);
 
-    await render(hbs`
-      <NaviVisualizations::Wrapper
-        @report={{this.report}}
-        @print={{true}}
-      />
-    `);
+    this.set('isPrint', true);
+    await render(TEMPLATE);
 
     assert.ok(
       !!findAll('.table-widget--print').length,
@@ -132,13 +133,8 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
     );
     this.set('response', NaviFactResponse.create({ rows: [] }));
 
-    await render(hbs`
-      <NaviVisualizations::Wrapper
-        @report={{this.report}}
-        @response={{this.response}}
-        @print={{true}}
-      />
-    `);
+    this.set('isPrint', true);
+    await render(TEMPLATE);
 
     assert.ok(
       !!findAll('.line-chart-widget').length,

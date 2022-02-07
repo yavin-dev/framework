@@ -226,7 +226,7 @@ export default class Table extends Component<Args> {
 
   @computed('args.options.columnAttributes', 'request.{columns.[],sorts.[]}')
   get columns(): TableColumn[] {
-    const { columnAttributes } = this.args.options;
+    const { columnAttributes = {} } = this.args.options;
     return this.request.columns.map((column) => {
       let sortDirection: TableColumn['sortDirection'];
       if (column.columnMetadata.isSortable) {

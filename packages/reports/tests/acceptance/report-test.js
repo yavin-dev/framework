@@ -763,7 +763,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     /* == Change to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await click('.navi-report__run-btn');
 
     await click($('.menu-content a:contains("PDF")')[0]);
@@ -939,7 +939,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.dom('.c3-legend-item').exists({ count: 4 }, 'Line chart visualization has 4 series as configured');
 
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1072,7 +1072,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1091,7 +1091,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1367,7 +1367,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     /* == Modify report by adding a metric == */
     await visit('/reports/1/view');
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await clickItem('metric', 'Time Spent');
     await click('.navi-report__run-btn');
 
@@ -1407,7 +1407,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
     await click('.navi-report__run-btn');
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
@@ -2038,7 +2038,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
     await visit('/reports/2/view');
 
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await click('.report-view__visualization-edit-btn');
 
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown

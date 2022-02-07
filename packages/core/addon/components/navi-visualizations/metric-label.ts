@@ -9,11 +9,14 @@
  * />
  */
 import Component from '@glimmer/component';
-import { computed } from '@ember/object';
+import { computed, action } from '@ember/object';
+import { inject as service } from '@ember/service';
 import { VisualizationModel } from './table';
 import ColumnFragment from 'navi-core/models/request/column';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
+import type NaviFormatterService from 'navi-data/services/navi-formatter';
 import type { MetricValue } from 'navi-data/serializers/facts/interface';
+import type MetricMetadataModel from 'navi-data/models/metadata/metric';
 
 export type Args = {
   model: VisualizationModel;
@@ -21,6 +24,9 @@ export type Args = {
 };
 
 export default class MetricLabelVisualization extends Component<Args> {
+  @service
+  protected declare naviFormatter: NaviFormatterService;
+
   /**
    * font size is small, medium, or large depending on the length of the value
    * returns the appropriate font class
@@ -46,6 +52,16 @@ export default class MetricLabelVisualization extends Component<Args> {
     return metricColumn;
   }
 
+  @action
+  format(...args: Parameters<MetricMetadataModel['formatValue']>) {
+    const metric = args[1];
+    if (metric.columnMetadata) {
+      return metric.columnMetadata.formatValue(...args);
+    } else {
+      return this.naviFormatter.formatMetricValue(...args);
+    }
+  }
+
   /**
    * formats if there is a formatter configured
    */
@@ -58,7 +74,7 @@ export default class MetricLabelVisualization extends Component<Args> {
       const firstRow = response?.rows?.[0] || {};
       const { canonicalName } = metric;
       const value = firstRow[canonicalName] as MetricValue;
-      return metric.columnMetadata.formatValue(value, metric, firstRow, options.format);
+      return this.format(value, metric, firstRow, options.format);
     }
     return undefined;
   }

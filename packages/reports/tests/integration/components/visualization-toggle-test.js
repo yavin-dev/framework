@@ -9,30 +9,20 @@ module('Integration | Component | visualization toggle', function (hooks) {
   test('visualization toggle', async function (assert) {
     assert.expect(3);
 
-    this.set('validVisualizations', [
-      {
-        icon: 'bar-chart',
-        name: 'bar-chart',
-        niceName: 'Bar Chart',
-      },
-      {
-        icon: 'line-chart',
-        name: 'line-chart',
-        niceName: 'Line Chart',
-      },
-      {
-        icon: 'table',
-        name: 'table',
-        niceName: 'Data Table',
-      },
-    ]);
+    const visualizationServices = this.owner.lookup('service:visualization');
+
+    const BarChartManifest = visualizationServices.getVisualization('c3:bar-chart');
+    const LineChartManifest = visualizationServices.getVisualization('c3:line-chart');
+    const TableManifest = visualizationServices.getVisualization('yavin:table');
+
+    this.set('validVisualizations', [BarChartManifest, LineChartManifest, TableManifest]);
     this.set('report', {
       visualization: {
-        type: 'bar-chart',
+        manifest: BarChartManifest,
       },
     });
-    this.set('onVisualizationTypeUpdate', function (visName) {
-      assert.equal(visName, 'line-chart', 'The clicked visualization name is sent to the action');
+    this.set('onVisualizationTypeUpdate', function (visManifest) {
+      assert.equal(visManifest, LineChartManifest, 'The clicked visualization name is sent to the action');
     });
 
     await render(hbs`
@@ -44,7 +34,7 @@ module('Integration | Component | visualization toggle', function (hooks) {
 
     assert.deepEqual(
       findAll('.visualization-toggle__option-icon').map((el) => el.attributes.title.value),
-      ['Bar Chart', 'Line Chart', 'Data Table'],
+      ['Bar Chart', 'Line Chart', 'Table'],
       'All valid visualizations are shown as options'
     );
 

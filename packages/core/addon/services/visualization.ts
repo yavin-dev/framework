@@ -45,7 +45,7 @@ class CompatManifest extends YavinVisualizationManifest {
     const owner = getOwner(this.old);
     const store = owner.lookup('service:store') as StoreService;
 
-    this.namespace = this.old.name === 'table' ? 'yavin' : '$c3';
+    this.namespace = ['metric-label', 'table'].includes(this.old.name) ? 'yavin' : 'c3';
     this.type = this.old.name;
     this.niceName = this.old.niceName;
     this.icon = this.old.icon;
@@ -61,32 +61,34 @@ class CompatManifest extends YavinVisualizationManifest {
   }
 
   createNewSettings(): unknown {
-    return {};
+    const temp = this.createModel();
+    const settings = temp.metadata;
+    this.store.unloadRecord(temp);
+    return settings;
   }
 
   dataDidUpdate(currentSettings: object, request: RequestFragment, response: NaviFactResponse): object {
     const vizModel = this.store.createFragment(this.visualizationType, currentSettings);
-    vizModel.rebuildConfig(request, response);
-    const settings = vizModel.serialize();
+    vizModel.metadata = currentSettings;
+    let settings;
+    if (!vizModel.isValidForRequest(request)) {
+      vizModel.rebuildConfig(request, response);
+      settings = vizModel.metadata;
+    } else {
+      settings = currentSettings;
+    }
     this.store.unloadRecord(vizModel);
     return settings;
   }
 
-  normalizeModel(c: unknown): Promise<YavinVisualizationModel> {
+  normalizeModel(settings: unknown): Promise<YavinVisualizationModel> {
     const { visualizationType } = this;
-    const normalized = this.store.createFragment(visualizationType, { c });
+    const normalized = this.store.createFragment(visualizationType, { metadata: settings });
     return Promise.resolve(normalized);
   }
 
   createModel() {
-    const { currentVersion: version, namespace } = this;
-    const metadata = this.createNewSettings();
-    return this.store.createFragment(this.visualizationType, {
-      type: this.visualizationType,
-      version,
-      namespace,
-      metadata,
-    });
+    return this.store.createFragment(this.visualizationType, {});
   }
 }
 
@@ -122,9 +124,8 @@ export default class YavinVisualizationsService extends Service {
     return visualization;
   }
 
-  validVisualizations(_request: RequestFragment) {
-    //TODO long term want to show all, but might filter in short term
-    return this.getVisualizations();
+  validVisualizations(request: RequestFragment) {
+    return this.getVisualizations().filter((m) => m.validate(request).isValid === true);
   }
 
   registerVisualization(visualization: YavinVisualizationManifest<unknown>, category = this.defaultCategory) {
