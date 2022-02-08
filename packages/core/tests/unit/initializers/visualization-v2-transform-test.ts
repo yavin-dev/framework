@@ -2,7 +2,7 @@ import Application from '@ember/application';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { run } from '@ember/runloop';
-import visV2 from 'dummy/initializers/visualization-v2-transform';
+import visV2 from 'navi-core/initializers/visualization-v2-transform';
 import type { TestContext as Context } from 'ember-test-helpers';
 
 interface TestContext extends Context {

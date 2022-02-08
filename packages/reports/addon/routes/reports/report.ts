@@ -188,8 +188,7 @@ export default class ReportsReportRoute extends Route {
         // Switch from temp id to permanent id
         this.replaceWith('reports.report.view', get(report, 'id'));
       })
-      .catch((e) => {
-        debugger;
+      .catch((_e) => {
         this.naviNotifications.add({
           title: 'An error occurred while saving the report',
           style: 'danger',
@@ -235,7 +234,7 @@ export default class ReportsReportRoute extends Route {
   @action
   onUpdateVisualizationConfig(metadataUpdates: Partial<ReportLike['visualization']['metadata']>) {
     const report = this.modelFor(this.routeName) as ModelFrom<this>;
-    const metadata = report.visualization?.metadata;
+    const metadata = (report.visualization?.metadata ?? {}) as object;
 
     set(report.visualization, 'metadata', { ...metadata, ...metadataUpdates });
   }
