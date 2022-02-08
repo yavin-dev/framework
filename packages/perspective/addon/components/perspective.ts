@@ -11,36 +11,41 @@ import '@finos/perspective-viewer-d3fc';
 import YavinVisualizationComponent from 'navi-core/visualization/component';
 import { PerspectiveSettings } from '../manifest';
 import { isEqual } from 'lodash-es';
+import { task, TaskGenerator } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 
 export default class PerspectiveVisualization extends YavinVisualizationComponent<PerspectiveSettings> {
-  async saveSettings(viewer: HTMLPerspectiveViewerElement) {
+  @task *saveSettings(viewer: HTMLPerspectiveViewerElement): TaskGenerator<void> {
     const { settings, isReadOnly } = this.args;
-    const configuration = await viewer.save();
+    const configuration = yield viewer.save();
     if (!isReadOnly && !isEqual(configuration, settings?.configuration)) {
       this.args.onUpdateSettings({ configuration });
     }
   }
 
   @action
-  async onSettingsUpdate(viewer: HTMLPerspectiveViewerElement): Promise<void> {
-    await viewer.restore(this.args?.settings?.configuration ?? {});
-    await this.saveSettings(viewer);
+  async loadData(viewer: HTMLPerspectiveViewerElement): Promise<void> {
+    const { response } = this.args;
+    const data = response.rows as TableData;
+    const worker = perspective.shared_worker();
+    const table = await worker.table(data);
+    await viewer.load(table);
+  }
+
+  @action
+  async loadSettings(viewer: HTMLPerspectiveViewerElement): Promise<void> {
+    const { settings } = this.args;
+    await viewer.restore(settings?.configuration ?? {});
+    await taskFor(this.saveSettings).perform(viewer); //save in the case config is updated after loading
   }
 
   @action
   async setupElement(viewer: HTMLPerspectiveViewerElement): Promise<void> {
-    const { response, settings } = this.args;
-    const worker = perspective.worker();
-
-    const data = response.rows as TableData;
-    const table = await worker.table(data);
-
-    await viewer.load(table);
-    await viewer.restore(settings?.configuration ?? {});
-    await this.saveSettings(viewer);
+    await this.loadData(viewer);
+    await this.loadSettings(viewer);
 
     viewer.addEventListener('perspective-config-update', async () => {
-      await this.saveSettings(viewer);
+      await taskFor(this.saveSettings).perform(viewer);
     });
   }
 }

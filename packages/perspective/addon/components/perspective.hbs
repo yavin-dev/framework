@@ -4,5 +4,6 @@
     class="yavin-perspective"
     ...attributes
     {{did-insert this.setupElement}}
-    {{did-update this.onSettingsUpdate @settings}}
+    {{did-update this.loadData @response}}
+    {{did-update this.loadSettings @settings}}
   />
