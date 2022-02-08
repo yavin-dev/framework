@@ -62,14 +62,13 @@ export default class ReportsNewRoute extends Route {
         throw new Error('Could not locate requested data source');
       }
     }
-    debugger;
     const report = this.store.createRecord('report', {
       owner,
       request: this.store.createFragment('request', {
         dataSource,
       }),
-      visualization: defaultVisualization.createModel(),
     });
+    report.updateVisualization(defaultVisualization.createModel());
     return report;
   }
 }

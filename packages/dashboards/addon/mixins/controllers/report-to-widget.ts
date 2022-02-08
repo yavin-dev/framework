@@ -16,13 +16,14 @@ export default Mixin.create({
    * @returns unsaved widget model
    */
   _createWidget(report: ReportModel, title: string) {
-    let visualization = report.visualization.serialize();
+    const { visualization } = report;
 
-    return this.get('store').createRecord('dashboard-widget', {
+    const widget = this.get('store').createRecord('dashboard-widget', {
       title,
       requests: [report.request.clone()],
-      visualization,
     });
+    widget.updateVisualization(visualization.clone());
+    return widget;
   },
 
   actions: {

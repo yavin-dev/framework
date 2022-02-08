@@ -28,8 +28,8 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
       owner,
       dashboard,
       requests: A([this.store.createFragment('request', {})]),
-      visualization: defaultVisualization.createModel(),
     });
+    widget.updateVisualization(defaultVisualization.createModel());
 
     return widget;
   }
