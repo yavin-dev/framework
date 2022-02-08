@@ -5,17 +5,17 @@
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
-import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type CompressionService from 'navi-core/services/compression';
 import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 import { getDataSource } from 'navi-data/utils/adapter';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
 
-  @service declare naviVisualizations: NaviVisualizationsService;
+  @service declare visualization: YavinVisualizationsService;
 
   @service declare compression: CompressionService;
 
@@ -54,7 +54,7 @@ export default class ReportsNewRoute extends Route {
    */
   protected async newModel(dataSource?: string): Promise<ReportLike> {
     const owner = this.user.getUser();
-    const defaultVisualization = this.naviVisualizations.defaultVisualization();
+    const defaultVisualization = this.visualization.defaultVisualization();
     if (dataSource !== undefined) {
       try {
         getDataSource(dataSource); //validate datasource param
@@ -62,12 +62,13 @@ export default class ReportsNewRoute extends Route {
         throw new Error('Could not locate requested data source');
       }
     }
+    debugger;
     const report = this.store.createRecord('report', {
       owner,
       request: this.store.createFragment('request', {
         dataSource,
       }),
-      visualization: { type: defaultVisualization },
+      visualization: defaultVisualization.createModel(),
     });
     return report;
   }

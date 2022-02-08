@@ -21,14 +21,14 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
    */
   protected async newModel() {
     const owner = await this.user.findOrRegister();
-    const defaultVisualization = this.naviVisualizations.defaultVisualization();
+    const defaultVisualization = this.visualization.defaultVisualization();
     const dashboard = this.modelFor('dashboards.dashboard');
 
     const widget = this.store.createRecord('dashboard-widget', {
       owner,
       dashboard,
       requests: A([this.store.createFragment('request', {})]),
-      visualization: { type: defaultVisualization },
+      visualization: defaultVisualization.createModel(),
     });
 
     return widget;

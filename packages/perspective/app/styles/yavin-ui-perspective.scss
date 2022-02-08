@@ -28,6 +28,9 @@ $arrowhead-left-circle: '\ea61';
 $arrowhead-right-circle: '\ea66';
 $check-circle: '\eb03';
 $circle: '\eb0b';
+$information-circle: '\ec54';
+
+$info-background-color: rgb(map-get($denali-status-colors, 'info'), 0.4);
 
 perspective-viewer,
 perspective-viewer[theme='Denali'] {
@@ -121,6 +124,9 @@ perspective-viewer[theme='Denali'],
   --column-style-close-button--content: #{meta.inspect($more-horizontal-circle)};
   --tree-label-collapse--content: #{meta.inspect($arrowhead-right)};
   --tree-label-expand--content: #{meta.inspect($arrowhead-down)};
+  --overflow-hint-icon--content: #{meta.inspect($information-circle)};
+  --warning--background: #{meta.inspect($info-background-color)};
+  --overflow-hint-icon--color: #{map-get($denali-grey-colors, '800')};
   background-color: map-get($denali-grey-colors, '200');
   color: map-get($denali-grey-colors, '800');
   font-family: $font-family-sans-serif;
