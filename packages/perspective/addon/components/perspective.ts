@@ -15,7 +15,7 @@ import { task, TaskGenerator } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 
 export default class PerspectiveVisualization extends YavinVisualizationComponent<PerspectiveSettings> {
-  @task *saveSettings(viewer: HTMLPerspectiveViewerElement): TaskGenerator<void> {
+  @task *saveSettingsTask(viewer: HTMLPerspectiveViewerElement): TaskGenerator<void> {
     const { settings, isReadOnly } = this.args;
     const configuration = yield viewer.save();
     if (!isReadOnly && !isEqual(configuration, settings?.configuration)) {
@@ -36,7 +36,11 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
   async loadSettings(viewer: HTMLPerspectiveViewerElement): Promise<void> {
     const { settings } = this.args;
     await viewer.restore(settings?.configuration ?? {});
-    await taskFor(this.saveSettings).perform(viewer); //save in the case config is updated after loading
+
+    //save in the case config is updated after loading
+    await taskFor(this.saveSettingsTask)
+      .perform(viewer)
+      .catch((e) => console.info(e));
   }
 
   @action
@@ -45,7 +49,9 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
     await this.loadSettings(viewer);
 
     viewer.addEventListener('perspective-config-update', () => {
-      taskFor(this.saveSettings).perform(viewer).catch();
+      taskFor(this.saveSettingsTask)
+        .perform(viewer)
+        .catch((e) => console.info(e));
     });
   }
 }
