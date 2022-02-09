@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import PieChartManifest from 'navi-core/navi-visualization-manifests/pie-chart';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 
 let Manifest: PieChartManifest;
 

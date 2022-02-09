@@ -8,8 +8,20 @@ import { inject as service } from '@ember/service';
 import { formTypeName } from 'navi-core/visualization/manifest';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
+import { validator, buildValidations } from 'ember-cp-validations';
+import { cloneDeep } from 'lodash-es';
 
-export default class YavinVisualizationModel<T = unknown> extends Fragment {
+const Validations = buildValidations({
+  type: [
+    validator('presence', {
+      presence: true,
+      ignoreBlank: true,
+      message: 'The visualization must have a type',
+    }),
+  ],
+});
+
+export default class YavinVisualizationModel<T = unknown> extends Fragment.extend(Validations) {
   @service declare visualization: YavinVisualizationsService;
 
   @attr('string')
@@ -31,6 +43,13 @@ export default class YavinVisualizationModel<T = unknown> extends Fragment {
 
   get manifest(): YavinVisualizationManifest {
     return this.visualization.getVisualization(this.typeName);
+  }
+
+  clone(): YavinVisualizationModel {
+    const { manifest, metadata } = this;
+    const model = manifest.createModel();
+    model.metadata = cloneDeep(metadata);
+    return model;
   }
 }
 

@@ -13,7 +13,7 @@ import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { TestContext } from 'ember-test-helpers';
-import { buildTestRequest } from '../../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import LineChart from 'navi-core/components/navi-visualizations/line-chart';
 import StoreService from '@ember-data/store';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';

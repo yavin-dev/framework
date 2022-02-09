@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-new-mixins */
 /**
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
@@ -9,13 +10,15 @@ import { set } from '@ember/object';
 import { fragment } from 'ember-data-model-fragments/attributes';
 import { isEqual } from 'lodash-es';
 import type { FragmentRegistry, VisualizationType } from 'navi-core/models/registry';
-import type YavinVisualizationModel from 'navi-core/models/visualization-v2';
+import YavinVisualizationModel from 'navi-core/models/visualization-v2';
 import type RequestFragment from 'navi-core/models/request';
 
-type PersistedVisualization = FragmentRegistry[VisualizationType] | undefined;
+type PersistedVisualization = FragmentRegistry[VisualizationType] | YavinVisualizationModel | undefined;
 
 export default Mixin.create({
-  visualization: fragment('visualization-v2', { polymorphic: true }) as FragmentRegistry[VisualizationType],
+  visualization: fragment('visualization-v2', { polymorphic: true }) as
+    | FragmentRegistry[VisualizationType]
+    | YavinVisualizationModel,
   _persistedVisualization: undefined as PersistedVisualization,
 
   /**
@@ -38,13 +41,18 @@ export default Mixin.create({
       // since we know this is a different visualization type
       //@ts-ignore
       this.visualization = null;
-      //@ts-ignore - assign to serialized version of visualization to support legacy models using the polymorphic route
-      this.visualization = newVisualization.serialize();
+      if (newVisualization instanceof YavinVisualizationModel) {
+        this.visualization = newVisualization;
+      } else {
+        //@ts-ignore - assign to serialized version of visualization to support legacy models using the polymorphic route
+        this.visualization = newVisualization.serialize();
+      }
     }
     //@ts-ignore
     const request = this.request as RequestFragment;
     if (request) {
       // update the visualization (only needed for legacy) to have the latest request for use in validations
+      //@ts-ignore
       set(this.visualization, '_request', request);
     }
   },
@@ -72,8 +80,7 @@ export default Mixin.create({
      */
     let persistedVisualization = this._persistedVisualization;
     if (persistedVisualization) {
-      //@ts-ignore - pass serialized in to allow polymorphic creation of legacy fragments
-      this.visualization = persistedVisualization.serialize();
+      this.updateVisualization(persistedVisualization);
     }
 
     this._super();

@@ -29,22 +29,22 @@
   },
   "dependencies": {
     "compression": "^1.6.2",
-    "ember-auto-import": "^1.10.1",
     "express": "^4.14.0",
     "merge": "~1.2.0"
   },
   "devDependencies": {
-    "@denali-design/ember": "^1.0.0-alpha.30",
+    "@denali-design/ember": "^1.0.0-alpha.34",
     "@ember/jquery": "^0.6.1",
     "@ember/optional-features": "^2.0.0",
     "@ember/test-helpers": "^2.2.0",
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "@html-next/vertical-collection": "^2.0.0",
+    "@yavin-ui/perspective": "0.4.0",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "cross-env": "^7.0.3",
-    "ember-auto-import": "^1.5.3",
+    "ember-auto-import": "^2.4.0",
     "ember-basic-dropdown": "^3.0.19",
     "ember-cli": "~3.25.3",
     "ember-cli-app-version": "^4.0.0",
@@ -91,7 +91,8 @@
     "prettier": "^2.2.1",
     "qunit": "^2.14.0",
     "qunit-dom": "^1.6.0",
-    "sass": "^1.30.0"
+    "sass": "^1.30.0",
+    "webpack": "^5.65.0"
   },
   "engines": {
     "node": "10.* || >= 12"

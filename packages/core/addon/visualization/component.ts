@@ -6,7 +6,6 @@ import Component from '@glimmer/component';
 // eslint-disable-next-line ember/no-classic-components
 import type EmberComponent from '@ember/component';
 import type RequestFragment from 'navi-core/models/request';
-import type YavinVisualizationModel from 'navi-core/models/visualization-v2';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type { YavinVisualizationManifest } from './manifest';
 
@@ -18,7 +17,7 @@ export interface YavinVisualizationArgs<Settings = unknown> {
   isReadOnly: boolean;
   isPrint: boolean;
   onUpdateReport: (action: string, ...params: unknown[]) => void;
-  onUpdateSettings(model: YavinVisualizationModel<Settings>): void;
+  onUpdateSettings(model: Settings): void;
   // temporary legacy support
   manifest: YavinVisualizationManifest;
   container: () => HTMLElement | EmberComponent;

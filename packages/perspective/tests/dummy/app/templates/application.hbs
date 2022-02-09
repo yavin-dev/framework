@@ -1,0 +1,22 @@
+{{page-title "Yavin Perspective Visualization"}}
+<DenaliNavbar @isResponsive={{true}} as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.Item>Yavin Perspective Visualization</Left.Item>
+  </Nav.Left>
+</DenaliNavbar>
+
+<Perspective
+  @response={{this.model.response}}
+  @settings={{this.settings}}
+  @onUpdateSettings={{this.onUpdateSettings}}
+  class="w-full flex-1"
+/>
+
+<hr>
+
+<DenaliButton
+  class="m-b-15 m-l-15 align-self-start"
+  {{on 'click' this.revertSettings}}
+>
+  Undo Settings
+</DenaliButton>

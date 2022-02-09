@@ -42,7 +42,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
           },
         },
         updateVisualization(viz) {
-          assert.deepEqual(viz.serialize(), {}, 'visualization is updated');
+          assert.deepEqual(viz.type, 'table', 'visualization is updated');
         },
       };
 

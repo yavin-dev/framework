@@ -113,8 +113,9 @@ export default class ReportsReportViewRoute extends Route {
     const { manifest } = visualization;
 
     const newSettings = manifest.dataDidUpdate(report.visualization.metadata, request, response);
-    const normalized = await manifest.normalizeModel(newSettings);
-    report.updateVisualization(normalized);
+    //@ts-ignore
+    visualization.metadata = newSettings;
+    report.updateVisualization(visualization);
   }
 
   /**

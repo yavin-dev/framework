@@ -6,7 +6,7 @@ import { set } from '@ember/object';
 import { attr } from '@ember-data/model';
 import Fragment from 'ember-data-model-fragments/fragment';
 import { formTypeName } from 'navi-core/visualization/manifest';
-import { omit } from 'lodash-es';
+import { cloneDeep, omit } from 'lodash-es';
 import { inject as service } from '@ember/service';
 import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
@@ -14,8 +14,19 @@ import type { VisualizationType } from 'navi-core/models/registry';
 import type VisualizationModelV2 from './visualization-v2';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
+import { validator, buildValidations } from 'ember-cp-validations';
 
-export default class VisualizationFragment extends Fragment implements VisualizationModelV2 {
+const Validations = buildValidations({
+  type: [
+    validator('presence', {
+      presence: true,
+      ignoreBlank: true,
+      message: 'The visualization must have a type',
+    }),
+  ],
+});
+
+export default class VisualizationFragment extends Fragment.extend(Validations) implements VisualizationModelV2 {
   @service declare visualization: YavinVisualizationsService;
 
   @attr('string')
@@ -87,6 +98,13 @@ export default class VisualizationFragment extends Fragment implements Visualiza
     const json = super.toJSON() as this;
     const withoutNamespace = omit(json, 'namespace');
     return withoutNamespace;
+  }
+
+  clone(): VisualizationModelV2 {
+    const { manifest, metadata } = this;
+    const model = manifest.createModel();
+    model.metadata = cloneDeep(metadata);
+    return model;
   }
 }
 
