@@ -5,6 +5,7 @@ import FragmentTransform from 'ember-data-model-fragments/transforms/fragment';
 const Fragment = FragmentTransform.extend({
   type: 'visualization-v2',
   polymorphicTypeProp: 'type',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   modelNameFor(data: any) {
     let store = this.store;
     let modelName = this.type;

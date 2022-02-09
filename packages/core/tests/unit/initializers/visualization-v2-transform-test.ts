@@ -28,9 +28,28 @@ module('Unit | Initializer | visualization-v2-transform', function (hooks) {
   });
 
   test('it works', async function (assert) {
+    assert.expect(7);
     await this.application.boot();
 
-    // TODO: Test that vis-v2 lookups are polymorphic but fall back to generic model
-    assert.ok(true);
+    const transform = this.owner.lookup('transform:-mf-fragment$visualization-v2$type');
+
+    const map = {
+      'line-chart': 'line-chart',
+      'bar-chart': 'bar-chart',
+      'goal-gauge': 'goal-gauge',
+      'metric-label': 'metric-label',
+      'pie-chart': 'pie-chart',
+      table: 'table',
+      'model-that-does-not-exit': 'visualization-v2',
+    };
+
+    Object.entries(map).forEach(([modelInputType, expectedModel]) => {
+      const actualModel = transform.modelNameFor({ type: modelInputType });
+      assert.strictEqual(
+        actualModel,
+        expectedModel,
+        `${modelInputType} should map to ${expectedModel} (was ${actualModel})`
+      );
+    });
   });
 });
