@@ -80,8 +80,7 @@ export default Mixin.create({
      */
     let persistedVisualization = this._persistedVisualization;
     if (persistedVisualization) {
-      //@ts-ignore - pass serialized in to allow polymorphic creation of legacy fragments
-      this.visualization = persistedVisualization.serialize();
+      this.updateVisualization(persistedVisualization);
     }
 
     this._super();
