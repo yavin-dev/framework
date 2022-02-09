@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, find, findAll, render, settled, waitFor, waitUntil } from '@ember/test-helpers';
+import { click, find, findAll, render, waitFor, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { YavinVisualizationArgs } from 'navi-core/addon/visualization/component';
 import { PerspectiveSettings } from '@yavin-ui/perspective/manifest';
@@ -60,7 +60,6 @@ module('Integration | Component | perspective', function (hooks) {
       ['age(field=id)', 'revenue(currency=USD)', 'totalPageViews', 'uniqueIdentifier', 'network.dateTime(grain=day)'],
       'it renders correct table headers'
     );
-    await settled();
   });
 
   test('it loads configuration', async function (this: TestContext, assert) {
@@ -90,7 +89,6 @@ module('Integration | Component | perspective', function (hooks) {
       ['age(field=id)', 'revenue(currency=USD)', 'totalPageViews', 'uniqueIdentifier', 'network.dateTime(grain=day)'],
       'it loads configuration after initial render'
     );
-    await settled();
   });
 
   test('it saves configuration', async function (this: TestContext, assert) {
@@ -127,6 +125,5 @@ module('Integration | Component | perspective', function (hooks) {
     await render(TEMPLATE);
     await waitFor('th', { timeout: 5000 });
     assert.ok(true);
-    await settled();
   });
 });

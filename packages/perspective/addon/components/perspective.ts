@@ -44,8 +44,8 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
     await this.loadData(viewer);
     await this.loadSettings(viewer);
 
-    viewer.addEventListener('perspective-config-update', async () => {
-      await taskFor(this.saveSettings).perform(viewer);
+    viewer.addEventListener('perspective-config-update', () => {
+      taskFor(this.saveSettings).perform(viewer);
     });
   }
 }
