@@ -60,6 +60,7 @@ module('Integration | Component | perspective', function (hooks) {
       ['age(field=id)', 'revenue(currency=USD)', 'totalPageViews', 'uniqueIdentifier', 'network.dateTime(grain=day)'],
       'it renders correct table headers'
     );
+    await settled();
   });
 
   test('it loads configuration', async function (this: TestContext, assert) {
