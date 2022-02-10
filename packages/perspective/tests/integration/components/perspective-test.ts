@@ -53,7 +53,7 @@ module('Integration | Component | perspective', function (hooks) {
     await render(TEMPLATE);
     assert.dom('perspective-viewer').exists('it renders a perspective-view element');
 
-    await waitFor('th', { timeout: 5000 });
+    await waitFor('th', { timeout: 10000 });
     const headers = findAll('th').map((th) => th.textContent);
     assert.deepEqual(
       headers,
@@ -71,9 +71,9 @@ module('Integration | Component | perspective', function (hooks) {
     await render(TEMPLATE);
     assert.dom('perspective-viewer').exists('it renders a perspective-view element');
 
-    await waitFor('perspective-viewer-d3fc-xbar', { timeout: 5000 });
+    await waitFor('perspective-viewer-d3fc-xbar', { timeout: 10000 });
     const element = find('perspective-viewer-d3fc-xbar');
-    await waitUntil(() => element?.shadowRoot?.querySelector('.bottom-label'), { timeout: 5000 });
+    await waitUntil(() => element?.shadowRoot?.querySelector('.bottom-label'), { timeout: 10000 });
     assert.dom(element?.shadowRoot?.querySelector('.bottom-label')).hasText('age(field=id)', 'it loads configuration');
 
     this.set('settings', {
@@ -82,7 +82,7 @@ module('Integration | Component | perspective', function (hooks) {
       },
     });
 
-    await waitUntil(() => findAll('th').length === 5, { timeout: 5000 });
+    await waitUntil(() => findAll('th').length === 5, { timeout: 10000 });
     const headers = findAll('th').map((th) => th.textContent);
     assert.deepEqual(
       headers,
@@ -99,7 +99,7 @@ module('Integration | Component | perspective', function (hooks) {
       assert.deepEqual(settings?.configuration?.sort, [], 'it saves configuration with no sorting');
     };
     await render(TEMPLATE);
-    await waitFor('th', { timeout: 5000 });
+    await waitFor('th', { timeout: 10000 });
 
     await timeout(2000);
     this.set('onUpdateSettings', (settings: PerspectiveSettings) => {
@@ -123,7 +123,7 @@ module('Integration | Component | perspective', function (hooks) {
 
     this.isReadOnly = true;
     await render(TEMPLATE);
-    await waitFor('th', { timeout: 5000 });
+    await waitFor('th', { timeout: 10000 });
     assert.ok(true);
   });
 });
