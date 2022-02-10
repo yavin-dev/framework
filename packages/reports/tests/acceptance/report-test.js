@@ -287,6 +287,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await clickItem('metric', 'Page Views');
     await click('.navi-report__save-btn');
 
+    let reportId;
     server.patch('/reports/:id', function ({ reports }, request) {
       assert.equal(
         request.requestHeaders['Content-Type'],
@@ -298,10 +299,10 @@ module('Acceptance | Navi Report', function (hooks) {
         'application/vnd.api+json',
         'Request header accept is correct JSON-API mime type'
       );
-      const id = request.params.id;
+      reportId = request.params.id;
       let attrs = this.normalizedRequestAttrs();
 
-      return reports.find(id).update(attrs);
+      return reports.find(reportId).update(attrs);
     });
 
     //remove a metric and save the report
@@ -315,10 +316,10 @@ module('Acceptance | Navi Report', function (hooks) {
     //revert changes
     await click('.navi-report__revert-btn');
 
-    let emberId = find('.report-view.ember-view').id,
-      component = this.owner.lookup('-view-registry:main')[emberId];
+    const store = this.owner.lookup('service:store');
+    const report = await store.findRecord('report', reportId);
     assert.equal(
-      component.get('report.visualization.type'),
+      report.visualization.type,
       'table',
       'Report has a valid visualization type after running then reverting.'
     );
@@ -361,10 +362,10 @@ module('Acceptance | Navi Report', function (hooks) {
       'On cancel the dirty state of the report still remains'
     );
 
-    let emberId = find('.report-view.ember-view').id,
-      component = this.owner.lookup('-view-registry:main')[emberId];
+    const reportsController = this.owner.lookup('controller:reports.report');
+    const report = reportsController.model;
     assert.equal(
-      component.get('report.visualization.type'),
+      report.visualization.type,
       'table',
       'Report has a valid visualization type after closing Save-As Modal'
     );
@@ -384,17 +385,14 @@ module('Acceptance | Navi Report', function (hooks) {
       'On cancel the dirty state of the report still remains'
     );
 
-    assert.equal(
-      component.get('report.visualization.type'),
-      'table',
-      'Report has a valid visualization type after canceling Save-As.'
-    );
+    assert.equal(report.visualization.type, 'table', 'Report has a valid visualization type after canceling Save-As.');
   });
 
   test('Save As report', async function (assert) {
     assert.expect(6);
 
-    await visit('/reports/13');
+    const reportId = '13';
+    await visit(`/reports/${reportId}`);
 
     // Change the Dim
     await click('.navi-column-config-item__trigger');
@@ -414,10 +412,10 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!$('.filter-builder__subject:contains(Week)').length, 'The new Dim is shown in the new report.');
 
     // New Report is run
-    let emberId = find('.report-view.ember-view').id,
-      component = this.owner.lookup('-view-registry:main')[emberId];
+    const store = this.owner.lookup('service:store');
+    const report = await store.findRecord('report', reportId);
     assert.equal(
-      component.get('report.visualization.type'),
+      report.visualization.type,
       'table',
       'Report has a valid visualization type after running then reverting.'
     );
@@ -437,7 +435,8 @@ module('Acceptance | Navi Report', function (hooks) {
 
   test('Save As change title manually', async function (assert) {
     assert.expect(6);
-    await visit('/reports/13');
+    const reportId = '13';
+    await visit(`/reports/${reportId}`);
     // Change the Dim
     await click('.navi-column-config-item__trigger');
 
@@ -458,10 +457,10 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!$('.filter-builder__subject:contains(Month)').length, 'The new Dim is shown in the new report.');
 
     // New Report is run
-    let emberId = find('.report-view.ember-view').id,
-      component = this.owner.lookup('-view-registry:main')[emberId];
+    const store = this.owner.lookup('service:store');
+    const report = await store.findRecord('report', reportId);
     assert.equal(
-      component.get('report.visualization.type'),
+      report.visualization.type,
       'table',
       'Report has a valid visualization type after running then reverting.'
     );
@@ -764,7 +763,7 @@ module('Acceptance | Navi Report', function (hooks) {
     );
 
     /* == Change to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await click('.navi-report__run-btn');
 
     await click($('.menu-content a:contains("PDF")')[0]);
@@ -940,7 +939,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.dom('.c3-legend-item').exists({ count: 4 }, 'Line chart visualization has 4 series as configured');
 
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1073,7 +1072,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1092,7 +1091,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
     /* == Switch to table == */
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
@@ -1368,7 +1367,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     /* == Modify report by adding a metric == */
     await visit('/reports/1/view');
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await clickItem('metric', 'Time Spent');
     await click('.navi-report__run-btn');
 
@@ -1408,7 +1407,7 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
     await animationsSettled();
     await click('.navi-report__run-btn');
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
 
     assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
 
@@ -2039,7 +2038,7 @@ module('Acceptance | Navi Report', function (hooks) {
     assert.expect(4);
     await visit('/reports/2/view');
 
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     await click('.report-view__visualization-edit-btn');
 
     await click(findAll('.number-format-dropdown__trigger')[1]); // open nav clicks dropdown

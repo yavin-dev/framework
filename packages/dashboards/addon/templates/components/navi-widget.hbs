@@ -78,15 +78,20 @@
 
   {{!-- Success --}}
   {{#if @taskInstance.isSuccessful}}
-    <div class="navi-widget__content visualization-container">
-      {{#let (component (concat this.visualizationPrefix @model.visualization.type)) as |Visualization|}}
-        <Visualization
-          @model={{this.data}}
-          @options={{@model.visualization.metadata}}
-          @containerComponent={{item}}
-        />
-      {{/let}}
-    </div>
+    {{#let @model.visualization.manifest.visualizationComponent as |VisualizationComponent|}}
+      <VisualizationComponent
+        class="navi-widget__content visualization-container"
+        @request={{this.data.firstObject.request}}
+        @response={{this.data.firstObject.response}}
+        @settings={{@model.visualization.metadata}}
+        @isReadOnly={{true}}
+        @isEditing={{false}}
+        {{!-- @onUpdateReport={{noop}} --}}
+        {{!-- @onUpdateSettings={{noop}} --}}
+        @container={{item}}
+        @manifest={{@model.visualization.manifest}}
+      />
+    {{/let}}
   {{/if}}
 
 </GridStackItem>

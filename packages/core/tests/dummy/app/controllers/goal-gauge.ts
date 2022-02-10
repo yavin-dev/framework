@@ -1,13 +1,21 @@
 import Controller from '@ember/controller';
+import { inject as service } from '@ember/service';
 import { set, action } from '@ember/object';
 import { merge } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 import { ModelFrom } from 'navi-core/utils/type-utils';
 import GoalGaugeRoute from '../routes/goal-gauge';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class GoalGaugeController extends Controller {
-  model!: ModelFrom<GoalGaugeRoute>;
+  declare model: ModelFrom<GoalGaugeRoute>;
+
+  @service declare visualization: YavinVisualizationsService;
+
+  get manifest() {
+    return this.visualization.getVisualization('c3:goal-gauge');
+  }
 
   @tracked goalGaugeOptions: GoalGaugeConfig['metadata'] = {
     metricCid: this.model.firstObject!.request.metricColumns[0].cid,

@@ -1,0 +1,95 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div id={{this.guid}} class="report-view" ...attributes {{did-insert this.setupElement}} {{did-update this.filtersUpdate @isFiltersCollapsed @report.request.filters.length}}>
+  <div class="report-view__visualization-main">
+    <ReportViewOverlay
+      @runReport={{pipe (route-action "validate" @report) (route-action "forceRun" @report)}}
+      @isVisible={{and @report.request.hasDirtyAttributes (not @hasRequestRun)}}
+    />
+    <div class="report-view__visualization-header">
+      <div class="report-view__visualization-header-left">
+        <h4 class="report-view__title">Visualization</h4>
+        <VisualizationToggle
+          class="report-view__visualization-toggle"
+          @report={{@report}}
+          @validVisualizations={{this.validVisualizations}}
+          @onVisualizationTypeUpdate={{this.onVisualizationTypeUpdate}}
+        />
+      </div>
+      {{#animated-if (and @hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}
+        <DenaliButton
+          @size="medium"
+          @style="text"
+          {{on "click" this.toggleEditVisualization}}
+          class="report-view__visualization-edit-btn"
+        >
+          Edit {{this.visualizationTypeLabel}}
+        </DenaliButton>
+      {{/animated-if}}
+      {{#animated-if (not @hasRequestRun) use=this.visFadeTransition duration=200}}
+        <span class="report-view__info-text">
+          <DenaliIcon @icon="warning" @size="small" class="is-status-warning"/> Run request to update {{this.visualizationTypeLabel}}
+        </span>
+      {{/animated-if}}
+    </div>
+    <div class= "report-view__visualization-body">
+      <div class="report-view__visualization-container">
+        {{#if this.hasNoData}}
+          <div class="report-view__visualization-no-results">
+            No results available.
+          </div>
+        {{else}}
+          {{#let @report.visualization.manifest.visualizationComponent as |VisualizationComponent|}}
+            <VisualizationComponent
+              class="report-view__visualization"
+              @request={{@report.request}}
+              @response={{@response}}
+              @settings={{@report.visualization.metadata}}
+              @isReadOnly={{false}}
+              @isEditing={{and this.isEditingVisualization @hasRequestRun}}
+              @onUpdateReport={{queue
+                (route-action "onUpdateReport")
+                (route-action "validate" @report)
+                (route-action "runReport" @report)
+              }}
+              @onUpdateSettings={{route-action "onUpdateVisualizationConfig"}}
+
+              @manifest={{@report.visualization.manifest}}
+              @container={{this.getContainer}}
+              @annotationData={{@annotationData}}
+            />
+          {{/let}}
+          <MissingIntervalsWarning
+            @response={{@response}}
+            @onDetailsToggle={{this.resizeVisualization}}
+          />
+        {{/if}}
+      </div>
+    </div>
+  </div>
+  <AnimatedContainer class="report-view__animation-container">
+    {{#animated-if (and this.isEditingVisualization @hasRequestRun) use=this.drawerTransition duration=400}}
+      <div class="report-view__visualization-edit">
+        <div class="report-view__visualization-edit-header">
+          <span>Edit {{this.visualizationTypeLabel}}</span>
+          <DenaliIcon
+            role="button"
+            @icon="close"
+            class="report-view__visualization-edit-close link is-secondary is-sub"
+            {{on "click" this.toggleEditVisualization}}
+          />
+        </div>
+        {{#let @report.visualization.manifest.settingsPanelComponent as |SettingsPanelComponent|}}
+          <SettingsPanelComponent
+            class="report-view__navi-visualization-config"
+            @request={{@report.request}}
+            @response={{@response.rows}}
+            @settings={{@report.visualization.metadata}}
+            @manifest={{@report.visualization.manifest}}
+            @isEditing={{true}}
+            @onUpdateSettings={{route-action "onUpdateVisualizationConfig"}}
+          />
+        {{/let}}
+      </div>
+    {{/animated-if}}
+  </AnimatedContainer>
+</div>

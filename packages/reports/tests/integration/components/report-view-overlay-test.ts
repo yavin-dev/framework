@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import ReportViewOverlay from 'navi-reports/components/report-view-overlay';
@@ -45,7 +45,9 @@ module('Integration | Component | report-view-overlay', function (hooks) {
       .doesNotExist('The content is not rendered when the overlay is dismissed');
 
     this.set('isVisible', false);
+    await settled();
     this.set('isVisible', true);
+    await settled();
     assert.dom('.report-view-overlay__content').exists('The dismiss is reset when the @isVisible prop is updated');
   });
 

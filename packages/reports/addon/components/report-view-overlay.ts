@@ -13,6 +13,7 @@ interface Args {
 
 export default class ReportViewOverlay extends Component<Args> {
   @tracked wasDismissed = false;
+  wasVisible?: boolean;
 
   get shouldDisplay() {
     return this.wasDismissed === false && this.args.isVisible === true;
@@ -24,7 +25,15 @@ export default class ReportViewOverlay extends Component<Args> {
   }
 
   @action
-  resetDismissed(_isVisible: Args['isVisible']) {
-    this.wasDismissed = false;
+  setupElement() {
+    this.wasVisible = this.args.isVisible;
+  }
+
+  @action
+  resetDismissed(_el: HTMLElement, [isVisible]: [Args['isVisible']]) {
+    if (this.wasVisible === false && isVisible === true) {
+      this.wasDismissed = false;
+    }
+    this.wasVisible = isVisible;
   }
 }

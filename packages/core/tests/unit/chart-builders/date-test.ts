@@ -4,7 +4,7 @@ import Object from '@ember/object';
 import BuilderClass from 'navi-core/chart-builders/date-time';
 import TooltipTemplate from 'navi-core/templates/chart-tooltips/date';
 import { C3Row } from 'navi-core/chart-builders/base';
-import { buildTestRequest } from '../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';

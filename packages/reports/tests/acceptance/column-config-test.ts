@@ -1413,7 +1413,7 @@ module('Acceptance | Navi Report | Column Config', function (hooks) {
 
     await click('.navi-report__run-btn');
 
-    await click('.visualization-toggle__option-icon[title="Data Table"]');
+    await click('.visualization-toggle__option-icon[title="Table"]');
     assert.dom('.table-row__rollup-row').exists('Table visualization has rollup styled rows');
 
     await click('.navi-column-config__grandtotal-icon');

@@ -54,8 +54,8 @@ export default class MultipleFormatExport extends ReportActionExport {
     const newModel = store.createRecord('report', {
       title: serializedModel.title,
       request: model.request.clone(),
-      visualization: store.createFragment(serializedModel.visualization.type, serializedModel.visualization),
     });
+    newModel.updateVisualization(model.visualization.clone());
 
     // Model compression requires an id
     newModel.set('id', newModel.tempId);

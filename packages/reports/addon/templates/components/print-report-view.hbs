@@ -5,11 +5,19 @@
       No results available.
     </div>
   {{else}}
-    <ReportVisualization
-      class="print-report-view__visualization"
-      @report={{@report}}
-      @response={{@response}}
-      @print={{true}}
-    />
+    {{#let @report.visualization.manifest.visualizationComponent as |VisualizationComponent|}}
+      <VisualizationComponent
+        class="print-report-view__visualization"
+        @request={{@report.request}}
+        @response={{@response}}
+        @settings={{@report.visualization.metadata}}
+        {{!-- @onUpdateReport={{noop}} --}}
+        {{!-- @onUpdateSettings={{noop}} --}}
+        @isEditing={{false}}
+        @isReadOnly={{true}}
+        @isPrint={{true}}
+        @manifest={{@report.visualization.manifest}}
+      />
+    {{/let}}
   {{/if}}
 </div>

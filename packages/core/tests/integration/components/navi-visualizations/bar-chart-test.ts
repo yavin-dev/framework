@@ -9,7 +9,7 @@ import { initialize as injectC3Enhancements } from 'navi-core/initializers/injec
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import { buildTestRequest } from '../../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import { TestContext } from 'ember-test-helpers';
 

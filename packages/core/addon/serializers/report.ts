@@ -12,25 +12,26 @@ import { normalizeBarChartV2 } from './bar-chart';
 import { normalizeGoalGaugeV2 } from './goal-gauge';
 import { normalizePieChartV2 } from './pie-chart';
 import type Model from '@ember-data/model';
-import type RequestFragment from 'navi-core/models/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function normalizeVisualization(request: RequestFragment, visualization: any, metadata: NaviMetadataService) {
+export function normalizeVisualization(request: RequestV2, visualization: any, metadata: NaviMetadataService) {
+  let normalized = visualization;
   if (visualization?.type === 'table') {
-    return normalizeTableV2(request, visualization, metadata);
+    normalized = normalizeTableV2(request, visualization, metadata);
   } else if (visualization?.type === 'metric-label') {
-    return normalizeMetricLabelV2(request, visualization);
+    normalized = normalizeMetricLabelV2(request, visualization);
   } else if (visualization?.type === 'line-chart') {
-    return normalizeLineChartV2(request, visualization);
+    normalized = normalizeLineChartV2(request, visualization);
   } else if (visualization?.type === 'bar-chart') {
-    return normalizeBarChartV2(request, visualization);
+    normalized = normalizeBarChartV2(request, visualization);
   } else if (visualization?.type === 'goal-gauge') {
-    return normalizeGoalGaugeV2(request, visualization);
+    normalized = normalizeGoalGaugeV2(request, visualization);
   } else if (visualization?.type === 'pie-chart') {
-    return normalizePieChartV2(request, visualization);
+    normalized = normalizePieChartV2(request, visualization);
   }
-  return visualization;
+  return normalized;
 }
 
 export default class ReportSerializer extends AssetSerializer {

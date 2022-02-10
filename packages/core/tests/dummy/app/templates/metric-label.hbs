@@ -20,8 +20,9 @@
   <NaviVisualizationConfig::Wrapper
     @request={{@model.bottle.firstObject.request}}
     @response={{@model.bottle.firstObject.response}}
-    @visualization={{this.metricVisualization}}
-    @onUpdateConfig={{this.onUpdateConfig}}
+    @manifest={{this.manifest}}
+    @settings={{this.metricVisualization.metadata}}
+    @onUpdateSettings={{this.onUpdateConfig}}
   />
   <NaviVisualizations::MetricLabel
     @model={{@model.bottle}}

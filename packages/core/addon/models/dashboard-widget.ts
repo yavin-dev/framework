@@ -74,11 +74,12 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
   clone() {
     let clonedWidget = this.toJSON() as DashboardWidget;
 
-    return this.store.createRecord('dashboard-widget', {
+    const widget = this.store.createRecord('dashboard-widget', {
       title: clonedWidget.title,
-      visualization: this.store.createFragment(clonedWidget.visualization.type, clonedWidget.visualization),
       requests: this.requests.map((request) => request.clone()),
     });
+    widget.updateVisualization(this.visualization.clone());
+    return widget;
   }
 }
 

@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { set, action } from '@ember/object';
+import { action } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
@@ -11,7 +11,6 @@ import { reject } from 'rsvp';
 import { taskFor } from 'ember-concurrency-ts';
 import { assert } from '@ember/debug';
 import type NaviFactsService from 'navi-data/services/navi-facts';
-import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
@@ -19,6 +18,7 @@ import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type RequestFragment from 'navi-core/models/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
+import type YavinVisualizationsService from 'navi-core/addon/services/visualization';
 
 export default class ReportsReportViewRoute extends Route {
   /**
@@ -29,7 +29,7 @@ export default class ReportsReportViewRoute extends Route {
   /**
    * instance of navi visualizations service
    */
-  @service declare naviVisualizations: NaviVisualizationsService;
+  @service declare visualization: YavinVisualizationsService;
 
   /**
    * options for request
@@ -65,9 +65,9 @@ export default class ReportsReportViewRoute extends Route {
     // Wrap the response in a promise object so we can manually handle loading spinners
     return taskFor(this.facts.fetch)
       .perform(serializedRequest, requestOptions)
-      .then((response) => {
+      .then(async (response) => {
         this._setValidVisualizationType(request, report);
-        this._setValidVisualizationConfig(request, report, response.response);
+        await this._setValidVisualizationConfig(request, report, response.response);
 
         return response;
       })
@@ -89,14 +89,14 @@ export default class ReportsReportViewRoute extends Route {
    * @param report
    */
   _setValidVisualizationType(request: RequestFragment, report: ReportLike) {
-    const { naviVisualizations } = this;
+    const { visualization: visualizationService } = this;
     let { visualization } = report;
-    const visualizationManifest = naviVisualizations.getManifest(visualization.type);
+    const { manifest } = visualization;
 
     // If the current type is already valid, don't bother setting a new type
-    if (!visualizationManifest.typeIsValid(request)) {
-      visualization = this.store.createFragment(naviVisualizations.defaultVisualization(), {});
-      set(report, 'visualization', visualization);
+    if (manifest.validate(request).isValid !== true) {
+      const def = visualizationService.defaultVisualization();
+      report.updateVisualization(def.createModel());
     }
   }
 
@@ -108,12 +108,14 @@ export default class ReportsReportViewRoute extends Route {
    * @param report
    * @param response
    */
-  _setValidVisualizationConfig(request: RequestFragment, report: ReportLike, response: NaviFactResponse) {
+  async _setValidVisualizationConfig(request: RequestFragment, report: ReportLike, response: NaviFactResponse) {
     const { visualization } = report;
+    const { manifest } = visualization;
 
-    if (!visualization.isValidForRequest(request)) {
-      visualization.rebuildConfig(request, response);
-    }
+    const newSettings = manifest.dataDidUpdate(report.visualization.metadata, request, response);
+    //@ts-ignore
+    visualization.metadata = newSettings;
+    report.updateVisualization(visualization);
   }
 
   /**

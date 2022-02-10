@@ -16,7 +16,7 @@ import LineChart from 'navi-core/components/navi-visualizations/line-chart';
 import { C3Row } from 'navi-core/chart-builders/base';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import StoreService from '@ember-data/store';
-import { buildTestRequest } from '../../../helpers/request';
+import { buildTestRequest } from 'navi-core/test-support/request';
 import { LineChartConfig } from 'navi-core/models/line-chart';
 
 /*eslint max-len: ["error", { "code": 250 }]*/

@@ -2,6 +2,7 @@
 <div 
   class="report-view-overlay {{if this.shouldDisplay "report-view-overlay--visible"}}" 
   ...attributes
+  {{did-insert this.setupElement}}
   {{did-update this.resetDismissed @isVisible}}
 >
   {{#if (and hasBlock this.shouldDisplay)}}

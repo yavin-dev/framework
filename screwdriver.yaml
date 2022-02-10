@@ -79,6 +79,10 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-search
+  main-perspective:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin-ui/perspective'
   main-webservice:
     steps:
       - *install-node
@@ -105,6 +109,7 @@ jobs:
         main-notifications,
         main-reports,
         main-search,
+        main-perspective,
         main-webservice,
       ]
 

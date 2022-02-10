@@ -63,11 +63,12 @@ export default class ReportModel extends DeliverableItem.extend(hasVisualization
    */
   clone() {
     const clonedReport = this.toJSON() as this; //TODO not totally right
-    return {
+    const report = this.store.createRecord('report', {
       title: clonedReport.title,
-      visualization: this.store.createFragment(clonedReport.visualization.type, clonedReport.visualization),
       request: this.request.clone(),
-    };
+    });
+    report.updateVisualization(this.visualization.clone());
+    return report;
   }
 }
 

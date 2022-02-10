@@ -13,11 +13,11 @@ import type UserService from 'navi-core/services/user';
 import type UpdateReportActionDispatcher from 'navi-reports/services/update-report-action-dispatcher';
 import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 import type ReportModel from 'navi-core/models/report';
-import type NaviVisualizationsService from 'navi-reports/services/navi-visualizations';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 type ModelParams = { report_id: string } | { widget_id: string };
 type ReportModelParams = { report_id: string };
@@ -29,7 +29,7 @@ export default class ReportsReportRoute extends Route {
 
   @service declare user: UserService;
 
-  @service declare naviVisualizations: NaviVisualizationsService;
+  @service declare visualization: YavinVisualizationsService;
 
   @service declare updateReportActionDispatcher: UpdateReportActionDispatcher;
 
@@ -41,7 +41,7 @@ export default class ReportsReportRoute extends Route {
    * visualization type if not specified in report
    */
   get defaultVisualizationType() {
-    return this.naviVisualizations.defaultVisualization();
+    return this.visualization.defaultVisualization();
   }
 
   /**
@@ -104,7 +104,7 @@ export default class ReportsReportRoute extends Route {
    */
   private setDefaultVisualization(report: ReportLike): ReportLike {
     if (!report.visualization?.type) {
-      set(report, 'visualization', this.store.createFragment(this.defaultVisualizationType, {}));
+      report.updateVisualization(this.defaultVisualizationType.createModel());
     }
     return report;
   }
@@ -188,7 +188,7 @@ export default class ReportsReportRoute extends Route {
         // Switch from temp id to permanent id
         this.replaceWith('reports.report.view', get(report, 'id'));
       })
-      .catch(() => {
+      .catch((_e) => {
         this.naviNotifications.add({
           title: 'An error occurred while saving the report',
           style: 'danger',
@@ -234,7 +234,7 @@ export default class ReportsReportRoute extends Route {
   @action
   onUpdateVisualizationConfig(metadataUpdates: Partial<ReportLike['visualization']['metadata']>) {
     const report = this.modelFor(this.routeName) as ModelFrom<this>;
-    const metadata = report.visualization?.metadata;
+    const metadata = (report.visualization?.metadata ?? {}) as object;
 
     set(report.visualization, 'metadata', { ...metadata, ...metadataUpdates });
   }

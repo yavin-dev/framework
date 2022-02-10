@@ -199,6 +199,17 @@ export default C3Chart.extend({
     }
   },
 
+  getContainer() {
+    const { containerComponent } = this;
+    let container;
+    if (typeof containerComponent === 'function') {
+      container = $(containerComponent());
+    } else {
+      container = $(get(this, 'containerComponent.element'));
+    }
+    return container;
+  },
+
   didInsertElement() {
     this._super(...arguments);
 
@@ -208,8 +219,8 @@ export default C3Chart.extend({
     // Call resize on initial render
     next(this, '_resizeFunc');
 
+    const container = this.getContainer();
     // Call resize on resize event
-    let container = $(get(this, 'containerComponent.element'));
     if (container.length) {
       container.on('resizestop.navi-vis-c3-chart', () => {
         scheduleOnce('afterRender', this, '_resizeFunc');
@@ -220,7 +231,7 @@ export default C3Chart.extend({
   willDestroyElement() {
     this._super(...arguments);
 
-    let container = $(get(this, 'containerComponent.element'));
+    const container = this.getContainer();
     if (container.length) {
       container.off('.navi-vis-c3-chart');
     }

@@ -343,10 +343,8 @@ module('Integration | Component | table', function (hooks) {
 
     assert.dom('.table-row__total-row').isVisible('The total row is visible when show grand total is `true`');
 
-    let totalRow = findAll('.table-row__total-row .table-cell').map((cell) => cell.textContent.trim());
-
     assert.deepEqual(
-      totalRow,
+      findAll('.table-row__total-row .table-cell').map((cell) => cell.textContent.trim()),
       ['Grand Total', '--', '--', '1,373,229,356', '29,181,322,613', '0'],
       'The table renders the grand total row correctly'
     );
