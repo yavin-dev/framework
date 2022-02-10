@@ -18,7 +18,7 @@ import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type RequestFragment from 'navi-core/models/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
-import type YavinVisualizationsService from 'navi-core/addon/services/visualization';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class ReportsReportViewRoute extends Route {
   /**

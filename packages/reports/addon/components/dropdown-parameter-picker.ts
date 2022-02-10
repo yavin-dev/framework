@@ -10,8 +10,9 @@ import { assert } from '@ember/debug';
 import { parseParameterValue } from 'navi-data/utils/metric';
 import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
 import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
-import type { ParameterValue } from 'navi-data/addon/adapters/facts/interface';
-import type { Dropdown } from 'ember-basic-dropdown/addon/components/basic-dropdown';
+import type { ParameterValue } from 'navi-data/adapters/facts/interface';
+//@ts-ignore
+import type { Dropdown } from 'ember-basic-dropdown/components/basic-dropdown';
 
 interface Args {
   parameterMetadata: FunctionParameter;

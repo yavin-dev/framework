@@ -2,8 +2,9 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, find, findAll, render, waitFor, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { YavinVisualizationArgs } from 'navi-core/addon/visualization/component';
+import { YavinVisualizationArgs } from 'navi-core/visualization/component';
 import { PerspectiveSettings } from '@yavin-ui/perspective/manifest';
+//@ts-ignore
 import { buildTestRequest } from 'navi-core/test-support/request';
 import type NaviFactsModel from 'navi-data/models/navi-facts';
 import { taskFor } from 'ember-concurrency-ts';
@@ -12,7 +13,8 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import { timeout } from 'ember-concurrency';
 import { TestContext as Context } from 'ember-test-helpers';
 
-interface TestContext extends Context, YavinVisualizationArgs<PerspectiveSettings> {}
+type ComponentArgs = YavinVisualizationArgs<PerspectiveSettings>;
+interface TestContext extends Context, Omit<ComponentArgs, 'container'> {}
 
 const TEMPLATE = hbs`
   <Perspective
