@@ -343,12 +343,8 @@ module('Integration | Component | table', function (hooks) {
 
     assert.dom('.table-row__total-row').isVisible('The total row is visible when show grand total is `true`');
 
-    const getTableCells = () => findAll('.table-row__total-row .table-cell');
-
-    await waitUntil(() => getTableCells().length === 6);
-    let totalRow = getTableCells().map((cell) => cell.textContent.trim());
     assert.deepEqual(
-      totalRow,
+      findAll('.table-row__total-row .table-cell').map((cell) => cell.textContent.trim()),
       ['Grand Total', '--', '--', '1,373,229,356', '29,181,322,613', '0'],
       'The table renders the grand total row correctly'
     );
@@ -372,7 +368,6 @@ module('Integration | Component | table', function (hooks) {
 
     await render(TEMPLATE);
 
-    await waitUntil(() => findAll('.table-row__total-row').length === 3);
     assert.deepEqual(
       findAll('.table-row__total-row').map((el) => el.textContent.replace(/\s+/g, ' ').trim()),
       [
@@ -386,7 +381,7 @@ module('Integration | Component | table', function (hooks) {
     let newOptions = merge({}, options, { showTotals: { grandTotal: true } });
     this.set('options', newOptions);
 
-    await waitUntil(() => findAll('.table-row__total-row').length === 4);
+    await settled();
     assert.deepEqual(
       findAll('.table-row__total-row').map((el) => el.textContent.replace(/\s+/g, ' ').trim()),
       [
@@ -410,7 +405,6 @@ module('Integration | Component | table', function (hooks) {
 
     await render(TEMPLATE);
 
-    await waitUntil(() => findAll('.table-row__total-row').length === 2);
     assert.deepEqual(
       findAll('.table-row__total-row').map((el) => el.textContent.replace(/\s+/g, ' ').trim()),
       ['Subtotal -- -- 539,521,365 11,783,015,784 0', 'Subtotal -- -- 172,933,788 3,669,828,357 0'],
@@ -454,7 +448,6 @@ module('Integration | Component | table', function (hooks) {
     this.set('options', options);
     await render(TEMPLATE);
 
-    await waitUntil(() => findAll('.table-row__total-row').length === 4);
     assert.deepEqual(
       findAll('.table-row__total-row').map((el) => el.textContent.replace(/\s+/g, ' ').trim()),
       [

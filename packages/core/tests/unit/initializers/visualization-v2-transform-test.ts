@@ -40,7 +40,7 @@ module('Unit | Initializer | visualization-v2-transform', function (hooks) {
       'metric-label': 'metric-label',
       'pie-chart': 'pie-chart',
       table: 'table',
-      'model-that-does-not-exit': 'visualization-v2',
+      'model-that-does-not-exist': 'visualization-v2',
     };
 
     Object.entries(map).forEach(([modelInputType, expectedModel]) => {

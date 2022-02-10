@@ -32,7 +32,9 @@ export default class VisualizationFragment extends Fragment.extend(Validations) 
   @attr('string')
   type!: string;
 
-  // @attr('string')
+  /**
+   * Implement the VisualizationModelV2 without modifying any legacy visualizations
+   */
   get namespace() {
     return ['metric-label', 'table'].includes(this.type) ? 'yavin' : 'c3';
   }

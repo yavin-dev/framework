@@ -4,12 +4,4 @@
  */
 import JSONSerializer from '@ember-data/serializer/json';
 
-export default class VisualizationSerializer extends JSONSerializer {
-  /**
-   * @property attrs - model attribute config while serialization
-   */
-  attrs = {
-    // Prevent sending below attributes in legacy visualizations
-    // namespace: { serialize: false },
-  };
-}
+export default class VisualizationSerializer extends JSONSerializer {}

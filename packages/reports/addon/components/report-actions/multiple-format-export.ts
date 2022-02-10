@@ -21,7 +21,6 @@ import { taskFor } from 'ember-concurrency-ts';
 import type ReportModel from 'navi-core/models/report';
 import type GsheetExportService from 'navi-core/services/gsheet-export';
 import { htmlSafe } from '@ember/template';
-import { VisualizationType } from 'navi-core/models/registry';
 
 export default class MultipleFormatExport extends ReportActionExport {
   /**
@@ -51,13 +50,12 @@ export default class MultipleFormatExport extends ReportActionExport {
 
     const serializedModel = model.toJSON() as ReportModel;
 
-    const type = serializedModel.visualization.type as VisualizationType;
     // Create new report model in case we're dealing with a widget model
     const newModel = store.createRecord('report', {
       title: serializedModel.title,
       request: model.request.clone(),
-      visualization: store.createFragment(type, serializedModel.visualization).serialize(),
     });
+    newModel.updateVisualization(model.visualization.clone());
 
     // Model compression requires an id
     newModel.set('id', newModel.tempId);
