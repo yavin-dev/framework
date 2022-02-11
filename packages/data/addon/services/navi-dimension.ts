@@ -38,7 +38,7 @@ type RequestType = 'all' | 'search' | 'find';
  * dimension cache, however, is "give me query X and I'll format result Y from what I have"
  */
 class DimensionCache extends Cache<NaviDimensionResponse> {
-  // set this.getCacheId() function
+  // set this.getCacheKey() function
   constructor() {
     function getDimensionCacheId(dimension: DimensionColumn): string {
       const cannonicalName = canonicalizeMetric({
@@ -68,8 +68,8 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
     let results = undefined;
 
     // check if all dimension results are stored in cache
-    let cacheId = this.getCacheId(dimension);
-    let cacheResponse = this.checkCache(cacheId);
+    let cacheId = this.getCacheKey(dimension);
+    let cacheResponse = this.getItem(cacheId);
     if (cacheResponse) {
       // if all results are in cache, but are looking for specific search
       if (requestType === 'search' && query) {
@@ -83,8 +83,8 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
   }
 
   addDimensionToCache(dimension: DimensionColumn, dimensionResults: NaviDimensionResponse) {
-    let cacheId = this.getCacheId(dimension);
-    this.addToCache(cacheId, dimensionResults);
+    let cacheId = this.getCacheKey(dimension);
+    this.setItem(cacheId, dimensionResults);
   }
 }
 

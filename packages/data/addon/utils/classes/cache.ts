@@ -11,25 +11,26 @@ type CacheRecord<T> = {
 
 /**
  * a cache
- * to use, give it a unique string (cacheId) and whatever you want stored alongside that key
+ * to use, give it a unique string (cacheKey) and whatever you want stored alongside that key
  * returns only exact matches
  */
 export default class Cache<T> {
   private _maxCacheSize;
   private _cacheTimeout;
-  private _cache: Record<string, CacheRecord<T>> = {};
-  getCacheId;
+  private _cache;
+  getCacheKey;
 
   /**
-   * @param {function (params:type) => string} cacheIdFunction - a function that returns unique strings associated with specific items in cache
+   * @param {function (params:type) => string} cacheKeyFunction - a function that returns unique strings associated with specific items in cache
    * @param {number} maxCacheSize - the maximum number of items that can be stored in the cache (default 10)
    * @param {number} cacheTimeout - the maximum amount of milliseconds a record should be allowed to stay in the cache (default 1 hour)
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(cacheIdFunction: (args: any) => string, maxCacheSize = 10, cacheTimeout = 60 * 60 * 1000) {
-    this.getCacheId = cacheIdFunction;
+  constructor(cacheKeyFunction: (args: any) => string, maxCacheSize = 10, cacheTimeout = 60 * 60 * 1000) {
+    this.getCacheKey = cacheKeyFunction;
     this._maxCacheSize = maxCacheSize;
     this._cacheTimeout = cacheTimeout;
+    this._cache = new Map<string, CacheRecord<T>>();
   }
 
   /**
@@ -38,72 +39,84 @@ export default class Cache<T> {
   private _removeStaleItems(): void {
     const cache = this._cache;
     const now = Date.now();
-    for (const [id, cacheResult] of Object.entries(cache)) {
-      if (now - cacheResult.creationTime >= this._cacheTimeout) {
-        delete cache[id];
+    cache.forEach((value: CacheRecord<T>, key: string) => {
+      if (now - value.creationTime >= this._cacheTimeout) {
+        cache.delete(key);
       }
-    }
+    });
   }
 
   /**
    * removes the least recently accessed items until cache is at or below max size
+   * @returns {number} the number of items removed from the cache
    */
-  private _trimExtraItems(): void {
+  private _trimExtraItems(): number {
     const cache = this._cache;
-    while (Object.keys(cache).length > this._maxCacheSize) {
+    let removedCount = 0;
+    while (cache.size > this._maxCacheSize) {
       let oldestDate = Date.now();
-      let oldestId = '';
-      for (const [id, cacheResult] of Object.entries(cache)) {
-        if (cacheResult.lastAccessed < oldestDate) {
-          oldestDate = cacheResult.lastAccessed;
-          oldestId = id;
+      let oldestKey = '';
+      cache.forEach((value: CacheRecord<T>, key: string) => {
+        if (value.lastAccessed < oldestDate) {
+          oldestDate = value.lastAccessed;
+          oldestKey = key;
         }
-      }
-      delete cache[oldestId];
+      });
+      cache.delete(oldestKey);
+
+      removedCount = removedCount + 1;
     }
+    return removedCount;
+  }
+
+  has(cacheKey: string): boolean {
+    return this._cache.has(cacheKey);
   }
 
   /**
    * adds a given key/value pair to the cache
-   * @param {string} cacheId - the unique identifier associated with the thing you're putting into the cache (result of getCacheId function)
+   * @param {string} cacheKey - the unique identifier associated with the thing you're putting into the cache (result of getCacheKey function)
    * @param {any} records - the thing you want to store in the cache
    * @returns void
    */
-  addToCache(cacheId: string, records: T): void {
+  setItem(cacheKey: string, records: T): void {
     this._removeStaleItems();
-    if (!cacheId) {
+    if (!cacheKey) {
       return;
     }
 
     const cache = this._cache;
-    cache[cacheId] = {
-      creationTime: Date.now(),
-      lastAccessed: Date.now(),
-      records,
-    };
+    cache.set(cacheKey, { creationTime: Date.now(), lastAccessed: Date.now(), records });
 
     this._trimExtraItems();
   }
 
   /**
    * looks for and returns a specific record in the cache
-   * @param cacheId - the unique identifier associated with the thing you're looking for (result of getCacheId function)
+   * @param {string} cacheKey - the unique identifier associated with the thing you're looking for (result of getCacheKey function)
+   * @param {(string) => T} fallbackFn - a function that will run if the cache misses (results added to cache)
    * @returns the thing you're looking for (or undefined, if it's not in the cache)
    */
-  checkCache(cacheId: string): T | undefined {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getItem(cacheKey: string, fallbackFn?: (args?: any) => T): T | undefined {
     this._removeStaleItems();
-    if (!cacheId) {
+    if (!cacheKey) {
       return;
     }
 
     const cache = this._cache;
-    let cacheResponse = cache[cacheId];
+    let cacheResponse = cache.get(cacheKey);
     let results = undefined;
 
     // if something was found, update record access time
     if (cacheResponse) {
       cacheResponse.lastAccessed = Date.now();
       results = cacheResponse.records;
+    }
+    // if nothing was found, call the fallback function
+    else if (fallbackFn) {
+      results = fallbackFn(cacheKey);
+      this.setItem(cacheKey, results);
     }
 
     return results;
