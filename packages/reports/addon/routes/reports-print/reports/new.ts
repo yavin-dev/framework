@@ -4,13 +4,14 @@
  */
 import ReportNewRoute from 'navi-reports/routes/reports/new';
 import type ReportModel from 'navi-core/models/report';
+import type { Transition } from 'navi-core/addon/utils/type-utils';
 
 export default class ReportsPrintReportsNewRoute extends ReportNewRoute {
   /**
    * @param report - resolved report model
    * @override
    */
-  afterModel(report: ReportModel) {
+  afterModel(report: ReportModel): Transition {
     return this.replaceWith('reports-print.reports.report.view', report.tempId);
   }
 }

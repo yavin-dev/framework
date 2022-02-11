@@ -7,7 +7,7 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import Route from '@ember/routing/route';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
-import type { ModelFrom } from 'navi-core/utils/type-utils';
+import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 import type LayoutFragment from 'navi-core/models/fragments/layout';
 import type FragmentArrayBase from 'ember-data-model-fragments/FragmentArray';
@@ -46,7 +46,7 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
    * Transitions to dashboard
    * @override
    */
-  afterModel() {
+  afterModel(): Transition {
     const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
     return this.replaceWith('dashboards.dashboard', dashboard.id);
   }

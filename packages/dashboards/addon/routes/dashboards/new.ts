@@ -35,7 +35,7 @@ export default class DashboardsNewRoute extends Route {
    * @param dashboard - resolved dashboard model
    * @override
    */
-  afterModel(dashboard: DashboardModel, transition: Transition) {
+  afterModel(dashboard: DashboardModel, transition: Transition): Transition {
     const queryParams = transition.to?.queryParams || {};
 
     // If an initial widget was given in the query params, create it

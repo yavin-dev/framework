@@ -4,6 +4,7 @@
  */
 import { A } from '@ember/array';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
+import type { Transition } from 'navi-core/addon/utils/type-utils';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute {
@@ -12,7 +13,7 @@ export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute 
    * @param widget - resolved widget model
    * @override
    */
-  afterModel(widget: ReportLike) {
+  afterModel(widget: ReportLike): Transition {
     return this.replaceWith('dashboards.dashboard.widgets.widget.edit', widget.tempId);
   }
 

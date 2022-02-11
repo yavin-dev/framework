@@ -149,7 +149,7 @@ export default class ReportsReportViewRoute extends Route {
    * @returns refreshes model transition
    */
   @action
-  forceRun() {
+  forceRun(): Transition {
     return this.refresh();
   }
 

@@ -125,7 +125,7 @@ export default class ReportsReportRoute extends Route {
    * transition to view subroute if runReport is not handled in subroutes
    */
   @action
-  runReport(report: ReportLike) {
+  runReport(report: ReportLike): Transition {
     return this.transitionTo(`${this.routeName}.view`, report.tempId || report.id);
   }
 
