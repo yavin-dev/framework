@@ -1,1 +1,1 @@
-export { default } from '@yavin-ui/perspective/components/perspective';
+export { default } from '@yavin/perspective/components/perspective';

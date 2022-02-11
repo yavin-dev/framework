@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { click, find, findAll, render, waitFor, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { YavinVisualizationArgs } from 'navi-core/visualization/component';
-import { PerspectiveSettings } from '@yavin-ui/perspective/manifest';
+import { PerspectiveSettings } from '@yavin/perspective/manifest';
 //@ts-ignore
 import { buildTestRequest } from 'navi-core/test-support/request';
 import type NaviFactsModel from 'navi-data/models/navi-facts';

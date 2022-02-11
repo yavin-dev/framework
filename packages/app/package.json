@@ -40,7 +40,7 @@
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "@html-next/vertical-collection": "^2.0.0",
-    "@yavin-ui/perspective": "0.4.0",
+    "@yavin/perspective": "0.4.0",
     "babel-eslint": "^10.1.0",
     "broccoli-asset-rev": "^3.0.0",
     "cross-env": "^7.0.3",

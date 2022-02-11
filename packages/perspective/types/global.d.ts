@@ -1,5 +1,5 @@
 // Types for compiled templates
-declare module '@yavin-ui/perspective/templates/*' {
+declare module '@yavin/perspective/templates/*' {
   import { TemplateFactory } from 'htmlbars-inline-precompile';
   const tmpl: TemplateFactory;
   export default tmpl;
