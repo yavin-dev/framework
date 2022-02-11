@@ -165,7 +165,7 @@ export default class DashboardsDashboardRoute extends Route {
    * @param widgetModel - object to delete
    */
   @action
-  deleteWidget(widgetModel: DashboardWidget) {
+  deleteWidget(widgetModel: DashboardWidget): Transition {
     const { id } = widgetModel;
 
     widgetModel.deleteRecord();

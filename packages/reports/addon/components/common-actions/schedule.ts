@@ -22,7 +22,7 @@ import type NaviNotificationService from 'navi-core/services/interfaces/navi-not
 import type UserService from 'navi-core/services/user';
 import type DeliverableItemModel from 'navi-core/models/deliverable-item';
 import type { RSVPMethodsObj } from 'navi-reports/consumers/delivery-rule';
-import GsheetFormat from 'navi-core/addon/models/gsheet';
+import GsheetFormat from 'navi-core/models/gsheet';
 
 const defaultFrequencies = ['day', 'week', 'month', 'quarter', 'year'];
 const defaultFormats = ['csv'];

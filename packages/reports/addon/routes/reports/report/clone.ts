@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import type UserService from 'navi-core/services/user';
 import type ReportModel from 'navi-core/models/report';
-import type { ModelFrom } from 'navi-core/utils/type-utils';
+import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 
@@ -28,7 +28,7 @@ export default class ReportsReportCloneRoute extends Route {
    * @param report - resolved report model
    * @override
    */
-  afterModel(report: ReportModel) {
+  afterModel(report: ReportModel): Transition {
     return this.replaceWith('reports.report.view', report.tempId);
   }
 

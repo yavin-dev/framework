@@ -1,8 +1,8 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { taskFor } from 'ember-concurrency-ts';
-import type NaviFactsService from 'navi-data/addon/services/navi-facts';
-import type NaviMetadataService from 'navi-data/addon/services/navi-metadata';
+import type NaviFactsService from 'navi-data/services/navi-facts';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
 
 export default class Application extends Route {

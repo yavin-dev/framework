@@ -9,7 +9,7 @@ import { assert } from '@ember/debug';
 import type UserService from 'navi-core/services/user';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
-import type { ModelFrom } from 'navi-core/utils/type-utils';
+import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 
@@ -35,7 +35,7 @@ export default class DashboardsDashboardCloneRoute extends Route {
    * @param dashboard - resolved dashboard model
    * @override
    */
-  afterModel(dashboard: DashboardModel) {
+  afterModel(dashboard: DashboardModel): Transition {
     return this.replaceWith('dashboards.dashboard', dashboard.id);
   }
 

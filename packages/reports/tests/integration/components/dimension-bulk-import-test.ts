@@ -10,7 +10,7 @@ import type { TestContext as Context } from 'ember-test-helpers';
 import type { Server } from 'miragejs';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
-import type { DimensionColumn } from 'navi-data/addon/models/metadata/dimension';
+import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 
 const HOST = config.navi.dataSources[0].uri;
 
