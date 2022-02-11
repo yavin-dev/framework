@@ -82,7 +82,7 @@ jobs:
   main-perspective:
     <<: *main-npm-test-job
     environment:
-      PACKAGE: '@yavin-ui/perspective'
+      PACKAGE: '@yavin/perspective'
   main-webservice:
     steps:
       - *install-node

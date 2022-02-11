@@ -1,4 +1,4 @@
-# @yavin-ui/perspective
+# @yavin/perspective
 
 [Short description of the addon.]
 
@@ -11,7 +11,7 @@
 ## Installation
 
 ```
-ember install @yavin-ui/perspective
+ember install @yavin/perspective
 ```
 
 ## Usage
