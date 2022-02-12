@@ -15,23 +15,25 @@ shared:
           npm-cache-verify: npm cache verify
       - .: &npm-ci
           npm-ci: npm ci --unsafe-perm
+      - .: &npm-install-package
+          npm-ci: |
+            npm ci --unsafe-perm --ignore-scripts &> /dev/null
+            npx lerna bootstrap --scope $PACKAGE --include-dependencies --concurrency=1
       - .: &install-chrome
           install-chrome: ./build-scripts/setup-chrome.sh
     jobs:
       main-npm-test-job: &main-npm-test-job
         steps:
           - *install-node
-          - *npm-cache-verify
-          - *npm-ci
+          - *npm-install-package
           - *install-chrome
           - test-package: npx lerna run test --scope $PACKAGE --stream;
         requires:
           - ~pr
           - ~commit
-          - ~pr:vis-v2
   environment:
     NODE_VERSION: 14.16.1
-    JOBS: 4
+    JOBS: 2
 
 jobs:
   lint:
@@ -92,11 +94,13 @@ jobs:
       - ~pr
       - ~commit
   main:
+    image: alpine:3.8
     annotations:
       screwdriver.cd/ram: MICRO
       screwdriver.cd/cpu: MICRO
     steps:
-      - echo "success"
+      - ok: echo "success"
+    cache: false
     requires:
       [
         lint,
