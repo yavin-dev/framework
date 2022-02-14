@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
@@ -14,6 +14,14 @@ import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import Cache from 'navi-data/utils/classes/cache';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
+import SearchUtils from 'navi-data/utils/search';
+import { A } from '@ember/array';
+import config from 'ember-get-config';
+
+const DIMENSION_CACHE = config.navi.dimensionCache;
 
 export type ServiceOptions = {
   timeout?: number;
@@ -22,7 +30,74 @@ export type ServiceOptions = {
   clientId?: string;
 };
 
+type RequestType = 'all' | 'search' | 'find';
+
+/**
+ * a cache specifically for dimension results and queries
+ * a normal cache follows logic "give me key X and I'll give you result Y"
+ * dimension cache, however, is "give me query X and I'll format result Y from what I have"
+ */
+class DimensionCache extends Cache<NaviDimensionResponse> {
+  // set this.getCacheKey() function
+  constructor() {
+    function getDimensionCacheId(dimension: DimensionColumn): string {
+      const cannonicalName = canonicalizeMetric({
+        metric: dimension?.columnMetadata?.name,
+        parameters: dimension.parameters,
+      });
+      return cannonicalName;
+    }
+    super(getDimensionCacheId, DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+  }
+
+  /**
+   * pares an 'all' response down into a 'search' response
+   * @param {NaviDimensionResponse} allResponse - the response with all of the dimensions
+   * @param {string} query - the query that you're searching
+   * @returns {NaviDimensionResponse | undefined} the search request dimension request
+   */
+  getSearchFromAll(allResponse: NaviDimensionResponse, query: string): NaviDimensionResponse {
+    return SearchUtils.searchNaviDimensionRecords(A(allResponse.values), query);
+  }
+
+  checkDimensionCache(
+    requestType: RequestType,
+    dimension: DimensionColumn,
+    query?: string
+  ): NaviDimensionResponse | undefined {
+    let results = undefined;
+
+    // check if all dimension results are stored in cache
+    let cacheId = this.getCacheKey(dimension);
+    let cacheResponse = this.getItem(cacheId);
+    if (cacheResponse) {
+      // if all results are in cache, but are looking for specific search
+      if (requestType === 'search' && query) {
+        results = this.getSearchFromAll(cacheResponse, query);
+      } else {
+        results = cacheResponse;
+      }
+    }
+
+    return results;
+  }
+
+  addDimensionToCache(dimension: DimensionColumn, dimensionResults: NaviDimensionResponse) {
+    let cacheId = this.getCacheKey(dimension);
+    this.setItem(cacheId, dimensionResults);
+  }
+}
+
 export default class NaviDimensionService extends Service {
+  /**
+   * @property {DimensionCache} _dimensionCache - local cache for dimensions
+   */
+  private _dimensionCache = new DimensionCache();
+
+  clearCache(): void {
+    this._dimensionCache.clear();
+  }
+
   /**
    * @param dataSourceType
    * @returns  adapter instance for type
@@ -45,6 +120,12 @@ export default class NaviDimensionService extends Service {
    * @param options - method options
    */
   @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
+    // check cache
+    const cacheResponse = this._dimensionCache.checkDimensionCache('all', dimension);
+    if (cacheResponse) {
+      return cacheResponse;
+    }
+
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const serializer = this.serializerFor(dataSourceType);
@@ -72,7 +153,13 @@ export default class NaviDimensionService extends Service {
         moreResults = false;
       }
     }
-    return NaviDimensionResponse.create({ values });
+    const results = NaviDimensionResponse.create({ values });
+
+    // if small, cache results
+    if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+      this._dimensionCache.addDimensionToCache(dimension, results);
+    }
+    return results;
   }
 
   /**
@@ -103,10 +190,24 @@ export default class NaviDimensionService extends Service {
     query: string,
     options: ServiceOptions = {}
   ): TaskGenerator<NaviDimensionResponse> {
+    // check cache
+    const cacheResponse = this._dimensionCache.checkDimensionCache('search', dimension, query);
+    if (cacheResponse) {
+      return cacheResponse;
+    }
+
+    // if the dimension is small, query `all` instead for better caching
+    if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {
+      const allResponse = yield this.all(dimension, options);
+      return this._dimensionCache.getSearchFromAll(allResponse, query);
+    }
+
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield taskFor(adapter.search).perform(dimension, query, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+    const results = this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+
+    return results;
   }
 }
 

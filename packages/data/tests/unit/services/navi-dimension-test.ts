@@ -235,6 +235,8 @@ module('Unit | Service | navi-dimension', function (hooks) {
     assert.strictEqual(all.values.length, 13, 'There are 13 results');
     assert.strictEqual(dataRequestsCount, 1, 'Only one dimension request is created because response fits in one page');
 
+    service.clearCache();
+
     dataRequestsCount = 0;
     const allPageBy2 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1, page: 1 });
     assert.strictEqual(allPageBy2.values.length, 13, 'There are 13 results');
@@ -311,5 +313,48 @@ module('Unit | Service | navi-dimension', function (hooks) {
 
     const noResultSearch = await taskFor(service.search).perform({ columnMetadata }, 'fuggedaboutit');
     assert.deepEqual(noResultSearch.values, [], 'Empty array is returned when no values are found');
+  });
+
+  test('caching', async function (this: TestContext, assert) {
+    assert.expect(3);
+
+    const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
+    const metadataService = this.metadataService; // makes typescript happy
+    await metadataService.loadMetadata({ dataSourceName: 'bardOne' });
+
+    // runs appropriate task in the navi-dimension service for given dimension ID and set of params
+    async function runServiceTask(dimensionID: string, searchParams?: string) {
+      const columnMetadata = metadataService.getById('dimension', dimensionID, 'bardOne') as DimensionMetadataModel;
+      if (searchParams) {
+        return await taskFor(service.search).perform({ columnMetadata }, searchParams);
+      }
+      return await taskFor(service.all).perform({ columnMetadata });
+    }
+
+    // mock endpoint and keep track of number of calls to it
+    let dataRequestsCount = 0;
+    this.server.pretender.handledRequest = (_, url) => {
+      if (url.includes('/v1/dimensions')) {
+        dataRequestsCount++;
+      }
+    };
+
+    // setup cache
+    await runServiceTask('age');
+    await runServiceTask('browser');
+    await runServiceTask('currency');
+    await runServiceTask('gender');
+    await runServiceTask('lang');
+    assert.deepEqual(dataRequestsCount, 5, "'all' task successfully called 5 times");
+
+    // cached queries do not make another call
+    await runServiceTask('age');
+    await runServiceTask('currency');
+    await runServiceTask('lang');
+    assert.deepEqual(dataRequestsCount, 5, 'data fetching tasks are not called when items are cached');
+
+    // calling 'search' after calling 'all'
+    await runServiceTask('browser', '1');
+    assert.deepEqual(dataRequestsCount, 5, "doesn't trigger data fetch");
   });
 });

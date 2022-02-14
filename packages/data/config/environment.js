@@ -8,6 +8,10 @@ module.exports = function (/* environment, appConfig */) {
         small: 600,
         medium: 50000,
       },
+      dimensionCache: {
+        timeoutMs: 60 * 60 * 1000,
+        maxSize: 10,
+      },
     },
   };
 };
