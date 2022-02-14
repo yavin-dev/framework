@@ -19,9 +19,9 @@ import Cache from 'navi-data/utils/classes/cache';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import SearchUtils from 'navi-data/utils/search';
 import { A } from '@ember/array';
+import config from 'ember-get-config';
 
-const MAX_CACHE_SIZE = 10;
-const CACHE_TIMEOUT = 60 * 60 * 1000;
+const DIMENSION_CACHE = config.navi.dimensionCache;
 
 export type ServiceOptions = {
   timeout?: number;
@@ -47,7 +47,7 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
       });
       return cannonicalName;
     }
-    super(getDimensionCacheId, MAX_CACHE_SIZE, CACHE_TIMEOUT);
+    super(getDimensionCacheId, DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
   }
 
   /**
@@ -95,7 +95,7 @@ export default class NaviDimensionService extends Service {
   private _dimensionCache = new DimensionCache();
 
   clearCache(): void {
-    this._dimensionCache = new DimensionCache();
+    this._dimensionCache.clear();
   }
 
   /**

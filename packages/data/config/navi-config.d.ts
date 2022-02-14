@@ -44,5 +44,9 @@ declare module 'navi-config' {
       medium: number;
     };
     defaultTimeGrain?: Grain;
+    dimensionCache: {
+      timeoutMs: number;
+      maxSize: number;
+    };
   }
 }

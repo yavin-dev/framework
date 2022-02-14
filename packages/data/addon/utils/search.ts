@@ -129,7 +129,7 @@ export default {
    * @returns {values: NaviDimensionModel}
    */
   searchNaviDimensionRecords(records: NaviDimensionModel[], query: string): { values: NaviDimensionModel[] } {
-    let results: MutableArray<{ record: NaviDimensionModel; relevance: number }> = A(); // = [] as;
+    let results: MutableArray<{ record: NaviDimensionModel; relevance: number }> = A();
 
     // Filter, map, and sort records based on how close each record is to the search query
     records.forEach((record) => {

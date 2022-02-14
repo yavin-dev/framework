@@ -47,13 +47,14 @@ export default class Cache<T> {
   }
 
   /**
-   * removes the least recently accessed items until cache is at or below max size
+   * makes space for a given cacheKey by removing the least recently accessed item if cache is at max size
+   * @param {string} cacheKey - the unique identifier you want to make space for in the cache
    * @returns {number} the number of items removed from the cache
    */
-  private _trimExtraItems(): number {
+  private _makeSpaceFor(cacheKey: string): number {
     const cache = this._cache;
     let removedCount = 0;
-    while (cache.size > this._maxCacheSize) {
+    if (!cache.has(cacheKey) && cache.size === this._maxCacheSize) {
       let oldestDate = Date.now();
       let oldestKey = '';
       cache.forEach((value: CacheRecord<T>, key: string) => {
@@ -69,6 +70,18 @@ export default class Cache<T> {
     return removedCount;
   }
 
+  /**
+   * removes all items from the cache
+   */
+  clear(): void {
+    this._cache.clear();
+  }
+
+  /**
+   * checks to see if a specific key is in the cache
+   * @param cacheKey - the unique identifier you want to check if is in the cache
+   * @returns {boolean} boolean indicating presence of given key in cache
+   */
   has(cacheKey: string): boolean {
     return this._cache.has(cacheKey);
   }
@@ -85,10 +98,9 @@ export default class Cache<T> {
       return;
     }
 
+    this._makeSpaceFor(cacheKey);
     const cache = this._cache;
     cache.set(cacheKey, { creationTime: Date.now(), lastAccessed: Date.now(), records });
-
-    this._trimExtraItems();
   }
 
   /**
