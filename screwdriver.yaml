@@ -4,8 +4,8 @@ cache:
 shared:
   image: maven:3.8.2-openjdk-11
   annotations:
-    screwdriver.cd/ram: HIGH
-    screwdriver.cd/cpu: HIGH
+    screwdriver.cd/ram: LOW
+    screwdriver.cd/cpu: LOW
     steps:
       - .: &install-node
           install-node: |
@@ -38,6 +38,8 @@ shared:
 
 jobs:
   lint:
+    screwdriver.cd/ram: MICRO
+    screwdriver.cd/cpu: MICRO
     requires:
       - ~pr
       - ~commit
