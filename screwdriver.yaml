@@ -119,8 +119,12 @@ jobs:
       ]
 
   alpha-main:
-    screwdriver.cd/ram: TURBO
-    screwdriver.cd/cpu: TURBO
+    requires:
+      - ~commit:0.2.x-alpha
+      - ~pr:0.2.x-alpha
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     steps:
       - *install-node
       - *npm-ci
@@ -135,9 +139,6 @@ jobs:
       - test-navi-reports: npx lerna run test --scope navi-reports --stream;
       - test-navi-search: npx lerna run test --scope navi-search --stream;
       - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
-    requires:
-      - ~commit:0.2.x-alpha
-      - ~pr:0.2.x-alpha
 
   publish-npm:
     requires:
@@ -170,9 +171,10 @@ jobs:
       - GPG_PASSPHRASE
 
   gh-pages:
-    screwdriver.cd/ram: TURBO
-    screwdriver.cd/cpu: TURBO
     requires: main
+    annotations:
+      screwdriver.cd/ram: TURBO
+      screwdriver.cd/cpu: TURBO
     environment:
       BUILD_NAVI_DEMO: true
     steps:
