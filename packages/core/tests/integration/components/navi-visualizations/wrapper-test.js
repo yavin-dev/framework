@@ -63,6 +63,7 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
       Store.createRecord('report', {
         request: Request,
         visualization: {
+          vizModelType: 'table',
           type: 'table',
           version: 2,
           metadata: {
@@ -112,6 +113,7 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
       Store.createRecord('report', {
         request: Request,
         visualization: {
+          vizModelType: 'line-chart',
           type: 'line-chart',
           version: 2,
           metadata: {

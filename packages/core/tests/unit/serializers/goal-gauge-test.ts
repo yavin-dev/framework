@@ -7,7 +7,7 @@ import GoalGaugeSerializer, { LegacyGoalGaugeConfig, normalizeGoalGaugeV2 } from
 import { GoalGaugeConfig } from 'navi-core/models/goal-gauge';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 
-module('Unit | Serializer | metric label', function (hooks) {
+module('Unit | Serializer | goal gauge', function (hooks) {
   setupTest(hooks);
   setupMirage(hooks);
 

@@ -1,7 +1,7 @@
 import { helper as buildHelper } from '@ember/component/helper';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, settled } from '@ember/test-helpers';
 import $ from 'jquery';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
@@ -120,6 +120,7 @@ module('Integration | Component | report view', function (hooks) {
           sorts: [],
         },
         visualization: {
+          vizModelType: 'line-chart',
           type: 'line-chart',
           version: 2,
           metadata: {
@@ -196,7 +197,8 @@ module('Integration | Component | report view', function (hooks) {
       'Visualization is rendered based on the report visualization type'
     );
 
-    this.set('report.visualization', {
+    const store = this.owner.lookup('service:store');
+    const table = store.createFragment('table', {
       type: 'table',
       version: 2,
       metadata: {
@@ -204,8 +206,11 @@ module('Integration | Component | report view', function (hooks) {
           c1: { canAggregateSubtotal: false },
           c2: { canAggregateSubtotal: false },
         },
+        showTotals: {},
       },
     });
+    this.report.updateVisualization(table);
+    await settled();
 
     assert.ok($('.table-widget').is(':visible'), 'Rendered visualization updates with report');
 

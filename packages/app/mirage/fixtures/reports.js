@@ -214,4 +214,56 @@ export default [
       requestVersion: 'v1',
     },
   },
+  {
+    id: 6,
+    title: 'New Perspective Visualization',
+    createdOn: '2022-02-14 00:00:00',
+    updatedOn: '2022-02-14 00:00:00',
+    ownerId: 'navi_user',
+    deliveryRuleIds: [],
+    visualization: {
+      type: 'perspective',
+      namespace: 'perspective',
+      version: 1,
+      metadata: {},
+    },
+    request: {
+      table: 'gameStats',
+      dataSource: 'default',
+      limit: null,
+      requestVersion: '2.0',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'gameStats.dateTime',
+          parameters: { grain: 'day' },
+          operator: 'bet',
+          values: ['2022-02-01T00:00:00.000Z', '2022-02-14T00:00:00.000Z'],
+        },
+      ],
+      columns: [
+        {
+          cid: 'c1',
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'c2',
+          type: 'metric',
+          field: 'coins',
+          parameters: {},
+        },
+        {
+          cid: 'c3',
+          type: 'dimension',
+          field: 'platform',
+          parameters: { field: 'id' },
+        },
+      ],
+      sorts: [],
+    },
+  },
 ];

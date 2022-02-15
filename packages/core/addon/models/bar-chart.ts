@@ -12,6 +12,8 @@ export type BarChartConfig = ChartConfig<'bar-chart'>;
 export default class BarChart extends LineChart<'bar-chart'> implements BarChartConfig, TypedVisualizationFragment {
   @attr('string', { defaultValue: 'bar-chart' })
   type!: 'bar-chart';
+
+  namespace = 'c3';
 }
 
 declare module 'navi-core/models/registry' {

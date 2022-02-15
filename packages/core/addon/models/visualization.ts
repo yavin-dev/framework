@@ -11,10 +11,10 @@ import { inject as service } from '@ember/service';
 import type RequestFragment from './request';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
-import type VisualizationModelV2 from './visualization-v2';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
 import { validator, buildValidations } from 'ember-cp-validations';
+import type YavinVisualizationModel from 'navi-core/visualization/model';
 
 const Validations = buildValidations({
   type: [
@@ -26,24 +26,22 @@ const Validations = buildValidations({
   ],
 });
 
-export default class VisualizationFragment extends Fragment.extend(Validations) implements VisualizationModelV2 {
+export default class VisualizationFragment extends Fragment.extend(Validations) implements YavinVisualizationModel {
   @service declare visualization: YavinVisualizationsService;
 
   @attr('string')
-  type!: string;
+  declare type: string;
 
   /**
    * Implement the VisualizationModelV2 without modifying any legacy visualizations
    */
-  get namespace() {
-    return ['metric-label', 'table'].includes(this.type) ? 'yavin' : 'c3';
-  }
+  declare namespace: string;
 
   @attr('number')
-  version!: number;
+  declare version: number;
 
   @attr()
-  metadata: unknown;
+  declare metadata: unknown;
 
   get typeName(): string {
     const { namespace, type } = this;
@@ -97,12 +95,12 @@ export default class VisualizationFragment extends Fragment.extend(Validations) 
    * @override
    */
   toJSON(): object {
-    const json = super.toJSON() as this;
+    const json = super.toJSON();
     const withoutNamespace = omit(json, 'namespace');
     return withoutNamespace;
   }
 
-  clone(): VisualizationModelV2 {
+  clone(): YavinVisualizationModel {
     const { manifest, metadata } = this;
     const model = manifest.createModel();
     model.metadata = cloneDeep(metadata);

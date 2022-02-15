@@ -12,12 +12,10 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
     Store = this.owner.lookup('service:store');
     MockOwner = Store.createRecord('user', { id: 'Gannon' });
 
-    this.owner.register(
-      'service:user',
-      Service.extend({
-        getUser: () => MockOwner,
-      })
-    );
+    class MockUserService extends Service {
+      getUser = () => MockOwner;
+    }
+    this.owner.register('service:user', MockUserService);
   });
 
   test('model', function (assert) {
@@ -31,7 +29,7 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
             clone: () => null,
           },
           visualization: {
-            type: 'goal-gauge',
+            clone: () => ({ typeName: 'namespace:fakeVisualization' }),
           },
           toJSON() {
             return Object.assign({}, this);
@@ -44,13 +42,9 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
         });
 
       let report = route.model();
-      assert.equal(
-        report.get('title'),
-        `Copy of ${widget.title}`,
-        'Created report title is "Copy of" + original title'
-      );
+      assert.equal(report.title, `Copy of ${widget.title}`, 'Created report title is "Copy of" + original title');
 
-      assert.equal(report.get('owner.id'), MockOwner.id, 'Current user is the owner of the created report');
+      assert.equal(report.owner.get('id'), MockOwner.id, 'Current user is the owner of the created report');
     });
   });
 
@@ -66,7 +60,7 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
             clone: () => null,
           },
           visualization: {
-            type: 'goal-gauge',
+            clone: () => ({ typeName: 'namespace:fakeVisualization' }),
           },
           toJSON() {
             return Object.assign({}, this);
@@ -74,13 +68,9 @@ module('Unit | Route | dashboards/dashboard/widgets/widget/clone-to-report', fun
         };
 
       let clonedReport = route._cloneToReport(widget);
-      assert.equal(
-        clonedReport.get('title'),
-        `Copy of ${widget.title}`,
-        'Created report title is "Copy of" + original title'
-      );
+      assert.equal(clonedReport.title, `Copy of ${widget.title}`, 'Created report title is "Copy of" + original title');
 
-      assert.equal(clonedReport.get('owner.id'), MockOwner.id, 'Current user is the owner of the created report');
+      assert.equal(clonedReport.owner.get('id'), MockOwner.id, 'Current user is the owner of the created report');
     });
   });
 });
