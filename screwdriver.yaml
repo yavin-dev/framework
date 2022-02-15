@@ -23,10 +23,9 @@ shared:
           install-chrome: ./build-scripts/setup-chrome.sh
     jobs:
       main-npm-test-job: &main-npm-test-job
+        image: cimg/node:14.19-browsers
         steps:
-          - *install-node
           - *npm-install-package
-          - *install-chrome
           - test-package: npx lerna run test --scope $PACKAGE --stream;
         requires:
           - ~pr
