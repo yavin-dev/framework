@@ -31,9 +31,6 @@ shared:
         requires:
           - ~pr
           - ~commit
-        environment:
-          GIT_SHALLOW_CLONE_SINGLE_BRANCH: true
-          GIT_SHALLOW_CLONE_DEPTH: 1
   environment:
     SD_ZIP_ARTIFACTS: true
     NODE_VERSION: 14.19.0
@@ -41,6 +38,7 @@ shared:
 
 jobs:
   lint:
+    image: node:14-alpine
     annotations:
       screwdriver.cd/ram: MICRO
       screwdriver.cd/cpu: MICRO
@@ -48,7 +46,6 @@ jobs:
       - ~pr
       - ~commit
     steps:
-      - *install-node
       - *npm-ci-root
       # TODO add lint meta https://docs.screwdriver.cd/user-guide/metadata#additional-pull-request-checks
       - lint-pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
