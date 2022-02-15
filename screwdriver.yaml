@@ -31,6 +31,9 @@ shared:
         requires:
           - ~pr
           - ~commit
+        environment:
+          GIT_SHALLOW_CLONE_SINGLE_BRANCH: true
+          GIT_SHALLOW_CLONE_DEPTH: 1
   environment:
     SD_ZIP_ARTIFACTS: true
     NODE_VERSION: 14.19.0
