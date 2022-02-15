@@ -15,6 +15,7 @@ import org.hibernate.annotations.TypeDef
 data class DashboardWidgetVisualization(
     var type: String = "",
     var version: Int = 0,
+    var namespace: String? = null,
     @Type(
         type = "com.yahoo.navi.ws.models.types.JsonType",
         parameters = [
