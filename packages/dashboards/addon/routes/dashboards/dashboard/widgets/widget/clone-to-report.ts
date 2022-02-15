@@ -9,7 +9,6 @@ import type ReportModel from 'navi-core/models/report';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type DashboardsDashboardWidgetsWidgetRoute from 'navi-dashboards/routes/dashboards/dashboard/widgets/widget';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
-import type { VisualizationType } from 'navi-core/models/registry';
 
 export default class DashboardsDashboardWidgetsWidgetCloneToReportRoute extends Route {
   @service declare user: UserService;
@@ -42,15 +41,12 @@ export default class DashboardsDashboardWidgetsWidgetCloneToReportRoute extends 
    * @returns report model from widget
    */
   _cloneToReport(widget: DashboardWidget) {
-    // TODO This isn't really a DashboardWidget object
-    const clonedWidget = widget.toJSON() as DashboardWidget;
-
-    const type = clonedWidget.visualization.type as VisualizationType;
-    return this.store.createRecord('report', {
+    const report = this.store.createRecord('report', {
       title: `Copy of ${widget.title}`.substring(0, 150),
       owner: this.user.getUser(),
       request: widget.request?.clone(),
-      visualization: this.store.createFragment(type, clonedWidget.visualization).serialize(),
     });
+    report.updateVisualization(widget.visualization.clone());
+    return report;
   }
 }

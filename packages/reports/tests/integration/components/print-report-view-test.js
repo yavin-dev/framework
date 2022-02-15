@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { render, settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
@@ -74,6 +74,7 @@ module('Integration | Component | print report view', function (hooks) {
         ownerId: 'navi_user',
         deliveryRuleIds: [],
         visualization: {
+          vizModelType: 'line-chart',
           type: 'line-chart',
           version: 2,
           metadata: {
@@ -137,7 +138,8 @@ module('Integration | Component | print report view', function (hooks) {
 
     assert.dom('.line-chart-widget').exists('Visualization is rendered based on the report visualization type');
 
-    this.set('report.visualization', {
+    const store = this.owner.lookup('service:store');
+    const table = store.createFragment('table', {
       type: 'table',
       version: 2,
       metadata: {
@@ -148,6 +150,8 @@ module('Integration | Component | print report view', function (hooks) {
         showTotals: {},
       },
     });
+    this.report.updateVisualization(table);
+    await settled();
 
     assert.dom('.table-widget').exists('Rendered visualization updates with report');
 

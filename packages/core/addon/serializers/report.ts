@@ -18,6 +18,7 @@ import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeVisualization(request: RequestV2, visualization: any, metadata: NaviMetadataService) {
   let normalized = visualization;
+  let vizModelType = normalized?.vizModelType ?? normalized?.type;
   if (visualization?.type === 'table') {
     normalized = normalizeTableV2(request, visualization, metadata);
   } else if (visualization?.type === 'metric-label') {
@@ -31,7 +32,7 @@ export function normalizeVisualization(request: RequestV2, visualization: any, m
   } else if (visualization?.type === 'pie-chart') {
     normalized = normalizePieChartV2(request, visualization);
   }
-  return normalized;
+  return { ...normalized, vizModelType };
 }
 
 export default class ReportSerializer extends AssetSerializer {

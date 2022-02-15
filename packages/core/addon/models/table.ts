@@ -40,6 +40,7 @@ const Validations = buildValidations(
 export default class TableVisualization
   extends VisualizationFragment.extend(Validations)
   implements TableVisualizationMetadata, TypedVisualizationFragment {
+  namespace = 'yavin';
   @attr('string', { defaultValue: 'table' })
   type!: TableVisualizationMetadata['type'];
 

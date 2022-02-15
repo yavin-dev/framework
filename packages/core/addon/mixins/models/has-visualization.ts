@@ -9,16 +9,17 @@ import { set } from '@ember/object';
 //@ts-ignore
 import { fragment } from 'ember-data-model-fragments/attributes';
 import { isEqual } from 'lodash-es';
+import VisualizationModelV2 from 'navi-core/models/visualization-v2';
 import type { FragmentRegistry, VisualizationType } from 'navi-core/models/registry';
-import YavinVisualizationModel from 'navi-core/models/visualization-v2';
 import type RequestFragment from 'navi-core/models/request';
+import type YavinVisualizationModel from 'navi-core/visualization/model';
 
-type PersistedVisualization = FragmentRegistry[VisualizationType] | YavinVisualizationModel | undefined;
+type PersistedVisualization = FragmentRegistry[VisualizationType] | VisualizationModelV2 | undefined;
 
 export default Mixin.create({
-  visualization: fragment('visualization-v2', { polymorphic: true }) as
+  visualization: fragment('visualization', { polymorphic: true, typeKey: 'vizModelType' }) as
     | FragmentRegistry[VisualizationType]
-    | YavinVisualizationModel,
+    | VisualizationModelV2,
   _persistedVisualization: undefined as PersistedVisualization,
 
   /**
@@ -37,16 +38,8 @@ export default Mixin.create({
         visualization.metadata = newVisualization.metadata;
       }
     } else {
-      // assign to null first otherwise the new settings will be applied to the existing visualization (e.g. line chart settings on table model)
-      // since we know this is a different visualization type
       //@ts-ignore
-      this.visualization = null;
-      if (newVisualization instanceof YavinVisualizationModel) {
-        this.visualization = newVisualization;
-      } else {
-        //@ts-ignore - assign to serialized version of visualization to support legacy models using the polymorphic route
-        this.visualization = newVisualization.serialize();
-      }
+      this.visualization = newVisualization;
     }
     //@ts-ignore
     const request = this.request as RequestFragment;

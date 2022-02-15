@@ -40,6 +40,7 @@ export type GoalGaugeConfig = {
 export default class GoalGaugeModel
   extends VisualizationFragment.extend(Validations)
   implements GoalGaugeConfig, TypedVisualizationFragment {
+  namespace = 'c3';
   @attr('string', { defaultValue: 'goal-gauge' })
   declare type: GoalGaugeConfig['type'];
 

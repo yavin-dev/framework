@@ -38,6 +38,7 @@ export type MetricLabelConfig = {
 export default class MetricLabelModel
   extends VisualizationFragment.extend(Validations)
   implements MetricLabelConfig, TypedVisualizationFragment {
+  namespace = 'yavin';
   @attr('string', { defaultValue: 'metric-label' })
   type!: MetricLabelConfig['type'];
 

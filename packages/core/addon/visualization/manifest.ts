@@ -4,7 +4,7 @@
  */
 import RequestFragment from 'navi-core/models/request';
 import EmberObject from '@ember/object';
-import VisualizationModel from 'navi-core/models/visualization-v2';
+import YavinVisualizationModel from './model';
 import type Store from '@ember-data/store';
 import { inject as service } from '@ember/service';
 import type YavinVisualizationComponent from './component';
@@ -21,11 +21,11 @@ export abstract class YavinVisualizationManifest<Settings = unknown> extends Emb
   @service
   declare store: Store;
 
-  abstract namespace: VisualizationModel['namespace'];
+  abstract namespace: YavinVisualizationModel['namespace'];
 
-  abstract currentVersion: VisualizationModel['version'];
+  abstract currentVersion: YavinVisualizationModel['version'];
 
-  abstract type: VisualizationModel['type'];
+  abstract type: YavinVisualizationModel['type'];
 
   abstract niceName: string;
 
@@ -48,15 +48,15 @@ export abstract class YavinVisualizationManifest<Settings = unknown> extends Emb
     return currentSettings;
   }
 
-  normalizeModel(c: unknown): Promise<VisualizationModel<Settings>> {
-    return Promise.resolve(c as VisualizationModel<Settings>);
+  normalizeModel(c: unknown): Promise<YavinVisualizationModel<Settings>> {
+    return Promise.resolve(c as YavinVisualizationModel<Settings>);
   }
 
-  serializeSettings(model: VisualizationModel): VisualizationModel {
+  serializeSettings(model: YavinVisualizationModel): YavinVisualizationModel {
     return model;
   }
 
-  createModel(): VisualizationModel<Settings> {
+  createModel(): YavinVisualizationModel<Settings> {
     const { type, currentVersion: version, namespace } = this;
     const metadata = this.createNewSettings();
     return this.store.createFragment('visualization-v2', {
@@ -64,7 +64,7 @@ export abstract class YavinVisualizationManifest<Settings = unknown> extends Emb
       version,
       namespace,
       metadata,
-    }) as VisualizationModel<Settings>;
+    }) as YavinVisualizationModel<Settings>;
   }
 
   hasSingleMetric(request: RequestFragment): boolean {

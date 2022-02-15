@@ -31,7 +31,7 @@ module('Unit | Initializer | visualization-v2-transform', function (hooks) {
     assert.expect(7);
     await this.application.boot();
 
-    const transform = this.owner.lookup('transform:-mf-fragment$visualization-v2$type');
+    const transform = this.owner.lookup('transform:-mf-fragment$visualization$vizModelType');
 
     const map = {
       'line-chart': 'line-chart',

@@ -28,7 +28,7 @@ const Fragment = FragmentTransform.extend({
 });
 
 export function initialize(application: Application): void {
-  application.register('transform:-mf-fragment$visualization-v2$type', Fragment);
+  application.register('transform:-mf-fragment$visualization$vizModelType', Fragment);
 }
 
 export default {
