@@ -35,7 +35,7 @@
     "ember-auto-import": "^2.4.0",
     "ember-cli-babel": "^7.23.1",
     "ember-cli-htmlbars": "^5.3.2",
-    "ember-cli-mirage": "~2.2.0",
+    "ember-cli-mirage": "^3.0.0-alpha.2",
     "ember-cli-typescript": "^4.1.0",
     "navi-core": "0.4.0"
   },

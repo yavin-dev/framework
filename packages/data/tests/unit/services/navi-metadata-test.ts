@@ -11,8 +11,8 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
-import { Server } from 'miragejs';
-import Mirage from 'ember-cli-mirage';
+import type { Server } from 'miragejs';
+import { Response } from 'miragejs';
 
 interface Context extends TestContext {
   server: Server;
@@ -263,7 +263,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
     this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
     this.server.get('/tables', function () {
       assert.ok(true, 'loadMetadata executes a request on unloaded metadata');
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     const promise1 = this.service.loadMetadata({ dataSourceName });

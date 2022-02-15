@@ -6,7 +6,7 @@ import { Server } from 'miragejs';
 //@ts-ignore
 import faker from 'faker';
 //@ts-ignore
-import { Response } from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import moment from 'moment';
 import {
   FiliDimension,

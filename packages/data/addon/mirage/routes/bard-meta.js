@@ -4,7 +4,7 @@
  */
 
 import faker from 'faker';
-import { Response } from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 
 //metadata
 import tableModels from '../fixtures/bard-meta-tables';

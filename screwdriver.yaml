@@ -16,7 +16,7 @@ shared:
       - .: &npm-ci
           npm-ci: npm ci --unsafe-perm
       - .: &npm-ci-root
-          npm-ci-root: npm ci --unsafe-perm --ignore-scripts &> /dev/null
+          npm-ci-root: npm ci --unsafe-perm --ignore-scripts
       - .: &npm-install-package
           npm-install-package: npx lerna bootstrap --scope $PACKAGE --include-dependencies --concurrency=1
       - .: &install-chrome
@@ -25,7 +25,6 @@ shared:
       main-npm-test-job: &main-npm-test-job
         steps:
           - *install-node
-          - *npm-ci-root
           - *npm-install-package
           - *install-chrome
           - test-package: npx lerna run test --scope $PACKAGE --stream;
@@ -44,6 +43,7 @@ jobs:
       - ~commit
     steps:
       - *install-node
+      - *npm-ci-root
       # TODO add lint meta https://docs.screwdriver.cd/user-guide/metadata#additional-pull-request-checks
       - lint-pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
       - lint-styles: npx stylelint "**/*.scss";
