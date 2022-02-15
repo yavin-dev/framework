@@ -23,8 +23,9 @@ shared:
           install-chrome: ./build-scripts/setup-chrome.sh
     jobs:
       main-npm-test-job: &main-npm-test-job
-        image: cimg/node:14.19-browsers
+        image: selenium/node-chrome:latest
         steps:
+          - *install-node
           - *npm-install-package
           - test-package: npx lerna run test --scope $PACKAGE --stream;
         requires:
@@ -32,7 +33,7 @@ shared:
           - ~commit
   environment:
     SD_ZIP_ARTIFACTS: true
-    NODE_VERSION: 14.16.1
+    NODE_VERSION: 14.19.0
     JOBS: 1
 
 jobs:
