@@ -38,8 +38,9 @@ shared:
 
 jobs:
   lint:
-    screwdriver.cd/ram: MICRO
-    screwdriver.cd/cpu: MICRO
+    annotations:
+      screwdriver.cd/ram: MICRO
+      screwdriver.cd/cpu: MICRO
     requires:
       - ~pr
       - ~commit
