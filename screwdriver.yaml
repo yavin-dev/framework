@@ -1,11 +1,11 @@
 cache:
-  pipeline: [~/.npm, ~/.gradle]
+  pipeline: [~/.gradle]
 
 shared:
   image: maven:3.8.2-openjdk-11
   annotations:
-    screwdriver.cd/ram: TURBO
-    screwdriver.cd/cpu: TURBO
+    screwdriver.cd/ram: HIGH
+    screwdriver.cd/cpu: HIGH
     steps:
       - .: &install-node
           install-node: |
@@ -32,6 +32,7 @@ shared:
           - ~pr
           - ~commit
   environment:
+    SD_ZIP_ARTIFACTS: true
     NODE_VERSION: 14.16.1
     JOBS: 2
 
@@ -118,6 +119,8 @@ jobs:
       ]
 
   alpha-main:
+    screwdriver.cd/ram: TURBO
+    screwdriver.cd/cpu: TURBO
     steps:
       - *install-node
       - *npm-ci
@@ -167,6 +170,8 @@ jobs:
       - GPG_PASSPHRASE
 
   gh-pages:
+    screwdriver.cd/ram: TURBO
+    screwdriver.cd/cpu: TURBO
     requires: main
     environment:
       BUILD_NAVI_DEMO: true
