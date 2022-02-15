@@ -23,7 +23,7 @@ shared:
           install-chrome: ./build-scripts/setup-chrome.sh
     jobs:
       main-npm-test-job: &main-npm-test-job
-        image: selenium/node-chrome:latest
+        image: browserless/chrome:1-chrome-stable
         steps:
           - *install-node
           - *npm-install-package
