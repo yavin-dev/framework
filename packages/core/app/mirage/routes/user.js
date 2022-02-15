@@ -1,4 +1,4 @@
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import moment from 'moment';
 import RESPONSE_CODES from '../enums/response-codes';
 
@@ -13,7 +13,7 @@ export default function () {
     const user = users.find(id);
 
     if (!user) {
-      return new Mirage.Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
+      return new Response(RESPONSE_CODES.NOT_FOUND, {}, { errors: [`Unknown identifier '${id}'`] });
     }
 
     return user;

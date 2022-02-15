@@ -4,7 +4,7 @@ import { click, findAll, blur, visit, triggerEvent, waitFor, fillIn } from '@emb
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import $ from 'jquery';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support/helpers';
 import Ember from 'ember';
@@ -531,7 +531,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await blur('.js-ember-tag-input-new');
 
     server.post('/deliveryRules', () => {
-      return new Mirage.Response(
+      return new Response(
         400,
         {},
         {
@@ -553,7 +553,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.equal(errors.length, 2, 'failing notifications are shown if server returns 400');
 
     server.post('/deliveryRules', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     //Save the schedule
@@ -568,7 +568,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       );
 
     server.post('/deliveryRules', () => {
-      return new Mirage.Response(
+      return new Response(
         401,
         {},
         {

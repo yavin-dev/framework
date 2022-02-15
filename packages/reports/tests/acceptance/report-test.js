@@ -14,7 +14,7 @@ import {
 import { setupApplicationTest } from 'ember-qunit';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { Response } from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import { selectChoose, selectSearch } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 import { clickItem, clickItemFilter } from 'navi-reports/test-support/report-builder';

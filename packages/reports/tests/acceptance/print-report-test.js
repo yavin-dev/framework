@@ -1,6 +1,6 @@
 import { currentURL, find, visit } from '@ember/test-helpers';
 import Ember from 'ember';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import config from 'ember-get-config';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
@@ -43,7 +43,7 @@ module('Acceptance | print report', function (hooks) {
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     server.get('/data/*path', () => {
-      return new Mirage.Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' });
+      return new Response(400, {}, { description: 'Cannot merge mismatched time grains month and day' });
     });
 
     //suppress errors and exceptions for this test

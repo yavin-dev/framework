@@ -3,7 +3,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import Model, { attr } from '@ember-data/model';
 import UserAdapter from 'navi-core/adapters/base-json-adapter';
 
@@ -126,7 +126,7 @@ module('Unit | Service | user', function (hooks) {
     //mock persistence WS to throw error
     this.server.urlPrefix = config.navi.appPersistence.uri;
     this.server.post('/users', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     return run(() => {
@@ -183,7 +183,7 @@ module('Unit | Service | user', function (hooks) {
     //mock persistence WS to throw error
     this.server.urlPrefix = config.navi.appPersistence.uri;
     this.server.post('/users', () => {
-      return new Mirage.Response(500);
+      return new Response(500);
     });
 
     return run(() => {

@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import config from 'ember-get-config';
-import Mirage from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import DeliverableItem from 'navi-core/models/deliverable-item';
 import { unset } from 'lodash-es';
 
@@ -162,7 +162,7 @@ module('Unit | Model | report', function (hooks) {
       );
 
       // Test case doesn't care about actual repsonse, so skip mocking it
-      return new Mirage.Response(204);
+      return new Response(204);
     });
 
     await run(() =>

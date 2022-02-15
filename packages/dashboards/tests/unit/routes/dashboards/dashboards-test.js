@@ -5,7 +5,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { Response } from 'ember-cli-mirage';
+import { Response } from 'miragejs';
 import DashboardsDashboardRoute from 'navi-dashboards/routes/dashboards/dashboard';
 
 const serializeLayout = (layout) => JSON.parse(JSON.stringify(layout));
