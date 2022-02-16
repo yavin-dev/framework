@@ -50,54 +50,54 @@ jobs:
       # TODO add lint meta https://docs.screwdriver.cd/user-guide/metadata#additional-pull-request-checks
       - lint-pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
       - lint-styles: npx stylelint "**/*.scss";
-  # main-admin:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-admin
-  # main-app:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-app
-  # main-core:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-core
-  # main-dashboards:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-dashboards
+  main-admin:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-admin
+  main-app:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-app
+  main-core:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-core
+  main-dashboards:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-dashboards
   main-data:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-data
-  # main-directory:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-directory
-  # main-notifications:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-notifications
-  # main-reports:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-reports
-  # main-search:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: navi-search
-  # main-perspective:
-  #   <<: *main-npm-test-job
-  #   environment:
-  #     PACKAGE: '@yavin/perspective'
-  # main-webservice:
-  #   steps:
-  #     - *install-node
-  #     - *npm-ci
-  #     - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
-  #   requires:
-  #     - ~pr
-  #     - ~commit
+  main-directory:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-directory
+  main-notifications:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-notifications
+  main-reports:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-reports
+  main-search:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: navi-search
+  main-perspective:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin/perspective'
+  main-webservice:
+    steps:
+      - *install-node
+      - *npm-ci
+      - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
+    requires:
+      - ~pr
+      - ~commit
   main:
     image: alpine:3.8
     annotations:
