@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
@@ -8,6 +8,7 @@ import type { TaskInstance } from 'ember-concurrency';
 export interface SourceItem<Source = unknown> {
   name: string;
   description?: string;
+  isHidden?: boolean;
   source: Source;
   isSuggested?: boolean;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.config
@@ -12,6 +12,7 @@ data class DataSourceNamespace(
     var name: String,
     var displayName: String,
     var description: String? = null,
+    var isHidden: Boolean? = false,
     var suggestedDataTables: List<String> = emptyList(),
 )
 
@@ -19,6 +20,7 @@ data class DataSource(
     var name: String,
     var displayName: String,
     var description: String? = null,
+    var isHidden: Boolean? = false,
     var uri: String,
     var type: DataSourceTypes,
     var namespaces: List<DataSourceNamespace> = emptyList(),
