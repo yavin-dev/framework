@@ -12,7 +12,6 @@ data class DataSourceNamespace(
     var name: String,
     var displayName: String,
     var description: String? = null,
-    var isHidden: Boolean? = false,
     var suggestedDataTables: List<String> = emptyList(),
 )
 
@@ -20,7 +19,6 @@ data class DataSource(
     var name: String,
     var displayName: String,
     var description: String? = null,
-    var isHidden: Boolean? = false,
     var uri: String,
     var type: DataSourceTypes,
     var namespaces: List<DataSourceNamespace> = emptyList(),
