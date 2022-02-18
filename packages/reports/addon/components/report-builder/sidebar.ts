@@ -127,7 +127,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
       sources.push({
         name: dataSource.displayName,
         description: dataSource.description,
-        isHidden: dataSource.isHidden,
+        hide: dataSource.hide,
         source: dataSource,
       });
 
@@ -144,11 +144,11 @@ export default class ReportBuilderSidebar extends Component<Args> {
       return yield [];
     }
 
-    return yield dataSource.namespaces.map(({ name, displayName, description, isHidden }) => {
+    return yield dataSource.namespaces.map(({ name, displayName, description, hide }) => {
       return {
         name: displayName,
         description,
-        isHidden,
+        hide,
         source: getDataSource(`${dataSource.name}.${name}`),
       };
     });

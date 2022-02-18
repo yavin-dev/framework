@@ -8,7 +8,7 @@ declare module 'navi-config' {
     name: string;
     displayName: string;
     description?: string;
-    isHidden?: boolean;
+    hide?: boolean;
     suggestedDataTables?: string[];
   };
 

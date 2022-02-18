@@ -66,7 +66,7 @@ module.exports = function (environment) {
         {
           name: 'elideTwoDefault',
           displayName: 'Elide Two Default',
-          isHidden: true,
+          hide: true,
           uri: 'https://data2.naviapp.com/graphql',
           type: 'elide',
           namespaces: [
@@ -79,7 +79,7 @@ module.exports = function (environment) {
               name: 'elideTwoCopy',
               displayName: 'Elide Two Copy',
               description: 'Copy of Elide Two Description',
-              isHidden: true,
+              hide: true,
             },
           ],
         },
