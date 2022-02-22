@@ -1,20 +1,25 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, find, findAll, render, waitFor, waitUntil } from '@ember/test-helpers';
+import { clearRender, click, find, findAll, render, waitFor, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { YavinVisualizationArgs } from 'navi-core/visualization/component';
 import { PerspectiveSettings } from '@yavin/perspective/manifest';
 //@ts-ignore
 import { buildTestRequest } from 'navi-core/test-support/request';
-import type NaviFactsModel from 'navi-data/models/navi-facts';
 import { taskFor } from 'ember-concurrency-ts';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { timeout } from 'ember-concurrency';
-import { TestContext as Context } from 'ember-test-helpers';
+import type { TestContext as Context } from 'ember-test-helpers';
+import type NaviFactsService from 'navi-data/services/navi-facts';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { Grain } from 'navi-data/utils/date';
 
 type ComponentArgs = YavinVisualizationArgs<PerspectiveSettings>;
-interface TestContext extends Context, Omit<ComponentArgs, 'container'> {}
+interface TestContext extends Context, Omit<ComponentArgs, 'container'> {
+  metadataService: NaviMetadataService;
+  factService: NaviFactsService;
+}
 
 const TEMPLATE = hbs`
   <Perspective
@@ -31,9 +36,9 @@ module('Integration | Component | perspective', function (hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function (this: TestContext) {
-    const metadataService = this.owner.lookup('service:navi-metadata');
-    await metadataService.loadMetadata({ dataSourceName: 'bardOne' });
-    const factService = this.owner.lookup('service:navi-facts');
+    this.metadataService = this.owner.lookup('service:navi-metadata');
+    await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
+    this.factService = this.owner.lookup('service:navi-facts');
 
     this.settings = {};
     this.request = buildTestRequest(
@@ -43,10 +48,10 @@ module('Integration | Component | perspective', function (hooks) {
         { cid: 'cid_revenue(currency=USD)', field: 'revenue', parameters: { currency: 'USD' } },
       ],
       [{ cid: 'cid_age', field: 'age', parameters: { field: 'id' } }],
-      { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
+      { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
       'day'
     );
-    const model = (await taskFor(factService.fetch).perform(this.request)) as NaviFactsModel;
+    const model = await taskFor(this.factService.fetch).perform(this.request);
     this.onUpdateSettings = () => null;
     this.response = model.response;
   });
@@ -127,5 +132,31 @@ module('Integration | Component | perspective', function (hooks) {
     await render(TEMPLATE);
     await waitFor('th', { timeout: 10000 });
     assert.ok(true);
+  });
+
+  test('it renders timeDimension columns correctly', async function (this: TestContext, assert) {
+    assert.expect(2);
+    await render(TEMPLATE);
+
+    const fetchWithGrain = async (grain: Grain) => {
+      this.request.timeGrainColumn!.parameters.grain = grain;
+      const model = await taskFor(this.factService.fetch).perform(this.request);
+      this.set('reponse', model.response);
+      await clearRender();
+
+      await render(TEMPLATE);
+      await waitFor('td', { timeout: 10000 });
+    };
+    const getFirstRow = () => {
+      const dateTimeElement = find('tbody tr:nth-child(1) td:last-child');
+      return dateTimeElement?.textContent?.trim();
+    };
+
+    await waitFor('td', { timeout: 10000 });
+    assert.deepEqual(getFirstRow(), '5/29/2016', 'First row renders correctly for day grain');
+
+    // Now restore the method to its original version
+    await fetchWithGrain('hour');
+    assert.deepEqual(getFirstRow(), '5/29/2016, 7:00:00 PM', 'First row renders correctly for hour grain');
   });
 });
