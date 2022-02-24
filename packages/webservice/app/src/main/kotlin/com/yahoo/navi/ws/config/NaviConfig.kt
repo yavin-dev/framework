@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 package com.yahoo.navi.ws.config
@@ -22,6 +22,7 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
             "default",
             "Default",
             null,
+            false,
             elideSettings.graphql.path,
             DataSourceTypes.elide,
             listOf(
@@ -29,6 +30,7 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
                     "DemoNamespace",
                     "Demo Namespace",
                     null,
+                    false,
                     listOf("DemoNamespace_TrendingNow")
                 )
             ),
@@ -36,7 +38,7 @@ class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
         )
     )
 
-    var appPersistence = DataSource("persistence", "Persistence", null, elideSettings.jsonApi.path, DataSourceTypes.elide)
+    var appPersistence = DataSource("persistence", "Persistence", null, false, elideSettings.jsonApi.path, DataSourceTypes.elide)
 
     @JsonProperty("FEATURES")
     var features = NaviFeatureSettings()

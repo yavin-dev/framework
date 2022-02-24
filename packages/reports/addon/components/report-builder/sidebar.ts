@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
@@ -127,6 +127,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
       sources.push({
         name: dataSource.displayName,
         description: dataSource.description,
+        hide: dataSource.hide,
         source: dataSource,
       });
 
@@ -134,7 +135,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
     });
 
     const namespaces = (yield all(fetchNamespacesTasks)).flat();
-    sources = [...sources, ...namespaces];
+    sources = [...sources, ...namespaces].filter((source) => !source.hide);
     return yield sortBy(sources, ['name']);
   }
 
@@ -143,10 +144,11 @@ export default class ReportBuilderSidebar extends Component<Args> {
       return yield [];
     }
 
-    return yield dataSource.namespaces.map(({ name, displayName, description }) => {
+    return yield dataSource.namespaces.map(({ name, displayName, description, hide }) => {
       return {
         name: displayName,
         description,
+        hide,
         source: getDataSource(`${dataSource.name}.${name}`),
       };
     });

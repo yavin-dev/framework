@@ -64,11 +64,24 @@ module.exports = function (environment) {
           type: 'elide',
         },
         {
-          name: 'elideTwo',
-          displayName: 'Elide Two',
-          description: 'Elide Two Description',
+          name: 'elideTwoDefault',
+          displayName: 'Elide Two Default',
+          hide: true,
           uri: 'https://data2.naviapp.com/graphql',
           type: 'elide',
+          namespaces: [
+            {
+              name: 'elideTwo',
+              displayName: 'Elide Two',
+              description: 'Elide Two Description',
+            },
+            {
+              name: 'elideTwoCopy',
+              displayName: 'Elide Two Copy',
+              description: 'Copy of Elide Two Description',
+              hide: true,
+            },
+          ],
         },
       ],
       appPersistence: {

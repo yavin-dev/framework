@@ -143,7 +143,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     assert.dom('.report-builder-sidebar__source').hasText('Network', 'The table is updated');
   });
 
-  test('it selects dataSources', async function (this: TestContext, assert) {
+  test('it shows and selects dataSources', async function (this: TestContext, assert) {
     assert.expect(9);
     await render(TEMPLATE);
     const originalLoadMetadata = MetadataService.loadMetadata;
@@ -166,7 +166,7 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     assert.deepEqual(
       findAll('.report-builder-source-selector__source-name').map((el) => el.textContent?.trim()),
       ['Bard One', 'Bard Two', 'Elide One', 'Elide Two'],
-      'The available dataSources are listed'
+      'All non-hidden dataSources are listed'
     );
     await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
     await animationsSettled();
