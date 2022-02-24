@@ -2,25 +2,23 @@
 {{#if (gt @sources.length 0)}}
   <ol class="report-builder-source-selector__list p-l-20" ...attributes>
     {{#each @sources as |item idx|}}
-      {{#unless item.hide}}
-        <li class="report-builder-source-selector__source p-y-8 flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
-          <button
-            type="button"
-            class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
-            {{on "click" (fn @setSource item.source)}}
-            data-source-name={{item.name}}
-          >
-            <span class="report-builder-source-selector__source-name flex-1 m-r-20 {{if (eq @currentSource.source item.source) "link is-active"}}">
-              {{item.name}}
-            </span>
-            {{#if item.description}}
-              <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-brand-300" @icon="information-circle" @size="small" />
-              <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
-            {{/if}}
-            <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
-          </button>
-        </li>
-      {{/unless}}
+      <li class="report-builder-source-selector__source p-y-8 flex {{if (eq @currentSource.source item.source) "report-builder-source-selector__source--selected"}}">
+        <button
+          type="button"
+          class="report-builder-source-selector__source-button p-y-5 align-items-center flex flex-1"
+          {{on "click" (fn @setSource item.source)}}
+          data-source-name={{item.name}}
+        >
+          <span class="report-builder-source-selector__source-name flex-1 m-r-20 {{if (eq @currentSource.source item.source) "link is-active"}}">
+            {{item.name}}
+          </span>
+          {{#if item.description}}
+            <DenaliIcon id="{{this.guid}}-{{idx}}" class="report-builder-source-selector__source-description is-brand-300" @icon="information-circle" @size="small" />
+            <EmberTooltip @popperContainer="body" @targetId="{{this.guid}}-{{idx}}" @side="right" @text={{item.description}} />
+          {{/if}}
+          <DenaliIcon class="is-brand-300" @icon="arrowhead-right" />
+        </button>
+      </li>
     {{/each}}
   </ol>
 {{/if}}

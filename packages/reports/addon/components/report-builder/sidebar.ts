@@ -135,7 +135,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
     });
 
     const namespaces = (yield all(fetchNamespacesTasks)).flat();
-    sources = [...sources, ...namespaces];
+    sources = [...sources, ...namespaces].filter((source) => !source.hide);
     return yield sortBy(sources, ['name']);
   }
 
