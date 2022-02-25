@@ -10,17 +10,70 @@
  *  />
  */
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { inject as service } from '@ember/service';
+import { action } from '@ember/object';
 import type ReportModel from 'navi-core/models/report';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
+import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 interface Args {
   report: ReportModel;
   validVisualizations: YavinVisualizationManifest[];
-  onVisualizationTypeUpdate: (name: string) => void;
+  onVisualizationTypeUpdate: (name: YavinVisualizationManifest) => void;
 }
 
 export default class VisualizationToggle extends Component<Args> {
-  get activeVisualization() {
+  @service declare visualization: YavinVisualizationsService;
+
+  @tracked selectedCategory;
+
+  constructor(owner: unknown, args: Args) {
+    super(owner, args);
+    this.selectedCategory = this.getCurrentCategory();
+  }
+
+  @action
+  selectCategory(category: string) {
+    this.selectedCategory = category;
+    const visualizations = this.categoryToVisualizations[this.selectedCategory];
+    this.args.onVisualizationTypeUpdate(visualizations[visualizations.length - 1]);
+  }
+
+  @action
+  updateCategory() {
+    this.selectedCategory = this.getCurrentCategory();
+  }
+
+  @action
+  getCurrentCategory() {
+    const { manifest } = this.args.report.visualization;
+    const [category] =
+      Object.entries(this.categoryToVisualizations).find(([_category, validVisualizations]) =>
+        validVisualizations.includes(manifest)
+      ) ?? [];
+    return category ?? this.categories[0];
+  }
+
+  get selectedVisualization() {
     return this.args.report.visualization.manifest;
+  }
+
+  get categories() {
+    return this.visualization.getCategories().sort();
+  }
+
+  get categoryToVisualizations() {
+    const { categories } = this;
+    const categoryToValidVisualizations: Record<string, YavinVisualizationManifest[]> = {};
+    categories.forEach((category) => {
+      const validVisualizations = this.visualization
+        .getVisualizations(category)
+        .filter((v) => this.args.validVisualizations.includes(v));
+      if (validVisualizations.length > 0) {
+        categoryToValidVisualizations[category] = validVisualizations;
+      }
+    });
+    return categoryToValidVisualizations;
   }
 }

@@ -935,7 +935,9 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.ok(!!findAll('.line-chart-widget').length, 'Line chart visualization is shown as configured');
 
-    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Line Chart', 'Edit Line Chart label is displayed');
+    assert
+      .dom('.report-view__visualization-edit-btn')
+      .hasAttribute('title', 'Edit Line Chart', 'Edit Line Chart label is displayed');
 
     assert.dom('.c3-legend-item').exists({ count: 4 }, 'Line chart visualization has 4 series as configured');
 
@@ -943,13 +945,17 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.ok(!!findAll('.table-widget').length, 'table visualization is shown when selected');
 
-    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Table', 'Edit Data Table label is displayed');
+    assert
+      .dom('.report-view__visualization-edit-btn')
+      .hasAttribute('title', 'Edit Table', 'Edit Data Table label is displayed');
 
     await click('.visualization-toggle__option-icon[title="Line Chart"]');
 
     assert.ok(!!findAll('.line-chart-widget').length, 'line-chart visualization is shown when selected');
 
-    assert.dom('.report-view__visualization-edit-btn').hasText('Edit Line Chart', 'Edit Line Chart label is displayed');
+    assert
+      .dom('.report-view__visualization-edit-btn')
+      .hasAttribute('title', 'Edit Line Chart', 'Edit Line Chart label is displayed');
   });
 
   test('redirect from report/index route', async function (assert) {

@@ -60,15 +60,17 @@
 
   &__visualization-header {
     align-items: center;
+    background: $tabs-primary-bg-color;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    margin: 10px 10px 0;
+    padding: 5px 10px;
   }
 
   &__visualization-header-left {
     align-items: center;
     display: flex;
+    flex: 1;
   }
 
   &__title {
@@ -76,6 +78,9 @@
   }
 
   &__visualization-toggle {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
     margin: 0 5px;
   }
 
