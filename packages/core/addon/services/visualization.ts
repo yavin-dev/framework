@@ -125,7 +125,7 @@ export default class YavinVisualizationsService extends Service {
   }
 
   validVisualizations(request: RequestFragment) {
-    return this.getVisualizations().filter((m) => m.validate(request).isValid === true);
+    return this.getAllVisualizations().filter((m) => m.validate(request).isValid === true);
   }
 
   registerVisualization(visualization: YavinVisualizationManifest<unknown>, category = this.defaultCategory) {
@@ -150,6 +150,10 @@ export default class YavinVisualizationsService extends Service {
 
   getCategories(): string[] {
     return [...this.registry.keys()];
+  }
+
+  getAllVisualizations(): YavinVisualizationManifest[] {
+    return this.getCategories().flatMap((category) => this.getVisualizations(category));
   }
 
   getVisualizations(categoryName = this.defaultCategory): YavinVisualizationManifest[] {

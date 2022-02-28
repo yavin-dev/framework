@@ -1,8 +1,25 @@
 {{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<div class="visualization-toggle" ...attributes>
+<div
+  class="visualization-toggle"
+  ...attributes
+  {{did-insert this.updateCategory}}
+  {{did-insert this.updateCategory @report.visualization.manifest}}
+>
+  <div class="flex align-items-center">
+    <PowerSelect
+      @options={{keys this.categoryToVisualizations}}
+      @selected={{this.selectedCategory}}
+      @searchEnabled={{false}}
+      @onChange={{this.selectCategory}}
+      @triggerClass="visualization-toggle__select-trigger is-small"
+      as |category|
+    >
+      {{category}}
+    </PowerSelect>
+  </div>
   <DenaliToggle
-    @options={{@validVisualizations}}
-    @activeOption={{this.activeVisualization}}
+    @options={{get this.categoryToVisualizations this.selectedCategory}}
+    @activeOption={{this.selectedVisualization}}
     @onChange={{@onVisualizationTypeUpdate}}
     @isSmall={{true}}
     as |visualization|
@@ -10,7 +27,7 @@
     <DenaliIcon 
       @icon={{visualization.icon}} 
       @size="small"
-      class="visualization-toggle__option-icon {{if (eq this.activeVisualization visualization  ) "visualization-toggle__option--is-active"}}" 
+      class="visualization-toggle__option-icon {{if (eq this.selectedVisualization visualization) "visualization-toggle__option--is-active"}}" 
       title={{visualization.niceName}}
     />
   </DenaliToggle>

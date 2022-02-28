@@ -16,14 +16,12 @@
         />
       </div>
       {{#animated-if (and @hasRequestRun (not this.isEditingVisualization)) use=this.visFadeTransition duration=200}}
-        <DenaliButton
-          @size="medium"
-          @style="text"
+        <DenaliIcon 
+          @icon="chart-edit"
+          class="report-view__visualization-edit-btn p-l-10 p-r-5 w-8 link"
+          title="Edit {{this.visualizationTypeLabel}}"
           {{on "click" this.toggleEditVisualization}}
-          class="report-view__visualization-edit-btn"
-        >
-          Edit {{this.visualizationTypeLabel}}
-        </DenaliButton>
+        />
       {{/animated-if}}
       {{#animated-if (not @hasRequestRun) use=this.visFadeTransition duration=200}}
         <span class="report-view__info-text">
