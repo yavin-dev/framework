@@ -14,6 +14,7 @@ import { getOwner, setOwner } from '@ember/application';
 import { YavinVisualizationManifest } from 'navi-core/visualization/manifest';
 import NaviVisualizationConfigWrapper from 'navi-core/components/navi-visualization-config/wrapper';
 import NaviVisualizationWrapper from 'navi-core/components/navi-visualizations/wrapper';
+import { sortBy } from 'lodash-es';
 import type RequestFragment from 'navi-core/models/request';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
@@ -95,6 +96,7 @@ class CompatManifest extends YavinVisualizationManifest {
 export default class YavinVisualizationsService extends Service {
   private registry: Map<string, Map<string, YavinVisualizationManifest<unknown>>> = new Map();
   private defaultCategory = 'Standard';
+  private categoryOrder = [this.defaultCategory];
 
   private owner = getOwner(this);
 
@@ -120,7 +122,7 @@ export default class YavinVisualizationsService extends Service {
   defaultVisualization(): YavinVisualizationManifest {
     const typeName = 'yavin:table';
     const visualization = this.getVisualization(typeName);
-    assert('Cannot find configured default visualization: ${typeName}', visualization);
+    assert(`Cannot find configured default visualization: ${typeName}`, visualization);
     return visualization;
   }
 
@@ -149,7 +151,13 @@ export default class YavinVisualizationsService extends Service {
   }
 
   getCategories(): string[] {
-    return [...this.registry.keys()];
+    const categories = [...this.registry.keys()];
+    const categoryOrdering = Object.fromEntries(this.categoryOrder.map((g, i) => [g, i]));
+    return sortBy(categories, (category) => categoryOrdering[category]);
+  }
+
+  setCategoryOrder(categoryOrder: string[]): void {
+    this.categoryOrder = categoryOrder;
   }
 
   getAllVisualizations(): YavinVisualizationManifest[] {

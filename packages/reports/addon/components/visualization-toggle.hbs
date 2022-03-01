@@ -7,7 +7,7 @@
 >
   <div class="flex align-items-center">
     <PowerSelect
-      @options={{keys this.categoryToVisualizations}}
+      @options={{this.categories}}
       @selected={{this.selectedCategory}}
       @searchEnabled={{false}}
       @onChange={{this.selectCategory}}

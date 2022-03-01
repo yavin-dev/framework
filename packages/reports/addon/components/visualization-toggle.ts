@@ -60,7 +60,7 @@ export default class VisualizationToggle extends Component<Args> {
   }
 
   get categories() {
-    return this.visualization.getCategories().sort();
+    return this.visualization.getCategories();
   }
 
   get categoryToVisualizations() {
