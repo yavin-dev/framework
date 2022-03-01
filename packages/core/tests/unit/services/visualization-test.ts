@@ -97,4 +97,24 @@ module('Unit | Service | visualization', function (hooks) {
       'it succesfully rebuilds config and removes invalid settings'
     );
   });
+
+  test('categoryOrder', async function (assert) {
+    const table = Service.getVisualization('yavin:table');
+    Service.registerVisualization(table, 'Four');
+    Service.registerVisualization(table, 'Two');
+    Service.registerVisualization(table, 'Three');
+    Service.registerVisualization(table, 'One');
+
+    assert.deepEqual(
+      Service.getCategories(),
+      ['Standard', 'Four', 'Two', 'Three', 'One'],
+      'All registered categories show up in the order they were registered in'
+    );
+    Service.setCategoryOrder(['One', 'Standard', 'Four']);
+    assert.deepEqual(
+      Service.getCategories(),
+      ['One', 'Standard', 'Four', 'Two', 'Three'],
+      'The categories are sorted by the registered order first with the rest at the end'
+    );
+  });
 });
