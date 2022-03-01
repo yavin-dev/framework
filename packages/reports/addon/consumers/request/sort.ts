@@ -88,6 +88,7 @@ export default class SortConsumer extends ActionConsumer {
 
       sorts.forEach((sort) => request.removeSort(sort));
     },
+
     /**
      * @action REMOVE_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property
@@ -99,7 +100,7 @@ export default class SortConsumer extends ActionConsumer {
     },
 
     /**
-     * Remove all column sorts of same base column if a param is updated
+     * Update all column sorts of same base column if a param is updated
      * @action UPDATE_COLUMN_FRAGMENT_WITH_PARAMS
      * @param route - route that has a model that contains a request property
      * @param columnFragment - the fragment of the column to remove sort
@@ -113,9 +114,26 @@ export default class SortConsumer extends ActionConsumer {
       const { request } = route.modelFor(routeName) as ReportModel;
       const { columnMetadata } = columnFragment;
 
+      let direction = null;
+
+      // remove old sorts associated with this column
       request.sorts
         .filter((sort) => sort.columnMetadata === columnMetadata)
-        .forEach((sort) => request.removeSort(sort));
+        .forEach((sort) => {
+          direction = sort.direction;
+          request.removeSort(sort);
+        });
+
+      // add updated sort if necessary
+      if (direction) {
+        request.addSort({
+          type: columnFragment.type,
+          field: columnFragment.field,
+          parameters: columnFragment.parameters,
+          source: columnFragment.source,
+          direction,
+        });
+      }
     },
   };
 }

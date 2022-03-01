@@ -140,7 +140,6 @@ module('Unit | Consumer | request sort', function (hooks) {
   });
 
   test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
-    const revenueWithDiffParam = { ...metricWithParam, parameters: { currency: 'GBP' } };
     const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
@@ -149,8 +148,7 @@ module('Unit | Consumer | request sort', function (hooks) {
       columns: [metricWithParam],
       filters: [],
       sorts: [
-        { ...metricWithParam, direction: 'desc' },
-        { ...revenueWithDiffParam, direction: 'asc' },
+        { ...metricWithParam, direction: 'asc' },
         { ...metric, direction: 'desc' },
       ],
     });
@@ -159,8 +157,7 @@ module('Unit | Consumer | request sort', function (hooks) {
       getSorts(request),
       {
         adClicks: 'desc',
-        'revenue(currency=GBP)': 'asc',
-        'revenue(currency=USD)': 'desc',
+        'revenue(currency=USD)': 'asc',
       },
       'The existing sort is correct'
     );
@@ -168,9 +165,13 @@ module('Unit | Consumer | request sort', function (hooks) {
     const route = routeFor(request);
 
     const first = request.columns.firstObject as ColumnFragment;
-    first.parameters.currency = 'CAD';
+    first.parameters.currency = 'GBP';
     Consumer.send(RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS, route, first);
 
-    assert.deepEqual(getSorts(request), { adClicks: 'desc' }, 'The sorts are removed with matching base metric');
+    assert.deepEqual(
+      getSorts(request),
+      { adClicks: 'desc', 'revenue(currency=GBP)': 'asc' },
+      'The sorts matching base metric have correctly updated params'
+    );
   });
 });

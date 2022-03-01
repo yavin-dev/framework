@@ -381,11 +381,13 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
       metric: field,
       parameters,
     });
-    const sortExists = this.sorts.findBy('canonicalName', canonicalName);
 
+    const sortExists = this.sorts.findBy('canonicalName', canonicalName);
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
 
-    this.sorts.pushObject(this.fragmentFactory.createSort(type, source, field, parameters, direction));
+    const newSort = this.fragmentFactory.createSort(type, source, field, parameters, direction);
+    // if dateTime is sorted, it needs to be the first sort (Fili requirement)
+    canonicalName.match(/dateTime/) ? this.sorts.unshiftObject(newSort) : this.sorts.pushObject(newSort);
   }
 
   /**
