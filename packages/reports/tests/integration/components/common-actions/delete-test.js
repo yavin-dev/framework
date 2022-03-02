@@ -69,4 +69,38 @@ module('Integration | Component | common actions/delete', function (hooks) {
     await click('.delete-button');
     await click('.delete__modal-delete-btn');
   });
+
+  test('delete action that destroys the component', async function (assert) {
+    assert.expect(1);
+
+    Template = hbs`
+      {{#unless this.widget.isDeleted}}
+        <CommonActions::Delete
+          class="delete"
+          @model={{this.widget}}
+          @deleteAction={{this.deleteWidget}}
+          as |onDelete|
+        >
+          <DenaliButton
+            @style="text"
+            @size="medium"
+            class="delete-button"
+            {{on "click" onDelete}}
+          >
+            Delete
+          </DenaliButton>
+        </CommonActions::Delete>
+      {{/unless}}
+    `;
+
+    this.set('deleteWidget', (widget) => {
+      widget.isDeleted = true;
+      return new Promise((resolve) => setTimeout(resolve, 200));
+    });
+
+    await render(Template);
+    await click('.delete-button');
+    await click('.delete__modal-delete-btn');
+    assert.ok(true, 'no error is thrown');
+  });
 });

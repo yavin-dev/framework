@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -9,7 +9,7 @@ import Model from '@ember-data/model';
 
 interface Args {
   model: Model;
-  deleteAction: () => void;
+  deleteAction: (model: Model) => void | Promise<void>;
 }
 
 export default class DeleteActionComponent extends Component<Args> {
