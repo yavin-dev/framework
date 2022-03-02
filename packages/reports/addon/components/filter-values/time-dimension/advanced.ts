@@ -9,7 +9,6 @@ import Interval from 'navi-data/utils/classes/interval';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { isIntervalValid } from 'navi-core/models/request/filter';
-import { next } from '@ember/runloop';
 
 export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalComponent {
   @tracked start = this.formatValue(this.args.filter.values[0]);
@@ -47,11 +46,9 @@ export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalCompo
   }
 
   @action
-  commitValues() {
-    next(this, () => {
-      if (!document.activeElement?.className.includes('filter-values--advanced-interval-input')) {
-        this.args.onUpdateFilter({ values: this.newValues });
-      }
-    });
+  commitValues(event: { relatedTarget: HTMLElement }) {
+    if (!event.relatedTarget?.className.includes('filter-values--advanced-interval-input')) {
+      this.args.onUpdateFilter({ values: this.newValues });
+    }
   }
 }
