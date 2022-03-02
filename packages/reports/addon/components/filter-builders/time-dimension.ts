@@ -176,8 +176,6 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
     end === 'current'
   ) {
     internalId = OPERATORS.lookback;
-  } else if (moment.isMoment(interval['_start']) && end === 'current') {
-    internalId = OPERATORS.since;
   } else if (moment.isMoment(interval['_start']) && moment.isMoment(interval['_end'])) {
     internalId = OPERATORS.dateRange;
   } else {

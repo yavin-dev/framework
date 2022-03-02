@@ -102,8 +102,8 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     assert.deepEqual(
       intervalId('2019-01-01', 'current'),
-      'since',
-      'Use since operator for specific dates ending with current interval'
+      'advanced',
+      'Use advanced operator for specific dates ending with current interval'
     );
     assert.deepEqual(
       intervalId('2019-01-01', 'next'),
