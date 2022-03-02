@@ -46,7 +46,9 @@ export default class FilterValuesTimeDimensionAdvanced extends BaseIntervalCompo
   }
 
   @action
-  commitValues() {
-    this.args.onUpdateFilter({ values: this.newValues });
+  commitValues(event: { relatedTarget: HTMLElement }) {
+    if (!event.relatedTarget?.className.includes('filter-values--advanced-interval-input')) {
+      this.args.onUpdateFilter({ values: this.newValues });
+    }
   }
 }
