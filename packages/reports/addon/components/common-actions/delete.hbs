@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 {{yield (fn (toggle "showModal" this))}}
 <DenaliModal
   class="delete__modal"
@@ -10,7 +10,7 @@
     <h3 class="delete__modal-header m-b-10">Are You Sure?</h3>
     <p class="delete__modal-details m-b-20">This action cannot be undone. This will permanently delete the <span class="is-bold">{{@model.title}}</span> {{this.modelName}}.</p>
     {{#if this.isDeleting}}
-      <NaviLoadingMessage>
+      <NaviLoadingMessage class="m-b-20">
         Deleting {{classify this.modelName}}
       </NaviLoadingMessage>
     {{/if}}
@@ -18,7 +18,7 @@
       class="delete__modal-delete-btn m-r-5"
       @style="danger"
       disabled={{this.isDeleting}}
-      {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model) (toggle "isDeleting" this))}}
+      {{on "click" (pipe (fn (mut this.isDeleting) true) (fn @deleteAction @model) (fn (mut this.isDeleting) false))}}
     >
       Delete
     </DenaliButton>
