@@ -451,6 +451,9 @@ module('Unit | Utils | Request', function (hooks) {
       'filters are normalized correctly'
     );
 
+    // remove (non-deterministic) cid
+    normalized.sorts.forEach((sort) => delete sort.cid);
+
     assert.deepEqual(
       normalized.sorts,
       [

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -72,6 +72,7 @@ export default class SortConsumer extends ActionConsumer {
           parameters: columnFragment.parameters,
           source: columnFragment.source,
           direction,
+          cid: columnFragment.cid,
         });
       }
     },
@@ -112,27 +113,13 @@ export default class SortConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const { columnMetadata } = columnFragment;
 
-      let direction = null;
-
-      // remove old sorts associated with this column
-      request.sorts
-        .filter((sort) => sort.columnMetadata === columnMetadata)
-        .forEach((sort) => {
-          direction = sort.direction;
-          request.removeSort(sort);
-        });
-
-      // add updated sort if necessary
-      if (direction) {
-        request.addSort({
-          type: columnFragment.type,
-          field: columnFragment.field,
-          parameters: columnFragment.parameters,
-          source: columnFragment.source,
-          direction,
-        });
+      // update sorts associated with this column
+      const sort = request.sorts.findBy('cid', columnFragment.cid);
+      if (sort) {
+        sort.type = columnFragment.type;
+        sort.field = columnFragment.field;
+        sort.parameters = columnFragment.parameters;
       }
     },
   };

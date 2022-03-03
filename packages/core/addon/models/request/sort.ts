@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { attr } from '@ember-data/model';
@@ -19,7 +19,10 @@ const Validations = buildValidations({
  */
 export default class SortFragment extends BaseFragment.extend(Validations) implements Sort {
   @attr('string', { defaultValue: 'desc' })
-  direction!: SortDirection;
+  declare direction: SortDirection;
+
+  @attr()
+  declare cid: string;
 }
 
 declare module 'navi-core/models/registry' {

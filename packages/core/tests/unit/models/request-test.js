@@ -64,11 +64,13 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
                 ],
                 sorts: [
                   {
+                    cid: '1111111111',
                     field: 'dateTime',
                     type: 'timeDimension',
                     direction: 'asc',
                   },
                   {
+                    cid: '4444444444',
                     field: 'navClicks',
                     type: 'metric',
                     direction: 'desc',
@@ -240,6 +242,12 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
       'the `direction` property of the second sort has the correct value'
     );
 
+    assert.equal(
+      request.sorts.objectAt(0).cid,
+      '1111111111',
+      'the `cid` property of the first sort has the correct value'
+    );
+
     assert.equal(request.sorts.objectAt(1).columnMetadata.category, 'Clicks', 'the meta data attached is correct');
   });
 
@@ -344,6 +352,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
 
     request.set('sorts', [
       {
+        cid: '007',
         field: 'dateTime',
         type: 'timeDimension',
         direction: 'asc',
@@ -413,12 +422,14 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
         ],
         sorts: [
           {
+            cid: '1111111111',
             field: 'dateTime',
             type: 'timeDimension',
             parameters: {},
             direction: 'asc',
           },
           {
+            cid: '4444444444',
             field: 'navClicks',
             type: 'metric',
             parameters: {},
