@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import type { TaskGenerator } from 'ember-concurrency';
@@ -61,6 +61,7 @@ export type Filter = {
 };
 
 export type Sort = {
+  cid?: string;
   field: string;
   parameters: Parameters;
   type: ColumnType;

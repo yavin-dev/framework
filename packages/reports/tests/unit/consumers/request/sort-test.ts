@@ -9,6 +9,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import SortConsumer from 'navi-reports/consumers/request/sort';
 import ColumnFragment from 'navi-core/models/request/column';
+import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 const timeDimension = {
   type: 'timeDimension',
@@ -21,12 +22,14 @@ const metric = {
   field: 'adClicks',
   parameters: {},
   source: 'bardOne',
+  cid: '1234567890',
 };
 const metricWithParam = {
   type: 'metric',
   field: 'revenue',
   parameters: { currency: 'USD' },
   source: 'bardOne',
+  cid: '0987654321',
 };
 const dimension = {
   type: 'dimension',
@@ -40,7 +43,12 @@ let Store: StoreService;
 
 const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) });
 const getSorts = (request: RequestFragment) =>
-  Object.fromEntries(request.sorts.map((s) => [s.canonicalName, s.direction]));
+  Object.fromEntries(
+    request.sorts.map((s) => {
+      const canonicalName = canonicalizeMetric({ metric: s.field, parameters: s.parameters });
+      return [canonicalName, s.direction];
+    })
+  );
 
 module('Unit | Consumer | request sort', function (hooks) {
   setupTest(hooks);
@@ -140,16 +148,18 @@ module('Unit | Consumer | request sort', function (hooks) {
   });
 
   test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
+    const revenueWithDiffParam = { ...metricWithParam, cid: '0000000000', parameters: { currency: 'GBP' } };
     const request: RequestFragment = Store.createFragment('request', {
       table: 'network',
       limit: null,
       dataSource: 'bardOne',
       requestVersion: '2.0',
-      columns: [metricWithParam],
+      columns: [metricWithParam], // revenue(currency=USD)
       filters: [],
       sorts: [
-        { ...metricWithParam, direction: 'asc' },
-        { ...metric, direction: 'desc' },
+        { ...metricWithParam, direction: 'desc' }, // revenue(currency=USD)
+        { ...revenueWithDiffParam, direction: 'asc' }, // revenue(currency=GBP)
+        { ...metric, direction: 'desc' }, // adClicks
       ],
     });
 
@@ -157,7 +167,8 @@ module('Unit | Consumer | request sort', function (hooks) {
       getSorts(request),
       {
         adClicks: 'desc',
-        'revenue(currency=USD)': 'asc',
+        'revenue(currency=GBP)': 'asc',
+        'revenue(currency=USD)': 'desc',
       },
       'The existing sort is correct'
     );
@@ -165,12 +176,16 @@ module('Unit | Consumer | request sort', function (hooks) {
     const route = routeFor(request);
 
     const first = request.columns.firstObject as ColumnFragment;
-    first.parameters.currency = 'GBP';
+    first.parameters.currency = 'CAD'; // USD -> CAD
     Consumer.send(RequestActions.UPDATE_COLUMN_FRAGMENT_WITH_PARAMS, route, first);
 
     assert.deepEqual(
       getSorts(request),
-      { adClicks: 'desc', 'revenue(currency=GBP)': 'asc' },
+      {
+        adClicks: 'desc',
+        'revenue(currency=GBP)': 'asc',
+        'revenue(currency=CAD)': 'desc',
+      },
       'The sorts matching base metric have correctly updated params'
     );
   });

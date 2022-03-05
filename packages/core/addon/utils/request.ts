@@ -328,6 +328,7 @@ export function normalizeV1toV2(
   const map: { [key: string]: string } = {};
   requestV2.columns.forEach(({ type, field, parameters, cid }) => {
     const canonicalName = canonicalizeMetric({ metric: field, parameters });
+    assert('cid exists', cid);
     map[`${type}|${canonicalName}`] = cid;
   });
   requestV2.sorts.forEach((sort) => {
