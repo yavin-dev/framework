@@ -198,7 +198,7 @@ module('Unit | Model | dashboard', function (hooks) {
   });
 
   // TODO Fix test after moving to core
-  skip('deliveryRuleForUser', function (assert) {
+  skip('deliveryRulesForUser', function (assert) {
     assert.expect(1);
 
     return run(() => {
@@ -208,7 +208,7 @@ module('Unit | Model | dashboard', function (hooks) {
             getUser: () => Store.peekRecord('user', 'navi_user'),
           };
 
-          return dashboardModel.get('deliveryRuleForUser').then((rule) => {
+          return dashboardModel.get('deliveryRulesForUser').then((rule) => {
             assert.deepEqual(rule, Store.peekRecord('deliveryRule', 3), 'deliveryRule is fetched for current user');
           });
         });

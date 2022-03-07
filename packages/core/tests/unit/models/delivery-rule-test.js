@@ -9,6 +9,7 @@ const ExpectedDeliveryRule = {
   createdOn: '2017-01-01 00:00:00.000',
   updatedOn: '2017-01-01 00:00:00.000',
   owner: 'navi_user',
+  name: 'Email delivered csv every week',
   deliveredItem: '3',
   delivery: 'email',
   deliveryType: 'report',

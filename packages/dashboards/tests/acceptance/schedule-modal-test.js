@@ -17,6 +17,8 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert
       .dom('.schedule__modal-delete-btn')
       .isNotVisible('The delete button is not present when creating a new schedule');
@@ -57,7 +59,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        'Dashboard delivery schedule successfully saved!',
+        `'Email delivered pdf every week' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
 
@@ -109,7 +111,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        'Dashboard delivery schedule successfully saved!',
+        `'Email delivered pdf every week' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
 

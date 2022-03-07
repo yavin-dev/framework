@@ -24,6 +24,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert.dom('.schedule__modal').exists('Schedule modal pops up when action is clicked');
 
+    await click('.schedule__modal-new-delivery button');
+
     // Default View
     assert
       .dom('.schedule__modal-delete-btn')
@@ -64,7 +66,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert
       .dom('.alert')
-      .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
+      .hasText(
+        `'Email delivered pdf every week' schedule successfully saved!`,
+        'Successful notification is shown after clicking save'
+      );
 
     assert.dom('.modal.is-active').isNotVisible('Modal closed on successful save');
 
@@ -131,7 +136,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert
       .dom('.alert')
-      .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
+      .hasText(
+        `'Email delivered csv every month' schedule successfully saved!`,
+        'Successful notification is shown after clicking save'
+      );
 
     assert.dom('.modal.is-active').isNotVisible('Modal closed on successful save');
 
@@ -188,7 +196,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert
       .dom('.alert ')
-      .hasText('Report delivery schedule successfully saved!', 'Successful notification is shown after clicking save');
+      .hasText(
+        `'Email delivered csv every month' schedule successfully saved!`,
+        'Successful notification is shown after clicking save'
+      );
 
     assert.dom('.schedule__modal').doesNotExist('Modal closes after successful save');
 
@@ -220,7 +231,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal delete action', async function (assert) {
-    assert.expect(12);
+    assert.expect(10);
     await visit('/reports');
 
     // Click "Schedule"
@@ -269,19 +280,11 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert
       .dom('.schedule__modal-save-btn')
-      .hasText('Save', 'The save button says "Save" and not "Save Changes" after the schedule has been deleted');
+      .isNotVisible('There is no schedule after deleting, so we have our no schedule state shown');
 
     assert
-      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
-      .hasText('Week', 'Frequency field is set to the default value after the schedule has been deleted');
-
-    assert
-      .dom('.schedule__modal-input--recipients')
-      .hasText('', 'Recipients field is empty after the schedule has been deleted');
-
-    assert
-      .dom('.schedule__modal-format-trigger .ember-power-select-selected-item')
-      .hasText('csv', 'Format field is set to the default value after the schedule has been deleted');
+      .dom('.schedule__modal-no-schedule-new-delivery')
+      .isVisible('Because we have no current schedule our no shedule no schedule new schedule button is visible');
   });
 
   test('schedule modal cancel existing schedule', async function (assert) {
@@ -291,6 +294,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.navi-report-actions__schedule');
+
+    await click('.schedule__modal-new-delivery button');
 
     assert.dom('.schedule__modal-must-have-data-toggle').isNotChecked('mustHaveData is false initially');
 
@@ -335,6 +340,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-report-actions__schedule');
+
+    await click('.schedule__modal-new-delivery button');
 
     // Enter an email
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
@@ -396,6 +403,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-report-actions__schedule');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert
       .dom('.schedule__modal-helper-recipients')
       .isVisible('Helper text is not highlighted red when creating a new schedule before attempting a save');
@@ -442,7 +451,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        'Report delivery schedule successfully saved!',
+        `'Email delivered pdf every week' schedule successfully saved!`,
         'Successful notification is shown after clicking save and the schedule is valid'
       );
 
@@ -479,7 +488,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.alert p')
       .hasText(
-        'An error occurred while fetching the schedule for this report.',
+        'An error occurred while fetching your schedule(s) for this report.',
         'Error message is displayed when the server returns an error while fetching a schedule'
       );
 
@@ -527,6 +536,9 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await visit('/reports');
     await triggerEvent('.navi-collection__row0', 'mouseenter');
     await click('.navi-report-actions__schedule');
+
+    await click('.schedule__modal-no-schedule-new-delivery');
+
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
     await blur('.js-ember-tag-input-new');
 
@@ -563,7 +575,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.alert p')
       .includesText(
-        'There was an error updating your delivery settings',
+        `There was an error updating your delivery settings for schedule 'Email delivered pdf every week'`,
         'failing notification is shown if server returns 500'
       );
 
@@ -605,7 +617,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     errors = findAll('.alert p');
     assert.equal(errors[0].innerText, 'Cannot schedule report with unauthorized users');
     assert.equal(errors[1].innerText, 'Must be a valid oath.com or yahoo-inc.com email');
-    assert.equal(errors[2].innerText, 'There was an error updating your delivery settings');
+    assert.equal(
+      errors[2].innerText,
+      `There was an error updating your delivery settings for schedule 'Email delivered pdf every week'`
+    );
     assert.equal(errors.length, 3, 'all errors show up formatted correctly for object-type errors');
 
     Ember.Logger.error = originalLoggerError;
@@ -619,6 +634,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     // Click "Schedule"
     await triggerEvent('.navi-collection__row3', 'mouseenter');
     await click('.navi-report-actions__schedule');
+
+    await click('.schedule__modal-new-delivery button');
 
     assert
       .dom('.schedule__modal .alert')

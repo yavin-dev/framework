@@ -18,7 +18,7 @@
       class="delete__modal-delete-btn m-r-5"
       @style="danger"
       disabled={{this.isDeleting}}
-      {{on "click" (pipe (fn (mut this.isDeleting) true) (fn @deleteAction @model) (fn (mut this.isDeleting) false))}}
+      {{on "click" (pipe (toggle "isDeleting" this) (fn @deleteAction @model))}}
     >
       Delete
     </DenaliButton>

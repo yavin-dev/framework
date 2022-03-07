@@ -11,6 +11,7 @@ const DeliveryRule = {
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
   delivery: 'email',
+  name: 'Email delivered csv every week',
   isDisabled: false,
 };
 const NoDelivery = {
@@ -18,28 +19,29 @@ const NoDelivery = {
   delivery: 'none',
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
+  name: 'No delivery csv every week',
   isDisabled: false,
 };
 const NoDeliveryModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(NoDelivery),
+  deliveryRulesForUser: Promise.resolve([NoDelivery]),
 };
 const TestModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(DeliveryRule),
+  deliveryRulesForUser: Promise.resolve([DeliveryRule]),
 };
 const errorModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  get deliveryRuleForUser() {
-    return Promise.reject('boo');
+  get deliveryRulesForUser() {
+    return Promise.reject([DeliveryRule]);
   },
 };
 const unscheduledModel = {
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(null),
+  deliveryRulesForUser: Promise.resolve([]),
   constructor: {
     modelName: 'report',
   },
@@ -94,6 +96,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert.dom('.schedule__modal .alert').doesNotExist('Error is not displayed when item is valid');
 
     assert
@@ -102,7 +106,17 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        '',
+      ],
       'Schedule Modal has all the expected sections'
     );
 
@@ -134,6 +148,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert
       .dom('.schedule__modal-header')
       .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
+
+    await click('.schedule__modal-new-delivery button');
 
     assert
       .dom('.schedule__modal .alert')
@@ -182,7 +198,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     await render(TEMPLATE);
 
     await click('.schedule-action__button');
-
     assert.deepEqual(
       findAll('.schedule__modal-input--recipients .tag').map((el) => el.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
@@ -205,6 +220,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     //Open modal
     await click('.schedule-action__button');
+
+    await click('.schedule__modal-new-delivery button');
 
     assert
       .dom('.schedule__modal-save-btn')
@@ -458,11 +475,24 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert
       .dom('.schedule__modal .alert')
-      .hasText('Error An error occurred while fetching the schedule for this report.', 'Error is displayed correctly');
+      .hasText(
+        'Error An error occurred while fetching your schedule(s) for this report.',
+        'Error is displayed correctly'
+      );
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        '',
+      ],
       'Schedule Modal has all the expected sections'
     );
 
@@ -501,7 +531,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.deepEqual(
       findAll('.schedule__modal .alert p').map((el) => el.textContent.trim()),
       [
-        'An error occurred while fetching the schedule for this report.',
+        'An error occurred while fetching your schedule(s) for this report.',
         'Unable to schedule invalid report. Please fix errors before proceeding.',
       ],
       'Both fetching and invalid errors are displayed'
@@ -525,14 +555,26 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   test('Change to no delivery', async function (assert) {
     assert.expect(2);
 
-    this.set('model', DeliveryRule);
+    this.set('model', TestModel);
 
     await render(TEMPLATE);
     await click('.schedule-action__button');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        '',
+      ],
       'Schedule Modal has all the expected sections'
     );
 
@@ -541,7 +583,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Frequency'],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', ''],
       'Schedule Modal has all the expected sections'
     );
   });
@@ -556,7 +598,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Frequency'],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', ''],
       'Schedule Modal has all the expected sections'
     );
   });
@@ -574,7 +616,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     this.set('model', {
       constructor: { modelName: 'report' },
       title: 'Test the overwrite',
-      deliveryRuleForUser: Promise.resolve(testDR),
+      deliveryRulesForUser: Promise.resolve([testDR]),
     });
     await render(TEMPLATE);
 

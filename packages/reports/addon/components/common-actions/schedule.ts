@@ -32,7 +32,7 @@ interface Args {
   isValidForSchedule?(): Promise<boolean>;
   onDelete(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
   onSave(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
-  onRevert(DeliveryRule: DeliveryRuleModel, promise: RSVPMethodsObj): void;
+  onRevert(DeliveryRule: DeliveryRuleModel): void;
 }
 
 export default class ScheduleActionComponent extends Component<Args> {
@@ -56,7 +56,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    * that we don't fetch any data until the modal is opened
    * @property {DS.Model} deliveryRule - deliveryRule for the current user
    */
-  @tracked deliveryRule!: Promise<DeliveryRuleModel | undefined>;
+  @tracked deliveryRules: DeliveryRuleModel[] = [];
 
   /**
    * @property {DS.Model} localDeliveryRule - Model that stores the values of the modal's fields
@@ -71,6 +71,8 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked isSaving = false;
 
   @tracked showModal = false;
+
+  @tracked errorWhileFetchingRules!: boolean;
 
   deliveryOptions = ['email', 'none'];
   /**
@@ -87,7 +89,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   }
 
   /**
-   * @property {Array} frequencies
+   * @property  {Array} frequencies
    */
   @computed('config.navi.schedule.frequencies')
   get frequencies() {
@@ -143,14 +145,26 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked attemptedSave = false;
 
   /**
+   * @action doDelete
+   */
+  @action
+  addNewRule() {
+    this.localDeliveryRule = this._createNewDeliveryRule();
+  }
+
+  /**
    * @method _createNewDeliveryRule
    * @private
    * @returns {DS.Model} - new delivery rule model
    */
   _createNewDeliveryRule() {
-    return this.store.createRecord('delivery-rule', {
+    let newRule = this.store.createRecord('delivery-rule', {
       format: { type: this.formats.firstObject },
     });
+
+    assert('Delivery Rules are defined', this.deliveryRules);
+    this.deliveryRules = [...this.deliveryRules, newRule];
+    return newRule;
   }
 
   /**
@@ -158,64 +172,77 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async doSave() {
-    if (this.isRuleValid) {
-      // Only add relationships to the new delivery rule if the fields are valid
-      setProperties(this.localDeliveryRule, {
-        deliveredItem: this.args.model,
-        owner: this.user.getUser(),
-      });
-
-      this.attemptedSave = false;
-      let savePromise = new RSVP.Promise((resolve, reject) => {
-        assert('The localDeliveryRule is defined', this.localDeliveryRule);
-        this.args.onSave(this.localDeliveryRule, { resolve, reject });
-      });
-
-      try {
-        await savePromise;
-        assert('The localDeliveryRule is defined', this.localDeliveryRule);
-        this.naviNotifications.add({
-          title: `${capitalize(this.localDeliveryRule.deliveryType)} delivery schedule successfully saved!`,
-          style: 'success',
-          timeout: 'short',
+    this.deliveryRules?.forEach(async (rule) => {
+      if (rule.validations.isValid) {
+        // Only add relationships to the new delivery rule if the fields are valid
+        //@ts-ignore
+        setProperties(rule, {
+          deliveredItem: this.args.model,
+          owner: this.user.getUser(),
         });
-        this.closeModal();
-      } catch (errors) {
-        this.notification = getAllApiErrMsg(errors.errors[0], 'There was an error updating your delivery settings');
-      } finally {
+
+        this.attemptedSave = false;
+        let savePromise = new RSVP.Promise((resolve, reject) => {
+          assert('The Rule is defined', rule);
+          this.args.onSave(rule, { resolve, reject });
+        });
+
+        try {
+          await savePromise;
+          assert('The localDeliveryRule is defined', rule);
+          this.naviNotifications.add({
+            title: `'${capitalize(rule.name)}'  schedule successfully saved!`,
+            style: 'success',
+            timeout: 'short',
+          });
+          this.closeModal();
+        } catch (errors) {
+          this.notification = getAllApiErrMsg(
+            errors.errors[0],
+            `There was an error updating your delivery settings for schedule '${capitalize(rule.name)}'`
+          );
+        } finally {
+          this.isSaving = false;
+          this.attemptedSave = true;
+        }
+      } else {
         this.isSaving = false;
         this.attemptedSave = true;
       }
-    } else {
-      this.isSaving = false;
-      this.attemptedSave = true;
-    }
+    });
   }
 
   /**
    * @action doDelete
    */
   @action
-  async doDelete() {
-    const deliveryRule = this.localDeliveryRule;
+  async doDelete(deliveryRule: DeliveryRuleModel) {
     assert('The localDeliveryRule is defined', deliveryRule);
+    const name = deliveryRule.name;
     const deletePromise = new RSVP.Promise((resolve, reject) => {
       this.args.onDelete(deliveryRule, { resolve, reject });
     });
 
+    this.deliveryRules = this.deliveryRules?.filter((rule) => rule !== deliveryRule);
     try {
       await deletePromise;
-      //Make sure there is no more local rule after deletion
-      this.localDeliveryRule = undefined;
+      if (deliveryRule === this.localDeliveryRule) {
+        //Make sure there is no more local rule after deletion
+        this.localDeliveryRule = undefined;
+      }
 
       //Add Page notification
       this.naviNotifications.add({
-        title: `Delivery schedule removed`,
+        title: `Delivery schedule '${name}' removed`,
         style: 'success',
         timeout: 'short',
       });
+
+      if (!this.deliveryRules || this.deliveryRules.length <= 0) {
+        this.closeModal();
+      }
     } catch (e) {
-      this.notification = [`An error occurred while removing the delivery schedule`];
+      this.notification = [`An error occurred while removing the delivery schedule '${name}`];
     }
   }
 
@@ -224,14 +251,16 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
-    //Kick off a fetch for existing delivery rules
-    this.deliveryRule = this.args.model.deliveryRuleForUser;
-
+    this.errorWhileFetchingRules = false;
     try {
-      const rule = await this.deliveryRule;
-      this.localDeliveryRule = rule ? rule : this.localDeliveryRule || this._createNewDeliveryRule();
+      this.deliveryRules = await this.args.model.deliveryRulesForUser;
+      if (this.deliveryRules) {
+        this.localDeliveryRule = this.deliveryRules[0] ? this.deliveryRules[0] : this.localDeliveryRule || undefined;
+      }
     } catch (e) {
+      this.errorWhileFetchingRules = true;
       this.localDeliveryRule = this._createNewDeliveryRule();
+      this.notification = [`An error occurred while fetching your schedule(s) for this ${this.modelType}.`];
     }
   }
 
@@ -294,5 +323,14 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   closeNotification() {
     this.notification = undefined;
+  }
+
+  /**
+   * @action revertAll
+   */
+  @action
+  revertAll() {
+    this.deliveryRules?.forEach((rule) => this.args.onRevert(rule));
+    this.deliveryRules = this.deliveryRules?.filter((rule) => !rule.isNew);
   }
 }

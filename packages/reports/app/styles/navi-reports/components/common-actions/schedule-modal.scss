@@ -6,7 +6,7 @@
   &__modal {
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
-      width: 525px;
+      width: 901px;
     }
 
     &__input--recipients {
@@ -39,6 +39,32 @@
       label {
         min-width: 182px;
       }
+    }
+
+    &-options {
+      align-items: center;
+      border-bottom: 1px solid #e8e8e8;
+      border-left: 1px solid #e8e8e8;
+      justify-content: center;
+      min-height: 530px;
+      position: relative;
+    }
+
+    &-no-schedule {
+      height: 200px;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+    }
+
+    &-buttons {
+      border-left: 1px solid #e8e8e8;
+    }
+
+    &-new-delivery {
+      border-bottom: 1px solid #e8e8e8;
     }
   }
 }

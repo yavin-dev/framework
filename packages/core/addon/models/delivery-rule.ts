@@ -64,6 +64,9 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @fragment('fragments/delivery-format', { polymorphic: true })
   format!: DeliveryFormatFragment;
 
+  @attr({ defaultValue: 'Email delivered pdf every week' })
+  name!: string;
+
   @attr({ defaultValue: () => [] })
   recipients?: string[];
 
