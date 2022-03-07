@@ -91,7 +91,7 @@ class DeliveryRule : HasOwner {
     var format: DeliveryFormat? = null
 
     @NotNull
-    var name: string? = null
+    var name: String? = null
 
     @NotNull
     var delivery: Delivery? = null
