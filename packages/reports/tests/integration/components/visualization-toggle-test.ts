@@ -16,6 +16,21 @@ interface TestContext extends Context, ComponentArgs {
   visualizationService: YavinVisualizationsService;
 }
 
+class TestViz extends YavinVisualizationManifest {
+  namespace = 'test';
+  currentVersion = 2;
+  type = 'viz';
+  niceName = 'Visualization';
+  icon = '';
+  visualizationComponent = class extends Component {};
+  validate(_request: RequestFragment): { isValid: boolean; messages?: string[] | undefined } {
+    return { isValid: true };
+  }
+  createNewSettings(): unknown {
+    return {};
+  }
+}
+
 const TEMPLATE = hbs`
 <VisualizationToggle
   @report={{this.report}}
@@ -66,20 +81,6 @@ module('Integration | Component | visualization toggle', function (hooks) {
   test('category selection', async function (this: TestContext, assert) {
     assert.expect(7);
 
-    class TestViz extends YavinVisualizationManifest {
-      namespace = 'test';
-      currentVersion = 2;
-      type = 'viz';
-      niceName = 'Visualization';
-      icon = '';
-      visualizationComponent = class extends Component {};
-      validate(_request: RequestFragment): { isValid: boolean; messages?: string[] | undefined } {
-        return { isValid: true };
-      }
-      createNewSettings(): unknown {
-        return {};
-      }
-    }
     this.visualizationService.registerVisualization(new TestViz(), 'Test Category');
 
     const BarChartManifest = this.visualizationService.getVisualization('c3:bar-chart');
@@ -127,5 +128,39 @@ module('Integration | Component | visualization toggle', function (hooks) {
     assert
       .dom('.visualization-toggle__option--is-active')
       .hasAttribute('title', 'Table', 'A valid visualization type from the new category is selected');
+  });
+
+  test('category with no valid visualizations', async function (this: TestContext, assert) {
+    assert.expect(2);
+
+    class InvalidTestViz extends TestViz {
+      validate(_request: RequestFragment): { isValid: boolean; messages?: string[] | undefined } {
+        return { isValid: false };
+      }
+    }
+
+    this.visualizationService.registerVisualization(new InvalidTestViz(), 'Test Category');
+
+    const BarChartManifest = this.visualizationService.getVisualization('c3:bar-chart');
+    const LineChartManifest = this.visualizationService.getVisualization('c3:line-chart');
+    const TableManifest = this.visualizationService.getVisualization('yavin:table');
+
+    this.validVisualizations = [BarChartManifest, LineChartManifest, TableManifest];
+    //@ts-expect-error - fake report
+    this.report = { visualization: { manifest: TableManifest } };
+
+    await render(TEMPLATE);
+
+    assert
+      .dom('.visualization-toggle__select-trigger')
+      .hasText('Standard', 'The current visualization category is correctly shown');
+
+    await click('.visualization-toggle__select-trigger');
+
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent?.trim()),
+      ['Standard'],
+      'Only categories from valid visualizations are shown'
+    );
   });
 });

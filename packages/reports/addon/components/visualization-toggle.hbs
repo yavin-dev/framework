@@ -7,7 +7,7 @@
 >
   <div class="flex align-items-center">
     <PowerSelect
-      @options={{this.categories}}
+      @options={{this.valid.categories}}
       @selected={{this.selectedCategory}}
       @searchEnabled={{false}}
       @onChange={{this.selectCategory}}
@@ -18,7 +18,7 @@
     </PowerSelect>
   </div>
   <DenaliToggle
-    @options={{get this.categoryToVisualizations this.selectedCategory}}
+    @options={{get this.valid.categoryToVisualizations this.selectedCategory}}
     @activeOption={{this.selectedVisualization}}
     @onChange={{@onVisualizationTypeUpdate}}
     @isSmall={{true}}

@@ -36,7 +36,7 @@ export default class VisualizationToggle extends Component<Args> {
   @action
   selectCategory(category: string) {
     this.selectedCategory = category;
-    const visualizations = this.categoryToVisualizations[this.selectedCategory];
+    const visualizations = this.valid.categoryToVisualizations[this.selectedCategory];
     this.args.onVisualizationTypeUpdate(visualizations[visualizations.length - 1]);
   }
 
@@ -49,31 +49,28 @@ export default class VisualizationToggle extends Component<Args> {
   getCurrentCategory() {
     const { manifest } = this.args.report.visualization;
     const [category] =
-      Object.entries(this.categoryToVisualizations).find(([_category, validVisualizations]) =>
+      Object.entries(this.valid.categoryToVisualizations).find(([_category, validVisualizations]) =>
         validVisualizations.includes(manifest)
       ) ?? [];
-    return category ?? this.categories[0];
+    return category ?? this.valid.categories[0];
   }
 
   get selectedVisualization() {
     return this.args.report.visualization.manifest;
   }
 
-  get categories() {
-    return this.visualization.getCategories();
-  }
-
-  get categoryToVisualizations() {
-    const { categories } = this;
-    const categoryToValidVisualizations: Record<string, YavinVisualizationManifest[]> = {};
-    categories.forEach((category) => {
+  get valid() {
+    const categories: string[] = [];
+    const categoryToVisualizations: Record<string, YavinVisualizationManifest[]> = {};
+    this.visualization.getCategories().forEach((category) => {
       const validVisualizations = this.visualization
         .getVisualizations(category)
         .filter((v) => this.args.validVisualizations.includes(v));
       if (validVisualizations.length > 0) {
-        categoryToValidVisualizations[category] = validVisualizations;
+        categories.push(category);
+        categoryToVisualizations[category] = validVisualizations;
       }
     });
-    return categoryToValidVisualizations;
+    return { categories, categoryToVisualizations };
   }
 }
