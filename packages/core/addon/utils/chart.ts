@@ -24,11 +24,11 @@ export function getTranslation(transform: string) {
    * to a single SVGTransform of type SVG_TRANSFORM_MATRIX and get
    * its SVGMatrix.
    */
-  const matrix = g.transform.baseVal.consolidate().matrix;
+  const matrix = g.transform.baseVal.consolidate()?.matrix;
 
   /*
    * Below calculations are taken and adapted from the private function
    * transform/decompose.js of D3's module d3-interpolate.
    */
-  return { x: matrix.e, y: matrix.f };
+  return { x: matrix?.e ?? -1, y: matrix?.f ?? -1 };
 }
