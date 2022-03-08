@@ -1,4 +1,4 @@
-mutation CancelTableExport($id: String) {
+mutation CancelTableExport($id: ID) {
   tableExport(op: UPDATE, data: { id: $id, status: CANCELLED }) {
     edges {
       node {
