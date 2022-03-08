@@ -135,7 +135,7 @@
     "qunit": "^2.14.0",
     "qunit-dom": "^1.6.0",
     "sass": "^1.30.0",
-    "typescript": "^4.1.5"
+    "typescript": "^4.6.2"
   },
   "engines": {
     "node": "10.* || >= 12"
