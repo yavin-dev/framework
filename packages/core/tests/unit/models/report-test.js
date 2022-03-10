@@ -119,7 +119,7 @@ module('Unit | Model | report', function (hooks) {
   });
 
   test('Retrieving records', async function (assert) {
-    assert.expect(8);
+    assert.expect(6);
 
     await run(async () => {
       const report = await Store.findRecord('report', 1);
@@ -144,15 +144,6 @@ module('Unit | Model | report', function (hooks) {
         //remove from validation since cid value is non deterministic
         unset(serialized, `data.attributes.request.columns[${idx}].cid`);
       });
-
-      // check and remove cid (b/c they're non-deterministic)
-      const sortCids = [];
-      serialized.data.attributes.request.sorts.forEach((sort, idx) => {
-        sortCids.push(sort.cid);
-        unset(serialized, `data.attributes.request.sorts[${idx}].cid`);
-      });
-      assert.equal(sortCids.length, 1, 'there is one sort');
-      assert.deepEqual(sortCids[0], cids[3], 'sort has same cid as matching column');
 
       assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
       assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');

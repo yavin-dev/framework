@@ -394,8 +394,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
 
     const newSort = this.fragmentFactory.createSort(type, source, field, parameters, direction, cid);
-    // if dateTime is sorted, it needs to be the first sort (Fili requirement)
-    canonicalName.match(/dateTime/) ? this.sorts.unshiftObject(newSort) : this.sorts.pushObject(newSort);
+    this.sorts.pushObject(newSort);
   }
 
   /**

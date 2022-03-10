@@ -117,10 +117,10 @@ export default class SortConsumer extends ActionConsumer {
       // update sorts associated with this column
       const sort = request.sorts.findBy('cid', columnFragment.cid);
       if (sort) {
-        set(sort, 'type', columnFragment.type);
-        set(sort, 'field', columnFragment.field);
-        set(sort, 'parameters', columnFragment.parameters);
-        set(sort, 'source', columnFragment.source);
+        sort.type = columnFragment.type;
+        sort.field = columnFragment.field;
+        sort.parameters = columnFragment.parameters;
+        sort.source = columnFragment.source;
       }
     },
   };

@@ -15,7 +15,6 @@ module('Unit | Model | Request | Sort', function (hooks) {
       this.owner.lookup('service:store').createRecord('fragments-v2-mock', {
         sorts: [
           {
-            cid: '007',
             field: 'revenue',
             type: 'metric',
             parameters: { currency: 'USD' },
@@ -93,7 +92,6 @@ module('Unit | Model | Request | Sort', function (hooks) {
       mockModel.serialize().data.attributes.sorts,
       [
         {
-          cid: '007',
           field: 'revenue',
           parameters: {
             currency: 'USD',
@@ -111,7 +109,6 @@ module('Unit | Model | Request | Sort', function (hooks) {
       mockModel.serialize().data.attributes.sorts,
       [
         {
-          cid: '007',
           field: 'revenue',
           type: 'metric',
           parameters: {},

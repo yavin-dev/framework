@@ -1,1 +1,1 @@
-export { default } from 'navi-core/serializers/request/base';
+export { default } from 'navi-core/serializers/request/sort';

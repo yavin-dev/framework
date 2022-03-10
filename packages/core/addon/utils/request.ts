@@ -9,7 +9,6 @@ import { getPeriodForGrain } from 'navi-data/utils/date';
 import type { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import { assert } from '@ember/debug';
 
 type LogicalTable = {
   table: string;
@@ -322,21 +321,6 @@ export function normalizeV1toV2(
       parameters: isDateTime ? { grain } : parameters,
       direction,
     });
-  });
-
-  // add cid to sorts
-  const map: { [key: string]: string } = {};
-  requestV2.columns.forEach(({ type, field, parameters, cid }) => {
-    const canonicalName = canonicalizeMetric({ metric: field, parameters });
-    assert('cid exists', cid);
-    map[`${type}|${canonicalName}`] = cid;
-  });
-  requestV2.sorts.forEach((sort) => {
-    const { type, field, parameters } = sort;
-    const canonicalName = canonicalizeMetric({ metric: field, parameters });
-    const cid = map[`${type}|${canonicalName}`];
-    assert('cid exists', cid);
-    sort.cid = cid;
   });
 
   return requestV2;

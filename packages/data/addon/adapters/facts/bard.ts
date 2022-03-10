@@ -288,20 +288,28 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const { sorts, table } = request;
 
     if (sorts.length) {
-      return sorts
-        .map(({ direction, field, parameters }) => {
-          const canonicalName =
-            field === `${table}.dateTime` ? 'dateTime' : canonicalizeMetric({ metric: field, parameters });
-          direction = direction || 'desc';
+      let res = sorts.map(({ direction, field, parameters }) => {
+        const canonicalName =
+          field === `${table}.dateTime` ? 'dateTime' : canonicalizeMetric({ metric: field, parameters });
+        direction = direction || 'desc';
 
-          assert(
-            `'${direction}' must be a valid sort direction (${SORT_DIRECTIONS.join()})`,
-            SORT_DIRECTIONS.includes(direction)
-          );
+        assert(
+          `'${direction}' must be a valid sort direction (${SORT_DIRECTIONS.join()})`,
+          SORT_DIRECTIONS.includes(direction)
+        );
 
-          return `${canonicalName}|${direction}`;
-        })
-        .join(',');
+        return `${canonicalName}|${direction}`;
+      });
+
+      // if dateTime is sorted, Fili requires it be the first sort
+      const dateTimeIndex = res.findIndex((s) => s.match(/dateTime/));
+      if (dateTimeIndex > -1) {
+        const dateTimeSort = res[dateTimeIndex];
+        res.splice(dateTimeIndex, 1);
+        res.unshift(dateTimeSort);
+      }
+
+      return res.join(',');
     }
     return undefined;
   }

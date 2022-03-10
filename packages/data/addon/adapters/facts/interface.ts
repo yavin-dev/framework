@@ -61,7 +61,6 @@ export type Filter = {
 };
 
 export type Sort = {
-  cid?: string;
   field: string;
   parameters: Parameters;
   type: ColumnType;

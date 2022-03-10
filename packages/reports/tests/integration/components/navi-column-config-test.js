@@ -403,7 +403,7 @@ module('Integration | Component | navi-column-config', function (hooks) {
         field: 'browser',
         parameters: { field: 'id' },
         direction: 'desc',
-        cid: '1234567890',
+        cid: '123457890',
       });
     };
     this.onRemoveSort = () => assert.step('onRemoveSort');
