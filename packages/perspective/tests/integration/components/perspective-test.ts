@@ -101,23 +101,27 @@ module('Integration | Component | perspective', function (hooks) {
   test('it saves configuration', async function (this: TestContext, assert) {
     assert.expect(3);
 
+    const done1 = assert.async();
     this.onUpdateSettings = (settings) => {
       assert.deepEqual(settings?.configuration?.plugin, 'Datagrid', 'it saves configuration on update');
       assert.deepEqual(settings?.configuration?.sort, [], 'it saves configuration with no sorting');
+      done1();
     };
     await render(TEMPLATE);
     await waitFor('th', { timeout: 10000 });
 
-    await timeout(1000);
+    const done2 = assert.async();
     this.set('onUpdateSettings', (settings: PerspectiveSettings) => {
       assert.deepEqual(
         settings?.configuration?.sort,
         [['age(field=id)', 'desc']],
         'it saves configuration after initial render'
       );
+      done2();
     });
 
     //wait due to debouncing logic
+    await timeout(1000);
     await click('.psp-header-leaf');
   });
 
