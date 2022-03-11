@@ -108,7 +108,7 @@ module('Integration | Component | perspective', function (hooks) {
     await render(TEMPLATE);
     await waitFor('th', { timeout: 10000 });
 
-    await timeout(2000);
+    await timeout(1000);
     this.set('onUpdateSettings', (settings: PerspectiveSettings) => {
       assert.deepEqual(
         settings?.configuration?.sort,
