@@ -53,19 +53,13 @@ export default class RequestSerializer extends JSONSerializer {
     // add cid to sorts
     const map = new Map();
     normalized.columns?.forEach(({ type, field, parameters, cid }) => {
-      const canonicalName =
-        type === 'timeDimension'
-          ? canonicalizeMetric({ metric: 'dateTime', parameters })
-          : canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeMetric({ metric: field, parameters });
       assert('columns must have cid', cid);
       map.set(`${type}|${canonicalName}`, cid);
     });
     normalized.sorts?.forEach((sort) => {
       const { type, field, parameters } = sort;
-      const canonicalName =
-        type === 'timeDimension'
-          ? canonicalizeMetric({ metric: 'dateTime', parameters })
-          : canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeMetric({ metric: field, parameters });
       const cid = map.get(`${type}|${canonicalName}`);
       assert('sorts must have cid', cid);
       sort.cid = cid;
