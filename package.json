@@ -8,7 +8,7 @@
     "url": "https://github.com/yavin-dev/framework"
   },
   "license": "MIT",
-  "author": "yavin@verizonmedia.com",
+  "author": "yavin@yahooinc.com",
   "scripts": {
     "build-ui": "lerna run build --scope navi-app --stream",
     "start": "cd packages/webservice && ./gradlew bootRun",
@@ -44,5 +44,9 @@
     "packages/webservice/**/*": [
       "npm run lint:ws:fix"
     ]
+  },
+  "volta": {
+    "node": "14.19.0",
+    "npm": "8.5.4"
   }
 }
