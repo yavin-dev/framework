@@ -29,6 +29,8 @@ $arrowhead-right-circle: '\ea66';
 $check-circle: '\eb03';
 $circle: '\eb0b';
 $information-circle: '\ec54';
+$arrow-back: '\ea52';
+$column-edit: '\ed32';
 
 $info-background-color: rgb(map-get($denali-status-colors, 'info'), 0.4);
 
@@ -71,6 +73,7 @@ perspective-viewer[theme='Denali'],
   --config-button-icon--content: #{meta.inspect($filter-horizontal)};
   --overflow-hint-icon--content: 'error_outline';
   --status-icon--content: null;
+  --status-bar-counter--content: #{meta.inspect($arrow-back)};
   --reset-button-icon--content: #{meta.inspect($refresh)};
   --export-button-icon--content: #{meta.inspect($download)};
   --copy-button-icon--content: #{meta.inspect($duplicate)};
@@ -82,6 +85,7 @@ perspective-viewer[theme='Denali'],
   --sort-order-col-asc--content: #{meta.inspect($arrowhead-right)};
   --sort-order-col-desc--content: #{meta.inspect($arrowhead-left)};
   --column-add--content: #{meta.inspect($add)};
+  --column-menu--content: #{meta.inspect($column-edit)};
   --column-close--content: #{meta.inspect($close)};
   --d3fc-y1-label--content: #{meta.inspect($arrowhead-down)};
   --d3fc-y2-label--content: #{meta.inspect($arrowhead-up)};
@@ -176,6 +180,9 @@ perspective-expression-editor[theme='Denali'] {
   --column-style-radio--appearance: radio;
   --column-style-radio-checked--content: none;
   --column-style-radio-unchecked--content: none;
+  --column-style-checkbox--appearance: none;
+  --column-style-checkbox-checked--content: #{meta.inspect($check-circle)};
+  --column-style-checkbox-unchecked--content: #{meta.inspect($circle)};
   background-color: map-get($denali-grey-colors, '100');
   font-family: $font-family-sans-serif;
 }
