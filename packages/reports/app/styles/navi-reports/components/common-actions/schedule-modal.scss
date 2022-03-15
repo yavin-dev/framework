@@ -65,6 +65,10 @@
 
     &-new-delivery {
       border-bottom: 1px solid #e8e8e8;
+
+      .button {
+        justify-content: left;
+      }
     }
   }
 }

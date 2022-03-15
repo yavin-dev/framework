@@ -10,7 +10,7 @@ import config from 'ember-get-config';
 // @ts-ignore
 import { getAllApiErrMsg } from 'navi-core/utils/persistence-error';
 import { A as arr } from '@ember/array';
-import { computed, setProperties, action } from '@ember/object';
+import { computed, action } from '@ember/object';
 import RSVP from 'rsvp';
 import { capitalize } from 'lodash-es';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
@@ -89,7 +89,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   }
 
   /**
-   * @property  {Array} frequencies
+   * @property {Array} frequencies
    */
   @computed('config.navi.schedule.frequencies')
   get frequencies() {
@@ -160,6 +160,8 @@ export default class ScheduleActionComponent extends Component<Args> {
   _createNewDeliveryRule() {
     let newRule = this.store.createRecord('delivery-rule', {
       format: { type: this.formats.firstObject },
+      deliveredItem: this.args.model,
+      owner: this.user.getUser(),
     });
 
     assert('Delivery Rules are defined', this.deliveryRules);
@@ -175,12 +177,6 @@ export default class ScheduleActionComponent extends Component<Args> {
     this.deliveryRules?.forEach(async (rule) => {
       if (rule.validations.isValid) {
         // Only add relationships to the new delivery rule if the fields are valid
-        //@ts-ignore
-        setProperties(rule, {
-          deliveredItem: this.args.model,
-          owner: this.user.getUser(),
-        });
-
         this.attemptedSave = false;
         let savePromise = new RSVP.Promise((resolve, reject) => {
           assert('The Rule is defined', rule);
