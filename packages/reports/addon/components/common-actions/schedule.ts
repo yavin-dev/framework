@@ -124,9 +124,18 @@ export default class ScheduleActionComponent extends Component<Args> {
   }
 
   /**
-   * @property {Boolean} isRuleValid
+   * @property {Boolean} areRulesValid
    */
-  @reads('localDeliveryRule.validations.isValid') isRuleValid!: boolean;
+  get areRulesValid() {
+    let valid = true;
+    this.deliveryRules?.forEach(async (rule) => {
+      if (!rule.validations.isValid) {
+        valid = false;
+      }
+    });
+
+    return valid;
+  }
 
   /**
    * @property {Boolean} disableSave
@@ -136,7 +145,7 @@ export default class ScheduleActionComponent extends Component<Args> {
       return true;
     }
 
-    return !(this.localDeliveryRule?.hasDirtyAttributes && this.isRuleValid);
+    return !(this.localDeliveryRule?.hasDirtyAttributes && this.areRulesValid);
   }
 
   /**
@@ -233,10 +242,6 @@ export default class ScheduleActionComponent extends Component<Args> {
         style: 'success',
         timeout: 'short',
       });
-
-      if (!this.deliveryRules || this.deliveryRules.length <= 0) {
-        this.closeModal();
-      }
     } catch (e) {
       this.notification = [`An error occurred while removing the delivery schedule '${name}`];
     }

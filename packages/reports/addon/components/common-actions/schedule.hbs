@@ -31,7 +31,10 @@
           </div>
           <DenaliSidebar class="has-bg-white w-full" as |Sidebar|>
             {{#each this.deliveryRules as |deliveryRule|}}
-              <Sidebar.Tab {{on "click" (fn (mut this.localDeliveryRule) deliveryRule)}}>
+              <Sidebar.Tab 
+                @isActive={{eq this.localDeliveryRule deliveryRule}} 
+                {{on "click" (fn (mut this.localDeliveryRule) deliveryRule)}}
+              >
                 <div class="row w-full">
                   <span class="col-7-8">{{deliveryRule.name}}</span>
                   <DenaliIcon 
@@ -126,7 +129,7 @@
                     <DenaliInputGroup
                       @label="Recipients"
                       @isStacked={{true}}
-                      class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
+                      class="{{unless this.areRulesValid "schedule__modal-recipients--invalid"}} m-b-30"
                     >
                       <NaviEmailInput
                         class="schedule__modal-input--recipients w-full"
