@@ -433,6 +433,7 @@ export default [
           {
             alias: null,
             field: 'network.dateTime',
+            cid: 'cid3',
             parameters: {
               grain: 'day',
             },
@@ -441,12 +442,14 @@ export default [
           {
             alias: null,
             field: 'adClicks',
+            cid: 'cid2',
             parameters: {},
             type: 'metric',
           },
           {
             alias: null,
             field: 'navClicks',
+            cid: 'cid1',
             parameters: {},
             type: 'metric',
           },
@@ -492,6 +495,7 @@ export default [
           {
             alias: null,
             field: 'network.dateTime',
+            cid: 'm3',
             parameters: {
               grain: 'day',
             },
@@ -500,6 +504,7 @@ export default [
           {
             alias: null,
             field: 'adClicks',
+            cid: 'm2',
             parameters: {},
             type: 'metric',
           },
@@ -552,6 +557,7 @@ export default [
           {
             alias: null,
             field: 'network.dateTime',
+            cid: 'm3',
             parameters: {
               grain: 'day',
             },
@@ -560,6 +566,7 @@ export default [
           {
             alias: null,
             field: 'adClicks',
+            cid: 'm2',
             parameters: {},
             type: 'metric',
           },

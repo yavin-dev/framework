@@ -118,7 +118,7 @@ module('Integration | Component | navi-column-config/base', function (hooks) {
     await click('.navi-column-config-base__clone-icon');
     await click('.navi-column-config-base__filter-icon');
     await click('.navi-column-config-base__sort-icon');
-    this.request.addSort({ ...metricBase, direction: 'desc' });
+    this.request.addSort({ ...metricBase, direction: 'desc', cid: '1234567890' });
     await click('.navi-column-config-base__sort-icon');
 
     assert.verifySteps(

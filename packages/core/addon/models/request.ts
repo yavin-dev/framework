@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { computed, set } from '@ember/object';
@@ -142,6 +142,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
           type: sort.type,
           direction: sort.direction,
           source: clonedRequest.dataSource,
+          cid: sort.cid,
         });
         return newSort;
       }),
@@ -376,16 +377,24 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
    * Adds a sort to the request if it does not exist
    * @param sort - the sort to add to the request
    */
-  addSort({ type, source, field, parameters, direction }: BaseLiteral & { direction: SortDirection }) {
+  addSort({
+    type,
+    source,
+    field,
+    parameters,
+    direction,
+    cid,
+  }: BaseLiteral & { direction: SortDirection; cid: string }) {
     const canonicalName = canonicalizeMetric({
       metric: field,
       parameters,
     });
-    const sortExists = this.sorts.findBy('canonicalName', canonicalName);
 
+    const sortExists = this.sorts.findBy('canonicalName', canonicalName);
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
 
-    this.sorts.pushObject(this.fragmentFactory.createSort(type, source, field, parameters, direction));
+    const newSort = this.fragmentFactory.createSort(type, source, field, parameters, direction, cid);
+    this.sorts.pushObject(newSort);
   }
 
   /**

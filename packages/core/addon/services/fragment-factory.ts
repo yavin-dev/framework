@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
@@ -103,14 +103,16 @@ export default class FragmentFactory extends Service {
    * @param meta - meta data object to build this filter from
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction  - `desc` or `asc`
+   * @param cid - the unique cid associated wth the column
    */
   createSortFromMeta(
     columnMetadata: ColumnMetadataModel,
     parameters: Record<string, string> = {},
-    direction: 'asc' | 'desc'
+    direction: 'asc' | 'desc',
+    cid: string
   ): SortFragment {
     const { id: field, metadataType: type, source } = columnMetadata;
-    return this.createSort(type, source, field, parameters, direction);
+    return this.createSort(type, source, field, parameters, direction, cid);
   }
 
   /**
@@ -120,13 +122,15 @@ export default class FragmentFactory extends Service {
    * @param field - field name, if dimension includes field `dimension.id`
    * @param parameters - parameters to attach to column, if none pass empty object `{}`
    * @param direction - `desc` or `asc`
+   * @param cid - the unique cid associated wth the column
    */
   createSort(
     type: ColumnType,
     dataSource: string,
     field: string,
     parameters: Parameters = {},
-    direction: SortDirection
+    direction: SortDirection,
+    cid: string
   ): SortFragment {
     return this.store.createFragment('request/sort', {
       field,
@@ -134,6 +138,7 @@ export default class FragmentFactory extends Service {
       type,
       direction,
       source: dataSource,
+      cid,
     });
   }
 }

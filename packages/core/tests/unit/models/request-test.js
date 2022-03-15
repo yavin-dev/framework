@@ -64,9 +64,12 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
                 ],
                 sorts: [
                   {
-                    field: 'dateTime',
+                    field: 'network.dateTime',
                     type: 'timeDimension',
                     direction: 'asc',
+                    parameters: {
+                      grain: 'day',
+                    },
                   },
                   {
                     field: 'navClicks',
@@ -230,7 +233,7 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
 
     assert.equal(
       request.sorts.objectAt(0).field,
-      'dateTime',
+      'network.dateTime',
       'the `field` property of the first sort has the correct value'
     );
 
@@ -413,9 +416,11 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
         ],
         sorts: [
           {
-            field: 'dateTime',
+            field: 'network.dateTime',
             type: 'timeDimension',
-            parameters: {},
+            parameters: {
+              grain: 'day',
+            },
             direction: 'asc',
           },
           {

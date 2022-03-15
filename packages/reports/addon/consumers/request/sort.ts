@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
@@ -72,6 +72,7 @@ export default class SortConsumer extends ActionConsumer {
           parameters: columnFragment.parameters,
           source: columnFragment.source,
           direction,
+          cid: columnFragment.cid,
         });
       }
     },
@@ -88,6 +89,7 @@ export default class SortConsumer extends ActionConsumer {
 
       sorts.forEach((sort) => request.removeSort(sort));
     },
+
     /**
      * @action REMOVE_COLUMN_FRAGMENT
      * @param route - route that has a model that contains a request property
@@ -99,7 +101,7 @@ export default class SortConsumer extends ActionConsumer {
     },
 
     /**
-     * Remove all column sorts of same base column if a param is updated
+     * Update all column sorts of same base column if a param is updated
      * @action UPDATE_COLUMN_FRAGMENT_WITH_PARAMS
      * @param route - route that has a model that contains a request property
      * @param columnFragment - the fragment of the column to remove sort
@@ -111,11 +113,15 @@ export default class SortConsumer extends ActionConsumer {
     ) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const { columnMetadata } = columnFragment;
 
-      request.sorts
-        .filter((sort) => sort.columnMetadata === columnMetadata)
-        .forEach((sort) => request.removeSort(sort));
+      // update sorts associated with this column
+      const sort = request.sorts.findBy('cid', columnFragment.cid);
+      if (sort) {
+        sort.type = columnFragment.type;
+        sort.field = columnFragment.field;
+        sort.parameters = columnFragment.parameters;
+        sort.source = columnFragment.source;
+      }
     },
   };
 }

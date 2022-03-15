@@ -148,20 +148,29 @@ module('Unit | Service | fragmentFactory', function (hooks) {
   test('Build Sort Fragments From Meta', function (assert) {
     const metricMeta = metadataService.getById('metric', 'navClicks', 'bardOne');
 
-    const metricMetaFragment = service.createSortFromMeta(metricMeta, { avg: 'trailing31day' }, 'asc');
+    const metricMetaFragment = service.createSortFromMeta(metricMeta, { avg: 'trailing31day' }, 'asc', '1234567890');
     assert.equal(metricMetaFragment.field, 'navClicks', 'Sort Fragment has right field');
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Sort fragment has right parameters');
     assert.equal(metricMetaFragment.direction, 'asc', 'Sort Fragment has passed operator');
     assert.equal(metricMetaFragment.columnMetadata.category, 'Clicks', 'Sort fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMetadata.source, 'bardOne', 'Sort fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.cid, '1234567890', 'Sort fragment has right cid');
   });
 
   test('Build Sort Fragments Without Meta', function (assert) {
-    const metricMetaFragment = service.createSort('metric', 'bardOne', 'revenue', { currency: 'USD' }, 'desc');
+    const metricMetaFragment = service.createSort(
+      'metric',
+      'bardOne',
+      'revenue',
+      { currency: 'USD' },
+      'desc',
+      '1234567890'
+    );
     assert.equal(metricMetaFragment.field, 'revenue', 'Sort Fragment has right field');
     assert.equal(metricMetaFragment.parameters.currency, 'USD', 'Sort fragment has right parameters');
     assert.equal(metricMetaFragment.direction, 'desc', 'Sort Fragment has passed operator');
     assert.equal(metricMetaFragment.columnMetadata.category, 'Revenue', 'Sort fragment meta is populated correctly');
     assert.equal(metricMetaFragment.columnMetadata.source, 'bardOne', 'Sort fragment meta data has right datasource');
+    assert.equal(metricMetaFragment.cid, '1234567890', 'Sort fragment has right cid');
   });
 });
