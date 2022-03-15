@@ -39,6 +39,7 @@ module('Unit - Utils - Pagination Utils', function () {
 
     assert.throws(
       function () {
+        //@ts-expect-error - no args
         PaginationUtils.getPaginatedRecords();
       },
       /allRecords param must be defined/,
@@ -47,6 +48,7 @@ module('Unit - Utils - Pagination Utils', function () {
 
     assert.throws(
       function () {
+        //@ts-expect-error - wrong type
         PaginationUtils.getPaginatedRecords(records, '2');
       },
       /Limit must be of type number/,
@@ -55,6 +57,7 @@ module('Unit - Utils - Pagination Utils', function () {
 
     assert.throws(
       function () {
+        //@ts-expect-error - wrong type
         PaginationUtils.getPaginatedRecords(records, 2, '3');
       },
       /Invalid page\/limit specified/,

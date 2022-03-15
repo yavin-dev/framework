@@ -22,6 +22,7 @@ module('Unit - Utils - Metrics Utils', function () {
     );
 
     assert.equal(
+      //@ts-expect-error - null parameters
       canonicalizeMetric({ metric: 'foo', parameters: null }),
       'foo',
       'correctly serializes metric with null object params'
@@ -40,6 +41,7 @@ module('Unit - Utils - Metrics Utils', function () {
     );
 
     assert.equal(
+      //@ts-expect-error - null parameter value
       canonicalizeMetric({ metric: 'ham', parameters: { p1: 'value', p2: null } }),
       'ham(p1=value)',
       'Do not send parameters with null or undefined values'
@@ -52,6 +54,7 @@ module('Unit - Utils - Metrics Utils', function () {
 
     assert.equal(hasParameters({ metric: 'foo', parameters: {} }), false, 'metric with empty object params');
 
+    //@ts-expect-error - null parameters
     assert.equal(hasParameters({ metric: 'foo', parameters: null }), false, 'metric with null object params');
 
     assert.equal(hasParameters({ metric: 'foo', parameters: { p1: '100' } }), true, 'metric with one param');
@@ -170,6 +173,7 @@ module('Unit - Utils - Metrics Utils', function () {
     assert.expect(6);
 
     assert.deepEqual(
+      //@ts-expect-error - missing parameters
       mapColumnAttributes({ name: 'base' }),
       { metric: 'base', parameters: {} },
       'Mapper correctly constructs a metric object given no `parameters` property'
@@ -197,12 +201,14 @@ module('Unit - Utils - Metrics Utils', function () {
     );
 
     assert.throws(
+      //@ts-expect-error - missing parameters
       () => mapColumnAttributes({ name: '' }),
       new Error('Metric Column Attributes Mapper: Error, empty metric name'),
       'Mapper throws an error given an empty metric name'
     );
 
     assert.throws(
+      //@ts-expect-error - missing parameters
       () => mapColumnAttributes({}),
       new Error('Metric Column Attributes Mapper: Error, empty metric name'),
       'Mapper throws an error given a missing `name` property'
@@ -211,6 +217,7 @@ module('Unit - Utils - Metrics Utils', function () {
 
   test('canonicalize column attributes', function (assert) {
     assert.expect(5);
+    //@ts-expect-error - missing parameters
     assert.equal(canonicalizeColumnAttributes({ name: 'foo' }), 'foo', 'correctly serializes metric with no params');
 
     assert.equal(
@@ -220,6 +227,7 @@ module('Unit - Utils - Metrics Utils', function () {
     );
 
     assert.equal(
+      //@ts-expect-error - null parameters
       canonicalizeColumnAttributes({ name: 'foo', parameters: null }),
       'foo',
       'correctly serializes metric with null object params'

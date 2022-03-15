@@ -5,8 +5,6 @@
 import type { TaskGenerator } from 'ember-concurrency';
 import type { ColumnType } from 'navi-data/models/metadata/column';
 
-export type RequestV1 = TODO;
-
 export type RequestOptions = {
   clientId?: string;
   requestId?: string;
@@ -149,7 +147,7 @@ export interface TableExportResult {
   message: string;
 }
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<unknown>;
-  urlForFindQuery(request: RequestV1 | RequestV2, options: RequestOptions): string;
-  urlForDownloadQuery(request: RequestV1 | RequestV2, options: RequestOptions): TaskGenerator<string>;
+  fetchDataForRequest(request: RequestV2, options: RequestOptions): TaskGenerator<unknown>;
+  urlForFindQuery(request: RequestV2, options: RequestOptions): string;
+  urlForDownloadQuery(request: RequestV2, options: RequestOptions): TaskGenerator<string>;
 }
