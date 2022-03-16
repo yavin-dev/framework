@@ -68,11 +68,6 @@ export default Component.extend({
   items: undefined,
 
   /**
-   * @property {Boolean} trim - if true collection is rendered in trimmed mode (mode with show more link)
-   */
-  trim: true,
-
-  /**
    * @property {String} moreLabel - show more label
    */
   moreLabel: 'Show more',

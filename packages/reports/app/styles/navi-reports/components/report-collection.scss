@@ -1,5 +1,5 @@
 /**
- * Copyright 2017, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 .navi-report-collection-container {
@@ -8,10 +8,6 @@
   flex-flow: column;
   min-height: 0;
   position: relative;
-
-  &__page-title {
-    .navi-page-title;
-  }
 
   .error-container,
   .loader-container {

@@ -4,6 +4,6 @@
  */
 @keyframes navi-pulse-once {
   50% {
-    background-color: @denali-brand-200;
+    background-color: map-get($denali-brand-colors, '100');
   }
 }
