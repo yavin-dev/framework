@@ -5,7 +5,7 @@
 
 * {
   box-sizing: border-box;
-  line-height: @navi-ideal-line-height;
+  line-height: $navi-ideal-line-height;
 
   &:focus {
     outline: none;
@@ -19,12 +19,12 @@ a {
 ol,
 ul {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
 
 fieldset {
-  border: none;
+  border: 0;
   margin: 0;
   padding: 0;
 }
@@ -32,7 +32,7 @@ fieldset {
 input,
 button {
   background: none;
-  border: none;
+  border: 0;
 }
 
 table {

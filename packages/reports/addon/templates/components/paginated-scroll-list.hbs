@@ -1,13 +1,8 @@
 {{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-{{!-- Disabling template lint until we come back to simplify this component --}}
-{{!-- template-lint-disable no-action --}}
-<div class="{{this._containerClass}} {{if this.trim "trimmed" "show-all"}}">
+<div class="{{this._containerClass}}">
   <ul class={{this._collectionClass}}>
     {{#each this._itemsToRender as |item idx|}}
       <li class="item">{{yield item idx}}</li>
     {{/each}}
   </ul>
 </div>
-{{#if this._isTrimmed}}
-  <button type="button" class="paginated-scroll-list__show-more" {{on "click" (action "onShowMore")}}>{{this.moreLabel}}</button>
-{{/if}}

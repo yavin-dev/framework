@@ -16,7 +16,6 @@
       class="dimension-bulk-import-simple__split-values m-b-30"
     >
       <PaginatedScrollList
-        @trim={{false}}
         @items={{this.splitValues}}
         class="dimension-bulk-import-simple__values"
         as |dimVal|
@@ -30,7 +29,6 @@
       class="dimension-bulk-import-simple__raw-value m-b-20"
     >
       <PaginatedScrollList
-        @trim={{false}}
         @items={{this.unsplitValue}}
         class="dimension-bulk-import-simple__values"
         as |dimVal|
