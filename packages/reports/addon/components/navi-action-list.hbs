@@ -1,5 +1,21 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report-actions flex-1 flex align-items-center" ...attributes>
+  {{!-- Edit always enabled --}}
+  <LinkTo
+    class="navi-report-actions__edit"
+    @route="reports.report.edit"
+    @model={{@item.modelId}}
+  >
+    <DenaliIcon
+      @size="small"
+      @icon="pencil"
+      class="p-x-4 link m-r-4"
+    />
+    <EmberTooltip @popperContainer="body">
+      Edit the report
+    </EmberTooltip>
+  </LinkTo>
+
   {{!-- Clone only enabled on a saved report --}}
   <LinkTo
     class="navi-report-actions__clone"
@@ -18,6 +34,7 @@
     </EmberTooltip>
   </LinkTo>
 
+  {{!-- Export always enabled --}}
   {{#let (feature-flag "exportFileTypes") as |exportFileTypes|}}
     {{#if (gt exportFileTypes.length 1)}}
       <ReportActions::MultipleFormatExport

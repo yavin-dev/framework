@@ -988,6 +988,22 @@ module('Acceptance | Navi Report', function (hooks) {
     );
   });
 
+  test('reports route actions - edit', async function (assert) {
+    assert.expect(2);
+
+    await visit('/reports');
+
+    await triggerEvent('.navi-collection__row0', 'mouseenter');
+    // Click "Edit"
+    await click('.navi-collection__row0 .navi-report-actions__edit');
+
+    assert.equal(currentURL(), '/reports/1/edit', 'After clicking edit, user is brought to edit route for a route');
+
+    assert
+      .dom('.navi-info-message__title')
+      .hasText('Get started by selecting some dimensions and metrics.', 'Visualization not shown in edit route');
+  });
+
   test('reports route actions - clone', async function (assert) {
     assert.expect(2);
 
