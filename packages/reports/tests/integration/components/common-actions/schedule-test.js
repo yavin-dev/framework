@@ -13,6 +13,7 @@ const DeliveryRule = {
   delivery: 'email',
   name: 'Email delivered csv every week',
   isDisabled: false,
+  validations: { isValid: true },
 };
 const NoDelivery = {
   frequency: 'Week',
@@ -21,6 +22,7 @@ const NoDelivery = {
   recipients: ['test@oath.com', 'rule@oath.com'],
   name: 'No delivery csv every week',
   isDisabled: false,
+  validations: { isValid: true },
 };
 const NoDeliveryModel = {
   constructor: { modelName: 'report' },

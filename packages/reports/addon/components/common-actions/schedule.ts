@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { reads } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import config from 'ember-get-config';
@@ -128,7 +127,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   get areRulesValid() {
     let valid = true;
-    this.deliveryRules?.forEach(async (rule) => {
+    this.deliveryRules.forEach(async (rule) => {
       if (!rule.validations.isValid) {
         valid = false;
       }
