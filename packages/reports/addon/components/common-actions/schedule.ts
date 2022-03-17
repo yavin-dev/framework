@@ -310,10 +310,19 @@ export default class ScheduleActionComponent extends Component<Args> {
   closeModal() {
     // Avoid `calling set on destroyed object` error
     if (!this.isDestroyed && !this.isDestroying) {
-      this.isSaving = false;
-      this.showModal = false;
-      this.attemptedSave = false;
-      this.notification = undefined;
+      if (this.deliveryRules.filter((rule) => rule.hasDirtyAttributes).length > 0) {
+        if (confirm('You have unsaved changes on your schedule(s), are you sure you want to exit?')) {
+          this.isSaving = false;
+          this.showModal = false;
+          this.attemptedSave = false;
+          this.notification = undefined;
+        }
+      } else {
+        this.isSaving = false;
+        this.showModal = false;
+        this.attemptedSave = false;
+        this.notification = undefined;
+      }
     }
   }
 

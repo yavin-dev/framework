@@ -10,9 +10,19 @@ import { selectChoose } from 'ember-power-select/test-support/helpers';
 import Ember from 'ember';
 import config from 'ember-get-config';
 
+let confirm;
+
 module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
+
+  hooks.beforeEach(() => {
+    confirm = window.confirm;
+  });
+
+  hooks.afterEach(() => {
+    window.confirm = confirm;
+  });
 
   test('schedule modal save new schedule', async function (assert) {
     assert.expect(14);
@@ -311,6 +321,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     // Set mustHaveData to be true
     await click('.schedule__modal-must-have-data-toggle');
 
+    window.confirm = () => {
+      return true;
+    };
+
     //Cancel changes to the schedule
     await click('.schedule__modal-cancel-btn');
 
@@ -353,6 +367,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     // Set mustHaveData to be true
     await click('.schedule__modal-must-have-data-toggle');
+
+    window.confirm = () => {
+      return true;
+    };
 
     // Cancel changes to the schedule
     await click('.schedule__modal-cancel-btn');
@@ -645,6 +663,10 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       );
 
     assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'The close button says "Close"');
+
+    window.confirm = () => {
+      return true;
+    };
     await click('.schedule__modal-cancel-btn');
 
     assert.dom('.schedule__modal-header').isNotVisible('Schedule modal closes after clicking the close button');
