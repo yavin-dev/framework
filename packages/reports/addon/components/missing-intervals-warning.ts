@@ -79,7 +79,7 @@ export default class MissingIntervalWarning extends Component<Args> {
   /**
    * resizeMotion - resize motion with callback
    */
-  get resizeMotion() {
+  get resizeMotion(): typeof Resize {
     const { onDetailsToggle } = this.args;
     return class extends Resize {
       *animate() {
