@@ -28,7 +28,7 @@ module('Unit - Utils - Search Utils', function () {
     const weight1 = SearchUtils.getPartialMatchWeight('heavy green character', 'character'),
       weight2 = SearchUtils.getPartialMatchWeight('heavy green character', 'heavy character');
 
-    assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
+    assert.ok(weight1 && weight2 && weight1 > weight2, 'Closer match has smaller match weight');
   });
 
   test('getExactMatchWeight', function (assert) {
@@ -45,7 +45,7 @@ module('Unit - Utils - Search Utils', function () {
     const weight1 = SearchUtils.getExactMatchWeight('15897', '158'),
       weight2 = SearchUtils.getExactMatchWeight('158', '158');
 
-    assert.ok(weight1 > weight2, 'Closer match has smaller match weight');
+    assert.ok(weight1 && weight2 && weight1 > weight2, 'Closer match has smaller match weight');
   });
 
   test('searchDimensionRecords', function (assert) {
@@ -70,7 +70,7 @@ module('Unit - Utils - Search Utils', function () {
       }),
     ]);
 
-    let results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
+    const results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
 
     assert.equal(results[0].record.description, 'All Bikes', 'First result is most relevant dimension');
 
@@ -78,22 +78,26 @@ module('Unit - Utils - Search Utils', function () {
 
     assert.equal(results.length, 2, 'Correct number of matching results are returned');
 
-    results = SearchUtils.searchDimensionRecords(records, '123', 2);
-    assert.equal(results.length, 2, 'Search results are correctly limited');
+    const results2 = SearchUtils.searchDimensionRecords(records, '123', 2);
+    assert.equal(results2.length, 2, 'Search results are correctly limited');
 
-    results = A(SearchUtils.searchDimensionRecords(records, '123', 2, 2));
+    const results3 = A(SearchUtils.searchDimensionRecords(records, '123', 2, 2));
     assert.deepEqual(
-      results.mapBy('record'),
+      results3.mapBy('record'),
       [records[2]],
       'Pagination for search results returns records as expected'
     );
 
-    results = SearchUtils.searchDimensionRecords(records, 'moible', 100);
-    assert.equal(results.length, 0, 'No results are returned when query does not match any record');
+    const results4 = SearchUtils.searchDimensionRecords(records, 'moible', 100);
+    assert.equal(results4.length, 0, 'No results are returned when query does not match any record');
 
-    results = A(SearchUtils.searchDimensionRecords(records, '123', 100));
+    const results5 = A(SearchUtils.searchDimensionRecords(records, '123', 100));
 
-    assert.deepEqual(results.mapBy('record.id'), ['123', '123456', '1234567'], 'Results are sorted in relevance order');
+    assert.deepEqual(
+      results5.mapBy('record.id'),
+      ['123', '123456', '1234567'],
+      'Results are sorted in relevance order'
+    );
 
     const expectedResults = [
       {
@@ -109,7 +113,8 @@ module('Unit - Utils - Search Utils', function () {
         relevance: 5,
       },
     ];
-    assert.deepEqual(results, expectedResults, 'Results contain expected records, order, and relevance');
+    //@ts-expect-error
+    assert.deepEqual(results5, expectedResults, 'Results contain expected records, order, and relevance');
   });
 
   test('searchDimensionRecords - without description', function (assert) {

@@ -17,7 +17,6 @@ import moment from 'moment';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { omitBy } from 'lodash-es';
 import type {
-  RequestV1,
   RequestOptions,
   AsyncQueryResponse,
   TableExportResponse,
@@ -342,7 +341,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  @task *urlForDownloadQuery(request: RequestV1, options: RequestOptions): TaskGenerator<string> {
+  @task *urlForDownloadQuery(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
     const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
     const status: QueryStatus = response.tableExport.edges[0]?.node.status;
     if (status !== QueryStatus.COMPLETE) {

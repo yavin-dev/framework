@@ -15,7 +15,7 @@ export default {
    * @param {Number} [limit] - number of records per page
    * @param {Number} [page] - page number
    */
-  getPaginatedRecords<T>(allRecords: Array<T>, limit: number, page: number): Array<T> {
+  getPaginatedRecords<T>(allRecords: Array<T>, limit?: number, page?: number): Array<T> {
     assert('allRecords param must be defined', allRecords);
     if (limit) {
       assert('Limit must be of type number', typeOf(limit) === 'number');
@@ -24,8 +24,8 @@ export default {
       assert('Invalid page/limit specified', typeOf(page) === 'number' && limit);
     }
 
-    let startIndex = (page - 1) * limit || 0,
-      endIndex = page * limit || limit;
+    const startIndex = page && limit ? (page - 1) * limit : 0;
+    const endIndex = page && limit ? page * limit : limit;
 
     return allRecords.slice(startIndex, endIndex);
   },

@@ -33,6 +33,7 @@ module('Unit - Utils - Adapter Utils', function () {
 
     assert.throws(
       () => {
+        //@ts-expect-error - no args
         getDataSource();
       },
       /getDataSource should be given a data source name to lookup/,
@@ -66,24 +67,24 @@ module('Unit - Utils - Adapter Utils', function () {
     );
 
     const oldDefault = defaultDataSource;
-    set(config, 'navi.defaultDataSource', undefined);
+    set(config.navi, 'defaultDataSource', undefined);
 
     assert.equal(
       getDefaultDataSource(),
       dataSources[0],
       'uses first configured datasource as default datasource with no default datasource configured'
     );
-    set(config, 'navi.defaultDataSource', oldDefault);
+    set(config.navi, 'defaultDataSource', oldDefault);
   });
 
   test('getDefaultDataSourceName gets correct source object name depending on configuration', function (assert) {
     assert.equal(getDefaultDataSourceName(), 'bardOne', 'Gets the default datasource that is configured');
 
     const oldDefault = config.navi.defaultDataSource;
-    set(config, 'navi.defaultDataSource', undefined);
+    set(config.navi, 'defaultDataSource', undefined);
 
     assert.equal(getDefaultDataSourceName(), 'bardOne', 'uses first configured datasource as default datasourcename');
-    set(config, 'navi.defaultDataSource', oldDefault);
+    set(config.navi, 'defaultDataSource', oldDefault);
   });
 
   test('configHost gets correct source object uri depending on configuration', function (assert) {
@@ -104,9 +105,9 @@ module('Unit - Utils - Adapter Utils', function () {
     );
 
     const oldDefault = config.navi.defaultDataSource;
-    set(config, 'navi.defaultDataSource', undefined);
+    set(config.navi, 'defaultDataSource', undefined);
     assert.equal(configHost({}), 'https://data.naviapp.io', 'returns first host if default is unspecified');
 
-    set(config, 'navi.defaultDataSource', oldDefault);
+    set(config.navi, 'defaultDataSource', oldDefault);
   });
 });
