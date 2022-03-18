@@ -70,11 +70,38 @@ module('Integration | Component | perspective', function (hooks) {
   });
 
   test('it loads configuration', async function (this: TestContext, assert) {
+    assert.expect(4);
     this.settings = {
       configuration: {
         plugin: 'X Bar',
       },
     };
+
+    const done = assert.async();
+    this.onUpdateSettings = (settings: PerspectiveSettings) => {
+      assert.deepEqual(
+        settings,
+        {
+          configuration: {
+            aggregates: {},
+            columns: ['age(field=id)'],
+            expressions: [],
+            filter: [],
+            group_by: [],
+            plugin: 'X Bar',
+            plugin_config: {},
+            settings: false,
+            sort: [],
+            split_by: [],
+            //@ts-expect-error - need to update type
+            theme: 'Denali',
+          },
+        },
+        'it saves updates to the configuration'
+      );
+      done();
+    };
+
     await render(TEMPLATE);
     assert.dom('perspective-viewer').exists('it renders a perspective-view element');
 
@@ -82,6 +109,7 @@ module('Integration | Component | perspective', function (hooks) {
     const element = find('perspective-viewer-d3fc-xbar');
     await waitUntil(() => element?.shadowRoot?.querySelector('.bottom-label'), { timeout: 10000 });
     assert.dom(element?.shadowRoot?.querySelector('.bottom-label')).hasText('age(field=id)', 'it loads configuration');
+    this.set('onUpdateSettings', () => null);
 
     this.set('settings', {
       configuration: {
@@ -107,8 +135,12 @@ module('Integration | Component | perspective', function (hooks) {
       assert.deepEqual(settings?.configuration?.sort, [], 'it saves configuration with no sorting');
       done1();
     };
+
     await render(TEMPLATE);
     await waitFor('th', { timeout: 10000 });
+
+    //wait due to debouncing logic
+    await timeout(1000);
 
     const done2 = assert.async();
     this.set('onUpdateSettings', (settings: PerspectiveSettings) => {
