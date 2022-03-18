@@ -42,11 +42,11 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[0],
-      ({
+      {
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': null,
         'series.1': 2,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Weeks are grouped into years based on isoWeekYear'
     );
 
@@ -75,13 +75,13 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[0],
-      ({
+      {
         x: { rawValue: 1, displayValue: 'Day 1' },
         'series.0': 1,
         'series.1': 2,
         'series.2': 3,
         'series.3': null,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Days are grouped into month'
     );
 
@@ -114,11 +114,11 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[0],
-      ({
+      {
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': 3,
         'series.1': 1,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'First data point contains values for first day of each year'
     );
 
@@ -147,12 +147,12 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[0],
-      ({
+      {
         x: { rawValue: 1, displayValue: 'Jan' },
         'series.0': null,
         'series.2': 1,
         'series.1': 3,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'First data point contains values for first month of each year'
     );
 
@@ -184,12 +184,12 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[1],
-      ({
+      {
         x: { rawValue: 2, displayValue: 'Hour 2' },
         'series.0': 1,
         'series.1': 2,
         'series.2': 3,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Data point contains values for hour of each day'
     );
 
@@ -221,12 +221,12 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[4],
-      ({
+      {
         x: { rawValue: 5, displayValue: 'Minute 5' },
         'series.0': 1,
         'series.1': 2,
         'series.2': 3,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Data point contains values for minute of each hour'
     );
 
@@ -258,12 +258,12 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[20],
-      ({
+      {
         x: { rawValue: 21, displayValue: 'Second 21' },
         'series.0': 1,
         'series.1': 2,
         'series.2': 3,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Data point contains values for second of each minute'
     );
 
@@ -289,10 +289,10 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
 
     assert.deepEqual(
       data.series[0],
-      ({
+      {
         x: { rawValue: 1, displayValue: 'Day 1' },
         'series.0': 0,
-      } as unknown) as C3Row,
+      } as unknown as C3Row,
       'Zero values are not considered gaps in data'
     );
 

@@ -48,9 +48,8 @@ export default class GroupedListComponent extends Component<Args> {
       groupConfigs,
     } = this;
 
-    const items: Array<
-      { name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>
-    > = [];
+    const items: Array<{ name: string; length: number; isOpen: boolean; isGroup: boolean } | Record<string, string>> =
+      [];
 
     // make categories into sorted array
     let sortedCategories = Object.entries(groupedItems).sort(function (a, b) {

@@ -262,7 +262,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   @computed('args.model.[]')
   get dataSelectionConfig(): { dataSelection?: Promise<EmberArray<InsightsData>> } {
     // model is an array, and object at index 1 is insights data promise
-    const insights = (this.args.model.objectAt(1) as unknown) as Promise<EmberArray<InsightsData>>;
+    const insights = this.args.model.objectAt(1) as unknown as Promise<EmberArray<InsightsData>>;
     return insights ? { dataSelection: insights } : {};
   }
 

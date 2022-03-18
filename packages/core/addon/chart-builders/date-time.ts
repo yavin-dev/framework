@@ -173,12 +173,12 @@ function _groupDataBySeries(data: ResponseRow[], timeGrainColumn: string, metric
  */
 function _buildDataRows(seriesMap: SeriesMap, grouper: Grouper): { series: C3Row[]; names: Record<string, string> } {
   let _buildRow = (x: number) => {
-    let row = ({
+    let row = {
       x: {
         rawValue: x,
         displayValue: grouper.getXDisplay(x),
       },
-    } as unknown) as C3Row;
+    } as unknown as C3Row;
 
     // Add each series to the row
     Object.keys(seriesMap).forEach((series, index) => {

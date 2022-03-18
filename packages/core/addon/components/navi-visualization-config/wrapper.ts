@@ -10,7 +10,8 @@ import type { YavinVisualizationPanelArgs } from '../../visualization/panel-comp
 
 export default class NaviVisualizationConfigWrapperComponent
   extends Component<YavinVisualizationPanelArgs>
-  implements YavinVisualizationPanelComponent {
+  implements YavinVisualizationPanelComponent
+{
   get configComponent() {
     const { type } = this.args.manifest;
     const owner = getOwner(this);

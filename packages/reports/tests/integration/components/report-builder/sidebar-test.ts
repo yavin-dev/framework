@@ -122,9 +122,9 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
 
     assert.deepEqual(
-      findAll(
-        '.report-builder-source-selector-list--suggested .report-builder-source-selector__source-name'
-      ).map((el) => el.textContent?.trim()),
+      findAll('.report-builder-source-selector-list--suggested .report-builder-source-selector__source-name').map(
+        (el) => el.textContent?.trim()
+      ),
       ['Network'],
       'The suggested tables are listed'
     );

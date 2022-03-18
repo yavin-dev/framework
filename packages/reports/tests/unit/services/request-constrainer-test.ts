@@ -39,7 +39,7 @@ function fakeRequest({
   filters?: RequestV2['filters'];
   requestConstraints?: ReturnType<typeof makeConstraint>[];
 }): RequestFragment {
-  const request = ({
+  const request = {
     columns,
     filters,
     sorts: [],
@@ -50,7 +50,7 @@ function fakeRequest({
     serialize() {
       return request;
     },
-  } as unknown) as RequestFragment;
+  } as unknown as RequestFragment;
 
   return request;
 }
@@ -80,12 +80,12 @@ module('Unit | Service | request-constrainer', function (hooks) {
       'service:navi-metadata',
       class extends NaviMetadataService {
         getById<K extends keyof MetadataModelRegistry>(type: string, field: string, _dataSourceName: string) {
-          return ({
+          return {
             getDefaultParameters: () => ({}),
             serialize() {
               return { type, field, mockMeta: true };
             },
-          } as unknown) as MetadataModelRegistry[K];
+          } as unknown as MetadataModelRegistry[K];
         }
       }
     );
@@ -130,9 +130,9 @@ module('Unit | Service | request-constrainer', function (hooks) {
       ],
     });
 
-    const fakeRoute = ({
+    const fakeRoute = {
       modelFor: () => ({ request, title: 'Fake Report' }),
-    } as unknown) as Route;
+    } as unknown as Route;
 
     RequestConstrainer.naviNotifications.add = ({ title, style, context }: MessageOptions) => {
       assert.deepEqual(style, 'warning', 'A warning is issued when constraints are not satisfied');

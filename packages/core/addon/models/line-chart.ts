@@ -65,7 +65,8 @@ export type LineChartConfig = ChartConfig<'line-chart'>;
 
 export default class LineChartVisualization<T extends ChartVisualizationType = 'line-chart'>
   extends ChartVisualization.extend(Validations)
-  implements ChartConfig<T>, TypedVisualizationFragment {
+  implements ChartConfig<T>, TypedVisualizationFragment
+{
   namespace = 'c3';
   @attr('string', { defaultValue: 'line-chart' })
   type!: T;

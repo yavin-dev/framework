@@ -176,7 +176,7 @@ export default class ReportsReportRoute extends Route {
    */
   @action
   saveReport(report: ReportLike) {
-    const savePromise = (report.save() as unknown) as Promise<void>;
+    const savePromise = report.save() as unknown as Promise<void>;
     savePromise
       .then((_model: unknown) => {
         this.naviNotifications.add({

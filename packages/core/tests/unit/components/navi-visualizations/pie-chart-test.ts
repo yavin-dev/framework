@@ -183,7 +183,7 @@ module('Unit | Component | pie chart', function (hooks) {
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      ([
+      [
         {
           'series.0': 3072620639,
           'series.1': 2072620639,
@@ -195,7 +195,7 @@ module('Unit | Component | pie chart', function (hooks) {
             rawValue: '2015-12-14 00:00:00.000',
           },
         },
-      ] as unknown) as C3Row[],
+      ] as unknown as C3Row[],
       'Data config contains json property with values for each slice of pie'
     );
 
@@ -246,7 +246,7 @@ module('Unit | Component | pie chart', function (hooks) {
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      ([
+      [
         {
           'series.0': 155191081,
           'series.1': 55191081,
@@ -258,7 +258,7 @@ module('Unit | Component | pie chart', function (hooks) {
             rawValue: '2015-12-14 00:00:00.000',
           },
         },
-      ] as unknown) as C3Row[],
+      ] as unknown as C3Row[],
       'Data config updates when metric has been changed in series options'
     );
 
@@ -278,7 +278,7 @@ module('Unit | Component | pie chart', function (hooks) {
 
     assert.deepEqual(
       component.dataConfig.data.json,
-      ([
+      [
         {
           'series.0': 3072620639,
           'series.1': 155191081,
@@ -287,7 +287,7 @@ module('Unit | Component | pie chart', function (hooks) {
             rawValue: '2015-12-14 00:00:00.000',
           },
         },
-      ] as unknown) as C3Row[],
+      ] as unknown as C3Row[],
       'Data config updates correctly for a metrics series according to first row of response'
     );
 

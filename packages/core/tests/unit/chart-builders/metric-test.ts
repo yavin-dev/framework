@@ -96,7 +96,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
     assert.deepEqual(
       ChartBuilder.buildData(DATA, {}, Request),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
             'series.0': 172933788,
@@ -122,7 +122,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
             'series.0': 172724594,
             'series.1': 3697156058,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Unique Identifiers',
           'series.1': 'Total Page Views',
@@ -151,7 +151,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-06-03 00:00:00.000', displayValue: 'Jun 3' },
             'series.0': 3669828357,
@@ -167,7 +167,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
             'series.0': 3669823211,
             'series.1': null,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Total Page Views',
           'series.1': 'Unique Identifiers',
@@ -196,7 +196,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-05-31 00:00:00.000', displayValue: '00:00' },
             'series.0': 3669828357,
@@ -205,7 +205,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
             x: { rawValue: '2016-05-31 01:00:00.000', displayValue: '01:00' },
             'series.0': 4088487125,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Total Page Views',
         },
@@ -233,7 +233,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
             'series.0': 3669828357,
@@ -242,7 +242,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
             x: { rawValue: '2017-01-01 00:00:00.000', displayValue: 'Jan 2017' },
             'series.0': 4088487125,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Total Page Views',
         },
@@ -267,13 +267,13 @@ module('Unit | Chart Builders | Metric', function (hooks) {
     assert.deepEqual(
       ChartBuilder.buildData(data, {}, request),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-06-02 00:00:00.000', displayValue: 'Jun 2' },
             'series.0': 0,
             'series.1': null,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Total Page Views',
           'series.1': 'Unique Identifiers',
@@ -307,7 +307,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
           'series.0': 'Unique Identifiers',
           'series.1': 'Page Views',
         },
-        series: ([
+        series: [
           {
             'series.0': 22,
             'series.1': 10,
@@ -316,7 +316,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
               rawValue: '',
             },
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
       },
       '`buildData` constructs a single c3 row when a time dimension is not requested'
     );

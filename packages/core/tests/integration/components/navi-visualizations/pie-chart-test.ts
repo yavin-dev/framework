@@ -291,7 +291,7 @@ module('Integration | Component | pie chart', function (hooks) {
       getTranslation(chartElm?.getAttribute('transform') as string).x -
       (chartElm?.getBoundingClientRect().width as number) / 2 -
       50;
-    yTranslate = (($('svg').css('height').replace('px', '') as unknown) as number) / 2;
+    yTranslate = ($('svg').css('height').replace('px', '') as unknown as number) / 2;
 
     assert.dom('.c3-title').hasText('Unique Identifiers', 'The metric label is updated after the metric is changed');
 

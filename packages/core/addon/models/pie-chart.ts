@@ -52,7 +52,8 @@ export type PieChartConfig = {
 
 export default class PieChart
   extends ChartVisualization.extend(Validations)
-  implements PieChartConfig, TypedVisualizationFragment {
+  implements PieChartConfig, TypedVisualizationFragment
+{
   namespace = 'c3';
   @attr('string', { defaultValue: 'pie-chart' })
   type!: PieChartConfig['type'];

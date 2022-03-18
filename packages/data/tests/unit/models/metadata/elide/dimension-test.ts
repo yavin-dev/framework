@@ -53,7 +53,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
         suggestionColumns: [],
       },
     });
-    const fakeLookup = ({ fake: true } as unknown) as ElideDimensionMetadataModel;
+    const fakeLookup = { fake: true } as unknown as ElideDimensionMetadataModel;
     Model['naviMetadata'] = {
       //@ts-expect-error
       getById(type, id, dataSourceName) {

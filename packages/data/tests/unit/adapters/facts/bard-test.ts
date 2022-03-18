@@ -963,7 +963,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         _id: string,
         _dataSourceName: string
       ): MetadataModelRegistry[K] {
-        return ({ hasAllGrain: false } as unknown) as MetadataModelRegistry[K];
+        return { hasAllGrain: false } as unknown as MetadataModelRegistry[K];
       },
     };
     assert.throws(
