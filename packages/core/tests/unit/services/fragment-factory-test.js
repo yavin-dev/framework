@@ -113,11 +113,14 @@ module('Unit | Service | fragmentFactory', function (hooks) {
   });
 
   test('Build Filter Fragments Without Meta', function (assert) {
-    const metricMetaFragment = service.createFilter('metric', 'bardOne', 'navClicks', { avg: 'trailing31day' }, 'in', [
-      1,
-      2,
-      3,
-    ]);
+    const metricMetaFragment = service.createFilter(
+      'metric',
+      'bardOne',
+      'navClicks',
+      { avg: 'trailing31day' },
+      'in',
+      [1, 2, 3]
+    );
     assert.equal(metricMetaFragment.field, 'navClicks', 'Metric has right field');
     assert.equal(metricMetaFragment.parameters.avg, 'trailing31day', 'Metric fragment has right parameters');
     assert.equal(metricMetaFragment.operator, 'in', 'Metric Fragment has passed operator');

@@ -1074,7 +1074,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     //@ts-expect-error
     adapter.naviMetadata = {
       getById<K extends keyof MetadataModelRegistry>(_type: K, _id: string, _dataSourceName: string) {
-        return ({ getDefaultParameters: () => DefaultParams } as unknown) as MetadataModelRegistry[K];
+        return { getDefaultParameters: () => DefaultParams } as unknown as MetadataModelRegistry[K];
       },
     };
     const noValues: Filter[] = [

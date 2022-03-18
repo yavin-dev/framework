@@ -32,7 +32,7 @@ module('Unit | Consumer | request constraint', function (hooks) {
 
   test('DID_UPDATE_TABLE', function (assert) {
     assert.expect(1);
-    const mockRoute = ({ modelFor: () => ({ request: 'fakeRequest' }) } as unknown) as Route;
+    const mockRoute = { modelFor: () => ({ request: 'fakeRequest' }) } as unknown as Route;
 
     MockConstrainer.constrain = (route) => {
       assert.deepEqual(route, mockRoute, 'The constrainer service is called after a table update is done');

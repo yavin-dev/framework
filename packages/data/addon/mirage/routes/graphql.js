@@ -420,7 +420,7 @@ function _getResponseBody(db, asyncQueryRecord) {
       if (sort.length) {
         rows = orderBy(
           rows,
-          sort.map((r) => (row) => (Number(row[r.field]) ? Number(row[r.field]) : row[r.field])), // metric values need to be cast to numbers in order to sort properly
+          sort.map((r) => (row) => Number(row[r.field]) ? Number(row[r.field]) : row[r.field]), // metric values need to be cast to numbers in order to sort properly
           sort.map((r) => r.direction)
         );
       }

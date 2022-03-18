@@ -91,7 +91,7 @@ module('Unit | Component | line chart', function (hooks) {
     };
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', args) as LineChart;
 
-    let expectedData = (response.rows.map((row) => {
+    let expectedData = response.rows.map((row) => {
       const date = row['network.dateTime(grain=day)'] as string;
       return {
         x: {
@@ -100,7 +100,7 @@ module('Unit | Component | line chart', function (hooks) {
         },
         'series.0': row.totalPageViews,
       };
-    }) as unknown) as C3Row[];
+    }) as unknown as C3Row[];
 
     assert.deepEqual(
       component.dataConfig.data.json,
@@ -135,7 +135,7 @@ module('Unit | Component | line chart', function (hooks) {
       source: 'bardOne',
     });
 
-    expectedData = (response.rows.map((row) => {
+    expectedData = response.rows.map((row) => {
       const date = row['network.dateTime(grain=day)'] as string;
       return {
         x: {
@@ -145,7 +145,7 @@ module('Unit | Component | line chart', function (hooks) {
         'series.0': row.totalPageViews,
         'series.1': row.uniqueIdentifier,
       };
-    }) as unknown) as C3Row[];
+    }) as unknown as C3Row[];
 
     assert.deepEqual(component.dataConfig.data.json, expectedData, 'Data config updates with series options');
 

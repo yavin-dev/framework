@@ -217,9 +217,9 @@ module('Integration | Component | filter values/dimension select', function (hoo
             .filter((s) => s)
         );
 
-    const expectedValueDimensions = ContainerValues.filter(({ description }) =>
-      description.includes(searchTerm)
-    ).map(({ id, description }) => [description, `id: ${id}`]);
+    const expectedValueDimensions = ContainerValues.filter(({ description }) => description.includes(searchTerm)).map(
+      ({ id, description }) => [description, `id: ${id}`]
+    );
 
     assert.deepEqual(visibleOptions(), expectedValueDimensions, `Only values containing '${searchTerm}' are displayed`);
 

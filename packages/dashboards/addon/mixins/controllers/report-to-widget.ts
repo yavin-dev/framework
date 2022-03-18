@@ -38,7 +38,7 @@ export default Mixin.create({
       let widget = this._createWidget(report, widgetTitle);
 
       // Transition to widgets/new route
-      ((this as unknown) as Controller).transitionToRoute('dashboards.dashboard.widgets.add', id, {
+      (this as unknown as Controller).transitionToRoute('dashboards.dashboard.widgets.add', id, {
         queryParams: {
           unsavedWidgetId: widget.tempId,
         },
@@ -55,7 +55,7 @@ export default Mixin.create({
       // Create widget model
       let widget = this._createWidget(report, widgetTitle);
 
-      ((this as unknown) as Controller).transitionToRoute('dashboards.new', {
+      (this as unknown as Controller).transitionToRoute('dashboards.new', {
         queryParams: {
           title: dashboardTitle,
           unsavedWidgetId: widget.tempId,

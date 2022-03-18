@@ -129,7 +129,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
           'series.0': 'All Other | M',
           'series.1': 'Under 13 | F',
         },
-        series: ([
+        series: [
           {
             'series.0': 10,
             'series.1': 12,
@@ -138,7 +138,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
               rawValue: '',
             },
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
       },
       '`buildData` constructs a single c3 row when a time dimension is not requested'
     );
@@ -160,7 +160,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
         REQUEST
       ),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: 'May 30' },
             'series.0': 3669828357,
@@ -176,7 +176,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
             'series.0': 4024700302,
             'series.1': 3024700302,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'All Other',
           'series.1': 'Under 13',
@@ -218,7 +218,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
         request
       ),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-05-30 00:00:00.000', displayValue: '00:00' },
             'series.0': 3669828357,
@@ -229,7 +229,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
             'series.0': 4088487125,
             'series.1': 4088487125,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'All Other',
           'series.1': 'Under 13',
@@ -271,7 +271,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
         request
       ),
       {
-        series: ([
+        series: [
           {
             x: { rawValue: '2016-12-01 00:00:00.000', displayValue: 'Dec 2016' },
             'series.0': 3669828357,
@@ -282,7 +282,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
             'series.0': 4088487125,
             'series.1': 4088487125,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'All Other',
           'series.1': 'Under 13',
@@ -308,7 +308,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
         REQUEST2
       ),
       {
-        series: ([
+        series: [
           {
             x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
             'series.0': 74621538,
@@ -319,7 +319,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
             'series.0': 72011227,
             'series.1': 156664890,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'All Other | M',
           'series.1': 'Under 13 | F',
@@ -345,7 +345,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
         REQUEST2
       ),
       {
-        series: ([
+        series: [
           {
             x: { displayValue: 'Jan 1', rawValue: '2016-01-01 00:00:00.000' },
             'series.0': null,
@@ -356,7 +356,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
             'series.0': null,
             'series.1': 156664890,
           },
-        ] as unknown) as C3Row[],
+        ] as unknown as C3Row[],
         names: {
           'series.0': 'Unknown | M',
           'series.1': 'Under 13 | F',

@@ -22,7 +22,8 @@ import type { YavinVisualizationArgs } from 'navi-core/visualization/component';
 
 export default class NaviVisualizationsWrapper
   extends Component<YavinVisualizationArgs>
-  implements YavinVisualizationComponent {
+  implements YavinVisualizationComponent
+{
   guid = guidFor(this);
 
   get visualizationHash() {

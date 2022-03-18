@@ -165,7 +165,7 @@ perspective-expression-editor[theme='Denali'] {
   --button--font-family: #{meta.inspect($icon-font)};
   --active--color: #{map-get($denali-brand-colors, '300')};
   --inactive-color: #{rgba(map-get($denali-grey-colors, '800'), 0.2)};
-  --plugin--background: ${background-color: map-get($denali-grey-colors, '100');}
+  --plugin--background: ${background-color: map-get($denali-grey-colors, '100')};
   --overflow-hint-icon--color: rgba(0, 0, 0, 0.2);
   --select--background-color: none;
   --column-drop-container--background: none;
