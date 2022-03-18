@@ -7,7 +7,7 @@
       <div class="col-1-1">
         <div class="navi-report-widget__breadcrumb">
           <LinkTo @route="index" class="navi-report-widget__breadcrumb-link">Home</LinkTo>
-          <NaviIcon @icon="angle-right" />
+          <DenaliIcon @icon="arrowhead-right" @size="extrasmall" />
           {{#with (model-for "dashboards.dashboard") as |parentDashboard|}}
             {{#if this.parentQueryParams}}
               <LinkTo @route="dashboards.dashboard" @model={{parentDashboard.id}} @query={{hash filters=this.parentQueryParams.filters}} class="navi-report-widget__breadcrumb-link">
@@ -19,7 +19,7 @@
               </LinkTo>
             {{/if}}
           {{/with}}
-          <NaviIcon @icon="angle-right" />
+          <DenaliIcon @icon="arrowhead-right" @size="extrasmall" />
         </div>
       </div>
     </div>

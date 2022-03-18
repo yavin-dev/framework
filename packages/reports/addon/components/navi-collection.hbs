@@ -1,0 +1,88 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<div class="navi-collection" ...attributes>
+  {{#if @config.filterable}}
+    <div class="navi-collection__filter-selector">
+      <PowerSelect
+        @triggerClass="navi-collection__filter-trigger"
+        @dropdownClass="navi-collection__filter-dropdown"
+        @options={{this.filterOptions}}
+        @selected={{this.filter}}
+        @onChange={{fn (mut this.filter)}}
+        @searchEnabled={{false}}
+        as |filter|
+      >
+        {{filter.name}}
+      </PowerSelect>
+    </div>
+  {{/if}}
+  <DenaliTable as |Table|>
+    <Table.Header as |Header|>
+      <Header.Row as |Row|>
+        <Row.HeaderCell>Name</Row.HeaderCell>
+        {{#if @config.actions}}
+          <Row.HeaderCell class="navi-collection__actions"></Row.HeaderCell>
+        {{/if}}
+        <Row.HeaderCell>Owner</Row.HeaderCell>
+        <Row.HeaderCell>Last Updated</Row.HeaderCell>
+      </Header.Row>
+    </Table.Header>
+
+    <Table.Body as |Body|>
+      {{#unless this.hasTableLoaded}}
+        <Body.Row class="is-loading" as |Row|>
+          <Row.Cell colspan="4">
+            <NaviLoader/>
+          </Row.Cell>
+        </Body.Row>
+      {{else}}
+        {{#each this.filteredItems as |item index|}}
+          <Body.Row class="navi-collection__row navi-collection__row{{index}}" as |Row|>
+            <Row.Cell>
+              {{#if item.tempId}}
+                <LinkTo @route={{this.itemRoute}} @model={{item.tempId}}>{{item.title}}</LinkTo>
+                <DenaliChip
+                  @size="small"
+                  @backgroundColor="grey"
+                  @backgroundShade="300"
+                  @textColor="grey"
+                  @textShade="700"
+                  class="navi-collection__unsaved-label"
+                >
+                  UNSAVED
+                </DenaliChip>
+              {{else}}
+                <LinkTo @route={{this.itemRoute}} @model={{item.id}}>{{item.title}}</LinkTo>
+              {{/if}}
+              {{#if item.isFavorite}}
+                <DenaliIcon class="favorite-item--active" @icon="star-solid" @size="small" />
+              {{/if}}
+            </Row.Cell>
+
+            {{#if @config.actions}}
+              <Row.Cell class="navi-collection__actions">
+                <LazyRender @target=".navi-collection__row{{index}}">
+                  {{#let (component @config.actions) as |AssetActions|}}
+                    <AssetActions @item={{item}} @index={{index}} />
+                  {{/let}}
+                </LazyRender>
+              </Row.Cell>
+            {{/if}}
+
+            <Row.Cell>{{item.owner.id}}</Row.Cell>
+            <Row.Cell>{{moment-format item.updatedOn "MM/DD/YYYY - hh:mm:ss a z" timeZone=(guess-timezone)}}</Row.Cell>
+          </Body.Row>
+        {{else}}
+          <Body.Row class="no-results" as |Row|>
+            <Row.Cell class="has-bg-grey-200" colspan="4">
+              {{#if @config.emptyMsg}}
+                {{@config.emptyMsg}}
+              {{else}}
+                You don't have any {{@itemType}} yet. Go ahead and <LinkTo @route={{this.itemNewRoute}}>create one</LinkTo> now?
+              {{/if}}
+            </Row.Cell>
+          </Body.Row>
+        {{/each}}
+      {{/unless}}
+    </Table.Body>
+  </DenaliTable>
+</div>

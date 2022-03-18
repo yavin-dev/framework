@@ -15,7 +15,7 @@
         </DenaliChip>
         <span class="navi-column-config-base__header-icons">
           {{!-- TODO: Favorites are not supported yet --}}
-          {{!-- <NaviIcon @icon="star-o" class="navi-column-config-base__star-icon" role="button" /> --}}
+          {{!-- <DenaliIcon @icon="star" class="navi-column-config-base__star-icon" /> --}}
           <DenaliIcon
             class="navi-column-config-base__clone-icon"
             @icon="duplicate"
@@ -88,11 +88,10 @@
       <div class="navi-column-config-base__option navi-column-config-item__parameter">
         <label for="{{this.classId}}-{{param.id}}" class="navi-column-config-item__parameter-label navi-column-config-base__option-label">{{capitalize param.name}}
           {{#if param.description}}
-            <NaviIcon @icon="question-circle-o">
-              <EmberTooltip @side="right" @popperContainer="body" @effect="none">
-                {{param.description}}
-              </EmberTooltip>
-            </NaviIcon>
+            <DenaliIcon id="help-{{this.classId}}-{{param.id}}" @icon="help-circle" @size="small" />
+            <EmberTooltip @targetId="help-{{this.classId}}-{{param.id}}" @side="right" @popperContainer="body" @effect="none">
+              {{param.description}}
+            </EmberTooltip>
           {{/if}}
         </label>
         {{#if (eq param.valueSourceType 'NONE')}}

@@ -3,3 +3,11 @@
 @import 'navi-core';
 @import 'navi-notifications';
 @import 'navi-reports';
+
+html,
+body {
+  display: flex;
+  flex-flow: column;
+  height: 100vh;
+  margin: 0;
+}

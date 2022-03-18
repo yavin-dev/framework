@@ -1,5 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
+//@ts-ignore
+import { createGlimmerComponent } from 'navi-core/test-support';
+import type NaviCollection from 'navi-reports/components/navi-collection';
 
 module('Unit | Component | navi collection', function (hooks) {
   setupTest(hooks);
@@ -7,27 +10,25 @@ module('Unit | Component | navi collection', function (hooks) {
   test('itemRoute and itemNewRoute', function (assert) {
     assert.expect(4);
 
-    let component = this.owner.factoryFor('component:navi-collection').create({
-      itemType: 'report',
-    });
+    const component: NaviCollection = createGlimmerComponent('component:navi-collection', { itemType: 'report' });
 
-    assert.equal(component.get('itemRoute'), 'reports.report', 'itemRoute is computed based on itemType');
+    assert.equal(component.itemRoute, 'reports.report', 'itemRoute is computed based on itemType');
 
-    assert.equal(component.get('itemNewRoute'), 'reports.new', 'itemNewRoute is computed based on itemType');
+    assert.equal(component.itemNewRoute, 'reports.new', 'itemNewRoute is computed based on itemType');
 
-    component.set('config', {
+    component.args.config = {
       itemRoute: 'customReports.report',
       itemNewRoute: 'customReports.new',
-    });
+    };
 
     assert.equal(
-      component.get('itemRoute'),
+      component.itemRoute,
       'customReports.report',
       'the itemRoute override in the config is used when available'
     );
 
     assert.equal(
-      component.get('itemNewRoute'),
+      component.itemNewRoute,
       'customReports.new',
       'the itemNewRoute override in the config is used when available'
     );
