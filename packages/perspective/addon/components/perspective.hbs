@@ -3,8 +3,8 @@
   theme="Material Dark"
   class="yavin-perspective"
   ...attributes
-  {{on "perspective-config-update" (perform this.saveSettingsTask)}}
   {{did-insert this.setupElement}}
   {{did-update this.loadData @response}}
   {{did-update this.loadSettings @settings}}
+  {{on "perspective-config-update" (perform this.handleConfigUpdate)}}
 />

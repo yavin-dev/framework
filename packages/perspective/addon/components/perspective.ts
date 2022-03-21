@@ -11,16 +11,25 @@ import YavinVisualizationComponent from 'navi-core/visualization/component';
 import { PerspectiveSettings } from '../manifest';
 import { isEqual } from 'lodash-es';
 import { task, TaskGenerator } from 'ember-concurrency';
-import type { HTMLPerspectiveViewerElement } from '@finos/perspective-viewer';
+import type { HTMLPerspectiveViewerElement, PerspectiveViewerConfig } from '@finos/perspective-viewer';
 import type { Grain } from 'navi-data/utils/date';
 
 const worker = perspective.shared_worker();
 
 export default class PerspectiveVisualization extends YavinVisualizationComponent<PerspectiveSettings> {
-  @task *saveSettingsTask(e: { target: HTMLPerspectiveViewerElement }): TaskGenerator<void> {
+  isLoaded = false;
+
+  @task *handleConfigUpdate(e: { target: HTMLPerspectiveViewerElement }): TaskGenerator<void> {
     const configuration = yield e.target.save();
-    const { settings, isReadOnly } = this.args;
-    if (!isReadOnly && !isEqual(configuration, settings?.configuration)) {
+    this.saveSettings(configuration);
+  }
+
+  saveSettings(configuration: PerspectiveViewerConfig): void {
+    const {
+      isLoaded,
+      args: { settings, isReadOnly },
+    } = this;
+    if (isLoaded && !isReadOnly && !isEqual(configuration, settings?.configuration)) {
       this.args.onUpdateSettings({ configuration });
     }
   }
@@ -55,8 +64,12 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
 
   @action
   async loadSettings(viewer: HTMLPerspectiveViewerElement): Promise<void> {
+    this.isLoaded = false;
     const { settings } = this.args;
     await viewer.restore(settings?.configuration ?? {});
+    const configuration = await viewer.save();
+    this.isLoaded = true;
+    this.saveSettings(configuration); //save just incase loaded settings changed
   }
 
   @action
