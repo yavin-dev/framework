@@ -71,7 +71,7 @@ export default class ScheduleActionComponent extends Component<Args> {
 
   @tracked showModal = false;
 
-  @tracked errorWhileFetchingRules!: boolean;
+  @tracked errorWhileFetchingRules = false;
 
   deliveryOptions = ['email', 'none'];
   /**
@@ -251,11 +251,18 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async onOpen() {
-    this.errorWhileFetchingRules = false;
     try {
       this.deliveryRules = await this.args.model.deliveryRulesForUser;
       if (this.deliveryRules) {
         this.localDeliveryRule = this.deliveryRules[0] ? this.deliveryRules[0] : this.localDeliveryRule || undefined;
+        if (this.localDeliveryRule) {
+          if (this.localDeliveryRule.format.type !== 'pdf' && this.localDeliveryRule.delivery !== 'none') {
+            this.localDeliveryRule.name = `Email delivered ${this.localDeliveryRule.format.type} every week`;
+          }
+          if (this.formats.length === 1) {
+            this.updateFormat(this.formats[0]);
+          }
+        }
       }
     } catch (e) {
       this.errorWhileFetchingRules = true;
@@ -283,6 +290,41 @@ export default class ScheduleActionComponent extends Component<Args> {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
     assert('The format is defined', this.localDeliveryRule.format);
     this.localDeliveryRule.format.type = type;
+    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+      this.localDeliveryRule.name = `${capitalize(this.localDeliveryRule.delivery)} delivered ${type} every ${
+        this.localDeliveryRule.frequency
+      }`;
+    }
+  }
+
+  /**
+   * @action updateFormat
+   * @param {String} deliveryType - format type
+   */
+  @action
+  updateDelivery(deliveryType: string) {
+    assert('The localDeliveryRule is defined', this.localDeliveryRule);
+    this.localDeliveryRule.delivery = deliveryType;
+    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+      this.localDeliveryRule.name = `${capitalize(deliveryType)} delivered ${
+        this.localDeliveryRule.format.type
+      } every ${this.localDeliveryRule.frequency}`;
+    }
+  }
+
+  /**
+   * @action updateFormat
+   * @param {String} frequency - format type
+   */
+  @action
+  updateFrequency(frequency: string) {
+    assert('The localDeliveryRule is defined', this.localDeliveryRule);
+    this.localDeliveryRule.frequency = frequency;
+    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+      this.localDeliveryRule.name = `${capitalize(this.localDeliveryRule.delivery)} delivered ${
+        this.localDeliveryRule.format.type
+      } every ${frequency}`;
+    }
   }
 
   @action

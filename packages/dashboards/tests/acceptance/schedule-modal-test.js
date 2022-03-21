@@ -59,7 +59,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        `'Email delivered pdf every week' schedule successfully saved!`,
+        `'Email delivered pdf every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
 
@@ -111,7 +111,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        `'Email delivered pdf every week' schedule successfully saved!`,
+        `'Email delivered pdf every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
 

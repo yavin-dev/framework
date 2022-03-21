@@ -112,7 +112,7 @@
                       @options={{this.deliveryOptions}}
                       @selected={{this.localDeliveryRule.delivery}}
                       @renderInPlace={{true}}
-                      @onChange={{fn (mut this.localDeliveryRule.delivery)}}
+                      @onChange={{this.updateDelivery}}
                       as | delivery |
                     >
                       {{capitalize delivery}}
@@ -167,7 +167,7 @@
                       @selected={{this.localDeliveryRule.frequency}}
                       @disabled={{this.errorWhileFetchingRules}}
                       @searchEnabled={{false}}
-                      @onChange={{fn (mut this.localDeliveryRule.frequency)}}
+                      @onChange={{this.updateFrequency}}
                       @renderInPlace={{true}}
                       as | frequency |
                     >
