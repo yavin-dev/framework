@@ -180,6 +180,46 @@
             }
           ]
         }
+        {
+          name:filtered_count
+          type: INTEGER
+          definition: "sum(case when {{$rating}} = '{{$$column.args.rating}}' then 1 else 0 end)"
+          description: Filter Count
+          friendlyName: Filter Count
+          arguments:
+          [
+            {
+              name: rating
+              type: TEXT
+              tableSource: {
+                table: ratings
+                column: rating
+                namespace: DemoNamespace 
+              }
+              default: 'G'
+            }
+          ]
+        }
+      ]
+    }
+
+    {
+      namespace: DemoNamespace
+      name: ratings
+      friendlyName: Ratings
+      description: Show Ratings
+      table: netflix_ratings
+      dbConnectionName: DemoConnection
+      isFact: false
+      dimensions: [
+        {
+          name: rating
+          friendlyName: Rating
+          cardinality: small
+          category: Attributes
+          type: TEXT
+          definition: '{{$rating}}'
+        }
       ]
     }
   ]

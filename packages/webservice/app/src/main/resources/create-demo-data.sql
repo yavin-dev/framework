@@ -29,3 +29,10 @@ AS SELECT
     listed_in,
     description
 FROM CSVREAD('classpath:netflix_titles.csv');
+
+CREATE TABLE IF NOT EXISTS netflix_ratings(
+    rating VARCHAR(255),
+)
+AS SELECT DISTINCT 
+    rating
+FROM CSVREAD('classpath:netflix_titles.csv');
