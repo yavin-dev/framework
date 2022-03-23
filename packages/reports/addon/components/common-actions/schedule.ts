@@ -290,7 +290,9 @@ export default class ScheduleActionComponent extends Component<Args> {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
     assert('The format is defined', this.localDeliveryRule.format);
     this.localDeliveryRule.format.type = type;
-    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+    if (
+      this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)
+    ) {
       this.localDeliveryRule.name = `${capitalize(this.localDeliveryRule.delivery)} delivered ${type} every ${
         this.localDeliveryRule.frequency
       }`;
@@ -305,7 +307,9 @@ export default class ScheduleActionComponent extends Component<Args> {
   updateDelivery(deliveryType: string) {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
     this.localDeliveryRule.delivery = deliveryType;
-    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+    if (
+      this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)
+    ) {
       this.localDeliveryRule.name = `${capitalize(deliveryType)} delivered ${
         this.localDeliveryRule.format.type
       } every ${this.localDeliveryRule.frequency}`;
@@ -320,7 +324,9 @@ export default class ScheduleActionComponent extends Component<Args> {
   updateFrequency(frequency: string) {
     assert('The localDeliveryRule is defined', this.localDeliveryRule);
     this.localDeliveryRule.frequency = frequency;
-    if (this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b +\w/)) {
+    if (
+      this.localDeliveryRule.name.toString().match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)
+    ) {
       this.localDeliveryRule.name = `${capitalize(this.localDeliveryRule.delivery)} delivered ${
         this.localDeliveryRule.format.type
       } every ${frequency}`;
