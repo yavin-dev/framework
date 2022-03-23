@@ -25,6 +25,7 @@ import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/di
 import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type { Grain } from 'navi-data/utils/date';
+import { TableSource } from '../../models/metadata/dimension';
 
 type Edge<T> = {
   node: T;
@@ -57,11 +58,11 @@ type ElideArgument = {
   type: DataType;
   values: string[];
   valueSourceType: ValueSourceType;
-  tableSource: Connection<TableSource>;
+  tableSource: Connection<ElideTableSource>;
   defaultValue: string;
 };
 
-export type TableSource = {
+export type ElideTableSource = {
   suggestionColumns: Connection<Partial<DimensionNode>>;
   valueSource: Connection<Partial<DimensionNode>>;
 };
@@ -69,7 +70,7 @@ export type TableSource = {
 export type DimensionNode = ColumnNode & {
   cardinality: ElideCardinality;
   valueSourceType: ValueSourceType;
-  tableSource: Connection<TableSource> | null;
+  tableSource: Connection<ElideTableSource> | null;
   values: string[];
 };
 
@@ -401,7 +402,7 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       source,
       valueType: node.type,
       valueSourceType: node.valueSourceType,
-      tableSource: undefined, //TODO come back and support table source params
+      tableSource: this.normalizeTableSource(node.tableSource?.edges?.[0]?.node),
       defaultValue: node.defaultValue,
       _localValues: node.values.map((v) => ({ id: v, name: v })),
     }));
@@ -417,8 +418,18 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   }
 
   /**
+   * Normalizes elide table source to internal table source shape
+   */
+  private normalizeTableSource(tableSource: ElideTableSource): TableSource | undefined {
+    if (tableSource) {
+      const valueSource = tableSource.valueSource.edges?.[0].node.id;
+      return valueSource ? { valueSource } : undefined;
+    }
+    return undefined;
+  }
+
+  /**
    * Normalizes elide cardinalities to navi sizes
-   * @param cardinality the elide cardinality size
    */
   _normalizeCardinality(elideCardinality?: ElideCardinality): Cardinality | undefined {
     const cardinality = elideCardinality?.toLowerCase() as Lowercase<ElideCardinality> | undefined;

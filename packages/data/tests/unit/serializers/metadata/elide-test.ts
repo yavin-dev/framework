@@ -513,7 +513,42 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
             defaultFormat: 'NONE',
             columnType: 'field',
             expression: '',
-            arguments: { edges: [] },
+            arguments: {
+              edges: [
+                {
+                  node: {
+                    id: 'argId',
+                    name: 'argName',
+                    description: 'argDesc',
+                    type: DataType.TEXT,
+                    values: [],
+                    valueSourceType: ValueSourceType.TABLE,
+                    tableSource: {
+                      edges: [
+                        {
+                          node: {
+                            suggestionColumns: { edges: [] },
+                            valueSource: {
+                              edges: [
+                                {
+                                  node: {
+                                    id: 'argColumnId',
+                                  },
+                                  cursor: '',
+                                },
+                              ],
+                            },
+                          },
+                          cursor: '',
+                        },
+                      ],
+                    },
+                    defaultValue: 'a default value',
+                  },
+                  cursor: '',
+                },
+              ],
+            },
           },
           cursor: '',
         },
@@ -567,7 +602,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         type: 'field',
         isSortable: true,
         expression: '',
-        columnFunctionId: undefined,
+        columnFunctionId: 'normalizer-generated:elide-myApi:column=clicks',
       },
       {
         id: 'impressions',
@@ -587,6 +622,27 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     ];
 
     const expectedFunctionPayloads: ColumnFunctionMetadataPayload[] = [
+      {
+        id: 'normalizer-generated:elide-myApi:column=clicks',
+        name: 'Column Arguments',
+        description: 'Column Arguments',
+        source,
+        _parametersPayload: [
+          {
+            id: 'argName',
+            name: 'argName',
+            description: 'argDesc',
+            source,
+            valueSourceType: ValueSourceType.TABLE,
+            valueType: DataType.TEXT,
+            tableSource: {
+              valueSource: 'argColumnId',
+            },
+            defaultValue: 'a default value',
+            _localValues: [],
+          },
+        ],
+      },
       {
         id: 'normalizer-generated:elide-myApi:column=impressions',
         name: 'Column Arguments',
@@ -623,7 +679,7 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
 
     assert.deepEqual(
       columnFunctions,
-      [null, ...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
+      [...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
       'metric column functions are normalized properly'
     );
 
