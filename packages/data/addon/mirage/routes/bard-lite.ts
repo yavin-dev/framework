@@ -4,7 +4,7 @@
  */
 import { Server } from 'miragejs';
 //@ts-ignore
-import faker from 'faker';
+import faker from '@faker-js/faker';
 //@ts-ignore
 import { Response } from 'ember-cli-mirage';
 import moment from 'moment';

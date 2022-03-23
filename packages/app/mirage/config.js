@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import config from 'navi-app/config/environment';
 import BardLite from 'navi-data/mirage/routes/bard-lite';
 import BardMeta from './bard-meta-stub';
@@ -28,7 +28,7 @@ function hashCode(str) {
   return hash;
 }
 
-export default function() {
+export default function () {
   // https://github.com/kategengler/ember-cli-code-coverage#create-a-passthrough-when-intercepting-all-ajax-requests-in-tests
   this.passthrough('/write-coverage');
 

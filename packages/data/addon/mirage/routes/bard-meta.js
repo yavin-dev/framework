@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import { Response } from 'ember-cli-mirage';
 
 //metadata

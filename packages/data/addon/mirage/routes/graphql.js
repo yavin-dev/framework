@@ -5,7 +5,7 @@
 import { createGraphQLHandler, mirageGraphQLFieldResolver } from '@miragejs/graphql';
 import graphQLSchema from '../../gql/schema.graphql';
 import gql from 'graphql-tag';
-import faker from 'faker';
+import faker from '@faker-js/faker';
 import moment from 'moment';
 import { capitalize } from '@ember/string';
 import { orderBy, invert } from 'lodash-es';
