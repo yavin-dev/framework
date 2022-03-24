@@ -2086,7 +2086,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert
       .dom('.table-cell-content.table-cell-url a')
-      .hasAttribute('href', /^https?:\/\/\w+\.\w+/, 'The anchor element is rendered correctly');
+      .hasAttribute('href', /^https?:\/\/[\w-]+\.\w+/, 'The anchor element is rendered correctly');
   });
 
   test('bulk import', async function (assert) {

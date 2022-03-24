@@ -31,6 +31,7 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
+    "@faker-js/faker": "^6.0.0",
     "@miragejs/graphql": "^0.1.13",
     "@rsql/parser": "^1.0.2",
     "apollo-link-context": "^1.0.19",
@@ -47,7 +48,6 @@
     "ember-get-config": "0.2.4",
     "ember-moment": "^7.8.1",
     "ember-uuid": "^2.1.0",
-    "faker": "^4.1.0",
     "graphql": "^15.5.1",
     "graphql-tag": "^2.10.1",
     "lodash-es": "^4.17.11",
