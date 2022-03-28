@@ -388,6 +388,15 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   revertAll() {
     this.deliveryRules?.forEach((rule) => this.args.onRevert(rule));
+    this.deliveryRules
+      .filter((rule) => rule.isNew)
+      .forEach(
+        (rule) =>
+          new RSVP.Promise((resolve, reject) => {
+            this.args.onDelete(rule, { resolve, reject });
+          })
+      );
     this.deliveryRules = this.deliveryRules?.filter((rule) => !rule.isNew);
+    this.localDeliveryRule = undefined;
   }
 }

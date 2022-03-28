@@ -349,7 +349,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal cancel new schedule', async function (assert) {
-    assert.expect(4);
+    assert.expect(1);
     await visit('/reports');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
@@ -380,22 +380,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await click('.navi-report-actions__schedule');
 
     assert
-      .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
-      .hasText('Day', 'Frequency field changes to a new schedule are kept but not saved to the store');
-
-    assert.deepEqual(
-      findAll('.schedule__modal-input--recipients .tag').map((e) => e.innerText.trim()),
-      ['navi_user@navi.io'],
-      'Recipients field changes to a new schedule kept but not saved to the store'
-    );
-
-    assert
-      .dom('.schedule__modal-must-have-data-toggle')
-      .isChecked('mustHaveData field changes to a new schedule are kept but not saved to the store');
-
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText('Save', 'The cancel button does not save a new delivery rule to the store');
+      .dom('.schedule__modal-frequency-trigger')
+      .isNotVisible('Canceling the schedule removed our brand new schedule');
   });
 
   test('schedule modal in report view', async function (assert) {
