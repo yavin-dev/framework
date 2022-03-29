@@ -160,7 +160,7 @@
             ALTER TABLE DeliveryRule
                 ADD isDisabled boolean not null default false;
             ALTER TABLE DeliveryRule 
-                ADD failureCount int not null;
+                ADD failureCount int not null default 0;
         </sql>
     </changeSet>
 </databaseChangeLog>
