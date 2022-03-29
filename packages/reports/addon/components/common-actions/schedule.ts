@@ -182,6 +182,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async doSave() {
+    debugger;
     this.deliveryRules?.forEach(async (rule) => {
       if (rule.validations.isValid) {
         // Only add relationships to the new delivery rule if the fields are valid
@@ -256,7 +257,13 @@ export default class ScheduleActionComponent extends Component<Args> {
       if (this.deliveryRules) {
         this.localDeliveryRule = this.deliveryRules[0] ? this.deliveryRules[0] : this.localDeliveryRule || undefined;
         if (this.localDeliveryRule) {
-          if (this.localDeliveryRule.format.type !== 'pdf' && this.localDeliveryRule.delivery !== 'none') {
+          if (
+            this.localDeliveryRule.format.type !== 'pdf' &&
+            this.localDeliveryRule.delivery !== 'none' &&
+            this.localDeliveryRule.name
+              .toString()
+              .match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)
+          ) {
             this.localDeliveryRule.name = `Email delivered ${this.localDeliveryRule.format.type} every week`;
           }
           if (this.formats.length === 1) {
