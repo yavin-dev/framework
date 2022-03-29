@@ -153,7 +153,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @tracked attemptedSave = false;
 
   /**
-   * @action doDelete
+   * @action addNewRule
    */
   @action
   addNewRule() {
@@ -182,7 +182,6 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   @action
   async doSave() {
-    debugger;
     this.deliveryRules?.forEach(async (rule) => {
       if (rule.validations.isValid) {
         // Only add relationships to the new delivery rule if the fields are valid
@@ -243,7 +242,7 @@ export default class ScheduleActionComponent extends Component<Args> {
         timeout: 'short',
       });
     } catch (e) {
-      this.notification = [`An error occurred while removing the delivery schedule '${name}`];
+      this.notification = [`An error occurred while removing the delivery schedule '${name}'`];
     }
   }
 
