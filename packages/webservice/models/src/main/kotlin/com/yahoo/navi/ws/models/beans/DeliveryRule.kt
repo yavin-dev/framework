@@ -95,6 +95,9 @@ class DeliveryRule : HasOwner {
     @NotNull
     var isDisabled: Boolean? = null
 
+    @NotNull
+    var failureCount: Int? = null
+
     @Column(name = "scheduling_rules", columnDefinition = "MEDIUMTEXT")
     @Type(
         type = "com.yahoo.navi.ws.models.types.JsonType",
