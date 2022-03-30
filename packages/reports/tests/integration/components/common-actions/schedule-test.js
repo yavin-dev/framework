@@ -613,6 +613,9 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       frequency: 'week',
       format: { type: 'gsheet' },
       recipients: ['test@oath.com', 'rule@oath.com'],
+      isDisabled: false,
+      failureCount: 0,
+      name: 'Gsheet delivered every week',
     };
 
     this.set('model', {
@@ -622,6 +625,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     });
     await render(TEMPLATE);
 
+    debugger;
     await click('.schedule-action__button');
 
     assert.dom('.schedule__modal-overwrite').exists('Overwrite control exists');
