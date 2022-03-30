@@ -625,7 +625,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     });
     await render(TEMPLATE);
 
-    debugger;
     await click('.schedule-action__button');
 
     assert.dom('.schedule__modal-overwrite').exists('Overwrite control exists');
