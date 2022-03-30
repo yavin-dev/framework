@@ -104,7 +104,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             ),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -154,7 +155,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -183,7 +185,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("dashboards"), id("2"))),
@@ -246,7 +249,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("lastDeliveredOn", "2018-12-03 00:00:00"),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -277,7 +281,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -323,7 +328,8 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("delivery", "none"),
-                            attr("isDisabled", true)
+                            attr("isDisabled", true),
+                            attr("failureCount", 0)
                         )
                     )
                 )
@@ -373,7 +379,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -402,7 +409,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf<String>()),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -430,7 +438,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("format", format),
                             attr("delivery", "email"),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -459,7 +468,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("user1@yavin.dev", "uasdf")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -488,7 +498,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("version", "1"),
                             attr("recipients", arrayOf("user1@yavin.dev")),
                             attr("format", format),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -520,7 +531,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -548,7 +560,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -574,7 +587,8 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("frequency", "month"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         )
                     )
                 ).toJSON()
@@ -617,7 +631,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -643,7 +658,8 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("frequency", "month"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         )
                     )
                 ).toJSON()
@@ -679,7 +695,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -773,7 +790,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev")),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id(reportId))),
@@ -878,7 +896,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev")),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("dashboards"), id(dashboardId))),
@@ -948,7 +967,8 @@ class DeliveryRulesTest : IntegrationTest() {
                             ),
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0)
                         ),
                         relationships(
                             relation("deliveredItem", linkage(type("reports"), id("1"))),
@@ -989,7 +1009,8 @@ class DeliveryRulesTest : IntegrationTest() {
                         id("1"),
                         attributes(
                             attr("format", formatWithOptions),
-                            attr("isDisabled", false)
+                            attr("isDisabled", false),
+                            attr("failureCount", 0),
                         )
                     )
                 )
