@@ -4,7 +4,7 @@
   class="yavin-perspective"
   ...attributes
   {{did-insert this.setupElement}}
-  {{did-update this.loadData @response}}
+  {{did-update this.loadData @response @isReadOnly}}
   {{did-update this.loadSettings @settings}}
   {{on "perspective-config-update" (perform this.handleConfigUpdate)}}
 />
