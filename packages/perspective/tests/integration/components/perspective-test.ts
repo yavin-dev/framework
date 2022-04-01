@@ -90,7 +90,7 @@ module('Integration | Component | perspective', function (hooks) {
             group_by: [],
             plugin: 'X Bar',
             plugin_config: {},
-            settings: false,
+            //settings: false, - we delete this property
             sort: [],
             split_by: [],
             //@ts-expect-error - need to update type
@@ -196,5 +196,27 @@ module('Integration | Component | perspective', function (hooks) {
     await fetchWithGrain('hour');
     const DATETIME = /\d\d?\/\d\d?\/\d{4}, \d\d?:\d{2}:\d{2} [AP]M/;
     assert.ok(DATETIME.test(getFirstRow()), 'First row renders correctly for hour grain');
+  });
+
+  test('it disables settings when read only', async function (this: TestContext, assert) {
+    this.set('isReadOnly', true);
+    await render(TEMPLATE);
+    await waitFor('td', { timeout: 10000 });
+    const settingsBtn = find('perspective-viewer')?.shadowRoot?.querySelector('#settings_button') as HTMLElement;
+    assert
+      .dom(settingsBtn)
+      .hasStyle({ visibility: 'hidden' }, 'it disabled setting btn on initial render when `isReadOnly` is true');
+
+    this.set('isReadOnly', false);
+    await waitUntil(() => settingsBtn?.style?.visibility === 'visible', { timeout: 10000 });
+    assert
+      .dom(settingsBtn)
+      .hasStyle({ visibility: 'visible' }, 'it enabled setting btn on update when `isReadOnly` is false');
+
+    this.set('isReadOnly', true);
+    await waitUntil(() => settingsBtn?.style?.visibility === 'hidden', { timeout: 10000 });
+    assert
+      .dom(settingsBtn)
+      .hasStyle({ visibility: 'hidden' }, 'it disabled setting btn on update when `isReadOnly` is true');
   });
 });

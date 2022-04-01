@@ -29,6 +29,7 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
       isLoaded,
       args: { settings, isReadOnly },
     } = this;
+    delete configuration.settings; //don't save the open/closed state of the settings panel
     if (isLoaded && !isReadOnly && !isEqual(configuration, settings?.configuration)) {
       this.args.onUpdateSettings({ configuration });
     }
@@ -52,11 +53,21 @@ export default class PerspectiveVisualization extends YavinVisualizationComponen
     return { ...defaultSchema, ...schemaOverrides };
   }
 
+  setupSettingsBtn(viewer: HTMLPerspectiveViewerElement) {
+    const visibility = this.args.isReadOnly ? 'hidden' : 'visible';
+    const settingsBtn = viewer.shadowRoot?.querySelector('#settings_button');
+    if (settingsBtn) {
+      //set visibility of settings button based on `isReadOnly`
+      (settingsBtn as HTMLElement).style.visibility = visibility;
+    }
+  }
+
   @action
   async loadData(viewer: HTMLPerspectiveViewerElement): Promise<void> {
     const { response } = this.args;
     const data = response.rows as TableData;
     const schema = await this.makeSchema();
+    this.setupSettingsBtn(viewer);
     const table = await worker.table(schema);
     table.update(data);
     await viewer.load(table);
