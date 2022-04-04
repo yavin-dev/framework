@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { w as words } from '@ember/string';
@@ -23,6 +23,13 @@ export function getPartialMatchWeight(string, query) {
     origString = string,
     stringTokens = arr(words(string)),
     allTokensFound = true;
+
+  // ignore special characters unless query also contains them
+  const specChar = new RegExp(/[^\w\s]/gi);
+  if (!specChar.test(query)) {
+    origString = origString.replaceAll(specChar, '');
+    stringTokens = stringTokens.map((token) => token.replaceAll(specChar, ''));
+  }
 
   // Check that all words in the search query can be found in the given string
   for (let i = 0; i < searchTokens.length; i++) {

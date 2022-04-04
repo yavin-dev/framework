@@ -8,7 +8,7 @@ import { module, test } from 'qunit';
 
 module('Unit | Utils | Search Utils', function () {
   test('getPartialMatchWeight', function (assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     assert.equal(
       getPartialMatchWeight('heavy green character', 'kart weight'),
@@ -26,6 +26,12 @@ module('Unit | Utils | Search Utils', function () {
       getPartialMatchWeight('heavy green character', 'character heavy'),
       7,
       'Match is found despite word order'
+    );
+
+    assert.equal(
+      getPartialMatchWeight('heavy (green) character', 'character heavy'),
+      7,
+      'Match is found despite special characters'
     );
 
     assert.equal(
