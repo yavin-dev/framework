@@ -455,7 +455,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        `'Email delivered pdf every week' schedule successfully saved!`,
+        `'Email delivered csv every week' schedule successfully saved!`,
         'Successful notification is shown after clicking save and the schedule is valid'
       );
 
@@ -473,7 +473,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal error when fetching existing schedule', async function (assert) {
-    assert.expect(6);
+    assert.expect(2);
 
     //suppress errors and exceptions for this test because 500 response will throw an error
     let originalLoggerError = Ember.Logger.error,
@@ -497,31 +497,8 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       );
 
     assert
-      .dom('.schedule__modal-input--recipients .emberTagInput')
-      .hasClass(
-        'emberTagInput--readOnly',
-        'The recipients input field is disabled when there is an error fetching the schedule'
-      );
-
-    assert
-      .dom('.schedule__modal-frequency-trigger')
-      .hasAttribute(
-        'aria-disabled',
-        'true',
-        'The frequency field is disabled when there is an error fetching the schedule'
-      );
-
-    assert
-      .dom('.schedule__modal-save-btn')
-      .isNotVisible('The save button is not available when there is an error fetching the schedule');
-
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not available when there is an error fetching the schedule');
-
-    assert
-      .dom('.schedule__modal-cancel-btn')
-      .isVisible('The cancel button is the primary button on the modal when there is an error fetching the schedule');
+      .dom('.schedule__modal-no-schedule-new-delivery')
+      .isVisible('After the error our empty schedule state is presented');
 
     Ember.Logger.error = originalLoggerError;
     Ember.Test.adapter.exception = originalException;
@@ -579,7 +556,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert
       .dom('.alert p')
       .includesText(
-        `There was an error updating your delivery settings for schedule 'Email delivered pdf every week'`,
+        `There was an error updating your delivery settings for schedule 'Email delivered csv every week'`,
         'failing notification is shown if server returns 500'
       );
 
@@ -623,7 +600,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     assert.equal(errors[1].innerText, 'Must be a valid oath.com or yahoo-inc.com email');
     assert.equal(
       errors[2].innerText,
-      `There was an error updating your delivery settings for schedule 'Email delivered pdf every week'`
+      `There was an error updating your delivery settings for schedule 'Email delivered csv every week'`
     );
     assert.equal(errors.length, 3, 'all errors show up formatted correctly for object-type errors');
 

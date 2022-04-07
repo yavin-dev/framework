@@ -214,7 +214,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('onSave Action', async function (assert) {
-    assert.expect(9);
+    assert.expect(10);
 
     this.set('model', unscheduledModel);
 
@@ -237,6 +237,9 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isNotVisible('The delete button is not available when model does not have a delivery rule for the current user');
 
+    await fillIn('.schedule__modal-name', 'Test');
+    await blur('.schedule__modal-name');
+
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
 
@@ -254,9 +257,12 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Recipients entered in the text area is set in the delivery rule'
       );
 
+      assert.equal(rule.get('name'), 'Test', 'The test name is properly in place');
+
       assert.ok(true, 'OnSave action is called');
 
-      rule.rollbackAttributes();
+      //added because rolling back attributes creates error with defaultName function
+      rule.hasDirtyAttributes = false;
 
       return resolve();
     });
@@ -462,7 +468,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('error fetching delivery rule when valid', async function (assert) {
-    assert.expect(11);
+    assert.expect(12);
 
     this.set('model', errorModel);
 
@@ -484,6 +490,14 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
+      [],
+      'Schedule Modal has its empty state shown because of the error'
+    );
+
+    await click('.schedule__modal-no-schedule-new-delivery');
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
       [
         'Schedule Name',
         'Delivery',
@@ -495,7 +509,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Status',
         '',
       ],
-      'Schedule Modal has all the expected sections'
+      'Schedule Modal has all the expected sections once we add a rule'
     );
 
     assert
@@ -523,6 +537,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await render(TEMPLATE);
     await click('.schedule-action__button');
+    await click('.schedule__modal-no-schedule-new-delivery');
 
     assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
 

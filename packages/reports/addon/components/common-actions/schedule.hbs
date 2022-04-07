@@ -2,7 +2,7 @@
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
-  @onClose={{queue this.closeModal (fn @onRevert this.localDeliveryRule)}}
+  @onClose={{queue this.closeModal (fn @onRevert this.currentDisplayedRule)}}
   class="schedule__modal"
   ...attributes
   as |Modal|
@@ -32,8 +32,8 @@
           <DenaliSidebar class="has-bg-white w-full" as |Sidebar|>
             {{#each this.deliveryRules as |deliveryRule|}}
               <Sidebar.Tab 
-                @isActive={{eq this.localDeliveryRule deliveryRule}} 
-                {{on "click" (fn (mut this.localDeliveryRule) deliveryRule)}}
+                @isActive={{eq this.currentDisplayedRule deliveryRule}} 
+                {{on "click" (fn (mut this.currentDisplayedRule) deliveryRule)}}
               >
                 <div class="row w-full">
                   <span class="col-7-8">{{deliveryRule.name}}</span>
@@ -63,7 +63,7 @@
               </DenaliAlert>
             {{/if}}
             {{!-- enable creation of a new delivery rule only if valid --}}
-            {{#if (and this.localDeliveryRule.isNew (not (await this.isValidForSchedule)))}}
+            {{#if (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule)))}}
               <DenaliAlert
                 @style="danger"
                 @isBlock={{true}}
@@ -75,7 +75,7 @@
                 </Alert.Context>
               </DenaliAlert>
             {{else}}
-                {{#if (eq this.localDeliveryRule undefined)}}
+                {{#if (eq this.currentDisplayedRule undefined)}}
                   <div class="schedule__modal-no-schedule">
                     <DenaliIcon class="flex justify-content-center m-t-200" @size="large" @icon="calendar-event" />
                     <h3 class="flex justify-content-center">We Deliver For You!</h3>
@@ -97,8 +97,8 @@
                       type="text" 
                       placeholder="Schedule Name (Optional)"
                       class="schedule__modal-name"
-                      value={{this.localDeliveryRule.name}}
-                      {{on "input" (pipe (pick "target.value") (fn (mut this.localDeliveryRule.name) ) )}}
+                      value={{unless this.currentDisplayedRule.name this.currentDisplayedRule.name this.defaultName}}
+                      {{on "input" (pipe (pick "target.value") (fn (mut this.currentDisplayedRule.name) ) )}}
                     />
                       <div class="schedule__modal-helper-name is-grey-800">
                         Please enter a custom name for this schedule.
@@ -110,30 +110,30 @@
                       @triggerClass="schedule__modal-delivery-trigger w-full"
                       @dropdownClass="w-full"
                       @options={{this.deliveryOptions}}
-                      @selected={{this.localDeliveryRule.delivery}}
+                      @selected={{this.currentDisplayedRule.delivery}}
                       @renderInPlace={{true}}
-                      @onChange={{this.updateDelivery}}
+                      @onChange={{fn (mut this.currentDisplayedRule.delivery)}}
                       as | delivery |
                     >
                       {{capitalize delivery}}
                     </PowerSelect>
                     <div class="schedule__modal-helper-delivery m-b-30 is-grey-800">
-                      {{#if (eq this.localDeliveryRule.delivery "email")}}
+                      {{#if (eq this.currentDisplayedRule.delivery "email")}}
                         Send this  {{this.modelType}} in an email on a recurring basis
                       {{else}}
                         Schedule and cache this {{this.modelType}} without delivery
                       {{/if}}
                     </div>
                   </DenaliInputGroup>
-                  {{#if (eq this.localDeliveryRule.delivery "email")}}
+                  {{#if (eq this.currentDisplayedRule.delivery "email")}}
                     <DenaliInputGroup
                       @label="Recipients"
                       @isStacked={{true}}
-                      class="{{unless this.areRulesValid "schedule__modal-recipients--invalid"}} m-b-30"
+                      class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
                     >
                       <NaviEmailInput
                         class="schedule__modal-input--recipients w-full"
-                        @emails={{readonly this.localDeliveryRule.recipients}}
+                        @emails={{readonly this.currentDisplayedRule.recipients}}
                         @onUpdateEmails={{this.updateRecipients}}
                         @isDisabled={{this.errorWhileFetchingRules}}
                       />
@@ -148,7 +148,7 @@
                         @dropdownClass="w-full"
                         @disabled={{lt this.formats.length 2}}
                         @options={{this.formats}}
-                        @selected={{this.localDeliveryRule.format.type}}
+                        @selected={{this.currentDisplayedRule.format.type}}
                         @searchEnabled={{false}}
                         @onChange={{this.updateFormat}}
                         @renderInPlace={{true}}
@@ -164,47 +164,47 @@
                       @triggerClass="schedule__modal-frequency-trigger w-full"
                       @dropdownClass="w-full"
                       @options={{this.frequencies}}
-                      @selected={{this.localDeliveryRule.frequency}}
+                      @selected={{this.currentDisplayedRule.frequency}}
                       @disabled={{this.errorWhileFetchingRules}}
                       @searchEnabled={{false}}
-                      @onChange={{this.updateFrequency}}
+                      @onChange={{fn (mut this.currentDisplayedRule.frequency)}}
                       @renderInPlace={{true}}
                       as | frequency |
                     >
                       {{capitalize frequency}}
                     </PowerSelect>
                   </DenaliInputGroup>
-                  {{#if (and (feature-flag "enabledNotifyIfData") (eq this.localDeliveryRule.delivery "email"))}}
+                  {{#if (and (feature-flag "enabledNotifyIfData") (eq this.currentDisplayedRule.delivery "email"))}}
                     <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
                       <DenaliSwitch
                         class="schedule__modal-must-have-data-toggle"
-                        @isEnabled={{this.localDeliveryRule.schedulingRules.mustHaveData}}
-                        @onChange={{toggle "mustHaveData" this.localDeliveryRule.schedulingRules}}/>
+                        @isEnabled={{this.currentDisplayedRule.schedulingRules.mustHaveData}}
+                        @onChange={{toggle "mustHaveData" this.currentDisplayedRule.schedulingRules}}/>
                     </DenaliInputGroup>
                   {{/if}}
 
-                  {{#if (includes this.localDeliveryRule.format.type this.overwriteableFormats)}}
+                  {{#if (includes this.currentDisplayedRule.format.type this.overwriteableFormats)}}
                     <DenaliInputGroup @label="Overwrite spreadsheet" class="schedule__modal-overwrite">
                       <DenaliSwitch
                         class="schedule__modal-overwrite-toggle"
-                        @isEnabled={{this.localDeliveryRule.format.options.overwriteFile}}
+                        @isEnabled={{this.currentDisplayedRule.format.options.overwriteFile}}
                         @onChange={{this.toggleOverwriteFile}}/>
                     </DenaliInputGroup>
                     <p class="help-text m-b-30 is-grey-800">
-                      {{#if this.localDeliveryRule.format.options.overwriteFile}}
-                        Data will be replaced in the same sheet every {{this.localDeliveryRule.frequency}}
+                      {{#if this.currentDisplayedRule.format.options.overwriteFile}}
+                        Data will be replaced in the same sheet every {{this.currentDisplayedRule.frequency}}
                       {{else}}
-                        A new sheet will be created every {{this.localDeliveryRule.frequency}}
+                        A new sheet will be created every {{this.currentDisplayedRule.frequency}}
                       {{/if}}
                     </p>
                   {{/if}}
                   <DenaliInputGroup @label="Status" class="m-b-30 align-items-center">
                     <DenaliSwitch
                       class="schedule__modal-disabled-status"
-                      @isEnabled={{not this.localDeliveryRule.isDisabled}}
-                      @onChange={{toggle "isDisabled" this.localDeliveryRule}}/>
+                      @isEnabled={{not this.currentDisplayedRule.isDisabled}}
+                      @onChange={{toggle "isDisabled" this.currentDisplayedRule}}/>
                     <p>
-                      {{#if this.localDeliveryRule.isDisabled}}
+                      {{#if this.currentDisplayedRule.isDisabled}}
                         Paused
                       {{else}}
                         Active
@@ -215,9 +215,9 @@
               {{/if}}
           </div>
 
-          {{#if this.localDeliveryRule}}
+          {{#if this.currentDisplayedRule}}
             <div class="schedule__modal-buttons w-full p-24">
-              {{#if (and this.localDeliveryRule.isNew (not (await this.isValidForSchedule)))}}
+              {{#if (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule)))}}
                 <DenaliButton
                   class="schedule__modal-cancel-btn m-r-5"
                   style="ghost"
@@ -242,7 +242,7 @@
                   isLoading={{this.isSaving}}
                   {{on "click" (queue (toggle "isSaving" this) this.doSave)}}
                 >
-                  {{#if this.localDeliveryRule.isNew}}
+                  {{#if this.currentDisplayedRule.isNew}}
                     Save
                   {{else}}
                     Save Changes
@@ -255,17 +255,17 @@
                   type="button"
                   {{on "click" (queue this.closeModal this.revertAll)}}
                 >
-                  {{#if this.localDeliveryRule.hasDirtyAttributes}}
+                  {{#if this.currentDisplayedRule.hasDirtyAttributes}}
                     Cancel
                   {{else}}
                     Close
                   {{/if}}
                 </DenaliButton>
               {{/if}}
-              {{#unless this.localDeliveryRule.isNew}}
+              {{#unless this.currentDisplayedRule.isNew}}
                 <CommonActions::Delete
-                  @model={{this.localDeliveryRule}}
-                  @deleteAction={{queue (fn this.doDelete this.localDeliveryRule) this.closeModal}}
+                  @model={{this.currentDisplayedRule}}
+                  @deleteAction={{queue (fn this.doDelete this.currentDisplayedRule) this.closeModal}}
                   as |onDelete|
                 >
                   <DenaliButton
