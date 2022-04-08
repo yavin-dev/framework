@@ -44,7 +44,7 @@ You can install the individual packages via npm
 Assuming you have git, node (>=10), and [ember-cli](https://cli.emberjs.com/release/)
 
 - `git clone https://github.com/yavin-dev/framework.git`
-- `cd yavin`
+- `cd framework`
 - `CI=true npm install` (`CI=true` makes use of each package's `package-lock.json` file)
 - `cd packages/reports` (or whichever package)
 - `ember s` to run a local server
